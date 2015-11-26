@@ -1,0 +1,4 @@
+
+Sand can be smelted into glass.
+[furnace{200,50,block/sand}block/glass]
+[furnace{200,200,key=block/glass}]

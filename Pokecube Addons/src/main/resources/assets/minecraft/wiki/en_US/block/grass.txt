@@ -1,0 +1,10 @@
+[image{270,190,2,igwmod:textures/GuiInfo.png}]
+[image{200,90,4,igwmod:textures/GuiInfo.png}]
+
+Note: The following page is just an example of what you can do with this mod.
+
+ [prefix{l}]Grass Block [prefix{r}]
+A Grass Block is a [link{server/test1}]block [link{}]that was introduced very early in the game. It uses 4 textures: a gray one for the top which is then tinted to the correct color according to what biome the block is in, one borrowed from the dirt block for the bottom, an edited dirt texture with grass on the top edge on all of the sides, and a gray texture matching the shape of the grass on the side of the block, which is tinted to the correct biome color. When covered by snow the side texture is white. On natural maps, grass appears on topmost blocks of dirt with no fluids or opaque solid blocks above them.
+In mining, grass blocks behave just like [link{block/dirt}]Dirt [link{}]- they drop dirt resources and are best dug with a shovel; however, they make a different sound when harvested and take slightly longer to dig up. This can be used to tell when the player is about to break the surface when tunneling upwards.
+
+Color test: [color{FFFFFF}]white [color{FF0000}]red, still red, [prefix{l}]still red

@@ -1,0 +1,50 @@
+[prefix{l}]Your Bag[prefix{}]
+Your bag is 32 pages of 54 slots which can hold any item which a pokemob can hold, as well as empty pokecubes.
+The gui and usage is mostly similar to the [link{pokecube:block/pc.top}]PC[link{}].
+
+[prefix{l}]Recipe[prefix{}]
+[crafting{200,80,key=item/pokecubebag}]
+
+
+
+
+
+
+
+
+
+
+
+
+[prefix{l}]Gui[prefix{}]
+[image{200,240,0.5,pokecube_adventures:textures/wiki/Bag.png}]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-If not opened via the PC, then the PC button will be missing.  If it exists, the PC button will open your [link{pokecube:block/pc.top}]PC [link{}].
+
+-Rename does the same as with the [link{pokecube:block/pc.top}]PC [link{}].
+
+-The text field in the top right allows for searching the current box, It will highlight items which match the text.

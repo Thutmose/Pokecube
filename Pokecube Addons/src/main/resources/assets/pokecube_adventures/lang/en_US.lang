@@ -1,0 +1,37 @@
+﻿#Pokecube Adventures translation
+
+item.pokemobTarget.name=Target
+item.warplinker.name=Warp Pad Linker
+item.biomeSetter.name=Sub-Biome Setter
+item.exp_share.name=Exp. Share
+item.trainerSpawner.name=Trainer Editor
+item.leaderSpawner.name=Leader Editor
+item.traderSpawner.name=Trader Editor
+item.pokecubebag.name=Bag
+
+tile.oranLog.name=Oran Wood
+tile.oranWood.name=Oran Planks
+tile.oranLeaves.name=Oran Leaves
+tile.sitrusLog.name=Sitrus Wood
+tile.sitrusWood.name=Sitrus Planks
+tile.sitrusLeaves.name=Sitrus Leaves
+tile.pechaLog.name=Pecha Wood
+tile.pechaWood.name=Pecha Planks
+tile.pechaLeaves.name=Pecha Leaves
+tile.nanabLog.name=Nanab Wood
+tile.nanabWood.name=Nanab Planks
+tile.nanabLeaves.name=Nanab Leaves
+tile.leppaLog.name=Leppa Wood
+tile.leppaWood.name=Leppa Planks
+tile.leppaLeaves.name=Leppa Leaves
+tile.enigmaLog.name=Enigma Wood
+tile.enigmaWood.name=Enigma Planks
+tile.enigmaLeaves.name=Enigma Leaves
+tile.warppad.name=Warp Pad
+tile.cloner.name=Splicing Device
+
+gui.trainer.stationary=Trainer Wanders
+gui.trainer.saved=Saved Trainer
+
+entity.pokecube_adventures.targetParticles.name=Target
+

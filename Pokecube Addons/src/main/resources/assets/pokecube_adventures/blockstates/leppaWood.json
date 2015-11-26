@@ -1,0 +1,8 @@
+{
+   "variants": {
+       "axis=y": { "model": "pokecube_adventures:leppaWood" },
+       "axis=z": { "model": "pokecube_adventures:leppaWood_side" },
+       "axis=x": { "model": "pokecube_adventures:leppaWood_side", "y": 90  },
+       "axis=none": { "model": "pokecube_adventures:leppaWood_bark" }
+    }
+}

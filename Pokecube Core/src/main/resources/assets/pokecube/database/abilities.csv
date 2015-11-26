@@ -1,0 +1,771 @@
+001 ,Bulbasaur ,Overgrow ,,Chlorophyll
+002 ,Ivysaur ,Overgrow ,,Chlorophyll
+003 ,Venusaur ,Overgrow ,,Chlorophyll
+003 ,Mega Venusaur ,Thick Fat ,,
+004 ,Charmander ,Blaze ,,Solar Power
+005 ,Charmeleon ,Blaze ,,Solar Power
+006 ,Charizard ,Blaze ,,Solar Power
+006 ,Mega Charizard X ,Tough Claws ,,
+006 ,Mega Charizard Y ,Drought ,,
+007 ,Squirtle ,Torrent ,,Rain Dish
+008 ,Wartortle ,Torrent ,,Rain Dish
+009 ,Blastoise ,Torrent ,,Rain Dish
+009 ,Mega Blastoise ,Mega Launcher ,,
+010 ,Caterpie ,Shield Dust ,,Run Away
+011 ,Metapod ,Shed Skin ,,
+012 ,Butterfree ,Compound Eyes ,,Tinted Lens
+013 ,Weedle ,Shield Dust ,,Run Away
+014 ,Kakuna ,Shed Skin ,,
+015 ,Beedrill ,Swarm ,,Sniper
+016 ,Pidgey ,Keen Eye ,Tangled Feet ,Big Pecks
+017 ,Pidgeotto ,Keen Eye ,Tangled Feet ,Big Pecks
+018 ,Pidgeot ,Keen Eye ,Tangled Feet ,Big Pecks
+019 ,Rattata ,Run Away ,Guts ,Hustle
+020 ,Raticate ,Run Away ,Guts ,Hustle
+021 ,Spearow ,Keen Eye ,,Sniper
+022 ,Fearow ,Keen Eye ,,Sniper
+023 ,Ekans ,Intimidate ,Shed Skin ,Unnerve
+024 ,Arbok ,Intimidate ,Shed Skin ,Unnerve
+172 ,Pichu ,Static ,,Lightning Rod
+025 ,Pikachu ,Static ,,Lightning Rod
+026 ,Raichu ,Static ,,Lightning Rod
+027 ,Sandshrew ,Sand Veil ,,Sand Rush
+028 ,Sandslash ,Sand Veil ,,Sand Rush
+029 ,Nidoran? ,Poison Point ,Rivalry ,Hustle
+030 ,Nidorina ,Poison Point ,Rivalry ,Hustle
+031 ,Nidoqueen ,Poison Point ,Rivalry ,Sheer Force
+032 ,Nidoran? ,Poison Point ,Rivalry ,Hustle
+033 ,Nidorino ,Poison Point ,Rivalry ,Hustle
+034 ,Nidoking ,Poison Point ,Rivalry ,Sheer Force
+173 ,Cleffa ,Cute Charm ,Magic Guard ,Friend Guard
+035 ,Clefairy ,Cute Charm ,Magic Guard ,Friend Guard
+036 ,Clefable ,Cute Charm ,Magic Guard ,Unaware
+037 ,Vulpix ,Flash Fire ,,Drought
+038 ,Ninetales ,Flash Fire ,,Drought
+174 ,Igglybuff ,Cute Charm ,Competitive ,Friend Guard
+039 ,Jigglypuff ,Cute Charm ,Competitive ,Friend Guard
+040 ,Wigglytuff ,Cute Charm ,Competitive ,Frisk
+041 ,Zubat ,Inner Focus ,,Infiltrator
+042 ,Golbat ,Inner Focus ,,Infiltrator
+169 ,Crobat ,Inner Focus ,,Infiltrator
+043 ,Oddish ,Chlorophyll ,,Run Away
+044 ,Gloom ,Chlorophyll ,,Stench
+045 ,Vileplume ,Chlorophyll ,,Effect Spore
+182 ,Bellossom ,Chlorophyll ,,Healer
+046 ,Paras ,Effect Spore ,Dry Skin ,Damp
+047 ,Parasect ,Effect Spore ,Dry Skin ,Damp
+048 ,Venonat ,Compound Eyes ,Tinted Lens ,Run Away
+049 ,Venomoth ,Shield Dust ,Tinted Lens ,Wonder Skin
+050 ,Diglett ,Sand Veil ,Arena Trap ,Sand Force
+051 ,Dugtrio ,Sand Veil ,Arena Trap ,Sand Force
+052 ,Meowth ,Pickup ,Technician ,Unnerve
+053 ,Persian ,Limber ,Technician ,Unnerve
+054 ,Psyduck ,Damp ,Cloud Nine ,Swift Swim
+055 ,Golduck ,Damp ,Cloud Nine ,Swift Swim
+056 ,Mankey ,Vital Spirit ,Anger Point ,Defiant
+057 ,Primeape ,Vital Spirit ,Anger Point ,Defiant
+058 ,Growlithe ,Intimidate ,Flash Fire ,Justified
+059 ,Arcanine ,Intimidate ,Flash Fire ,Justified
+060 ,Poliwag ,Water Absorb ,Damp ,Swift Swim
+061 ,Poliwhirl ,Water Absorb ,Damp ,Swift Swim
+062 ,Poliwrath ,Water Absorb ,Damp ,Swift Swim
+186 ,Politoed ,Water Absorb ,Damp ,Drizzle
+063 ,Abra ,Synchronize ,Inner Focus ,Magic Guard
+064 ,Kadabra ,Synchronize ,Inner Focus ,Magic Guard
+065 ,Alakazam ,Synchronize ,Inner Focus ,Magic Guard
+065 ,Mega Alakazam ,Trace ,,
+066 ,Machop ,Guts ,No Guard ,Steadfast
+067 ,Machoke ,Guts ,No Guard ,Steadfast
+068 ,Machamp ,Guts ,No Guard ,Steadfast
+069 ,Bellsprout ,Chlorophyll ,,Gluttony
+070 ,Weepinbell ,Chlorophyll ,,Gluttony
+071 ,Victreebel ,Chlorophyll ,,Gluttony
+072 ,Tentacool ,Clear Body ,Liquid Ooze ,Rain Dish
+073 ,Tentacruel ,Clear Body ,Liquid Ooze ,Rain Dish
+074 ,Geodude ,Rock Head ,Sturdy ,Sand Veil
+075 ,Graveler ,Rock Head ,Sturdy ,Sand Veil
+076 ,Golem ,Rock Head ,Sturdy ,Sand Veil
+077 ,Ponyta ,Run Away ,Flash Fire ,Flame Body
+078 ,Rapidash ,Run Away ,Flash Fire ,Flame Body
+079 ,Slowpoke ,Oblivious ,Own Tempo ,Regenerator
+080 ,Slowbro ,Oblivious ,Own Tempo ,Regenerator
+199 ,Slowking ,Oblivious ,Own Tempo ,Regenerator
+081 ,Magnemite ,Magnet Pull ,Sturdy ,Analytic
+082 ,Magneton ,Magnet Pull ,Sturdy ,Analytic
+462 ,Magnezone ,Magnet Pull ,Sturdy ,Analytic
+083 ,Farfetch'd ,Keen Eye ,Inner Focus ,Defiant
+084 ,Doduo ,Run Away ,Early Bird ,Tangled Feet
+085 ,Dodrio ,Run Away ,Early Bird ,Tangled Feet
+086 ,Seel ,Thick Fat ,Hydration ,Ice Body
+087 ,Dewgong ,Thick Fat ,Hydration ,Ice Body
+088 ,Grimer ,Stench ,Sticky Hold ,Poison Touch
+089 ,Muk ,Stench ,Sticky Hold ,Poison Touch
+090 ,Shellder ,Shell Armor ,Skill Link ,Overcoat
+091 ,Cloyster ,Shell Armor ,Skill Link ,Overcoat
+092 ,Gastly ,Levitate ,,
+093 ,Haunter ,Levitate ,,
+094 ,Gengar ,Levitate ,,
+094 ,Mega Gengar ,Shadow Tag ,,
+095 ,Onix ,Rock Head ,Sturdy ,Weak Armor
+208 ,Steelix ,Rock Head ,Sturdy ,Sheer Force
+096 ,Drowzee ,Insomnia ,Forewarn ,Inner Focus
+097 ,Hypno ,Insomnia ,Forewarn ,Inner Focus
+098 ,Krabby ,Hyper Cutter ,Shell Armor ,Sheer Force
+099 ,Kingler ,Hyper Cutter ,Shell Armor ,Sheer Force
+100 ,Voltorb ,Soundproof ,Static ,Aftermath
+101 ,Electrode ,Soundproof ,Static ,Aftermath
+102 ,Exeggcute ,Chlorophyll ,,Harvest
+103 ,Exeggutor ,Chlorophyll ,,Harvest
+104 ,Cubone ,Rock Head ,Lightning Rod ,Battle Armor
+105 ,Marowak ,Rock Head ,Lightning Rod ,Battle Armor
+236 ,Tyrogue ,Guts ,Steadfast ,Vital Spirit
+106 ,Hitmonlee ,Limber ,Reckless ,Unburden
+107 ,Hitmonchan ,Keen Eye ,Iron Fist ,Inner Focus
+237 ,Hitmontop ,Intimidate ,Technician ,Steadfast
+108 ,Lickitung ,Own Tempo ,Oblivious ,Cloud Nine
+463 ,Lickilicky ,Own Tempo ,Oblivious ,Cloud Nine
+109 ,Koffing ,Levitate ,,
+110 ,Weezing ,Levitate ,,
+111 ,Rhyhorn ,Lightning Rod ,Rock Head ,Reckless
+112 ,Rhydon ,Lightning Rod ,Rock Head ,Reckless
+464 ,Rhyperior ,Lightning Rod ,Solid Rock ,Reckless
+440 ,Happiny ,Natural Cure ,Serene Grace ,Friend Guard
+113 ,Chansey ,Natural Cure ,Serene Grace ,Healer
+242 ,Blissey ,Natural Cure ,Serene Grace ,Healer
+114 ,Tangela ,Chlorophyll ,Leaf Guard ,Regenerator
+465 ,Tangrowth ,Chlorophyll ,Leaf Guard ,Regenerator
+115 ,Kangaskhan ,Early Bird ,Scrappy ,Inner Focus
+115 ,Mega Kangaskhan ,Parental Bond ,,
+116 ,Horsea ,Swift Swim ,Sniper ,Damp
+117 ,Seadra ,Poison Point ,Sniper ,Damp
+230 ,Kingdra ,Swift Swim ,Sniper ,Damp
+118 ,Goldeen ,Swift Swim ,Water Veil ,Lightning Rod
+119 ,Seaking ,Swift Swim ,Water Veil ,Lightning Rod
+120 ,Staryu ,Illuminate ,Natural Cure ,Analytic
+121 ,Starmie ,Illuminate ,Natural Cure ,Analytic
+439 ,Mime Jr. ,Soundproof ,Filter ,Technician
+122 ,Mr. Mime ,Soundproof ,Filter ,Technician
+123 ,Scyther ,Swarm ,Technician ,Steadfast
+212 ,Scizor ,Swarm ,Technician ,Light Metal
+212 ,Mega Scizor ,Technician ,,
+238 ,Smoochum ,Oblivious ,Forewarn ,Hydration
+124 ,Jynx ,Oblivious ,Forewarn ,Dry Skin
+239 ,Elekid ,Static ,,Vital Spirit
+125 ,Electabuzz ,Static ,,Vital Spirit
+466 ,Electivire ,Motor Drive ,,Vital Spirit
+240 ,Magby ,Flame Body ,,Vital Spirit
+126 ,Magmar ,Flame Body ,,Vital Spirit
+467 ,Magmortar ,Flame Body ,,Vital Spirit
+127 ,Pinsir ,Hyper Cutter ,Mold Breaker ,Moxie
+127 ,Mega Pinsir ,Aerilate ,,
+128 ,Tauros ,Intimidate ,Anger Point ,Sheer Force
+129 ,Magikarp ,Swift Swim ,,Rattled
+130 ,Gyarados ,Intimidate ,,Moxie
+130 ,Mega Gyarados ,Mold Breaker ,,
+131 ,Lapras ,Water Absorb ,Shell Armor ,Hydration
+132 ,Ditto ,Limber ,,Imposter
+133 ,Eevee ,Run Away ,Adaptability ,Anticipation
+134 ,Vaporeon ,Water Absorb ,,Hydration
+135 ,Jolteon ,Volt Absorb ,,Quick Feet
+136 ,Flareon ,Flash Fire ,,Guts
+196 ,Espeon ,Synchronize ,,Magic Bounce
+197 ,Umbreon ,Synchronize ,,Inner Focus
+470 ,Leafeon ,Leaf Guard ,,Chlorophyll
+471 ,Glaceon ,Snow Cloak ,,Ice Body
+700 ,Sylveon ,Cute Charm ,,Pixilate
+137 ,Porygon ,Trace ,Download ,Analytic
+233 ,Porygon2 ,Trace ,Download ,Analytic
+474 ,Porygon-Z ,Adaptability ,Download ,Analytic
+138 ,Omanyte ,Swift Swim ,Shell Armor ,Weak Armor
+139 ,Omastar ,Swift Swim ,Shell Armor ,Weak Armor
+140 ,Kabuto ,Swift Swim ,Battle Armor ,Weak Armor
+141 ,Kabutops ,Swift Swim ,Battle Armor ,Weak Armor
+142 ,Aerodactyl ,Rock Head ,Pressure ,Unnerve
+142 ,Mega Aerodactyl ,Tough Claws ,,
+446 ,Munchlax ,Pickup ,Thick Fat ,Gluttony
+143 ,Snorlax ,Immunity ,Thick Fat ,Gluttony
+144 ,Articuno ,Pressure ,,Snow Cloak
+145 ,Zapdos ,Pressure ,,Static
+146 ,Moltres ,Pressure ,,Flame Body
+147 ,Dratini ,Shed Skin ,,Marvel Scale
+148 ,Dragonair ,Shed Skin ,,Marvel Scale
+149 ,Dragonite ,Inner Focus ,,Multiscale
+150 ,Mewtwo ,Pressure ,,Unnerve
+150 ,Mega Mewtwo X ,Steadfast ,,
+150 ,Mega Mewtwo Y ,Insomnia ,,
+151 ,Mew ,Synchronize ,,
+152 ,Chikorita ,Overgrow ,,Leaf Guard
+153 ,Bayleef ,Overgrow ,,Leaf Guard
+154 ,Meganium ,Overgrow ,,Leaf Guard
+155 ,Cyndaquil ,Blaze ,,Flash Fire
+156 ,Quilava ,Blaze ,,Flash Fire
+157 ,Typhlosion ,Blaze ,,Flash Fire
+158 ,Totodile ,Torrent ,,Sheer Force
+159 ,Croconaw ,Torrent ,,Sheer Force
+160 ,Feraligatr ,Torrent ,,Sheer Force
+161 ,Sentret ,Run Away ,Keen Eye ,Frisk
+162 ,Furret ,Run Away ,Keen Eye ,Frisk
+163 ,Hoothoot ,Insomnia ,Keen Eye ,Tinted Lens
+164 ,Noctowl ,Insomnia ,Keen Eye ,Tinted Lens
+165 ,Ledyba ,Swarm ,Early Bird ,Rattled
+166 ,Ledian ,Swarm ,Early Bird ,Iron Fist
+167 ,Spinarak ,Swarm ,Insomnia ,Sniper
+168 ,Ariados ,Swarm ,Insomnia ,Sniper
+170 ,Chinchou ,Volt Absorb ,Illuminate ,Water Absorb
+171 ,Lanturn ,Volt Absorb ,Illuminate ,Water Absorb
+175 ,Togepi ,Hustle ,Serene Grace ,Super Luck
+176 ,Togetic ,Hustle ,Serene Grace ,Super Luck
+468 ,Togekiss ,Hustle ,Serene Grace ,Super Luck
+177 ,Natu ,Synchronize ,Early Bird ,Magic Bounce
+178 ,Xatu ,Synchronize ,Early Bird ,Magic Bounce
+179 ,Mareep ,Static ,,Plus
+180 ,Flaaffy ,Static ,,Plus
+181 ,Ampharos ,Static ,,Plus
+181 ,Mega Ampharos ,Mold Breaker ,,
+298 ,Azurill ,Thick Fat ,Huge Power ,Sap Sipper
+183 ,Marill ,Thick Fat ,Huge Power ,Sap Sipper
+184 ,Azumarill ,Thick Fat ,Huge Power ,Sap Sipper
+438 ,Bonsly ,Sturdy ,Rock Head ,Rattled
+185 ,Sudowoodo ,Sturdy ,Rock Head ,Rattled
+187 ,Hoppip ,Chlorophyll ,Leaf Guard ,Infiltrator
+188 ,Skiploom ,Chlorophyll ,Leaf Guard ,Infiltrator
+189 ,Jumpluff ,Chlorophyll ,Leaf Guard ,Infiltrator
+190 ,Aipom ,Run Away ,Pickup ,Skill Link
+424 ,Ambipom ,Technician ,Pickup ,Skill Link
+191 ,Sunkern ,Chlorophyll ,Solar Power ,Early Bird
+192 ,Sunflora ,Chlorophyll ,Solar Power ,Early Bird
+193 ,Yanma ,Speed Boost ,Compound Eyes ,Frisk
+469 ,Yanmega ,Speed Boost ,Tinted Lens ,Frisk
+194 ,Wooper ,Damp ,Water Absorb ,Unaware
+195 ,Quagsire ,Damp ,Water Absorb ,Unaware
+198 ,Murkrow ,Insomnia ,Super Luck ,Prankster
+430 ,Honchkrow ,Insomnia ,Super Luck ,Moxie
+200 ,Misdreavus ,Levitate ,,
+429 ,Mismagius ,Levitate ,,
+201 ,Unown ,Levitate ,,
+360 ,Wynaut ,Shadow Tag ,,Telepathy
+202 ,Wobbuffet ,Shadow Tag ,,Telepathy
+203 ,Girafarig ,Inner Focus ,Early Bird ,Sap Sipper
+204 ,Pineco ,Sturdy ,,Overcoat
+205 ,Forretress ,Sturdy ,,Overcoat
+206 ,Dunsparce ,Serene Grace ,Run Away ,Rattled
+207 ,Gligar ,Hyper Cutter ,Sand Veil ,Immunity
+472 ,Gliscor ,Hyper Cutter ,Sand Veil ,Poison Heal
+209 ,Snubbull ,Intimidate ,Run Away ,Rattled
+210 ,Granbull ,Intimidate ,Quick Feet ,Rattled
+211 ,Qwilfish ,Poison Point ,Swift Swim ,Intimidate
+213 ,Shuckle ,Sturdy ,Gluttony ,Contrary
+214 ,Heracross ,Swarm ,Guts ,Moxie
+214 ,Mega Heracross ,Skill Link ,,
+215 ,Sneasel ,Inner Focus ,Keen Eye ,Pickpocket
+461 ,Weavile ,Pressure ,,Pickpocket
+216 ,Teddiursa ,Pickup ,Quick Feet ,Honey Gather
+217 ,Ursaring ,Guts ,Quick Feet ,Unnerve
+218 ,Slugma ,Magma Armor ,Flame Body ,Weak Armor
+219 ,Magcargo ,Magma Armor ,Flame Body ,Weak Armor
+220 ,Swinub ,Oblivious ,Snow Cloak ,Thick Fat
+221 ,Piloswine ,Oblivious ,Snow Cloak ,Thick Fat
+473 ,Mamoswine ,Oblivious ,Snow Cloak ,Thick Fat
+222 ,Corsola ,Hustle ,Natural Cure ,Regenerator
+223 ,Remoraid ,Hustle ,Sniper ,Moody
+224 ,Octillery ,Suction Cups ,Sniper ,Moody
+225 ,Delibird ,Vital Spirit ,Hustle ,Insomnia
+458 ,Mantyke ,Swift Swim ,Water Absorb ,Water Veil
+226 ,Mantine ,Swift Swim ,Water Absorb ,Water Veil
+227 ,Skarmory ,Keen Eye ,Sturdy ,Weak Armor
+228 ,Houndour ,Early Bird ,Flash Fire ,Unnerve
+229 ,Houndoom ,Early Bird ,Flash Fire ,Unnerve
+229 ,Mega Houndoom ,Solar Power ,,
+231 ,Phanpy ,Pickup ,,Sand Veil
+232 ,Donphan ,Sturdy ,,Sand Veil
+234 ,Stantler ,Intimidate ,Frisk ,Sap Sipper
+235 ,Smeargle ,Own Tempo ,Technician ,Moody
+241 ,Miltank ,Thick Fat ,Scrappy ,Sap Sipper
+243 ,Raikou ,Pressure ,,Volt Absorb
+244 ,Entei ,Pressure ,,Flash Fire
+245 ,Suicune ,Pressure ,,Water Absorb
+246 ,Larvitar ,Guts ,,Sand Veil
+247 ,Pupitar ,Shed Skin ,,
+248 ,Tyranitar ,Sand Stream ,,Unnerve
+248 ,Mega Tyranitar ,Sand Stream ,,
+249 ,Lugia ,Pressure ,,Multiscale
+250 ,Ho-Oh ,Pressure ,,Regenerator
+251 ,Celebi ,Natural Cure ,,
+252 ,Treecko ,Overgrow ,,Unburden
+253 ,Grovyle ,Overgrow ,,Unburden
+254 ,Sceptile ,Overgrow ,,Unburden
+254 ,Mega Sceptile ,Lightning Rod ,,
+255 ,Torchic ,Blaze ,,Speed Boost
+256 ,Combusken ,Blaze ,,Speed Boost
+257 ,Blaziken ,Blaze ,,Speed Boost
+257 ,Mega Blaziken ,Speed Boost ,,
+258 ,Mudkip ,Torrent ,,Damp
+259 ,Marshtomp ,Torrent ,,Damp
+260 ,Swampert ,Torrent ,,Damp
+260 ,Mega Swampert ,Swift Swim ,,
+261 ,Poochyena ,Run Away ,Quick Feet ,Rattled
+262 ,Mightyena ,Intimidate ,Quick Feet ,Moxie
+263 ,Zigzagoon ,Pickup ,Gluttony ,Quick Feet
+264 ,Linoone ,Pickup ,Gluttony ,Quick Feet
+265 ,Wurmple ,Shield Dust ,,Run Away
+266 ,Silcoon ,Shed Skin ,,
+267 ,Beautifly ,Swarm ,,Rivalry
+268 ,Cascoon ,Shed Skin ,,
+269 ,Dustox ,Shield Dust ,,Compound Eyes
+270 ,Lotad ,Swift Swim ,Rain Dish ,Own Tempo
+271 ,Lombre ,Swift Swim ,Rain Dish ,Own Tempo
+272 ,Ludicolo ,Swift Swim ,Rain Dish ,Own Tempo
+273 ,Seedot ,Chlorophyll ,Early Bird ,Pickpocket
+274 ,Nuzleaf ,Chlorophyll ,Early Bird ,Pickpocket
+275 ,Shiftry ,Chlorophyll ,Early Bird ,Pickpocket
+276 ,Taillow ,Guts ,,Scrappy
+277 ,Swellow ,Guts ,,Scrappy
+278 ,Wingull ,Keen Eye ,,Rain Dish
+279 ,Pelipper ,Keen Eye ,,Rain Dish
+280 ,Ralts ,Synchronize ,Trace ,Telepathy
+281 ,Kirlia ,Synchronize ,Trace ,Telepathy
+282 ,Gardevoir ,Synchronize ,Trace ,Telepathy
+282 ,Mega Gardevoir ,Pixilate ,,
+475 ,Gallade ,Steadfast ,,Justified
+283 ,Surskit ,Swift Swim ,,Rain Dish
+284 ,Masquerain ,Intimidate ,,Unnerve
+285 ,Shroomish ,Effect Spore ,Poison Heal ,Quick Feet
+286 ,Breloom ,Effect Spore ,Poison Heal ,Technician
+287 ,Slakoth ,Truant ,,
+288 ,Vigoroth ,Vital Spirit ,,
+289 ,Slaking ,Truant ,,
+290 ,Nincada ,Compound Eyes ,,Run Away
+291 ,Ninjask ,Speed Boost ,,Infiltrator
+292 ,Shedinja ,Wonder Guard ,,Wonder Guard
+293 ,Whismur ,Soundproof ,,Rattled
+294 ,Loudred ,Soundproof ,,Scrappy
+295 ,Exploud ,Soundproof ,,Scrappy
+296 ,Makuhita ,Thick Fat ,Guts ,Sheer Force
+297 ,Hariyama ,Thick Fat ,Guts ,Sheer Force
+299 ,Nosepass ,Sturdy ,Magnet Pull ,Sand Force
+476 ,Probopass ,Sturdy ,Magnet Pull ,Sand Force
+300 ,Skitty ,Cute Charm ,Normalize ,Wonder Skin
+301 ,Delcatty ,Cute Charm ,Normalize ,Wonder Skin
+302 ,Sableye ,Keen Eye ,Stall ,Prankster
+302 ,Mega Sableye ,Magic Bounce ,,
+303 ,Mawile ,Hyper Cutter ,Intimidate ,Sheer Force
+303 ,Mega Mawile ,Huge Power ,,
+304 ,Aron ,Sturdy ,Rock Head ,Heavy Metal
+305 ,Lairon ,Sturdy ,Rock Head ,Heavy Metal
+306 ,Aggron ,Sturdy ,Rock Head ,Heavy Metal
+306 ,Mega Aggron ,Filter ,,
+307 ,Meditite ,Pure Power ,,Telepathy
+308 ,Medicham ,Pure Power ,,Telepathy
+308 ,Mega Medicham ,Pure Power ,,
+309 ,Electrike ,Static ,Lightning Rod ,Minus
+310 ,Manectric ,Static ,Lightning Rod ,Minus
+310 ,Mega Manectric ,Intimidate ,,
+311 ,Plusle ,Plus ,,Lightning Rod
+312 ,Minun ,Minus ,,Volt Absorb
+313 ,Volbeat ,Illuminate ,Swarm ,Prankster
+314 ,Illumise ,Oblivious ,Tinted Lens ,Prankster
+406 ,Budew ,Natural Cure ,Poison Point ,Leaf Guard
+315 ,Roselia ,Natural Cure ,Poison Point ,Leaf Guard
+407 ,Roserade ,Natural Cure ,Poison Point ,Technician
+316 ,Gulpin ,Liquid Ooze ,Sticky Hold ,Gluttony
+317 ,Swalot ,Liquid Ooze ,Sticky Hold ,Gluttony
+318 ,Carvanha ,Rough Skin ,,Speed Boost
+319 ,Sharpedo ,Rough Skin ,,Speed Boost
+320 ,Wailmer ,Water Veil ,Oblivious ,Pressure
+321 ,Wailord ,Water Veil ,Oblivious ,Pressure
+322 ,Numel ,Oblivious ,Simple ,Own Tempo
+323 ,Camerupt ,Magma Armor ,Solid Rock ,Anger Point
+324 ,Torkoal ,White Smoke ,,Shell Armor
+325 ,Spoink ,Thick Fat ,Own Tempo ,Gluttony
+326 ,Grumpig ,Thick Fat ,Own Tempo ,Gluttony
+327 ,Spinda ,Own Tempo ,Tangled Feet ,Contrary
+328 ,Trapinch ,Hyper Cutter ,Arena Trap ,Sheer Force
+329 ,Vibrava ,Levitate ,,
+330 ,Flygon ,Levitate ,,
+331 ,Cacnea ,Sand Veil ,,Water Absorb
+332 ,Cacturne ,Sand Veil ,,Water Absorb
+333 ,Swablu ,Natural Cure ,,Cloud Nine
+334 ,Altaria ,Natural Cure ,,Cloud Nine
+335 ,Zangoose ,Immunity ,,Toxic Boost
+336 ,Seviper ,Shed Skin ,,Infiltrator
+337 ,Lunatone ,Levitate ,,
+338 ,Solrock ,Levitate ,,
+339 ,Barboach ,Oblivious ,Anticipation ,Hydration
+340 ,Whiscash ,Oblivious ,Anticipation ,Hydration
+341 ,Corphish ,Hyper Cutter ,Shell Armor ,Adaptability
+342 ,Crawdaunt ,Hyper Cutter ,Shell Armor ,Adaptability
+343 ,Baltoy ,Levitate ,,
+344 ,Claydol ,Levitate ,,
+345 ,Lileep ,Suction Cups ,,Storm Drain
+346 ,Cradily ,Suction Cups ,,Storm Drain
+347 ,Anorith ,Battle Armor ,,Swift Swim
+348 ,Armaldo ,Battle Armor ,,Swift Swim
+349 ,Feebas ,Swift Swim ,Oblivious ,Adaptability
+350 ,Milotic ,Marvel Scale ,Competitive ,Cute Charm
+351 ,Castform ,Forecast ,,
+352 ,Kecleon ,Color Change ,,Protean
+353 ,Shuppet ,Insomnia ,Frisk ,Cursed Body
+354 ,Banette ,Insomnia ,Frisk ,Cursed Body
+354 ,Mega Banette ,Prankster ,,
+355 ,Duskull ,Levitate ,,Frisk
+356 ,Dusclops ,Pressure ,,Frisk
+477 ,Dusknoir ,Pressure ,,Frisk
+357 ,Tropius ,Chlorophyll ,Solar Power ,Harvest
+433 ,Chingling ,Levitate ,,
+358 ,Chimecho ,Levitate ,,
+359 ,Absol ,Pressure ,Super Luck ,Justified
+359 ,Mega Absol ,Magic Bounce ,,
+361 ,Snorunt ,Inner Focus ,Ice Body ,Moody
+362 ,Glalie ,Inner Focus ,Ice Body ,Moody
+478 ,Froslass ,Snow Cloak ,,Cursed Body
+363 ,Spheal ,Thick Fat ,Ice Body ,Oblivious
+364 ,Sealeo ,Thick Fat ,Ice Body ,Oblivious
+365 ,Walrein ,Thick Fat ,Ice Body ,Oblivious
+366 ,Clamperl ,Shell Armor ,,Rattled
+367 ,Huntail ,Swift Swim ,,Water Veil
+368 ,Gorebyss ,Swift Swim ,,Hydration
+369 ,Relicanth ,Swift Swim ,Rock Head ,Sturdy
+370 ,Luvdisc ,Swift Swim ,,Hydration
+371 ,Bagon ,Rock Head ,,Sheer Force
+372 ,Shelgon ,Rock Head ,,Overcoat
+373 ,Salamence ,Intimidate ,,Moxie
+374 ,Beldum ,Clear Body ,,Light Metal
+375 ,Metang ,Clear Body ,,Light Metal
+376 ,Metagross ,Clear Body ,,Light Metal
+377 ,Regirock ,Clear Body ,,Sturdy
+378 ,Regice ,Clear Body ,,Ice Body
+379 ,Registeel ,Clear Body ,,Light Metal
+380 ,Latias ,Levitate ,,
+380 ,Mega Latias ,Levitate ,,
+381 ,Latios ,Levitate ,,
+381 ,Mega Latios ,Levitate ,,
+382 ,Kyogre ,Drizzle ,,
+383 ,Groudon ,Drought ,,
+384 ,Rayquaza ,Air Lock ,,
+385 ,Jirachi ,Serene Grace ,,
+386 ,Deoxys ,Pressure ,,
+386 ,Deoxys ,Pressure ,,
+386 ,Deoxys ,Pressure ,,
+386 ,Deoxys ,Pressure ,,
+387 ,Turtwig ,Overgrow ,,Shell Armor
+388 ,Grotle ,Overgrow ,,Shell Armor
+389 ,Torterra ,Overgrow ,,Shell Armor
+390 ,Chimchar ,Blaze ,,Iron Fist
+391 ,Monferno ,Blaze ,,Iron Fist
+392 ,Infernape ,Blaze ,,Iron Fist
+393 ,Piplup ,Torrent ,,Defiant
+394 ,Prinplup ,Torrent ,,Defiant
+395 ,Empoleon ,Torrent ,,Defiant
+396 ,Starly ,Keen Eye ,,Reckless
+397 ,Staravia ,Intimidate ,,Reckless
+398 ,Staraptor ,Intimidate ,,Reckless
+399 ,Bidoof ,Simple ,Unaware ,Moody
+400 ,Bibarel ,Simple ,Unaware ,Moody
+401 ,Kricketot ,Shed Skin ,,Run Away
+402 ,Kricketune ,Swarm ,,Technician
+403 ,Shinx ,Rivalry ,Intimidate ,Guts
+404 ,Luxio ,Rivalry ,Intimidate ,Guts
+405 ,Luxray ,Rivalry ,Intimidate ,Guts
+408 ,Cranidos ,Mold Breaker ,,Sheer Force
+409 ,Rampardos ,Mold Breaker ,,Sheer Force
+410 ,Shieldon ,Sturdy ,,Soundproof
+411 ,Bastiodon ,Sturdy ,,Soundproof
+412 ,Burmy ,Shed Skin ,,Overcoat
+413 ,Wormadam ,Anticipation ,,Overcoat
+413 ,Wormadam ,Anticipation ,,Overcoat
+413 ,Wormadam ,Anticipation ,,Overcoat
+414 ,Mothim ,Swarm ,,Tinted Lens
+415 ,Combee ,Honey Gather ,,Hustle
+416 ,Vespiquen ,Pressure ,,Unnerve
+417 ,Pachirisu ,Run Away ,Pickup ,Volt Absorb
+418 ,Buizel ,Swift Swim ,,Water Veil
+419 ,Floatzel ,Swift Swim ,,Water Veil
+420 ,Cherubi ,Chlorophyll ,,
+421 ,Cherrim ,Flower Gift ,,
+422 ,Shellos ,Sticky Hold ,Storm Drain ,Sand Force
+423 ,Gastrodon ,Sticky Hold ,Storm Drain ,Sand Force
+425 ,Drifloon ,Aftermath ,Unburden ,Flare Boost
+426 ,Drifblim ,Aftermath ,Unburden ,Flare Boost
+427 ,Buneary ,Run Away ,Klutz ,Limber
+428 ,Lopunny ,Cute Charm ,Klutz ,Limber
+431 ,Glameow ,Limber ,Own Tempo ,Keen Eye
+432 ,Purugly ,Thick Fat ,Own Tempo ,Defiant
+434 ,Stunky ,Stench ,Aftermath ,Keen Eye
+435 ,Skuntank ,Stench ,Aftermath ,Keen Eye
+436 ,Bronzor ,Levitate ,Heatproof ,Heavy Metal
+437 ,Bronzong ,Levitate ,Heatproof ,Heavy Metal
+441 ,Chatot ,Keen Eye ,Tangled Feet ,Big Pecks
+442 ,Spiritomb ,Pressure ,,Infiltrator
+443 ,Gible ,Sand Veil ,,Rough Skin
+444 ,Gabite ,Sand Veil ,,Rough Skin
+445 ,Garchomp ,Sand Veil ,,Rough Skin
+445 ,Mega Garchomp ,Sand Force ,,
+447 ,Riolu ,Steadfast ,Inner Focus ,Prankster
+448 ,Lucario ,Steadfast ,Inner Focus ,Justified
+448 ,Mega Lucario ,Adaptability ,,
+449 ,Hippopotas ,Sand Stream ,,Sand Force
+450 ,Hippowdon ,Sand Stream ,,Sand Force
+451 ,Skorupi ,Battle Armor ,Sniper ,Keen Eye
+452 ,Drapion ,Battle Armor ,Sniper ,Keen Eye
+453 ,Croagunk ,Anticipation ,Dry Skin ,Poison Touch
+454 ,Toxicroak ,Anticipation ,Dry Skin ,Poison Touch
+455 ,Carnivine ,Levitate ,,
+456 ,Finneon ,Swift Swim ,Storm Drain ,Water Veil
+457 ,Lumineon ,Swift Swim ,Storm Drain ,Water Veil
+459 ,Snover ,Snow Warning ,,Soundproof
+460 ,Abomasnow ,Snow Warning ,,Soundproof
+460 ,Mega Abomasnow ,Snow Warning ,,
+479 ,Rotom ,Levitate ,,
+479 ,Rotom ,Levitate ,,
+479 ,Rotom ,Levitate ,,
+479 ,Rotom ,Levitate ,,
+479 ,Rotom ,Levitate ,,
+479 ,Rotom ,Levitate ,,
+480 ,Uxie ,Levitate ,,
+481 ,Mesprit ,Levitate ,,
+482 ,Azelf ,Levitate ,,
+483 ,Dialga ,Pressure ,,Telepathy
+484 ,Palkia ,Pressure ,,Telepathy
+485 ,Heatran ,Flash Fire ,,Flame Body
+486 ,Regigigas ,Slow Start ,,
+487 ,Giratina ,Pressure ,,Telepathy
+487 ,Giratina ,Levitate ,,
+488 ,Cresselia ,Levitate ,,
+489 ,Phione ,Hydration ,,
+490 ,Manaphy ,Hydration ,,
+491 ,Darkrai ,Bad Dreams ,,
+492 ,Shaymin ,Natural Cure ,,
+492 ,Shaymin ,Serene Grace ,,
+493 ,Arceus ,Multitype ,,
+494 ,Victini ,Victory Star ,,
+495 ,Snivy ,Overgrow ,,Contrary
+496 ,Servine ,Overgrow ,,Contrary
+497 ,Serperior ,Overgrow ,,Contrary
+498 ,Tepig ,Blaze ,,Thick Fat
+499 ,Pignite ,Blaze ,,Thick Fat
+500 ,Emboar ,Blaze ,,Reckless
+501 ,Oshawott ,Torrent ,,Shell Armor
+502 ,Dewott ,Torrent ,,Shell Armor
+503 ,Samurott ,Torrent ,,Shell Armor
+504 ,Patrat ,Run Away ,Keen Eye ,Analytic
+505 ,Watchog ,Illuminate ,Keen Eye ,Analytic
+506 ,Lillipup ,Vital Spirit ,Pickup ,Run Away
+507 ,Herdier ,Intimidate ,Sand Rush ,Scrappy
+508 ,Stoutland ,Intimidate ,Sand Rush ,Scrappy
+509 ,Purrloin ,Limber ,Unburden ,Prankster
+510 ,Liepard ,Limber ,Unburden ,Prankster
+511 ,Pansage ,Gluttony ,,Overgrow
+512 ,Simisage ,Gluttony ,,Overgrow
+513 ,Pansear ,Gluttony ,,Blaze
+514 ,Simisear ,Gluttony ,,Blaze
+515 ,Panpour ,Gluttony ,,Torrent
+516 ,Simipour ,Gluttony ,,Torrent
+517 ,Munna ,Forewarn ,Synchronize ,Telepathy
+518 ,Musharna ,Forewarn ,Synchronize ,Telepathy
+519 ,Pidove ,Big Pecks ,Super Luck ,Rivalry
+520 ,Tranquill ,Big Pecks ,Super Luck ,Rivalry
+521 ,Unfezant ,Big Pecks ,Super Luck ,Rivalry
+522 ,Blitzle ,Lightning Rod ,Motor Drive ,Sap Sipper
+523 ,Zebstrika ,Lightning Rod ,Motor Drive ,Sap Sipper
+524 ,Roggenrola ,Sturdy ,,Sand Force
+525 ,Boldore ,Sturdy ,,Sand Force
+526 ,Gigalith ,Sturdy ,,Sand Force
+527 ,Woobat ,Unaware ,Klutz ,Simple
+528 ,Swoobat ,Unaware ,Klutz ,Simple
+529 ,Drilbur ,Sand Rush ,Sand Force ,Mold Breaker
+530 ,Excadrill ,Sand Rush ,Sand Force ,Mold Breaker
+531 ,Audino ,Healer ,Regenerator ,Klutz
+532 ,Timburr ,Guts ,Sheer Force ,Iron Fist
+533 ,Gurdurr ,Guts ,Sheer Force ,Iron Fist
+534 ,Conkeldurr ,Guts ,Sheer Force ,Iron Fist
+535 ,Tympole ,Swift Swim ,Hydration ,Water Absorb
+536 ,Palpitoad ,Swift Swim ,Hydration ,Water Absorb
+537 ,Seismitoad ,Swift Swim ,Poison Touch ,Water Absorb
+538 ,Throh ,Guts ,Inner Focus ,Mold Breaker
+539 ,Sawk ,Sturdy ,Inner Focus ,Mold Breaker
+540 ,Sewaddle ,Swarm ,Chlorophyll ,Overcoat
+541 ,Swadloon ,Leaf Guard ,Chlorophyll ,Overcoat
+542 ,Leavanny ,Swarm ,Chlorophyll ,Overcoat
+543 ,Venipede ,Poison Point ,Swarm ,Speed Boost
+544 ,Whirlipede ,Poison Point ,Swarm ,Speed Boost
+545 ,Scolipede ,Poison Point ,Swarm ,Speed Boost
+546 ,Cottonee ,Prankster ,Infiltrator ,Chlorophyll
+547 ,Whimsicott ,Prankster ,Infiltrator ,Chlorophyll
+548 ,Petilil ,Chlorophyll ,Own Tempo ,Leaf Guard
+549 ,Lilligant ,Chlorophyll ,Own Tempo ,Leaf Guard
+550 ,Basculin ,Reckless ,Adaptability ,Mold Breaker
+550 ,Basculin ,Rock Head ,Adaptability ,Mold Breaker
+551 ,Sandile ,Intimidate ,Moxie ,Anger Point
+552 ,Krokorok ,Intimidate ,Moxie ,Anger Point
+553 ,Krookodile ,Intimidate ,Moxie ,Anger Point
+554 ,Darumaka ,Hustle ,,Inner Focus
+555 ,Darmanitan ,Sheer Force ,,Zen Mode
+556 ,Maractus ,Water Absorb ,Chlorophyll ,Storm Drain
+557 ,Dwebble ,Sturdy ,Shell Armor ,Weak Armor
+558 ,Crustle ,Sturdy ,Shell Armor ,Weak Armor
+559 ,Scraggy ,Shed Skin ,Moxie ,Intimidate
+560 ,Scrafty ,Shed Skin ,Moxie ,Intimidate
+561 ,Sigilyph ,Wonder Skin ,Magic Guard ,Tinted Lens
+562 ,Yamask ,Mummy ,,
+563 ,Cofagrigus ,Mummy ,,
+564 ,Tirtouga ,Solid Rock ,Sturdy ,Swift Swim
+565 ,Carracosta ,Solid Rock ,Sturdy ,Swift Swim
+566 ,Archen ,Defeatist ,,
+567 ,Archeops ,Defeatist ,,
+568 ,Trubbish ,Stench ,Sticky Hold ,Aftermath
+569 ,Garbodor ,Stench ,Weak Armor ,Aftermath
+570 ,Zorua ,Illusion ,,
+571 ,Zoroark ,Illusion ,,
+572 ,Minccino ,Cute Charm ,Technician ,Skill Link
+573 ,Cinccino ,Cute Charm ,Technician ,Skill Link
+574 ,Gothita ,Frisk ,Competitive ,Shadow Tag
+575 ,Gothorita ,Frisk ,Competitive ,Shadow Tag
+576 ,Gothitelle ,Frisk ,Competitive ,Shadow Tag
+577 ,Solosis ,Overcoat ,Magic Guard ,Regenerator
+578 ,Duosion ,Overcoat ,Magic Guard ,Regenerator
+579 ,Reuniclus ,Overcoat ,Magic Guard ,Regenerator
+580 ,Ducklett ,Keen Eye ,Big Pecks ,Hydration
+581 ,Swanna ,Keen Eye ,Big Pecks ,Hydration
+582 ,Vanillite ,Ice Body ,,Weak Armor
+583 ,Vanillish ,Ice Body ,,Weak Armor
+584 ,Vanilluxe ,Ice Body ,,Weak Armor
+585 ,Deerling ,Chlorophyll ,Sap Sipper ,Serene Grace
+586 ,Sawsbuck ,Chlorophyll ,Sap Sipper ,Serene Grace
+587 ,Emolga ,Static ,,Motor Drive
+588 ,Karrablast ,Swarm ,Shed Skin ,No Guard
+589 ,Escavalier ,Swarm ,Shell Armor ,Overcoat
+590 ,Foongus ,Effect Spore ,,Regenerator
+591 ,Amoonguss ,Effect Spore ,,Regenerator
+592 ,Frillish ,Water Absorb ,Cursed Body ,Damp
+593 ,Jellicent ,Water Absorb ,Cursed Body ,Damp
+594 ,Alomomola ,Healer ,Hydration ,Regenerator
+595 ,Joltik ,Compound Eyes ,Unnerve ,Swarm
+596 ,Galvantula ,Compound Eyes ,Unnerve ,Swarm
+597 ,Ferroseed ,Iron Barbs ,,
+598 ,Ferrothorn ,Iron Barbs ,,Anticipation
+599 ,Klink ,Plus ,Minus ,Clear Body
+600 ,Klang ,Plus ,Minus ,Clear Body
+601 ,Klinklang ,Plus ,Minus ,Clear Body
+602 ,Tynamo ,Levitate ,,
+603 ,Eelektrik ,Levitate ,,
+604 ,Eelektross ,Levitate ,,
+605 ,Elgyem ,Telepathy ,Synchronize ,Analytic
+606 ,Beheeyem ,Telepathy ,Synchronize ,Analytic
+607 ,Litwick ,Flash Fire ,Flame Body ,Infiltrator
+608 ,Lampent ,Flash Fire ,Flame Body ,Infiltrator
+609 ,Chandelure ,Flash Fire ,Flame Body ,Infiltrator
+610 ,Axew ,Rivalry ,Mold Breaker ,Unnerve
+611 ,Fraxure ,Rivalry ,Mold Breaker ,Unnerve
+612 ,Haxorus ,Rivalry ,Mold Breaker ,Unnerve
+613 ,Cubchoo ,Snow Cloak ,,Rattled
+614 ,Beartic ,Snow Cloak ,,Swift Swim
+615 ,Cryogonal ,Levitate ,,
+616 ,Shelmet ,Hydration ,Shell Armor ,Overcoat
+617 ,Accelgor ,Hydration ,Sticky Hold ,Unburden
+618 ,Stunfisk ,Static ,Limber ,Sand Veil
+619 ,Mienfoo ,Inner Focus ,Regenerator ,Reckless
+620 ,Mienshao ,Inner Focus ,Regenerator ,Reckless
+621 ,Druddigon ,Rough Skin ,Sheer Force ,Mold Breaker
+622 ,Golett ,Iron Fist ,Klutz ,No Guard
+623 ,Golurk ,Iron Fist ,Klutz ,No Guard
+624 ,Pawniard ,Defiant ,Inner Focus ,Pressure
+625 ,Bisharp ,Defiant ,Inner Focus ,Pressure
+626 ,Bouffalant ,Reckless ,Sap Sipper ,Soundproof
+627 ,Rufflet ,Keen Eye ,Sheer Force ,Hustle
+628 ,Braviary ,Keen Eye ,Sheer Force ,Defiant
+629 ,Vullaby ,Big Pecks ,Overcoat ,Weak Armor
+630 ,Mandibuzz ,Big Pecks ,Overcoat ,Weak Armor
+631 ,Heatmor ,Gluttony ,Flash Fire ,White Smoke
+632 ,Durant ,Swarm ,Hustle ,Truant
+633 ,Deino ,Hustle ,,
+634 ,Zweilous ,Hustle ,,
+635 ,Hydreigon ,Levitate ,,
+636 ,Larvesta ,Flame Body ,,Swarm
+637 ,Volcarona ,Flame Body ,,Swarm
+638 ,Cobalion ,Justified ,,
+639 ,Terrakion ,Justified ,,
+640 ,Virizion ,Justified ,,
+641 ,Tornadus ,Prankster ,,Defiant
+641 ,Tornadus ,Regenerator ,,
+642 ,Thundurus ,Prankster ,,Defiant
+642 ,Thundurus ,Volt Absorb ,,
+643 ,Reshiram ,Turboblaze ,,
+644 ,Zekrom ,Teravolt ,,
+645 ,Landorus ,Sand Force ,,Sheer Force
+645 ,Landorus ,Intimidate ,,
+646 ,Kyurem ,Pressure ,,
+646 ,Kyurem ,Teravolt ,,
+646 ,Kyurem ,Turboblaze ,,
+647 ,Keldeo ,Justified ,,
+648 ,Meloetta ,Serene Grace ,,
+649 ,Genesect ,Download ,,
+650 ,Chespin ,Overgrow ,,Bulletproof
+651 ,Quilladin ,Overgrow ,,Bulletproof
+652 ,Chesnaught ,Overgrow ,,Bulletproof
+653 ,Fennekin ,Blaze ,,Magician
+654 ,Braixen ,Blaze ,,Magician
+655 ,Delphox ,Blaze ,,Magician
+656 ,Froakie ,Torrent ,,Protean
+657 ,Frogadier ,Torrent ,,Protean
+658 ,Greninja ,Torrent ,,Protean
+659 ,Bunnelby ,Pickup ,Cheek Pouch ,Huge Power
+660 ,Diggersby ,Pickup ,Cheek Pouch ,Huge Power
+661 ,Fletchling ,Big Pecks ,,Gale Wings
+662 ,Fletchinder ,Flame Body ,,Gale Wings
+663 ,Talonflame ,Flame Body ,,Gale Wings
+664 ,Scatterbug ,Shield Dust ,Compound Eyes ,Friend Guard
+665 ,Spewpa ,Shed Skin ,,Friend Guard
+666 ,Vivillon ,Shield Dust ,Compound Eyes ,Friend Guard
+667 ,Litleo ,Rivalry ,Unnerve ,Moxie
+668 ,Pyroar ,Rivalry ,Unnerve ,Moxie
+669 ,Flabébé ,Flower Veil ,,Symbiosis
+670 ,Floette ,Flower Veil ,,Symbiosis
+671 ,Florges ,Flower Veil ,,Symbiosis
+672 ,Skiddo ,Sap Sipper ,,Grass Pelt
+673 ,Gogoat ,Sap Sipper ,,Grass Pelt
+674 ,Pancham ,Iron Fist ,Mold Breaker ,Scrappy
+675 ,Pangoro ,Iron Fist ,Mold Breaker ,Scrappy
+676 ,Furfrou ,Fur Coat ,,
+677 ,Espurr ,Keen Eye ,Infiltrator ,Own Tempo
+678 ,Meowstic? ,Keen Eye ,Infiltrator ,Prankster
+678 ,Meowstic? ,Keen Eye ,Infiltrator ,Competitive
+679 ,Honedge ,No Guard ,,
+680 ,Doublade ,No Guard ,,
+681 ,Aegislash ,Stance Change ,,
+682 ,Spritzee ,Healer ,,Aroma Veil
+683 ,Aromatisse ,Healer ,,Aroma Veil
+684 ,Swirlix ,Sweet Veil ,,Unburden
+685 ,Slurpuff ,Sweet Veil ,,Unburden
+686 ,Inkay ,Contrary ,Suction Cups ,Infiltrator
+687 ,Malamar ,Contrary ,Suction Cups ,Infiltrator
+688 ,Binacle ,Tough Claws ,Sniper ,Pickpocket
+689 ,Barbaracle ,Tough Claws ,Sniper ,Pickpocket
+690 ,Skrelp ,Poison Point ,Poison Touch ,Adaptability
+691 ,Dragalge ,Poison Point ,Poison Touch ,Adaptability
+692 ,Clauncher ,Mega Launcher ,,
+693 ,Clawitzer ,Mega Launcher ,,
+694 ,Helioptile ,Dry Skin ,Sand Veil ,Solar Power
+695 ,Heliolisk ,Dry Skin ,Sand Veil ,Solar Power
+696 ,Tyrunt ,Strong Jaw ,,Sturdy
+697 ,Tyrantrum ,Strong Jaw ,,Rock Head
+698 ,Amaura ,Refrigerate ,,Snow Warning
+699 ,Aurorus ,Refrigerate ,,Snow Warning
+701 ,Hawlucha ,Limber ,Unburden ,Mold Breaker
+702 ,Dedenne ,Cheek Pouch ,Pickup ,Plus
+703 ,Carbink ,Clear Body ,,Sturdy
+704 ,Goomy ,Sap Sipper ,Hydration ,Gooey
+705 ,Sliggoo ,Sap Sipper ,Hydration ,Gooey
+706 ,Goodra ,Sap Sipper ,Hydration ,Gooey
+707 ,Klefki ,Prankster ,,Magician
+708 ,Phantump ,Natural Cure ,Frisk ,Harvest
+709 ,Trevenant ,Natural Cure ,Frisk ,Harvest
+710 ,Pumpkaboo ,Pickup ,Frisk ,Insomnia
+711 ,Gourgeist ,Pickup ,Frisk ,Insomnia
+712 ,Bergmite ,Own Tempo ,Ice Body ,Sturdy
+713 ,Avalugg ,Own Tempo ,Ice Body ,Sturdy
+714 ,Noibat ,Frisk ,Infiltrator ,Telepathy
+715 ,Noivern ,Frisk ,Infiltrator ,Telepathy
+716 ,Xerneas ,Fairy Aura ,,
+717 ,Yveltal ,Dark Aura ,,
+718 ,Zygarde ,Aura Break ,,
+719 ,Diancie ,Clear Body ,,

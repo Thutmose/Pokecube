@@ -1,0 +1,5 @@
+[prefix{l}]PC Storage System[prefix{}]
+The PC lets you store 32 boxes of 54 pokemobs each.  By default, the boxes can only hold pokemob eggs or filled pokecubes.  There is a config option for allowing other items, or increasing the number of boxes. This is the bottom block of the PC, and must be placed underneath of the PC top for either to work. see the [link{pokecube:block/pc.top}]PC Top[link{}] for usage information.
+
+[prefix{l}]Recipe[prefix{}]
+[crafting{200,130,block/pc.top,www,cic,crc,w=block/glass,c=block/blockIron,i=item/redstone,r=item/ingotIron}]

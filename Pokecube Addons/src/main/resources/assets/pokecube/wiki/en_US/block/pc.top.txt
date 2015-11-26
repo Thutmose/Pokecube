@@ -1,0 +1,57 @@
+[prefix{l}]PC Storage System[prefix{}]
+The PC lets you store 32 boxes of 54 pokemobs each.  By default, the boxes can only hold pokemob eggs or filled pokecubes.  There is a config option for allowing other items, or increasing the number of boxes.  This block must be placed on top of the [link{pokecube:block/pc.base}]PC Base[link{}]
+
+[prefix{l}]Recipe[prefix{}]
+[crafting{200,120,block/pc.top,www,cic,crc,w=block/glass,c=block/blockIron,i=item/redstone,r=item/ingotIron}]
+
+
+
+
+
+
+
+
+
+
+
+
+[prefix{l}]Usage Information[prefix{}]
+[image{195,240,0.5,pokecube:textures/wiki/PC.png}]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The previous and next buttons will change the box of the PC, typing a number in the box between them and pressing enter will go to that box.
+
+After pressing the release button, click on the cubes to release (they get a green highlight), then press confirm to delete them.
+
+The Bag button will swap over to your [link{pokecube_adventures:item/pokecubebag}]Bag's [link{}] inventory.
+
+Rename opens a text box which allows you to rename the current box.
+
+Auto off toggles whether or not pokemobs are automatically sent to PC on capture.
+
+Private toggles between your pc and a publicly available box.
+
+The text field in the top right allows for searching the current box, It will highlight items which match the text.
+

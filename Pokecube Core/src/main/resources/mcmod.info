@@ -1,0 +1,17 @@
+[
+{
+  "modid": "pokecube",
+  "name": "Pokécube Core",
+  "description": "The Core to run Pokecube and its plugins.",
+  "version": "2.0.0",
+  "mcversion": "1.8.0",
+  "logoFile": "/assets/pokecube/textures/pokecube_logo.png",
+  "url": "https://sites.google.com/site/minecraftpokemob/",
+  "updateUrl": "",
+  "authors": ["Manchou, Thutmose"],
+  "credits": "Made by Manchou. Freely inspired by the Nintendo franchise 'Pokémon' and the video games developed by Game Freak.",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

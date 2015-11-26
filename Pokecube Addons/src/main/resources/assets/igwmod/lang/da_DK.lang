@@ -1,0 +1,13 @@
+igwmod.keys.wiki=Vis IGW-Mod wiki
+igwmod.wikitab.blocksAndItems.name=Blokke & Ting
+igwmod.wikitab.entities.name=Entities
+igwmod.wikitab.igwmod.name=IGW-Mod
+igwmod.tooltip.tabPageBrowse.next=Venstreklik for at gå til næste side
+igwmod.tooltip.tabPageBrowse.previous=Højreklik for at gå til næste side
+
+igwtab.entry.intro=Intro
+igwtab.entry.forServers=For Servers
+igwtab.entry.devIntro=Dev: Intro
+igwtab.entry.devItemAndBlock=Dev: Ting & Blokke Side
+igwtab.entry.devPageCommands=Dev: Side Kommandoer
+igwtab.entry.devForModders=Dev: For Modders

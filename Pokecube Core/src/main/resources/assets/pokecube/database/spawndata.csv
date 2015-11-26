@@ -1,0 +1,367 @@
+Name,Special Cases,Biomes - any acceptable,Biomes - all needed,Excluded biomes
+Bulbasaur,starter day night ,,,
+Charmander,starter day night ,,,
+Squirtle,starter day night ,,,
+Caterpie,day night ,wet 0.2:8:4;forest 0.2:8:4,,dry cold sparse
+Weedle,day night ,wet 0.2:8:4;forest 0.2:8:4,,dry cold sparse
+Pidgey,day night ,plains 0.4,,wet
+Rattata,day night ,plains 0.6:10:5;forest 0.6:10:5,,
+Spearow,day night ,plains 0.3;hills 0.3,,
+Ekans,day night ,forest 0.15,,cold
+Pikachu,day night ,forest 0.1,,wet cold sparse
+Sandshrew,day night,,sandy dry 0.25;sandy dry cave 0.25,
+NidoranM,day night ,plains 0.25,,wet cold
+NidoranF,day night ,plains 0.25,,wet cold
+Clefairy,day night,meteor 0.25;cave 0.25,,
+Vulpix,day night ,plains 0.2,,
+Jigglypuff,day night,meteor 0.3;cave 0.2,,
+Zubat,night,all 0.05:50:5,,
+Oddish,day ,plains 0.2,,dry savanna
+Paras,day night,mushroom 0.3; cave 0.2,jungle hills 0.15,
+Venonat,night ,forest 0.2,,
+Diglett,day night,sandy 0.4;mountain 0.4;dry 0.4; cave 0.4,,
+Meowth,day night ,village 0.25,plains village 0.25,wet
+Psyduck,day night ,river beach lake 0.15,,cold
+Mankey,day night ,forest 0.15,,cold sparse
+Growlithe,day night ,plains 0.4,,wet
+Poliwag,day night ,river swamp 0.3,,cold
+Abra,day night,forest 0.25 cave 0.2,,
+Machop,day night,mountain 0.25,mountain cave 0.25,
+Bellsprout,day ,plains 0.2,,dry savanna
+Tentacool,day night water,ocean 1,,
+Geodude,day night,mountain 1 cave 1,,
+Ponyta,day night ,plains 0.2,,
+Slowpoke,day nigh,beach river lake 0.3,beach cave 0.25; river cave 0.25; lake cave 0.25 ,
+Magnemite,day night,industrial 0.7,,
+Farfetch'd,day night ,swamp river lake 0.05,,
+Doduo,day night ,plains 0.2,,
+Seel,day night water+,ocean beach 0.08,,
+Grimer,day night,industrial 0.7,,
+Shellder,day night water,ocean beach 0.1,,
+Gastly,day night ,spooky nether 0.4,,
+Onix,day night,sandy mountain cave 0.05,,
+Drowzee,day night,,cave nether 0.4,
+Krabby,day night water+,ocean beach lake 0.2,ocean cave 0.2; beach cave 0.2;lake cave 0.2,
+Voltorb,day night ,industrial 0.7,,
+Exeggcute,day ,plains 0.08,,dry savanna
+Cubone,night,mountain 0.15,mountain cave 0.15,cold
+Tyrogue,day night,village 0.08,,
+Lickitung,day night ,hills 0.09,,wet cold
+Koffing,day night ,nether 0.8,,
+Rhyhorn,day night,,mountain cave 0.15,
+Chansey,day night,meteor 0.05;cave 0.05,,
+Tangela,day night ,jungle 0.1,plains wet 0.1,
+Kangaskhan,day night ,,savanna sparse 0.06,
+Horsea,day night water,ocean beach 0.08,,
+Goldeen,day night water,river ocean beach lake 0.2,,
+Staryu,day night water,ocean beach 0.2,,
+Mr. Mime,day night ,village 0.2,,
+Scyther,day night ,plains 0.02,,dry savanna
+Jynx,day night,cold 0.03,cold cave 0.1,
+Electabuzz,day night ,industrial 0.1,,
+Magmar,day night ,nether 0.2,,
+Pinsir,day night ,plains 0.02,,
+Tauros,day night ,plains 0.1,,
+Magikarp,day night water,river ocean beach lake 1,,
+Lapras,day night water,ocean 0.03,,
+Ditto,day night,village 0.08,,
+Eevee,day night ,village 0.08,,
+Porygon,day night,industrial 0.1,,
+Omanyte,fossil day night,,,
+Kabuto,fossil day night,,,
+Aerodactyl,fossil day night,,,
+Snorlax,day night,forest cave 0.02,,
+Articuno,legendary day night ,mountain 0.01:1:1,,
+Zapdos,legendary day night ,mountain 0.01:1:1,,
+Moltres,legendary day night ,mountain 0.01:1:1,,
+Dratini,day night water,ocean 0.01,,
+Mewtwo,legendary,,,
+Mew,day night,,jungle hills 0.001,
+Chikorita,starter day night ,,,
+Cyndaquil,starter day night ,,,
+Totodile,starter day night ,,,
+Sentret,day ,plains 0.3,,
+Hoothoot,night ,forest hills 0.3,,
+Ledyba,day ,forest 0.1,,cold
+Spinarak,day night ,forest 0.1,,cold
+Chinchou,day night ,ocean 0.3,,
+Togepi,day night ,plains 0.02,,cold savanna
+Natu,day night,forest plains 0.1,,cold
+Mareep,day night ,plains 0.3,,cold
+Marill,day night ,swamp 0.04,plains wet 0.1,cold
+Bonsly,day night ,forest 0.05,,wet
+Hoppip,day ,plains 0.3,,
+Aipom,day night ,jungle 0.1,,
+Sunkern,day ,forest plains 0.1,,cold
+Yanma,day night ,river swamp lake 0.3,,
+Wooper,day night,swamp 0.3,swamp cave 0.3,
+Murkrow,night ,forest 0.05,,cold
+Misdreavus,night ,,forest spooky 0.1,
+Unown,day night,ruin 0.8,,
+Wobbuffet,day night,lake 0.1,lake cave 0.6,
+Girafarig,day night ,plains forest 0.2,,wet cold
+Pineco,day night ,forest 0.1,,
+Dunsparce,day night,mountain hills 0.3,mountain cave 0.15,
+Gligar,day night,mountain hills 0.2,mountain cave 0.15,
+Snubbull,day night ,village 0.08,,
+Qwilfish,day night water,ocean 0.3,,
+Shuckle,day night,wet ocean beach mushroom cave 0.1,,
+Heracross,day night ,jungle 0.1,forest hills 0.1,coniferous savanna
+Sneasel,day night,cold 0.2,cold cave 0.3,
+Teddiursa,day night,,cold forest 0.1; cold forest cave 0.2,
+Slugma,day ,nether wasteland 0.3,,cold
+Swinub,day night,snowy 0.3,snowy cave 0.3,
+Corsola,day water,ocean beach 0.08,,
+Remoraid,day night water,ocean 0.2,,
+Delibird,day night,snowy 0.05,snowy cave 0.1,
+Mantine,day night water,beach ocean 0.1,,
+Skarmory,day night,wasteland mountain 0.05,,cold
+Houndour,night ,nether 0.2,,
+Phanpy,day night ,plains 0.1,,wet
+Stantler,night ,forest 0.2,,
+Smeargle,day night,village 0.01,,
+Miltank,day ,plains 0.1,,
+Raikou,legendary day night ,plains forest 0.01:1:1,,
+Entei,legendary day night ,plains nether 0.01:1:1,,
+Suicune,legendary day night ,plains snowy 0.01:1:1,,
+Larvitar,day,mountain 0.1,mountain cave 0.15,
+Lugia,legendary day night ,Beach 0.001:1:1,,
+Ho-Oh,legendary day night ,forest 0.0,,wet cold dry hills mountain savanna
+Celebi,legendary day night ,forest 0.0,,cold savanna dry
+Treecko,starter day night ,,,
+Torchic,starter day night ,,,
+Mudkip,starter day night ,,,
+Poochyena,day night ,forest 0.3,,cold
+Zigzagoon,day night ,forest plains 0.3,,cold
+Wurmple,day night ,,wet forest 0.4,cold sparse dry
+Lotad,day night ,swamp lake river 0.4,,cold
+Seedot,day ,forest 0.3,,cold
+Taillow,day night ,forest plains 0.1,,cold
+Wingull,day night ,beach ocean 0.3,,
+Ralts,day night ,village 0.3,,
+Surskit,day night ,wet lake 0.3,,cold
+Shroomish,day night ,forest jungle mushroom 0.1,,
+Slakoth,day night ,jungle 0.1,forest hills 0.1,cold
+Nincada,day night ,forest jungle 0.1,,cold
+Whismur,day night,meteor 0.05;cave 0.05,,
+Makuhita,day night,mountain 0.1,mountain cave 0.15,
+Nosepass,day night,mountain 0.1,mountain cave 0.15,
+Skitty,day night ,forest 0.2,,
+Sableye,day night,mountain 0.1,sandy dry 0.25;sandy dry cave 0.25,
+Mawile,day night,wasteland mountain 0.05,,
+Aron,day night,hills 0.09,hills cave 0.1,
+Meditite,day night,hills 0.09,hills cave 0.1,
+Electrike,day night ,plains 0.2,,cold
+Plusle,day night ,plains 0.4,,cold
+Minun,day night ,plains 0.4,,cold
+Volbeat,night ,forest jungle 0.3,,cold
+Illumise,night ,forest jungle 0.5,,cold
+Roselia,day night ,forest jungle flower 0.3,,cold
+Gulpin,day night,swamp 0.4,swamp cave 0.3,
+Carvanha,day night water,ocean 0.5,,
+Wailmer,day night water,ocean 0.01,,
+Numel,day night,nether mountain wasteland 0.3,nether cave 0.3; mountain cave 0.3; wasteland cave 0.3,cold
+Torkoal,day night,nether mountain wasteland 0.3,nether cave 0.3; mountain cave 0.3; wasteland cave 0.3,cold
+Spoink,day night,nether mountain wasteland 0.15,nether cave 0.3; mountain cave 0.3; wasteland cave 0.3,cold
+Spinda,day night,nether mountain wasteland 0.3,nether cave 0.3; mountain cave 0.3; wasteland cave 0.3,cold
+Trapinch,day night,sandy 0.5,sandy cave 0.5,cold
+Cacnea,day night ,sandy 0.6,,cold
+Swablu,day night ,forest 0.05,,
+Zangoose,day night ,plains 0.02,,
+Seviper,day night ,plains 0.02,,
+Lunatone,night,meteor 0.05;cave 0.05,,
+Solrock,day,meteor 0.05;cave 0.05,,
+Barboach,day night water,river swamp lake 0.3,,
+Corphish,day night water+,river lake 0.3,,cold
+Baltoy,day night,,sandy hills cave 0.3; sandy hills 0.3,cold
+Lileep,fossil day night,,,
+Anorith,fossil day night,,,
+Feebas,day night,,river cave 0.01,
+Castform,day night ,river industrial 0.1,,
+Kecleon,day night ,plains forest 0.01,,cold
+Shuppet,day night ,spooky 0.3,,
+Duskull,day night ,spooky 0.3,,
+Tropius,day night ,forest 0.1,,cold
+Chimecho,day night,cave 0.1,,
+Absol,night,cold wasteland 0.2,,
+Snorunt,night,snowy 0.5,snowy cave 0.5,
+Spheal,day night water+,ocean beach 0.08,ocean cave 0.2; beach cave 0.2,
+Clamperl,day night water,ocean 0.3,ocean cave 0.3,
+Relicanth,day night water,,ocean cave 0.1,
+Luvdisc,day night water,ocean 0.2,,
+Bagon,day night,,hills mountain cave 0.1,
+Beldum,day night,,hills sandy cave 0.1; hills meteor 0.1,
+Regirock,legendary,mountain 0,,cold
+Regice,legendary,mountain 0,,
+Registeel,legendary,mountain 0,,cold
+Latias,legendary day night ,beach 0.01:2:2,,
+Latios,legendary day night ,beach 0.01:2:2,,
+Kyogre,legendary day night,,ocean cave 0.0,
+Groudon,legendary day night,,wasteland mountain cave 0; nether cave 0,wet cold
+Rayquaza,legendary day night ,,,
+Jirachi,legendary day night ,,,
+Deoxys,legendary day night ,,,
+Turtwig,starter day night ,,,
+Chimchar,starter day night ,,,
+Piplup,starter day night ,,,
+Starly,day night ,plains 0.4,,cold snowy
+Bidoof,day night water+,plains 0.6;forest 0.6,,cold jungle
+Kricketot,day night ,forest 0.2,,cold
+Shinx,day night ,plains industrial 0.1,,cold
+Cranidos,fossil day night,,,
+Shieldon,fossil day night,,,
+Burmy,day nigh,forest 0.2,forest cave 0.2,
+Combee,day night ,plains forest 0.06,,cold snowy
+Pachirisu,day night ,forest 0.2,,
+Buizel,day night water+,beach river 0.3,beach cave 0.25; river cave 0.25; lake cave 0.25 ,cold
+Cherubi,day night ,plains 0.02,,cold savanna
+Shellos,day night water+,ocean beach 0.4,beach cave 0.25; ocean cave 0.25,cold
+Drifloon,day night ,spooky village 0.1,,
+Buneary,day night ,forest 0.2,,cold
+Glameow,day night ,plains beach 0.2,,cold savanna
+Stunky,day night ,plains beach 0.2,,cold savanna
+Bronzor,day night,,mountain hills ruin 0.1,
+Chatot,day ,jungle 0.1,,
+Spiritomb,night,spooky 0.1,spooky cave 0.1,
+Gible,day night,,sandy dry cave 0.2;,
+Riolu,day night,,mountain hills cave 0.2; mountain hills 0.1,
+Hippopotas,day night,sandy 0.2,sandy cave 0.5,cold
+Skorupi,day night,wasteland 0.5,mountain hills cave 0.2; mountain hills 0.1,cold
+Croagunk,day night ,jungle swamp 0.1,jungle cave 0.3; swamp cave 0.3,
+Carnivine,day night ,jungle 0.1,,
+Finneon,day night water ,river 0.3,,cold
+Snover,day night,snowy 0.3,snowy cave 0.1,wasteland
+Rotom,night ,industrial 0.01,,
+Uxie,legendary day night ,,,
+Mesprit,legendary day night ,,,
+Azelf,legendary day night ,,,
+Dialga,legendary day night ,,,
+Palkia,legendary day night ,,,
+Giratina,legendary day night ,,,
+Heatran,legendary day night ,,,
+Regigigas,legendary day night ,,,
+Cresselia,legendary day night ,,,
+Darkrai,legendary day night ,,,
+Phione,legendary day night ,,,
+Manaphy,legendary day night ,ocean 0.01,,
+Shaymin,legendary day night ,,,
+Arceus,legendary day night ,,,
+Victini,legendary day night ,,,
+Snivy,starter day night ,,,
+Tepig,starter day night ,,,
+Oshawott,starter day night ,,,
+Patrat,day night ,plains 0.4,,
+Lillipup,day night ,forest plains 0.1,,cold snowy
+Purrloin,day night ,plains 0.1,,cold snowy
+Pansage,day night ,forest jungle 0.1,,cold savanna snowy
+Pansear,day night ,forest jungle 0.1,,cold savanna snowy
+Panpour,day night ,forest jungle 0.1,,cold savanna snowy
+Munna,night,forest 0.2,,cold
+Pidove,day night ,forest plains village 0.2,,cold
+Blitzle,day night ,plains 0.1,,wet cold
+Roggenrola,day night,mountain 1 cave 1,,
+Woobat,day night,all,,
+Drilbur,day night,mountain wasteland 0.2,mountain cave 0.2; wasteland cave 0.2,
+Audino,day night ,forest 0.05,,
+Timburr,day night,mountain 0.1,mountain cave 0.15,
+Tympole,day night ,swamp 0.3,,
+Throh,day night ,mountain beach 0.1,,
+Sawk,day night ,mountain beach 0.1,,
+Sewaddle,day ,forest jungle 0.1,,cold dry
+Venipede,night ,forest jungle 0.1,,cold dry
+Cottonee,day night ,forest 0.1,,cold dry
+Petilil,day night ,forest flower 0.2,,cold dry
+Basculin,day night water,beach river lake 0.3,,
+Sandile,day night,sandy 0.2,sandy cave 0.5,
+Darumaka,day night,sandy 0.2,sandy cave 0.5,
+Maractus,day night ,sandy 0.5,,
+Dwebble,day night,sandy 0.2,sandy cave 0.5,
+Scraggy,day night,village 0.08,,
+Sigilyph,day night,sandy 0.2,sandy cave 0.5,
+Yamask,day night ,sandy nether 0.1,sandy cave 0.5,
+Tirtouga,fossil day night ,,,
+Archen,fossil day night ,,,
+Trubbish,day night ,village 0.3,,
+Zorua,day night ,nether spooky 0.1,,
+Minccino,day night ,forest 0.3,,cold
+Gothita,night ,forest 0.05,,cold
+Solosis,night ,forest 0.05,,cold
+Ducklett,day night ,river 0.3,,
+Vanillite,day night,snowy 0.05,snowy cave 0.1,
+Deerling,day night ,forest 0.1,,
+Emolga,day night ,forest 0.2,,cold dry
+Karrablast,day night,swamp 0.04,swamp cave 0.1,
+Foongus,day night,mushroom 0.3; plains 0.2,mushroom cave 0.4; plains cave 0.3;,dry savanna
+Frillish,day night water,beach ocean 1,,
+Alomomola,day night water,beach ocean 0.3,,
+Joltik,day night,industrial cave 0.1,,
+Ferroseed,day night,industrial cave 0.1,,
+Klink,day night ,industrial 0.1,,
+Tynamo,day night,,mountain hills cave 0.2; mountain hills 0.1,
+Elgyem,day night ,,jungle hills 0.1,
+Litwick,night ,spooky nether 0.4,,
+Axew,day night,,mountain hills cave 0.2,
+Cubchoo,day night,snowy 0.05,snowy cave 0.1,
+Cryogonal,day night,,snowy mountain cave 0.1;,
+Shelmet,day night,river swamp cave 0.02,,cold
+Stunfisk,day night ,swamp lake 0.4,,
+Mienfoo,day night,,mountain hills cave 0.2,
+Druddigon,day night,,forest cold cave 0.2,
+Golett,day night ,nether 0.2,,
+Pawniard,day night ,forest 0.05,,
+Bouffalant,day night ,plains 0.1,,
+Rufflet,day night ,forest 0.05,,
+Vullaby,day night ,,mountain hills 0.4,
+Heatmor,day night,,mountain hills cave 0.4,
+Durant,day night,,mountain hills cave 0.4,
+Deino,day night,,mountain hills cave 0.4,
+Larvesta,legendary day night ,,,
+Cobalion,legendary day night ,,,
+Terrakion,legendary day night ,,,
+Virizion,legendary day night ,,,
+Tornadus,legendary day night ,,,
+Thundurus,legendary day night ,,,
+Reshiram,legendary day night ,,,
+Zekrom,legendary day night ,,,
+Landorus,legendary day night ,,,
+Kyurem,legendary day night ,,,
+Keldeo,legendary day night ,,,
+Meloetta,legendary day night ,,,
+Genesect,legendary day night ,,,
+Chespin,starter day night ,,,
+Fennekin,starter day night ,,,
+Froakie,starter day night ,,,
+Bunnelby,day night ,plains 0.2,plains cave 0.3,
+Fletchling,day night ,forest 0.3,,cold
+Scatterbug,day ,all 0.4,,
+Litleo,day night ,sandy plains 0.3;,,mesa
+Flabébé,,flower 0.8,,
+Skiddo,day ,hills 0.3,,
+Pancham,night ,forest 0.1,,wet savanna
+Furfrou,day ,village 0.08,,
+Espurr,night ,plains 0.1,,wet
+Honedge,cave ,ruin 0.1,,
+Spritzee,day ,village 0.08,,
+Swirlix,day ,village 0.08,,
+Inkay,night water,ocean beach 0.9,,
+Binacle,day night ,beach 0.2,,
+Skrelp,day night water,ocean 0.4,,
+Clauncher,,,,
+Helioptile,,,,
+Tyrunt,,,,
+Amaura,,,,
+Hawlucha,,,,
+Dedenne,,,,
+Carbink,cave ,hills mountain cave 0.1,,
+Goomy,day night ,swamp 0.01,,
+Klefki,day night ,ruin 0.1,,
+Phantump,night,,forest spooky 0.2,
+Pumpkaboo,,,,
+Bergmite,day night,,mountain snowy 0.3; mountain cold 0.3,
+Noibat,,,,
+Xerneas,,,,
+Yveltal,,,,
+Zygarde,,,,
+Diancie,,,,
+Volcanion,,,,
+Hoopa,,,,

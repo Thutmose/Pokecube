@@ -1,0 +1,9 @@
+[prefix{l}]Pokecenter Block[prefix{r}]
+This block is used to Heal your Pokemobs.
+Simply place the pokecubes in the slots, and press the heal button.
+If this block is receiving direct Redstone power, it will play a loop of music.  In the ones which spawn naturally, simply remove the power source, and they will stop playing.
+
+[prefix{l}]Recipe[prefix{r}]
+
+
+[crafting{200,120,key=block/pokecenter}]

@@ -1,0 +1,17 @@
+igwmod.keys.category=IGW-Mod Keys
+igwmod.keys.wiki=Display IGW-Mod wiki
+igwmod.wikitab.blocksAndItems.name=Blocks & Items
+igwmod.wikitab.entities.name=Entities
+igwmod.wikitab.igwmod.name=IGW-Mod
+igwmod.tooltip.tabPageBrowse.next=Left click to navigate to the next page
+igwmod.tooltip.tabPageBrowse.previous=Right click to navigate to the previous page
+
+igwtab.entry.intro=Intro
+igwtab.entry.forServers=For Servers
+igwtab.entry.devIntro=Dev: Intro
+igwtab.entry.devItemAndBlock=Dev: Item & Block Page
+igwtab.entry.devPageCommands=Dev: Page Commands
+igwtab.entry.devForModders=Dev: For Modders
+
+igwmod.gui.crafting.shapeless=Shapeless Crafting
+igwmod.gui.crafting.shaped=Shaped Crafting

@@ -1,0 +1,108 @@
+/**
+ * 
+ */
+package pokecube.core.moves.templates;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.DamageSource;
+import pokecube.core.Mod_Pokecube_Helper;
+import pokecube.core.database.Pokedex;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.HappinessType;
+import pokecube.core.moves.MovesUtils;
+import pokecube.core.utils.Tools;
+import thut.api.maths.ExplosionCustom;
+import thut.api.maths.Vector3;
+
+/**
+ * @author Manchou
+ *
+ */
+public class Move_Explode extends Move_Basic {
+
+	/**
+	 * @param name
+	 * @param attackCategory
+	 */
+	public Move_Explode(String name) {
+		super(name);
+		Move_Utility.moves.add(name);
+	}
+
+
+    @Override
+    public void attack(IPokemob attacker, Vector3 attacked, float f)
+    {
+    	attack(attacker, (Entity) attacker, f);
+    }
+	
+    @Override
+    public void attack(IPokemob attacker, Entity attacked, float f)
+    {
+        if (attacker instanceof EntityLiving)
+        {
+            EntityLiving voltorb = (EntityLiving) attacker; // typically Voltorb or Electrode but can be other
+            IPokemob pokemob = attacker;
+            int i = pokemob.getExplosionState();
+            if (i <= 0 && f < 3F || i > 0 && f < 7F)
+            {
+                if (pokemob.getMoveStats().timeSinceIgnited == 0)
+                {
+                    voltorb.worldObj.playSoundAtEntity(voltorb, "game.tnt.primed", 1.0F, 0.5F);
+                }
+                pokemob.setExplosionState(1);
+                if((attacker==attacked&&!pokemob.getMoveStats().Exploding))
+                {
+                	pokemob.getMoveStats().Exploding = true;
+                    float f1 = getPWR() * Tools.getStats(pokemob)[1]/1000f;
+                    
+                    if(pokemob.isType(normal))
+                    	f1 *= 1.5f;
+                    MovesUtils.newExplosion(voltorb, voltorb.posX, voltorb.posY, voltorb.posZ, f1, false, true);
+                	voltorb.setHealth(0);
+                    voltorb.onDeath(DamageSource.generic);
+                	HappinessType.applyHappiness(pokemob, HappinessType.FAINT);
+                	pokemob.returnToPokecube();
+                }
+
+                if (!(attacker==attacked))
+                {
+
+                    float f1 = getPWR() * Tools.getStats(pokemob)[1]/1000f;
+                    
+                    if(pokemob.isType(normal))
+                    	f1 *= 1.5f;
+                    ExplosionCustom.MAX_RADIUS = 250;
+                    MovesUtils.newExplosion(voltorb, voltorb.posX, voltorb.posY, voltorb.posZ, f1, false, true);
+
+                    voltorb.setHealth(0);
+                    voltorb.onDeath(DamageSource.generic);
+                    if (attacked instanceof IPokemob && (((EntityLivingBase)attacked).getHealth() >= 0 && attacked != attacker))
+                    {
+                        if(!(((IPokemob) attacked).getPokemonAIState(IPokemob.TAMED) && !Mod_Pokecube_Helper.pvpExp))
+                        {
+	                        // voltorb's enemy wins XP and EVs even if it didn't attack
+	                        ((IPokemob) attacked).setExp(((IPokemob) attacked).getExp() + Tools.getExp(1, pokemob.getBaseXP(), pokemob.getLevel()), true, false);
+	                        byte[] evsToAdd = Pokedex.getInstance().getEntry(pokemob.getPokedexNb()).getEVs();
+	                        ((IPokemob) attacked).addEVs(evsToAdd);
+                        }
+                    }
+                    pokemob.returnToPokecube();
+                }
+            }
+            else
+            {
+            	pokemob.setExplosionState(-1);
+                
+            	pokemob.getMoveStats().timeSinceIgnited--;
+
+                if (pokemob.getMoveStats().timeSinceIgnited < 0)
+                {
+                	pokemob.getMoveStats().timeSinceIgnited = 0;
+                }
+            }
+        }
+    }
+}

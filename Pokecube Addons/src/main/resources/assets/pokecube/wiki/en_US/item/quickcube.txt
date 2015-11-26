@@ -1,0 +1,5 @@
+[prefix{l}]Quickcube[prefix{}]
+This cube has a higher capture rate for newly spawned pokemobs.
+
+[prefix{l}]Recipe[prefix{}]
+[crafting{200,80,key=item/quickcube}]

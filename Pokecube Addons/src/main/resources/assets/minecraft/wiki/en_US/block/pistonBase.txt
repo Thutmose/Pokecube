@@ -1,0 +1,22 @@
+[crafting{200,50,block/pistonBase,www,cic,crc,w=block/wood.oak,c=block/stonebrick,i=item/ingotIron,r=item/redstone}]
+[crafting{200,380,key=block/pistonBase}]
+
+Crafting recipe test:
+
+Pistons always face the player when placed.
+
+Pistons are redstone powered. When powered, their wooden surface extends outwards by 1 block, pushing up to a maximum of 12 blocks.
+
+When going back to the unpowered state, the regular piston does not pull any block back (Blocks affected by gravity still fall back down).
+
+Its wooden surface can also push players, mobs and other entities on the floor by 1 block if they are in the way. However, if there is no space for the player/mob/entity to be pushed, the extended piston head will just pass through them without harm(unless the block the player is being pushed towards is a staircase/slab). The piston can still push a mob or player off a one block wide walkway, which can be coupled with a pressure plate for a fairly effective trap.
+
+The extended piston head is considered solid and transparent (just like glass). If a piston head extends into a player/mob this way, they will not suffocate, and the player/mob can move out of it but not back into it.
+
+Similarly, if a block pushed by a piston is pushed into a player/mob, the player/mob will get pushed if there is space. If there is no space, the block will start to occupy the same space as the player/mob and cause suffocation if the block is opaque.
+
+When blocks are pushed by a piston, they are momentarily non-solid and cause any players/items on the moving block to fall through the moving block.
+
+Pistons can be used to toggle fluid flows like a flood gate by extending into or retracting from the space where the fluid would flow through.
+
+Pistons can push boats and minecarts. Note that if the minecart is on a rail, the rail will also get pushed if there is space. If there is no space, or it is pushed over an edge, the rail will turn into a drop.

@@ -1,0 +1,5 @@
+[prefix{l}]Repeatcube[prefix{}]
+This cube has a higher capture rate if you already have one of those pokemobs.
+
+[prefix{l}]Recipe[prefix{}]
+[crafting{200,80,key=item/repeatcube}]

@@ -1,0 +1,5 @@
+[prefix{l}]Nestcube[prefix{}]
+This cube has a higher capture rate for lower leveled pokemobs.
+
+[prefix{l}]Recipe[prefix{}]
+[crafting{200,80,key=item/nestcube}]

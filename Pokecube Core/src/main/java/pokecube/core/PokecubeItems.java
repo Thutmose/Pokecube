@@ -1,0 +1,615 @@
+package pokecube.core;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Vector;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import pokecube.core.database.Database;
+import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.items.DispenserBehaviorPokecube;
+
+public class PokecubeItems extends Items
+{
+    static HashMap<String, ItemStack> itemstacks = new HashMap<String, ItemStack>();
+    static HashMap<String, Item>      items      = new HashMap<String, Item>();
+    static HashMap<String, Block>     blocks     = new HashMap<String, Block>();
+
+    public static HashMap<Integer, Item[]> pokecubes = new HashMap<Integer, Item[]>();
+
+    public static HashSet<ItemStack> heldItems = new HashSet<ItemStack>();
+
+    private static HashSet<Block> allBlocks = new HashSet<Block>();
+
+    public static HashSet<ItemStack> evoItems = new HashSet<ItemStack>();
+
+    public static HashMap<Integer, Boolean> cubeIds = new HashMap<Integer, Boolean>();
+
+    public static HashMap<ItemStack, Integer> fossils = new HashMap<ItemStack, Integer>();
+
+    private static List<ItemStack>            meteorDrops   = new ArrayList<ItemStack>();
+    public static HashMap<ItemStack, Integer> meteorDropMap = new HashMap<ItemStack, Integer>();
+
+    private static List<ItemStack>            spawnerDrops   = new ArrayList<ItemStack>();
+    public static HashMap<ItemStack, Integer> spawnerDropMap = new HashMap<ItemStack, Integer>();
+
+    public static HashSet<ItemRegister> textureMap = new HashSet<ItemRegister>();
+
+    public static Vector<Long> times = new Vector<Long>();
+
+    public static HashSet<Block> grasses = new HashSet<Block>();
+
+    public static Item waterstone;
+    public static Item firestone;
+
+    public static Item thunderstone;
+    public static Item leafstone;
+    public static Item moonstone;
+    public static Item sunstone;
+    public static Item shinystone;
+    public static Item ovalstone;
+    public static Item everstone;
+    public static Item duskstone;
+    public static Item dawnstone;
+    public static Item kingsrock;
+    public static Item luckyEgg;
+    public static Item pokemobEgg;
+    public static Item pokedex;
+    public static Item berryJuice;
+    public static Item berries;
+
+    public static Block pokecenter;
+    public static Block repelBlock;
+    public static Block tableBlock;
+    public static Block pokemobSpawnerBlock;
+    public static Block pokemobSpawnerBlockTallGrass;
+    public static Block pc;
+    public static Block tradingtable;
+
+    /** Used for generic adding of itemstacks, items or blocks. if inputting an
+     * itemstack, it adds the corresponding item and block to the other maps. if
+     * inputting block or item, it adds a stack of size 1, meta 0 to the
+     * itemstack map.
+     * 
+     * @param name
+     * @param item */
+    public static void addGeneric(String name, Object item)
+    {
+        if (items.containsKey(name.toLowerCase().trim())) return;
+
+        if (item instanceof ItemStack)
+        {
+            itemstacks.put(name.toLowerCase().trim(), (ItemStack) item);
+
+            Item i = ((ItemStack) item).getItem();
+            items.put(name.toLowerCase().trim(), i);
+
+            Block b = Block.getBlockFromItem(i);
+            if (b != null) blocks.put(name.toLowerCase().trim(), b);
+        }
+        if (item instanceof Item)
+        {
+            items.put(name.toLowerCase().trim(), (Item) item);
+            itemstacks.put(name.toLowerCase().trim(), new ItemStack((Item) item));
+            if (Block.getBlockFromItem((Item) item) != null)
+                blocks.put(name.toLowerCase().trim(), Block.getBlockFromItem((Item) item));
+            if (name.toLowerCase().contains("berry") || item instanceof IPokemobUseable)
+            {
+                addToHoldables(name);
+            }
+            if (name.toLowerCase().contains("stone"))
+            {
+                addToEvos(name);
+            }
+        }
+        if (item instanceof Block)
+        {
+            blocks.put(name.toLowerCase().trim(), (Block) item);
+            itemstacks.put(name.toLowerCase().trim(), new ItemStack((Block) item));
+            items.put(name.toLowerCase().trim(), Item.getItemFromBlock((Block) item));
+        }
+
+    }
+
+    /** Registers a pokecube id, the Object[] is an array with the item or block
+     * assosicated with the unfilled and filled cubes. example: Object cubes =
+     * new Object[] { pokecube, pokecubeFilled}; where pokecube is the unfilled
+     * pokecube block, and pokecubeFilled is the filled one. defaults are: 0 -
+     * pokecube 1 - greatcube 2 - ultracube 3 - mastercube
+     * 
+     * @param id
+     * @param cubes */
+    public static void addCube(int id, Object[] cubes, boolean defaultRenderer)
+    {
+        if (pokecubes.containsKey(id))
+        {
+            System.err.println("Pokecube Id " + id + " Has already been registered as " + getEmptyCube(id));
+        }
+
+        if (cubes.length == 1)
+        {
+            cubes = new Object[] { cubes[0], cubes[0] };
+        }
+
+        Item[] items = new Item[2];
+        if (cubes[0] instanceof Item) items[0] = (Item) cubes[0];
+        else if (cubes[0] instanceof Block) items[0] = Item.getItemFromBlock((Block) cubes[0]);
+        if (cubes[1] instanceof Item) items[1] = (Item) cubes[1];
+        else if (cubes[1] instanceof Block) items[1] = Item.getItemFromBlock((Block) cubes[1]);
+
+        BlockDispenser.dispenseBehaviorRegistry.putObject(items[0], new DispenserBehaviorPokecube());
+        BlockDispenser.dispenseBehaviorRegistry.putObject(items[1], new DispenserBehaviorPokecube());
+
+        cubeIds.put(id, defaultRenderer);
+
+        pokecubes.put(id, items);
+    }
+
+    /** Registers a pokecube id, the Object[] is an array with the item or block
+     * assosicated with the unfilled and filled cubes. example: Object cubes =
+     * new Object[] { pokecube, pokecubeFilled}; where pokecube is the unfilled
+     * pokecube block, and pokecubeFilled is the filled one. defaults are: 0 -
+     * pokecube 1 - greatcube 2 - ultracube 3 - mastercube
+     * 
+     * @param id
+     * @param cubes */
+    public static void addCube(int id, Object[] cubes)
+    {
+        addCube(id, cubes, true);
+    }
+
+    /** defaults are: 0 - pokecube 1 - greatcube 2 - ultracube 3 - mastercube if
+     * you pass in a non- pokecube stack, it returns 0, defaults to a pokecube.
+     * 
+     * @param stack
+     * @return */
+    public static int getCubeId(ItemStack stack)
+    {
+        for (Integer i : pokecubes.keySet())
+        {
+            Item[] cubes = pokecubes.get(i);
+            for (Item cube : cubes)
+                if (cube == stack.getItem()) return i;
+        }
+        return -1;
+    }
+
+    /** defaults are: 0 - pokecube 1 - greatcube 2 - ultracube 3 - mastercube if
+     * you request a non-registerd id, it returns pokecube. */
+    public static Item getFilledCube(int id)
+    {
+        Item ret = null;
+
+        if (pokecubes.containsKey(id)) ret = pokecubes.get(id)[1];
+
+        if (ret == null)
+        {
+            ret = pokecubes.get(0)[1];
+            if (id != -1) System.err.println("Could not find filled cube for id " + id);
+        }
+
+        return ret;
+    }
+
+    public static Item getFilledCube(ItemStack stack)
+    {
+        return getFilledCube(getCubeId(stack));
+    }
+
+    /** defaults are: 0 - pokecube 1 - greatcube 2 - ultracube 3 - mastercube if
+     * you request a non-registerd id, it returns pokecube. */
+    public static Item getEmptyCube(int id)
+    {
+        Item ret = null;
+
+        if (pokecubes.containsKey(id)) ret = pokecubes.get(id)[0];
+
+        if (ret == null)
+        {
+            ret = pokecubes.get(0)[0];
+            // System.err.println("Could not find empty cube for id "+id);
+            // new Exception().printStackTrace();
+        }
+
+        return ret;
+    }
+
+    public static Item getEmptyCube(ItemStack stack)
+    {
+        return getEmptyCube(getCubeId(stack));
+    }
+
+    /** Use this for a specific itemstack, make sure the name differs from other
+     * names of itemstacks added. this one only adds to the itemstack list, use
+     * addGeneric to add to all valid lists.
+     * 
+     * @param name
+     * @param item */
+    public static void addSpecificItemStack(String name, ItemStack item)
+    {
+        itemstacks.put(name.toLowerCase().trim(), item);
+    }
+
+    public static Block getBlock(String name)
+    {
+        return blocks.get(name.toLowerCase().trim());
+    }
+
+    public static Item getItem(String name)
+    {
+        Item item = (Item) Item.itemRegistry.getObject(new ResourceLocation(name));
+        if (item != null) return item;
+
+        return items.get(name.toLowerCase().trim());
+    }
+
+    public static ItemStack getStack(String name)
+    {
+        if (itemstacks.get(name.toLowerCase().trim()) != null) return itemstacks.get(name.toLowerCase().trim()).copy();
+        return null;
+    }
+
+    public static boolean contains(String name)
+    {
+        return getBlock(name.toLowerCase().trim()) != null || getItem(name.toLowerCase().trim()) != null
+                || getStack(name.toLowerCase().trim()) != null;
+    }
+
+    /** registers the item or block, clazz can be null, if it isn't it should be
+     * an itemblock class. if name is null, it registers name as the unlocalised
+     * name.
+     * 
+     * @param o
+     * @param name
+     * @param clazz */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static void register(Object o, Class clazz, String name)
+    {
+        if (o instanceof Item)
+        {
+            GameRegistry.registerItem((Item) o, name);
+        }
+        if (o instanceof Block)
+        {
+            GameRegistry.registerBlock((Block) o, clazz == null ? ItemBlock.class : clazz, name);
+        }
+        addGeneric(name, o);
+    }
+
+    /** Registers as above, assigns the itemblock as null.
+     * 
+     * @param o
+     * @param name */
+    public static void register(Object o, String name)
+    {
+        register(o, ItemBlock.class, name);
+    }
+
+    /** Sets the name to the unlocalized name, minus the "tile." or "item.",
+     * uses generic ItemBlock.class for blocks
+     * 
+     * @param o */
+    public static void register(Object o)
+    {
+        if (o instanceof Block)
+        {
+            register(o, ((Block) o).getUnlocalizedName().substring(5));
+        }
+        if (o instanceof Item)
+        {
+            register(o, ((Item) o).getUnlocalizedName().substring(5));
+        }
+    }
+
+    /** Sets the name of the block to the unlocalized name, minus "tile.", and
+     * uses the given ItemBlock class.
+     * 
+     * @param o
+     * @param clazz */
+    @SuppressWarnings("rawtypes")
+    public static void register(Block o, Class clazz)
+    {
+        register(o, clazz, o.getUnlocalizedName().substring(5));
+    }
+
+    public static ItemStack makeCandyStack()
+    {
+        ItemStack candy = PokecubeItems.getStack("rarecandy");
+        if (candy == null) return null;
+
+        makeStackValid(candy);
+        candy.setStackDisplayName("Rare Candy");
+
+        return candy;
+    }
+
+    public static void makeStackValid(ItemStack stack)
+    {
+        long time = System.nanoTime();
+        if (isValid(stack)) deValidate(stack);
+        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+        times.add(time);
+        stack.getTagCompound().setLong("time", time);
+    }
+
+    public static boolean isValid(ItemStack stack)
+    {
+        if (stack.hasTagCompound())
+        {
+            long time = stack.getTagCompound().getLong("time");
+            return times.contains(time);
+        }
+        return false;
+    }
+
+    public static void deValidate(ItemStack stack)
+    {
+        if (stack.hasTagCompound())
+        {
+            long time = stack.getTagCompound().getLong("time");
+            times.remove(time);
+            stack.setTagCompound(null);
+            stack.splitStack(1);
+        }
+    }
+
+    public static boolean resetTimeTags = false;
+
+    public static void saveTime(NBTTagCompound nbt)
+    {
+        Long[] i = times.toArray(new Long[0]);
+
+        int num = 0;
+        if (nbt == null || i == null)
+        {
+            System.err.println("No Data");
+            return;
+        }
+        for (Long l : i)
+        {
+            if (l != null)
+            {
+                nbt.setLong("" + num, l.longValue());
+                num++;
+            }
+        }
+        nbt.setInteger("count", num);
+    }
+
+    public static void loadTime(NBTTagCompound nbt)
+    {
+        if (resetTimeTags)
+        {
+            resetTimeTags = false;
+            return;
+        }
+        times.clear();
+        int num = nbt.getInteger("count");
+        for (int i = 0; i < num; i++)
+        {
+            if (Long.valueOf(nbt.getLong("" + i)) != 0) times.add(Long.valueOf(nbt.getLong("" + i)));
+        }
+    }
+
+    public static void addToHoldables(String item)
+    {
+        ItemStack stack = getStack(item);
+        heldItems.add(stack);
+    }
+
+    public static void removeFromHoldables(String item)
+    {
+        ItemStack stack = getStack(item);
+        heldItems.remove(stack);
+    }
+
+    public static void addToEvos(String item)
+    {
+        ItemStack stack = getStack(item);
+        evoItems.add(stack);
+    }
+
+    public static void removeFromEvos(String item)
+    {
+        ItemStack stack = getStack(item);
+        evoItems.remove(stack);
+    }
+
+    public static void init()
+    {
+        initVanillaHeldItems();
+        for (ItemRegister i : textureMap)
+        {
+            Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(i.item, i.meta, i.loc);
+        }
+
+        for (int i = 0; i < Short.MAX_VALUE; i++)
+        {
+            Item item = Item.getItemById(i);
+            if (item != null)
+            {
+                addGeneric(item.getUnlocalizedName().substring(5), item);
+            }
+
+        }
+        grasses.clear();
+        for (Block b : getAllBlocks())
+        {
+            if (grasses.contains(b)) continue;
+
+            if (b.getMaterial() == Material.grass) grasses.add(b);
+            if (b.getMaterial() == Blocks.red_flower.getMaterial()) grasses.add(b);
+            if (b.getMaterial() == Blocks.tallgrass.getMaterial()) PokecubeItems.grasses.add(b);
+            if (b.getMaterial() == Blocks.wheat.getMaterial()) PokecubeItems.grasses.add(b);
+        }
+
+    }
+
+    public static void initAllBlocks()
+    {
+        allBlocks.clear();
+        for (int i = 0; i < 4096; i++)
+        {
+            if (Block.getBlockById(i) != null) allBlocks.add(Block.getBlockById(i));
+        }
+    }
+
+    public static HashSet<Block> getAllBlocks()
+    {
+        if (allBlocks.size() == 0)
+        {
+            initAllBlocks();
+        }
+        return allBlocks;
+    }
+
+    public static void registerFossil(ItemStack fossil, String pokemonName)
+    {
+        if (Database.entryExists(pokemonName))
+        {
+            fossils.put(fossil.copy(), Database.getEntry(pokemonName).getPokedexNb());
+        }
+    }
+
+    public static void registerFossil(ItemStack fossil, int number)
+    {
+        fossils.put(fossil.copy(), number);
+    }
+
+    public static int getFossilNumber(ItemStack fossil)
+    {
+        int ret = 0;
+        for (ItemStack s : fossils.keySet())
+        {
+            System.out.println(s + " " + fossil);
+            if (s.isItemEqual(fossil))
+            {
+                ret = fossils.get(s);
+                break;
+            }
+        }
+        return ret;
+    }
+
+    public static ItemStack getRandomMeteorDrop()
+    {
+        if (meteorDrops.size() == 0) return null;
+
+        Collections.shuffle(meteorDrops);
+        return meteorDrops.get(0);
+    }
+
+    public static void addMeteorDrop(ItemStack stack, int weight)
+    {
+        meteorDropMap.put(stack, weight);
+        for (int i = 0; i < weight; i++)
+            meteorDrops.add(stack);
+    }
+
+    public static void addSpawnerDrop(ItemStack stack, int weight)
+    {
+        spawnerDropMap.put(stack, weight);
+        for (int i = 0; i < weight; i++)
+            spawnerDrops.add(stack);
+    }
+
+    public static ItemStack getRandomSpawnerDrop()
+    {
+        if (spawnerDrops.size() == 0) return null;
+        Collections.shuffle(spawnerDrops);
+        return spawnerDrops.get(0);
+    }
+
+    private static void initVanillaHeldItems()
+    {
+        addGeneric("ice", Blocks.packed_ice);
+        addGeneric("mossStone", Blocks.mossy_cobblestone);
+
+        addGeneric("razorfang", Items.iron_pickaxe);
+        addGeneric("razorclaw", Items.iron_axe);
+
+        addGeneric("reapercloth", Blocks.carpet);
+        addGeneric("dragonscale", Items.emerald);
+        addGeneric("prismscale", Items.diamond);
+
+        addToEvos("ice");
+        addToEvos("mossStone");
+        addToEvos("razorfang");
+        addToEvos("razorclaw");
+        addToEvos("reapercloth");
+        addToEvos("dragonscale");
+        addToEvos("prismscale");
+
+    }
+
+    public static boolean isValidHeldItem(ItemStack stack)
+    {
+        boolean ret = false;
+        if (stack == null) return false;
+        for (ItemStack s : heldItems)
+        {
+            if (s != null && s.isItemEqual(stack)) return true;
+        }
+        for (ItemStack s : evoItems)
+        {
+            if (s != null && s.isItemEqual(stack)) return true;
+        }
+        return ret;
+    }
+
+    public static boolean isValidEvoItem(ItemStack stack)
+    {
+        boolean ret = false;
+        if (stack == null) return false;
+        for (ItemStack s : evoItems)
+        {
+            if (s != null && s.isItemEqual(stack)) return true;
+        }
+        return ret;
+    }
+
+    public static int getCubeId(Item item)
+    {
+        return getCubeId(new ItemStack(item));
+    }
+
+    public static int getCubeId(Block item)
+    {
+        return getCubeId(new ItemStack(item));
+    }
+
+    public static void registerItemTexture(Item item, int meta, ModelResourceLocation loc)
+    {
+        textureMap.add(new ItemRegister(item, meta, loc));
+    }
+
+    private static class ItemRegister
+    {
+        public Item                  item;
+        public int                   meta;
+        public ModelResourceLocation loc;
+
+        public ItemRegister(Item i, int m, ModelResourceLocation l)
+        {
+            item = i;
+            meta = m;
+            loc = l;
+        }
+
+    }
+}

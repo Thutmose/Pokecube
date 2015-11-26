@@ -6,7 +6,7 @@ bin
 .classpath
 .project
 .recommenders/*
-*.gradle*
+.gradle*
 
 # idea
 out

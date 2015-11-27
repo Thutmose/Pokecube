@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.modelloader.client.custom.RenderAdvancedPokemobModel;
 import pokecube.modelloader.client.tabula.TabulaPackLoader;
 import pokecube.modelloader.client.tabula.TabulaPackLoader.TabulaModelSet;
 
@@ -246,16 +247,20 @@ public class MowzieModelRenderer extends ModelRenderer {
         scaleY = y;
         scaleZ = z;
     }
-
-    @Deprecated
-    public void setOpacity(float o) {
-
-    }
-
+    
     @SideOnly(Side.CLIENT)
     public void render(float partialTicks, Entity entity) {
         GL11.glPushMatrix();
+        
+        int rgba = RenderAdvancedPokemobModel.getColour(name, (IPokemob) entity, 0xFFFFFFFF);
 
+        float alpha = ((rgba >> 24) & 255) / 255f;
+        float red = ((rgba >> 16) & 255) / 255f;
+        float green = ((rgba >> 8) & 255) / 255f;
+        float blue = (rgba & 255) / 255f;
+        
+        isHidden = RenderAdvancedPokemobModel.isHidden(name, (IPokemob) entity, isHidden);
+        
         if (!isHidden) {
             if (showModel) {
                 if (!compiled) {
@@ -322,8 +327,11 @@ public class MowzieModelRenderer extends ModelRenderer {
                 
                 if (rotateAngleX == 0f && rotateAngleY == 0f && rotateAngleZ == 0f) {
                     if (rotationPointX == 0f && rotationPointY == 0f && rotationPointZ == 0f) {
+                        
+                        GL11.glPushMatrix();
+                        GL11.glColor4f(red, green, blue, alpha);
                         GL11.glCallList(displayList);
-
+                        GL11.glPopMatrix();
                         if (childModels != null) {
                             for (i = 0; i < childModels.size(); ++i) {
                                 ((MowzieModelRenderer) childModels.get(i)).render(partialTicks, entity);
@@ -331,7 +339,11 @@ public class MowzieModelRenderer extends ModelRenderer {
                         }
                     } else {
                         GL11.glTranslatef(rotationPointX * partialTicks, rotationPointY * partialTicks, rotationPointZ * partialTicks);
+
+                        GL11.glPushMatrix();
+                        GL11.glColor4f(red, green, blue, alpha);
                         GL11.glCallList(displayList);
+                        GL11.glPopMatrix();
 
                         if (childModels != null) {
                             for (i = 0; i < childModels.size(); ++i) {
@@ -357,7 +369,10 @@ public class MowzieModelRenderer extends ModelRenderer {
                         GL11.glRotatef(rotateAngleX * (180f / (float) Math.PI), 1f, 0f, 0f);
                     }
 
+                    GL11.glPushMatrix();
+                    GL11.glColor4f(red, green, blue, alpha);
                     GL11.glCallList(displayList);
+                    GL11.glPopMatrix();
 
                     if (childModels != null) {
                         for (i = 0; i < childModels.size(); ++i) {

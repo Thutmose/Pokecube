@@ -78,6 +78,7 @@ public class AnimationPowder extends MoveAnimationBase
         GL11.glPushMatrix();
 
         initColour(info.currentTick * 300, partialTick, info.move);
+        
         float alpha = ((rgba >> 24) & 255) / 255f;
         float red = ((rgba >> 16) & 255) / 255f;
         float green = ((rgba >> 8) & 255) / 255f;

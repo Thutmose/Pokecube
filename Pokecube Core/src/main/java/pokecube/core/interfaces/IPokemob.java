@@ -664,6 +664,17 @@ public interface IPokemob extends IMoveConstants
 	
     double getMovementSpeed();
     
+    /**
+     * Currently used for mareep colour, can be used for other things if needed
+     * @return
+     */
+    int getSpecialInfo();
+    /**
+     * Currently used for mareep colour, can be used for other things if needed
+     * @return
+     */
+    void setSpecialInfo(int info);
+    
     public static enum HappinessType
     {
     	TIME(2,2,1),

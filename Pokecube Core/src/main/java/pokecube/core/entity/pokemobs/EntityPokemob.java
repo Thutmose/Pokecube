@@ -3,8 +3,6 @@
  */
 package pokecube.core.entity.pokemobs;
 
-import java.util.UUID;
-
 import net.minecraft.world.World;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;

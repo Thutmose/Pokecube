@@ -13,9 +13,13 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.gui.GuiPokedex;
@@ -35,7 +39,6 @@ import pokecube.modelloader.client.tabula.components.ModelJson;
 import pokecube.modelloader.client.tabula.model.IModelParser;
 import pokecube.modelloader.client.tabula.model.tabula.TabulaModel;
 import pokecube.modelloader.client.tabula.model.tabula.TabulaModelParser;
-import thut.api.maths.Vector3;
 
 public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLiving<T>
 {
@@ -44,7 +47,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     public LoadedModel model;
     final String       modelName;
-    private Vector3    scale = Vector3.getNewVectorFromPool();
 
     public RenderAdvancedPokemobModel(String name, float par2)
     {
@@ -294,13 +296,13 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             }
         }
 
-        float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
+//        float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
 
         f4 = this.handleRotationFloat(entity, partialTick);
-        float f5 = 0.0625F;
+//        float f5 = 0.0625F;
         this.preRenderCallback(entity, partialTick);
-        float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
-        float f7 = entity.limbSwing - entity.limbSwingAmount * (1.0F - partialTick);
+//        float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
+//        float f7 = entity.limbSwing - entity.limbSwingAmount * (1.0F - partialTick);
 
         TabulaModelSet set = TabulaPackLoader.modelMap.get(entry);
         // System.out.println(set+" "+entry);
@@ -476,6 +478,30 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     protected ResourceLocation getEntityTexture(T entity)
     {
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
+    }
+    
+    public static boolean isHidden(String partName, IPokemob pokemob, boolean default_)
+    {
+        //TODO make a way to load this name from xmls
+        if(pokemob.getPokedexNb()==179 && partName.equalsIgnoreCase("body"))//Mareep
+        {
+            boolean shearable = ((IShearable)pokemob).isShearable(new ItemStack(Items.shears), ((Entity)pokemob).worldObj, ((Entity)pokemob).getPosition());
+            return !shearable;
+            
+        }
+        return default_;
+    }
+    
+    public static int getColour(String partName, IPokemob pokemob, int default_)
+    {
+        if(pokemob.getPokedexNb()==179 && partName.equalsIgnoreCase("body"))//Mareep
+        {
+            //TODO make a way to load this name from xmls
+            int rgba = 0xFF000000;
+            rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;
+            return rgba;
+        }
+        return default_;
     }
 
 }

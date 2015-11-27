@@ -13,6 +13,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.AnimalChest;
 import net.minecraft.inventory.IInvBasic;
@@ -24,7 +25,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -50,7 +53,7 @@ import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
 public abstract class EntityTameablePokemob extends EntityTameable
-        implements IPokemob, IMob, IInvBasic, IHungrymob, IPathingMob
+        implements IPokemob, IMob, IInvBasic, IHungrymob, IPathingMob, IShearable
 {
     public static int EXITCUBEDURATION = 40;
 
@@ -98,6 +101,8 @@ public abstract class EntityTameablePokemob extends EntityTameable
     static final int EVS1DW            = 24;
     static final int EVS2DV            = 25;
 
+    static final int SPECIALINFO = 26;
+
     static final int EVOLNBDW   = 27;
     static final int EVOLTICKDW = 28;
     static final int HAPPYDW    = 29;
@@ -143,6 +148,9 @@ public abstract class EntityTameablePokemob extends EntityTameable
                                                                      // and
                                                                      // moveIndex
         dataWatcher.addObject(MOVESDW, "");// moves
+        
+        
+        dataWatcher.addObject(SPECIALINFO, Integer.valueOf(0));//Used for mareep colour
 
     }
 
@@ -155,6 +163,10 @@ public abstract class EntityTameablePokemob extends EntityTameable
     public void specificSpawnInit()
     {
         this.setHeldItem(this.wildHeldItem());
+        if(pokedexNb==179)//Mareep
+        {
+            setSpecialInfo(11);
+        }
     }
 
     @Override
@@ -164,6 +176,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
         nbttagcompound.setInteger(PokecubeSerializer.POKEDEXNB, pokedexNb);
         nbttagcompound.setInteger("PokemobActionState", dataWatcher.getWatchableObjectInt(5));
         nbttagcompound.setInteger("hungerTime", hungerTime);
+        nbttagcompound.setInteger("specialInfo", getSpecialInfo());
         nbttagcompound.setIntArray("homeLocation",
                 new int[] { getHome().getX(), getHome().getY(), getHome().getZ(), (int) getHomeDistance() });
 
@@ -198,6 +211,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
         super.readEntityFromNBT(nbttagcompound);
         pokedexNb = nbttagcompound.getInteger(PokecubeSerializer.POKEDEXNB);
         this.setPokedexEntry(Database.getEntry(pokedexNb));
+        this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
         dataWatcher.updateObject(5, nbttagcompound.getInteger("PokemobActionState"));
         hungerTime = nbttagcompound.getInteger("hungerTime");
         int[] home = nbttagcompound.getIntArray("homeLocation");
@@ -772,5 +786,80 @@ public abstract class EntityTameablePokemob extends EntityTameable
         }
 
         this.worldObj.theProfiler.endSection();
+    }
+
+    @Override
+    public int getSpecialInfo()
+    {
+        return dataWatcher.getWatchableObjectInt(SPECIALINFO);
+    }
+
+    @Override
+    public void setSpecialInfo(int info)
+    {
+        this.dataWatcher.updateObject(SPECIALINFO, Integer.valueOf(info));
+    }
+    
+    @Override
+    public boolean isShearable(ItemStack item, IBlockAccess world, BlockPos pos)
+    {
+        if(getPokedexEntry().getName().equalsIgnoreCase("mareep"))
+        {
+            long last = getEntityData().getLong("lastSheared");
+            
+            if(last < worldObj.getTotalWorldTime() - 200 && !worldObj.isRemote)
+            {
+                setSheared(false);
+            }
+            
+            return !getSheared();
+        }
+        return false;
+    }
+
+    @Override
+    public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
+    {
+        if(getPokedexEntry().getName().equalsIgnoreCase("mareep"))
+        {
+            ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+            setSheared(true);
+            
+            getEntityData().setLong("lastSheared", worldObj.getTotalWorldTime());
+            
+            int i = 1 + rand.nextInt(3);
+            for (int j = 0; j < i; j++)
+            {
+                ret.add(new ItemStack(Blocks.wool, 1, 15-getSpecialInfo()));
+            }
+            this.playSound("mob.sheep.shear", 1.0F, 1.0F);
+            return ret;
+        }
+        return null;
+    }
+    
+    /**
+     * returns true if a sheeps wool has been sheared
+     */
+    public boolean getSheared()
+    {
+        return (this.dataWatcher.getWatchableObjectByte(SHEARDW) & 16) != 0;
+    }
+
+    /**
+     * make a sheep sheared if set to true
+     */
+    public void setSheared(boolean sheared)
+    {
+        byte b0 = this.dataWatcher.getWatchableObjectByte(21);
+
+        if (sheared)
+        {
+            this.dataWatcher.updateObject(SHEARDW, Byte.valueOf((byte)(b0 | 16)));
+        }
+        else
+        {
+            this.dataWatcher.updateObject(SHEARDW, Byte.valueOf((byte)(b0 & -17)));
+        }
     }
 }

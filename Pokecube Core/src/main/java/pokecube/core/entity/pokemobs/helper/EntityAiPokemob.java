@@ -80,15 +80,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public GuardAI        guardAI  = new GuardAI(this, getHome(), 16, 16, new TimePeriod(0, 0), false);
     public LogicCollision collider = new LogicCollision(this);
 
-    /** Ridden task parameter Counter for speed boosting, upon reaching
-     * maxSpeedBoostTime the speed boost will be disabled */
-    private int speedBoostTime = 0;
-
-    /** Ridden task parameter Maximum time the entity's speed should be boosted
-     * for. **/
-    private int maxSpeedBoostTime = 0;
-
-    private int lastSeenTargetTime = 0;
     private int lastHadTargetTime  = 0;
 
     private PokeNavigator     navi;
@@ -673,6 +664,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!worldObj.isRemote)
         {
             PokedexEntry entry = getPokedexEntry();
+            int aiState = dataWatcher.getWatchableObjectInt(AIACTIONSTATESDW);
             boolean isAbleToFly = entry.mobType == Type.FLOATING || entry.mobType == Type.FLYING;
             boolean isWaterMob = entry.mobType == Type.WATER;
             boolean shouldGoDown = false;
@@ -709,7 +701,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 setDirectionPitch(0);
             }
-            if ((getPokemonAIState(SLEEPING) || getStatus() == STATUS_SLP || getStatus() == STATUS_FRZ) && isAbleToFly)
+            if ((getAIState(SLEEPING, aiState) || getStatus() == STATUS_SLP || getStatus() == STATUS_FRZ) && isAbleToFly)
                 shouldGoDown = true;
 
             if (this.isInWater())
@@ -792,12 +784,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     f2 = b.slipperiness * 0.91F;
                 }
 
-                if (this.isOnLadder()) // || b.isLadder(worldObj,
-                                       // MathHelper.floor_double(this.posX),
-                                       // MathHelper.floor_double(this.boundingBox.minY)
-                                       // - 1,
-                                       // MathHelper.floor_double(this.posZ),
-                                       // this))
+                if (this.isOnLadder())
                 {
                     float f5 = 0.05F;
                     this.onGround = true;
@@ -829,7 +816,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     }
 
                 }
-                if (getPokemonAIState(WATCHED) || getPokemonAIState(TAMED))
+                if (getAIState(WATCHED, aiState) || getAIState(TAMED, aiState))
                 {
                     PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(18));
                     buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
@@ -861,7 +848,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         this.motionY = 0.0D;
                     }
                 }
-                else if (!isAbleToFly)
+                else if (!isAbleToFly || this.getAIState(SITTING, aiState) || this.getAIState(SLEEPING, aiState))
                 {
                     this.motionY -= 0.08D;
                 }
@@ -1339,18 +1326,18 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             this.motionY += 0.03999999910593033D;
         }
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-        buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-        buffer.writeInt(getEntityId());
-        buffer.writeByte(3);
-        buffer.writeFloat((float) motionX);
-        buffer.writeFloat((float) motionY);
-        buffer.writeFloat((float) motionZ);
-        buffer.writeFloat((float) posX);
-        buffer.writeFloat((float) posY);
-        buffer.writeFloat((float) posZ);
-        MessageClient message = new MessageClient(buffer);
-        // PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
+//        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+//        buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
+//        buffer.writeInt(getEntityId());
+//        buffer.writeByte(3);
+//        buffer.writeFloat((float) motionX);
+//        buffer.writeFloat((float) motionY);
+//        buffer.writeFloat((float) motionZ);
+//        buffer.writeFloat((float) posX);
+//        buffer.writeFloat((float) posY);
+//        buffer.writeFloat((float) posZ);
+//        MessageClient message = new MessageClient(buffer);
+//        PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
     }
 
     public void setJumping(boolean jump)

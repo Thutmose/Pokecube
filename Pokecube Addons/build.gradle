@@ -24,7 +24,7 @@ group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-convention
 archivesBaseName = "Pokecube Revival"
 
 minecraft {
-    version = "1.8.8-11.14.4.1590-1.8.8"
+    version = "1.8.8-11.15.0.1591-1.8.8"
     runDir = "run"
     
     replace "@VERSION@", project.version
@@ -80,6 +80,7 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+        exclude 'pokecube_at.cfg'
     }
 }
 

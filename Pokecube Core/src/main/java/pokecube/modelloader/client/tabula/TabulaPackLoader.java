@@ -3,11 +3,9 @@ package pokecube.modelloader.client.tabula;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -24,15 +22,11 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.modelloader.client.custom.IExtendedModelPart;
 import pokecube.modelloader.client.custom.LoadedModel;
-import pokecube.modelloader.client.custom.PartInfo;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
-import pokecube.modelloader.client.custom.animation.AnimationBipedWalk;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
-import pokecube.modelloader.client.custom.animation.AnimationQuadrupedWalk;
 import pokecube.modelloader.client.custom.animation.ModelAnimation;
-import pokecube.modelloader.client.custom.animation.AnimationLoader.Model;
+import pokecube.modelloader.client.tabula.animation.BasicFlapAnimation;
 import pokecube.modelloader.client.tabula.animation.BiWalkAnimation;
 import pokecube.modelloader.client.tabula.animation.QuadWalkAnimation;
 import pokecube.modelloader.client.tabula.components.Animation;
@@ -173,6 +167,8 @@ public class TabulaPackLoader extends AnimationLoader
             HashSet<String> fr = new HashSet();
             int quadwalkdur = 0;
             int biwalkdur = 0;
+            int flapdur = 0;
+            int flapaxis = 2;
             float walkAngle1 = 20;
             float walkAngle2 = 20;
 
@@ -280,6 +276,35 @@ public class TabulaPackLoader extends AnimationLoader
                             else quadwalkdur = Integer
                                     .parseInt(part.getAttributes().getNamedItem("duration").getNodeValue());
                         }
+                        else if (phaseName.equals("flap"))
+                        {
+                            String[] lh = part.getAttributes().getNamedItem("leftWing").getNodeValue().split(":");
+                            String[] rh = part.getAttributes().getNamedItem("rightWing").getNodeValue().split(":");
+
+                            convertToIdents(lh);
+                            convertToIdents(rh);
+
+                            for (String s : lh)
+                                hl.add(s);
+                            for (String s : rh)
+                                hr.add(s);
+
+                            if (part.getAttributes().getNamedItem("angle") != null)
+                            {
+                                walkAngle1 = Float
+                                        .parseFloat(part.getAttributes().getNamedItem("angle").getNodeValue());
+                            }
+                            if (part.getAttributes().getNamedItem("start") != null)
+                            {
+                                walkAngle2 = Float
+                                        .parseFloat(part.getAttributes().getNamedItem("start").getNodeValue());
+                            }
+                            if (part.getAttributes().getNamedItem("axis") != null)
+                            {
+                                flapaxis = Integer.parseInt(part.getAttributes().getNamedItem("axis").getNodeValue());
+                            }
+                            flapdur = Integer.parseInt(part.getAttributes().getNamedItem("duration").getNodeValue());
+                        }
                     }
                 }
             }
@@ -311,6 +336,11 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 loadedAnimations.put("walking",
                         new QuadWalkAnimation().init(hl, hr, fl, fr, quadwalkdur, walkAngle1, walkAngle2));
+            }
+            if (flapdur != 0)
+            {
+                loadedAnimations.put("flying",
+                        new BasicFlapAnimation().init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis));
             }
         }
 

@@ -331,6 +331,7 @@ public class MowzieModelRenderer extends ModelRenderer {
                         GL11.glPushMatrix();
                         GL11.glColor4f(red, green, blue, alpha);
                         GL11.glCallList(displayList);
+                        GL11.glColor4f(1, 1, 1, 1);
                         GL11.glPopMatrix();
                         if (childModels != null) {
                             for (i = 0; i < childModels.size(); ++i) {
@@ -343,6 +344,7 @@ public class MowzieModelRenderer extends ModelRenderer {
                         GL11.glPushMatrix();
                         GL11.glColor4f(red, green, blue, alpha);
                         GL11.glCallList(displayList);
+                        GL11.glColor4f(1, 1, 1, 1);
                         GL11.glPopMatrix();
 
                         if (childModels != null) {
@@ -372,6 +374,7 @@ public class MowzieModelRenderer extends ModelRenderer {
                     GL11.glPushMatrix();
                     GL11.glColor4f(red, green, blue, alpha);
                     GL11.glCallList(displayList);
+                    GL11.glColor4f(1, 1, 1, 1);
                     GL11.glPopMatrix();
 
                     if (childModels != null) {

@@ -543,15 +543,12 @@ public class EventsHandlerClient
             if(s!=null && s.equals(msg))
                 return;
         }
-        
-        
-        
         debug = false;
         event.left.add("");
         event.left.add(msg);
     }
 
-    static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap();
+    static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
 
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
     {

@@ -511,7 +511,7 @@ public class AnimationLoader
         }
         catch (IOException e1)
         {
-            System.out.println("did not find "+s);
+//            System.out.println("did not find "+s);
             model = null;
         }
         try

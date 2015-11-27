@@ -862,4 +862,15 @@ public abstract class EntityTameablePokemob extends EntityTameable
             this.dataWatcher.updateObject(SHEARDW, Byte.valueOf((byte)(b0 & -17)));
         }
     }
+    
+    /**
+     * Used to get the state without continually looking up in datawatcher.
+     * @param state
+     * @param array
+     * @return
+     */
+    protected boolean getAIState(int state, int array)
+    {
+        return (array & state) != 0;
+    }
 }

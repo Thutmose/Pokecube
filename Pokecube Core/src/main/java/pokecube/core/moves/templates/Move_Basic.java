@@ -256,9 +256,11 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             try
             {
             	String toSend = getName();
+            	
+            	double shift = target!=null?target.height/2:0;
                 
                 toSend += "`"+attacker.getEntityId();
-                toSend += "`"+attacked.x+"`"+attacked.y+"`"+attacked.z;
+                toSend += "`"+attacked.x+"`"+(attacked.y+shift)+"`"+attacked.z;
                 if(target!=null)
                 {
                 	toSend += "`"+target.getEntityId();

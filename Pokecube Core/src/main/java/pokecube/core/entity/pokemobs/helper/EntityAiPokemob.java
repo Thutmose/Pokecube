@@ -247,7 +247,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 setAttackTarget(null);
             }
         }
-        else if (riddenByEntity == null && ticksExisted % 20 == 0)
+        else if (riddenByEntity == null && ticksExisted % 200 == 0)
         {
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
@@ -260,32 +260,33 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
         }
         String s;
-        if (getPokemonAIState(TAMED) && ((s = getPokemonOwnerName()) == null || s.isEmpty()))
+        int state = dataWatcher.getWatchableObjectInt(AIACTIONSTATESDW);
+        if (getAIState(TAMED, state) && ((s = getPokemonOwnerName()) == null || s.isEmpty()))
         {
             setPokemonAIState(TAMED, false);
         }
 
         PokedexEntry entry = getPokedexEntry();
 
-        if (getPokemonAIState(HELD) && ridingEntity == null)
+        if (getAIState(HELD, state) && ridingEntity == null)
         {
             setPokemonAIState(HELD, false);
         }
-        if (getPokemonAIState(SHOULDER) && ridingEntity == null)
+        if (getAIState(SHOULDER, state) && ridingEntity == null)
         {
             setPokemonAIState(SHOULDER, false);
         }
-        if (getPokemonAIState(GUARDING) && getPokemonAIState(SITTING))
+        if (getAIState(GUARDING, state) && getAIState(SITTING, state))
         {
             setPokemonAIState(SITTING, false);
         }
-        if (ticksExisted > EXITCUBEDURATION && getPokemonAIState(EXITINGCUBE))
+        if (ticksExisted > EXITCUBEDURATION && getAIState(EXITINGCUBE, state))
         {
             setPokemonAIState(EXITINGCUBE, false);
         }
         boolean canFloat = entry.mobType == Type.FLOATING;
 
-        if (canFloat)
+        if (canFloat && !getAIState(INWATER, state))
         {
             float floatHeight = (float) entry.preferedHeight;
             if (here == null)
@@ -296,8 +297,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             Vector3 down = Vector3.getNextSurfacePoint(worldObj, here.set(this), Vector3.secondAxisNeg, floatHeight);
             if (down != null) here.set(down);
 
-            if (!here.getBlock(worldObj).isReplaceable(worldObj, here.getPos()) && getAttackTarget() == null
-                    && !getPokemonAIState(SLEEPING))
+            Block b;
+            if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) && getAttackTarget() == null
+                    && !getAIState(SLEEPING, state) || b.getMaterial().isLiquid() )
             {
                 motionY += 0.01;
             }
@@ -1126,6 +1128,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (!handleHmAndSaddle(player, new ItemStack(Items.saddle)))
             {
                 this.setJumping(false);
+                return false;
             }
             else
             {

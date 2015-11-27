@@ -1,8 +1,0 @@
-{
-   "variants": {
-       "axis=y": { "model": "pokecube_adventures:oranWood" },
-       "axis=z": { "model": "pokecube_adventures:oranWood_side" },
-       "axis=x": { "model": "pokecube_adventures:oranWood_side", "y": 90  },
-       "axis=none": { "model": "pokecube_adventures:oranWood_bark" }
-    }
-}

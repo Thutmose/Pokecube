@@ -1,8 +1,0 @@
-{
-   "variants": {
-       "axis=y": { "model": "pokecube_adventures:nanabWood" },
-       "axis=z": { "model": "pokecube_adventures:nanabWood_side" },
-       "axis=x": { "model": "pokecube_adventures:nanabWood_side", "y": 90  },
-       "axis=none": { "model": "pokecube_adventures:nanabWood_bark" }
-    }
-}

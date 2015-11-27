@@ -55,7 +55,6 @@ public class CommonProxy implements IGuiHandler
     @Override
     public Object getServerGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
-        BlockPos pos = new BlockPos(x, y, z);
         if (guiID == PokecubeAdv.GUIBAG_ID)
         {
             ContainerBag cont = new ContainerBag(player.inventory);

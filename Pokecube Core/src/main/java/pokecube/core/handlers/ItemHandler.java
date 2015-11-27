@@ -45,6 +45,11 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.blocks.BlockRepel;
 import pokecube.core.blocks.TileEntityRepel;
+import pokecube.core.blocks.berries.BerryPlantManager;
+import pokecube.core.blocks.berries.BlockBerryLeaves;
+import pokecube.core.blocks.berries.BlockBerryLog;
+import pokecube.core.blocks.berries.BlockBerryWood;
+import pokecube.core.blocks.berries.ItemBlockMeta;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.blocks.nests.BlockNest;
 import pokecube.core.blocks.nests.TileEntityNest;
@@ -70,17 +75,25 @@ import pokecube.core.items.ItemTM;
 import pokecube.core.items.ItemTranslated;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
+import pokecube.core.items.berries.TileEntityBerryFruit;
 import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.megastuff.ItemMegastone;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.Pokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.vitamins.VitaminManager;
+import pokecube.core.moves.TreeRemover;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public class ItemHandler extends Mod_Pokecube_Helper
 {
+    public static Block log0;
+    public static Block log1;
+    public static Block plank0;
+    public static Block leaf0;
+    public static Block leaf1;
+    
     public static void addItems(Mod_Pokecube_Helper helper)
     {
         addPokecubes();
@@ -237,6 +250,72 @@ public class ItemHandler extends Mod_Pokecube_Helper
                                                             // foe if holder is
                                                             // hit by a special
                                                             // move
+        
+        
+        BerryPlantManager.addBerry("cheri", 1);// Cures Paralysis
+        BerryPlantManager.addBerry("chesto", 2);// Cures sleep
+        BerryPlantManager.addBerry("pecha", 3);// Cures poison
+        BerryPlantManager.addBerry("rawst", 4);// Cures burn
+        BerryPlantManager.addBerry("aspear", 5);// Cures freeze
+        BerryPlantManager.addBerry("leppa", 6);// Restores 10PP
+        BerryPlantManager.addBerry("oran", 7);// Restores 10HP
+        BerryPlantManager.addBerry("persim", 8);// Cures confusion
+        BerryPlantManager.addBerry("lum", 9);// Cures any status ailment
+        BerryPlantManager.addBerry("sitrus", 10);// Restores 1/4 HP
+        BerryPlantManager.addBerry("nanab", 18);// Pokeblock ingredient
+        BerryPlantManager.addBerry("pinap", 20);// Pokeblock ingredient
+        BerryPlantManager.addBerry("cornn", 27);// Pokeblock ingredient
+        BerryPlantManager.addBerry("enigma", 60);// Restores 1/4 of HP
+        BerryPlantManager.addBerry("jaboca", 63);// 4th gen. Causes recoil
+                                                 // damage on foe if holder is
+                                                 // hit by a physical move
+        BerryPlantManager.addBerry("rowap", 64);// 4th gen. Causes recoil damage
+                                                // on foe if holder is hit by a
+                                                // special move
+
+        String[] names = { "pecha", "oran", "leppa", "sitrus" };
+        BlockBerryLog.currentlyConstructing = 0;
+        log0 = new BlockBerryLog(0, names).setHardness(2.0F).setStepSound(Block.soundTypeWood)
+                .setUnlocalizedName("log0");
+        leaf0 = new BlockBerryLeaves(0, names).setHardness(0.2F).setLightOpacity(1).setStepSound(Block.soundTypeGrass)
+                .setUnlocalizedName("leaves0");
+        plank0 = new BlockBerryWood(0, names).setHardness(2.0F).setResistance(5.0F).setStepSound(Block.soundTypeWood)
+                .setUnlocalizedName("wood0");
+
+        register(log0, ItemBlockMeta.class, "pokecube_log0");
+        register(plank0, ItemBlockMeta.class, "pokecube_plank0");
+        register(leaf0, ItemBlockMeta.class, "pokecube_leaf0");
+
+        names = new String[] { "enigma", "nanab" };
+        BlockBerryLog.currentlyConstructing = 4;
+        log1 = new BlockBerryLog(4, names).setHardness(2.0F).setStepSound(Block.soundTypeWood)
+                .setUnlocalizedName("log1");
+        leaf1 = new BlockBerryLeaves(4, names).setHardness(0.2F).setLightOpacity(1).setStepSound(Block.soundTypeGrass)
+                .setUnlocalizedName("leaves1");
+
+        register(log1, ItemBlockMeta.class, "pokecube_log1");
+        register(leaf1, ItemBlockMeta.class, "pokecube_leaf1");
+
+        for (int i = 0; i < 4; i++)
+            GameRegistry.addShapelessRecipe(new ItemStack(plank0, 4, i), new ItemStack(log0, 1, i));
+
+        for (int i = 0; i < 2; i++)
+            GameRegistry.addShapelessRecipe(new ItemStack(plank0, 4, i + 4), new ItemStack(log1, 1, i));
+
+        OreDictionary.registerOre("logWood", new ItemStack(log0, 1, OreDictionary.WILDCARD_VALUE));
+        OreDictionary.registerOre("logWood", new ItemStack(log1, 1, OreDictionary.WILDCARD_VALUE));
+
+        OreDictionary.registerOre("plankWood", new ItemStack(plank0, 1, OreDictionary.WILDCARD_VALUE));
+
+        OreDictionary.registerOre("treeLeaves", new ItemStack(leaf1, 1, OreDictionary.WILDCARD_VALUE));
+
+        TreeRemover.woodTypes.add(log1);
+        TreeRemover.woodTypes.add(log0);
+        TreeRemover.plantTypes.add(leaf0);
+        TreeRemover.plantTypes.add(leaf1);
+
+        GameRegistry.registerTileEntity(TileEntityBerryFruit.class, "berry");
+        
     }
 
     private static void addPokecubes()

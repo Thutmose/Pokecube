@@ -69,6 +69,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ai.thread.PokemobAIThread;
+import pokecube.core.blocks.berries.WorldGenBerries;
 import pokecube.core.blocks.nests.WorldGenNests;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -631,6 +632,9 @@ public class mod_Pokecube extends PokecubeMod
         {
 
         }
+
+
+        GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);// TODO find number
 
         GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
         Mod_Pokecube_Helper.initAllBlocks();

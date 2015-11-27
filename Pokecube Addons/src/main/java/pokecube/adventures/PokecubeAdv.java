@@ -2,11 +2,9 @@ package pokecube.adventures;
 
 import java.io.File;
 
-import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -19,10 +17,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.adventures.blocks.berries.WorldGenBerries;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.villager.EntityTrader;
@@ -35,7 +30,7 @@ import pokecube.adventures.handlers.ItemHandler;
 import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TeamCommands;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
-import pokecube.adventures.items.*;
+import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient.MessageHandlerClient;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
@@ -102,8 +97,6 @@ public class PokecubeAdv
 		EntityRegistry.registerModEntity(EntityTrainer.class, "pokecube:trainer", 1, this, 80, 3, true);
 		EntityRegistry.registerModEntity(EntityLeader.class, "pokecube:leader", 2, this, 80, 3, true);
 		EntityRegistry.registerModEntity(EntityTrader.class, "pokecube:trader", 3, this, 80, 3, true);
-
-		GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);// TODO find number
 
 		PAEventsHandler events = new PAEventsHandler();
 		TeamEventsHandler teams = new TeamEventsHandler();

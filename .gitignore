@@ -23,5 +23,3 @@ gradle*
 # other
 eclipse
 run
-*core.bat
-*addons.bat

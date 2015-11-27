@@ -118,14 +118,22 @@ public class Compat
 			"rCr",
 			"RrR", 'R', Blocks.redstone_block, 'C', PokecubeItems.getBlock("cloner"), 'r', Items.redstone }));
 	}
-	
-	@Optional.Method(modid = "AS_Ruins")
-	@EventHandler
-	public void AS_Compat(FMLPostInitializationEvent evt)
-	{
-	    System.out.println("AS_Ruins Compat");
-	    MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
-	}
+    
+    @Optional.Method(modid = "AS_Ruins")
+    @EventHandler
+    public void AS_RuinsCompat(FMLPostInitializationEvent evt)
+    {
+        System.out.println("AS_Ruins Compat");
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
+    }
+    
+    @Optional.Method(modid = "DynamicLights")
+    @EventHandler
+    public void AS_DLCompat(FMLPostInitializationEvent evt)
+    {
+        System.out.println("DynamicLights Compat");
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.DynamicLightsCompat());
+    }
 	
 	@SubscribeEvent
 	public void postPostInit(PostPostInit evt) 

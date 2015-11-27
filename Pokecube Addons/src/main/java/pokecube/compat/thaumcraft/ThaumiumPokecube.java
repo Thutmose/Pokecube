@@ -1,9 +1,10 @@
-package pokecube.compat;
+package pokecube.compat.thaumcraft;
 
 import static pokecube.core.PokecubeItems.register;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubes;
 
 import net.minecraft.entity.Entity;
+import pokecube.compat.CompatPokecubes;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.CaptureEvent.Post;
 import pokecube.core.events.CaptureEvent.Pre;

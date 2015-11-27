@@ -375,7 +375,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
         {
             Entity owner = this.getPokemonOwner();
 
-            if (owner instanceof EntityPlayer)
+            if (owner instanceof EntityPlayer && !this.isDead)
             {
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setInteger("id", getEntityId());

@@ -28,7 +28,7 @@ public class IGWMod{
     public static IProxy proxy;
 
     @Instance(Constants.MOD_ID)
-    public IGWMod instance;
+    public static IGWMod instance;
 
     /**
      * This method is used to reject connection when the server has server info available for IGW-mod. Unless the properties.txt explicitly says

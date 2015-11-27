@@ -5,16 +5,20 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
+import pokecube.adventures.blocks.cloner.TileEntityCloner;
 
 public class GuiCloner extends GuiContainer {
     private static final ResourceLocation craftingTableGuiTextures = new ResourceLocation("textures/gui/container/crafting_table.png");
 
-    public GuiCloner(InventoryPlayer p_i1084_1_, World p_i1084_2_, int p_i1084_3_, int p_i1084_4_, int p_i1084_5_)
+    public GuiCloner(InventoryPlayer inventory, TileEntityCloner tile)
     {
-        super(new ContainerCloner(p_i1084_1_, p_i1084_2_, p_i1084_3_, p_i1084_4_, p_i1084_5_));
+        super(new ContainerCloner(inventory, tile));
     }
 
     /**
@@ -25,6 +29,19 @@ public class GuiCloner extends GuiContainer {
     {
         this.fontRendererObj.drawString(I18n.format("container.crafting", new Object[0]), 28, 6, 4210752);
         this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+        ContainerCloner container = (ContainerCloner) inventorySlots;
+        if(container.worldObj != null)
+        {
+            TileEntity te = container.worldObj.getTileEntity(container.pos);
+
+            if (te == null) return;
+
+            TileEntityCloner cloner = (TileEntityCloner) te;
+
+            int energy = cloner.getField(0);
+            this.fontRendererObj.drawString(""+energy, 128, 6, 4210752);
+            
+        }
     }
 
     @Override

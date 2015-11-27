@@ -3,7 +3,7 @@ Your bag is 32 pages of 54 slots which can hold any item which a pokemob can hol
 The gui and usage is mostly similar to the [link{pokecube:block/pc.top}]PC[link{}].
 
 [prefix{l}]Recipe[prefix{}]
-[crafting{200,80,key=item/pokecubebag}]
+[crafting{220,80,key=item/pokecubebag}]
 
 
 

@@ -41,6 +41,7 @@ public class TileEntitySiphon extends TileEnergyHandler implements ITickable
     	}
     	int input = getInput();
     	storage.setEnergyStored(input);
+    	
     	for(EnumFacing side: EnumFacing.values())
     	{
     		TileEntity te = v.getTileEntity(worldObj, side);

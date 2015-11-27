@@ -23,6 +23,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.adventures.handlers.ConfigHandler;
+import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
@@ -38,6 +39,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
     private Vector3      linkPos;
     public Vector3       here;
     protected long       lastStepped = Long.MIN_VALUE;
+    boolean              noEnergy    = false;
     public static double MAXRANGE    = 64;
     public static int    COOLDOWN    = 1000;
 
@@ -73,16 +75,17 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
         double distSq = 0;
         long time = System.currentTimeMillis();
         boolean tele = link != null && !link.isEmpty() && lastStepped + COOLDOWN <= time
-                && (MAXRANGE < 0 || (distSq = here.distanceTo(linkPos)) < MAXRANGE);
+                && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);
 
-        if (tele && ConfigHandler.ENERGY)
+        if (tele && ConfigHandler.ENERGY && !noEnergy)
         {
-            int energy = (int) (distSq / 100);
+            int energy = (int) (distSq);
             tele = storage.extractEnergy(energy, false) == energy;
 
             if (!tele)
             {
                 worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "note.bd", 1.0F, 1.0F);
+                lastStepped = time;
             }
         }
 
@@ -92,13 +95,12 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
 
             worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "mob.endermen.portal", 1.0F,
                     1.0F);
-            {
-                PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
-                buff.writeByte(9);
-                here.writeToBuff(buff);
-                PokecubeClientPacket packet = new PokecubeClientPacket(buff);
-                PokecubePacketHandler.sendToAllNear(packet, here, stepper.dimension, 20);
-            }
+
+            PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
+            buff.writeByte(9);
+            here.writeToBuff(buff);
+            MessageClient packet = new MessageClient(buff);
+            PokecubePacketHandler.sendToAllNear(packet, here, stepper.dimension, 20);
 
             if (te != null && te instanceof TileEntityWarpPad)
             {
@@ -111,21 +113,15 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
             Vector3 loc = d.getLoc();
             int dim = d.getDim();
 
-            World dest = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
-
-            TelDestination link = new TelDestination(dest, loc.getAABB(), loc.x, loc.y, loc.z, loc.intX(), loc.intY(),
-                    loc.intZ());
-
             Transporter.teleportEntity(stepper, loc, dim, false);
 
-            // if(stepper instanceof EntityPlayer)
-            {
-                PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
-                buff.writeByte(9);
-                linkPos.writeToBuff(buff);
-                PokecubeClientPacket packet = new PokecubeClientPacket(buff);
-                PokecubePacketHandler.sendToAllNear(packet, linkPos, stepper.dimension, 20);
-            }
+            worldObj.playSoundEffect(loc.x, loc.y, loc.z, "mob.endermen.portal", 1.0F, 1.0F);
+            buff = new PacketBuffer(Unpooled.buffer());
+            buff.writeByte(9);
+            linkPos.writeToBuff(buff);
+            packet = new MessageClient(buff);
+            PokecubePacketHandler.sendToAllNear(packet, linkPos, stepper.dimension, 20);
+
         }
     }
 
@@ -146,6 +142,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
             // internal energy buffer of the node.
             node.load(tagCompound.getCompoundTag("oc:node"));
         }
+        noEnergy = tagCompound.getBoolean("noEnergy");
         storage.readFromNBT(tagCompound);
     }
 
@@ -165,6 +162,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
             node.save(nodeNbt);
             tagCompound.setTag("oc:node", nodeNbt);
         }
+        tagCompound.setBoolean("noEnergy", noEnergy);
         storage.writeToNBT(tagCompound);
     }
 

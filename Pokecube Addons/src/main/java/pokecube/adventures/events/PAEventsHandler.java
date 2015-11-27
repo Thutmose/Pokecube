@@ -31,7 +31,7 @@ public class PAEventsHandler
     public void PlayerLoggin(PlayerLoggedInEvent evt)
     {
         EntityPlayer entityPlayer = evt.player;
-
+        System.out.println(entityPlayer);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
 
         NBTTagCompound nbt;

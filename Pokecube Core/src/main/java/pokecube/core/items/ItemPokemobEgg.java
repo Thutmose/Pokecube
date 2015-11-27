@@ -232,11 +232,13 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
                     mob.setMove(4 - i, null);
                 }
             }
-
+            //IsDead is set to prevent it notifiying owner of move learning.
+            ((Entity)mob).isDead = true;
             for (String s : moves)
             {
                 if (s != null && !s.isEmpty()) mob.learn(s);
             }
+            ((Entity)mob).isDead = false;
             mob.setColours(nbt.getByteArray("colour"));
             mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
             mob.setNature(nbt.getByte("nature"));
@@ -422,6 +424,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             entity.setHealth(entity.getMaxHealth());
             int exp = Tools.levelToXp(mob.getExperienceMode(), 1);
             exp = Math.max(1, exp);
+            mob.setExp(exp, true, true);
             entity.setLocationAndAngles(par2, par4, par6, world.rand.nextFloat() * 360F, 0.0F);
             if (stack.hasTagCompound())
             {
@@ -436,7 +439,6 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
                     initPokemobGenetics(mob, stack.getTagCompound());
                 }
             }
-            mob.setExp(exp, true, true);
             mob.specificSpawnInit();
             world.spawnEntityInWorld(entity);
             entity.setCurrentItemOrArmor(0, null);

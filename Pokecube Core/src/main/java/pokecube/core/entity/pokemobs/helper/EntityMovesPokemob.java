@@ -222,7 +222,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 				return;
 		}
         
-        if(getPokemonOwner()!=null)
+        if(getPokemonOwner()!=null && !this.isDead)
         {
         	String message = StatCollector.translateToLocalFormatted(
             		"pokemob.move.notify.learn", 

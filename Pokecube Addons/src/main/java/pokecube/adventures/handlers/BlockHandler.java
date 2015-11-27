@@ -3,6 +3,7 @@ package pokecube.adventures.handlers;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.adventures.blocks.cloner.BlockCloner;
+import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.core.PokecubeItems;
@@ -23,6 +24,7 @@ public class BlockHandler
         cloner = new BlockCloner().setUnlocalizedName("cloner");
         cloner.setCreativeTab(mod_Pokecube.creativeTabPokecubeBlocks);
         PokecubeItems.register(cloner, "cloner");
+        GameRegistry.registerTileEntity(TileEntityCloner.class, "cloner");
 
     }
 }

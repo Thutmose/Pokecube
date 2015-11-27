@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -35,6 +36,8 @@ import pokecube.compat.blocks.rf.BlockSiphon;
 import pokecube.compat.blocks.rf.TileEntitySiphon;
 import pokecube.compat.galacticraft.GCCompat;
 import pokecube.compat.mfr.MFRCompat;
+import pokecube.compat.thaumcraft.ThaumcraftCompat;
+import pokecube.compat.thaumcraft.ThaumiumPokecube;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.events.PostPostInit;
@@ -45,11 +48,12 @@ import pokecube.core.interfaces.PokecubeMod;
 @Mod(modid = "pokecube_compat", name = "Pokecube Compat", version = "1.0")
 public class Compat 
 {
-	ThaumcraftCompat tccompat;
-	ThaumiumPokecube thaumiumpokecube;
 	GCCompat gccompat;
 	Config conf;
 	public static String CUSTOMSPAWNSFILE;
+	
+	@Instance("pokecube_compat")
+	public static Compat instance;
 	
 	public Compat()
 	{
@@ -73,21 +77,11 @@ public class Compat
 		
 		Database.addSpawnData(CUSTOMSPAWNSFILE);
 		conf = new Config(evt);
-
-//		ReComplexCompat.register();
-		if(Loader.isModLoaded("Thaumcraft")){
-			thaumiumpokecube = new ThaumiumPokecube();
-			thaumiumpokecube.addThaumiumPokecube();
-		}
 	}
 
 	@EventHandler
 	public void load(FMLInitializationEvent evt) 
 	{
-		if(Loader.isModLoaded("Thaumcraft")){
-			tccompat = new ThaumcraftCompat();
-			MinecraftForge.EVENT_BUS.register(tccompat);
-		}
 		new IGWSupportNotifier();
 
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
@@ -134,7 +128,24 @@ public class Compat
         System.out.println("DynamicLights Compat");
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.DynamicLightsCompat());
     }
+    
+    @Optional.Method(modid = "Thaumcraft")
+    @EventHandler
+    public void Thaumcraft_Compat(FMLPreInitializationEvent evt)
+    {
+        System.out.println("Thaumcraft Compat");
+
+        ThaumcraftCompat tccompat;
+        ThaumiumPokecube thaumiumpokecube;
+        thaumiumpokecube = new ThaumiumPokecube();
+        thaumiumpokecube.addThaumiumPokecube();
+        
+        tccompat = new ThaumcraftCompat();
+        MinecraftForge.EVENT_BUS.register(tccompat);
+    }
 	
+    
+    
 	@SubscribeEvent
 	public void postPostInit(PostPostInit evt) 
 	{

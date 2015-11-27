@@ -840,17 +840,6 @@ public class PokecubePacketHandler
                         e.printStackTrace();
                     }
                 }
-                if (channel == 9)
-                {
-                    Vector3 v = Vector3.readFromBuff(buffer);
-                    Random rand = new Random();
-                    for (int i = 0; i < 32; ++i)
-                    {
-                        player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, v.x + 0.5,
-                                v.y + rand.nextDouble() * 2.0D, v.z + 0.5, rand.nextGaussian(), 0.0D,
-                                rand.nextGaussian());
-                    }
-                }
                 if (channel == 10)
                 {
                     try

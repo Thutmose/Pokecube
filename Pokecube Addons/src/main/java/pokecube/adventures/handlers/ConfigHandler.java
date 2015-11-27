@@ -17,7 +17,7 @@ public class ConfigHandler
     public static boolean trainerSpawn   = true;
     public static boolean trainersInvul  = false;
     public static boolean ONLYPOKECUBES  = true;
-    public static boolean ENERGY         = false;
+    public static boolean ENERGY         = true;
     static String[]       biomes;
 
     public static ArrayList<String> overrides = new ArrayList();
@@ -50,7 +50,7 @@ public class ConfigHandler
                 .get(Configuration.CATEGORY_GENERAL, "trainers unvulnerable", false, "are trainers immune to damage.")
                 .getBoolean(false);
         ENERGY = conf
-                .get(Configuration.CATEGORY_GENERAL, "energy", true, "Do various blocks require RF to run, like the warp pad.")
+                .get(Configuration.CATEGORY_GENERAL, "energy", true, "Do various blocks require RF to run.")
                 .getBoolean(true);
         RecipeHandler.tmRecipe = conf.get(Configuration.CATEGORY_GENERAL, "tm's Craftable", true).getBoolean(true);
         if (conf.hasKey(Configuration.CATEGORY_GENERAL, "starteroverrides"))

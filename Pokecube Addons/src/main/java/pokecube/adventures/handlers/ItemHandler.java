@@ -37,8 +37,19 @@ public class ItemHandler
         {
         	PokecubeItems.registerItemTexture(expshare, 0, new ModelResourceLocation("pokecube_adventures:exp_share", "inventory"));
         }
-       	PokecubeItems.addToHoldables("exp_share");
-        ItemStack share = PokecubeItems.getStack("exp_share");
+        
+        PokecubeItems.addToHoldables("exp_share");
+//        ItemStack share = PokecubeItems.getStack("exp_share");
+        
+        Item mewHair = (new ItemTranslated()).setModId(
+                PokecubeAdv.ID).setUnlocalizedName("silkyhair");
+        GameRegistry.registerItem(mewHair, "mewHair");
+        PokecubeItems.addGeneric("mewHair", mewHair);
+
+        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(mewHair, 0, new ModelResourceLocation("pokecube_adventures:mewHair", "inventory"));
+        }
         
         Item target = new ItemTarget().setUnlocalizedName("pokemobTarget").setCreativeTab(creativeTabPokecube);
         register(target);

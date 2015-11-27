@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
+import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.items.bags.ContainerBag;
 
 public class CommonProxy implements IGuiHandler
@@ -62,7 +63,9 @@ public class CommonProxy implements IGuiHandler
         }
         if (guiID == PokecubeAdv.GUICLONER_ID)
         {
-            ContainerCloner cont = new ContainerCloner(player.inventory, world, x, y, z);
+            BlockPos pos = new BlockPos(x,y,z);
+            TileEntityCloner tile = (TileEntityCloner) world.getTileEntity(pos);
+            ContainerCloner cont = new ContainerCloner(player.inventory, tile);
             return cont;
         }
         return null;

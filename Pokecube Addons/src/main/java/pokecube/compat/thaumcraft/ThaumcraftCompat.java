@@ -1,4 +1,4 @@
-package pokecube.compat;
+package pokecube.compat.thaumcraft;
 
 import java.util.HashMap;
 import java.util.Map;

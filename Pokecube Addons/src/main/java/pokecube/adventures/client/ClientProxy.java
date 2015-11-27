@@ -21,6 +21,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.CommonProxy;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.client.gui.GUIBiomeSetter;
 import pokecube.adventures.client.gui.GuiBag;
 import pokecube.adventures.client.gui.GuiCloner;
@@ -149,7 +150,7 @@ public class ClientProxy extends CommonProxy
         }
         else if (guiID == PokecubeAdv.GUICLONER_ID)
         {
-            return new GuiCloner(player.inventory, world, x, y, z);
+            return new GuiCloner(player.inventory, (TileEntityCloner) world.getTileEntity(pos));
         }
         else if (guiID == 5) { return new GUIBiomeSetter(player.getHeldItem()); }
         return null;

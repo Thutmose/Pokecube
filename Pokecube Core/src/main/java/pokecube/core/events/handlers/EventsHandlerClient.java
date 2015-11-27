@@ -25,6 +25,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -73,6 +75,7 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
+import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -134,79 +137,80 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void ClientRenderTick(RenderWorldLastEvent evt)
     {
-        EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
-
-        if (player == null || player.worldObj == null || evt.partialTicks == last) return;
-        last = evt.partialTicks;
-        WorldTerrain worldTerrain = TerrainManager.getInstance().getTerrain(player.worldObj);
-        rendererUpdateCount++;
-        int x = ((int) player.posX) >> 4;
-        int y = ((int) player.posY) >> 4;
-        int z = ((int) player.posZ) >> 4;
-        int j0 = Math.max(0, y - 2);
-        int j1 = Math.min(15, y + 2);
-
-        for (int i = x - 2; i <= x + 2; i++)
-        {
-            for (int j = j0; j <= j1; j++)
-            {
-                for (int k = z - 2; k <= z + 2; k++)
-                {
-                    TerrainSegment terrain = worldTerrain.getTerrain(i, j, k);
-
-                    PokemobTerrainEffects effect = (PokemobTerrainEffects) terrain.geTerrainEffect("pokemobEffects");
-                    if (effect == null)
-                    {
-                        terrain.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
-                    }
-
-                    World worldObj = player.worldObj;
-                    v.x = terrain.chunkX * 16 + 8;
-                    v.y = terrain.chunkY * 16 + 8;
-                    v.z = terrain.chunkZ * 16 + 8;
-
-                    if (effect.effects[EFFECT_WEATHER_SAND] > 0)
-                    {
-                        doSandstorm(v, worldObj, terrain);
-                    }
-
-                    if (effect.effects[EFFECT_WEATHER_SUN] > 0)
-                    {
-
-                    }
-
-                    if (effect.effects[EFFECT_WEATHER_RAIN] > 0)
-                    {
-                        doRain(v, worldObj, terrain, evt.partialTicks);
-                    }
-
-                    if (effect.effects[EFFECT_WEATHER_HAIL] > 0)
-                    {
-
-                    }
-
-                    if (effect.effects[EFFECT_TERRAIN_MISTY] > 0)
-                    {
-
-                    }
-
-                    if (effect.effects[EFFECT_TERRAIN_ELECTRIC] > 0)
-                    {
-
-                    }
-
-                    if (effect.effects[EFFECT_POISON] > 0)
-                    {
-                        doToxicHaze(v, worldObj, terrain);
-                    }
-
-                    if (effect.effects[EFFECT_POISON2] > 0)
-                    {
-                        doToxicHaze(v, worldObj, terrain);
-                    }
-                }
-            }
-        }
+        //TODO fix the terrain effects, I don't think this event is good for it anymore
+//        EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
+//
+//        if (player == null || player.worldObj == null || evt.partialTicks == last) return;
+//        last = evt.partialTicks;
+//        WorldTerrain worldTerrain = TerrainManager.getInstance().getTerrain(player.worldObj);
+//        rendererUpdateCount++;
+//        int x = ((int) player.posX) >> 4;
+//        int y = ((int) player.posY) >> 4;
+//        int z = ((int) player.posZ) >> 4;
+//        int j0 = Math.max(0, y - 2);
+//        int j1 = Math.min(15, y + 2);
+//
+//        for (int i = x - 2; i <= x + 2; i++)
+//        {
+//            for (int j = j0; j <= j1; j++)
+//            {
+//                for (int k = z - 2; k <= z + 2; k++)
+//                {
+//                    TerrainSegment terrain = worldTerrain.getTerrain(i, j, k);
+//
+//                    PokemobTerrainEffects effect = (PokemobTerrainEffects) terrain.geTerrainEffect("pokemobEffects");
+//                    if (effect == null)
+//                    {
+//                        terrain.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
+//                    }
+//
+//                    World worldObj = player.worldObj;
+//                    v.x = terrain.chunkX * 16 + 8;
+//                    v.y = terrain.chunkY * 16 + 8;
+//                    v.z = terrain.chunkZ * 16 + 8;
+//
+//                    if (effect.effects[EFFECT_WEATHER_SAND] > 0)
+//                    {
+//                        doSandstorm(v, worldObj, terrain);
+//                    }
+//
+//                    if (effect.effects[EFFECT_WEATHER_SUN] > 0)
+//                    {
+//
+//                    }
+//
+//                    if (effect.effects[EFFECT_WEATHER_RAIN] > 0)
+//                    {
+//                        doRain(v, worldObj, terrain, evt.partialTicks);
+//                    }
+//
+//                    if (effect.effects[EFFECT_WEATHER_HAIL] > 0)
+//                    {
+//
+//                    }
+//
+//                    if (effect.effects[EFFECT_TERRAIN_MISTY] > 0)
+//                    {
+//
+//                    }
+//
+//                    if (effect.effects[EFFECT_TERRAIN_ELECTRIC] > 0)
+//                    {
+//
+//                    }
+//
+//                    if (effect.effects[EFFECT_POISON] > 0)
+//                    {
+//                        doToxicHaze(v, worldObj, terrain);
+//                    }
+//
+//                    if (effect.effects[EFFECT_POISON2] > 0)
+//                    {
+//                        doToxicHaze(v, worldObj, terrain);
+//                    }
+//                }
+//            }
+//        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -520,6 +524,31 @@ public class EventsHandlerClient
             }
             GL11.glPopMatrix();
         }
+        
+        debug = event.type==ElementType.DEBUG;
+        
+    }
+    boolean debug = false;
+    @SubscribeEvent
+    public void textOverlay(RenderGameOverlayEvent.Text event)
+    {
+        if(!debug) return;
+        TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(Minecraft.getMinecraft().thePlayer);
+        Vector3 v = Vector3.getNewVectorFromPool().set(Minecraft.getMinecraft().thePlayer);
+        String msg = "Sub-Biome: "+BiomeDatabase.getReadableNameFromType(t.getBiome(v));
+        v.freeVectorFromPool();
+        //Until forge stops sending the same event, with the same list 8 times, this is needed
+        for(String s: event.left)
+        {
+            if(s!=null && s.equals(msg))
+                return;
+        }
+        
+        
+        
+        debug = false;
+        event.left.add("");
+        event.left.add(msg);
     }
 
     static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap();

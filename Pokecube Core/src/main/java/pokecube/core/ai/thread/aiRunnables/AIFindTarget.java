@@ -46,6 +46,14 @@ public class AIFindTarget extends AIBase implements IAICombat
 		
         boolean ret = entity.getAITarget() == null && entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IPokemob.SITTING);
 		
+        if(entity.getAttackTarget()!=null && entity.getAttackTarget().isDead)
+        {
+            setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
+            addTargetInfo(entity, null);
+            return false;
+        }
+        
+        
         if(ret && !pokemob.getPokemonAIState(IPokemob.TAMED) && entity.getRNG().nextInt(200)==0)
         {
         	EntityPlayer player = getClosestVulnerablePlayerToEntity(entity, Mod_Pokecube_Helper.mobAggroRadius);

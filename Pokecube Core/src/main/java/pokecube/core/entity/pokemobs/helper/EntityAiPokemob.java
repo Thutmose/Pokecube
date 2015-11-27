@@ -298,7 +298,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (down != null) here.set(down);
 
             Block b;
-            if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) && getAttackTarget() == null
+            if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) //&& getAttackTarget() == null
                     && !getAIState(SLEEPING, state) || b.getMaterial().isLiquid() )
             {
                 motionY += 0.01;
@@ -1080,6 +1080,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             this.hungerTime += 800;
             // System.out.println(hungerTime);
         }
+
         if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.stick)
         {
             if (player.isSneaking())

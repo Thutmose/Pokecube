@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ModelAnimator version="0.1">
+	<model name="Onix">
+			<phase name="global" rotation="1,0,0,0" offset="0,0.5,0" scale="1.5,1.5,1.5">
+			</phase>
+			<part name="mid">
+				<phase name="idle">
+					<vector rotation="0,0,0,0" time="0"/>
+				</phase>
+			<part name="head">
+				<phase name="idle">
+					<vector rotation="0,1,0,-40" time="0"/>
+				</phase>
+			<part name="neck3">
+				<phase name="idle">
+					<vector rotation="0,1,0,-40" time="0"/>
+				</phase>
+			<part name="neck2">
+				<phase name="idle">
+					<vector rotation="0,1,0,40" time="0"/>
+				</phase>
+				<part name="neck1">
+				<phase name="idle">
+					<vector rotation="0,1,0,40" time="0"/>
+				</phase>
+			</part>
+			</part>
+			</part>
+			</part>
+				<part name="tail1">
+				<phase name="idle">
+					<vector rotation="0,0,1,30" time="25"/>
+					<vector rotation="0,0,1,-30" time="25"/>
+				</phase>
+				<phase name="sitting">
+					<vector rotation="0,0,1,30" time="0"/>
+				</phase>
+			<part name="tail2">
+				<phase name="idle">
+					<vector rotation="0,0,1,15" time="25"/>
+					<vector rotation="0,0,1,-15" time="25"/>
+				</phase>
+				<phase name="sitting">
+					<vector rotation="0,0,1,30" time="0"/>
+				</phase>
+			<part name="tail3">
+				<phase name="idle">
+					<vector rotation="0,0,1,0" time="25"/>
+				</phase>
+				<phase name="sitting">
+					<vector rotation="0,0,1,30" time="0"/>
+				</phase>
+			<part name="tail4">
+				<phase name="idle">
+					<vector rotation="0,0,1,-15" time="25"/>
+					<vector rotation="0,0,1,15" time="25"/>
+				</phase>
+				<phase name="sitting">
+					<vector rotation="0,0,1,30" time="0"/>
+				</phase>
+			<part name="tail5">
+				<phase name="idle">
+					<vector rotation="0,0,1,-30" time="25"/>
+					<vector rotation="0,0,1,30" time="25"/>
+				</phase>
+				<phase name="sitting">
+					<vector rotation="0,0,1,30" time="0"/>
+				</phase>
+			<part name="tail6">
+				<phase name="idle">
+					<vector rotation="0,0,1,-15" time="25"/>
+					<vector rotation="0,0,1,15" time="25"/>
+				</phase>
+				<phase name="sitting">
+					<vector rotation="0,0,1,30" time="0"/>
+				</phase>
+			<part name="tail7">
+				<phase name="idle">
+					<vector rotation="0,0,1,0" time="25"/>
+				</phase>
+				<phase name="sitting">
+					<vector rotation="0,0,1,30" time="0"/>
+				</phase>
+			<part name="tail8">
+				<phase name="idle">
+					<vector rotation="0,0,1,-30" time="25"/>
+					<vector rotation="0,0,1,30" time="25"/>
+				</phase>
+				<phase name="sitting">
+					<vector rotation="0,0,1,30" time="0"/>
+				</phase>
+			<part name="tail9">
+				<phase name="idle">
+					<vector rotation="0,0,1,30" time="25"/>
+					<vector rotation="0,0,1,-30" time="25"/>
+				</phase>
+				<phase name="sitting">
+					<vector rotation="0,0,1,-10" time="25"/>
+					<vector rotation="0,0,1,10" time="25"/>
+				</phase>
+			<part name="tail10">
+				<phase name="idle">
+					<vector rotation="0,0,1,-30" time="25"/>
+					<vector rotation="0,0,1,30" time="25"/>
+				</phase>
+				<phase name="sitting">
+					<vector rotation="0,0,1,-10" time="25"/>
+					<vector rotation="0,0,1,10" time="25"/>
+				</phase>
+			</part>
+			</part>
+			</part>
+			</part>
+			</part>
+			</part>
+			</part>
+			</part>
+			</part>
+			</part>
+			</part>
+	</model>
+</ModelAnimator>
+
+

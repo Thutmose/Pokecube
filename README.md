@@ -1,6 +1,32 @@
 # Pokécube
 Pokémobs for Minecraft - page under construction.
 
+##Currently Glitched Pokemob Models
+- Charizard
+- Rattata
+- Pikachu/Raichu/Pichu
+- farfetch'd
+- tauros
+- aerodactyl
+- unfezant
+- tynamo
+- sliggoo
+- slugma
+- miltank
+- ho-oh
+- seedot
+- wingull
+- pelipper
+- carvanha
+- armaldo
+- sealeo
+- giratina
+- servine
+- unfezant
+- tynamo
+- sliggoo
+
+
 ##Related/Contained projects
 Currently contains [IGW-mod](https://github.com/MineMaarten/IGW-mod) and [Baubles](https://github.com/Azanor/Baubles) until those get updated to 1.8.8, then it will revert to using them as libraries
 

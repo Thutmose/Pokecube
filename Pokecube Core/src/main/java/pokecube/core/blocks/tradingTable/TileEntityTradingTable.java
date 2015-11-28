@@ -245,8 +245,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         {
             if (((PokecubeManager.isFilled(a)) && (PokecubeManager.isFilled(b)))) return false;
 
-            int index = PokecubeManager.isFilled(a) ? 0 : 1;
-
             IPokemob mob = PokecubeManager.isFilled(a) ? PokecubeManager.itemToPokemob(inventory[0], worldObj)
                     : PokecubeManager.itemToPokemob(inventory[1], worldObj);
             int id = PokecubeManager.isFilled(a) ? PokecubeItems.getCubeId(b) : PokecubeItems.getCubeId(b);
@@ -491,7 +489,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         if (!player.worldObj.isRemote)
         {
             ArrayList<String> moves = new ArrayList<String>();
-            ArrayList<String> newMoves = new ArrayList<String>();
             boolean pc = hasPC();
             if (!pc) { return moves; }
             InventoryPC pcInv = InventoryPC.getPC(player.getUniqueID().toString());
@@ -596,6 +593,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     }
 
     /** Overriden in a sign to provide the text. */
+    @SuppressWarnings("rawtypes")
     @Override
     public Packet getDescriptionPacket()
     {

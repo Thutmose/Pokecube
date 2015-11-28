@@ -15,8 +15,6 @@ Pokémobs for Minecraft - page under construction.
 - miltank
 - ho-oh
 - seedot
-- wingull
-- pelipper
 - armaldo
 - sealeo
 - giratina

@@ -55,8 +55,6 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob {
     	}
     	Vector3 v = here.set(this);
     	ChunkCoordinate c = new ChunkCoordinate(v, dimension);
-    	int maxTime = Mod_Pokecube_Helper.pokemobLifeSpan;
-
     	if(!this.neverHungry() && hungerCooldown<0)
         {
         	if(hungerTime>HUNGERDELAY+getRNG().nextInt((int)(0.5*HUNGERDELAY))&& !getPokemonAIState(HUNTING))
@@ -97,8 +95,6 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob {
     	
         if(this.getAttackTarget()==null && !this.isDead && ticksExisted%100==0 && !worldObj.isRemote && hungerCooldown<0)
 		{
-	    	float missingHp = this.getMaxHealth() - this.getHealth();
-	    	
 	    	float dh = Math.max(1,  getMaxHealth() * 0.05f);
 	    	
 	    	float toHeal = this.getHealth() + dh;
@@ -111,7 +107,6 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob {
     	vBak.set(vec);
     	if(e!=null)
     	{
-	    	ChunkCoordinate c = new ChunkCoordinate(vec.set(e), dimension);
 	    	addHappiness(-10);
     	}
     	vec.set(vBak);
@@ -120,7 +115,6 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob {
     public void eat(Entity e)
     {
     	vBak.set(vec);
-    	ChunkCoordinate c = new ChunkCoordinate(vec.set(e), dimension);
     	if(e instanceof EntityItem)
     	{
     		HappinessType.applyHappiness(this, HappinessType.EVBERRY);

@@ -22,8 +22,8 @@ public class EntityPokemob extends EntityPokemobBase
 		{
 			String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
 			PokedexEntry entry = Database.getEntry(Integer.parseInt(num));
-			if(entry!=null && entry.getNb() > 0)
-				init(entry.getNb());
+			if(entry!=null && entry.getPokedexNb() > 0)
+				init(entry.getPokedexNb());
 		}
 	}
 	
@@ -31,8 +31,8 @@ public class EntityPokemob extends EntityPokemobBase
 	{
 		super(world);
 		PokedexEntry entry = Database.getEntry(name);
-		if(entry!=null && entry.getNb() > 0)
-			init(entry.getNb());
+		if(entry!=null && entry.getPokedexNb() > 0)
+			init(entry.getPokedexNb());
 		
 	}
 }

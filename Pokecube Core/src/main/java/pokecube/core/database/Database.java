@@ -207,7 +207,7 @@ public class Database implements IMoveConstants {
 	}
 
 	public static void addEntry(PokedexEntry entry) {
-		data.put(entry.getNb(), entry);
+		data.put(entry.getPokedexNb(), entry);
 	}
 
 	public static PokedexEntry getEntry(int nb) {

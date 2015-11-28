@@ -1,7 +1,6 @@
 package pokecube.core.events.handlers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -44,7 +43,7 @@ public class Commands implements ICommand
 
     public Commands()
     {
-        this.aliases = new ArrayList();
+        this.aliases = new ArrayList<String>();
         this.aliases.add("pokecube");
         this.aliases.add("pqb");
     }
@@ -97,7 +96,7 @@ public class Commands implements ICommand
             String s = args[i];
             if (s.contains("@"))
             {
-                ArrayList targs = new ArrayList(PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));// .matchPlayers(cSender,
+                ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));// .matchPlayers(cSender,
                                                                                                               // s);
                 targets = (EntityPlayerMP[]) targs.toArray(new EntityPlayerMP[0]);
             }
@@ -112,7 +111,7 @@ public class Commands implements ICommand
             {
                 ByteBuf buffer = Unpooled.buffer();
                 buffer.writeByte(15);
-                buffer.writeInt(entry.getNb());
+                buffer.writeInt(entry.getPokedexNb());
                 PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
                 PokecubePacketHandler.sendToClient(packet, (EntityPlayer) cSender);
             }
@@ -156,12 +155,12 @@ public class Commands implements ICommand
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         boolean isOp = isOp(sender);
         if (args[0].isEmpty())
         {
-            List ret = new ArrayList();
+            List<String> ret = new ArrayList<String>();
             ret.add("tm");
             ret.add("recall");
             ret.add("spawn");
@@ -181,7 +180,7 @@ public class Commands implements ICommand
         }
         if (args[0].equalsIgnoreCase("recall"))
         {
-            List ret = new ArrayList();
+            List<String> ret = new ArrayList<String>();
             if (args.length == 2)
             {
                 ret.add("all");
@@ -197,7 +196,7 @@ public class Commands implements ICommand
         }
         if (args[0].equalsIgnoreCase("make"))
         {
-            List ret = new ArrayList();
+            List<String> ret = new ArrayList<String>();
             if (args.length == 2)
             {
                 String text = args[1];
@@ -219,7 +218,7 @@ public class Commands implements ICommand
         if (args[0].equalsIgnoreCase("tm"))
         {
             Collection<String> moves = MovesUtils.moves.keySet();
-            List ret = new ArrayList();
+            List<String> ret = new ArrayList<String>();
             if (args.length == 2)
             {
                 String text = args[1];
@@ -263,7 +262,7 @@ public class Commands implements ICommand
                 }
 
             }
-            ArrayList list = new ArrayList(world.loadedEntityList);
+            ArrayList<?> list = new ArrayList<Object>(world.loadedEntityList);
             for (Object o : list)
             {
                 if (o instanceof IPokemob)
@@ -307,7 +306,7 @@ public class Commands implements ICommand
             if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             {
                 World world = cSender.getEntityWorld();
-                List entities = new ArrayList(world.loadedEntityList);
+                List<?> entities = new ArrayList<Object>(world.loadedEntityList);
                 int count = 0;
                 for (Object o : entities)
                 {
@@ -341,8 +340,7 @@ public class Commands implements ICommand
             if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             {
                 World world = cSender.getEntityWorld();
-                List entities = new ArrayList(world.loadedEntityList);
-                int count = 0;
+                List<?> entities = new ArrayList<Object>(world.loadedEntityList);
                 int count1 = 0;
                 int count2 = 0;
                 String name = "";
@@ -357,7 +355,6 @@ public class Commands implements ICommand
                         IPokemob e = (IPokemob) o;
                         if (!all || e.getPokedexEntry() == Database.getEntry(name))
                         {
-                            count++;
                             if (((Entity) e).getDistance(cSender.getPositionVector().xCoord,
                                     cSender.getPositionVector().yCoord,
                                     cSender.getPositionVector().zCoord) > Mod_Pokecube_Helper.mobDespawnRadius)
@@ -382,7 +379,7 @@ public class Commands implements ICommand
             if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             {
                 World world = cSender.getEntityWorld();
-                List entities = new ArrayList(world.loadedEntityList);
+                List<?> entities = new ArrayList<Object>(world.loadedEntityList);
                 String name = "";
                 if (all)
                 {
@@ -595,7 +592,6 @@ public class Commands implements ICommand
                 int index = 2;
                 EntityPlayer player = null;
 
-                WorldServer world = (WorldServer) cSender.getEntityWorld();
                 if (targets != null)
                 {
                     num = targets.length;
@@ -627,7 +623,7 @@ public class Commands implements ICommand
                                 }
                             }
                         }
-                        mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(Database.getEntry(name).getNb(),
+                        mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(Database.getEntry(name).getPokedexNb(),
                                 cSender.getEntityWorld());
 
                         if (mob == null)
@@ -841,8 +837,6 @@ public class Commands implements ICommand
             }
             if (args.length == 2)
             {
-                String temp = args[1];
-
                 WorldServer world = (WorldServer) cSender.getEntityWorld();
                 EntityPlayer player = null;
 
@@ -919,7 +913,7 @@ public class Commands implements ICommand
 
                     String name = gift[0];
 
-                    IPokemob mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(Database.getEntry(name).getNb(),
+                    IPokemob mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(Database.getEntry(name).getPokedexNb(),
                             cSender.getEntityWorld());
 
                     boolean shiny = false;

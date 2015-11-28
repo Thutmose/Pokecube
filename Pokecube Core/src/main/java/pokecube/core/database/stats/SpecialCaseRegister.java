@@ -41,9 +41,9 @@ public class SpecialCaseRegister
 	
 	public static ISpecialSpawnCondition getSpawnCondition(String name)
 	{
-		if(Database.getEntry(name)!=null&&ISpecialSpawnCondition.spawnMap.containsKey(Database.getEntry(name).getNb()))
+		if(Database.getEntry(name)!=null&&ISpecialSpawnCondition.spawnMap.containsKey(Database.getEntry(name).getPokedexNb()))
 		{
-			return ISpecialSpawnCondition.spawnMap.get(Database.getEntry(name).getNb());
+			return ISpecialSpawnCondition.spawnMap.get(Database.getEntry(name).getPokedexNb());
 		}
 			
 		return null;
@@ -51,9 +51,9 @@ public class SpecialCaseRegister
 	
 	public static ISpecialCaptureCondition getCaptureCondition(String name)
 	{
-		if(Database.getEntry(name)!=null&&ISpecialCaptureCondition.captureMap.containsKey(Database.getEntry(name).getNb()))
+		if(Database.getEntry(name)!=null&&ISpecialCaptureCondition.captureMap.containsKey(Database.getEntry(name).getPokedexNb()))
 		{
-			return ISpecialCaptureCondition.captureMap.get(Database.getEntry(name).getNb());
+			return ISpecialCaptureCondition.captureMap.get(Database.getEntry(name).getPokedexNb());
 		}
 			
 		return null;
@@ -63,14 +63,14 @@ public class SpecialCaseRegister
 	{
 		if(Database.entryExists(name))
 		{
-			ISpecialCaptureCondition.captureMap.put(Database.getEntry(name).getNb(), condition);
+			ISpecialCaptureCondition.captureMap.put(Database.getEntry(name).getPokedexNb(), condition);
 		}
 	}
 	
 	public static void register(String name, ISpecialSpawnCondition condition)
 	{
 		if(Database.entryExists(name))
-			ISpecialSpawnCondition.spawnMap.put(Database.getEntry(name).getNb(), condition);
+			ISpecialSpawnCondition.spawnMap.put(Database.getEntry(name).getPokedexNb(), condition);
 		
 	}
 	

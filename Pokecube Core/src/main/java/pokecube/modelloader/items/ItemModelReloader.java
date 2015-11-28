@@ -47,7 +47,7 @@ public class ItemModelReloader extends Item
         
         for(PokedexEntry e: Database.allFormes)
         {
-            if(e.getNb() == 201)
+            if(e.getPokedexNb() == 201)
                 System.out.println(e);
         }
         

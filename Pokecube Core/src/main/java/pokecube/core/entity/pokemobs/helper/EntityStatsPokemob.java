@@ -14,7 +14,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -76,7 +75,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         super.init(nb);
         this.pokedexNb = nb;
-        PokedexEntry pokedexEntry = getPokedexEntry();
+        getPokedexEntry();
 
         setEVs(PokecubeSerializer.noEVs); // JAVA STUPID AND BYTE GOES FROM -128
                                           // -> 127
@@ -351,7 +350,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void addEVs(byte[] evsToAdd)
     {
         byte[] evs = getEVs();
-        byte[] old = evs;
         for (int i = 0; i < 6; i++)
         {
             if (evs[i] + 128 + evsToAdd[i] <= 255 && evs[i] + 128 + evsToAdd[i] >= 0)
@@ -430,11 +428,11 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             {
                 String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
                 PokedexEntry entry = Database.getEntry(Integer.parseInt(num));
-                if (entry != null && entry.getNb() > 0)
+                if (entry != null && entry.getPokedexNb() > 0)
                 {
-                    pokedexNb = entry.getNb();
+                    pokedexNb = entry.getPokedexNb();
                     // new Exception().printStackTrace();
-                    init(entry.getNb());
+                    init(entry.getPokedexNb());
                     return pokedexNb;
                 }
             }
@@ -464,7 +462,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         if (entry == newEntry) return;
         entry = newEntry;
-        this.pokedexNb = entry.getNb();
+        this.pokedexNb = entry.getPokedexNb();
         this.setStats(getPokedexEntry().getStats());
     }
 

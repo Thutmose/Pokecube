@@ -1016,7 +1016,6 @@ public class MovesUtils implements IMoveConstants
 
     public static boolean isMoveImplemented(String attackName)
     {
-        String moveName = attackName;
         if (attackName == null) return false;
         Move_Base move = moves.get(attackName);
         if (move == null)

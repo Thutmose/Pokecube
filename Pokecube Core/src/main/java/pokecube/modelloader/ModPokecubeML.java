@@ -76,7 +76,6 @@ public class ModPokecubeML
         info = config.getBoolean("printAll", Configuration.CATEGORY_GENERAL, info,
                 "will print all pokemon names to console on load");
         config.save();
-        String sep = File.separator;
         configDir = evt.getModConfigurationDirectory();
         ArrayList<String> toAdd = Lists.newArrayList(addedPokemon);
 

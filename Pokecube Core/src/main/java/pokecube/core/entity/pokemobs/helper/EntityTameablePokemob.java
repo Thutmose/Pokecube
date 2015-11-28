@@ -448,8 +448,8 @@ public abstract class EntityTameablePokemob extends EntityTameable
         if (!this.getPokemonAIState(IPokemob.TAMED)) return null;
         if (owner == null)
         {
-            List entities = null;
-            entities = new ArrayList(worldObj.loadedEntityList);
+            List<Object> entities = null;
+            entities = new ArrayList<Object>(worldObj.loadedEntityList);
 
             if (!ownerName.isEmpty())
             {

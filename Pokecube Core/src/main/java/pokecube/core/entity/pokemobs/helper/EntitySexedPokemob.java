@@ -41,7 +41,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     private Entity lover;
     protected int inLove;
     protected byte sexe = 0;
-    public ArrayList<IPokemob> males = new ArrayList();
+    public ArrayList<IPokemob> males = new ArrayList<IPokemob>();
 
     public static int BREEDINGDELAY = 4000;
     
@@ -221,7 +221,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         if (inLove > 0)
         {
             float searchingLoveDist = 5F;
-            List list = worldObj.getEntitiesWithinAABB(EntityPokemob.class, getEntityBoundingBox().expand(searchingLoveDist, searchingLoveDist, searchingLoveDist));
+            List<EntityPokemob> list = worldObj.getEntitiesWithinAABB(EntityPokemob.class, getEntityBoundingBox().expand(searchingLoveDist, searchingLoveDist, searchingLoveDist));
 
             if(list.size()>=30)
             {
@@ -286,8 +286,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         if (movesString != null && movesString.length() > 2)
         {
             String[] movesSplit = movesString.split(",");
-            int indexMove = 0;
-
             for (int i = 0; i < Math.min(5, movesSplit.length) ; i++)
             {
                 String move = movesSplit[i];
@@ -295,7 +293,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
                 if (move != null && move.length() > 1 && MovesUtils.isMoveImplemented(move))
                 {
                     moves[i] = move;
-                    indexMove++;
                 }
             }
         }

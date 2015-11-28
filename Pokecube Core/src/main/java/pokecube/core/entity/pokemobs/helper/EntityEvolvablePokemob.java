@@ -3,8 +3,6 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
-import java.util.UUID;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -124,7 +122,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 			    	    	if(hasCube && hasSpace)
 			    	    	{
 			    	    		int cubeId = PokecubeItems.getCubeId(cube);
-			    	    		Entity pokemon = PokecubeMod.core.createEntityByPokedexNb(Database.getEntry("shedinja").getNb(), worldObj);
+			    	    		Entity pokemon = PokecubeMod.core.createEntityByPokedexNb(Database.getEntry("shedinja").getPokedexNb(), worldObj);
 			    	    		if(pokemon!=null)
 			    	    		{
 			    	    			IPokemob poke = (IPokemob) pokemon;
@@ -196,7 +194,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     	if(newEntry!=null)
     	{
     		setPokemonAIState(EVOLVING, true);
-    		evolution = PokecubeMod.core.createEntityByPokedexNb(newEntry.getNb(), worldObj);
+    		evolution = PokecubeMod.core.createEntityByPokedexNb(newEntry.getPokedexNb(), worldObj);
     		evolution.copyDataFromOld(this);
     		evolution.copyLocationAndAnglesFrom(this);
     		((IPokemob)evolution).changeForme(forme);
@@ -285,11 +283,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 
         if (rand.nextInt(100)>30)
         {
-            double d = rand.nextGaussian() * 0.02D;
-            double d1 = rand.nextGaussian() * 0.02D;
-            double d2 = rand.nextGaussian() * 0.02D;
-            mod_Pokecube.spawnParticle(effectToUse, (posX + rand.nextFloat() * width * 2.0F) - width, posY + 0.5D + rand.nextFloat() * height,
-                    (posZ + rand.nextFloat() * width * 2.0F) - width, d, d1, d2);
+//           //TODO Evolution Particles If needed
         }
     }
 
@@ -312,7 +306,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 			else
 			{
 				PokedexEntry e = Database.getEntry(evolution);
-				if(e!=null&&Pokedex.getInstance().getEntry(e.getNb())!=null)
+				if(e!=null&&Pokedex.getInstance().getEntry(e.getPokedexNb())!=null)
 				{
 					return true;
 				}

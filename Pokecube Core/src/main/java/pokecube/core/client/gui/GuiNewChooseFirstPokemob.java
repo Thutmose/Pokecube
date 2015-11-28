@@ -240,7 +240,7 @@ public class GuiNewChooseFirstPokemob extends GuiScreen
         }
         if (n == 3)
         {
-            int pokedexNb = pokedexEntry.getNb();
+            int pokedexNb = pokedexEntry.getPokedexNb();
             ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
             DataOutputStream outputStream = new DataOutputStream(bos);
             try

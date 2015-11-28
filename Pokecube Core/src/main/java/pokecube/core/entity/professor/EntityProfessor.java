@@ -31,7 +31,6 @@ public class EntityProfessor extends EntityAgeable
 	public ItemStack[] pokecubes = new ItemStack[6];
 	public int[] attackCooldown = new int[6];
 	public int cooldown = 0;
-	private int id;
 	public String name = "";
 	public int out = -1;
 	public boolean male = true;

@@ -79,13 +79,11 @@ public class PCEventsHandler
         InventoryPlayer inv = player.inventory;
 
         recallAllPokemobs(player);
-        int n = 0;
         for (ItemStack stack : inv.mainInventory)
         {
             if (stack != null && ContainerPC.isItemValid(stack))
             {
                 InventoryPC.addStackToPC(player.getUniqueID().toString(), stack.copy());
-                n++;
             }
         }
         for (int i = 0; i < inv.armorInventory.length; i++)
@@ -310,7 +308,7 @@ public class PCEventsHandler
 
     public static void recallAllPokemobs(Entity player)
     {
-        List pokemobs = new ArrayList(player.worldObj.loadedEntityList);
+        List<Object> pokemobs = new ArrayList<Object>(player.worldObj.loadedEntityList);
         boolean sentToPC = false;
         for (Object o : pokemobs)
         {
@@ -357,7 +355,7 @@ public class PCEventsHandler
 
     public static List<IPokemob> getOutMobs(EntityLivingBase player)
     {
-        List pokemobs = new ArrayList(player.worldObj.loadedEntityList);
+        List<?> pokemobs = new ArrayList<Object>(player.worldObj.loadedEntityList);
         List<IPokemob> ret = new ArrayList<IPokemob>();
         for (Object o : pokemobs)
         {

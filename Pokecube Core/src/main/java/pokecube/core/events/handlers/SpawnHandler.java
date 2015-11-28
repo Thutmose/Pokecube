@@ -96,7 +96,7 @@ public final class SpawnHandler
 				occurances.add((double) p.getSpawnData().getWeight(s));
 				numbers.add(p.getPokedexNb());
 			}
-			spawnLists.put(s, new ArrayList());
+			spawnLists.put(s, new ArrayList<PokedexEntry>());
 			Double[] oc = occurances.toArray(new Double[0]);
 			Integer[] i = numbers.toArray(new Integer[0]);
 			new Cruncher().sort22(oc, i);
@@ -160,8 +160,6 @@ public final class SpawnHandler
 			entries.add(entry);
 		}
 	}
-
-	private static List<PokedexEntry> allList = new ArrayList<PokedexEntry>();
 
 	public static boolean addForbiddenSpawningCoord(int x, int y, int z, int dim, int range)
 	{
@@ -248,12 +246,8 @@ public final class SpawnHandler
 		int j = point.intY();
 		int k = point.intZ();
 
-		long time = System.nanoTime();
-		double dt;
-
 		if (!checkNoSpawnerInArea(world, i, j, k))
 		{
-			dt = (System.nanoTime() - time) / 1000000000D;
 			return false;
 		}
 		SpawnData entry = dbe.getSpawnData();
@@ -276,12 +270,11 @@ public final class SpawnHandler
 		}
 
 		boolean validLocation = canPokemonSpawnHere(point, world, dbe);
-		dt = (System.nanoTime() - time) / 1000000000D;
-
 		return validLocation;
 	}
 
-	public void spawn(World world)
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public void spawn(World world)
 	{
 		if (world.getDifficulty() == EnumDifficulty.PEACEFUL || !doSpawns) return;
 		List players = new ArrayList(world.playerEntities);
@@ -293,7 +286,7 @@ public final class SpawnHandler
 					Mod_Pokecube_Helper.mobDespawnRadius);
 			if (v != null)
 			{
-				int num = doSpawnForLocation(world, v);
+				doSpawnForLocation(world, v);
 			}
 		}
 	}
@@ -303,7 +296,7 @@ public final class SpawnHandler
 		int ret = 0;
 		if (!v.doChunksExist(world, 10)) return ret;
 		AxisAlignedBB box = v.getAABB();
-		List list = world.getEntitiesWithinAABB(EntityLivingBase.class, box.expand(Mod_Pokecube_Helper.mobDespawnRadius,
+		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, box.expand(Mod_Pokecube_Helper.mobDespawnRadius,
 				Mod_Pokecube_Helper.mobDespawnRadius, Mod_Pokecube_Helper.mobDespawnRadius));
 		
 		int num = 0;
@@ -403,7 +396,6 @@ public final class SpawnHandler
 	private int doSpawnForType(World world, Vector3 loc, PokedexEntry dbe, JEP parser, TerrainSegment t)
 	{
 
-		long total = System.nanoTime();
 		SpawnData entry = dbe.getSpawnData();
 
 		int totalSpawnCount = 0;
@@ -411,8 +403,6 @@ public final class SpawnHandler
 		Vector3 point = v2.clear();
 
 		int biome = t.getBiome(loc);
-		int biome1 = loc.getBiomeID(world);
-
 		byte distGroupZone = 6;
 		Random rand = new Random();
 
@@ -448,9 +438,9 @@ public final class SpawnHandler
 				try
 				{
 
-					if (dbe.getNb() > 0)
+					if (dbe.getPokedexNb() > 0)
 					{
-						entityliving = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(dbe.getNb(), world);
+						entityliving = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(dbe.getPokedexNb(), world);
 						entityliving.setHealth(entityliving.getMaxHealth());
 						entityliving.setLocationAndAngles((double) x + 0.5F, (double) y + 0.5F, (double) z + 0.5F,
 								world.rand.nextFloat() * 360.0F, 0.0F);
@@ -501,7 +491,7 @@ public final class SpawnHandler
 	 * @return */
 	public static boolean checkNoSpawnerInArea(World world, int chunkPosX, int chunkPosY, int chunkPosZ)
 	{
-		ArrayList<ChunkCoordinate> coords = new ArrayList(forbiddenSpawningCoords.keySet());
+		ArrayList<ChunkCoordinate> coords = new ArrayList<ChunkCoordinate>(forbiddenSpawningCoords.keySet());
 		
 		for (ChunkCoordinate coord : coords)
 		{
@@ -583,7 +573,7 @@ public final class SpawnHandler
 		return false;
 	}
 
-	public static final HashMap parsers = new HashMap();
+	public static final HashMap<Integer, JEP> parsers = new HashMap<Integer, JEP>();
 
 	public static int getSpawnXp(World world, Vector3 location, PokedexEntry pokemon)
 	{
@@ -603,7 +593,6 @@ public final class SpawnHandler
 
 		Vector3 spawn = temp.set(world.getSpawnPoint());
 		JEP toUse;
-		double value = 0;
 		int type = world.getWorldType().getWorldTypeID();
 		boolean isNew = false;
 		String function = "";
@@ -688,18 +677,14 @@ public final class SpawnHandler
 	public static boolean moveEntityOutOfBlocks(Entity e)
 	{
 		Vector3 v = vec.set(e);
-		Vector3 v1 = vec1.set(vec);
-
 		float num = e.width * e.height * e.width * 8;
 		num = Math.max(num, 27);
-
-		long start = System.nanoTime();
 
 		if (!v.isEntityClearOfBlocks(e.worldObj, e))
 		{
 			Vector3 v2 = Vector3.getNewVectorFromPool().set(vec);
 			boolean clear = false;
-			int n = 0, x, y, z, size, i;
+			int x, y, z, size, i;
 			int currentRadius = 0, subIndex = 0;
 			int nextRadius = 1;
 			
@@ -777,7 +762,7 @@ public final class SpawnHandler
 				if (!world.provider.isSurfaceWorld()) return;
 				if (world.provider.getHasNoSky()) return;
 
-				List players = new ArrayList(world.playerEntities);
+				List<Object> players = new ArrayList<Object>(world.playerEntities);
 				if (players.size() < 1) return;
 				Collections.shuffle(players);
 

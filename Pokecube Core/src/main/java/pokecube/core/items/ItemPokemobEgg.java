@@ -5,7 +5,6 @@ package pokecube.core.items;
 
 import java.util.HashMap;
 import java.util.Random;
-import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
@@ -40,7 +39,7 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public class ItemPokemobEgg extends ItemMonsterPlacer
 {
-    static HashMap<PokedexEntry, IPokemob> fakeMobs = new HashMap();
+    static HashMap<PokedexEntry, IPokemob> fakeMobs = new HashMap<PokedexEntry, IPokemob>();
 
     /** @param par1 */
     public ItemPokemobEgg()

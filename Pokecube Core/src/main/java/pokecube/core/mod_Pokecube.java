@@ -313,7 +313,7 @@ public class mod_Pokecube extends PokecubeMod
     @Override
     public void registerPokemon(boolean createEgg, Object mod, String name)
     {
-        registerPokemon(createEgg, mod, Database.getEntry(name).getNb());
+        registerPokemon(createEgg, mod, Database.getEntry(name).getPokedexNb());
     }
 
     /** Registers a Pokemob into the Pokedex. Have a look to the file called
@@ -685,7 +685,7 @@ public class mod_Pokecube extends PokecubeMod
 
         for (PokedexEntry dbe : Database.spawnables)
         {
-            if (Pokedex.getInstance().getEntry(dbe.getNb()) != null && !spawns.contains(dbe))
+            if (Pokedex.getInstance().getEntry(dbe.getPokedexNb()) != null && !spawns.contains(dbe))
             {
                 spawns.add(dbe);
                 SpawnHandler.addSpawn(dbe);

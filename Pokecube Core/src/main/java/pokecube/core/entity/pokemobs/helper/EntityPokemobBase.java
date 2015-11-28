@@ -33,7 +33,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.mod_Pokecube;
 import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.SpawnEvent;
@@ -87,16 +86,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public static boolean multibox = true;
 	
     private int uid = -1;
-    private int nextStepDist = 1;
     protected int pokecubeId = 0;
     
     protected int particleIntensity = 0;
     protected int particleCounter = 0;
     protected String particle;
 
-    /** Ridden task parameter */
-    private float currentSpeed = 0.0F;
-    
     private int[] flavourAmounts = new int[5];
     
     protected String texture;
@@ -106,10 +101,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 	public HashMap<String, Matrix3> boxes = new HashMap<String, Matrix3>();
 	public HashMap<String, Vector3> offsets = new HashMap<String, Vector3>();
 	
-	//private ChunkCache cache;
-	private long lastTime = 0;
-
-    int corruptedSum = -123586;
+	int corruptedSum = -123586;
 	private float nextStepDistance;
 
     public EntityPokemobBase(World world)
@@ -125,7 +117,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void init(int nb)
     {
     	super.init(nb);
-    	PokedexEntry entry = this.getPokedexEntry();
+    	this.getPokedexEntry();
     	
     	if(multibox)
     	{
@@ -265,8 +257,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         uid = nbttagcompound.getInteger("PokemobUID");
         if(nbttagcompound.hasKey("flavours"))
         flavourAmounts = nbttagcompound.getIntArray("flavours");
-
-    	PokedexEntry entry = this.getPokedexEntry();
 
     	int checkSum = nbttagcompound.getInteger("checkSum");
     	
@@ -483,7 +473,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         	BossStatus.bossName = getPokemonDisplayName();
         }
     }
-    
+
+    //TODO Pokeblock Particle Effects
     void showLivingParticleFX()
     {
     	if(flavourAmounts.length!=5)
@@ -492,82 +483,22 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if(flavourAmounts[SWEET]>0)
         {
         	particle = "powder.pink";
-            for (int i = 0; i < 3; i++)
-            {
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                double d3 = rand.nextGaussian() * 0.02D;
-                mod_Pokecube.spawnParticle(
-                        particle,
-                        (posX + rand.nextFloat() * width * 2.0F) - width, 
-                        posY + 0.5D + rand.nextFloat() * height,
-                        (posZ + rand.nextFloat() * width * 2.0F) - width,
-                        d1, d2, d3);
-            }
         }
         if(flavourAmounts[BITTER]>0)
         {
         	particle = "powder.green";
-            for (int i = 0; i < 3; i++)
-            {
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                double d3 = rand.nextGaussian() * 0.02D;
-                mod_Pokecube.spawnParticle(
-                        particle,
-                        (posX + rand.nextFloat() * width * 2.0F) - width, 
-                        posY + 0.5D + rand.nextFloat() * height,
-                        (posZ + rand.nextFloat() * width * 2.0F) - width,
-                        d1, d2, d3);
-            }
         }
         if(flavourAmounts[SPICY]>0)
         {
         	particle = "powder.red";
-            for (int i = 0; i < 3; i++)
-            {
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                double d3 = rand.nextGaussian() * 0.02D;
-                mod_Pokecube.spawnParticle(
-                        particle,
-                        (posX + rand.nextFloat() * width * 2.0F) - width, 
-                        posY + 0.5D + rand.nextFloat() * height,
-                        (posZ + rand.nextFloat() * width * 2.0F) - width,
-                        d1, d2, d3);
-            }
         }
         if(flavourAmounts[DRY]>0)
         {
         	particle = "powder.blue";
-            for (int i = 0; i < 3; i++)
-            {
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                double d3 = rand.nextGaussian() * 0.02D;
-                mod_Pokecube.spawnParticle(
-                        particle,
-                        (posX + rand.nextFloat() * width * 2.0F) - width, 
-                        posY + 0.5D + rand.nextFloat() * height,
-                        (posZ + rand.nextFloat() * width * 2.0F) - width,
-                        d1, d2, d3);
-            }
         }
         if(flavourAmounts[SOUR]>0)
         {
         	particle = "powder.yellow";
-            for (int i = 0; i < 3; i++)
-            {
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                double d3 = rand.nextGaussian() * 0.02D;
-                mod_Pokecube.spawnParticle(
-                        particle,
-                        (posX + rand.nextFloat() * width * 2.0F) - width, 
-                        posY + 0.5D + rand.nextFloat() * height,
-                        (posZ + rand.nextFloat() * width * 2.0F) - width,
-                        d1, d2, d3);
-            }
         }
     	if(isShadow())
     	{
@@ -587,19 +518,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (particle != null && particleCounter++ >= 100 - particleIntensity)
         {
         	
-            for (int i = 0; i < 3; i++)
-            {
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                double d3 = rand.nextGaussian() * 0.02D;
-                mod_Pokecube.spawnParticle(
-                        particle,
-                        (posX + rand.nextFloat() * width * 2.0F) - width, 
-                        posY + 0.5D + rand.nextFloat() * height,
-                        (posZ + rand.nextFloat() * width * 2.0F) - width,
-                        d1, d2, d3);
-            }
-
             particleCounter = 0;
         }
     }
@@ -782,21 +700,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public boolean isEntityInsideOpaqueBlock()
     {
-        
-		for(String key: boxes.keySet())
-		{
-			Matrix3 box = boxes.get(key).copy();
-			Vector3 offset;
-			if(offsets.containsKey(key))
-			{
-				offset = offsets.get(key).copy();
-			}
-			if(box!=null)
-			{
-				
-			}
-		}
-    	
         return false;
     }
 	
@@ -863,22 +766,15 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void moveEntity(double x, double y, double z)
     {
-    	if(!multibox)// || riddenByEntity != null)
+    	if(!multibox)
     	{
     		super.moveEntity(x, y, z);
     		return;
     	}
     	else
         {
-//    		if(worldObj.isRemote && riddenByEntity != null)// && !getNavigator().noPath())
-//    		{
-//    			super.moveEntity(x, y, z);
-//    			return;
-//    		}
     		
-			double x0 = x, y0 = y, z0 = z, r = 0;
-			double x2 = x, y2 = y, z2 = z;
-			
+			double x0 = x, y0 = y, z0 = z;
 			setBoxes();
 			setOffsets();
 			IBlockAccess world = ((PokeNavigator)getNavigator()).pathfinder.chunks;
@@ -891,7 +787,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 			}
 			
 			Vector3 diffs = Vector3.getNewVectorFromPool();
-			Vector3 diffs2 = Vector3.getNewVectorFromPool();
 			diffs.set(x, y, z);
 
 			for(String s: getBoxes().keySet())
@@ -922,8 +817,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 			
 			
 			this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
-			double y1 = posY;
-            this.posX += x;// (this.boundingBox.minX + this.boundingBox.maxX) / 2.0D;
+			
+			this.posX += x;// (this.boundingBox.minX + this.boundingBox.maxX) / 2.0D;
             this.posY += newY;
             this.posZ += z;//(this.boundingBox.minZ + this.boundingBox.maxZ) / 2.0D;
             
@@ -992,12 +887,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     	
     }
     
-    private void resetPositionToBB()
-    {
-        this.posX = (this.getEntityBoundingBox().minX + this.getEntityBoundingBox().maxX) / 2.0D;
-        this.posY = this.getEntityBoundingBox().minY;
-        this.posZ = (this.getEntityBoundingBox().minZ + this.getEntityBoundingBox().maxZ) / 2.0D;
-    }
     /**
      * returns the bounding box for this entity
      */

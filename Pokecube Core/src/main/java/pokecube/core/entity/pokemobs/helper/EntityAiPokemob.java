@@ -15,7 +15,6 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -669,18 +668,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             boolean isWaterMob = entry.mobType == Type.WATER;
             boolean shouldGoDown = false;
             boolean shouldGoUp = false;
-            float dragFactor = 1.0f;
             PathPoint p = null;
-            PathPoint pf = null;
-            PathPoint pi = null;
             if (!getNavigator().noPath() && !getNavigator().getPath().isFinished())
             {
                 p = getNavigator().getPath().getPathPointFromIndex(getNavigator().getPath().getCurrentPathIndex());
                 if (getNavigator().getPath().getCurrentPathIndex() < getNavigator().getPath().getCurrentPathLength()
                         - 1)
-                    pi = getNavigator().getPath()
-                            .getPathPointFromIndex(getNavigator().getPath().getCurrentPathIndex() + 1);
-                pf = getNavigator().getPath().getFinalPathPoint();
+                {
+                }
                 shouldGoDown = p.yCoord < posY - stepHeight;
                 shouldGoUp = p.yCoord > posY + stepHeight;
                 if (isAbleToFly)
@@ -897,7 +892,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void moveFlying(float strafe, float forward, float speed)
     {
         float f3 = strafe * strafe + forward * forward;
-        boolean air = this.getPokedexEntry().floats() || this.getPokedexEntry().flys();
         if (f3 >= 0F)
         {
             f3 = MathHelper.sqrt_float(f3);
@@ -1004,7 +998,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
             captureDrops = true;
             capturedDrops.clear();
-            int j = 0;
 
             boolean shadowDrop = (this.isShadow() && this.getLevel() < 40);
 
@@ -1015,8 +1008,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                 if (this.recentlyHit > 0)
                 {
-                    j = this.rand.nextInt(200) - i;
-
                     // if (j < 5)//TODO see if this was needed
                     // {
                     // this.dropRareDrop(j <= 0 ? 1 : 0);
@@ -1140,11 +1131,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
                 else
                 {
-                    double f = ridingEntity.width;
-                    Vector3 look = vec.set(ridingEntity.getLookVec());
-                    Vector3 loc = vec.set(this).addTo(look);
                     mountEntity(null);
-                    // loc.moveEntity(this);
                     setPokemonAIState(HELD, false);
 
                     if (player != getPokemonOwner())

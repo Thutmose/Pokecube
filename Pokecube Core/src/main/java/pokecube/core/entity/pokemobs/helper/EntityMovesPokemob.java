@@ -112,8 +112,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (movesString != null && movesString.length() > 2)
         {
             String[] movesSplit = movesString.split(",");
-            int indexMove = 0;
-
             for (int i = 0; i < Math.min(4, movesSplit.length) ; i++)
             {
                 String move = movesSplit[i];
@@ -121,7 +119,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                 if (move != null && move.length() > 1 && MovesUtils.isMoveImplemented(move))
                 {
                     moves[i] = move;
-                    indexMove++;
                 }
             }
         }
@@ -137,7 +134,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     		return to.getMove(index);
     	}
     	
-        String movesString = dataWatcher.getWatchableObjectString(MOVESDW);
         String[] moves = getMoves();
 
         if (index >= 0 && index < 4)
@@ -147,7 +143,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if(index==4 && moves[3]!=null && getPokemonAIState(LEARNINGMOVE))
         {
         	List<String> list;
-        	List<String> lastMoves = new ArrayList();
+        	List<String> lastMoves = new ArrayList<String>();
         	int n = getLevel();
         	
         	while(n > 0)
@@ -451,11 +447,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     protected void spawnPoisonParticle(){
         for (int i = 0; i < 2; i++)
         {
-            double d = rand.nextGaussian() * 0.02D;
-            double d1 = rand.nextGaussian() * 0.02D;
-            double d2 = rand.nextGaussian() * 0.02D;
-            mod_Pokecube.spawnParticle("spell", (posX + rand.nextFloat() * width * 2.0F) - width, posY + 0.5D + rand.nextFloat() * height,
-                    (posZ + rand.nextFloat() * width * 2.0F) - width, d, d1, d2);
+            //TODO Poison Effects
         }
     }
     
@@ -728,11 +720,11 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     		if(attack.equalsIgnoreCase(MOVE_METRONOME))
     		{
         		attack = null;
-        		ArrayList moves = new ArrayList(MoveEntry.values());
+        		ArrayList<MoveEntry> moves = new ArrayList<MoveEntry>(MoveEntry.values());
         		while(attack==null)
         		{
         			Collections.shuffle(moves);
-        			MoveEntry move = (MoveEntry) moves.iterator().next();
+        			MoveEntry move = moves.iterator().next();
         			if(move!=null)
         				attack = move.name;
         			

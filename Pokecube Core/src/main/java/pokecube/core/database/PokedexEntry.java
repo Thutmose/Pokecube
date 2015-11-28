@@ -62,7 +62,6 @@ public class PokedexEntry
     protected String[]         abilities          = { null, null, null };
     protected int              baseHappiness;
     private String             modId;
-    private String             texture;
     public PokecubeMod.Type    mobType            = PokecubeMod.Type.NORMAL;
     public double              preferedHeight     = 1.5;
     public double              mountedOffset      = 1;
@@ -83,7 +82,7 @@ public class PokedexEntry
      * berries,<br>
      * water (filter feeds from water) */
     public boolean[]           foods              = { false, false, false, false, false, true, false };
-    protected List<TimePeriod> activeTimes        = new ArrayList();
+    protected List<TimePeriod> activeTimes        = new ArrayList<TimePeriod>();
 
     public boolean isStationary = false;
 
@@ -308,11 +307,6 @@ public class PokedexEntry
         return modId;
     }
 
-    public void setTexture(String texture)
-    {
-        this.texture = texture;
-    }
-
     public String getTexture(byte gender)
     {
         return getTexture(gender, 0);// texture;
@@ -326,7 +320,7 @@ public class PokedexEntry
         String suffix = textureSuffixs[(int) suffixIndex];
         return "textures/entities/" + name + suffix + ".png";// texture;
     }
-
+//TODO
     /** @return the pokedexNb */
     public int getPokedexNb()
     {
@@ -572,11 +566,6 @@ public class PokedexEntry
         return baseName;
     }
 
-    public int getNb()
-    {
-        return pokedexNb;
-    }
-
     public int getGen()
     {
         if (pokedexNb < 152) return 1;
@@ -708,7 +697,7 @@ public class PokedexEntry
         Double[] nums = new Double[temp.length];
         for (int i = 0; i < nums.length; i++)
         {
-            nums[i] = (double) ((PokedexEntry) temp[i]).getNb();
+            nums[i] = (double) ((PokedexEntry) temp[i]).getPokedexNb();
         }
         new Cruncher().sort(nums, temp);
         related.clear();
@@ -721,7 +710,7 @@ public class PokedexEntry
     protected void initPrey()
     {
         if (food == null) return;
-        List<String> foodList = new ArrayList();
+        List<String> foodList = new ArrayList<String>();
         for (String s : food)
             foodList.add(s);
         poke:
@@ -764,8 +753,6 @@ public class PokedexEntry
         int count = Integer.parseInt(drop[0]);
         String name = drop[1];
         int meta = 0;
-        int chance = 100;
-
         try
         {
             if (drop.length > 2) meta = Integer.parseInt(drop[2]);
@@ -1434,10 +1421,10 @@ public class PokedexEntry
 
         public static class TypeEntry
         {
-            ArrayList<Type>             biomes   = new ArrayList();
+            ArrayList<Type>             biomes   = new ArrayList<Type>();
             ArrayList<BiomeGenBase>     valid    = new ArrayList<BiomeGenBase>();
-            HashSet<Integer>            types    = new HashSet();
-            public ArrayList<BiomeType> biome2   = new ArrayList();
+            HashSet<Integer>            types    = new HashSet<Integer>();
+            public ArrayList<BiomeType> biome2   = new ArrayList<BiomeType>();
             float                       weight;
             public int                  groupMax = 4;
             public int                  groupMin = 2;
@@ -1448,7 +1435,6 @@ public class PokedexEntry
 
             public boolean isValid(int biome)
             {
-                boolean ret = false;
                 if (types.contains(BiomeType.ALL.getType())) return true;
 
                 if (types.contains(biome)) return true;

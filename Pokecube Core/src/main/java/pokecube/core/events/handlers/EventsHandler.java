@@ -72,6 +72,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -120,7 +121,7 @@ public class EventsHandler
 
         if (Mod_Pokecube_Helper.deactivateMonsters && evt.world.getChunkProvider() instanceof ChunkProviderHell)
         {
-            ChunkProviderHell provider = (ChunkProviderHell) evt.world.getChunkProvider();
+//            ChunkProviderHell provider = (ChunkProviderHell) evt.world.getChunkProvider();
 
             // provider.genNetherBridge.getSpawnList().clear();//TODO remove
             // nether bridge mobs via reflection
@@ -315,7 +316,6 @@ public class EventsHandler
 
         if (!evt.player.worldObj.isRemote)
         {
-            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(0));
             NBTTagCompound nbt = new NBTTagCompound();
             StatsCollector.writeToNBT(nbt);
 
@@ -452,8 +452,6 @@ public class EventsHandler
                     loc.getAABB().expand(16, 16, 16));
             Vector3 temp = Vector3.getNewVectorFromPool();
             Vector3 look = Vector3.getNewVectorFromPool().set(player.getLookVec());
-            int n = 0;
-            int m = 0;
             for (Object o : entities)
             {
                 if (o instanceof IPokemob)
@@ -462,12 +460,10 @@ public class EventsHandler
                     if (temp.dot(look) > 0)
                     {
                         ((IPokemob) o).setPokemonAIState(IPokemob.WATCHED, true);
-                        n++;
                     }
                     else
                     {
                         ((IPokemob) o).setPokemonAIState(IPokemob.WATCHED, false);
-                        m++;
                     }
                 }
             }
@@ -550,7 +546,7 @@ public class EventsHandler
             for (IPokemob e : pokemon)
             {
                 double dist = ((Entity) e).getDistanceSqToEntity(evt.entityLiving);
-                if (dist < closest && !(e.getPokemonAIState(e.STAYING) && e.getPokemonAIState(e.SITTING)))
+                if (dist < closest && !(e.getPokemonAIState(IMoveConstants.STAYING) && e.getPokemonAIState(IMoveConstants.SITTING)))
                 {
                     closest = dist;
                     newtarget = e;
@@ -577,7 +573,7 @@ public class EventsHandler
         AxisAlignedBB box = new AxisAlignedBB(owner.posX, owner.posY, owner.posZ, owner.posX, owner.posY, owner.posZ)
                 .expand(distance, distance, distance);
 
-        List pokemobs = owner.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, box);
+        List<EntityLivingBase> pokemobs = owner.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, box);
         for (Object o : pokemobs)
         {
             if (o instanceof IPokemob)
@@ -595,7 +591,7 @@ public class EventsHandler
 
     public static void recallAllPokemobsExcluding(EntityPlayer player, IPokemob excluded)
     {
-        List pokemobs = new ArrayList(player.worldObj.loadedEntityList);
+        List<?> pokemobs = new ArrayList<Object>(player.worldObj.loadedEntityList);
         for (Object o : pokemobs)
         {
             if (o instanceof IPokemob)
@@ -628,19 +624,16 @@ public class EventsHandler
 
     public static int getShadowPokemonNb(Entity hostile)
     {
-        int ret = 0;
         String temp = hostile.getCommandSenderName().toLowerCase().trim().replace(" ", "");
 
         PokedexEntry entry = null;
-
-        String key = temp;
-
+        
         ArrayList<PokedexEntry> list = Database.mobReplacements.get(temp);
         if (list != null)
         {
             Collections.shuffle(list);
             entry = list.get(0);
-            while (Pokedex.getInstance().getEntry(entry.getNb()) == null && list.size() > 0)
+            while (Pokedex.getInstance().getEntry(entry.getPokedexNb()) == null && list.size() > 0)
             {
                 list.remove(0);
                 entry = list.get(0);
@@ -650,6 +643,6 @@ public class EventsHandler
                 Database.mobReplacements.remove(temp);
             }
         }
-        return entry == null ? 249 : entry.getNb();
+        return entry == null ? 249 : entry.getPokedexNb();
     }
 }

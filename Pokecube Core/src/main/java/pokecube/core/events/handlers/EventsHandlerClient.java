@@ -1,18 +1,7 @@
 package pokecube.core.events.handlers;
 
-import static pokecube.core.moves.PokemobTerrainEffects.EFFECT_POISON;
-import static pokecube.core.moves.PokemobTerrainEffects.EFFECT_POISON2;
-import static pokecube.core.moves.PokemobTerrainEffects.EFFECT_TERRAIN_ELECTRIC;
-import static pokecube.core.moves.PokemobTerrainEffects.EFFECT_TERRAIN_MISTY;
-import static pokecube.core.moves.PokemobTerrainEffects.EFFECT_WEATHER_HAIL;
-import static pokecube.core.moves.PokemobTerrainEffects.EFFECT_WEATHER_RAIN;
-import static pokecube.core.moves.PokemobTerrainEffects.EFFECT_WEATHER_SAND;
-import static pokecube.core.moves.PokemobTerrainEffects.EFFECT_WEATHER_SUN;
-import static thut.api.terrain.TerrainSegment.getWind;
-
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -21,17 +10,11 @@ import org.lwjgl.opengl.GL12;
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
 import io.netty.buffer.Unpooled;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -42,15 +25,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -60,53 +39,35 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiScrollableLists;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
-import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
-import thut.api.terrain.WorldTerrain;
 
 @SideOnly(Side.CLIENT)
 public class EventsHandlerClient
 {
-    private static final ResourceLocation locationRainPng = new ResourceLocation("textures/environment/rain.png");
-    private static final ResourceLocation locationSnowPng = new ResourceLocation("textures/environment/snow.png");
-    private static ISound                 rain            = PositionedSoundRecord
-            .create(new ResourceLocation("ambient.weather.rain"), 0.1F);
-    private DynamicTexture                lightmapTexture = new DynamicTexture(16, 16);
-
     /** Rain X coords */
     float[] rainXCoords;
     /** Rain Y coords */
     float[] rainYCoords;
 
-    private int rendererUpdateCount;
-
-    private Random random = new Random();
-    private int    rainSoundCounter;
-    private float  last;
-
     public EventsHandlerClient()
     {
     }
-
-    private Vector3 v  = Vector3.getNewVectorFromPool();
-    private Vector3 v1 = Vector3.getNewVectorFromPool();
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
@@ -138,162 +99,9 @@ public class EventsHandlerClient
     public void ClientRenderTick(RenderWorldLastEvent evt)
     {
         //TODO fix the terrain effects, I don't think this event is good for it anymore
-//        EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
-//
-//        if (player == null || player.worldObj == null || evt.partialTicks == last) return;
-//        last = evt.partialTicks;
-//        WorldTerrain worldTerrain = TerrainManager.getInstance().getTerrain(player.worldObj);
-//        rendererUpdateCount++;
-//        int x = ((int) player.posX) >> 4;
-//        int y = ((int) player.posY) >> 4;
-//        int z = ((int) player.posZ) >> 4;
-//        int j0 = Math.max(0, y - 2);
-//        int j1 = Math.min(15, y + 2);
-//
-//        for (int i = x - 2; i <= x + 2; i++)
-//        {
-//            for (int j = j0; j <= j1; j++)
-//            {
-//                for (int k = z - 2; k <= z + 2; k++)
-//                {
-//                    TerrainSegment terrain = worldTerrain.getTerrain(i, j, k);
-//
-//                    PokemobTerrainEffects effect = (PokemobTerrainEffects) terrain.geTerrainEffect("pokemobEffects");
-//                    if (effect == null)
-//                    {
-//                        terrain.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
-//                    }
-//
-//                    World worldObj = player.worldObj;
-//                    v.x = terrain.chunkX * 16 + 8;
-//                    v.y = terrain.chunkY * 16 + 8;
-//                    v.z = terrain.chunkZ * 16 + 8;
-//
-//                    if (effect.effects[EFFECT_WEATHER_SAND] > 0)
-//                    {
-//                        doSandstorm(v, worldObj, terrain);
-//                    }
-//
-//                    if (effect.effects[EFFECT_WEATHER_SUN] > 0)
-//                    {
-//
-//                    }
-//
-//                    if (effect.effects[EFFECT_WEATHER_RAIN] > 0)
-//                    {
-//                        doRain(v, worldObj, terrain, evt.partialTicks);
-//                    }
-//
-//                    if (effect.effects[EFFECT_WEATHER_HAIL] > 0)
-//                    {
-//
-//                    }
-//
-//                    if (effect.effects[EFFECT_TERRAIN_MISTY] > 0)
-//                    {
-//
-//                    }
-//
-//                    if (effect.effects[EFFECT_TERRAIN_ELECTRIC] > 0)
-//                    {
-//
-//                    }
-//
-//                    if (effect.effects[EFFECT_POISON] > 0)
-//                    {
-//                        doToxicHaze(v, worldObj, terrain);
-//                    }
-//
-//                    if (effect.effects[EFFECT_POISON2] > 0)
-//                    {
-//                        doToxicHaze(v, worldObj, terrain);
-//                    }
-//                }
-//            }
-//        }
     }
 
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void livingRender(RenderLivingEvent.Post evt)
-    {
-    }
-
-    void doSandstorm(Vector3 v, World worldObj, TerrainSegment terrain)
-    {
-        for (int j = 0; j < 100; j++)
-        {
-            double x = v.x + (0.5 - Math.random()) * 16;
-            double y = v.y + (0.5 - Math.random()) * 16;
-            double z = v.z + (0.5 - Math.random()) * 16;
-            if (terrain.isInTerrainSegment(x, y, z))
-            {
-                Vector3 wind = getWind(worldObj, x, y, z);
-                int biome = terrain.getBiome(v.set(x, y, z));
-                if (biome == BiomeType.CAVE.getType()) wind.clear();
-
-                mod_Pokecube.spawnParticle("powder.brown", x, y, z, wind.x, wind.y, wind.z);
-            }
-        }
-    }
-
-    void doToxicHaze(Vector3 v, World worldObj, TerrainSegment terrain)
-    {
-        for (int j = 0; j < 100; j++)
-        {
-            double x = v.x + (0.5 - Math.random()) * 16;
-            double y = v.y + (0.5 - Math.random()) * 16;
-            double z = v.z + (0.5 - Math.random()) * 16;
-
-            mod_Pokecube.spawnParticle("powder.purple", x, y, z, 0, 0, 0);
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    void doRain(Vector3 v, World worldObj, TerrainSegment terrain, float partialTicks)
-    {
-        renderRainSnow(partialTicks, v);
-
-        int l = 0;// weather particle effects
-        for (int j = 0; j < 100; j++)
-        {
-            double x = v.x + (0.5 - Math.random()) * 16;
-            double y = v.y + (0.5 - Math.random()) * 16;
-            double z = v.z + (0.5 - Math.random()) * 16;
-            BlockPos pos = new BlockPos(MathHelper.floor_double(x), (int) y, MathHelper.floor_double(z));
-
-            Block b = worldObj.getBlockState(pos).getBlock();
-
-            if (!b.isAir(worldObj, pos))
-            {
-                l++;
-                // Minecraft.getMinecraft().effectRenderer.addEffect(new
-                // net.minecraft.client.particle.EntityRainFX(
-                // worldObj, x, (int) y + b.getBlockBoundsMaxY(), z));//TODO
-                // figure out rain again
-            }
-            else
-            {
-                // Minecraft.getMinecraft().effectRenderer.addEffect(
-                // new net.minecraft.client.particle.EntitySplashFX(worldObj, x,
-                // y, z, 0, -0.5, 0));
-            }
-        }
-        if (l > 0 && random.nextInt(300) < this.rainSoundCounter++)
-        {
-            this.rainSoundCounter = 0;
-            // Minecraft.getMinecraft().getSoundHandler().playSound(rain);
-            worldObj.playSound(v.x, v.y, v.z, "ambient.weather.rain", .1F, 0.5F, false);
-
-        }
-    }
-
-    protected void renderRainSnow(float p_78474_1_, Vector3 v)
-    {
-        // TODO redo rain from raindance
-
-    }
-
+ 
     static long eventTime = 0;
 
     @SubscribeEvent
@@ -333,7 +141,7 @@ public class EventsHandlerClient
                 }
             }
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
-            if (current != null && ring && !current.getPokemonAIState(current.EVOLVING))
+            if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING))
             {
                 PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
                 System.out.println(current);
@@ -448,13 +256,8 @@ public class EventsHandlerClient
                 List<Slot> slots = gui.inventorySlots.inventorySlots;
                 int w = gui.width;
                 int h = gui.height;
-                int num = 0;
-
                 int xSize = gui.xSize;
                 int ySize = gui.ySize;
-                float yang = 30;
-                float xang = 30;
-                float zang = 15;
                 float zLevel = 800;
                 GL11.glPushMatrix();
                 GlStateManager.translate(0, 0, zLevel);
@@ -595,19 +398,18 @@ public class EventsHandlerClient
         float zoom = 30f / size;
         GL11.glScalef(-zoom, zoom, zoom);
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-        long time = Minecraft.getMinecraft().getSystemTime();
+        Minecraft.getMinecraft();
+        long time = Minecraft.getSystemTime();
         GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
         RenderHelper.enableStandardItemLighting();
 
         GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-        float offset = 0.4f;
-        float f, f1, f2;
 
         entity.rotationYaw = 0;
         entity.rotationPitch = 0;
         entity.rotationYawHead = 0;
 
-        pokemob.setPokemonAIState(pokemob.SITTING, true);
+        pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
         entity.onGround = true;
 
         int i = 15728880;

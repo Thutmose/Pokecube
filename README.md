@@ -10,10 +10,8 @@ Pokémobs for Minecraft - page under construction.
 - aerodactyl
 - unfezant
 - tynamo
-- sliggoo
 - slugma
 - miltank
-- ho-oh
 - seedot
 - armaldo
 - sealeo
@@ -21,7 +19,6 @@ Pokémobs for Minecraft - page under construction.
 - servine
 - unfezant
 - tynamo
-- sliggoo
 - Combee
 
 ##Currently Messed up texures/other glitches
@@ -36,6 +33,7 @@ Pokémobs for Minecraft - page under construction.
 - Reuniclus
 - Foongus
 - Trevenant
+- ho-oh
 
 ##Related/Contained projects
 Currently contains [IGW-mod](https://github.com/MineMaarten/IGW-mod) and [Baubles](https://github.com/Azanor/Baubles) until those get updated to 1.8.8, then it will revert to using them as libraries

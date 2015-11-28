@@ -23,7 +23,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerKeyBindings() {
 		keyHandler = new KeyHandler();
-		FMLCommonHandler.instance().bus().register(keyHandler);
+		MinecraftForge.EVENT_BUS.register(keyHandler);
 		MinecraftForge.EVENT_BUS.register(new GuiEvents());
 	}
 	

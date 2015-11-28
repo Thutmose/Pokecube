@@ -34,7 +34,6 @@ public class MoveAnimationHelper
 		if (instance == null)
 		{
 			instance = new MoveAnimationHelper();
-			FMLCommonHandler.instance().bus().register(instance);
 			MinecraftForge.EVENT_BUS.register(instance);
 		}
 		return instance;

@@ -132,7 +132,6 @@ public class ModPokecubeML
                 new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),
                 "modelreloader");
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
     }
 
     @EventHandler

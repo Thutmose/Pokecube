@@ -509,7 +509,6 @@ public class mod_Pokecube extends PokecubeMod
         config.save();
         EventsHandler evts = new EventsHandler();
         MinecraftForge.EVENT_BUS.register(evts);
-        FMLCommonHandler.instance().bus().register(evts);
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new LoadingCallback()
         {
 
@@ -588,10 +587,8 @@ public class mod_Pokecube extends PokecubeMod
 
         PCSaveHandler save = new PCSaveHandler();
         MinecraftForge.EVENT_BUS.register(save);
-        FMLCommonHandler.instance().bus().register(save);
         PCEventsHandler events = new PCEventsHandler();
         MinecraftForge.EVENT_BUS.register(events);
-        FMLCommonHandler.instance().bus().register(events);
 
     }
 

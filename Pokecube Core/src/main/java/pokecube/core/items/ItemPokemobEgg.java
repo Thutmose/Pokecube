@@ -467,8 +467,8 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         if (pokemob == null)
         {
             pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(number, world);
-            fakeMobs.put(entry, pokemob);
             if (pokemob == null) return null;
+            fakeMobs.put(entry, pokemob);
         }
         location.moveEntity((Entity) pokemob);
         initPokemobGenetics(pokemob, stack.getTagCompound());

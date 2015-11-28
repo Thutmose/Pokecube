@@ -425,7 +425,7 @@ public class mod_Pokecube extends PokecubeMod
         if (entity == null)
         {
             System.err.println("Problem with entity with pokedexNb: " + pokedexNb);
-            System.err.println(clazz + " " + clazz.getSuperclass());
+            System.err.println(clazz + " ");
             new Exception().printStackTrace();
         }
 

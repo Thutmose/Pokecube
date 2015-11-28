@@ -131,7 +131,9 @@ public class EntityPokemobEgg extends EntityLiving
         }
         else if (age > hatch * 0.8 && rand.nextInt(20 + hatch - age) == 0)
         {
-            ((EntityLiving) getPokemob()).playLivingSound();
+            IPokemob mob = getPokemob();
+            if (mob == null) this.setDead();
+            else((EntityLiving) getPokemob()).playLivingSound();
         }
     }
 
@@ -142,7 +144,7 @@ public class EntityPokemobEgg extends EntityLiving
     public IPokemob getPokemob()
     {
         IPokemob pokemob = ItemPokemobEgg.getFakePokemob(worldObj, here, getHeldItem());
-        ;
+        if (pokemob == null) return null;
         ((Entity) pokemob).worldObj = worldObj;
         return pokemob;
     }

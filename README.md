@@ -1,7 +1,7 @@
 # Pokécube
 Pokémobs for Minecraft - page under construction.
 
-##Currently Glitched Pokemob Models
+##Currently Missing Pokemob Models
 - Charizard
 - Rattata
 - Pikachu/Raichu/Pichu
@@ -25,7 +25,20 @@ Pokémobs for Minecraft - page under construction.
 - unfezant
 - tynamo
 - sliggoo
+- Combee
 
+##Currently Messed up texures/other glitches
+- Cloyster (spikes)
+- Marowak (bone)
+- Chikorita
+- Mantine
+- Snivy line
+- Tepig line
+- Oshawatt line
+- Pidove
+- Reuniclus
+- Foongus
+- Trevenant
 
 ##Related/Contained projects
 Currently contains [IGW-mod](https://github.com/MineMaarten/IGW-mod) and [Baubles](https://github.com/Azanor/Baubles) until those get updated to 1.8.8, then it will revert to using them as libraries

@@ -17,7 +17,6 @@ Pokémobs for Minecraft - page under construction.
 - seedot
 - wingull
 - pelipper
-- carvanha
 - armaldo
 - sealeo
 - giratina

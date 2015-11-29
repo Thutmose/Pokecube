@@ -1,10 +1,11 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/238253-pokecube-core",
   "promos": {
-    "1.8.8-latest": "2.0.4",
-    "1.8.8-recommended": "2.0.4"
+    "1.8.8-latest": "2.0.5",
+    "1.8.8-recommended": "2.0.5"
   },
   "1.8.8": {
+    "2.0.5": "fixes nicknaming issue",
     "2.0.4": "added fossils to core",
     "2.0.3": "fixes a crash from village buildings, fixes village buildings",
     "2.0.2": "fixes a crash from removing pokemobs",

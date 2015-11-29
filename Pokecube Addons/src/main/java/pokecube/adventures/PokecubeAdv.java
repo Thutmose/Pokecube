@@ -4,11 +4,9 @@ import java.io.File;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -41,12 +39,13 @@ import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 
-@Mod(modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = "required-after:pokecube")
+@Mod(modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = "required-after:pokecube", updateJSON = PokecubeAdv.UPDATEURL)
 public class PokecubeAdv
 {
 	public static final String	ID		= "pokecube_adventures";
-	public static final String	version	= "0.1.0";
+	public static final String	version	= "@VERSION@";
 
+    public final static String UPDATEURL = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Addons/versions.json";
 	public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
 
 	// public static SimpleNetworkWrapper wrapper;
@@ -128,9 +127,9 @@ public class PokecubeAdv
 
 	private void doMetastuff()
 	{
-		ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
+//		ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
 
-		meta.parent = PokecubeMod.ID;
+//		meta.parent = PokecubeMod.ID;
 	}
 
 	public static void setTrainerConfig(FMLPreInitializationEvent evt)

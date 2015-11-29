@@ -36,7 +36,7 @@ public abstract class PokecubeMod
     public final static String ID = "pokecube";
     public final static String VERSION = "@VERSION@";
     
-    public final static String UPDATEURL = "https://gist.githubusercontent.com/Thutmose/a2a916a322d08ee017b6/raw";
+    public final static String UPDATEURL = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Core/versions.json";
 	
     public static final int MAX_DAMAGE = 0x7FFF;
     public static final int FULL_HEALTH = MAX_DAMAGE-1;

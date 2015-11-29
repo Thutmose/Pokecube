@@ -17,8 +17,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.items.ItemPokemobEgg;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
 public class ContainerCloner extends Container// Workbench
 {
@@ -66,7 +66,7 @@ public class ContainerCloner extends Container// Workbench
         }
         
         this.onCraftMatrixChanged(tile.craftMatrix);
-
+        tile.openInventory(inv.player);
     }
 
     @Override
@@ -242,5 +242,14 @@ public class ContainerCloner extends Container// Workbench
     public boolean canInteractWith(EntityPlayer p)
     {
         return true;
+    }
+    
+    /**
+     * Called when the container is closed.
+     */
+    public void onContainerClosed(EntityPlayer playerIn)
+    {
+        super.onContainerClosed(playerIn);
+        tile.closeInventory(playerIn);
     }
 }

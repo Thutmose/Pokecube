@@ -1,6 +1,7 @@
 package pokecube.adventures.blocks.cloner;
 
 import cofh.api.energy.TileEnergyHandler;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -15,12 +16,62 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
+import pokecube.core.PokecubeItems;
+import pokecube.core.mod_Pokecube;
+import pokecube.core.interfaces.IPokemob;
 
-public class TileEntityCloner extends TileEnergyHandler implements IInventory
+public class TileEntityCloner extends TileEnergyHandler implements IInventory, ITickable
 {
     public CraftMatrix          craftMatrix;
     public InventoryCraftResult result;
     private ItemStack[]         inventory = new ItemStack[10];
+    EntityPlayer                user;
+
+    @Override
+    public void update()
+    {
+        if (worldObj.getTotalWorldTime() % 10 == 0 && !worldObj.isRemote)
+        {
+            int index = -1;
+            for (int i = 0; i < 9; i++)
+            {
+                ItemStack stack = inventory[i];
+                int num = PokecubeItems.getFossilNumber(stack);
+                if (num > 0)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            if (index >= 0)
+            {
+                ItemStack stack = inventory[index];
+                int num = PokecubeItems.getFossilNumber(stack);
+                int energy = storage.getEnergyStored();
+                if (energy >= 20000)
+                {
+                    storage.extractEnergy(20000, false);
+                    EntityLiving entity = (EntityLiving) mod_Pokecube.core.createEntityByPokedexNb(num, worldObj);
+                    if (entity != null)
+                    {
+                        entity.setHealth(entity.getMaxHealth());
+                        // to avoid the death on spawn
+                        int maxXP = 6000;
+                        // that will make your pokemob around level 3-5.
+                        // You can give him more XP if you want
+                        ((IPokemob) entity).setExp(worldObj.rand.nextInt(maxXP) + 50, true, true);
+                        if (user != null) ((IPokemob) entity).setPokemonOwner(user);
+                        entity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(),
+                                worldObj.rand.nextFloat() * 360F, 0.0F);
+                        worldObj.spawnEntityInWorld(entity);
+                        entity.playLivingSound();
+                        stack.stackSize--;
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
@@ -179,19 +230,19 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory
     @Override
     public boolean isUseableByPlayer(EntityPlayer player)
     {
-        return true;
+        return user == null || user == player;
     }
 
     @Override
     public void openInventory(EntityPlayer player)
     {
-
+        user = player;
     }
 
     @Override
     public void closeInventory(EntityPlayer player)
     {
-
+        user = null;
     }
 
     @Override

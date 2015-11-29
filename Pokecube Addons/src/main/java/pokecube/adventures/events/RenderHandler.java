@@ -31,7 +31,7 @@ import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.ItemPokemobEgg;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.api.maths.Vector3;
 import vazkii.botania.api.item.IBaubleRender;
 import vazkii.botania.api.item.IBaubleRender.RenderType;

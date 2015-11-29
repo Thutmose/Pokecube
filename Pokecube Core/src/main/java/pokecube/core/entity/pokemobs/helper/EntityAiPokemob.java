@@ -79,7 +79,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public GuardAI        guardAI  = new GuardAI(this, getHome(), 16, 16, new TimePeriod(0, 0), false);
     public LogicCollision collider = new LogicCollision(this);
 
-    private int lastHadTargetTime  = 0;
+    private int lastHadTargetTime = 0;
 
     private PokeNavigator     navi;
     private PokemobMoveHelper mover;
@@ -288,8 +288,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (down != null) here.set(down);
 
             Block b;
-            if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) //&& getAttackTarget() == null
-                    && !getAIState(SLEEPING, state) || b.getMaterial().isLiquid() )
+            if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) // &&
+                                                                                      // getAttackTarget()
+                                                                                      // ==
+                                                                                      // null
+                    && !getAIState(SLEEPING, state) || b.getMaterial().isLiquid())
             {
                 motionY += 0.01;
             }
@@ -397,11 +400,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         super.onLivingUpdate();
 
-        if(ticksExisted%10==0)
+        if (ticksExisted % 10 == 0)
         {
             this.isShearable(null, worldObj, here.getPos());
         }
-        
+
         if (getPokemonAIState(IPokemob.ANGRY) && getAttackTarget() == null)
         {
             this.setPokemonAIState(ANGRY, false);
@@ -696,7 +699,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 setDirectionPitch(0);
             }
-            if ((getAIState(SLEEPING, aiState) || getStatus() == STATUS_SLP || getStatus() == STATUS_FRZ) && isAbleToFly)
+            if ((getAIState(SLEEPING, aiState) || getStatus() == STATUS_SLP || getStatus() == STATUS_FRZ)
+                    && isAbleToFly)
                 shouldGoDown = true;
 
             if (this.isInWater())
@@ -1076,7 +1080,18 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             this.motionY += look.y;
             this.motionZ += look.z;
             look.freeVectorFromPool();
-            // System.out.println(onGround);
+            if (!worldObj.isRemote)
+            {
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+                buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
+                buffer.writeInt(getEntityId());
+                buffer.writeByte(4);
+                buffer.writeFloat((float) posX);
+                buffer.writeFloat((float) posY);
+                buffer.writeFloat((float) posZ);
+                MessageClient message = new MessageClient(buffer);
+                PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
+            }
             return false;
         }
         if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.apple)
@@ -1087,7 +1102,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
 
-        if (player.getHeldItem() != null && getPokedexNb() == 179)//Mareep
+        if (player.getHeldItem() != null && getPokedexNb() == 179) // Mareep
         {
             if (player.getHeldItem().getItem() == Items.dye)
             {
@@ -1313,18 +1328,18 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             this.motionY += 0.03999999910593033D;
         }
-//        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-//        buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-//        buffer.writeInt(getEntityId());
-//        buffer.writeByte(3);
-//        buffer.writeFloat((float) motionX);
-//        buffer.writeFloat((float) motionY);
-//        buffer.writeFloat((float) motionZ);
-//        buffer.writeFloat((float) posX);
-//        buffer.writeFloat((float) posY);
-//        buffer.writeFloat((float) posZ);
-//        MessageClient message = new MessageClient(buffer);
-//        PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
+        // PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+        // buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
+        // buffer.writeInt(getEntityId());
+        // buffer.writeByte(3);
+        // buffer.writeFloat((float) motionX);
+        // buffer.writeFloat((float) motionY);
+        // buffer.writeFloat((float) motionZ);
+        // buffer.writeFloat((float) posX);
+        // buffer.writeFloat((float) posY);
+        // buffer.writeFloat((float) posZ);
+        // MessageClient message = new MessageClient(buffer);
+        // PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
     }
 
     public void setJumping(boolean jump)

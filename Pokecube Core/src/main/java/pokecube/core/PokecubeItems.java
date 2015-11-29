@@ -499,7 +499,6 @@ public class PokecubeItems extends Items
         int ret = 0;
         for (ItemStack s : fossils.keySet())
         {
-            System.out.println(s + " " + fossil);
             if (s.isItemEqual(fossil))
             {
                 ret = fossils.get(s);

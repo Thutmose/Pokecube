@@ -116,6 +116,7 @@ public class ModelPokemobEgg extends ModelBase
         this.Egg3.render(f5);
         this.Egg1.render(f5);
 
+        GL11.glColor3f(1, 1, 1);
         GL11.glPopMatrix();
     }
 

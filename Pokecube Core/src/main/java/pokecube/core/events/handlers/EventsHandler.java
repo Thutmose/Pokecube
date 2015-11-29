@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.Lists;
+
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -83,6 +85,8 @@ import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.pokemobs.PokemobPacketHandler;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.world.gen.WorldGenStartBuilding;
 import thut.api.maths.ExplosionCustom;
@@ -145,10 +149,10 @@ public class EventsHandler
         if (evt.explosion instanceof ExplosionCustom && evt instanceof ExplosionEvent.Detonate)
         {
             ExplosionCustom boom = (ExplosionCustom) evt.explosion;
-
             if (!boom.meteor) return;
 
-            List<BlockPos> blocks = ((ExplosionEvent.Detonate) evt).getAffectedBlocks();
+            @SuppressWarnings("unchecked")
+            List<BlockPos> blocks = Lists.newArrayList(boom.affectedBlockPositions);
 
             for (BlockPos p : blocks)
             {
@@ -452,13 +456,28 @@ public class EventsHandler
                     loc.getAABB().expand(16, 16, 16));
             Vector3 temp = Vector3.getNewVectorFromPool();
             Vector3 look = Vector3.getNewVectorFromPool().set(player.getLookVec());
-            for (Object o : entities)
+            for (EntityLiving o : entities)
             {
                 if (o instanceof IPokemob)
                 {
                     temp.set((temp.set(o).subtractFrom(loc)).normalize());
                     if (temp.dot(look) > 0)
                     {
+                        boolean watched = ((IPokemob) o).getPokemonAIState(IPokemob.WATCHED);
+                        if(!watched)
+                        {
+                            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(18));
+                            buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
+                            Vector3 here = Vector3.getNewVectorFromPool().set(o);
+                            buffer.writeInt(o.getEntityId());
+                            buffer.writeByte(0);
+                            buffer.writeFloat((float) o.posX);
+                            buffer.writeFloat((float) o.posY);
+                            buffer.writeFloat((float) o.posZ);
+                            MessageClient message = new MessageClient(buffer);
+                            PokecubePacketHandler.sendToAllNear(message, here, o.dimension, 32);
+                        }
+                        
                         ((IPokemob) o).setPokemonAIState(IPokemob.WATCHED, true);
                     }
                     else

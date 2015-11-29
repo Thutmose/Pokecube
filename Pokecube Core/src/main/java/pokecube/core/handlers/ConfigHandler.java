@@ -38,7 +38,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                         "Are addons that add FakeMons allowed to add spawns or starters to the world.")
                 .getBoolean(true);
         meteors = config.get(Configuration.CATEGORY_GENERAL, "meteors", meteors, "do meteors fall.").getBoolean(true);
-        
+
         cull = config.get(Configuration.CATEGORY_GENERAL, "cullDistanced", cull,
                 "do pokemon that get too far from a player despawn instantly").getBoolean(false);
         mysterygift = config.get(Configuration.CATEGORY_GENERAL, "mysterygift", mysterygift,
@@ -92,6 +92,11 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
         if (advanced)
         {
+
+            SpawnHandler.MAXNUM = config
+                    .get(CATEGORY_ADVANCED, "mobNumber", SpawnHandler.MAXNUM,
+                            "Number of Pokemobs that can spawn inside the despawn radius, this is multiplied by spawn density")
+                    .getInt();
 
             int dist = config.get(CATEGORY_ADVANCED, "minMeteorDistance", 3000,
                     "The minimum distance between two meteor impacts").getInt(3000);
@@ -169,8 +174,8 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             }
             if (config.hasKey(CATEGORY_ADVANCED, "mystlocs"))
             {
-                String[] locs = config.getStringList("mystlocs", CATEGORY_ADVANCED, new String[]{}, "");
-                for(String loc: locs)
+                String[] locs = config.getStringList("mystlocs", CATEGORY_ADVANCED, new String[] {}, "");
+                for (String loc : locs)
                 {
                     PokecubeMod.giftLocations.add(loc);
                 }
@@ -227,7 +232,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         POKEMARTSELLER = config
                 .get(Configuration.CATEGORY_GENERAL, "pokemartseller", true, "Do pokemart sellers spawn in pokemarts.")
                 .getBoolean(true);
-        
+
         config.save();
         // Gui
         GUICHOOSEFIRSTPOKEMOB_ID = 11;
@@ -240,5 +245,34 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         GUIDISPLAYTELEPORTINFO_ID = 18;
         GUIPOKEMOB_ID = 19;
         System.out.println("Pokecube Config Loaded");
+    }
+
+    public static void saveConfig()
+    {
+        Configuration config = new Configuration(configFile);
+        config.load();
+
+        config.get(CATEGORY_ADVANCED, "hardMode", hardMode).set(hardMode);
+        config.get(CATEGORY_ADVANCED, "semiHMode", semiHardMode).set(semiHardMode);
+        config.get(CATEGORY_ADVANCED, "loginGui", guiOnLogin).set(guiOnLogin);
+        config.get(CATEGORY_ADVANCED, "advancedOptions", false).set(true);
+        config.get(CATEGORY_ADVANCED, "mobNumber", SpawnHandler.MAXNUM).set(SpawnHandler.MAXNUM);
+        config.get(CATEGORY_ADVANCED, "despawnRadius", mobDespawnRadius).set(mobDespawnRadius);
+        if (config.hasKey(CATEGORY_ADVANCED, "explosions") || !explosions)
+        {
+            config.get(CATEGORY_ADVANCED, "explosions", explosions).set(explosions);
+        }
+        ArrayList<String> funcs = new ArrayList<String>();
+        for (Integer i : SpawnHandler.functions.keySet())
+        {
+            String s = SpawnHandler.functions.get(i);
+            if (i != null && s != null)
+            {
+                funcs.add(i + ":" + s);
+            }
+        }
+
+        config.get(CATEGORY_ADVANCED, "functions", funcs.toArray(new String[0])).set(funcs.toArray(new String[0]));
+        config.save();
     }
 }

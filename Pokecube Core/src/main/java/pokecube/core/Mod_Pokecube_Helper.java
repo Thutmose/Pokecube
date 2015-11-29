@@ -6,8 +6,6 @@ package pokecube.core;
 import static pokecube.core.PokecubeItems.getItem;
 import static pokecube.core.PokecubeItems.removeFromHoldables;
 import static pokecube.core.interfaces.PokecubeMod.HMs;
-import static pokecube.core.interfaces.PokecubeMod.hardMode;
-import static pokecube.core.interfaces.PokecubeMod.semiHardMode;
 import static pokecube.core.mod_Pokecube.getWorld;
 
 import java.io.File;
@@ -26,7 +24,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.config.Configuration;
-import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.handlers.RecipeHandler;
@@ -161,8 +158,8 @@ public class Mod_Pokecube_Helper
         terrain.add(Blocks.netherrack);
     }
 
-    public static final String  CATEGORY_ADVANCED = "advanced";
-    public static HashSet<Block> allBlocks = new HashSet<Block>();
+    public static final String   CATEGORY_ADVANCED = "advanced";
+    public static HashSet<Block> allBlocks         = new HashSet<Block>();
 
     public static void initAllBlocks()
     {
@@ -262,7 +259,6 @@ public class Mod_Pokecube_Helper
     {
         ItemHandler.addItems(this);
     }
-
 
     private static PrintWriter out;
     private static FileWriter  fwriter;
@@ -762,32 +758,5 @@ public class Mod_Pokecube_Helper
     public static List<Block> getTerrain()
     {
         return terrain;
-    }
-
-    public static void saveConfig()
-    {
-        Configuration config = new Configuration(configFile);
-        config.load();
-
-        config.get(CATEGORY_ADVANCED, "hardMode", hardMode).set(hardMode);
-        config.get(CATEGORY_ADVANCED, "semiHMode", semiHardMode).set(semiHardMode);
-        config.get(CATEGORY_ADVANCED, "loginGui", guiOnLogin).set(guiOnLogin);
-        if (config.hasKey(CATEGORY_ADVANCED, "explosions") || !explosions)
-        {
-            config.get(CATEGORY_ADVANCED, "advancedOptions", false).set(true);
-            config.get(CATEGORY_ADVANCED, "explosions", explosions).set(explosions);
-        }
-        ArrayList<String> funcs = new ArrayList<String>();
-        for (Integer i : SpawnHandler.functions.keySet())
-        {
-            String s = SpawnHandler.functions.get(i);
-            if (i != null && s != null)
-            {
-                funcs.add(i + ":" + s);
-            }
-        }
-
-        config.get(CATEGORY_ADVANCED, "functions", funcs.toArray(new String[0])).set(funcs.toArray(new String[0]));
-        config.save();
     }
 }

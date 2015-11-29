@@ -27,6 +27,7 @@ import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
@@ -471,6 +472,7 @@ public class Commands implements ICommand
                     Mod_Pokecube_Helper.mobDespawnRadius = Integer.parseInt(args[2]);
                     cSender.addChatMessage(new ChatComponentText("Pokemob Spawn Info n:" + SpawnHandler.MAXNUM + ":d:"
                             + Mod_Pokecube_Helper.mobDespawnRadius));
+                    ConfigHandler.saveConfig();
                     return true;
                 }
             }
@@ -500,7 +502,7 @@ public class Commands implements ICommand
                         PokecubeMod.semiHardMode = on;
                         cSender.addChatMessage(
                                 new ChatComponentText("SemiHardMode is set to " + PokecubeMod.semiHardMode));
-                        Mod_Pokecube_Helper.saveConfig();
+                        ConfigHandler.saveConfig();
                         return true;
                     }
                     else
@@ -532,7 +534,7 @@ public class Commands implements ICommand
                         PokecubeMod.hardMode = on;
                         if (PokecubeMod.hardMode) PokecubeMod.semiHardMode = true;
                         cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.hardMode));
-                        Mod_Pokecube_Helper.saveConfig();
+                        ConfigHandler.saveConfig();
                         return true;
                     }
                     else
@@ -564,7 +566,7 @@ public class Commands implements ICommand
                         Mod_Pokecube_Helper.explosions = on;
                         cSender.addChatMessage(
                                 new ChatComponentText("Explosion Damage is " + Mod_Pokecube_Helper.explosions));
-                        Mod_Pokecube_Helper.saveConfig();
+                        ConfigHandler.saveConfig();
                         return true;
                     }
                     else

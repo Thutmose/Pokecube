@@ -36,6 +36,7 @@ public class ItemLuckyEgg extends ItemTranslated
                 EntityProfessor p = new EntityProfessor(world, location.offset(EnumFacing.UP));
                 world.spawnEntityInWorld(p);
             }
+            location.freeVectorFromPool();
         }
         return itemstack;
     }

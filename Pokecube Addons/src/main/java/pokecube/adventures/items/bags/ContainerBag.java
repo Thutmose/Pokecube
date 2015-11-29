@@ -113,7 +113,7 @@ public class ContainerBag extends Container {
 	{
 		if(!(mod_Pokecube.isOnClientSide()&&FMLClientHandler.instance().getServer()!=null))
 		{
-			inv.setPage((inv.getPage()==0)&&(dir==-1)?inv.PAGECOUNT-1:(inv.getPage()+dir)%inv.PAGECOUNT);
+			inv.setPage((inv.getPage()==0)&&(dir==-1)?InventoryBag.PAGECOUNT-1:(inv.getPage()+dir)%InventoryBag.PAGECOUNT);
 		}
 		
 		bindInventories();
@@ -197,7 +197,7 @@ public class ContainerBag extends Container {
             {
                 ItemStack itemstack1 = slot.getStack();
                 itemstack = itemstack1.copy();
-                if(!this.isItemValid(itemstack1)) return null;
+                if(!ContainerBag.isItemValid(itemstack1)) return null;
 
                 if (i > 35)
                 {

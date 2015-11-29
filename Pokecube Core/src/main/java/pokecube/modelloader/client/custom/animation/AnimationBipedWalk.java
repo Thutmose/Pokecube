@@ -20,12 +20,12 @@ public class AnimationBipedWalk extends ModelAnimation
 	/** Right arm */
 	public HashMap<String, ArrayList<Vector5>>	positionsRA	= new HashMap<String, ArrayList<Vector5>>();
 
-	public HashSet<String>	namesL	= new HashSet();
-	public HashSet<String>	namesR	= new HashSet();
-	public HashSet<String>	namesLA	= new HashSet();
-	public HashSet<String>	namesRA	= new HashSet();
+	public HashSet<String>	namesL	= new HashSet<String>();
+	public HashSet<String>	namesR	= new HashSet<String>();
+	public HashSet<String>	namesLA	= new HashSet<String>();
+	public HashSet<String>	namesRA	= new HashSet<String>();
 
-	public HashMap<String, Float>	partialTimes	= new HashMap();
+	public HashMap<String, Float>	partialTimes	= new HashMap<String, Float>();
 	private int[]					ticks			= new int[4];
 	private float					lastTick;
 	
@@ -160,7 +160,7 @@ public class AnimationBipedWalk extends ModelAnimation
 
 	public void initPositions(int speed, HashMap<String, ArrayList<Vector5>> map, String partName)
 	{
-		ArrayList<Vector5> list = new ArrayList();
+		ArrayList<Vector5> list = new ArrayList<Vector5>();
 		if(map==positionsL || map==positionsRA)
 		{
 			float angle = map==positionsL?angleLegs:angleArms;

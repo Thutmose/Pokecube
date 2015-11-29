@@ -73,8 +73,6 @@ public class ModelPokemobEgg extends ModelBase
         GL11.glScaled(0.25, 0.25, 0.25);
         GL11.glTranslated(0, 4.4, 0);
 
-        int[] colours = APokemobModel.getColours(0);
-
         IPokemob pokemob = ((EntityPokemobEgg) entity).getPokemob();
         Color colour = new Color(PokeType.normal.colour);
         float red = colour.getRed() / 255f;

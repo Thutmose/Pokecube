@@ -10,7 +10,7 @@ import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.entity.villager.EntityTrader;
 
-public class RenderTrainer extends RenderBiped
+public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
 {
 	
     public RenderTrainer()
@@ -18,6 +18,7 @@ public class RenderTrainer extends RenderBiped
         super(Minecraft.getMinecraft().getRenderManager(), new ModelBiped(0.0F), 0.5f);
     }
 	
+    @SuppressWarnings("unchecked")
     @Override
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
@@ -27,7 +28,7 @@ public class RenderTrainer extends RenderBiped
     	if(villager instanceof EntityTrainer)
     	{
     		TypeTrainer type = ((EntityTrainer)villager).getType();
-    		return type==null?super.getEntityTexture(villager):type.getTexture(((EntityTrainer)villager));
+    		return type==null?super.getEntityTexture((T) villager):type.getTexture(((EntityTrainer)villager));
     		
     	}
     	else if(villager instanceof EntityTrader)

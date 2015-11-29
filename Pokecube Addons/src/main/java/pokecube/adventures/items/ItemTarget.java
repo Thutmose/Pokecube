@@ -2,22 +2,16 @@ package pokecube.adventures.items;
 
 import java.util.List;
 
-import igwmod.WikiUtils;
-import igwmod.lib.IGWLog;
-import igwmod.recipeintegration.IntegratorCraftingRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
@@ -168,8 +162,6 @@ public class ItemTarget extends Item
     		return itemstack;
     	}
 
-    	Vector3 v = Vector3.getNewVectorFromPool().set(player);
-    	
     	if(player.isSneaking() && meta!=3)
     	{
     		TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(player);
@@ -204,7 +196,7 @@ public class ItemTarget extends Item
     /**
      * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
      */
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
     	par3List.add(new ItemStack(par1, 1, 0));
     	par3List.add(new ItemStack(par1, 1, 1));
     	par3List.add(new ItemStack(par1, 1, 3));

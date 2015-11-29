@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
@@ -20,33 +20,33 @@ import thut.api.maths.Vector3;
 
 public class ELNInterfacer
 {
-	static Class coordonate;
-	static Class line;
-	static Class state;
-	static Class resistor;
-	static Class voltageSource;
-	static Class nodeManager;
-	static Class rootSystem;
+	static Class<?> coordonate;
+	static Class<?> line;
+	static Class<?> state;
+	static Class<?> resistor;
+	static Class<?> voltageSource;
+	static Class<?> nodeManager;
+	static Class<?> rootSystem;
 	static Method resistorSetR;
 	static Field nodeManagerInstance;
 	static Method nodeManagerGetNodeFromCoordonate;
-	static Class directions;
+	static Class<?> directions;
 	static Method dirValues;
-	static Class lrdu;
+	static Class<?> lrdu;
 	static Method getElectricalLoad;
-	static Class electricalLoad;
-	static Class nbtElectricalLoad;
+	static Class<?> electricalLoad;
+	static Class<?> nbtElectricalLoad;
 	static Method loadSetRs;
 	static Method sourceSetU;
 	static Method getSubSystem;
-	static Class subsystem;
+	static Class<?> subsystem;
 	static Method getRoot;
 	
-	static Class sixNode;
-	static Class sixNodeElement;
+	static Class<?> sixNode;
+	static Class<?> sixNodeElement;
 	static Field sixNodeSEL;
 	
-	static Class cable;
+	static Class<?> cable;
 	static Field cableCompList;
 	static Field cableLoadList;
 	static Field cableLoad;
@@ -54,7 +54,7 @@ public class ELNInterfacer
 	static Method disconnect;
 	static Method connect;
 	
-	static Class bipole;
+	static Class<?> bipole;
 	static Method breakConnection;
 	static Method connectTo;
 
@@ -241,8 +241,8 @@ public class ELNInterfacer
 				if(load!=null)
 				{
 					Object cable = getCable(node);
-					List cableElectricalComps = getCableComponents(cable);
-					List cableLoads = getCableLoads(cable);
+					List<Object> cableElectricalComps = getCableComponents(cable);
+					List<Object> cableLoads = getCableLoads(cable);
 					Object cableLoad = getCableLoad(cable);
 					Vector3 cableLoc = Vector3.getNewVectorFromPool().set(tile);
 					CablePacket pack = new CablePacket(cableLoc, resistor, voltageSource, loadA, loadB, cable, cableLoad);
@@ -264,7 +264,7 @@ public class ELNInterfacer
 						breakConnection(resistor1);
 						breakConnection(voltageSource1);
 						cableElectricalComps.clear();
-						List toRemove = new ArrayList();
+						List<Object> toRemove = new ArrayList<Object>();
 						for(Object cableload: cableLoads)
 						{
 							if(cableload!= cableLoad)
@@ -321,14 +321,16 @@ public class ELNInterfacer
 		return object[2];
 	}
 	
-	static List getCableComponents(Object cable) throws IllegalArgumentException, IllegalAccessException
+	@SuppressWarnings("unchecked")
+    static List<Object> getCableComponents(Object cable) throws IllegalArgumentException, IllegalAccessException
 	{
-		return (List) cableCompList.get(cable);
+		return (List<Object>) cableCompList.get(cable);
 	}
 	
-	static List getCableLoads(Object cable) throws IllegalArgumentException, IllegalAccessException
+	@SuppressWarnings("unchecked")
+    static List<Object> getCableLoads(Object cable) throws IllegalArgumentException, IllegalAccessException
 	{
-		return (List) cableLoadList.get(cable);
+		return (List<Object>) cableLoadList.get(cable);
 	}
 	
 	static Object getCableLoad(Object cable) throws IllegalArgumentException, IllegalAccessException
@@ -388,8 +390,8 @@ public class ELNInterfacer
 			breakConnection(resistor);
 			breakConnection(voltageSource);
 			getCableComponents(cable).clear();
-			List toRemove = new ArrayList();
-			List cableLoads = getCableLoads(cable);
+			List<Object> toRemove = new ArrayList<Object>();
+			List<Object> cableLoads = getCableLoads(cable);
 			for(Object cableload: cableLoads)
 			{
 				if(cableload!= cableLoad)

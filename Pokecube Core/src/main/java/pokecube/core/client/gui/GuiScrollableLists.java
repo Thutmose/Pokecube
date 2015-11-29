@@ -73,7 +73,6 @@ public class GuiScrollableLists extends Gui
 
     private void draw(RenderWorldLastEvent event)
     {
-        int currentItemIndex = mod_Pokecube.getPlayer(null).inventory.currentItem;
         int h = Mod_Pokecube_Helper.guiOffset[0];
         int w = Mod_Pokecube_Helper.guiOffset[1];
 
@@ -93,8 +92,6 @@ public class GuiScrollableLists extends Gui
         locations = PokecubeSerializer.getInstance().getTeleports(minecraft.thePlayer.getUniqueID().toString());
 
         int i = 0;
-        int j = 0;
-
         int xOffset = 0;
         int yOffset = 60;
 

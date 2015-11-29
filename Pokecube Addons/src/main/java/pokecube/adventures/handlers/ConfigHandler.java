@@ -20,7 +20,7 @@ public class ConfigHandler
     public static boolean ENERGY         = true;
     static String[]       biomes;
 
-    public static ArrayList<String> overrides = new ArrayList();
+    public static ArrayList<String> overrides = new ArrayList<String>();
 
     static
     {

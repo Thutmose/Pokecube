@@ -49,7 +49,6 @@ public class ParticlesOnTarget extends MoveAnimationBase
         Vector3 target = info.target;
         ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-        double dist = source.distanceTo(target);
         Vector3 temp = Vector3.getNewVectorFromPool().set(source).subtractFrom(target);
 
         PTezzelator tez = PTezzelator.instance;

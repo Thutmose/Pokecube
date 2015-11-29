@@ -34,8 +34,8 @@ public class EntityTrader extends EntityVillager
 	MerchantRecipeList list = new MerchantRecipeList();
 	MerchantRecipeList list2 = new MerchantRecipeList();
 	
-	HashSet<BlockPos> chests = new HashSet();
-	HashMap<BlockPos, MerchantRecipe> map = new HashMap();
+	HashSet<BlockPos> chests = new HashSet<BlockPos>();
+	HashMap<BlockPos, MerchantRecipe> map = new HashMap<BlockPos, MerchantRecipe>();
 	
 	public String texture = "male";
 	
@@ -135,9 +135,9 @@ public class EntityTrader extends EntityVillager
 		
 		Vector3 chest = Vector3.getNewVectorFromPool();
 		
-		for(BlockPos c1: map.keySet())
+//		for(BlockPos c1: map.keySet())
 		{//TODO write a method for comparing sales
-			MerchantRecipe p1 = map.get(c1);
+//			MerchantRecipe p1 = map.get(c1);
 //			if(p1!=null && p1.hasSameIDsAs(p) && p1.getItemToSell().isItemEqual(p.getItemToSell()))
 //			{
 //				chest = Vector3.getNewVectorFromPool().set(c1);
@@ -165,7 +165,6 @@ public class EntityTrader extends EntityVillager
 				IInventory inv = (IInventory) te;
 				if(inv.getSizeInventory()>3)
 				{
-					boolean has = false;
 					int count = 0;
 					for(int i = 3; i<inv.getSizeInventory(); i++)
 					{

@@ -1,15 +1,9 @@
 package pokecube.compat.ai;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import cofh.api.energy.IEnergyHandler;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.tileentity.TileEntity;
@@ -19,8 +13,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Cruncher;
 import thut.api.maths.Vector3;
-import thut.api.maths.ExplosionCustom.ClientUpdateInfo;
-import thut.api.maths.ExplosionCustom.ExplosionVictimTicker;
 
 public class AIElectricalInterferance extends EntityAIBase
 {
@@ -30,7 +22,7 @@ public class AIElectricalInterferance extends EntityAIBase
 	final IPokemob pokemob;
 	final Vector3 mobLoc = Vector3.getNewVectorFromPool();
 	final EntityLiving entity;
-	final Set linesAffectedThisTick = new HashSet();
+	final Set<?> linesAffectedThisTick = new HashSet<Object>();
 	
 	public AIElectricalInterferance(IPokemob pokemob_)
 	{

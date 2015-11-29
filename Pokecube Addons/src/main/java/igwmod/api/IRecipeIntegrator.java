@@ -1,11 +1,11 @@
 package igwmod.api;
 
+import java.util.List;
+
 import igwmod.gui.IReservedSpace;
 import igwmod.gui.IWidget;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
-
-import java.util.List;
 
 /**
  * Implement this class and register it to the WikiRegistry to add support for custom recipes, like Pressure Chambers, Carpenters, Assembly Tables, ...

@@ -15,27 +15,25 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Vector4;
-import pokecube.modelloader.client.custom.animation.AnimationBipedWalk;
+import pokecube.modelloader.client.custom.animation.AnimationLoader.Model;
 import pokecube.modelloader.client.custom.animation.ModelAnimation;
 import pokecube.modelloader.client.custom.animation.PartAnimation;
-import pokecube.modelloader.client.custom.animation.AnimationLoader.Model;
 import pokecube.modelloader.client.custom.tbl.TblModel;
 import pokecube.modelloader.client.custom.x3d.X3dModel;
 import thut.api.maths.Vector3;
 
-public class LoadedModel extends RendererLivingEntity
+public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 {
     public static final String             DEFAULTPHASE = "idle";
     public String                          name;
     HashMap<String, PartInfo>              parts;
     HashMap<String, ArrayList<Vector5>>    global;
-    HashSet<String>                        validPhases  = new HashSet();
+    HashSet<String>                        validPhases  = new HashSet<String>();
     public HashMap<String, ModelAnimation> phaseMap     = new HashMap<String, ModelAnimation>();
 
     public Vector3 offset    = Vector3.getNewVectorFromPool();;
@@ -51,8 +49,6 @@ public class LoadedModel extends RendererLivingEntity
 
     public float  rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
     public float  rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
-    private float timeFactor     = 1;
-
     ResourceLocation texture;
 
     public LoadedModel(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global, Model model)
@@ -100,8 +96,7 @@ public class LoadedModel extends RendererLivingEntity
         }
         for (PartInfo p : parts.values())
         {
-            String root = p.name;
-            Set phases = p.getPhases();
+            Set<String> phases = p.getPhases();
             addChildrenPhases(validPhases, p);
             validPhases.addAll(phases);
         }
@@ -120,7 +115,7 @@ public class LoadedModel extends RendererLivingEntity
         }
     }
 
-    private void addChildrenPhases(HashSet toAddTo, PartInfo part)
+    private void addChildrenPhases(HashSet<String> toAddTo, PartInfo part)
     {
         for (PartInfo p : part.children.values())
         {
@@ -159,20 +154,6 @@ public class LoadedModel extends RendererLivingEntity
         return partsList;
     }
 
-    private void addChildren(PartInfo info, IExtendedModelPart root, IModel model2)
-    {
-        for (PartInfo p : info.children.values())
-        {
-            if (model2.getParts().get(p.name) != null)
-            {
-                addChildren(p, model2.getParts().get(p.name), model2);
-            }
-            Set phases = p.getPhases();
-            validPhases.addAll(phases);
-            root.addChild(model2.getParts().get(p.name));
-        }
-    }
-
     public HashSet<IExtendedModelPart> getAllParts()
     {
         HashSet<IExtendedModelPart> ret = new HashSet<IExtendedModelPart>();
@@ -183,7 +164,7 @@ public class LoadedModel extends RendererLivingEntity
     }
 
     @Override
-    public void doRender(EntityLivingBase entity, double d, double d1, double d2, float f, float f1)
+    public void doRender(T entity, double d, double d1, double d2, float f, float f1)
     {
         float f2 = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, f1);
         float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, f1);
@@ -215,7 +196,6 @@ public class LoadedModel extends RendererLivingEntity
         float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * f1;
 
         f4 = this.handleRotationFloat(entity, f1);
-        float f5 = 0.0625F;
         this.preRenderCallback(entity, f1);
         float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * f1;
         float f7 = entity.limbSwing - entity.limbSwingAmount * (1.0F - f1);
@@ -292,7 +272,6 @@ public class LoadedModel extends RendererLivingEntity
     public void transformGlobal(String currentPhase, Entity entity, double x, double y, double z, float partialTick,
             float rotationYaw, float rotationPitch)
     {
-        float factor = 2.0f;
         if (rotations == null)
         {
             rotations = new Vector5();
@@ -317,15 +296,7 @@ public class LoadedModel extends RendererLivingEntity
             GL11.glScalef(scale, scale, scale);
             shadowSize = entry.width * mob.getSize();
         }
-        float yawOffset = 0;
-        if (entity instanceof EntityLiving)
-        {
-            EntityLiving ent = (EntityLiving) entity;
-            yawOffset = ent.renderYawOffset;
-        }
-
         Vector4 yaw = new Vector4(0, 1, 0, rotationYaw);
-        Vector4 pitch = new Vector4(1, 0, 0, entity.rotationPitch);
         this.rotate();
         yaw.glRotate();
         this.translate();
@@ -338,8 +309,6 @@ public class LoadedModel extends RendererLivingEntity
     {
 
         IExtendedModelPart part = this.getPart(partName);
-        PartInfo info = getPartInfo(partName);
-
         if (part == null) { return; }
         // System.out.println(info);
         GL11.glPushMatrix();
@@ -597,13 +566,13 @@ public class LoadedModel extends RendererLivingEntity
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity var1)
+    protected ResourceLocation getEntityTexture(T var1)
     {
         return RenderPokemobs.getInstance().getEntityTexturePublic(var1);
     }
 
     @Override
-    protected void preRenderCallback(EntityLivingBase entity, float f)
+    protected void preRenderCallback(T entity, float f)
     {
         GL11.glEnable(GL11.GL_NORMALIZE);
         GL11.glEnable(GL11.GL_BLEND);

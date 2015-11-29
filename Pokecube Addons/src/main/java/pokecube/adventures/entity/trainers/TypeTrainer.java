@@ -247,7 +247,7 @@ public class TypeTrainer
 
     private static ItemStack makeStack(PokedexEntry entry, EntityLivingBase trainer, World world, int level)
     {
-    	int num = entry.getNb();
+    	int num = entry.getPokedexNb();
     	if(Pokedex.getInstance().getEntry(num) == null)
     		return null;
     	

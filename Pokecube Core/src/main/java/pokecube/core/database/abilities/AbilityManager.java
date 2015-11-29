@@ -17,7 +17,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.utils.PokeType;
 
 public class AbilityManager {
-	private static HashMap<String, Ability> abilities = new HashMap();
+	private static HashMap<String, Ability> abilities = new HashMap<String, Ability>();
 	
 	public static Ability getAbility(String name)
 	{
@@ -174,8 +174,6 @@ public class AbilityManager {
 			
 			@Override
 			public void onMoveUse(IPokemob mob, MovePacket move) {
-		    	Move_Base attack = move.getMove();
-		    	
 		    	IPokemob attacker = move.attacker;
 		    	if(attacker==mob || !move.pre ||  attacker==move.attacked) 
 		    		return;
@@ -287,8 +285,6 @@ public class AbilityManager {
 			
 			@Override
 			public void onMoveUse(IPokemob mob, MovePacket move) {
-		    	Move_Base attack = move.getMove();
-		    	
 		    	IPokemob attacker = move.attacker;
 		    	if(attacker==mob || !move.pre ||  attacker==move.attacked) 
 		    		return;
@@ -401,7 +397,7 @@ public class AbilityManager {
 				{
 					if(poke.getHeldItem()==null)
 					{
-						List items = new ArrayList(PokecubeItems.heldItems);
+						List<?> items = new ArrayList<Object>(PokecubeItems.heldItems);
 						Collections.shuffle(items);
 						ItemStack item = (ItemStack) items.get(0);
 						

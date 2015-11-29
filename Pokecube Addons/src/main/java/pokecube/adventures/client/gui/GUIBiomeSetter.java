@@ -24,7 +24,6 @@ public class GUIBiomeSetter extends GuiScreen {
         buttonList.clear();
         
         int yOffset = -20;
-        int xOffset = +20;
         String biome = "";
         if(setter!=null && setter.hasTagCompound())
         {

@@ -119,9 +119,6 @@ public class TblObject implements IExtendedModelPart
 		}
 		if(getParent()!=null && getParent() instanceof TblObject)
 		{
-            ModelRenderer parents = ((TblObject)getParent()).model;
-            
-            float rX = parents.rotateAngleX, rY = parents.rotateAngleY, rZ = parents.rotateAngleZ;
             float pX = model.rotationPointX * factor, pY = model.rotationPointY * factor, pZ = model.rotationPointZ * factor;
 
             GL11.glTranslatef(pX, pY, pZ);

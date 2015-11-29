@@ -1,19 +1,15 @@
 package pokecube.compat.ai;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.World;
 import pneumaticCraft.api.IHeatExchangerLogic;
 import pneumaticCraft.api.tileentity.IHeatExchanger;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IHungrymob;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
 public class AIThermalInteferance extends EntityAIBase
@@ -41,7 +37,7 @@ public class AIThermalInteferance extends EntityAIBase
      */
     public void updateTask()
 	{
-		if(pokemob.getPokemonAIState(pokemob.SLEEPING))
+		if(pokemob.getPokemonAIState(IMoveConstants.SLEEPING))
 		{
 			double heating = 0;
 			if(entity.getEntityData().hasKey("heatOut"))
@@ -50,7 +46,7 @@ public class AIThermalInteferance extends EntityAIBase
 			}
 			if(heating <= 0)
 			{
-				pokemob.setPokemonAIState(pokemob.SLEEPING, false);
+				pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
 				pokemob.setPokemonAIState(IPokemob.TIRED, false);
 			}
 			else
@@ -60,7 +56,6 @@ public class AIThermalInteferance extends EntityAIBase
 		}
 		else
 		{
-			World worldObj = entity.worldObj;
 			double heating = 0;
 			if(entity.getEntityData().hasKey("heatOut"))
 			{
@@ -69,7 +64,7 @@ public class AIThermalInteferance extends EntityAIBase
 			if(heating > pokemob.getLevel())
 			{
 				entity.getEntityData().setDouble("heatOut", 150 - pokemob.getLevel());
-				pokemob.setPokemonAIState(pokemob.SLEEPING, true);
+				pokemob.setPokemonAIState(IMoveConstants.SLEEPING, true);
 				pokemob.setPokemonAIState(IPokemob.TIRED, true);
 			}
 //			heating  = 100;

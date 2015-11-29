@@ -535,7 +535,7 @@ public class MovesUtils implements IMoveConstants
         if (!(move.attackCategory == CATEGORY_SELF && PWR == 0) && finalAttackStrength > 0)
         {
             DamageSource source = new PokemobDamageSource("mob", (EntityLivingBase) attacker, type);
-            boolean hit = attacked.attackEntityFrom(source, finalAttackStrength);
+            attacked.attackEntityFrom(source, finalAttackStrength);
 
             if (attacked instanceof IPokemob)
             {
@@ -578,14 +578,12 @@ public class MovesUtils implements IMoveConstants
             }
             if (((move.selfDamageType & MoveEntry.DAMAGEDEALT) != 0))
             {
-                float max = ((EntityLiving) attacker).getMaxHealth();
                 float diff = damageDealt * damageRatio / 100f;
                 ((EntityLiving) attacker).attackEntityFrom(DamageSource.fall, diff);
             }
             if (((move.selfDamageType & MoveEntry.RELATIVEHP) != 0))
             {
                 float current = ((EntityLiving) attacker).getHealth();
-                float max = ((EntityLiving) attacker).getMaxHealth();
                 float diff = current * damageRatio / 100f;
                 ((EntityLiving) attacker).attackEntityFrom(DamageSource.fall, diff);
             }
@@ -618,7 +616,6 @@ public class MovesUtils implements IMoveConstants
         {
             ((EntityLiving) attacker).setHealth(Math.min(((EntityLiving) attacker).getMaxHealth(),
                     ((EntityLiving) attacker).getHealth() + (((EntityLiving) attacker).getMaxHealth() * healRatio)));
-            EntityLivingBase entityAttacker = (EntityLivingBase) attacker;
             ((IPokemob) attacker).getMoveStats().SELFRAISECOUNTER = 80;
         }
 
@@ -872,17 +869,6 @@ public class MovesUtils implements IMoveConstants
         }
 
         return ret;
-    }
-
-    private static byte handleStatus(IPokemob attacker, Entity attacked)
-    {
-
-        if (attacker.getStatus() == STATUS_FRZ) { return STATUS_FRZ; }
-        if (attacker.getStatus() == STATUS_SLP) { return STATUS_SLP; }
-        if (attacker.getStatus() == STATUS_PAR && MovesUtils.rand.nextInt(100) <= 25) { return STATUS_PAR; }
-        if (attacker.getStatus() == STATUS_BRN) { return STATUS_BRN; }
-
-        return STATUS_NON;
     }
 
     /** For contact moves like tackle. The mob gets close to its target and

@@ -11,10 +11,8 @@ import thut.api.maths.Vector3;
 
 public class PokecubeTeleporter extends Teleporter {
 
-	private WorldServer world;
 	public PokecubeTeleporter(WorldServer world) {
 		super(world);
-		this.world = world;
 	}
 	
 	   /**

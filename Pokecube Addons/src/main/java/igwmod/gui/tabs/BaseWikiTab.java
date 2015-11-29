@@ -1,13 +1,13 @@
 package igwmod.gui.tabs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import igwmod.gui.GuiWiki;
 import igwmod.gui.IPageLink;
 import igwmod.gui.IReservedSpace;
 import igwmod.gui.LocatedSectionString;
 import igwmod.gui.LocatedString;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class BaseWikiTab implements IWikiTab{
     protected List<String> pageEntries = new ArrayList<String>();

@@ -24,8 +24,8 @@ import pokecube.modelloader.items.ItemModelReloader;
 public class ClientProxy extends CommonProxy
 {
 
-    public static HashMap<String, Object>            modelProviders = new HashMap();
-    public static HashMap<String, ArrayList<String>> modModels      = new HashMap();
+    public static HashMap<String, Object>            modelProviders = new HashMap<String, Object>();
+    public static HashMap<String, ArrayList<String>> modModels      = new HashMap<String, ArrayList<String>>();
 
     @Override
     public void registerModelProvider(String modid, Object mod)
@@ -33,6 +33,7 @@ public class ClientProxy extends CommonProxy
         if (!modelProviders.containsKey(modid)) modelProviders.put(modid, mod);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public void registerRenderInformation()
     {

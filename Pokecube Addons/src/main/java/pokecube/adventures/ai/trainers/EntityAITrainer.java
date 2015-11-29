@@ -16,7 +16,7 @@ public class EntityAITrainer extends EntityAIBase {
 
 	// The entity (normally a player) that is the target of this trainer.
 	EntityLivingBase target;
-	Class targetClass;
+	Class<? extends EntityLivingBase> targetClass;
 	Vector3 loc = Vector3.getNewVectorFromPool();
 
 	// The trainer Entity
@@ -38,7 +38,7 @@ public class EntityAITrainer extends EntityAIBase {
 
 		Vector3 here = loc.set(trainer);
 
-		List targets = world.getEntitiesWithinAABB(targetClass, here.getAABB()
+		List<? extends EntityLivingBase> targets = world.getEntitiesWithinAABB(targetClass, here.getAABB()
 				.expand(16, 16, 16));
 		for (Object o : targets) {
 			EntityLivingBase e = (EntityLivingBase) o;

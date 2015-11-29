@@ -28,7 +28,6 @@ public class GuiBag extends GuiContainer {
 	GuiTextField textFieldSearch;
 	GuiTextField textDebug;
 
-	private String selectedBox = "1";
 	private String boxName = "1";
 	private boolean toRename = false;
 	public boolean pc = false;
@@ -224,7 +223,6 @@ public class GuiBag extends GuiContainer {
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-		int i1;
 	}
 	
 	@Override

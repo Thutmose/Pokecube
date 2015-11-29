@@ -61,7 +61,7 @@ public class InventoryPC implements IInventory
 	    {
 	    	NBTTagList nbttag = new NBTTagList();
 	    	
-	    	HashSet<String> keys = new HashSet();
+	    	HashSet<String> keys = new HashSet<String>();
 	    	for(String s: map.keySet())
 	    		keys.add(s);
 	    	
@@ -81,8 +81,7 @@ public class InventoryPC implements IInventory
 	    		if(!isUid)
 	    			continue;
 	    		
-	    		int ind = 0;
-			    NBTTagCompound items = new NBTTagCompound();
+	    		NBTTagCompound items = new NBTTagCompound();
 			    NBTTagCompound boxes = new NBTTagCompound();
 			    boxes.setString("UUID", uuid);
 			    boxes.setBoolean("seenOwner", map.get(uuid).seenOwner);
@@ -94,7 +93,6 @@ public class InventoryPC implements IInventory
 			    	boxes.setString("name"+i, map.get(uuid).boxes[i]);
 			    }
 				items.setInteger("page", map.get(uuid).getPage());
-			    int count = 0;
 			    for (int i = 0; i < map.get(uuid).getSizeInventory(); i++)
 			    {
 			        ItemStack itemstack = map.get(uuid).getStackInSlot(i);
@@ -103,10 +101,8 @@ public class InventoryPC implements IInventory
 			        if (itemstack != null)
 			        {
 			            nbttagcompound.setShort("Slot", (short)i);
-			            ind++;
 			            itemstack.writeToNBT(nbttagcompound);
 			            items.setTag("item"+i, nbttagcompound);
-			            count++;
 			        }
 			    }
 			    items.setTag("boxes", boxes);
@@ -128,8 +124,7 @@ public class InventoryPC implements IInventory
 				{
 					continue;
 				}
-	    		int ind = 0;
-			    NBTTagCompound items = new NBTTagCompound();
+	    		NBTTagCompound items = new NBTTagCompound();
 			    NBTTagCompound boxes = new NBTTagCompound();
 			    boxes.setString("UUID", player);
 			    boxes.setBoolean("seenOwner", map.get(player).seenOwner);
@@ -142,7 +137,6 @@ public class InventoryPC implements IInventory
 			    	boxes.setString("name"+i, map.get(player).boxes[i]);
 			    }
 				items.setInteger("page", map.get(player).getPage());
-			    int count = 0;
 			    for (int i = 0; i < map.get(player).getSizeInventory(); i++)
 			    {
 			        ItemStack itemstack = map.get(player).getStackInSlot(i);
@@ -151,10 +145,8 @@ public class InventoryPC implements IInventory
 			        if (itemstack != null)
 			        {
 			            nbttagcompound.setShort("Slot", (short)i);
-			            ind++;
 			            itemstack.writeToNBT(nbttagcompound);
 			            items.setTag("item"+i, nbttagcompound);
-			            count++;
 			        }
 			    }
 			    items.setTag("boxes", boxes);
@@ -322,10 +314,8 @@ public class InventoryPC implements IInventory
     		if(player==null)
     		{
 	    		IPokemob poke = PokecubeManager.itemToPokemob(mob, world);
-	    		EntityLivingBase owner = null;
 	    		if(poke!=null)
 	    		{
-	    			owner = poke.getPokemonOwner();
 	    			((EntityLivingBase)poke).setDead();
 	    		}
     		}

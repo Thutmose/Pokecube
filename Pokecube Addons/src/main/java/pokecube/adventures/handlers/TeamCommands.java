@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.scoreboard.ScorePlayerTeam;
@@ -19,10 +18,10 @@ import pokecube.core.utils.ChunkCoordinate;
 
 public class TeamCommands implements ICommand {
 
-	private List aliases;
+	private List<String> aliases;
 	
 	public TeamCommands() {
-		this.aliases = new ArrayList();
+		this.aliases = new ArrayList<String>();
 		this.aliases.add("poketeam");
 		this.aliases.add("pteam");
 		this.aliases.add("pokeTeam");
@@ -39,7 +38,7 @@ public class TeamCommands implements ICommand {
 	}
 
 	@Override
-	public List getCommandAliases() {
+	public List<String> getCommandAliases() {
 		return aliases;
 	}
 
@@ -70,14 +69,11 @@ public class TeamCommands implements ICommand {
 				team = ((EntityPlayer)sender).worldObj.getScoreboard().getPlayersTeam(sender.getCommandSenderName());
 			}
 
-			EntityPlayerMP[] targets = null;
 			for(int i = 1; i<args.length;i++)
 			{
 				String s = args[i];
 				if(s.contains("@"))
 				{
-					List valid = PlayerSelector.matchEntities(sender, s, EntityPlayerMP.class);
-					targets = (EntityPlayerMP[]) valid.toArray(new EntityPlayerMP[0]);
 				}
 			}
 			
@@ -305,7 +301,7 @@ public class TeamCommands implements ICommand {
 			{
 				String teamName = team.getRegisteredName();
 				sender.addChatMessage(new ChatComponentText("Members of Team "+teamName));
-				Collection c = team.getMembershipCollection();
+				Collection<?> c = team.getMembershipCollection();
 				for(Object o: c)
 				{
 					sender.addChatMessage(new ChatComponentText(""+o));
@@ -316,7 +312,7 @@ public class TeamCommands implements ICommand {
 			{
 				String teamName = team.getRegisteredName();
 				sender.addChatMessage(new ChatComponentText("Admins of Team "+teamName));
-				Collection c = TeamManager.getInstance().getAdmins(teamName);
+				Collection<?> c = TeamManager.getInstance().getAdmins(teamName);
 				for(Object o: c)
 				{
 					sender.addChatMessage(new ChatComponentText(""+o));
@@ -327,7 +323,7 @@ public class TeamCommands implements ICommand {
 			{
 				String teamName = sender.getCommandSenderName();
 				sender.addChatMessage(new ChatComponentText("Invites for "+teamName));
-				Collection c = TeamManager.getInstance().getInvites(teamName);
+				Collection<?> c = TeamManager.getInstance().getInvites(teamName);
 				for(Object o: c)
 				{
 					sender.addChatMessage(new ChatComponentText(""+o));
@@ -336,7 +332,6 @@ public class TeamCommands implements ICommand {
 			}
 			if(arg1.equalsIgnoreCase("land") && team!=null)
 			{
-				String teamName = team.getRegisteredName();
 				int x = MathHelper.floor_double(sender.getPosition().getX()/16f);
 				int y = MathHelper.floor_double(sender.getPosition().getY()/16f);
 				int z = MathHelper.floor_double(sender.getPosition().getZ()/16f);
@@ -359,10 +354,8 @@ public class TeamCommands implements ICommand {
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender,
+	public List<String> addTabCompletionOptions(ICommandSender sender,
 			String[] args, BlockPos pos) {
-		List<String> ret = new ArrayList<String>();
-		
 		return null;
 	}
 

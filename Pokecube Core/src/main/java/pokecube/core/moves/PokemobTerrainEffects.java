@@ -52,7 +52,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
     int chunkZ;
     int chunkY;
 
-    Set pokemon = new HashSet();
+    Set<IPokemob> pokemon = new HashSet<IPokemob>();
 
     public PokemobTerrainEffects()
     {
@@ -89,14 +89,12 @@ public class PokemobTerrainEffects implements ITerrainEffect
             IPokemob mob = (IPokemob) entity;
             if (effects[EFFECT_WEATHER_HAIL] > 0 && !mob.isType(ice))
             {
-                float thisHP = entity.getHealth();
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
                 entity.attackEntityFrom(DamageSource.generic, damage);
             }
             if (effects[EFFECT_WEATHER_SAND] > 0 && !(mob.isType(rock) || mob.isType(steel) || mob.isType(ground)))
             {
-                float thisHP = entity.getHealth();
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
                 entity.attackEntityFrom(DamageSource.generic, damage);// TODO
@@ -124,14 +122,12 @@ public class PokemobTerrainEffects implements ITerrainEffect
         {
             if (effects[EFFECT_WEATHER_HAIL] > 0)
             {
-                float thisHP = entity.getHealth();
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
                 entity.attackEntityFrom(DamageSource.generic, damage);
             }
             if (effects[EFFECT_WEATHER_SAND] > 0)
             {
-                float thisHP = entity.getHealth();
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
                 entity.attackEntityFrom(DamageSource.generic, damage);// TODO
@@ -172,7 +168,6 @@ public class PokemobTerrainEffects implements ITerrainEffect
             }
             if (effects[EFFECT_ROCKS] > 0)
             {
-                float thisHP = entity.getHealth();
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
                 double mult = PokeType.getAttackEfficiency(rock, mob.getType1(), mob.getType2());

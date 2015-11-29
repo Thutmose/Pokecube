@@ -35,7 +35,6 @@ public class DBLoader
 	{
 		ArrayList<ArrayList<String>> rows = getRows(s2);
 		
-		int n = 0;
 		rows:
 		for(ArrayList<String> row: rows)
 		{
@@ -111,7 +110,7 @@ public class DBLoader
 				if(types[0].equalsIgnoreCase("all"))
 				{
 					for (PokedexEntry s : Database.spawnables) {
-						if (!s.getSpawnData().types[SpawnData.LEGENDARY] && s.getNb()!=151&&s!=null) {
+						if (!s.getSpawnData().types[SpawnData.LEGENDARY] && s.getPokedexNb()!=151&&s!=null) {
 							type.pokemon.add(s);
 						}
 					}
@@ -125,7 +124,7 @@ public class DBLoader
 						{
 							for (PokedexEntry s : Database.spawnables) {
 								if (s.isType(pokeType)
-										&& !s.getSpawnData().types[SpawnData.LEGENDARY] && s.getNb()!=151&&s!=null) {
+										&& !s.getSpawnData().types[SpawnData.LEGENDARY] && s.getPokedexNb()!=151&&s!=null) {
 									type.pokemon.add(s);
 								}
 							}

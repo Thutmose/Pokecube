@@ -1,6 +1,5 @@
 package pokecube.compat.atomicstryker;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import atomicstryker.dynamiclights.client.IDynamicLightSource;

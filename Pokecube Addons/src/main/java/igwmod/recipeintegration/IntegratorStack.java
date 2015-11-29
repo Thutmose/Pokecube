@@ -1,5 +1,7 @@
 package igwmod.recipeintegration;
 
+import java.util.List;
+
 import igwmod.WikiUtils;
 import igwmod.api.IRecipeIntegrator;
 import igwmod.gui.GuiWiki;
@@ -7,9 +9,6 @@ import igwmod.gui.IReservedSpace;
 import igwmod.gui.IWidget;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
-
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 
 public class IntegratorStack implements IRecipeIntegrator{

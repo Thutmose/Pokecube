@@ -2,7 +2,6 @@ package pokecube.modelloader.client.tabula;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -22,10 +21,8 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.modelloader.client.custom.LoadedModel;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
-import pokecube.modelloader.client.custom.animation.ModelAnimation;
 import pokecube.modelloader.client.tabula.animation.BasicFlapAnimation;
 import pokecube.modelloader.client.tabula.animation.BiWalkAnimation;
 import pokecube.modelloader.client.tabula.animation.QuadWalkAnimation;
@@ -37,7 +34,7 @@ import thut.api.maths.Vector3;
 
 public class TabulaPackLoader extends AnimationLoader
 {
-    public static HashMap<PokedexEntry, TabulaModelSet> modelMap = new HashMap();
+    public static HashMap<PokedexEntry, TabulaModelSet> modelMap = new HashMap<PokedexEntry, TabulaModelSet>();
 
     public static boolean loadModel(String path)
     {
@@ -161,18 +158,16 @@ public class TabulaPackLoader extends AnimationLoader
 
             NodeList modelList = doc.getElementsByTagName("model");
 
-            HashSet<String> hl = new HashSet();
-            HashSet<String> hr = new HashSet();
-            HashSet<String> fl = new HashSet();
-            HashSet<String> fr = new HashSet();
+            HashSet<String> hl = new HashSet<String>();
+            HashSet<String> hr = new HashSet<String>();
+            HashSet<String> fl = new HashSet<String>();
+            HashSet<String> fr = new HashSet<String>();
             int quadwalkdur = 0;
             int biwalkdur = 0;
             int flapdur = 0;
             int flapaxis = 2;
             float walkAngle1 = 20;
             float walkAngle2 = 20;
-
-            HashMap<String, ModelAnimation> loadedPresets = new HashMap();
 
             float[] headCaps = { -180, 180 };
             Vector3 offset = null;
@@ -187,7 +182,6 @@ public class TabulaPackLoader extends AnimationLoader
                     Node part = partsList.item(j);
                     if (part.getNodeName().equals("phase"))
                     {
-                        ArrayList<Vector5> phase = new ArrayList<LoadedModel.Vector5>();
                         String phaseName = part.getAttributes().getNamedItem("name").getNodeValue();
 
                         if (phaseName.equals("global"))

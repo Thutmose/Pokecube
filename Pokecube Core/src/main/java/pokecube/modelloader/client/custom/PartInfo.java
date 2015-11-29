@@ -21,7 +21,7 @@ public class PartInfo
 	/** A global scaling factor to apply to the model. */
 	public Vector3								scale		= Vector3.getNewVectorFromPool();
 	/** Any child parts of this part */
-	public HashMap<String, PartInfo>			children	= new HashMap();
+	public HashMap<String, PartInfo>			children	= new HashMap<String, PartInfo>();
 	private HashMap<String, ArrayList<Vector5>>	phaseInfo	= new HashMap<String, ArrayList<Vector5>>();
 
 	public PartInfo(String name)

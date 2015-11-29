@@ -108,11 +108,11 @@ public class MoveAnimationHelper
 					}
 				}
 			}
-			HashSet toRemove = new HashSet();
+			HashSet<Object> toRemove = new HashSet<Object>();
 			for (Object e : moves.keySet())
 			{
 				HashSet<MoveAnimation> moves = this.moves.get(e);
-				HashSet remove = new HashSet();
+				HashSet<MoveAnimation> remove = new HashSet<MoveAnimation>();
 				for (MoveAnimation move : moves)
 				{
 					if (move.duration < 0)

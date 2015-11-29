@@ -15,7 +15,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import pokecube.core.client.Resources;
@@ -31,12 +30,8 @@ public class GuiPokemob extends GuiContainer {
     private IInventory pokeInventory;
     private IPokemob pokemob;
     private EntityLiving entity;
-    private float xLoc;
-    private float yLoc;
     private float yRenderAngle = 10;
     private float xRenderAngle = 0;
-    private float yHeadRenderAngle = 10;
-    private float xHeadRenderAngle = 0;
     Button stance;
 
     public GuiPokemob(IInventory playerInv, IPokemob pokemob)
@@ -94,10 +89,9 @@ public class GuiPokemob extends GuiContainer {
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
             GL11.glPushMatrix();
             GL11.glTranslatef(j + 55, k + 50, 50F);
-            float zoom = 30f/size;
+            float zoom = 25f/size;
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-            float f4 = (j + 51) - xSize;
             float f5 = ((k + 75) - 50) - ySize;
             GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
 
@@ -106,9 +100,6 @@ public class GuiPokemob extends GuiContainer {
             GL11.glRotatef(-135F, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(-(float)Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
             GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-            float offset = 0.4f;
-            float f,f1,f2;
-            
             if(zRenderAngle!=0)
             {
                 entity.rotationYaw = 0;
@@ -128,8 +119,6 @@ public class GuiPokemob extends GuiContainer {
             GL11.glPopMatrix();
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            
-            float time = MathHelper.cos(entity.worldObj.getWorldTime()/3f * 0.6662f);
 
         }
         catch (Throwable e)
@@ -241,8 +230,6 @@ public class GuiPokemob extends GuiContainer {
     @Override
 	public void drawScreen(int x, int y, float z)
     {
-        this.xLoc = x;
-        this.yLoc = y;
         super.drawScreen(x, y, z);
 		GuiButton b = (GuiButton) buttonList.get(0);
 		GuiButton guibutton = (GuiButton) buttonList.get(1);

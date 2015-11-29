@@ -1,30 +1,26 @@
 package pokecube.adventures.handlers;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import pokecube.core.moves.MovesUtils;
 
 public class GeneralCommands implements ICommand  {
 
-	private List aliases;
+	private List<String> aliases;
 
 	public static boolean TRAINERSDIE = false;
 	
 	public GeneralCommands() {
-		this.aliases = new ArrayList();
+		this.aliases = new ArrayList<String>();
 		this.aliases.add("pokeAdv");
 		this.aliases.add("pokeadv");
 	}
@@ -40,7 +36,7 @@ public class GeneralCommands implements ICommand  {
 	}
 
 	@Override
-	public List getCommandAliases() {
+	public List<String> getCommandAliases() {
 		return this.aliases;
 	}
 	
@@ -67,17 +63,13 @@ public class GeneralCommands implements ICommand  {
 			cSender.addChatMessage(new ChatComponentText("Invalid arguments"));
 			return;
 		}
-		EntityPlayerMP[] targets = null;
 		for(int i = 1; i<args.length;i++)
 		{
 			String s = args[i];
 			if(s.contains("@"))
 			{
-				List valid = PlayerSelector.matchEntities(cSender, s, EntityPlayerMP.class);
-				targets = (EntityPlayerMP[]) valid.toArray(new EntityPlayerMP[0]);
 			}
 		}
-		String sender = cSender.getCommandSenderName();
 		boolean isOp = isOp(cSender);
 
 		if(args[0].equalsIgnoreCase("trainerspawn")||args[0].equalsIgnoreCase("tspn"))
@@ -93,8 +85,6 @@ public class GeneralCommands implements ICommand  {
 				boolean off = temp.equalsIgnoreCase("false")||temp.equalsIgnoreCase("off");
 				if(off||on)
 				{
-					WorldServer world = (WorldServer) cSender.getEntityWorld();
-					
 					if(isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
 					{
 						ConfigHandler.trainerSpawn = on;
@@ -125,8 +115,6 @@ public class GeneralCommands implements ICommand  {
 				boolean off = temp.equalsIgnoreCase("false")||temp.equalsIgnoreCase("off");
 				if(off||on)
 				{
-					WorldServer world = (WorldServer) cSender.getEntityWorld();
-	
 					if(isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
 					{
 						ConfigHandler.trainersInvul = on;
@@ -158,8 +146,6 @@ public class GeneralCommands implements ICommand  {
 				boolean off = temp.equalsIgnoreCase("false")||temp.equalsIgnoreCase("off");
 				if(off||on)
 				{
-					WorldServer world = (WorldServer) cSender.getEntityWorld();
-
 					if(isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
 					{
 						TRAINERSDIE = on;
@@ -185,15 +171,13 @@ public class GeneralCommands implements ICommand  {
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender p_71516_1_,
+	public List<String> addTabCompletionOptions(ICommandSender p_71516_1_,
 			String[] args, BlockPos pos) {
 		return null;
 	}
 
 	@Override
 	public boolean isUsernameIndex(String[] args, int index) {
-		String arg = args[0];
-		
 		return false;
 	}
 	

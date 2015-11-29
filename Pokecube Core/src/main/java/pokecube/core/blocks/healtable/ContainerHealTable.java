@@ -79,13 +79,12 @@ public class ContainerHealTable extends Container
     @Override
     public void putStackInSlot(int slot_index, ItemStack itemStack)
     {
-        ItemStack stack = null;
         Slot slot_object = (Slot) inventorySlots.get(slot_index);
 
         if (slot_object != null && slot_object.getHasStack())
         {
             ItemStack stack_in_slot = slot_object.getStack();
-            stack = stack_in_slot.copy();
+            
 
 //			if (slot_index == 0) {
 //				if (!mergeItemStack(stack_in_slot, 1, inventorySlots.size(),

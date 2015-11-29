@@ -19,7 +19,7 @@ import pokecube.core.items.berries.BerryManager;
 
 public class BlockBerryWood extends Block implements IMetaBlock
 {
-	public static final PropertyEnum VARIANT = PropertyEnum.create("variant", EnumType.class);
+	public static final PropertyEnum<BlockBerryWood.EnumType> VARIANT = PropertyEnum.create("variant", EnumType.class);
 
 	public BlockBerryWood(int par1, String[] names)
 	{
@@ -47,7 +47,7 @@ public class BlockBerryWood extends Block implements IMetaBlock
 	/** returns a list of blocks with the same ID, but different meta (eg: wood
 	 * returns 4 blocks) */
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item itemIn, CreativeTabs tab, List list)
+	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
 	{
 		EnumType[] aenumtype = EnumType.values();
 		int i = aenumtype.length;

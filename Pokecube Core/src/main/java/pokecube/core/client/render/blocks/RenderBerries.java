@@ -16,6 +16,7 @@ import pokecube.core.client.models.block.berries.ModelOran;
 import pokecube.core.client.models.block.berries.ModelPecha;
 import pokecube.core.client.models.block.berries.ModelSitrus;
 
+@SuppressWarnings("rawtypes")
 public class RenderBerries extends TileEntitySpecialRenderer {
 	
 	private HashMap<Integer, ModelBerry> berryModels = new HashMap<Integer, ModelBerry>();

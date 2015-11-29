@@ -40,6 +40,7 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokeType;
 
+@SuppressWarnings("deprecation")
 public class GuiNewChooseFirstPokemob extends GuiScreen
 {
 
@@ -93,7 +94,6 @@ public class GuiNewChooseFirstPokemob extends GuiScreen
             if (same) fixed = false;
         }
 
-        int n = 0;
         ArrayList<Integer> starts = new ArrayList<Integer>();
         for (int i = 0; i < _starters.length; i++)
         {
@@ -314,7 +314,6 @@ public class GuiNewChooseFirstPokemob extends GuiScreen
 
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-            float f4 = (float) (j + 51) - xSize;
             float f5 = (float) ((k + 75) - 50) - ySize;
             GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
 
@@ -333,10 +332,6 @@ public class GuiNewChooseFirstPokemob extends GuiScreen
             entity.limbSwing = 0;
             entity.limbSwingAmount = 0;
             entity.onGround = ((IPokemob) entity).getType1() != flying && ((IPokemob) entity).getType2() != flying;
-            int i = 15728880;
-            int j1 = i % 65536;
-            int k1 = i / 65536;
-
             Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, 0, 0, 0, POKEDEX_RENDER);
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
@@ -361,7 +356,6 @@ public class GuiNewChooseFirstPokemob extends GuiScreen
             glPushMatrix();
             glTranslatef(0.5F, 1.0f, 0.5F);
             glRotatef(-180, 1.0F, 0.0F, 0.0F);
-            double time = entityPlayer.worldObj.getWorldTime() / 4d;
             glRotatef(entityPlayer.worldObj.getWorldTime() * 2, 0.0F, 1.0F, 0.0F);
             glScalef(50f, 50f, 50f);
 

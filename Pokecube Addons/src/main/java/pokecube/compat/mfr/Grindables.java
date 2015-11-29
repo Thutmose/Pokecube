@@ -1,20 +1,5 @@
 package pokecube.compat.mfr;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import pokecube.core.database.Pokedex;
-import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
-
 public class Grindables 
 {
 //	static void registerGrindables(Object registry, Method register) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
@@ -47,7 +32,7 @@ public class Grindables
 //		{
 //			PokedexEntry e = Pokedex.getInstance().getEntry(i);
 //			int r = e.getBaseXP() - min;
-//			Class pokeclass = PokecubeMod.core.getEntityClassFromPokedexNumber(e.getNb());
+//			Class pokeclass = PokecubeMod.core.getEntityClassFromPokedexNumber(e.getPokedexNb());
 //			String id = (String) EntityList.classToStringMapping.get(pokeclass);
 //			register.invoke(registry, id, r);
 //		}
@@ -57,7 +42,7 @@ public class Grindables
 //	{
 //		Class pokeclass;
 //		public FactorySpawnHandler(PokedexEntry entry) {
-//			pokeclass = PokecubeMod.core.getEntityClassFromPokedexNumber(entry.getNb());
+//			pokeclass = PokecubeMod.core.getEntityClassFromPokedexNumber(entry.getPokedexNb());
 //		}
 //		
 //		@Override
@@ -94,7 +79,7 @@ public class Grindables
 //		public GrindablePokemob(PokedexEntry entry)
 //		{
 //			this.entry = entry;
-//			this._grindableClass = PokecubeMod.core.getEntityClassFromPokedexNumber(entry.getNb());
+//			this._grindableClass = PokecubeMod.core.getEntityClassFromPokedexNumber(entry.getPokedexNb());
 //		}
 //
 //		@Override

@@ -1,35 +1,5 @@
 package pokecube.compat;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.world.ChunkDataEvent;
-import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.event.world.ChunkWatchEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import pokecube.core.ai.utils.GuardAI;
-import pokecube.core.database.Database;
-import pokecube.core.events.handlers.SpawnHandler;
-import pokecube.core.utils.TimePeriod;
-import thut.api.maths.Matrix3;
-import thut.api.maths.Vector3;
-import thut.api.terrain.BiomeDatabase;
-import thut.api.terrain.TerrainManager;
-
 public class ReComplexCompat {
 	
 //	

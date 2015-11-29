@@ -16,7 +16,7 @@ import pokecube.core.moves.TreeRemover;
 
 public class BerryPlantManager extends BerryManager
 {
-    public static HashMap<String, Block> toRegister = new HashMap();
+    public static HashMap<String, Block> toRegister = new HashMap<String, Block>();
 
     public static void addBerry(String name, int id)
     {

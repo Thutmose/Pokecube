@@ -10,7 +10,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -51,9 +50,10 @@ public class ClientProxy extends CommonProxy
 
         registerItemTexture(Item.getItemFromBlock(warppad), 0,
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));
-        
+
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void initClient()
     {
@@ -63,7 +63,6 @@ public class ClientProxy extends CommonProxy
 
         RenderHandler h = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(h);
-        FMLCommonHandler.instance().bus().register(h);
 
         // if(!(Minecraft.getMinecraft().getRenderManager().entityRenderMap.get(EntityPlayer.class)
         // instanceof RenderPlayerPokemob))
@@ -74,7 +73,7 @@ public class ClientProxy extends CommonProxy
 
         try
         {
-            Class c = Class.forName("vazkii.botania.client.core.helper.RenderHelper");
+            Class.forName("vazkii.botania.client.core.helper.RenderHelper");
             RenderHandler.BOTANIA = true;
         }
         catch (ClassNotFoundException e)
@@ -127,15 +126,14 @@ public class ClientProxy extends CommonProxy
     @Override
     public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
-        EntityPlayer entityPlayer = mod_Pokecube.getPlayer(null);
-        TileEntity tileEntity = null;
         Entity entityHit = null;
         MovingObjectPosition objectClicked = ((Minecraft) mod_Pokecube.getMinecraftInstance()).objectMouseOver;
 
         if (objectClicked != null)
         {
             if (objectClicked.getBlockPos() != null)
-                tileEntity = entityPlayer.worldObj.getTileEntity(objectClicked.getBlockPos());
+            {
+            }
             entityHit = objectClicked.entityHit;
         }
         BlockPos pos = new BlockPos(x, y, z);

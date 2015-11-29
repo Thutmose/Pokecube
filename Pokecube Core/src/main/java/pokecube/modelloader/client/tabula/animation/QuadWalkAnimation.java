@@ -17,7 +17,6 @@ public class QuadWalkAnimation extends Animation
     
     public QuadWalkAnimation init(Set<String> hl, Set<String> hr, Set<String>fl, Set<String>fr, int duration, float legAngle, float armAngle)
     {
-        int num = 0;
         for(String s: hr)
         {
             String ident = "";
@@ -48,8 +47,6 @@ public class QuadWalkAnimation extends Animation
             set.add(component2);
             set.add(component3);
             sets.put(s, set);
-            
-            num++;
         }
         for(String s: hl)
         {
@@ -81,8 +78,6 @@ public class QuadWalkAnimation extends Animation
             set.add(component2);
             set.add(component3);
             sets.put(s, set);
-            
-            num++;
         }
         for(String s: fr)
         {
@@ -114,8 +109,6 @@ public class QuadWalkAnimation extends Animation
             set.add(component2);
             set.add(component3);
             sets.put(s, set);
-            
-            num++;
         }
         for(String s: fl)
         {
@@ -147,8 +140,6 @@ public class QuadWalkAnimation extends Animation
             set.add(component2);
             set.add(component3);
             sets.put(s, set);
-            
-            num++;
         }
         
         return this;

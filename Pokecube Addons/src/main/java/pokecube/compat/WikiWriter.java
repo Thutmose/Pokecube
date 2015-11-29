@@ -15,10 +15,10 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.client.gui.GuiGifCapture;
 import pokecube.core.database.Database;
@@ -64,8 +64,6 @@ public class WikiWriter {
     {
 		try {
 			String fileName = Compat.CUSTOMSPAWNSFILE.replace("spawns.csv", "Home.wiki");
-			File temp1 = new File(fileName);
-			
 			fwriter = new FileWriter(fileName);
 	     	out = new PrintWriter(fwriter);
 	        
@@ -89,8 +87,6 @@ public class WikiWriter {
 	{
 		try {
 			String fileName = Compat.CUSTOMSPAWNSFILE.replace("spawns.csv", "pokemobList.wiki");
-			File temp1 = new File(fileName);
-			
 			fwriter = new FileWriter(fileName);
 	     	out = new PrintWriter(fwriter);
 	        
@@ -128,8 +124,6 @@ public class WikiWriter {
 	{
 		try {
 			String fileName = Compat.CUSTOMSPAWNSFILE.replace("spawns.csv", "pokemobs/"+entry.getTranslatedName()+".wiki");
-			File temp1 = new File(fileName);
-			
 			File temp = new File(fileName.replace(entry.getName()+".wiki", "")); 
 			if(!temp.exists())
 			{
@@ -163,10 +157,10 @@ public class WikiWriter {
 	     	
 	     	//Print the name and header
 	     	out.println("="+entry.getName());
-	     	String numString = entry.getNb()+"";
-	     	if(entry.getNb() < 10)
+	     	String numString = entry.getPokedexNb()+"";
+	     	if(entry.getPokedexNb() < 10)
 	     		numString = "00"+numString;
-	     	else if(entry.getNb()<100)
+	     	else if(entry.getPokedexNb()<100)
 	     		numString = "0"+numString;
 	     	out.println("|=Type: "+typeString+"\\\\"+"Number: "+numString+"\\\\|="+"{{"+gifDir+numString+".gif}}\\\\");
 	     	
@@ -214,8 +208,7 @@ public class WikiWriter {
 	     	}
 	     	if(entry.evolvesFrom!=null)
 	     	{
-	     		EvolutionData d = entry.evolvesBy;
-     			String evoString = formatLink(pokemobDir, entry.evolvesFrom.getTranslatedName());
+	     		String evoString = formatLink(pokemobDir, entry.evolvesFrom.getTranslatedName());
 	     		desc += " "+entry.getTranslatedName()+" Evolves from "+evoString+".";
 	     	}
 	     	out.println(desc);
@@ -223,8 +216,8 @@ public class WikiWriter {
 	     	//Print move list
 	     	out.println("==Natural Moves List");
 	     	out.println("|=Level|=Move|");
-	     	List<String> moves = new ArrayList(entry.getMoves());
-	     	List<String> used = new ArrayList();
+	     	List<String> moves = new ArrayList<String>(entry.getMoves());
+	     	List<String> used = new ArrayList<String>();
 	     	for(int i = 1; i<=100; i++)
 	     	{
 	     		List<String> newMoves = entry.getMovesForLevel(i, i-1);
@@ -351,12 +344,12 @@ public class WikiWriter {
 	private static int currentCaptureFrame;
 	private static int currentPokemob = 1;
 	private static int numberTaken = 1;
-	private static final int NUM_CAPTURE_FRAMES = 30;
-	private static final int NUM_POKEMOBS = 424;
-	private static final int WINDOW_XPOS = 1;
-	private static final int WINDOW_YPOS = 1;
-	private static final int WINDOW_WIDTH = 200;
-	private static final int WINDOW_HEIGHT = 200;
+//	private static final int NUM_CAPTURE_FRAMES = 30;
+//	private static final int NUM_POKEMOBS = 424;
+//	private static final int WINDOW_XPOS = 1;
+//	private static final int WINDOW_YPOS = 1;
+//	private static final int WINDOW_WIDTH = 200;
+//	private static final int WINDOW_HEIGHT = 200;
 	
 	static private void openPokedex()
 	{
@@ -364,17 +357,17 @@ public class WikiWriter {
 				mod_Pokecube.instance, 20, Minecraft.getMinecraft().thePlayer.worldObj, 0, 0, 0);
 	}
 	
-	static private void setPokedexBeginning()
-	{
-		GuiGifCapture.pokedexEntry = Pokedex.getInstance().getEntry(1);
-	}
-	
-	static private void cyclePokedex()
-	{
-		GuiGifCapture.pokedexEntry = Pokedex.getInstance().getNext(GuiGifCapture.pokedexEntry, 1);
-		if(GuiGifCapture.pokedexEntry!=null)
-			currentPokemob = GuiGifCapture.pokedexEntry.getNb();
-	}
+//	static private void setPokedexBeginning()
+//	{
+//		GuiGifCapture.pokedexEntry = Pokedex.getInstance().getEntry(1);
+//	}
+//	
+//	static private void cyclePokedex()
+//	{
+//		GuiGifCapture.pokedexEntry = Pokedex.getInstance().getNext(GuiGifCapture.pokedexEntry, 1);
+//		if(GuiGifCapture.pokedexEntry!=null)
+//			currentPokemob = GuiGifCapture.pokedexEntry.getPokedexNb();
+//	}
 	
 	static public void beginGifCapture()
 	{
@@ -423,7 +416,7 @@ public class WikiWriter {
 		x += -3*w/32;//- w/4 - w/64 + w/128;
 		y += -3*w/32;//- h/4 - h/8 + h/32 + h/64;
 		if(GuiGifCapture.pokedexEntry!=null)
-			currentPokemob = GuiGifCapture.pokedexEntry.getNb();
+			currentPokemob = GuiGifCapture.pokedexEntry.getPokedexNb();
 		else
 			return;
 		String pokename = Compat.CUSTOMSPAWNSFILE.replace("spawns.csv", new String("" + currentPokemob + "_"));

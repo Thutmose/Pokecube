@@ -19,8 +19,6 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory
 {
     private boolean     bound   = false;
     private String      boundId = "";
-    private int         counter = 1;
-    private int         max     = 2;
     public List<String> visible = new ArrayList<String>();
 
     public TileEntityPC()
@@ -51,11 +49,11 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory
     }
 
     /** Overriden in a sign to provide the text. */
+    @SuppressWarnings("rawtypes")
     @Override
     public Packet getDescriptionPacket()
     {
 
-        int meta = this.getBlockMetadata();
         NBTTagCompound nbttagcompound = new NBTTagCompound();
 
         this.writeToNBT(nbttagcompound);

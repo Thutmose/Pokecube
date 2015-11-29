@@ -1,5 +1,7 @@
 package igwmod.recipeintegration;
 
+import java.util.List;
+
 import igwmod.TextureSupplier;
 import igwmod.api.IRecipeIntegrator;
 import igwmod.gui.IReservedSpace;
@@ -7,8 +9,6 @@ import igwmod.gui.IWidget;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
 import igwmod.gui.LocatedTexture;
-
-import java.util.List;
 
 public class IntegratorImage implements IRecipeIntegrator{
 

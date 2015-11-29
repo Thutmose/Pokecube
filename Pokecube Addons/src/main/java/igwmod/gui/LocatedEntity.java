@@ -1,22 +1,21 @@
 package igwmod.gui;
 
-import igwmod.gui.tabs.EntityWikiTab;
-import igwmod.lib.Util;
-
 import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import igwmod.gui.tabs.EntityWikiTab;
+import igwmod.lib.Util;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraftforge.fml.client.FMLClientHandler;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public class LocatedEntity extends Gui implements IReservedSpace, IPageLink{
     protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRendererObj;

@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.common.base.Predicate;
 
 import net.minecraft.block.BlockLog;
-import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
@@ -20,30 +19,20 @@ import pokecube.core.blocks.berries.BlockBerryWood.EnumType;
 
 public class BlockBerryLog extends BlockLog implements IMetaBlock
 {
-	public static final PropertyEnum	VARIANT4				= PropertyEnum.create("variant",
-			BlockBerryWood.EnumType.class, new Predicate()
+	public static final PropertyEnum<BlockBerryWood.EnumType>	VARIANT4				= PropertyEnum.create("variant",
+			BlockBerryWood.EnumType.class, new Predicate<BlockBerryWood.EnumType>()
 			{
 				public boolean apply(BlockBerryWood.EnumType type)
 				{
 					return type.getMetadata() >= 4;
 				}
-
-				public boolean apply(Object p_apply_1_)
-				{
-					return this.apply((BlockBerryWood.EnumType) p_apply_1_);
-				}
 			});
-	public static final PropertyEnum	VARIANT0				= PropertyEnum.create("variant",
-			BlockBerryWood.EnumType.class, new Predicate()
+	public static final PropertyEnum<BlockBerryWood.EnumType>	VARIANT0				= PropertyEnum.create("variant",
+			BlockBerryWood.EnumType.class, new Predicate<BlockBerryWood.EnumType>()
 			{
 				public boolean apply(BlockBerryWood.EnumType type)
 				{
 					return type.getMetadata() < 4;
-				}
-
-				public boolean apply(Object p_apply_1_)
-				{
-					return this.apply((BlockBerryWood.EnumType) p_apply_1_);
 				}
 			});
 	public final String[]				woodType;
@@ -62,7 +51,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 
 		IBlockState state = this.blockState.getBaseState();
 		EnumType type = EnumType.byMetadata(logShift);
-		PropertyEnum property = shift == 0 ? VARIANT0 : VARIANT4;
+		PropertyEnum<EnumType> property = shift == 0 ? VARIANT0 : VARIANT4;
 		state = state.withProperty(property, type);
 		this.setDefaultState(state.withProperty(LOG_AXIS, BlockLog.EnumAxis.Y));
 		setCreativeTab(mod_Pokecube.creativeTabPokecubeBerries);
@@ -72,7 +61,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 
 	/** returns a list of blocks with the same ID, but different meta (eg: wood
 	 * returns 4 blocks) */
-	public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List)
+	public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
 	{
 		for (int i = 0; i < woodType.length; i++)
 		{
@@ -100,7 +89,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 	protected ItemStack createStackedBlock(IBlockState state)
 	{
 		return new ItemStack(Item.getItemFromBlock(this), 1,
-				((BlockPlanks.EnumType) state.getValue(shift == 0 ? VARIANT0 : VARIANT4)).getMetadata() - shift);
+				((BlockBerryWood.EnumType) state.getValue(shift == 0 ? VARIANT0 : VARIANT4)).getMetadata() - shift);
 	}
 	
 	public IBlockState getStateForTree(String berryName)
@@ -124,7 +113,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
     public IBlockState getStateFromMeta(int meta)
     {
     	IBlockState state = super.getStateFromMeta(meta);
-    	IProperty property = (shift == 0 ? VARIANT0 : VARIANT4);
+    	IProperty<EnumType> property = (shift == 0 ? VARIANT0 : VARIANT4);
         return state.withProperty(property, EnumType.byMetadata((meta & 3) + shift));
     }
 

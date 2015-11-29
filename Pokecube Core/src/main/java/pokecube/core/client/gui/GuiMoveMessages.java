@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.Entity;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -21,8 +20,8 @@ public class GuiMoveMessages
 {
 	private static GuiMoveMessages instance;
 
-	private ArrayList<String> messages = new ArrayList();
-	private ArrayList<String> recent = new ArrayList();
+	private ArrayList<String> messages = new ArrayList<String>();
+	private ArrayList<String> recent = new ArrayList<String>();
 	int time = 0;
 	int offset = 0;
 	public GuiMoveMessages()
@@ -61,8 +60,7 @@ public class GuiMoveMessages
     public void draw(RenderWorldLastEvent event)
     {
     	Minecraft minecraft = Minecraft.getMinecraft();
-    	Entity player = minecraft.thePlayer;
-        int i = Mouse.getDWheel();
+    	int i = Mouse.getDWheel();
         
         
         int n = (minecraft.displayWidth);
@@ -94,8 +92,7 @@ public class GuiMoveMessages
         }
         m = m/2;
         
-        int x = n, y=m / 2, h=64,w=64,u=0,v=0;
-        float zLevel = 100.0F;
+        int x = n, y=m / 2;
         GL11.glPushMatrix();
      	GL11.glDisable(GL11.GL_DEPTH_TEST);
      	GL11.glDepthMask(false);

@@ -25,7 +25,7 @@ public class PASaveHandler
     private ISaveHandler saveHandler;
     private static PASaveHandler instance;
     private static PASaveHandler clientInstance;
-    public HashMap<Integer, EntityTrainer> trainers = new HashMap();
+    public HashMap<Integer, EntityTrainer> trainers = new HashMap<Integer, EntityTrainer>();
     
     private PASaveHandler()
     {
@@ -154,7 +154,7 @@ public class PASaveHandler
     				String s = f.getName();
     				try
 					{
-						UUID uuid = UUID.fromString(s);
+						UUID.fromString(s);
 						loadBag(s);
 					}
 					catch (Exception e)

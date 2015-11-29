@@ -1,11 +1,10 @@
 package igwmod;
 
+import java.io.File;
+
 import igwmod.lib.IGWLog;
 import igwmod.network.MessageSendServerTab;
 import igwmod.network.NetworkHandler;
-
-import java.io.File;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;

@@ -91,7 +91,7 @@ public class BlockBerryCrop extends BlockCrops {
         	{
         		IBlockState leaf = null;
         		IBlockState log = null;
-    			for(BlockBerryLeaves l: this.leaves)
+    			for(BlockBerryLeaves l: BlockBerryCrop.leaves)
     			{
     				if(leaf==null)
     				{
@@ -99,7 +99,7 @@ public class BlockBerryCrop extends BlockCrops {
     				}
     			}
     			
-    			for(BlockBerryLog l: this.logs)
+    			for(BlockBerryLog l: BlockBerryCrop.logs)
     			{
     				if(log==null)
     				{
@@ -164,16 +164,6 @@ public class BlockBerryCrop extends BlockCrops {
 //			}
 //		}
 //	}
-
-	/**
-	 * Gets the growth rate for the crop. Setup to encourage rows by halving growth rate if there is diagonals, crops on different sides that aren't opposing, and by adding growth for every crop next
-	 * to this one (and for crop below this one). Args: x, y, z
-	 */
-	private float getGrowthRate(World par1World, int par2, int par3, int par4) {
-		float var5 = 3.0F;
-
-		return var5;
-	}
 	
     @Override
     /**

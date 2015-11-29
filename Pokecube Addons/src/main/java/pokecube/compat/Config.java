@@ -141,8 +141,6 @@ public class Config {
 		int count = 1;
 		String name = drop[0];
 		int meta = 0;
-		int chance = 100;
-		
 		try {
 			if(drop.length>1)
 				count = Integer.parseInt(drop[1]);

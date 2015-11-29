@@ -60,7 +60,7 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                 buf.writeByte(PokecubePacketHandler.CHANNEL_ID_ChooseFirstPokemob);
                 buf.writeBoolean(true);
 
-                ArrayList<Integer> starters = new ArrayList();
+                ArrayList<Integer> starters = new ArrayList<Integer>();
                 TileEntity te = player.worldObj.getTileEntity(pos.down(2));
                 if (te != null && te instanceof IInventory)
                 {

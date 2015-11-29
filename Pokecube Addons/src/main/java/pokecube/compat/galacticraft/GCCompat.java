@@ -13,8 +13,8 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
@@ -23,27 +23,27 @@ import pokecube.core.events.handlers.SpawnHandler;
 
 public class GCCompat {
 
-	private static HashMap<String, Float> moonmon = new HashMap();
+	private static HashMap<String, Float> moonmon = new HashMap<String, Float>();
 
 	static {
 		moonmon.put("clefairy", 0.1f);
 		moonmon.put("clefable", 0.0f);
 		moonmon.put("lunatone", 0.5f);
 	}
-	private static HashMap<String, Float> roidmon = new HashMap();
+	private static HashMap<String, Float> roidmon = new HashMap<String, Float>();
 
 	static {
 		roidmon.put("lunatone", 0.5f);
 		roidmon.put("solrock", 0.5f);
 	}
-	private static HashMap<String, Float> spacemon = new HashMap();
+	private static HashMap<String, Float> spacemon = new HashMap<String, Float>();
 
 	static {
 		spacemon.put("deoxys", 0.001f);
 	}
 	
 	
-	private HashSet<Integer> spaceNums = new HashSet();
+	private HashSet<Integer> spaceNums = new HashSet<Integer>();
 	boolean init = false;
 
 	public void register() {

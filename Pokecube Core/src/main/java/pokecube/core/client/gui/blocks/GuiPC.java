@@ -35,7 +35,6 @@ public class GuiPC extends GuiContainer {
 	String autoOn = StatCollector.translateToLocal("tile.pc.autoon");
 	String autoOff = StatCollector.translateToLocal("tile.pc.autooff");
 
-	private String selectedBox = "1";
 	private String boxName = "1";
 	private boolean toRename = false;
 
@@ -298,7 +297,7 @@ public class GuiPC extends GuiContainer {
 						GL11.glEnable(GL11.GL_BLEND);
 						GL11.glColor4f(0, 0, 0, 1);
 						mc.renderEngine.bindTexture(new ResourceLocation(
-								PokecubeMod.core.ID, "textures/hologram.png"));
+								PokecubeMod.ID, "textures/hologram.png"));
 						drawTexturedModalRect(x, y, 0, 0, 16, 16);
 						GL11.glDisable(GL11.GL_BLEND);
 						GL11.glPopMatrix();
@@ -307,7 +306,7 @@ public class GuiPC extends GuiContainer {
 						GL11.glEnable(GL11.GL_BLEND);
 						GL11.glColor4f(0, 1, 0, 1);
 						mc.renderEngine.bindTexture(new ResourceLocation(
-						        PokecubeMod.core.ID, "textures/hologram.png"));
+						        PokecubeMod.ID, "textures/hologram.png"));
 						drawTexturedModalRect(x, y, 0, 0, 16, 16);
 						GL11.glDisable(GL11.GL_BLEND);
 						GL11.glPopMatrix();
@@ -326,7 +325,6 @@ public class GuiPC extends GuiContainer {
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-		int i1;
 	}
 
 	@Override

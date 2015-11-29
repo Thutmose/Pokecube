@@ -3,7 +3,6 @@ package pokecube.adventures.items;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob;
 

@@ -1,5 +1,9 @@
 package igwmod.recipeintegration;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import igwmod.TextureSupplier;
 import igwmod.WikiUtils;
 import igwmod.api.FurnaceRetrievalEvent;
@@ -11,11 +15,6 @@ import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
 import igwmod.gui.LocatedTexture;
 import igwmod.lib.Paths;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 

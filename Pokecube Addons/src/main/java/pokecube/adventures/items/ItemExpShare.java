@@ -1,17 +1,9 @@
 package pokecube.adventures.items;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Set;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import pokecube.core.database.Database;
-import pokecube.core.database.PokedexEntry;
 import pokecube.core.items.ItemPokemobUseable;
-import pokecube.modelloader.client.ClientProxy;
 
 public class ItemExpShare extends ItemPokemobUseable 
 {

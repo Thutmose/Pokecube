@@ -1,12 +1,11 @@
 package igwmod.gui.tabs;
 
+import java.util.List;
+
 import igwmod.gui.GuiWiki;
 import igwmod.gui.IPageLink;
 import igwmod.gui.IReservedSpace;
 import igwmod.gui.LocatedTexture;
-
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 
 public interface IWikiTab{

@@ -57,13 +57,7 @@ public class GuiGifCapture extends GuiScreen
     private int mouseRotateControl;
     
     private int page = 0;
-    private int index = 0;
-    private int index2 = 0;
-    
-    private static final int PAGECOUNT = 5;
-
-
-	List<Integer> biomes = new ArrayList<Integer>();
+    List<Integer> biomes = new ArrayList<Integer>();
     /**
      *
      */
@@ -106,8 +100,6 @@ public class GuiGifCapture extends GuiScreen
         y = this.height;
     	
         buttonList.clear();
-        int yOffset = height / 2 - 80;
-        int xOffset = width / 2;
         
     }
 
@@ -333,8 +325,6 @@ public class GuiGifCapture extends GuiScreen
         drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);
         GL11.glPushMatrix();
 //        GL11.glScalef(2.0F, 2.0F, 2.0F);
-        int yOffset = height / 2 - 80;
-        int xOffset = width / 2;
         
         renderMob();
         
@@ -387,10 +377,8 @@ public class GuiGifCapture extends GuiScreen
             int j = 0;
             int k = 0; 
             
-            IPokemob pokemob = null;
             if(entity instanceof IPokemob)
             {
-            	pokemob = (IPokemob) entity;
             }
             
             if(entity instanceof EntityPokemob)
@@ -413,7 +401,6 @@ public class GuiGifCapture extends GuiScreen
             float zoom = 23f/size;//(float)(23F / Math.sqrt(size + 0.6));
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-            float f4 = (j + 51) - xSize;
             float f5 = ((k + 75) - 50) - ySize;
             GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
 

@@ -45,7 +45,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
     static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
 
-    public LoadedModel model;
+    public LoadedModel<T> model;
     final String       modelName;
 
     public RenderAdvancedPokemobModel(String name, float par2)
@@ -54,11 +54,12 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         modelName = name;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void doRender(T entity, double d0, double d1, double d2, float f, float f1)
     {
 
-        model = AnimationLoader.getModel(modelName);
+        model = (LoadedModel<T>) AnimationLoader.getModel(modelName);
         if (model == null)
         {
             if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
@@ -107,7 +108,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
-        model.doRender(entity, d0, d1, d2, f, f1);
+        model.doRender((T)entity, d0, d1, d2, f, f1);
 //        renderStatusModel(entity, d0, d1, d2, f, f1);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
         GL11.glPopMatrix();

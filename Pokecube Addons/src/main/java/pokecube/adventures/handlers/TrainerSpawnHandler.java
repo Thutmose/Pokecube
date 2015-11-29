@@ -40,7 +40,6 @@ public class TrainerSpawnHandler
 	
 	public TrainerSpawnHandler()
 	{
-		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 		instance = this;
 	}
@@ -49,7 +48,7 @@ public class TrainerSpawnHandler
 	{
 		return instance;
 	}
-	public static HashSet trainers = new HashSet();
+	public static HashSet<ChunkCoordinate> trainers = new HashSet<ChunkCoordinate>();
 
 	public static boolean addTrainerCoord(Entity e)
 	{
@@ -138,7 +137,7 @@ public class TrainerSpawnHandler
 			if(v==null) return;
 			if(v.y<0)
 				v.y = v.getMaxY(w);
-			Vector3 temp = v.getNextSurfacePoint2(w, v, v1.set(0, -1, 0), 4);
+			Vector3 temp = Vector3.getNextSurfacePoint2(w, v, v1.set(0, -1, 0), 4);
 			v = temp!=null?temp.offset(EnumFacing.UP):v;
 			
 			if(!SpawnHandler.checkNoSpawnerInArea(w, v.intX(), v.intY(), v.intZ()))
@@ -161,8 +160,6 @@ public class TrainerSpawnHandler
 				Collections.shuffle(trainers);
 				ttype = trainers.get(0);
 
-				int counts = 0;
-				
 				if(m!=ttype.material)
 				{
 					for(TypeTrainer b: trainers)

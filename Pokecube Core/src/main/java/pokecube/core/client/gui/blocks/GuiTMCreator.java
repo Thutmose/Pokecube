@@ -88,7 +88,6 @@ public class GuiTMCreator extends GuiContainer
 		int x = (width - xSize) / 2;
 		int y = (height - ySize) / 2;
 		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-		int i1;
 	}
 	
     @Override
@@ -105,7 +104,7 @@ public class GuiTMCreator extends GuiContainer
         
         if(moves.isEmpty() && textFieldSearch.getText().isEmpty())
         {
-	        List mov = table.getMoves(mc.thePlayer.getUniqueID().toString());
+	        List<String> mov = table.getMoves(mc.thePlayer.getUniqueID().toString());
 	        if(mov!=null)
 	        {
 	            moves.addAll(mov);
@@ -127,11 +126,9 @@ public class GuiTMCreator extends GuiContainer
         	String s = moves.get(index).trim();
 
 			Move_Base move = MovesUtils.getMoveFromName(s);
-			boolean val = true;
-            if (move != null)
+			if (move != null)
             {
-            	val = false;
-                drawString(fontRendererObj, MovesUtils.getTranslatedMove(s), xOffset + 14 , yOffset + 99, move.getType().colour);
+            	drawString(fontRendererObj, MovesUtils.getTranslatedMove(s), xOffset + 14 , yOffset + 99, move.getType().colour);
                 drawString(fontRendererObj, "" + move.getPWR(), xOffset + 102 , yOffset + 99, 0xffffff);
             }
         }

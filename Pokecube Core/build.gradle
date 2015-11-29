@@ -12,12 +12,12 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "2.0.2"
+version = "2.0.3"
 group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Pokecube Core"
 
 minecraft {
-    version = "1.8.8-11.15.0.1592-1.8.8"
+    version = "1.8.8-11.15.0.1594-1.8.8"
     runDir = "run"
     
     replace "@VERSION@", project.version

@@ -1,9 +1,8 @@
 package igwmod.gui;
 
-import igwmod.api.WikiRegistry;
-
 import java.awt.Rectangle;
 
+import igwmod.api.WikiRegistry;
 import net.minecraft.item.ItemStack;
 
 public class LocatedStack implements IReservedSpace, IPageLink{

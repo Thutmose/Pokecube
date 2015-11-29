@@ -9,10 +9,10 @@ import pokecube.core.utils.PokeType;
 
 public class MoveEntry implements IMoveConstants{
 
-	private static HashMap<String, MoveEntry> movesNames = new HashMap();
-	public static HashSet<String> protectionMoves = new HashSet();
-	public static HashSet<String> unBlockableMoves = new HashSet();
-	public static HashSet<String> oneHitKos = new HashSet();
+	private static HashMap<String, MoveEntry> movesNames = new HashMap<String, MoveEntry>();
+	public static HashSet<String> protectionMoves = new HashSet<String>();
+	public static HashSet<String> unBlockableMoves = new HashSet<String>();
+	public static HashSet<String> oneHitKos = new HashSet<String>();
 	
 	public static int TOTALHP = 1;
 	public static int DAMAGEDEALT = 2;

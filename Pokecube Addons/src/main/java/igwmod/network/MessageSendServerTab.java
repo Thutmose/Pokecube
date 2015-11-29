@@ -1,20 +1,19 @@
 package igwmod.network;
 
-import igwmod.IGWMod;
-import igwmod.api.WikiRegistry;
-import igwmod.gui.tabs.ServerWikiTab;
-import io.netty.buffer.ByteBuf;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+
+import igwmod.IGWMod;
+import igwmod.api.WikiRegistry;
+import igwmod.gui.tabs.ServerWikiTab;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class MessageSendServerTab extends AbstractPacket<MessageSendServerTab>{
     private File serverFolder;

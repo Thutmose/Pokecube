@@ -1,5 +1,10 @@
 package igwmod.gui.tabs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import igwmod.api.WikiRegistry;
 import igwmod.gui.GuiWiki;
 import igwmod.gui.IPageLink;
@@ -7,10 +12,6 @@ import igwmod.gui.IReservedSpace;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedTexture;
 import igwmod.lib.Textures;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -18,8 +19,6 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-
-import org.lwjgl.opengl.GL11;
 
 public class BlockAndItemWikiTab implements IWikiTab{
     public static RenderItem itemRenderer;

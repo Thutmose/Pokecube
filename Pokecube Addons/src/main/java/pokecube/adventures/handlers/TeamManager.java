@@ -34,11 +34,11 @@ public class TeamManager {
 	
 	private TeamManager()
 	{
-		landMap = new HashMap();
-		landCounts = new HashMap();
-		teamAdmins = new HashMap();
-		teamInvites = new HashMap();
-		publicBlocks = new HashSet();
+		landMap = new HashMap<ChunkCoordinate, String>();
+		landCounts = new HashMap<String, Integer>();
+		teamAdmins = new HashMap<String, String>();
+		teamInvites = new HashMap<String, String>();
+		publicBlocks = new HashSet<ChunkCoordinate>();
 	}
 	
 	public static void clearInstance()
@@ -99,7 +99,7 @@ public class TeamManager {
 	
 	public List<String> getAdmins(String team)
 	{
-		List<String> ret = new ArrayList();
+		List<String> ret = new ArrayList<String>();
 		if(teamAdmins.containsKey(team))
 		{
 			String[] admins = teamAdmins.get(team).split(":");
@@ -127,9 +127,9 @@ public class TeamManager {
 		teamInvites.put(player, invites);
 	}
 	
-	public List getInvites(String player)
+	public List<String> getInvites(String player)
 	{
-		List ret = new ArrayList();
+		List<String> ret = new ArrayList<String>();
 		String adminList = teamInvites.get(player);
 		if(adminList==null) return ret;
 		
@@ -232,7 +232,6 @@ public class TeamManager {
 	
 	public void addToTeam(EntityPlayer player, String team)
 	{
-		String currentTeam = player.getTeam().getRegisteredName();
 		player.worldObj.getScoreboard().addPlayerToTeam(player.getCommandSenderName(), team);
 		player.addChatMessage(new ChatComponentText("You joined Team "+team));
 		teamInvites.remove(player.getCommandSenderName());

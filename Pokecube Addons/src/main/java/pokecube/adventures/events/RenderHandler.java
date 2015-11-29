@@ -1,7 +1,6 @@
 package pokecube.adventures.events;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -10,13 +9,11 @@ import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -45,10 +42,6 @@ public class RenderHandler
 {
 
 	public static float				partialTicks	= 0.0F;
-	private World					prevWorld;
-	private List<EntityPlayer>		playerlist;
-	private EntityRenderer			prevAlt;
-
 	public static boolean BOTANIA = false;
 
 	public RenderHandler()
@@ -103,8 +96,6 @@ public class RenderHandler
 		GL11.glRotatef(yaw - 270, 0, 1, 0);
 		GL11.glRotatef(pitch, 0, 0, 1);
 		dispatchRenders(inv, event, RenderType.HEAD);
-
-		ItemStack helm = player.inventory.armorItemInSlot(3);
 
 		GL11.glPopMatrix();
 	}

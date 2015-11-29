@@ -19,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.interfaces.IPokecube;
 
+@SuppressWarnings({ "rawtypes", "deprecation" })
 public class RenderTradingTable extends TileEntitySpecialRenderer
 {
     @Override

@@ -14,11 +14,12 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 
+@SuppressWarnings("rawtypes")
 public class RenderPokemobs extends RenderPokemob {
 
-	private static Map<String, ModelBase> models = new HashMap();
-	private static Map<String, ModelBase> statusModels = new HashMap();
-	private static Map<String, Render> renderMap = new HashMap();
+	private static Map<String, ModelBase> models = new HashMap<String, ModelBase>();
+	private static Map<String, ModelBase> statusModels = new HashMap<String, ModelBase>();
+    private static Map<String, Render> renderMap = new HashMap<String, Render>();
 	
 	private static RenderPokemobs instance;
 	
@@ -32,6 +33,7 @@ public class RenderPokemobs extends RenderPokemob {
      * (Render<T extends Entity) and this method has signature public void doRender(T entity, double d, double d1,
      * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
      */
+    @SuppressWarnings("unchecked")
     @Override
 	public void doRender(EntityLiving entity, double x, double y, double z, float par8, float par9)
     {
@@ -51,9 +53,6 @@ public class RenderPokemobs extends RenderPokemob {
 			}
 			if(mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IPokemob.SHOULDER) && ((Entity)mob).ridingEntity!=null)
 			{
-				Entity riding = ((Entity)mob).ridingEntity;
-//				System.out.println(y+" "+entity.posY+" "+riding.posY);
-//				y = 0;
 			}
 			String nbm =mob.getPokedexEntry().getName() +  mob.getPokedexEntry().getModId();
 
@@ -123,7 +122,8 @@ public class RenderPokemobs extends RenderPokemob {
     	return super.getPokemobTexture(mob);
     }
 	
-	public void setModel(String nb)
+	@SuppressWarnings("unchecked")
+    public void setModel(String nb)
 	{
 		this.mainModel = models.get(nb);
 		this.modelStatus = statusModels.get(nb);

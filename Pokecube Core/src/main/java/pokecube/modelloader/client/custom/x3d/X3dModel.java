@@ -80,8 +80,6 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel
 		for (String s : partPoints.keySet())
 		{
 			HashMap<String, String> points = partPoints.get(s);
-			HashMap<String, String> values = partTranslations.get(s);
-
 			X3dObject o = new X3dObject(s);
 
 			o.vertices = parseVertices(points.get("coordinates"));

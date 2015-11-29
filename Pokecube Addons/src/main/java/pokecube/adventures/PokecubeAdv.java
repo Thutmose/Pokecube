@@ -102,7 +102,6 @@ public class PokecubeAdv
 		TeamEventsHandler teams = new TeamEventsHandler();
 		MinecraftForge.EVENT_BUS.register(teams);
 		MinecraftForge.EVENT_BUS.register(events);
-		FMLCommonHandler.instance().bus().register(events);
 		new TrainerSpawnHandler();
 		RecipeHandler.register();
 	}

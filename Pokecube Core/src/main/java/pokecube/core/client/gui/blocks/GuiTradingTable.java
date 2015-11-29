@@ -74,7 +74,6 @@ public class GuiTradingTable extends GuiContainer
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-        int i1;
     }
 
     /** Draw the foreground layer for the GuiContainer (everything in front of
@@ -100,7 +99,6 @@ public class GuiTradingTable extends GuiContainer
     {
         super.drawScreen(i, j, f);
 
-        ItemStack stack = table.getStackInSlot(0);
         int x = width / 2 - 73;
         int y = height / 2 - 71;
 
@@ -191,7 +189,6 @@ public class GuiTradingTable extends GuiContainer
         // System.out.println(zoom);
         GL11.glScalef(-zoom, zoom, zoom);
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-        float f4 = (float) (j + 51) - xSize;
         float f5 = (float) ((k + 75) - 50) - ySize;
         GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
 
@@ -206,9 +203,6 @@ public class GuiTradingTable extends GuiContainer
         yRenderAngle = yRenderAngle + 0.15F;
         GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(xRenderAngle, 1.0F, 0.0F, 0.0F);
-
-        double time = entityPlayer.worldObj.getWorldTime() / 4d;
-        float triangle = (float) Math.asin(Math.sin(time));
 
         // LoggerPokecube.logError(""+triangle);
         entity.limbSwing = 0;

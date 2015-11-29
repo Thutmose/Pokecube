@@ -1,15 +1,5 @@
 package igwmod;
 
-import igwmod.api.IRecipeIntegrator;
-import igwmod.api.ITextInterpreter;
-import igwmod.api.WikiRegistry;
-import igwmod.gui.IReservedSpace;
-import igwmod.gui.IWidget;
-import igwmod.gui.LocatedStack;
-import igwmod.gui.LocatedString;
-import igwmod.lib.IGWLog;
-import igwmod.lib.Paths;
-
 import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,6 +11,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import igwmod.api.IRecipeIntegrator;
+import igwmod.api.ITextInterpreter;
+import igwmod.api.WikiRegistry;
+import igwmod.gui.IReservedSpace;
+import igwmod.gui.IWidget;
+import igwmod.gui.LocatedStack;
+import igwmod.gui.LocatedString;
+import igwmod.lib.IGWLog;
+import igwmod.lib.Paths;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;

@@ -4,9 +4,6 @@ import static pokecube.core.PokecubeItems.addSpecificItemStack;
 import static pokecube.core.PokecubeItems.register;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecube;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -26,8 +23,6 @@ import pokecube.core.items.ItemTranslated;
 
 public class ItemHandler 
 {
-	private static List<Item> items = new ArrayList<Item>();
-	
 	public static void registerItems()
 	{
         Item expshare = (new ItemExpShare()).setUnlocalizedName("exp_share");

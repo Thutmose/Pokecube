@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
@@ -75,8 +74,6 @@ public class TeamEventsHandler
         		return;
         	
         	
-        	EnumFacing side = evt.face;
-
         	ChunkCoordinate blockLoc = new ChunkCoordinate(evt.pos, evt.entityPlayer.dimension);
        	
         	if(!team.equals(owner))

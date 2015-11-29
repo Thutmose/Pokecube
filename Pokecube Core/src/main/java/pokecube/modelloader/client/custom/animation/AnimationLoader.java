@@ -22,8 +22,8 @@ import pokecube.core.utils.Vector4;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.custom.IExtendedModelPart;
 import pokecube.modelloader.client.custom.LoadedModel;
-import pokecube.modelloader.client.custom.PartInfo;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
+import pokecube.modelloader.client.custom.PartInfo;
 import thut.api.maths.Vector3;
 
 public class AnimationLoader
@@ -34,9 +34,9 @@ public class AnimationLoader
     public final static String TEXTUREPATH = "textures/entities/";
 
     static String                              file       = "";
+    @SuppressWarnings("rawtypes")
     public static HashMap<String, LoadedModel> modelMaps  = new HashMap<String, LoadedModel>();
-    private static HashSet<String>             modelNames = new HashSet();
-    public static HashMap<String, Model>       models     = new HashMap();
+    public static HashMap<String, Model>       models     = new HashMap<String, Model>();
 
     public static class Model
     {
@@ -64,6 +64,7 @@ public class AnimationLoader
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void parse(Model model)
     {
         try
@@ -78,10 +79,10 @@ public class AnimationLoader
 
             NodeList modelList = doc.getElementsByTagName("model");
 
-            HashSet<String> hl = new HashSet();
-            HashSet<String> hr = new HashSet();
-            HashSet<String> fl = new HashSet();
-            HashSet<String> fr = new HashSet();
+            HashSet<String> hl = new HashSet<String>();
+            HashSet<String> hr = new HashSet<String>();
+            HashSet<String> fl = new HashSet<String>();
+            HashSet<String> fr = new HashSet<String>();
             int headDir = 2;
             int headAxis = 2;
             float[] headCaps = { -180, 180 };
@@ -93,7 +94,7 @@ public class AnimationLoader
             Vector5 rotation = null;
             Vector3 scale = null;
             ArrayList<String> names = new ArrayList<String>();
-            HashMap<String, ModelAnimation> loadedPresets = new HashMap();
+            HashMap<String, ModelAnimation> loadedPresets = new HashMap<String, ModelAnimation>();
             for (int i = 0; i < modelList.getLength(); i++)
             {
                 Node modelNode = modelList.item(i);
@@ -108,8 +109,7 @@ public class AnimationLoader
                     Node part = partsList.item(j);
                     if (part.getNodeName().equals("part"))
                     {
-                        PartInfo pinfo;
-                        parts.put(part.getAttributes().getNamedItem("name").getNodeValue(), pinfo = getPart(part));
+                        parts.put(part.getAttributes().getNamedItem("name").getNodeValue(), getPart(part));
 
                     }
                     if (part.getNodeName().equals("phase"))
@@ -196,7 +196,7 @@ public class AnimationLoader
                     }
                 }
 
-                LoadedModel loaded = modelMaps.get(modelName);
+                LoadedModel<?> loaded = modelMaps.get(modelName);
                 if (loaded == null)
                 {
                     loaded = new LoadedModel(parts, phaseList, model);
@@ -275,7 +275,7 @@ public class AnimationLoader
                 for (String s : loadedPresets.keySet())
                 {
                     ModelAnimation m = loadedPresets.get(s);
-                    ModelAnimation old = loaded.phaseMap.get(s);
+                    ModelAnimation old = (ModelAnimation) loaded.phaseMap.get(s);
                     if (old == null || m.getClass().isInstance(m))
                     {
                         loaded.phaseMap.put(s, m);
@@ -304,7 +304,7 @@ public class AnimationLoader
         }
         catch (Exception e)
         {
-            LoadedModel loaded = modelMaps.get(model.name);
+            LoadedModel<?> loaded = modelMaps.get(model.name);
             if (loaded == null)
             {
                 loaded = new LoadedModel(new HashMap<String, PartInfo>(), new HashMap<String, ArrayList<Vector5>>(),
@@ -321,7 +321,7 @@ public class AnimationLoader
 
     }
 
-    public static LoadedModel getModel(String name)
+    public static LoadedModel<?> getModel(String name)
     {
         Model model = models.get(name);
         if (model == null)
@@ -333,7 +333,7 @@ public class AnimationLoader
         if (modelMaps.get(model.name) != null) return modelMaps.get(model.name);
 
         System.err.println("Model not found, finding a random one instead");
-        for (LoadedModel m : modelMaps.values())
+        for (LoadedModel<?> m : modelMaps.values())
         {
             if (m != null) return m;
         }
@@ -379,7 +379,7 @@ public class AnimationLoader
         return ret;
     }
 
-    static void addVectors(NodeList nodes, ArrayList list)
+    static void addVectors(NodeList nodes, ArrayList<Vector5> list)
     {
 
         for (int j = 0; j < nodes.getLength(); j++)
@@ -403,7 +403,6 @@ public class AnimationLoader
         if (node.getAttributes() == null) return vect;
         if (node.getAttributes().getNamedItem("rotation") != null)
         {
-            String shift;
             String rotation;
             String time = "0";
             Vector4 ro = new Vector4();
@@ -429,7 +428,6 @@ public class AnimationLoader
         {
             vect = Vector3.getNewVectorFromPool();
             String shift;
-            int t = 0;
             String[] r;
             shift = node.getAttributes().getNamedItem("offset").getNodeValue();
             r = shift.split(",");
@@ -446,7 +444,6 @@ public class AnimationLoader
         {
             vect = Vector3.getNewVectorFromPool();
             String shift;
-            int t = 0;
             String[] r;
             shift = node.getAttributes().getNamedItem("scale").getNodeValue();
             r = shift.split(",");
@@ -486,7 +483,6 @@ public class AnimationLoader
         if (node.getAttributes().getNamedItem("headCap") != null)
         {
             String shift;
-            int t = 0;
             String[] r;
             shift = node.getAttributes().getNamedItem("headCap").getNodeValue();
             r = shift.split(",");

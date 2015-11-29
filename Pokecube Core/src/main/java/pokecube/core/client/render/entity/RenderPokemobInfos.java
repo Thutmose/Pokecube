@@ -6,22 +6,21 @@ import org.lwjgl.opengl.GL13;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import pokecube.core.client.render.PTezzelator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.mod_Pokecube;
+import pokecube.core.client.render.PTezzelator;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Tools;
 
 @SideOnly(Side.CLIENT)
-public abstract class RenderPokemobInfos extends RenderLiving
+public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderLiving<T>
 {
     public RenderPokemobInfos(RenderManager m, ModelBase modelbase, float shadowSize)
     {
@@ -51,7 +50,7 @@ public abstract class RenderPokemobInfos extends RenderLiving
     }
 
     @Override
-    public void doRender(EntityLiving entityliving, double d, double d1, double d2, float f, float f1)
+    public void doRender(T entityliving, double d, double d1, double d2, float f, float f1)
     {
         super.doRender(entityliving, d, d1, d2, f, f1);
 

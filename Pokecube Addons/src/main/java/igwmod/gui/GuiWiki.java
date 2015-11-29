@@ -1,5 +1,15 @@
 package igwmod.gui;
 
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
 import igwmod.ClientProxy;
 import igwmod.ConfigHandler;
 import igwmod.InfoSupplier;
@@ -14,13 +24,6 @@ import igwmod.gui.tabs.IWikiTab;
 import igwmod.lib.IGWLog;
 import igwmod.lib.Textures;
 import igwmod.lib.Util;
-
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -39,10 +42,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Derived from Vanilla's GuiContainerCreative

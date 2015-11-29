@@ -23,7 +23,7 @@ public class PlayerAsPokemobManager
 	private static PlayerAsPokemobManager instance;
 	private static PlayerAsPokemobManager instance2;
 
-	private HashMap<String, NBTTagCompound> playerData = new HashMap();
+	private HashMap<String, NBTTagCompound> playerData = new HashMap<String, NBTTagCompound>();
 	
 	private PlayerAsPokemobManager(){}
 

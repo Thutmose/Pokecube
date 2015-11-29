@@ -1,14 +1,14 @@
 package pokecube.modelloader.client.tabula.model;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.google.common.annotations.Beta;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 @Beta
 public interface IModelParser<T extends IModel> {

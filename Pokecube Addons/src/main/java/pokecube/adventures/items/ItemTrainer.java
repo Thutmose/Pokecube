@@ -133,8 +133,7 @@ public class ItemTrainer extends Item
 		}
 		
 		Vector3 pos = Vector3.getNewVectorFromPool().set(target);
-		GuardAI ai;
-		v.tasks.addTask(2,ai = new GuardAI(v, new BlockPos(pos.intX(), pos.intY(), pos.intZ()),
+		v.tasks.addTask(2,new GuardAI(v, new BlockPos(pos.intX(), pos.intY(), pos.intZ()),
 				1.0f, 48.0f, new TimePeriod(0.00, 0.5), false));
 		GuardAIProperties props = new GuardAIProperties();
 		props.init(v, v.worldObj);
@@ -150,7 +149,7 @@ public class ItemTrainer extends Item
     /**
      * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
      */
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
     	par3List.add(new ItemStack(par1, 1, 0));
     	par3List.add(new ItemStack(par1, 1, 1));
     	par3List.add(new ItemStack(par1, 1, 2));

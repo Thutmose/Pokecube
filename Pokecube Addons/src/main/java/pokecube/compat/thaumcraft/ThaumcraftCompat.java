@@ -3,12 +3,9 @@ package pokecube.compat.thaumcraft;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.EntityList;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-import pokecube.core.PokecubeItems;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.PostPostInit;
@@ -17,10 +14,6 @@ import pokecube.core.utils.PokeType;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.crafting.InfusionRecipe;
-import thaumcraft.api.research.ResearchCategories;
-import thaumcraft.api.research.ResearchItem;
-import thaumcraft.api.research.ResearchPage;
 
 public class ThaumcraftCompat {
 	
@@ -119,7 +112,7 @@ public class ThaumcraftCompat {
 	
 	public void registerTrainersThaumcraft() {
 		
-		Class klass = pokecube.adventures.entity.trainers.EntityTrainer.class;
+		Class<EntityTrainer> klass = pokecube.adventures.entity.trainers.EntityTrainer.class;
 		
 		String name = (String) EntityList.classToStringMapping.get(klass);
 		
@@ -140,7 +133,7 @@ public class ThaumcraftCompat {
 		
 		for(Integer i : Pokedex.getInstance().getEntries()) {
 			PokedexEntry entry = Pokedex.getInstance().getEntry(i);
-			Class klass = PokecubeMod.core.getEntityClassFromPokedexNumber(entry.getPokedexNb());
+			Class<?> klass = PokecubeMod.core.getEntityClassFromPokedexNumber(entry.getPokedexNb());
 			
 			if(klass != null) {
 				String name = (String) EntityList.classToStringMapping.get(klass);

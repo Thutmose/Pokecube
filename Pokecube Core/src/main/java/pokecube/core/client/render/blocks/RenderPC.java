@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL12;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
+@SuppressWarnings("rawtypes")
 public class RenderPC extends TileEntitySpecialRenderer
 {
     public RenderPC()

@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class RenderTarget extends RendererLivingEntity
 {
 

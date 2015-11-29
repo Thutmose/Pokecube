@@ -19,24 +19,24 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
-import pokecube.core.interfaces.IPokecube;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
-public class RenderPokecube extends RenderLiving
+@SuppressWarnings("deprecation")
+public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
 {
 	public RenderPokecube(RenderManager renderManager) {
 		super(renderManager, new ModelPokecube(), 0);
 	}
 
-	public static HashMap<Integer, Render> pokecubeRenderers = new HashMap();
+	@SuppressWarnings("rawtypes")
+    public static HashMap<Integer, Render> pokecubeRenderers = new HashMap<Integer, Render>();
 
-	@Override
-	public void doRender(EntityLiving entity, double x, double y, double z, float f, float f1)
+	@SuppressWarnings("unchecked")
+    @Override
+	public void doRender(T entity, double x, double y, double z, float f, float f1)
 	{
 		EntityPokecube pokecube = (EntityPokecube) entity;
-		
-		IPokecube cube = (IPokecube) pokecube.getEntityItem().getItem();
 		
 		int num = PokecubeItems.getCubeId(pokecube.getEntityItem());
 		if(pokecubeRenderers.containsKey(num))
@@ -48,7 +48,7 @@ public class RenderPokecube extends RenderLiving
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity)
+	protected ResourceLocation getEntityTexture(T entity)
 	{
 		return new ResourceLocation(mod_Pokecube.ID, "textures/items/pokecubefront.png");
 	}
@@ -77,8 +77,6 @@ public class RenderPokecube extends RenderLiving
 			if (PokecubeManager.getTilt(cube.getEntityItem()) > 0)
 			{
 				float rotateY = MathHelper.cos(MathHelper.abs((float)(Math.PI * f2)/12)) * (180F / (float)Math.PI);//getRotationX(entityItem);
-				float rotateX = 0;
-
 				GL11.glRotatef(rotateY, 0.0F, 0.0F, 1.0F);
 			}
 

@@ -18,13 +18,11 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.client.Resources;
 import pokecube.core.interfaces.IMoveNames;
@@ -78,8 +76,6 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     private void draw(RenderWorldLastEvent event)
     {
-        int currentItemIndex = mod_Pokecube.getPlayer(null).inventory.currentItem;
-
         int h = Mod_Pokecube_Helper.guiOffset[0];
         int w = Mod_Pokecube_Helper.guiOffset[1];
 
@@ -112,8 +108,6 @@ public class GuiDisplayPokecubeInfo extends Gui
             indexPokemob = 0;
         }
         if (indexPokemob >= pokemobs.length) { return; }
-        int i = 0;
-
         IPokemob pokemob = pokemobs[indexPokemob];
         int n = pokemobs.length;
         if (pokemob != null)
@@ -140,8 +134,6 @@ public class GuiDisplayPokecubeInfo extends Gui
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             fontRenderer.drawString(displayName, 2 + h, 2 + w, lightGrey);
             int moveIndex = 0;
-            int index2 = 0;
-
             // Draw number of pokemon
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
             int num = fontRenderer.getStringWidth("" + n);
@@ -157,7 +149,6 @@ public class GuiDisplayPokecubeInfo extends Gui
 
                 if (move != null)
                 {
-                    index2++;
                     if (pokemob.getMoveIndex() == moveIndex) GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
                     else GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     // bind texture
@@ -185,8 +176,6 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
 
         }
-        i++;
-
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(true);
         GL11.glDisable(GL11.GL_BLEND);
@@ -206,10 +195,9 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (refreshCounter > 0) return arrayRet;
 
         EntityPlayer player = minecraft.thePlayer;
-        List pokemobs = minecraft.theWorld.getLoadedEntityList();
+        List<?> pokemobs = minecraft.theWorld.getLoadedEntityList();
 
         List<IPokemob> ret = new ArrayList<IPokemob>();
-        int i = 0;
         for (Object object : pokemobs)
         {
             if (!(object instanceof IPokemob)) continue;
@@ -252,34 +240,6 @@ public class GuiDisplayPokecubeInfo extends Gui
         // Arrays.sort(arrayRet, PokemobAIThread.pokemobComparator);
 
         return arrayRet;
-    }
-
-    private int getColorForItem(ItemStack itemStack)
-    {
-        int color = lightGrey;
-
-        if (itemStack.getItem() == PokecubeItems.pokemobEgg)
-        {
-            color = 0x78C848;
-        }
-        else if (itemStack.getItem() == PokecubeItems.getItem("pokecubeFilled"))
-        {
-            color = 0xEE0000;
-        }
-        else if (itemStack.getItem() == PokecubeItems.getItem("greatcubeFilled"))
-        {
-            color = 0x0B90CE;
-        }
-        else if (itemStack.getItem() == PokecubeItems.getItem("ultracubeFilled"))
-        {
-            color = 0xDCA937;
-        }
-        else if (itemStack.getItem() == PokecubeItems.getItem("mastercubeFilled"))
-        {
-            color = 0x332F6A;
-        }
-
-        return color;
     }
 
     int indexPokemob = 0;
@@ -388,11 +348,9 @@ public class GuiDisplayPokecubeInfo extends Gui
         temp.freeVectorFromPool();
         look.freeVectorFromPool();
         buffer.writeInt(target != null ? target.getEntityId() : 0);
-        IPokemob targetPoke = null;
         boolean sameOwner = false;
         if (target instanceof IPokemob)
         {
-            targetPoke = (IPokemob) target;
             sameOwner = ((IPokemob) target).getPokemonOwner() == player;
         }
 

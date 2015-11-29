@@ -1,13 +1,5 @@
 package pokecube.compat.mfr;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-import pokecube.core.PokecubeItems;
-
 public class MFRCompat {
 
 //	public static List<IFactoryRanchable> ranchables = new ArrayList<IFactoryRanchable>();

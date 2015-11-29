@@ -96,6 +96,7 @@ import thut.api.maths.Vector3;
 
 /** @author Manchou */
 @SideOnly(Side.CLIENT)
+@SuppressWarnings("rawtypes")
 public class ClientProxyPokecube extends CommonProxyPokecube
 {
     private static BitSet models = new BitSet();
@@ -142,7 +143,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 String modid = annotation.modid();
                 if (!modid.equals(PokecubeMod.defaultMod)) return;
             }
-            Class clas = PokecubeMod.core.getEntityClassFromPokedexNumber(number);
             // RenderingRegistry.registerEntityRenderingHandler(clas, new
             // RenderPokemob(model, 1, 1));
             models.set(number);
@@ -177,6 +177,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     @Override
     public void registerRenderInformation()
     {
@@ -224,7 +225,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
     }
 
-    private HashMap<Integer, Object> cubeRenders = new HashMap();
+    private HashMap<Integer, Object> cubeRenders = new HashMap<Integer, Object>();
 
     @Override
     public void registerPokecubeRenderer(int cubeId, Render renderer, Object mod)

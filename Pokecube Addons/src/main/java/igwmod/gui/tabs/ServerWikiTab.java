@@ -1,20 +1,19 @@
 package igwmod.gui.tabs;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import igwmod.IGWMod;
 import igwmod.InfoSupplier;
 import igwmod.gui.GuiWiki;
 import igwmod.gui.LocatedTexture;
 import igwmod.lib.IGWLog;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-
-import org.lwjgl.opengl.GL11;
 
 public class ServerWikiTab extends BaseWikiTab{
     private String serverName;

@@ -9,7 +9,6 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
@@ -213,7 +212,6 @@ public class MovesAdder implements IMoveConstants
                 {
                     EntityLivingBase target = mob.getAttackTarget();
                     // TODO make this scale with toxic.
-                    float thisHP = mob.getHealth();
                     float thisMaxHP = mob.getMaxHealth();
                     int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
                     mob.attackEntityFrom(DamageSource.generic, damage);
@@ -255,7 +253,6 @@ public class MovesAdder implements IMoveConstants
             @Override
             public int getDuration()
             {
-                Random r = new Random();
                 return 2;
             }
 
@@ -289,7 +286,6 @@ public class MovesAdder implements IMoveConstants
             @Override
             public void doOngoingEffect(EntityLiving mob)
             {
-                float thisHP = mob.getHealth();
                 float thisMaxHP = mob.getMaxHealth();
                 int damage = Math.max(1, (int) (0.125 * thisMaxHP));
                 mob.attackEntityFrom(DamageSource.generic, damage);
@@ -450,7 +446,6 @@ public class MovesAdder implements IMoveConstants
             {
                 if (attacked instanceof IPokemob)
                 {
-                    IPokemob target = (IPokemob) attacked;
                     int[] attackerStats = attacker.getBaseStats();
                     byte[] attackerMods = attacker.getModifiers();
 
@@ -669,7 +664,6 @@ public class MovesAdder implements IMoveConstants
             @Override
             public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
             {
-                EntityLivingBase entityAttacker = (EntityLivingBase) attacker;
                 // entityAttacker.attackTime =
                 // MovesUtils.getDelayBetweenAttacks(attacker) * 2 / 3; // will
                 // reattack faster
@@ -893,7 +887,6 @@ public class MovesAdder implements IMoveConstants
                     {
                         changeAddition = move.change;
                     }
-                    double defCurl = 1;
                     double rollOut = ((IPokemob) attacker).getMoveStats().FURYCUTTERCOUNTER;
                     int PWR = (int) Math.max(this.getPWR(), Math.min(160, (rollOut * 2) * this.getPWR()));
                     int finalAttackStrength = MovesUtils.attack(attacker, attacked, name, move.type, PWR, move.crit,
@@ -1223,7 +1216,6 @@ public class MovesAdder implements IMoveConstants
             @Override
             public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
             {
-                EntityLivingBase entityAttacker = (EntityLivingBase) attacker;
                 // entityAttacker.attackTime =
                 // MovesUtils.getDelayBetweenAttacks(attacker) * 2 / 3; // will
                 // reattack faster

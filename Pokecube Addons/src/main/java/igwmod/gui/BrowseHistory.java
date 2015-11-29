@@ -1,9 +1,9 @@
 package igwmod.gui;
 
-import igwmod.gui.tabs.IWikiTab;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import igwmod.gui.tabs.IWikiTab;
 
 public class BrowseHistory{
 

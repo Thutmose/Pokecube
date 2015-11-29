@@ -9,7 +9,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IPokemob;
-import thut.api.maths.Cruncher;
 import thut.api.maths.Vector3;
 
 public class AITendPlants extends EntityAIBase
@@ -37,7 +36,7 @@ public class AITendPlants extends EntityAIBase
     public void updateTask()
 	{
 		Vector3 here = Vector3.getNewVectorFromPool().set(pokemob);
-		int range = 4, x,y,z;
+		int range = 4;
 		
 		for(int i = 0; i<range*range*range; i++)
 		{

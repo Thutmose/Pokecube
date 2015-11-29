@@ -1,12 +1,12 @@
 package igwmod.recipeintegration;
 
+import java.util.List;
+
 import igwmod.api.IRecipeIntegrator;
 import igwmod.gui.IReservedSpace;
 import igwmod.gui.IWidget;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
-
-import java.util.List;
 
 public class IntegratorComment implements IRecipeIntegrator{
 

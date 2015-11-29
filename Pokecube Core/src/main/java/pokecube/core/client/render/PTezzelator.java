@@ -5,9 +5,7 @@ import java.awt.Color;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.realms.RealmsBufferBuilder;
 import net.minecraft.realms.RealmsVertexFormat;
-import net.minecraft.realms.Tezzelator;
 
 public class PTezzelator
 {

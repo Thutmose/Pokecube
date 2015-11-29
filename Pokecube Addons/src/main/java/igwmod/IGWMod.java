@@ -1,8 +1,5 @@
 package igwmod;
 
-import igwmod.lib.Constants;
-import igwmod.network.NetworkHandler;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import igwmod.lib.Constants;
+import igwmod.network.NetworkHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;

@@ -3,7 +3,6 @@ package pokecube.adventures.client.gui;
 import static pokecube.core.utils.PokeType.flying;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -276,37 +275,37 @@ public class GuiTrainerEdit extends GuiScreen
 				if(textfieldPokedexNb0.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb0.getText());
-					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb0.setText(""+n);
 				}
 				if(textfieldPokedexNb1.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb1.getText());
-					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb1.setText(""+n);
 				}
 				if(textfieldPokedexNb2.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb2.getText());
-					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb2.setText(""+n);
 				}
 				if(textfieldPokedexNb3.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb3.getText());
-					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb3.setText(""+n);
 				}
 				if(textfieldPokedexNb4.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb4.getText());
-					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb4.setText(""+n);
 				}
 				if(textfieldPokedexNb5.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb5.getText());
-					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getNext(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb5.setText(""+n);
 				}
 			}
@@ -324,37 +323,37 @@ public class GuiTrainerEdit extends GuiScreen
 				if(textfieldPokedexNb0.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb0.getText());
-					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb0.setText(""+n);
 				}
 				if(textfieldPokedexNb1.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb1.getText());
-					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb1.setText(""+n);
 				}
 				if(textfieldPokedexNb2.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb2.getText());
-					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb2.setText(""+n);
 				}
 				if(textfieldPokedexNb3.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb3.getText());
-					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb3.setText(""+n);
 				}
 				if(textfieldPokedexNb4.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb4.getText());
-					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb4.setText(""+n);
 				}
 				if(textfieldPokedexNb5.isFocused())
 				{
 					num = Integer.parseInt(textfieldPokedexNb5.getText());
-					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getNb();
+					int n = Pokedex.getInstance().getPrevious(Pokedex.getInstance().getEntry(num), 1).getPokedexNb();
 					textfieldPokedexNb5.setText(""+n);
 				}
 			}
@@ -430,8 +429,6 @@ public class GuiTrainerEdit extends GuiScreen
 		PokecubePacketHandler.sendToServer(packet);
 	}
 
-	private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
-
 	public static int	x;
 	public static int	y;
 
@@ -439,7 +436,7 @@ public class GuiTrainerEdit extends GuiScreen
 	{
 		try
 		{
-			EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(mob.getNb(),
+			EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(mob.getPokedexNb(),
 					trainer.worldObj);
 
 			float size = 0;
@@ -470,7 +467,6 @@ public class GuiTrainerEdit extends GuiScreen
 			float zoom = 15f / size;// (float)(23F / Math.sqrt(size + 0.6));
 			GL11.glScalef(-zoom, zoom, zoom);
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			float f4 = (j + 51) - 100;
 			float f5 = ((k + 75) - 50) - 100;
 			GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
 
@@ -483,9 +479,7 @@ public class GuiTrainerEdit extends GuiScreen
 			entity.rotationPitch = 0;
 			entity.rotationYawHead = entity.rotationYaw;
 			GL11.glTranslatef(0.0F, (float)entity.getYOffset(), 0.0F);
-			float offset = 0.4f;
-			float f, f1, f2;
-
+			
 			GL11.glRotatef(-30, 0.0F, 1.0F, 0.0F);
 			GL11.glRotatef(0, 1.0F, 0.0F, 0.0F);
 

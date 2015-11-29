@@ -181,6 +181,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     /** Overriden in a sign to provide the text. */
+    @SuppressWarnings("rawtypes")
     public Packet getDescriptionPacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();

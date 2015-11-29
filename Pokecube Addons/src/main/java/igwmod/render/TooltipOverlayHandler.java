@@ -1,5 +1,7 @@
 package igwmod.render;
 
+import org.lwjgl.input.Keyboard;
+
 import igwmod.ClientProxy;
 import igwmod.ConfigHandler;
 import igwmod.IGWMod;
@@ -10,8 +12,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import org.lwjgl.input.Keyboard;
 
 public class TooltipOverlayHandler{
 

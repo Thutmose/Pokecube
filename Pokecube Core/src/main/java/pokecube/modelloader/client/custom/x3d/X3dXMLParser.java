@@ -9,7 +9,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -44,7 +43,6 @@ public class X3dXMLParser {
 		//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
 		doc.getDocumentElement().normalize();
 		
-		NodeList nList = doc.getChildNodes();
 		partName = doc.getElementsByTagName("meta").item(0).getAttributes().getNamedItem("content").getNodeValue().replace(".x3d", "");
 		
 		partTranslations = new HashMap<String, HashMap<String, String>>();
@@ -96,15 +94,6 @@ public class X3dXMLParser {
 				String name = doc.getElementsByTagName("Group").item(j).getAttributes().getNamedItem("DEF").getNodeValue();
 				String index = n.getAttributes().getNamedItem("index").getNodeValue();
 				items.put("index", index);
-				String[] s = index.split(" ");
-				int m = s.length;
-				s = n.getChildNodes().item(3).getAttributes().getNamedItem("vector").getNodeValue().split(" ");
-				int g = s.length;
-				s = n.getChildNodes().item(1).getAttributes().getNamedItem("point").getNodeValue().split(" ");
-				int f = s.length;
-				s = n.getChildNodes().item(5).getAttributes().getNamedItem("point").getNodeValue().split(" ");
-				int h = s.length;
-				
 				items.put("coordinates", n.getChildNodes().item(1).getAttributes().getNamedItem("point").getNodeValue());
 				items.put("normals", n.getChildNodes().item(3).getAttributes().getNamedItem("vector").getNodeValue());
 				items.put("textures", n.getChildNodes().item(5).getAttributes().getNamedItem("point").getNodeValue());

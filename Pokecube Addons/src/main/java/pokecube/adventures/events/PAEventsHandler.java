@@ -81,9 +81,8 @@ public class PAEventsHandler
 
         if (!evt.player.worldObj.isRemote)
         {
-            int pokedexNb = evt.pick;
             System.out.println(evt.pick + " " + evt.starterPack.length);
-            List<ItemStack> toPC = new ArrayList();
+            List<ItemStack> toPC = new ArrayList<ItemStack>();
             ItemStack starter = null;
             // if (pokedexNb > 0)
             // {
@@ -131,7 +130,6 @@ public class PAEventsHandler
     @SubscribeEvent
     public void KillEvent(pokecube.core.events.KillEvent evt)
     {
-        IPokemob killer = evt.killer;
         IPokemob killed = evt.killed;
 
         EntityLivingBase owner = killed.getPokemonOwner();

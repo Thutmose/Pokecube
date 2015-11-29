@@ -15,15 +15,9 @@ import pokecube.core.utils.Vector4;
 
 public class ModelRendererQuat extends ModelRenderer{
 
-    /** The X offset into the texture used for displaying this model */
-    private int textureOffsetX;
-    /** The Y offset into the texture used for displaying this model */
-    private int textureOffsetY;
     private boolean compiled;
     /** The GL display list rendered by the Tessellator for this model */
     private int displayList;
-    private ModelBase baseModel;
-    
     public ModelRendererQuat(ModelBase p_i1172_1_, String p_i1172_2_)
     {
     	this(p_i1172_1_);
@@ -35,8 +29,7 @@ public class ModelRendererQuat extends ModelRenderer{
         this.textureWidth = 64.0F;
         this.textureHeight = 32.0F;
         this.showModel = true;
-        this.cubeList = new ArrayList();
-        this.baseModel = p_i1173_1_;
+        this.cubeList = new ArrayList<ModelBox>();
         p_i1173_1_.boxList.add(this);
         this.setTextureSize(p_i1173_1_.textureWidth, p_i1173_1_.textureHeight);
         

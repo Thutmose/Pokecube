@@ -227,13 +227,6 @@ public class Move_Utility extends Move_Basic {
 		for(Block l: Mod_Pokecube_Helper.getRocks())
 			list.add(l);
 
-		
-		String out = "";
-		for(Block b1: list)
-		{
-			out += b1.getLocalizedName()+", ";
-		}
-
 		Vector3 temp = Vector3.getNewVectorFromPool();
 		temp.set(v);
     	for(int i = -1; i<=1; i++)

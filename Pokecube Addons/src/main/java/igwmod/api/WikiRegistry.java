@@ -1,15 +1,14 @@
 package igwmod.api;
 
-import igwmod.gui.GuiWiki;
-import igwmod.gui.tabs.IWikiTab;
-import igwmod.gui.tabs.ServerWikiTab;
-
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import igwmod.gui.GuiWiki;
+import igwmod.gui.tabs.IWikiTab;
+import igwmod.gui.tabs.ServerWikiTab;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;

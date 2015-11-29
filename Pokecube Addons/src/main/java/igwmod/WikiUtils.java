@@ -1,12 +1,11 @@
 package igwmod;
 
-import igwmod.lib.IGWLog;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import igwmod.lib.IGWLog;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

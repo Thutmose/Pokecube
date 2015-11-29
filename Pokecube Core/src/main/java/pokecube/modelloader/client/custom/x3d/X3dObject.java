@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.utils.Vector4;
@@ -112,7 +111,7 @@ public class X3dObject implements IExtendedModelPart
 			for (Integer i : order)
 			{
 				m = i;
-				Vertex faceNormal = vertexNormals.get(i);
+//				Vertex faceNormal = vertexNormals.get(i);
 				Vertex vertex = vertices.get(i);
 
 		        short j = (short) (brightness >> 16 & 65535);

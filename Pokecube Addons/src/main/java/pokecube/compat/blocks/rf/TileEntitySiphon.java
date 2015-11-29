@@ -60,7 +60,7 @@ public class TileEntitySiphon extends TileEnergyHandler implements ITickable
     
     public int getInput()
     {
-    	List l = worldObj.getEntitiesWithinAABB(EntityLiving.class, box);
+    	List<EntityLiving> l = worldObj.getEntitiesWithinAABB(EntityLiving.class, box);
     	int ret = 0;
     	for(Object o: l)
     	{

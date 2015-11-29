@@ -16,20 +16,18 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
-import pokecube.core.client.render.PTezzelator;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.client.Resources;
 import pokecube.core.client.gui.GuiPokedex;
+import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -37,7 +35,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.maths.Vector3;
 
 @SideOnly(Side.CLIENT)
-public class RenderPokemob extends RenderPokemobInfos
+public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 {
     protected float scale;
     protected ModelBase modelStatus;
@@ -65,7 +63,7 @@ public class RenderPokemob extends RenderPokemobInfos
 	}
 
 	@Override
-    protected void preRenderCallback(EntityLivingBase entity, float f)
+    protected void preRenderCallback(T entity, float f)
     {
         preRenderScale(entity, f);
         updateCreeperScale((EntityLiving)entity, f);
@@ -224,7 +222,7 @@ public class RenderPokemob extends RenderPokemobInfos
      * Returns an ARGB int color back. Args: entityLiving, lightBrightness, partialTickTime
      */
     @Override
-    protected int getColorMultiplier(EntityLivingBase par1EntityLiving, float par2, float par3)
+    protected int getColorMultiplier(T par1EntityLiving, float par2, float par3)
     {
 //    	if (par3 > 0.5)
 //    		return getBlackColorMultiplier();//TODO
@@ -236,7 +234,7 @@ public class RenderPokemob extends RenderPokemobInfos
 	}
     
     @Override
-    protected void renderModel(EntityLivingBase entity, float walktime, float walkspeed, float time, float rotationYaw, float rotationPitch, float scale) {
+    protected void renderModel(T entity, float walktime, float walkspeed, float time, float rotationYaw, float rotationPitch, float scale) {
 
 		GL11.glPushMatrix();
 
@@ -252,12 +250,10 @@ public class RenderPokemob extends RenderPokemobInfos
 			
 			if(mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IPokemob.SHOULDER) && ((Entity)mob).ridingEntity!=null)
 			{
-				Entity riding = ((Entity)mob).ridingEntity;
 				GL11.glTranslated( 1 - entry.width/2, 0, 0);
 			}
 			else if(mob.getPokemonAIState(IPokemob.HELD) && ((Entity)mob).ridingEntity instanceof EntityLivingBase)
 			{
-				EntityLivingBase holder = (EntityLivingBase) ((Entity)mob).ridingEntity;
 				Vector3 look = v.set(-0.5,0.5,-0.5);
 				GL11.glTranslated(look.x, ((Entity)mob).height + 1-look.y,look.z);
 			}
@@ -301,7 +297,7 @@ public class RenderPokemob extends RenderPokemobInfos
     }
     
     @Override
-    protected void rotateCorpse(EntityLivingBase par1EntityLiving, float par2, float par3, float par4) {
+    protected void rotateCorpse(T par1EntityLiving, float par2, float par3, float par4) {
     	super.rotateCorpse(par1EntityLiving, par2, par3, par4);
     	if (((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP || ((IPokemob) par1EntityLiving).getPokemonAIState(IPokemob.SLEEPING)){
     		short timer = ((IPokemob) par1EntityLiving).getStatusTimer();
@@ -506,11 +502,11 @@ public class RenderPokemob extends RenderPokemobInfos
         	
         	ResourceLocation test = new ResourceLocation(modId, texture);
         	try {
-				IResource res = Minecraft.getMinecraft().getResourceManager().getResource(test);
+				Minecraft.getMinecraft().getResourceManager().getResource(test);
 			} catch (IOException e) {
 				test = new ResourceLocation(modId, texture.toLowerCase());
 				try {
-					IResource res = Minecraft.getMinecraft().getResourceManager().getResource(test);
+					Minecraft.getMinecraft().getResourceManager().getResource(test);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -522,11 +518,12 @@ public class RenderPokemob extends RenderPokemobInfos
     }
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) {
+	protected ResourceLocation getEntityTexture(T entity) {
 		return getPokemobTexture((IPokemob) entity);
 	}
 	
-	public ResourceLocation getEntityTexturePublic(Entity entity) {
-		return this.getEntityTexture(entity);
+	@SuppressWarnings("unchecked")
+    public ResourceLocation getEntityTexturePublic(Entity entity) {
+		return this.getEntityTexture((T) entity);
 	}
 }

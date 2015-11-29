@@ -20,17 +20,13 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.adventures.handlers.ConfigHandler;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Vector4;
 import thut.api.entity.Transporter;
-import thut.api.entity.Transporter.TelDestination;
 import thut.api.maths.Vector3;
 
 public class TileEntityWarpPad extends TileEntityOwnable implements Environment, ITickable, IEnergyReceiver
@@ -167,6 +163,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
     }
 
     /** Overriden in a sign to provide the text. */
+    @SuppressWarnings("rawtypes")
     @Override
     public Packet getDescriptionPacket()
     {

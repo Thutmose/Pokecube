@@ -23,13 +23,10 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import pokecube.core.client.render.PTezzelator;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -39,6 +36,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.Resources;
+import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
@@ -47,6 +45,7 @@ import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
@@ -79,7 +78,6 @@ public class GuiPokedex extends GuiScreen
 
     /** The Y size of the inventory window in pixels. */
     protected int ySize            = 180; // old:166
-    private float yRenderAngle     = 10;
     private float xRenderAngle     = 0;
     private float yHeadRenderAngle = 10;
     private float xHeadRenderAngle = 0;
@@ -161,7 +159,6 @@ public class GuiPokedex extends GuiScreen
                     index2 = i;// type - 1;
                 }
             }
-            String biomeName = BiomeDatabase.getReadableNameFromType(type);
             nicknameTextField.setText("");
             nicknameTextField.setEnabled(false);
         }
@@ -379,7 +376,6 @@ public class GuiPokedex extends GuiScreen
 
         if (mouseRotateControl == 0)
         {
-            yRenderAngle += (x - prevX) * 2;
             prevX = x;
             xRenderAngle += y - prevY;
             prevY = y;
@@ -616,7 +612,6 @@ public class GuiPokedex extends GuiScreen
                             index2 = i - 1;// type - 1;
                         }
                     }
-                    String biomeName = BiomeDatabase.getReadableNameFromType(type);
                 }
             }
 
@@ -646,7 +641,6 @@ public class GuiPokedex extends GuiScreen
                             index2 = i - 1;// type - 1;
                         }
                     }
-                    String biomeName = BiomeDatabase.getReadableNameFromType(type);
                 }
             }
 
@@ -657,11 +651,7 @@ public class GuiPokedex extends GuiScreen
 
             if (page == 1)
             {
-                TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-                Vector3 location = Vector3.getNewVectorFromPool().set(entityPlayer);
-                int type = t.getBiome(location.intX(), location.intY(), location.intZ());
-                location.freeVectorFromPool();
-                String biomeName = BiomeDatabase.getReadableNameFromType(type);
+                
             }
             if (page != 4)
             {
@@ -942,16 +932,13 @@ public class GuiPokedex extends GuiScreen
         drawString(fontRendererObj, count + "/" + count2,
                 xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 141, 0xffffff);
         World world = entityPlayer.worldObj;
-        List entities = new ArrayList(world.loadedEntityList);
+        List<Object> entities = new ArrayList<Object>(world.loadedEntityList);
         count = 0;
-        int count1 = 0;
         count2 = 0;
-        String name = "";
         for (Object o : entities)
         {
             if (o instanceof IPokemob)
             {
-                IPokemob e = (IPokemob) o;
                 count++;
             }
         }
@@ -1237,7 +1224,7 @@ public class GuiPokedex extends GuiScreen
                 }
             }
 
-            pokemob.setPokemonAIState(pokemob.EXITINGCUBE, false);
+            pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
 
             size = Math.max(entity.width, entity.height);
             j = (width - xSize) / 2;
@@ -1248,7 +1235,6 @@ public class GuiPokedex extends GuiScreen
             float zoom = (float) (23F / Math.sqrt(size + 0.6));
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-            float f4 = (j + 51) - xSize;
             float f5 = ((k + 75) - 50) - ySize;
             GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
 

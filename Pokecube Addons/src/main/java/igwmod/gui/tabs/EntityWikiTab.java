@@ -1,5 +1,11 @@
 package igwmod.gui.tabs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import igwmod.TickHandler;
 import igwmod.api.WikiRegistry;
 import igwmod.gui.GuiWiki;
@@ -9,10 +15,6 @@ import igwmod.gui.LocatedEntity;
 import igwmod.gui.LocatedTexture;
 import igwmod.lib.Textures;
 import igwmod.lib.Util;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
@@ -20,9 +22,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public class EntityWikiTab implements IWikiTab{
     private static Entity curEntity;

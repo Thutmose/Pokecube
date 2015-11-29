@@ -21,12 +21,12 @@ public class AnimationQuadrupedWalk extends ModelAnimation
 	/** Hind Left */
 	public HashMap<String, ArrayList<Vector5>>	positionsHL	= new HashMap<String, ArrayList<Vector5>>();
 
-	public HashSet<String>	namesFL	= new HashSet();
-	public HashSet<String>	namesFR	= new HashSet();
-	public HashSet<String>	namesHL	= new HashSet();
-	public HashSet<String>	namesHR	= new HashSet();
+	public HashSet<String>	namesFL	= new HashSet<String>();
+	public HashSet<String>	namesFR	= new HashSet<String>();
+	public HashSet<String>	namesHL	= new HashSet<String>();
+	public HashSet<String>	namesHR	= new HashSet<String>();
 	
-	public HashMap<String, Float> partialTimes = new HashMap();
+	public HashMap<String, Float> partialTimes = new HashMap<String, Float>();
 	private int[]		ticks	= new int[4];
 
 	private float					lastTick;
@@ -161,7 +161,7 @@ public class AnimationQuadrupedWalk extends ModelAnimation
 	
 	public void initPositions(int speed, HashMap<String, ArrayList<Vector5>> map, String partName)
 	{
-		ArrayList<Vector5> list = new ArrayList();
+		ArrayList<Vector5> list = new ArrayList<Vector5>();
 		if(map==positionsFL || map==positionsHL)
 		{
 			list.add(new Vector5(new Vector4(1, 0, 0, maxAngle), speed));

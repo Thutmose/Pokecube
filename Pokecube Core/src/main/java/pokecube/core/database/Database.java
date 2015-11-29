@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -40,7 +39,7 @@ public class Database implements IMoveConstants {
 
 	public static boolean FORCECOPY = true;
 	public static HashMap<Integer, PokedexEntry> data = new HashMap<Integer, PokedexEntry>();
-	public static HashSet<PokedexEntry> allFormes = new HashSet();
+	public static HashSet<PokedexEntry> allFormes = new HashSet<PokedexEntry>();
 	public static HashMap<String, ArrayList<PokedexEntry>> mobReplacements = new HashMap<String, ArrayList<PokedexEntry>>();
 	public static List<PokedexEntry> spawnables = new ArrayList<PokedexEntry>();
 
@@ -128,8 +127,7 @@ public class Database implements IMoveConstants {
 				String args = p.getTexture((byte)0).substring(0,p.getTexture((byte)0).length()-4);
 	        	args = args+"Sh.png";
 				ResourceLocation tex = new ResourceLocation(p.getModId(), args);
-				boolean exists = false;
-				IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+				Minecraft.getMinecraft().getResourceManager().getResource(tex);
 				
 				p.hasSpecialTextures[3] = true;
 				//System.out.println(p+" Has "+tex);
@@ -141,8 +139,7 @@ public class Database implements IMoveConstants {
 				String args = p.getTexture((byte)0).substring(0,p.getTexture((byte)0).length()-4);
 	        	args = args+"Ra.png";
 				ResourceLocation tex = new ResourceLocation(p.getModId(), args);
-				boolean exists = false;
-				IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+				Minecraft.getMinecraft().getResourceManager().getResource(tex);
 				
 				p.hasSpecialTextures[0] = true;
 				//System.out.println(p+" Has "+tex);
@@ -380,7 +377,6 @@ public class Database implements IMoveConstants {
 					}
 					
 					String evolutionNbs = s.get(12);
-					String evolutionData = s.get(13);
 					if(evolutionNbs!=null && !evolutionNbs.isEmpty())
 					{
 						String[] evols = s.get(12).split(" ");
@@ -1092,12 +1088,10 @@ public class Database implements IMoveConstants {
 	       	modifiers[5] = (byte) Math.max(-6, Math.min(6, modifiers[5]+amounts[5]*((effect&16)/16)));
 	       	modifiers[6] = (byte) Math.max(-6, Math.min(6, modifiers[6]+amounts[6]*((effect&32)/32)));
 	       	modifiers[7] = (byte) Math.max(-6, Math.min(6, modifiers[7]+amounts[7]*((effect&64)/64)));
-	       	boolean change = false;
 	       	for(int i = 0; i<old.length; i++)
 	       	{
 	       		if(old[i]!=modifiers[i])
 	       		{
-	       			change = true;
 	       			break;
 	       		}
 	       	}
@@ -1224,7 +1218,6 @@ public class Database implements IMoveConstants {
 			
 			String[] levels = row.get(1).split(":");
 			String[] moves = row2.get(1).split(":");
-			String name = row.get(0);
 			int nb = Integer.parseInt(row2.get(0).trim());
 			PokedexEntry dbe = getEntry(nb);
 			
@@ -1327,13 +1320,7 @@ public class Database implements IMoveConstants {
 		return ret;
 	}
 	
-	private static boolean configExists()
-	{
-		
-		return false;
-	}
-	
-    public static void checkConfigFiles(FMLPreInitializationEvent evt)
+	public static void checkConfigFiles(FMLPreInitializationEvent evt)
     {
     	File file = evt.getSuggestedConfigurationFile();
     	String seperator = System.getProperty("file.separator");
@@ -1399,16 +1386,12 @@ public class Database implements IMoveConstants {
 		ArrayList<String> rows = new ArrayList<String>();
 		BufferedReader br = null;
 		String line = "";
-		String cvsSplitBy = ",";
-
 		try {
 
 			br = new BufferedReader(
 					new InputStreamReader(res));
-			int n = 0;
 			while ((line = br.readLine()) != null) {
 				rows.add(line);
-				n++;
 			}
 
 		} catch (FileNotFoundException e) {
@@ -1417,10 +1400,8 @@ public class Database implements IMoveConstants {
 			try {
 				FileReader temp = new FileReader(new File(file));
 				br = new BufferedReader(temp);
-				int n = 0;
 				while ((line = br.readLine()) != null) {
 					rows.add(line);
-					n++;
 				}
 			} catch (IOException e1) {
 				e1.printStackTrace();

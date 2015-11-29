@@ -13,7 +13,6 @@ public class Move_Ongoing extends Move_Basic {
 	
 	public void doOngoingEffect(EntityLiving mob)
 	{
-		float thisHP = mob.getHealth();
 		float thisMaxHP = mob.getMaxHealth();
 		int damage = Math.max(1, (int)(0.0625*thisMaxHP));
 		mob.attackEntityFrom(DamageSource.generic, damage);

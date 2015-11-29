@@ -13,6 +13,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.utils.PokecubeSerializer;
 
 
+@SuppressWarnings({ "deprecation", "rawtypes" })
 public class RenderPokecubeTable extends TileEntitySpecialRenderer {
 
 	//static ModelPokecubeTable model = new ModelPokecubeTable();

@@ -3,9 +3,7 @@ package pokecube.core.world.gen.village.buildings;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -102,8 +100,8 @@ public class ComponentPokeCentre extends ComponentVillageBase {
         
         
         //Ceiling Light
-        this.placeBlockAtCurrentPosition(world, Blocks.lit_redstone_lamp, 0, 4, 6, 3, structureboundingbox);//lamp
         this.placeBlockAtCurrentPosition(world, Blocks.redstone_block, 0, 4, 7, 3, structureboundingbox);//redstone to power lamp
+        this.placeBlockAtCurrentPosition(world, Blocks.lit_redstone_lamp, 0, 4, 6, 3, structureboundingbox);//lamp
 
         //counter
         this.fillWithMetaBlocks(world, structureboundingbox, 3, 3, 5, 5, 3, 5, Blocks.double_stone_slab, 0, false);//front
@@ -118,7 +116,7 @@ public class ComponentPokeCentre extends ComponentVillageBase {
         this.placeBlockAtCurrentPosition(world, PokecubeItems.pokecenter, 1, 4, 3, 7, structureboundingbox);//healingTable
         this.placeBlockAtCurrentPosition(world, Blocks.redstone_torch, 0, 4, 2, 7, structureboundingbox);//healingTable
         //DOOR
-        this.placeDoorCurrentPosition(world, structureboundingbox, random, 4, 3, 0, EnumFacing.getHorizontal(this.getMetadataWithOffset(Blocks.spruce_door, 1)));
+        this.placeDoorCurrentPosition(world, structureboundingbox, random, 4, 3, 0, coordBaseMode.rotateY());
         
         //Stairs
         Vector3 here = toAbsolute(4, 2, -1);
@@ -130,13 +128,6 @@ public class ComponentPokeCentre extends ComponentVillageBase {
     	this.placeBlockAtCurrentPosition(world, Blocks.air, 0, 4, 5, -1, structureboundingbox);//
     	this.placeBlockAtCurrentPosition(world, Blocks.air, 0, 4, 6, -1, structureboundingbox);//
 
-        //frame
-        here = toAbsolute(4, 6, 0);
-        EntityItemFrame frame = new EntityItemFrame(world);
-        frame.setPosition(here.intX(), here.intY(), here.intZ());
-        frame.setDisplayedItem(new ItemStack(PokecubeItems.getEmptyCube(0)));
-        world.spawnEntityInWorld(frame);
-        here.freeVectorFromPool();
         for (int l = 0; l < 9; ++l)
         {
             for (int i1 = 0; i1 < 9; ++i1)

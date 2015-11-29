@@ -40,12 +40,14 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     public static final PropertyBool      TMC    = PropertyBool.create("tmc");
     private ExtendedBlockState            state  = new ExtendedBlockState(this, new IProperty[0],
             new IUnlistedProperty[] { OBJModel.OBJProperty.instance });
+
     public BlockTradingTable()
     {
         super(Material.cloth);
         this.setBlockBounds(0, 0, 0, 1, 0.75f, 1);
         this.setCreativeTab(mod_Pokecube.creativeTabPokecube);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TMC, false));
+        this.setDefaultState(
+                this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TMC, false));
         this.setHardness(100);
         this.setResistance(100);
         this.setLightOpacity(0);
@@ -115,38 +117,6 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
     {
-        this.setDefaultFacing(worldIn, pos, state);
-    }
-
-    private void setDefaultFacing(World worldIn, BlockPos pos, IBlockState state)
-    {
-        if (!worldIn.isRemote)
-        {
-            Block block = worldIn.getBlockState(pos.north()).getBlock();
-            Block block1 = worldIn.getBlockState(pos.south()).getBlock();
-            Block block2 = worldIn.getBlockState(pos.west()).getBlock();
-            Block block3 = worldIn.getBlockState(pos.east()).getBlock();
-            EnumFacing enumfacing = (EnumFacing) state.getValue(FACING);
-
-            if (enumfacing == EnumFacing.NORTH && block.isFullBlock() && !block1.isFullBlock())
-            {
-                enumfacing = EnumFacing.SOUTH;
-            }
-            else if (enumfacing == EnumFacing.SOUTH && block1.isFullBlock() && !block.isFullBlock())
-            {
-                enumfacing = EnumFacing.NORTH;
-            }
-            else if (enumfacing == EnumFacing.WEST && block2.isFullBlock() && !block3.isFullBlock())
-            {
-                enumfacing = EnumFacing.EAST;
-            }
-            else if (enumfacing == EnumFacing.EAST && block3.isFullBlock() && !block2.isFullBlock())
-            {
-                enumfacing = EnumFacing.WEST;
-            }
-
-            worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing), 2);
-        }
     }
 
     @Override
@@ -206,7 +176,7 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     @Override
     /** Convert the BlockState into the correct metadata value */
     public int getMetaFromState(IBlockState state)
-    {       
+    {
         int ret = ((EnumFacing) state.getValue(FACING)).getIndex();
         if (((Boolean) state.getValue(TMC))) ret += 8;
         return ret;
@@ -218,13 +188,12 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
         return new BlockState(this, new IProperty[] { FACING, TMC });
     }
 
-
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
         List<String> visible = Lists.newArrayList();
-        //TODO better model that changes if next to PC to show it makes TMs
-        
+        // TODO better model that changes if next to PC to show it makes TMs
+
         visible.add(OBJModel.Group.ALL);
         EnumFacing facing = (EnumFacing) state.getValue(FACING);
         facing = facing.rotateYCCW();

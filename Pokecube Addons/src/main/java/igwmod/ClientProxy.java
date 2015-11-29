@@ -33,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -50,9 +51,9 @@ public class ClientProxy implements IProxy{
 
     @Override
     public void preInit(FMLPreInitializationEvent event){
-        FMLCommonHandler.instance().bus().register(new TickHandler());
+        MinecraftForge.EVENT_BUS.register(new TickHandler());
 
-        FMLCommonHandler.instance().bus().register(new TooltipOverlayHandler());
+        MinecraftForge.EVENT_BUS.register(new TooltipOverlayHandler());
 
         //Not being used, as it doesn't really add anything...
         // MinecraftForge.EVENT_BUS.register(new HighlightHandler());
@@ -61,7 +62,7 @@ public class ClientProxy implements IProxy{
 
         openInterfaceKey = new KeyBinding("igwmod.keys.wiki", Constants.DEFAULT_KEYBIND_OPEN_GUI, "igwmod.keys.category");//TODO blend keybinding category in normal
         ClientRegistry.registerKeyBinding(openInterfaceKey);
-        FMLCommonHandler.instance().bus().register(this);//subscribe to key events.
+        MinecraftForge.EVENT_BUS.register(this);//subscribe to key events.
 
         ConfigHandler.init(event.getSuggestedConfigurationFile());
 

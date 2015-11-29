@@ -51,6 +51,7 @@ public class WikiRegistry{
         registerBlockAndItemPageEntry(new ItemStack(item, 1, OreDictionary.WILDCARD_VALUE), page);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static void registerBlockAndItemPageEntry(ItemStack stack, String page){
         itemAndBlockPageEntries.add(new AbstractMap.SimpleEntry(page, stack));
     }

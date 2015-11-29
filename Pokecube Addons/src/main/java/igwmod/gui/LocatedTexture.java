@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
-import pokecube.core.client.render.PTezzelator;
+import igwmod.render.PTezzelator;
 
 public class LocatedTexture implements IReservedSpace, IWidget{
     public ResourceLocation texture;

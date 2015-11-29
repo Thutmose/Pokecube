@@ -25,10 +25,10 @@ import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
-import pokecube.core.items.RecipeRevive;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.RecipeBrewBerries;
 import pokecube.core.items.pokecubes.RecipePokeseals;
+import pokecube.core.items.revive.RecipeRevive;
 
 public class RecipeHandler extends Mod_Pokecube_Helper
 {

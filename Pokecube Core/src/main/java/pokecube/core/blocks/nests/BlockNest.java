@@ -12,7 +12,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.ColorizerGrass;
 import net.minecraft.world.World;
 import pokecube.core.database.Database;
-import pokecube.core.items.ItemPokemobEgg;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
 public class BlockNest extends Block implements ITileEntityProvider {
 

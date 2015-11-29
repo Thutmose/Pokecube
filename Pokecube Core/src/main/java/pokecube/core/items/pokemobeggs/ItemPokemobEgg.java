@@ -1,7 +1,7 @@
 /**
  *
  */
-package pokecube.core.items;
+package pokecube.core.items.pokemobeggs;
 
 import java.util.HashMap;
 import java.util.Random;

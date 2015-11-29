@@ -1,4 +1,4 @@
-package pokecube.core.blocks.nests;
+package pokecube.core.world.gen;
 
 import java.util.Random;
 

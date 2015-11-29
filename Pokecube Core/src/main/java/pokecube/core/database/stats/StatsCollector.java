@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagList;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.items.EntityPokemobEgg;
+import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 
 /**
  * 

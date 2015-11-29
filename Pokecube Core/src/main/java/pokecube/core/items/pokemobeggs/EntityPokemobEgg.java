@@ -1,7 +1,7 @@
 /**
  *
  */
-package pokecube.core.items;
+package pokecube.core.items.pokemobeggs;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;

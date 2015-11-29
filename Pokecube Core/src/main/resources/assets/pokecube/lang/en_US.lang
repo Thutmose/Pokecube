@@ -1451,6 +1451,11 @@ item.pokecube.flames=Flames
 
 item.HelixFossil.name=Helix Fossil
 item.DomeFossil.name=Dome Fossil
+item.LileepFossil.name=Root Fossil
+item.AnorithFossil.name=Claw Fossil
+item.CranidosFossil.name=Skull Fossil
+item.ShieldonFossil.name=Armor Fossil
+tile.fossilstone.name=Fossil Stone
 
 item.megaring.name=Mega Ring
 item.megastone.name=Mega Stone

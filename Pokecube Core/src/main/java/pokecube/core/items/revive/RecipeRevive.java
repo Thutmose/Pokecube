@@ -1,4 +1,4 @@
-package pokecube.core.items;
+package pokecube.core.items.revive;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.InventoryCrafting;

@@ -89,9 +89,9 @@ import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.EntityPokemobEgg;
 import pokecube.core.items.berries.TileEntityBerryFruit;
 import pokecube.core.items.pokecubes.EntityPokecube;
+import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */

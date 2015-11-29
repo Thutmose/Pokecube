@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.material.Material;
@@ -22,6 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.DispenserBehaviorPokecube;
 
 public class PokecubeItems extends Items
@@ -457,7 +460,7 @@ public class PokecubeItems extends Items
             if (b.getMaterial() == Blocks.tallgrass.getMaterial()) PokecubeItems.grasses.add(b);
             if (b.getMaterial() == Blocks.wheat.getMaterial()) PokecubeItems.grasses.add(b);
         }
-
+        postInitFossils();
     }
 
     public static void initAllBlocks()
@@ -504,6 +507,24 @@ public class PokecubeItems extends Items
             }
         }
         return ret;
+    }
+    
+    private static void postInitFossils()
+    {
+        List<ItemStack> toRemove = Lists.newArrayList();
+        for(ItemStack s: fossils.keySet())
+        {
+            int num = fossils.get(s);
+            if(!PokecubeMod.registered.get(num))
+            {
+                toRemove.add(s);
+                System.out.println("Should remove "+Database.getEntry(num)+" "+s.getDisplayName());
+            }
+        }
+        for(ItemStack s: toRemove)
+        {
+            fossils.remove(s);
+        }
     }
 
     public static ItemStack getRandomMeteorDrop()

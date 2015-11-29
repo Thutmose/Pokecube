@@ -69,8 +69,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ai.thread.PokemobAIThread;
-import pokecube.core.blocks.berries.WorldGenBerries;
-import pokecube.core.blocks.nests.WorldGenNests;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -84,8 +82,8 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.EntityPokemobEgg;
 import pokecube.core.items.pokecubes.EntityPokecube;
+import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MovesAdder;
 import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.network.PCPacketHandler;
@@ -102,6 +100,9 @@ import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer.Message
 import pokecube.core.utils.PCSaveHandler;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import pokecube.core.world.gen.WorldGenBerries;
+import pokecube.core.world.gen.WorldGenFossils;
+import pokecube.core.world.gen.WorldGenNests;
 import pokecube.core.world.gen.WorldGenStartBuilding;
 import pokecube.core.world.gen.village.buildings.ComponentPokeCentre;
 import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
@@ -632,7 +633,7 @@ public class mod_Pokecube extends PokecubeMod
 
 
         GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);// TODO find number
-
+        GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
         Mod_Pokecube_Helper.initAllBlocks();
         proxy.registerRenderInformation();

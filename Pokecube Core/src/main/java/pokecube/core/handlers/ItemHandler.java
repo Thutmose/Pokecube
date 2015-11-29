@@ -50,6 +50,7 @@ import pokecube.core.blocks.berries.BlockBerryLeaves;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.berries.ItemBlockMeta;
+import pokecube.core.blocks.fossil.BlockFossilStone;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.blocks.nests.BlockNest;
 import pokecube.core.blocks.nests.TileEntityNest;
@@ -68,9 +69,7 @@ import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.items.ItemBlockTranslated;
 import pokecube.core.items.ItemLuckyEgg;
 import pokecube.core.items.ItemPokedex;
-import pokecube.core.items.ItemPokemobEgg;
 import pokecube.core.items.ItemPokemobUseableFood;
-import pokecube.core.items.ItemRevive;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.ItemTranslated;
 import pokecube.core.items.berries.BerryManager;
@@ -81,6 +80,8 @@ import pokecube.core.items.megastuff.ItemMegastone;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.Pokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import pokecube.core.items.revive.ItemRevive;
 import pokecube.core.items.vitamins.VitaminManager;
 import pokecube.core.moves.TreeRemover;
 import pokecube.core.utils.Tools;
@@ -100,7 +101,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
         addStones();
         addBerries();
         addVitamins();
-
+        addFossils();
+        
         GameRegistry.registerTileEntity(TileEntityRepel.class, "repel");
         repelBlock = new BlockRepel();
         repelBlock.setUnlocalizedName("repel");
@@ -199,6 +201,71 @@ public class ItemHandler extends Mod_Pokecube_Helper
         register(tm, "tm");
         addSpecificItemStack("rarecandy", new ItemStack(tm, 1, 20));
         addSpecificItemStack("emerald_shard", new ItemStack(tm, 1, 19));
+    }
+    
+    private static void addFossils()
+    {
+        Block fossilStone = (new BlockFossilStone()).setHardness(3F).setResistance(4F).setUnlocalizedName("fossilstone");
+        PokecubeItems.register(fossilStone, "fossilstone");
+        fossilStone.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+            registerItemTexture(Item.getItemFromBlock(fossilStone), 0,
+                    new ModelResourceLocation("pokecube:fossilstone", "inventory"));
+        
+        
+        Item fossilLileep = (new Item().setUnlocalizedName("LileepFossil"));
+        PokecubeItems.register(fossilLileep, "fossilLileep");
+        fossilLileep.setCreativeTab(PokecubeMod.creativeTabPokecube);
+        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilLileep"), "lileep");
+        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(fossilLileep, 0, new ModelResourceLocation("pokecube:fossilLileep", "inventory"));
+        }
+        
+        Item fossilAnorith = (new Item().setUnlocalizedName("AnorithFossil"));
+        PokecubeItems.register(fossilAnorith, "fossilAnorith");
+        fossilAnorith.setCreativeTab(PokecubeMod.creativeTabPokecube);
+        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilAnorith"), "anorith");
+        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(fossilAnorith, 0, new ModelResourceLocation("pokecube:fossilAnorith", "inventory"));
+        }
+        
+        Item fossilCranidos = (new Item().setUnlocalizedName("CranidosFossil"));
+        PokecubeItems.register(fossilCranidos, "fossilCranidos");
+        fossilCranidos.setCreativeTab(PokecubeMod.creativeTabPokecube);
+        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilCranidos"), "cranidos");
+        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(fossilCranidos, 0, new ModelResourceLocation("pokecube:fossilCranidos", "inventory"));
+        }
+        
+        Item fossilShieldon = (new Item().setUnlocalizedName("ShieldonFossil"));
+        PokecubeItems.register(fossilShieldon, "fossilShieldon");
+        fossilShieldon.setCreativeTab(PokecubeMod.creativeTabPokecube);
+        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilShieldon"), "shieldon");
+        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(fossilShieldon, 0, new ModelResourceLocation("pokecube:fossilShieldon", "inventory"));
+        }
+        
+        Item dome = (new Item().setUnlocalizedName("DomeFossil"));
+        PokecubeItems.register(dome, "fossilDome");
+        dome.setCreativeTab(PokecubeMod.creativeTabPokecube);
+        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilDome"), "kabuto");
+        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(dome, 0, new ModelResourceLocation("pokecube:fossilDome", "inventory"));
+        }
+
+        Item helix = (new Item().setUnlocalizedName("HelixFossil"));
+        PokecubeItems.register(helix, "fossilHelix");
+        helix.setCreativeTab(PokecubeMod.creativeTabPokecube);
+        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilHelix"), "omanyte");
+        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(helix, 0, new ModelResourceLocation("pokecube:fossilHelix", "inventory"));
+        }
     }
     
     private static void addVitamins()

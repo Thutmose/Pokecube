@@ -8,7 +8,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.items.EntityPokemobEgg;
+import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.utils.PokeType;
 
 /** egg - Undefined Created using Tabula 4.1.1 */

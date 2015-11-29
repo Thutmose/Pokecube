@@ -1,4 +1,4 @@
-package pokecube.core.blocks.berries;
+package pokecube.core.world.gen;
 
 import static thut.api.terrain.BiomeDatabase.contains;
 

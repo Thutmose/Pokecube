@@ -400,9 +400,13 @@ public class PokecubePacketHandler
             if (action.contains("n") && args.length > 2 && !args[2].equals(pokemob.getPokemonDisplayName()))
             {
                 boolean OT = pokemob.getPokemonOwnerName() == null
-                        || (PokecubeMod.getFakePlayer().getPersistentID()
-                                .equals(pokemob.getOriginalOwnerUUID()))
+                        || (PokecubeMod.getFakePlayer().getPersistentID().equals(pokemob.getOriginalOwnerUUID()))
                         || (pokemob.getPokemonOwnerName().equals(pokemob.getOriginalOwnerUUID().toString()));
+
+                if(!OT && pokemob.getPokemonOwner()!=null)
+                {
+                    OT = pokemob.getPokemonOwner().getUniqueID().equals(pokemob.getOriginalOwnerUUID());
+                }
                 if (!OT)
                 {
                     if (pokemob.getPokemonOwner() != null)
@@ -664,9 +668,9 @@ public class PokecubePacketHandler
             System.out.println("null player");
             return;
         }
-        if(!(player instanceof EntityPlayerMP))
+        if (!(player instanceof EntityPlayerMP))
         {
-            new ClassCastException("Cannot cast "+player+" to EntityPlayerMP").printStackTrace();
+            new ClassCastException("Cannot cast " + player + " to EntityPlayerMP").printStackTrace();
             return;
         }
         PokecubeMod.packetPipeline.sendTo(toSend, (EntityPlayerMP) player);

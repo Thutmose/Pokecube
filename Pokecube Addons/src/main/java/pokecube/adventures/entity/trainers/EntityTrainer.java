@@ -511,7 +511,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 	    	}
 	    	else
 	    	{
-	    		System.out.println("HeldItem is null");
+//	    		System.out.println("HeldItem is null");
 	    	}
     	}
     	

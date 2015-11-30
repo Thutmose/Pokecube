@@ -3,8 +3,10 @@
 these require the pokecube semihardmode setting to be enabled, you can check this with the command /pokecube shm
 If you have permissions, you can set it with /pokecube shm <true/false>
 
+In general, the number of berries needed decreases with level.  This does not apply to flash, which just needs one berry or teleport, which needs no berries
+
 [prefix{l}] Teleport [prefix{}]
--Teleports the player to a saved healing table location
+-Teleports the player to a saved healing table location, see the [link{item/pokedex}]Pokedex, [link{}] page 5 info, for managing teleports
 
 [prefix{l}] Dig [prefix{}]
 - Digs a 3x3x3 cube centered on the target location, consumes berries, drops less terrain blocks with higher levels
@@ -14,3 +16,9 @@ If you have permissions, you can set it with /pokecube shm <true/false>
 
 [prefix{l}] Flash [prefix{}]
 - Gives the player night vision for a while after use, consumes a berry.
+
+[prefix{l}] Cut [prefix{}]
+- Attempts to cut down the tree the player is looking at, if no tree found, will attempt to cut grass or crops nearby instead.  Consumes berries based on number of blocks affected.
+
+[prefix{l}] Explosion/Self Destruct [prefix{}]
+- These only work with explosions enabled (use /pokecube explosions, similar to shm to check/set this).  These are dangerous, use at your own risk.

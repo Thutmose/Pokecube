@@ -7,6 +7,7 @@ tc.research_page.THAUMIUMPOKECUBE.1=You have found that the mystical properties 
 item.thaumiumpokecube.name=Thaumium Pokecube
 
 igwtab.entry.HMs=HMs
+msg.pokedexbuttonforwiki.text=Press the blue button on the top left of the pokedex to open the ingame wiki
 
 #RF Stuff
 tile.pokesiphon.name=RF Siphon

@@ -38,7 +38,7 @@ public class RecipeHandler {
                     " E ", 'R', Items.redstone, 'O', Blocks.stone, 'E', Items.emerald
                 });
         //Tainer editor
-        GameRegistry.addRecipe(getStack("trainerSpawner"), new Object[]
+        GameRegistry.addRecipe(getStack("traderSpawner"), new Object[]
                 {
                     " R ", 
                     "ROR", 

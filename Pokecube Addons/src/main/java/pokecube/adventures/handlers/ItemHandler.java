@@ -58,6 +58,7 @@ public class ItemHandler
         }
         Item trainer = new ItemTrainer().setUnlocalizedName("trainerSpawner").setCreativeTab(creativeTabPokecube);
         register(trainer);
+        addSpecificItemStack("traderSpawner", new ItemStack(trainer, 1, 2));
         if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
         	ModelBakery.addVariantName(trainer, "pokecube_adventures:spawner");

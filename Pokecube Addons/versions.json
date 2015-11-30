@@ -1,10 +1,11 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/224362-pokecube-revival",
   "promos": {
-    "1.8.8-latest": "2.0.2",
-    "1.8.8-recommended": "2.0.2"
+    "1.8.8-latest": "2.0.3",
+    "1.8.8-recommended": "2.0.3"
   },
   "1.8.8": {
+    "2.0.3": "fixes up the trader a bit",
     "2.0.2": "cloner now revives fossils",
     "2.0.1": "updated for core 2.0.2",
     "2.0.0": "initial 1.8.8 version"

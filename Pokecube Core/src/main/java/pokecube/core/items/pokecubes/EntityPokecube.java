@@ -600,6 +600,10 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 this.inGround = true;
                 tilePos = pos;
             }
+            if (block.getMaterial().isLiquid())
+            {
+                motionY += 0.1;
+            }
         }
 
         if (motionX == motionZ && motionZ == 0)
@@ -618,9 +622,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             else
             {
                 this.inGround = false;
-                // this.motionX *= (double) (this.rand.nextFloat() * 0.2F);
-                // this.motionY *= (double) (this.rand.nextFloat() * 0.2F);
-                // this.motionZ *= (double) (this.rand.nextFloat() * 0.2F);
                 this.ticksInGround = 0;
             }
             if (tilt < 0)
@@ -631,11 +632,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 }
                 else
                 {
-                    // if (!worldObj.isRemote)
-                    // {
-                    // this.entityDropItem(getEntityItem(), (float) 0.25);
-                    // }
-                    // this.setDead();
+
                 }
                 return;
             }

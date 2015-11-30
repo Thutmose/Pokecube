@@ -4,13 +4,11 @@ import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -22,7 +20,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PCPacketHandler;
 import pokecube.core.network.PCPacketHandler.MessageServer;
 import pokecube.core.network.PokecubePacketHandler;
-import thut.api.maths.Vector3;
 
 public class GuiPC extends GuiContainer {
 
@@ -101,11 +98,6 @@ public class GuiPC extends GuiContainer {
 					/ 2 - yOffset - 85, 50, 20, "confirm"));
 			((GuiButton) buttonList.get(6)).visible = false;
 			((GuiButton) buttonList.get(6)).enabled = false;
-			
-
-			buttonList.add(new GuiButton(8, width / 2 - xOffset - 137, height
-					/ 2 - yOffset - 85, 50, 20, "Bag"));
-			
 			
 		}
 		
@@ -202,14 +194,14 @@ public class GuiPC extends GuiContainer {
 			}
 			else if(guibutton.id == 8)
 			{
-				PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-				buf.writeByte(7);
-				buf.writeBoolean(true);
-				Vector3 loc = Vector3.getNewVectorFromPool().set(cont.pcTile);
-				loc.writeToBuff(buf);
-				loc.freeVectorFromPool();
-				packet = new MessageServer(buf);
-				PokecubePacketHandler.sendToServer(packet);
+//				PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+//				buf.writeByte(7);
+//				buf.writeBoolean(true);
+//				Vector3 loc = Vector3.getNewVectorFromPool().set(cont.pcTile);
+//				loc.writeToBuff(buf);
+//				loc.freeVectorFromPool();
+//				packet = new MessageServer(buf);
+//				PokecubePacketHandler.sendToServer(packet);
 			}
 			else {
 				cont.updateInventoryPages((byte) (guibutton.id == 2 ? -1

@@ -1056,12 +1056,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public boolean interact(EntityPlayer player)
     {
         ItemStack itemstack = player.inventory.getCurrentItem();
-        if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.wooden_hoe) // player==getPokemonOwner()
-                                                                                                         // &&
-        {
-            this.hungerTime += 800;
-            // System.out.println(hungerTime);
-        }
+
+        if (getPokedexEntry().interact(player, this)) return true;
 
         if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.stick)
         {

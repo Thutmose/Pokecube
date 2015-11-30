@@ -66,3 +66,6 @@ This block has two modes, TM mode, and Trading mode.  The block is in TM mode if
 -TMs can be overwritten, and do not need to be blank to use.
 
 -The colour of the move's name represents the type, and the number to the right is the moves's power.
+
+-TM recipe is as follows:
+[crafting{200,830,key=item/tm0}]

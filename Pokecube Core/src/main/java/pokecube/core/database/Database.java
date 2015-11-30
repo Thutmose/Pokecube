@@ -26,6 +26,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.database.PokedexEntry.EvolutionData;
+import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.TypeEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -634,6 +635,10 @@ public class Database implements IMoveConstants {
 						}
 					}
 				}
+				if(s.size() > 22)
+				{
+				    InteractionLogic.initForEntry(e, s.get(22));
+				}
 				
 				if(evolutionMode==-1)
 				{
@@ -1021,7 +1026,7 @@ public class Database implements IMoveConstants {
 			 }
 			 else
 			 {
-				 //TODO finish this for tri-attack
+                // TODO finish this for tri-attack
 			 }
 			 move.statusChange = effect;
 			 move.statusChance = chance;

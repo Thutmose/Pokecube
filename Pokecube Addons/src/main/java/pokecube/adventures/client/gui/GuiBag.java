@@ -108,7 +108,7 @@ public class GuiBag extends GuiContainer {
         	{
         		cont.updateInventoryPages((byte) (guibutton.id==2?-1:guibutton.id==1?1:0),mc.thePlayer.inventory);
 
-        		textFieldSelectedBox.setText(cont.getPageNb());
+//        		textFieldSelectedBox.setText(cont.getPageNb());
         	}
         }
         }

@@ -12,14 +12,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary.Type;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
@@ -41,29 +46,27 @@ public class PokedexEntry
     protected String           baseName;
     protected PokeType         type1;
     protected PokeType         type2;
+    /** The relation between xp and level */
     protected int              evolutionMode      = 1;
-    protected int              baseXP;                                                                 // used
-                                                                                                       // to
-                                                                                                       // compute
-                                                                                                       // the
-                                                                                                       // winner
-                                                                                                       // XP
-                                                                                                       // of
-                                                                                                       // a
-                                                                                                       // fight
+    /** base xp given from defeating */
+    protected int              baseXP;
     protected int              catchRate          = 3;
     protected int              sexeRatio          = -1;
     protected String           sound;
     private int[]              stats;
     protected byte[]           evs;
+    /** Used to determine egg group */
     public String[]            species;
     protected String[]         food;
     protected String[][]       textureDetails     = { { "" }, null };
     protected String[]         abilities          = { null, null, null };
     protected int              baseHappiness;
     private String             modId;
+    /** Movement type for this mob */
     public PokecubeMod.Type    mobType            = PokecubeMod.Type.NORMAL;
+    /** If the above is floating, how high does it try to float */
     public double              preferedHeight     = 1.5;
+    /** Offset between top of hitbox and where player sits */
     public double              mountedOffset      = 1;
     public boolean[]           hasSpecialTextures = { false, false, false, false };
     public boolean             hasMegaForm        = false;
@@ -106,6 +109,9 @@ public class PokedexEntry
 
     /** A map of father pokedexnb : child pokedexNbs */
     protected Map<Integer, int[]> childNumbers = new HashMap<Integer, int[]>();
+
+    /** Interactions with items from when player right clicks. */
+    private InteractionLogic interactionLogic = new InteractionLogic();
 
     private List<PokedexEntry> prey = new ArrayList<PokedexEntry>();
 
@@ -167,7 +173,8 @@ public class PokedexEntry
 
     public void copyToForm(PokedexEntry e)
     {
-        if (e.baseForme != null && e.baseForme != this) throw new IllegalArgumentException("Cannot add a second base form");
+        if (e.baseForme != null && e.baseForme != this)
+            throw new IllegalArgumentException("Cannot add a second base form");
         e.pokedexNb = pokedexNb;
         e.possibleMoves = possibleMoves;
         e.lvlUpMoves = lvlUpMoves;
@@ -320,7 +327,8 @@ public class PokedexEntry
         String suffix = textureSuffixs[(int) suffixIndex];
         return "textures/entities/" + name + suffix + ".png";// texture;
     }
-//TODO
+
+    // TODO
     /** @return the pokedexNb */
     public int getPokedexNb()
     {
@@ -813,6 +821,17 @@ public class PokedexEntry
     public boolean canEvolve()
     {
         return evolutions.size() > 0;
+    }
+
+    /** Call whenever player right clicks a pokemob to run special interaction
+     * logic
+     * 
+     * @param player
+     * @param pokemob
+     * @return */
+    public boolean interact(EntityPlayer player, IPokemob pokemob)
+    {
+        return interactionLogic.interact(player, pokemob);
     }
 
     public boolean shouldEvolve(IPokemob mob)
@@ -1473,6 +1492,114 @@ public class PokedexEntry
             {
                 return biomes + " " + biome2 + " " + weight + " " + groupMin + "-" + groupMax;
             }
+        }
+    }
+
+    public static class InteractionLogic
+    {
+        HashMap<ItemStack, List<ItemStack>> stacks = new HashMap<ItemStack, List<ItemStack>>();
+
+        boolean interact(EntityPlayer player, IPokemob pokemob)
+        {
+            EntityLiving entity = (EntityLiving) pokemob;
+            NBTTagCompound data = entity.getEntityData();
+            if (data.hasKey("lastInteract"))
+            {
+                long time = data.getLong("lastInteract");
+                long diff = entity.worldObj.getTotalWorldTime() - time;
+                if (diff < 1000) { return false; }
+            }
+            data.setLong("lastInteract", entity.worldObj.getTotalWorldTime());
+
+            ItemStack stack = getKey(player.getHeldItem());
+            if (stack != null)
+            {
+                List<ItemStack> results = stacks.get(stack);
+                int index = player.getRNG().nextInt(results.size());
+                ItemStack result = results.get(index).copy();
+                if (player.getHeldItem().stackSize-- == 1)
+                {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, result);
+                }
+                else if (!player.inventory.addItemStackToInventory(result))
+                {
+                    player.dropPlayerItemWithRandomChoice(result, false);
+                }
+
+                if (player != pokemob.getPokemonOwner())
+                {
+                    entity.setAttackTarget(player);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private ItemStack getKey(ItemStack held)
+        {
+            if (held != null) for (ItemStack stack : stacks.keySet())
+            {
+                if (stack.isItemEqual(held)) { return stack; }
+            }
+            return null;
+        }
+
+        protected static void initForEntry(PokedexEntry entry, String fromDatabase)
+        {
+            String[] entries = fromDatabase.trim().split(" ");
+            for (String s : entries)
+            {
+                String[] args = s.split("`");
+                String key = args[0];
+                String[] vals = new String[args.length - 1];
+                for (int i = 0; i < vals.length; i++)
+                {
+                    vals[i] = args[i + 1];
+                }
+                ItemStack keyStack = parseStack(key);
+                List<ItemStack> stacks = Lists.newArrayList();
+                for (String s1 : vals)
+                {
+                    ItemStack temp = parseStack(s1);
+                    if (temp != null)
+                    {
+                        stacks.add(temp);
+                    }
+                }
+                if (keyStack != null && !stacks.isEmpty())
+                {
+                    InteractionLogic interact = entry.interactionLogic;
+                    interact.stacks.put(keyStack, stacks);
+                }
+            }
+        }
+
+        private static ItemStack parseStack(String info)
+        {
+            ItemStack ret = null;
+
+            String modid;
+            String name;
+            int damage = 0;
+            if (info.contains(":"))
+            {
+                modid = info.split(":")[0];
+                name = info.split(":")[1];
+            }
+            else
+            {
+                modid = "minecraft";
+                name = info;
+            }
+            if (name.contains("#"))
+            {
+                name = info.split("#")[0];
+                damage = Integer.parseInt(info.split("#")[1]);
+            }
+            Item item = GameRegistry.findItem(modid, name);
+            if (item != null) ret = new ItemStack(item, 1, damage);
+            else new NullPointerException("Errored Item for " + info);
+            return ret;
         }
     }
 }

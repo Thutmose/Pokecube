@@ -19,6 +19,7 @@ import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.ItemTarget;
+import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.interfaces.IPokemob;
@@ -256,6 +257,13 @@ public class PacketPokeAdv
                 if (channel == 1)
                 {
                     handleTrainerEditPacket(buffer, player);
+                }
+                if (channel == 6)
+                {
+                    byte m = message[0];
+
+                    byte dir = (byte) (m == 1 ? 1 : m == 2 ? -1 : 0);
+                    ((ContainerBag) (player.openContainer)).updateInventoryPages(dir, player.inventory);
                 }
                 if (channel == 7)
                 {

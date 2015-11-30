@@ -70,7 +70,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
     protected EntityLivingBase owner;
 
     private String ownerName = "";
-    private UUID   original  = PokecubeMod.getFakePlayer().getUniqueID();
+    private UUID   original  = new UUID(1234, 4321);
 
     protected Vector3 here = Vector3.getNewVectorFromPool();
     protected Vector3 vec  = Vector3.getNewVectorFromPool();

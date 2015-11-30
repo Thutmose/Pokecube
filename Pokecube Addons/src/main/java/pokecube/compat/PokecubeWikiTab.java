@@ -11,13 +11,15 @@ public class PokecubeWikiTab extends BaseWikiTab
 	public PokecubeWikiTab()
 	{
 		pageEntries.add("Controls");
+        pageEntries.add("HMs");
 		pageEntries.add("item/pokedex");
 		pageEntries.add("block/pc.top");
 		pageEntries.add("item/pokecubebag");
 		pageEntries.add("block/pc.base");
 		pageEntries.add("block/pokecenter");
 		pageEntries.add("block/tradingtable");
-		pageEntries.add("Pokecubes");
+        pageEntries.add("Pokecubes");
+        pageEntries.add("Stones");
 	}
 
 	@Override

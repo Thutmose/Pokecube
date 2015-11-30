@@ -9,6 +9,8 @@ item.leaderSpawner.name=Leader Editor
 item.traderSpawner.name=Trader Editor
 item.pokecubebag.name=Bag
 
+igwtab.entry.Stones=Evolution Stones
+
 tile.oranLog.name=Oran Wood
 tile.oranWood.name=Oran Planks
 tile.oranLeaves.name=Oran Leaves

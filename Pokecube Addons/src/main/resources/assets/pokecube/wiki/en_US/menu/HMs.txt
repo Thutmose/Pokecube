@@ -1,0 +1,16 @@
+[prefix{l}]Moves usable Out of Battle[prefix{}]
+
+these require the pokecube semihardmode setting to be enabled, you can check this with the command /pokecube shm
+If you have permissions, you can set it with /pokecube shm <true/false>
+
+[prefix{l}] Teleport [prefix{}]
+-Teleports the player to a saved healing table location
+
+[prefix{l}] Dig [prefix{}]
+- Digs a 3x3x3 cube centered on the target location, consumes berries, drops less terrain blocks with higher levels
+
+[prefix{l}] Rock Smash [prefix{}]
+- Digs a 3x3x3 cube centered on the target location, consumes berries, gains fortune at high levels, can only break "rocks"
+
+[prefix{l}] Flash [prefix{}]
+- Gives the player night vision for a while after use, consumes a berry.

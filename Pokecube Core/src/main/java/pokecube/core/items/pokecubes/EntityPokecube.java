@@ -249,7 +249,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     @Override
     public void applyEntityCollision(Entity e)
     {
-        if (e == shootingEntity || isReleasing() || worldObj.isRemote || e instanceof EntityPokecube)
+        if (e == shootingEntity || isReleasing() || worldObj.isRemote || e instanceof EntityPokecube || e.isDead)
         {
             super.applyEntityCollision(e);
             return;
@@ -637,7 +637,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 return;
             }
         }
-        if (tilt > 0)
+        if (tilt > 0 || (targetEntity!=null && targetEntity.isDead))
         {
             targetEntity = null;
         }

@@ -299,7 +299,7 @@ public class EntityTrader extends EntityVillager
     public boolean attackEntityFrom(DamageSource source, float i)
     {
         Entity e = source.getSourceOfDamage();
-        if (e == null) { return super.attackEntityFrom(source, i); }
+        if (e == null || !(e instanceof EntityPlayer)) { return super.attackEntityFrom(source, i); }
 
         if ((e instanceof EntityPlayer && (((EntityPlayer) e).capabilities.isCreativeMode))
                 || (((EntityPlayer) e).getHeldItem() != null

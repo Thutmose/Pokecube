@@ -60,7 +60,7 @@ public class ModelEnigma extends ModelBerry {
 public void render(float f5)
   {
 
-	  ResourceLocation texture = new ResourceLocation("pokecube_adventures:textures/blocks/Enigma.png");
+	  ResourceLocation texture = new ResourceLocation("pokecube:textures/blocks/Enigma.png");
 	  FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 	  
     Berry_bottom.render(f5);

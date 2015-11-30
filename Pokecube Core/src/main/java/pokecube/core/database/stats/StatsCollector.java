@@ -85,6 +85,12 @@ public class StatsCollector
 		assert hatched.getPokemob()!=null;
 			
 		HashMap<PokedexEntry, Integer> map = eggsHatched.get(owner);
+		if(hatched.getPokemob()==null)
+		{
+		    new Exception().printStackTrace();
+		    return;
+		}
+		
 		PokedexEntry dbe = Database.getEntry(hatched.getPokemob());
 		int current = 1;
 		

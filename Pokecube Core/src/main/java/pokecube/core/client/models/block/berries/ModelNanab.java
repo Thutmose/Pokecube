@@ -46,7 +46,7 @@ public class ModelNanab extends ModelBerry {
 public void render(float f5)
   {
 
-	  ResourceLocation texture = new ResourceLocation("pokecube_adventures:textures/blocks/nanab.png");
+	  ResourceLocation texture = new ResourceLocation("pokecube:textures/blocks/nanab.png");
 	  FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 	  
     Stem.render(f5);

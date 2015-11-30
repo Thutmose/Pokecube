@@ -95,7 +95,7 @@ public class ModelPecha extends ModelBerry {
 public void render(float f5)
   {
 
-	  ResourceLocation texture = new ResourceLocation("pokecube_adventures:textures/blocks/Pecha.png");
+	  ResourceLocation texture = new ResourceLocation("pokecube:textures/blocks/Pecha.png");
 	  FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 	  
     Leftfruit.render(f5);

@@ -1078,14 +1078,21 @@ public class PokecubePacketHandler
                     if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IPokecube)
                     {
                         Vector3 targetLocation = Vector3.getNewVectorFromPool();
+                        
+                        long time = player.getEntityData().getLong("lastThrow");
+                        if(time==player.worldObj.getTotalWorldTime())
+                            return;
+                        player.getEntityData().setLong("lastThrow", player.worldObj.getTotalWorldTime());
+                        
+                        
                         int id = buffer.readInt();
                         Entity target = player.worldObj.getEntityByID(id);
                         if (target != null && target instanceof IPokemob) targetLocation.set(target);
-                        ((IPokecube) player.getHeldItem().getItem()).throwPokecube(player.worldObj, player,
+                        boolean used = ((IPokecube) player.getHeldItem().getItem()).throwPokecube(player.worldObj, player,
                                 player.getHeldItem(), targetLocation, target);
                         targetLocation.freeVectorFromPool();
                         if (player.getHeldItem() != null && !(!PokecubeManager.isFilled(player.getHeldItem())
-                                && player.capabilities.isCreativeMode))
+                                && player.capabilities.isCreativeMode) && used)
                         {
                             player.getHeldItem().stackSize--;
                             if (player.getHeldItem().stackSize == 0)

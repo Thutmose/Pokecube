@@ -77,8 +77,8 @@ public class TileEntityNest extends TileEntity implements ITickable
             AxisAlignedBB aabb = here.getAABB().expand(16, 16, 16);
             
             ItemStack eggItem = ItemPokemobEgg.getEggStack(pokedexNb);
-
-            NBTTagCompound nbt = new NBTTagCompound();
+            
+            NBTTagCompound nbt = eggItem.getTagCompound();
             nbt.setIntArray("nestLocation", new int[] { getPos().getX(), getPos().getY(), getPos().getZ() });
             eggItem.setTagCompound(nbt);
             Random rand = new Random();

@@ -53,7 +53,7 @@ public class ModelSitrus extends ModelBerry {
 public void render(float f5)
   {
 
-	  ResourceLocation texture = new ResourceLocation("pokecube_adventures:textures/blocks/Sitrus.png");
+	  ResourceLocation texture = new ResourceLocation("pokecube:textures/blocks/Sitrus.png");
 	  FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 	  
     Berry_bottom.render(f5);

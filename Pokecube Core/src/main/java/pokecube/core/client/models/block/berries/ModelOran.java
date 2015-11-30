@@ -76,7 +76,7 @@ public class ModelOran extends ModelBerry
 public void render(float f5)
   {
 
-	  ResourceLocation texture = new ResourceLocation("pokecube_adventures:textures/blocks/Oran.png");
+	  ResourceLocation texture = new ResourceLocation("pokecube:textures/blocks/Oran.png");
 	  FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 	  
     Berry_base.render(f5);

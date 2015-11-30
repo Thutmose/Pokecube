@@ -59,7 +59,7 @@ public class ModelLeppa extends ModelBerry {
 	public void render(float f5)
 	  {
 
-		  ResourceLocation texture = new ResourceLocation("pokecube_adventures:textures/blocks/Leppa.png");
+		  ResourceLocation texture = new ResourceLocation("pokecube:textures/blocks/Leppa.png");
 		  FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 		Berry.render(f5);
 		Leaf_base.render(f5);

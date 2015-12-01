@@ -55,12 +55,8 @@ public class AIElectricalInterferance extends EntityAIBase
      */
     public void updateTask()
 	{
-		int range = 4, x,y,z;
-		int currentRadius = 0, subIndex = 0;
-		int nextRadius = 1;
+		int range = 4;
 		linesAffectedThisTick.clear();
-		int currentRadSq = 0;
-		int nextRadCb = 1;
 
 		int statFactor = pokemob.getActualStats()[1] + pokemob.getActualStats()[3];
 		
@@ -74,37 +70,19 @@ public class AIElectricalInterferance extends EntityAIBase
 		}
 		statFactor = tempFactor;
 		
-		int radCbDiff = 1;
-		int radSqDiff = 1;
-		int[] toFill = new int[3];
+		Vector3 toFill = Vector3.getNewVectorFromPool();
 		range *= 2;
 		for(int i = 0; i<range*range*range; i++)
 		{
-			if (i >= nextRadCb)
-			{
-				nextRadius++;
-				currentRadius++;
-				int temp = (2 * nextRadius - 1);
-				nextRadCb = temp * temp * temp;
-				temp = (2 * currentRadius - 1);
-				currentRadSq = temp * temp * temp;
-				radCbDiff = nextRadCb - currentRadSq;
-				radSqDiff = (2 * nextRadius - 1) * (2 * nextRadius - 1) - temp * temp;
-			}
-			subIndex = (i - currentRadSq);
+			Cruncher.indexToVals(i, toFill);
 
-			Cruncher.indexToVals(currentRadius, subIndex, radSqDiff, radCbDiff, toFill);
-			x = toFill[0];
-			z = toFill[1];
-			y = toFill[2];
-
-			mobLoc.set(pokemob).addTo(x, y, z);
+			mobLoc.set(pokemob).addTo(toFill);
 			
 			TileEntity tile = mobLoc.getTileEntity(entity.worldObj);
 
 			if(tile instanceof IEnergyHandler)
 			{
-				int radSq = (currentRadius * currentRadius);
+				int radSq = (int) toFill.magSq();
 				radSq = Math.max(1, radSq);
 				IEnergyHandler energySource = (IEnergyHandler) tile;
 				int num = statFactor / radSq;
@@ -130,7 +108,7 @@ public class AIElectricalInterferance extends EntityAIBase
 			{
 				try
 				{
-					ELNInterfacer.doELNInterference(entity, currentRadius, statFactor, tile);
+					ELNInterfacer.doELNInterference(entity, (int) toFill.mag(), statFactor, tile);
 				}
 				catch (Exception e)
 				{
@@ -138,6 +116,7 @@ public class AIElectricalInterferance extends EntityAIBase
 				}
 			}
 		}
+		toFill.freeVectorFromPool();
 	}
 	
 }

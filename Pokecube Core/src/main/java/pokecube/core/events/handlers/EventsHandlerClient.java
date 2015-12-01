@@ -98,12 +98,12 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void ClientRenderTick(RenderWorldLastEvent evt)
     {
-        //TODO fix the terrain effects, I don't think this event is good for it anymore
+        // TODO fix the terrain effects, I don't think this event is good for it
+        // anymore
     }
 
- 
     static long eventTime = 0;
-
+    static long counter = 0;
     @SubscribeEvent
     public void keyInput(KeyInputEvent evt)
     {
@@ -253,6 +253,13 @@ public class EventsHandlerClient
             {
                 GuiContainer gui = (GuiContainer) event.gui;
                 if (gui.mc.thePlayer == null || !Keyboard.isKeyDown(Keyboard.KEY_LMENU)) { return; }
+                
+                if(rainXCoords==null)
+                {
+                    rainXCoords = new float[]{0};
+                }
+                if(rainXCoords[0] == event.renderPartialTicks || counter++%10!=0) return;
+                rainXCoords[0] = event.renderPartialTicks;
                 List<Slot> slots = gui.inventorySlots.inventorySlots;
                 int w = gui.width;
                 int h = gui.height;
@@ -327,24 +334,26 @@ public class EventsHandlerClient
             }
             GL11.glPopMatrix();
         }
-        
-        debug = event.type==ElementType.DEBUG;
-        
+
+        debug = event.type == ElementType.DEBUG;
+
     }
+
     boolean debug = false;
+
     @SubscribeEvent
     public void textOverlay(RenderGameOverlayEvent.Text event)
     {
-        if(!debug) return;
+        if (!debug) return;
         TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(Minecraft.getMinecraft().thePlayer);
         Vector3 v = Vector3.getNewVectorFromPool().set(Minecraft.getMinecraft().thePlayer);
-        String msg = "Sub-Biome: "+BiomeDatabase.getReadableNameFromType(t.getBiome(v));
+        String msg = "Sub-Biome: " + BiomeDatabase.getReadableNameFromType(t.getBiome(v));
         v.freeVectorFromPool();
-        //Until forge stops sending the same event, with the same list 8 times, this is needed
-        for(String s: event.left)
+        // Until forge stops sending the same event, with the same list 8 times,
+        // this is needed
+        for (String s : event.left)
         {
-            if(s!=null && s.equals(msg))
-                return;
+            if (s != null && s.equals(msg)) return;
         }
         debug = false;
         event.left.add("");
@@ -362,17 +371,16 @@ public class EventsHandlerClient
         {
             PokedexEntry entry = Database.getEntry(num);
             IPokemob pokemob = renderMobs.get(entry);
-            if (pokemob == null)
+            if(pokemob==null)
             {
                 pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(num, world);
+                if(pokemob==null) return null;
                 renderMobs.put(entry, pokemob);
-                // System.out.println(entry);
-                if (pokemob == null) return null;
             }
             Entity poke = (Entity) pokemob;
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
             poke.readFromNBT(pokeTag);
-            pokemob.popFromPokecube();// should reinit status
+            pokemob.popFromPokecube();
             pokemob.setPokecubeId(PokecubeItems.getCubeId(itemStack));
             ((EntityLivingBase) pokemob).setHealth(
                     Tools.getHealth((int) ((EntityLivingBase) pokemob).getMaxHealth(), itemStack.getItemDamage()));

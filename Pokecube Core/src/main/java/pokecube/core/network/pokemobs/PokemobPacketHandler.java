@@ -118,7 +118,7 @@ public class PokemobPacketHandler
 					float posX = buffer.readFloat();
 					float posY = buffer.readFloat();
 					float posZ = buffer.readFloat();
-					
+//					System.out.println(id+" "+posX+" "+posY+" "+posZ);
 					Entity e;
 					if((e = player.worldObj.getEntityByID(id))!=null)
 					{

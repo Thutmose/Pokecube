@@ -30,7 +30,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.gen.ChunkProviderHell;
 import net.minecraftforge.common.ForgeVersion;
@@ -57,9 +56,9 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -87,8 +86,6 @@ import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
-import pokecube.core.network.pokemobs.PokemobPacketHandler;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.world.gen.WorldGenStartBuilding;
 import thut.api.maths.ExplosionCustom;
@@ -154,7 +151,6 @@ public class EventsHandler
             ExplosionCustom boom = (ExplosionCustom) evt.explosion;
             if (!boom.meteor) return;
 
-            @SuppressWarnings("unchecked")
             List<BlockPos> blocks = Lists.newArrayList(boom.affectedBlockPositions);
 
             for (BlockPos p : blocks)
@@ -169,13 +165,10 @@ public class EventsHandler
     public void WorldUnloadEvent(Unload evt)
     {
         WorldGenStartBuilding.building = false;
-        System.out.println("World Unload Event " + evt.world.provider.getDimensionId() + " "
-                + FMLCommonHandler.instance().getEffectiveSide());
         if (evt.world.provider.getDimensionId() == 0 && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             System.out.println("Clearing Client instance");// TODO
             PokecubeSerializer.getInstance().clearInstance();
-            ExplosionCustom.clearInstance();
             AISaveHandler.clearInstance();
             GuiMoveMessages.clear();
             new GuiScrollableLists();
@@ -351,7 +344,6 @@ public class EventsHandler
         {
             System.out.println("Clearing Server instance");
             PokecubeSerializer.getInstance().clearInstance();
-            ExplosionCustom.clearInstance();
             AISaveHandler.clearInstance();
             pendingStarters.clear();
         }
@@ -451,20 +443,20 @@ public class EventsHandler
                     temp.set((temp.set(o).subtractFrom(loc)).normalize());
                     if (temp.dot(look) > 0)
                     {
-                        boolean watched = ((IPokemob) o).getPokemonAIState(IPokemob.WATCHED);
-                        if(!watched)
-                        {
-                            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(18));
-                            buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-                            Vector3 here = Vector3.getNewVectorFromPool().set(o);
-                            buffer.writeInt(o.getEntityId());
-                            buffer.writeByte(0);
-                            buffer.writeFloat((float) o.posX);
-                            buffer.writeFloat((float) o.posY);
-                            buffer.writeFloat((float) o.posZ);
-                            MessageClient message = new MessageClient(buffer);
-                            PokecubePacketHandler.sendToAllNear(message, here, o.dimension, 32);
-                        }
+//                        boolean watched = ((IPokemob) o).getPokemonAIState(IPokemob.WATCHED);
+//                        if(!watched)
+//                        {
+//                            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(18));
+//                            buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
+//                            Vector3 here = Vector3.getNewVectorFromPool().set(o);
+//                            buffer.writeInt(o.getEntityId());
+//                            buffer.writeByte(0);
+//                            buffer.writeFloat((float) o.posX);
+//                            buffer.writeFloat((float) o.posY);
+//                            buffer.writeFloat((float) o.posZ);
+//                            MessageClient message = new MessageClient(buffer);
+//                            PokecubePacketHandler.sendToAllNear(message, here, o.dimension, 32);
+//                        }
                         
                         ((IPokemob) o).setPokemonAIState(IPokemob.WATCHED, true);
                     }

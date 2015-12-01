@@ -354,6 +354,7 @@ public class Commands implements ICommand
                     if (o instanceof IPokemob)
                     {
                         IPokemob e = (IPokemob) o;
+                        System.out.println(e);
                         if (!all || e.getPokedexEntry() == Database.getEntry(name))
                         {
                             if (((Entity) e).getDistance(cSender.getPositionVector().xCoord,

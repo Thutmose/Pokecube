@@ -22,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
@@ -148,9 +147,9 @@ public abstract class EntityTameablePokemob extends EntityTameable
                                                                      // and
                                                                      // moveIndex
         dataWatcher.addObject(MOVESDW, "");// moves
-        
-        
-        dataWatcher.addObject(SPECIALINFO, Integer.valueOf(0));//Used for mareep colour
+
+        dataWatcher.addObject(SPECIALINFO, Integer.valueOf(0));// Used for
+                                                               // mareep colour
 
     }
 
@@ -163,7 +162,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
     public void specificSpawnInit()
     {
         this.setHeldItem(this.wildHeldItem());
-        if(pokedexNb==179)//Mareep
+        if (pokedexNb == 179) // Mareep
         {
             setSpecialInfo(11);
         }
@@ -507,13 +506,6 @@ public abstract class EntityTameablePokemob extends EntityTameable
     public void setPosition(double x, double y, double z)
     {
         super.setPosition(x, y, z);
-        this.posX = x;
-        this.posY = y;
-        this.posZ = z;
-        float f = this.width / 2.0F;
-        float f1 = this.height;
-        this.setEntityBoundingBox(
-                new AxisAlignedBB(x - (double) f, y, z - (double) f, x + (double) f, y + (double) f1, z + (double) f));
     }
 
     protected AnimalChest pokeChest;
@@ -723,14 +715,17 @@ public abstract class EntityTameablePokemob extends EntityTameable
     {
         if (this.newPosRotationIncrements > 0)
         {
-            double d3 = MathHelper.wrapAngleTo180_double(this.newRotationYaw - (double) this.rotationYaw);
-            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.newPosRotationIncrements);
-            this.rotationPitch = (float) ((double) this.rotationPitch
-                    + (this.newRotationPitch - (double) this.rotationPitch) / (double) this.newPosRotationIncrements);
+            double d0 = this.posX + (this.newPosX - this.posX) / (double)this.newPosRotationIncrements;
+            double d1 = this.posY + (this.newPosY - this.posY) / (double)this.newPosRotationIncrements;
+            double d2 = this.posZ + (this.newPosZ - this.posZ) / (double)this.newPosRotationIncrements;
+            double d3 = MathHelper.wrapAngleTo180_double(this.newRotationYaw - (double)this.rotationYaw);
+            this.rotationYaw = (float)((double)this.rotationYaw + d3 / (double)this.newPosRotationIncrements);
+            this.rotationPitch = (float)((double)this.rotationPitch + (this.newRotationPitch - (double)this.rotationPitch) / (double)this.newPosRotationIncrements);
             --this.newPosRotationIncrements;
+            this.setPosition(d0, d1, d2);
             this.setRotation(this.rotationYaw, this.rotationPitch);
         }
-        else if (this.isServerWorld())
+        else if (!this.isServerWorld())
         {
             this.motionX *= 0.98D;
             this.motionY *= 0.98D;
@@ -761,12 +756,6 @@ public abstract class EntityTameablePokemob extends EntityTameable
             this.moveForward = 0.0F;
             this.randomYawVelocity = 0.0F;
         }
-        // else if (!this.isServerWorld())
-        // {
-        // this.worldObj.theProfiler.startSection("newAi");
-        // this.updateAITasks();
-        // this.worldObj.theProfiler.endSection();
-        // }
 
         this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.startSection("jump");
@@ -789,6 +778,18 @@ public abstract class EntityTameablePokemob extends EntityTameable
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean p_180426_10_)
+    {
+        this.newPosX = x;
+        this.newPosY = y;
+        this.newPosZ = z;
+        this.newRotationYaw = (double)yaw;
+        this.newRotationPitch = (double)pitch;
+        this.newPosRotationIncrements = posRotationIncrements;
+    }
+    
+    @Override
     public int getSpecialInfo()
     {
         return dataWatcher.getWatchableObjectInt(SPECIALINFO);
@@ -799,19 +800,19 @@ public abstract class EntityTameablePokemob extends EntityTameable
     {
         this.dataWatcher.updateObject(SPECIALINFO, Integer.valueOf(info));
     }
-    
+
     @Override
     public boolean isShearable(ItemStack item, IBlockAccess world, BlockPos pos)
     {
-        if(getPokedexEntry().getName().equalsIgnoreCase("mareep"))
+        if (getPokedexEntry().getName().equalsIgnoreCase("mareep"))
         {
             long last = getEntityData().getLong("lastSheared");
-            
-            if(last < worldObj.getTotalWorldTime() - 200 && !worldObj.isRemote)
+
+            if (last < worldObj.getTotalWorldTime() - 200 && !worldObj.isRemote)
             {
                 setSheared(false);
             }
-            
+
             return !getSheared();
         }
         return false;
@@ -820,55 +821,50 @@ public abstract class EntityTameablePokemob extends EntityTameable
     @Override
     public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
     {
-        if(getPokedexEntry().getName().equalsIgnoreCase("mareep"))
+        if (getPokedexEntry().getName().equalsIgnoreCase("mareep"))
         {
             ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
             setSheared(true);
-            
+
             getEntityData().setLong("lastSheared", worldObj.getTotalWorldTime());
-            
+
             int i = 1 + rand.nextInt(3);
             for (int j = 0; j < i; j++)
             {
-                ret.add(new ItemStack(Blocks.wool, 1, 15-getSpecialInfo()));
+                ret.add(new ItemStack(Blocks.wool, 1, 15 - getSpecialInfo()));
             }
             this.playSound("mob.sheep.shear", 1.0F, 1.0F);
             return ret;
         }
         return null;
     }
-    
-    /**
-     * returns true if a sheeps wool has been sheared
-     */
+
+    /** returns true if a sheeps wool has been sheared */
     public boolean getSheared()
     {
         return (this.dataWatcher.getWatchableObjectByte(SHEARDW) & 16) != 0;
     }
 
-    /**
-     * make a sheep sheared if set to true
-     */
+    /** make a sheep sheared if set to true */
     public void setSheared(boolean sheared)
     {
         byte b0 = this.dataWatcher.getWatchableObjectByte(21);
 
         if (sheared)
         {
-            this.dataWatcher.updateObject(SHEARDW, Byte.valueOf((byte)(b0 | 16)));
+            this.dataWatcher.updateObject(SHEARDW, Byte.valueOf((byte) (b0 | 16)));
         }
         else
         {
-            this.dataWatcher.updateObject(SHEARDW, Byte.valueOf((byte)(b0 & -17)));
+            this.dataWatcher.updateObject(SHEARDW, Byte.valueOf((byte) (b0 & -17)));
         }
     }
-    
-    /**
-     * Used to get the state without continually looking up in datawatcher.
+
+    /** Used to get the state without continually looking up in datawatcher.
+     * 
      * @param state
      * @param array
-     * @return
-     */
+     * @return */
     protected boolean getAIState(int state, int array)
     {
         return (array & state) != 0;

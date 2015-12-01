@@ -336,6 +336,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     {
         if (worldObj.isRemote || isReleasing()) { return null; }
         IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+        System.out.println(entity1);
         if (entity1 != null)
         {
             Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);

@@ -676,59 +676,35 @@ public final class SpawnHandler
 
 	public static boolean moveEntityOutOfBlocks(Entity e)
 	{
-		Vector3 v = vec.set(e);
-		float num = e.width * e.height * e.width * 8;
-		num = Math.max(num, 27);
-
-		if (!v.isEntityClearOfBlocks(e.worldObj, e))
-		{
-			Vector3 v2 = Vector3.getNewVectorFromPool().set(vec);
-			boolean clear = false;
-			int x, y, z, size, i;
-			int currentRadius = 0, subIndex = 0;
-			int nextRadius = 1;
-			
-			int currentRadSq = 0;
-			int nextRadCb = 1;
-			
-			int radCbDiff = 1;
-			int radSqDiff = 1;
-			int[] toFill = new int[3];
-			size = 30;
-			num = Math.min(num, size);
-			for (i = 0; i < num * num * num; i++)
-			{
-				if(i >= nextRadCb)
-				{
-					nextRadius++;
-					currentRadius++;
-					int temp = (2*nextRadius - 1);
-					nextRadCb = temp * temp * temp;
-					temp = (2*currentRadius - 1);
-					currentRadSq = temp * temp * temp;
-					radCbDiff = nextRadCb - currentRadSq;
-					radSqDiff = (2*nextRadius - 1)*(2*nextRadius - 1) - temp * temp;
-				}
-				subIndex = (i - currentRadSq);
-				Cruncher.indexToVals(currentRadius, subIndex, radSqDiff, radCbDiff, toFill);
-				x = toFill[0];
-				z = toFill[1];
-				y = toFill[2];
-				v2.set(vec).addTo(x, y, z);
-				clear = v2.isEntityClearOfBlocks(e.worldObj, e);
-				if (clear)
-				{
-					break;
-				}
-			}
-
-			if (clear && v2 != null)
-			{
-				v2.moveEntity(e);
-				v2.freeVectorFromPool();
-			}
-			return clear;
-		}
+//		Vector3 v = vec.set(e);
+//		float num = e.width * e.height * e.width * 8;
+//		num = Math.max(num, 27);
+		//TODO redo this method
+//		if (!v.isEntityClearOfBlocks(e.worldObj, e))
+//		{
+//			Vector3 v2 = Vector3.getNewVectorFromPool().set(vec);
+//			boolean clear = false;
+//			int size, i;
+//			size = 30;
+//			num = Math.min(num, size);
+//			for (i = 0; i < num * num * num; i++)
+//			{
+//				Cruncher.indexToVals(i, v2);
+//				v2.addTo(vec);
+//				clear = v2.isEntityClearOfBlocks(e.worldObj, e);
+//				if (clear)
+//				{
+//					break;
+//				}
+//			}
+//
+//			if (clear && v2 != null)
+//			{
+//				v2.moveEntity(e);
+//				v2.freeVectorFromPool();
+//			}
+//			return clear;
+//		}
 		return true;
 	}
 

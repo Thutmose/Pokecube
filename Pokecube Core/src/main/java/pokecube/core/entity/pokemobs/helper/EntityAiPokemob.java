@@ -663,7 +663,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             super.moveEntityWithHeading(f, f1);
             return;
         }
-        if (!worldObj.isRemote)
+        if (isServerWorld())
         {
             PokedexEntry entry = getPokedexEntry();
             int aiState = dataWatcher.getWatchableObjectInt(AIACTIONSTATESDW);
@@ -873,21 +873,18 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 this.motionZ *= f2;
             }
         }
-        else
-        {
-            this.moveEntity(this.motionX, this.motionY, this.motionZ);
-        }
+
         this.prevLimbSwingAmount = this.limbSwingAmount;
-        d0 = this.posX - this.prevPosX;
-        double d1 = this.posZ - this.prevPosZ;
-        float f6 = MathHelper.sqrt_double(d0 * d0 + d1 * d1) * 4.0F;
+        double d2 = this.posX - this.prevPosX;
+        double d3 = this.posZ - this.prevPosZ;
+        float f7 = MathHelper.sqrt_double(d2 * d2 + d3 * d3) * 4.0F;
 
-        if (f6 > 1.0F)
+        if (f7 > 1.0F)
         {
-            f6 = 1.0F;
+            f7 = 1.0F;
         }
 
-        this.limbSwingAmount += (f6 - this.limbSwingAmount) * 0.4F;
+        this.limbSwingAmount += (f7 - this.limbSwingAmount) * 0.4F;
         this.limbSwing += this.limbSwingAmount;
     }
 

@@ -393,8 +393,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             int num = rand.nextInt(unowns.length);
             changeForme(unowns[num]);
         }
-    	
-    	
+        
+    	//TODO
     	if(corruptedSum!=-123586)
     	{
 //    		return;
@@ -773,7 +773,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     	}
     	else
         {
-    		
 			double x0 = x, y0 = y, z0 = z;
 			setBoxes();
 			setOffsets();
@@ -803,8 +802,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 				v.freeVectorFromPool();
 				x = diffs.x; y = diffs.y; z = diffs.z;
 			}
-			
+            
 			x = diffs.x; y = diffs.y; z = diffs.z;
+			
 			diffs.freeVectorFromPool();
 			
 			double dy = 0;

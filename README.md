@@ -20,7 +20,6 @@ Pokémobs for Minecraft - page under construction.
 - Oshawatt line
 - Pidove
 - Reuniclus
-- Foongus
 - Trevenant
 - ho-oh
 

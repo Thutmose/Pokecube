@@ -1,10 +1,11 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/238253-pokecube-core",
   "promos": {
-    "1.8.8-latest": "2.0.10",
-    "1.8.8-recommended": "2.0.10"
+    "1.8.8-latest": "2.0.11",
+    "1.8.8-recommended": "2.0.11"
   },
   "1.8.8": {
+    "2.0.11": "Updates to Thut Core 2.1.6",
     "2.0.10": "fixes the long standing sync issues with client and server which would result in teleporty pokemobs",
     "2.0.9": "Updates the version checker, fixes combee and charizard not loading from resource pack",
     "2.0.8": "fixes missing berry block textures, a pokecube dupe bug, adds configurable interaction capabilities",

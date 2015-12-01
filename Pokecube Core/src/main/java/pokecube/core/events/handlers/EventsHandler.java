@@ -30,6 +30,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.gen.ChunkProviderHell;
 import net.minecraftforge.common.ForgeVersion;
@@ -56,6 +57,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -102,6 +104,7 @@ public class EventsHandler
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         PokemobAIThread aiTicker = new PokemobAIThread();
         MinecraftForge.EVENT_BUS.register(aiTicker);
+        new UpdateNotifier();
     }
 
     static double max        = 0;
@@ -359,21 +362,6 @@ public class EventsHandler
     @SubscribeEvent
     public void EntityJoinWorld(EntityJoinWorldEvent evt)
     {
-        if (evt.world.isRemote && evt.entity instanceof EntityPlayer && !notified)
-        {
-            Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
-            CheckResult result = ForgeVersion.getResult(((ModContainer) o));
-            if(result.status == Status.OUTDATED)
-            {
-                String mess = "Current Listed Release Version of Pokecube is "+result.target+", but you have "+PokecubeMod.VERSION;
-                ((EntityPlayer) evt.entity)
-                        .addChatMessage(new ChatComponentText(mess));
-            }
-            
-            notified = true;
-            return;
-        }
-
         if (Mod_Pokecube_Helper.disableMonsters && !(evt.entity instanceof IPokemob) && evt.entity instanceof IMob
                 && !(evt.entity instanceof EntityDragon || evt.entity instanceof EntityDragonPart))
         {
@@ -663,5 +651,30 @@ public class EventsHandler
             }
         }
         return entry == null ? 249 : entry.getPokedexNb();
+    }
+    
+    public static class UpdateNotifier
+    {
+        public UpdateNotifier()
+        {
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void onPlayerJoin(TickEvent.PlayerTickEvent event)
+        {
+            if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
+            {
+                Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
+                CheckResult result = ForgeVersion.getResult(((ModContainer) o));
+                if(result.status == Status.OUTDATED)
+                {
+                    String mess = "Current Listed Release Version of Pokecube Core is "+result.target+", but you have "+PokecubeMod.VERSION+".";
+                    mess += "\nIf you find bugs, please update and check if they still occur before reporting them.";
+                    (event.player).addChatMessage(new ChatComponentText(mess));
+                }
+                MinecraftForge.EVENT_BUS.unregister(this);
+            }
+        }
     }
 }

@@ -14,12 +14,16 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ForgeVersion.CheckResult;
+import net.minecraftforge.common.ForgeVersion.Status;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.ModMetadata;
@@ -32,6 +36,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.compat.ai.AIElectricalInterferance;
 import pokecube.compat.ai.AITendPlants;
 import pokecube.compat.ai.AIThermalInteferance;
@@ -260,6 +265,16 @@ public class Compat
                 message = StatCollector.translateToLocal(message);
                 event.player.addChatMessage(new ChatComponentText(message));
                 MinecraftForge.EVENT_BUS.unregister(this);
+                
+                Object o = Loader.instance().getIndexedModList().get(PokecubeAdv.ID);
+                CheckResult result = ForgeVersion.getResult(((ModContainer) o));
+                if(result.status == Status.OUTDATED)
+                {
+                    String mess = "Current Listed Release Version of Pokecube Revival is "+result.target+", but you have "+PokecubeAdv.version+".";
+                    mess += "\nIf you find bugs, please update and check if they still occur before reporting them.";
+                    (event.player).addChatMessage(new ChatComponentText(mess));
+                }
+                
             }
         }
     }

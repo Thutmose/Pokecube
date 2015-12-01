@@ -6,10 +6,8 @@ Pokémobs for Minecraft - page under construction.
 - farfetch'd
 - tauros
 - aerodactyl
-- slugma
 - miltank
 - seedot
-- armaldo
 - giratina
 - servine
 

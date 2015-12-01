@@ -525,7 +525,6 @@ public class AnimationLoader
                             anim.replace(entry.getName(), entry.getBaseName()));
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
                     System.out.println("Registerd an x3d model for "+name);
-//                    getModel(name);
                 }
                 else
                 {

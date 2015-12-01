@@ -1,19 +1,15 @@
 package pokecube.modelloader.client.tabula.model.tabula;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 
 import com.google.common.collect.Maps;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,7 +24,6 @@ public class TabulaModelParser implements IModelParser<TabulaModel>
     
     @SideOnly(Side.CLIENT)
     public Map<TabulaModel, ModelJson> modelMap;
-    public Map<TabulaModel, Integer>   textureMap = Maps.newHashMap();
     
     public String getExtension()
     {
@@ -44,16 +39,12 @@ public class TabulaModelParser implements IModelParser<TabulaModel>
         }
         TabulaModel tabulaModel = null;
         InputStream in = IOUtils.toInputStream(json, "UTF-8");
-        tabulaModel = JsonFactory.getGson().fromJson(new InputStreamReader(in), TabulaModel.class);
-        BufferedImage texture = null;
-        texture = ImageIO.read(tex);
-        
+        InputStreamReader reader = new InputStreamReader(in);
+        tabulaModel = JsonFactory.getGson().fromJson(reader, TabulaModel.class);
+        reader.close();
         if (tabulaModel != null)
         {
-            tabulaModel.texture = texture;
             modelMap.put(tabulaModel, new ModelJson(tabulaModel));
-            textureMap.put(tabulaModel,
-                    TextureUtil.uploadTextureImage(TextureUtil.glGenTextures(), tabulaModel.texture));
             return tabulaModel;
         }
         else
@@ -71,12 +62,6 @@ public class TabulaModelParser implements IModelParser<TabulaModel>
     public TabulaModel decode(ByteBuf buf)
     {
         return null; // todo
-    }
-
-    @SideOnly(Side.CLIENT)
-    public int getTextureId(TabulaModel model)
-    {
-        return textureMap.get(model);
     }
 
     @SideOnly(Side.CLIENT)

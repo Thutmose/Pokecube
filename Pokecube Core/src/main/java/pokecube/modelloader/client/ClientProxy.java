@@ -106,7 +106,15 @@ public class ClientProxy extends CommonProxy
                 {
                     if (!TabulaPackLoader.loadModel(mod + ":" + AnimationLoader.MODELPATH + s))
                     {
-                        AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s);
+                        boolean has = AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s);
+                        if(!has)
+                        {
+                            System.err.println("Did not find model for "+s);
+                        }
+                    }
+                    if(s.contains("bee"))
+                    {
+                        System.out.println(s);
                     }
                 }
             }

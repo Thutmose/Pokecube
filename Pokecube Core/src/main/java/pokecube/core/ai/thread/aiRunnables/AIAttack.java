@@ -110,7 +110,7 @@ public class AIAttack extends AIBase implements IAICombat
                 delayTime = 0;
             }
         }
-
+        
         this.attacker.getLookHelper().setLookPositionWithEntity(entityTarget, 30.0F, 30.0F);
 
         IPokemob pokemob = (IPokemob) attacker;
@@ -277,6 +277,10 @@ public class AIAttack extends AIBase implements IAICombat
         else
         {
             setPokemobAIState((IPokemob) attacker, IPokemob.EXECUTINGMOVE, false);
+        }
+        if(!delay && delayTime%5==0)
+        {
+            addTargetInfo(attacker, entityTarget);
         }
         if (!targetLoc.isEmpty() && delay && inRange)
         {

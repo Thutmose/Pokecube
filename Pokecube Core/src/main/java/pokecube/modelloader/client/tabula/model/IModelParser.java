@@ -23,9 +23,6 @@ public interface IModelParser<T extends IModel> {
     T decode(ByteBuf buf);
 
     @SideOnly(Side.CLIENT)
-    int getTextureId(T model);
-
-    @SideOnly(Side.CLIENT)
     void render(T model, Entity entity);
 
     Class<T> getModelClass();

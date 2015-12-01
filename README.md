@@ -2,7 +2,6 @@
 Pokémobs for Minecraft - page under construction.
 
 ##Currently Missing Pokemob Models
-- Charizard
 - Rattata
 - Pikachu/Raichu/Pichu
 - farfetch'd
@@ -19,7 +18,6 @@ Pokémobs for Minecraft - page under construction.
 - servine
 - unfezant
 - tynamo
-- Combee
 
 ##Currently Messed up texures/other glitches
 - Cloyster (spikes)

@@ -40,7 +40,6 @@ public class TabulaPackLoader extends AnimationLoader
     {
         ResourceLocation model = new ResourceLocation(path + ".tbl");
         String anim = path + ".xml";
-        ResourceLocation texture = new ResourceLocation(path.replace(MODELPATH, TEXTUREPATH) + ".png");
         ResourceLocation extraData = new ResourceLocation(anim);
 
         String[] args = path.split(":");
@@ -62,7 +61,6 @@ public class TabulaPackLoader extends AnimationLoader
             if (entry != null)
             {
                 TabulaModelParser parser = new TabulaModelParser();
-                res = Minecraft.getMinecraft().getResourceManager().getResource(texture);
                 TabulaModel tbl = parser.parse(json, res.getInputStream());
                 TabulaModelSet set = new TabulaModelSet(tbl, parser, extraData, entry);
                 modelMap.put(entry, set);
@@ -72,7 +70,8 @@ public class TabulaPackLoader extends AnimationLoader
         }
         catch (IOException e)
         {
-
+            if(path.contains("bee"))
+                e.printStackTrace();
         }
 
         return false;

@@ -64,7 +64,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         {
             if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
                 return;
-            IPokemob pokemob = (IPokemob) entity;
             renderHp(entity, d0, d1, d2, f, f1);
             GL11.glPushMatrix();
             GL11.glTranslated(d0, d1, d2);

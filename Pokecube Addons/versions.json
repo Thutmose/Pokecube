@@ -1,10 +1,11 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/224362-pokecube-revival",
   "promos": {
-    "1.8.8-latest": "2.0.5",
-    "1.8.8-recommended": "2.0.5"
+    "1.8.8-latest": "2.0.6",
+    "1.8.8-recommended": "2.0.6"
   },
   "1.8.8": {
+    "2.0.6": "updates to the version checker",
     "2.0.5": "fixes and issue in bag gui and a crash with trader",
     "2.0.4": "improvements to ingame wiki",
     "2.0.3": "fixes up the trader a bit",

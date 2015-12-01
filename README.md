@@ -7,7 +7,6 @@ Pokémobs for Minecraft - page under construction.
 - tauros
 - aerodactyl
 - miltank
-- seedot
 - giratina
 - servine
 

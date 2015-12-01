@@ -15,7 +15,6 @@ Pokémobs for Minecraft - page under construction.
 - Cloyster (spikes)
 - Marowak (bone)
 - Chikorita
-- Mantine
 - Snivy line
 - Tepig line
 - Oshawatt line

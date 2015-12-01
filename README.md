@@ -2,22 +2,17 @@
 Pokémobs for Minecraft - page under construction.
 
 ##Currently Missing Pokemob Models
-- Rattata
 - Pikachu/Raichu/Pichu
 - farfetch'd
 - tauros
 - aerodactyl
 - unfezant
-- tynamo
 - slugma
 - miltank
 - seedot
 - armaldo
-- sealeo
 - giratina
 - servine
-- unfezant
-- tynamo
 
 ##Currently Messed up texures/other glitches
 - Cloyster (spikes)

@@ -112,10 +112,6 @@ public class ClientProxy extends CommonProxy
                             System.err.println("Did not find model for "+s);
                         }
                     }
-                    if(s.contains("bee"))
-                    {
-                        System.out.println(s);
-                    }
                 }
             }
         }

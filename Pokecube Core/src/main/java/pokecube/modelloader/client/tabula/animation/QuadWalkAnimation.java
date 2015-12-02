@@ -14,7 +14,21 @@ public class QuadWalkAnimation extends Animation
     {
         loops = true;
     }
-    
+    /**
+     * Swings legs and arms in opposite directions.
+     * Only the parts directly childed to the body
+     * need to be added to these sets, any parts childed
+     * to them will also be swung by the parent/child system.
+     * 
+     * @param hl - left hind legs
+     * @param hr - right hind legs
+     * @param fl - left front legs
+     * @param fr - right front legs
+     * @param duration - time taken for animation
+     * @param legAngle - half - angle covered by hind legs.
+     * @param armAngle - half - angle covered by front legs.
+     * @return
+     */
     public QuadWalkAnimation init(Set<String> hl, Set<String> hr, Set<String>fl, Set<String>fr, int duration, float legAngle, float armAngle)
     {
         for(String s: hr)

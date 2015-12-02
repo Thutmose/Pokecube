@@ -157,13 +157,7 @@ public class TabulaPackLoader extends AnimationLoader
                     if (s.equals(anim.name))
                     {
                         Animation loaded = loadedAnimations.get(s);
-                        for (String s1 : loaded.sets.keySet())
-                        {
-                            if (!anim.sets.containsKey(s1))
-                            {
-                                anim.sets.put(s1, loaded.sets.get(s1));
-                            }
-                        }
+                        merge(loaded, anim);
                         toRemove.add(s);
                     }
                 }
@@ -173,6 +167,29 @@ public class TabulaPackLoader extends AnimationLoader
                 loadedAnimations.remove(s);
             }
             if (toRemove.size() > 0) System.out.println("Merged " + toRemove.size() + " Animations for " + entry);
+        }
+
+        private void merge(Animation from, Animation to)
+        {
+            for (String s1 : from.sets.keySet())
+            {
+                if (!to.sets.containsKey(s1))
+                {
+                    to.sets.put(s1, from.sets.get(s1));
+                }
+            }
+        }
+
+        private void addAnimation(String key, Animation animation)
+        {
+            if (loadedAnimations.containsKey(key))
+            {
+                merge(animation, loadedAnimations.get(key));
+            }
+            else
+            {
+                loadedAnimations.put(key, animation);
+            }
         }
 
         public void parse(ResourceLocation animation) throws Exception
@@ -315,8 +332,7 @@ public class TabulaPackLoader extends AnimationLoader
             }
             else quadwalkdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
 
-            loadedAnimations.put("walking",
-                    new QuadWalkAnimation().init(hl, hr, fl, fr, quadwalkdur, walkAngle1, walkAngle2));
+            addAnimation("walking", new QuadWalkAnimation().init(hl, hr, fl, fr, quadwalkdur, walkAngle1, walkAngle2));
 
         }
 
@@ -366,8 +382,7 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 e.printStackTrace();
             }
-            loadedAnimations.put("walking",
-                    new BiWalkAnimation().init(hl, hr, fl, fr, biwalkdur, walkAngle1, walkAngle2));
+            addAnimation("walking", new BiWalkAnimation().init(hl, hr, fl, fr, biwalkdur, walkAngle1, walkAngle2));
 
         }
 
@@ -408,8 +423,7 @@ public class TabulaPackLoader extends AnimationLoader
             }
             flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
 
-            loadedAnimations.put("flying",
-                    new BasicFlapAnimation().init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis));
+            addAnimation("flying", new BasicFlapAnimation().init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis));
 
         }
     }

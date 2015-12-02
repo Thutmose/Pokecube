@@ -13,6 +13,7 @@ public class BasicFlapAnimation extends Animation
     public BasicFlapAnimation()
     {
         loops = true;
+        name = "flying";
     }
     
     /**

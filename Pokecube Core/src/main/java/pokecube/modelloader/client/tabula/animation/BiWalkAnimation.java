@@ -13,6 +13,7 @@ public class BiWalkAnimation extends Animation
     public BiWalkAnimation()
     {
         loops = true;
+        name = "walking";
     }
     /**
      * Swings legs and arms in opposite directions.

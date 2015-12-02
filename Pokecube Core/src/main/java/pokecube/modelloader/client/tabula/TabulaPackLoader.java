@@ -16,6 +16,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -100,6 +101,7 @@ public class TabulaPackLoader extends AnimationLoader
                     System.err.println("Cannot find base forme for " + entry + " " + entry.baseForme);
                 }
             }
+            set.postInitAnimations();
         }
     }
 
@@ -143,6 +145,34 @@ public class TabulaPackLoader extends AnimationLoader
                     System.out.println("did not find " + test2 + " " + e1);
                 }
             }
+        }
+
+        private void postInitAnimations()
+        {
+            HashSet<String> toRemove = Sets.newHashSet();
+            for (Animation anim : model.getAnimations())
+            {
+                for (String s : loadedAnimations.keySet())
+                {
+                    if (s.equals(anim.name))
+                    {
+                        Animation loaded = loadedAnimations.get(s);
+                        for (String s1 : loaded.sets.keySet())
+                        {
+                            if (!anim.sets.containsKey(s1))
+                            {
+                                anim.sets.put(s1, loaded.sets.get(s1));
+                            }
+                        }
+                        toRemove.add(s);
+                    }
+                }
+            }
+            for (String s : toRemove)
+            {
+                loadedAnimations.remove(s);
+            }
+            if (toRemove.size() > 0) System.out.println("Merged " + toRemove.size() + " Animations for " + entry);
         }
 
         public void parse(ResourceLocation animation) throws Exception

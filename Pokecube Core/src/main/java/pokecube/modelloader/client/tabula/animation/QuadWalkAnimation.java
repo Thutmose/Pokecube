@@ -13,6 +13,7 @@ public class QuadWalkAnimation extends Animation
     public QuadWalkAnimation()
     {
         loops = true;
+        name = "walking";
     }
     /**
      * Swings legs and arms in opposite directions.

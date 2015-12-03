@@ -5,6 +5,8 @@ import static pokecube.adventures.handlers.BlockHandler.warppad;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -13,12 +15,14 @@ import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.CommonProxy;
+import pokecube.adventures.LegendaryConditions;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.client.gui.GUIBiomeSetter;
@@ -32,6 +36,7 @@ import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.events.RenderHandler;
 import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.items.bags.ContainerBag;
+import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import thut.api.maths.Vector3;
 
@@ -51,6 +56,19 @@ public class ClientProxy extends CommonProxy
         registerItemTexture(Item.getItemFromBlock(warppad), 0,
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));
 
+        StateMap map = (new StateMap.Builder()).withName(LegendaryConditions.spawner1.TYPE).withSuffix("_spawner").build();
+        ModelLoader.setCustomStateMapper(LegendaryConditions.spawner1, map);
+        Item item = Item.getItemFromBlock(LegendaryConditions.spawner1);
+//        ModelBakery.addVariantName(item, "pokecube_adventures:0_spawner");
+//        registerItemTexture(item, 0,
+//                new ModelResourceLocation("pokecube_adventures:0_spawner", "inventory"));
+        
+        for (int i = 0; i < LegendaryConditions.spawner1.types.size(); i++)
+        {
+            ModelBakery.addVariantName(item, "pokecube_adventures:" + i + "_spawner");
+            PokecubeItems.registerItemTexture(item, i,
+                    new ModelResourceLocation("pokecube_adventures:" + i + "_spawner", "inventory"));
+        }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

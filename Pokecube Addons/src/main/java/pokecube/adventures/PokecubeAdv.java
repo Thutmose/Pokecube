@@ -116,6 +116,7 @@ public class PokecubeAdv
 	{
 		DBLoader.load();
 		ConfigHandler.parseBiomes();
+		LegendaryConditions.registerSpecialConditions();
 	}
 
 	@EventHandler

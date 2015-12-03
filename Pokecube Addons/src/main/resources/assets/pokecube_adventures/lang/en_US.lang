@@ -35,5 +35,26 @@ tile.cloner.name=Splicing Device
 gui.trainer.stationary=Trainer Wanders
 gui.trainer.saved=Saved Trainer
 
+msg.nohoohhere.txt=Ho-Oh will not spawn here.
+msg.nocelebihere.txt=Celebi will not spawn here.
+msg.nokyogrehere.txt=Kyogre will not spawn here.
+msg.nogroudonhere.txt=Groudon will not spawn here.
+msg.noregisteelhere.txt=This does not seem to be the correct location to build this.
+msg.noregicehere.txt=This does not seem to be the correct location to build this.
+msg.noregirockhere.txt=This does not seem to be the correct location to build this.
+
+msg.reginotlookright.txt=This does not look like it was built correctly.
+
+msg.nogroudontrust.txt=Groudon does not trust you enough to be captured.
+msg.nokyogretrust.txt=Kyogre does not trust you enough to be captured.
+msg.nocelebitrust.txt=Celebi does not trust you enough to be captured.
+msg.nohoohtrust.txt=Ho-Oh does not trust you enough to be captured.
+msg.nolugiatrust.txt=Lugia does not trust you enough to be captured.
+msg.nosuicunetrust.txt=Suicune does not trust you enough to be captured.
+msg.noenteitrust.txt=Entei does not trust you enough to be captured.
+msg.noraikoutrust.txt=Raikou does not trust you enough to be captured.
+
+msg.celebiangry.txt=You have angered Celebi and need to re-gain its trust.
+
 entity.pokecube_adventures.targetParticles.name=Target
 

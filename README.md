@@ -8,7 +8,6 @@ Pokémobs for Minecraft - page under construction.
 - giratina
 
 ##Currently known Messed up texures/other glitches
-- Haxorus - The texture needs re-mapping
 - Trevenant - Legs are funny
 
 ##Related/Contained projects

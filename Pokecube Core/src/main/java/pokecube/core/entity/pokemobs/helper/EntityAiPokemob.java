@@ -15,7 +15,9 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.pathfinding.PathNavigate;
@@ -1055,8 +1057,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         ItemStack itemstack = player.inventory.getCurrentItem();
 
         if (getPokedexEntry().interact(player, this)) return true;
-
-        if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.stick)
+        Item torch = Item.getItemFromBlock(Blocks.torch);
+        if (player == getPokemonOwner() && itemstack != null
+                && (itemstack.getItem() == Items.stick || itemstack.getItem() == torch))
         {
             if (player.isSneaking())
             {

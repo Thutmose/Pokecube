@@ -1497,8 +1497,16 @@ public class PokedexEntry
 
     public static class InteractionLogic
     {
+        static HashMap<PokeType, String> defaults = new HashMap<>();
+        
+        static
+        {
+            defaults.put(PokeType.fire, "stick`torch");
+            defaults.put(PokeType.water, "bucket`water_bucket");
+        }
+        
         HashMap<ItemStack, List<ItemStack>> stacks = new HashMap<ItemStack, List<ItemStack>>();
-
+        
         boolean interact(EntityPlayer player, IPokemob pokemob)
         {
             EntityLiving entity = (EntityLiving) pokemob;
@@ -1507,10 +1515,9 @@ public class PokedexEntry
             {
                 long time = data.getLong("lastInteract");
                 long diff = entity.worldObj.getTotalWorldTime() - time;
-                if (diff < 1000) { return false; }
+                if (diff < 100) { return false; }
             }
             data.setLong("lastInteract", entity.worldObj.getTotalWorldTime());
-
             ItemStack stack = getKey(player.getHeldItem());
             if (stack != null)
             {
@@ -1551,6 +1558,10 @@ public class PokedexEntry
             {
                 String[] args = s.split("`");
                 String key = args[0];
+                
+                if(key.equals("null"))
+                    return;
+                
                 String[] vals = new String[args.length - 1];
                 for (int i = 0; i < vals.length; i++)
                 {
@@ -1571,6 +1582,29 @@ public class PokedexEntry
                     InteractionLogic interact = entry.interactionLogic;
                     interact.stacks.put(keyStack, stacks);
                 }
+            }
+        }
+        
+        protected static void initForEntry(PokedexEntry entry)
+        {
+            String val = "";
+            for(PokeType t: defaults.keySet())
+            {
+                if(entry.isType(t))
+                {
+                    if(val.isEmpty())
+                    {
+                        val = defaults.get(t);
+                    }
+                    else
+                    {
+                        val += " "+defaults.get(t);
+                    }
+                }
+            }
+            if(!val.isEmpty())
+            {
+                initForEntry(entry, val);
             }
         }
 

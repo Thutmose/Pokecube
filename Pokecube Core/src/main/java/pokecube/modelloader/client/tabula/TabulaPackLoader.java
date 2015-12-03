@@ -272,6 +272,7 @@ public class TabulaPackLoader extends AnimationLoader
         {
             for (int i = 0; i < names.length; i++)
             {
+                boolean found = false;
                 for (ModelJson json : parser.modelMap.values())
                 {
                     if (json.nameMap.containsKey(names[i]))
@@ -282,13 +283,14 @@ public class TabulaPackLoader extends AnimationLoader
                             if (json.identifierMap.get(ident) == o)
                             {
                                 names[i] = ident;
+                                found = true;
                                 break;
                             }
                         }
                         break;
                     }
-
                 }
+                if (!found) names[i] = null;
             }
         }
 
@@ -315,13 +317,13 @@ public class TabulaPackLoader extends AnimationLoader
             convertToIdents(rf);
 
             for (String s : lh)
-                hl.add(s);
+                if (s != null) hl.add(s);
             for (String s : rh)
-                hr.add(s);
+                if (s != null) hr.add(s);
             for (String s : rf)
-                fr.add(s);
+                if (s != null) fr.add(s);
             for (String s : lf)
-                fl.add(s);
+                if (s != null) fl.add(s);
             if (map.getNamedItem("angle") != null)
             {
                 walkAngle1 = Float.parseFloat(map.getNamedItem("angle").getNodeValue());
@@ -359,13 +361,13 @@ public class TabulaPackLoader extends AnimationLoader
             convertToIdents(rf);
 
             for (String s : lh)
-                hl.add(s);
+                if (s != null) hl.add(s);
             for (String s : rh)
-                hr.add(s);
+                if (s != null) hr.add(s);
             for (String s : rf)
-                fr.add(s);
+                if (s != null) fr.add(s);
             for (String s : lf)
-                fl.add(s);
+                if (s != null) fl.add(s);
             biwalkdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
             try
             {
@@ -405,9 +407,9 @@ public class TabulaPackLoader extends AnimationLoader
             convertToIdents(rh);
 
             for (String s : lh)
-                hl.add(s);
+                if (s != null) hl.add(s);
             for (String s : rh)
-                hr.add(s);
+                if (s != null) hr.add(s);
 
             if (map.getNamedItem("angle") != null)
             {

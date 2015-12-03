@@ -109,7 +109,7 @@ import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
 import pokecube.core.world.gen.village.handlers.PokeCentreCreationHandler;
 import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 
-@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION, dependencies = "required-after:Baubles;required-after:thutcore", updateJSON = PokecubeMod.UPDATEURL) //
+@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION)//, dependencies = "required-after:Baubles;required-after:thutcore", updateJSON = PokecubeMod.UPDATEURL) //
 public class mod_Pokecube extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")

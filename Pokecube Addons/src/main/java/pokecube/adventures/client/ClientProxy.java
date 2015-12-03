@@ -59,9 +59,6 @@ public class ClientProxy extends CommonProxy
         StateMap map = (new StateMap.Builder()).withName(LegendaryConditions.spawner1.TYPE).withSuffix("_spawner").build();
         ModelLoader.setCustomStateMapper(LegendaryConditions.spawner1, map);
         Item item = Item.getItemFromBlock(LegendaryConditions.spawner1);
-//        ModelBakery.addVariantName(item, "pokecube_adventures:0_spawner");
-//        registerItemTexture(item, 0,
-//                new ModelResourceLocation("pokecube_adventures:0_spawner", "inventory"));
         
         for (int i = 0; i < LegendaryConditions.spawner1.types.size(); i++)
         {

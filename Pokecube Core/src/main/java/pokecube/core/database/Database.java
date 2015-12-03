@@ -78,9 +78,9 @@ public class Database implements IMoveConstants {
 
 	public static void postInit()
 	{
+        loadStats(DBLOCATION+"baseStats.csv");
 		loadEVXP(DBLOCATION+"evsXp.csv");
 		loadAbilities(DBLOCATION+"abilities.csv");
-		loadStats(DBLOCATION+"baseStats.csv");
 
 		for (String s : externalEVXPDatabases) {
 			if(s!=null)
@@ -635,9 +635,13 @@ public class Database implements IMoveConstants {
 						}
 					}
 				}
-				if(s.size() > 22)
+				if(s.size() > 22 && !s.get(22).trim().isEmpty())
 				{
 				    InteractionLogic.initForEntry(e, s.get(22));
+				}
+				else
+				{
+                    InteractionLogic.initForEntry(e);
 				}
 				
 				if(evolutionMode==-1)

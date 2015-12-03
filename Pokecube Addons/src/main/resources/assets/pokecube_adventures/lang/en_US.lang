@@ -32,6 +32,14 @@ tile.enigmaLeaves.name=Enigma Leaves
 tile.warppad.name=Warp Pad
 tile.cloner.name=Splicing Device
 
+tile.celebi.name=Mysterious Altar
+tile.groudon.name=Groudon Altar
+tile.kyogre.name=Kyogre Altar
+tile.hooh.name=Ho-oh Altar
+tile.regice.name=Regice Core
+tile.regirock.name=Regirock Core
+tile.registeel.name=Registeel Core
+
 gui.trainer.stationary=Trainer Wanders
 gui.trainer.saved=Saved Trainer
 

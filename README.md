@@ -3,7 +3,6 @@ Pokémobs for Minecraft - page under construction.
 
 ##Currently Missing Pokemob Models
 - Pikachu/Raichu/Pichu
-- farfetch'd
 - aerodactyl
 - giratina
 

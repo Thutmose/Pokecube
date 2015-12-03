@@ -63,7 +63,7 @@ public class TabulaPackLoader extends AnimationLoader
             if (entry != null)
             {
                 TabulaModelParser parser = new TabulaModelParser();
-                TabulaModel tbl = parser.parse(json, res.getInputStream());
+                TabulaModel tbl = parser.parse(json);
                 TabulaModelSet set = new TabulaModelSet(tbl, parser, extraData, entry);
                 modelMap.put(entry, set);
             }
@@ -72,7 +72,7 @@ public class TabulaPackLoader extends AnimationLoader
         }
         catch (IOException e)
         {
-            if (path.contains("bee")) e.printStackTrace();
+            
         }
 
         return false;
@@ -96,8 +96,6 @@ public class TabulaPackLoader extends AnimationLoader
                 }
                 else
                 {
-                    // new NullPointerException("Cannot find base forme for
-                    // "+entry).printStackTrace();
                     System.err.println("Cannot find base forme for " + entry + " " + entry.baseForme);
                 }
             }

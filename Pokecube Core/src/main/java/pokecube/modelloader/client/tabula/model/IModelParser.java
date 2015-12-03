@@ -1,7 +1,6 @@
 package pokecube.modelloader.client.tabula.model;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import com.google.common.annotations.Beta;
 
@@ -16,7 +15,7 @@ public interface IModelParser<T extends IModel> {
     String getExtension();
 
     @SideOnly(Side.CLIENT)
-    T parse(String json, InputStream tex) throws IOException;
+    T parse(String json) throws IOException;
 
     void encode(ByteBuf buf, T model);
 

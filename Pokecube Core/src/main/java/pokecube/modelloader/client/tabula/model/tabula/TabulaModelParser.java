@@ -31,7 +31,7 @@ public class TabulaModelParser implements IModelParser<TabulaModel>
     }
 
     @SideOnly(Side.CLIENT)
-    public TabulaModel parse(String json, InputStream tex) throws IOException
+    public TabulaModel parse(String json) throws IOException
     {
         if (modelMap == null)
         {

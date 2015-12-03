@@ -27,16 +27,23 @@ import pokecube.modelloader.client.tabula.model.modelbase.MowzieModelRenderer;
 @SideOnly(Side.CLIENT)
 public class ModelJson extends MowzieModelBase
 {
-    private JsonTabulaModel                               tabulaModel;
-    private Map<MowzieModelRenderer, MowzieModelRenderer> childParentMap = Maps.newHashMap();
-    public Map<String, MowzieModelRenderer>               nameMap        = Maps.newHashMap();
-    public Map<String, MowzieModelRenderer>               identifierMap  = Maps.newHashMap();
-    ArrayList<String>                                     groupIdents    = Lists.newArrayList();
-    public Map<String, Set<MowzieModelRenderer>>          groupMap       = Maps.newHashMap();
+    private JsonTabulaModel tabulaModel;
+
+    public Map<String, MowzieModelRenderer> nameMap       = Maps.newHashMap();
+    public Map<String, MowzieModelRenderer> identifierMap = Maps.newHashMap();
+
+    /** This is an ordered list of CubeGroup Identifiers. It is used to ensure
+     * that translucent parts render in the correct order. */
+    ArrayList<String>                            groupIdents = Lists.newArrayList();
+    /** Map of CubeGroup Identifiers to Sets of Root parts on the group. Uses
+     * the above list to get keys */
+    public Map<String, Set<MowzieModelRenderer>> groupMap    = Maps.newHashMap();
 
     private IModelAnimator animator;
 
     public ArrayList<Animation>       animations   = Lists.newArrayList();
+    /** Map of names to animations, used to get animations for rendering more
+     * easily */
     public HashMap<String, Animation> animationMap = Maps.newHashMap();
 
     public Animation playingAnimation;
@@ -65,7 +72,8 @@ public class ModelJson extends MowzieModelBase
         {
             cubeGroup(g);
         }
-        
+        // The groups come in in the opposite order from what is needed here, so
+        // reverse it
         Collections.reverse(groupIdents);
 
         setInitPose();
@@ -85,10 +93,11 @@ public class ModelJson extends MowzieModelBase
         double[] scales = tabulaModel.getScale();
         GL11.glScaled(scales[0], scales[1], scales[2]);
 
-        for(String s: groupIdents)
+        // Render based on the group, this ensures they are correctly rendered.
+        for (String s : groupIdents)
         {
             Set<MowzieModelRenderer> cubes = groupMap.get(s);
-            for(MowzieModelRenderer cube: cubes)
+            for (MowzieModelRenderer cube : cubes)
             {
                 if (cube != null)
                 {
@@ -145,7 +154,6 @@ public class ModelJson extends MowzieModelBase
     {
         MowzieModelRenderer modelRenderer = createModelRenderer(cube);
 
-        childParentMap.put(modelRenderer, parent);
         nameMap.put(cube.name, modelRenderer);
         identifierMap.put(cube.identifier, modelRenderer);
 
@@ -154,9 +162,9 @@ public class ModelJson extends MowzieModelBase
             parent.addChild(modelRenderer);
         }
 
+        // Only add root parts to the group set.
         if (parent == null)
         {
-
             Set<MowzieModelRenderer> cubes;
             if (groupMap.containsKey(group))
             {
@@ -198,8 +206,6 @@ public class ModelJson extends MowzieModelBase
                     }
                 }
             }
-
-            // animationTimer = 0;
         }
     }
 
@@ -230,11 +236,9 @@ public class ModelJson extends MowzieModelBase
         }
     }
 
-    /** Starts an animation with the id from the Tabula model.
+    /** Starts an animation with the id from the Tabula model. if this is called
+     * when an animation is running, it will stop it, and start the new one.
      *
-     * @see net.ilexiconn.llibrary.client.model.tabula.ModelJson
-     * @see net.ilexiconn.llibrary.client.model.tabula.Animation
-     * @see net.ilexiconn.llibrary.client.model.tabula.AnimationComponent
      * @since 0.1.0 */
     public void startAnimation(Animation animation)
     {
@@ -287,7 +291,7 @@ public class ModelJson extends MowzieModelBase
                     animating.rotationPointX += component.posChange[0] / component.length * componentTimer;
                     animating.rotationPointY += component.posChange[1] / component.length * componentTimer;
                     animating.rotationPointZ += component.posChange[2] / component.length * componentTimer;
-                    // TODO
+
                     animating.rotateAngleX += Math
                             .toRadians(component.rotChange[0] / component.length * componentTimer);
                     animating.rotateAngleY += Math
@@ -299,6 +303,7 @@ public class ModelJson extends MowzieModelBase
                     animating.rotationPointY += component.posOffset[1];
                     animating.rotationPointZ += component.posOffset[2];
 
+                    // Rotate by the Rotation Offset of the animation.
                     animating.rotateAngleX += Math.toRadians(component.rotOffset[0]);
                     animating.rotateAngleY += Math.toRadians(component.rotOffset[1]);
                     animating.rotateAngleZ += Math.toRadians(component.rotOffset[2]);
@@ -327,17 +332,20 @@ public class ModelJson extends MowzieModelBase
         MowzieModelRenderer cube = new MowzieModelRenderer(this, cubeInfo.txOffset[0], cubeInfo.txOffset[1]);
         cube.name = cubeInfo.name;
         cube.setRotationPoint((float) cubeInfo.position[0], (float) cubeInfo.position[1], (float) cubeInfo.position[2]);
+        // Use cubeInfo.mcScale as the scale, this lets it work properly.
         cube.addBox((float) cubeInfo.offset[0], (float) cubeInfo.offset[1], (float) cubeInfo.offset[2],
                 cubeInfo.dimensions[0], cubeInfo.dimensions[1], cubeInfo.dimensions[2], (float) cubeInfo.mcScale);
         cube.rotateAngleX = (float) Math.toRadians((float) cubeInfo.rotation[0]);
         cube.rotateAngleY = (float) Math.toRadians((float) cubeInfo.rotation[1]);
         cube.rotateAngleZ = (float) Math.toRadians((float) cubeInfo.rotation[2]);
+        // Allows scaling the cube with the cubeinfo scale.
         cube.scaleX = (float) cubeInfo.scale[0];
         cube.scaleY = (float) cubeInfo.scale[1];
         cube.scaleZ = (float) cubeInfo.scale[2];
+        // Allows mirrored textures
         cube.mirror = cubeInfo.txMirror;
+        // Allows hidden textures
         cube.isHidden = cubeInfo.hidden;
-
         return cube;
     }
 

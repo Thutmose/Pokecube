@@ -83,7 +83,7 @@ public class ModelJson extends MowzieModelBase
             if (cube.getValue() == null)
             {
                 MowzieModelRenderer model = cube.getKey();
-                model.render(partialTicks, entity);
+                model.render(0.0625f, entity);
             }
         }
     }
@@ -302,11 +302,15 @@ public class ModelJson extends MowzieModelBase
         cube.name = cubeInfo.name;
         cube.setRotationPoint((float) cubeInfo.position[0], (float) cubeInfo.position[1], (float) cubeInfo.position[2]);
         cube.addBox((float) cubeInfo.offset[0], (float) cubeInfo.offset[1], (float) cubeInfo.offset[2],
-                cubeInfo.dimensions[0], cubeInfo.dimensions[1], cubeInfo.dimensions[2], 0.0F);
+                cubeInfo.dimensions[0], cubeInfo.dimensions[1], cubeInfo.dimensions[2], (float)cubeInfo.mcScale);
         cube.rotateAngleX = (float) Math.toRadians((float) cubeInfo.rotation[0]);
         cube.rotateAngleY = (float) Math.toRadians((float) cubeInfo.rotation[1]);
         cube.rotateAngleZ = (float) Math.toRadians((float) cubeInfo.rotation[2]);
-
+        cube.scaleX = (float) cubeInfo.scale[0];
+        cube.scaleY = (float) cubeInfo.scale[1];
+        cube.scaleZ = (float) cubeInfo.scale[2];
+        cube.mirror = cubeInfo.txMirror;
+        cube.isHidden = cubeInfo.hidden;
         return cube;
     }
 

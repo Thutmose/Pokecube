@@ -6,15 +6,9 @@ Pokémobs for Minecraft - page under construction.
 - farfetch'd
 - aerodactyl
 - giratina
-- servine
 
 ##Currently Messed up texures/other glitches
-- Cloyster (spikes)
-- Marowak (bone)
 - Chikorita
-- Snivy line
-- Tepig line
-- Oshawatt line
 - Pidove
 - Reuniclus
 - Trevenant

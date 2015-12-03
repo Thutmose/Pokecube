@@ -249,7 +249,7 @@ public class MowzieModelRenderer extends ModelRenderer {
     }
     
     @SideOnly(Side.CLIENT)
-    public void render(float partialTicks, Entity entity) {
+    public void render(float scale, Entity entity) {
         GL11.glPushMatrix();
         
         int rgba = RenderAdvancedPokemobModel.getColour(name, (IPokemob) entity, 0xFFFFFFFF);
@@ -264,7 +264,7 @@ public class MowzieModelRenderer extends ModelRenderer {
         if (!isHidden) {
             if (showModel) {
                 if (!compiled) {
-                    compileDisplayList(partialTicks);
+                    compileDisplayList(scale);
                 }
                 
                 float f5 = 0.0625F;
@@ -283,7 +283,7 @@ public class MowzieModelRenderer extends ModelRenderer {
                     float body = (entity.rotationYaw + 360) % 360;
                     float rot = Math.min(set.headCap[1], head - body);
                     float headRot = Math.max(rot, set.headCap[0]);
-                    GL11.glTranslatef(rotationPointX * partialTicks, rotationPointY * partialTicks, rotationPointZ * partialTicks);
+                    GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
                     
                     if(parent!=null)
                     {
@@ -321,7 +321,7 @@ public class MowzieModelRenderer extends ModelRenderer {
                     }
                     
                     
-                    GL11.glTranslatef(-rotationPointX * partialTicks, -rotationPointY * partialTicks, -rotationPointZ * partialTicks);
+                    GL11.glTranslatef(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
                 }
                 
                 
@@ -335,11 +335,11 @@ public class MowzieModelRenderer extends ModelRenderer {
                         GL11.glPopMatrix();
                         if (childModels != null) {
                             for (i = 0; i < childModels.size(); ++i) {
-                                ((MowzieModelRenderer) childModels.get(i)).render(partialTicks, entity);
+                                ((MowzieModelRenderer) childModels.get(i)).render(scale, entity);
                             }
                         }
                     } else {
-                        GL11.glTranslatef(rotationPointX * partialTicks, rotationPointY * partialTicks, rotationPointZ * partialTicks);
+                        GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
                         GL11.glPushMatrix();
                         GL11.glColor4f(red, green, blue, alpha);
@@ -349,15 +349,15 @@ public class MowzieModelRenderer extends ModelRenderer {
 
                         if (childModels != null) {
                             for (i = 0; i < childModels.size(); ++i) {
-                                ((MowzieModelRenderer) childModels.get(i)).render(partialTicks, entity);
+                                ((MowzieModelRenderer) childModels.get(i)).render(scale, entity);
                             }
                         }
 
-                        GL11.glTranslatef(-rotationPointX * partialTicks, -rotationPointY * partialTicks, -rotationPointZ * partialTicks);
+                        GL11.glTranslatef(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
                     }
                 } else {
                     GL11.glPushMatrix();
-                    GL11.glTranslatef(rotationPointX * partialTicks, rotationPointY * partialTicks, rotationPointZ * partialTicks);
+                    GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
                     if (rotateAngleZ != 0f) {
                         GL11.glRotatef(rotateAngleZ * (180f / (float) Math.PI), 0f, 0f, 1f);
@@ -379,7 +379,7 @@ public class MowzieModelRenderer extends ModelRenderer {
 
                     if (childModels != null) {
                         for (i = 0; i < childModels.size(); ++i) {
-                            ((MowzieModelRenderer) childModels.get(i)).render(partialTicks, entity);
+                            ((MowzieModelRenderer) childModels.get(i)).render(scale, entity);
                         }
                     }
 
@@ -395,11 +395,11 @@ public class MowzieModelRenderer extends ModelRenderer {
     }
 
     @SideOnly(Side.CLIENT)
-    private void compileDisplayList(float partialTicks) {
+    private void compileDisplayList(float scale) {
         displayList = GLAllocation.generateDisplayLists(1);
         GL11.glNewList(displayList, GL11.GL_COMPILE);
         for (Object object : cubeList) {
-            ((ModelBox) object).render(Tessellator.getInstance().getWorldRenderer(), partialTicks);
+            ((ModelBox) object).render(Tessellator.getInstance().getWorldRenderer(), scale);
         }
         GL11.glEndList();
         compiled = true;

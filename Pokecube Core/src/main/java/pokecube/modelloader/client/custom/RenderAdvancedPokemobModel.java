@@ -296,16 +296,11 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             }
         }
 
-//        float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
-
         f4 = this.handleRotationFloat(entity, partialTick);
-//        float f5 = 0.0625F;
         this.preRenderCallback(entity, partialTick);
-//        float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
-//        float f7 = entity.limbSwing - entity.limbSwingAmount * (1.0F - partialTick);
 
         TabulaModelSet set = TabulaPackLoader.modelMap.get(entry);
-        // System.out.println(set+" "+entry);
+        
         TabulaModel model = set.model;
         IModelParser<TabulaModel> parser = set.parser;
 
@@ -331,8 +326,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
         String phase = getPhase(set, entity, partialTick);
         boolean inSet = false;
-        // System.out.println(phase+" "+modelj.animationMap+"
-        // "+set.loadedAnimations);
+
         if (modelj.animationMap.containsKey(phase) || (inSet = set.loadedAnimations.containsKey(phase)))
         {
             if (!inSet) modelj.startAnimation(phase);
@@ -350,7 +344,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         set.rotation.rotations.glRotate();
         GlStateManager.translate(set.shift.x, set.shift.y, set.shift.z);
         GlStateManager.scale(set.scale.x, set.scale.y, set.scale.z);
-
+        
         parser.render(model, entity);
 
         GlStateManager.enableCull();

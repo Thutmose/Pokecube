@@ -7,12 +7,9 @@ Pokémobs for Minecraft - page under construction.
 - aerodactyl
 - giratina
 
-##Currently Messed up texures/other glitches
-- Chikorita
-- Pidove
-- Reuniclus
-- Trevenant
-- ho-oh
+##Currently known Messed up texures/other glitches
+- Haxorus - The texture needs re-mapping
+- Trevenant - Legs are funny
 
 ##Related/Contained projects
 Currently contains [IGW-mod](https://github.com/MineMaarten/IGW-mod) and [Baubles](https://github.com/Azanor/Baubles) until those get updated to 1.8.8, then it will revert to using them as libraries

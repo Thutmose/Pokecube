@@ -31,4 +31,10 @@ public class CubeInfo {
     public String parentIdentifier;
 
     public String identifier;
+    
+    @Override
+    public String toString()
+    {
+        return name+" "+children;
+    }
 }

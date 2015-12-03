@@ -19,4 +19,10 @@ public class CubeGroup {
     public boolean hidden = false;
 
     public String identifier;
+    
+    @Override
+    public String toString()
+    {
+        return name+" "+cubes+" "+cubeGroups;
+    }
 }

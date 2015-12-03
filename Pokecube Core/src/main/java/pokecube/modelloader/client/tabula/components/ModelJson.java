@@ -1,14 +1,17 @@
 package pokecube.modelloader.client.tabula.components;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -28,7 +31,10 @@ public class ModelJson extends MowzieModelBase
     private Map<MowzieModelRenderer, MowzieModelRenderer> childParentMap = Maps.newHashMap();
     public Map<String, MowzieModelRenderer>               nameMap        = Maps.newHashMap();
     public Map<String, MowzieModelRenderer>               identifierMap  = Maps.newHashMap();
-    private IModelAnimator                                animator;
+    ArrayList<String>                                     groupIdents    = Lists.newArrayList();
+    public Map<String, Set<MowzieModelRenderer>>          groupMap       = Maps.newHashMap();
+
+    private IModelAnimator animator;
 
     public ArrayList<Animation>       animations   = Lists.newArrayList();
     public HashMap<String, Animation> animationMap = Maps.newHashMap();
@@ -50,16 +56,17 @@ public class ModelJson extends MowzieModelBase
         {
             animationMap.put(animation.name, animation);
         }
-
         for (CubeInfo c : model.getCubes())
         {
-            cube(c, null);
+            cube(c, null, "null");
         }
 
         for (CubeGroup g : model.getCubeGroups())
         {
             cubeGroup(g);
         }
+        
+        Collections.reverse(groupIdents);
 
         setInitPose();
     }
@@ -71,19 +78,22 @@ public class ModelJson extends MowzieModelBase
     }
 
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float rotation, float rotationYaw,
-            float rotationPitch, float partialTicks)
+            float rotationPitch, float scale)
     {
-        this.setRotationAngles(limbSwing, limbSwingAmount, rotation, rotationYaw, rotationPitch, partialTicks, entity);
+        this.setRotationAngles(limbSwing, limbSwingAmount, rotation, rotationYaw, rotationPitch, scale, entity);
 
-        double[] scale = tabulaModel.getScale();
-        GL11.glScaled(scale[0], scale[1], scale[2]);
+        double[] scales = tabulaModel.getScale();
+        GL11.glScaled(scales[0], scales[1], scales[2]);
 
-        for (Entry<MowzieModelRenderer, MowzieModelRenderer> cube : childParentMap.entrySet())
+        for(String s: groupIdents)
         {
-            if (cube.getValue() == null)
+            Set<MowzieModelRenderer> cubes = groupMap.get(s);
+            for(MowzieModelRenderer cube: cubes)
             {
-                MowzieModelRenderer model = cube.getKey();
-                model.render(0.0625f, entity);
+                if (cube != null)
+                {
+                    cube.render(0.0625f, entity);
+                }
             }
         }
     }
@@ -122,7 +132,7 @@ public class ModelJson extends MowzieModelBase
     {
         for (CubeInfo cube : group.cubes)
         {
-            cube(cube, null);
+            cube(cube, null, group.identifier);
         }
 
         for (CubeGroup c : group.cubeGroups)
@@ -131,7 +141,7 @@ public class ModelJson extends MowzieModelBase
         }
     }
 
-    private void cube(CubeInfo cube, MowzieModelRenderer parent)
+    private void cube(CubeInfo cube, MowzieModelRenderer parent, String group)
     {
         MowzieModelRenderer modelRenderer = createModelRenderer(cube);
 
@@ -144,9 +154,25 @@ public class ModelJson extends MowzieModelBase
             parent.addChild(modelRenderer);
         }
 
+        if (parent == null)
+        {
+
+            Set<MowzieModelRenderer> cubes;
+            if (groupMap.containsKey(group))
+            {
+                cubes = groupMap.get(group);
+            }
+            else
+            {
+                cubes = Sets.newHashSet();
+                groupMap.put(group, cubes);
+                groupIdents.add(group);
+            }
+            cubes.add(modelRenderer);
+        }
         for (CubeInfo c : cube.children)
         {
-            cube(c, modelRenderer);
+            cube(c, modelRenderer, group);
         }
     }
 
@@ -213,7 +239,7 @@ public class ModelJson extends MowzieModelBase
     public void startAnimation(Animation animation)
     {
         if (playingAnimation != animation) stopAnimation();
-        
+
         if (playingAnimation == null)
         {
             playingAnimation = animation;
@@ -302,7 +328,7 @@ public class ModelJson extends MowzieModelBase
         cube.name = cubeInfo.name;
         cube.setRotationPoint((float) cubeInfo.position[0], (float) cubeInfo.position[1], (float) cubeInfo.position[2]);
         cube.addBox((float) cubeInfo.offset[0], (float) cubeInfo.offset[1], (float) cubeInfo.offset[2],
-                cubeInfo.dimensions[0], cubeInfo.dimensions[1], cubeInfo.dimensions[2], (float)cubeInfo.mcScale);
+                cubeInfo.dimensions[0], cubeInfo.dimensions[1], cubeInfo.dimensions[2], (float) cubeInfo.mcScale);
         cube.rotateAngleX = (float) Math.toRadians((float) cubeInfo.rotation[0]);
         cube.rotateAngleY = (float) Math.toRadians((float) cubeInfo.rotation[1]);
         cube.rotateAngleZ = (float) Math.toRadians((float) cubeInfo.rotation[2]);
@@ -311,6 +337,7 @@ public class ModelJson extends MowzieModelBase
         cube.scaleZ = (float) cubeInfo.scale[2];
         cube.mirror = cubeInfo.txMirror;
         cube.isHidden = cubeInfo.hidden;
+
         return cube;
     }
 

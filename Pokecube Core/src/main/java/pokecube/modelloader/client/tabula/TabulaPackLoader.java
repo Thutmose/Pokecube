@@ -102,6 +102,18 @@ public class TabulaPackLoader extends AnimationLoader
                 }
             }
             set.postInitAnimations();
+            if(set.rotation == null)
+            {
+                set.rotation = new Vector5();
+            }
+            if(set.scale.isEmpty())
+            {
+                set.scale.set(1,1,1);
+            }
+            if(set.shift.isEmpty())
+            {
+                set.shift.set(0,-1.5,0);
+            }
         }
     }
 

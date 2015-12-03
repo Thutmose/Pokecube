@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -51,6 +50,7 @@ import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
@@ -103,7 +103,8 @@ public class EventsHandlerClient
     }
 
     static long eventTime = 0;
-    static long counter = 0;
+    static long counter   = 0;
+
     @SubscribeEvent
     public void keyInput(KeyInputEvent evt)
     {
@@ -253,13 +254,13 @@ public class EventsHandlerClient
             {
                 GuiContainer gui = (GuiContainer) event.gui;
                 if (gui.mc.thePlayer == null || !Keyboard.isKeyDown(Keyboard.KEY_LMENU)) { return; }
-                
-                if(rainXCoords==null)
+
+                if (rainXCoords == null)
                 {
-                    rainXCoords = new float[]{0};
-                }//TODO fix the lag when it tries to render bunches of times per tick
-                if(rainXCoords[0] == event.renderPartialTicks)
-                    return;
+                    rainXCoords = new float[] { 0 };
+                } // TODO fix the lag when it tries to render bunches of times
+                  // per tick
+                if (rainXCoords[0] == event.renderPartialTicks) return;
                 rainXCoords[0] = event.renderPartialTicks;
                 List<Slot> slots = gui.inventorySlots.inventorySlots;
                 int w = gui.width;
@@ -372,15 +373,14 @@ public class EventsHandlerClient
         {
             PokedexEntry entry = Database.getEntry(num);
             IPokemob pokemob = renderMobs.get(entry);
-            if(pokemob==null)
+            if (pokemob == null)
             {
                 pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(num, world);
-                if(pokemob==null) return null;
+                if (pokemob == null) return null;
                 renderMobs.put(entry, pokemob);
             }
-            Entity poke = (Entity) pokemob;
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
-            poke.readFromNBT(pokeTag);
+            SetFromNBT(pokemob, pokeTag);
             pokemob.popFromPokecube();
             pokemob.setPokecubeId(PokecubeItems.getCubeId(itemStack));
             ((EntityLivingBase) pokemob).setHealth(
@@ -391,6 +391,29 @@ public class EventsHandlerClient
         }
 
         return null;
+    }
+
+    private static void SetFromNBT(IPokemob pokemob, NBTTagCompound tag)
+    {
+        float scale = tag.getFloat("scale");
+        if (scale > 0)
+        {
+            pokemob.setSize(scale);
+        }
+        pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
+        byte red = tag.getByte("red");
+        byte green = tag.getByte("green");
+        byte blue = tag.getByte("blue");
+        boolean shiny = tag.getBoolean("shiny");
+        pokemob.setShiny(shiny);
+        byte[] cols = pokemob.getColours();
+        cols[0] = red;
+        cols[1] = green;
+        cols[2] = blue;
+        String forme = tag.getString("forme");
+        pokemob.changeForme(forme);
+        pokemob.setColours(cols);
+        pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 
     public static void renderMob(IPokemob pokemob, float tick)

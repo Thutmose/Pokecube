@@ -97,8 +97,9 @@ public class Commands implements ICommand
             String s = args[i];
             if (s.contains("@"))
             {
-                ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));// .matchPlayers(cSender,
-                                                                                                              // s);
+                ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(
+                        PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));// .matchPlayers(cSender,
+                // s);
                 targets = (EntityPlayerMP[]) targs.toArray(new EntityPlayerMP[0]);
             }
         }
@@ -603,16 +604,17 @@ public class Commands implements ICommand
                 {
                     if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
                     {
-
+                        PokedexEntry entry = null;
                         try
                         {
                             int id = Integer.parseInt(args[1]);
-                            name = Database.getEntry(id).getName();
+                            entry = Database.getEntry(id);
+                            name = entry.getName();
                         }
                         catch (NumberFormatException e)
                         {
                             name = args[1];
-                            if (name.contains("\'"))
+                            if (name.startsWith("\'"))
                             {
 
                                 for (int j = 2; j < args.length; j++)
@@ -625,8 +627,15 @@ public class Commands implements ICommand
                                     }
                                 }
                             }
+                            entry = Database.getEntry(name);
                         }
-                        mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(Database.getEntry(name).getPokedexNb(),
+                        if (entry == null)
+                        {
+
+                        }
+
+                        System.out.println(entry + " " + name + " " + Database.getEntry(name));
+                        mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(),
                                 cSender.getEntityWorld());
 
                         if (mob == null)
@@ -903,11 +912,11 @@ public class Commands implements ICommand
             {
                 String code = args[1];
                 String giftSt = PokecubeMod.gifts.get(code);
-                if (giftSt!=null)
+                if (giftSt != null)
                 {
                     EntityPlayer player = (EntityPlayer) cSender;
-                    
-                    if (player.getEntityData().getString("code:"+code).equals(code))
+
+                    if (player.getEntityData().getString("code:" + code).equals(code))
                     {
                         cSender.addChatMessage(new ChatComponentText("You've already used this code!"));
                         return false;
@@ -916,8 +925,8 @@ public class Commands implements ICommand
 
                     String name = gift[0];
 
-                    IPokemob mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(Database.getEntry(name).getPokedexNb(),
-                            cSender.getEntityWorld());
+                    IPokemob mob = (IPokemob) PokecubeMod.core
+                            .createEntityByPokedexNb(Database.getEntry(name).getPokedexNb(), cSender.getEntityWorld());
 
                     boolean shiny = false;
                     boolean shadow = false;
@@ -965,31 +974,31 @@ public class Commands implements ICommand
                         {
                             blue = Byte.parseByte(val);
                         }
-                        else if(arg.equalsIgnoreCase("m") && index < 4)
+                        else if (arg.equalsIgnoreCase("m") && index < 4)
                         {
                             moves[index] = val;
                             index++;
                         }
-                        else if(arg.equalsIgnoreCase("n") && !val.isEmpty())
+                        else if (arg.equalsIgnoreCase("n") && !val.isEmpty())
                         {
                             mob.setPokemonNickname(val);
                         }
                     }
-                    mob.setOriginalOwnerUUID(new UUID(12345,54321));
+                    mob.setOriginalOwnerUUID(new UUID(12345, 54321));
                     mob.setPokecubeId(13);
                     mob.setExp(exp, false, true);
                     mob.setShiny(shiny);
                     if (gender != -3) mob.setSexe(gender);
                     mob.setColours(new byte[] { red, green, blue });
                     if (shadow) mob.setShadow(shadow);
-                    for(int i = 0; i<4; i++)
+                    for (int i = 0; i < 4; i++)
                     {
-                        if(moves[i]!=null)
+                        if (moves[i] != null)
                         {
                             String arg = moves[i];
-                            if(!arg.isEmpty())
+                            if (!arg.isEmpty())
                             {
-                                if(arg.equalsIgnoreCase("none"))
+                                if (arg.equalsIgnoreCase("none"))
                                 {
                                     mob.setMove(i, null);
                                 }
@@ -1005,7 +1014,7 @@ public class Commands implements ICommand
                     mob.returnToPokecube();
 
                     cSender.addChatMessage(new ChatComponentText("Congratulations!"));
-                    player.getEntityData().setString("code:"+code, code);
+                    player.getEntityData().setString("code:" + code, code);
 
                     return true;
                 }

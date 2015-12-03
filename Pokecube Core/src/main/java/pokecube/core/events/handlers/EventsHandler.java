@@ -125,7 +125,8 @@ public class EventsHandler
 
         if (Mod_Pokecube_Helper.deactivateMonsters && evt.world.getChunkProvider() instanceof ChunkProviderHell)
         {
-//            ChunkProviderHell provider = (ChunkProviderHell) evt.world.getChunkProvider();
+            // ChunkProviderHell provider = (ChunkProviderHell)
+            // evt.world.getChunkProvider();
 
             // provider.genNetherBridge.getSpawnList().clear();//TODO remove
             // nether bridge mobs via reflection
@@ -443,21 +444,24 @@ public class EventsHandler
                     temp.set((temp.set(o).subtractFrom(loc)).normalize());
                     if (temp.dot(look) > 0)
                     {
-//                        boolean watched = ((IPokemob) o).getPokemonAIState(IPokemob.WATCHED);
-//                        if(!watched)
-//                        {
-//                            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(18));
-//                            buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-//                            Vector3 here = Vector3.getNewVectorFromPool().set(o);
-//                            buffer.writeInt(o.getEntityId());
-//                            buffer.writeByte(0);
-//                            buffer.writeFloat((float) o.posX);
-//                            buffer.writeFloat((float) o.posY);
-//                            buffer.writeFloat((float) o.posZ);
-//                            MessageClient message = new MessageClient(buffer);
-//                            PokecubePacketHandler.sendToAllNear(message, here, o.dimension, 32);
-//                        }
-                        
+                        // boolean watched = ((IPokemob)
+                        // o).getPokemonAIState(IPokemob.WATCHED);
+                        // if(!watched)
+                        // {
+                        // PacketBuffer buffer = new
+                        // PacketBuffer(Unpooled.buffer(18));
+                        // buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
+                        // Vector3 here = Vector3.getNewVectorFromPool().set(o);
+                        // buffer.writeInt(o.getEntityId());
+                        // buffer.writeByte(0);
+                        // buffer.writeFloat((float) o.posX);
+                        // buffer.writeFloat((float) o.posY);
+                        // buffer.writeFloat((float) o.posZ);
+                        // MessageClient message = new MessageClient(buffer);
+                        // PokecubePacketHandler.sendToAllNear(message, here,
+                        // o.dimension, 32);
+                        // }
+
                         ((IPokemob) o).setPokemonAIState(IPokemob.WATCHED, true);
                     }
                     else
@@ -545,7 +549,8 @@ public class EventsHandler
             for (IPokemob e : pokemon)
             {
                 double dist = ((Entity) e).getDistanceSqToEntity(evt.entityLiving);
-                if (dist < closest && !(e.getPokemonAIState(IMoveConstants.STAYING) && e.getPokemonAIState(IMoveConstants.SITTING)))
+                if (dist < closest && !(e.getPokemonAIState(IMoveConstants.STAYING)
+                        && e.getPokemonAIState(IMoveConstants.SITTING)))
                 {
                     closest = dist;
                     newtarget = e;
@@ -626,7 +631,7 @@ public class EventsHandler
         String temp = hostile.getCommandSenderName().toLowerCase().trim().replace(" ", "");
 
         PokedexEntry entry = null;
-        
+
         ArrayList<PokedexEntry> list = Database.mobReplacements.get(temp);
         if (list != null)
         {
@@ -644,7 +649,7 @@ public class EventsHandler
         }
         return entry == null ? 249 : entry.getPokedexNb();
     }
-    
+
     public static class UpdateNotifier
     {
         public UpdateNotifier()
@@ -659,9 +664,10 @@ public class EventsHandler
             {
                 Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
-                if(result.status == Status.OUTDATED)
+                if (result.status == Status.OUTDATED)
                 {
-                    String mess = "Current Listed Release Version of Pokecube Core is "+result.target+", but you have "+PokecubeMod.VERSION+".";
+                    String mess = "Current Listed Release Version of Pokecube Core is " + result.target
+                            + ", but you have " + PokecubeMod.VERSION + ".";
                     mess += "\nIf you find bugs, please update and check if they still occur before reporting them.";
                     (event.player).addChatMessage(new ChatComponentText(mess));
                 }

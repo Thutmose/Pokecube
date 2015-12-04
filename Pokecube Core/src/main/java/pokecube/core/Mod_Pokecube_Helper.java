@@ -181,11 +181,6 @@ public class Mod_Pokecube_Helper
         {
             try
             {
-                // if(!getCaveBlocks().contains(b)&&b.isReplaceableOreGen(null,
-                // new BlockPos(0,0,0),
-                // net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.stone))
-                // ||b.isReplaceableOreGen(null, new BlockPos(0,0,0),
-                // net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.netherrack)))
                 getCaveBlocks().add(b);
             }
             catch (Exception e)

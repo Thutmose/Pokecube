@@ -1,6 +1,7 @@
 package pokecube.core;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,19 +36,26 @@ public class PokecubeItems extends Items
 
     public static HashMap<Integer, Item[]> pokecubes = new HashMap<Integer, Item[]>();
 
+    /** Items that are allowed to be held by pokemobs */
     public static HashSet<ItemStack> heldItems = new HashSet<ItemStack>();
 
     private static HashSet<Block> allBlocks = new HashSet<Block>();
 
+    /** Items which will be considered for evolution by pokemobs */
     public static HashSet<ItemStack> evoItems = new HashSet<ItemStack>();
 
-    public static HashMap<Integer, Boolean> cubeIds = new HashMap<Integer, Boolean>();
+    /** Should pokecubes be rendered using the default renderer */
+    public static BitSet cubeIds = new BitSet();
 
+    /** Items to be considered for re-animation, mapped to the pokedex number to
+     * reanimate to. */
     public static HashMap<ItemStack, Integer> fossils = new HashMap<ItemStack, Integer>();
 
+    /** Various meteor related drops, the map is the rate of each drop */
     private static List<ItemStack>            meteorDrops   = new ArrayList<ItemStack>();
     public static HashMap<ItemStack, Integer> meteorDropMap = new HashMap<ItemStack, Integer>();
 
+    /** to be used if mob spawners are to get a replacement. */
     private static List<ItemStack>            spawnerDrops   = new ArrayList<ItemStack>();
     public static HashMap<ItemStack, Integer> spawnerDropMap = new HashMap<ItemStack, Integer>();
 
@@ -55,6 +63,7 @@ public class PokecubeItems extends Items
 
     public static Vector<Long> times = new Vector<Long>();
 
+    /** List of grass blocks for pokemobs to eat. */
     public static HashSet<Block> grasses = new HashSet<Block>();
 
     public static Item waterstone;
@@ -158,7 +167,7 @@ public class PokecubeItems extends Items
         BlockDispenser.dispenseBehaviorRegistry.putObject(items[0], new DispenserBehaviorPokecube());
         BlockDispenser.dispenseBehaviorRegistry.putObject(items[1], new DispenserBehaviorPokecube());
 
-        cubeIds.put(id, defaultRenderer);
+        if (defaultRenderer) cubeIds.set(id);
 
         pokecubes.put(id, items);
     }
@@ -507,20 +516,20 @@ public class PokecubeItems extends Items
         }
         return ret;
     }
-    
+
     private static void postInitFossils()
     {
         List<ItemStack> toRemove = Lists.newArrayList();
-        for(ItemStack s: fossils.keySet())
+        for (ItemStack s : fossils.keySet())
         {
             int num = fossils.get(s);
-            if(!PokecubeMod.registered.get(num))
+            if (!PokecubeMod.registered.get(num))
             {
                 toRemove.add(s);
-                System.out.println("Should remove "+Database.getEntry(num)+" "+s.getDisplayName());
+                System.out.println("Should remove " + Database.getEntry(num) + " " + s.getDisplayName());
             }
         }
-        for(ItemStack s: toRemove)
+        for (ItemStack s : toRemove)
         {
             fossils.remove(s);
         }

@@ -177,8 +177,6 @@ public interface IMoveConstants extends IMoveNames
 	/** is the pokemob tired */
 	static final int	TIRED			= 1 << 24;
 	/** is a player watching the pokemob */
-	static final int	WATCHED			= 1 << 25;
-	/** is a player watching the pokemob */
-	static final int	EVOLVING		= 1 << 26;
+	static final int	EVOLVING		= 1 << 25;
 
 }

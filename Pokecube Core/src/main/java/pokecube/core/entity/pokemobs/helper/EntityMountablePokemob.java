@@ -3,7 +3,6 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -11,7 +10,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentText;
@@ -25,9 +23,6 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod.Type;
 import pokecube.core.moves.templates.Move_Utility;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.pokemobs.PokemobPacketHandler;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
 import pokecube.core.utils.PokeType;
 
 /**
@@ -454,21 +449,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob {
 
             this.moveEntity(this.motionX, this.motionY, this.motionZ);
 
-            if(!worldObj.isRemote)
-            {
-	    		PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-	    		buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-	    		buffer.writeInt(getEntityId());
-	    		buffer.writeByte(3);
-	    		buffer.writeFloat((float) motionX);
-	    		buffer.writeFloat((float) motionY);
-	    		buffer.writeFloat((float) motionZ);
-	    		buffer.writeFloat((float) posX);
-	    		buffer.writeFloat((float) posY);
-	    		buffer.writeFloat((float) posZ);
-	    		MessageClient message = new MessageClient(buffer);
-	    		PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
-            }
             if (this.isCollidedHorizontally && this.isOnLadder())
             {
                 this.motionY = 0.2D;

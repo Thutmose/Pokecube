@@ -30,8 +30,6 @@ public class PokemobPacketHandler
 	
 	public static final byte MESSAGEALIVECHECK = 7;
 	
-	public static final byte MESSAGEPOSUPDATE = 8;
-	
 	public static class MessageClient implements IMessage
 	{
 		PacketBuffer buffer;
@@ -108,53 +106,6 @@ public class PokemobPacketHandler
 						if(v.distanceTo(v2)>e.width)
 						{
 							v.moveEntity(e);
-						}
-					}
-				}
-				if(channel == MESSAGEPOSUPDATE)
-				{
-					int id = buffer.readInt();
-					byte type = buffer.readByte();
-					float posX = buffer.readFloat();
-					float posY = buffer.readFloat();
-					float posZ = buffer.readFloat();
-//					System.out.println(id+" "+posX+" "+posY+" "+posZ);
-					Entity e;
-					if((e = player.worldObj.getEntityByID(id))!=null)
-					{
-						if(type==0)
-						{
-							e.setPosition(posX, posY, posZ);
-						}
-						else if(type==1)
-						{
-							e.setVelocity(posX, posY, posZ);
-							e.setPosition(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-						}
-						else if(type==2)
-						{
-							e.setVelocity(posX, posY, posZ);
-						}
-						else if(type==3)
-						{
-							e.setVelocity(posX, posY, posZ);
-							posX = buffer.readFloat();
-							posY = buffer.readFloat();
-							posZ = buffer.readFloat();
-							Vector3 temp = Vector3.getNewVectorFromPool().set(posX, posY, posZ);
-							if(temp.distToEntity(e)>e.width)
-							{
-								e.setPosition(posX, posY, posZ);
-							}
-						}
-						else if(type==4)
-						{
-							Vector3 temp = Vector3.getNewVectorFromPool().set(posX, posY, posZ);
-							double dist = Math.max(2,  e.width * 5);
-							if(temp.distToEntity(e)>dist)
-							{
-								e.setPosition(posX, posY, posZ);
-							}
 						}
 					}
 				}

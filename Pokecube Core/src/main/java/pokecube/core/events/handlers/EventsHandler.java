@@ -69,8 +69,6 @@ import pokecube.core.ai.properties.GuardAIProperties;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.TileEntityOwnable;
-import pokecube.core.client.gui.GuiMoveMessages;
-import pokecube.core.client.gui.GuiScrollableLists;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -163,18 +161,9 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void WorldUnloadEvent(Unload evt)
+    public void ClientLogOffEvent(Unload evt)
     {
         WorldGenStartBuilding.building = false;
-        if (evt.world.provider.getDimensionId() == 0 && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            System.out.println("Clearing Client instance");// TODO
-            PokecubeSerializer.getInstance().clearInstance();
-            AISaveHandler.clearInstance();
-            GuiMoveMessages.clear();
-            new GuiScrollableLists();
-        }
-
     }
 
     @SubscribeEvent
@@ -305,7 +294,7 @@ public class EventsHandler
     public void PlayerLoggin(PlayerLoggedInEvent evt)
     {
         EntityPlayer entityPlayer = evt.player;
-
+        
         if (entityPlayer.getTeam() == null)
         {
             if (entityPlayer.worldObj.getScoreboard().getTeam("Trainers") == null)
@@ -431,44 +420,6 @@ public class EventsHandler
             if (player.getTeam() == null)
             {
                 player.worldObj.getScoreboard().addPlayerToTeam(player.getCommandSenderName(), "Trainers");
-            }
-            Vector3 loc = Vector3.getNewVectorFromPool().set(player);
-            List<EntityLiving> entities = evt.entityLiving.worldObj.getEntitiesWithinAABB(EntityLiving.class,
-                    loc.getAABB().expand(16, 16, 16));
-            Vector3 temp = Vector3.getNewVectorFromPool();
-            Vector3 look = Vector3.getNewVectorFromPool().set(player.getLookVec());
-            for (EntityLiving o : entities)
-            {
-                if (o instanceof IPokemob)
-                {
-                    temp.set((temp.set(o).subtractFrom(loc)).normalize());
-                    if (temp.dot(look) > 0)
-                    {
-                        // boolean watched = ((IPokemob)
-                        // o).getPokemonAIState(IPokemob.WATCHED);
-                        // if(!watched)
-                        // {
-                        // PacketBuffer buffer = new
-                        // PacketBuffer(Unpooled.buffer(18));
-                        // buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-                        // Vector3 here = Vector3.getNewVectorFromPool().set(o);
-                        // buffer.writeInt(o.getEntityId());
-                        // buffer.writeByte(0);
-                        // buffer.writeFloat((float) o.posX);
-                        // buffer.writeFloat((float) o.posY);
-                        // buffer.writeFloat((float) o.posZ);
-                        // MessageClient message = new MessageClient(buffer);
-                        // PokecubePacketHandler.sendToAllNear(message, here,
-                        // o.dimension, 32);
-                        // }
-
-                        ((IPokemob) o).setPokemonAIState(IPokemob.WATCHED, true);
-                    }
-                    else
-                    {
-                        ((IPokemob) o).setPokemonAIState(IPokemob.WATCHED, false);
-                    }
-                }
             }
             if (pendingStarters.contains(player.getEntityId()))
             {

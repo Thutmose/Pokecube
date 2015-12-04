@@ -3,7 +3,6 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -19,7 +18,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.potion.Potion;
@@ -64,9 +62,6 @@ import pokecube.core.interfaces.PokecubeMod.Type;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobTerrainEffects;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.pokemobs.PokemobPacketHandler;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TimePeriod;
@@ -238,18 +233,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 setAttackTarget(null);
             }
-        }
-        else if (riddenByEntity == null && ticksExisted % 200 == 0)
-        {
-            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-            buffer.writeInt(getEntityId());
-            buffer.writeByte(4);
-            buffer.writeFloat((float) posX);
-            buffer.writeFloat((float) posY);
-            buffer.writeFloat((float) posZ);
-            MessageClient message = new MessageClient(buffer);
-            PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
         }
         String s;
         int state = dataWatcher.getWatchableObjectInt(AIACTIONSTATESDW);
@@ -817,19 +800,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     }
 
                 }
-                if (getAIState(WATCHED, aiState) || getAIState(TAMED, aiState))
-                {
-                    PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(18));
-                    buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-                    buffer.writeInt(getEntityId());
-                    buffer.writeByte(2);
-                    buffer.writeFloat((float) motionX);
-                    buffer.writeFloat((float) motionY);
-                    buffer.writeFloat((float) motionZ);
-                    MessageClient message = new MessageClient(buffer);
-                    PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
-                }
-
                 this.moveEntity(this.motionX, this.motionY, this.motionZ);
 
                 if (this.isCollidedHorizontally && this.isOnLadder())
@@ -1076,18 +1046,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             this.motionY += look.y;
             this.motionZ += look.z;
             look.freeVectorFromPool();
-            if (!worldObj.isRemote)
-            {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-                buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-                buffer.writeInt(getEntityId());
-                buffer.writeByte(4);
-                buffer.writeFloat((float) posX);
-                buffer.writeFloat((float) posY);
-                buffer.writeFloat((float) posZ);
-                MessageClient message = new MessageClient(buffer);
-                PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
-            }
             return false;
         }
         if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.apple)
@@ -1324,18 +1282,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             this.motionY += 0.03999999910593033D;
         }
-        // PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-        // buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-        // buffer.writeInt(getEntityId());
-        // buffer.writeByte(3);
-        // buffer.writeFloat((float) motionX);
-        // buffer.writeFloat((float) motionY);
-        // buffer.writeFloat((float) motionZ);
-        // buffer.writeFloat((float) posX);
-        // buffer.writeFloat((float) posY);
-        // buffer.writeFloat((float) posZ);
-        // MessageClient message = new MessageClient(buffer);
-        // PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
     }
 
     public void setJumping(boolean jump)

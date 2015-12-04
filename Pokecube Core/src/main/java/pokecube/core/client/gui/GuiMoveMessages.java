@@ -10,9 +10,7 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -45,15 +43,6 @@ public class GuiMoveMessages
     {
 		draw(event);
 		time--;
-    }
-    
-    @SubscribeEvent//TODO see if this is called properly in 1.8.8
-    public void PlayerLoggout(PlayerLoggedOutEvent evt)
-    {
-    	if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
-    	{
-    		messages.clear();
-    	}
     }
     
     @SideOnly(Side.CLIENT)

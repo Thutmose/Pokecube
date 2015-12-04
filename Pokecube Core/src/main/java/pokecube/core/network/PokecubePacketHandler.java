@@ -41,8 +41,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
+import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.blocks.healtable.ContainerHealTable;
+import pokecube.core.client.gui.GuiMoveMessages;
 import pokecube.core.client.gui.GuiScrollableLists;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -510,6 +512,11 @@ public class PokecubePacketHandler
             EntityPlayer player = mod_Pokecube.getPlayer(null);
             if (nbt.getBoolean("hasSerializer"))
             {
+                PokecubeSerializer.getInstance().clearInstance();
+                AISaveHandler.clearInstance();
+                GuiMoveMessages.clear();
+                new GuiScrollableLists();
+                
                 PokecubeSerializer.getInstance().readFromNBT(nbt);
             }
             else if (nbt.getBoolean("hasTerrain"))
@@ -810,7 +817,7 @@ public class PokecubePacketHandler
                         e.printStackTrace();
                     }
                 }
-                if (channel == 6)
+                if (channel == PokecubePacketHandler.CHANNEL_ID_STATS)
                 {
                     handleStatsPacketClient(buffer);
                 }

@@ -10,12 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
@@ -29,8 +27,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.network.pokemobs.PokemobPacketHandler;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.TickHandler;
@@ -238,7 +234,7 @@ public class PokemobAIThread
 
                 if (!(mob.isDead || mob.getHealth() <= 0))
                 {
-                    p.setPath(mob, false);
+                    p.setPath(mob);
                 }
                 paths.remove(o);
             }
@@ -333,24 +329,8 @@ public class PokemobAIThread
             dim = dimension;
         }
 
-        public void setPath(EntityLiving entity, boolean update)
+        public void setPath(EntityLiving entity)
         {
-            if (update)
-            {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-                buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-                buffer.writeInt(entity.getEntityId());
-                buffer.writeByte(3);
-                buffer.writeFloat((float) entity.motionX);
-                buffer.writeFloat((float) entity.motionY);
-                buffer.writeFloat((float) entity.motionZ);
-                buffer.writeFloat((float) entity.posX);
-                buffer.writeFloat((float) entity.posY);
-                buffer.writeFloat((float) entity.posZ);
-                new MessageClient(buffer);
-                Vector3 here = Vector3.getNewVectorFromPool().set(entity);
-                here.freeVectorFromPool();
-            }
             entity.getNavigator().setPath(path, speed);
         }
     }

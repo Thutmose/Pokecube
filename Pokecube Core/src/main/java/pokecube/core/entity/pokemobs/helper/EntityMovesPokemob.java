@@ -11,14 +11,12 @@ import java.util.List;
 import java.util.Set;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.BlockPos;
@@ -47,8 +45,6 @@ import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
-import pokecube.core.network.pokemobs.PokemobPacketHandler;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
@@ -664,7 +660,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 		{
 			return;
 		}
-		updatePos();
 		
 		if(target instanceof EntityLiving)
 		{
@@ -1146,22 +1141,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 		abilityNumber = data.readInt();
 		moveInfo.ability = getPokedexEntry().getAbility(abilityNumber);
 		super.readSpawnData(data);
-	}
-	
-	private void updatePos()
-	{
-		if(!worldObj.isRemote)
-		{
-			PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-			buffer.writeByte(PokemobPacketHandler.MESSAGEPOSUPDATE);
-			buffer.writeInt(getEntityId());
-			buffer.writeByte(0);
-			buffer.writeFloat((float) posX);
-			buffer.writeFloat((float) posY);
-			buffer.writeFloat((float) posZ);
-			MessageClient message = new MessageClient(buffer);
-			PokecubePacketHandler.sendToAllNear(message, here, dimension, 32);
-		}
 	}
 	
 	@Override

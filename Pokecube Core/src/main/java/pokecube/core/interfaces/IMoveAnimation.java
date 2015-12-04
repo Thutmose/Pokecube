@@ -8,11 +8,25 @@ import thut.api.maths.Vector3;
 
 public interface IMoveAnimation
 {
+    /** Actually plays the animation in the world, this is called every
+     * render tick for the number of world ticks specificed in getDuration();
+     * 
+     * @param info
+     * @param world
+     * @param partialTick */
     @SideOnly(Side.CLIENT)
     public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick);
 
+    /**
+     * How long this animation plays for in world ticks.
+     * @return
+     */
     public int getDuration();
-    
+
+    /**
+     * Sets the duration.
+     * @param duration
+     */
     public void setDuration(int duration);
 
     public static class MovePacketInfo

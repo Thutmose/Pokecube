@@ -1,11 +1,11 @@
 package pokecube.core;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import com.google.common.collect.Lists;
@@ -44,8 +44,8 @@ public class PokecubeItems extends Items
     /** Items which will be considered for evolution by pokemobs */
     public static HashSet<ItemStack> evoItems = new HashSet<ItemStack>();
 
-    /** Should pokecubes be rendered using the default renderer */
-    public static BitSet cubeIds = new BitSet();
+    /** contains pokecubes that should be rendered using the default renderer */
+    public static Set<Integer> cubeIds = new HashSet<>();
 
     /** Items to be considered for re-animation, mapped to the pokedex number to
      * reanimate to. */
@@ -167,7 +167,7 @@ public class PokecubeItems extends Items
         BlockDispenser.dispenseBehaviorRegistry.putObject(items[0], new DispenserBehaviorPokecube());
         BlockDispenser.dispenseBehaviorRegistry.putObject(items[1], new DispenserBehaviorPokecube());
 
-        if (defaultRenderer) cubeIds.set(id);
+        if (defaultRenderer) cubeIds.add(id);
 
         pokecubes.put(id, items);
     }

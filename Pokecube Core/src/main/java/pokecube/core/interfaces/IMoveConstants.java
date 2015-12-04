@@ -9,6 +9,9 @@ import pokecube.core.utils.PokeType;
 public interface IMoveConstants extends IMoveNames
 {
 
+    /*
+     * exclusive Status Effects
+     */
 	byte	STATUS_NON	= 0;
 	byte	STATUS_BRN	= 1;
 	byte	STATUS_FRZ	= 2;
@@ -17,6 +20,9 @@ public interface IMoveConstants extends IMoveNames
 	byte	STATUS_PSN2	= 24;
 	byte	STATUS_SLP	= 32;
 
+	/*
+	 * Stats Modifiers
+	 */
 	byte	ATTACK		= 1;
 	byte	DEFENSE		= 2;
 	byte	SPATACK		= 4;
@@ -25,27 +31,42 @@ public interface IMoveConstants extends IMoveNames
 	byte	ACCURACY	= 32;
 	byte	EVASION		= 64;
 
+	/*
+	 * Stats Changes
+	 */
 	byte	HARSH		= -2;
 	byte	FALL		= -1;
 	byte	RAISE		= 1;
 	byte	SHARP		= 2;
 	byte	DRASTICALLY	= 3;
 
+	/*
+	 * non-exclusive status effects
+	 */
 	byte	CHANGE_NONE		= 0;
 	byte	CHANGE_CONFUSED	= 1;
 	byte	CHANGE_FLINCH	= 2;
 	byte	CHANGE_CURSE	= 4;
 
+	/*
+	 * Move Categories
+	 */
 	byte	CATEGORY_CONTACT		= 1;
 	byte	CATEGORY_DISTANCE		= 2;
 	byte	CATEGORY_SELF			= 4;
 	byte	CATEGORY_SELF_EFFECT	= 8;
 
+	/*
+	 * Move damage category
+	 */
 	byte	SPECIAL		= 1;
 	byte	PHYSICAL	= 2;
 
 	String DEFAULT_MOVE = MOVE_TACKLE;
 
+	/*
+	 * Natures
+	 */
 	byte	HARDY	= 0;
 	byte	LONELY	= 1;
 	byte	BRAVE	= 2;
@@ -72,6 +93,9 @@ public interface IMoveConstants extends IMoveNames
 	byte	CAREFUL	= 23;
 	byte	QUIRKY	= 24;
 
+	/*
+	 * Types
+	 */
 	PokeType	unknown		= PokeType.unknown;
 	PokeType	normal		= PokeType.normal;
 	PokeType	fighting	= PokeType.fighting;
@@ -92,6 +116,9 @@ public interface IMoveConstants extends IMoveNames
 	PokeType	dark		= PokeType.dark;
 	PokeType	fairy		= PokeType.fairy;
 
+	/*
+	 * Flavours
+	 */
 	byte	SPICY	= 0;// red
 	byte	DRY		= 1;// blue
 	byte	SWEET	= 2;// pink

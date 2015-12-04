@@ -24,9 +24,14 @@ import pokecube.core.interfaces.IPokemob;
 public class BerryManager implements IMoveConstants
 {
 
+    /** Map of berry id -> block of crop */
     public static Map<Integer, Block>  berryCrops    = new HashMap<Integer, Block>();
+    /** Map of berry id -> block of fruit */
     public static Map<Integer, Block>  berryFruits   = new HashMap<Integer, Block>();
+    /** Map of berry id -> name of berry */
     public static Map<Integer, String> berryNames    = new HashMap<Integer, String>();
+    /** Map of berry id -> flavours of berry, see {@link IMoveConstants.SPICY}
+     * for the indecies of the array */
     public static Map<Integer, int[]>  berryFlavours = new HashMap<Integer, int[]>();
 
     public static void addBerry(String name, int id, int spicy, int dry, int sweet, int bitter, int sour)

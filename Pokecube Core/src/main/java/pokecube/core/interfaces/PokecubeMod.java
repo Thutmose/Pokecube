@@ -143,7 +143,6 @@ public abstract class PokecubeMod
     			world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
     		}
     		
-    		System.out.println(world);
     		FakePlayer fakeplayer = FakePlayerFactory.get(world, new GameProfile(new UUID(1234, 4321), "[Pokecube]DispenserPlayer"));
     		fakePlayers.put(dim, fakeplayer);
     	}

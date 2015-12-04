@@ -651,7 +651,7 @@ public class GuiPokedex extends GuiScreen
 
             if (page == 1)
             {
-                
+
             }
             if (page != 4)
             {
@@ -680,11 +680,6 @@ public class GuiPokedex extends GuiScreen
     @Override
     public void drawScreen(int i, int j, float f)
     {
-//        if(true)
-//            return;
-//        
-//        
-        
         Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -755,6 +750,12 @@ public class GuiPokedex extends GuiScreen
         super.drawScreen(i, j, f);
     }
 
+    /** Draws the first page of the pokedex, this is the page with the pokemob's
+     * stats and current moves, if no pokemob is selected, it tries to show an
+     * arrow to the nearest village
+     * 
+     * @param xOffset
+     * @param yOffset */
     private void drawPage0(int xOffset, int yOffset)
     {
 
@@ -855,6 +856,11 @@ public class GuiPokedex extends GuiScreen
         }
     }
 
+    /** Draws the biome info page, as well as the various statistics at the
+     * bottom
+     * 
+     * @param xOffset
+     * @param yOffset */
     private void drawPage1(int xOffset, int yOffset)
     {
 
@@ -947,6 +953,10 @@ public class GuiPokedex extends GuiScreen
                 yOffset + 155, 0xffffff);
     }
 
+    /** Draws the learnable moves page.
+     * 
+     * @param xOffset
+     * @param yOffset */
     private void drawPage2(int xOffset, int yOffset)
     {
         ArrayList<String> names = new ArrayList<String>();
@@ -986,6 +996,10 @@ public class GuiPokedex extends GuiScreen
 
     }
 
+    /** Draws the breeding information page
+     * 
+     * @param xOffset
+     * @param yOffset */
     private void drawPage3(int xOffset, int yOffset)
     {
         ArrayList<String> names = new ArrayList<String>();
@@ -1014,6 +1028,10 @@ public class GuiPokedex extends GuiScreen
         }
     }
 
+    /** Draws the teleport locations page
+     * 
+     * @param xOffset
+     * @param yOffset */
     private void drawPage4(int xOffset, int yOffset)
     {
         Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
@@ -1028,6 +1046,11 @@ public class GuiPokedex extends GuiScreen
                 yOffset + 99 + 14 * index, PokeType.fire.colour);
     }
 
+    /** Used to draw in the list of moves that the pokemob has in the bottom
+     * section of some pages
+     * 
+     * @param xOffset
+     * @param yOffset */
     public void drawSelectedMoves(int xOffset, int yOffset)
     {
         if (pokemob == null || !canEditPokemob()) return;
@@ -1138,11 +1161,9 @@ public class GuiPokedex extends GuiScreen
             this.drawBackground(tint);
         }
     }
-    
+
     @Override
-    /**
-     * Draws the background (i is always 0 as of 1.2.2)
-     */
+    /** Draws the background (i is always 0 as of 1.2.2) */
     public void drawBackground(int tint)
     {
         GlStateManager.disableLighting();
@@ -1153,14 +1174,14 @@ public class GuiPokedex extends GuiScreen
         float f = 32.0F;
         tez.begin();
         tez.color(4210752);
-        tez.vertex(0.0D, (double)this.height, 0.0D).tex(0.0D, (double)((float)this.height / f + (float)tint));
-        tez.vertex((double)this.width, (double)this.height, 0.0D).tex((double)((float)this.width / f), (double)((float)this.height / f + (float)tint));
-        tez.vertex((double)this.width, 0.0D, 0.0D).tex((double)((float)this.width / f), (double)tint);
-        tez.vertex(0.0D, 0.0D, 0.0D).tex(0.0D, (double)tint);
+        tez.vertex(0.0D, (double) this.height, 0.0D).tex(0.0D, (double) ((float) this.height / f + (float) tint));
+        tez.vertex((double) this.width, (double) this.height, 0.0D).tex((double) ((float) this.width / f),
+                (double) ((float) this.height / f + (float) tint));
+        tez.vertex((double) this.width, 0.0D, 0.0D).tex((double) ((float) this.width / f), (double) tint);
+        tez.vertex(0.0D, 0.0D, 0.0D).tex(0.0D, (double) tint);
         tez.end();
     }
-    
-    
+
     private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
 
     private EntityLiving getEntityToDisplay()
@@ -1278,14 +1299,14 @@ public class GuiPokedex extends GuiScreen
 
             if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
             {
-                 entity.onGround = true;
+                entity.onGround = true;
                 entity.limbSwingAmount = 0.05f;
                 entity.prevLimbSwingAmount = entity.limbSwingAmount - 0.5f;
             }
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
-            
+
             Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, 0, 0, 1, POKEDEX_RENDER);
-            
+
             GL11.glPopMatrix();
 
         }

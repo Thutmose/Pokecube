@@ -47,7 +47,7 @@ public class GuiMoveMessages
 		time--;
     }
     
-    @SubscribeEvent
+    @SubscribeEvent//TODO see if this is called properly in 1.8.8
     public void PlayerLoggout(PlayerLoggedOutEvent evt)
     {
     	if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)

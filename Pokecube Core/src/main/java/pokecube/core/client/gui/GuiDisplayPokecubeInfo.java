@@ -244,18 +244,21 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     int indexPokemob = 0;
 
+    /** Select next pokemob */
     public void nextPokemob()
     {
         indexPokemob++;
         if (indexPokemob >= arrayRet.length) indexPokemob = 0;
     }
 
+    /** Select previous pokemob */
     public void previousPokemob()
     {
         indexPokemob--;
         if (indexPokemob < 0) indexPokemob = arrayRet.length - 1;
     }
 
+    /** Incremenrs pokemob move index */
     public void nextMove()
     {
 
@@ -269,6 +272,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         }
     }
 
+    /** Decrements pokemob move index */
     public void previousMove()
     {
 
@@ -298,6 +302,9 @@ public class GuiDisplayPokecubeInfo extends Gui
         }
     }
 
+    /** Sets pokemob's move index.
+     * 
+     * @param num */
     public void setMove(int num)
     {
         IPokemob pokemob = getCurrentPokemob();
@@ -308,6 +315,8 @@ public class GuiDisplayPokecubeInfo extends Gui
         }
     }
 
+    /** Recalls selected pokemob, if none selected, will try to identify a
+     * pokemob being looked at, and recalls that */
     public void pokemobBack()
     {
         IPokemob pokemob = getCurrentPokemob();
@@ -333,6 +342,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     }
 
+    /** Identifies target of attack, and sends the packet with info to server */
     public void pokemobAttack()
     {
         byte[] message = { (byte) 21, (byte) indexPokemob };
@@ -399,6 +409,8 @@ public class GuiDisplayPokecubeInfo extends Gui
         PokecubePacketHandler.sendToServer(packet);
     }
 
+    /** Sends the packet to toggle all pokemobs set to follow between sit and
+     * stand */
     public void pokemobStance()
     {
         byte[] message = { (byte) 22 };
@@ -407,6 +419,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         PokecubePacketHandler.sendToServer(packet);
     }
 
+    /** @return the currently selected pokemob */
     public IPokemob getCurrentPokemob()
     {
         IPokemob pokemob = null;
@@ -417,6 +430,10 @@ public class GuiDisplayPokecubeInfo extends Gui
         return pokemob;
     }
 
+    /** Shifts the gui by x and y
+     * 
+     * @param x
+     * @param y */
     public void moveGui(int x, int y)
     {
         Mod_Pokecube_Helper.guiOffset[0] += x;

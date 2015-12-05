@@ -119,53 +119,27 @@ public class BlockBerryCrop extends BlockCrops {
         worldIn.setBlockState(pos, state.withProperty(AGE, Integer.valueOf(i)), 2);
     }
     
-//    {
-//		int metadata = world.getBlockMetadata(par2, par3, par4);
-//		
-//		if(!trees.contains(berryIndex))
-//		{
-//			if (metadata != 1) {
-//				world.setBlockMetadataWithNotify(par2, par3, par4, 1, 2);
-//			}
-//			if (metadata == 1 && world.isAirBlock(par2, par3 + 1, par4)) {
-//				world.setBlock(par2, par3 + 1, par4, BerryManager.berryFruits.get(berryIndex), 0, 3);
-//			}
-//		}
-//		else
-//		{
-//			int woodMeta = -1;
-//			int leavesMeta = -1;
-//			Block leaves = null;
-//			Block wood = null;
-//			
-//			for(BlockBerryLeaves l: this.leaves)
-//			{
-//				leavesMeta = l.getMetaFromName(berryName);
-//				if(leavesMeta>=0)
-//				{
-//					leaves = l;
-//					leavesMeta |= 8;
-//					break;
-//				}
-//			}
-//			
-//			for(BlockBerryLog l: this.logs)
-//			{
-//				woodMeta = l.getMetaFromName(berryName);
-//				if(woodMeta>=0)
-//				{
-//					wood = l;
-//					break;
-//				}
-//			}
-//			
-//			if(woodMeta>=0&&leavesMeta>=0&&leaves!=null&&wood!=null)
-//			{
-//				growTree(world, par2, par3, par4, woodMeta, leavesMeta, wood, leaves);
-//			}
-//		}
-//	}
-	
+    @Override
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
+    {
+        super.updateTick(worldIn, pos, state, rand);
+
+        if (worldIn.getLightFromNeighbors(pos.up()) >= 9)
+        {
+            int i = ((Integer)state.getValue(AGE)).intValue();
+
+            if (i < 7)
+            {
+                float f = getGrowthChance(this, worldIn, pos);
+
+                if (rand.nextInt((int)(25.0F / f) + 1) == 0)
+                {
+                    grow(worldIn, pos, state);
+                }
+            }
+        }
+    }
+    
     @Override
     /**
      * Called when a user uses the creative pick block button on this block

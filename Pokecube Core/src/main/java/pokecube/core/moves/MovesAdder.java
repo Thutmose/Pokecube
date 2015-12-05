@@ -500,7 +500,7 @@ public class MovesAdder implements IMoveConstants
             }
         });
 
-        registerMove(new Move_Basic(MOVE_BIDE)// TODO animation
+        registerMove(new Move_Basic(MOVE_BIDE)
         {
             @Override
             public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
@@ -528,7 +528,7 @@ public class MovesAdder implements IMoveConstants
             }
         });
 
-        registerMove(new Move_Basic(MOVE_MIRRORCOAT)// TODO animation
+        registerMove(new Move_Basic(MOVE_MIRRORCOAT)
         {
             @Override
             public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
@@ -553,7 +553,7 @@ public class MovesAdder implements IMoveConstants
             }
         });
 
-        registerMove(new Move_Basic(MOVE_COUNTER)// TODO animation
+        registerMove(new Move_Basic(MOVE_COUNTER)
         {
             @Override
             public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
@@ -578,7 +578,7 @@ public class MovesAdder implements IMoveConstants
             }
         });
 
-        registerMove(new Move_Basic(MOVE_FOCUSENERGY)// TODO animation
+        registerMove(new Move_Basic(MOVE_FOCUSENERGY)
         {
             @Override
             public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
@@ -619,7 +619,7 @@ public class MovesAdder implements IMoveConstants
             }
         });
 
-        registerMove(new Move_Basic(MOVE_PRESENT)// TODO animation
+        registerMove(new Move_Basic(MOVE_PRESENT)
         {
             @Override
             public int getPWR(IPokemob user, Entity target)
@@ -1139,29 +1139,6 @@ public class MovesAdder implements IMoveConstants
                     }
                 }
             }
-            //
-            // @SideOnly(Side.CLIENT)
-            // @Override TODO make an IMoveAnimation for this.
-            // public void clientAnimation(Entity attacker, Vector3 target,
-            // Entity attacked, IWorldAccess world)
-            // {
-            // double x = attacker.posX;
-            // double z = attacker.posZ;
-            // double y = attacker.posY;
-            //
-            // for (int i = 0; i < 100; i++)
-            // {
-            // double d1 = MovesUtils.rand.nextGaussian() * 2D;
-            // double d2 = MovesUtils.rand.nextGaussian() * 2D;
-            // double d3 = MovesUtils.rand.nextGaussian() * 2D;
-            //
-            // spawnParticle("spark",
-            // x + d1,
-            // y + d2,
-            // z + d3,
-            // d1, d2, d3);
-            // }
-            // }
 
         }.setSound("ambient.weather.thunder"));
     }

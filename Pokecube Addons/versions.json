@@ -1,10 +1,12 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/224362-pokecube-revival",
   "promos": {
-    "1.8.8-latest": "2.0.9",
-    "1.8.8-recommended": "2.0.9"
+    "1.8.8-latest": "2.0.11",
+    "1.8.8-recommended": "2.0.11"
   },
   "1.8.8": {
+    "2.0.11": "fixes a rendering issue with bag on servers",
+    "2.0.10": "fixes an issue with trainer GUI",
     "2.0.9": "Adds the legendary spawner blocks in, as well as legendary requirements",
     "2.0.8": "updates to Thut Core 2.1.6 and pokecube Core 2.0.11",
     "2.0.7": "updates to Thut Core 2.1.5 and pokecube Core 2.0.10",

@@ -84,23 +84,6 @@ public class PAEventsHandler
             System.out.println(evt.pick + " " + evt.starterPack.length);
             List<ItemStack> toPC = new ArrayList<ItemStack>();
             ItemStack starter = null;
-            // if (pokedexNb > 0)
-            // {
-            // starter = PokecubeSerializer.getInstance().starter(pokedexNb,
-            // evt.player);
-            // }
-            // else
-            // {
-            // for (int i = 0; i < evt.starterPack.length; i++)
-            // {
-            // ItemStack e = evt.starterPack[i];
-            // if (PokecubeManager.isFilled(e))
-            // {
-            // starter = e;
-            // break;
-            // }
-            // }
-            // }
             boolean replaced = false;
             for (int i = 0; i < evt.starterPack.length; i++)
             {

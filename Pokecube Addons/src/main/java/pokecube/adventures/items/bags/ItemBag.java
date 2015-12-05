@@ -60,7 +60,6 @@ public class ItemBag extends Item implements IBauble, IBaubleRender
 		if(arg2==RenderType.BODY)
 		{
 			ModelBag.model.render(0.5f);
-			
 		}
 	}
 }

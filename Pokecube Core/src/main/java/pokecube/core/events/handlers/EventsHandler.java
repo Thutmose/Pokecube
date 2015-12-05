@@ -330,7 +330,7 @@ public class EventsHandler
     public void PlayerLoggout(PlayerLoggedOutEvent evt)
     {
         System.out.println("LoggedOut Event " + " " + FMLCommonHandler.instance().getEffectiveSide());
-        if (FMLCommonHandler.instance().getEffectiveSide() != Side.CLIENT)
+        if (FMLCommonHandler.instance().getEffectiveSide() != Side.CLIENT && !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
         {
             System.out.println("Clearing Server instance");
             PokecubeSerializer.getInstance().clearInstance();

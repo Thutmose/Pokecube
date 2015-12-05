@@ -1,10 +1,12 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/238253-pokecube-core",
   "promos": {
-    "1.8.8-latest": "2.0.13",
-    "1.8.8-recommended": "2.0.13"
+    "1.8.8-latest": "2.0.15",
+    "1.8.8-recommended": "2.0.15"
   },
   "1.8.8": {
+    "2.0.15": "fixes a server issue with logging out",
+    "2.0.14": "bunch of network optimizations, fixes berry crops not growing naturally, fixes a SMP kick for trading, fixes teleport not teleporting wild pokemobs",
     "2.0.13": "Fixes lag from pokemobs in GUI, fixes the remaining server/client sync issues, Fixes solosis line, requires re-downloading the Pokecube_Resources.zip from GitHub",
     "2.0.12": "Improves Animation Loading support, models can be partially animated in tabula, and in the xml via presets, and have them combined",
     "2.0.11": "Updates to Thut Core 2.1.6",

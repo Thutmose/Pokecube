@@ -155,7 +155,12 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget {
     	Vector3 leaperLoc = Vector3.getNewVectorFromPool().set(leaper);
     	
     	Vector3 dir = targetLoc.subtract(leaperLoc).scalarMultBy(0.5f);
-    	
+
+        if(dir.isNaN())
+        {
+            new Exception().printStackTrace();
+            dir.clear();
+        }
     	dir.addVelocities(leaper);
     	
     	dir.freeVectorFromPool();

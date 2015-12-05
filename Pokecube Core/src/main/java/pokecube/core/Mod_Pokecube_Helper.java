@@ -65,10 +65,7 @@ public class Mod_Pokecube_Helper
     public static int     pokemobagressticks = 100;
     public static int     maxAIThreads       = Runtime.getRuntime().availableProcessors();
     public static boolean explosions         = true;
-    public static boolean nests              = false;                                     // TODO
-                                                                                          // config
-                                                                                          // for
-                                                                                          // this
+    public static boolean nests              = false;
     public static int     nestsPerChunk      = 1;
     public static boolean refreshNests       = false;
     public static int     minLegendLevel     = 1;

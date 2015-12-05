@@ -30,6 +30,7 @@ import pokecube.core.CreativeTabPokecube;
 import pokecube.core.CreativeTabPokecubeBerries;
 import pokecube.core.CreativeTabPokecubeBlocks;
 import pokecube.core.CreativeTabPokecubes;
+import thut.api.maths.Vector3;
 
 public abstract class PokecubeMod 
 {
@@ -187,4 +188,6 @@ public abstract class PokecubeMod
      */
     @SuppressWarnings("rawtypes")
     public abstract Class getEntityClassFromPokedexNumber(int pokedexNb);
+    
+    public abstract void spawnParticle(String par1Str, Vector3 location, Vector3 velocity);
 }

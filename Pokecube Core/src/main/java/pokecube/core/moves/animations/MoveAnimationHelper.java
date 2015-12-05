@@ -11,9 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.RenderWorldEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent.Unload;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -54,16 +51,8 @@ public class MoveAnimationHelper
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onRenderWorldLast(RenderWorldLastEvent event)
-	{
-
-	}
-
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
 	public void onRenderWorldPost(RenderFogEvent event)
 	{
-
 		try
 		{
             GL11.glPushMatrix();
@@ -132,26 +121,6 @@ public class MoveAnimationHelper
 		{
 			e.printStackTrace();
 		}
-	}
-
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onRenderPlayerPost(RenderPlayerEvent.Post event)
-	{
-
-	}
-
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onRenderPlayerPre(RenderPlayerEvent.Pre event)
-	{
-
-	}
-
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onRenderWorldPre(RenderWorldEvent.Pre event)
-	{
 	}
 	
 	@SubscribeEvent

@@ -48,8 +48,6 @@ public class PokecubeAdv
     public final static String UPDATEURL = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Addons/versions.json";
 	public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
 
-	// public static SimpleNetworkWrapper wrapper;
-
 	public static String CUSTOMTRAINERFILE;
 
 	public static int	GUITRAINER_ID		= 2;
@@ -67,7 +65,7 @@ public class PokecubeAdv
 	{
 		BlockHandler.registerBlocks();
 		ItemHandler.registerItems();
-		doMetastuff();
+
 		Configuration config = PokecubeMod.core.getPokecubeConfig(e);
 		ConfigHandler.load(config);
 		setTrainerConfig(e);
@@ -124,13 +122,6 @@ public class PokecubeAdv
 	{
 		event.registerServerCommand(new GeneralCommands());
 		event.registerServerCommand(new TeamCommands());
-	}
-
-	private void doMetastuff()
-	{
-//		ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
-
-//		meta.parent = PokecubeMod.ID;
 	}
 
 	public static void setTrainerConfig(FMLPreInitializationEvent evt)

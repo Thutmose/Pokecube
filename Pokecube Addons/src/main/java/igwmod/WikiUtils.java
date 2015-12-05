@@ -31,7 +31,7 @@ public class WikiUtils{
 
             for(ItemStack stack : stackList) {
                 if(stack.getItem() == null) continue;
-                String itemName = stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");//TODO improve
+                String itemName = stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
                 unlocMap.put(itemName, stack);
                 unlocMap.put(getOwningModId(stack) + ":" + itemName, stack);
             }

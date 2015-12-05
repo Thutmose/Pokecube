@@ -99,7 +99,7 @@ public class AIThermalInteferance extends EntityAIBase
 				}
 				tempLastTick = temp;
 			}
-			else if(tile!=null)//TODO && eln
+			else if(tile!=null)
 			{
 				doElnThermalInterference();
 			}

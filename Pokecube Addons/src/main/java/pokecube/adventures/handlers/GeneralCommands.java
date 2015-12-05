@@ -184,7 +184,6 @@ public class GeneralCommands implements ICommand  {
     @Override
     public int compareTo(ICommand o)
     {
-        // TODO Auto-generated method stub
         return 0;
     }
 

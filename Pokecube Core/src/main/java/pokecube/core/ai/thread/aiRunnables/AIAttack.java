@@ -110,7 +110,7 @@ public class AIAttack extends AIBase implements IAICombat
                 delayTime = 0;
             }
         }
-        
+
         this.attacker.getLookHelper().setLookPositionWithEntity(entityTarget, 30.0F, 30.0F);
 
         IPokemob pokemob = (IPokemob) attacker;
@@ -136,9 +136,6 @@ public class AIAttack extends AIBase implements IAICombat
                 setPokemobAIState((IPokemob) attacker, IPokemob.MATEFIGHT, false);
             }
         }
-
-        // pokemob.setLastAttackTick(Math.max(pokemob.getLastAttackTick() - 1,
-        // 0));TODO see if this was needed
 
         if (pokemob.getPokemonAIState(IPokemob.EXECUTINGMOVE) && targetLoc.isEmpty())
         {
@@ -249,7 +246,6 @@ public class AIAttack extends AIBase implements IAICombat
         }
         if (delayTime < -20)
         {
-            // randomMove();//TODO see if this is still needed
             applyDelay(distanced);
             addTargetInfo(attacker, entityTarget);
             ((IPokemob) attacker).setPokemonAIState(IPokemob.ANGRY, true);
@@ -278,7 +274,7 @@ public class AIAttack extends AIBase implements IAICombat
         {
             setPokemobAIState((IPokemob) attacker, IPokemob.EXECUTINGMOVE, false);
         }
-        if(!delay && delayTime%5==0)
+        if (!delay && delayTime % 5 == 0)
         {
             addTargetInfo(attacker, entityTarget);
         }
@@ -294,9 +290,6 @@ public class AIAttack extends AIBase implements IAICombat
 
             }
             if (entityTarget instanceof IPokemob) setPokemobAIState((IPokemob) entityTarget, IPokemob.DODGING, false);
-            // pokemob.setHasAttacked(pokemob.getMove(pokemob.getMoveIndex()));//TODO
-            // see if this was needed
-
             if (this.attacker.getHeldItem() != null)
             {
                 this.attacker.swingItem();
@@ -329,11 +322,6 @@ public class AIAttack extends AIBase implements IAICombat
         {
             PokemobAIThread.addTargetInfo(attacker.getEntityId(), -1, attacker.dimension);
             entityTarget = null;
-        }
-        else
-        {
-            // PokemobAIThread.addTargetInfo(attacker, entityTarget);//TODO see
-            // if this is needed
         }
         return entityTarget != null && !entityTarget.isDead;
     }

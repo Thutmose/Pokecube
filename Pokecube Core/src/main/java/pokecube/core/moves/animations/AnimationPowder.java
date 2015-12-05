@@ -22,7 +22,6 @@ public class AnimationPowder extends MoveAnimationBase
 {
 
     String  particle;
-    int     rgba;
     float   width   = 1;
     float   density = 1;
     boolean reverse = false;
@@ -85,28 +84,7 @@ public class AnimationPowder extends MoveAnimationBase
 
         VertexFormat format = DefaultVertexFormats.field_181706_f;
         
-        Random rand = new Random(info.currentTick);//
-
-//      This will draw a textured, coloured quad
-//        
-//      texture = new ResourceLocation("pokecube", "textures/particles.png");
-//      FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-//      format = DefaultVertexFormats.field_181709_i;
-//      int u = 1, v = 2;
-//      
-//      double u1 = u * 1d/16d, v1 = v * 1d/16d;
-//      double u2 = (u+1) * 1d/16d, v2 = (v+1) * 1d/16d;
-//
-//      //Face 1
-//      tez.vertex(temp.x - size, temp.y - size, temp.z).tex(u1, v2).color(red, green, blue, alpha).endVertex();
-//      tez.vertex(temp.x, temp.y - size, temp.z - size).tex(u2, v2).color(red, green, blue, alpha).endVertex();
-//      tez.vertex(temp.x, temp.y + size, temp.z - size).tex(u2, v1).color(red, green, blue, alpha).endVertex();
-//      tez.vertex(temp.x - size, temp.y + size, temp.z).tex(u1, v1).color(red, green, blue, alpha).endVertex();
-//      //Face 2
-//      tez.vertex(temp.x - size, temp.y - size, temp.z).tex(u1, v2).color(red, green, blue, alpha).endVertex();
-//      tez.vertex(temp.x - size, temp.y + size, temp.z).tex(u1, v1).color(red, green, blue, alpha).endVertex();
-//      tez.vertex(temp.x, temp.y + size, temp.z - size).tex(u2, v1).color(red, green, blue, alpha).endVertex();
-//      tez.vertex(temp.x, temp.y - size, temp.z - size).tex(u2, v2).color(red, green, blue, alpha).endVertex();
+        Random rand = new Random(info.currentTick);
         
         for (int i = 0; i < 500 * density; i++)
         {

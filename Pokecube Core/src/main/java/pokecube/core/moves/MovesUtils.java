@@ -991,7 +991,7 @@ public class MovesUtils implements IMoveConstants
         else if (attacked instanceof EntityLivingBase)
         {
             int duration = 250;
-            // TODO change related tests
+
             if (change == IMoveConstants.CHANGE_CONFUSED)
             {
                 ((EntityLivingBase) attacked).addPotionEffect(new PotionEffect(Potion.confusion.id, duration));

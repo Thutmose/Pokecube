@@ -27,6 +27,7 @@ import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.interfaces.CommonProxy;
 import pokecube.core.interfaces.IPokemob;
+import thut.api.maths.Vector3;
 
 /** @author Manchou */
 public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
@@ -139,10 +140,9 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         return null;
     }
 
-    @Deprecated
-    public void spawnParticle(String par1Str, double par2, double par4, double par6, double par8, double par10,
-            double par12)
+    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
     {
+        //TODO send a packet to spawn it on client if sent from here
     }
 
     @Override

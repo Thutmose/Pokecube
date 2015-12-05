@@ -69,6 +69,11 @@ public class PokemobAIDodge extends EntityAIBase {
     		perp = perp.scalarMultBy(-1);
     	dodger.setPokemonAIState(IPokemob.DODGING, true);
     	perp = perp.normalize();
+    	if(perp.isNaN())
+    	{
+    	    new Exception().printStackTrace();
+    	    perp.clear();
+    	}
     	perp.scalarMultBy(dodger.getPokedexEntry().width * dodger.getSize());
     	perp.addVelocities(entity);
     	temp.freeVectorFromPool();

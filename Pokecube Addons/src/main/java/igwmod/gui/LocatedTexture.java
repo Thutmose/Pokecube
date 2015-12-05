@@ -86,7 +86,7 @@ public class LocatedTexture implements IReservedSpace, IWidget{
         int maxYCap = Math.min(heigth, GuiWiki.MAX_TEXT_Y - y);
         PTezzelator tez = PTezzelator.instance;
         tez.begin(7, DefaultVertexFormats.field_181707_g);
-        tez.vertex(x, y + maxYCap, 0).tex(0.0, (float)maxYCap / heigth).endVertex();//TODO render at right Z level
+        tez.vertex(x, y + maxYCap, 0).tex(0.0, (float)maxYCap / heigth).endVertex();
         tez.vertex(x + width, y + maxYCap, 0).tex(1.0, (float)maxYCap / heigth).endVertex();
         tez.vertex(x + width, y + minYCap, 0).tex(1, (float)minYCap / heigth).endVertex();
         tez.vertex(x, y + minYCap, 0).tex(0, (float)minYCap / heigth).endVertex();

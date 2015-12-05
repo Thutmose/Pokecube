@@ -13,11 +13,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
+import pokecube.core.client.render.particle.ParticleFactory;
+import pokecube.core.client.render.particle.ParticleHandler;
+import pokecube.core.client.render.particle.ParticleNoGravity;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
+import thut.api.maths.Vector3;
 
 public class ItemTM extends ItemPokemobUseable {
 
@@ -116,6 +120,15 @@ public class ItemTM extends ItemPokemobUseable {
     @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
+        if(!world.isRemote)return itemstack;
+        
+        Vector3 loc = Vector3.getNewVectorFromPool().set(player).addTo(0,2,0);
+        Vector3 look = Vector3.getNewVectorFromPool().set(player.getLookVec());
+        loc.addTo(look);
+        ParticleNoGravity particle = (ParticleNoGravity) ParticleFactory.makeParticle("aurora", null);
+        particle.setLifetime(100);
+        ParticleHandler.Instance().addParticle(loc, particle);
+        
     	return itemstack;
     }
     

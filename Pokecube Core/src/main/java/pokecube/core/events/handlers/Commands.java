@@ -1,6 +1,7 @@
 package pokecube.core.events.handlers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -665,6 +666,8 @@ public class Commands implements ICommand
 
                         int exp = 10;
                         int level = -1;
+                        String[] moves = new String[4];
+                        int mindex = 0;
 
                         if (index < args.length)
                         {
@@ -708,6 +711,11 @@ public class Commands implements ICommand
                                 {
                                     owner = val;
                                 }
+                                else if (arg.equalsIgnoreCase("m") && mindex < 4)
+                                {
+                                    moves[mindex] = val;
+                                    mindex++;
+                                }
                             }
                         }
 
@@ -741,6 +749,25 @@ public class Commands implements ICommand
                         if (shadow) mob.setShadow(shadow);
                         if (ancient) mob.setAncient(ancient);
                         mob.setExp(exp, true, true);
+                        System.out.println(Arrays.toString(moves));
+                        for (int i1 = 0; i1 < 4; i1++)
+                        {
+                            if (moves[i1] != null)
+                            {
+                                String arg = moves[i1];
+                                if (!arg.isEmpty())
+                                {
+                                    if (arg.equalsIgnoreCase("none"))
+                                    {
+                                        mob.setMove(i1, null);
+                                    }
+                                    else
+                                    {
+                                        mob.setMove(i1, arg);
+                                    }
+                                }
+                            }
+                        }
                         mob.specificSpawnInit();
                         if (mob != null)
                         {

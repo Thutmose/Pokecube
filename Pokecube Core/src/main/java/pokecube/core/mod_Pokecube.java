@@ -108,14 +108,13 @@ import pokecube.core.world.gen.village.buildings.ComponentPokeCentre;
 import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
 import pokecube.core.world.gen.village.handlers.PokeCentreCreationHandler;
 import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
+import thut.api.maths.Vector3;
 
-@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION)//, dependencies = "required-after:Baubles;required-after:thutcore", updateJSON = PokecubeMod.UPDATEURL) //
+@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION)
 public class mod_Pokecube extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")
-    public static CommonProxyPokecube proxy; // This object will be populated
-                                             // with the class that you choose
-                                             // for the environment
+    public static CommonProxyPokecube proxy;
 
     @Instance(ID)
     public static mod_Pokecube instance;
@@ -630,17 +629,15 @@ public class mod_Pokecube extends PokecubeMod
         {
 
         }
-
-
-        GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);// TODO find number
+        //TODO figure out good spawn weights
+        GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
         Mod_Pokecube_Helper.initAllBlocks();
         proxy.registerRenderInformation();
         proxy.registerKeyBindings();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-        Mod_Pokecube_Helper.postInit();// TODO see if moving this to init messes
-                                       // anything up
+        Mod_Pokecube_Helper.postInit();
     }
 
     @EventHandler
@@ -772,11 +769,9 @@ public class mod_Pokecube extends PokecubeMod
         }
     }
 
-    @Deprecated
-    public static void spawnParticle(String par1Str, double par2, double par4, double par6, double par8, double par10,
-            double par12)
+    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
     {
-        getProxy().spawnParticle(par1Str, par2, par4, par6, par8, par10, par12);
+        getProxy().spawnParticle(par1Str, location, velocity);
     }
 
 }

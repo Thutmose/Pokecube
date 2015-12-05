@@ -34,7 +34,6 @@ class ContainerBlockWiki extends Container{
                 });
                 if(stack.stack.getItemDamage() == 32767)
                 {
-                    //TODO search for available options to render here.
                     stack.stack.setItemDamage(0);
                 }
                 inventory.setInventorySlotContents(curSlot++, stack.stack);

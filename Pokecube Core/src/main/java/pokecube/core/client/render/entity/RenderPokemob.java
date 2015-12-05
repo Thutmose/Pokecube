@@ -358,7 +358,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
  	    	    	x = rand.nextGaussian();
  	    	    	y = rand.nextGaussian();
  	    	    	z = rand.nextGaussian();
- 	    	    	//TODO find out how to get the dies again.
+ 	    	    	//TODO find out how to get the dyes again.
  	 	    	  // mod_Pokecube.getProxy().spawnParticle("powder:"+ItemDye.field_150922_c[sealTag.getInteger("dye")], entity.posX, entity.posY, entity.posZ, x/100, y/100, z/100);
  	    	 }
     	    

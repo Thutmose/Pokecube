@@ -78,8 +78,6 @@ public class MessageSendServerTab extends AbstractPacket<MessageSendServerTab>{
 
     @Override
     public void handleServerSide(MessageSendServerTab message, EntityPlayer player){
-        // TODO Auto-generated method stub
-
     }
 
 }

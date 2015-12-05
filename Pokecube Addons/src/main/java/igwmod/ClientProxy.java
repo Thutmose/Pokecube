@@ -60,7 +60,7 @@ public class ClientProxy implements IProxy{
 
         //We don't need a proxy here, since this is a client-only mod.
 
-        openInterfaceKey = new KeyBinding("igwmod.keys.wiki", Constants.DEFAULT_KEYBIND_OPEN_GUI, "igwmod.keys.category");//TODO blend keybinding category in normal
+        openInterfaceKey = new KeyBinding("igwmod.keys.wiki", Constants.DEFAULT_KEYBIND_OPEN_GUI, "igwmod.keys.category");
         ClientRegistry.registerKeyBinding(openInterfaceKey);
         MinecraftForge.EVENT_BUS.register(this);//subscribe to key events.
 

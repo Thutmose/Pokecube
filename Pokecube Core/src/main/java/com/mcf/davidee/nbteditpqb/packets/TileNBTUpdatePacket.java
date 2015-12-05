@@ -20,7 +20,7 @@ public class TileNBTUpdatePacket extends TileNBTPacket {
 
 	@Override
 	public void handleClientSide(EntityPlayer player) {
-		//TODO Work on this
+
 		TileEntity te = player.worldObj.getTileEntity(pos);
 		if (te != null) {
 			NBTTagCompound backup = new NBTTagCompound();

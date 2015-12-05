@@ -28,7 +28,7 @@ public abstract class AbstractPacket<REQ extends IMessage> implements IMessage, 
      * Handle a packet on the client side.
      * 
      * @param message
-     *            TODO
+     *         
      * @param player
      *            the player reference
      */
@@ -38,7 +38,7 @@ public abstract class AbstractPacket<REQ extends IMessage> implements IMessage, 
      * Handle a packet on the server side.
      * 
      * @param message
-     *            TODO
+     *         
      * @param player
      *            the player reference
      */

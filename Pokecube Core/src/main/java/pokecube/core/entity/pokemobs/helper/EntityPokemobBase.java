@@ -36,6 +36,7 @@ import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.SpawnEvent;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.IMultibox;
@@ -479,7 +480,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
     	if(flavourAmounts.length!=5)
     		flavourAmounts = new int[5];
-    	
+    	Vector3 particleLoc = here.copy();
         if(flavourAmounts[SWEET]>0)
         {
         	particle = "powder.pink";
@@ -509,15 +510,23 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     	{
     		particle = getPokedexEntry().particleData[0];
     		particleIntensity = Integer.parseInt(getPokedexEntry().particleData[1]);
+            particleIntensity = 100;
     	}
     	
     	Calendar calendar = Calendar.getInstance();
     	if (calendar.get(Calendar.DAY_OF_MONTH) == 25 && calendar.get(Calendar.MONTH) == 11)
+    	{
+    	    float scale = width * 2;
+    	    Vector3 offset = Vector3.getNewVectorFromPool().set(rand.nextDouble()-0.5, rand.nextDouble() + height/2, rand.nextDouble() - 0.5);
+    	    offset.scalarMultBy(scale);
+    	    particleLoc.addTo(offset);
+    	    offset.freeVectorFromPool();
     		particle = "aurora";// Merry Xmas
-    	
+    		particleIntensity = 90;
+    	}
         if (particle != null && particleCounter++ >= 100 - particleIntensity)
         {
-        	
+        	PokecubeMod.core.spawnParticle(particle, particleLoc, null);
             particleCounter = 0;
         }
     }

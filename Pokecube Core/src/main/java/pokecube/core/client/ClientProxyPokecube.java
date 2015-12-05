@@ -83,6 +83,9 @@ import pokecube.core.client.render.blocks.RenderTradingTable;
 import pokecube.core.client.render.entity.RenderPokecube;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.client.render.entity.RenderProfessor;
+import pokecube.core.client.render.particle.IParticle;
+import pokecube.core.client.render.particle.ParticleFactory;
+import pokecube.core.client.render.particle.ParticleHandler;
 import pokecube.core.database.Database;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.professor.EntityProfessor;
@@ -203,7 +206,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPC.class, new RenderPC());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
-        
+
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBerryFruit.class, new RenderBerries());
 
         MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
@@ -319,8 +322,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         StateMap map = (new StateMap.Builder()).ignore(new IProperty[] { BlockPC.FACING }).build();
         ModelLoader.setCustomStateMapper(pc, map);
 
-        map = (new StateMap.Builder())
-                .ignore(new IProperty[] { BlockTradingTable.FACING, BlockTradingTable.TMC }).build();
+        map = (new StateMap.Builder()).ignore(new IProperty[] { BlockTradingTable.FACING, BlockTradingTable.TMC })
+                .build();
         ModelLoader.setCustomStateMapper(tradingtable, map);
         registerItemTexture(Item.getItemFromBlock(tradingtable), 0,
                 new ModelResourceLocation("pokecube:tradingtable", "inventory"));
@@ -344,12 +347,10 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
         ModelLoader.setCustomStateMapper(leaf0,
                 (new StateMap.Builder()).withName(BlockBerryLeaves.VARIANT0).withSuffix("Leaves")
-                        .ignore(new IProperty[] { BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE })
-                        .build());
+                        .ignore(new IProperty[] { BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE }).build());
         ModelLoader.setCustomStateMapper(leaf1,
                 (new StateMap.Builder()).withName(BlockBerryLeaves.VARIANT4).withSuffix("Leaves")
-                        .ignore(new IProperty[] { BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE })
-                        .build());
+                        .ignore(new IProperty[] { BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE }).build());
 
         ModelLoader.setCustomStateMapper(log0,
                 (new StateMap.Builder()).withName(BlockBerryLog.VARIANT0).withSuffix("Wood").build());
@@ -418,14 +419,14 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         registerItemTexture(Item.getItemFromBlock(log1), 1,
                 new ModelResourceLocation("pokecube:nanabWood", "inventory"));
 
-        for(String ident: BerryPlantManager.toRegister.keySet())
+        for (String ident : BerryPlantManager.toRegister.keySet())
         {
             Block crop = BerryPlantManager.toRegister.get(ident);
-            map = (new StateMap.Builder()).ignore(new IProperty[] {BlockBerryCrop.AGE}).withSuffix("").build();
+            map = (new StateMap.Builder()).ignore(new IProperty[] { BlockBerryCrop.AGE }).withSuffix("").build();
             registerItemTexture(Item.getItemFromBlock(crop), 0, new ModelResourceLocation(ident, "inventory"));
             ModelLoader.setCustomStateMapper(crop, map);
         }
-        
+
     }
 
     @Override
@@ -552,11 +553,11 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
     }
 
-    @Deprecated
     @Override
-    public void spawnParticle(String par1Str, double par2, double par4, double par6, double par8, double par10,
-            double par12)
+    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
     {
-
+        if (velocity == null) velocity = Vector3.empty;
+        IParticle particle = ParticleFactory.makeParticle(par1Str, velocity);
+        ParticleHandler.Instance().addParticle(location, particle);
     }
 }

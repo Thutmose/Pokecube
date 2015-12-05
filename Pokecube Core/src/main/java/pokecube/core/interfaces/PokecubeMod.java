@@ -120,6 +120,8 @@ public abstract class PokecubeMod
     public ByteClassLoader loader;
     public ArrayList<Integer> starters = new ArrayList<Integer>();
 
+    public static final UUID fakeUUID = new UUID(1234,4321);
+    
     public static FakePlayer getFakePlayer()
     {
     	return getFakePlayer(0);
@@ -143,7 +145,7 @@ public abstract class PokecubeMod
     			world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
     		}
     		
-    		FakePlayer fakeplayer = FakePlayerFactory.get(world, new GameProfile(new UUID(1234, 4321), "[Pokecube]DispenserPlayer"));
+    		FakePlayer fakeplayer = FakePlayerFactory.get(world, new GameProfile(fakeUUID, "[Pokecube]DispenserPlayer"));
     		fakePlayers.put(dim, fakeplayer);
     	}
     	return fakePlayers.get(dim);

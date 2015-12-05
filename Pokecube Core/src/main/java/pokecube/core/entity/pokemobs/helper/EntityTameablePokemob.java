@@ -416,7 +416,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
             this.setPokemonAIState(IPokemob.TAMED, true);
             super.setOwnerId(e.getUniqueID().toString());
 
-            if (original.compareTo(PokecubeMod.getFakePlayer().getUniqueID()) == 0)
+            if (original.compareTo(PokecubeMod.fakeUUID) == 0)
             {
                 original = e.getUniqueID();
             }

@@ -402,7 +402,7 @@ public class PokecubePacketHandler
             if (action.contains("n") && args.length > 2 && !args[2].equals(pokemob.getPokemonDisplayName()))
             {
                 boolean OT = pokemob.getPokemonOwnerName() == null
-                        || (PokecubeMod.getFakePlayer().getPersistentID().equals(pokemob.getOriginalOwnerUUID()))
+                        || (PokecubeMod.fakeUUID.equals(pokemob.getOriginalOwnerUUID()))
                         || (pokemob.getPokemonOwnerName().equals(pokemob.getOriginalOwnerUUID().toString()));
 
                 if(!OT && pokemob.getPokemonOwner()!=null)

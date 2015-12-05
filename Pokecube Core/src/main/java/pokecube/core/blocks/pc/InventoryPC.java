@@ -289,7 +289,7 @@ public class InventoryPC implements IInventory
 					isUid = false;
 				}
 	    		if(!isUid)
-	    			return getPC(PokecubeMod.getFakePlayer().getUniqueID().toString());
+	    			return getPC(PokecubeMod.fakeUUID.toString());
     			return new InventoryPC(uuid);
     		}
     	}

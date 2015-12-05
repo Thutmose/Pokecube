@@ -29,7 +29,6 @@ public class PokeMartCreationHandler  implements IVillageCreationHandler
 	public Village buildComponent(PieceWeight villagePiece, Start startPiece,
 			List<StructureComponent> pieces, Random random, int p1, int p2, int p3,
 			EnumFacing facing, int p5) {
-		// TODO Auto-generated method stub
 		return ComponentPokeMart.buildComponent(villagePiece, startPiece, pieces, random, p1, p2, p3, facing, p5);
 	}
 

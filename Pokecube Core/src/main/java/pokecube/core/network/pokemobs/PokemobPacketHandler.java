@@ -54,7 +54,6 @@ public class PokemobPacketHandler
 			this.buffer = new PacketBuffer(Unpooled.buffer());
 			buffer.writeByte(channel);
 			buffer.writeNBTTagCompoundToBuffer(nbt);
-			// System.out.println(buffer.array().length);
 		}
 
 		@Override
@@ -85,7 +84,6 @@ public class PokemobPacketHandler
 
 				if(player==null)
 				{
-//					new NullPointerException("Packet recieved by null player").printStackTrace();
 					System.out.println(Minecraft.getMinecraft().thePlayer+" "+channel);
 					return;
 				}

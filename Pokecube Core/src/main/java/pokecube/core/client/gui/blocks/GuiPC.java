@@ -121,7 +121,7 @@ public class GuiPC extends GuiContainer {
 			byte[] message = { (byte) guibutton.id };
 			// if(guibutton.id<5)
 			// {
-			MessageServer packet = PCPacketHandler.makeServerPacket((byte) 6,
+			MessageServer packet = PCPacketHandler.makeServerPacket(MessageServer.PC,
 					message);
 			PokecubePacketHandler.sendToServer(packet);
 			// }
@@ -158,7 +158,7 @@ public class GuiPC extends GuiContainer {
 						slot.release = false;
 					}
 					message[0] = 13;
-					packet = PCPacketHandler.makeServerPacket((byte) 6, message);
+					packet = PCPacketHandler.makeServerPacket(MessageServer.PC, message);
 					PokecubePacketHandler.sendToServer(packet);
 				} else {
 					for (int i = 0; i < 54; i++) {
@@ -167,7 +167,7 @@ public class GuiPC extends GuiContainer {
 						slot.release = true;
 					}
 					message[0] = 12;
-					packet = PCPacketHandler.makeServerPacket((byte) 6, message);
+                    packet = PCPacketHandler.makeServerPacket(MessageServer.PC, message);
 					PokecubePacketHandler.sendToServer(packet);
 				}
 

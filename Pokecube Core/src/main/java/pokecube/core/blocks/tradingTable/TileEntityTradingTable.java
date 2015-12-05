@@ -70,7 +70,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             player2 = null;
             String message = 9 + "," + getPos().getX() + "," + getPos().getY() + "," + getPos().getZ() + ",0,0";
             Vector3 point = Vector3.getNewVectorFromPool().set(player);
-            MessageClient packet = PCPacketHandler.makeClientPacket(PokecubePacketHandler.CHANNEL_ID_TradingTable,
+            MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE,
                     message.getBytes());
             PokecubePacketHandler.sendToAllNear(packet, point, worldObj.provider.getDimensionId(), 10);
             point.freeVectorFromPool();
@@ -99,7 +99,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                         message += "," + 0;
                     }
                     Vector3 point = Vector3.getNewVectorFromPool().set(player);
-                    MessageClient packet = PCPacketHandler.makeClientPacket(PokecubePacketHandler.CHANNEL_ID_TradingTable,
+                    MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE,
                             message.getBytes());
                     PokecubePacketHandler.sendToAllNear(packet, point, player.dimension, 10);
                     point.freeVectorFromPool();
@@ -138,7 +138,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                     }
 
                     Vector3 point = Vector3.getNewVectorFromPool().set(player);
-                    MessageClient packet = PCPacketHandler.makeClientPacket(PokecubePacketHandler.CHANNEL_ID_TradingTable,
+                    MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE,
                             message.getBytes());
                     PokecubePacketHandler.sendToAllNear(packet, point, player.dimension, 10);
                     point.freeVectorFromPool();
@@ -544,7 +544,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             for (String s : moves)
                 message += "," + s;// .trim();
 
-            MessageClient packet = PCPacketHandler.makeClientPacket(PokecubePacketHandler.CHANNEL_ID_TradingTable,
+            MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE,
                     message.getBytes());
             PokecubePacketHandler.sendToClient(packet, player);
 

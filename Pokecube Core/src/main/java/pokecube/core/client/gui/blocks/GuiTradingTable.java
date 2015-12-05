@@ -50,8 +50,7 @@ public class GuiTradingTable extends GuiContainer
     {
         if (guibutton.id == 1)
         {
-            MessageServer packet = PCPacketHandler.makeServerPacket(PokecubePacketHandler.CHANNEL_ID_TradingTable,
-                    "0".getBytes());
+            MessageServer packet = PCPacketHandler.makeServerPacket(MessageServer.TRADE, "0".getBytes());
             PokecubePacketHandler.sendToServer(packet);
         }
     }
@@ -145,7 +144,7 @@ public class GuiTradingTable extends GuiContainer
     {
         table.player1 = null;
         table.player2 = null;
-        MessageServer packet = PCPacketHandler.makeServerPacket(PokecubePacketHandler.CHANNEL_ID_TradingTable,
+        MessageServer packet = PCPacketHandler.makeServerPacket(MessageServer.TRADE,
                 ("5," + table.getPos().getX() + "," + table.getPos().getY() + "," + table.getPos().getZ()).getBytes());
         PokecubePacketHandler.sendToServer(packet);
     }

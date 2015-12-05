@@ -187,7 +187,6 @@ public class RenderHandler
 //		World world = mc.theWorld;
 //		if ((world != null) && (this.prevWorld != world))
 //		{
-//			// TODO update request packet here
 //			this.prevWorld = world;
 //		}
 //		if ((true) && (mc.thePlayer != null) && (world != null)// replace true

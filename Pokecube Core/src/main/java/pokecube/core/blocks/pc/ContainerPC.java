@@ -342,7 +342,7 @@ public class ContainerPC extends Container{
     				nbt.setBoolean("val"+i, true);
     			}
     		}
-    		MessageServer mess = new MessageServer((byte) 8, nbt);
+    		MessageServer mess = new MessageServer(MessageServer.PCRELEASE, nbt);
     		PokecubePacketHandler.sendToServer(mess);
     	}
     	release = bool;

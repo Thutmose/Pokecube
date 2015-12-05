@@ -337,7 +337,7 @@ public class InventoryPC implements IInventory
 	        
 	        nbt.setTag("pc", tags);
 	        
-	        MessageClient packet = new MessageClient((byte)2, nbt);
+	        MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
 	        PokecubePacketHandler.sendToClient(packet, mod_Pokecube.proxy.getPlayer(uuid));
 		}
     }

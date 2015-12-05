@@ -4,7 +4,6 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -104,40 +103,5 @@ public class WorldGenNests implements IWorldGenerator {
 
 	public void generateEnd() {
 		// we're not going to generate in the end yet
-	}
-
-	int getAverageHeight(World world, int x, int z)// TODO make this take width
-													// and length instead of
-													// fixed at 25
-	{
-		int y = 0;
-		int minY = 255;
-		for (int i = 0; i < 25; i++)
-			for (int j = 0; j < 25; j++) {
-				if (getMaxY(world, x, z) < minY)
-					minY = getMaxY(world, x + i, z + j);
-			}
-
-		for (int i = 0; i < 25; i++)
-			for (int j = 0; j < 25; j++)
-				y += getMaxY(world, x + i, z + j);
-		y /= 625;
-		if ((minY < y - 5) && !(minY < y - 10))
-			y = minY;
-		return y;
-	}
-
-	int getMaxY(World world, int x, int z) {
-		int y = 255;
-		BlockPos pos = new BlockPos(x,y,z);
-		Block id = Blocks.air;
-		while ((id.isAir(world, pos) || id == Blocks.snow || id.isLeaves(world, pos)
-				|| id.isWood(world, pos)) && y > 1) {
-			y--;
-			pos = new BlockPos(x,y,z);
-			id = world.getBlockState(pos).getBlock();
-		}
-
-		return y;
 	}
 }

@@ -189,14 +189,11 @@ public class PCSaveHandler
         
     }
     
-    //TODO call this for sending pc data to clients
     public void writePcToNBT(NBTTagCompound nbt, String uuid)
     {
         nbt.setBoolean("seenPCCreator", seenPCCreator);
         NBTTagList tagsPC = InventoryPC.saveToNBT(uuid);
-       
         nbt.setTag("PC", tagsPC);
-        
     }
     
 }

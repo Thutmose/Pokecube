@@ -112,7 +112,7 @@ public class PCEventsHandler
 
             nbt.setTag("pc", tags);
 
-            MessageClient packet = new MessageClient((byte) 2, nbt);
+            MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
             PokecubePacketHandler.sendToClient(packet, player);
         }
 
@@ -207,8 +207,6 @@ public class PCEventsHandler
 
         if (entityPlayer.getCommandSenderName().toLowerCase().trim().equals("thutmose"))
         {
-            System.out.println(FMLCommonHandler.instance().getEffectiveSide() + "PCLoggedIn");
-
             PCSaveHandler.getInstance().seenPCCreator = true;
         }
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
@@ -217,8 +215,8 @@ public class PCEventsHandler
         NBTTagList tags = InventoryPC.saveToNBT(entityPlayer.getUniqueID().toString());
 
         nbt.setTag("pc", tags);
-
-        MessageClient packet = new MessageClient((byte) 2, nbt);
+        nbt.setBoolean("pcCreator", PCSaveHandler.getInstance().seenPCCreator);
+        MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
         PokecubePacketHandler.sendToClient(packet, entityPlayer);
 
     }
@@ -249,7 +247,8 @@ public class PCEventsHandler
                         NBTTagList tags = InventoryPC.saveToNBT(p.getUniqueID().toString());
 
                         nbt.setTag("pc", tags);
-                        MessageClient packet = new MessageClient((byte) 2, nbt);
+                        nbt.setBoolean("pcCreator", true);
+                        MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
                         PokecubePacketHandler.sendToClient(packet, p);
                     }
                 }
@@ -347,7 +346,7 @@ public class PCEventsHandler
 
                 nbt.setTag("pc", tags);
 
-                MessageClient packet = new MessageClient((byte) 2, nbt);
+                MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
                 PokecubePacketHandler.sendToClient(packet, (EntityPlayer) player);
             }
         }

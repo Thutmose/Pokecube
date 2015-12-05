@@ -31,18 +31,12 @@ public class PCPacketHandler
     public static byte TYPEADDLAND    = 1;
     public static byte TYPEREMOVELAND = 2;
 
-    public static void sendBagOpenPacket(boolean fromPC, Vector3 loc)
-    {
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-        buf.writeByte(7);
-        buf.writeBoolean(true);
-        loc.writeToBuff(buf);
-        MessageServer packet = new MessageServer(buf);
-        PokecubePacketHandler.sendToServer(packet);
-    }
-
     public static class MessageClient implements IMessage
     {
+        public static final byte ALLPC      = 1;
+        public static final byte PERSONALPC = 2;
+        public static final byte TRADE      = 3;
+
         PacketBuffer buffer;
 
         public MessageClient()
@@ -65,7 +59,6 @@ public class PCPacketHandler
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
             buffer.writeNBTTagCompoundToBuffer(nbt);
-            // System.out.println(buffer.array().length);
         }
 
         @Override
@@ -98,7 +91,7 @@ public class PCPacketHandler
                 {
                     message[i] = buffer.array()[i + 1];
                 }
-                if (channel == 1)
+                if (channel == ALLPC)
                 {
                     try
                     {
@@ -110,13 +103,17 @@ public class PCPacketHandler
                         e.printStackTrace();
                     }
                 }
-                if (channel == 2)
+                if (channel == PERSONALPC)
                 {
                     try
                     {
                         NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
                         if (tag == null) return;
                         NBTTagList list = (NBTTagList) tag.getTag("pc");
+                        if (tag.hasKey("pcCreator"))
+                        {
+                            PCSaveHandler.getInstance().seenPCCreator = tag.getBoolean("pcCreator");
+                        }
                         InventoryPC.loadFromNBT(list, true);
                     }
                     catch (Exception e)
@@ -124,7 +121,7 @@ public class PCPacketHandler
                         e.printStackTrace();
                     }
                 }
-                if (channel == 5)
+                if (channel == TRADE)
                 {
                     handleTradePacket(message, player);
                 }
@@ -143,7 +140,10 @@ public class PCPacketHandler
 
     public static class MessageServer implements IMessage
     {
-        PacketBuffer buffer;
+        public static final byte PC        = 1;
+        public static final byte PCRELEASE = 2;
+        public static final byte TRADE     = 3;
+        PacketBuffer             buffer;
 
         public MessageServer()
         {
@@ -165,7 +165,6 @@ public class PCPacketHandler
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
             buffer.writeNBTTagCompoundToBuffer(nbt);
-            // System.out.println(buffer.array().length);
         }
 
         @Override
@@ -198,25 +197,15 @@ public class PCPacketHandler
                 {
                     message[i] = buffer.array()[i + 1];
                 }
-                if (channel == 5)
+                if (channel == TRADE)
                 {
                     handleTradePacket(message, player);
                 }
-                if (channel == 6)
+                else if (channel == PC)
                 {
                     handlePCPacket(message, player);
                 }
-                if (channel == 7)
-                {
-//                    boolean pc = buffer.readBoolean();//TODO see when this packet was sent
-//                    Vector3 v = Vector3.readFromBuff(buffer);
-//                    if (pc) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, v.intX(),
-//                            v.intY(), v.intZ());
-//                    else player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIPC_ID, player.worldObj, v.intX(), v.intY(),
-//                            v.intZ());
-                }
-
-                if (channel == 8)
+                else if (channel == PCRELEASE)
                 {
                     try
                     {
@@ -334,8 +323,7 @@ public class PCPacketHandler
 
                 mes = 9 + "," + x + "," + y + "," + z + "," + player.getEntityId() + ",0";
                 Vector3 point = Vector3.getNewVectorFromPool().set(player);
-                MessageClient pac = makeClientPacket(PokecubePacketHandler.CHANNEL_ID_TradingTable,
-                        mes.getBytes());
+                MessageClient pac = makeClientPacket(MessageClient.TRADE, mes.getBytes());
                 PokecubePacketHandler.sendToAllNear(pac, point, player.dimension, 10);
                 point.freeVectorFromPool();
                 return;

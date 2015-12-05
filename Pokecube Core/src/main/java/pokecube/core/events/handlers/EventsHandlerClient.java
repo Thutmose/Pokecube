@@ -258,8 +258,8 @@ public class EventsHandlerClient
                 if (rainXCoords == null)
                 {
                     rainXCoords = new float[] { 0 };
-                } // TODO fix the lag when it tries to render bunches of times
-                  // per tick
+                }
+                
                 if (rainXCoords[0] == event.renderPartialTicks) return;
                 rainXCoords[0] = event.renderPartialTicks;
                 List<Slot> slots = gui.inventorySlots.inventorySlots;

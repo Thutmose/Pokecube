@@ -1288,8 +1288,6 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_DAZZLINGGLEAM));//setAnimtion(new ParticleBeam("white")).setMultiTarget());
     }
 
-    /** TODO confim that recoil works with the new system Moves that cause
-     * recoil Damage */
     static void registerRecoilMoves()
     {
 

@@ -72,7 +72,7 @@ public class BlockBerryCrop extends BlockCrops {
 	}
 
     @Override
-    public void grow(World worldIn, BlockPos pos, IBlockState state)//TODO growing things here
+    public void grow(World worldIn, BlockPos pos, IBlockState state)
     {
         int i = ((Integer)state.getValue(AGE)).intValue() + MathHelper.getRandomIntegerInRange(worldIn.rand, 2, 5);
 

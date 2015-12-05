@@ -77,7 +77,6 @@ public class RenderPokemobs extends RenderPokemob {
 			}
 			else if(renderMap.get(nbm)!=null)
 			{
-//				renderMap.get(nbm)..setRenderManager(renderManager);//TODO see if binding render manager was needed
 				renderMap.get(nbm).doRender(entity, x, y, z, par8, par9);
 			}
 			else

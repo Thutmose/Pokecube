@@ -256,8 +256,8 @@ public class PokemobTerrainEffects implements ITerrainEffect
         {
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
             {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-                buffer.writeByte(7);
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(73));
+                buffer.writeByte(PokecubeClientPacket.TERRAINEFFECTS);
                 buffer.writeInt(chunkX);
                 buffer.writeInt(chunkY);
                 buffer.writeInt(chunkZ);

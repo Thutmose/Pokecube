@@ -21,7 +21,7 @@ import pokecube.core.client.Resources;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 
 
 public class GuiPokemob extends GuiContainer {
@@ -176,11 +176,11 @@ public class GuiPokemob extends GuiContainer {
     		byte type = -1;
     		if(type!=0)
     		{
-    			PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-    			buffer.writeByte(8);
+    			PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+    			buffer.writeByte(MessageServer.STANCE);
     			buffer.writeInt(entity.getEntityId());
     			buffer.writeByte(type);
-    			PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
+    			MessageServer packet = new MessageServer(buffer);
     			PokecubePacketHandler.sendToServer(packet);
     		}
         }
@@ -194,12 +194,12 @@ public class GuiPokemob extends GuiContainer {
     		byte type = 1;
     		if(type!=0)
     		{
-    			PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-    			buffer.writeByte(8);
-    			buffer.writeInt(entity.getEntityId());
-    			buffer.writeByte(type);
-    			PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
-    			PokecubePacketHandler.sendToServer(packet);
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+                buffer.writeByte(MessageServer.STANCE);
+                buffer.writeInt(entity.getEntityId());
+                buffer.writeByte(type);
+                MessageServer packet = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(packet);
     		}
     	}
     	else if(guibutton.id == 2)
@@ -215,12 +215,12 @@ public class GuiPokemob extends GuiContainer {
     		}
     		if(type!=0)
     		{
-    			PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-    			buffer.writeByte(8);
-    			buffer.writeInt(entity.getEntityId());
-    			buffer.writeByte(type);
-    			PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
-    			PokecubePacketHandler.sendToServer(packet);
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+                buffer.writeByte(MessageServer.STANCE);
+                buffer.writeInt(entity.getEntityId());
+                buffer.writeByte(type);
+                MessageServer packet = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(packet);
     		}
     	}
     }

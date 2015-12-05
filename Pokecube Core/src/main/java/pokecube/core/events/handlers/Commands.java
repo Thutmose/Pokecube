@@ -111,8 +111,8 @@ public class Commands implements ICommand
             PokedexEntry entry = Database.getEntry(name);
             if (entry != null)
             {
-                ByteBuf buffer = Unpooled.buffer();
-                buffer.writeByte(15);
+                ByteBuf buffer = Unpooled.buffer(5);
+                buffer.writeByte(PokecubeClientPacket.WIKIWRITE);
                 buffer.writeInt(entry.getPokedexNb());
                 PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
                 PokecubePacketHandler.sendToClient(packet, (EntityPlayer) cSender);
@@ -829,8 +829,8 @@ public class Commands implements ICommand
                 {
                     EntityPlayer player = (EntityPlayer) cSender;
                     PokecubeSerializer.getInstance().setHasStarter(player, false);
-                    ByteBuf buf = Unpooled.buffer();
-                    buf.writeByte(PokecubePacketHandler.CHANNEL_ID_ChooseFirstPokemob);
+                    ByteBuf buf = Unpooled.buffer(3);
+                    buf.writeByte(PokecubeClientPacket.CHOOSE1ST);
                     buf.writeBoolean(false);
                     buf.writeBoolean(true);
                     PokecubeClientPacket packet = new PokecubeClientPacket(buf);
@@ -876,8 +876,8 @@ public class Commands implements ICommand
                         if (player != null)
                         {
                             PokecubeSerializer.getInstance().setHasStarter(player, false);
-                            ByteBuf buf = Unpooled.buffer();
-                            buf.writeByte(PokecubePacketHandler.CHANNEL_ID_ChooseFirstPokemob);
+                            ByteBuf buf = Unpooled.buffer(3);
+                            buf.writeByte(PokecubeClientPacket.CHOOSE1ST);
                             buf.writeBoolean(false);
                             buf.writeBoolean(true);
                             PokecubeClientPacket packet = new PokecubeClientPacket(buf);

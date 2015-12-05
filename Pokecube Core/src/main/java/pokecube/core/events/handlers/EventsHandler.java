@@ -217,8 +217,8 @@ public class EventsHandler
 
             look.freeVectorFromPool();
             temp.freeVectorFromPool();
-            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeByte(7);
+            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(5));
+            buffer.writeByte(PokecubeServerPacket.POKECUBEUSE);
             if (target != null)
             {
                 buffer.writeInt(target.getEntityId());
@@ -313,7 +313,7 @@ public class EventsHandler
             nbt.setBoolean("hasSerializer", true);
             boolean offline = !FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode();
             nbt.setBoolean("serveroffline", offline);
-            PokecubeClientPacket packet = new PokecubeClientPacket(PokecubePacketHandler.CHANNEL_ID_STATS, nbt);
+            PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
             PokecubePacketHandler.sendToClient(packet, entityPlayer);
         }
 
@@ -424,7 +424,7 @@ public class EventsHandler
             if (pendingStarters.contains(player.getEntityId()))
             {
                 PokecubeClientPacket packet2 = new PokecubeClientPacket(
-                        new byte[] { PokecubePacketHandler.CHANNEL_ID_ChooseFirstPokemob });
+                        new byte[] { PokecubeClientPacket.CHOOSE1ST });
                 System.out.println("Sending Packet to " + player);
                 PokecubePacketHandler.sendToClient(packet2, player);
                 pendingStarters.remove(player.getEntityId());

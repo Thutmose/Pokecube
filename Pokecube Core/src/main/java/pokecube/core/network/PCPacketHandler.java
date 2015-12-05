@@ -45,8 +45,7 @@ public class PCPacketHandler
 
         public MessageClient(byte[] data)
         {
-            this.buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeBytes(data);
+            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
         }
 
         public MessageClient(PacketBuffer buffer)
@@ -66,7 +65,7 @@ public class PCPacketHandler
         {
             if (buffer == null)
             {
-                buffer = new PacketBuffer(Unpooled.buffer());
+                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
             }
             buffer.writeBytes(buf);
         }
@@ -76,7 +75,7 @@ public class PCPacketHandler
         {
             if (buffer == null)
             {
-                buffer = new PacketBuffer(Unpooled.buffer());
+                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
             }
             buf.writeBytes(buffer);
         }
@@ -151,8 +150,7 @@ public class PCPacketHandler
 
         public MessageServer(byte[] data)
         {
-            this.buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeBytes(data);
+            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
         }
 
         public MessageServer(PacketBuffer buffer)
@@ -182,7 +180,7 @@ public class PCPacketHandler
         {
             if (buffer == null)
             {
-                buffer = new PacketBuffer(Unpooled.buffer());
+                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
             }
             buf.writeBytes(buffer);
         }

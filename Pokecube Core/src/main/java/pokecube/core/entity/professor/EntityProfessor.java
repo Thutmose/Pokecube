@@ -162,7 +162,7 @@ public class EntityProfessor extends EntityAgeable
         {
         	if(!PokecubeSerializer.getInstance().hasStarter(player))
         	{
-	        	PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] {PokecubePacketHandler.CHANNEL_ID_ChooseFirstPokemob});
+	        	PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] {PokecubeClientPacket.CHOOSE1ST});
 	        	PokecubePacketHandler.sendToClient(packet, player);
         	}
         	else

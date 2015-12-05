@@ -97,7 +97,7 @@ public class GuiBag extends GuiContainer {
         	} 
         	if(guibutton.id == 4)
         	{
-				PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+				PacketBuffer buf = new PacketBuffer(Unpooled.buffer(1));
 				buf.writeByte(7);
 				buf.writeBoolean(false);
 				loc.writeToBuff(buf);

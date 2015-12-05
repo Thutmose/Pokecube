@@ -45,7 +45,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
@@ -379,7 +379,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setInteger("id", getEntityId());
                 nbt.setString("message", message);
-                PokecubeClientPacket mess = new PokecubeClientPacket((byte) 10, nbt);
+                PokecubeClientPacket mess = new PokecubeClientPacket(PokecubeClientPacket.MOVEMESSAGE, nbt);
                 PokecubePacketHandler.sendToClient(mess, (EntityPlayer) owner);
             }
         }
@@ -582,14 +582,8 @@ public abstract class EntityTameablePokemob extends EntityTameable
         {
             try
             {
-                String toSend = getEntityId() + "`p`";
-
-                byte[] message = toSend.getBytes();
-                PokecubeServerPacket packet = PokecubePacketHandler
-                        .makeServerPacket(PokecubePacketHandler.CHANNEL_ID_EntityPokemob, message);
+                MessageServer packet = new MessageServer(MessageServer.RETURN, getEntityId());
                 PokecubePacketHandler.sendToServer(packet);
-                // this.setDead();
-
             }
             catch (Exception ex)
             {

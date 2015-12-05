@@ -404,7 +404,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                 }
             }
         }
-        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubePacketHandler.CHANNEL_ID_STATS,
+        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS,
                 buffer.array());
         PokecubePacketHandler.sendToServer(packet);
     }
@@ -414,7 +414,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     public void pokemobStance()
     {
         byte[] message = { (byte) 22 };
-        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubePacketHandler.CHANNEL_ID_STATS,
+        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS,
                 message);
         PokecubePacketHandler.sendToServer(packet);
     }

@@ -55,7 +55,7 @@ public class ItemPokedex extends ItemTranslated
         	nbt.setBoolean("hasTerrain", true);
         	nbt.setTag("terrain", tag);
         	
-        	PokecubeClientPacket packet = new PokecubeClientPacket(PokecubePacketHandler.CHANNEL_ID_STATS, nbt);
+        	PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
         	PokecubePacketHandler.sendToClient(packet, player);
         }
     }
@@ -95,7 +95,7 @@ public class ItemPokedex extends ItemTranslated
 				NBTTagCompound teletag = new NBTTagCompound();
 				PokecubeSerializer.getInstance().writePlayerTeleports(playerIn.getUniqueID(), teletag);
 				
-	        	PokecubeClientPacket packet = new PokecubeClientPacket((byte)8, teletag);
+	        	PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST, teletag);
 	        	PokecubePacketHandler.sendToClient(packet, playerIn);
     		}
     		hit.freeVectorFromPool();

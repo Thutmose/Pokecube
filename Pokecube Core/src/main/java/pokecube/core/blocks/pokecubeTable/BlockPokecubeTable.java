@@ -57,7 +57,7 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
             if (!PokecubeSerializer.getInstance().hasStarter(player))
             {
                 ByteBuf buf = Unpooled.buffer();
-                buf.writeByte(PokecubePacketHandler.CHANNEL_ID_ChooseFirstPokemob);
+                buf.writeByte(PokecubeClientPacket.CHOOSE1ST);
                 buf.writeBoolean(true);
 
                 ArrayList<Integer> starters = new ArrayList<Integer>();

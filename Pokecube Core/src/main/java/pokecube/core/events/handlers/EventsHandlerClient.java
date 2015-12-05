@@ -50,6 +50,7 @@ import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -117,11 +118,7 @@ public class EventsHandlerClient
         EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
         if (key == Keyboard.KEY_SPACE && player.ridingEntity instanceof IPokemob)
         {
-            String toSend = player.ridingEntity.getEntityId() + "`j`";
-
-            byte[] message = toSend.getBytes();
-            PokecubeServerPacket packet = PokecubePacketHandler
-                    .makeServerPacket(PokecubePacketHandler.CHANNEL_ID_EntityPokemob, message);
+            MessageServer packet = new MessageServer(MessageServer.JUMP, player.ridingEntity.getEntityId());
             PokecubePacketHandler.sendToServer(packet);
         }
         if (key == ClientProxyPokecube.mobMegavolve.getKeyCode())
@@ -144,9 +141,8 @@ public class EventsHandlerClient
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING))
             {
-                PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-                System.out.println(current);
-                buf.writeByte(17);
+                PacketBuffer buf = new PacketBuffer(Unpooled.buffer(5));
+                buf.writeByte(PokecubeServerPacket.MEGAEVOLVE);
                 buf.writeInt(current.getPokemonUID());
 
                 PokecubeServerPacket packet = new PokecubeServerPacket(buf);

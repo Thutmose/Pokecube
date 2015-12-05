@@ -54,8 +54,8 @@ public class Move_Terrain extends Move_Basic
 			teffect.setEffect(effect, duration + attacked.worldObj.getTotalWorldTime());
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
-			PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-			buffer.writeByte(7);
+			PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(73));
+			buffer.writeByte(PokecubeClientPacket.TERRAINEFFECTS);
 			buffer.writeInt(segment.chunkX);
 			buffer.writeInt(segment.chunkY);
 			buffer.writeInt(segment.chunkZ);

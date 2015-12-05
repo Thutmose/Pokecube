@@ -57,7 +57,7 @@ public class Move_Teleport extends Move_Utility
                     EventsHandler.recallAllPokemobsExcluding((EntityPlayer) attacker.getPokemonOwner(),
                             (IPokemob) null);
 
-                    PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] { (byte) 13 });
+                    PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.TELEPORTINDEX });
                     PokecubePacketHandler.sendToClient(packet, (EntityPlayer) attacker.getPokemonOwner());
                 }
             }

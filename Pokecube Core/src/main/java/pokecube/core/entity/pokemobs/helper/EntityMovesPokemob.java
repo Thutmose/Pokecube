@@ -11,11 +11,13 @@ import java.util.List;
 import java.util.Set;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -40,7 +42,7 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
@@ -262,11 +264,14 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
             try
             {
-                String toSend = getEntityId() + "`m`";
-                toSend += moveIndex0 + "`" + moveIndex1 + "`" + moveInfo.num;
-                byte[] message = toSend.getBytes();
-                PokecubeServerPacket packet = PokecubePacketHandler
-                        .makeServerPacket(PokecubePacketHandler.CHANNEL_ID_EntityPokemob, message);
+                //message, id, move0, move1, movenum
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
+                buffer.writeByte(MessageServer.MOVESWAP);
+                buffer.writeInt(getEntityId());
+                buffer.writeByte((byte)moveIndex0);
+                buffer.writeByte((byte)moveIndex1);
+                buffer.writeInt(moveInfo.num);
+                MessageServer packet = new MessageServer(buffer);
                 PokecubePacketHandler.sendToServer(packet);
 
             }
@@ -576,12 +581,11 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         {
             try
             {
-                String toSend = getEntityId() + "`i`";
-                toSend += moveIndex;
-
-                byte[] message = toSend.getBytes();
-                PokecubeServerPacket packet = PokecubePacketHandler
-                        .makeServerPacket(PokecubePacketHandler.CHANNEL_ID_EntityPokemob, message);
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+                buffer.writeByte(MessageServer.MOVEINDEX);
+                buffer.writeInt(getEntityId());
+                buffer.writeByte((byte)moveIndex);
+                MessageServer packet = new MessageServer(buffer);
                 PokecubePacketHandler.sendToServer(packet);
             }
             catch (Exception ex)

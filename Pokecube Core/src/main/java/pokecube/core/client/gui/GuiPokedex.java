@@ -212,7 +212,6 @@ public class GuiPokedex extends GuiScreen
             }
             else if (page == 4 && par2 == 28 && index == 0 || index == 4)
             {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
 
                 Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
@@ -220,7 +219,7 @@ public class GuiPokedex extends GuiScreen
 
                 if (locations.size() > 0)
                 {
-
+                    PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
                     Vector4 location = locations
                             .get((GuiScrollableLists.instance().indexLocation) % locations.size()).loc;
                     if (index == 0) buffer.writeByte(-1);
@@ -234,7 +233,7 @@ public class GuiPokedex extends GuiScreen
 
                     PokecubeSerializer.getInstance().unsetTeleport(location,
                             minecraft.thePlayer.getUniqueID().toString());
-                    PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 5, buffer.array());
+                    PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX, buffer.array());
                     PokecubePacketHandler.sendToServer(packet);
                 }
 
@@ -595,7 +594,7 @@ public class GuiPokedex extends GuiScreen
             if (entityPlayer.getHeldItem() != null && entityPlayer.getHeldItem().getItem() == PokecubeItems.pokedex)
             {
                 // entityPlayer.getHeldItem().setItemDamage(page);
-                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 5,
+                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
                         new byte[] { (byte) page });
                 PokecubePacketHandler.sendToServer(packet);
 

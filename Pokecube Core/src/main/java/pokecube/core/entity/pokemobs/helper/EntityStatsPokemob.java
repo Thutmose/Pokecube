@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -28,7 +29,7 @@ import pokecube.core.events.LevelUpEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -493,12 +494,13 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             try
             {
-                String toSend = getEntityId() + "`n`";
-                toSend += nickname;
-
-                byte[] message = toSend.getBytes();
-                PokecubeServerPacket packet = PokecubePacketHandler
-                        .makeServerPacket(PokecubePacketHandler.CHANNEL_ID_EntityPokemob, message);
+                byte[] string = nickname.getBytes();
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6 + string.length));
+                buffer.writeByte(MessageServer.NICKNAME);
+                buffer.writeInt(getEntityId());
+                buffer.writeByte(string.length);
+                buffer.writeByteArray(string);
+                MessageServer packet = new MessageServer(buffer);
                 PokecubePacketHandler.sendToServer(packet);
             }
             catch (Exception ex)

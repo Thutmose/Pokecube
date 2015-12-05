@@ -248,7 +248,7 @@ public class GuiNewChooseFirstPokemob extends GuiScreen
                 outputStream.writeInt(pokedexNb);
                 outputStream.writeBoolean(fixed);
                 PokecubeServerPacket packet = PokecubePacketHandler
-                        .makeServerPacket(PokecubePacketHandler.CHANNEL_ID_ChooseFirstPokemob, bos.toByteArray());
+                        .makeServerPacket(PokecubeServerPacket.CHOOSE1ST, bos.toByteArray());
                 PokecubePacketHandler.sendToServer(packet);
             }
             catch (Exception ex)

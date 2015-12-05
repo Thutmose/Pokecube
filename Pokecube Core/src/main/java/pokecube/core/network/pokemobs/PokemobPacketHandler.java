@@ -4,246 +4,380 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.mod_Pokecube;
+import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
+import thut.api.terrain.TerrainManager;
+import thut.api.terrain.TerrainSegment;
 
 public class PokemobPacketHandler
 {
-	public static final byte MESSAGERETURN = 0;
-	public static final byte MESSAGERENAME = 1;
-	
-	public static final byte MESSAGEMOVEUSE = 2;
-	public static final byte MESSAGEMOVEMESSAGE = 3;
-	public static final byte MESSAGEMOVESWAP = 4;
-	public static final byte MESSAGEMOVEINDEX = 5;
-	
-	public static final byte MESSAGECHANGEFORM = 6;
-	
-	public static final byte MESSAGEALIVECHECK = 7;
-	
-	public static class MessageClient implements IMessage
-	{
-		PacketBuffer buffer;
+    public static class MessageClient implements IMessage
+    {
 
-		public MessageClient()
-		{
-		};
+        public static final byte MOVEUSE     = 2;
+        public static final byte MOVEMESSAGE = 3;
+        public static final byte MOVESWAP    = 4;
+        public static final byte MOVEINDEX   = 5;
 
-		public MessageClient(byte[] data)
-		{
-			this.buffer = new PacketBuffer(Unpooled.buffer());
-			buffer.writeBytes(data);
-		}
+        public static final byte CHANGEFORM = 6;
+        public static final byte ALIVECHECK = 7;
 
-		public MessageClient(PacketBuffer buffer)
-		{
-			this.buffer = buffer;
-		}
+        PacketBuffer buffer;
 
-		public MessageClient(byte channel, NBTTagCompound nbt)
-		{
-			this.buffer = new PacketBuffer(Unpooled.buffer());
-			buffer.writeByte(channel);
-			buffer.writeNBTTagCompoundToBuffer(nbt);
-		}
+        public MessageClient()
+        {
+        };
 
-		@Override
-		public void fromBytes(ByteBuf buf)
-		{
-			if (buffer == null)
-			{
-				buffer = new PacketBuffer(Unpooled.buffer());
-			}
-			buffer.writeBytes(buf);
-		}
+        public MessageClient(byte[] data)
+        {
+            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
+        }
 
-		@Override
-		public void toBytes(ByteBuf buf)
-		{
-			if (buffer == null)
-			{
-				buffer = new PacketBuffer(Unpooled.buffer());
-			}
-			buf.writeBytes(buffer);
-		}
+        public MessageClient(PacketBuffer buffer)
+        {
+            this.buffer = buffer;
+        }
 
-		public static class MessageHandlerClient implements IMessageHandler<MessageClient, MessageServer>
-		{
-			public void handleClientSide(EntityPlayer player, PacketBuffer buffer)
-			{
-				byte channel = buffer.readByte();
+        public MessageClient(byte channel, NBTTagCompound nbt)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeByte(channel);
+            buffer.writeNBTTagCompoundToBuffer(nbt);
+        }
 
-				if(player==null)
-				{
-					System.out.println(Minecraft.getMinecraft().thePlayer+" "+channel);
-					return;
-				}
-				
-				if(channel == MESSAGEALIVECHECK)
-				{
-					int id = buffer.readInt();
-					boolean alive = buffer.readBoolean();
-					Entity e;
-					if(!alive && (e = (Entity) PokecubeSerializer.getInstance().getPokemob(id))!=null)
-					{
-						e.setDead();
-					}
-					else if((e = (Entity) PokecubeSerializer.getInstance().getPokemob(id))!=null)
-					{
+        @Override
+        public void fromBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer());
+            }
+            buffer.writeBytes(buf);
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer());
+            }
+            buf.writeBytes(buffer);
+        }
+
+        public static class MessageHandlerClient implements IMessageHandler<MessageClient, MessageServer>
+        {
+            public void handleClientSide(EntityPlayer player, PacketBuffer buffer)
+            {
+                byte channel = buffer.readByte();
+
+                if (player == null)
+                {
+                    System.err.println(Minecraft.getMinecraft().thePlayer + " " + channel);
+                    return;
+                }
+
+                if (channel == ALIVECHECK)
+                {
+                    int id = buffer.readInt();
+                    boolean alive = buffer.readBoolean();
+                    Entity e;
+                    if (!alive && (e = (Entity) PokecubeSerializer.getInstance().getPokemob(id)) != null)
+                    {
+                        e.setDead();
+                    }
+                    else if ((e = (Entity) PokecubeSerializer.getInstance().getPokemob(id)) != null)
+                    {
                         Vector3 v = Vector3.readFromBuff(buffer);
-						Vector3 v2 = Vector3.getNewVectorFromPool().set(e);
-						if(v.distanceTo(v2)>e.width)
-						{
-							v.moveEntity(e);
-						}
-					}
-				}
-			}
+                        Vector3 v2 = Vector3.getNewVectorFromPool().set(e);
+                        if (v.distanceTo(v2) > e.width)
+                        {
+                            v.moveEntity(e);
+                        }
+                    }
+                }
+            }
 
-			@Override
-			public MessageServer onMessage(MessageClient message, MessageContext ctx)
-			{
-				handleClientSide(mod_Pokecube.getPlayer(null), message.buffer);
-				return null;
-			}
-		}
-	}
+            @Override
+            public MessageServer onMessage(MessageClient message, MessageContext ctx)
+            {
+                handleClientSide(mod_Pokecube.getPlayer(null), message.buffer);
+                return null;
+            }
+        }
+    }
 
-	public static class MessageServer implements IMessage
-	{
-		PacketBuffer buffer;
+    public static class MessageServer implements IMessage
+    {
+        public static final byte RETURN      = 0;
+        public static final byte NICKNAME    = 1;
+        public static final byte MOVEUSE     = 2;
+        public static final byte MOVEMESSAGE = 3;
+        public static final byte MOVESWAP    = 4;
+        public static final byte MOVEINDEX   = 5;
+        public static final byte CHANGEFORM  = 6;
+        public static final byte ALIVECHECK  = 7;
+        public static final byte JUMP        = 8;
+        public static final byte STANCE      = 9;
+        PacketBuffer             buffer;
 
-		public MessageServer()
-		{
-		};
+        public MessageServer()
+        {
+        };
 
-		public MessageServer(byte[] data)
-		{
-			this.buffer = new PacketBuffer(Unpooled.buffer());
-			buffer.writeBytes(data);
-		}
+        public MessageServer(byte messageid, int entityId)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer(9));
+            buffer.writeByte(messageid);
+            buffer.writeInt(entityId);
+        }
 
-		public MessageServer(PacketBuffer buffer)
-		{
-			this.buffer = buffer;
-		}
+        public MessageServer(byte[] data)
+        {
+            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
+        }
 
-		public MessageServer(byte channel, NBTTagCompound nbt)
-		{
-			this.buffer = new PacketBuffer(Unpooled.buffer());
-			buffer.writeByte(channel);
-			buffer.writeNBTTagCompoundToBuffer(nbt);
-		}
+        public MessageServer(PacketBuffer buffer)
+        {
+            this.buffer = buffer;
+        }
 
-		@Override
-		public void fromBytes(ByteBuf buf)
-		{
-			if (buffer == null)
-			{
-				buffer = new PacketBuffer(Unpooled.buffer());
-			}
-			buffer.writeBytes(buf);
-		}
+        public MessageServer(byte channel, int id, NBTTagCompound nbt)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer(9));
+            buffer.writeByte(channel);
+            buffer.writeInt(id);
+            buffer.writeNBTTagCompoundToBuffer(nbt);
+        }
 
-		@Override
-		public void toBytes(ByteBuf buf)
-		{
-			if (buffer == null)
-			{
-				buffer = new PacketBuffer(Unpooled.buffer());
-			}
-			buf.writeBytes(buffer);
-		}
+        @Override
+        public void fromBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer());
+            }
+            buffer.writeBytes(buf);
+        }
 
-		public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
-		{
-			public void handleServerSide(EntityPlayer player, PacketBuffer buffer)
-			{
-				byte channel = buffer.readByte();
-				
-				if(channel == MESSAGEALIVECHECK)
-				{
-					int id = buffer.readInt();
-					
-					Vector3 v = Vector3.getNewVectorFromPool();
-					
-					Entity e;
-					if((e = (Entity) PokecubeSerializer.getInstance().getPokemob(id))==null || e.isDead)
-					{
-						PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
-						ret.writeByte(MESSAGEALIVECHECK);
-						ret.writeInt(id);
-						ret.writeBoolean(false);
-						MessageClient message = new MessageClient(ret);
-						PokecubePacketHandler.sendToClient(message, player);
-					}
-					else
-					{
-						PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
-						ret.writeByte(MESSAGEALIVECHECK);
-						ret.writeInt(id);
-						ret.writeBoolean(true);
-						v.set(e).writeToBuff(ret);
-						MessageClient message = new MessageClient(ret);
-						PokecubePacketHandler.sendToClient(message, player);
-					}
-					
-					v.freeVectorFromPool();
-				}
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer());
+            }
+            buf.writeBytes(buffer);
+        }
 
-				if(channel == MESSAGERETURN)
-				{
-					int id = buffer.readInt();
-					Entity mob = player.worldObj.getEntityByID(id);
-					if(mob!=null && !mob.isDead && mob instanceof IPokemob)
-					{
-						((IPokemob)mob).returnToPokecube();
-					}
-				}
-			}
+        public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
+        {
+            public void handleServerSide(EntityPlayer player, PacketBuffer buffer)
+            {
+                byte channel = buffer.readByte();
+                int id = buffer.readInt();
+                IPokemob pokemob = null;
 
-			@Override
-			public IMessage onMessage(MessageServer message, MessageContext ctx)
-			{
-				EntityPlayer player = ctx.getServerHandler().playerEntity;
-				handleServerSide(player, message.buffer);
-				return null;
-			}
+                WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
+                        .worldServerForDimension(player.dimension);
 
-		}
+                pokemob = (IPokemob) world.getEntityByID(id);
 
-	}
+                if (pokemob == null) { return; }
 
-	public static MessageServer makeServerPacket(byte channel, byte[] data)
-	{
-		byte[] packetData = new byte[data.length + 1];
-		packetData[0] = channel;
+                if (channel == ALIVECHECK)
+                {
+                    Vector3 v = Vector3.getNewVectorFromPool();
+                    Entity e = (Entity) pokemob;
+                    if (e.isDead)
+                    {
+                        PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
+                        ret.writeByte(ALIVECHECK);
+                        ret.writeInt(id);
+                        ret.writeBoolean(false);
+                        MessageClient message = new MessageClient(ret);
+                        PokecubePacketHandler.sendToClient(message, player);
+                    }
+                    else
+                    {
+                        PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
+                        ret.writeByte(ALIVECHECK);
+                        ret.writeInt(id);
+                        ret.writeBoolean(true);
+                        v.set(e).writeToBuff(ret);
+                        MessageClient message = new MessageClient(ret);
+                        PokecubePacketHandler.sendToClient(message, player);
+                    }
+                    v.freeVectorFromPool();
+                }
+                else if (channel == RETURN)
+                {
+                    Entity mob = (Entity) pokemob;
+                    if (!mob.isDead)
+                    {
+                        ((IPokemob) mob).returnToPokecube();
+                    }
+                }
+                else if (channel == JUMP)
+                {
+                    ((EntityLiving) pokemob).getJumpHelper().setJumping();
+                }
+                else if (channel == MOVEINDEX)
+                {
+                    byte moveIndex = buffer.readByte();
+                    pokemob.setMoveIndex(moveIndex);
+                }
+                else if (channel == MOVESWAP)
+                {
+                    byte moveIndex0 = buffer.readByte();
+                    byte moveIndex1 = buffer.readByte();
+                    int num = buffer.readInt();
+                    pokemob.setLeaningMoveIndex(num);
+                    pokemob.exchangeMoves(moveIndex0, moveIndex1);
+                }
+                else if (channel == NICKNAME)
+                {
 
-		for (int i = 1; i < packetData.length; i++)
-		{
-			packetData[i] = data[i - 1];
-		}
-		return new MessageServer(packetData);
-	}
+                    boolean OT = pokemob.getPokemonOwnerName() == null
+                            || (PokecubeMod.fakeUUID.equals(pokemob.getOriginalOwnerUUID()))
+                            || (pokemob.getPokemonOwnerName().equals(pokemob.getOriginalOwnerUUID().toString()));
 
-	public static MessageClient makeClientPacket(byte channel, byte[] data)
-	{
-		byte[] packetData = new byte[data.length + 1];
-		packetData[0] = channel;
+                    if (!OT && pokemob.getPokemonOwner() != null)
+                    {
+                        OT = pokemob.getPokemonOwner().getUniqueID().equals(pokemob.getOriginalOwnerUUID());
+                    }
+                    if (!OT)
+                    {
+                        if (pokemob.getPokemonOwner() != null)
+                        {
+                            pokemob.getPokemonOwner()
+                                    .addChatMessage(new ChatComponentText("Cannot rename a traded pokemob"));
+                        }
+                    }
+                    else
+                    {
+                        byte[] string = new byte[buffer.readByte() + 1];
+                        for (int i = 0; i < string.length; i++)
+                        {
+                            string[i] = buffer.readByte();
+                        }
+                        String name = ChatAllowedCharacters.filterAllowedCharacters(new String(string));
+                        pokemob.setPokemonNickname(name);
+                    }
+                }
+                else if(channel == STANCE)
+                {
+                    byte dir = buffer.readByte();
+                    byte type = 0;
+                    if (dir > 0)
+                    {
+                        if (pokemob.getPokemonAIState(IPokemob.STAYING))
+                        {
+                            type = 3;
+                        }
+                        else if (pokemob.getPokemonAIState(IPokemob.GUARDING))
+                        {
+                            type = 2;
+                        }
+                        else
+                        {
+                            type = 1;
+                        }
+                    }
+                    else
+                    {
+                        if (pokemob.getPokemonAIState(IPokemob.STAYING))
+                        {
+                            type = 1;
+                        }
+                        else if (pokemob.getPokemonAIState(IPokemob.GUARDING))
+                        {
+                            type = 3;
+                        }
+                        else
+                        {
+                            type = 2;
+                        }
+                    }
+                    if (dir == 4) type = 4;
+                    if (type == 1)
+                    {
+                        pokemob.setPokemonAIState(IPokemob.GUARDING, true);
+                        ((GuardAI) pokemob.getGuardAI()).guardPeriod = TimePeriod.fullDay;
+                        TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity((Entity) pokemob);
+                        Vector3 mid = terrain.getCentre();
+                        pokemob.setHome(mid.intX(), mid.intY(), mid.intZ(), 16);
+                        ((GuardAI) pokemob.getGuardAI()).pos = new BlockPos(mid.intX(), mid.intY(), mid.intZ());
+                        pokemob.setPokemonAIState(IPokemob.STAYING, false);
+                    }
+                    else if (type == 2)
+                    {
+                        pokemob.setPokemonAIState(IPokemob.GUARDING, false);
+                        ((GuardAI) pokemob.getGuardAI()).guardPeriod = TimePeriod.fullDay;
+                        pokemob.setPokemonAIState(IPokemob.STAYING, true);
+                    }
+                    else if (type == 3)
+                    {
+                        pokemob.setPokemonAIState(IPokemob.STAYING, false);
+                        ((GuardAI) pokemob.getGuardAI()).guardPeriod = new TimePeriod(0, 0);
+                        pokemob.setPokemonAIState(IPokemob.GUARDING, false);
+                    }
+                    else if (dir == 4)
+                    {
+                        pokemob.setPokemonAIState(IPokemob.SITTING, !pokemob.getPokemonAIState(IPokemob.SITTING));
+                    }
+                }
+            }
 
-		for (int i = 1; i < packetData.length; i++)
-		{
-			packetData[i] = data[i - 1];
-		}
-		return new MessageClient(packetData);
-	}
+            @Override
+            public IMessage onMessage(MessageServer message, MessageContext ctx)
+            {
+                EntityPlayer player = ctx.getServerHandler().playerEntity;
+                handleServerSide(player, message.buffer);
+                return null;
+            }
+        }
+    }
+
+    public static MessageServer makeServerPacket(byte channel, byte[] data)
+    {
+        byte[] packetData = new byte[data.length + 1];
+        packetData[0] = channel;
+
+        for (int i = 1; i < packetData.length; i++)
+        {
+            packetData[i] = data[i - 1];
+        }
+        return new MessageServer(packetData);
+    }
+
+    public static MessageClient makeClientPacket(byte channel, byte[] data)
+    {
+        byte[] packetData = new byte[data.length + 1];
+        packetData[0] = channel;
+
+        for (int i = 1; i < packetData.length; i++)
+        {
+            packetData[i] = data[i - 1];
+        }
+        return new MessageClient(packetData);
+    }
 }

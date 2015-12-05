@@ -88,7 +88,7 @@ public class MovesUtils implements IMoveConstants
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setInteger("id", attacked.getEntityId());
             nbt.setString("message", "\u00a7c" + enemyUsed);
-            PokecubeClientPacket mess = new PokecubeClientPacket((byte) 10, nbt);
+            PokecubeClientPacket mess = new PokecubeClientPacket(PokecubeClientPacket.MOVEMESSAGE, nbt);
             PokecubePacketHandler.sendToClient(mess, (EntityPlayer) attacked);
         }
     }
@@ -936,7 +936,7 @@ public class MovesUtils implements IMoveConstants
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setInteger("id", attacked.getEntityId());
                 nbt.setString("message", "\u00a7c" + message);
-                PokecubeClientPacket mess = new PokecubeClientPacket((byte) 10, nbt);
+                PokecubeClientPacket mess = new PokecubeClientPacket(PokecubeClientPacket.MOVEMESSAGE, nbt);
                 PokecubePacketHandler.sendToClient(mess, (EntityPlayer) attacked);
             }
         }

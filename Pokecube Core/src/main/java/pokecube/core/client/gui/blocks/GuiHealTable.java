@@ -28,7 +28,7 @@ public class GuiHealTable extends GuiContainer
 
         if (guibutton.id == 1)
         {
-        	PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubePacketHandler.CHANNEL_ID_HealTable, "coucou".getBytes());
+        	PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKECENTER, "coucou".getBytes());
         	PokecubePacketHandler.sendToServer(packet);
         	
             ((ContainerHealTable) inventorySlots).heal();// client side

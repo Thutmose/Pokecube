@@ -147,8 +147,8 @@ public class ContainerPC extends Container{
 			for(int i = 2; i<message.length; i++)
 			{
 				message[i] = string[i-2];
-			}
-	        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 6, message);
+			}//TODO move this to PC packet handler instead
+	        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS, message);
 	        PokecubePacketHandler.sendToServer(packet);
 			return;
 		}

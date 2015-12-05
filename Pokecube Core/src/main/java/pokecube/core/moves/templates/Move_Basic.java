@@ -267,7 +267,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 toSend += "`" + 0;
             }
             PokecubeClientPacket packet = PokecubePacketHandler
-                    .makeClientPacket(PokecubePacketHandler.CHANNEL_ID_PokemobMove, toSend.getBytes());
+                    .makeClientPacket(PokecubeClientPacket.MOVEANIMATION, toSend.getBytes());
             PokecubePacketHandler.sendToAllNear(packet, v1.set(attacker), attacker.dimension, 64);
 
         }

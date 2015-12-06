@@ -14,16 +14,17 @@ import thut.api.maths.Vector3;
 
 public class ParticleBase implements IParticle, IAnimatedParticle
 {
-    int    duration  = 10;
-    int    lifetime  = 10;
-    long   lastTick  = 0;
-    int    animSpeed = 2;
-    double size      = 1;
-    int    rgba      = 0xFFFFFFFF;
-    String name;
+    int     duration  = 10;
+    int     lifetime  = 10;
+    long    lastTick  = 0;
+    int     animSpeed = 2;
+    double  size      = 1;
+    int     rgba      = 0xFFFFFFFF;
+    String  name;
+    boolean billboard = true;
 
     Vector3 velocity = Vector3.empty;
-    int[][]   tex      = new int[1][2];
+    int[][] tex      = new int[1][2];
 
     public ParticleBase(int x, int y)
     {
@@ -70,9 +71,9 @@ public class ParticleBase implements IParticle, IAnimatedParticle
     @Override
     public void kill()
     {
-        if (velocity != Vector3.empty && velocity!=null)
+        if (velocity != Vector3.empty && velocity != null)
         {
-            velocity.freeVectorFromPool();
+//            velocity.freeVectorFromPool();
         }
     }
 
@@ -84,10 +85,12 @@ public class ParticleBase implements IParticle, IAnimatedParticle
         ResourceLocation texture;
         GL11.glPushMatrix();
 
-        RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-        GL11.glRotatef(-renderManager.playerViewY - 45, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-        
+        if (billboard)
+        {
+            RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+            GL11.glRotatef(-renderManager.playerViewY - 45, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+        }
         setColour();
 
         float alpha = ((rgba >> 24) & 255) / 255f;
@@ -99,9 +102,9 @@ public class ParticleBase implements IParticle, IAnimatedParticle
         texture = new ResourceLocation("pokecube", "textures/particles.png");
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
         format = DefaultVertexFormats.field_181709_i;
-        
-        int num = (getDuration()/animSpeed) % tex.length;
-        
+
+        int num = (getDuration() / animSpeed) % tex.length;
+
         int u = tex[num][0], v = tex[num][1];
 
         Vector3 temp = Vector3.getNewVectorFromPool();
@@ -115,14 +118,14 @@ public class ParticleBase implements IParticle, IAnimatedParticle
         tez.begin(GL11.GL_QUADS, format);
         // Face 1
         tez.vertex(temp.x - size, temp.y - size, temp.z).tex(u1, v2).color(red, green, blue, alpha).endVertex();
-        tez.vertex(temp.x, temp.y - size, temp.z - size).tex(u2, v2).color(red, green, blue, alpha).endVertex();
-        tez.vertex(temp.x, temp.y + size, temp.z - size).tex(u2, v1).color(red, green, blue, alpha).endVertex();
+        tez.vertex(temp.x, temp.y - size, temp.z).tex(u2, v2).color(red, green, blue, alpha).endVertex();
+        tez.vertex(temp.x, temp.y + size, temp.z).tex(u2, v1).color(red, green, blue, alpha).endVertex();
         tez.vertex(temp.x - size, temp.y + size, temp.z).tex(u1, v1).color(red, green, blue, alpha).endVertex();
         // Face 2
         tez.vertex(temp.x - size, temp.y - size, temp.z).tex(u1, v2).color(red, green, blue, alpha).endVertex();
         tez.vertex(temp.x - size, temp.y + size, temp.z).tex(u1, v1).color(red, green, blue, alpha).endVertex();
-        tez.vertex(temp.x, temp.y + size, temp.z - size).tex(u2, v1).color(red, green, blue, alpha).endVertex();
-        tez.vertex(temp.x, temp.y - size, temp.z - size).tex(u2, v2).color(red, green, blue, alpha).endVertex();
+        tez.vertex(temp.x, temp.y + size, temp.z).tex(u2, v1).color(red, green, blue, alpha).endVertex();
+        tez.vertex(temp.x, temp.y - size, temp.z).tex(u2, v2).color(red, green, blue, alpha).endVertex();
         tez.end();
         temp.freeVectorFromPool();
         GL11.glPopMatrix();

@@ -13,17 +13,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
-import pokecube.core.client.render.particle.ParticleBase;
-import pokecube.core.client.render.particle.ParticleFactory;
-import pokecube.core.client.render.particle.ParticleHandler;
-import pokecube.core.client.render.particle.ParticleNoGravity;
-import pokecube.core.client.render.particle.ParticleOrientable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
-import pokecube.core.utils.Vector4;
 import thut.api.maths.Vector3;
 
 public class ItemTM extends ItemPokemobUseable {

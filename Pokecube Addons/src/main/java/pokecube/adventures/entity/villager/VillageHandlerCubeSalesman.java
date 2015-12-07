@@ -5,7 +5,6 @@ public class VillageHandlerCubeSalesman extends VillageHandlerBase //implements 
 //	public static VillageHandlerCubeSalesman villageHandler = null;
 //	public static ResourceLocation cubeSalesTexture = new ResourceLocation(PokecubeAdv.instance.ID, "textures/villager/cubesalesman.png");
 //	
-//	public static int ID = 20;//TODO make this check config
 //	
 //	public static void init()
 //	{

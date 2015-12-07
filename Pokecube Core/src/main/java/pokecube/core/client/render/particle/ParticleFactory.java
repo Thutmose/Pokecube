@@ -40,7 +40,6 @@ public class ParticleFactory
                 Vector4 v3 = new Vector4(0,1,0,(float) (90-normal.toSpherical().z * 180/Math.PI));
                 Vector4 v2 = new Vector4(1,0,0,(float) (90+(normal.y * 180/Math.PI)));
                 ((ParticleOrientable)particle).setOrientation(v3.addAngles(v2));
-//                normal.freeVectorFromPool();
             }
             ret = particle;
         }

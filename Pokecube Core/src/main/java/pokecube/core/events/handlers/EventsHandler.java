@@ -31,7 +31,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.gen.ChunkProviderHell;
+import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
 import net.minecraftforge.common.ForgeVersion.Status;
@@ -44,6 +44,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
@@ -111,7 +112,7 @@ public class EventsHandler
     private HashSet<Integer> pendingStarters = new HashSet<Integer>();
 
     @SubscribeEvent
-    public void WorldLoadEvent(Load evt)
+    public void worldLoadEvent(Load evt)
     {
         if (evt.world.isRemote) { return; }
         PokecubeMod.getFakePlayer(evt.world);
@@ -120,14 +121,14 @@ public class EventsHandler
         {
             AISaveHandler.instance();
         }
-
-        if (Mod_Pokecube_Helper.deactivateMonsters && evt.world.getChunkProvider() instanceof ChunkProviderHell)
+    }
+    
+    @SubscribeEvent
+    public void clearNetherBridge(InitMapGenEvent evt)
+    {
+        if(Mod_Pokecube_Helper.deactivateMonsters && evt.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
         {
-            // ChunkProviderHell provider = (ChunkProviderHell)
-            // evt.world.getChunkProvider();
-
-            // provider.genNetherBridge.getSpawnList().clear();//TODO remove
-            // nether bridge mobs via reflection
+            ((MapGenNetherBridge)evt.newGen).getSpawnList().clear();
         }
     }
 
@@ -143,7 +144,7 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void ExplosionEvents(ExplosionEvent evt)
+    public void explosionEvents(ExplosionEvent evt)
     {
         if (evt.explosion instanceof ExplosionCustom && evt instanceof ExplosionEvent.Detonate)
         {

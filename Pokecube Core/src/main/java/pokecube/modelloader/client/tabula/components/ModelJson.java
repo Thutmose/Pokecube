@@ -271,7 +271,7 @@ public class ModelJson extends MowzieModelBase
 
     public void updateAnimation(Entity entity, float partialTick)
     {
-        float time = entity.ticksExisted + partialTick;
+        float time = entity.worldObj.getTotalWorldTime() + partialTick;
         time = time % animationLength;
         for (Entry<String, ArrayList<AnimationComponent>> entry : playingAnimation.sets.entrySet())
         {

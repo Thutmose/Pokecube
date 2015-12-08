@@ -9,9 +9,6 @@ package pokecube.core.interfaces;
  */
 public interface IMoveNames{
 	
-	//No move move for just sitting there
-	String MOVE_NONE			= "none";
-	
 	// 1st Gen
 	String	MOVE_PINMISSILE		= "pinmissile";
 	String	MOVE_LEECHLIFE		= "leechlife";

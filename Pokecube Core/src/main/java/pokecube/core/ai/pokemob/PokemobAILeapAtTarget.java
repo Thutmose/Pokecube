@@ -8,7 +8,6 @@ import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.util.AxisAlignedBB;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.MovesUtils;
@@ -44,7 +43,7 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget {
         this.leapTarget = this.leaper.getAttackTarget();
     	Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
     	if(move==null)
-    		move = MovesUtils.getMoveFromName(IMoveNames.MOVE_TACKLE);
+    		move = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
 
     	if(pokemob.getPokemonAIState(IPokemob.LEAPING))
     	{

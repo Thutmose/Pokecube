@@ -6,7 +6,7 @@ import net.minecraft.world.IBlockAccess;
 /**
  * have blocks which are to be eaten by pokemon as berries implement this interface.
  * 
- * @author thutmose
+ * @author Thutmose
  *
  */
 public interface IBerryFruitBlock {

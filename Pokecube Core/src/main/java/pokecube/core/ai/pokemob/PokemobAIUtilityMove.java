@@ -120,7 +120,7 @@ public class PokemobAIUtilityMove extends EntityAIBase {
         Move_Base move = MovesUtils.getMoveFromName(pokemon.getMove(pokemon.getMoveIndex()));
     	
     	if(move==null)
-    		move = MovesUtils.getMoveFromName(IMoveNames.MOVE_TACKLE);
+    		move = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
     	if((move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE)>0)
     	{
     		var1 = 64;

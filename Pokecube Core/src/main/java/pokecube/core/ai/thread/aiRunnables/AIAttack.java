@@ -12,7 +12,6 @@ import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.MovesUtils;
@@ -70,7 +69,7 @@ public class AIAttack extends AIBase implements IAICombat
         {
             attack = MovesUtils.getMoveFromName(((IPokemob) attacker).getMove(((IPokemob) attacker).getMoveIndex()));
             entityTarget = var1;
-            if (attack == null) attack = MovesUtils.getMoveFromName(IMoveNames.MOVE_TACKLE);
+            if (attack == null) attack = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
             return true;
         }
     }
@@ -171,7 +170,7 @@ public class AIAttack extends AIBase implements IAICombat
                 move = MovesUtils.getMoveFromName(mob.getMove(mob.getMoveIndex()));
             }
 
-            if (move == null) move = MovesUtils.getMoveFromName(IMoveNames.MOVE_TACKLE);
+            if (move == null) move = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
 
             if ((move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0)
             {

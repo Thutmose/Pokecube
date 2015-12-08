@@ -153,7 +153,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             if (!lastMoves.isEmpty()) { return (String) lastMoves.get(moveInfo.num % lastMoves.size()); }
         }
 
-        if (index == 5) { return IMoveNames.MOVE_NONE; }
+        if (index == 5) { return IMoveConstants.MOVE_NONE; }
 
         return null;
     }

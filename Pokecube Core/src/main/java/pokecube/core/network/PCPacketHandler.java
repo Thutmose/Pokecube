@@ -25,6 +25,9 @@ import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.utils.PCSaveHandler;
 import thut.api.maths.Vector3;
 
+/** This class deals with the packets for the PC and the trading table.
+ * 
+ * @author Thutmose */
 public class PCPacketHandler
 {
     public static byte TYPESETPUBLIC  = 0;

@@ -9,7 +9,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -27,12 +26,10 @@ import pokecube.core.interfaces.IPokemobUseable;
  * @author Oracion
  * @author Manchou
  */
-public class ItemBerry extends ItemFood implements IMoveConstants, IPokemobUseable
+public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
 {
-	public static boolean food = true;
-
 	public ItemBerry() {
-		super(food?1:0, true);
+		super();
 		this.setHasSubtypes(true);
 	}
 

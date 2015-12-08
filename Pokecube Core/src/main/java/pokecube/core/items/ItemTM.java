@@ -54,7 +54,7 @@ public class ItemTM extends ItemPokemobUseable {
 		if(entity instanceof IPokemob)
 		{
 			int num = stack.getItemDamage();
-			
+			//If candy, raise level by one
 			if(num==20)
 			{
 				int level = ((IPokemob)entity).getLevel();
@@ -66,7 +66,7 @@ public class ItemTM extends ItemPokemobUseable {
 		        PokecubeItems.deValidate(stack);
 				return true;
 			}
-			else
+			else//it is a TM, should try to teach the move
 			{
 				return teachToPokemob(stack, (IPokemob) entity);
 			}
@@ -83,12 +83,14 @@ public class ItemTM extends ItemPokemobUseable {
 		if(stack.hasTagCompound())
 		{
 			int num = stack.getItemDamage();
-			if(PokecubeItems.isValid(stack)||num!=20)
+			//Check if is TM or valid candy
+			if(num!=20||PokecubeItems.isValid(stack))
 			{
 				return feedToPokemob(stack, mob);
 			}
 			else
 			{
+			    //If invalid candy, drop level since it is bad candy
 				if(num==20)
 				{
 					int xp = Tools.levelToXp(((IPokemob)mob).getExperienceMode(), ((IPokemob)mob).getLevel()-1);
@@ -102,6 +104,7 @@ public class ItemTM extends ItemPokemobUseable {
 		else
 		{
 			int num = stack.getItemDamage();
+            //If invalid candy, drop level since it is bad candy
 			if(num==20)
 			{
 				int xp = Tools.levelToXp(((IPokemob)mob).getExperienceMode(), ((IPokemob)mob).getLevel()-1);

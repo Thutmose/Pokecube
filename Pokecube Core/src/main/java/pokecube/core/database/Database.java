@@ -192,7 +192,6 @@ public class Database implements IMoveConstants
                     continue;
                 }
                 toRemove.add(e);
-//                System.out.println(e);
             }
         }
         

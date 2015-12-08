@@ -27,6 +27,9 @@ import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 
+/** This class handles the packets sent for the IPokemob Entities.
+ * 
+ * @author Thutmose */
 public class PokemobPacketHandler
 {
     public static class MessageClient implements IMessage
@@ -283,7 +286,7 @@ public class PokemobPacketHandler
                         pokemob.setPokemonNickname(name);
                     }
                 }
-                else if(channel == STANCE)
+                else if (channel == STANCE)
                 {
                     byte dir = buffer.readByte();
                     byte type = 0;

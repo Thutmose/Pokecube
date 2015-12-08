@@ -13,7 +13,6 @@ import pokecube.core.database.Database;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.utils.PokecubeSerializer;
 
 public class ConfigHandler extends Mod_Pokecube_Helper
@@ -63,9 +62,6 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                 .getBoolean(false);
         guiOnLogin = config
                 .get(CATEGORY_ADVANCED, "loginGui", guiOnLogin, "does the choose first pokemob gui appear on login")
-                .getBoolean(false);
-        ItemBerry.food = config
-                .get(CATEGORY_ADVANCED, "berryfood", ItemBerry.food, "do berries restore minimal hunger when eatern")
                 .getBoolean(false);
         if (hardMode) semiHardMode = true;
 

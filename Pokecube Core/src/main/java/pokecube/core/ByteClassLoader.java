@@ -10,6 +10,11 @@ import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.entity.pokemobs.GenericPokemob;
 import pokecube.core.events.ClassGenEvent;
 
+/** This class generates the pokemob classes for each pokemob. It works by
+ * copying the byte array from GenericPokemob.class, then modifiying it
+ * accordingly for each pokemob class it makes.
+ * 
+ * @author Thutmose */
 public class ByteClassLoader extends ClassLoader
 {
     String resName = "GenericPokemob.class";
@@ -19,7 +24,6 @@ public class ByteClassLoader extends ClassLoader
         super(ucl);
     }
 
-    // @Override
     public Class<?> loadClass(String name, byte[] jarBytes, boolean resolve) throws ClassNotFoundException
     {
         name = name.replace("/", ".");

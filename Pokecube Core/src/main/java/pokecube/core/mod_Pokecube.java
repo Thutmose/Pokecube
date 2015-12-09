@@ -470,6 +470,7 @@ public class mod_Pokecube extends PokecubeMod
         // proxy.initClient();
         // This method is executed before init (of all mods)
         getPokecubeConfig(evt);
+        PokecubeTerrainChecker.init();
 
         // used to register the moves from the spreadsheets
         Database.init(evt);
@@ -597,7 +598,6 @@ public class mod_Pokecube extends PokecubeMod
     private void init(FMLInitializationEvent evt)
     {
         System.out.println("mod_pokecube.init() " + FMLCommonHandler.instance().getEffectiveSide());
-        PokecubeTerrainChecker.init();
         EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,
                 1, true);
         EntityRegistry.registerModEntity(EntityProfessor.class, "pokecube:Professor", getUniqueEntityId(this), this, 80,

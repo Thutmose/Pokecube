@@ -1,11 +1,10 @@
-package pokecube.core.items;
+package pokecube.core.items.pokecubes;
 
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.FakePlayer;
 import pokecube.core.interfaces.PokecubeMod;
 
@@ -36,8 +35,6 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem {
 
         player.rotationYaw = yaw;
         player.rotationYawHead = yaw;
-		
-        System.out.println(player.getLookVec()+" "+dir);
         
 		itemstack.useItemRightClick(iblocksource.getWorld(), player);
 		itemstack.splitStack(1);

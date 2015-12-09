@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.DispenserBehaviorPokecube;
+import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
 
 public class PokecubeItems extends Items
 {

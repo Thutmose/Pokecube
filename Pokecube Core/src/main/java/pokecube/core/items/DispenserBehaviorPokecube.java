@@ -11,43 +11,34 @@ import pokecube.core.interfaces.PokecubeMod;
 
 public class DispenserBehaviorPokecube implements IBehaviorDispenseItem {
 
-//    private final BehaviorDefaultDispenseItem behaviourDefaultDispenseItem = new BehaviorDefaultDispenseItem();
-    
 	@Override
 	public ItemStack dispense(IBlockSource iblocksource, ItemStack itemstack) {
 
 		FakePlayer player = PokecubeMod.getFakePlayer();
-		
+		player.worldObj = iblocksource.getWorld();
 		player.posX = iblocksource.getX();
 		player.posY = iblocksource.getY() - player.getEyeHeight();
 		player.posZ = iblocksource.getZ();
-		
+		EnumFacing dir = BlockDispenser.getFacing(iblocksource.getBlockMetadata());
 		float yaw = 0;
-		if(BlockDispenser.getFacing(iblocksource.getBlockMetadata())==EnumFacing.NORTH)
+		if(dir==EnumFacing.NORTH)
 		{
 			yaw = 180;
 		}
-		if(BlockDispenser.getFacing(iblocksource.getBlockMetadata())==EnumFacing.EAST)
-		{
-			yaw = 90;
-		}
-		if(BlockDispenser.getFacing(iblocksource.getBlockMetadata())==EnumFacing.WEST)
+		if(dir==EnumFacing.EAST)
 		{
 			yaw = -90;
 		}
+		if(dir==EnumFacing.WEST)
+		{
+			yaw = 90;
+		}
+
+        player.rotationYaw = yaw;
+        player.rotationYawHead = yaw;
 		
-		float f = 1.5f;
-		
-		double motionX = -MathHelper.sin((player.rotationYaw / 180F) * (float)Math.PI) * MathHelper.cos((player.rotationPitch / 180F) * (float)Math.PI) * f;
-        double motionZ = MathHelper.cos((player.rotationYaw / 180F) * (float)Math.PI) * MathHelper.cos((player.rotationPitch / 180F) * (float)Math.PI) * f;
-        double motionY = -MathHelper.sin((player.rotationPitch / 180F) * (float)Math.PI) * f;
-		
-        player.posX+= motionX;
-        player.posY+= motionY;
-        player.posZ+= motionZ;
+        System.out.println(player.getLookVec()+" "+dir);
         
-		player.rotationYaw = yaw;
-		
 		itemstack.useItemRightClick(iblocksource.getWorld(), player);
 		itemstack.splitStack(1);
 		return itemstack;

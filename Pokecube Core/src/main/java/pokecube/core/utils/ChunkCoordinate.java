@@ -65,19 +65,4 @@ public class ChunkCoordinate extends BlockPos {
 	public static ChunkCoordinate getChunkCoordFromWorldCoord(BlockPos pos, int dimension) {
 		return getChunkCoordFromWorldCoord(pos.getX(), pos.getY(), pos.getZ(), dimension);
 	}
-
-//    @Override
-//	public int compareTo(BlockPos p_compareTo_1_)
-//    {
-//    	if(p_compareTo_1_ instanceof ChunkCoordinate)
-//    	{
-//    		ChunkCoordinate c = (ChunkCoordinate) p_compareTo_1_;
-//    		if(this.dim!=c.dim)
-//    			return this.dim - c.dim;
-//    	}
-//    	
-//        return this.getY() == p_compareTo_1_.getY() ? 
-//        		(this.getZ() == p_compareTo_1_.getZ() ? 
-//        				this.getX() - p_compareTo_1_.getX() : this.getZ() - p_compareTo_1_.getZ()) : this.getY() - p_compareTo_1_.getY();
-//    }
 }

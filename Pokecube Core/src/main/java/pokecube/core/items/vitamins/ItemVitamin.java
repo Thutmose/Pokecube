@@ -1,6 +1,5 @@
 package pokecube.core.items.vitamins;
 
-//import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -8,11 +7,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.ItemPokemobUseable;
 
-/**
- * 
- * @author Oracion
- * @author Manchou
- */
 public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants{
 
 	int vitaminIndex = 0;

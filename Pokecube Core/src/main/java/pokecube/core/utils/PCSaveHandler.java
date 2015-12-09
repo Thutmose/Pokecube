@@ -70,12 +70,6 @@ public class PCSaveHandler
         
         if(FMLCommonHandler.instance().getMinecraftServerInstance()==null)return;
         
-//      if(true)
-//      {
-//          savePC();
-//          return;
-//      }
-        
         try {
             
             World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);

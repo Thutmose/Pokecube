@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,6 +14,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
@@ -214,18 +216,23 @@ public class Pokecube extends ItemTranslated implements IPokecube
             // dye names in pokeseals
         }
     }
-    
+
     @Override
-    /**
-     * This is called when the item is used, before the block is activated.
-     * @param stack The Item Stack
-     * @param player The Player that used the item
-     * @param world The Current World
-     * @param pos Target position
-     * @param side The side of the target hit
-     * @return Return true to prevent any further processing.
-     */
-    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+    /** This is called when the item is used, before the block is activated.
+     * 
+     * @param stack
+     *            The Item Stack
+     * @param player
+     *            The Player that used the item
+     * @param world
+     *            The Current World
+     * @param pos
+     *            Target position
+     * @param side
+     *            The side of the target hit
+     * @return Return true to prevent any further processing. */
+    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
+            float hitX, float hitY, float hitZ)
     {
         return false;
     }
@@ -240,21 +247,21 @@ public class Pokecube extends ItemTranslated implements IPokecube
         ItemStack stack = ItemStack.copyItemStack(cube);
         stack.stackSize = 1;
         entity = new pokecube.core.items.pokecubes.EntityPokecube(world, player, stack);
-        
-        if (target instanceof EntityLivingBase || PokecubeManager.isFilled(cube) || player.isSneaking())
+
+        if (target instanceof EntityLivingBase || PokecubeManager.isFilled(cube) || player.isSneaking() || (player instanceof FakePlayer))
         {
             entity.targetEntity = (EntityLivingBase) target;
-            
-            if(player.isSneaking())
+
+            if (player.isSneaking())
             {
                 Vector3 temp = Vector3.getNewVectorFromPool().set(player).add(0, player.getEyeHeight(), 0);
                 Vector3 temp1 = Vector3.getNewVectorFromPool().set(player.getLookVec()).scalarMultBy(1.5);
-                
+
                 temp.addTo(temp1).moveEntity(entity);
                 temp.clear().setVelocities(entity);
                 entity.targetEntity = null;
             }
-            
+
             if (!world.isRemote)
             {
                 world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));

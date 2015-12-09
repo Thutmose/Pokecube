@@ -40,17 +40,15 @@ public class ItemPokedex extends ItemTranslated
     {
         if (mod_Pokecube.isOnClientSide())
         {
-            //entityplayer.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, entityplayer.worldObj, 0, 0, 0);
+
         }
         else
         {
         	NBTTagCompound nbt = new NBTTagCompound();
         	StatsCollector.writeToNBT(nbt);
-        	//
+
     		NBTTagCompound tag = new NBTTagCompound();
     		TerrainManager.getInstance().getTerrainForEntity(player).saveToNBT(tag);
-//            PokecubePacket packet = PokecubePacketHandler.makePacket((byte) 5, tag);
-//            PokecubePacketHandler.sendToClient(packet, player);
             
         	nbt.setBoolean("hasTerrain", true);
         	nbt.setTag("terrain", tag);
@@ -66,7 +64,7 @@ public class ItemPokedex extends ItemTranslated
 
     	if(world.isRemote)
     		return itemstack;
-//    	System.out.println(player);
+
     	if(!player.isSneaking())
     	{
     		showGui(player);

@@ -44,23 +44,18 @@ import thut.api.maths.Vector3;
 public class PokecubeSerializer
 {
     private static final String POKECUBE            = "pokecube";
-//    private static final String POKEAI              = "pokecubeAI";
     private static final String DATA                = "data";
     private static final String HASSTARTER          = "hasStarter";
     private static final String TPOPTIONS           = "tpOptions";
     private static final String METEORS             = "meteors";
     private static final String CHUNKS              = "chunks";
     private static final String LASTUID             = "lastUid";
-//    private static final String POKEMOB             = "pokemob.";
-//    private static final String PC                  = "pc.";
     public static final String  USERNAME            = "username";
     public static final String  EXP                 = "exp";
     public static final String  SEXE                = "sexe";
     public static final String  POKEDEXNB           = "pokedexNb";
     public static final String  STATUS              = "status";
     public static final String  NICKNAME            = "nickname";
-//    private static final String HASLEGENDARYSPAWNED = "hasLegendarySpawned";
-//    private static final String POKEMOB_CLASS       = POKEMOB + "class";
 
     public static final String EVS   = "EVS";
     public static final String IVS   = "IVS";

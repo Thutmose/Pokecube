@@ -57,10 +57,15 @@ public class PokedexEntry
     protected byte[]           evs;
     /** Used to determine egg group */
     public String[]            species;
+    /** Inital list of species which are prey */
     protected String[]         food;
+    /** Array used for animated or gender based textures. */
     protected String[][]       textureDetails     = { { "" }, null };
+    /** The abilities available to the pokedex entry. */
     protected String[]         abilities          = { null, null, null };
+    /** Initial Happiness of the pokemob */
     protected int              baseHappiness;
+    /** Mod which owns the pokemob, used for texture location. */
     private String             modId;
     /** Movement type for this mob */
     public PokecubeMod.Type    mobType            = PokecubeMod.Type.NORMAL;
@@ -68,14 +73,20 @@ public class PokedexEntry
     public double              preferedHeight     = 1.5;
     /** Offset between top of hitbox and where player sits */
     public double              mountedOffset      = 1;
+    /** indicatees of the specified special texture exists. */
     public boolean[]           hasSpecialTextures = { false, false, false, false };
+    /** Can it megaevolve */
     public boolean             hasMegaForm        = false;
+    /** Materials which will hurt or make it despawn. */
     public String[]            hatedMaterial;
+    /** Particle Effects. */
     public String[]            particleData;
     public boolean             canSitShoulder     = false;
     public boolean             shouldFly          = false;
     public boolean             shouldDive         = false;
+    /** Mass of the pokemon in kg. */
     public double              mass               = 1000;
+    /** Will it protect others. */
     public boolean             isSocial           = true;
     /** light,<br>
      * rock,<br>
@@ -85,6 +96,7 @@ public class PokedexEntry
      * berries,<br>
      * water (filter feeds from water) */
     public boolean[]           foods              = { false, false, false, false, false, true, false };
+    /** Times not included here the pokemob will go to sleep when idle. */
     protected List<TimePeriod> activeTimes        = new ArrayList<TimePeriod>();
 
     public boolean isStationary = false;
@@ -105,15 +117,14 @@ public class PokedexEntry
 
     public Map<ItemStack, Integer> heldItems = new HashMap<ItemStack, Integer>();
 
-    public Map<String, PokedexEntry> forms = new HashMap<String, PokedexEntry>();
-
+    /** Map of forms assosciated with this one. */
+    public Map<String, PokedexEntry> forms            = new HashMap<String, PokedexEntry>();
     /** A map of father pokedexnb : child pokedexNbs */
-    protected Map<Integer, int[]> childNumbers = new HashMap<Integer, int[]>();
-
+    protected Map<Integer, int[]>    childNumbers     = new HashMap<Integer, int[]>();
     /** Interactions with items from when player right clicks. */
-    private InteractionLogic interactionLogic = new InteractionLogic();
-
-    private List<PokedexEntry> prey = new ArrayList<PokedexEntry>();
+    private InteractionLogic         interactionLogic = new InteractionLogic();
+    /** Pokemobs with these entries will be hunted. */
+    private List<PokedexEntry>       prey             = new ArrayList<PokedexEntry>();
 
     public float height = -1;
     public float width;
@@ -124,7 +135,9 @@ public class PokedexEntry
     protected boolean hasStats = false;
     protected boolean hasEVXP  = false;
 
+    /** All possible moves */
     private List<String>                    possibleMoves;
+    /** Map of Level to Moves learned. */
     private Map<Integer, ArrayList<String>> lvlUpMoves;
     private SpawnData                       spawns;
     /** The list of pokemon this can evolve into */
@@ -278,6 +291,11 @@ public class PokedexEntry
         forms.put(key, form);
     }
 
+    /**
+     * 
+     * @param form
+     * @return the forme of the pokemob with the assosciated name.
+     */
     public PokedexEntry getForm(String form)
     {
         return forms.get(form.toLowerCase().trim().replaceAll("forme", "form").replaceAll(" ", ""));
@@ -328,7 +346,6 @@ public class PokedexEntry
         return "textures/entities/" + name + suffix + ".png";// texture;
     }
 
-    // TODO
     /** @return the pokedexNb */
     public int getPokedexNb()
     {
@@ -1498,15 +1515,15 @@ public class PokedexEntry
     public static class InteractionLogic
     {
         static HashMap<PokeType, String> defaults = new HashMap<>();
-        
+
         static
         {
             defaults.put(PokeType.fire, "stick`torch");
             defaults.put(PokeType.water, "bucket`water_bucket");
         }
-        
+
         HashMap<ItemStack, List<ItemStack>> stacks = new HashMap<ItemStack, List<ItemStack>>();
-        
+
         boolean interact(EntityPlayer player, IPokemob pokemob)
         {
             EntityLiving entity = (EntityLiving) pokemob;
@@ -1558,10 +1575,9 @@ public class PokedexEntry
             {
                 String[] args = s.split("`");
                 String key = args[0];
-                
-                if(key.equals("null"))
-                    return;
-                
+
+                if (key.equals("null")) return;
+
                 String[] vals = new String[args.length - 1];
                 for (int i = 0; i < vals.length; i++)
                 {
@@ -1584,25 +1600,25 @@ public class PokedexEntry
                 }
             }
         }
-        
+
         protected static void initForEntry(PokedexEntry entry)
         {
             String val = "";
-            for(PokeType t: defaults.keySet())
+            for (PokeType t : defaults.keySet())
             {
-                if(entry.isType(t))
+                if (entry.isType(t))
                 {
-                    if(val.isEmpty())
+                    if (val.isEmpty())
                     {
                         val = defaults.get(t);
                     }
                     else
                     {
-                        val += " "+defaults.get(t);
+                        val += " " + defaults.get(t);
                     }
                 }
             }
-            if(!val.isEmpty())
+            if (!val.isEmpty())
             {
                 initForEntry(entry, val);
             }

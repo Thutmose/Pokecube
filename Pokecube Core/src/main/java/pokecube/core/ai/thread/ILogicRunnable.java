@@ -2,5 +2,6 @@ package pokecube.core.ai.thread;
 
 public interface ILogicRunnable
 {
-	public void doLogic();
+    /** Runs this logic for the entity. */
+    public void doLogic();
 }

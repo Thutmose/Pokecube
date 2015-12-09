@@ -37,12 +37,6 @@ public abstract class AIBase implements IAIRunnable
 		return this;
 	}
 	
-	@Override 
-	public void runServerThread()
-	{
-		
-	}
-	
 	protected void setPokemobAIState(IPokemob pokemob, int state, boolean value)
 	{
 		PokemobAIThread.addStateInfo(pokemob.getPokemonUID(), state, value);

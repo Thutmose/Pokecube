@@ -26,7 +26,7 @@ public class ItemLuckyEgg extends ItemTranslated
     {
         if (world.isRemote) { return itemstack; }
 
-        if (player.capabilities.isCreativeMode)
+        if (player.capabilities.isCreativeMode && player.isSneaking())
         {
             int metadata = itemstack.getItemDamage();
             Vector3 location = Vector3.getNewVectorFromPool().set(player)

@@ -108,6 +108,7 @@ import pokecube.core.world.gen.village.buildings.ComponentPokeCentre;
 import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
 import pokecube.core.world.gen.village.handlers.PokeCentreCreationHandler;
 import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
 @Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION)
@@ -596,7 +597,7 @@ public class mod_Pokecube extends PokecubeMod
     private void init(FMLInitializationEvent evt)
     {
         System.out.println("mod_pokecube.init() " + FMLCommonHandler.instance().getEffectiveSide());
-
+        PokecubeTerrainChecker.init();
         EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,
                 1, true);
         EntityRegistry.registerModEntity(EntityProfessor.class, "pokecube:Professor", getUniqueEntityId(this), this, 80,

@@ -1,10 +1,11 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/238253-pokecube-core",
   "promos": {
-    "1.8.8-latest": "2.0.15",
-    "1.8.8-recommended": "2.0.15"
+    "1.8.8-latest": "2.0.16",
+    "1.8.8-recommended": "2.0.16"
   },
   "1.8.8": {
+    "2.0.16": "fixes some gui issues, some minor optimizations to AI, fixes dispensers, berries are not food anymore.",
     "2.0.15": "fixes a server issue with logging out",
     "2.0.14": "bunch of network optimizations, fixes berry crops not growing naturally, fixes a SMP kick for trading, fixes teleport not teleporting wild pokemobs",
     "2.0.13": "Fixes lag from pokemobs in GUI, fixes the remaining server/client sync issues, Fixes solosis line, requires re-downloading the Pokecube_Resources.zip from GitHub",

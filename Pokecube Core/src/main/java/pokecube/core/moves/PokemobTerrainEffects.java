@@ -24,7 +24,7 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
-import thut.api.terrain.ITerrainEffect;
+import thut.api.terrain.TerrainSegment.ITerrainEffect;
 
 public class PokemobTerrainEffects implements ITerrainEffect
 {

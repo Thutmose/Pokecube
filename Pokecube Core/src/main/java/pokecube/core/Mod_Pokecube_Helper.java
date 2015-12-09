@@ -127,8 +127,6 @@ public class Mod_Pokecube_Helper
         getCaveBlocks().add(Blocks.diamond_ore);
         getCaveBlocks().add(Blocks.redstone_ore);
         getCaveBlocks().add(Blocks.gold_ore);
-        getCaveBlocks().add(Blocks.mossy_cobblestone);
-        getCaveBlocks().add(Blocks.cobblestone);
         getCaveBlocks().add(Blocks.gravel);
         getCaveBlocks().add(Blocks.netherrack);
         getCaveBlocks().add(Blocks.nether_brick);
@@ -208,12 +206,19 @@ public class Mod_Pokecube_Helper
         {
             try
             {
-                getCaveBlocks().add(b);
+                if (getCaveBlocks().contains(b)) continue;
+
+                if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.stone).apply(b.getDefaultState()))
+                    getCaveBlocks().add(b);
+                else if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.netherrack).apply(b.getDefaultState()))
+                    getCaveBlocks().add(b);
+                else if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.dirt).apply(b.getDefaultState()))
+                    getCaveBlocks().add(b);
+                else if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.sand).apply(b.getDefaultState()))
+                    getCaveBlocks().add(b);
             }
             catch (Exception e)
             {
-                // e.printStackTrace();//TODO figure out how to get this
-                // automatically finding worldgen blocks again
             }
         }
         for (Block b : getCaveBlocks())

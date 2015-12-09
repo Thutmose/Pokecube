@@ -32,7 +32,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Pre;
-import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
@@ -345,7 +344,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             if (v == null) v = v0.set(this);
             v.moveEntity(((Entity) entity1));
             worldObj.spawnEntityInWorld((Entity) entity1);
-            SpawnHandler.moveEntityOutOfBlocks(((Entity) entity1));
             ((IMultibox) entity1).setBoxes();
             ((IMultibox) entity1).setOffsets();
 
@@ -546,14 +544,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 ((Entity) entity1).setLocationAndAngles(posX, posY + 1.0D, posZ, rotationYaw, 0.0F);
                 boolean ret = worldObj.spawnEntityInWorld((Entity) entity1);
 
-                boolean outOfBlock = SpawnHandler.moveEntityOutOfBlocks(((Entity) entity1));
-
-                if (!outOfBlock)
-                {
-                    System.err.println(
-                            String.format("The pokemob %1$s spawn from pokecube has failed to move out of a block. ",
-                                    entity1.getPokemonDisplayName()));
-                }
                 if (ret == false)
                 {
                     System.err.println(String.format("The pokemob %1$s spawn from pokecube has failed. ",
@@ -638,7 +628,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 return;
             }
         }
-        if (tilt > 0 || (targetEntity!=null && targetEntity.isDead))
+        if (tilt > 0 || (targetEntity != null && targetEntity.isDead))
         {
             targetEntity = null;
         }

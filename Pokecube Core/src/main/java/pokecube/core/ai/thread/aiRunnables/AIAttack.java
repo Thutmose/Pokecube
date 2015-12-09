@@ -97,7 +97,8 @@ public class AIAttack extends AIBase implements IAICombat
             running = true;
             if (Mod_Pokecube_Helper.pokemobagresswarning && delayTime == -1 && entityTarget instanceof EntityPlayer
                     && !((IPokemob) attacker).getPokemonAIState(IPokemob.TAMED)
-                    && ((EntityPlayer) entityTarget).getLastAttacker() != attacker)
+                    && ((EntityPlayer) entityTarget).getLastAttacker() != attacker
+                    && ((EntityPlayer) entityTarget).getAITarget() != attacker)
             {
                 delayTime = Mod_Pokecube_Helper.pokemobagressticks;
                 String missed = StatCollector.translateToLocalFormatted("pokemob.agress",

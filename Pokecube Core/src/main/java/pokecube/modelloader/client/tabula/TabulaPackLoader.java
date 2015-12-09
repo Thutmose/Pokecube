@@ -72,7 +72,7 @@ public class TabulaPackLoader extends AnimationLoader
         }
         catch (IOException e)
         {
-            
+
         }
 
         return false;
@@ -100,33 +100,42 @@ public class TabulaPackLoader extends AnimationLoader
                 }
             }
             set.postInitAnimations();
-            if(set.rotation == null)
+            if (set.rotation == null)
             {
                 set.rotation = new Vector5();
             }
-            if(set.scale.isEmpty())
+            if (set.scale.isEmpty())
             {
-                set.scale.set(1,1,1);
+                set.scale.set(1, 1, 1);
             }
-            if(set.shift.isEmpty())
+            if (set.shift.isEmpty())
             {
-                set.shift.set(0,-1.5,0);
+                set.shift.set(0, -1.5, 0);
             }
         }
     }
 
     public static class TabulaModelSet
     {
+        /** The pokemon associated with this model. */
         final PokedexEntry                entry;
         public final TabulaModel          model;
         public final TabulaModelParser    parser;
+        /** Animations loaded from the XML */
         public HashMap<String, Animation> loadedAnimations = Maps.newHashMap();
+        /** Translation of the model */
         public Vector3                    shift            = Vector3.getNewVectorFromPool();
+        /** Global rotation of the model */
         public Vector5                    rotation;
+        /** Scale of the model */
         public Vector3                    scale            = Vector3.getNewVectorFromPool();
+        /** Limits on the rotation of the head */
         public float[]                    headCap          = { -180, 180 };
+        /** Which axis the head rotates around, 0,1 or 2 for x, y, or z. */
         public int                        headAxis         = 1;
-        public boolean                    foundExtra       = false;
+        /** Internal, used to determine if it should copy xml data from base
+         * forme. */
+        private boolean                   foundExtra       = false;
 
         public TabulaModelSet(TabulaModel model, TabulaModelParser parser, ResourceLocation extraData,
                 PokedexEntry entry)
@@ -179,6 +188,10 @@ public class TabulaPackLoader extends AnimationLoader
             if (toRemove.size() > 0) System.out.println("Merged " + toRemove.size() + " Animations for " + entry);
         }
 
+        /** Merges animation data from from to to.
+         * 
+         * @param from
+         * @param to */
         private void merge(Animation from, Animation to)
         {
             for (String s1 : from.sets.keySet())

@@ -1,9 +1,7 @@
 package pokecube.core.ai.thread;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,7 +15,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -35,9 +32,13 @@ import thut.api.maths.Vector3;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class PokemobAIThread
 {
+    /** Lock used to unsure that AI tasks run at the correct time. */
     private static final BitSet                          tickLock          = new BitSet();
+    /** Lists of the AI stuff for each thread. */
     private static Vector<Object>[]                      aiStuffLists;
+    /** Map of dimension to players, used for thread-safe player access. */
     public static final HashMap<Integer, Vector<Object>> worldPlayers      = new HashMap<Integer, Vector<Object>>();
+    /** Used for sorting the AI runnables for run order. */
     public static final Comparator<IAIRunnable>          aiComparator      = new Comparator<IAIRunnable>()
     {
         @Override
@@ -46,6 +47,7 @@ public class PokemobAIThread
             return o1.getPriority() - o2.getPriority();
         }
     };
+    /** Sorts pokemobs by move order. */
     public static final Comparator<IPokemob>             pokemobComparator = new Comparator<IPokemob>()
     {
         @Override
@@ -61,6 +63,10 @@ public class PokemobAIThread
         }
     };
 
+    /** Adds the AI task for the given entity.
+     * 
+     * @param entity
+     * @param task */
     public static void addAI(EntityLiving entity, IAIRunnable task)
     {
         IPokemob pokemob = (IPokemob) entity;
@@ -86,6 +92,10 @@ public class PokemobAIThread
 
     }
 
+    /** Adds the custom logic runnable for the given entity
+     * 
+     * @param entity
+     * @param logic */
     public static void addLogic(EntityLiving entity, ILogicRunnable logic)
     {
         IPokemob pokemob = (IPokemob) entity;
@@ -110,6 +120,9 @@ public class PokemobAIThread
         entityAI.addAILogic(logic);
     }
 
+    /** Removes the AI entry for the entity.
+     * 
+     * @param entity */
     public static void removeEntity(EntityLiving entity)
     {
         int id = entity.getEntityId() % AIThread.threadCount;
@@ -126,6 +139,7 @@ public class PokemobAIThread
         }
     }
 
+    /** Clears things for world unload */
     public static void clear()
     {
         for (Vector v : aiStuffLists)
@@ -137,6 +151,11 @@ public class PokemobAIThread
         tickLock.clear();
     }
 
+    /** Checks if task can run, given the tasks in tasks.
+     * 
+     * @param task
+     * @param tasks
+     * @return */
     private static boolean canRun(IAIRunnable task, ArrayList<IAIRunnable> tasks)
     {
         int prior = task.getPriority();
@@ -148,29 +167,50 @@ public class PokemobAIThread
         return task.shouldRun();
     }
 
+    /** threadsafe path determination.
+     * 
+     * @param id
+     * @param dim
+     * @param path
+     * @param speed */
     public static void addEntityPath(int id, int dim, PathEntity path, double speed)
     {
         paths.add(new PathInfo(id, dim, path, speed));
     }
 
+    /** Thread safe target swapping information.
+     * 
+     * @param attacker
+     * @param target
+     * @param dim */
     public static void addTargetInfo(int attacker, int target, int dim)
     {
         targets.add(new TargetInfo(attacker, target, dim));
     }
 
+    /** Thread safe attack setting */
     public static void addMoveInfo(int attacker, int targetEnt, int dim, Vector3 target, float distance)
     {
         moves.add(new MoveInfo(attacker, targetEnt, dim, target, distance));
     }
 
+    /** Thread safe AI state setting
+     * 
+     * @param uid
+     * @param state
+     * @param value */
     public static void addStateInfo(int uid, int state, boolean value)
     {
         states.add(new StateInfo(uid, state, value));
     }
 
+    /** List of PathInfos for setting pokemob paths */
     private static final Vector<PathInfo>   paths   = new Vector();
+    /** List of targets to set. */
     private static final Vector<TargetInfo> targets = new Vector();
+    /** List of moves to use. */
     private static final Vector<MoveInfo>   moves   = new Vector();
+    /** Lists of states to swap to. */
     private static final Vector<StateInfo>  states  = new Vector();
 
     static
@@ -178,6 +218,9 @@ public class PokemobAIThread
         AIThread.createThreads();
     }
 
+    /** AI Ticks at the end of the server tick.
+     * 
+     * @param evt */
     @SubscribeEvent
     public void tickEventServer(ServerTickEvent evt)
     {
@@ -196,6 +239,7 @@ public class PokemobAIThread
     @SubscribeEvent
     public void tickEvent(WorldTickEvent evt)
     {
+        // At the start, refresh the player lists.
         if (evt.phase == Phase.START)
         {
             Vector players = worldPlayers.get(evt.world.provider.getDimensionId());
@@ -207,7 +251,8 @@ public class PokemobAIThread
             players.addAll(evt.world.playerEntities);
             worldPlayers.put(evt.world.provider.getDimensionId(), players);
         }
-        else try
+        else try// At the end, apply all of the paths, targets, moves and
+                // states.
         {
             ArrayList todo = new ArrayList();
 
@@ -314,6 +359,9 @@ public class PokemobAIThread
         }
     }
 
+    /** A thread-safe object used to set the current path for an entity.
+     * 
+     * @author Thutmose */
     static class PathInfo
     {
         public final PathEntity path;
@@ -335,6 +383,9 @@ public class PokemobAIThread
         }
     }
 
+    /** A thread safe object used to set the attack target of an entity.
+     * 
+     * @author Thutmose */
     static class TargetInfo
     {
         public final int attacker;
@@ -371,6 +422,9 @@ public class PokemobAIThread
         }
     }
 
+    /** A thread-safe object used to set which move a pokemob is to use.
+     * 
+     * @author Thutmose */
     static class MoveInfo
     {
         public static final Comparator compare = new Comparator<MoveInfo>()
@@ -385,7 +439,8 @@ public class PokemobAIThread
                             .worldServerForDimension(o1.dim);
                     Entity e1 = world.getEntityByID(o1.attacker);
                     Entity e2 = world.getEntityByID(o2.attacker);
-                    if (e1 instanceof IPokemob && e2 instanceof IPokemob) { return pokemobComparator.compare((IPokemob)e1, (IPokemob)e2); }
+                    if (e1 instanceof IPokemob && e2 instanceof IPokemob) { return pokemobComparator
+                            .compare((IPokemob) e1, (IPokemob) e2); }
                 }
                 return 0;
             }
@@ -407,6 +462,10 @@ public class PokemobAIThread
         }
     }
 
+    /** A collecion of AITasks and AILogics for the entity to run on seperate
+     * threads.
+     * 
+     * @author Thutmose */
     static class AIStuff
     {
         public final EntityLiving       entity;
@@ -431,10 +490,8 @@ public class PokemobAIThread
 
     public static class AIThread extends Thread
     {
-        public static int     threadCount = 0;
-        final int             id;
-        public static boolean setAccess   = false;
-        public static Field   unloadedField;
+        public static int threadCount = 0;
+        final int         id;
 
         public AIThread(final int number)
         {
@@ -458,21 +515,8 @@ public class PokemobAIThread
                         synchronized (tickLock)
                         {
                             tick = tickLock.get(id);
-                            if (tick && unloadedField == null)
-                            {
-                                try
-                                {
-                                    unloadedField = World.class.getDeclaredFields()[4];
-                                    unloadedField.setAccessible(true);
-                                }
-                                catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                    continue;
-                                }
-                            }
                         }
-                        if (tick && unloadedField != null)
+                        if (tick)
                         {
                             System.currentTimeMillis();
                             ArrayList toRemove = new ArrayList();
@@ -480,12 +524,17 @@ public class PokemobAIThread
                             ArrayList temp = new ArrayList(entities);
                             for (Object o : temp)
                             {
-                                ArrayList unloadedMobs;
+                                List unloadedMobs;
                                 AIStuff stuff = (AIStuff) o;
                                 EntityLiving b = stuff.entity;
+                                if (b == null)
+                                {
+                                    toRemove.add(o);
+                                    continue;
+                                }
                                 try
                                 {
-                                    unloadedMobs = new ArrayList((Collection) unloadedField.get(b.worldObj));
+                                    unloadedMobs = b.worldObj.unloadedEntityList;
                                 }
                                 catch (Exception e1)
                                 {

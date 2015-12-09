@@ -114,9 +114,7 @@ public class Mod_Pokecube_Helper
     protected static String terrains;
     protected static String industrial;
 
-    /**
-     * List of blocks to be considered for the floor of a cave.
-     */
+    /** List of blocks to be considered for the floor of a cave. */
     private static List<Block> caveBlocks = new ArrayList<Block>();
 
     static
@@ -135,10 +133,8 @@ public class Mod_Pokecube_Helper
         getCaveBlocks().add(Blocks.netherrack);
         getCaveBlocks().add(Blocks.nether_brick);
     }
-    
-    /**
-     * List of blocks to be considered for the surface.
-     */
+
+    /** List of blocks to be considered for the surface. */
     private static List<Block> surfaceBlocks = new ArrayList<Block>();
 
     static
@@ -154,9 +150,9 @@ public class Mod_Pokecube_Helper
         getSurfaceBlocks().add(Blocks.stained_hardened_clay);
         getSurfaceBlocks().add(Blocks.mycelium);
     };
-    /**
-     * List of blocks to be considered to be rocks for the purpose of rocksmash and lithovore eating
-     */
+
+    /** List of blocks to be considered to be rocks for the purpose of rocksmash
+     * and lithovore eating */
     private static List<Block> rocks = new ArrayList<Block>();
 
     static
@@ -175,9 +171,8 @@ public class Mod_Pokecube_Helper
         getRocks().add(Blocks.netherrack);
     }
 
-    /**
-     * List of blocks to be considered to be generic terrain, for dig to reduce drop rates for
-     */
+    /** List of blocks to be considered to be generic terrain, for dig to reduce
+     * drop rates for */
     private static List<Block> terrain = new ArrayList<Block>();
 
     static

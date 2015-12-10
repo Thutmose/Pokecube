@@ -40,6 +40,11 @@ import pokecube.core.utils.Tools;
 
 public class PCEventsHandler
 {
+    /** Attempts to send the pokecube to the PC whenever the entityitem it is in
+     * expires. This prevents losing pokemobs if the cube is somehow left in the
+     * world.
+     * 
+     * @param evt */
     @SubscribeEvent
     public void sendPokemobToPCOnItemExpiration(ItemExpireEvent evt)
     {
@@ -50,6 +55,10 @@ public class PCEventsHandler
         }
     }
 
+    /** Loads PC data when overwold loads. only does this on server. TODO move
+     * this to serverload event
+     * 
+     * @param evt */
     @SubscribeEvent
     public void WorldLoadEvent(Load evt)
     {
@@ -59,6 +68,10 @@ public class PCEventsHandler
         }
     }
 
+    /** Overworld only unloads on server when it stops, TODO move this to
+     * serverunloadevent
+     * 
+     * @param evt */
     @SubscribeEvent
     public void WorldUnloadEvent(Unload evt)
     {
@@ -68,6 +81,9 @@ public class PCEventsHandler
         }
     }
 
+    /** Tries to send pokecubes to PC when player dies.
+     * 
+     * @param evt */
     @SubscribeEvent
     public void sendPokemobToPCPlayerDeath(LivingDeathEvent evt)
     {
@@ -118,6 +134,10 @@ public class PCEventsHandler
 
     }
 
+    /** Tries to send pokecube to PC if player has no room in inventory for it.
+     * Otherwise, will add pokecube to player's inventory.
+     * 
+     * @param evt */
     @SubscribeEvent
     public void sendPokemobToPCPlayerFull(CaptureEvent.Post evt)
     {
@@ -159,6 +179,9 @@ public class PCEventsHandler
         }
     }
 
+    /** If player tosses a pokecube item, it will be send to PC instead.
+     * 
+     * @param evt */
     @SubscribeEvent
     public void playerTossPokecubeToPC(ItemTossEvent evt)
     {
@@ -172,16 +195,10 @@ public class PCEventsHandler
         }
     }
 
-    @SubscribeEvent
-    public void PokecubeExpireToPC(ItemExpireEvent evt)
-    {
-        if (evt.entityItem.worldObj.isRemote) return;
-        if (PokecubeManager.isFilled(evt.entityItem.getEntityItem()) && evt.entityItem.getEntityItem().hasTagCompound())
-        {
-            InventoryPC.addPokecubeToPC(evt.entityItem.getEntityItem(), evt.entityItem.worldObj);
-        }
-    }
-
+    /** This sends pokecube to PC if the player has a full inventory and tries
+     * to pick up a pokecube.
+     * 
+     * @param evt */
     @SubscribeEvent
     public void playerPickupItem(EntityItemPickupEvent evt)
     {
@@ -200,6 +217,9 @@ public class PCEventsHandler
         }
     }
 
+    /** Sends the packet with the player's PC data to that player.
+     * 
+     * @param evt */
     @SubscribeEvent
     public void PlayerLoggin(PlayerLoggedInEvent evt)
     {
@@ -221,6 +241,11 @@ public class PCEventsHandler
 
     }
 
+    /** Used for changing name from "Someone's PC" to "Thutmose's PC". This is
+     * done as all of the PC systems are named after whoever made them. See
+     * Bill's PC for an example.
+     * 
+     * @param evt */
     @SubscribeEvent
     public void PCLoggin(EntityJoinWorldEvent evt)
     {
@@ -256,6 +281,7 @@ public class PCEventsHandler
         }
     }
 
+    // TODO move this to client side server closing event, this is never called.
     @SubscribeEvent
     public void PlayerLoggout(PlayerLoggedOutEvent evt)
     {
@@ -265,6 +291,10 @@ public class PCEventsHandler
         }
     }
 
+    /** Applies the exp from lucky egg and exp share. TODO move this out of
+     * PCEventsHandler.
+     * 
+     * @param evt */
     @SubscribeEvent
     public void KillEvent(pokecube.core.events.KillEvent evt)
     {
@@ -305,6 +335,10 @@ public class PCEventsHandler
         }
     }
 
+    /** Recalls all pokemobs belonging to the player in the player's current
+     * world.
+     * 
+     * @param player */
     public static void recallAllPokemobs(Entity player)
     {
         List<Object> pokemobs = new ArrayList<Object>(player.worldObj.loadedEntityList);
@@ -352,6 +386,11 @@ public class PCEventsHandler
         }
     }
 
+    /** Gets a list of all pokemobs out of their cube belonging to the player in
+     * the player's current world.
+     * 
+     * @param player
+     * @return */
     public static List<IPokemob> getOutMobs(EntityLivingBase player)
     {
         List<?> pokemobs = new ArrayList<Object>(player.worldObj.loadedEntityList);

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,14 +17,10 @@ import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.world.WorldEvent.Load;
-import net.minecraftforge.event.world.WorldEvent.Unload;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
@@ -36,7 +31,6 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PCPacketHandler.MessageClient;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.PCSaveHandler;
-import pokecube.core.utils.Tools;
 
 public class PCEventsHandler
 {
@@ -52,32 +46,6 @@ public class PCEventsHandler
         {
             if (evt.entityItem.worldObj.isRemote) return;
             InventoryPC.addPokecubeToPC(evt.entityItem.getEntityItem(), evt.entityItem.worldObj);
-        }
-    }
-
-    /** Loads PC data when overwold loads. only does this on server. TODO move
-     * this to serverload event
-     * 
-     * @param evt */
-    @SubscribeEvent
-    public void WorldLoadEvent(Load evt)
-    {
-        if (evt.world.provider.getDimensionId() == 0 && !evt.world.isRemote)
-        {
-            PCSaveHandler.getInstance().loadPC();
-        }
-    }
-
-    /** Overworld only unloads on server when it stops, TODO move this to
-     * serverunloadevent
-     * 
-     * @param evt */
-    @SubscribeEvent
-    public void WorldUnloadEvent(Unload evt)
-    {
-        if (evt.world.provider.getDimensionId() == 0 && !evt.world.isRemote)
-        {
-            InventoryPC.clearPC();
         }
     }
 
@@ -275,60 +243,6 @@ public class PCEventsHandler
                         nbt.setBoolean("pcCreator", true);
                         MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
                         PokecubePacketHandler.sendToClient(packet, p);
-                    }
-                }
-            }
-        }
-    }
-
-    // TODO move this to client side server closing event, this is never called.
-    @SubscribeEvent
-    public void PlayerLoggout(PlayerLoggedOutEvent evt)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-        {
-            InventoryPC.clearPC();
-        }
-    }
-
-    /** Applies the exp from lucky egg and exp share. TODO move this out of
-     * PCEventsHandler.
-     * 
-     * @param evt */
-    @SubscribeEvent
-    public void KillEvent(pokecube.core.events.KillEvent evt)
-    {
-        IPokemob killer = evt.killer;
-        IPokemob killed = evt.killed;
-
-        if (killer != null)
-        {
-            EntityLivingBase owner = killer.getPokemonOwner();
-
-            ItemStack stack = ((EntityLivingBase) killer).getHeldItem();
-            if (stack != null && PokecubeItems.getStack("luckyegg").isItemEqual(stack))
-            {
-                int exp = killer.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
-
-                killer.setExp(exp, true, false);
-            }
-
-            if (owner != null)
-            {
-
-                List<IPokemob> pokemobs = getOutMobs(owner);
-                for (IPokemob mob : pokemobs)
-                {
-                    if (mob instanceof IPokemob)
-                    {
-                        IPokemob poke = (IPokemob) mob;
-                        if (((EntityLiving) poke).getHeldItem() != null)
-                            if (((EntityLiving) poke).getHeldItem().isItemEqual(PokecubeItems.getStack("exp_share")))
-                        {
-                            int exp = poke.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
-
-                            poke.setExp(exp, true, false);
-                        }
                     }
                 }
             }

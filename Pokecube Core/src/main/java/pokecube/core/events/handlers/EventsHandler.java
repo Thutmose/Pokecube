@@ -50,7 +50,6 @@ import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
-import net.minecraftforge.event.world.WorldEvent.Unload;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -68,7 +67,6 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.ai.properties.GuardAIProperties;
 import pokecube.core.ai.thread.PokemobAIThread;
-import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -86,7 +84,7 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.world.gen.WorldGenStartBuilding;
+import pokecube.core.utils.Tools;
 import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
@@ -116,19 +114,14 @@ public class EventsHandler
     {
         if (evt.world.isRemote) { return; }
         PokecubeMod.getFakePlayer(evt.world);
-
-        if (evt.world.provider.getDimensionId() == 0 && !evt.world.isRemote)
-        {
-            AISaveHandler.instance();
-        }
     }
-    
+
     @SubscribeEvent
     public void clearNetherBridge(InitMapGenEvent evt)
     {
-        if(Mod_Pokecube_Helper.deactivateMonsters && evt.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
+        if (Mod_Pokecube_Helper.deactivateMonsters && evt.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
         {
-            ((MapGenNetherBridge)evt.newGen).getSpawnList().clear();
+            ((MapGenNetherBridge) evt.newGen).getSpawnList().clear();
         }
     }
 
@@ -159,12 +152,6 @@ public class EventsHandler
             }
 
         }
-    }
-
-    @SubscribeEvent
-    public void ClientLogOffEvent(Unload evt)
-    {
-        WorldGenStartBuilding.building = false;
     }
 
     @SubscribeEvent
@@ -295,7 +282,7 @@ public class EventsHandler
     public void PlayerLoggin(PlayerLoggedInEvent evt)
     {
         EntityPlayer entityPlayer = evt.player;
-        
+
         if (entityPlayer.getTeam() == null)
         {
             if (entityPlayer.worldObj.getScoreboard().getTeam("Trainers") == null)
@@ -330,12 +317,9 @@ public class EventsHandler
     @SubscribeEvent
     public void PlayerLoggout(PlayerLoggedOutEvent evt)
     {
-        System.out.println("LoggedOut Event " + " " + FMLCommonHandler.instance().getEffectiveSide());
-        if (FMLCommonHandler.instance().getEffectiveSide() != Side.CLIENT && !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+        if (FMLCommonHandler.instance().getEffectiveSide() != Side.CLIENT
+                && !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
         {
-            System.out.println("Clearing Server instance");
-            PokecubeSerializer.getInstance().clearInstance();
-            AISaveHandler.clearInstance();
             pendingStarters.clear();
         }
     }
@@ -424,8 +408,7 @@ public class EventsHandler
             }
             if (pendingStarters.contains(player.getEntityId()))
             {
-                PokecubeClientPacket packet2 = new PokecubeClientPacket(
-                        new byte[] { PokecubeClientPacket.CHOOSE1ST });
+                PokecubeClientPacket packet2 = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.CHOOSE1ST });
                 System.out.println("Sending Packet to " + player);
                 PokecubePacketHandler.sendToClient(packet2, player);
                 pendingStarters.remove(player.getEntityId());
@@ -518,6 +501,49 @@ public class EventsHandler
                 }
                 ((EntityLiving) newtarget).setAttackTarget(evt.entityLiving);
                 newtarget.setPokemonAIState(IPokemob.ANGRY, true);
+            }
+        }
+    }
+
+    /** Applies the exp from lucky egg and exp share. TODO move this out of
+     * PCEventsHandler.
+     * 
+     * @param evt */
+    @SubscribeEvent
+    public void KillEvent(pokecube.core.events.KillEvent evt)
+    {
+        IPokemob killer = evt.killer;
+        IPokemob killed = evt.killed;
+
+        if (killer != null)
+        {
+            EntityLivingBase owner = killer.getPokemonOwner();
+
+            ItemStack stack = ((EntityLivingBase) killer).getHeldItem();
+            if (stack != null && PokecubeItems.getStack("luckyegg").isItemEqual(stack))
+            {
+                int exp = killer.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
+
+                killer.setExp(exp, true, false);
+            }
+
+            if (owner != null)
+            {
+                List<IPokemob> pokemobs = PCEventsHandler.getOutMobs(owner);
+                for (IPokemob mob : pokemobs)
+                {
+                    if (mob instanceof IPokemob)
+                    {
+                        IPokemob poke = (IPokemob) mob;
+                        if (((EntityLiving) poke).getHeldItem() != null)
+                            if (((EntityLiving) poke).getHeldItem().isItemEqual(PokecubeItems.getStack("exp_share")))
+                        {
+                            int exp = poke.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
+
+                            poke.setExp(exp, true, false);
+                        }
+                    }
+                }
             }
         }
     }

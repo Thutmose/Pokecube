@@ -61,7 +61,9 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -69,6 +71,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ai.thread.PokemobAIThread;
+import pokecube.core.ai.utils.AISaveHandler;
+import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -630,7 +634,7 @@ public class mod_Pokecube extends PokecubeMod
         {
 
         }
-        //TODO figure out good spawn weights
+        // TODO figure out good spawn weights
         GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
@@ -667,6 +671,28 @@ public class mod_Pokecube extends PokecubeMod
     public void serverStop(FMLServerStoppingEvent event)
     {
         PokemobAIThread.clear();
+    }
+
+    /** Loads PC data when server starts
+     * 
+     * @param evt */
+    @EventHandler
+    public void WorldLoadEvent(FMLServerStartedEvent evt)
+    {
+        PCSaveHandler.getInstance().loadPC();
+        AISaveHandler.instance();
+    }
+
+    /** clears PC when server stops
+     * 
+     * @param evt */
+    @EventHandler
+    public void WorldUnloadEvent(FMLServerStoppedEvent evt)
+    {
+        InventoryPC.clearPC();
+        WorldGenStartBuilding.building = false;
+        PokecubeSerializer.getInstance().clearInstance();
+        AISaveHandler.clearInstance();
     }
 
     public static void registerSpawns()
@@ -738,7 +764,7 @@ public class mod_Pokecube extends PokecubeMod
 
         if (Mod_Pokecube_Helper.deactivateAnimals)
         {
-
+//TODO add rabbit
             EntityRegistry.removeSpawn(EntityChicken.class, EnumCreatureType.CREATURE, biomes);
             EntityRegistry.removeSpawn(EntityCow.class, EnumCreatureType.CREATURE, biomes);
             EntityRegistry.removeSpawn(EntityPig.class, EnumCreatureType.CREATURE, biomes);

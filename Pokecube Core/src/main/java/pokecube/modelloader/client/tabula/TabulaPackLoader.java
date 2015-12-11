@@ -44,7 +44,7 @@ public class TabulaPackLoader extends AnimationLoader
         AnimationLoader.clear();
         modelMap.clear();
     }
-    
+
     public static boolean loadModel(String path)
     {
         ResourceLocation model = new ResourceLocation(path + ".tbl");
@@ -125,9 +125,15 @@ public class TabulaPackLoader extends AnimationLoader
     public static class TabulaModelSet
     {
         /** The pokemon associated with this model. */
-        final PokedexEntry                entry;
-        public final TabulaModel          model;
-        public final TabulaModelParser    parser;
+        final PokedexEntry             entry;
+        public final TabulaModel       model;
+        public final TabulaModelParser parser;
+
+        /** Animations to merge together, animation key is merged into animation
+         * value. so key of idle and value of walk will merge the idle animation
+         * into the walk animation. */
+        private HashMap<String, String> mergedAnimations = Maps.newHashMap();
+
         /** Animations loaded from the XML */
         public HashMap<String, Animation> loadedAnimations = Maps.newHashMap();
         /** Translation of the model */
@@ -190,6 +196,28 @@ public class TabulaPackLoader extends AnimationLoader
                     }
                 }
             }
+            for(String s: mergedAnimations.keySet())
+            {
+                String toName = mergedAnimations.get(s);
+                Animation to = null;
+                Animation from = null;
+                for (Animation anim : model.getAnimations())
+                {
+                    if (s.equals(anim.name))
+                    {
+                        from = anim;
+                    }
+                    if(toName.equals(anim.name))
+                    {
+                        to = anim;
+                    }
+                    if(to!=null && from!=null) break;
+                }
+                if(to!=null && from!=null)
+                {
+                    merge(from, to);
+                }
+            }
             for (String s : toRemove)
             {
                 loadedAnimations.remove(s);
@@ -205,6 +233,7 @@ public class TabulaPackLoader extends AnimationLoader
         {
             for (String s1 : from.sets.keySet())
             {
+                //Prioritize to, if to already has animations for that part, skip it.
                 if (!to.sets.containsKey(s1))
                 {
                     to.sets.put(s1, from.sets.get(s1));
@@ -285,6 +314,11 @@ public class TabulaPackLoader extends AnimationLoader
                         {
                             addAdvancedFlap(part.getAttributes());
                         }
+                    }
+                    else if(part.getNodeName().equals("merges"))
+                    {
+                        String[] merges = part.getAttributes().getNamedItem("merge").getNodeValue().split("->");
+                        mergedAnimations.put(merges[0], merges[1]);
                     }
                 }
             }
@@ -475,16 +509,16 @@ public class TabulaPackLoader extends AnimationLoader
         void addAdvancedFlap(NamedNodeMap map)
         {
             int flapdur = 0;
-            int flapaxis = 2;
             float walkAngle2 = 20;
             AdvancedFlapAnimation anim = new AdvancedFlapAnimation();
 
             flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
-            //Can have up to 255 wing segments, more than this would be silly.
+            // Can have up to 255 wing segments, more than this would be silly.
             for (int i = 1; i <= 255; i++)
             {
                 if (map.getNamedItem("leftWing" + i) == null) break;
 
+                int flapaxis = 2;
                 float[] walkAngle1 = { 20, 20 };
                 HashSet<String> hl = new HashSet<String>();
                 HashSet<String> hr = new HashSet<String>();

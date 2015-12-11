@@ -406,7 +406,11 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 walkAngle2 = Float.parseFloat(map.getNamedItem("frontAngle").getNodeValue());
             }
-            else quadwalkdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
+            else
+            {
+                walkAngle2 = walkAngle1;
+            }
+            quadwalkdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
 
             addAnimation("walking", new QuadWalkAnimation().init(hl, hr, fl, fr, quadwalkdur, walkAngle1, walkAngle2));
 

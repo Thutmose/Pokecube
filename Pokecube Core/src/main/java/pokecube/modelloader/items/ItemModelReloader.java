@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import pokecube.core.database.Database;
 import pokecube.modelloader.client.ClientProxy;
-import pokecube.modelloader.client.custom.animation.AnimationLoader;
 
 public class ItemModelReloader extends Item
 {

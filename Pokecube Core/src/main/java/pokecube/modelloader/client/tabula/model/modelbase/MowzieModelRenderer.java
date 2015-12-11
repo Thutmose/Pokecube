@@ -6,6 +6,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
@@ -289,14 +290,54 @@ public class MowzieModelRenderer extends ModelRenderer
                     TabulaModelSet set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry());
                     float head = (entity.getRotationYawHead() + 360) % 360;
                     float body = (entity.rotationYaw + 360) % 360;
-                    //TODO improve on these caps.
+                    // TODO improve on these caps.;
                     float rot = Math.min(set.headCap[1], head - body);
                     float headRot = Math.max(rot, set.headCap[0]);
 
-                    if (set.headAxis == 0) rotateAngleZ += Math.toRadians(headRot * set.headDir);
-                    else rotateAngleY += Math.toRadians(headRot * set.headDir);
-                    rotateAngleX += Math.toRadians(entity.rotationPitch);
-                    
+                    GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
+
+                    if (parent != null)
+                    {
+                        if (parent.rotateAngleZ != 0f)
+                        {
+                            GL11.glRotatef(parent.rotateAngleZ * (180f / (float) Math.PI), 0f, 0f, -1f);
+                        }
+
+                        if (parent.rotateAngleY != 0f)
+                        {
+                            GL11.glRotatef(parent.rotateAngleY * (180f / (float) Math.PI), 0f, -1f, 0f);
+                        }
+
+                        if (parent.rotateAngleX != 0f)
+                        {
+                            GL11.glRotatef(parent.rotateAngleX * (180f / (float) Math.PI), -1f, 0f, 0f);
+                        }
+                    }
+
+                    if (set.headAxis == 2) GlStateManager.rotate(headRot, 0, 0, 1);
+                    else GlStateManager.rotate(headRot, 0, 1, 0);
+                    GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
+
+                    if (parent != null)
+                    {
+                        if (parent.rotateAngleZ != 0f)
+                        {
+                            GL11.glRotatef(parent.rotateAngleZ * (180f / (float) Math.PI), 0f, 0f, 1f);
+                        }
+
+                        if (parent.rotateAngleY != 0f)
+                        {
+                            GL11.glRotatef(parent.rotateAngleY * (180f / (float) Math.PI), 0f, 1f, 0f);
+                        }
+
+                        if (parent.rotateAngleX != 0f)
+                        {
+                            GL11.glRotatef(parent.rotateAngleX * (180f / (float) Math.PI), 1f, 0f, 0f);
+                        }
+                    }
+
+                    GL11.glTranslatef(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
+
                 }
 
                 if (rotateAngleX == 0f && rotateAngleY == 0f && rotateAngleZ == 0f)

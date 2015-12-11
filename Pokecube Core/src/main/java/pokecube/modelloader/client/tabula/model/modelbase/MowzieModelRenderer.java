@@ -293,7 +293,8 @@ public class MowzieModelRenderer extends ModelRenderer
                     // TODO improve on these caps.;
                     float rot = Math.min(set.headCap[1], head - body);
                     float headRot = Math.max(rot, set.headCap[0]);
-
+                    headRot *= set.headDir;
+                    
                     GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
                     if (parent != null)

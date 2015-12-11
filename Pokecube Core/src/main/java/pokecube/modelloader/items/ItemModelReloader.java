@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import pokecube.core.database.Database;
+import pokecube.modelloader.client.ClientProxy;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
 
 public class ItemModelReloader extends Item
@@ -22,12 +23,7 @@ public class ItemModelReloader extends Item
     {
         if (!world.isRemote) return itemstack;
         Database.updateSizes();
-        AnimationLoader.load();
-//        if (!player.isSneaking()) AnimationLoader.load();
-//        else
-//        {
-//            
-//        }
+        ClientProxy.populateModels();
         return itemstack;
     }
 

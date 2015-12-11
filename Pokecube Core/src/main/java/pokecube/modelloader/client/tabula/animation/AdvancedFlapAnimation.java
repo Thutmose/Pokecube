@@ -1,7 +1,6 @@
 package pokecube.modelloader.client.tabula.animation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
@@ -31,12 +30,13 @@ public class AdvancedFlapAnimation extends Animation
      * @param angle - angle[0] = first stage movement, angle[1] = second stage movement.
      * @param start - initial angle moved to to start flapping
      * @param axis - axis used for flapping around.
+     * @param reverse - should only be false for the first section of the wing.
      * @return
      */
     public AdvancedFlapAnimation init(Set<String> lw, Set<String> rw, int duration, float[] angle, float start, int axis, boolean reverse)
     {
         int dir = reverse?-1:1;
-        System.out.println(lw+" "+Arrays.toString(angle)+" "+start+" "+reverse+" "+duration);
+        
         for(String s: rw)
         {
             String ident = "";

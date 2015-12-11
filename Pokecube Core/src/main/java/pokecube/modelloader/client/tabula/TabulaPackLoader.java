@@ -39,6 +39,12 @@ public class TabulaPackLoader extends AnimationLoader
 {
     public static HashMap<PokedexEntry, TabulaModelSet> modelMap = new HashMap<PokedexEntry, TabulaModelSet>();
 
+    public static void clear()
+    {
+        AnimationLoader.clear();
+        modelMap.clear();
+    }
+    
     public static boolean loadModel(String path)
     {
         ResourceLocation model = new ResourceLocation(path + ".tbl");

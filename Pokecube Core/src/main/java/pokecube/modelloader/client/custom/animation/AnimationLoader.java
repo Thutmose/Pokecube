@@ -38,6 +38,12 @@ public class AnimationLoader
     public static HashMap<String, LoadedModel> modelMaps  = new HashMap<String, LoadedModel>();
     public static HashMap<String, Model>       models     = new HashMap<String, Model>();
 
+    public static void clear()
+    {
+        models.clear();
+        modelMaps.clear();
+    }
+    
     public static class Model
     {
         public ResourceLocation model;

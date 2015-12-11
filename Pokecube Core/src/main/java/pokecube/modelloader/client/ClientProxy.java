@@ -76,9 +76,10 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation("pokecube_ml:modelreloader", "inventory"));
     }
 
-    private void populateModels()
+    public static void populateModels()
     {
         System.out.println("Looking for models");
+        TabulaPackLoader.clear();
         for (String mod : modelProviders.keySet())
         {
             for (PokedexEntry p : Database.allFormes)

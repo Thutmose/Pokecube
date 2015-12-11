@@ -314,8 +314,8 @@ public class MowzieModelRenderer extends ModelRenderer
                         }
                     }
 
-                    GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
                     GlStateManager.rotate(headRot, 0, 1, 0);
+                    GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
 
                     if (parent != null)
                     {

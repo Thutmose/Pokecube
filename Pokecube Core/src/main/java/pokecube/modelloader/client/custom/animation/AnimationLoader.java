@@ -466,7 +466,7 @@ public class AnimationLoader
         return ret;
     }
 
-    static int getHeadAxis(Node node)
+    public static int getHeadAxis(Node node)
     {
         int ret = 2;
         if (node.getAttributes() == null) return ret;

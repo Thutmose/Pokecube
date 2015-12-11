@@ -1,10 +1,11 @@
 package pokecube.modelloader.client.tabula.model.modelbase;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
@@ -13,8 +14,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.custom.RenderAdvancedPokemobModel;
 import pokecube.modelloader.client.tabula.TabulaPackLoader;
 import pokecube.modelloader.client.tabula.TabulaPackLoader.TabulaModelSet;
-
-import org.lwjgl.opengl.GL11;
 
 /** @author BobMowzie, gegy1000, FiskFille
  * @since 0.1.0 */
@@ -283,59 +282,21 @@ public class MowzieModelRenderer extends ModelRenderer
                 GL11.glTranslatef(-rotationPointX * f5, -rotationPointY * f5, -rotationPointZ * f5);
                 int i;
 
-                /**
-                 * Rotate the head, this should probably also be moved to a seperate method.
-                 */
+                /** Rotate the head, this should probably also be moved to a
+                 * seperate method. */
                 if (isHeadRoot && entity instanceof IPokemob)
                 {
                     TabulaModelSet set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry());
-
                     float head = (entity.getRotationYawHead() + 360) % 360;
                     float body = (entity.rotationYaw + 360) % 360;
+                    //TODO improve on these caps.
                     float rot = Math.min(set.headCap[1], head - body);
                     float headRot = Math.max(rot, set.headCap[0]);
-                    GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
-                    if (parent != null)
-                    {
-                        if (parent.rotateAngleZ != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleZ * (180f / (float) Math.PI), 0f, 0f, -1f);
-                        }
-
-                        if (parent.rotateAngleY != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleY * (180f / (float) Math.PI), 0f, -1f, 0f);
-                        }
-
-                        if (parent.rotateAngleX != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleX * (180f / (float) Math.PI), -1f, 0f, 0f);
-                        }
-                    }
-
-                    GlStateManager.rotate(headRot, 0, 1, 0);
-                    GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
-
-                    if (parent != null)
-                    {
-                        if (parent.rotateAngleZ != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleZ * (180f / (float) Math.PI), 0f, 0f, 1f);
-                        }
-
-                        if (parent.rotateAngleY != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleY * (180f / (float) Math.PI), 0f, 1f, 0f);
-                        }
-
-                        if (parent.rotateAngleX != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleX * (180f / (float) Math.PI), 1f, 0f, 0f);
-                        }
-                    }
-
-                    GL11.glTranslatef(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
+                    if (set.headAxis == 0) rotateAngleZ += Math.toRadians(headRot * set.headDir);
+                    else rotateAngleY += Math.toRadians(headRot * set.headDir);
+                    rotateAngleX += Math.toRadians(entity.rotationPitch);
+                    
                 }
 
                 if (rotateAngleX == 0f && rotateAngleY == 0f && rotateAngleZ == 0f)
@@ -344,7 +305,7 @@ public class MowzieModelRenderer extends ModelRenderer
                     {
 
                         GL11.glPushMatrix();
-                        //Apply Colour
+                        // Apply Colour
                         GL11.glColor4f(red, green, blue, alpha);
                         GL11.glCallList(displayList);
                         GL11.glColor4f(1, 1, 1, 1);
@@ -362,7 +323,7 @@ public class MowzieModelRenderer extends ModelRenderer
                         GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
                         GL11.glPushMatrix();
-                        //Apply Colour
+                        // Apply Colour
                         GL11.glColor4f(red, green, blue, alpha);
                         GL11.glCallList(displayList);
                         GL11.glColor4f(1, 1, 1, 1);
@@ -400,7 +361,7 @@ public class MowzieModelRenderer extends ModelRenderer
                     }
 
                     GL11.glPushMatrix();
-                    //Apply Colour
+                    // Apply Colour
                     GL11.glColor4f(red, green, blue, alpha);
                     GL11.glCallList(displayList);
                     GL11.glColor4f(1, 1, 1, 1);

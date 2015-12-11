@@ -25,6 +25,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
+import pokecube.modelloader.client.tabula.animation.AdvancedFlapAnimation;
 import pokecube.modelloader.client.tabula.animation.BasicFlapAnimation;
 import pokecube.modelloader.client.tabula.animation.BiWalkAnimation;
 import pokecube.modelloader.client.tabula.animation.QuadWalkAnimation;
@@ -131,8 +132,10 @@ public class TabulaPackLoader extends AnimationLoader
         public Vector3                    scale            = Vector3.getNewVectorFromPool();
         /** Limits on the rotation of the head */
         public float[]                    headCap          = { -180, 180 };
-        /** Which axis the head rotates around, 0,1 or 2 for x, y, or z. */
+        /** Which axis the head rotates around, 0,1 or for x, y */
         public int                        headAxis         = 1;
+        /** Which direction the head rotates */
+        public int                        headDir          = 1;
         /** Internal, used to determine if it should copy xml data from base
          * forme. */
         private boolean                   foundExtra       = false;
@@ -249,6 +252,10 @@ public class TabulaPackLoader extends AnimationLoader
                                 offset = getOffset(part);
                                 scale = getScale(part);
                                 rotation = getRotation(part);
+                                headAxis = getHeadAxis(part);
+                                headDir = getHeadDir(part);
+                                headDir = Math.min(1, headDir);
+                                headDir = Math.max(-1, headDir);
                                 setHeadCaps(part, headCaps);
                             }
                             catch (Exception e)
@@ -267,6 +274,10 @@ public class TabulaPackLoader extends AnimationLoader
                         else if (phaseName.equals("flap"))
                         {
                             addBasicFlap(part.getAttributes());
+                        }
+                        else if (phaseName.equals("advFlap"))
+                        {
+                            addAdvancedFlap(part.getAttributes());
                         }
                     }
                 }
@@ -449,6 +460,55 @@ public class TabulaPackLoader extends AnimationLoader
             flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
 
             addAnimation("flying", new BasicFlapAnimation().init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis));
+
+        }
+
+        /** Reads and adds the basic flap animation from the walk.
+         * 
+         * @param map */
+        void addAdvancedFlap(NamedNodeMap map)
+        {
+            int flapdur = 0;
+            int flapaxis = 2;
+            float walkAngle2 = 20;
+            AdvancedFlapAnimation anim = new AdvancedFlapAnimation();
+
+            flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
+            //Can have up to 255 wing segments, more than this would be silly.
+            for (int i = 1; i <= 255; i++)
+            {
+                if (map.getNamedItem("leftWing" + i) == null) break;
+
+                float[] walkAngle1 = { 20, 20 };
+                HashSet<String> hl = new HashSet<String>();
+                HashSet<String> hr = new HashSet<String>();
+                String[] lh = map.getNamedItem("leftWing" + i).getNodeValue().split(":");
+                String[] rh = map.getNamedItem("rightWing" + i).getNodeValue().split(":");
+                convertToIdents(lh);
+                convertToIdents(rh);
+
+                for (String s : lh)
+                    if (s != null) hl.add(s);
+                for (String s : rh)
+                    if (s != null) hr.add(s);
+
+                if (map.getNamedItem("angle" + i) != null)
+                {
+                    String[] args = map.getNamedItem("angle" + i).getNodeValue().split(",");
+                    walkAngle1[0] = Float.parseFloat(args[0]);
+                    walkAngle1[1] = Float.parseFloat(args[1]);
+                }
+                if (map.getNamedItem("start" + i) != null)
+                {
+                    walkAngle2 = Float.parseFloat(map.getNamedItem("start" + i).getNodeValue());
+                }
+                if (map.getNamedItem("axis" + i) != null)
+                {
+                    flapaxis = Integer.parseInt(map.getNamedItem("axis" + i).getNodeValue());
+                }
+                anim.init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis, i > 1);
+            }
+            addAnimation("flying", anim);
 
         }
     }

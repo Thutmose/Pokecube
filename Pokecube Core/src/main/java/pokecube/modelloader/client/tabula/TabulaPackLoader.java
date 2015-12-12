@@ -196,7 +196,7 @@ public class TabulaPackLoader extends AnimationLoader
                     }
                 }
             }
-            for(String s: mergedAnimations.keySet())
+            for (String s : mergedAnimations.keySet())
             {
                 String toName = mergedAnimations.get(s);
                 Animation to = null;
@@ -207,13 +207,25 @@ public class TabulaPackLoader extends AnimationLoader
                     {
                         from = anim;
                     }
-                    if(toName.equals(anim.name))
+                    if (toName.equals(anim.name))
                     {
                         to = anim;
                     }
-                    if(to!=null && from!=null) break;
+                    if (to != null && from != null) break;
                 }
-                if(to!=null && from!=null)
+                if (to == null || from == null) for (Animation anim : loadedAnimations.values())
+                {
+                    if (from == null) if (s.equals(anim.name))
+                    {
+                        from = anim;
+                    }
+                    if (to == null) if (toName.equals(anim.name))
+                    {
+                        to = anim;
+                    }
+                    if (to != null && from != null) break;
+                }
+                if (to != null && from != null)
                 {
                     merge(from, to);
                 }
@@ -233,7 +245,8 @@ public class TabulaPackLoader extends AnimationLoader
         {
             for (String s1 : from.sets.keySet())
             {
-                //Prioritize to, if to already has animations for that part, skip it.
+                // Prioritize to, if to already has animations for that part,
+                // skip it.
                 if (!to.sets.containsKey(s1))
                 {
                     to.sets.put(s1, from.sets.get(s1));
@@ -315,7 +328,7 @@ public class TabulaPackLoader extends AnimationLoader
                             addAdvancedFlap(part.getAttributes());
                         }
                     }
-                    else if(part.getNodeName().equals("merges"))
+                    else if (part.getNodeName().equals("merges"))
                     {
                         String[] merges = part.getAttributes().getNamedItem("merge").getNodeValue().split("->");
                         mergedAnimations.put(merges[0], merges[1]);

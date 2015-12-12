@@ -294,48 +294,16 @@ public class MowzieModelRenderer extends ModelRenderer
                     float rot = Math.min(set.headCap[1], head - body);
                     float headRot = Math.max(rot, set.headCap[0]);
                     headRot *= set.headDir;
-                    
+
                     GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
-                    if (parent != null)
-                    {
-                        if (parent.rotateAngleZ != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleZ * (180f / (float) Math.PI), 0f, 0f, -1f);
-                        }
-
-                        if (parent.rotateAngleY != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleY * (180f / (float) Math.PI), 0f, -1f, 0f);
-                        }
-
-                        if (parent.rotateAngleX != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleX * (180f / (float) Math.PI), -1f, 0f, 0f);
-                        }
-                    }
+                    rotateToParent();
 
                     if (set.headAxis == 2) GlStateManager.rotate(headRot, 0, 0, 1);
                     else GlStateManager.rotate(headRot, 0, 1, 0);
                     GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
 
-                    if (parent != null)
-                    {
-                        if (parent.rotateAngleZ != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleZ * (180f / (float) Math.PI), 0f, 0f, 1f);
-                        }
-
-                        if (parent.rotateAngleY != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleY * (180f / (float) Math.PI), 0f, 1f, 0f);
-                        }
-
-                        if (parent.rotateAngleX != 0f)
-                        {
-                            GL11.glRotatef(parent.rotateAngleX * (180f / (float) Math.PI), 1f, 0f, 0f);
-                        }
-                    }
+                    unRotateToParent();
 
                     GL11.glTranslatef(-rotationPointX * scale, -rotationPointY * scale, -rotationPointZ * scale);
 
@@ -426,6 +394,53 @@ public class MowzieModelRenderer extends ModelRenderer
         }
 
         GL11.glPopMatrix();
+    }
+
+    private void rotateToParent()
+    {
+        if (parent != null)
+        {
+            if (parent instanceof MowzieModelRenderer) ((MowzieModelRenderer) parent).rotateToParent();
+
+            if (parent.rotateAngleZ != 0f)
+            {
+                GL11.glRotatef(parent.rotateAngleZ * (180f / (float) Math.PI), 0f, 0f, -1f);
+            }
+
+            if (parent.rotateAngleY != 0f)
+            {
+                GL11.glRotatef(parent.rotateAngleY * (180f / (float) Math.PI), 0f, -1f, 0f);
+            }
+
+            if (parent.rotateAngleX != 0f)
+            {
+                GL11.glRotatef(parent.rotateAngleX * (180f / (float) Math.PI), -1f, 0f, 0f);
+            }
+        }
+    }
+
+    private void unRotateToParent()
+    {
+
+        if (parent != null)
+        {
+            if (parent instanceof MowzieModelRenderer) ((MowzieModelRenderer) parent).unRotateToParent();
+            
+            if (parent.rotateAngleZ != 0f)
+            {
+                GL11.glRotatef(parent.rotateAngleZ * (180f / (float) Math.PI), 0f, 0f, 1f);
+            }
+
+            if (parent.rotateAngleY != 0f)
+            {
+                GL11.glRotatef(parent.rotateAngleY * (180f / (float) Math.PI), 0f, 1f, 0f);
+            }
+
+            if (parent.rotateAngleX != 0f)
+            {
+                GL11.glRotatef(parent.rotateAngleX * (180f / (float) Math.PI), 1f, 0f, 0f);
+            }
+        }
     }
 
     @SideOnly(Side.CLIENT)

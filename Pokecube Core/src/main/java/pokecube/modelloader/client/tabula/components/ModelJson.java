@@ -45,6 +45,8 @@ public class ModelJson extends MowzieModelBase
     /** Map of names to animations, used to get animations for rendering more
      * easily */
     public HashMap<String, Animation> animationMap = Maps.newHashMap();
+    
+    public Set<Animation> playing = Sets.newHashSet();
 
     public Animation playingAnimation;
     private float    animationTimer;
@@ -124,7 +126,7 @@ public class ModelJson extends MowzieModelBase
         {
             this.setToInitPose();
 
-            if (playingAnimation != null)
+            if (playingAnimation != null || !playing.isEmpty())
             {
                 updateAnimation(entity, partialTicks);
             }
@@ -242,7 +244,7 @@ public class ModelJson extends MowzieModelBase
      * @since 0.1.0 */
     public void startAnimation(Animation animation)
     {
-        if (playingAnimation != animation) stopAnimation();
+        if (!canRunConcurrent(animation)) stopAnimation();
 
         if (playingAnimation == null)
         {
@@ -267,6 +269,11 @@ public class ModelJson extends MowzieModelBase
     public void stopAnimation()
     {
         playingAnimation = null;
+    }
+    
+    public void stopAnimation(Animation toStop)
+    {
+        playing.remove(toStop);
     }
 
     public void updateAnimation(Entity entity, float partialTick)
@@ -326,6 +333,11 @@ public class ModelJson extends MowzieModelBase
             }
         }
     }
+    
+    private boolean canRunConcurrent(Animation toRun)
+    {
+        return toRun!=playingAnimation;
+    }
 
     private MowzieModelRenderer createModelRenderer(CubeInfo cubeInfo)
     {
@@ -356,7 +368,7 @@ public class ModelJson extends MowzieModelBase
 
     public boolean isAnimationInProgress()
     {
-        return playingAnimation != null;
+        return playingAnimation != null || !playing.isEmpty();
     }
 
     public int getAnimationLength()

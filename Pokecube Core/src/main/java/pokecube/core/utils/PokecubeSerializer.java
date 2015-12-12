@@ -214,7 +214,6 @@ public class PokecubeSerializer
 
                 if ((file == null))
                 {
-                    System.out.println("new " + file);
                     instance = new PokecubeSerializer(server);
                 }
             }

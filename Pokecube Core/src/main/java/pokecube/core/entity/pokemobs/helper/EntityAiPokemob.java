@@ -116,12 +116,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         if (entry.flys()) moveSpeed /= 1.25f;
 
-        // this.getNavigator().setAvoidsWater(false);
         this.getNavigator().setSpeed(moveSpeed);
         this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(moveSpeed);
 
-        // if(true)
-        // return;
+//         if(true) return;
 
         this.tasks.addTask(1, new PokemobAISwimming(this));
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
@@ -691,8 +689,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (this.isInWater())
             {
                 d0 = this.posY;
-                float f2 = 0.05F;
-                float f6 = swims() ? 5f : 1;
+                float f2 = 0.1F;
+                float f6 = swims() ? 2.5f : 1;
                 float f4;
                 float f3 = f2 * f6;
 

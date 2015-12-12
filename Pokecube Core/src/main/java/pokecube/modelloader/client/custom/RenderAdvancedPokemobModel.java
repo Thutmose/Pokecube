@@ -326,7 +326,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
         String phase = getPhase(set, entity, partialTick);
         boolean inSet = false;
-
         if (modelj.animationMap.containsKey(phase) || (inSet = set.loadedAnimations.containsKey(phase)))
         {
             if (!inSet) modelj.startAnimation(phase);

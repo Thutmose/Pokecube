@@ -336,7 +336,7 @@ public class ModelJson extends MowzieModelBase
     
     private boolean canRunConcurrent(Animation toRun)
     {
-        return toRun!=playingAnimation;
+        return toRun==playingAnimation;
     }
 
     private MowzieModelRenderer createModelRenderer(CubeInfo cubeInfo)

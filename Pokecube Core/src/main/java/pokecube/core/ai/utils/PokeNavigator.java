@@ -23,170 +23,145 @@ import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 import thut.api.pathing.Paths;
 
-public class PokeNavigator extends PathNavigate {
-    private final EntityLiving theEntity;
-    private final World worldObj;
+public class PokeNavigator extends PathNavigate
+{
+    private final EntityLiving       theEntity;
+    private final World              worldObj;
     /** The PathEntity being followed. */
-    private PathEntity currentPath;
-    private double speed;
-	Vector3 v = Vector3.getNewVectorFromPool();
-	Vector3 v1 = Vector3.getNewVectorFromPool();
-	Vector3 v2 = Vector3.getNewVectorFromPool();
-	Vector3 v3 = Vector3.getNewVectorFromPool();
-    /**
-     * The number of blocks (extra) +/- in each axis that get pulled out as cache for the pathfinder's search space
-     */
+    private PathEntity               currentPath;
+    private double                   speed;
+    Vector3                          v            = Vector3.getNewVectorFromPool();
+    Vector3                          v1           = Vector3.getNewVectorFromPool();
+    Vector3                          v2           = Vector3.getNewVectorFromPool();
+    Vector3                          v3           = Vector3.getNewVectorFromPool();
+    /** The number of blocks (extra) +/- in each axis that get pulled out as
+     * cache for the pathfinder's search space */
     private final IAttributeInstance pathSearchRange;
-    private boolean noSunPathfind;
+    private boolean                  noSunPathfind;
     /** Time, in number of ticks, following the current path */
-    private int totalTicks;
-    /**
-     * The time when the last position check was done (to detect successful movement)
-     */
-    private int ticksAtLastPos;
-    /**
-     * Coordinates of the entity's position last time a check was done (part of monitoring getting 'stuck')
-     */
-    private Vec3 lastPosCheck = new Vec3(0.0D, 0.0D, 0.0D);
-    /**
-     * Specifically, if a wooden door block is even considered to be passable by the pathfinder
-     */
-    private boolean canPassOpenWoodenDoors = true;
-    /** If door blocks are considered passable even when closed */
-    private boolean canPassClosedWoodenDoors;
-    /** If water blocks are avoided (at least by the pathfinder) */
-    private boolean avoidsWater;
-    /**
-     * If the entity can swim. Swimming AI enables this and the pathfinder will also cause the entity to swim straight
-     * upwards when underwater
-     */
-    private boolean canSwim;
-    
+    private int                      totalTicks;
+    /** The time when the last position check was done (to detect successful
+     * movement) */
+    private int                      ticksAtLastPos;
+    /** Coordinates of the entity's position last time a check was done (part of
+     * monitoring getting 'stuck') */
+    private Vec3                     lastPosCheck = new Vec3(0.0D, 0.0D, 0.0D);
+    /** If the entity can swim. Swimming AI enables this and the pathfinder will
+     * also cause the entity to swim straight upwards when underwater */
+    private boolean                  canSwim;
+
     private boolean canDive;
-    
-    private boolean canFly;
+
+    private boolean    canFly;
     public final Paths pathfinder;
-    
+
     final IPokemob pokemob;
-    
+
     long lastCacheUpdate = 0;
 
     public PokeNavigator(EntityLiving entity, World world)
     {
-    	super(entity, world);
+        super(entity, world);
         this.theEntity = entity;
         this.worldObj = world;
         this.pathSearchRange = entity.getEntityAttribute(SharedMonsterAttributes.followRange);
         pokemob = (IPokemob) entity;
         canSwim = true;
-        canDive = ((IPathingMob)entity).swims();
+        canDive = ((IPathingMob) entity).swims();
         pathfinder = new Paths(world);
     }
-    
+
     public void refreshCache()
     {
-    	if(pathfinder.cacheLock[1])
-    		return;
+        if (pathfinder.cacheLock[1]) return;
         long time = System.nanoTime();
         pathfinder.cacheLock[0] = true;
-        if(lastCacheUpdate==0||(time - lastCacheUpdate > 1000000000))
+        if (lastCacheUpdate == 0 || (time - lastCacheUpdate > 1000000000))
         {
             int i = MathHelper.floor_double(theEntity.posX);
             int j = MathHelper.floor_double(theEntity.posY + 1.0D);
             int k = MathHelper.floor_double(theEntity.posZ);
-            int l = (int)(pathSearchRange.getAttributeValue() + 16.0F);
+            int l = (int) (pathSearchRange.getAttributeValue() + 16.0F);
             int i1 = i - l;
             int j1 = j - l;
             int k1 = k - l;
             int l1 = i + l;
             int i2 = j + l;
             int j2 = k + l;
-        	pathfinder.chunks = new ChunkCache(worldObj, new BlockPos(i1, j1, k1), new BlockPos(l1, i2, j2), 0);
-        	lastCacheUpdate = System.nanoTime();
-        	
+            pathfinder.chunks = new ChunkCache(worldObj, new BlockPos(i1, j1, k1), new BlockPos(l1, i2, j2), 0);
+            lastCacheUpdate = System.nanoTime();
+
         }
         pathfinder.cacheLock[0] = false;
     }
-    /**
-     * Sets the speed
-     */
+
+    /** Sets the speed */
     @Override
-	public void setSpeed(double speed)
+    public void setSpeed(double speed)
     {
         this.speed = speed;
     }
 
-    /**
-     * Gets the maximum distance that the path finding will search in.
-     */
+    /** Gets the maximum distance that the path finding will search in. */
     @Override
-	public float getPathSearchRange()
+    public float getPathSearchRange()
     {
-        return (float)this.pathSearchRange.getAttributeValue();
+        return (float) this.pathSearchRange.getAttributeValue();
     }
-    
+
     @Override
     public PathEntity getPathToPos(BlockPos pos)
-    {
-      PokedexEntry entry = pokemob.getPokedexEntry();
-      this.canFly = entry.mobType == Type.FLYING || entry.mobType == Type.FLOATING;
-      this.canDive = entry.mobType == Type.WATER;
-      PathEntity current = currentPath;
-	  	if(current!=null && !pokemob.getPokemonAIState(IPokemob.ANGRY))
-	  	{
-		    	Vector3 p = v.set(current.getFinalPathPoint());
-				Vector3 v = v1.set(pos);
-				if(p.distToSq(v)<=1)
-				{
-					return current;
-				}
-	  	}
-      return pathfinder.getEntityPathToXYZ(this.theEntity, pos.getX(), pos.getY(), pos.getZ(), this.getPathSearchRange(), this.canPassOpenWoodenDoors, this.canPassClosedWoodenDoors, this.avoidsWater, this.canFly, this.canSwim);
- 
-    }
-
-    /**
-     * Try to find and set a path to XYZ. Returns true if successful.
-     */
-    @Override
-	public boolean tryMoveToXYZ(double x, double y, double z, double speed)
-    {
-        PathEntity pathentity = this.getPathToXYZ(MathHelper.floor_double(x), ((int)y), MathHelper.floor_double(z));
-        return this.setPath(pathentity, speed);
-    }
-
-    /**
-     * Returns the path to the given EntityLiving
-     */
-    @Override
-	public PathEntity getPathToEntityLiving(Entity entity)
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
         this.canFly = entry.mobType == Type.FLYING || entry.mobType == Type.FLOATING;
         this.canDive = entry.mobType == Type.WATER;
-        return !this.canNavigate() ? null : pathfinder.getPathEntityToEntity(this.theEntity, entity, this.getPathSearchRange(), this.canPassOpenWoodenDoors, this.canPassClosedWoodenDoors, this.avoidsWater, this.canFly, this.canSwim);
+        PathEntity current = currentPath;
+        if (current != null && !pokemob.getPokemonAIState(IPokemob.ANGRY))
+        {
+            Vector3 p = v.set(current.getFinalPathPoint());
+            Vector3 v = v1.set(pos);
+            if (p.distToSq(v) <= 1) { return current; }
+        }
+        return pathfinder.getEntityPathToXYZ(this.theEntity, pos.getX(), pos.getY(), pos.getZ(),
+                this.getPathSearchRange());
+
     }
 
-    /**
-     * Try to find and set a path to EntityLiving. Returns true if successful.
-     */
+    /** Try to find and set a path to XYZ. Returns true if successful. */
     @Override
-	public boolean tryMoveToEntityLiving(Entity entity, double speed)
+    public boolean tryMoveToXYZ(double x, double y, double z, double speed)
+    {
+        PathEntity pathentity = this.getPathToXYZ(MathHelper.floor_double(x), ((int) y), MathHelper.floor_double(z));
+        return this.setPath(pathentity, speed);
+    }
+
+    /** Returns the path to the given EntityLiving */
+    @Override
+    public PathEntity getPathToEntityLiving(Entity entity)
+    {
+        PokedexEntry entry = pokemob.getPokedexEntry();
+        this.canFly = entry.mobType == Type.FLYING || entry.mobType == Type.FLOATING;
+        this.canDive = entry.mobType == Type.WATER;
+        return !this.canNavigate() ? null
+                : pathfinder.getPathEntityToEntity(this.theEntity, entity, this.getPathSearchRange());
+    }
+
+    /** Try to find and set a path to EntityLiving. Returns true if
+     * successful. */
+    @Override
+    public boolean tryMoveToEntityLiving(Entity entity, double speed)
     {
         PathEntity pathentity = this.getPathToEntityLiving(entity);
         return pathentity != null ? this.setPath(pathentity, speed) : false;
     }
 
-    /**
-     * sets the active path data if path is 100% unique compared to old path, checks to adjust path for sun avoiding
-     * ents and stores end coords
-     */
+    /** sets the active path data if path is 100% unique compared to old path,
+     * checks to adjust path for sun avoiding ents and stores end coords */
     @Override
-	public boolean setPath(PathEntity path, double speed)
+    public boolean setPath(PathEntity path, double speed)
     {
 
-		if(path==currentPath)
-			return true;
+        if (path == currentPath) return true;
         if (path == null)
         {
             this.currentPath = null;
@@ -219,17 +194,15 @@ public class PokeNavigator extends PathNavigate {
         }
     }
 
-    /**
-     * gets the actively used PathEntity
-     */
+    /** gets the actively used PathEntity */
     @Override
-	public PathEntity getPath()
+    public PathEntity getPath()
     {
         return this.currentPath;
     }
 
     @Override
-	public void onUpdateNavigation()
+    public void onUpdateNavigation()
     {
         ++this.totalTicks;
 
@@ -238,40 +211,47 @@ public class PokeNavigator extends PathNavigate {
             if (this.canNavigate())
             {
                 try
-				{
-					this.pathFollow();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+                {
+                    this.pathFollow();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
 
             if (!this.noPath())
             {
-                Vec3 vec3 = this.currentPath.getPosition(this.theEntity);
-                
+                Vector3 targetLoc = Vector3.getNewVectorFromPool();
+                targetLoc.set(this.currentPath.getPosition(this.theEntity));
+
+                if (targetLoc.isEmpty())
+                {
+                    targetLoc.freeVectorFromPool();
+                    return;
+                }
+
                 float f = this.theEntity.width;
+                
                 f = Math.max(f, 0.5f);
                 v.set(theEntity);
                 v1.set(currentPath.getFinalPathPoint());
 
-//            	System.out.println(vec3+" "+v.distTo(v1));
-                if(v.distTo(v1)<f)
-                {                
-                	this.clearPathEntity();
-                	return;
-                }
-                
-                if (vec3 != null)
+                if (v.distTo(v1) < f)
                 {
-                	double speed = this.speed;
-                	if(canDive && this.isInLiquid())
-                	{
-                		speed *= 2;
-                	}
-                    this.theEntity.getMoveHelper().setMoveTo(vec3.xCoord, vec3.yCoord, vec3.zCoord, speed);
+                    this.clearPathEntity();
+                    targetLoc.freeVectorFromPool();
+                    return;
                 }
+
+                double speed = this.speed;
+                if (canDive && this.isInLiquid())
+                {
+                    speed *= 2;
+                }
+                this.theEntity.getMoveHelper().setMoveTo(targetLoc.x, targetLoc.y, targetLoc.z, speed);
+                targetLoc.freeVectorFromPool();
+
             }
         }
     }
@@ -281,29 +261,21 @@ public class PokeNavigator extends PathNavigate {
     {
         Vec3 vec3 = this.getEntityPosition();
         int i = this.currentPath.getCurrentPathLength();
-        
+
         float f = this.theEntity.width * this.theEntity.width;
-        f = Math.max(f, 0.5f);
-        v.set(theEntity);
-        v1.set(currentPath.getFinalPathPoint());
-        if(v.distTo(v1)<f)
-        {                
-        	this.clearPathEntity();
-        	return;
-        }
-        f = Math.max(f,  1.5f);
+        f = Math.max(1, 0.15f);
         this.currentPath.setCurrentPathIndex(getNextPoint());
-        
-        if(!((canFly || canSwim && theEntity.isInWater()) && !theEntity.onGround))
-        for (int j = this.currentPath.getCurrentPathIndex(); j < this.currentPath.getCurrentPathLength(); ++j)
+
+        if (!((canFly || canSwim && theEntity.isInWater()) && !theEntity.onGround))
+            for (int j = this.currentPath.getCurrentPathIndex(); j < this.currentPath.getCurrentPathLength(); ++j)
         {
-            if (this.currentPath.getPathPointFromIndex(j).yCoord != (int)vec3.yCoord)
+            if (this.currentPath.getPathPointFromIndex(j).yCoord != (int) vec3.yCoord)
             {
                 i = j;
                 break;
             }
         }
-        
+
         int k;
 
         for (k = this.currentPath.getCurrentPathIndex(); k < i; ++k)
@@ -313,70 +285,58 @@ public class PokeNavigator extends PathNavigate {
                 this.currentPath.setCurrentPathIndex(k + 1);
             }
         }
-        
-
-        k = MathHelper.ceiling_float_int(this.theEntity.width);
-        int l = (int)this.theEntity.height + 1;
-        int i1 = k;
-        for (int j1 = i - 1; j1 >= this.currentPath.getCurrentPathIndex(); --j1)
+        f = Math.max(f, 1.5f);
+        v.set(theEntity);
+        v1.set(currentPath.getFinalPathPoint());
+        if (v.distTo(v1) < f)
         {
-        	if (this.isDirectPathBetweenPoints(vec3, this.currentPath.getVectorFromIndex(this.theEntity, j1), k, l, i1))
-            {
-            	this.currentPath.setCurrentPathIndex(j1);
-                break;
-            }
+            this.clearPathEntity();
+            return;
         }
-        
-        if(lastPosCheck.distanceTo(vec3)>f)
+
+        f = Math.max(f, 1.5f);
+        if (lastPosCheck.distanceTo(vec3) > f)
         {
             this.ticksAtLastPos = this.totalTicks;
             lastPosCheck = vec3;
         }
-        
+
         int tickDiff = this.totalTicks - this.ticksAtLastPos;
-        
-        if (tickDiff > (pokemob.getPokemonAIState(IMoveConstants.IDLE)?25 * speed:50 * speed))
+
+        if (tickDiff > (pokemob.getPokemonAIState(IMoveConstants.IDLE) ? 25 * speed : 50 * speed))
         {
-//        	if(theEntity.isInWater())
-//        		f /= 5;
             if (vec3.squareDistanceTo(this.lastPosCheck) < f)
             {
-            	sticks ++;
+                sticks++;
                 this.clearPathEntity();
             }
 
             this.ticksAtLastPos = this.totalTicks;
             lastPosCheck = vec3;
         }
-        
-        if(sticks > 100)
+
+        if (sticks > 100)
         {
-        	//System.err.println(theEntity+" Has been stuck trying to path quite a lot");
-        	sticks = 0;
-      //  	new Exception().printStackTrace();
+            sticks = 0;
         }
-        
+
     }
-    
+
     int sticks = 0;
 
-    /**
-     * If null path or reached the end
-     */
+    /** If null path or reached the end */
     @Override
-	public boolean noPath()
+    public boolean noPath()
     {
         return this.currentPath == null || this.currentPath.isFinished();
     }
 
-    /**
-     * sets active PathEntity to null
-     */
+    /** sets active PathEntity to null */
     @Override
-	public synchronized void clearPathEntity()
+    public synchronized void clearPathEntity()
     {
-//    	if(!((IPokemob)theEntity).getPokemonAIState(IPokemob.TAMED))
-//    	new Exception().printStackTrace();
+        // if(!((IPokemob)theEntity).getPokemonAIState(IPokemob.TAMED))
+        // new Exception().printStackTrace();
         this.currentPath = null;
     }
 
@@ -386,67 +346,64 @@ public class PokeNavigator extends PathNavigate {
         return new Vec3(this.theEntity.posX, this.getPathableYPos(), this.theEntity.posZ);
     }
 
-    /**
-     * Gets the safe pathing Y position for the entity depending on if it can path swim or not
-     */
+    /** Gets the safe pathing Y position for the entity depending on if it can
+     * path swim or not */
     private int getPathableYPos()
     {
-    	boolean inWater = this.theEntity.isInWater();
-        if(canDive && inWater)
+        boolean inWater = this.theEntity.isInWater();
+        if (canDive && inWater)
         {
-        	return (int)(this.theEntity.posY + 0.5D);
+            return (int) (this.theEntity.posY + 0.5D);
         }
         else if (canFly && !inWater)
         {
-        	return (int)(this.theEntity.posY + 0.5D);
+            return (int) (this.theEntity.posY + 0.5D);
         }
         else if (inWater && this.canSwim)
         {
-            int i = (int)this.theEntity.posY;
-            Block block = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.theEntity.posX), i, MathHelper.floor_double(this.theEntity.posZ))).getBlock();
+            int i = (int) this.theEntity.posY;
+            Block block = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.theEntity.posX), i,
+                    MathHelper.floor_double(this.theEntity.posZ))).getBlock();
             int j = 0;
 
             do
             {
-                if (block != Blocks.flowing_water && block != Blocks.water)
-                {
-                    return i;
-                }
+                if (block != Blocks.flowing_water && block != Blocks.water) { return i; }
 
                 ++i;
-                block = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.theEntity.posX), i, MathHelper.floor_double(this.theEntity.posZ))).getBlock();
+                block = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.theEntity.posX), i,
+                        MathHelper.floor_double(this.theEntity.posZ))).getBlock();
                 ++j;
             }
             while (j <= 16);
 
-            return (int)this.theEntity.posY;
+            return (int) this.theEntity.posY;
         }
-        return (int)(this.theEntity.posY + 0.5D);
-        
+        return (int) (this.theEntity.posY + 0.5D);
+
     }
 
-    /**
-     * If on ground or swimming and can swim
-     */
+    /** If on ground or swimming and can swim */
     public boolean canNavigate()
     {
         return this.theEntity.onGround || this.canSwim && this.isInLiquid() || this.canFly;
     }
 
-    /**
-     * Returns true if the entity is in water or lava, false otherwise
-     */
+    /** Returns true if the entity is in water or lava, false otherwise */
     public boolean isInLiquid()
     {
-        return this.theEntity.isInWater();// || worldObj.isMaterialInBB(theEntity.boundingBox.expand(-0.10000000149011612D, -0.4000000059604645D, -0.10000000149011612D), Material.lava);
+        return this.theEntity.isInWater();// ||
+                                          // worldObj.isMaterialInBB(theEntity.boundingBox.expand(-0.10000000149011612D,
+                                          // -0.4000000059604645D,
+                                          // -0.10000000149011612D),
+                                          // Material.lava);
     }
 
-    /**
-     * Trims path data from the end to the first sun covered block
-     */
+    /** Trims path data from the end to the first sun covered block */
     public void removeSunnyPath()
     {
-        if (!this.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(this.theEntity.posX), (int)(this.theEntity.posY + 0.5D), MathHelper.floor_double(this.theEntity.posZ))))
+        if (!this.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(this.theEntity.posX),
+                (int) (this.theEntity.posY + 0.5D), MathHelper.floor_double(this.theEntity.posZ))))
         {
             for (int i = 0; i < this.currentPath.getCurrentPathLength(); ++i)
             {
@@ -461,10 +418,9 @@ public class PokeNavigator extends PathNavigate {
         }
     }
 
-    /**
-     * Returns true when an entity of specified size could safely walk in a straight line between the two points. Args:
-     * pos1, pos2, entityXSize, entityYSize, entityZSize
-     */
+    /** Returns true when an entity of specified size could safely walk in a
+     * straight line between the two points. Args: pos1, pos2, entityXSize,
+     * entityYSize, entityZSize */
     public boolean isDirectPathBetweenPoints(Vec3 start, Vec3 end, int sizeX, int sizeY, int sizeZ)
     {
         double d0 = end.xCoord - start.xCoord;
@@ -479,40 +435,36 @@ public class PokeNavigator extends PathNavigate {
         else
         {
             v.set(start);
-            v1.set(end);//TODO re-do this using safe checks
+            v1.set(end);// TODO re-do this using safe checks
             return v1.isVisible(worldObj, v);
         }
     }
-    
+
     private int getNextPoint()
     {
-    	int index = currentPath.getCurrentPathIndex();
-    	
-    	if(index + 1 >= currentPath.getCurrentPathLength() || index == 0)
-    		return index;
-    	
-    	PathPoint current = currentPath.getPathPointFromIndex(index-1);
-    	PathPoint next = currentPath.getPathPointFromIndex(index);
-    	v.set(current);
-    	v1.set(next);
-    	v2.set(v.subtractFrom(v1));
-    	while(index + 1 < currentPath.getCurrentPathLength())
-    	{
-    		current = currentPath.getPathPointFromIndex(index);
-    		next = currentPath.getPathPointFromIndex(index+1);
-    		if(!v2.equals(v.set(current).subtractFrom(v1.set(next))))
-    		{
-    			return index;
-    		}
-    		index++;
-    	}
-    	return index;
+        int index = currentPath.getCurrentPathIndex();
+
+        if (index + 1 >= currentPath.getCurrentPathLength() || index == 0) return index;
+
+        PathPoint current = currentPath.getPathPointFromIndex(index - 1);
+        PathPoint next = currentPath.getPathPointFromIndex(index);
+        v.set(current);
+        v1.set(next);
+        v2.set(v.subtractFrom(v1));
+        while (index + 1 < currentPath.getCurrentPathLength())
+        {
+            current = currentPath.getPathPointFromIndex(index);
+            next = currentPath.getPathPointFromIndex(index + 1);
+            if (!v2.equals(v.set(current).subtractFrom(v1.set(next)))) { return index; }
+            index++;
+        }
+        return index;
     }
-    
+
     @Override
-	protected PathFinder getPathFinder() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    protected PathFinder getPathFinder()
+    {
+        return null;
+    }
 
 }

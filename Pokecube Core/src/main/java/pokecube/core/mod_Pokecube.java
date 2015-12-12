@@ -691,7 +691,7 @@ public class mod_Pokecube extends PokecubeMod
     {
         InventoryPC.clearPC();
         WorldGenStartBuilding.building = false;
-        PokecubeSerializer.getInstance().clearInstance();
+        if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
         AISaveHandler.clearInstance();
     }
 
@@ -764,7 +764,7 @@ public class mod_Pokecube extends PokecubeMod
 
         if (Mod_Pokecube_Helper.deactivateAnimals)
         {
-//TODO add rabbit
+            // TODO add rabbit
             EntityRegistry.removeSpawn(EntityChicken.class, EnumCreatureType.CREATURE, biomes);
             EntityRegistry.removeSpawn(EntityCow.class, EnumCreatureType.CREATURE, biomes);
             EntityRegistry.removeSpawn(EntityPig.class, EnumCreatureType.CREATURE, biomes);

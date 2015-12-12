@@ -543,7 +543,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public World getWorld()
     {
-        if (isOnClientSide())
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             return FMLClientHandler.instance().getWorldClient();
         }

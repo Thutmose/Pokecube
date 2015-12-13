@@ -734,10 +734,9 @@ public class mod_Pokecube extends PokecubeMod
             {
                 p.setSound(ID + ":mobs." + p.getName());
                 n++;
-
+                //TODO read this from database instead of here
                 if (p.getPokedexNb() == 345 || p.getPokedexNb() == 346 || p.getPokedexNb() == 91)
                 {
-
                     p.isStationary = true;
                 }
 
@@ -749,6 +748,7 @@ public class mod_Pokecube extends PokecubeMod
             p.updateMoves();
             // Refreshes the forme's modIds
             p.setModId(p.getModId());
+            System.out.println(p.getPokedexNb()+" "+p);
         }
         System.out.println(
                 "Loaded " + n + " Pokemob sounds and " + Pokedex.getInstance().getEntries().size() + " Pokemon");

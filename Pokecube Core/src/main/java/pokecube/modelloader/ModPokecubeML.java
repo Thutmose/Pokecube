@@ -75,7 +75,7 @@ public class ModPokecubeML
         addedPokemon = config.get(Configuration.CATEGORY_GENERAL, "pokemon", new String[] {"Zubat"}).getStringList();
         info = config.getBoolean("printAll", Configuration.CATEGORY_GENERAL, info,
                 "will print all pokemon names to console on load");
-        String[] files = config.getStringList("packs", Configuration.CATEGORY_GENERAL, new String[]{"Pokecube_Resources", "Gen_1", "Gen_2", "Gen_3", "Gen_4"}, "Resource Packs to add models");
+        String[] files = config.getStringList("packs", Configuration.CATEGORY_GENERAL, new String[]{"Pokecube_Resources", "Gen_1", "Gen_2", "Gen_3", "Gen_4", "Gen_5", "Gen_6"}, "Resource Packs to add models");
         config.save();
         configDir = evt.getModConfigurationDirectory();
         ArrayList<String> toAdd = Lists.newArrayList(addedPokemon);

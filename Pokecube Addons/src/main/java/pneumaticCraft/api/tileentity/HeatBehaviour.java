@@ -60,6 +60,7 @@ public abstract class HeatBehaviour<Tile extends TileEntity> {
         return z;
     }
 
+    @SuppressWarnings("unchecked")
     public Tile getTileEntity(){
         if(cachedTE == null || cachedTE.isInvalid()) cachedTE = (Tile)world.getTileEntity(pos);
         return cachedTE;
@@ -99,6 +100,7 @@ public abstract class HeatBehaviour<Tile extends TileEntity> {
         z = tag.getInteger("z");
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public boolean equals(Object o){
         if(o instanceof HeatBehaviour) {

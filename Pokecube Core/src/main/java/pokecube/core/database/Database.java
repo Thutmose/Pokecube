@@ -1434,7 +1434,7 @@ public class Database implements IMoveConstants
     private static void copyDatabaseFile(String name)
     {
         File temp1 = new File(CONFIGLOC + name);
-        if (temp1.exists() && !FORCECOPY) { return; }
+        if (temp1.exists() || !FORCECOPY) { return; }
         ArrayList<String> rows = getFile(DBLOCATION + name);
         try
         {

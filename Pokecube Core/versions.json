@@ -1,10 +1,11 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/238253-pokecube-core",
   "promos": {
-    "1.8.8-latest": "2.0.20",
-    "1.8.8-recommended": "2.0.20"
+    "1.8.8-latest": "2.0.21",
+    "1.8.8-recommended": "2.0.21"
   },
   "1.8.8": {
+    "2.0.21": "fixes the override database config not actually working.",
     "2.0.20": "added a config to allow other resource packs to be treated like Pokecube_Resources for adding pokemobs, see the Gen_<num> packs on the Github for examples.",
     "2.0.19": "initial support for custom shearable parts, as well as custom dyeable parts,  Re-adds the hiss before pokemobs explode.",
     "2.0.18": "updates to ThutCore 2.1.9, should improve on some types of pathfinding, also improves on some of the animation capabilities for pokemobs.",

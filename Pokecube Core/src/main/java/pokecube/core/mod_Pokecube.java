@@ -748,7 +748,6 @@ public class mod_Pokecube extends PokecubeMod
             p.updateMoves();
             // Refreshes the forme's modIds
             p.setModId(p.getModId());
-            System.out.println(p.getPokedexNb()+" "+p);
         }
         System.out.println(
                 "Loaded " + n + " Pokemob sounds and " + Pokedex.getInstance().getEntries().size() + " Pokemon");

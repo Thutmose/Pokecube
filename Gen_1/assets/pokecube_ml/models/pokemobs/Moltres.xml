@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ModelAnimator version="0.1">
+	<model name="">
+        <phase name="global" rotation="1,0,0,0" offset="0,-1.2,0" scale="0.75,0.75,0.75" headCap="-90,90" headAxis="1"/>
+        <phase name="biWalk" leftLeg="LegLeft1" rightLeg="LegRight1" leftArm="" rightArm="" duration="10" legAngle="50"/>
+        <phase name="advFlap" duration="20"
+            leftWing1="LeftWing1" rightWing1="RightWing1" angle1="45,45" start1="0"
+            leftWing2="LeftWing2" rightWing2="RightWing2" angle2="20,10" start2="0"
+            leftWing3="LeftWing3" rightWing3="RightWing3" angle3="20,10" start3="0"
+        />
+        <merges merge="idle->walking" />
+	</model>
+</ModelAnimator>
+
+

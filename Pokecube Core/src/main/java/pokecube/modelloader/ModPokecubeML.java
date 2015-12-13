@@ -75,6 +75,7 @@ public class ModPokecubeML
         addedPokemon = config.get(Configuration.CATEGORY_GENERAL, "pokemon", new String[] {"Zubat"}).getStringList();
         info = config.getBoolean("printAll", Configuration.CATEGORY_GENERAL, info,
                 "will print all pokemon names to console on load");
+        String[] files = config.getStringList("packs", Configuration.CATEGORY_GENERAL, new String[]{"Pokecube_Resources", "Gen_1", "Gen_2", "Gen_3", "Gen_4"}, "Resource Packs to add models");
         config.save();
         configDir = evt.getModConfigurationDirectory();
         ArrayList<String> toAdd = Lists.newArrayList(addedPokemon);
@@ -82,47 +83,50 @@ public class ModPokecubeML
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
 
         String modelDir = "assets/pokecube_ml/models/pokemobs/";
-        File pack = new File(resourceDir, "Pokecube_Resources.zip");
-        if (pack.exists())
+        for(String file: files)
         {
-            try
+            File pack = new File(resourceDir, file+".zip");
+            if (pack.exists())
             {
-                ZipFile zip = new ZipFile(pack);
-                Enumeration<? extends ZipEntry> entries = zip.entries();
-                int n = 0;
-                while (entries.hasMoreElements() && n < 10)
+                try
                 {
-                    ZipEntry entry = entries.nextElement();
-                    String s = entry.getName();
-                    if (s.contains(modelDir))
+                    ZipFile zip = new ZipFile(pack);
+                    Enumeration<? extends ZipEntry> entries = zip.entries();
+                    int n = 0;
+                    while (entries.hasMoreElements() && n < 10)
                     {
-                        String name = s.replace(modelDir, "").split("\\.")[0];
-                        boolean has = false;
-                        for (String s1 : toAdd)
+                        ZipEntry entry = entries.nextElement();
+                        String s = entry.getName();
+                        if (s.contains(modelDir))
                         {
-                            if (s1.equals(name))
+                            String name = s.replace(modelDir, "").split("\\.")[0];
+                            boolean has = false;
+                            for (String s1 : toAdd)
                             {
-                                has = true;
-                                break;
+                                if (s1.equals(name))
+                                {
+                                    has = true;
+                                    break;
+                                }
+                            }
+                            if (!has)
+                            {
+                                toAdd.add(name);
                             }
                         }
-                        if (!has)
-                        {
-                            toAdd.add(name);
-                        }
                     }
+    
+                    zip.close();
                 }
-
-                zip.close();
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
-            catch (Exception e)
+            else
             {
-                e.printStackTrace();
+                System.err.println("No Resource Pack "+pack);
             }
-        }
-        else
-        {
-            System.err.println("No Resource Pack "+pack);
         }
 
         addedPokemon = toAdd.toArray(new String[0]);

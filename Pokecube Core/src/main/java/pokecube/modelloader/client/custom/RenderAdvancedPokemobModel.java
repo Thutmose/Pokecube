@@ -473,23 +473,20 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
     }
     
-    public static boolean isHidden(String partName, IPokemob pokemob, boolean default_)
+    public static boolean isHidden(String partIdentifier, TabulaModelSet set, IPokemob pokemob, boolean default_)
     {
-        //TODO make a way to load this name from xmls
-        if(pokemob.getPokedexNb()==179 && partName.equalsIgnoreCase("body"))//Mareep
+        if(set.shearableIdents.contains(partIdentifier))
         {
             boolean shearable = ((IShearable)pokemob).isShearable(new ItemStack(Items.shears), ((Entity)pokemob).worldObj, ((Entity)pokemob).getPosition());
             return !shearable;
-            
         }
         return default_;
     }
     
-    public static int getColour(String partName, IPokemob pokemob, int default_)
+    public static int getColour(String partIdentifier, TabulaModelSet set, IPokemob pokemob, int default_)
     {
-        if(pokemob.getPokedexNb()==179 && partName.equalsIgnoreCase("body"))//Mareep
+        if(set.shearableIdents.contains(partIdentifier))
         {
-            //TODO make a way to load this name from xmls
             int rgba = 0xFF000000;
             rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;
             return rgba;

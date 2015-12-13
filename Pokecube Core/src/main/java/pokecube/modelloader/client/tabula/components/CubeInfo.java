@@ -26,7 +26,7 @@ public class CubeInfo {
     public double opacity = 100d;
 
     public boolean hidden = false;
-
+    public ArrayList<String> metadata = Lists.newArrayList();
     public ArrayList<CubeInfo> children = Lists.newArrayList();
     public String parentIdentifier;
 

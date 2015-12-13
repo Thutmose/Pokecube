@@ -29,7 +29,6 @@ public class Pokedex
         {
             instance = new Pokedex();
         }
-
         return instance;
     }
 

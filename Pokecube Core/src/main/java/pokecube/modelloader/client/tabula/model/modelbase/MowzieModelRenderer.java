@@ -33,15 +33,17 @@ public class MowzieModelRenderer extends ModelRenderer
     public float initRotationPointY;
     public float initRotationPointZ;
 
-    public float         scaleX = 1f;
-    public float         scaleY = 1f;
-    public float         scaleZ = 1f;
-    public ModelRenderer parent;
-    public boolean       hasInitPose;
-    private boolean      compiled;
-    private int          displayList;
-    private boolean      isHeadRoot;
-    public String        name;
+    public float          scaleX = 1f;
+    public float          scaleY = 1f;
+    public float          scaleZ = 1f;
+    public ModelRenderer  parent;
+    public boolean        hasInitPose;
+    private boolean       compiled;
+    private int           displayList;
+    private boolean       isHeadRoot;
+    public String         name;
+    public String         identifier;
+    public TabulaModelSet set;
 
     public MowzieModelRenderer(ModelBase modelBase, String name)
     {
@@ -254,9 +256,11 @@ public class MowzieModelRenderer extends ModelRenderer
     {
         GL11.glPushMatrix();
 
+        if (set == null) set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry());
+
         // Allows specific part recolouring, this could possibly be moved over
         // to a method inside this class somehow
-        int rgba = RenderAdvancedPokemobModel.getColour(name, (IPokemob) entity, 0xFFFFFFFF);
+        int rgba = RenderAdvancedPokemobModel.getColour(identifier, set, (IPokemob) entity, 0xFFFFFFFF);
 
         float alpha = ((rgba >> 24) & 255) / 255f;
         float red = ((rgba >> 16) & 255) / 255f;
@@ -265,7 +269,7 @@ public class MowzieModelRenderer extends ModelRenderer
 
         // Allows specific part hiding based on entity state. should probably be
         // somehow moved over to this class somewhere
-        isHidden = RenderAdvancedPokemobModel.isHidden(name, (IPokemob) entity, isHidden);
+        isHidden = RenderAdvancedPokemobModel.isHidden(identifier, set, (IPokemob) entity, isHidden);
 
         if (!isHidden)
         {
@@ -425,7 +429,7 @@ public class MowzieModelRenderer extends ModelRenderer
         if (parent != null)
         {
             if (parent instanceof MowzieModelRenderer) ((MowzieModelRenderer) parent).unRotateToParent();
-            
+
             if (parent.rotateAngleZ != 0f)
             {
                 GL11.glRotatef(parent.rotateAngleZ * (180f / (float) Math.PI), 0f, 0f, 1f);

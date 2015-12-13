@@ -45,7 +45,7 @@ public class ModelJson extends MowzieModelBase
     /** Map of names to animations, used to get animations for rendering more
      * easily */
     public HashMap<String, Animation> animationMap = Maps.newHashMap();
-    
+
     public Set<Animation> playing = Sets.newHashSet();
 
     public Animation playingAnimation;
@@ -270,7 +270,7 @@ public class ModelJson extends MowzieModelBase
     {
         playingAnimation = null;
     }
-    
+
     public void stopAnimation(Animation toStop)
     {
         playing.remove(toStop);
@@ -333,16 +333,17 @@ public class ModelJson extends MowzieModelBase
             }
         }
     }
-    
+
     private boolean canRunConcurrent(Animation toRun)
     {
-        return toRun==playingAnimation;
+        return toRun == playingAnimation;
     }
 
     private MowzieModelRenderer createModelRenderer(CubeInfo cubeInfo)
     {
         MowzieModelRenderer cube = new MowzieModelRenderer(this, cubeInfo.txOffset[0], cubeInfo.txOffset[1]);
         cube.name = cubeInfo.name;
+        cube.identifier = cubeInfo.identifier;
         cube.setRotationPoint((float) cubeInfo.position[0], (float) cubeInfo.position[1], (float) cubeInfo.position[2]);
         // Use cubeInfo.mcScale as the scale, this lets it work properly.
         cube.addBox((float) cubeInfo.offset[0], (float) cubeInfo.offset[1], (float) cubeInfo.offset[2],

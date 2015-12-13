@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -30,6 +31,8 @@ import pokecube.modelloader.client.tabula.animation.BasicFlapAnimation;
 import pokecube.modelloader.client.tabula.animation.BiWalkAnimation;
 import pokecube.modelloader.client.tabula.animation.QuadWalkAnimation;
 import pokecube.modelloader.client.tabula.components.Animation;
+import pokecube.modelloader.client.tabula.components.CubeGroup;
+import pokecube.modelloader.client.tabula.components.CubeInfo;
 import pokecube.modelloader.client.tabula.components.ModelJson;
 import pokecube.modelloader.client.tabula.model.tabula.TabulaModel;
 import pokecube.modelloader.client.tabula.model.tabula.TabulaModelParser;
@@ -134,6 +137,10 @@ public class TabulaPackLoader extends AnimationLoader
          * into the walk animation. */
         private HashMap<String, String> mergedAnimations = Maps.newHashMap();
 
+        /** A set of identifiers of shearable parts. */
+        public Set<String>               shearableIdents  = Sets.newHashSet();
+        /** A set of identifiers of dyeable parts. */
+        public Set<String>               dyeableIdents  = Sets.newHashSet();
         /** Animations loaded from the XML */
         public HashMap<String, Animation> loadedAnimations = Maps.newHashMap();
         /** Translation of the model */
@@ -158,6 +165,7 @@ public class TabulaPackLoader extends AnimationLoader
             this.model = model;
             this.parser = parser;
             this.entry = entry;
+            processMetadata();
             try
             {
                 parse(extraData);
@@ -181,6 +189,49 @@ public class TabulaPackLoader extends AnimationLoader
             }
         }
 
+        private void processMetadata()
+        {
+            for(CubeInfo cube: model.getCubes())
+            {
+                processMetadataForCubeInfo(cube);
+            }
+            for(CubeGroup group: model.getCubeGroups())
+            {
+                processMetadataForCubeGroup(group);
+            }
+        }
+        
+        private void processMetadataForCubeGroup(CubeGroup group)
+        {
+            for(CubeInfo cube: group.cubes)
+            {
+                processMetadataForCubeInfo(cube);
+            }
+            for(CubeGroup group1: group.cubeGroups)
+            {
+                processMetadataForCubeGroup(group1);
+            }
+        }
+        
+        private void processMetadataForCubeInfo(CubeInfo cube)
+        {
+            for(String s: cube.metadata)
+            {
+                if(s.equalsIgnoreCase("shearable"))
+                {
+                    shearableIdents.add(cube.identifier);
+                }
+                if(s.equalsIgnoreCase("dyeable"))
+                {
+                    dyeableIdents.add(cube.identifier);
+                }
+            }
+            for(CubeInfo cube1: cube.children)
+            {
+                processMetadataForCubeInfo(cube1);
+            }
+        }
+        
         private void postInitAnimations()
         {
             HashSet<String> toRemove = Sets.newHashSet();

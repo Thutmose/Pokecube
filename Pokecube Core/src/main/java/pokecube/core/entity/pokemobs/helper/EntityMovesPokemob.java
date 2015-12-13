@@ -856,7 +856,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
     public void setExplosionState(int i)
     {
-        if (i == 0) moveInfo.Exploding = true;
+        if (i >= 0) moveInfo.Exploding = true;
         dataWatcher.updateObject(BOOMSTATEDW, Byte.valueOf((byte) i));
     }
 
@@ -884,20 +884,14 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             {
                 worldObj.playSoundAtEntity(this, "random.fuse", 1.0F, 0.5F);
             }
-
             moveInfo.timeSinceIgnited += i;
 
             if (moveInfo.timeSinceIgnited < 0)
             {
                 moveInfo.timeSinceIgnited = 0;
             }
-
-            if (moveInfo.timeSinceIgnited >= 30)
-            {
-                moveInfo.timeSinceIgnited = 30;
-            }
         }
-        if (getAttackTarget() == null && moveInfo.timeSinceIgnited > 0) //
+        if (getAttackTarget() == null && moveInfo.timeSinceIgnited > 50) //
         {
             setExplosionState(-1);
             moveInfo.timeSinceIgnited--;

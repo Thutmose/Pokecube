@@ -498,12 +498,14 @@ public class MovesUtils implements IMoveConstants
                 ((EntityLiving) attacked).setAttackTarget((EntityLivingBase) attacker);
             ((IPokemob) attacked).setPokemonAIState(IPokemob.ANGRY, true);
         }
-
         if (efficiency > 0)
         {
+            Move_Ongoing ongoing;
             if (getMoveFromName(attack) instanceof Move_Ongoing && attacked instanceof IPokemob)
             {
-                ((IPokemob) attacked).addOngoingEffect(getMoveFromName(attack));
+                ongoing = (Move_Ongoing) getMoveFromName(attack);
+                if (ongoing.onTarget()) ((IPokemob) attacked).addOngoingEffect(ongoing);
+                if (ongoing.onSource()) ((IPokemob) attacker).addOngoingEffect(ongoing);
             }
         }
 

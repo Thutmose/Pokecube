@@ -46,7 +46,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
 
     public LoadedModel<T> model;
-    final String       modelName;
+    final String          modelName;
 
     public RenderAdvancedPokemobModel(String name, float par2)
     {
@@ -107,8 +107,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
-        model.doRender((T)entity, d0, d1, d2, f, f1);
-//        renderStatusModel(entity, d0, d1, d2, f, f1);
+        model.doRender((T) entity, d0, d1, d2, f, f1);
+        // renderStatusModel(entity, d0, d1, d2, f, f1);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
         GL11.glPopMatrix();
     }
@@ -300,7 +300,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         this.preRenderCallback(entity, partialTick);
 
         TabulaModelSet set = TabulaPackLoader.modelMap.get(entry);
-        
+
         TabulaModel model = set.model;
         IModelParser<TabulaModel> parser = set.parser;
 
@@ -343,7 +343,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         set.rotation.rotations.glRotate();
         GlStateManager.translate(set.shift.x, set.shift.y, set.shift.z);
         GlStateManager.scale(set.scale.x, set.scale.y, set.scale.z);
-        
+
         parser.render(model, entity);
 
         GlStateManager.enableCull();
@@ -367,12 +367,15 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         float walkspeed = entity.prevLimbSwingAmount
                 + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
 
-        if (pokemob.getPokemonAIState(IMoveConstants.SLEEPING) && hasPhase(set, modelj, "sleeping"))
+        boolean asleep = pokemob.getStatus() == IMoveConstants.STATUS_SLP
+                || pokemob.getPokemonAIState(IMoveConstants.SLEEPING);
+
+        if (asleep && hasPhase(set, modelj, "sleeping"))
         {
             phase = "sleeping";
             return phase;
         }
-        if (pokemob.getPokemonAIState(IMoveConstants.SLEEPING) && hasPhase(set, modelj, "asleep"))
+        if (asleep && hasPhase(set, modelj, "asleep"))
         {
             phase = "asleep";
             return phase;
@@ -449,7 +452,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
             var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
             GL11.glScalef(var7, var7, var7);
-            
+
             renderTabula(entity, d0, d1, d2, f, partialTick);
 
             GL11.glMatrixMode(GL11.GL_TEXTURE);
@@ -477,20 +480,21 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     {
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
     }
-    
+
     public static boolean isHidden(String partIdentifier, TabulaModelSet set, IPokemob pokemob, boolean default_)
     {
-        if(set.shearableIdents.contains(partIdentifier))
+        if (set.shearableIdents.contains(partIdentifier))
         {
-            boolean shearable = ((IShearable)pokemob).isShearable(new ItemStack(Items.shears), ((Entity)pokemob).worldObj, ((Entity)pokemob).getPosition());
+            boolean shearable = ((IShearable) pokemob).isShearable(new ItemStack(Items.shears),
+                    ((Entity) pokemob).worldObj, ((Entity) pokemob).getPosition());
             return !shearable;
         }
         return default_;
     }
-    
+
     public static int getColour(String partIdentifier, TabulaModelSet set, IPokemob pokemob, int default_)
     {
-        if(set.shearableIdents.contains(partIdentifier))
+        if (set.shearableIdents.contains(partIdentifier))
         {
             int rgba = 0xFF000000;
             rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;

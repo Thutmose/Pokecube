@@ -282,6 +282,7 @@ public class TabulaPackLoader extends AnimationLoader
                     to.name = toName;
                     to.identifier = toName;
                     to.loops = from.loops;
+                    loadedAnimations.put(toName, to);
                 }
 
                 if (to != null && from != null)

@@ -1,4 +1,4 @@
-Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mode,Gender Ratio,Base FriendShip,Common Drop,Rare Drop,Food Drop,Held Item,Particle Effects,Hated Material Rules,Logic: Shoulder:Fly:Dive,Shadow Replacements,Food Material,Active Times,Interaction Logic
+Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mode,Gender Ratio,Base FriendShip,Common Drop,Rare Drop,Food Drop,Held Item,Particle Effects,Hated Material Rules,Logic: Shoulder:Fly:Dive:Dye#defaultcolour,Shadow Replacements,Food Material,Active Times,Interaction Logic
 1,Bulbasaur ,64,0,0,0,1,0,0,Medium Slow,31,70,1:wheat_seeds,,,0,,,FALSE,,light,,
 2,Ivysaur ,142,0,0,0,1,1,0,Medium Slow,31,70,2:wheat_seeds,,,0,,,FALSE,,light,,
 3,Venusaur ,236,0,0,0,2,1,0,Medium Slow,31,70,3:wheat_seeds,,,0,,,FALSE,,light,,
@@ -44,7 +44,7 @@ Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mo
 43,Oddish ,64,0,0,0,1,0,0,Medium Slow,127,70,1:wheat_seeds,,,0,,,FALSE,,light,,
 44,Gloom ,138,0,0,0,2,0,0,Medium Slow,127,70,2:wheat_seeds,,,0,,,FALSE,,light,,
 45,Vileplume ,216,0,0,0,3,0,0,Medium Slow,127,70,3:wheat_seeds,,,0,,,FALSE,,light,,
-46,Paras ,57,0,1,0,0,0,0,Medium Fast,127,70,2:brown_mushroom 2:red_mushroom,,,0,,,FALSE,,,,
+46,Paras ,57,0,1,0,0,0,0,Medium Fast,127,70,2:brown_mushroom 2:red_mushroom,,,0,,,FALSE,,,,shears`brown_mushroom`red_mushroom
 47,Parasect ,142,0,2,1,0,0,0,Medium Fast,127,70,3:brown_mushroom 3:red_mushroom,,,0,,,FALSE,,,,bowl`mushroom_stew
 48,Venonat ,61,0,0,0,0,1,0,Medium Fast,127,70,1:spider_eye,,,0,,,FALSE,,,,
 49,Venomoth ,158,0,0,0,1,0,1,Medium Fast,127,70,2:spider_eye,,,0,,,FALSE,,,,
@@ -177,7 +177,7 @@ Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mo
 176,Togetic ,142,0,0,0,0,2,0,Fast,31,70,,,,0,,,FALSE,,,,
 177,Natu ,64,0,0,0,1,0,0,Medium Fast,127,70,,,,0,,,TRUE,,,,
 178,Xatu ,165,0,0,0,1,0,1,Medium Fast,127,70,,,,0,,,FALSE,,,,
-179,Mareep ,56,0,0,0,1,0,0,Medium Slow,127,70,1:wool,,,0,,,FALSE,,grass,,
+179,Mareep ,56,0,0,0,1,0,0,Medium Slow,127,70,1:wool,,,0,,,FALSE:::TRUE#11,,grass,,shears`wool
 180,Flaaffy ,128,0,0,0,2,0,0,Medium Slow,127,70,,,,0,,,FALSE,,grass,,
 181,Ampharos ,225,0,0,0,3,0,0,Medium Slow,127,70,,,,0,,,FALSE,,grass,,
 182,Bellossom ,216,0,0,0,0,3,0,Medium Slow,127,70,,,,0,,,FALSE,,light,,
@@ -233,7 +233,7 @@ Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mo
 232,Donphan ,175,0,1,1,0,0,0,Medium Fast,127,70,,,,0,,,FALSE,,grass,,
 233,Porygon2 ,180,0,0,0,2,0,0,Medium Fast,255,70,,,,0,,,FALSE,,,,
 234,Stantler ,163,0,1,0,0,0,0,Slow,127,70,1:bone,,,0,,,FALSE,,,,
-235,Smeargle ,88,0,0,0,0,0,1,Fast,127,70,,,,0,,,FALSE,,,,
+235,Smeargle ,88,0,0,0,0,0,1,Fast,127,70,,,,0,,,FALSE:::TRUE#2,,,,
 236,Tyrogue ,42,0,1,0,0,0,0,Medium Fast,0,70,,,,0,,,FALSE,,,,
 237,Hitmontop ,159,0,0,0,0,2,0,Medium Fast,0,70,,,,0,,,FALSE,,,,
 238,Smoochum ,61,0,0,0,1,0,0,Medium Fast,254,70,,,,0,,,FALSE,,,,

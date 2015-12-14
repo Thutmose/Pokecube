@@ -194,7 +194,7 @@ public class Database implements IMoveConstants
                 toRemove.add(e);
             }
         }
-        
+
         allFormes.removeAll(toRemove);
 
     }
@@ -590,7 +590,11 @@ public class Database implements IMoveConstants
                     e.canSitShoulder = Boolean.parseBoolean(args[0]);
                     if (args.length > 1 && !args[1].isEmpty()) e.shouldFly = Boolean.parseBoolean(args[1]);
                     if (args.length > 2 && !args[2].isEmpty()) e.shouldDive = Boolean.parseBoolean(args[2]);
-                    if (args.length > 3 && !args[3].isEmpty()) e.shouldDive = Boolean.parseBoolean(args[3]);
+                    if (args.length > 3 && !args[3].isEmpty())
+                    {
+                        e.hasSpecialTextures[4] = Boolean.parseBoolean(args[3].split("#")[0]);
+                        e.defaultSpecial = Integer.parseInt(args[3].split("#")[1]);
+                    }
                 }
                 if (s.size() > 19)
                 {
@@ -1434,7 +1438,11 @@ public class Database implements IMoveConstants
     private static void copyDatabaseFile(String name)
     {
         File temp1 = new File(CONFIGLOC + name);
-        if (temp1.exists() || !FORCECOPY) { return; }
+        if (temp1.exists() && !FORCECOPY)
+        {
+            System.out.println(" Not Overwriting old database " + name);
+            return;
+        }
         ArrayList<String> rows = getFile(DBLOCATION + name);
         try
         {

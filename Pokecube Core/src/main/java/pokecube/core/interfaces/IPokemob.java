@@ -584,7 +584,7 @@ public interface IPokemob extends IMoveConstants
      * @return */
     int getSpecialInfo();
 
-    /** Currently used for mareep colour, can be used for other things if needed
+    /** first 4 bits are used for colour, can be used for other things if needed
      * 
      * @return */
     void setSpecialInfo(int info);

@@ -13,7 +13,6 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.AnimalChest;
 import net.minecraft.inventory.IInvBasic;
@@ -162,10 +161,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
     public void specificSpawnInit()
     {
         this.setHeldItem(this.wildHeldItem());
-        if (pokedexNb == 179) // Mareep
-        {
-            setSpecialInfo(11);
-        }
+        setSpecialInfo(getPokedexEntry().defaultSpecial);
     }
 
     @Override
@@ -709,12 +705,13 @@ public abstract class EntityTameablePokemob extends EntityTameable
     {
         if (this.newPosRotationIncrements > 0)
         {
-            double d0 = this.posX + (this.newPosX - this.posX) / (double)this.newPosRotationIncrements;
-            double d1 = this.posY + (this.newPosY - this.posY) / (double)this.newPosRotationIncrements;
-            double d2 = this.posZ + (this.newPosZ - this.posZ) / (double)this.newPosRotationIncrements;
-            double d3 = MathHelper.wrapAngleTo180_double(this.newRotationYaw - (double)this.rotationYaw);
-            this.rotationYaw = (float)((double)this.rotationYaw + d3 / (double)this.newPosRotationIncrements);
-            this.rotationPitch = (float)((double)this.rotationPitch + (this.newRotationPitch - (double)this.rotationPitch) / (double)this.newPosRotationIncrements);
+            double d0 = this.posX + (this.newPosX - this.posX) / (double) this.newPosRotationIncrements;
+            double d1 = this.posY + (this.newPosY - this.posY) / (double) this.newPosRotationIncrements;
+            double d2 = this.posZ + (this.newPosZ - this.posZ) / (double) this.newPosRotationIncrements;
+            double d3 = MathHelper.wrapAngleTo180_double(this.newRotationYaw - (double) this.rotationYaw);
+            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.newPosRotationIncrements);
+            this.rotationPitch = (float) ((double) this.rotationPitch
+                    + (this.newRotationPitch - (double) this.rotationPitch) / (double) this.newPosRotationIncrements);
             --this.newPosRotationIncrements;
             this.setPosition(d0, d1, d2);
             this.setRotation(this.rotationYaw, this.rotationPitch);
@@ -773,16 +770,17 @@ public abstract class EntityTameablePokemob extends EntityTameable
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean p_180426_10_)
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int posRotationIncrements,
+            boolean p_180426_10_)
     {
         this.newPosX = x;
         this.newPosY = y;
         this.newPosZ = z;
-        this.newRotationYaw = (double)yaw;
-        this.newRotationPitch = (double)pitch;
+        this.newRotationYaw = (double) yaw;
+        this.newRotationPitch = (double) pitch;
         this.newPosRotationIncrements = posRotationIncrements;
     }
-    
+
     @Override
     public int getSpecialInfo()
     {
@@ -798,11 +796,14 @@ public abstract class EntityTameablePokemob extends EntityTameable
     @Override
     public boolean isShearable(ItemStack item, IBlockAccess world, BlockPos pos)
     {
-        if (getPokedexEntry().getName().equalsIgnoreCase("mareep"))
+        /** Checks if the pokedex entry has shears listed, if so, then apply to
+         * any mod shears as well. */
+        ItemStack key = new ItemStack(Items.shears);
+        if (getPokedexEntry().interact(key))
         {
             long last = getEntityData().getLong("lastSheared");
 
-            if (last < worldObj.getTotalWorldTime() - 200 && !worldObj.isRemote)
+            if (last < worldObj.getTotalWorldTime() - 800 && !worldObj.isRemote)
             {
                 setSheared(false);
             }
@@ -815,7 +816,8 @@ public abstract class EntityTameablePokemob extends EntityTameable
     @Override
     public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
     {
-        if (getPokedexEntry().getName().equalsIgnoreCase("mareep"))
+        ItemStack key = new ItemStack(Items.shears);
+        if (getPokedexEntry().interact(key))
         {
             ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
             setSheared(true);
@@ -823,9 +825,16 @@ public abstract class EntityTameablePokemob extends EntityTameable
             getEntityData().setLong("lastSheared", worldObj.getTotalWorldTime());
 
             int i = 1 + rand.nextInt(3);
+            List<ItemStack> list = getPokedexEntry().getInteractResult(key);
+
             for (int j = 0; j < i; j++)
             {
-                ret.add(new ItemStack(Blocks.wool, 1, 15 - getSpecialInfo()));
+                for (ItemStack stack : list)
+                {
+                    ItemStack toAdd = stack.copy();
+                    if (getPokedexEntry().hasSpecialTextures[4]) toAdd.setItemDamage(15 - getSpecialInfo() & 15);
+                    ret.add(toAdd);
+                }
             }
             this.playSound("mob.sheep.shear", 1.0F, 1.0F);
             return ret;

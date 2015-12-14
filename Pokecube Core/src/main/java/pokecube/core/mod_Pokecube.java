@@ -476,6 +476,12 @@ public class mod_Pokecube extends PokecubeMod
         getPokecubeConfig(evt);
         PokecubeTerrainChecker.init();
 
+        // It initializes elements needed by plugins.
+        Configuration config = getPokecubeConfig(evt);
+        config.load();
+
+        helper = new Mod_Pokecube_Helper();
+        helper.loadConfig(config);
         // used to register the moves from the spreadsheets
         Database.init(evt);
 
@@ -498,12 +504,6 @@ public class mod_Pokecube extends PokecubeMod
 
         System.out.println("Registering Moves");
         MovesAdder.registerMoves();
-        // It initializes elements needed by plugins.
-        Configuration config = getPokecubeConfig(evt);
-        config.load();
-
-        helper = new Mod_Pokecube_Helper();
-        helper.loadConfig(config);
 
         spawner = new SpawnHandler();
         if (!Mod_Pokecube_Helper.defaultMobs.equals(""))

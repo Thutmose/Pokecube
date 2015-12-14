@@ -383,7 +383,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         super.onLivingUpdate();
 
-        if (ticksExisted % 10 == 0)
+        if (ticksExisted % 20 == 0)
         {
             this.isShearable(null, worldObj, here.getPos());
         }
@@ -1024,7 +1024,15 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         ItemStack itemstack = player.inventory.getCurrentItem();
 
-        if (getPokedexEntry().interact(player, this)) return true;
+        ItemStack key = new ItemStack(Items.shears);
+        if (getPokedexEntry().interact(key) && player.getHeldItem() != null && player.getHeldItem().isItemEqual(key))
+        {
+            System.out.println("test");
+            return false;
+        }
+            
+        if (getPokedexEntry().interact(player, this, true)) return true;
+        
         Item torch = Item.getItemFromBlock(Blocks.torch);
         if (player == getPokemonOwner() && itemstack != null
                 && (itemstack.getItem() == Items.stick || itemstack.getItem() == torch))
@@ -1054,14 +1062,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
 
-        if (player.getHeldItem() != null && getPokedexNb() == 179) // Mareep
+        if (player.getHeldItem() != null && getPokedexEntry().hasSpecialTextures[4]) // Can be Dyed
         {
             if (player.getHeldItem().getItem() == Items.dye)
             {
-
                 setSpecialInfo(player.getHeldItem().getItemDamage());
+                System.out.println(getSpecialInfo());
                 player.getHeldItem().stackSize--;
-
                 return true;
             }
             else if (player.getHeldItem().getItem() == Items.shears) { return false; }

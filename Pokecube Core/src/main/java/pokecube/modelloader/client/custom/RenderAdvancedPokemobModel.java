@@ -494,7 +494,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     public static int getColour(String partIdentifier, TabulaModelSet set, IPokemob pokemob, int default_)
     {
-        if (set.shearableIdents.contains(partIdentifier))
+        if (set.dyeableIdents.contains(partIdentifier))
         {
             int rgba = 0xFF000000;
             rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;

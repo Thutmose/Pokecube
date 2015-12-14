@@ -73,8 +73,12 @@ public class PokedexEntry
     public double              preferedHeight     = 1.5;
     /** Offset between top of hitbox and where player sits */
     public double              mountedOffset      = 1;
-    /** indicatees of the specified special texture exists. */
-    public boolean[]           hasSpecialTextures = { false, false, false, false };
+    /** indicatees of the specified special texture exists. Index 4 is used for
+     * if the mob can be dyed */
+    public boolean[]           hasSpecialTextures = { false, false, false, false, false };
+    /** Default value of specialInfo, used to determine default colour of
+     * recolourable parts */
+    public int                 defaultSpecial     = 0;
     /** Can it megaevolve */
     public boolean             hasMegaForm        = false;
     /** Materials which will hurt or make it despawn. */
@@ -291,11 +295,8 @@ public class PokedexEntry
         forms.put(key, form);
     }
 
-    /**
-     * 
-     * @param form
-     * @return the forme of the pokemob with the assosciated name.
-     */
+    /** @param form
+     * @return the forme of the pokemob with the assosciated name. */
     public PokedexEntry getForm(String form)
     {
         return forms.get(form.toLowerCase().trim().replaceAll("forme", "form").replaceAll(" ", ""));
@@ -845,10 +846,34 @@ public class PokedexEntry
      * 
      * @param player
      * @param pokemob
+     * @param doInteract
+     *            - if false, will not actually do anything.
      * @return */
-    public boolean interact(EntityPlayer player, IPokemob pokemob)
+    public boolean interact(EntityPlayer player, IPokemob pokemob, boolean doInteract)
     {
-        return interactionLogic.interact(player, pokemob);
+        return interactionLogic.interact(player, pokemob, doInteract);
+    }
+
+    /** returns whether the interaction logic has a response listed for the
+     * given key.
+     * 
+     * @param pokemob
+     * @param doInteract
+     *            - if false, will not actually do anything.
+     * @return */
+    public boolean interact(ItemStack stack)
+    {
+        return interactionLogic.canInteract(stack);
+    }
+
+    /** returns whether the interaction logic has a response listed for the
+     * given key.
+     * 
+     * @param pokemob
+     * @return the stack that maps to this key */
+    public List<ItemStack> getInteractResult(ItemStack stack)
+    {
+        return interactionLogic.interact(stack);
     }
 
     public boolean shouldEvolve(IPokemob mob)
@@ -1524,7 +1549,17 @@ public class PokedexEntry
 
         HashMap<ItemStack, List<ItemStack>> stacks = new HashMap<ItemStack, List<ItemStack>>();
 
-        boolean interact(EntityPlayer player, IPokemob pokemob)
+        boolean canInteract(ItemStack key)
+        {
+            return getKey(key) != null;
+        }
+
+        List<ItemStack> interact(ItemStack key)
+        {
+            return stacks.get(getKey(key));
+        }
+
+        boolean interact(EntityPlayer player, IPokemob pokemob, boolean doInteract)
         {
             EntityLiving entity = (EntityLiving) pokemob;
             NBTTagCompound data = entity.getEntityData();
@@ -1534,8 +1569,9 @@ public class PokedexEntry
                 long diff = entity.worldObj.getTotalWorldTime() - time;
                 if (diff < 100) { return false; }
             }
-            data.setLong("lastInteract", entity.worldObj.getTotalWorldTime());
             ItemStack stack = getKey(player.getHeldItem());
+            if (!doInteract) return stack != null;
+            data.setLong("lastInteract", entity.worldObj.getTotalWorldTime());
             if (stack != null)
             {
                 List<ItemStack> results = stacks.get(stack);
@@ -1549,7 +1585,6 @@ public class PokedexEntry
                 {
                     player.dropPlayerItemWithRandomChoice(result, false);
                 }
-
                 if (player != pokemob.getPokemonOwner())
                 {
                     entity.setAttackTarget(player);

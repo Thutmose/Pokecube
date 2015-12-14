@@ -414,6 +414,9 @@ public class EventsHandlerClient
 
     public static void renderMob(IPokemob pokemob, float tick)
     {
+        if(pokemob==null) return;
+        
+        
         EntityLiving entity = (EntityLiving) pokemob;
 
         float size = 0;

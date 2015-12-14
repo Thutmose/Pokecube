@@ -392,6 +392,11 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             phase = "flying";
             return phase;
         }
+        if (entity.isInWater() && hasPhase(set, modelj, "swimming"))
+        {
+            phase = "swimming";
+            return phase;
+        }
         if (entity.onGround && walkspeed > 0.1 && hasPhase(set, modelj, "walking"))
         {
             phase = "walking";

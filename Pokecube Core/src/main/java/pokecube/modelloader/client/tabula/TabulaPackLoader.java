@@ -138,9 +138,9 @@ public class TabulaPackLoader extends AnimationLoader
         private HashMap<String, String> mergedAnimations = Maps.newHashMap();
 
         /** A set of identifiers of shearable parts. */
-        public Set<String>               shearableIdents  = Sets.newHashSet();
+        public Set<String>                shearableIdents  = Sets.newHashSet();
         /** A set of identifiers of dyeable parts. */
-        public Set<String>               dyeableIdents  = Sets.newHashSet();
+        public Set<String>                dyeableIdents    = Sets.newHashSet();
         /** Animations loaded from the XML */
         public HashMap<String, Animation> loadedAnimations = Maps.newHashMap();
         /** Translation of the model */
@@ -191,47 +191,47 @@ public class TabulaPackLoader extends AnimationLoader
 
         private void processMetadata()
         {
-            for(CubeInfo cube: model.getCubes())
+            for (CubeInfo cube : model.getCubes())
             {
                 processMetadataForCubeInfo(cube);
             }
-            for(CubeGroup group: model.getCubeGroups())
+            for (CubeGroup group : model.getCubeGroups())
             {
                 processMetadataForCubeGroup(group);
             }
         }
-        
+
         private void processMetadataForCubeGroup(CubeGroup group)
         {
-            for(CubeInfo cube: group.cubes)
+            for (CubeInfo cube : group.cubes)
             {
                 processMetadataForCubeInfo(cube);
             }
-            for(CubeGroup group1: group.cubeGroups)
+            for (CubeGroup group1 : group.cubeGroups)
             {
                 processMetadataForCubeGroup(group1);
             }
         }
-        
+
         private void processMetadataForCubeInfo(CubeInfo cube)
         {
-            for(String s: cube.metadata)
+            for (String s : cube.metadata)
             {
-                if(s.equalsIgnoreCase("shearable"))
+                if (s.equalsIgnoreCase("shearable"))
                 {
                     shearableIdents.add(cube.identifier);
                 }
-                if(s.equalsIgnoreCase("dyeable"))
+                if (s.equalsIgnoreCase("dyeable"))
                 {
                     dyeableIdents.add(cube.identifier);
                 }
             }
-            for(CubeInfo cube1: cube.children)
+            for (CubeInfo cube1 : cube.children)
             {
                 processMetadataForCubeInfo(cube1);
             }
         }
-        
+
         private void postInitAnimations()
         {
             HashSet<String> toRemove = Sets.newHashSet();
@@ -276,6 +276,14 @@ public class TabulaPackLoader extends AnimationLoader
                     }
                     if (to != null && from != null) break;
                 }
+                if (from != null && to == null)
+                {
+                    to = new Animation();
+                    to.name = toName;
+                    to.identifier = toName;
+                    to.loops = from.loops;
+                }
+
                 if (to != null && from != null)
                 {
                     merge(from, to);

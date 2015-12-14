@@ -570,6 +570,7 @@ public class PokecubeItems extends Items
         addGeneric("mossStone", Blocks.mossy_cobblestone);
 
         addGeneric("razorfang", Items.iron_pickaxe);
+        addGeneric("protector", Items.iron_chestplate);
         addGeneric("razorclaw", Items.iron_axe);
 
         addGeneric("reapercloth", Blocks.carpet);
@@ -579,6 +580,7 @@ public class PokecubeItems extends Items
         addToEvos("ice");
         addToEvos("mossStone");
         addToEvos("razorfang");
+        addToEvos("protector");
         addToEvos("razorclaw");
         addToEvos("reapercloth");
         addToEvos("dragonscale");

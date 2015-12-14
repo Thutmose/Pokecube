@@ -297,12 +297,6 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob {
         if (attacker instanceof EntityPlayer && !worldObj.isRemote)
         {
         	damage *= 2;
-//            if (FMLCommonHandler.instance().getMinecraftServerInstance().func_147135_j().ordinal() >= EnumDifficulty.HARD.ordinal()){
-//                setPokemonAngry(true);
-//                setAttackTarget((EntityLivingBase) attacker);
-//                fleeingTick = 0;
-//            	return true;
-//            }
         }
 
         EntityLivingBase oldTarget = getAttackTarget();

@@ -520,7 +520,7 @@ public class MovesAdder implements IMoveConstants
                                 + ((IPokemob) attacker).getMoveStats().SPECIALDAMAGETAKENCOUNTER;
                         ((IPokemob) attacker).getMoveStats().PHYSICALDAMAGETAKENCOUNTER = 0;
                         ((IPokemob) attacker).getMoveStats().SPECIALDAMAGETAKENCOUNTER = 0;
-                        attacked.attackEntityFrom(new PokemobDamageSource("mob", (EntityLivingBase) attacker, normal),
+                        attacked.attackEntityFrom(new PokemobDamageSource("mob", (EntityLivingBase) attacker, this),
                                 damage);
                         ((IPokemob) attacker).getMoveStats().biding = false;
                     }
@@ -546,7 +546,7 @@ public class MovesAdder implements IMoveConstants
                         int damage = 2 * ((IPokemob) attacker).getMoveStats().SPECIALDAMAGETAKENCOUNTER;
                         ((IPokemob) attacker).getMoveStats().SPECIALDAMAGETAKENCOUNTER = 0;
                         if (attacked != null) attacked.attackEntityFrom(
-                                new PokemobDamageSource("mob", (EntityLivingBase) attacker, psychic), damage);
+                                new PokemobDamageSource("mob", (EntityLivingBase) attacker, this), damage);
                         ((IPokemob) attacker).getMoveStats().biding = false;
                     }
                 }
@@ -570,7 +570,7 @@ public class MovesAdder implements IMoveConstants
                     {
                         int damage = 2 * ((IPokemob) attacker).getMoveStats().PHYSICALDAMAGETAKENCOUNTER;
                         ((IPokemob) attacker).getMoveStats().PHYSICALDAMAGETAKENCOUNTER = 0;
-                        attacked.attackEntityFrom(new PokemobDamageSource("mob", (EntityLivingBase) attacker, normal),
+                        attacked.attackEntityFrom(new PokemobDamageSource("mob", (EntityLivingBase) attacker, this),
                                 damage);
                         ((IPokemob) attacker).getMoveStats().biding = false;
                     }

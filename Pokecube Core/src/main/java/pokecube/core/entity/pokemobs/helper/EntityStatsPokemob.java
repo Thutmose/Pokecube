@@ -11,10 +11,14 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.potion.Potion;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -27,7 +31,9 @@ import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.LevelUpEvent;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
@@ -107,7 +113,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         // Follow Range - default 32.0D - min 0.0D - max 2048.0D
         this.getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(32);// .setAttribute(32.0D);
         // Knockback Resistance - default 0.0D - min 0.0D - max 1.0D
-        this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(0);// .setAttribute(0.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(10);// .setAttribute(0.0D);
         // Movement Speed - default 0.699D - min 0.0D - max Double.MAX_VALUE
         moveSpeed = 0.6f;
         this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(moveSpeed);// .setAttribute(moveSpeed);
@@ -802,5 +808,165 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setNature(byte nature)
     {
         this.nature = nature;
+    }
+
+    @Override
+    /** Called when the entity is attacked. */
+    public boolean attackEntityFrom(DamageSource source, float amount)
+    {
+        if (!net.minecraftforge.common.ForgeHooks.onLivingAttack(this, source, amount)) return false;
+        if (this.isEntityInvulnerable(source))
+        {
+            return false;
+        }
+        else if (this.worldObj.isRemote)
+        {
+            return false;
+        }
+        else
+        {
+            this.entityAge = 0;
+
+            if (this.getHealth() <= 0.0F)
+            {
+                return false;
+            }
+            else if (source.isFireDamage() && this.isPotionActive(Potion.fireResistance))
+            {
+                return false;
+            }
+            else
+            {
+                if ((source == DamageSource.anvil || source == DamageSource.fallingBlock)
+                        && this.getEquipmentInSlot(4) != null)
+                {
+                    this.getEquipmentInSlot(4).damageItem((int) (amount * 4.0F + this.rand.nextFloat() * amount * 2.0F),
+                            this);
+                    amount *= 0.75F;
+                }
+
+                this.limbSwingAmount = 1.5F;
+                boolean flag = true;
+
+                if ((float) this.hurtResistantTime > (float) this.maxHurtResistantTime / 2.0F)
+                {
+                    if (amount <= this.lastDamage) { return false; }
+
+                    this.damageEntity(source, amount - this.lastDamage);
+                    this.lastDamage = amount;
+                    flag = false;
+                }
+                else
+                {
+                    this.lastDamage = amount;
+                    this.hurtResistantTime = this.maxHurtResistantTime;
+                    this.damageEntity(source, amount);
+                    this.hurtTime = this.maxHurtTime = 10;
+                }
+
+                this.attackedAtYaw = 0.0F;
+                Entity entity = source.getEntity();
+
+                if (entity != null)
+                {
+                    if (entity instanceof EntityLivingBase)
+                    {
+                        this.setRevengeTarget((EntityLivingBase) entity);
+                    }
+
+                    if (entity instanceof EntityPlayer)
+                    {
+                        this.recentlyHit = 100;
+                        this.attackingPlayer = (EntityPlayer) entity;
+                    }
+                    else if (entity instanceof IEntityOwnable)
+                    {
+                        IEntityOwnable entitywolf = (IEntityOwnable) entity;
+
+                        if (entitywolf.getOwner() != null)
+                        {
+                            this.recentlyHit = 100;
+                            this.attackingPlayer = null;
+                        }
+                    }
+                }
+
+                if (flag)
+                {
+                    this.worldObj.setEntityState(this, (byte) 2);
+
+                    if (source != DamageSource.drown)
+                    {
+                        this.setBeenAttacked();
+                    }
+
+                    if (entity != null)
+                    {
+                        double d1 = entity.posX - this.posX;
+                        double d0;
+
+                        for (d0 = entity.posZ - this.posZ; d1 * d1
+                                + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D)
+                        {
+                            d1 = (Math.random() - Math.random()) * 0.01D;
+                        }
+
+                        this.attackedAtYaw = (float) (MathHelper.func_181159_b(d0, d1) * 180.0D / Math.PI
+                                - (double) this.rotationYaw);
+                        //Reduces knockback from distanced moves
+                        if (source instanceof PokemobDamageSource)
+                        {
+                            if(!source.isProjectile())
+                            {
+                                this.knockBack(entity, amount, d1, d0);
+                            }
+                        }
+                        else
+                        {
+                            this.knockBack(entity, amount, d1, d0);
+                        }
+                    }
+                    else
+                    {
+                        this.attackedAtYaw = (float) ((int) (Math.random() * 2.0D) * 180);
+                    }
+                }
+
+                if (this.getHealth() <= 0.0F)
+                {
+                    String s = this.getDeathSound();
+
+                    if (flag && s != null)
+                    {
+                        this.playSound(s, this.getSoundVolume(), this.getSoundPitch());
+                    }
+
+                    this.onDeath(source);
+                }
+                else
+                {
+                    String s1 = this.getHurtSound();
+
+                    if (flag && s1 != null)
+                    {
+                        this.playSound(s1, this.getSoundVolume(), this.getSoundPitch());
+                    }
+                }
+
+                return true;
+            }
+        }
+    }
+
+    @Override
+    public boolean isEntityInvulnerable(DamageSource source)
+    {
+        if (source instanceof PokemobDamageSource)
+        {
+            Move_Base move = ((PokemobDamageSource) source).move;
+            return PokeType.getAttackEfficiency(move.getType(), getType1(), getType2()) <= 0;
+        }
+
+        return super.isEntityInvulnerable(source);
     }
 }

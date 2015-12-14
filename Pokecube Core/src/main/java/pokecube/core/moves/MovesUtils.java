@@ -536,7 +536,7 @@ public class MovesUtils implements IMoveConstants
 
         if (!(move.attackCategory == CATEGORY_SELF && PWR == 0) && finalAttackStrength > 0)
         {
-            DamageSource source = new PokemobDamageSource("mob", (EntityLivingBase) attacker, type);
+            DamageSource source = new PokemobDamageSource("mob", (EntityLivingBase) attacker, getMoveFromName(attack));
             attacked.attackEntityFrom(source, finalAttackStrength);
 
             if (attacked instanceof IPokemob)

@@ -831,6 +831,17 @@ public class GuiPokedex extends GuiScreen
         }
         else
         {
+            int num = 1;
+            PokedexEntry test = Pokedex.getInstance().getFirstEntry();
+            while(test != pokedexEntry && num < 1500)
+            {
+                test = Pokedex.getInstance().getNext(test, 1);
+                num++;
+            }
+            
+            String level = "N. " + num;
+            drawString(fontRendererObj, level, xOffset + 15, yOffset + 11, 0xffffff);
+            
             if (!closestVillage.isEmpty())
             {
                 GL11.glPushMatrix();

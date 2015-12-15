@@ -137,6 +137,8 @@ public class TabulaPackLoader extends AnimationLoader
          * into the walk animation. */
         private HashMap<String, String> mergedAnimations = Maps.newHashMap();
 
+        /** The root part of the head. */
+        private String                    headRoot         = "";
         /** A set of identifiers of shearable parts. */
         public Set<String>                shearableIdents  = Sets.newHashSet();
         /** A set of identifiers of dyeable parts. */
@@ -215,6 +217,10 @@ public class TabulaPackLoader extends AnimationLoader
 
         private void processMetadataForCubeInfo(CubeInfo cube)
         {
+            if (headRoot.isEmpty() && cube.name.toLowerCase().contains("head") && cube.parentIdentifier != null)
+            {
+                headRoot = cube.identifier;
+            }
             for (String s : cube.metadata)
             {
                 if (s.equalsIgnoreCase("shearable"))
@@ -224,6 +230,10 @@ public class TabulaPackLoader extends AnimationLoader
                 if (s.equalsIgnoreCase("dyeable"))
                 {
                     dyeableIdents.add(cube.identifier);
+                }
+                if (s.equalsIgnoreCase("head"))
+                {
+                    headRoot = cube.identifier;
                 }
             }
             for (CubeInfo cube1 : cube.children)
@@ -324,6 +334,16 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 loadedAnimations.put(key, animation);
             }
+        }
+
+        /**
+         * Returns true of the given identifier matches the part listed as the root of the head.
+         * @param identifier
+         * @return
+         */
+        public boolean isHeadRoot(String identifier)
+        {
+            return identifier.equals(headRoot);
         }
 
         public void parse(ResourceLocation animation) throws Exception

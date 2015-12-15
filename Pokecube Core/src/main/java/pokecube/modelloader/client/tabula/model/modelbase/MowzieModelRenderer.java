@@ -40,7 +40,6 @@ public class MowzieModelRenderer extends ModelRenderer
     public boolean        hasInitPose;
     private boolean       compiled;
     private int           displayList;
-    private boolean       isHeadRoot;
     public String         name;
     public String         identifier;
     public TabulaModelSet set;
@@ -73,12 +72,6 @@ public class MowzieModelRenderer extends ModelRenderer
         if (renderer instanceof MowzieModelRenderer)
         {
             ((MowzieModelRenderer) renderer).setParent(this);
-            ((MowzieModelRenderer) renderer).isHeadRoot = ((MowzieModelRenderer) renderer).name.toLowerCase()
-                    .contains("head");
-            if (this.isHeadRoot)
-            {
-                ((MowzieModelRenderer) renderer).isHeadRoot = false;
-            }
         }
     }
 
@@ -287,11 +280,11 @@ public class MowzieModelRenderer extends ModelRenderer
                 GL11.glTranslatef(-rotationPointX * f5, -rotationPointY * f5, -rotationPointZ * f5);
                 int i;
 
+                TabulaModelSet set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry());
                 /** Rotate the head, this should probably also be moved to a
                  * seperate method. */
-                if (isHeadRoot && entity instanceof IPokemob)
+                if (set.isHeadRoot(identifier) && entity instanceof IPokemob)
                 {
-                    TabulaModelSet set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry());
                     float head = (entity.getRotationYawHead() + 360) % 360;
                     float body = (entity.rotationYaw + 360) % 360;
                     // TODO improve on these caps.;

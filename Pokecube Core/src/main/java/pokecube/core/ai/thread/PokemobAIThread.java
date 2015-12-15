@@ -2,32 +2,23 @@ package pokecube.core.ai.thread;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.TickHandler;
-import thut.api.maths.Vector3;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class PokemobAIThread
@@ -35,7 +26,7 @@ public class PokemobAIThread
     /** Lock used to unsure that AI tasks run at the correct time. */
     private static final BitSet                          tickLock          = new BitSet();
     /** Lists of the AI stuff for each thread. */
-    private static Vector<Object>[]                      aiStuffLists;
+    private static Vector<AIStuff>[]                      aiStuffLists;
     /** Map of dimension to players, used for thread-safe player access. */
     public static final HashMap<Integer, Vector<Object>> worldPlayers      = new HashMap<Integer, Vector<Object>>();
     /** Used for sorting the AI runnables for run order. */
@@ -71,12 +62,11 @@ public class PokemobAIThread
     {
         IPokemob pokemob = (IPokemob) entity;
         int id = pokemob.getPokemonUID() % AIThread.threadCount;
-        Vector<Object> list = aiStuffLists[id];
-        ArrayList toCheck = new ArrayList(list);
+        Vector<AIStuff> list = aiStuffLists[id];
+        ArrayList<AIStuff> toCheck = new ArrayList(list);
         AIStuff entityAI = null;
-        for (Object o : toCheck)
+        for (AIStuff aistuff : toCheck)
         {
-            AIStuff aistuff = (AIStuff) o;
             if (aistuff.entity == entity)
             {
                 entityAI = aistuff;
@@ -167,52 +157,6 @@ public class PokemobAIThread
         return task.shouldRun();
     }
 
-    /** threadsafe path determination.
-     * 
-     * @param id
-     * @param dim
-     * @param path
-     * @param speed */
-    public static void addEntityPath(int id, int dim, PathEntity path, double speed)
-    {
-        paths.add(new PathInfo(id, dim, path, speed));
-    }
-
-    /** Thread safe target swapping information.
-     * 
-     * @param attacker
-     * @param target
-     * @param dim */
-    public static void addTargetInfo(int attacker, int target, int dim)
-    {
-        targets.add(new TargetInfo(attacker, target, dim));
-    }
-
-    /** Thread safe attack setting */
-    public static void addMoveInfo(int attacker, int targetEnt, int dim, Vector3 target, float distance)
-    {
-        moves.add(new MoveInfo(attacker, targetEnt, dim, target, distance));
-    }
-
-    /** Thread safe AI state setting
-     * 
-     * @param uid
-     * @param state
-     * @param value */
-    public static void addStateInfo(int uid, int state, boolean value)
-    {
-        states.add(new StateInfo(uid, state, value));
-    }
-
-    /** List of PathInfos for setting pokemob paths */
-    private static final Vector<PathInfo>   paths   = new Vector();
-    /** List of targets to set. */
-    private static final Vector<TargetInfo> targets = new Vector();
-    /** List of moves to use. */
-    private static final Vector<MoveInfo>   moves   = new Vector();
-    /** Lists of states to swap to. */
-    private static final Vector<StateInfo>  states  = new Vector();
-
     static
     {
         AIThread.createThreads();
@@ -254,211 +198,21 @@ public class PokemobAIThread
         else try// At the end, apply all of the paths, targets, moves and
                 // states.
         {
-            ArrayList todo = new ArrayList();
+            ArrayList<AIStuff> todo = new ArrayList();
 
-            List unloadedMobs = evt.world.unloadedEntityList;
-
-            todo.addAll(paths);
-            for (Object o : todo)
+            for(Vector<AIStuff> v: aiStuffLists)
             {
-                PathInfo p = (PathInfo) o;
-                if (p.dim != evt.world.provider.getDimensionId()) continue;
-
-                Entity e = evt.world.getEntityByID(p.pather);
-                if (e == null || !(e instanceof EntityLiving))
+                todo.addAll(v);
+                for(AIStuff stuff: todo)
                 {
-                    paths.remove(o);
-                    continue;
+                    stuff.runServerThreadTasks(evt.world);
                 }
-                EntityLiving mob = (EntityLiving) e;
-                if (!mob.worldObj.loadedEntityList.contains(mob) || unloadedMobs.contains(mob))
-                {
-                    paths.remove(o);
-                    continue;
-                }
-
-                if (!(mob.isDead || mob.getHealth() <= 0))
-                {
-                    p.setPath(mob);
-                }
-                paths.remove(o);
+                todo.clear();
             }
-            todo.clear();
-            todo.addAll(moves);
-            Collections.sort(todo, MoveInfo.compare);
-            for (Object o : todo)
-            {
-                MoveInfo m = (MoveInfo) o;
-                if (m.dim != evt.world.provider.getDimensionId()) continue;
-                Entity e = evt.world.getEntityByID(m.attacker);
-                if (e == null || !(e instanceof EntityLiving))
-                {
-                    moves.remove(m);
-                    continue;
-                }
-                EntityLiving mob = (EntityLiving) e;
-                if (!mob.worldObj.loadedEntityList.contains(mob) || unloadedMobs.contains(mob))
-                {
-                    moves.remove(m);
-                    continue;
-                }
-                if (!(mob.isDead || mob.getHealth() <= 0))
-                {
-                    ((IPokemob) mob).executeMove(evt.world.getEntityByID(m.targetEnt), m.target, m.distance);
-
-                }
-                moves.remove(m);
-            }
-            todo.clear();
-            todo.addAll(targets);
-            for (Object o : todo)
-            {
-                TargetInfo t = (TargetInfo) o;
-                if (t.dim != evt.world.provider.getDimensionId()) continue;
-                Entity e = evt.world.getEntityByID(t.attacker);
-                Entity e1 = evt.world.getEntityByID(t.target);
-                if (e == null || !(e instanceof EntityLiving))
-                {
-                    targets.remove(t);
-                    continue;
-                }
-                if (!(e1 instanceof EntityLivingBase))
-                {
-                    e1 = null;
-                }
-                EntityLiving mob = (EntityLiving) e;
-
-                boolean mobExists = !(unloadedMobs.contains(t.attacker));
-
-                if (!mobExists
-                        || (!(e1 instanceof EntityPlayer) && ((e1 != null && !e1.worldObj.loadedEntityList.contains(e1))
-                                || (e1 != null && unloadedMobs.contains(e1)))))
-                {
-                    targets.remove(t);
-                    continue;
-                }
-                if (!(mob.isDead || mob.getHealth() <= 0))
-                {
-                    mob.setAttackTarget((EntityLivingBase) e1);
-                }
-                targets.remove(t);
-            }
-            todo.clear();
-            todo.addAll(states);
-            for (Object o : todo)
-            {
-                StateInfo info = (StateInfo) o;
-                info.applyState();
-                states.remove(o);
-            }
-            todo.clear();
         }
         catch (Exception e)
         {
             e.printStackTrace();
-        }
-    }
-
-    /** A thread-safe object used to set the current path for an entity.
-     * 
-     * @author Thutmose */
-    static class PathInfo
-    {
-        public final PathEntity path;
-        public final int        pather;
-        public final int        dim;
-        public final double     speed;
-
-        public PathInfo(int _pather, int dimension, PathEntity _path, double _speed)
-        {
-            path = _path;
-            pather = _pather;
-            speed = _speed;
-            dim = dimension;
-        }
-
-        public void setPath(EntityLiving entity)
-        {
-            entity.getNavigator().setPath(path, speed);
-        }
-    }
-
-    /** A thread safe object used to set the attack target of an entity.
-     * 
-     * @author Thutmose */
-    static class TargetInfo
-    {
-        public final int attacker;
-        public final int target;
-        public final int dim;
-
-        public TargetInfo(int _attacker, int _target, int dimension)
-        {
-            attacker = _attacker;
-            target = _target;
-            dim = dimension;
-        }
-    }
-
-    static class StateInfo
-    {
-        public final int     pokemobUid;
-        public final int     state;
-        public final boolean value;
-
-        public StateInfo(int uid, int state_, boolean value_)
-        {
-            pokemobUid = uid;
-            state = state_;
-            value = value_;
-        }
-
-        public boolean applyState()
-        {
-            IPokemob pokemob = PokecubeSerializer.getInstance().getPokemob(pokemobUid);
-            if (pokemob == null) return false;
-            pokemob.setPokemonAIState(state, value);
-            return true;
-        }
-    }
-
-    /** A thread-safe object used to set which move a pokemob is to use.
-     * 
-     * @author Thutmose */
-    static class MoveInfo
-    {
-        public static final Comparator compare = new Comparator<MoveInfo>()
-        {
-            @Override
-            public int compare(MoveInfo o1, MoveInfo o2)
-            {
-                if (o1.dim != o2.dim) return 0;
-                if (FMLCommonHandler.instance().getSide() == Side.SERVER)
-                {
-                    WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
-                            .worldServerForDimension(o1.dim);
-                    Entity e1 = world.getEntityByID(o1.attacker);
-                    Entity e2 = world.getEntityByID(o2.attacker);
-                    if (e1 instanceof IPokemob && e2 instanceof IPokemob) { return pokemobComparator
-                            .compare((IPokemob) e1, (IPokemob) e2); }
-                }
-                return 0;
-            }
-        };
-
-        public final int     attacker;
-        public final int     targetEnt;
-        public final int     dim;
-        public final Vector3 target;
-        public final float   distance;
-
-        public MoveInfo(int _attacker, int _targetEnt, int dimension, Vector3 _target, float _distance)
-        {
-            attacker = _attacker;
-            targetEnt = _targetEnt;
-            target = _target;
-            distance = _distance;
-            dim = dimension;
         }
     }
 
@@ -485,6 +239,14 @@ public class PokemobAIThread
         public void addAILogic(ILogicRunnable logic)
         {
             aiLogic.add(logic);
+        }
+        
+        public void runServerThreadTasks(World world)
+        {
+            for(IAIRunnable ai: aiTasks)
+            {
+                ai.doMainThreadTick(world);
+            }
         }
     }
 

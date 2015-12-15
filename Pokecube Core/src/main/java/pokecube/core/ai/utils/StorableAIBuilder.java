@@ -1,10 +1,9 @@
 package pokecube.core.ai.utils;
 
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.nbt.NBTTagCompound;
 
-public interface StorableAIBuilder<T extends EntityAIBase & StorableAI>
+public interface StorableAIBuilder<T extends StorableAI>
 {
 	/**
 	 * Create a new AI routine based on the data in the NBTTagCompound.

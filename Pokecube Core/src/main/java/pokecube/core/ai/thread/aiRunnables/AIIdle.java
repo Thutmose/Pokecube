@@ -5,7 +5,6 @@ import java.util.Random;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.pathfinding.PathEntity;
-import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
@@ -43,7 +42,7 @@ public class AIIdle extends AIBase
         if (world == null) return false;
         if ((current = entity.getNavigator().getPath()) != null && entity.getNavigator().noPath())
         {
-            PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, null, speed);
+            addEntityPath(entity.getEntityId(), entity.dimension, null, speed);
             current = null;
         }
         if (current != null && entity.getAttackTarget() == null)
@@ -55,7 +54,7 @@ public class AIIdle extends AIBase
             diff = Math.max(2, diff);
             if (v.distToSq(v1) < diff)
             {
-                PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, null, speed);
+                addEntityPath(entity.getEntityId(), entity.dimension, null, speed);
                 return false;
             }
             else
@@ -149,10 +148,9 @@ public class AIIdle extends AIBase
 
         mob.setPokemonAIState(IPokemob.IDLE, true);
         PathEntity path = this.entity.getNavigator().getPathToXYZ(this.xPosition, this.yPosition, this.zPosition);
-        PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
+        addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
         // System.out.println("should run");
         mob.setPokemonAIState(IPokemob.IDLE, false);
-
     }
 
     private void doFlyingIdle()

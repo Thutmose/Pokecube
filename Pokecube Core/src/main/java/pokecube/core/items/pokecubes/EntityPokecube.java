@@ -335,13 +335,15 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     {
         if (worldObj.isRemote || isReleasing()) { return null; }
         IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-        System.out.println(entity1);
+
         if (entity1 != null)
         {
             Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
             Vector3 dv = v1.set(motionX, motionY, motionZ);
             v = Vector3.getNextSurfacePoint(worldObj, v, dv, Math.max(2, dv.mag()));
             if (v == null) v = v0.set(this);
+            Block b = v.getBlock(worldObj);
+            if (b.getMaterial().isSolid()) v.y = Math.ceil(v.y);
             v.moveEntity(((Entity) entity1));
             worldObj.spawnEntityInWorld((Entity) entity1);
             ((IMultibox) entity1).setBoxes();
@@ -389,7 +391,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage)
     {
-        System.out.println(source);
         return false;
     }
 

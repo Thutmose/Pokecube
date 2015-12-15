@@ -12,7 +12,6 @@ import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.util.EnumFacing;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
-import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IPokemob;
@@ -219,7 +218,7 @@ public class AIFindFood extends AIBase
                             setPokemobAIState(pokemob, IPokemob.HUNTING, false);
 
                             PathEntity path = entity.getNavigator().getPathToXYZ(temp.x, temp.y, temp.z);
-                            PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                            addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
                             hungrymob.eat(berry);
                             temp.freeVectorFromPool();
                             return;
@@ -334,13 +333,13 @@ public class AIFindFood extends AIBase
                     if (shouldChangePath
                             && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
                     {
-                        PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                        addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
                         setPokemobAIState(pokemob, IPokemob.HUNTING, false);
                         berry.setEntityItemStack(fruit);
                         hungrymob.noEat(berry);
                         foodLoc.clear();
                     }
-                    else PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                    else addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
                 }
             }
             else if (b != null)
@@ -357,7 +356,7 @@ public class AIFindFood extends AIBase
                         TickHandler.addBlockChange(foodLoc, entity.dimension,
                                 b.getMaterial() == Material.grass ? Blocks.dirt : Blocks.air);
                         foodLoc.clear();
-                        PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+                        addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
                     }
                     else if (entity.ticksExisted % 20 == 0)
                     {
@@ -397,15 +396,15 @@ public class AIFindFood extends AIBase
                         }
                         PathEntity path = null;
                         if (shouldChangePath
-                                && !entity.getNavigator().tryMoveToXYZ(foodLoc.x, foodLoc.y, foodLoc.z, moveSpeed))
+                                && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
                         {
                             setPokemobAIState(pokemob, IPokemob.HUNTING, false);
                             berry.setEntityItemStack(new ItemStack(b));
                             hungrymob.noEat(berry);
                             foodLoc.clear();
-                            PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+                            addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
                         }
-                        else PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                        else addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
                     }
                 }
                 else if ((Mod_Pokecube_Helper.getRocks().contains(b) || b == Blocks.gravel) && hungrymob.isLithotroph())
@@ -435,7 +434,7 @@ public class AIFindFood extends AIBase
                         berry.setEntityItemStack(new ItemStack(b));
                         hungrymob.eat(berry);
                         foodLoc.clear();
-                        PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+                        addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
                     }
                     else if (entity.ticksExisted % 20 == 0)
                     {
@@ -466,7 +465,7 @@ public class AIFindFood extends AIBase
                         {
                             path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z);
                             pathed = path != null;
-                            PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                            addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
                         }
 
                         if (shouldChangePath && !pathed)
@@ -480,11 +479,11 @@ public class AIFindFood extends AIBase
                                 // System.out.println("test");
                                 path = entity.getNavigator().getPathToXYZ(pokemob.getHome().getX(),
                                         pokemob.getHome().getY(), pokemob.getHome().getZ());
-                                PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                                addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
                             }
                             else
                             {
-                                PokemobAIThread.addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+                                addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
                             }
                         }
                     }

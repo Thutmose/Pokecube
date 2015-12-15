@@ -65,7 +65,7 @@ public class ContainerPokemob extends Container
 					@Override
 					public boolean isItemValid(ItemStack stack)
 					{
-						return PokecubeItems.isValidHeldItem(stack);
+						return true;//PokecubeItems.isValidHeldItem(stack);
 					}
 				});
 			}
@@ -112,7 +112,7 @@ public class ContainerPokemob extends Container
 			}
 			else if (this.getSlot(1).isItemValid(itemstack1) && !this.getSlot(1).getHasStack())
 			{
-				if (!this.mergeItemStack(itemstack1, 1, 2, false)) { return null; }
+			    this.getSlot(1).putStack(slot.getStack().splitStack(1));
 			}
 			else if (this.getSlot(0).isItemValid(itemstack1))
 			{

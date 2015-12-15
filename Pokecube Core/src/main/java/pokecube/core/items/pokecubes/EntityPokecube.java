@@ -643,7 +643,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             here.freeVectorFromPool();
             dir.freeVectorFromPool();
         }
-        
+
         super.onUpdate();
 
     }
@@ -669,5 +669,10 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         }
 
         return super.interact(player);
+    }
+
+    protected void doBlockCollisions()
+    {
+        super.doBlockCollisions();
     }
 }

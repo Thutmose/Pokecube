@@ -409,7 +409,7 @@ public class PokecubePacketHandler
                 target.set(attacked);
             }
 
-            if (move.animation != null)
+            if (move.animation != null && attacker!=null)
             {
                 MoveAnimation anim = new MoveAnimation(attacker, attacked, target, move, move.animation.getDuration());
                 MoveAnimationHelper.Instance().addMove(attacker, anim);

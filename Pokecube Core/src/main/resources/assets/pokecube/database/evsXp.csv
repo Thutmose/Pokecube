@@ -178,7 +178,7 @@ Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mo
 177,Natu ,64,0,0,0,1,0,0,Medium Fast,127,70,,,,0,,,TRUE,,,,
 178,Xatu ,165,0,0,0,1,0,1,Medium Fast,127,70,,,,0,,,FALSE,,,,
 179,Mareep ,56,0,0,0,1,0,0,Medium Slow,127,70,1:wool,,,0,,,FALSE:::TRUE#11,,grass,,shears`wool
-180,Flaaffy ,128,0,0,0,2,0,0,Medium Slow,127,70,,,,0,,,FALSE,,grass,,
+180,Flaaffy ,128,0,0,0,2,0,0,Medium Slow,127,70,,,,0,,,FALSE:::TRUE#15,,grass,,
 181,Ampharos ,225,0,0,0,3,0,0,Medium Slow,127,70,,,,0,,,FALSE,,grass,,
 182,Bellossom ,216,0,0,0,0,3,0,Medium Slow,127,70,,,,0,,,FALSE,,light,,
 183,Marill ,88,2,0,0,0,0,0,Fast,127,70,,,,0,,,TRUE,,,,
@@ -355,7 +355,7 @@ Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mo
 354,Banette ,159,0,2,0,0,0,0,Fast,127,35,,,,0,,,FALSE,,,,
 355,Duskull ,59,0,0,0,0,1,0,Fast,127,35,1:bone,,,0,,,FALSE,,,,
 356,Dusclops ,159,0,0,1,0,1,0,Fast,127,35,2:bone,,,0,,,FALSE,,,,
-357,Tropius ,161,2,0,0,0,0,0,Slow,127,70,1:apple,,,0,,,FALSE,,light,,
+357,Tropius ,161,2,0,0,0,0,0,Slow,127,70,1:apple,,,0,,,FALSE,,light,,shears`apple
 358,Chimecho ,149,0,0,0,1,1,0,Fast,127,70,1:ender_pearl,,,0,,,FALSE,,,,
 359,Absol ,163,0,2,0,0,0,0,Medium Slow,127,35,,,,0,,,FALSE,,,,
 360,Wynaut ,52,1,0,0,0,0,0,Medium Fast,127,70,,,,0,,,FALSE,,,,

@@ -138,6 +138,7 @@ public class TabulaPackLoader extends AnimationLoader
         private HashMap<String, String> mergedAnimations = Maps.newHashMap();
 
         /** The root part of the head. */
+        private Set<String>               headRoots        = Sets.newHashSet();
         private String                    headRoot         = "";
         /** A set of identifiers of shearable parts. */
         public Set<String>                shearableIdents  = Sets.newHashSet();
@@ -233,7 +234,7 @@ public class TabulaPackLoader extends AnimationLoader
                 }
                 if (s.equalsIgnoreCase("head"))
                 {
-                    headRoot = cube.identifier;
+                    headRoots.add(cube.identifier);
                 }
             }
             for (CubeInfo cube1 : cube.children)
@@ -336,13 +337,17 @@ public class TabulaPackLoader extends AnimationLoader
             }
         }
 
-        /**
-         * Returns true of the given identifier matches the part listed as the root of the head.
+        /** Returns true of the given identifier matches the part listed as the
+         * root of the head.
+         * 
          * @param identifier
-         * @return
-         */
+         * @return */
         public boolean isHeadRoot(String identifier)
         {
+            if(!headRoots.isEmpty())
+            {
+                return headRoots.contains(identifier);
+            }
             return identifier.equals(headRoot);
         }
 

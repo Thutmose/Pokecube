@@ -294,7 +294,11 @@ public class ModelJson extends MowzieModelBase
                     {
                         componentTimer = component.length;
                     }
-
+////TODO get the scale working properly, probably need saving the original scale somewhere.
+//                    animating.scaleX = (float) (1 + component.scaleChange[0] / component.length * componentTimer);
+//                    animating.scaleY = (float) (1 + component.scaleChange[1] / component.length * componentTimer);
+//                    animating.scaleZ = (float) (1 + component.scaleChange[2] / component.length * componentTimer);
+//                    
                     animating.rotationPointX += component.posChange[0] / component.length * componentTimer;
                     animating.rotationPointY += component.posChange[1] / component.length * componentTimer;
                     animating.rotationPointZ += component.posChange[2] / component.length * componentTimer;

@@ -153,7 +153,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
         return "cloner";
     }
@@ -203,7 +203,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot)
+    public ItemStack removeStackFromSlot(int slot)
     {
         if (inventory[slot] != null)
         {
@@ -313,9 +313,9 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
          * 
          * @param index
          *            The slot to remove a stack from. */
-        public ItemStack getStackInSlotOnClosing(int index)
+        public ItemStack removeStackFromSlot(int index)
         {
-            return cloner.getStackInSlotOnClosing(index);
+            return cloner.removeStackFromSlot(index);
         }
 
         @Override
@@ -389,9 +389,9 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
          * 
          * @param index
          *            The slot to remove a stack from. */
-        public ItemStack getStackInSlotOnClosing(int index)
+        public ItemStack removeStackFromSlot(int index)
         {
-            return cloner.getStackInSlotOnClosing(index + 9);
+            return cloner.removeStackFromSlot(index + 9);
         }
 
         /** Sets the given item stack to the specified slot in the inventory

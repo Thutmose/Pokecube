@@ -153,7 +153,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
             GlStateManager.enableBlend();
             int mode = 7;
-            format = DefaultVertexFormats.field_181706_f;
+            format = DefaultVertexFormats.POSITION_COLOR;
 
             tez.begin(mode, format);
 

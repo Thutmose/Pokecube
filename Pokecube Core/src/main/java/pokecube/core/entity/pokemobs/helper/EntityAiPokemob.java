@@ -972,7 +972,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
             boolean shadowDrop = (this.isShadow() && this.getLevel() < 40);
 
-            if (this.canDropLoot() && this.worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot") && !shadowDrop)
+            if (this.canDropLoot() && this.worldObj.getGameRules().getBoolean("doMobLoot") && !shadowDrop)
             {
                 this.dropFewItems(this.recentlyHit > 0, i);
                 this.dropEquipment(this.recentlyHit > 0, i);

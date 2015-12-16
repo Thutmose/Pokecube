@@ -473,7 +473,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     	{
 	    	if(getType()!=null&&!worldObj.isRemote&&entityplayer.isSneaking())
 	    	{
-		    	String message = this.getCommandSenderName()+" "+getAIState(STATIONARY)+" "+countPokemon()+" "+out+" ";
+		    	String message = this.getName()+" "+getAIState(STATIONARY)+" "+countPokemon()+" "+out+" ";
 		    	for(ItemStack i: pokecubes)
 		    	{
 		    		if(i!=null)

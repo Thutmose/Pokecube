@@ -55,10 +55,10 @@ public class ParticleOrientable extends ParticleBase
         float green = ((rgba >> 8) & 255) / 255f;
         float blue = (rgba & 255) / 255f;
 
-        VertexFormat format = DefaultVertexFormats.field_181706_f;
+        VertexFormat format = DefaultVertexFormats.POSITION_COLOR;
         texture = new ResourceLocation("pokecube", "textures/particles.png");
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-        format = DefaultVertexFormats.field_181709_i;
+        format = DefaultVertexFormats.POSITION_TEX_COLOR;
 
         int num = (getDuration() / animSpeed) % tex.length;
 

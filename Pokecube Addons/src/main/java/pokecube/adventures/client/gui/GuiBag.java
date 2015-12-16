@@ -231,7 +231,7 @@ public class GuiBag extends GuiContainer {
 	{
 		GL11.glPushMatrix();
 		GL11.glScaled(0.8, 0.8, 0.8);
-		String pcTitle = cont.invPlayer.player.getCommandSenderName()+"'s Bag";
+		String pcTitle = cont.invPlayer.player.getName()+"'s Bag";
     	fontRendererObj.drawString(cont.getPage(), xSize / 2 - fontRendererObj.getStringWidth(cont.getPage()) / 3 - 60, 13, 4210752);
     	fontRendererObj.drawString(pcTitle,  xSize / 2 - fontRendererObj.getStringWidth(pcTitle) / 3 - 60, 4, 4210752);
     	GL11.glPopMatrix();

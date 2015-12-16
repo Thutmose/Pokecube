@@ -674,7 +674,7 @@ public final class SpawnHandler
         try
         {
 
-            if (world.getGameRules().getGameRuleBooleanValue("doMobSpawning") && Mod_Pokecube_Helper.deactivateAnimals
+            if (world.getGameRules().getBoolean("doMobSpawning") && Mod_Pokecube_Helper.deactivateAnimals
                     && Mod_Pokecube_Helper.deactivateMonsters)
             {
                 world.getGameRules().setOrCreateGameRule("doMobSpawning", "false");

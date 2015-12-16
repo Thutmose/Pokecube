@@ -923,7 +923,7 @@ public class MovesUtils implements IMoveConstants
         }
         else if (attacked instanceof EntityPlayer)
         {
-            mobDisplayName = ((EntityPlayer) attacked).getCommandSenderName();
+            mobDisplayName = ((EntityPlayer) attacked).getName();
         }
         String message = getStatusMessage(status, mobDisplayName, true);
 

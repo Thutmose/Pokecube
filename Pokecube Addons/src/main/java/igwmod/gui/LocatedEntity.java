@@ -44,7 +44,7 @@ public class LocatedEntity extends Gui implements IReservedSpace, IPageLink{
     @Override
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY){
         if(getReservedSpace().contains(mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop())) {
-            drawCreativeTabHoveringText(entity.getCommandSenderName(), mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop());
+            drawCreativeTabHoveringText(entity.getName(), mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop());
         }
     }
 
@@ -84,7 +84,7 @@ public class LocatedEntity extends Gui implements IReservedSpace, IPageLink{
 
     @Override
     public String getName(){
-        return entity.getCommandSenderName();
+        return entity.getName();
     }
 
     @Override

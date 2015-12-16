@@ -75,13 +75,13 @@ public class Commands implements ICommand
 
         if (sender instanceof EntityPlayer)
         {
-            EntityPlayer player = sender.getEntityWorld().getPlayerEntityByName(sender.getCommandSenderName());
+            EntityPlayer player = sender.getEntityWorld().getPlayerEntityByName(sender.getName());
             UserListOpsEntry userentry = (UserListOpsEntry) ((EntityPlayerMP) player).mcServer.getConfigurationManager()
                     .getOppedPlayers().getEntry(player.getGameProfile());
             return userentry != null && userentry.getPermissionLevel() >= 4;
         }
         else if (sender instanceof TileEntityCommandBlock) { return true; }
-        return sender.getCommandSenderName().equalsIgnoreCase("@") || sender.getCommandSenderName().equals("Server");
+        return sender.getName().equalsIgnoreCase("@") || sender.getName().equals("Server");
     }
 
     @Override
@@ -242,7 +242,7 @@ public class Commands implements ICommand
     {
         if (args[0].equalsIgnoreCase("recall"))
         {
-            String sender = cSender.getCommandSenderName();
+            String sender = cSender.getName();
             boolean all = args.length > 1 && args[1].equalsIgnoreCase("all");
             boolean allall = args.length > 2 && args[2].equalsIgnoreCase("all");
             boolean guard = args.length > 1 && args[1].equalsIgnoreCase("guard");
@@ -824,7 +824,7 @@ public class Commands implements ICommand
                             player = targets[index];
                         }
 
-                        if (player == null) player = world.getPlayerEntityByName(cSender.getCommandSenderName());
+                        if (player == null) player = world.getPlayerEntityByName(cSender.getName());
 
                         if (player != null && isOp
                                 || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
@@ -862,7 +862,7 @@ public class Commands implements ICommand
                     buf.writeBoolean(true);
                     PokecubeClientPacket packet = new PokecubeClientPacket(buf);
                     PokecubePacketHandler.sendToClient(packet, player);
-                    cSender.addChatMessage(new ChatComponentText("Reset Starter for " + player.getCommandSenderName()));
+                    cSender.addChatMessage(new ChatComponentText("Reset Starter for " + player.getName()));
                     player.addChatMessage(new ChatComponentText("You may choose a new starter"));
 
                 }
@@ -911,7 +911,7 @@ public class Commands implements ICommand
                             PokecubePacketHandler.sendToClient(packet, player);
 
                             cSender.addChatMessage(
-                                    new ChatComponentText("Reset Starter for " + player.getCommandSenderName()));
+                                    new ChatComponentText("Reset Starter for " + player.getName()));
                             player.addChatMessage(new ChatComponentText("You may choose a new starter"));
                         }
                     }

@@ -226,15 +226,15 @@ public class TeamManager {
     	{
     		player.worldObj.getScoreboard().createTeam(team);
     		addToTeam(player, team);
-    		addToAdmins(player.getCommandSenderName(), team);
+    		addToAdmins(player.getName(), team);
     	}
 	}
 	
 	public void addToTeam(EntityPlayer player, String team)
 	{
-		player.worldObj.getScoreboard().addPlayerToTeam(player.getCommandSenderName(), team);
+		player.worldObj.getScoreboard().addPlayerToTeam(player.getName(), team);
 		player.addChatMessage(new ChatComponentText("You joined Team "+team));
-		teamInvites.remove(player.getCommandSenderName());
+		teamInvites.remove(player.getName());
 	}
 	
 	public String getLandOwner(ChunkCoordinate land)

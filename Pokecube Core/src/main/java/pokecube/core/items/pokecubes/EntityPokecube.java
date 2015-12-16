@@ -229,7 +229,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     @Override
     public void onCollideWithPlayer(EntityPlayer entityplayer)
     {
-        if (entityplayer.getCommandSenderName() == PokecubeManager.getOwner(getEntityItem())
+        if (entityplayer.getName() == PokecubeManager.getOwner(getEntityItem())
                 || entityplayer.getUniqueID().toString() == PokecubeManager.getOwner(getEntityItem()))
         {
             if (shootingEntity == entityplayer

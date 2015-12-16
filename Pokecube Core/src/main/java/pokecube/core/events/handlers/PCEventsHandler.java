@@ -193,7 +193,7 @@ public class PCEventsHandler
     {
         EntityPlayer entityPlayer = evt.player;
 
-        if (entityPlayer.getCommandSenderName().toLowerCase().trim().equals("thutmose"))
+        if (entityPlayer.getName().toLowerCase().trim().equals("thutmose"))
         {
             PCSaveHandler.getInstance().seenPCCreator = true;
         }
@@ -221,7 +221,7 @@ public class PCEventsHandler
 
         EntityPlayer entityPlayer = (EntityPlayer) evt.entity;
 
-        if (entityPlayer.getCommandSenderName().toLowerCase().trim().equals("thutmose"))
+        if (entityPlayer.getName().toLowerCase().trim().equals("thutmose"))
         {
             // System.out.println("Thutmose logged in");
             for (Object o : evt.world.playerEntities)
@@ -273,7 +273,7 @@ public class PCEventsHandler
                 if (mob.getEntityItem() != null)
                 {
                     String name = PokecubeManager.getOwner(mob.getEntityItem());
-                    if (name != null && (name.equalsIgnoreCase(player.getCommandSenderName())
+                    if (name != null && (name.equalsIgnoreCase(player.getName())
                             || name.equals(player.getUniqueID().toString())))
                     {
                         InventoryPC.addStackToPC(name, mob.getEntityItem());

@@ -55,7 +55,7 @@ public class TeamEventsHandler
             IBlockState state = evt.world.getBlockState(evt.pos);
         	block = evt.world.getBlockState(evt.pos).getBlock();
             boolean b = true;
-        	String team = evt.world.getScoreboard().getPlayersTeam(evt.entityPlayer.getCommandSenderName()).getRegisteredName();
+        	String team = evt.world.getScoreboard().getPlayersTeam(evt.entityPlayer.getName()).getRegisteredName();
 
         	if(owner.equals(team))
         	{

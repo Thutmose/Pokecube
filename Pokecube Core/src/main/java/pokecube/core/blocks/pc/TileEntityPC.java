@@ -98,9 +98,9 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i)
+    public ItemStack removeStackFromSlot(int i)
     {
-        if (getPC() != null) { return getPC().getStackInSlotOnClosing(i); }
+        if (getPC() != null) { return getPC().removeStackFromSlot(i); }
         return null;
     }
 
@@ -193,9 +193,9 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
-        if (getPC() != null) return getPC().getCommandSenderName();
+        if (getPC() != null) return getPC().getName();
         return null;
     }
 

@@ -227,7 +227,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
         return null;
     }
@@ -273,7 +273,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int index)
+    public ItemStack removeStackFromSlot(int index)
     {
         if (inventory[index] != null)
         {

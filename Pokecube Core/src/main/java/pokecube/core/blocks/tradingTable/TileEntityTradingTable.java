@@ -349,7 +349,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot)
+    public ItemStack removeStackFromSlot(int slot)
     {
         if (trade)
         {
@@ -548,7 +548,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                     message.getBytes());
             PokecubePacketHandler.sendToClient(packet, player);
 
-            this.moves.put(player.getCommandSenderName(), moves);
+            this.moves.put(player.getName(), moves);
             return moves;
         }
         else
@@ -623,7 +623,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
         return "tradingtable";
     }

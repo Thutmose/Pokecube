@@ -62,19 +62,19 @@ public class TileNBTPacket extends AbstractPacket {
 			try {
 				te.readFromNBT(tag);
 				NBTEdit.DISPATCHER.sendToDimension(new TileNBTUpdatePacket(pos, tag), player.dimension); //Broadcast changes
-				NBTEdit.log(Level.FINE, player.getCommandSenderName() + " edited a tag -- Tile Entity at " + pos.getX() + "," + pos.getY() + "," + pos.getZ());
+				NBTEdit.log(Level.FINE, player.getName() + " edited a tag -- Tile Entity at " + pos.getX() + "," + pos.getY() + "," + pos.getZ());
 				NBTEdit.logTag(tag);
 				sendMessageToPlayer(player, "Your changes have been saved");
 			}
 			catch(Throwable t) {
 				sendMessageToPlayer(player, SECTION_SIGN + "cSave Failed - Invalid NBT format for Tile Entity");
-				NBTEdit.log(Level.WARNING, player.getCommandSenderName() + " edited a tag and caused an exception");
+				NBTEdit.log(Level.WARNING, player.getName() + " edited a tag and caused an exception");
 				NBTEdit.logTag(tag);
 				NBTEdit.throwing("TileNBTPacket", "handleServerSide", t);
 			}
 		}
 		else {
-			NBTEdit.log(Level.WARNING, player.getCommandSenderName() + " tried to edit a non-existant TileEntity at "+pos.getX()+","+pos.getY()+","+pos.getZ());
+			NBTEdit.log(Level.WARNING, player.getName() + " tried to edit a non-existant TileEntity at "+pos.getX()+","+pos.getY()+","+pos.getZ());
 			sendMessageToPlayer(player, SECTION_SIGN + "cSave Failed - There is no TileEntity at "+pos.getX()+","+pos.getY()+","+pos.getZ());
 		}
 	}

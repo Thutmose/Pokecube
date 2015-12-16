@@ -20,7 +20,7 @@ public class SlotTrade extends Slot {
     {
     	if(!(PokecubeManager.isFilled(getStack()))) return true;
     	String name = PokecubeManager.getOwner(getStack());
-        return name.equals(par1EntityPlayer.getCommandSenderName()) ||name.equals(par1EntityPlayer.getUniqueID().toString());
+        return name.equals(par1EntityPlayer.getName()) ||name.equals(par1EntityPlayer.getUniqueID().toString());
     }
 
     @Override

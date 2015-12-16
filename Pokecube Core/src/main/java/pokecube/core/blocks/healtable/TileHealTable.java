@@ -116,7 +116,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slotIndex)
+    public ItemStack removeStackFromSlot(int slotIndex)
     {
         ItemStack stack = getStackInSlot(slotIndex);
 
@@ -215,7 +215,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
         return "TileEntityHealTable";
     }

@@ -46,7 +46,7 @@ public class GeneralCommands implements ICommand  {
 	{
 		if(sender instanceof EntityPlayer)
 		{
-			EntityPlayer player = sender.getEntityWorld().getPlayerEntityByName(sender.getCommandSenderName());
+			EntityPlayer player = sender.getEntityWorld().getPlayerEntityByName(sender.getName());
 			UserListOpsEntry userentry = (UserListOpsEntry)((EntityPlayerMP)player).mcServer.getConfigurationManager().getOppedPlayers().getEntry(player.getGameProfile());
 			return userentry!=null&&userentry.getPermissionLevel()>=4;
 		}
@@ -54,7 +54,7 @@ public class GeneralCommands implements ICommand  {
 		{
 			return true;
 		}
-		return sender.getCommandSenderName().equalsIgnoreCase("@")||sender.getCommandSenderName().equals("Server");
+		return sender.getName().equalsIgnoreCase("@")||sender.getName().equals("Server");
 	}
 
 	@Override

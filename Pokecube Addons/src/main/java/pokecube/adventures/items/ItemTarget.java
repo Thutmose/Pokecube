@@ -46,11 +46,11 @@ public class ItemTarget extends Item
         {
             ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(pos, entityplayer.dimension);
             String team = TeamManager.getInstance().getLandOwner(c);
-            String playerTeam = world.getScoreboard().getPlayersTeam(entityplayer.getCommandSenderName())
+            String playerTeam = world.getScoreboard().getPlayersTeam(entityplayer.getName())
                     .getRegisteredName();
             if (team != null && team.equalsIgnoreCase(playerTeam)
-                    && TeamManager.getInstance().isAdmin(entityplayer.getCommandSenderName(),
-                            world.getScoreboard().getPlayersTeam(entityplayer.getCommandSenderName())))
+                    && TeamManager.getInstance().isAdmin(entityplayer.getName(),
+                            world.getScoreboard().getPlayersTeam(entityplayer.getName())))
             {
                 ChunkCoordinate blockLoc = new ChunkCoordinate(pos, entityplayer.dimension);
                 if (TeamManager.getInstance().isPublic(blockLoc))

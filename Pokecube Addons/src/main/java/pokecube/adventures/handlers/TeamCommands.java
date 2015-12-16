@@ -46,7 +46,7 @@ public class TeamCommands implements ICommand {
 	{
 		if(sender instanceof EntityPlayer)
 		{
-			EntityPlayer player = sender.getEntityWorld().getPlayerEntityByName(sender.getCommandSenderName());
+			EntityPlayer player = sender.getEntityWorld().getPlayerEntityByName(sender.getName());
 			UserListOpsEntry userentry = (UserListOpsEntry)((EntityPlayerMP)player).mcServer.getConfigurationManager().getOppedPlayers().getEntry(player.getGameProfile());
 			return userentry!=null&&userentry.getPermissionLevel()>=4;
 		}
@@ -55,7 +55,7 @@ public class TeamCommands implements ICommand {
 			return true;
 		}
 		
-		return sender.getCommandSenderName().equalsIgnoreCase("@")||sender.getCommandSenderName().equals("Server");
+		return sender.getName().equalsIgnoreCase("@")||sender.getName().equals("Server");
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ public class TeamCommands implements ICommand {
 			ScorePlayerTeam team = null;
 			if(sender instanceof EntityPlayer)
 			{
-				team = ((EntityPlayer)sender).worldObj.getScoreboard().getPlayersTeam(sender.getCommandSenderName());
+				team = ((EntityPlayer)sender).worldObj.getScoreboard().getPlayersTeam(sender.getName());
 			}
 
 			for(int i = 1; i<args.length;i++)
@@ -81,7 +81,7 @@ public class TeamCommands implements ICommand {
 			String arg1 = args[0];
 			if(arg1.equalsIgnoreCase("claim") && team!=null)
 			{
-				if(!TeamManager.getInstance().isAdmin(sender.getCommandSenderName(), team)||team.getRegisteredName().equalsIgnoreCase("Trainers"))
+				if(!TeamManager.getInstance().isAdmin(sender.getName(), team)||team.getRegisteredName().equalsIgnoreCase("Trainers"))
 				{
 					sender.addChatMessage(new ChatComponentText("You are not Authorized to claim land for your team"));
 					return;
@@ -145,7 +145,7 @@ public class TeamCommands implements ICommand {
 			}
 			if(arg1.equalsIgnoreCase("unclaim") && team!=null)
 			{
-				if(!TeamManager.getInstance().isAdmin(sender.getCommandSenderName(), team)||team.getRegisteredName().equalsIgnoreCase("Trainers"))
+				if(!TeamManager.getInstance().isAdmin(sender.getName(), team)||team.getRegisteredName().equalsIgnoreCase("Trainers"))
 				{
 					sender.addChatMessage(new ChatComponentText("You are not Authorized to unclaim land for your team"));
 					return;
@@ -204,12 +204,12 @@ public class TeamCommands implements ICommand {
 						if(empty || isOp)
 						{
 							TeamManager.getInstance().addToTeam((EntityPlayer) sender, teamname);
-							TeamManager.getInstance().addToAdmins(sender.getCommandSenderName(), teamname);
+							TeamManager.getInstance().addToAdmins(sender.getName(), teamname);
 							return;
 						}
 						
 					}
-					if(TeamManager.getInstance().hasInvite(sender.getCommandSenderName(), teamname) || isOp)
+					if(TeamManager.getInstance().hasInvite(sender.getName(), teamname) || isOp)
 						TeamManager.getInstance().addToTeam((EntityPlayer) sender, teamname);
 					else
 						sender.addChatMessage(new ChatComponentText("You do not have an invite for Team "+teamname));
@@ -225,7 +225,7 @@ public class TeamCommands implements ICommand {
 					EntityPlayer adding = sender.getEntityWorld().getPlayerEntityByName(teamname);
 					boolean isPlayer = adding !=null;
 					if(isPlayer)
-						TeamManager.getInstance().invite(sender.getCommandSenderName(), adding.getCommandSenderName(), team.getRegisteredName());
+						TeamManager.getInstance().invite(sender.getName(), adding.getName(), team.getRegisteredName());
 				}
 				return;
 			}
@@ -235,7 +235,7 @@ public class TeamCommands implements ICommand {
 				{
 					String teamname = args[1];
 					
-					if(teamname.equalsIgnoreCase(sender.getCommandSenderName()) || TeamManager.getInstance().isAdmin(sender.getCommandSenderName(), team))
+					if(teamname.equalsIgnoreCase(sender.getName()) || TeamManager.getInstance().isAdmin(sender.getName(), team))
 					{
 						TeamManager.getInstance().removeFromTeam((EntityPlayer) sender, team.getRegisteredName(), teamname);
 						sender.addChatMessage(new ChatComponentText("Removed "+teamname+" From Team "+team.getRegisteredName()));
@@ -245,9 +245,9 @@ public class TeamCommands implements ICommand {
 			}
 			if(arg1.equalsIgnoreCase("leave") && team!=null && !team.getRegisteredName().equals("Trainers"))
 			{
-				String teamname = sender.getCommandSenderName();
+				String teamname = sender.getName();
 				
-				if(teamname.equalsIgnoreCase(sender.getCommandSenderName()) || TeamManager.getInstance().isAdmin(sender.getCommandSenderName(), team))
+				if(teamname.equalsIgnoreCase(sender.getName()) || TeamManager.getInstance().isAdmin(sender.getName(), team))
 				{
 					TeamManager.getInstance().removeFromTeam((EntityPlayer) sender, team.getRegisteredName(), teamname);
 					sender.addChatMessage(new ChatComponentText("Left Team "+team.getRegisteredName()));
@@ -260,7 +260,7 @@ public class TeamCommands implements ICommand {
 				{
 					String player = args[1];
 					String teamName = team.getRegisteredName();
-					if(TeamManager.getInstance().isAdmin(sender.getCommandSenderName(), team))
+					if(TeamManager.getInstance().isAdmin(sender.getName(), team))
 					{
 						TeamManager.getInstance().addToAdmins(player, teamName);
 						sender.addChatMessage(new ChatComponentText(player+" added as an Admin for Team "+teamName));
@@ -279,7 +279,7 @@ public class TeamCommands implements ICommand {
 				{
 					String player = args[1];
 					String teamName = team.getRegisteredName();
-					if(TeamManager.getInstance().isAdmin(sender.getCommandSenderName(), team))
+					if(TeamManager.getInstance().isAdmin(sender.getName(), team))
 					{
 						TeamManager.getInstance().removeFromAdmins(player, teamName);
 						sender.addChatMessage(new ChatComponentText(player+" removed as an Admin for Team "+teamName));
@@ -321,7 +321,7 @@ public class TeamCommands implements ICommand {
 			}
 			if(arg1.equalsIgnoreCase("invites") && team!=null)
 			{
-				String teamName = sender.getCommandSenderName();
+				String teamName = sender.getName();
 				sender.addChatMessage(new ChatComponentText("Invites for "+teamName));
 				Collection<?> c = TeamManager.getInstance().getInvites(teamName);
 				for(Object o: c)

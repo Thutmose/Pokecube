@@ -47,7 +47,7 @@ public class PAEventsHandler
     @SubscribeEvent
     public void PlayerStarter(StarterEvent evt)
     {
-        String playerName = evt.player.getCommandSenderName().toLowerCase();
+        String playerName = evt.player.getName().toLowerCase();
         if (evt.starterPack == null)
         {
             if (PokecubePacketHandler.specialStarters.containsKey(playerName))

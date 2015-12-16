@@ -44,9 +44,9 @@ public class PlayerAsPokemobManager
 	
 	public IPokemob getTransformed(EntityPlayer player)
 	{
-		if(!playerData.containsKey(player.getCommandSenderName()))
+		if(!playerData.containsKey(player.getName()))
 			return null;
-		NBTTagCompound tag = playerData.get(player.getCommandSenderName());
+		NBTTagCompound tag = playerData.get(player.getName());
 		int num = tag.getInteger("PokedexNb");
 		   if(num!=0)
 		   {
@@ -71,13 +71,13 @@ public class PlayerAsPokemobManager
 	{
 		if(pokemob==null)
 		{
-			playerData.remove(player.getCommandSenderName());
+			playerData.remove(player.getName());
 			return;
 		}
 		
 		
 		ItemStack stack = PokecubeManager.pokemobToItem(pokemob);
-		playerData.put(player.getCommandSenderName(), stack.getTagCompound());
+		playerData.put(player.getName(), stack.getTagCompound());
 	}
 	
 	public void setData(String playerName, NBTTagCompound data)
@@ -94,7 +94,7 @@ public class PlayerAsPokemobManager
 	
 	public NBTTagCompound getData(EntityPlayer player)
 	{
-		return playerData.get(player.getCommandSenderName());
+		return playerData.get(player.getName());
 	}
 	
 	public void sendClientUpdatePacket(EntityPlayer sendTo, String infoToSend)

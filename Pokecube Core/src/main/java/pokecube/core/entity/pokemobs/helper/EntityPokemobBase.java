@@ -379,7 +379,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
      * Hopefully this will fix the mod.pokemon kill messages
      */
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
     	return this.getPokedexEntry().getTranslatedName();
     }

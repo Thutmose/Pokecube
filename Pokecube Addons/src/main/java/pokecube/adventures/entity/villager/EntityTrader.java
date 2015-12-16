@@ -318,10 +318,10 @@ public class EntityTrader extends EntityVillager
                                 MathHelper.floor_double(v.intZ() / 16f), dimension));
                 v.freeVectorFromPool();
                 if (owner1 == null || !owner1.equals(owner)) { return false; }
-                String team = worldObj.getScoreboard().getPlayersTeam(p.getCommandSenderName()).getRegisteredName();
+                String team = worldObj.getScoreboard().getPlayersTeam(p.getName()).getRegisteredName();
                 if (owner == null) return false;
                 if (!owner.equals(team)
-                        || !TeamManager.getInstance().isAdmin(p.getCommandSenderName(), p.getTeam())) { return false; }
+                        || !TeamManager.getInstance().isAdmin(p.getName(), p.getTeam())) { return false; }
             }
             this.setDead();
             return true;
@@ -389,9 +389,9 @@ public class EntityTrader extends EntityVillager
                             .getLandOwner(new ChunkCoordinate(MathHelper.floor_double(v.intX() / 16f), v.intY() / 16,
                                     MathHelper.floor_double(v.intZ() / 16f), dimension));
                     if (owner1 == null || !owner1.equals(owner)) { return false; }
-                    String team = worldObj.getScoreboard().getPlayersTeam(p.getCommandSenderName()).getRegisteredName();
+                    String team = worldObj.getScoreboard().getPlayersTeam(p.getName()).getRegisteredName();
                     if (owner == null) return false;
-                    if (!owner.equals(team) || !TeamManager.getInstance().isAdmin(p.getCommandSenderName(),
+                    if (!owner.equals(team) || !TeamManager.getInstance().isAdmin(p.getName(),
                             p.getTeam())) { return false; }
                     BlockPos c1 = new BlockPos(loc[0], loc[1], loc[2]);
                     if (chests.contains(c1)) chests.remove(c1);

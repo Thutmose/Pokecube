@@ -124,7 +124,7 @@ public class BlockBerryFruit extends BlockBush implements ITileEntityProvider{
      */
     protected void dropBlockAsItem(World p_149642_1_, int p_149642_2_, int p_149642_3_, int p_149642_4_, ItemStack p_149642_5_)
     {
-        if (!p_149642_1_.isRemote && p_149642_1_.getGameRules().getGameRuleBooleanValue("doTileDrops") && !p_149642_1_.restoringBlockSnapshots) // do not drop items while restoring blockstates, prevents item dupe
+        if (!p_149642_1_.isRemote && p_149642_1_.getGameRules().getBoolean("doTileDrops") && !p_149642_1_.restoringBlockSnapshots) // do not drop items while restoring blockstates, prevents item dupe
         {
             if (captureDrops.get())
             {

@@ -64,7 +64,7 @@ public class EntityNBTPacket extends AbstractPacket {
 			try {
 				GameType preGameType = player.theItemInWorldManager.getGameType();
 				e.readFromNBT(tag);
-				NBTEdit.log(Level.FINE, player.getCommandSenderName() + " edited a tag -- Entity ID #" + entityID);
+				NBTEdit.log(Level.FINE, player.getName() + " edited a tag -- Entity ID #" + entityID);
 				NBTEdit.logTag(tag);
 				if (e == player) { //Update player info
 					player.sendContainerToPlayer(player.inventoryContainer);
@@ -79,7 +79,7 @@ public class EntityNBTPacket extends AbstractPacket {
 			} 
 			catch(Throwable t) {
 				sendMessageToPlayer(player, SECTION_SIGN + "cSave Failed - Invalid NBT format for Entity");
-				NBTEdit.log(Level.WARNING, player.getCommandSenderName() + " edited a tag and caused an exception");
+				NBTEdit.log(Level.WARNING, player.getName() + " edited a tag and caused an exception");
 				NBTEdit.logTag(tag);
 				NBTEdit.throwing("EntityNBTPacket", "handleServerSide", t);
 			}

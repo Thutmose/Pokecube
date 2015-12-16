@@ -85,7 +85,7 @@ public class ParticleFlow extends MoveAnimationBase
         float green = ((rgba >> 8) & 255)/255f;
         float blue = (rgba & 255)/255f;
 
-        VertexFormat format = DefaultVertexFormats.field_181706_f;
+        VertexFormat format = DefaultVertexFormats.POSITION_COLOR;
         Random rand = new Random(info.currentTick);
         factor *= width * 0.2;
         double yF = flat ? 0 : 1;

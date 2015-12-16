@@ -324,7 +324,7 @@ public class GuiPC extends GuiContainer {
 		GL11.glPushMatrix();
 		GL11.glScaled(0.8, 0.8, 0.8);
 		
-		String name = cont.pcTile.getCommandSenderName();
+		String name = cont.pcTile.getName();
 		
 		
 		String pcTitle = bound ? name

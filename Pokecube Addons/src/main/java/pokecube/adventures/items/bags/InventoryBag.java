@@ -258,7 +258,7 @@ public class InventoryBag implements IInventory
     		{
     			if(mod_Pokecube.proxy.getPlayer(uuid)!=null)
     			{
-    				String username = mod_Pokecube.proxy.getPlayer(uuid).getCommandSenderName();
+    				String username = mod_Pokecube.proxy.getPlayer(uuid).getName();
     				map.remove(username);
     			}
     			return map.get(uuid);
@@ -376,7 +376,7 @@ public class InventoryBag implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i) 
+	public ItemStack removeStackFromSlot(int i) 
 	{
 		i = i + getPage()*54;
 		return contents.get(i);
@@ -424,7 +424,7 @@ public class InventoryBag implements IInventory
 	}
 
 	@Override
-	public String getCommandSenderName() {
+	public String getName() {
 		return null;
 	}
 

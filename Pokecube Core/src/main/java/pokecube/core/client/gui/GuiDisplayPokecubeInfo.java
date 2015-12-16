@@ -375,7 +375,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
 
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner) pokemob.displayMessageToOwner(
-                    "You tell " + pokemob.getPokemonDisplayName() + " to attack " + target.getCommandSenderName());
+                    "You tell " + pokemob.getPokemonDisplayName() + " to attack " + target.getName());
             buffer.writeInt(((Entity) pokemob).getEntityId());
             if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
             {

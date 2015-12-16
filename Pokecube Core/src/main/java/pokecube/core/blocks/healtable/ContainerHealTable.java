@@ -116,7 +116,7 @@ public class ContainerHealTable extends Container
         {
             for (int var2 = 0; var2 < this.inventoryHealTable.getSizeInventory(); ++var2)
             {
-                ItemStack var3 = this.inventoryHealTable.getStackInSlotOnClosing(var2);
+                ItemStack var3 = this.inventoryHealTable.removeStackFromSlot(var2);
 
                 if (var3 != null)
                 {

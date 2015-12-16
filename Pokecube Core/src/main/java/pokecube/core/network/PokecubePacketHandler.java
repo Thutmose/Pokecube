@@ -90,7 +90,7 @@ public class PokecubePacketHandler
             int pokedexNb = inputStream.readInt();
             boolean fixed = inputStream.readBoolean();
 
-            String username = player.getCommandSenderName();
+            String username = player.getName();
 
             if (PokecubeSerializer.getInstance().hasStarter(player)) { return; }
             PokecubeSerializer.getInstance().setHasStarter(player);
@@ -172,7 +172,7 @@ public class PokecubePacketHandler
             return;
         }
 
-        String username = player.getCommandSenderName().toLowerCase();
+        String username = player.getName().toLowerCase();
         ByteBuf buf = Unpooled.buffer().writeBytes(packet);
 
         boolean bool = buf.readBoolean();

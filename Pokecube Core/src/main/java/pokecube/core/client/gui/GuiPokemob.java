@@ -50,8 +50,8 @@ public class GuiPokemob extends GuiContainer {
     @Override
 	protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
     {
-        this.fontRendererObj.drawString(this.pokeInventory.hasCustomName() ? this.pokeInventory.getCommandSenderName() : I18n.format(this.pokeInventory.getCommandSenderName(), new Object[0]), 8, 6, 4210752);
-        this.fontRendererObj.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getCommandSenderName() : I18n.format(this.playerInventory.getCommandSenderName(), new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+        this.fontRendererObj.drawString(this.pokeInventory.hasCustomName() ? this.pokeInventory.getName() : I18n.format(this.pokeInventory.getName(), new Object[0]), 8, 6, 4210752);
+        this.fontRendererObj.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName() : I18n.format(this.playerInventory.getName(), new Object[0]), 8, this.ySize - 96 + 2, 4210752);
     }
 
     @Override

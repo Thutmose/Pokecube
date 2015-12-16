@@ -82,7 +82,7 @@ public class TickHandler{
 
     public static String getCurrentObjectName(){
         if(lastEntityHovered != null) {
-            return lastEntityHovered.getCommandSenderName();
+            return lastEntityHovered.getName();
         } else {
             try {
                 World world = FMLClientHandler.instance().getClient().theWorld;

@@ -280,7 +280,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
         }
         if (!named && getPokedexEntry() != null)
         {
-            this.pokeChest.setCustomName(getCommandSenderName());// .func_110133_a(this.getCommandSenderName());
+            this.pokeChest.setCustomName(getName());// .func_110133_a(this.getName());
             named = true;
         }
         for (int i = 0; i < this.pokeChest.getSizeInventory(); i++)
@@ -404,11 +404,11 @@ public abstract class EntityTameablePokemob extends EntityTameable
         owner = e;
 
         boolean uuidorName = this.getPokemonOwnerName().equalsIgnoreCase(e.getUniqueID().toString())
-                || getPokemonOwnerName().equalsIgnoreCase(e.getCommandSenderName());
+                || getPokemonOwnerName().equalsIgnoreCase(e.getName());
 
         if (e instanceof EntityPlayer && !uuidorName)
         {
-            ownerName = e.getCommandSenderName();
+            ownerName = e.getName();
             this.setPokemonAIState(IPokemob.TAMED, true);
             super.setOwnerId(e.getUniqueID().toString());
 
@@ -462,7 +462,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
                     if (e.getUniqueID().toString().equals(owneruuid))
                     {
                         owner = e;
-                        ownerName = owner.getCommandSenderName();
+                        ownerName = owner.getName();
                         return owner;
                     }
                 }
@@ -517,7 +517,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
         if (!this.worldObj.isRemote && (this.riddenByEntity == null || this.riddenByEntity == player)
                 && this.getPokemonAIState(IPokemob.TAMED))
         {
-            this.pokeChest.setCustomName(this.getCommandSenderName());
+            this.pokeChest.setCustomName(this.getName());
             player.openGui(PokecubeMod.core, Mod_Pokecube_Helper.GUIPOKEMOB_ID, worldObj, getEntityId(), 0, 0);
         }
     }

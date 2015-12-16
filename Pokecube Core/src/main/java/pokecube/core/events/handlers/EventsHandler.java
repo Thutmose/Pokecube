@@ -289,7 +289,7 @@ public class EventsHandler
             {
                 entityPlayer.worldObj.getScoreboard().createTeam("Trainers");
             }
-            entityPlayer.worldObj.getScoreboard().addPlayerToTeam(entityPlayer.getCommandSenderName(), "Trainers");
+            entityPlayer.worldObj.getScoreboard().addPlayerToTeam(entityPlayer.getName(), "Trainers");
         }
 
         if (!evt.player.worldObj.isRemote)
@@ -404,7 +404,7 @@ public class EventsHandler
             EntityPlayer player = (EntityPlayer) evt.entityLiving;
             if (player.getTeam() == null)
             {
-                player.worldObj.getScoreboard().addPlayerToTeam(player.getCommandSenderName(), "Trainers");
+                player.worldObj.getScoreboard().addPlayerToTeam(player.getName(), "Trainers");
             }
             if (pendingStarters.contains(player.getEntityId()))
             {
@@ -591,7 +591,7 @@ public class EventsHandler
                 if (mob.getEntityItem() != null)
                 {
                     String name = PokecubeManager.getOwner(mob.getEntityItem());
-                    if (name != null && (name.equalsIgnoreCase(player.getCommandSenderName())
+                    if (name != null && (name.equalsIgnoreCase(player.getName())
                             || name.equals(player.getUniqueID().toString())))
                     {
                         ItemStack cube = mob.getEntityItem();
@@ -606,7 +606,7 @@ public class EventsHandler
 
     public static int getShadowPokemonNb(Entity hostile)
     {
-        String temp = hostile.getCommandSenderName().toLowerCase().trim().replace(" ", "");
+        String temp = hostile.getName().toLowerCase().trim().replace(" ", "");
 
         PokedexEntry entry = null;
 

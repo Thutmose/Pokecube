@@ -385,7 +385,7 @@ public class TabulaPackLoader extends AnimationLoader
                                 offset = getOffset(part);
                                 scale = getScale(part);
                                 rotation = getRotation(part);
-                                headAxis = getHeadAxis(part);
+                                headAxis = getHeadAxis(part, 1);
                                 headDir = getHeadDir(part);
                                 headDir = Math.min(1, headDir);
                                 headDir = Math.max(-1, headDir);

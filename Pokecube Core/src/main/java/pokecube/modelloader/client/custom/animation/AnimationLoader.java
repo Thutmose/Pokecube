@@ -131,7 +131,7 @@ public class AnimationLoader
                                 scale = getScale(part);
                                 rotation = getRotation(part);
                                 headDir = getHeadDir(part);
-                                headAxis = getHeadAxis(part);
+                                headAxis = getHeadAxis(part, 2);
                                 setHeadCaps(part, headCaps);
                             }
                             catch (Exception e)
@@ -472,9 +472,9 @@ public class AnimationLoader
         return ret;
     }
 
-    public static int getHeadAxis(Node node)
+    public static int getHeadAxis(Node node, int default_)
     {
-        int ret = 2;
+        int ret = default_;
         if (node.getAttributes() == null) return ret;
         if (node.getAttributes().getNamedItem("headAxis") != null)
         {

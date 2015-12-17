@@ -79,6 +79,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
@@ -201,7 +202,7 @@ public class EventsHandler
             Vector3 temp = Vector3.getNewVectorFromPool().set(evt.entityPlayer).addTo(0,
                     evt.entityPlayer.getEyeHeight(), 0);
 
-            Entity target = temp.firstEntityExcluding(32, look, evt.entityPlayer.worldObj, false, evt.entityPlayer);
+            Entity target = MovesUtils.targetHit(temp, look, 32, evt.world, evt.entityPlayer, true, EntityPokecube.class);//temp.firstEntityExcluding(32, look, evt.entityPlayer.worldObj, false, evt.entityPlayer);
 
             look.freeVectorFromPool();
             temp.freeVectorFromPool();

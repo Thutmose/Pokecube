@@ -20,6 +20,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.database.MoveEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -637,12 +638,18 @@ public class MovesUtils implements IMoveConstants
     public static Entity targetHit(Entity attacker, Vector3 dest)
     {
         Vector3 source = Vector3.getNewVectorFromPool().set(attacker, true);
+        source.y += attacker.height / 4;
+        return targetHit(source, dest.subtract(source), 16, attacker.worldObj, attacker, false);
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static Entity targetHit(Vector3 source, Vector3 dir, int distance, World worldObj, Entity attacker,
+            boolean ignoreAllies, Class... ignored)
+    {
         // Vector3 dest = Vector3.getVector().set(target, true);
         Entity target = null;
-        source.y += attacker.height / 4;
 
-        List<Entity> targets = source.allEntityLocationExcluding(16, 0.5, dest.subtract(source), source,
-                attacker.worldObj, attacker);
+        List<Entity> targets = source.allEntityLocationExcluding(distance, 0.5, dir, source, worldObj, attacker);
         source.freeVectorFromPool();
         double closest = 16;
 
@@ -651,6 +658,22 @@ public class MovesUtils implements IMoveConstants
             if (e instanceof EntityLivingBase && attacker.getDistanceToEntity(e) < closest
                     && (PokecubeMod.hardMode || !(e instanceof EntityPlayer)) && e != attacker.ridingEntity)
             {
+                if (ignoreAllies && e instanceof IPokemob)
+                {
+                    if (attacker instanceof IPokemob)
+                    {
+                        if (((IPokemob) attacker).getPokemonOwner() == ((IPokemob) e).getPokemonOwner()) continue;
+                    }
+                    else if (attacker instanceof EntityPlayer)
+                    {
+                        if (((IPokemob) e).getPokemonOwner() == attacker) continue;
+                    }
+                }
+                for (Class c : ignored)
+                {
+                    if (c.isInstance(e)) continue;
+                }
+
                 closest = attacker.getDistanceToEntity(e);
                 target = e;
             }

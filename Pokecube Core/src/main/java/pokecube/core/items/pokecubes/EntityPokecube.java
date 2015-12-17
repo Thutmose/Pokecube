@@ -253,6 +253,10 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             super.applyEntityCollision(e);
             return;
         }
+        if(shootingEntity!=null && e instanceof IPokemob && ((IPokemob)e).getPokemonOwner() == shootingEntity)
+        {
+            return;
+        }
 
         if (e instanceof EntityLivingBase && e instanceof IPokemob && ((EntityLivingBase) e).getHealth() > 0
                 && tilt == -1 && !((IPokemob) e).getPokemonAIState(IPokemob.TAMED))

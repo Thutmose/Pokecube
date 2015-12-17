@@ -703,69 +703,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
      * sunlight and start to burn. */
     public void onLivingUpdate()
     {
-        if (this.newPosRotationIncrements > 0)
-        {
-            double d0 = this.posX + (this.newPosX - this.posX) / (double) this.newPosRotationIncrements;
-            double d1 = this.posY + (this.newPosY - this.posY) / (double) this.newPosRotationIncrements;
-            double d2 = this.posZ + (this.newPosZ - this.posZ) / (double) this.newPosRotationIncrements;
-            double d3 = MathHelper.wrapAngleTo180_double(this.newRotationYaw - (double) this.rotationYaw);
-            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.newPosRotationIncrements);
-            this.rotationPitch = (float) ((double) this.rotationPitch
-                    + (this.newRotationPitch - (double) this.rotationPitch) / (double) this.newPosRotationIncrements);
-            --this.newPosRotationIncrements;
-            this.setPosition(d0, d1, d2);
-            this.setRotation(this.rotationYaw, this.rotationPitch);
-        }
-        else if (!this.isServerWorld())
-        {
-            this.motionX *= 0.98D;
-            this.motionY *= 0.98D;
-            this.motionZ *= 0.98D;
-        }
-
-        if (Math.abs(this.motionX) < 0.005D)
-        {
-            this.motionX = 0.0D;
-        }
-
-        if (Math.abs(this.motionY) < 0.005D)
-        {
-            this.motionY = 0.0D;
-        }
-
-        if (Math.abs(this.motionZ) < 0.005D)
-        {
-            this.motionZ = 0.0D;
-        }
-
-        this.worldObj.theProfiler.startSection("ai");
-
-        if (this.isMovementBlocked())
-        {
-            this.isJumping = false;
-            this.moveStrafing = 0.0F;
-            this.moveForward = 0.0F;
-            this.randomYawVelocity = 0.0F;
-        }
-
-        this.worldObj.theProfiler.endSection();
-        this.worldObj.theProfiler.startSection("jump");
-
-        this.worldObj.theProfiler.endSection();
-        this.worldObj.theProfiler.startSection("travel");
-        this.moveStrafing *= 0.98F;
-        this.moveForward *= 0.98F;
-        this.randomYawVelocity *= 0.9F;
-        this.moveEntityWithHeading(this.moveStrafing, this.moveForward);
-        this.worldObj.theProfiler.endSection();
-        this.worldObj.theProfiler.startSection("push");
-
-        if (!this.worldObj.isRemote)
-        {
-            this.collideWithNearbyEntities();
-        }
-
-        this.worldObj.theProfiler.endSection();
+        super.onLivingUpdate();
     }
 
     @Override

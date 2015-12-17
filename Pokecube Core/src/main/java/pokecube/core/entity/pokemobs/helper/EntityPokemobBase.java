@@ -44,10 +44,8 @@ import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 
 /**
- * This is the old implementation.
- * It does not use tasks and becomes very difficult to maintain. 
  * 
- * @author Manchou
+ * @author Manchou, Thutmose
  */
 public abstract class EntityPokemobBase extends EntityHungryPokemob implements IMultibox, IBossDisplayData
 {
@@ -446,18 +444,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         	showLivingParticleFX();
         }
         
-        this.entityAge = 0;
-
-    	this.despawnEntity();
-        
-//        if (this.isMovementBlocked())
-//        {
-//        }
-//        else //i//f (!isServerWorld())
-        {
-        	this.updateAITasks();
-             //this.updateEntityActionState();
-        }
         for(int i = 0; i<flavourAmounts.length; i++)
         {
         	if(flavourAmounts[i]>0)

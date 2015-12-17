@@ -467,29 +467,47 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     float moveF;
 
     @Override
-    protected void updateAITasks()
+    protected void updateEntityActionState()
     {
+        ++this.entityAge;
         navi.refreshCache();
+        this.worldObj.theProfiler.startSection("checkDespawn");
+        this.despawnEntity();
+        this.worldObj.theProfiler.endSection();
+        this.worldObj.theProfiler.startSection("sensing");
+        this.senses.clearSensingCache();
+        this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.startSection("targetSelector");
         this.targetTasks.onUpdateTasks();
         this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.startSection("goalSelector");
         this.tasks.onUpdateTasks();
         this.worldObj.theProfiler.endSection();
-
-        moveForward = moveF;
-        if (navi != null) navi.onUpdateNavigation();
-        if (mover != null) mover.onUpdateMoveHelper();
-
-        this.getJumpHelper().doJump();
+        this.worldObj.theProfiler.startSection("navigation");
+        this.getNavigator().onUpdateNavigation();
+        this.worldObj.theProfiler.endSection();
+        this.worldObj.theProfiler.startSection("mob tick");
+        this.updateAITasks();
+        this.worldObj.theProfiler.endSection();
+        this.worldObj.theProfiler.startSection("controls");
+        this.worldObj.theProfiler.startSection("move");
+        this.getMoveHelper().onUpdateMoveHelper();
+        this.worldObj.theProfiler.endStartSection("look");
         this.getLookHelper().onUpdateLook();
-
-        // moveEntityWithHeading(moveForward, moveStrafing);
+        this.worldObj.theProfiler.endStartSection("jump");
+        this.getJumpHelper().doJump();
         if (getPokemonAIState(JUMPING))
         {
             jump();
         }
-        // System.out.println(here);
+        this.worldObj.theProfiler.endSection();
+        this.worldObj.theProfiler.endSection();
+    }
+    
+    @Override
+    protected void updateAITasks()
+    {
+        super.updateAITasks();
     }
 
     @Override
@@ -977,12 +995,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 this.dropFewItems(this.recentlyHit > 0, i);
                 this.dropEquipment(this.recentlyHit > 0, i);
 
-                if (this.recentlyHit > 0)
+                if (this.recentlyHit > 0 && this.rand.nextFloat() < 0.025F + (float)i * 0.01F)
                 {
-                    // if (j < 5)//TODO see if this was needed
-                    // {
-                    // this.dropRareDrop(j <= 0 ? 1 : 0);
-                    // }
+                    this.addRandomDrop();
                 }
             }
 

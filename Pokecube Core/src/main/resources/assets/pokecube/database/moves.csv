@@ -106,7 +106,7 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 105,Recover ,Normal ,Self,Smart ,10,_,_,I ,none;0,none;0,none;0,0;50%,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 106,Harden ,Normal ,Self,Tough ,30,_,_,I ,none;0,Def;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 107,Minimize ,Normal ,Self,Cute ,10,_,_,I ,none;0,Eva;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-108,Smokescreen ,Normal ,Status ,Smart ,20,_,100.00%,I ,none;0,Acc;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,powder:d10:w10
+108,Smokescreen ,Normal ,Status ,Smart ,20,_,100.00%,I ,none;0,Acc;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,powder:d5:w10:c0
 109,Confuse Ray ,Ghost ,Status ,Smart ,10,_,100.00%,I ,none;0,none;0,Confuse;100,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
 110,Withdraw ,Water ,Self,Cute ,40,_,_,I ,none;0,Def;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 111,Defense Curl ,Normal ,Self,Cute ,40,_,_,I ,none;0,Def;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none

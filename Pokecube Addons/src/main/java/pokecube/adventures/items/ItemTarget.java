@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,8 @@ import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.adventures.events.TeamEventsHandler;
 import pokecube.adventures.handlers.TeamManager;
+import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.ChunkCoordinate;
 import pokecube.core.utils.Vector4;
 import thut.api.maths.Vector3;
@@ -159,6 +162,43 @@ public class ItemTarget extends Item
     {
         int meta = itemstack.getItemDamage();
 
+        Vector3 p = Vector3.getNewVectorFromPool().set(player, false);
+        Vector3 d = Vector3.getNewVectorFromPool().set(player.getLookVec());
+        
+        List<Entity> e = p.allEntityLocationExcluding(2, 1, d, p, world, player);
+        
+        for(Object o: e)
+        {
+            if(o instanceof IPokemob)
+            {
+                IPokemob poke = (IPokemob) o;
+                PokedexEntry entry = poke.getPokedexEntry();
+                if(poke.getPokemonOwner()!=player)
+                    continue;
+                
+                if(entry.getName().equalsIgnoreCase("deoxys"))
+                {
+                    poke.changeForme("deoxys speed");
+                }
+                if(entry.getName().equalsIgnoreCase("deoxys speed"))
+                {
+                    poke.changeForme("deoxys attack");
+                }
+                if(entry.getName().equalsIgnoreCase("deoxys attack"))
+                {
+                    poke.changeForme("deoxys defense");
+                }
+                if(entry.getName().equalsIgnoreCase("deoxys defense"))
+                {
+                    poke.changeForme("deoxys");
+                }
+            }
+        }
+        p.freeVectorFromPool();
+        d.freeVectorFromPool();
+        if(e!=null && !e.isEmpty())
+            return itemstack;
+        
         if (world.isRemote)
         {
 

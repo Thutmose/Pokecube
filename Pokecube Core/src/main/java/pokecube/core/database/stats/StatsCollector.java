@@ -29,10 +29,12 @@ public class StatsCollector
 	{
 		
 		if(killer==null||killed==null) return;
-		
-		String owner = killer.getPokemonOwnerName();
-		if(owner.equals(""))
-			owner = new UUID(1234, 4321).toString();
+
+        String owner;
+        if(killer.getPokemonOwner() instanceof EntityPlayer )
+            owner = killer.getPokemonOwner().getUniqueID().toString();
+        else
+            owner = new UUID(1234, 4321).toString();
 		HashMap<PokedexEntry, Integer> map = playerKills.get(owner);
 		PokedexEntry dbe = Database.getEntry(killed);
 		int current = 1;
@@ -48,14 +50,17 @@ public class StatsCollector
 		{
 			current += map.get(dbe);
 		}
+
 		playerKills.get(owner).put(dbe, current);
 	}
 
 	public static void addCapture(IPokemob captured)
 	{
-		String owner = captured.getPokemonOwnerName();
-		if(owner.equals(""))
-			owner = new UUID(1234, 4321).toString();
+		String owner;
+        if(captured.getPokemonOwner() instanceof EntityPlayer )
+            owner = captured.getPokemonOwner().getUniqueID().toString();
+        else
+            owner = new UUID(1234, 4321).toString();
 		HashMap<PokedexEntry, Integer> map = playerCaptures.get(owner);
 		PokedexEntry dbe = Database.getEntry(captured);
 		int current = 1;

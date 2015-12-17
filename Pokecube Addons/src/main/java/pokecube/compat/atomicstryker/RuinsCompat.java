@@ -23,7 +23,7 @@ public class RuinsCompat
         {
             biome = Config.biomeMap.get(data.name.toLowerCase().replace("tml", ""));
         }
-        System.out.println("Set "+data.name+" "+biome);
+
         for (int i = data.xMin; i < data.xMax; i++)
             for (int j = data.yMin; j < data.yMax; j++)
                 for (int k = data.zMin; k < data.zMax; k++)

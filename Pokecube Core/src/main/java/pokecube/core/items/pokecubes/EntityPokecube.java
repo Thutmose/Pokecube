@@ -470,6 +470,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     /** Called to update the entity's position/logic. */
     public void onUpdate()
     {
+
+        super.onUpdate();
         boolean releasing = isReleasing();
 
         if (shooter != null && shootingEntity == null)
@@ -644,8 +646,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             here.freeVectorFromPool();
             dir.freeVectorFromPool();
         }
-
-        super.onUpdate();
 
     }
 

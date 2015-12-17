@@ -35,6 +35,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.compat.ai.AIElectricalInterferance;
@@ -154,11 +155,20 @@ public class Compat
         MinecraftForge.EVENT_BUS.register(tccompat);
     }
 
+    @SideOnly(Side.CLIENT)
+    @Optional.Method(modid = "Waila")
+    @EventHandler
+    public void WAILA_Compat(FMLPostInitializationEvent evt)
+    {
+        System.out.println("Waila Compat");
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.waila.WailaCompat());
+    }
+
     @SubscribeEvent
     public void postPostInit(PostPostInit evt)
     {
         gccompat.register();
-        // MFRCompat.register();
+
         boolean wikiWrite = false;
 
         if (wikiWrite)

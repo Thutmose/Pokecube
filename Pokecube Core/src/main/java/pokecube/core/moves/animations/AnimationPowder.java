@@ -25,6 +25,7 @@ public class AnimationPowder extends MoveAnimationBase
     float   width   = 1;
     float   density = 1;
     boolean reverse = false;
+    boolean customColour = false;
 
     public AnimationPowder(String particle)
     {
@@ -55,6 +56,18 @@ public class AnimationPowder extends MoveAnimationBase
             else if (ident.equals("r"))
             {
                 reverse = Boolean.parseBoolean(val);
+            }
+            else if(ident.equals("c"))
+            {
+                int alpha = 255;
+                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
+                new Exception().printStackTrace();
+                System.out.println(val+" "+rgba);
+                customColour = true;
+            }
+            else if(ident.equals("t"))
+            {
+                duration = Integer.parseInt(val);
             }
         }
 
@@ -123,7 +136,7 @@ public class AnimationPowder extends MoveAnimationBase
         {
             rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
         }
-        else
+        else if(!customColour)
         {
             rgba = getColourFromMove(move, 255);
         }

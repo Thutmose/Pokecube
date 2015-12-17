@@ -586,6 +586,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         if (attacked instanceof IPokemob && attacked.getHealth() <= 0)
         {
             KillEvent event = new KillEvent(attacker, (IPokemob) attacked);
+
             MinecraftForge.EVENT_BUS.post(event);
             if (event.isCanceled() || ((IPokemob) attacked).isShadow())
             {

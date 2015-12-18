@@ -207,7 +207,7 @@ Pokémobs for Minecraft - page under construction.
 - Pansage
 - Pansear
 - Patrat
-- Pichu
+- ~~Pichu~~
 - ~~Pikachu~~
 - Pinsir
 - Pinsir Mega

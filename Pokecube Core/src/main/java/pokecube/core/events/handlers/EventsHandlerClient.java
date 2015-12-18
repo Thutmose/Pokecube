@@ -255,7 +255,7 @@ public class EventsHandlerClient
                 {
                     rainXCoords = new float[] { 0 };
                 }
-                
+
                 if (rainXCoords[0] == event.renderPartialTicks) return;
                 rainXCoords[0] = event.renderPartialTicks;
                 List<Slot> slots = gui.inventorySlots.inventorySlots;
@@ -414,9 +414,8 @@ public class EventsHandlerClient
 
     public static void renderMob(IPokemob pokemob, float tick)
     {
-        if(pokemob==null) return;
-        
-        
+        if (pokemob == null) return;
+
         EntityLiving entity = (EntityLiving) pokemob;
 
         float size = 0;

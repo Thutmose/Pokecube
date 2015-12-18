@@ -16,6 +16,7 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
@@ -23,6 +24,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -233,7 +235,8 @@ public class GuiPokedex extends GuiScreen
 
                     PokecubeSerializer.getInstance().unsetTeleport(location,
                             minecraft.thePlayer.getUniqueID().toString());
-                    PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX, buffer.array());
+                    PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
+                            buffer.array());
                     PokecubePacketHandler.sendToServer(packet);
                 }
 
@@ -691,8 +694,10 @@ public class GuiPokedex extends GuiScreen
         int yOffset = height / 2 - 80;
         int xOffset = width / 2;
 
-        renderMob();
-
+        GL11.glPushMatrix();
+        renderMob();// TODO find out why rendering player messes up shader
+                    // lighting
+        GL11.glPopMatrix();
         nicknameTextField.drawTextBox();
         if (page == 0)
         {
@@ -833,15 +838,15 @@ public class GuiPokedex extends GuiScreen
         {
             int num = 1;
             PokedexEntry test = Pokedex.getInstance().getFirstEntry();
-            while(test != pokedexEntry && num < 1500)
+            while (test != pokedexEntry && num < 1500)
             {
                 test = Pokedex.getInstance().getNext(test, 1);
                 num++;
             }
-            
+
             String level = "N. " + num;
             drawString(fontRendererObj, level, xOffset + 15, yOffset + 11, 0xffffff);
-            
+
             if (!closestVillage.isEmpty())
             {
                 GL11.glPushMatrix();
@@ -1205,7 +1210,7 @@ public class GuiPokedex extends GuiScreen
             pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(),
                     entityPlayer.worldObj);
 
-            ((IPokemob)pokemob).specificSpawnInit();
+            ((IPokemob) pokemob).specificSpawnInit();
             if (pokemob != null)
             {
                 entityToDisplayMap.put(pokedexEntry.getPokedexNb(), pokemob);
@@ -1277,26 +1282,6 @@ public class GuiPokedex extends GuiScreen
             entity.rotationPitch = xHeadRenderAngle;
             entity.rotationYawHead = entity.rotationYaw;
             GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-            float offset = 1.6f;
-
-            float f, f1, f2;
-            f = entityPlayer.rotationPitch;
-            f1 = entityPlayer.rotationYaw;
-            f2 = entityPlayer.rotationYawHead;
-
-            entityPlayer.rotationPitch = 00;
-            entityPlayer.renderYawOffset = 50;
-            entityPlayer.rotationYawHead = 40;
-            Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entityPlayer, offset + entity.width / 2f,
-                    1.0D, 1.0D, 1.0F, 1.0F);
-
-            entityPlayer.rotationPitch = f;
-            entityPlayer.renderYawOffset = f1;
-            entityPlayer.rotationYawHead = f2;
-
-            int i1 = entityPlayer.getBrightnessForRender(0);
-            int j1 = i1 % 65536;
-            int k1 = i1 / 65536;
 
             entity.setPosition(entityPlayer.posX, entityPlayer.posY + 1, entityPlayer.posZ);
 
@@ -1304,9 +1289,6 @@ public class GuiPokedex extends GuiScreen
             entity.limbSwingAmount = 0;
             entity.prevLimbSwingAmount = 0;
             entity.onGround = ((IPokemob) entity).getType1() != flying && ((IPokemob) entity).getType2() != flying;
-            int i = 15728880;
-            j1 = i % 65536;
-            k1 = i / 65536;
 
             if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
             {
@@ -1314,11 +1296,40 @@ public class GuiPokedex extends GuiScreen
                 entity.limbSwingAmount = 0.05f;
                 entity.prevLimbSwingAmount = entity.limbSwingAmount - 0.5f;
             }
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
+            int i = 15728880;
+            int j2 = i % 65536;
+            int k2 = i / 65536;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j2 / 1.0F, k2 / 1.0F);
 
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            RenderHelper.enableStandardItemLighting();
             Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, 0, 0, 1, POKEDEX_RENDER);
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
             GL11.glPopMatrix();
+
+            // GL11.glPushMatrix();
+            //
+            // float offset = 1.6f;
+            //
+            // float f, f1, f2;
+            // f = entityPlayer.rotationPitch;
+            // f1 = entityPlayer.rotationYaw;
+            // f2 = entityPlayer.rotationYawHead;
+            //
+            // entityPlayer.rotationPitch = 00;
+            // entityPlayer.renderYawOffset = 50;
+            // entityPlayer.rotationYawHead = 40;
+            // Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entityPlayer,
+            // offset + entity.width / 2f,
+            // 1.0D, 1.0D, 1.0F, 1.0F);
+            //
+            // entityPlayer.rotationPitch = f;
+            // entityPlayer.renderYawOffset = f1;
+            // entityPlayer.rotationYawHead = f2;
+            // GL11.glPopMatrix();
 
         }
         catch (Throwable e)

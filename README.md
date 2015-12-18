@@ -2,7 +2,7 @@
 Pokémobs for Minecraft - page under construction.
 
 ##Currently Missing Pokemob Models from before
-- Pikachu/Raichu/Pichu
+- ~~Pikachu/Raichu/Pichu~~
 
 ##Currently known Messed up texures/other glitches
 - Trevenant - Legs are funny

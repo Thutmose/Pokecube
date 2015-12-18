@@ -95,8 +95,8 @@ Pokémobs for Minecraft - page under construction.
 - Ferrothorn
 - Finneon
 - Flabébé
-- Fletchinder
-- Fletchling
+- ~~Fletchinder~~
+- ~~Fletchling~~
 - Floatzel
 - Floette
 - Florges
@@ -274,14 +274,14 @@ Pokémobs for Minecraft - page under construction.
 - Starmie
 - Staryu
 - Stoutland
-- Stunfisk
+- ~~Stunfisk~~
 - Stunky
 - Surskit
 - Swadloon
 - Swanna
 - Swirlix
 - Swoobat
-- Talonflame
+- ~~Talonflame~~
 - Tangela
 - Tangrowth
 - Terrakion

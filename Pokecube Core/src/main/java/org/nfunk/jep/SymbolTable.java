@@ -34,6 +34,7 @@ import java.util.Hashtable;
  * @author Rich Morris
  * Created on 28-Feb-2004
  */ 
+@SuppressWarnings({ "serial", "rawtypes", "unchecked" })
 public class SymbolTable extends Hashtable
 {
 	protected VariableFactory vf;
@@ -42,9 +43,6 @@ public class SymbolTable extends Hashtable
 	{
 		vf = varFac;
 	}
-	/** Private default constructors, SymbolTable should always be constructed with an explicit variable factory. */
-	private SymbolTable() {}
-	
 	/**
 	 * @deprecated The getValue or getVar methods should be used instead. 
 	 */
@@ -96,7 +94,7 @@ public class SymbolTable extends Hashtable
 	/** Creates a variable with given value.
 	 * Returns null if variable already exists.
 	 */
-	public Variable addVariable(String name,Object val)
+    public Variable addVariable(String name,Object val)
 	{
 		Variable var = (Variable) super.get(name);
 		if(var != null)	return null;

@@ -18,6 +18,7 @@ import org.nfunk.jep.ParseException;
  * All function classes must implement this interface to ensure that the run()
  * method is implemented.
  */
+@SuppressWarnings({ "rawtypes" })
 public interface PostfixMathCommandI
 {
 	/**

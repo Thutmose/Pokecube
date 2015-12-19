@@ -20,6 +20,7 @@ import org.nfunk.jep.ParseException;
  * @author Rich Morris
  * Created on 29-Feb-2004
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class List extends PostfixMathCommand
 {
 	public List()

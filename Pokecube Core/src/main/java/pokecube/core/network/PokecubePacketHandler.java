@@ -152,6 +152,10 @@ public class PokecubePacketHandler
 
                 player.inventory.addItemStackToInventory(e);
                 pokedexNb = PokecubeManager.getPokedexNb(e);
+                if(pokedexNb > 0)
+                {
+                    StatsCollector.addCapture(PokecubeManager.itemToPokemob(e, player.worldObj));
+                }
             }
 
             PokecubeSerializer.getInstance().save();

@@ -14,6 +14,7 @@ import java.util.Vector;
 import org.nfunk.jep.ParseException;
 import org.nfunk.jep.type.Complex;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Divide extends PostfixMathCommand
 {
 	public Divide()

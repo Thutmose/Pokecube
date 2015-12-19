@@ -25,6 +25,7 @@ import org.nfunk.jep.type.Complex;
  * @author Rich Morris
  * Created on 20-Jun-2003
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Exp extends PostfixMathCommand
 {
 	public Exp()

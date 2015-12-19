@@ -22,6 +22,7 @@ import org.nfunk.jep.Variable;
  * @author Rich Morris
  * Created on 18-Nov-2003
  */
+@SuppressWarnings({ "rawtypes" })
 public class Assign extends PostfixMathCommand implements SpecialEvaluationI {
 
 	public Assign() {

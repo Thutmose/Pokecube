@@ -14,6 +14,7 @@ import org.nfunk.jep.ParseException;
 /**
 * Encapsulates the Math.random() function.
 */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Random extends PostfixMathCommand
 {
 	public Random()

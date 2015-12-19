@@ -18,6 +18,7 @@ import org.nfunk.jep.type.Complex;
  * @author Rich Morris
  * Created on 20-Nov-2003
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Arg extends PostfixMathCommand
 {
 	private static final Double ONE = new Double(1.0);

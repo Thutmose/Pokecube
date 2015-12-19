@@ -27,6 +27,7 @@ import org.nfunk.jep.type.Complex;
  * 		if(lt(obj1,obj2)) inStack.push(new Double(1));
  *		else 	inStack.push(new Double(0));
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Comparative extends PostfixMathCommand
 {
 	int id;

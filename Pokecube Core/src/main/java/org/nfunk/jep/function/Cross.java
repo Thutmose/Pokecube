@@ -14,6 +14,7 @@ import java.util.Vector;
 
 import org.nfunk.jep.ParseException;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Cross extends PostfixMathCommand
 {
 	static Subtract sub = new Subtract();

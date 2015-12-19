@@ -18,6 +18,7 @@ import org.nfunk.jep.type.Complex;
  *
  * RJM Change: fixed so ln(positive Double) is Double.
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class NaturalLogarithm extends PostfixMathCommand
 {
 	public NaturalLogarithm()

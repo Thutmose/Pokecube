@@ -31,6 +31,7 @@ import org.nfunk.jep.function.SpecialEvaluationI;
  * Simplifies error handeling by making visit methods throw ParseException.
  * Changed visit(ASTVarNode node) so messages not calculated every time. 
  */
+@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 public class EvaluatorVisitor implements ParserVisitor {
 	/** Stack used for evaluating the expression */
 	protected Stack stack;

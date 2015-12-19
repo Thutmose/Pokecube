@@ -11,6 +11,7 @@ public class EntityTarget extends EntityLiving {
 	public EntityTarget(World par1World) {
 		super(par1World);
 		this.setSize(0.25f, 0.25f);
+		this.setAlwaysRenderNameTag(false);
 	}
 	
 	int time = 0;
@@ -18,7 +19,7 @@ public class EntityTarget extends EntityLiving {
     @Override
     public void onUpdate()
     {
-      //  super.onUpdate();
+//        super.onUpdate();
 //        time++;
 //        rotationYaw = rotationYaw%360;
 //        prevRotationYawHead = rotationYaw;

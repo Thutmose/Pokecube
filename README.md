@@ -195,7 +195,7 @@ Pokémobs for Minecraft - page under construction.
 - Mr. Mime
 - Muk
 - Munchlax
-- Ninetales
+- ~~Ninetales~~
 - Noibat
 - Noivern
 - Nosepass
@@ -274,7 +274,6 @@ Pokémobs for Minecraft - page under construction.
 - Starmie
 - Staryu
 - Stoutland
-- ~~Stunfisk~~
 - Stunky
 - Surskit
 - Swadloon
@@ -312,7 +311,7 @@ Pokémobs for Minecraft - page under construction.
 - Vivillon
 - Volbeat
 - Vullaby
-- Vulpix
+- ~~Vulpix~~
 - Watchog
 - Weepinbell
 - Woobat

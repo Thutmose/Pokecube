@@ -22,7 +22,6 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.EntityLiving;
@@ -38,7 +37,6 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.Resources;
-import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
@@ -133,6 +131,8 @@ public class GuiPokedex extends GuiScreen
     @Override
     public void initGui()
     {
+        super.initGui();
+
         buttonList.clear();
         int yOffset = height / 2 - 80;
         int xOffset = width / 2;
@@ -189,7 +189,7 @@ public class GuiPokedex extends GuiScreen
     @Override
     protected void keyTyped(char par1, int par2) throws IOException
     {
-        if (par2 == Keyboard.KEY_LMENU) return;
+        if (isAltKeyDown()) return;
         if (page == 4)
         {
             nicknameTextField.setEnabled(true);
@@ -682,21 +682,22 @@ public class GuiPokedex extends GuiScreen
     @Override
     public void drawScreen(int i, int j, float f)
     {
+        super.drawScreen(i, j, f);
+
         Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         minecraft.renderEngine.bindTexture(Resources.GUI_POKEDEX);
         int j2 = (width - xSize) / 2;
         int k2 = (height - ySize) / 2;
         drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);
+
         GL11.glPushMatrix();
 
         int yOffset = height / 2 - 80;
         int xOffset = width / 2;
 
         GL11.glPushMatrix();
-        renderMob();// TODO find out why rendering player messes up shader
-                    // lighting
+        renderMob();// TODO find out why rendering player messes up shaders
         GL11.glPopMatrix();
         nicknameTextField.drawTextBox();
         if (page == 0)
@@ -749,9 +750,7 @@ public class GuiPokedex extends GuiScreen
                 // e.printStackTrace();
             }
         }
-
         GL11.glPopMatrix();
-        super.drawScreen(i, j, f);
     }
 
     /** Draws the first page of the pokedex, this is the page with the pokemob's
@@ -1167,34 +1166,14 @@ public class GuiPokedex extends GuiScreen
     @Override
     public void drawWorldBackground(int tint)
     {
-        if (this.mc.theWorld != null)
-        {
-            this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
-        }
-        else
-        {
-            this.drawBackground(tint);
-        }
+        super.drawWorldBackground(tint);
     }
 
     @Override
     /** Draws the background (i is always 0 as of 1.2.2) */
     public void drawBackground(int tint)
     {
-        GlStateManager.disableLighting();
-        GlStateManager.disableFog();
-        PTezzelator tez = PTezzelator.instance;
-        this.mc.getTextureManager().bindTexture(optionsBackground);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        float f = 32.0F;
-        tez.begin();
-        tez.color(4210752);
-        tez.vertex(0.0D, (double) this.height, 0.0D).tex(0.0D, (double) ((float) this.height / f + (float) tint));
-        tez.vertex((double) this.width, (double) this.height, 0.0D).tex((double) ((float) this.width / f),
-                (double) ((float) this.height / f + (float) tint));
-        tez.vertex((double) this.width, 0.0D, 0.0D).tex((double) ((float) this.width / f), (double) tint);
-        tez.vertex(0.0D, 0.0D, 0.0D).tex(0.0D, (double) tint);
-        tez.end();
+        super.drawBackground(tint);
     }
 
     private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
@@ -1290,7 +1269,7 @@ public class GuiPokedex extends GuiScreen
             entity.prevLimbSwingAmount = 0;
             entity.onGround = ((IPokemob) entity).getType1() != flying && ((IPokemob) entity).getType2() != flying;
 
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            if (isAltKeyDown())
             {
                 entity.onGround = true;
                 entity.limbSwingAmount = 0.05f;

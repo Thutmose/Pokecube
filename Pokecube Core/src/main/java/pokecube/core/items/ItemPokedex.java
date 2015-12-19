@@ -11,6 +11,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.database.Database;
@@ -40,7 +41,7 @@ public class ItemPokedex extends ItemTranslated
     {
         if (mod_Pokecube.isOnClientSide())
         {
-
+            player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
         }
         else
         {
@@ -61,9 +62,6 @@ public class ItemPokedex extends ItemTranslated
     @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
-
-    	if(world.isRemote)
-    		return itemstack;
 
     	if(!player.isSneaking())
     	{

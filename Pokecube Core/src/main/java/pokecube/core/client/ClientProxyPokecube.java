@@ -432,7 +432,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
-        EntityPlayer entityPlayer = mod_Pokecube.getPlayer(null);
         Entity entityHit = null;
 
         if (mod_Pokecube.isOnClientSide())
@@ -462,8 +461,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
         else if (guiID == Mod_Pokecube_Helper.GUIPOKEDEX_ID)
         {
-            if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, entityPlayer);
-            else return new GuiPokedex(null, entityPlayer);
+            if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, player);
+            else return new GuiPokedex(null, player);
         }
         else if (guiID == Mod_Pokecube_Helper.GUIPOKEMOB_ID)
         {
@@ -536,6 +535,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
         else
         {
+            new Exception().printStackTrace();
             return super.getPlayer(playerName);
         }
     }

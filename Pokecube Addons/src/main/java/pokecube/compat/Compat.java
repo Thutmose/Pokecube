@@ -273,18 +273,19 @@ public class Compat
             {
                 String message = "msg.pokedexbuttonforwiki.text";
                 message = StatCollector.translateToLocal(message);
-                event.player.addChatMessage(new ChatComponentText(message));
+                if (Loader.isModLoaded("IGWMod")) event.player.addChatMessage(new ChatComponentText(message));
                 MinecraftForge.EVENT_BUS.unregister(this);
-                
+
                 Object o = Loader.instance().getIndexedModList().get(PokecubeAdv.ID);
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
-                if(result.status == Status.OUTDATED)
+                if (result.status == Status.OUTDATED)
                 {
-                    String mess = "Current Listed Release Version of Pokecube Revival is "+result.target+", but you have "+PokecubeAdv.version+".";
+                    String mess = "Current Listed Release Version of Pokecube Revival is " + result.target
+                            + ", but you have " + PokecubeAdv.version + ".";
                     mess += "\nIf you find bugs, please update and check if they still occur before reporting them.";
                     (event.player).addChatMessage(new ChatComponentText(mess));
                 }
-                
+
             }
         }
     }

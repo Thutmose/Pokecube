@@ -422,7 +422,7 @@ public class PokecubePacketHandler
         }
     }
 
-    private static void handleStatsPacketClient(PacketBuffer buffer)
+    private static void handleStatsPacketClient(PacketBuffer buffer, EntityPlayer player)
     {
         try
         {
@@ -433,7 +433,6 @@ public class PokecubePacketHandler
                 return;
             }
             StatsCollector.readFromNBT(nbt);
-            EntityPlayer player = mod_Pokecube.getPlayer(null);
             if (nbt.getBoolean("hasSerializer"))
             {
                 PokecubeSerializer.getInstance().clearInstance();
@@ -454,6 +453,7 @@ public class PokecubePacketHandler
 
                 if (temp != null) temp.freeVectorFromPool();
                 player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
+                System.out.println(player);
             }
             else if (nbt.getBoolean("toLoadTerrain"))
             {
@@ -744,7 +744,7 @@ public class PokecubePacketHandler
                 }
                 else if (channel == STATS)
                 {
-                    handleStatsPacketClient(buffer);
+                    handleStatsPacketClient(buffer, player);
                 }
                 else if (channel == TERRAINEFFECTS)
                 {

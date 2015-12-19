@@ -11,6 +11,7 @@ import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -152,9 +153,9 @@ public class EventsHandlerClient
 
         if (GameSettings.isKeyDown(ClientProxyPokecube.nextMob))
         {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            if (GuiScreen.isAltKeyDown())
             {
-                int num = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 10 : 1;
+                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
                 GuiDisplayPokecubeInfo.instance().moveGui(num, 0);
             }
             else
@@ -164,9 +165,9 @@ public class EventsHandlerClient
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.previousMob))
         {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            if (GuiScreen.isAltKeyDown())
             {
-                int num = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 10 : 1;
+                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
                 GuiDisplayPokecubeInfo.instance().moveGui(-num, 0);
             }
             else
@@ -176,9 +177,9 @@ public class EventsHandlerClient
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.nextMove))
         {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            if (GuiScreen.isAltKeyDown())
             {
-                int num = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 10 : 1;
+                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
                 GuiDisplayPokecubeInfo.instance().moveGui(0, num);
             }
             else
@@ -190,9 +191,9 @@ public class EventsHandlerClient
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.previousMove))
         {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            if (GuiScreen.isAltKeyDown())
             {
-                int num = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 10 : 1;
+                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
                 GuiDisplayPokecubeInfo.instance().moveGui(0, -num);
             }
             else
@@ -249,7 +250,7 @@ public class EventsHandlerClient
             if ((event.gui instanceof GuiContainer))
             {
                 GuiContainer gui = (GuiContainer) event.gui;
-                if (gui.mc.thePlayer == null || !Keyboard.isKeyDown(Keyboard.KEY_LMENU)) { return; }
+                if (gui.mc.thePlayer == null || !GuiScreen.isAltKeyDown()) { return; }
 
                 if (rainXCoords == null)
                 {
@@ -299,7 +300,7 @@ public class EventsHandlerClient
         if (event.type == ElementType.HOTBAR)
         {
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-            if (player == null || !Keyboard.isKeyDown(Keyboard.KEY_LMENU)
+            if (player == null || !GuiScreen.isAltKeyDown()
                     || Minecraft.getMinecraft().currentScreen != null) { return; }
 
             int w = event.resolution.getScaledWidth();

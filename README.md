@@ -268,7 +268,7 @@ Pokémobs for Minecraft - page under construction.
 - Snover
 - Spewpa
 - Spinda
-- Spiritomb
+- ~~Spiritomb~~
 - Spoink
 - Spritzee
 - Starmie

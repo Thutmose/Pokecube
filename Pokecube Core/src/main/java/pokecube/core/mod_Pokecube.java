@@ -338,7 +338,10 @@ public class mod_Pokecube extends PokecubeMod
         Class c = genericMobClasses.get(pokedexNb);
         if (c == null)
         {
-            System.err.println("Class for " + pokedexNb + " Has not been made, Making now");
+            if (loader == null)
+            {
+                loader = new ByteClassLoader(GenericPokemob.class.getClassLoader());
+            }
             try
             {
                 c = loader.generatePokemobClass(pokedexNb);
@@ -346,6 +349,7 @@ public class mod_Pokecube extends PokecubeMod
             }
             catch (ClassNotFoundException e)
             {
+                System.err.println("Error Making Class for  " + Database.getEntry(pokedexNb));
                 e.printStackTrace();
             }
         }
@@ -484,23 +488,6 @@ public class mod_Pokecube extends PokecubeMod
         helper.loadConfig(config);
         // used to register the moves from the spreadsheets
         Database.init(evt);
-
-        loader = new ByteClassLoader(GenericPokemob.class.getClassLoader());
-
-        System.out.println("Generating Generic Pokemob Classes");
-        int n = 0;
-        for (int i = 1; i < 722; i++)
-        {
-            try
-            {
-                genericMobClasses.put(i, loader.generatePokemobClass(i));
-                n++;
-            }
-            catch (ClassNotFoundException e)
-            {
-            }
-        }
-        System.out.println("Generated " + n + " Pokemon Classes");
 
         System.out.println("Registering Moves");
         MovesAdder.registerMoves();
@@ -734,7 +721,7 @@ public class mod_Pokecube extends PokecubeMod
             {
                 p.setSound(ID + ":mobs." + p.getName());
                 n++;
-                //TODO read this from database instead of here
+                // TODO read this from database instead of here
                 if (p.getPokedexNb() == 345 || p.getPokedexNb() == 346 || p.getPokedexNb() == 91)
                 {
                     p.isStationary = true;

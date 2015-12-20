@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -25,51 +26,53 @@ import thut.api.maths.Vector3;
 
 public abstract class AIBase implements IAIRunnable
 {
-	IBlockAccess				world;
-	int priority = 0;
-	int mutex = 0;
-    protected Vector<IRunnable> toRun = new Vector<IRunnable>();
-    private ArrayList<IRunnable> runs = Lists.newArrayList();
-	@Override
-	public int getPriority()
-	{
-		return priority;
-	}
+    IBlockAccess                 world;
+    int                          priority = 0;
+    int                          mutex    = 0;
+    protected Vector<IRunnable>  toRun    = new Vector<IRunnable>();
+    private ArrayList<IRunnable> runs     = Lists.newArrayList();
 
-	@Override
-	public int getMutex()
-	{
-		return mutex;
-	}
+    @Override
+    public int getPriority()
+    {
+        return priority;
+    }
 
-	@Override
-	public IAIRunnable setPriority(int prior)
-	{
-		priority = prior;
-		return this;
-	}
+    @Override
+    public int getMutex()
+    {
+        return mutex;
+    }
 
-	@Override
-	public IAIRunnable setMutex(int mutex)
-	{
-		this.mutex = mutex;
-		return this;
-	}
-	
-	@Override
-	public void doMainThreadTick(World world)
-	{
-	    runs.addAll(toRun);
-	    for(IRunnable run: runs)
-	    {
-	        boolean ran = run.run(world);
-	        if(ran)
-	        {
-	            toRun.remove(run);
-	        }
-	    }
-	    runs.clear();
-	}
+    @Override
+    public IAIRunnable setPriority(int prior)
+    {
+        priority = prior;
+        return this;
+    }
+
+    @Override
+    public IAIRunnable setMutex(int mutex)
+    {
+        this.mutex = mutex;
+        return this;
+    }
+
+    @Override
+    public void doMainThreadTick(World world)
+    {
+        runs.addAll(toRun);
+        for (IRunnable run : runs)
+        {
+            boolean ran = run.run(world);
+            if (ran)
+            {
+                toRun.remove(run);
+            }
+        }
+        runs.clear();
+    }
+
     /** Thread safe AI state setting
      * 
      * @param uid
@@ -79,45 +82,44 @@ public abstract class AIBase implements IAIRunnable
     {
         toRun.add(new StateInfo(uid, state, value));
     }
-	
-	protected void setPokemobAIState(IPokemob pokemob, int state, boolean value)
-	{
-		addStateInfo(pokemob.getPokemonUID(), state, value);
-	}
+
+    protected void setPokemobAIState(IPokemob pokemob, int state, boolean value)
+    {
+        addStateInfo(pokemob.getPokemonUID(), state, value);
+    }
 
     /** Thread safe attack setting */
     protected void addMoveInfo(int attacker, int targetEnt, int dim, Vector3 target, float distance)
     {
         toRun.add(new MoveInfo(attacker, targetEnt, dim, target, distance));
     }
-	
-	protected void addTargetInfo(Entity attacker, Entity target)
-	{
-		int targetId = target==null? -1: target.getEntityId();
-		addTargetInfo(attacker.getEntityId(), targetId, attacker.dimension);
-	}
-	
+
+    protected void addTargetInfo(Entity attacker, Entity target)
+    {
+        int targetId = target == null ? -1 : target.getEntityId();
+        addTargetInfo(attacker.getEntityId(), targetId, attacker.dimension);
+    }
+
     /** Thread safe target swapping information.
      * 
      * @param attacker
      * @param target
      * @param dim */
-	protected void addTargetInfo(int attacker, int target, int dim)
+    protected void addTargetInfo(int attacker, int target, int dim)
     {
         toRun.add(new TargetInfo(attacker, target, dim));
     }
-	
+
     /** threadsafe path determination.
      * 
      * @param id
      * @param dim
      * @param path
      * @param speed */
-	protected void addEntityPath(int id, int dim, PathEntity path, double speed)
+    protected void addEntityPath(int id, int dim, PathEntity path, double speed)
     {
         toRun.add(new PathInfo(id, dim, path, speed));
     }
-	
 
     /** A thread-safe object used to set the current path for an entity.
      * 
@@ -278,6 +280,49 @@ public abstract class AIBase implements IAIRunnable
         }
     }
 
+    public static class InventoryChange implements IRunnable
+    {
+        public final int       entity;
+        public final int       dim;
+        public final int       slot;
+        public final int       minSlot;
+        public final ItemStack stack;
+
+        public InventoryChange(Entity entity, int slot, ItemStack stack)
+        {
+            this(entity, slot, stack, false);
+        }
+
+        public InventoryChange(Entity entity, int slot, ItemStack stack, boolean min)
+        {
+            this.entity = entity.getEntityId();
+            this.dim = entity.dimension;
+            this.stack = stack;
+            if (min)
+            {
+                minSlot = slot;
+                this.slot = -1;
+            }
+            else
+            {
+                this.slot = slot;
+                minSlot = 0;
+            }
+        }
+
+        @Override
+        public boolean run(World world)
+        {
+            if (dim != world.provider.getDimensionId()) return false;
+            Entity e = world.getEntityByID(entity);
+            if (e == null || !(e instanceof IPokemob)) return false;
+            if (slot > 0) ((IPokemob) e).getPokemobInventory().setInventorySlotContents(slot, stack);
+            else AIStoreStuff.addItemStackToInventory(stack, ((IPokemob) e).getPokemobInventory(), minSlot);
+            return true;
+        }
+
+    }
+
     public static interface IRunnable
     {
         /** @param world
@@ -285,5 +330,4 @@ public abstract class AIBase implements IAIRunnable
         boolean run(World world);
     }
 
-	
 }

@@ -21,7 +21,7 @@ import pokecube.core.items.berries.ItemBerry;
 import thut.api.TickHandler;
 import thut.api.maths.Vector3;
 
-public class AIFindFood extends AIBase
+public class AIHungry extends AIBase
 {
 
     final EntityLiving entity;
@@ -36,7 +36,7 @@ public class AIFindFood extends AIBase
     Vector3            v       = Vector3.getNewVectorFromPool();
     Vector3            v1      = Vector3.getNewVectorFromPool();
 
-    public AIFindFood(final EntityLiving entity, final EntityItem berry_, double distance)
+    public AIHungry(final EntityLiving entity, final EntityItem berry_, double distance)
     {
         this.entity = entity;
         berry = berry_;
@@ -234,7 +234,7 @@ public class AIFindFood extends AIBase
 
             // No food already obtained, reset mating rules, hungry things don't
             // mate
-            if (pokemob instanceof IBreedingMob) ((IBreedingMob)pokemob).resetLoveStatus();
+            if (pokemob instanceof IBreedingMob) ((IBreedingMob) pokemob).resetLoveStatus();
 
             if (pokemob.getPokemonAIState(IPokemob.TAMED) && pokemob.getPokemonAIState(IPokemob.SITTING))
             {
@@ -247,7 +247,17 @@ public class AIFindFood extends AIBase
 
             if (foodLoc.isEmpty())
             {
-                if (hungrymob.isHerbivore())
+                if (!block && hungrymob.eatsBerries())
+                {
+                    Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
+                    if (temp != null)
+                    {
+                        block = true;
+                        foodLoc.set(temp);
+                    }
+                    if (temp != null) temp.freeVectorFromPool();
+                }
+                if (!block && hungrymob.isHerbivore())
                 {
                     Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
                     if (temp != null)
@@ -267,17 +277,6 @@ public class AIFindFood extends AIBase
                         return;
                     }
 
-                    if (temp != null)
-                    {
-                        block = true;
-                        foodLoc.set(temp);
-                    }
-                    if (temp != null) temp.freeVectorFromPool();
-                }
-
-                if (!block && hungrymob.eatsBerries())
-                {
-                    Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
                     if (temp != null)
                     {
                         block = true;
@@ -317,6 +316,7 @@ public class AIFindFood extends AIBase
                     setPokemobAIState(pokemob, IPokemob.HUNTING, false);
                     berry.setEntityItemStack(fruit);
                     hungrymob.eat(berry);
+                    toRun.addElement(new InventoryChange(entity, 2, fruit, true));
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.air);
                     // foodLoc.setBlock(world, Blocks.air);
                     foodLoc.clear();
@@ -356,6 +356,11 @@ public class AIFindFood extends AIBase
                         hungrymob.eat(berry);
                         TickHandler.addBlockChange(foodLoc, entity.dimension,
                                 b.getMaterial() == Material.grass ? Blocks.dirt : Blocks.air);
+                        if (b.getMaterial() != Material.grass)
+                        {
+                            for (ItemStack stack : b.getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0))
+                                toRun.addElement(new InventoryChange(entity, 2, stack, true));
+                        }
                         foodLoc.clear();
                         addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
                     }

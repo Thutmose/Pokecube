@@ -533,11 +533,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 return Minecraft.getMinecraft().thePlayer;
             }
         }
-//        else
-//        {
-//            new Exception().printStackTrace();
-//            return super.getPlayer(playerName);
-//        }
     }
 
     @Override

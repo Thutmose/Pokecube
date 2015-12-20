@@ -66,6 +66,7 @@ import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.ai.properties.GuardAIProperties;
+import pokecube.core.ai.properties.StorageAIProperties;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.Database;
@@ -163,6 +164,10 @@ public class EventsHandler
             if (GuardAIProperties.get((EntityLiving) event.entity) == null)
             {
                 GuardAIProperties.register((EntityLiving) event.entity);
+            }
+            if (StorageAIProperties.get((EntityLiving) event.entity) == null)
+            {
+                StorageAIProperties.register((EntityLiving) event.entity);
             }
         }
     }

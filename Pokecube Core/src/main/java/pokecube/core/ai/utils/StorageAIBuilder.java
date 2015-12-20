@@ -10,22 +10,19 @@ public class StorageAIBuilder implements StorableAIBuilder<AIStoreStuff>
     @Override
     public AIStoreStuff createFromNBT(EntityLiving living, NBTTagCompound data)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return AIStoreStuff.createFromNBT(living, data);
     }
 
     @Override
     public Class<AIStoreStuff> getType()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return AIStoreStuff.class;
     }
 
     @Override
     public String getRoutineName()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return "pokecube:store";
     }
 
 }

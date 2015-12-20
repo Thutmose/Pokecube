@@ -42,7 +42,7 @@ import pokecube.core.ai.pokemob.PokemobAISwimming;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.thread.aiRunnables.AIAttack;
-import pokecube.core.ai.thread.aiRunnables.AIFindFood;
+import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
@@ -154,7 +154,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         PokemobAIThread.addAI(this, new AIAttack(this).setPriority(2));
         PokemobAIThread.addAI(this, (mate = new AIMate(this)).setPriority(3));
         males = mate.males;
-        PokemobAIThread.addAI(this, new AIFindFood(this, new EntityItem(worldObj), 16).setPriority(3));
+        PokemobAIThread.addAI(this, new AIHungry(this, new EntityItem(worldObj), 16).setPriority(3));
         PokemobAIThread.addAI(this, new AIIdle(this).setPriority(5));
         PokemobAIThread.addAI(this, new AIFindTarget(this).setPriority(4));
 
@@ -1068,6 +1068,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (player.capabilities.isCreativeMode && player.isSneaking())
             {
                 this.addHappiness(255);
+            }
+        }
+        if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.golden_hoe)
+        {
+            if (player.capabilities.isCreativeMode && player.isSneaking())
+            {
+                this.setHungerTime(this.getHungerTime()+1000);
             }
         }
 

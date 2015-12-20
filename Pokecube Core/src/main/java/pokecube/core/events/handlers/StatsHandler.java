@@ -80,7 +80,7 @@ public class StatsHandler
     }
     
     @SubscribeEvent
-    public void recordEvolve(EvolveEvent evt)
+    public void recordEvolve(EvolveEvent.Post evt)
     {
     	StatsCollector.addCapture(evt.mob);
     	

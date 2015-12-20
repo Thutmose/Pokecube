@@ -241,7 +241,6 @@ public class TypeTrainer
 					break;
 			}
 			team[i] = item;
-			System.out.println(item.getDisplayName());
 		}
 	}
 

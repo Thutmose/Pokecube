@@ -20,9 +20,9 @@ import thut.api.maths.Vector3;
 public class AIStoreStuff extends AIBase implements StorableAI
 {
     final EntityLiving entity;
-    final boolean[]    states   = { false, false };
-    final int[] cooldowns = {0,0};
-    Vector3            seeking  = Vector3.getNewVectorFromPool();
+    final boolean[]    states    = { false, false };
+    final int[]        cooldowns = { 0, 0 };
+    Vector3            seeking   = Vector3.getNewVectorFromPool();
 
     public AIStoreStuff(EntityLiving entity)
     {

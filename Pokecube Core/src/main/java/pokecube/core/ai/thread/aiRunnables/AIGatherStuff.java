@@ -6,9 +6,9 @@ import thut.api.maths.Vector3;
 public class AIGatherStuff extends AIBase
 {
     final EntityLiving entity;
-    final boolean[]    states   = { false, false };
-    final int[] cooldowns = {0,0};
-    Vector3            seeking  = Vector3.getNewVectorFromPool();
+    final boolean[]    states    = { false, false };
+    final int[]        cooldowns = { 0, 0 };
+    Vector3            seeking   = Vector3.getNewVectorFromPool();
 
     public AIGatherStuff(EntityLiving entity)
     {

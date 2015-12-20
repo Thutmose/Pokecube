@@ -1,0 +1,6 @@
+{
+	"variants": {
+		"fixed=true": { "model": "pokecube:pokecenter" },
+		"fixed=false": { "model": "pokecube:pokecenter" }
+	}
+}

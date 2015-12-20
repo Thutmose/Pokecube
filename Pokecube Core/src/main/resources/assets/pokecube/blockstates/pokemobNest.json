@@ -1,0 +1,6 @@
+{
+	"variants": {
+		"normal": { "model": "minecraft:stone" },
+		"inventory": { "model": "minecraft:stone" }
+	}
+}

@@ -1,0 +1,8 @@
+{
+   "variants": {
+       "axis=y": { "model": "pokecube:enigmaWood" },
+       "axis=z": { "model": "pokecube:enigmaWood_side" },
+       "axis=x": { "model": "pokecube:enigmaWood_side", "y": 90  },
+       "axis=none": { "model": "pokecube:enigmaWood_bark" }
+    }
+}

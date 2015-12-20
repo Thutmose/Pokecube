@@ -1,0 +1,7 @@
+{
+    "parent": "block/column_side",
+    "textures": {
+        "end": "pokecube:blocks/nanabWood_top",
+        "side": "pokecube:blocks/nanabWood"
+    }
+}

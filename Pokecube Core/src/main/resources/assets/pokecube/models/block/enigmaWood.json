@@ -1,0 +1,7 @@
+{
+    "parent": "block/cube_column",
+    "textures": {
+        "end": "pokecube:blocks/enigmaWood_top",
+        "side": "pokecube:blocks/enigmaWood"
+    }
+}

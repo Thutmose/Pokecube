@@ -513,7 +513,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public EntityPlayer getPlayer(String playerName)
     {
-        if (isOnClientSide())
+//        if (isOnClientSide())
         {
             if (playerName != null)
             {
@@ -533,11 +533,11 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 return Minecraft.getMinecraft().thePlayer;
             }
         }
-        else
-        {
-            new Exception().printStackTrace();
-            return super.getPlayer(playerName);
-        }
+//        else
+//        {
+//            new Exception().printStackTrace();
+//            return super.getPlayer(playerName);
+//        }
     }
 
     @Override

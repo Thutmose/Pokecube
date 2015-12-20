@@ -269,27 +269,6 @@ public interface IPokemob extends IMoveConstants
      *            the byte sexe */
     void setSexe(byte sexe);
 
-    /** Will be called by the mother before she lays to know what baby to put in
-     * the egg.
-     *
-     * @param male
-     *            the male
-     * @return the pokedex number of the child */
-    int getChildSpecies(IPokemob male);
-
-    /** Which entity is this pokemob trying to breed with
-     * 
-     * @return */
-    Entity getLover();
-
-    /** Sets the entity to try to breed with
-     * 
-     * @param lover */
-    void setLover(Entity lover);
-
-    /** resets the status of being in love */
-    void resetLoveStatus();
-
     /** Returns the name to display in any GUI. Can be the nickname or the
      * Pokemob translated name.
      *

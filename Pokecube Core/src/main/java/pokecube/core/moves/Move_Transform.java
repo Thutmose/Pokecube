@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.IWorldAccess;
+import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
@@ -49,7 +50,7 @@ public class Move_Transform extends Move_Basic {
 		        	if (attacked instanceof IPokemob){
 		        		//((EntityPokemob) attacked).setTarget((Entity) attacker);
 						attacker.setStats(((IPokemob)attacked).getBaseStats());
-						if(attacked!=((IPokemob) attacker).getLover())
+						if(!(attacked instanceof IBreedingMob) || attacked!=((IBreedingMob) attacker).getLover())
 							((EntityCreature) attacked).setAttackTarget((EntityLivingBase) attacker);
 		            }
 		        	

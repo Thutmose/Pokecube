@@ -38,7 +38,6 @@ import pokecube.core.ai.pokemob.PokemobAIDodge;
 import pokecube.core.ai.pokemob.PokemobAIFollowOwner;
 import pokecube.core.ai.pokemob.PokemobAIHurt;
 import pokecube.core.ai.pokemob.PokemobAILeapAtTarget;
-import pokecube.core.ai.pokemob.PokemobAIMate;
 import pokecube.core.ai.pokemob.PokemobAISwimming;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.ai.thread.PokemobAIThread;
@@ -46,6 +45,7 @@ import pokecube.core.ai.thread.aiRunnables.AIAttack;
 import pokecube.core.ai.thread.aiRunnables.AIFindFood;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
+import pokecube.core.ai.thread.aiRunnables.AIMate;
 import pokecube.core.ai.thread.logicRunnables.LogicCollision;
 import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
 import pokecube.core.ai.utils.AISaveHandler;
@@ -124,7 +124,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.tasks.addTask(1, new PokemobAISwimming(this));
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(1, new PokemobAIDodge(this));
-        this.tasks.addTask(3, new PokemobAIMate(this));
+//        this.tasks.addTask(3, new PokemobAIMate(this));
         this.tasks.addTask(4, this.aiSit);
         this.tasks.addTask(5, guardAI);
         this.tasks.addTask(5, new PokemobAIUtilityMove(this));
@@ -150,8 +150,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         }
         if (worldObj.isRemote) return;
-
+        AIMate mate;
         PokemobAIThread.addAI(this, new AIAttack(this).setPriority(2));
+        PokemobAIThread.addAI(this, (mate = new AIMate(this)).setPriority(3));
+        males = mate.males;
         PokemobAIThread.addAI(this, new AIFindFood(this, new EntityItem(worldObj), 16).setPriority(3));
         PokemobAIThread.addAI(this, new AIIdle(this).setPriority(5));
         PokemobAIThread.addAI(this, new AIFindTarget(this).setPriority(4));
@@ -434,14 +436,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
             }
         }
-
-        inLove++;
-
-        if (inLove > 6000)
-        {
-            resetInLove();
-        }
-
+        
         if (getLover() != null)
         {
             if (inLove % 5 == 0)

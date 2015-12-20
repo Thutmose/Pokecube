@@ -13,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IBerryFruitBlock;
+import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -233,7 +234,7 @@ public class AIFindFood extends AIBase
 
             // No food already obtained, reset mating rules, hungry things don't
             // mate
-            pokemob.resetLoveStatus();
+            if (pokemob instanceof IBreedingMob) ((IBreedingMob)pokemob).resetLoveStatus();
 
             if (pokemob.getPokemonAIState(IPokemob.TAMED) && pokemob.getPokemonAIState(IPokemob.SITTING))
             {

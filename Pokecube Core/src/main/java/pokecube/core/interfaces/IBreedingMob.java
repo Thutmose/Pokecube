@@ -35,7 +35,7 @@ public interface IBreedingMob
      * @param value */
     void setLoveTimer(int value);
     
-    boolean isInLove();
+    boolean tryToBreed();
 
     /** Will be called by the mother before she lays to know what baby to put in
      * the egg.

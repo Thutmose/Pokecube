@@ -29,6 +29,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
     public AIStoreStuff(EntityLiving entity)
     {
         this.entity = entity;
+        this.setMutex(2);
     }
 
     @Override

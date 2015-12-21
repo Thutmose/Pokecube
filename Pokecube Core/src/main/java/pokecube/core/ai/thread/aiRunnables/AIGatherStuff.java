@@ -39,6 +39,7 @@ public class AIGatherStuff extends AIBase
         this.hungrymob = (IHungrymob) entity;
         this.pokemob = (IPokemob) entity;
         this.distance = distance;
+        this.setMutex(1);
     }
 
     @Override

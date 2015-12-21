@@ -20,6 +20,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -68,7 +69,8 @@ public class GuiDisplayPokecubeInfo extends Gui
         try
         {
             if (minecraft.currentScreen == null
-                    && !((Minecraft) mod_Pokecube.getMinecraftInstance()).gameSettings.hideGUI)
+                    && !((Minecraft) mod_Pokecube.getMinecraftInstance()).gameSettings.hideGUI
+                    && event.type == ElementType.HOTBAR)
                 draw(event);
         }
         catch (Throwable e)

@@ -35,10 +35,10 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public abstract class EntitySexedPokemob extends EntityStatsPokemob
 {
-    protected Entity            egg  = null;
-    private Entity              lover;
-    protected int               inLove;
-    protected byte              sexe = 0;
+    protected Entity               egg  = null;
+    private Entity                 lover;
+    protected int                  inLove;
+    protected byte                 sexe = 0;
     protected Vector<IBreedingMob> males;
 
     public static int BREEDINGDELAY = 4000;
@@ -136,7 +136,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
                         d1, d2);
             }
 
-            lay(childPokedexNb, (IPokemob)male);
+            lay(childPokedexNb, (IPokemob) male);
         }
     }
 
@@ -261,7 +261,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         lover = null;
         setPokemonAIState(MATING, false);
         setPokemonAIState(ANGRY, false);
-        if(males!=null) males.clear();
+        if (males != null) males.clear();
     }
 
     @Override
@@ -291,13 +291,13 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
         }
 
-        for (String s : ((IPokemob)male).getMoves())
+        for (String s : ((IPokemob) male).getMoves())
         {
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) otherTransforms = true;
         }
         if (transforms && !otherTransforms
-                && ((IPokemob)male).getTransformedTo() != this) { return ((IBreedingMob) male).getChild(male); }
-        return getPokedexEntry().getChildNb(((IPokemob)male).getPokedexNb());
+                && ((IPokemob) male).getTransformedTo() != this) { return ((IBreedingMob) male).getChild(male); }
+        return getPokedexEntry().getChildNb(((IPokemob) male).getPokedexNb());
     }
 
     // @Override
@@ -404,5 +404,11 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public Vector<IBreedingMob> getMalesForBreeding()
     {
         return males;
+    }
+
+    @Override
+    public boolean tryToBreed()
+    {
+        return isInLove();
     }
 }

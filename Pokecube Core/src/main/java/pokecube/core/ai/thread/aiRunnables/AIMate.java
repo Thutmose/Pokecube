@@ -40,11 +40,11 @@ public class AIMate extends AIBase
         if (world == null) return false;
 
         if (breedingMob.getLover() != null)
-            if (this.spawnBabyDelay < 60 && breedingMob.isInLove() && !breedingMob.getLover().isDead) return true;
+            if (this.spawnBabyDelay < 60 && breedingMob.tryToBreed() && !breedingMob.getLover().isDead) return true;
 
         boolean isMating = pokemob.getPokemonAIState(IPokemob.MATING);
         if ((breedingMob.getLover() != null && breedingMob.getLover() instanceof IBreedingMob
-                && !((IBreedingMob) breedingMob.getLover()).isInLove()) || (isMating && males.isEmpty()))
+                && !((IBreedingMob) breedingMob.getLover()).tryToBreed()) || (isMating && males.isEmpty()))
             breedingMob.resetLoveStatus();
         ;
         if (isMating) return true;
@@ -54,7 +54,7 @@ public class AIMate extends AIBase
             pokemob.setPokemonAIState(IPokemob.MATING, true);
             return true;
         }
-        if (pokemob.getSexe() == IPokemob.MALE || !breedingMob.isInLove()) return false;
+        if (pokemob.getSexe() == IPokemob.MALE || !breedingMob.tryToBreed()) return false;
 
         findLover();
         if (males.size() == 0) return false;

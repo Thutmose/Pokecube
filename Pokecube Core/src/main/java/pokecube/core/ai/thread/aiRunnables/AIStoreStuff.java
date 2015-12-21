@@ -72,8 +72,9 @@ public class AIStoreStuff extends AIBase implements StorableAI
 
         temp.set(temp.findClosestVisibleObject(world, true, 10, IInventory.class));
         seeking.set(temp);
+        boolean empty = temp.intX() == 0 && temp.intZ() == 0 && (temp.intY() == 0 || temp.intY() == 1);
         // If too far away, path to the nest for items.
-        if (!temp.isEmpty() && temp.distToEntity(entity) > 3)
+        if (!empty && temp.distToEntity(entity) > 3)
         {
             PathEntity path = this.entity.getNavigator().getPathToPos(temp.getPos());
             addEntityPath(entity.getEntityId(), entity.dimension, path, entity.getAIMoveSpeed());
@@ -100,7 +101,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
         cooldowns[1]--;
 
         // If too far away, path to the nest for items, that is done on other
-        // thread.
+        // thread.  here is just returns if too far, or on cooldown
         if (cooldowns[0] > 0 || cooldowns[1] > 0 || temp.distToEntity(entity) > 3) { return; }
 
         TileEntity tile = temp.getTileEntity(world);
@@ -149,6 +150,11 @@ public class AIStoreStuff extends AIBase implements StorableAI
                 if (index <= 2) states[1] = true;
                 if (!states[1]) cooldowns[1] = COOLDOWN;
             }
+        }
+        else
+        {
+            //Longer cooldown if there is no inventory found at all.
+            cooldowns[1] = cooldowns[0] = 10*COOLDOWN;
         }
     }
 
@@ -312,7 +318,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
     public static AIStoreStuff createFromNBT(EntityLiving living, NBTTagCompound data)
     {
         AIStoreStuff ai = new AIStoreStuff(living);
-        int priority = 4;
+        int priority = 400;
 
         ai.setPriority(priority);
         return ai;

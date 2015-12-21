@@ -43,7 +43,7 @@ public class StorageAIProperties implements IExtendedEntityProperties
     public void loadNBTData(NBTTagCompound compound)
     {
         NBTTagCompound properties = (NBTTagCompound) compound.getTag(EXT_PROP_NAME);
-        System.out.println(properties);
+
         if (owner != null && properties != null)
         {
             ai = aiBuilder.createFromNBT(owner, properties);

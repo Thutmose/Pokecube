@@ -74,223 +74,7 @@ public class AIHungry extends AIBase
     {
         if (foodLoc.isEmpty())
         {
-            v.set(entity);
-            if (hungrymob.isPhototroph())
-            {
-                if (entity.worldObj.provider.isDaytime() && v.canSeeSky(world))
-                {
-                    hungrymob.setHungerTime(0);
-                    setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                    return;
-                }
-            }
-            if (hungrymob.isLithotroph())
-            {
-                Block b = v.getBlock(world, EnumFacing.DOWN);
-                if (!Mod_Pokecube_Helper.getRocks().contains(b) || b == Blocks.gravel)
-                {
-                    Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
-                            Mod_Pokecube_Helper.getRocks());
-                    if (temp != null)
-                    {
-                        block = true;
-                        foodLoc.set(temp);
-                    }
-                    if (temp != null) temp.freeVectorFromPool();
-                    if (!foodLoc.isEmpty()) return;
-                }
-                else
-                {
-                    if (PokecubeMod.semiHardMode && Math.random() > 0.0075)
-                    {
-                        v.set(hungrymob).offsetBy(EnumFacing.DOWN);
-                        if (b == Blocks.cobblestone)
-                        {
-                            TickHandler.addBlockChange(v, entity.dimension, Blocks.gravel);
-                        }
-                        else if (b == Blocks.gravel && Mod_Pokecube_Helper.pokemobsEatGravel)
-                        {
-                            TickHandler.addBlockChange(v, entity.dimension, Blocks.air);
-                        }
-                        else if (b.getMaterial() == Material.rock)
-                        {
-                            TickHandler.addBlockChange(v, entity.dimension, Blocks.cobblestone);
-                        }
-                    }
-                    berry.setEntityItemStack(new ItemStack(b));
-                    setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                    hungrymob.eat(berry);
-                    return;
-                }
-            }
-            if (hungrymob.isElectrotroph())
-            {
-                int num = v.blockCount(world, Blocks.redstone_block, 8);
-                if (num < 1)
-                {
-
-                }
-                else
-                {
-                    hungrymob.setHungerTime(0);
-                    setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                    return;
-                }
-            }
-
-            if (pokemob.getPokedexEntry().swims())
-            {
-                // List<Entity> list =
-                // world.getEntitiesWithinAABB(EntityFishHook.class,
-                // AxisAlignedBB
-                // .getBoundingBox(entity.posX, entity.posY, entity.posZ,
-                // entity.posX + 1.0D, entity.posY + 1.0D, entity.posZ + 1.0D)
-                // .expand(20D, 20D, 20D));//TODO threadsafe this
-                // if (!list.isEmpty())
-                // {
-                // Entity nearest = null;
-                // double ds = 600;
-                // double dt;
-                // Vector3 v = Vector3.getNewVectorFromPool();
-                // for (Entity e : list)
-                // {
-                // dt = e.getDistanceSqToEntity(entity);
-                // if (dt < ds && Vector3.isVisibleEntityFromEntity(e, entity))
-                // {
-                // ds = dt;
-                // nearest = e;
-                // }
-                // }
-                // v.freeVectorFromPool();
-                // if (nearest != null)
-                // {
-                // System.out.println("Found a bait " +
-                // pokemob.getPokemonDisplayName());
-                //
-                // PathEntity path
-                // =entity.getNavigator().getPathToEntityLiving(nearest);
-                // PokemobAIThread.addEntityPath(entity.getEntityId(),
-                // entity.dimension, path, moveSpeed);
-                // return false;
-                // }
-                // }
-            }
-
-            // check inventory for berries
-            for (int i = 2; i < 7; i++)
-            {
-                ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
-                if (stack != null && stack.getItem() instanceof ItemBerry)
-                {
-                    stack.stackSize--;
-                    if (stack.stackSize <= 0)
-                    {
-                        pokemob.getPokemobInventory().setInventorySlotContents(i, null);
-                    }
-                    setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                    hungrymob.eat(berry);
-                    return;
-                }
-            }
-            // Tame pokemon can eat berries out of trapped chests, so check for
-            // one
-            // of those here.
-            if (pokemob.getPokemonAIState(IPokemob.TAMED))
-            {
-                IInventory container = null;
-                v.set(hungrymob).add(0, entity.height, 0);
-
-                Vector3 temp = v.findClosestVisibleObject(world, true, 10, Blocks.trapped_chest);
-
-                if (temp != null && temp.getBlock(world) == Blocks.trapped_chest)
-                {
-                    container = (IInventory) temp.getTileEntity(world);
-
-                    for (int i1 = 0; i1 < 27; i1++)
-                    {
-                        ItemStack stack = container.getStackInSlot(i1);
-                        if (stack != null && stack.getItem() instanceof ItemBerry)
-                        {
-                            stack.stackSize--;
-                            if (stack.stackSize <= 0)
-                            {
-                                container.setInventorySlotContents(i1, null);
-                            }
-                            setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-
-                            PathEntity path = entity.getNavigator().getPathToXYZ(temp.x, temp.y, temp.z);
-                            addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
-                            hungrymob.eat(berry);
-                            temp.freeVectorFromPool();
-                            return;
-                        }
-                    }
-                }
-                if (temp != null)
-                {
-                    temp.freeVectorFromPool();
-                }
-            }
-
-            // No food already obtained, reset mating rules, hungry things don't
-            // mate
-            if (pokemob instanceof IBreedingMob) ((IBreedingMob) pokemob).resetLoveStatus();
-
-            if (pokemob.getPokemonAIState(IPokemob.TAMED) && pokemob.getPokemonAIState(IPokemob.SITTING))
-            {
-                hungrymob.setHungerCooldown(100);
-                setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                return;
-            }
-            block = false;
-            v.set(hungrymob).add(0, entity.height, 0);
-
-            if (foodLoc.isEmpty())
-            {
-                if (!block && hungrymob.eatsBerries())
-                {
-                    Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
-                    if (temp != null)
-                    {
-                        block = true;
-                        foodLoc.set(temp);
-                    }
-                    if (temp != null) temp.freeVectorFromPool();
-                }
-                if (!block && hungrymob.isHerbivore())
-                {
-                    Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
-                    if (temp != null)
-                    {
-                        block = true;
-                        foodLoc.set(temp);
-                    }
-                    if (temp != null) temp.freeVectorFromPool();
-                }
-                if (!block && hungrymob.filterFeeder())
-                {
-                    Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, Blocks.water);
-                    if (entity.isInWater())
-                    {
-                        hungrymob.eat(berry);
-                        setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                        return;
-                    }
-
-                    if (temp != null)
-                    {
-                        block = true;
-                        foodLoc.set(temp);
-                    }
-                    if (temp != null) temp.freeVectorFromPool();
-                }
-            }
-
-            if (foodLoc.isEmpty())
-            {
-                hungrymob.setHungerCooldown(10);
-                setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-            }
+            findFood();
         }
         else
         {
@@ -301,198 +85,17 @@ public class AIHungry extends AIBase
 
             if (b instanceof IBerryFruitBlock)
             {
-                ItemStack fruit = ((IBerryFruitBlock) b).getBerryStack(world, foodLoc.intX(), foodLoc.intY(),
-                        foodLoc.intZ());
-
-                if (fruit == null)
-                {
-                    foodLoc.clear();
-                    hungrymob.noEat(null);
-                    return;
-                }
-
-                if (d < 3)
-                {
-                    setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                    berry.setEntityItemStack(fruit);
-                    hungrymob.eat(berry);
-                    toRun.addElement(new InventoryChange(entity, 2, fruit, true));
-                    TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.air);
-                    // foodLoc.setBlock(world, Blocks.air);
-                    foodLoc.clear();
-                }
-                else if (entity.ticksExisted % 20 == 0)
-                {
-                    boolean shouldChangePath = true;
-                    if (!this.entity.getNavigator().noPath())
-                    {
-                        Vector3 p = v.set(this.entity.getNavigator().getPath().getFinalPathPoint());
-                        Vector3 v = v1.set(foodLoc);
-                        if (p.distToSq(v) <= 16) shouldChangePath = false;
-                    }
-                    PathEntity path = null;
-                    if (shouldChangePath
-                            && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
-                    {
-                        addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
-                        setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                        berry.setEntityItemStack(fruit);
-                        hungrymob.noEat(berry);
-                        foodLoc.clear();
-                    }
-                    else addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
-                }
+                eatBerry(b, d);
             }
             else if (b != null)
             {
                 if (PokecubeItems.grasses.contains(b))
                 {
-                    double diff = 2;
-                    diff = Math.max(diff, entity.width);
-                    if (d < diff)
-                    {
-                        setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                        berry.setEntityItemStack(new ItemStack(b));
-                        hungrymob.eat(berry);
-                        TickHandler.addBlockChange(foodLoc, entity.dimension,
-                                b.getMaterial() == Material.grass ? Blocks.dirt : Blocks.air);
-                        if (b.getMaterial() != Material.grass)
-                        {
-                            for (ItemStack stack : b.getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0))
-                                toRun.addElement(new InventoryChange(entity, 2, stack, true));
-                        }
-                        foodLoc.clear();
-                        addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
-                    }
-                    else if (entity.ticksExisted % 20 == 0)
-                    {
-                        boolean shouldChangePath = true;
-                        block = false;
-                        v.set(hungrymob).add(0, entity.height, 0);
-                        Vector3 p, m;
-                        if (hungrymob.isHerbivore())
-                        {
-                            Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
-                                    PokecubeItems.grasses);
-                            if (temp != null)
-                            {
-                                block = true;
-                                foodLoc.set(temp);
-                            }
-                            if (temp != null) temp.freeVectorFromPool();
-                        }
-
-                        if (!block && hungrymob.eatsBerries())
-                        {
-                            Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
-                                    IBerryFruitBlock.class);
-                            if (temp != null)
-                            {
-                                block = true;
-                                foodLoc.set(temp);
-                            }
-                            if (temp != null) temp.freeVectorFromPool();
-                        }
-
-                        if (!this.entity.getNavigator().noPath())
-                        {
-                            p = v.set(this.entity.getNavigator().getPath().getFinalPathPoint());
-                            m = v1.set(foodLoc);
-                            if (p.distToSq(m) <= 16) shouldChangePath = true;
-                        }
-                        PathEntity path = null;
-                        if (shouldChangePath
-                                && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
-                        {
-                            setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                            berry.setEntityItemStack(new ItemStack(b));
-                            hungrymob.noEat(berry);
-                            foodLoc.clear();
-                            addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
-                        }
-                        else addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
-                    }
+                    eatPlant(b, d);
                 }
                 else if ((Mod_Pokecube_Helper.getRocks().contains(b) || b == Blocks.gravel) && hungrymob.isLithotroph())
                 {
-                    double diff = 2;
-                    diff = Math.max(diff, entity.width);
-                    if (d < diff)
-                    {
-
-                        if (PokecubeMod.semiHardMode && Math.random() > 0.0075)
-                        {
-                            if (b == Blocks.cobblestone)
-                            {
-                                TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.gravel);
-                            }
-                            else if (b == Blocks.gravel && Mod_Pokecube_Helper.pokemobsEatGravel)
-                            {
-                                TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.air);
-                            }
-                            else if (b.getMaterial() == Material.rock)
-                            {
-                                TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.cobblestone);
-                            }
-                        }
-
-                        setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                        berry.setEntityItemStack(new ItemStack(b));
-                        hungrymob.eat(berry);
-                        foodLoc.clear();
-                        addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
-                    }
-                    else if (entity.ticksExisted % 20 == 0)
-                    {
-                        boolean shouldChangePath = true;
-                        block = false;
-                        v.set(hungrymob).add(0, entity.height, 0);
-
-                        Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
-                                Mod_Pokecube_Helper.getRocks());
-                        if (temp != null)
-                        {
-                            block = true;
-                            foodLoc.set(temp);
-                        }
-                        if (temp != null) temp.freeVectorFromPool();
-
-                        Vector3 p, m;
-                        if (!this.entity.getNavigator().noPath())
-                        {
-                            p = v.set(this.entity.getNavigator().getPath().getFinalPathPoint());
-                            m = v1.set(foodLoc);
-                            if (p.distToSq(m) <= 16) shouldChangePath = true;
-
-                        }
-                        boolean pathed = false;
-                        PathEntity path = null;
-                        if (shouldChangePath)
-                        {
-                            path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z);
-                            pathed = path != null;
-                            addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
-                        }
-
-                        if (shouldChangePath && !pathed)
-                        {
-                            setPokemobAIState(pokemob, IPokemob.HUNTING, false);
-                            berry.setEntityItemStack(new ItemStack(b));
-                            hungrymob.noEat(berry);
-                            foodLoc.clear();
-                            if (pokemob.hasHomeArea())
-                            {
-                                // System.out.println("test");
-                                path = entity.getNavigator().getPathToXYZ(pokemob.getHome().getX(),
-                                        pokemob.getHome().getY(), pokemob.getHome().getZ());
-                                addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
-                            }
-                            else
-                            {
-                                addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
-                            }
-                        }
-                    }
+                    eatRocks(b, d);
                 }
             }
             else
@@ -508,4 +111,413 @@ public class AIHungry extends AIBase
         foodLoc.clear();
     }
 
+    protected void findFood()
+    {
+        v.set(entity);
+        if (hungrymob.isPhototroph())
+        {
+            if (entity.worldObj.provider.isDaytime() && v.canSeeSky(world))
+            {
+                hungrymob.setHungerTime(0);
+                setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+                return;
+            }
+        }
+        if (hungrymob.isLithotroph())
+        {
+            Block b = v.getBlock(world, EnumFacing.DOWN);
+            if (!Mod_Pokecube_Helper.getRocks().contains(b) || b == Blocks.gravel)
+            {
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, Mod_Pokecube_Helper.getRocks());
+                if (temp != null)
+                {
+                    block = true;
+                    foodLoc.set(temp);
+                }
+                if (temp != null) temp.freeVectorFromPool();
+                if (!foodLoc.isEmpty()) return;
+            }
+            else
+            {
+                if (PokecubeMod.semiHardMode && Math.random() > 0.0075)
+                {
+                    v.set(hungrymob).offsetBy(EnumFacing.DOWN);
+                    if (b == Blocks.cobblestone)
+                    {
+                        TickHandler.addBlockChange(v, entity.dimension, Blocks.gravel);
+                    }
+                    else if (b == Blocks.gravel && Mod_Pokecube_Helper.pokemobsEatGravel)
+                    {
+                        TickHandler.addBlockChange(v, entity.dimension, Blocks.air);
+                    }
+                    else if (b.getMaterial() == Material.rock)
+                    {
+                        TickHandler.addBlockChange(v, entity.dimension, Blocks.cobblestone);
+                    }
+                }
+                berry.setEntityItemStack(new ItemStack(b));
+                setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+                hungrymob.eat(berry);
+                return;
+            }
+        }
+        if (hungrymob.isElectrotroph())
+        {
+            int num = v.blockCount(world, Blocks.redstone_block, 8);
+            if (num < 1)
+            {
+
+            }
+            else
+            {
+                hungrymob.setHungerTime(0);
+                setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+                return;
+            }
+        }
+
+        if (pokemob.getPokedexEntry().swims())
+        {
+            // List<Entity> list =
+            // world.getEntitiesWithinAABB(EntityFishHook.class,
+            // AxisAlignedBB
+            // .getBoundingBox(entity.posX, entity.posY, entity.posZ,
+            // entity.posX + 1.0D, entity.posY + 1.0D, entity.posZ + 1.0D)
+            // .expand(20D, 20D, 20D));//TODO threadsafe this
+            // if (!list.isEmpty())
+            // {
+            // Entity nearest = null;
+            // double ds = 600;
+            // double dt;
+            // Vector3 v = Vector3.getNewVectorFromPool();
+            // for (Entity e : list)
+            // {
+            // dt = e.getDistanceSqToEntity(entity);
+            // if (dt < ds && Vector3.isVisibleEntityFromEntity(e, entity))
+            // {
+            // ds = dt;
+            // nearest = e;
+            // }
+            // }
+            // v.freeVectorFromPool();
+            // if (nearest != null)
+            // {
+            // System.out.println("Found a bait " +
+            // pokemob.getPokemonDisplayName());
+            //
+            // PathEntity path
+            // =entity.getNavigator().getPathToEntityLiving(nearest);
+            // PokemobAIThread.addEntityPath(entity.getEntityId(),
+            // entity.dimension, path, moveSpeed);
+            // return false;
+            // }
+            // }
+        }
+
+        // check inventory for berries
+        for (int i = 2; i < 7; i++)
+        {
+            ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
+            if (stack != null && stack.getItem() instanceof ItemBerry)
+            {
+                stack.stackSize--;
+                if (stack.stackSize <= 0)
+                {
+                    pokemob.getPokemobInventory().setInventorySlotContents(i, null);
+                }
+                setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+                hungrymob.eat(berry);
+                return;
+            }
+        }
+        // Tame pokemon can eat berries out of trapped chests, so check for
+        // one
+        // of those here.
+        if (pokemob.getPokemonAIState(IPokemob.TAMED))
+        {
+            IInventory container = null;
+            v.set(hungrymob).add(0, entity.height, 0);
+
+            Vector3 temp = v.findClosestVisibleObject(world, true, 10, Blocks.trapped_chest);
+
+            if (temp != null && temp.getBlock(world) == Blocks.trapped_chest)
+            {
+                container = (IInventory) temp.getTileEntity(world);
+
+                for (int i1 = 0; i1 < 27; i1++)
+                {
+                    ItemStack stack = container.getStackInSlot(i1);
+                    if (stack != null && stack.getItem() instanceof ItemBerry)
+                    {
+                        stack.stackSize--;
+                        if (stack.stackSize <= 0)
+                        {
+                            container.setInventorySlotContents(i1, null);
+                        }
+                        setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+
+                        PathEntity path = entity.getNavigator().getPathToXYZ(temp.x, temp.y, temp.z);
+                        addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                        hungrymob.eat(berry);
+                        temp.freeVectorFromPool();
+                        return;
+                    }
+                }
+            }
+            if (temp != null)
+            {
+                temp.freeVectorFromPool();
+            }
+        }
+
+        // No food already obtained, reset mating rules, hungry things don't
+        // mate
+        if (pokemob instanceof IBreedingMob) ((IBreedingMob) pokemob).resetLoveStatus();
+
+        if (pokemob.getPokemonAIState(IPokemob.TAMED) && pokemob.getPokemonAIState(IPokemob.SITTING))
+        {
+            hungrymob.setHungerCooldown(100);
+            setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+            return;
+        }
+        block = false;
+        v.set(hungrymob).add(0, entity.height, 0);
+
+        if (foodLoc.isEmpty())
+        {
+            if (!block && hungrymob.eatsBerries())
+            {
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
+                if (temp != null)
+                {
+                    block = true;
+                    foodLoc.set(temp);
+                }
+                if (temp != null) temp.freeVectorFromPool();
+            }
+            if (!block && hungrymob.isHerbivore())
+            {
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
+                if (temp != null)
+                {
+                    block = true;
+                    foodLoc.set(temp);
+                }
+                if (temp != null) temp.freeVectorFromPool();
+            }
+            if (!block && hungrymob.filterFeeder())
+            {
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, Blocks.water);
+                if (entity.isInWater())
+                {
+                    hungrymob.eat(berry);
+                    setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+                    return;
+                }
+
+                if (temp != null)
+                {
+                    block = true;
+                    foodLoc.set(temp);
+                }
+                if (temp != null) temp.freeVectorFromPool();
+            }
+        }
+
+        if (foodLoc.isEmpty())
+        {
+            hungrymob.setHungerCooldown(10);
+            setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+        }
+    }
+
+    protected void eatBerry(Block block, double distance)
+    {
+        ItemStack fruit = ((IBerryFruitBlock) block).getBerryStack(world, foodLoc.intX(), foodLoc.intY(),
+                foodLoc.intZ());
+
+        if (fruit == null)
+        {
+            foodLoc.clear();
+            hungrymob.noEat(null);
+            return;
+        }
+
+        if (distance < 3)
+        {
+            setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+            berry.setEntityItemStack(fruit);
+            hungrymob.eat(berry);
+            toRun.addElement(new InventoryChange(entity, 2, fruit, true));
+            TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.air);
+            foodLoc.clear();
+        }
+        else if (entity.ticksExisted % 20 == 0)
+        {
+            boolean shouldChangePath = true;
+            if (!this.entity.getNavigator().noPath())
+            {
+                Vector3 p = v.set(this.entity.getNavigator().getPath().getFinalPathPoint());
+                Vector3 v = v1.set(foodLoc);
+                if (p.distToSq(v) <= 16) shouldChangePath = false;
+            }
+            PathEntity path = null;
+            if (shouldChangePath
+                    && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
+            {
+                addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+                berry.setEntityItemStack(fruit);
+                hungrymob.noEat(berry);
+                foodLoc.clear();
+            }
+            else addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+        }
+    }
+
+    protected void eatPlant(Block plant, double dist)
+    {
+        double diff = 2;
+        diff = Math.max(diff, entity.width);
+        if (dist < diff)
+        {
+            setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+            berry.setEntityItemStack(new ItemStack(plant));
+            hungrymob.eat(berry);
+            TickHandler.addBlockChange(foodLoc, entity.dimension,
+                    plant.getMaterial() == Material.grass ? Blocks.dirt : Blocks.air);
+            if (plant.getMaterial() != Material.grass)
+            {
+                for (ItemStack stack : plant.getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0))
+                    toRun.addElement(new InventoryChange(entity, 2, stack, true));
+            }
+            foodLoc.clear();
+            addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+        }
+        else if (entity.ticksExisted % 20 == 0)
+        {
+            boolean shouldChangePath = true;
+            block = false;
+            v.set(hungrymob).add(0, entity.height, 0);
+            Vector3 p, m;
+            if (hungrymob.isHerbivore())
+            {
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
+                if (temp != null)
+                {
+                    block = true;
+                    foodLoc.set(temp);
+                }
+                if (temp != null) temp.freeVectorFromPool();
+            }
+
+            if (!block && hungrymob.eatsBerries())
+            {
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
+                if (temp != null)
+                {
+                    block = true;
+                    foodLoc.set(temp);
+                }
+                if (temp != null) temp.freeVectorFromPool();
+            }
+
+            if (!this.entity.getNavigator().noPath())
+            {
+                p = v.set(this.entity.getNavigator().getPath().getFinalPathPoint());
+                m = v1.set(foodLoc);
+                if (p.distToSq(m) <= 16) shouldChangePath = true;
+            }
+            PathEntity path = null;
+            if (shouldChangePath
+                    && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
+            {
+                setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+                berry.setEntityItemStack(new ItemStack(plant));
+                hungrymob.noEat(berry);
+                foodLoc.clear();
+                addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+            }
+            else addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+        }
+    }
+
+    protected void eatRocks(Block rock, double dist)
+    {
+        double diff = 2;
+        diff = Math.max(diff, entity.width);
+        if (dist < diff)
+        {
+            if (PokecubeMod.semiHardMode && Math.random() > 0.0075)
+            {
+                if (rock == Blocks.cobblestone)
+                {
+                    TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.gravel);
+                }
+                else if (rock == Blocks.gravel && Mod_Pokecube_Helper.pokemobsEatGravel)
+                {
+                    TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.air);
+                }
+                else if (rock.getMaterial() == Material.rock)
+                {
+                    TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.cobblestone);
+                }
+            }
+
+            setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+            berry.setEntityItemStack(new ItemStack(rock));
+            hungrymob.eat(berry);
+            foodLoc.clear();
+            addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+        }
+        else if (entity.ticksExisted % 20 == 0)
+        {
+            boolean shouldChangePath = true;
+            block = false;
+            v.set(hungrymob).add(0, entity.height, 0);
+
+            Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, Mod_Pokecube_Helper.getRocks());
+            if (temp != null)
+            {
+                block = true;
+                foodLoc.set(temp);
+            }
+            if (temp != null) temp.freeVectorFromPool();
+
+            Vector3 p, m;
+            if (!this.entity.getNavigator().noPath())
+            {
+                p = v.set(this.entity.getNavigator().getPath().getFinalPathPoint());
+                m = v1.set(foodLoc);
+                if (p.distToSq(m) <= 16) shouldChangePath = true;
+
+            }
+            boolean pathed = false;
+            PathEntity path = null;
+            if (shouldChangePath)
+            {
+                path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z);
+                pathed = path != null;
+                addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+            }
+
+            if (shouldChangePath && !pathed)
+            {
+                setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+                berry.setEntityItemStack(new ItemStack(rock));
+                hungrymob.noEat(berry);
+                foodLoc.clear();
+                if (pokemob.hasHomeArea())
+                {
+                    path = entity.getNavigator().getPathToXYZ(pokemob.getHome().getX(), pokemob.getHome().getY(),
+                            pokemob.getHome().getZ());
+                    addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                }
+                else
+                {
+                    addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+                }
+            }
+        }
+    }
 }

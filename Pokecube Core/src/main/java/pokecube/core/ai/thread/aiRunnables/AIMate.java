@@ -13,7 +13,6 @@ import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.TickHandler;
-import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
 
 public class AIMate extends AIBase
@@ -232,32 +231,5 @@ public class AIMate extends AIBase
             }
         }
         return null;
-    }
-
-    List<Object> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)
-    {
-        Vector<?> entities = ExplosionCustom.worldEntities.get(entity.dimension);
-        List<Object> list = new ArrayList<Object>();
-        double dsq = distance * distance;
-        if (entities != null)
-        {
-            List<?> temp = new ArrayList<Object>(entities);
-            for (Object o : temp)
-            {
-                boolean correctClass = true;
-                for (Class<?> claz : targetClass)
-                {
-                    correctClass = correctClass && claz.isInstance(o);
-                }
-                if (correctClass)
-                {
-                    if (entity.getDistanceSqToEntity((Entity) o) < dsq)
-                    {
-                        list.add(o);
-                    }
-                }
-            }
-        }
-        return list;
     }
 }

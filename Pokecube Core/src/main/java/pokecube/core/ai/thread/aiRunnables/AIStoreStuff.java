@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
 import pokecube.core.ai.utils.StorableAI;
@@ -19,6 +20,7 @@ import thut.api.maths.Vector3;
 
 public class AIStoreStuff extends AIBase implements StorableAI
 {
+    public static int  COOLDOWN  = 2000;
     final EntityLiving entity;
     final boolean[]    states    = { false, false };
     final int[]        cooldowns = { 0, 0 };
@@ -38,7 +40,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
         IPokemob pokemob = (IPokemob) entity;
 
         if (pokemob.getHome() == null) return false;
-        
+
         IInventory inventory = pokemob.getPokemobInventory();
         ItemStack stack;
         states[0] = (stack = inventory.getStackInSlot(2)) != null && stack.getItem() instanceof ItemBerry;
@@ -57,7 +59,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
     {
         IPokemob pokemob = (IPokemob) entity;
         Vector3 temp = Vector3.getNewVectorFromPool();
-        temp.set(pokemob.getHome());
+        temp.set(pokemob.getHome()).offsetBy(EnumFacing.UP);
 
         temp.set(temp.findClosestVisibleObject(world, true, 10, IInventory.class));
         seeking.set(temp);
@@ -87,7 +89,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
         Vector3 temp = seeking;
         cooldowns[0]--;
         cooldowns[1]--;
-        
+
         // If too far away, path to the nest for items, that is done on other
         // thread.
         if (cooldowns[0] > 0 || cooldowns[1] > 0 || temp.distToEntity(entity) > 3) { return; }
@@ -119,7 +121,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
                         break;
                     }
                 }
-                if(!states[0]) cooldowns[0] = 2000;
+                if (!states[0]) cooldowns[0] = COOLDOWN;
             }
             if (!states[1])
             {
@@ -136,7 +138,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
                     }
                 }
                 if (index <= 2) states[1] = true;
-                if(!states[1]) cooldowns[1] = 2000;
+                if (!states[1]) cooldowns[1] = COOLDOWN;
             }
         }
     }
@@ -180,7 +182,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
                     {
                         i = itemStackIn.stackSize;
                         itemStackIn.stackSize = storePartialItemStack(itemStackIn, toAddTo, minIndex);
-                        System.out.println(itemStackIn);
+
                         if (itemStackIn.stackSize <= 0 || itemStackIn.stackSize >= i)
                         {
                             break;

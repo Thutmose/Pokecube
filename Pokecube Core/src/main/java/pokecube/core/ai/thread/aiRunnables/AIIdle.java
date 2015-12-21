@@ -87,7 +87,6 @@ public class AIIdle extends AIBase
                 }
                 distance = (int) Math.min(distance, mob.getHomeDistance());
                 v.set(mob.getHome());
-                v.set(entity);
             }
             else
             {

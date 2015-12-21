@@ -44,6 +44,7 @@ import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.thread.aiRunnables.AIAttack;
 import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
+import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
 import pokecube.core.ai.thread.logicRunnables.LogicCollision;
@@ -155,6 +156,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         PokemobAIThread.addAI(this, (mate = new AIMate(this)).setPriority(3));
         males = mate.males;
         PokemobAIThread.addAI(this, new AIHungry(this, new EntityItem(worldObj), 16).setPriority(3));
+        PokemobAIThread.addAI(this, new AIGatherStuff(this, 32).setPriority(4));
         PokemobAIThread.addAI(this, new AIIdle(this).setPriority(5));
         PokemobAIThread.addAI(this, new AIFindTarget(this).setPriority(4));
 
@@ -1039,7 +1041,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             return false;
         }
-//        System.out.println(this);
+
         if (getPokedexEntry().interact(player, this, true)) return true;
 
         Item torch = Item.getItemFromBlock(Blocks.torch);
@@ -1273,6 +1275,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void jump()
     {
+//        if(true)
+//        {
+//            super.jump();
+//            return;
+//        }
+        
+        
         if (worldObj.isRemote) return;
 
         if (!this.isInWater() && !this.isInLava())

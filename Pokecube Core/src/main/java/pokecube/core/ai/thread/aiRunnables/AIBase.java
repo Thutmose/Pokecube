@@ -22,6 +22,7 @@ import pokecube.core.ai.thread.IAIRunnable;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokecubeSerializer;
+import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
 
 public abstract class AIBase implements IAIRunnable
@@ -119,6 +120,33 @@ public abstract class AIBase implements IAIRunnable
     protected void addEntityPath(int id, int dim, PathEntity path, double speed)
     {
         toRun.add(new PathInfo(id, dim, path, speed));
+    }
+    
+    List<Object> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)
+    {
+        Vector<?> entities = ExplosionCustom.worldEntities.get(source.dimension);
+        List<Object> list = new ArrayList<Object>();
+        double dsq = distance * distance;
+        if (entities != null)
+        {
+            List<?> temp = new ArrayList<Object>(entities);
+            for (Object o : temp)
+            {
+                boolean correctClass = true;
+                for (Class<?> claz : targetClass)
+                {
+                    correctClass = correctClass && claz.isInstance(o);
+                }
+                if (correctClass)
+                {
+                    if (source.getDistanceSqToEntity((Entity) o) < dsq)
+                    {
+                        list.add(o);
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     /** A thread-safe object used to set the current path for an entity.

@@ -205,7 +205,14 @@ public class PokemobAIThread
                 todo.addAll(v);
                 for(AIStuff stuff: todo)
                 {
-                    stuff.runServerThreadTasks(evt.world);
+                    if(stuff.entity.isDead)
+                    {
+                        v.remove(stuff);
+                    }
+                    else
+                    {
+                        stuff.runServerThreadTasks(evt.world);
+                    }
                 }
                 todo.clear();
             }

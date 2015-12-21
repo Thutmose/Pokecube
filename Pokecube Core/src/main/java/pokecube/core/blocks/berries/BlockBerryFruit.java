@@ -15,6 +15,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
+import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.TileEntityBerryFruit;
 
@@ -23,7 +24,7 @@ import pokecube.core.items.berries.TileEntityBerryFruit;
  * @author Oracion
  * @author Manchou
  */
-public class BlockBerryFruit extends BlockBush implements ITileEntityProvider{
+public class BlockBerryFruit extends BlockBush implements ITileEntityProvider, IBerryFruitBlock{
 	
 	public int berryIndex = 0;
 	public static int renderID;
@@ -144,4 +145,10 @@ public class BlockBerryFruit extends BlockBush implements ITileEntityProvider{
 	public TileEntity createNewTileEntity(World var1, int var2) {
 		return new TileEntityBerryFruit();
 	}
+
+    @Override
+    public ItemStack getBerryStack(IBlockAccess world, int x, int y, int z)
+    {
+        return BerryManager.getBerryItem(berryName);
+    }
 }

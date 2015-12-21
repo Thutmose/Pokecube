@@ -36,7 +36,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
-        if (world == null || entity.ticksExisted % 10 > 0) return false;
+        if (world == null || entity.ticksExisted % 10 > 0 || tameCheck()) return false;
         IPokemob pokemob = (IPokemob) entity;
 
         if (pokemob.getHome() == null) return false;
@@ -52,6 +52,15 @@ public class AIStoreStuff extends AIBase implements StorableAI
             states[1] = (stack = inventory.getStackInSlot(i)) == null;
         }
         return !states[1] && cooldowns[1] < 0;
+    }
+
+    /** Only tame pokemobs set to "stay" should run this AI.
+     * 
+     * @return */
+    private boolean tameCheck()
+    {
+        IPokemob pokemob = (IPokemob) entity;
+        return pokemob.getPokemonAIState(IPokemob.TAMED) && !pokemob.getPokemonAIState(IPokemob.STAYING);
     }
 
     @Override

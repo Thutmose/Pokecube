@@ -45,7 +45,7 @@ public class AIGatherStuff extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        if (world == null || pokemob.isAncient()) return false;
+        if (world == null || pokemob.isAncient() || tameCheck()) return false;
 
         if (pokemob.getHome() == null) return false;
 
@@ -58,6 +58,14 @@ public class AIGatherStuff extends AIBase
             states[0] = inventory.getStackInSlot(i) == null;
         }
         return states[0] && cooldowns[0] < 0;
+    }
+
+    /** Only tame pokemobs set to "stay" should run this AI.
+     * 
+     * @return */
+    private boolean tameCheck()
+    {
+        return pokemob.getPokemonAIState(IPokemob.TAMED) && !pokemob.getPokemonAIState(IPokemob.STAYING);
     }
 
     @Override

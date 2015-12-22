@@ -83,6 +83,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 		super(par1World);
 
         this.setSize(0.6F, 1.8F);
+        this.renderDistanceWeight = 4;
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(1, new EntityAITrainer(this, EntityPlayer.class));
         this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));

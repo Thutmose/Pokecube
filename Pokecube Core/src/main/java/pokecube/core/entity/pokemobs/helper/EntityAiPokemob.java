@@ -31,6 +31,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
@@ -1369,6 +1371,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         popped = true;
     }
 
+    @Override
     public void setMoveForward(float forward)
     {
         this.moveForward = forward;
@@ -1387,6 +1390,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         return dataWatcher.getWatchableObjectFloat(DIRECTIONPITCHDW);
     }
 
+    @Override
     /** Called when a user uses the creative pick block button on this entity.
      *
      * @param target
@@ -1396,5 +1400,25 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public ItemStack getPickedResult(MovingObjectPosition target)
     {
         return ItemPokemobEgg.getEggStack(this);
+    }
+    
+    @Override
+    /**
+     * Checks if the entity is in range to render by using the past in distance and comparing it to its average edge
+     * length * 64 * renderDistanceWeight Args: distance
+     */
+    @SideOnly(Side.CLIENT)
+    public boolean isInRangeToRenderDist(double distance)
+    {
+        double d0 = this.getEntityBoundingBox().getAverageEdgeLength();
+
+        if (Double.isNaN(d0))
+        {
+            d0 = 1.0D;
+        }
+        d0 = Math.max(1, d0);
+
+        d0 = d0 * 64.0D * this.renderDistanceWeight;
+        return distance < d0 * d0;
     }
 }

@@ -621,7 +621,7 @@ public class mod_Pokecube extends PokecubeMod
         {
 
         }
-        // TODO figure out good spawn weights
+        // TODO figure out good spawn weights, Also config for these
         GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);

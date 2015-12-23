@@ -303,7 +303,7 @@ public class PokemobAIThread
                                 }
                                 try
                                 {
-                                    unloadedMobs = b.worldObj.unloadedEntityList;
+                                    unloadedMobs = new ArrayList(b.worldObj.unloadedEntityList);
                                 }
                                 catch (Exception e1)
                                 {
@@ -331,7 +331,7 @@ public class PokemobAIThread
                                         if (uid % threadCount != id) continue;
                                     }
 
-                                    ArrayList list = stuff.aiTasks;
+                                    ArrayList list = (ArrayList) stuff.aiTasks.clone();
                                     if (list != null) for (IAIRunnable ai : (ArrayList<IAIRunnable>) list)
                                     {
                                         try

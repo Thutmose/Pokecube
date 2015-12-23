@@ -39,7 +39,6 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         here.set(this);
         if (worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
         {
-            System.out.println("loop");
             if(stopped)
             {
                 worldObj.playRecord(pos, "pokecube:pokecenterloop");

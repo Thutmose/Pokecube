@@ -859,7 +859,6 @@ public class Database implements IMoveConstants
             {
                 for (String an : any)
                 {
-
                     String[] vals = an.trim().split(" ");
 
                     if (vals.length <= 1) continue;

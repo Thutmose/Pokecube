@@ -51,10 +51,8 @@ public class BlockHealTable extends Block implements ITileEntityProvider
         		player.addChatMessage(new ChatComponentText("Set Block to "+((Boolean)state.getValue(BlockHealTable.FIXED)?"Breakable":"Unbreakable")));
         		world.setBlockState(pos, state);
         	}
-        	
             return false;
         }
-
         player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUIPOKECENTER_ID, world, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }

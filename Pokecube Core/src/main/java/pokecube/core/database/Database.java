@@ -595,6 +595,7 @@ public class Database implements IMoveConstants
                         e.hasSpecialTextures[4] = Boolean.parseBoolean(args[3].split("#")[0]);
                         e.defaultSpecial = Integer.parseInt(args[3].split("#")[1]);
                     }
+                    if (args.length > 4 && !args[4].isEmpty()) e.isStationary = Boolean.parseBoolean(args[2]);
                 }
                 if (s.size() > 19)
                 {

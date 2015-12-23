@@ -721,12 +721,6 @@ public class mod_Pokecube extends PokecubeMod
             {
                 p.setSound(ID + ":mobs." + p.getName());
                 n++;
-                // TODO read this from database instead of here
-                if (p.getPokedexNb() == 345 || p.getPokedexNb() == 346 || p.getPokedexNb() == 91)
-                {
-                    p.isStationary = true;
-                }
-
             }
             else
             {

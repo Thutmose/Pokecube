@@ -1,4 +1,4 @@
-Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mode,Gender Ratio,Base FriendShip,Common Drop,Rare Drop,Food Drop,Held Item,Particle Effects,Hated Material Rules,Logic: Shoulder:Fly:Dive:Dye#defaultcolour,Shadow Replacements,Food Material,Active Times,Interaction Logic
+Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mode,Gender Ratio,Base FriendShip,Common Drop,Rare Drop,Food Drop,Held Item,Particle Effects,Hated Material Rules,Logic: Shoulder:Fly:Dive:Dye#defaultcolour:Stationary,Shadow Replacements,Food Material,Active Times,Interaction Logic
 1,Bulbasaur ,64,0,0,0,1,0,0,Medium Slow,31,70,1:wheat_seeds,,,0,,,FALSE,,light,,
 2,Ivysaur ,142,0,0,0,1,1,0,Medium Slow,31,70,2:wheat_seeds,,,0,,,FALSE,,light,,
 3,Venusaur ,236,0,0,0,2,1,0,Medium Slow,31,70,3:wheat_seeds,,,0,,,FALSE,,light,,
@@ -89,7 +89,7 @@ Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mo
 88,Grimer ,65,1,0,0,0,0,0,Medium Fast,127,70,1:slime_ball,,,0,,,FALSE,zombie:slime,,,
 89,Muk ,175,1,1,0,0,0,0,Medium Fast,127,70,2:slime_ball,,,0,,,FALSE,,,,
 90,Shellder ,61,0,0,1,0,0,0,Slow,127,70,,1:ender_pearl,,0,,,FALSE,,water,,
-91,Cloyster ,184,0,0,2,0,0,0,Slow,127,70,,1:ender_pearl,,0,,,FALSE,,water,,
+91,Cloyster ,184,0,0,2,0,0,0,Slow,127,70,,1:ender_pearl,,0,,,FALSE::::TRUE,,water,,
 92,Gastly ,62,0,0,0,1,0,0,Medium Slow,127,70,1:ender_pearl,1:ghast_tear,,0,smoke:80,light:0.5:despawn,FALSE,ghast,,,
 93,Haunter ,142,0,0,0,2,0,0,Medium Slow,127,70,2:ender_pearl,,,0,,light:0.5:despawn,FALSE,,,,
 94,Gengar ,225,0,0,0,3,0,0,Medium Slow,127,70,3:ender_pearl,,,0,,light:0.5:despawn,FALSE,,,,
@@ -343,8 +343,8 @@ Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mo
 342,Crawdaunt ,164,0,2,0,0,0,0,Fluctuating,127,70,1:shears,,,0,,,FALSE,,water,,
 343,Baltoy ,60,0,0,0,0,1,0,Medium Fast,255,70,,,,0,,,FALSE,,,,
 344,Claydol ,175,0,0,0,0,2,0,Medium Fast,255,70,,,,0,,,FALSE,,,,
-345,Lileep ,71,0,0,0,0,1,0,Erratic,31,70,,,,0,,,FALSE,,,,
-346,Cradily ,173,0,0,0,0,2,0,Erratic,31,70,,,,0,,,FALSE,,,,
+345,Lileep ,71,0,0,0,0,1,0,Erratic,31,70,,,,0,,,FALSE::::TRUE,,,,
+346,Cradily ,173,0,0,0,0,2,0,Erratic,31,70,,,,0,,,FALSE::::TRUE,,,,
 347,Anorith ,71,0,1,0,0,0,0,Erratic,31,70,1:bone,,,0,,,FALSE,,,,
 348,Armaldo ,173,0,2,0,0,0,0,Erratic,31,70,2:bone,,,0,,,FALSE,,,,
 349,Feebas ,40,0,0,0,0,0,1,Erratic,127,70,,,1:fish,0,,,FALSE,,water,,

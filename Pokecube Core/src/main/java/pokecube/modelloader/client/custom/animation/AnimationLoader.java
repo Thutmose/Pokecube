@@ -497,6 +497,33 @@ public class AnimationLoader
         }
     }
 
+    public static void setTextureDetails(Node node, PokedexEntry entry)
+    {
+        if (node.getAttributes() == null) return;
+        String[] male = null, female = null;
+        if (node.getAttributes().getNamedItem("male") != null)
+        {
+            String shift;
+            shift = node.getAttributes().getNamedItem("male").getNodeValue();
+            male = shift.split(",");
+        }
+        if (node.getAttributes().getNamedItem("female") != null)
+        {
+            String shift;
+            shift = node.getAttributes().getNamedItem("female").getNodeValue();
+            female = shift.split(",");
+        }
+        if(female==null && male!=null)
+        {
+            female = male;
+        }
+        if(male!=null)
+        {
+            entry.textureDetails[0] = male;
+            entry.textureDetails[1] = female;
+        }
+    }
+
     public static boolean initModel(String s)
     {
         ResourceLocation model = null;

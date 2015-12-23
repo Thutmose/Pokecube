@@ -59,8 +59,9 @@ public class PokedexEntry
     public String[]            species;
     /** Inital list of species which are prey */
     protected String[]         food;
-    /** Array used for animated or gender based textures. */
-    protected String[][]       textureDetails     = { { "" }, null };
+    /** Array used for animated or gender based textures. Index 0 is the male
+     * textures, index 1 is the females */
+    public String[][]          textureDetails     = { { "" }, null };
     /** The abilities available to the pokedex entry. */
     protected String[]         abilities          = { null, null, null };
     /** Initial Happiness of the pokemob */

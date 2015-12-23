@@ -412,6 +412,10 @@ public class TabulaPackLoader extends AnimationLoader
                         {
                             addAdvancedFlap(part.getAttributes());
                         }
+                        else if(phaseName.equals("textures"))
+                        {
+                            setTextureDetails(part, entry);
+                        }
                     }
                     else if (part.getNodeName().equals("merges"))
                     {

@@ -450,9 +450,9 @@ public class Database implements IMoveConstants
                 }
                 e.height = Float.parseFloat(s.get(16));
 
-                if (s.size() > 22 && !s.get(22).isEmpty())
+                if (s.size() > 21 && !s.get(21).isEmpty())
                 {
-                    String[] matedata = s.get(22).split(";");
+                    String[] matedata = s.get(21).split(";");
                     for (String s1 : matedata)
                     {
                         args = s1.split(":");
@@ -475,21 +475,11 @@ public class Database implements IMoveConstants
                         e.preferedHeight = Double.parseDouble(strings[1]);
                     }
                 }
-                if (s.size() > 19)
-                {
-                    String[] texturedetails = s.get(19).split(":");
-                    String[][] details = new String[2][];
-                    String males = texturedetails[0];
-                    String females = texturedetails.length == 2 ? texturedetails[1] : null;
-                    details[0] = males.split("`");
-                    details[1] = females != null ? females.split("`") : null;
-                    e.textureDetails = details;
-                }
-                if (s.size() > 20 && !s.get(20).isEmpty())
+                if (s.size() > 19 && !s.get(19).isEmpty())
                 {
                     try
                     {
-                        e.mountedOffset = Double.parseDouble(s.get(20));
+                        e.mountedOffset = Double.parseDouble(s.get(19));
                     }
                     catch (NumberFormatException e1)
                     {
@@ -498,7 +488,7 @@ public class Database implements IMoveConstants
                 }
                 try
                 {
-                    e.mass = Double.parseDouble(s.get(21));
+                    e.mass = Double.parseDouble(s.get(20));
                 }
                 catch (Exception e1)
                 {

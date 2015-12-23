@@ -3,5 +3,6 @@
     <model name="">
         <phase name="global" rotation="1,0,0,0" offset="0,-1.8,0" scale="1.2" headAxis="1" headCap="-50,50"/>
         <phase name="quadWalk" leftHind="leg2" rightHind="leg1" leftFront="leg4" rightFront="leg3" duration="10"/>
+        <phase name="textures" male="1,2,3,4"/>
     </model>
 </ModelAnimator>

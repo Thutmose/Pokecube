@@ -305,6 +305,28 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     	return ret;
     }
     
+    public void lowerCooldowns()
+    {
+        boolean done = false;
+        for (int i = 0; i < 6; i++)
+        {
+            if(attackCooldown[i]<=0)
+            {
+                done = true;
+                break;
+            }
+            attackCooldown[i]--;
+        }
+        if(done)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                attackCooldown[i] = -1;
+            }
+        }
+        cooldown--;
+    }
+    
     public void throwCubeAt(Entity target)
     {
       	for(int j = 0; j<6; j++)
@@ -317,7 +339,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
       			worldObj.spawnEntityInWorld(entity);
       			out++;
       			attackCooldown[j] = ATTACKCOOLDOWN;
-      			cooldown = 200;
+      			cooldown = ATTACKCOOLDOWN;
       			globalCooldown = 200;
       			pokecubes[j] = null;
       			return;

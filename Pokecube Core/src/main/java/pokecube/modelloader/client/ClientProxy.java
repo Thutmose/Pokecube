@@ -30,6 +30,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void registerModelProvider(String modid, Object mod)
     {
+        super.registerModelProvider(modid, mod);
         if (!modelProviders.containsKey(modid)) modelProviders.put(modid, mod);
     }
 
@@ -72,6 +73,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void init()
     {
+        super.init();
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(ItemModelReloader.instance, 0,
                 new ModelResourceLocation("pokecube_ml:modelreloader", "inventory"));
     }

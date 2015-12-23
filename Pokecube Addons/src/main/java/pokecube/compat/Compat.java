@@ -178,7 +178,7 @@ public class Compat
     }
 
     @SubscribeEvent
-    public void pokemobSpawnCheck(SpawnEvent.Spawn evt)
+    public void pokemobSpawnCheck(SpawnEvent.Pre evt)
     {
         int id = evt.world.provider.getDimensionId();
         for (int i : Config.dimensionBlackList)

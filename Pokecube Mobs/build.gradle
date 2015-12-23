@@ -1,3 +1,5 @@
+
+// For those who want the bleeding edge
 buildscript {
     repositories {
         jcenter()
@@ -11,17 +13,22 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
-
-version = "2.0.25"
+/*
+// for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.2"
+}
+*/
+version = "1.0.0"
 group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Pokecube Core"
+archivesBaseName = "Pokecube Mobs"
 
 minecraft {
     version = "1.8.8-11.15.0.1635-1.8.8"
     runDir = "run"
     
     replace "@VERSION@", project.version
-    replaceIn "PokecubeMod.java"
+    replaceIn "PokecubeMobs.java"
     
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
@@ -73,17 +80,9 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+        exclude 'pokecube_at.cfg'
     }
 }
-
-jar {
-        manifest {
-        attributes 'FMLAT': 'pokecube_at.cfg'
-    }
-}
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
@@ -96,6 +95,9 @@ task deobfJar(type: Jar) {
 }
 
 artifacts {
-    //archives srcJar
-    archives deobfJar
+   // archives srcJar
+   // archives deobfJar
 }
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7

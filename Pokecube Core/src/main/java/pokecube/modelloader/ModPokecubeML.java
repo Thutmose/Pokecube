@@ -6,10 +6,12 @@ package pokecube.modelloader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
@@ -43,7 +45,8 @@ public class ModPokecubeML
     @Instance(ID)
     public static ModPokecubeML instance;
 
-    public static String[] addedPokemon;
+    public static ArrayList<String> addedPokemon;
+    public static Map<PokedexEntry, String> textureProviders = Maps.newHashMap();
 
     public static boolean info = false;
 
@@ -72,13 +75,13 @@ public class ModPokecubeML
         Configuration config = PokecubeMod.core.getPokecubeConfig(evt);
         doMetastuff();
         config.load();
-        addedPokemon = config.get(Configuration.CATEGORY_GENERAL, "pokemon", new String[] {"Zubat"}).getStringList();
+        String[] pokemon = config.get(Configuration.CATEGORY_GENERAL, "pokemon", new String[] {"Zubat"}).getStringList();
         info = config.getBoolean("printAll", Configuration.CATEGORY_GENERAL, info,
                 "will print all pokemon names to console on load");
         String[] files = config.getStringList("packs", Configuration.CATEGORY_GENERAL, new String[]{"Pokecube_Resources", "Gen_1", "Gen_2", "Gen_3", "Gen_4", "Gen_5", "Gen_6"}, "Resource Packs to add models");
         config.save();
         configDir = evt.getModConfigurationDirectory();
-        ArrayList<String> toAdd = Lists.newArrayList(addedPokemon);
+        ArrayList<String> toAdd = Lists.newArrayList(pokemon);
 
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
 
@@ -129,7 +132,7 @@ public class ModPokecubeML
             }
         }
 
-        addedPokemon = toAdd.toArray(new String[0]);
+        addedPokemon = toAdd;
 
         GameRegistry.registerItem(
                 new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),
@@ -151,7 +154,15 @@ public class ModPokecubeML
 
         for (String s : addedPokemon)
         {
-            if (Database.getEntry(s) != null) PokecubeMod.core.registerPokemon(true, this, s);
+            PokedexEntry e;
+            if ((e = Database.getEntry(s)) != null)
+            {
+                PokecubeMod.core.registerPokemon(true, this, s);
+                if(textureProviders.containsKey(e))
+                {
+                    e.setModId(textureProviders.get(e));
+                }
+            }
         }
         proxy.registerRenderInformation();
     }

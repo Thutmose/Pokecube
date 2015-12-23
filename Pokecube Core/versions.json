@@ -1,10 +1,11 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/238253-pokecube-core",
   "promos": {
-    "1.8.8-latest": "2.0.25",
-    "1.8.8-recommended": "2.0.25"
+    "1.8.8-latest": "2.0.26",
+    "1.8.8-recommended": "2.0.26"
   },
   "1.8.8": {
+    "2.0.26": "Texture info for pokemobs is now registered in the XML, rather than database.  See charizard, combee and pikachu for examples.",
     "2.0.25": "Re-adds ability to load from a sub-mod instead of just from resource packs.  Adds some internal events.",
     "2.0.24": "Adds gather and storage AI, fixes some gui issues with shaders. See GitHub for full list of changes.",
     "2.0.23": "fixes some lag issues with smokescreen, fixes some issues with statscollector, needed to enable some of the stuff for WAILA compat",

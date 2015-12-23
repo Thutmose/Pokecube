@@ -23,3 +23,6 @@ gradle*
 # other
 eclipse
 run
+
+#don't need multiples of these
+pokecube_mobs/*

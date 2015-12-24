@@ -8,9 +8,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAIOwnerHurtTarget;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,13 +39,14 @@ import pokecube.core.ai.pokemob.PokemobAIDodge;
 import pokecube.core.ai.pokemob.PokemobAIFollowOwner;
 import pokecube.core.ai.pokemob.PokemobAIHurt;
 import pokecube.core.ai.pokemob.PokemobAILeapAtTarget;
+import pokecube.core.ai.pokemob.PokemobAILook;
 import pokecube.core.ai.pokemob.PokemobAISwimming;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.thread.aiRunnables.AIAttack;
-import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
+import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
 import pokecube.core.ai.thread.logicRunnables.LogicCollision;
@@ -127,15 +127,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.tasks.addTask(1, new PokemobAISwimming(this));
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(1, new PokemobAIDodge(this));
-//        this.tasks.addTask(3, new PokemobAIMate(this));
         this.tasks.addTask(4, this.aiSit);
         this.tasks.addTask(5, guardAI);
         this.tasks.addTask(5, new PokemobAIUtilityMove(this));
 
         if (!entry.isStationary) this.tasks.addTask(6, new PokemobAIFollowOwner(this, 8.0F, 4.0F));
-
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F, 1f));
-        this.tasks.addTask(9, new EntityAILookIdle(this));
+        EntityAIBase ai;
+        this.tasks.addTask(8, ai = new PokemobAILook(this, EntityPlayer.class, 8.0F, 1f));
+        System.out.println(ai+" "+(ai.getMutexBits()&aiSit.getMutexBits()));
 
         this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
         this.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));

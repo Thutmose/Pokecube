@@ -352,7 +352,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
     @Override
     protected boolean isMovementBlocked()
     {
-        return getPokemonAIState(IPokemob.SITTING) || field_25052_g;
+        return field_25052_g || this.getHealth() <= 0.0F || getPokemonAIState(SLEEPING);
     }
 
     @Override

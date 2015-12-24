@@ -205,7 +205,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPC.class, new RenderPC());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
 
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBerryFruit.class, new RenderBerries());
+        // ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBerryFruit.class,
+        // new RenderBerries());
 
         MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
         MinecraftForge.EVENT_BUS.register(new GuiScrollableLists());
@@ -417,8 +418,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         registerItemTexture(Item.getItemFromBlock(log1), 1,
                 new ModelResourceLocation("pokecube:nanabWood", "inventory"));
 
-        
-        
         for (String ident : BerryPlantManager.cropsToRegister.keySet())
         {
             Block crop = BerryPlantManager.cropsToRegister.get(ident);
@@ -513,25 +512,22 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public EntityPlayer getPlayer(String playerName)
     {
-//        if (isOnClientSide())
+        if (playerName != null)
         {
-            if (playerName != null)
+            try
             {
-                try
-                {
-                    UUID.fromString(playerName);
-                    return getWorld().getPlayerEntityByUUID(UUID.fromString(playerName));
-                }
-                catch (Exception e)
-                {
+                UUID.fromString(playerName);
+                return getWorld().getPlayerEntityByUUID(UUID.fromString(playerName));
+            }
+            catch (Exception e)
+            {
 
-                }
-                return getWorld().getPlayerEntityByName(playerName);
             }
-            else
-            {
-                return Minecraft.getMinecraft().thePlayer;
-            }
+            return getWorld().getPlayerEntityByName(playerName);
+        }
+        else
+        {
+            return Minecraft.getMinecraft().thePlayer;
         }
     }
 

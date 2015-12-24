@@ -10,6 +10,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.b3d.B3DLoader;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
@@ -17,6 +19,8 @@ import pokecube.modelloader.CommonProxy;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.custom.RenderAdvancedPokemobModel;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
+import pokecube.modelloader.client.custom.animation.AnimationLoader.Model;
+import pokecube.modelloader.client.custom.obj.BakedRenderer;
 import pokecube.modelloader.client.tabula.TabulaPackLoader;
 import pokecube.modelloader.items.ItemModelReloader;
 
@@ -34,7 +38,21 @@ public class ClientProxy extends CommonProxy
         if (!modelProviders.containsKey(modid)) modelProviders.put(modid, mod);
     }
 
-    @SuppressWarnings("rawtypes")
+    @Override
+    public void preInit()
+    {
+        super.preInit();
+        OBJLoader.instance.addDomain(ModPokecubeML.ID);
+        B3DLoader.instance.addDomain(ModPokecubeML.ID);
+    }
+    
+    @Override
+    public void postInit()
+    {
+        BakedRenderer.init();
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void registerRenderInformation()
     {
@@ -48,7 +66,19 @@ public class ClientProxy extends CommonProxy
                 for (String s : modModels.get(modid))
                 {
                     if (AnimationLoader.models.containsKey(s))
-                        PokecubeMod.getProxy().registerPokemobRenderer(s, new RenderAdvancedPokemobModel(s, 1), mod);
+                    {
+                        Model model = AnimationLoader.models.get(s);
+                        if(model.model.getResourcePath().contains(".obj")||model.model.getResourcePath().contains(".b3d"))
+                        {
+                            RenderAdvancedPokemobModel render;
+                            PokecubeMod.getProxy().registerPokemobRenderer(s, render = new RenderAdvancedPokemobModel(s, 1), mod);
+                            render.model2Loc = model.model.toString();
+                        }
+                        else
+                        {
+                            PokecubeMod.getProxy().registerPokemobRenderer(s, new RenderAdvancedPokemobModel(s, 1), mod);
+                        }
+                    }
                 }
             }
         }
@@ -59,7 +89,7 @@ public class ClientProxy extends CommonProxy
             Object mod = null;
             for (String modid : modelProviders.keySet())
             {
-                if(modid.equalsIgnoreCase(entry.getModId()))
+                if (modid.equalsIgnoreCase(entry.getModId()))
                 {
                     mod = modelProviders.get(modid);
                     break;
@@ -110,9 +140,9 @@ public class ClientProxy extends CommonProxy
                     if (!TabulaPackLoader.loadModel(mod + ":" + AnimationLoader.MODELPATH + s))
                     {
                         boolean has = AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s);
-                        if(!has)
+                        if (!has)
                         {
-                            System.err.println("Did not find model for "+s);
+                            System.err.println("Did not find model for " + s);
                         }
                     }
                 }

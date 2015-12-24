@@ -486,7 +486,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             boolean fixed = false;
             return new GuiNewChooseFirstPokemob(null, fixed);
         }
-
         return null;
     }
 

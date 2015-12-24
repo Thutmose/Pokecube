@@ -19,9 +19,10 @@ import pokecube.core.database.PokedexEntry;
 public class CommonProxy
 {
     private HashMap<String, Object> mobProviders = new HashMap<String, Object>();
-    public static final String MODELPATH = "models/pokemobs/";
+    public static final String      MODELPATH    = "models/pokemobs/";
     /** texture folder */
-    public final static String TEXTUREPATH = "textures/entities/";
+    public final static String      TEXTUREPATH  = "textures/entities/";
+
     public void registerModelProvider(String modid, Object mod)
     {
         if (!mobProviders.containsKey(modid)) mobProviders.put(modid, mod);
@@ -32,6 +33,14 @@ public class CommonProxy
     {
         // unused server side. -- see ClientProxyPokecubeTemplate for
         // implementation
+    }
+
+    public void preInit()
+    {
+    }
+
+    public void postInit()
+    {
     }
 
     public void init()
@@ -74,7 +83,7 @@ public class CommonProxy
         {
             try
             {
-                ResourceLocation tex = new ResourceLocation(modid, MODELPATH+entry.getName()+".tbl");
+                ResourceLocation tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".tbl");
                 IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                 res.getInputStream().close();
                 return true;
@@ -83,7 +92,7 @@ public class CommonProxy
             {
                 try
                 {
-                    ResourceLocation tex = new ResourceLocation(modid, MODELPATH+entry.getName()+".xml");
+                    ResourceLocation tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".xml");
                     IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                     res.getInputStream().close();
                     return true;
@@ -92,14 +101,35 @@ public class CommonProxy
                 {
                     try
                     {
-                        ResourceLocation tex = new ResourceLocation(modid, MODELPATH+entry.getName()+".x3d");
+                        ResourceLocation tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".x3d");
                         IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                         res.getInputStream().close();
                         return true;
                     }
                     catch (Exception e4)
                     {
+                        try
+                        {
+                            ResourceLocation tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".b3d");
+                            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                            res.getInputStream().close();
+                            return true;
+                        }
+                        catch (Exception e5)
+                        {
 
+                            try
+                            {
+                                ResourceLocation tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".obj");
+                                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                                res.getInputStream().close();
+                                return true;
+                            }
+                            catch (Exception e6)
+                            {
+
+                            }
+                        }
                     }
                 }
             }

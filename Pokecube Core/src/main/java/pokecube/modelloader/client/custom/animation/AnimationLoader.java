@@ -33,17 +33,17 @@ public class AnimationLoader
     /** texture folder */
     public final static String TEXTUREPATH = "textures/entities/";
 
-    static String                              file       = "";
+    static String                              file        = "";
     @SuppressWarnings("rawtypes")
-    public static HashMap<String, LoadedModel> modelMaps  = new HashMap<String, LoadedModel>();
-    public static HashMap<String, Model>       models     = new HashMap<String, Model>();
+    public static HashMap<String, LoadedModel> modelMaps   = new HashMap<String, LoadedModel>();
+    public static HashMap<String, Model>       models      = new HashMap<String, Model>();
 
     public static void clear()
     {
         models.clear();
         modelMaps.clear();
     }
-    
+
     public static class Model
     {
         public ResourceLocation model;
@@ -131,7 +131,7 @@ public class AnimationLoader
                                 scale = getScale(part);
                                 rotation = getRotation(part);
                                 headDir = getHeadDir(part);
-                                headAxis = getHeadAxis(part, 2);
+                                headAxis = getHeadAxis(part, 1);
                                 setHeadCaps(part, headCaps);
                             }
                             catch (Exception e)
@@ -330,10 +330,7 @@ public class AnimationLoader
     public static LoadedModel<?> getModel(String name)
     {
         Model model = models.get(name);
-        if (model == null)
-        {
-            return null;
-        }
+        if (model == null) { return null; }
         if (modelMaps.get(model.name) != null) return modelMaps.get(model.name);
         parse(model);
         if (modelMaps.get(model.name) != null) return modelMaps.get(model.name);
@@ -513,11 +510,11 @@ public class AnimationLoader
             shift = node.getAttributes().getNamedItem("female").getNodeValue();
             female = shift.split(",");
         }
-        if(female==null && male!=null)
+        if (female == null && male != null)
         {
             female = male;
         }
-        if(male!=null)
+        if (male != null)
         {
             entry.textureDetails[0] = male;
             entry.textureDetails[1] = female;
@@ -528,7 +525,6 @@ public class AnimationLoader
     {
         ResourceLocation model = null;
         String anim = s + ".xml";
-
         // System.out.println(anim);
 
         ResourceLocation texture = new ResourceLocation(s.replace(MODELPATH, TEXTUREPATH) + ".png");
@@ -540,8 +536,26 @@ public class AnimationLoader
         }
         catch (IOException e1)
         {
-//            System.out.println("did not find "+s);
-            model = null;
+            try
+            {
+                model = new ResourceLocation(s + ".b3d");
+                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+                res.getInputStream().close();
+            }
+            catch (IOException e2)
+            {
+                try
+                {
+                    model = new ResourceLocation(s + ".obj");
+                    IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+                    res.getInputStream().close();
+                }
+                catch (IOException e3)
+                {
+                    // System.out.println("did not find "+s);
+                    model = null;
+                }
+            }
         }
         try
         {
@@ -556,8 +570,10 @@ public class AnimationLoader
                     PokedexEntry entry = Database.getEntry(name);
                     ResourceLocation animation = new ResourceLocation(
                             anim.replace(entry.getName(), entry.getBaseName()));
+                    
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
-                    System.out.println("Registerd an x3d model for "+name);
+                    System.out.println("Registerd an x3d model for " + name);
+                    
                 }
                 else
                 {

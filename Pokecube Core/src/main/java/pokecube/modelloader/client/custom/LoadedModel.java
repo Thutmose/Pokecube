@@ -8,7 +8,6 @@ import java.util.Set;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -47,8 +46,8 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 
     public float[] headCaps = { -180, 180 };
 
-    public float  rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
-    public float  rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
+    public float     rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
+    public float     rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
     ResourceLocation texture;
 
     public LoadedModel(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global, Model model)
@@ -58,13 +57,16 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         this.parts = parts;
         this.texture = model.texture;
         if (model.model.getResourcePath().contains(".x3d")) this.model = new X3dModel(model.model);
-        else this.model = new TblModel(model.model);
+        else if (model.model.getResourcePath().contains(".tbl")) this.model = new TblModel(model.model);
+
+        if (this.model == null) { return; }
+
         initModelParts();
         if (headDir == 2)
         {
             headDir = (this.model instanceof X3dModel) ? 1 : -1;
         }
-        if(headAxis == -2)
+        if (headAxis == -2)
         {
             headDir = (this.model instanceof X3dModel) ? 1 : 2;
         }
@@ -107,7 +109,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             {
                 PartAnimation anim = new PartAnimation(p.name);
                 anim.info = p;
-                anim.positions = p.getPhase(phase);
+                anim.rotations = p.getPhase(phase);
                 animation.animations.put(p.name, anim);
                 addChildrenToAnimation(animation, p, phase);
             }
@@ -132,8 +134,8 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 
             PartAnimation anim = new PartAnimation(s);
             anim.info = p2;
-            anim.positions = p2.getPhase(phase);
-            if (!animation.animations.containsKey(p2.name) || animation.animations.get(p2.name).positions == null)
+            anim.rotations = p2.getPhase(phase);
+            if (!animation.animations.containsKey(p2.name) || animation.animations.get(p2.name).rotations == null)
             {
                 animation.animations.put(p2.name, anim);
                 addChildrenToAnimation(animation, p2, phase);
@@ -192,7 +194,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
                 f2 += f4 * 0.2F;
             }
         }
-        
+
         float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * f1;
 
         f4 = this.handleRotationFloat(entity, f1);
@@ -210,16 +212,6 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             f6 = 1.0F;
         }
         GL11.glPushMatrix();
-        
-        int i = entity.getBrightnessForRender(f);
-        if (entity.isBurning())
-        {
-            i = 15728880;
-        }
-
-        int j = i % 65536;
-        int k = i / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
 
         String currentPhase = getPhaseFromEntity(entity, f6, f7, f3 - f2, f13);
 
@@ -335,8 +327,10 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         if (phaseMap.containsKey(currentPhase)
                 && phaseMap.get(currentPhase).doAnimation(entity, partName, part, partialTick))
         {
-//            AnimationBipedWalk walk = (AnimationBipedWalk) phaseMap.get(currentPhase);
-//            System.out.println(walk.namesL+" "+partName+" "+part.getParent().getSubParts().keySet());
+            // AnimationBipedWalk walk = (AnimationBipedWalk)
+            // phaseMap.get(currentPhase);
+            // System.out.println(walk.namesL+" "+partName+"
+            // "+part.getParent().getSubParts().keySet());
         }
         else if (phaseMap.containsKey(DEFAULTPHASE)
                 && phaseMap.get(DEFAULTPHASE).doAnimation(entity, partName, part, partialTick))
@@ -371,6 +365,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             ang2 = Math.max(ang2, headCaps[0]);
             ang2 = Math.min(ang2, headCaps[1]);
             Vector4 dir;
+            headAxis = 1;
             if (headAxis == 0)
             {
                 dir = new Vector4(headDir, 0, 0, ang);
@@ -384,24 +379,22 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
                 dir = new Vector4(0, headDir, 0, ang);
             }
             Vector4 dir2;
-            if (headAxis == 0)
+            if (headAxis == 2)
             {
-                dir2 = new Vector4(0, headDir, 0, -ang2);
+                dir2 = new Vector4(0, -headDir, 0, -ang2);
             }
-            else if (headAxis == 2)
+            else if (headAxis == 1)
             {
-                dir2 = new Vector4(0, 0, headDir, -ang2);
+                dir2 = new Vector4(0, 0, -headDir, -ang2);
             }
             else
             {
-                dir2 = new Vector4(headDir, 0, 0, -ang2);
+                dir2 = new Vector4(-headDir, 0, 0, -ang2);
             }
-            // dir = dir.addAngles(dir2);
-
             part.setPostRotations(dir);
             part.setPostRotations2(dir2);
         }
-        part.setRGBAB(new int[] { red, green, blue, 255, entity.getBrightnessForRender(0) });
+        part.setRGBAB(new int[] { red, green, blue, 255, entity.getBrightnessForRender(partialTick) });
         part.renderPart(partName);// .render(red, green, blue)
         for (String s : part.getSubParts().keySet())
         {

@@ -84,7 +84,6 @@ public class X3dObject implements IExtendedModelPart
 		preRot.glRotate();
 		GL11.glTranslated(postTrans.x, postTrans.y, postTrans.z);
 		GL11.glTranslated(-offset.x, -offset.y, -offset.z);
-
 		GL11.glPushMatrix();
 
 		GL11.glTranslated(offset.x, offset.y, offset.z);
@@ -93,7 +92,7 @@ public class X3dObject implements IExtendedModelPart
 		postRot2.glRotate();
 		GL11.glScalef(scale.x, scale.y, scale.z);
 		PTezzelator tez = PTezzelator.instance;
-		tez.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.BLOCK);//, VertexFormat.);
+        tez.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.BLOCK);
 		addForRender(tez);
 		tez.end();
 		GL11.glPopMatrix();
@@ -111,15 +110,17 @@ public class X3dObject implements IExtendedModelPart
 			for (Integer i : order)
 			{
 				m = i;
-//				Vertex faceNormal = vertexNormals.get(i);
+				
 				Vertex vertex = vertices.get(i);
-
+		        if(parent!=null && parent instanceof X3dObject)
+		            brightness = ((X3dObject)parent).brightness;
+		        
 		        short j = (short) (brightness >> 16 & 65535);
 		        short k = (short) (brightness & 65535);
 				TextureCoordinate textureCoordinate = i < textureCoordinates.size() ? textureCoordinates.get(i) : null;
 
-				if (textureCoordinate != null) tessellator.vertex(vertex.x, vertex.y,
-						vertex.z).color(red, green, blue, alpha).tex(textureCoordinate.u, textureCoordinate.v).tex2(j,k).endVertex();
+                if (textureCoordinate != null) tessellator.vertex(vertex.x, vertex.y,
+                        vertex.z).color(red, green, blue, alpha).tex(textureCoordinate.u, textureCoordinate.v).tex2(j,k).endVertex();
 				else tessellator.vertex(vertex.x, vertex.y, vertex.z).endVertex();
 			}
 		}

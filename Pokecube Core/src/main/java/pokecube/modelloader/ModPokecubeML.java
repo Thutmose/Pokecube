@@ -74,6 +74,7 @@ public class ModPokecubeML
     {
         Configuration config = PokecubeMod.core.getPokecubeConfig(evt);
         proxy.registerModelProvider(ID, this);
+        proxy.preInit();
         doMetastuff();
         config.load();
         String[] pokemon = config.getStringList("pokemon", Configuration.CATEGORY_GENERAL, new String[] {"Zubat"}, "extra Pokemobs to register on load");
@@ -171,7 +172,7 @@ public class ModPokecubeML
     @EventHandler
     private void postInit(FMLPostInitializationEvent evt)
     {
-
+        proxy.postInit();
     }
 
     @SideOnly(Side.CLIENT)

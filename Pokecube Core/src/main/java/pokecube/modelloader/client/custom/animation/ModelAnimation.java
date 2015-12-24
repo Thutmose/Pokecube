@@ -15,7 +15,7 @@ public class ModelAnimation
 		{
 			PartAnimation anim = animations.get(partName);
 			anim.doAnimation(entity, part, partialTick);
-			if(anim.positions == null)
+			if(anim.rotations == null)
 				return false;
 			return true;
 		}

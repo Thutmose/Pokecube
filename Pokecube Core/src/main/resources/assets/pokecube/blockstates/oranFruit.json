@@ -1,5 +1,15 @@
 {
-   "variants": {
-   "normal": { "model": "pokecube:oranFruit" }
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#None": "pokecube:blocks/oran"
+        },
+        "model": "pokecube:oran.obj"
+     },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{
+            "transform": "forge:default-block"
+        }]
     }
 }

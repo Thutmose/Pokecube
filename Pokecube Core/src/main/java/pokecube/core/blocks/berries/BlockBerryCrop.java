@@ -82,7 +82,7 @@ public class BlockBerryCrop extends BlockCrops {
         }
         if(i==7)
         {
-        	i = 0;
+        	i = 1;
         	if(!trees.contains(berryIndex))
         	{
 	        	Block fruit = BerryManager.berryFruits.get(berryIndex);

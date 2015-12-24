@@ -76,7 +76,6 @@ import pokecube.core.client.gui.blocks.GuiPC;
 import pokecube.core.client.gui.blocks.GuiTMCreator;
 import pokecube.core.client.gui.blocks.GuiTradingTable;
 import pokecube.core.client.models.ModelPokemobEgg;
-import pokecube.core.client.render.blocks.RenderBerries;
 import pokecube.core.client.render.blocks.RenderPC;
 import pokecube.core.client.render.blocks.RenderPokecubeTable;
 import pokecube.core.client.render.blocks.RenderTradingTable;
@@ -92,7 +91,6 @@ import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.berries.TileEntityBerryFruit;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.maths.Vector3;
@@ -207,7 +205,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPC.class, new RenderPC());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBerryFruit.class, new RenderBerries());
+//        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBerryFruit.class, new RenderBerries());
 
         MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
         MinecraftForge.EVENT_BUS.register(new GuiScrollableLists());
@@ -419,9 +417,11 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         registerItemTexture(Item.getItemFromBlock(log1), 1,
                 new ModelResourceLocation("pokecube:nanabWood", "inventory"));
 
-        for (String ident : BerryPlantManager.toRegister.keySet())
+        
+        
+        for (String ident : BerryPlantManager.cropsToRegister.keySet())
         {
-            Block crop = BerryPlantManager.toRegister.get(ident);
+            Block crop = BerryPlantManager.cropsToRegister.get(ident);
             map = (new StateMap.Builder()).ignore(new IProperty[] { BlockBerryCrop.AGE }).withSuffix("").build();
             registerItemTexture(Item.getItemFromBlock(crop), 0, new ModelResourceLocation(ident, "inventory"));
             ModelLoader.setCustomStateMapper(crop, map);

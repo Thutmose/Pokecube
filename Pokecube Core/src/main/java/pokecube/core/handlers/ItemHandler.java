@@ -63,9 +63,9 @@ import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.events.CaptureEvent.Post;
 import pokecube.core.events.CaptureEvent.Pre;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.items.ItemBlockTranslated;
 import pokecube.core.items.ItemLuckyEgg;
 import pokecube.core.items.ItemPokedex;
@@ -74,7 +74,6 @@ import pokecube.core.items.ItemTM;
 import pokecube.core.items.ItemTranslated;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
-import pokecube.core.items.berries.TileEntityBerryFruit;
 import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.megastuff.ItemMegastone;
 import pokecube.core.items.pokecubes.EntityPokecube;
@@ -380,8 +379,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
         TreeRemover.woodTypes.add(log0);
         TreeRemover.plantTypes.add(leaf0);
         TreeRemover.plantTypes.add(leaf1);
-
-        GameRegistry.registerTileEntity(TileEntityBerryFruit.class, "berry");
         
     }
 

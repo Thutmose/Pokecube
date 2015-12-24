@@ -1,5 +1,15 @@
 {
-   "variants": {
-   "normal": { "model": "pokecube:enigmaFruit" }
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#None": "pokecube:blocks/enigma"
+        },
+        "model": "pokecube:enigma.obj"
+     },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{
+            "transform": "forge:default-block"
+        }]
     }
 }

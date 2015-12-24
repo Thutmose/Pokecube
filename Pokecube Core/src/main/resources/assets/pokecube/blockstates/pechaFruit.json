@@ -1,5 +1,15 @@
 {
-   "variants": {
-   "normal": { "model": "pokecube:pechaFruit" }
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#None": "pokecube:blocks/pecha"
+        },
+        "model": "pokecube:pecha.obj"
+     },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{
+            "transform": "forge:default-block"
+        }]
     }
 }

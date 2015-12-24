@@ -1,5 +1,15 @@
 {
-   "variants": {
-   "normal": { "model": "pokecube:nanabFruit" }
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#None": "pokecube:blocks/nanab"
+        },
+        "model": "pokecube:nanab.obj"
+     },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{
+            "transform": "forge:default-block"
+        }]
     }
 }

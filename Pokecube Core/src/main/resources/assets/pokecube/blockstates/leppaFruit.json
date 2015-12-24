@@ -1,5 +1,15 @@
 {
-   "variants": {
-   "normal": { "model": "pokecube:leppaFruit" }
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#None": "pokecube:blocks/leppa"
+        },
+        "model": "pokecube:leppa.obj"
+     },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{
+            "transform": "forge:default-block"
+        }]
     }
 }

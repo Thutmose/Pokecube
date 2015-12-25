@@ -63,7 +63,7 @@ public class AnimationHelper
             Vector4 angle = null;
             if (z != 0)
             {
-                angle = new Vector4(0, 0, 1, z);
+                angle = new Vector4(1, 0, 0, z);
             }
             if (y != 0)
             {
@@ -73,7 +73,7 @@ public class AnimationHelper
                 }
                 else
                 {
-                    angle = new Vector4(0, 1, 0, y);
+                    angle = new Vector4(0, 0, 1, y);
                 }
             }
             if (x != 0)
@@ -84,7 +84,7 @@ public class AnimationHelper
                 }
                 else
                 {
-                    angle = new Vector4(1, 0, 0, x);
+                    angle = new Vector4(0, 1, 0, x);
                 }
             }
             if (angle != null) part.setPreRotations(angle);

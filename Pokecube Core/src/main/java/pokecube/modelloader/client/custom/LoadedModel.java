@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -220,6 +221,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         Vector4 yaw = new Vector4(0, 1, 0, rotationYaw);
         this.rotate();
         yaw.glRotate();
+        GlStateManager.rotate(-90, 1, 0, 0);
         this.translate();
 
         if (!scale.isEmpty()) GL11.glScaled(scale.x, scale.y, scale.z);
@@ -259,7 +261,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         if (isHead(parent.getName()))
         {
             float ang = (entity.rotationYaw) % 360;
-            float ang2 = entity.rotationPitch;
+            float ang2 = -entity.rotationPitch;
             float te = -entity.getRotationYawHead();
 
             ang += te;
@@ -272,7 +274,9 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             ang2 = Math.max(ang2, headCaps[0]);
             ang2 = Math.min(ang2, headCaps[1]);
             Vector4 dir;
-            headAxis = 1;
+
+            headAxis = 2;
+            headAxis2 = 0;
             if (headAxis == 0)
             {
                 dir = new Vector4(headDir, 0, 0, ang);

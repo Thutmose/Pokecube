@@ -355,10 +355,24 @@ public class TabulaPackLoader extends AnimationLoader
                     Node part = partsList.item(j);
                     if (part.getNodeName().equals("phase"))
                     {
-                        String phaseName = part.getAttributes().getNamedItem("name").getNodeValue();
+                        Node phase = part.getAttributes().getNamedItem("name") == null
+                                ? part.getAttributes().getNamedItem("type") : part.getAttributes().getNamedItem("name");
+                        String phaseName = phase.getNodeValue();
 
-                        if (phaseName.equals("global")) // Read settings for
-                                                        // global
+                        // Look for preset animations to load in
+                        boolean preset = false;
+
+                        for (String s : AnimationRegistry.animations.keySet())
+                        {
+                            if (phaseName.equals(s))
+                            {
+                                addAnimation(AnimationRegistry.make(s, part.getAttributes(), this));
+                                preset = true;
+                            }
+                        }
+                        // Global offset and rotation settings (legacy support
+                        // for head stuff as well)
+                        if (phaseName.equals("global"))
                         {
                             try
                             {
@@ -376,23 +390,23 @@ public class TabulaPackLoader extends AnimationLoader
                                 e.printStackTrace();
                             }
                         }
-                        else if (phaseName.equals("textures")) // Read texture
-                                                               // info
+                        // Texture Animation info
+                        else if (phaseName.equals("textures"))
                         {
                             setTextureDetails(part, entry);
                         }
-                        // Look for animations to load in
-                        for (String s : AnimationRegistry.animations.keySet())
+                        //Try to load in an animation.
+                        else if(!preset)
                         {
-                            if (phaseName.equals(s))
+                            Animation anim = AnimationBuilder.build(part, null);
+                            if (anim != null)
                             {
-                                addAnimation(AnimationRegistry.make(s, part.getAttributes(), this));
+                                addAnimation(anim);
                             }
                         }
                     }
-                    else if (part.getNodeName().equals("merges")) // Read
-                                                                  // animations
-                                                                  // to merge
+                    // Read in Animation Merges
+                    else if (part.getNodeName().equals("merges"))
                     {
                         String[] merges = part.getAttributes().getNamedItem("merge").getNodeValue().split("->");
                         mergedAnimations.put(merges[0], merges[1]);

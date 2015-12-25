@@ -26,7 +26,6 @@ import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.custom.LoadedModel;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
 import pokecube.modelloader.client.custom.PartInfo;
-import pokecube.modelloader.client.tabula.animation.AnimationRegistry;
 import pokecube.modelloader.client.tabula.components.Animation;
 import thut.api.maths.Vector3;
 
@@ -105,7 +104,7 @@ public class AnimationLoader
             for (int i = 0; i < modelList.getLength(); i++)
             {
                 Node modelNode = modelList.item(i);
-                String modelName = model.name;// modelNode.getAttributes().getNamedItem("name").getNodeValue();
+                String modelName = model.name;
                 HashMap<String, PartInfo> parts = new HashMap<String, PartInfo>();
                 HashMap<String, ArrayList<Vector5>> phaseList = new HashMap<String, ArrayList<Vector5>>();
                 NodeList partsList = modelNode.getChildNodes();

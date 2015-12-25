@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.tabula.animation;
+package pokecube.modelloader.client.custom.animation;
 
 import java.util.HashMap;
 
@@ -8,6 +8,11 @@ import org.w3c.dom.NamedNodeMap;
 
 import com.google.common.collect.Maps;
 
+import pokecube.modelloader.client.tabula.animation.AdvancedFlapAnimation;
+import pokecube.modelloader.client.tabula.animation.BasicFlapAnimation;
+import pokecube.modelloader.client.tabula.animation.BiWalkAnimation;
+import pokecube.modelloader.client.tabula.animation.QuadWalkAnimation;
+import pokecube.modelloader.client.tabula.animation.SnakeMovement;
 import pokecube.modelloader.client.tabula.components.Animation;
 
 /** Used for determining what animation to make when reading from XMLs

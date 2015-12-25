@@ -8,7 +8,7 @@ import org.w3c.dom.NamedNodeMap;
 
 import com.google.common.collect.Lists;
 
-import pokecube.modelloader.client.tabula.animation.AnimationRegistry.IPartRenamer;
+import pokecube.modelloader.client.custom.animation.AnimationRegistry.IPartRenamer;
 import pokecube.modelloader.client.tabula.components.Animation;
 import pokecube.modelloader.client.tabula.components.AnimationComponent;
 

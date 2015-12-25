@@ -3,7 +3,7 @@ package pokecube.modelloader.client.tabula.components;
 import com.google.common.collect.Ordering;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.modelloader.client.tabula.animation.AnimationRegistry.IPartRenamer;
+import pokecube.modelloader.client.custom.animation.AnimationRegistry.IPartRenamer;
 
 import java.util.ArrayList;
 import java.util.TreeMap;

@@ -512,15 +512,10 @@ public class PokecubePacketHandler
                 }
 
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
-                dat.readInt();// TODO Was reading w. need to find out where that
-                              // was sent from
-                float x = dat.readFloat();
-                float y = dat.readFloat();
-                float z = dat.readFloat();
+                boolean teleport = dat.readBoolean();
                 dat.readStringFromBuffer(20);
-                Vector3 vec = null;
-                vec = v.set(x, y + 1, z);
-                if (vec != null)
+                
+                if (teleport)
                 {
                     NBTTagCompound teletag = new NBTTagCompound();
                     PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(), teletag);

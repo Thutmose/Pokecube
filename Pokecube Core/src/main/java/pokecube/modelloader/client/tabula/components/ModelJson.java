@@ -17,7 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.modelloader.client.tabula.animation.IModelAnimator;
 import pokecube.modelloader.client.tabula.json.JsonTabulaModel;
 import pokecube.modelloader.client.tabula.model.modelbase.MowzieModelBase;
 import pokecube.modelloader.client.tabula.model.modelbase.MowzieModelRenderer;
@@ -38,8 +37,6 @@ public class ModelJson extends MowzieModelBase
     /** Map of CubeGroup Identifiers to Sets of Root parts on the group. Uses
      * the above list to get keys */
     public Map<String, Set<MowzieModelRenderer>> groupMap    = Maps.newHashMap();
-
-    private IModelAnimator animator;
 
     public ArrayList<Animation>       animations   = Lists.newArrayList();
     /** Map of names to animations, used to get animations for rendering more
@@ -79,12 +76,6 @@ public class ModelJson extends MowzieModelBase
         Collections.reverse(groupIdents);
 
         setInitPose();
-    }
-
-    public ModelJson(JsonTabulaModel model, IModelAnimator animator)
-    {
-        this(model);
-        this.animator = animator;
     }
 
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float rotation, float rotationYaw,
@@ -129,12 +120,6 @@ public class ModelJson extends MowzieModelBase
             if (playingAnimation != null || !playing.isEmpty())
             {
                 updateAnimation(entity, partialTicks);
-            }
-
-            if (animator != null)
-            {
-                animator.setRotationAngles(this, limbSwing, limbSwingAmount, rotation, rotationYaw, rotationPitch,
-                        partialTicks, entity);
             }
         }
     }
@@ -250,16 +235,12 @@ public class ModelJson extends MowzieModelBase
         {
             playingAnimation = animation;
             animationLength = 0;
-            for (Entry<String, ArrayList<AnimationComponent>> entry : playingAnimation.sets.entrySet())
+            
+            if(animation.getLength() < 0)
             {
-                for (AnimationComponent component : entry.getValue())
-                {
-                    if (component.startKey + component.length > animationLength)
-                    {
-                        animationLength = component.startKey + component.length;
-                    }
-                }
+                animation.initLength();
             }
+            animationLength = animation.getLength();
         }
     }
 

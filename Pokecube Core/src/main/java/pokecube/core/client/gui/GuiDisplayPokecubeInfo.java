@@ -36,7 +36,6 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
-import pokecube.core.utils.Vector4;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -340,7 +339,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         EntityPlayer player = minecraft.thePlayer;
         Vector3 look = Vector3.getNewVectorFromPool().set(player.getLook(1));
         Vector3 temp = Vector3.getNewVectorFromPool().set(player).addTo(0, player.getEyeHeight(), 0);
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
         buffer.writeBytes(message);
 
         Entity target = temp.firstEntityExcluding(32, look, player.worldObj, true, player);
@@ -386,15 +385,15 @@ public class GuiDisplayPokecubeInfo extends Gui
 
                     if (locations.size() > 0)
                     {
-                        Vector4 location = locations
-                                .get((GuiScrollableLists.instance().indexLocation) % locations.size()).loc;
-                        buffer.writeInt((int) location.w);
-                        buffer.writeFloat(location.x);
-                        buffer.writeFloat(location.y);
-                        buffer.writeFloat(location.z);
+                        buffer.writeBoolean(true);
+                    }
+                    else
+                    {
+                        buffer.writeBoolean(false);
                     }
                 }
             }
+            buffer.writeBoolean(false);
         }
         PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS,
                 buffer.array());

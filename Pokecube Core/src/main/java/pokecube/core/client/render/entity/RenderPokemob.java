@@ -25,7 +25,6 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.client.Resources;
 import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.PokedexEntry;
@@ -101,122 +100,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 //        float var7 = (1.0F + var4 * 0.1F) / var5;
 //        GL11.glScalef(var6, var7, var6);
     }
-  //TODO findout what this was for
-    /**
-     * Updates color multiplier based on creeper state called by getColorMultiplier
-     */
-    protected int updateCreeperColorMultiplier(EntityLiving par1EntityCreeper, float par2, float par3)
-    {
-//        float var5 = par1EntityCreeper.getCreeperFlashIntensity(par3);
-//
-//        if (var5>0)
-//        	System.out.println("CreeperFlashIntensity: " + var5);
-//        if ((int)(var5 * 10.0F) % 2 == 0)
-//        {
-//            return 0;
-//        }
-//        else
-//        {
-//            int a = (int)(var5 * 0.2F * 255.0F);
-//
-//            if (a < 0)
-//            {
-//                a = 0;
-//            }
-//
-//            if (a > 255)
-//            {
-//                a = 255;
-//            }
-//
-//            short r = 255;
-//            short g = 255;
-//            short b = 255;
-//            return a << 24 | r << 16 | g << 8 | b;
-//        }
-    	int a = 255;
-      short r = 255;
-      short g = 255;
-      short b = 255;
-      return a << 24 | r << 16 | g << 8 | b;
-    }
-    
-    protected int renderStatusModel(IPokemob pokemob, int par2, float par3)
-    {
-        if (pokemob.getStatus() == IMoveConstants.STATUS_PAR)
-        {
-            if (par2 == 1)
-            {
-                float var4 = ((Entity) pokemob).ticksExisted + par3;
-                // loadTexture
-                this.bindTexture(Resources.STATUS_PAR);
-                GL11.glMatrixMode(GL11.GL_TEXTURE);
-                GL11.glLoadIdentity();
-                float var5 = var4 * 0.005F;
-                float var6 = var4 * 0.005F;
-                GL11.glTranslatef(var5, var6, 0.0F);
-//                this.setRenderPassModel(this.modelStatus);//TODO find out if this was needed.
-                GL11.glMatrixMode(GL11.GL_MODELVIEW);
-                GL11.glEnable(GL11.GL_BLEND);
-                float var7 = 0.5F;
-                GL11.glColor4f(var7, var7, var7, 1.0F);
-                GL11.glDisable(GL11.GL_LIGHTING);
-                GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-                GL11.glScalef(1.05F, 1.05F, 1.05F);
-                return 1;
-            }
-
-            if (par2 == 2)
-            {
-                GL11.glMatrixMode(GL11.GL_TEXTURE);
-                GL11.glLoadIdentity();
-                GL11.glMatrixMode(GL11.GL_MODELVIEW);
-                GL11.glEnable(GL11.GL_LIGHTING);
-                GL11.glDisable(GL11.GL_BLEND);
-            }
-        }
-
-        if (pokemob.getStatus() == IMoveConstants.STATUS_FRZ)
-        {
-            if (par2 == 1)
-            {
-                float var4 = ((Entity) pokemob).ticksExisted + par3;
-                // loadTexture
-                this.bindTexture(Resources.STATUS_FRZ);
-                GL11.glMatrixMode(GL11.GL_TEXTURE);
-                GL11.glLoadIdentity();
-                float var5 = var4 * 0.001F;
-                float var6 = var4 * 0.001F;
-                GL11.glTranslatef(var5, var6, 0.0F);
-//                this.setRenderPassModel(this.modelStatus);//TODO find out if this was needed.
-                GL11.glMatrixMode(GL11.GL_MODELVIEW);
-                GL11.glEnable(GL11.GL_BLEND);
-                float var7 = 0.5F;
-                GL11.glColor4f(var7, var7, var7, 1.0F);
-//                GL11.glDisable(GL11.GL_LIGHTING);
-                GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-                GL11.glScalef(1.08F, 1.08F, 1.08F);
-                return 1;
-            }
-
-            if (par2 == 2)
-            {
-                GL11.glMatrixMode(GL11.GL_TEXTURE);
-                GL11.glLoadIdentity();
-                GL11.glMatrixMode(GL11.GL_MODELVIEW);
-                GL11.glEnable(GL11.GL_LIGHTING);
-                GL11.glDisable(GL11.GL_BLEND);
-            }
-        }
-        
-        return -1;
-    }
-
-//    @Override
-//    protected int shouldRenderPass(EntityLivingBase par1EntityLiving, int par2, float par3)
-//    {
-//    	return renderStatusModel((IPokemob) par1EntityLiving, par2, par3);
-//    }
 
     /**
      * Returns an ARGB int color back. Args: entityLiving, lightBrightness, partialTickTime
@@ -224,9 +107,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     @Override
     protected int getColorMultiplier(T par1EntityLiving, float par2, float par3)
     {
-//    	if (par3 > 0.5)
-//    		return getBlackColorMultiplier();//TODO
-        return 0;//this.updateCreeperColorMultiplier((EntityLiving)par1EntityLiving, par2, par3);
+        return super.getColorMultiplier(par1EntityLiving, par2, par3);
     }
     
     public float getScale() {

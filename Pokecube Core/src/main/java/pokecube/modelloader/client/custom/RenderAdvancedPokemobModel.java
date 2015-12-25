@@ -101,7 +101,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
             return;
         }
-        if (model == null || isTabula)
+        if (isTabula || model == null)
         {
             if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
                 return;
@@ -150,6 +150,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
         GlStateManager.enableBlend();
         GlStateManager.disableLighting();
+        model.currentPhase = getPhase(null, entity, f1);
         model.doRender((T) entity, d0, d1, d2, f, f1);
         GlStateManager.enableLighting();
         renderStatusModel(entity, d0, d1, d2, f, f1);
@@ -405,8 +406,10 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     private String getPhase(TabulaModelSet set, EntityLiving entity, float partialTick)
     {
+
         String phase = "idle";
-        ModelJson modelj = set.parser.modelMap.get(set.model);
+        ModelJson modelj = null;
+        if (set != null) set.parser.modelMap.get(set.model);
         IPokemob pokemob = (IPokemob) entity;
         float walkspeed = entity.prevLimbSwingAmount
                 + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
@@ -461,11 +464,9 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     // TODO allow this to handle non-tabula models properly as well.
     private void renderStatusModel(T entity, double d0, double d1, double d2, float f, float partialTick)
     {
-        if(model != null)
-        {
-            
-            return;
-        }
+        if (model != null) {
+
+        return; }
         IPokemob pokemob = (IPokemob) entity;
         byte status;
         if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
@@ -522,6 +523,10 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     private boolean hasPhase(TabulaModelSet set, ModelJson modelj, String phase)
     {
+        if(set==null && model!=null)
+        {
+            return LoadedModel.DEFAULTPHASE.equals(phase) || model.animations.containsKey(phase);
+        } 
         return modelj.animationMap.containsKey(phase) || set.loadedAnimations.containsKey(phase);
     }
 

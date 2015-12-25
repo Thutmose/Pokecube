@@ -18,24 +18,23 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Vector4;
+import pokecube.modelloader.client.custom.animation.AnimationHelper;
 import pokecube.modelloader.client.custom.animation.AnimationLoader.Model;
-import pokecube.modelloader.client.custom.animation.ModelAnimation;
-import pokecube.modelloader.client.custom.animation.PartAnimation;
 import pokecube.modelloader.client.custom.x3d.X3dModel;
+import pokecube.modelloader.client.tabula.components.Animation;
 import thut.api.maths.Vector3;
 
 public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 {
-    public static final String             DEFAULTPHASE = "idle";
-    public String                          name;
-    HashMap<String, PartInfo>              parts;
-    HashMap<String, ArrayList<Vector5>>    global;
-    HashSet<String>                        validPhases  = new HashSet<String>();
-    public HashMap<String, ModelAnimation> phaseMap     = new HashMap<String, ModelAnimation>();
-    public Set<String>                     headParts    = Sets.newHashSet();
+    public static final String          DEFAULTPHASE = "idle";
+    public String                       name;
+    public String                       currentPhase = "idle";
+    HashMap<String, PartInfo>           parts;
+    HashMap<String, ArrayList<Vector5>> global;
+    public HashMap<String, Animation>   animations   = new HashMap<String, Animation>();
+    public Set<String>                  headParts    = Sets.newHashSet();
 
     public Vector3 offset    = Vector3.getNewVectorFromPool();;
     public Vector3 scale     = Vector3.getNewVectorFromPool();;
@@ -43,13 +42,13 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 
     public IModel model;
 
-    public int headDir   = 2;
-    public int headAxis  = -3;
-    public int headAxis2 = -3;
+    public int         headDir        = 2;
+    public int         headAxis       = -3;
+    public int         headAxis2      = -3;
     /** A set of names of shearable parts. */
-    public Set<String>                shearableParts  = Sets.newHashSet();
+    public Set<String> shearableParts = Sets.newHashSet();
     /** A set of namess of dyeable parts. */
-    public Set<String>                dyeableParts    = Sets.newHashSet();
+    public Set<String> dyeableParts   = Sets.newHashSet();
 
     public float[] headCaps = { -180, 180 };
 
@@ -103,51 +102,6 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             {
                 PartInfo p = getPartInfo(s);
                 parts.put(s, p);
-            }
-        }
-        for (PartInfo p : parts.values())
-        {
-            Set<String> phases = p.getPhases();
-            addChildrenPhases(validPhases, p);
-            validPhases.addAll(phases);
-        }
-        for (String phase : validPhases)
-        {
-            ModelAnimation animation = new ModelAnimation();
-            for (PartInfo p : parts.values())
-            {
-                PartAnimation anim = new PartAnimation(p.name);
-                anim.info = p;
-                anim.rotations = p.getPhase(phase);
-                animation.animations.put(p.name, anim);
-                addChildrenToAnimation(animation, p, phase);
-            }
-            phaseMap.put(phase, animation);
-        }
-    }
-
-    private void addChildrenPhases(HashSet<String> toAddTo, PartInfo part)
-    {
-        for (PartInfo p : part.children.values())
-        {
-            toAddTo.addAll(p.getPhases());
-            addChildrenPhases(toAddTo, p);
-        }
-    }
-
-    private void addChildrenToAnimation(ModelAnimation animation, PartInfo p, String phase)
-    {
-        for (String s : p.children.keySet())
-        {
-            PartInfo p2 = p.children.get(s);
-
-            PartAnimation anim = new PartAnimation(s);
-            anim.info = p2;
-            anim.rotations = p2.getPhase(phase);
-            if (!animation.animations.containsKey(p2.name) || animation.animations.get(p2.name).rotations == null)
-            {
-                animation.animations.put(p2.name, anim);
-                addChildrenToAnimation(animation, p2, phase);
             }
         }
     }
@@ -210,20 +164,12 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         f4 = this.handleRotationFloat(entity, partialTick);
         this.preRenderCallback(entity, partialTick);
         float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
-        float f7 = entity.limbSwing - entity.limbSwingAmount * (1.0F - partialTick);
-
-        if (entity.isChild())
-        {
-            f7 *= 3.0F;
-        }
 
         if (f6 > 1.0F)
         {
             f6 = 1.0F;
         }
         GL11.glPushMatrix();
-
-        String currentPhase = getPhaseFromEntity(entity, f6, f7, f3 - f2, f13);
 
         transformGlobal(currentPhase, entity, d, d1, d2, partialTick, f3 - f2, f13);
         updateAnimation(entity, currentPhase, partialTick);
@@ -248,22 +194,6 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         }
         GL11.glPopMatrix();
 
-    }
-
-    //TODO merge this into the same one used for the tabula models.
-    private String getPhaseFromEntity(Entity entity, float walkspeed, float time, float rotationYaw,
-            float rotationPitch)
-    {
-        // TODO make this find out what action the entity is doing.
-        if (entity instanceof EntityPokemob)
-        {
-            EntityPokemob mob = (EntityPokemob) entity;
-            if (mob.getPokemonAIState(IPokemob.SITTING) && mob.onGround) { return "sitting"; }
-            if (mob.onGround && walkspeed > 0.1) { return "walking"; }
-            if (!mob.onGround) { return "flying"; }
-            if (mob.onGround) { return "onground"; }
-        }
-        return DEFAULTPHASE;
     }
 
     private void transformGlobal(String currentPhase, Entity entity, double x, double y, double z, float partialTick,
@@ -308,23 +238,22 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
     private void updateSubParts(Entity entity, String currentPhase, float partialTick, IExtendedModelPart parent)
     {
         parent.resetToInit();
-        if (phaseMap.containsKey(currentPhase)
-                && phaseMap.get(currentPhase).doAnimation(entity, parent.getName(), parent, partialTick))
+
+        boolean anim = animations.containsKey(currentPhase);
+        if (anim)
         {
-            try
+            if (AnimationHelper.doAnimation(animations.get(currentPhase), entity, parent.getName(), parent,
+                    partialTick))
             {
+
             }
-            catch (Exception e)
+            else if (animations.containsKey(DEFAULTPHASE))
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                AnimationHelper.doAnimation(animations.get(DEFAULTPHASE), entity, parent.getName(), parent,
+                        partialTick);
             }
         }
-        else if (phaseMap.containsKey(DEFAULTPHASE)
-                && phaseMap.get(DEFAULTPHASE).doAnimation(entity, parent.getName(), parent, partialTick))
-        {
-            ;
-        }
+
         if (isHead(parent.getName()))
         {
             float ang = (entity.rotationYaw) % 360;

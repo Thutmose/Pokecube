@@ -30,9 +30,6 @@ public class BakedRenderer
 {
     static Map<String, IFlexibleBakedModel> loadedModels = new HashMap<>();
 
-    // A vertex format with normals that doesn't break the OBJ loader.
-    // FIXME: Replace with DefaultvertexFormats.POSITION_TEX_COLOR_NORMAL when
-    // it works.
     public static final VertexFormat CUSTOM_FORMAT;
 
     static

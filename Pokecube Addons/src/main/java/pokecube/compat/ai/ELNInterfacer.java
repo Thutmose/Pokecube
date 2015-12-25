@@ -62,7 +62,6 @@ public class ELNInterfacer
 	
 	public ELNInterfacer()
 	{
-		// TODO Auto-generated constructor stub
 		try
 		{
 			coordonate = Class.forName("mods.eln.misc.Coordonate");

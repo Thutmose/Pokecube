@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -26,10 +25,8 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
-import pokecube.modelloader.client.tabula.animation.AdvancedFlapAnimation;
-import pokecube.modelloader.client.tabula.animation.BasicFlapAnimation;
-import pokecube.modelloader.client.tabula.animation.BiWalkAnimation;
-import pokecube.modelloader.client.tabula.animation.QuadWalkAnimation;
+import pokecube.modelloader.client.tabula.animation.AnimationRegistry;
+import pokecube.modelloader.client.tabula.animation.AnimationRegistry.IPartRenamer;
 import pokecube.modelloader.client.tabula.components.Animation;
 import pokecube.modelloader.client.tabula.components.CubeGroup;
 import pokecube.modelloader.client.tabula.components.CubeInfo;
@@ -125,7 +122,7 @@ public class TabulaPackLoader extends AnimationLoader
         }
     }
 
-    public static class TabulaModelSet
+    public static class TabulaModelSet implements IPartRenamer
     {
         /** The pokemon associated with this model. */
         final PokedexEntry             entry;
@@ -325,8 +322,9 @@ public class TabulaPackLoader extends AnimationLoader
             }
         }
 
-        private void addAnimation(String key, Animation animation)
+        private void addAnimation(Animation animation)
         {
+            String key = animation.name;
             if (loadedAnimations.containsKey(key))
             {
                 merge(animation, loadedAnimations.get(key));
@@ -344,10 +342,7 @@ public class TabulaPackLoader extends AnimationLoader
          * @return */
         public boolean isHeadRoot(String identifier)
         {
-            if(!headRoots.isEmpty())
-            {
-                return headRoots.contains(identifier);
-            }
+            if (!headRoots.isEmpty()) { return headRoots.contains(identifier); }
             return identifier.equals(headRoot);
         }
 
@@ -378,7 +373,8 @@ public class TabulaPackLoader extends AnimationLoader
                     {
                         String phaseName = part.getAttributes().getNamedItem("name").getNodeValue();
 
-                        if (phaseName.equals("global"))
+                        if (phaseName.equals("global")) // Read settings for
+                                                        // global
                         {
                             try
                             {
@@ -396,28 +392,23 @@ public class TabulaPackLoader extends AnimationLoader
                                 e.printStackTrace();
                             }
                         }
-                        else if (phaseName.equals("biWalk"))
-                        {
-                            addBiWalk(part.getAttributes());
-                        }
-                        else if (phaseName.equals("quadWalk"))
-                        {
-                            addQuadWalk(part.getAttributes());
-                        }
-                        else if (phaseName.equals("flap"))
-                        {
-                            addBasicFlap(part.getAttributes());
-                        }
-                        else if (phaseName.equals("advFlap"))
-                        {
-                            addAdvancedFlap(part.getAttributes());
-                        }
-                        else if(phaseName.equals("textures"))
+                        else if (phaseName.equals("textures")) // Read texture
+                                                               // info
                         {
                             setTextureDetails(part, entry);
                         }
+                        // Look for animations to load in
+                        for (String s : AnimationRegistry.animations.keySet())
+                        {
+                            if (phaseName.equals(s))
+                            {
+                                addAnimation(AnimationRegistry.make(s, part.getAttributes(), this));
+                            }
+                        }
                     }
-                    else if (part.getNodeName().equals("merges"))
+                    else if (part.getNodeName().equals("merges")) // Read
+                                                                  // animations
+                                                                  // to merge
                     {
                         String[] merges = part.getAttributes().getNamedItem("merge").getNodeValue().split("->");
                         mergedAnimations.put(merges[0], merges[1]);
@@ -444,7 +435,8 @@ public class TabulaPackLoader extends AnimationLoader
             this.headCap[1] = headCaps[1];
         }
 
-        void convertToIdents(String[] names)
+        @Override
+        public void convertToIdents(String[] names)
         {
             for (int i = 0; i < names.length; i++)
             {
@@ -468,194 +460,6 @@ public class TabulaPackLoader extends AnimationLoader
                 }
                 if (!found) names[i] = null;
             }
-        }
-
-        /** Reads and adds the quadwalk animation from the map.
-         * 
-         * @param map */
-        void addQuadWalk(NamedNodeMap map)
-        {
-            HashSet<String> hl = new HashSet<String>();
-            HashSet<String> hr = new HashSet<String>();
-            HashSet<String> fl = new HashSet<String>();
-            HashSet<String> fr = new HashSet<String>();
-            int quadwalkdur = 0;
-            float walkAngle1 = 20;
-            float walkAngle2 = 20;
-            String[] lh = map.getNamedItem("leftHind").getNodeValue().split(":");
-            String[] rh = map.getNamedItem("rightHind").getNodeValue().split(":");
-            String[] lf = map.getNamedItem("leftFront").getNodeValue().split(":");
-            String[] rf = map.getNamedItem("rightFront").getNodeValue().split(":");
-
-            convertToIdents(lh);
-            convertToIdents(rh);
-            convertToIdents(lf);
-            convertToIdents(rf);
-
-            for (String s : lh)
-                if (s != null) hl.add(s);
-            for (String s : rh)
-                if (s != null) hr.add(s);
-            for (String s : rf)
-                if (s != null) fr.add(s);
-            for (String s : lf)
-                if (s != null) fl.add(s);
-            if (map.getNamedItem("angle") != null)
-            {
-                walkAngle1 = Float.parseFloat(map.getNamedItem("angle").getNodeValue());
-            }
-            if (map.getNamedItem("frontAngle") != null)
-            {
-                walkAngle2 = Float.parseFloat(map.getNamedItem("frontAngle").getNodeValue());
-            }
-            else
-            {
-                walkAngle2 = walkAngle1;
-            }
-            quadwalkdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
-
-            addAnimation("walking", new QuadWalkAnimation().init(hl, hr, fl, fr, quadwalkdur, walkAngle1, walkAngle2));
-
-        }
-
-        /** Reads and adds the biwalk animation from the map.
-         * 
-         * @param map */
-        void addBiWalk(NamedNodeMap map)
-        {
-            HashSet<String> hl = new HashSet<String>();
-            HashSet<String> hr = new HashSet<String>();
-            HashSet<String> fl = new HashSet<String>();
-            HashSet<String> fr = new HashSet<String>();
-            int biwalkdur = 0;
-            float walkAngle1 = 20;
-            float walkAngle2 = 20;
-            String[] lh = map.getNamedItem("leftLeg").getNodeValue().split(":");
-            String[] rh = map.getNamedItem("rightLeg").getNodeValue().split(":");
-            String[] lf = map.getNamedItem("leftArm").getNodeValue().split(":");
-            String[] rf = map.getNamedItem("rightArm").getNodeValue().split(":");
-
-            convertToIdents(lh);
-            convertToIdents(rh);
-            convertToIdents(lf);
-            convertToIdents(rf);
-
-            for (String s : lh)
-                if (s != null) hl.add(s);
-            for (String s : rh)
-                if (s != null) hr.add(s);
-            for (String s : rf)
-                if (s != null) fr.add(s);
-            for (String s : lf)
-                if (s != null) fl.add(s);
-            biwalkdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
-            try
-            {
-                if (map.getNamedItem("legAngle") != null)
-                {
-                    walkAngle1 = Float.parseFloat(map.getNamedItem("legAngle").getNodeValue());
-                }
-                if (map.getNamedItem("armAngle") != null)
-                {
-                    walkAngle2 = Float.parseFloat(map.getNamedItem("armAngle").getNodeValue());
-                }
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            addAnimation("walking", new BiWalkAnimation().init(hl, hr, fl, fr, biwalkdur, walkAngle1, walkAngle2));
-
-        }
-
-        /** Reads and adds the basic flap animation from the walk.
-         * 
-         * @param map */
-        void addBasicFlap(NamedNodeMap map)
-        {
-            HashSet<String> hl = new HashSet<String>();
-            HashSet<String> hr = new HashSet<String>();
-            int flapdur = 0;
-            int flapaxis = 2;
-            float walkAngle1 = 20;
-            float walkAngle2 = 20;
-
-            String[] lh = map.getNamedItem("leftWing").getNodeValue().split(":");
-            String[] rh = map.getNamedItem("rightWing").getNodeValue().split(":");
-
-            convertToIdents(lh);
-            convertToIdents(rh);
-
-            for (String s : lh)
-                if (s != null) hl.add(s);
-            for (String s : rh)
-                if (s != null) hr.add(s);
-
-            if (map.getNamedItem("angle") != null)
-            {
-                walkAngle1 = Float.parseFloat(map.getNamedItem("angle").getNodeValue());
-            }
-            if (map.getNamedItem("start") != null)
-            {
-                walkAngle2 = Float.parseFloat(map.getNamedItem("start").getNodeValue());
-            }
-            if (map.getNamedItem("axis") != null)
-            {
-                flapaxis = Integer.parseInt(map.getNamedItem("axis").getNodeValue());
-            }
-            flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
-
-            addAnimation("flying", new BasicFlapAnimation().init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis));
-
-        }
-
-        /** Reads and adds the basic flap animation from the walk.
-         * 
-         * @param map */
-        void addAdvancedFlap(NamedNodeMap map)
-        {
-            int flapdur = 0;
-            float walkAngle2 = 20;
-            AdvancedFlapAnimation anim = new AdvancedFlapAnimation();
-
-            flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
-            // Can have up to 255 wing segments, more than this would be silly.
-            for (int i = 1; i <= 255; i++)
-            {
-                if (map.getNamedItem("leftWing" + i) == null) break;
-
-                int flapaxis = 2;
-                float[] walkAngle1 = { 20, 20 };
-                HashSet<String> hl = new HashSet<String>();
-                HashSet<String> hr = new HashSet<String>();
-                String[] lh = map.getNamedItem("leftWing" + i).getNodeValue().split(":");
-                String[] rh = map.getNamedItem("rightWing" + i).getNodeValue().split(":");
-                convertToIdents(lh);
-                convertToIdents(rh);
-
-                for (String s : lh)
-                    if (s != null) hl.add(s);
-                for (String s : rh)
-                    if (s != null) hr.add(s);
-
-                if (map.getNamedItem("angle" + i) != null)
-                {
-                    String[] args = map.getNamedItem("angle" + i).getNodeValue().split(",");
-                    walkAngle1[0] = Float.parseFloat(args[0]);
-                    walkAngle1[1] = Float.parseFloat(args[1]);
-                }
-                if (map.getNamedItem("start" + i) != null)
-                {
-                    walkAngle2 = Float.parseFloat(map.getNamedItem("start" + i).getNodeValue());
-                }
-                if (map.getNamedItem("axis" + i) != null)
-                {
-                    flapaxis = Integer.parseInt(map.getNamedItem("axis" + i).getNodeValue());
-                }
-                anim.init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis, i > 1);
-            }
-            addAnimation("flying", anim);
-
         }
     }
 }

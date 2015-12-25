@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -23,10 +22,11 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.ModPokecubeML;
-import pokecube.modelloader.client.custom.IExtendedModelPart;
 import pokecube.modelloader.client.custom.LoadedModel;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
 import pokecube.modelloader.client.custom.PartInfo;
+import pokecube.modelloader.client.tabula.animation.AnimationRegistry;
+import pokecube.modelloader.client.tabula.components.Animation;
 import thut.api.maths.Vector3;
 
 public class AnimationLoader
@@ -87,19 +87,11 @@ public class AnimationLoader
             doc.getDocumentElement().normalize();
 
             NodeList modelList = doc.getElementsByTagName("model");
-
-            HashSet<String> hl = new HashSet<String>();
-            HashSet<String> hr = new HashSet<String>();
-            HashSet<String> fl = new HashSet<String>();
-            HashSet<String> fr = new HashSet<String>();
+            
             int headDir = 2;
             int headAxis = 2;
             int headAxis2 = 1;
             float[] headCaps = { -180, 180 };
-            int quadwalkdur = 0;
-            int biwalkdur = 0;
-            float walkAngle1 = 20;
-            float walkAngle2 = 20;
             Vector3 offset = null;
             Vector5 rotation = null;
             Vector3 scale = null;
@@ -107,7 +99,7 @@ public class AnimationLoader
             Set<String> headNames = Sets.newHashSet();
             Set<String> shear = Sets.newHashSet();
             Set<String> dye = Sets.newHashSet();
-            HashMap<String, ModelAnimation> loadedPresets = new HashMap<String, ModelAnimation>();
+            Set<Animation> tblAnims = Sets.newHashSet();
             for (int i = 0; i < modelList.getLength(); i++)
             {
                 Node modelNode = modelList.item(i);
@@ -149,7 +141,15 @@ public class AnimationLoader
                     {
                         ArrayList<Vector5> phase = new ArrayList<LoadedModel.Vector5>();
                         String phaseName = part.getAttributes().getNamedItem("name").getNodeValue();
-
+                        boolean animation = false;
+                        for (String s : AnimationRegistry.animations.keySet())
+                        {
+                            if (phaseName.equals(s))
+                            {
+                                tblAnims.add(AnimationRegistry.make(s, part.getAttributes(), null));
+                                animation = true;
+                            }
+                        }
                         if (phaseName.equals("global"))
                         {
                             try
@@ -170,62 +170,7 @@ public class AnimationLoader
                                 e.printStackTrace();
                             }
                         }
-                        else if (phaseName.equals("quadWalk"))
-                        {
-                            String[] lh = part.getAttributes().getNamedItem("leftHind").getNodeValue().split(":");
-                            String[] rh = part.getAttributes().getNamedItem("rightHind").getNodeValue().split(":");
-                            String[] lf = part.getAttributes().getNamedItem("leftFront").getNodeValue().split(":");
-                            String[] rf = part.getAttributes().getNamedItem("rightFront").getNodeValue().split(":");
-                            for (String s : lh)
-                                hl.add(s);
-                            for (String s : rh)
-                                hr.add(s);
-                            for (String s : rf)
-                                fr.add(s);
-                            for (String s : lf)
-                                fl.add(s);
-                            if (part.getAttributes().getNamedItem("angle") != null)
-                            {
-                                walkAngle1 = Float
-                                        .parseFloat(part.getAttributes().getNamedItem("angle").getNodeValue());
-                            }
-                            quadwalkdur = Integer
-                                    .parseInt(part.getAttributes().getNamedItem("duration").getNodeValue());
-                        }
-                        else if (phaseName.equals("biWalk"))
-                        {
-                            String[] lh = part.getAttributes().getNamedItem("leftLeg").getNodeValue().split(":");
-                            String[] rh = part.getAttributes().getNamedItem("rightLeg").getNodeValue().split(":");
-                            String[] lf = part.getAttributes().getNamedItem("leftArm").getNodeValue().split(":");
-                            String[] rf = part.getAttributes().getNamedItem("rightArm").getNodeValue().split(":");
-                            for (String s : lh)
-                                hl.add(s);
-                            for (String s : rh)
-                                hr.add(s);
-                            for (String s : rf)
-                                fr.add(s);
-                            for (String s : lf)
-                                fl.add(s);
-                            biwalkdur = Integer.parseInt(part.getAttributes().getNamedItem("duration").getNodeValue());
-                            try
-                            {
-                                if (part.getAttributes().getNamedItem("legAngle") != null)
-                                {
-                                    walkAngle1 = Float
-                                            .parseFloat(part.getAttributes().getNamedItem("legAngle").getNodeValue());
-                                }
-                                if (part.getAttributes().getNamedItem("armAngle") != null)
-                                {
-                                    walkAngle2 = Float
-                                            .parseFloat(part.getAttributes().getNamedItem("armAngle").getNodeValue());
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                e.printStackTrace();
-                            }
-                        }
-                        else
+                        else if(!animation)
                         {
                             addVectors(part.getChildNodes(), phase);
                             phaseList.put(phaseName, phase);
@@ -238,72 +183,6 @@ public class AnimationLoader
                 {
                     loaded = new LoadedModel(parts, phaseList, model);
                 }
-                if (quadwalkdur > 0)
-                {
-                    HashSet<IExtendedModelPart> modelParts = loaded.getAllParts();
-                    HashSet<IExtendedModelPart> phl = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> phr = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> pfl = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> pfr = new HashSet<IExtendedModelPart>();
-
-                    for (IExtendedModelPart p : modelParts)
-                    {
-                        if (hl.contains(p.getName()))
-                        {
-                            phl.add(p);
-                        }
-                        if (hr.contains(p.getName()))
-                        {
-                            phr.add(p);
-                        }
-                        if (fl.contains(p.getName()))
-                        {
-                            pfl.add(p);
-                        }
-                        if (fr.contains(p.getName()))
-                        {
-                            pfr.add(p);
-                        }
-                    }
-
-                    AnimationQuadrupedWalk w = new AnimationQuadrupedWalk();
-                    w.maxAngle = walkAngle1;
-                    w.initAnimation(pfl, pfr, phl, phr, quadwalkdur);
-                    loadedPresets.put("walking", w);
-                }
-                if (biwalkdur > 0)
-                {
-                    HashSet<IExtendedModelPart> modelParts = loaded.getAllParts();
-                    HashSet<IExtendedModelPart> phl = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> phr = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> pfl = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> pfr = new HashSet<IExtendedModelPart>();
-
-                    for (IExtendedModelPart p : modelParts)
-                    {
-                        if (hl.contains(p.getName()))
-                        {
-                            phl.add(p);
-                        }
-                        if (hr.contains(p.getName()))
-                        {
-                            phr.add(p);
-                        }
-                        if (fl.contains(p.getName()))
-                        {
-                            pfl.add(p);
-                        }
-                        if (fr.contains(p.getName()))
-                        {
-                            pfr.add(p);
-                        }
-                    }
-                    AnimationBipedWalk w = new AnimationBipedWalk();
-                    w.angleArms = walkAngle2;
-                    w.angleLegs = walkAngle1;
-                    w.initAnimation(phl, phr, pfr, pfl, biwalkdur);
-                    loadedPresets.put("walking", w);
-                }
                 loaded.updateModel(parts, phaseList, model);
                 loaded.offset.set(offset);
                 loaded.scale.set(scale);
@@ -311,21 +190,15 @@ public class AnimationLoader
                 loaded.headParts.addAll(headNames);
                 loaded.shearableParts.addAll(shear);
                 loaded.dyeableParts.addAll(dye);
-
-                for (String s : loadedPresets.keySet())
+                for(Animation anim: tblAnims)
                 {
-                    ModelAnimation m = loadedPresets.get(s);
-                    ModelAnimation old = (ModelAnimation) loaded.phaseMap.get(s);
-                    if (old == null || m.getClass().isInstance(m))
+                    if(anim!=null)
                     {
-                        loaded.phaseMap.put(s, m);
+                        loaded.animations.put(anim.name, anim);
                     }
                     else
                     {
-                        for (String s1 : old.animations.keySet())
-                        {
-                            m.animations.put(s, old.animations.get(s1));
-                        }
+                        new NullPointerException("Why is there a null animation?").printStackTrace();
                     }
                 }
 

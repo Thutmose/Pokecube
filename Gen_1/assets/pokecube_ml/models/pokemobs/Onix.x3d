@@ -2,7 +2,7 @@
 <X3D>
 	<head>
 		<meta name="filename" content="Onix.x3d" />
-		<meta name="generator" content="Blender 2.75 (sub 0)" />
+		<meta name="generator" content="Blender 2.76 (sub 0)" />
 	</head>
 	<Scene>
 		<NavigationInfo headlight="true"
@@ -15,12 +15,12 @@
 		            skyColor="0.051 0.051 0.051"
 		            />
 		<Transform DEF="mid_TRANSFORM"
-		           translation="0.000000 0.000000 0.000000"
+		           translation="0.000000 0.300000 0.000000"
 		           scale="1.000000 1.000000 1.000000"
-		           rotation="0.577350 0.577350 0.577350 2.094395"
+		           rotation="0.000000 1.000000 -0.000000 3.141593"
 		           >
 			<Transform DEF="mid_ifs_TRANSFORM"
-			           translation="0.000000 0.000000 0.000000"
+			           translation="-0.000000 0.000000 0.000000"
 			           scale="1.000000 1.000000 1.000000"
 			           rotation="1.000000 0.000000 0.000000 0.000000"
 			           >
@@ -95,7 +95,7 @@
 					           rotation="1.000000 0.000000 0.000000 1.570796"
 					           >
 						<Transform DEF="tail3_ifs_TRANSFORM"
-						           translation="0.000000 -0.000000 0.000000"
+						           translation="0.000000 0.000000 0.000000"
 						           scale="1.000000 1.000000 1.000000"
 						           rotation="1.000000 0.000000 0.000000 0.000000"
 						           >
@@ -147,7 +147,7 @@
 								<Transform DEF="tail5_ifs_TRANSFORM"
 								           translation="0.000000 0.000000 0.000000"
 								           scale="1.000000 1.000000 1.000000"
-								           rotation="1.000000 0.000000 0.000000 0.000000"
+								           rotation="0.000000 0.000000 0.000000 0.000000"
 								           >
 									<Group DEF="group_ME_tail5">
 										<Shape>
@@ -170,7 +170,7 @@
 								           rotation="1.000000 0.000000 0.000000 1.570797"
 								           >
 									<Transform DEF="tail6_ifs_TRANSFORM"
-									           translation="0.000000 0.000000 -0.000000"
+									           translation="-0.000000 0.000000 -0.000000"
 									           scale="1.000000 1.000000 1.000000"
 									           rotation="1.000000 0.000000 0.000000 0.000000"
 									           >
@@ -247,7 +247,7 @@
 												<Transform DEF="tail9_ifs_TRANSFORM"
 												           translation="0.000000 0.000000 0.000000"
 												           scale="1.000000 1.000000 1.000000"
-												           rotation="1.000000 0.000000 0.000000 0.000000"
+												           rotation="0.000000 0.000000 0.000000 0.000000"
 												           >
 													<Group DEF="group_ME_tail9">
 														<Shape>
@@ -267,12 +267,12 @@
 												<Transform DEF="tail10_TRANSFORM"
 												           translation="0.550926 -0.000000 -0.001403"
 												           scale="1.000000 1.000000 1.000000"
-												           rotation="1.000000 0.000000 0.000000 1.570796"
+												           rotation="1.000000 -0.000000 -0.000000 1.570796"
 												           >
 													<Transform DEF="tail10_ifs_TRANSFORM"
 													           translation="0.000000 -0.000000 0.000000"
 													           scale="1.000000 1.000000 1.000000"
-													           rotation="1.000000 0.000000 0.000000 0.000000"
+													           rotation="0.000000 0.000000 -0.000000 0.000000"
 													           >
 														<Group DEF="group_ME_tail10">
 															<Shape>
@@ -305,7 +305,7 @@
 			           rotation="1.000000 0.000000 0.000000 1.570796"
 			           >
 				<Transform DEF="neck1_ifs_TRANSFORM"
-				           translation="0.000000 0.000000 0.000000"
+				           translation="-0.000000 0.000000 0.000000"
 				           scale="1.000000 1.000000 1.000000"
 				           rotation="1.000000 0.000000 0.000000 0.000000"
 				           >
@@ -330,7 +330,7 @@
 				           rotation="1.000000 0.000000 0.000000 1.570796"
 				           >
 					<Transform DEF="neck2_ifs_TRANSFORM"
-					           translation="0.000000 0.000000 0.000000"
+					           translation="-0.000000 0.000000 0.000000"
 					           scale="1.000000 1.000000 1.000000"
 					           rotation="1.000000 0.000000 0.000000 0.000000"
 					           >
@@ -355,7 +355,7 @@
 					           rotation="1.000000 0.000000 0.000000 1.570796"
 					           >
 						<Transform DEF="neck3_ifs_TRANSFORM"
-						           translation="0.000000 0.000000 0.000000"
+						           translation="-0.000000 0.000000 0.000000"
 						           scale="1.000000 1.000000 1.000000"
 						           rotation="1.000000 0.000000 0.000000 0.000000"
 						           >
@@ -380,7 +380,7 @@
 						           rotation="1.000000 0.000000 0.000000 1.570796"
 						           >
 							<Transform DEF="head_ifs_TRANSFORM"
-							           translation="0.000000 -0.000000 -0.000000"
+							           translation="-0.000000 -0.000000 -0.000000"
 							           scale="1.000000 1.000000 1.000000"
 							           rotation="1.000000 0.000000 0.000000 0.000000"
 							           >

@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
 
+import com.google.common.collect.Sets;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
@@ -22,7 +24,6 @@ import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.animation.AnimationLoader.Model;
 import pokecube.modelloader.client.custom.animation.ModelAnimation;
 import pokecube.modelloader.client.custom.animation.PartAnimation;
-import pokecube.modelloader.client.custom.tbl.TblModel;
 import pokecube.modelloader.client.custom.x3d.X3dModel;
 import thut.api.maths.Vector3;
 
@@ -34,6 +35,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
     HashMap<String, ArrayList<Vector5>>    global;
     HashSet<String>                        validPhases  = new HashSet<String>();
     public HashMap<String, ModelAnimation> phaseMap     = new HashMap<String, ModelAnimation>();
+    public Set<String>                     headParts    = Sets.newHashSet();
 
     public Vector3 offset    = Vector3.getNewVectorFromPool();;
     public Vector3 scale     = Vector3.getNewVectorFromPool();;
@@ -41,8 +43,13 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 
     public IModel model;
 
-    public int headDir  = 2;
-    public int headAxis = -2;
+    public int headDir   = 2;
+    public int headAxis  = -3;
+    public int headAxis2 = -3;
+    /** A set of names of shearable parts. */
+    public Set<String>                shearableParts  = Sets.newHashSet();
+    /** A set of namess of dyeable parts. */
+    public Set<String>                dyeableParts    = Sets.newHashSet();
 
     public float[] headCaps = { -180, 180 };
 
@@ -57,7 +64,6 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         this.parts = parts;
         this.texture = model.texture;
         if (model.model.getResourcePath().contains(".x3d")) this.model = new X3dModel(model.model);
-        else if (model.model.getResourcePath().contains(".tbl")) this.model = new TblModel(model.model);
 
         if (this.model == null) { return; }
 
@@ -66,9 +72,13 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         {
             headDir = (this.model instanceof X3dModel) ? 1 : -1;
         }
-        if (headAxis == -2)
+        if (headAxis == -3)
         {
-            headDir = (this.model instanceof X3dModel) ? 1 : 2;
+            headAxis = (this.model instanceof X3dModel) ? 1 : 2;
+        }
+        if (headAxis2 == -3)
+        {
+            headAxis2 = (this.model instanceof X3dModel) ? 1 : 2;
         }
         this.global = global;
     }
@@ -79,7 +89,6 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         this.parts = parts;
         this.texture = model.texture;
         if (model.model.getResourcePath().contains(".x3d")) this.model = new X3dModel(model.model);
-        else this.model = new TblModel(model.model);
         initModelParts();
         this.global = global;
     }
@@ -166,15 +175,16 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
     }
 
     @Override
-    public void doRender(T entity, double d, double d1, double d2, float f, float f1)
+    public void doRender(T entity, double d, double d1, double d2, float f, float partialTick)
     {
-        float f2 = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, f1);
-        float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, f1);
+        float f2 = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
+        float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
         float f4;
         if (entity.isRiding() && entity.ridingEntity instanceof EntityLivingBase)
         {
             EntityLivingBase entitylivingbase1 = (EntityLivingBase) entity.ridingEntity;
-            f2 = this.interpolateRotation(entitylivingbase1.prevRenderYawOffset, entitylivingbase1.renderYawOffset, f1);
+            f2 = this.interpolateRotation(entitylivingbase1.prevRenderYawOffset, entitylivingbase1.renderYawOffset,
+                    partialTick);
             f4 = MathHelper.wrapAngleTo180_float(f3 - f2);
 
             if (f4 < -85.0F)
@@ -195,12 +205,12 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             }
         }
 
-        float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * f1;
+        float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
 
-        f4 = this.handleRotationFloat(entity, f1);
-        this.preRenderCallback(entity, f1);
-        float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * f1;
-        float f7 = entity.limbSwing - entity.limbSwingAmount * (1.0F - f1);
+        f4 = this.handleRotationFloat(entity, partialTick);
+        this.preRenderCallback(entity, partialTick);
+        float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
+        float f7 = entity.limbSwing - entity.limbSwingAmount * (1.0F - partialTick);
 
         if (entity.isChild())
         {
@@ -215,7 +225,8 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 
         String currentPhase = getPhaseFromEntity(entity, f6, f7, f3 - f2, f13);
 
-        transformGlobal(currentPhase, entity, d, d1, d2, f1, f3 - f2, f13);
+        transformGlobal(currentPhase, entity, d, d1, d2, partialTick, f3 - f2, f13);
+        updateAnimation(entity, currentPhase, partialTick);
 
         for (String partName : parts.keySet())
         {
@@ -226,14 +237,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
                 if (part.getParent() == null)
                 {
                     GL11.glPushMatrix();
-                    part.getDefaultRotations().glRotate();
-                    renderPart(partName, currentPhase, entity, f1);
-                    GL11.glPopMatrix();
-                }
-                else
-                {
-                    GL11.glPushMatrix();
-                    renderPart(partName, currentPhase, entity, f1);
+                    part.renderAll();
                     GL11.glPopMatrix();
                 }
             }
@@ -261,7 +265,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         return DEFAULTPHASE;
     }
 
-    public void transformGlobal(String currentPhase, Entity entity, double x, double y, double z, float partialTick,
+    private void transformGlobal(String currentPhase, Entity entity, double x, double y, double z, float partialTick,
             float rotationYaw, float rotationPitch)
     {
         if (rotations == null)
@@ -273,12 +277,6 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         this.setRotationPoint(offset);
 
         rotationYaw = -entity.rotationYaw + 180;
-
-        if (model instanceof TblModel)
-        {
-            GL11.glRotated(180, 0, 0, 1);
-            rotationYaw *= -1;
-        }
 
         if (entity instanceof IPokemob)
         {
@@ -297,59 +295,36 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 
     }
 
-    public void renderPart(String partName, String currentPhase, Entity entity, float partialTick)
+    private void updateAnimation(Entity entity, String currentPhase, float partialTicks)
     {
-
-        IExtendedModelPart part = this.getPart(partName);
-        if (part == null) { return; }
-        // System.out.println(info);
-        GL11.glPushMatrix();
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        if (part.getParent() != null)
+        for (String partName : parts.keySet())
         {
-            part.setPreTranslations(part.getParent().getDefaultTranslations());
+            IExtendedModelPart part = model.getParts().get(partName);
+            updateSubParts(entity, currentPhase, partialTicks, part);
         }
-        else
-        {
-            part.getDefaultRotations().glRotate();
-        }
+    }
 
-        int red = 255, green = 255, blue = 255;
-
-        if (entity instanceof IPokemob)
-        {
-            IPokemob poke = (IPokemob) entity;
-            red = poke.getColours()[0];
-            green = poke.getColours()[1];
-            blue = poke.getColours()[2];
-        }
-
+    private void updateSubParts(Entity entity, String currentPhase, float partialTick, IExtendedModelPart parent)
+    {
+        parent.resetToInit();
         if (phaseMap.containsKey(currentPhase)
-                && phaseMap.get(currentPhase).doAnimation(entity, partName, part, partialTick))
+                && phaseMap.get(currentPhase).doAnimation(entity, parent.getName(), parent, partialTick))
         {
-            // AnimationBipedWalk walk = (AnimationBipedWalk)
-            // phaseMap.get(currentPhase);
-            // System.out.println(walk.namesL+" "+partName+"
-            // "+part.getParent().getSubParts().keySet());
+            try
+            {
+            }
+            catch (Exception e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         else if (phaseMap.containsKey(DEFAULTPHASE)
-                && phaseMap.get(DEFAULTPHASE).doAnimation(entity, partName, part, partialTick))
+                && phaseMap.get(DEFAULTPHASE).doAnimation(entity, parent.getName(), parent, partialTick))
         {
             ;
         }
-        else
-        {
-            part.setPreRotations(new Vector4());
-            part.setPostRotations(new Vector4());
-        }
-
-        boolean head = partName.toLowerCase().contains("head") && part.getParent() != null;
-        if (head)
-        {
-            head = !part.getParent().getName().toLowerCase().contains("head");
-        }
-
-        if (head)
+        if (isHead(parent.getName()))
         {
             float ang = (entity.rotationYaw) % 360;
             float ang2 = entity.rotationPitch;
@@ -379,29 +354,43 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
                 dir = new Vector4(0, headDir, 0, ang);
             }
             Vector4 dir2;
-            if (headAxis == 2)
+            if (headAxis2 == 2)
             {
-                dir2 = new Vector4(0, -headDir, 0, -ang2);
+                dir2 = new Vector4(0, 0, headDir, ang2);
             }
-            else if (headAxis == 1)
+            else if (headAxis2 == 1)
             {
-                dir2 = new Vector4(0, 0, -headDir, -ang2);
+                dir2 = new Vector4(0, headDir, 0, ang2);
             }
             else
             {
-                dir2 = new Vector4(-headDir, 0, 0, -ang2);
+                dir2 = new Vector4(headDir, 0, 0, ang2);
             }
-            part.setPostRotations(dir);
-            part.setPostRotations2(dir2);
+            parent.setPostRotations(dir);
+            parent.setPostRotations2(dir2);
         }
-        part.setRGBAB(new int[] { red, green, blue, 255, entity.getBrightnessForRender(partialTick) });
-        part.renderPart(partName);// .render(red, green, blue)
-        for (String s : part.getSubParts().keySet())
-        {
-            if (s != null) renderPart(s, currentPhase, entity, partialTick);
-        }
-        GL11.glPopMatrix();
 
+        int red = 255, green = 255, blue = 255;
+        int brightness = entity.getBrightnessForRender(partialTick);
+        int alpha = 255;
+        if (entity instanceof IPokemob)
+        {
+            IPokemob poke = (IPokemob) entity;
+            red = poke.getColours()[0] * 2;
+            green = poke.getColours()[1] * 2;
+            blue = poke.getColours()[2] * 2;
+        }
+        parent.setRGBAB(new int[] { red, green, blue, alpha, brightness });
+        for (String partName : parent.getSubParts().keySet())
+        {
+            IExtendedModelPart part = parent.getSubParts().get(partName);
+            updateSubParts(entity, currentPhase, partialTick, part);
+        }
+    }
+
+    private boolean isHead(String partName)
+    {
+        return headParts.contains(partName);
     }
 
     public static class Vector5
@@ -487,32 +476,6 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         rotateAngleX = rotations.x;
         rotateAngleY = rotations.y;
         rotateAngleZ = rotations.z;
-    }
-
-    private IExtendedModelPart getPart(String partName)
-    {
-        IExtendedModelPart ret = null;
-        for (IExtendedModelPart part : model.getParts().values())
-        {
-            if (part.getName().equalsIgnoreCase(partName)) return part;
-            ret = getPart(partName, part);
-            if (ret != null) return ret;
-        }
-
-        return ret;
-    }
-
-    private IExtendedModelPart getPart(String partName, IExtendedModelPart parent)
-    {
-        IExtendedModelPart ret = null;
-        for (IExtendedModelPart part : parent.getSubParts().values())
-        {
-            if (part.getName().equalsIgnoreCase(partName)) return part;
-            ret = getPart(partName, part);
-            if (ret != null) return ret;
-        }
-
-        return ret;
     }
 
     private PartInfo getPartInfo(String partName)

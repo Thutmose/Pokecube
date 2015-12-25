@@ -61,14 +61,6 @@ public class PartAnimation
             partialTime = partial;
 
             Vector5 rot = prev.interpolate(next, partial, true);
-            if (partName.contains("head"))
-            {
-                Vector4 dir = new Vector4(0, 1, 0, -entity.getRotationYawHead() + entity.rotationYaw % 360);
-                part.setPostRotations(dir);
-                // new Exception().printStackTrace();//TODO see if this is ever
-                // called
-            }
-
             part.setPreRotations(rot.rotations);
 
             if (partial > 1)
@@ -93,13 +85,6 @@ public class PartAnimation
         else
         {
             Vector4 rot = next.rotations.copy();
-            if (partName.contains("head"))
-            {
-                Vector4 dir = new Vector4(0, 1, 0, -entity.getRotationYawHead() + entity.rotationYaw % 360);
-                part.setPostRotations(dir);
-                // new Exception().printStackTrace();//TODO see if this is ever
-                // called
-            }
             part.setPreRotations(rot);
         }
         lastTime = partialTick;

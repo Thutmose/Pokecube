@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,6 +13,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -91,6 +94,7 @@ public class AnimationLoader
             HashSet<String> fr = new HashSet<String>();
             int headDir = 2;
             int headAxis = 2;
+            int headAxis2 = 1;
             float[] headCaps = { -180, 180 };
             int quadwalkdur = 0;
             int biwalkdur = 0;
@@ -100,6 +104,9 @@ public class AnimationLoader
             Vector5 rotation = null;
             Vector3 scale = null;
             ArrayList<String> names = new ArrayList<String>();
+            Set<String> headNames = Sets.newHashSet();
+            Set<String> shear = Sets.newHashSet();
+            Set<String> dye = Sets.newHashSet();
             HashMap<String, ModelAnimation> loadedPresets = new HashMap<String, ModelAnimation>();
             for (int i = 0; i < modelList.getLength(); i++)
             {
@@ -118,7 +125,27 @@ public class AnimationLoader
                         parts.put(part.getAttributes().getNamedItem("name").getNodeValue(), getPart(part));
 
                     }
-                    if (part.getNodeName().equals("phase"))
+                    else if (part.getNodeName().equals("metadata"))
+                    {
+                        try
+                        {
+                            offset = getOffset(part, offset);
+                            scale = getScale(part, scale);
+                            rotation = getRotation(part, rotation);
+                            headDir = getHeadDir(part, headDir);
+                            headAxis = getHeadAxis(part, 1);
+                            headAxis2 = getHeadAxis2(part, 1);
+                            addStrings("head", part, headNames);
+                            addStrings("shear", part, shear);
+                            addStrings("dye", part, dye);
+                            setHeadCaps(part, headCaps);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                    else if (part.getNodeName().equals("phase"))
                     {
                         ArrayList<Vector5> phase = new ArrayList<LoadedModel.Vector5>();
                         String phaseName = part.getAttributes().getNamedItem("name").getNodeValue();
@@ -127,11 +154,15 @@ public class AnimationLoader
                         {
                             try
                             {
-                                offset = getOffset(part);
-                                scale = getScale(part);
-                                rotation = getRotation(part);
-                                headDir = getHeadDir(part);
+                                offset = getOffset(part, offset);
+                                scale = getScale(part, scale);
+                                rotation = getRotation(part, rotation);
+                                headDir = getHeadDir(part, headDir);
                                 headAxis = getHeadAxis(part, 1);
+                                headAxis2 = getHeadAxis2(part, 1);
+                                addStrings("head", part, headNames);
+                                addStrings("shear", part, shear);
+                                addStrings("dye", part, dye);
                                 setHeadCaps(part, headCaps);
                             }
                             catch (Exception e)
@@ -239,6 +270,7 @@ public class AnimationLoader
                     w.maxAngle = walkAngle1;
                     w.initAnimation(pfl, pfr, phl, phr, quadwalkdur);
                     loadedPresets.put("walking", w);
+                    loaded.headParts.addAll(headNames);
                 }
                 if (biwalkdur > 0)
                 {
@@ -290,7 +322,6 @@ public class AnimationLoader
                     {
                         for (String s1 : old.animations.keySet())
                         {
-                            // if (!m.animations.containsKey(s))
                             m.animations.put(s, old.animations.get(s1));
                         }
                     }
@@ -300,6 +331,7 @@ public class AnimationLoader
 
                 if (headDir != 2) loaded.headDir = headDir;
                 loaded.headAxis = headAxis;
+                loaded.headAxis2 = headAxis2;
                 loaded.headCaps = headCaps;
 
                 models.put(modelName, model);
@@ -390,7 +422,7 @@ public class AnimationLoader
             Node node = nodes.item(j);
             try
             {
-                Vector5 vect = getRotation(node);
+                Vector5 vect = getRotation(node, null);
                 if (vect != null) list.add(vect);
             }
             catch (Exception e)
@@ -400,10 +432,9 @@ public class AnimationLoader
         }
     }
 
-    public static Vector5 getRotation(Node node)
+    public static Vector5 getRotation(Node node, Vector5 default_)
     {
-        Vector5 vect = null;
-        if (node.getAttributes() == null) return vect;
+        if (node.getAttributes() == null) return default_;
         if (node.getAttributes().getNamedItem("rotation") != null)
         {
             String rotation;
@@ -418,15 +449,15 @@ public class AnimationLoader
             t = Integer.parseInt(time);
             ro.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()),
                     Float.parseFloat(r[3].trim()));
-            vect = new Vector5(ro, t);
+            return new Vector5(ro, t);
         }
-        return vect;
+        return default_;
     }
 
-    public static Vector3 getOffset(Node node)
+    public static Vector3 getOffset(Node node, Vector3 default_)
     {
+        if (node.getAttributes() == null) return default_;
         Vector3 vect = null;
-        if (node.getAttributes() == null) return vect;
         if (node.getAttributes().getNamedItem("offset") != null)
         {
             vect = Vector3.getNewVectorFromPool();
@@ -435,16 +466,17 @@ public class AnimationLoader
             shift = node.getAttributes().getNamedItem("offset").getNodeValue();
             r = shift.split(",");
             vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()));
+            return vect;
         }
-        return vect;
+        return default_;
     }
 
-    public static Vector3 getScale(Node node)
+    public static Vector3 getScale(Node node, Vector3 default_)
     {
-        Vector3 vect = null;
-        if (node.getAttributes() == null) return vect;
+        if (node.getAttributes() == null) return default_;
         if (node.getAttributes().getNamedItem("scale") != null)
         {
+            Vector3 vect = null;
             vect = Vector3.getNewVectorFromPool();
             String shift;
             String[] r;
@@ -454,13 +486,14 @@ public class AnimationLoader
             if (r.length == 3)
                 vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()));
             else vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[0].trim()), Float.parseFloat(r[0].trim()));
+            return vect;
         }
-        return vect;
+        return default_;
     }
 
-    public static int getHeadDir(Node node)
+    public static int getHeadDir(Node node, int default_)
     {
-        int ret = 2;
+        int ret = default_;
         if (node.getAttributes() == null) return ret;
         if (node.getAttributes().getNamedItem("headDir") != null)
         {
@@ -478,6 +511,30 @@ public class AnimationLoader
             ret = Integer.parseInt(node.getAttributes().getNamedItem("headAxis").getNodeValue());
         }
         return ret;
+    }
+
+    public static int getHeadAxis2(Node node, int default_)
+    {
+        int ret = default_;
+        if (node.getAttributes() == null) return ret;
+        if (node.getAttributes().getNamedItem("headAxis2") != null)
+        {
+            ret = Integer.parseInt(node.getAttributes().getNamedItem("headAxis2").getNodeValue());
+        }
+        return ret;
+    }
+
+    public static void addStrings(String key, Node node, Set<String> toAddTo)
+    {
+        if (node.getAttributes() == null) return;
+        if (node.getAttributes().getNamedItem(key) != null)
+        {
+            String[] names = node.getAttributes().getNamedItem(key).getNodeValue().split(":");
+            for(String s: names)
+            {
+                toAddTo.add(s);
+            }
+        }
     }
 
     public static void setHeadCaps(Node node, float[] toFill)

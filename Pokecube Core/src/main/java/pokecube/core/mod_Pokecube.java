@@ -536,7 +536,7 @@ public class mod_Pokecube extends PokecubeMod
                 PCPacketHandler.MessageServer.class, mod_Pokecube.getMessageID(), Side.SERVER);
 
         helper.addItems();
-        Reader fileIn;
+        Reader fileIn = null;
         BufferedReader br;
 
         String giftLoc = "https://gist.githubusercontent.com/Thutmose/b2b592fd6d554e9cd55f/raw";
@@ -547,7 +547,8 @@ public class mod_Pokecube extends PokecubeMod
 
             try
             {
-                fileIn = new InputStreamReader(new URL(location).openStream());
+                //TODO find out how to timeout this.
+//                fileIn = new InputStreamReader(new URL(location).openStream());
             }
             catch (Exception e1)
             {

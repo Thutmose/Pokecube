@@ -382,11 +382,11 @@ public class TabulaPackLoader extends AnimationLoader
                         {
                             try
                             {
-                                offset = getOffset(part);
-                                scale = getScale(part);
-                                rotation = getRotation(part);
+                                offset = getOffset(part, offset);
+                                scale = getScale(part, scale);
+                                rotation = getRotation(part, rotation);
                                 headAxis = getHeadAxis(part, 1);
-                                headDir = getHeadDir(part);
+                                headDir = getHeadDir(part, headDir);
                                 headDir = Math.min(1, headDir);
                                 headDir = Math.max(-1, headDir);
                                 setHeadCaps(part, headCaps);

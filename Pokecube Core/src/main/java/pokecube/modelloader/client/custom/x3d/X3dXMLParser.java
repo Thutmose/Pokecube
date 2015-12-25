@@ -106,7 +106,7 @@ public class X3dXMLParser {
 		stream.close();
 		
 	    } catch (Exception e) {
-		e.printStackTrace();
+	        e.printStackTrace();
 	    }
 	  }
 	 

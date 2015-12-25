@@ -406,7 +406,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     private String getPhase(TabulaModelSet set, EntityLiving entity, float partialTick)
     {
-
         String phase = "idle";
         ModelJson modelj = null;
         if (set != null) set.parser.modelMap.get(set.model);
@@ -523,11 +522,9 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     private boolean hasPhase(TabulaModelSet set, ModelJson modelj, String phase)
     {
-        if(set==null && model!=null)
-        {
-            return LoadedModel.DEFAULTPHASE.equals(phase) || model.animations.containsKey(phase);
-        } 
-        return modelj.animationMap.containsKey(phase) || set.loadedAnimations.containsKey(phase);
+        if (set == null && model != null) { return LoadedModel.DEFAULTPHASE.equals(phase)
+                || model.animations.containsKey(phase); }
+        return set.loadedAnimations.containsKey(phase) || modelj!=null&&modelj.animationMap.containsKey(phase);
     }
 
     @Override

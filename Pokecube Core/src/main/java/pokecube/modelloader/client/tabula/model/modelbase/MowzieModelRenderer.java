@@ -33,6 +33,10 @@ public class MowzieModelRenderer extends ModelRenderer
     public float initRotationPointY;
     public float initRotationPointZ;
 
+    public float          initScaleX = 1f;
+    public float          initScaleY = 1f;
+    public float          initScaleZ = 1f;
+
     public float          scaleX = 1f;
     public float          scaleY = 1f;
     public float          scaleZ = 1f;
@@ -115,6 +119,10 @@ public class MowzieModelRenderer extends ModelRenderer
         initOffsetX = offsetX;
         initOffsetY = offsetY;
         initOffsetZ = offsetZ;
+        
+        initScaleX = scaleX;
+        initScaleY = scaleY;
+        initScaleZ = scaleZ;
 
         hasInitPose = true;
     }
@@ -135,6 +143,10 @@ public class MowzieModelRenderer extends ModelRenderer
             offsetX = initOffsetX;
             offsetY = initOffsetY;
             offsetZ = initOffsetZ;
+            
+            scaleX = initScaleX;
+            scaleY = initScaleY;
+            scaleZ = initScaleZ;
         }
     }
 

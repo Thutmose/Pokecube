@@ -16,7 +16,10 @@ import pokecube.modelloader.client.tabula.components.Animation;
 public class AnimationRegistry
 {
     /** Map of XML node name to animation to read in. */
-    public static HashMap<String, Class<? extends Animation>> animations = Maps.newHashMap();
+    public static HashMap<String, Class<? extends Animation>> animations      = Maps.newHashMap();
+    /** Map of XML name to animation phase, will overwrite animation name with
+     * the value. */
+    public static HashMap<String, String>                     animationPhases = Maps.newHashMap();
 
     /** Add in defaults. */
     static
@@ -25,10 +28,14 @@ public class AnimationRegistry
         animations.put("biWalk", BiWalkAnimation.class);
         animations.put("flap", BasicFlapAnimation.class);
         animations.put("advFlap", AdvancedFlapAnimation.class);
+        animations.put("snakeWalk", SnakeMovement.class);
     }
 
     /** Generates the animation for the given name, and nodemap. Renamer is used
-     * to convert to identifiers in the cases where that is needed.
+     * to convert to identifiers in the cases where that is needed. <br>
+     * <br>
+     * This method will also then change the name of the animation to
+     * animationName if it is not null.
      * 
      * @param name
      * @param map
@@ -44,6 +51,10 @@ public class AnimationRegistry
             {
                 ret = toMake.newInstance();
                 ret.init(map, renamer);
+                if(animationPhases.containsKey(name))
+                {
+                    ret.name = animationPhases.get(name);
+                }
             }
             catch (Exception e)
             {

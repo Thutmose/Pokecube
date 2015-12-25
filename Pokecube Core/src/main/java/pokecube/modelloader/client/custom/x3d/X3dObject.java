@@ -88,7 +88,7 @@ public class X3dObject implements IExtendedModelPart
         GL11.glPushMatrix();
 
         GL11.glTranslated(offset.x, offset.y, offset.z);
-        rotations.glRotate();
+//        rotations.glRotate();
         postRot.glRotate();
         postRot1.glRotate();
         GL11.glScalef(scale.x, scale.y, scale.z);

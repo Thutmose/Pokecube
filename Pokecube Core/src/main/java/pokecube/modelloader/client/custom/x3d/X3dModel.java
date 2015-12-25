@@ -94,7 +94,7 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel
 			offset = partTranslations.get(s).get("rotation").split(" ");
 			o.rotations.set(Float.parseFloat(offset[0]), Float.parseFloat(offset[1]), Float.parseFloat(offset[2]),
 					(float) toDegrees(Float.parseFloat(offset[3])));
-
+			
 			offset = points.get("index").split(" ");
 			for (String s1 : offset)
 			{

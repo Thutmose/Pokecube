@@ -3,9 +3,11 @@ package pokecube.core;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -544,11 +546,14 @@ public class mod_Pokecube extends PokecubeMod
 
         for (String location : giftLocations)
         {
-
             try
             {
-                //TODO find out how to timeout this.
-//                fileIn = new InputStreamReader(new URL(location).openStream());
+                URL url = new URL(location);
+                URLConnection con = url.openConnection();
+                con.setConnectTimeout(1000);
+                con.setReadTimeout(1000);
+                InputStream in = con.getInputStream();
+                fileIn = new InputStreamReader(in);
             }
             catch (Exception e1)
             {

@@ -29,6 +29,10 @@ public class AnimationRegistry
         animations.put("flap", BasicFlapAnimation.class);
         animations.put("advFlap", AdvancedFlapAnimation.class);
         animations.put("snakeWalk", SnakeMovement.class);
+        animations.put("snakeFly", SnakeMovement.class);
+        animationPhases.put("snakeFly", "flying");
+        animations.put("snakeSwim", SnakeMovement.class);
+        animationPhases.put("snakeSwim", "swimming");
     }
 
     /** Generates the animation for the given name, and nodemap. Renamer is used

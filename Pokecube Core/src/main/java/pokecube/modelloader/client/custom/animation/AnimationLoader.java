@@ -13,6 +13,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
@@ -36,10 +37,10 @@ public class AnimationLoader
     /** texture folder */
     public final static String TEXTUREPATH = "textures/entities/";
 
-    static String                              file        = "";
+    static String                              file      = "";
     @SuppressWarnings("rawtypes")
-    public static HashMap<String, LoadedModel> modelMaps   = new HashMap<String, LoadedModel>();
-    public static HashMap<String, Model>       models      = new HashMap<String, Model>();
+    public static HashMap<String, LoadedModel> modelMaps = new HashMap<String, LoadedModel>();
+    public static HashMap<String, Model>       models    = new HashMap<String, Model>();
 
     public static void clear()
     {
@@ -87,7 +88,7 @@ public class AnimationLoader
             doc.getDocumentElement().normalize();
 
             NodeList modelList = doc.getElementsByTagName("model");
-            
+
             int headDir = 2;
             int headAxis = 2;
             int headAxis2 = 1;
@@ -95,29 +96,23 @@ public class AnimationLoader
             Vector3 offset = null;
             Vector5 rotation = null;
             Vector3 scale = null;
-            ArrayList<String> names = new ArrayList<String>();
+
             Set<String> headNames = Sets.newHashSet();
             Set<String> shear = Sets.newHashSet();
             Set<String> dye = Sets.newHashSet();
             Set<Animation> tblAnims = Sets.newHashSet();
+            HashMap<String, String> mergedAnimations = Maps.newHashMap();
             for (int i = 0; i < modelList.getLength(); i++)
             {
                 Node modelNode = modelList.item(i);
                 String modelName = model.name;// modelNode.getAttributes().getNamedItem("name").getNodeValue();
                 HashMap<String, PartInfo> parts = new HashMap<String, PartInfo>();
                 HashMap<String, ArrayList<Vector5>> phaseList = new HashMap<String, ArrayList<Vector5>>();
-
-                names.add(modelNode.getAttributes().getNamedItem("name").getNodeValue());
                 NodeList partsList = modelNode.getChildNodes();
                 for (int j = 0; j < partsList.getLength(); j++)
                 {
                     Node part = partsList.item(j);
-                    if (part.getNodeName().equals("part"))
-                    {
-                        parts.put(part.getAttributes().getNamedItem("name").getNodeValue(), getPart(part));
-
-                    }
-                    else if (part.getNodeName().equals("metadata"))
+                    if (part.getNodeName().equals("metadata"))
                     {
                         try
                         {
@@ -139,15 +134,16 @@ public class AnimationLoader
                     }
                     else if (part.getNodeName().equals("phase"))
                     {
-                        ArrayList<Vector5> phase = new ArrayList<LoadedModel.Vector5>();
-                        String phaseName = part.getAttributes().getNamedItem("name").getNodeValue();
-                        boolean animation = false;
+                        Node phase = part.getAttributes().getNamedItem("name") == null
+                                ? part.getAttributes().getNamedItem("type") : part.getAttributes().getNamedItem("name");
+                        String phaseName = phase.getNodeValue();
+                        boolean preset = false;
                         for (String s : AnimationRegistry.animations.keySet())
                         {
                             if (phaseName.equals(s))
                             {
                                 tblAnims.add(AnimationRegistry.make(s, part.getAttributes(), null));
-                                animation = true;
+                                preset = true;
                             }
                         }
                         if (phaseName.equals("global"))
@@ -170,11 +166,29 @@ public class AnimationLoader
                                 e.printStackTrace();
                             }
                         }
-                        else if(!animation)
+                        else if (!preset)
                         {
-                            addVectors(part.getChildNodes(), phase);
-                            phaseList.put(phaseName, phase);
+                            Animation anim = AnimationBuilder.build(part, null);
+                            if (anim != null)
+                            {
+                                Animation old = null;
+                                for (Animation a : tblAnims)
+                                {
+                                    if (a.name.equals(anim.name))
+                                    {
+                                        old = a;
+                                        break;
+                                    }
+                                }
+                                if (old != null) AnimationBuilder.merge(anim, old);
+                                else tblAnims.add(anim);
+                            }
                         }
+                    }
+                    else if (part.getNodeName().equals("merges"))
+                    {
+                        String[] merges = part.getAttributes().getNamedItem("merge").getNodeValue().split("->");
+                        mergedAnimations.put(merges[0], merges[1]);
                     }
                 }
 
@@ -190,15 +204,45 @@ public class AnimationLoader
                 loaded.headParts.addAll(headNames);
                 loaded.shearableParts.addAll(shear);
                 loaded.dyeableParts.addAll(dye);
-                for(Animation anim: tblAnims)
+                for (Animation anim : tblAnims)
                 {
-                    if(anim!=null)
+                    if (anim != null)
                     {
                         loaded.animations.put(anim.name, anim);
                     }
                     else
                     {
                         new NullPointerException("Why is there a null animation?").printStackTrace();
+                    }
+                }
+                for (String s : mergedAnimations.keySet())
+                {
+                    String toName = mergedAnimations.get(s);
+                    Animation to = null;
+                    Animation from = null;
+                    for (Animation anim : loaded.animations.values())
+                    {
+                        if (s.equals(anim.name))
+                        {
+                            from = anim;
+                        }
+                        if (toName.equals(anim.name))
+                        {
+                            to = anim;
+                        }
+                        if (to != null && from != null) break;
+                    }
+                    if (from != null && to == null)
+                    {
+                        to = new Animation();
+                        to.name = toName;
+                        to.identifier = toName;
+                        to.loops = from.loops;
+                        loaded.animations.put(toName, to);
+                    }
+                    if (to != null && from != null)
+                    {
+                        AnimationBuilder.merge(from, to);
                     }
                 }
 
@@ -230,6 +274,7 @@ public class AnimationLoader
             models.put(model.name, model);
             modelMaps.put(model.name, loaded);
             System.err.println("No Animation found for " + model.name + " " + model.model);
+            e.printStackTrace();
         }
 
     }
@@ -249,62 +294,6 @@ public class AnimationLoader
         }
         System.err.println("no models found");
         return null;
-    }
-
-    static PartInfo getPart(Node node)
-    {
-        if (node.getAttributes().getNamedItem("name") == null) { return null; }
-
-        String name = node.getAttributes().getNamedItem("name").getNodeValue();
-        PartInfo ret = new PartInfo(name);
-
-        NodeList children = node.getChildNodes();
-
-        HashMap<String, ArrayList<Vector5>> phaseList = new HashMap<String, ArrayList<Vector5>>();
-        HashMap<String, PartInfo> partsList = new HashMap<String, PartInfo>();
-
-        for (int i = 0; i < children.getLength(); i++)
-        {
-            Node child = children.item(i);
-            if (child.getNodeName().equals("phase"))
-            {
-                String phaseName = child.getAttributes().getNamedItem("name").getNodeValue();
-                NodeList phases = child.getChildNodes();
-
-                ArrayList<Vector5> vectors = new ArrayList<Vector5>();
-                addVectors(phases, vectors);
-                phaseList.put(phaseName, vectors);
-
-            }
-            if (child.getNodeName().equals("part"))
-            {
-                String partName = child.getAttributes().getNamedItem("name").getNodeValue();
-                partsList.put(partName, getPart(child));
-            }
-        }
-
-        ret.children = partsList;
-        ret.setPhaseInfo(phaseList);
-
-        return ret;
-    }
-
-    static void addVectors(NodeList nodes, ArrayList<Vector5> list)
-    {
-
-        for (int j = 0; j < nodes.getLength(); j++)
-        {
-            Node node = nodes.item(j);
-            try
-            {
-                Vector5 vect = getRotation(node, null);
-                if (vect != null) list.add(vect);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
     }
 
     public static Vector5 getRotation(Node node, Vector5 default_)
@@ -405,7 +394,7 @@ public class AnimationLoader
         if (node.getAttributes().getNamedItem(key) != null)
         {
             String[] names = node.getAttributes().getNamedItem(key).getNodeValue().split(":");
-            for(String s: names)
+            for (String s : names)
             {
                 toAddTo.add(s);
             }
@@ -502,10 +491,10 @@ public class AnimationLoader
                     PokedexEntry entry = Database.getEntry(name);
                     ResourceLocation animation = new ResourceLocation(
                             anim.replace(entry.getName(), entry.getBaseName()));
-                    
+
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
                     System.out.println("Registerd an x3d model for " + name);
-                    
+
                 }
                 else
                 {

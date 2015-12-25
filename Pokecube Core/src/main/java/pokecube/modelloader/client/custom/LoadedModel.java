@@ -237,6 +237,8 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 
     private void updateSubParts(Entity entity, String currentPhase, float partialTick, IExtendedModelPart parent)
     {
+        if (parent == null) return;
+
         parent.resetToInit();
 
         boolean anim = animations.containsKey(currentPhase);

@@ -24,6 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
+import pokecube.modelloader.client.custom.animation.AnimationBuilder;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
 import pokecube.modelloader.client.tabula.animation.AnimationRegistry;
 import pokecube.modelloader.client.tabula.animation.AnimationRegistry.IPartRenamer;
@@ -250,7 +251,7 @@ public class TabulaPackLoader extends AnimationLoader
                     if (s.equals(anim.name))
                     {
                         Animation loaded = loadedAnimations.get(s);
-                        merge(loaded, anim);
+                        AnimationBuilder.merge(loaded, anim);
                         toRemove.add(s);
                     }
                 }
@@ -295,7 +296,7 @@ public class TabulaPackLoader extends AnimationLoader
 
                 if (to != null && from != null)
                 {
-                    merge(from, to);
+                    AnimationBuilder.merge(from, to);
                 }
             }
             for (String s : toRemove)
@@ -305,29 +306,12 @@ public class TabulaPackLoader extends AnimationLoader
             if (toRemove.size() > 0) System.out.println("Merged " + toRemove.size() + " Animations for " + entry);
         }
 
-        /** Merges animation data from from to to.
-         * 
-         * @param from
-         * @param to */
-        private void merge(Animation from, Animation to)
-        {
-            for (String s1 : from.sets.keySet())
-            {
-                // Prioritize to, if to already has animations for that part,
-                // skip it.
-                if (!to.sets.containsKey(s1))
-                {
-                    to.sets.put(s1, from.sets.get(s1));
-                }
-            }
-        }
-
         private void addAnimation(Animation animation)
         {
             String key = animation.name;
             if (loadedAnimations.containsKey(key))
             {
-                merge(animation, loadedAnimations.get(key));
+                AnimationBuilder.merge(animation, loadedAnimations.get(key));
             }
             else
             {

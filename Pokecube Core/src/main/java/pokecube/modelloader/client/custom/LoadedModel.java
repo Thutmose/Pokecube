@@ -250,6 +250,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 
     }
 
+    //TODO merge this into the same one used for the tabula models.
     private String getPhaseFromEntity(Entity entity, float walkspeed, float time, float rotationYaw,
             float rotationPitch)
     {

@@ -15,6 +15,12 @@ import pokecube.modelloader.client.tabula.components.AnimationComponent;
 
 public class AnimationBuilder
 {
+    /** Constructs a new Animation, and assigns components based on the
+     * definitions in the XML node.
+     * 
+     * @param node
+     * @param renamer
+     * @return */
     public static Animation build(Node node, @Nullable IPartRenamer renamer)
     {
         Animation ret = null;

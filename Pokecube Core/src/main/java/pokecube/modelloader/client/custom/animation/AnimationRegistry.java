@@ -60,7 +60,7 @@ public class AnimationRegistry
             {
                 ret = toMake.newInstance();
                 ret.init(map, renamer);
-                if(animationPhases.containsKey(name))
+                if (animationPhases.containsKey(name))
                 {
                     ret.name = animationPhases.get(name);
                 }
@@ -73,6 +73,9 @@ public class AnimationRegistry
         return ret;
     }
 
+    /** Used to convert from part names to identifiers if needed.
+     * 
+     * @author Thutmose */
     public static interface IPartRenamer
     {
         void convertToIdents(String[] names);

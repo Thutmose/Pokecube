@@ -9,8 +9,20 @@ import pokecube.modelloader.client.tabula.components.Animation;
 import pokecube.modelloader.client.tabula.components.AnimationComponent;
 import thut.api.maths.Vector3;
 
+/** This class applies the tabula style animations to models consisting of
+ * IExtendedModelPart parts.
+ * 
+ * @author Thutmose */
 public class AnimationHelper
 {
+    /** Apples tabula Animation animation to the passed in part.
+     * 
+     * @param animation
+     * @param entity
+     * @param partName
+     * @param part
+     * @param partialTick
+     * @return */
     public static boolean doAnimation(Animation animation, Entity entity, String partName, IExtendedModelPart part,
             float partialTick)
     {

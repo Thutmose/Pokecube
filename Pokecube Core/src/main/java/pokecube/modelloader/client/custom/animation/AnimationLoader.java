@@ -270,7 +270,6 @@ public class AnimationLoader
                     w.maxAngle = walkAngle1;
                     w.initAnimation(pfl, pfr, phl, phr, quadwalkdur);
                     loadedPresets.put("walking", w);
-                    loaded.headParts.addAll(headNames);
                 }
                 if (biwalkdur > 0)
                 {
@@ -309,6 +308,9 @@ public class AnimationLoader
                 loaded.offset.set(offset);
                 loaded.scale.set(scale);
                 loaded.rotations = rotation;
+                loaded.headParts.addAll(headNames);
+                loaded.shearableParts.addAll(shear);
+                loaded.dyeableParts.addAll(dye);
 
                 for (String s : loadedPresets.keySet())
                 {

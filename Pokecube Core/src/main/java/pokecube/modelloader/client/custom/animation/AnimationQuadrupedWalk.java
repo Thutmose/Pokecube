@@ -162,7 +162,7 @@ public class AnimationQuadrupedWalk extends ModelAnimation
 	public void initPositions(int speed, HashMap<String, ArrayList<Vector5>> map, String partName)
 	{
 		ArrayList<Vector5> list = new ArrayList<Vector5>();
-		if(map==positionsFL || map==positionsHL)
+		if(map==positionsFL || map==positionsHR)
 		{
 			list.add(new Vector5(new Vector4(1, 0, 0, maxAngle), speed));
 			list.add(new Vector5(new Vector4(1, 0, 0, -maxAngle), speed));

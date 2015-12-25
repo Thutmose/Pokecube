@@ -18,7 +18,37 @@
                 <component name="1" rotOffset="0,0,20" length="1" startKey="0"/>
             </part>
         </phase>
-        <merges merge="idle->walking" />
+        <phase type="sitting">
+            <part name="tail1">
+                <component name="1" rotOffset="0,40,0" length="1" startKey="0"/>
+            </part>
+            <part name="tail2">
+                <component name="1" rotOffset="0,40,0" length="1" startKey="0"/>
+            </part>
+            <part name="tail3">
+                <component name="1" rotOffset="0,40,0" length="1" startKey="0"/>
+            </part>
+            <part name="tail4">
+                <component name="1" rotOffset="0,40,0" length="1" startKey="0"/>
+            </part>
+            <part name="tail5">
+                <component name="1" rotOffset="0,40,0" length="1" startKey="0"/>
+            </part>
+            <part name="tail6">
+                <component name="1" rotOffset="0,20,0" length="1" startKey="0"/>
+            </part>
+            <part name="tail7">
+                <component name="1" rotOffset="0,20,0" length="1" startKey="0"/>
+            </part>
+            <part name="tail8">
+                <component name="1" rotOffset="0,20,0" length="1" startKey="0"/>
+            </part>
+            <part name="tail9">
+                <component name="1" rotChange="0, 10,0" length="10" startKey="0"/>
+                <component name="1" rotChange="0,-10,0" length="10" startKey="10"/>
+            </part>
+        </phase>
+        <merges merge="idle->sitting" />
 	</model>
 </ModelAnimator>
 

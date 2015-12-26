@@ -19,7 +19,7 @@ public class RenderPokemobs extends RenderPokemob {
 
 	private static Map<String, ModelBase> models = new HashMap<String, ModelBase>();
 	private static Map<String, ModelBase> statusModels = new HashMap<String, ModelBase>();
-    private static Map<String, Render> renderMap = new HashMap<String, Render>();
+    public static Map<String, Render> renderMap = new HashMap<String, Render>();
 	
 	private static RenderPokemobs instance;
 	
@@ -54,20 +54,16 @@ public class RenderPokemobs extends RenderPokemob {
 			if(mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IPokemob.SHOULDER) && ((Entity)mob).ridingEntity!=null)
 			{
 			}
-			String nbm =mob.getPokedexEntry().getName() +  mob.getPokedexEntry().getModId();
 
 			PokedexEntry entry = mob.getPokedexEntry();
 			this.scale = (entry.height * mob.getSize());
 			this.shadowSize = entry.width * mob.getSize();
 	//		System.out.println(nbm+" "+renderMap.get(nbm));
+			Render render = getRenderer(mob.getPokedexEntry());
 			
-			if(renderMap.get(nbm)==null)
+			if(render == instance)
 			{
-				renderMap.put(nbm, getInstance());
-			}
-			
-			if(renderMap.get(nbm) == instance)
-			{
+		        String nbm = entry.getName() +  entry.getModId();
 				setModel(nbm);
 				if(this.mainModel==null)
 				{
@@ -75,29 +71,29 @@ public class RenderPokemobs extends RenderPokemob {
 				}
 				super.doRender(entity, x, y, z, par8, par9);
 			}
-			else if(renderMap.get(nbm)!=null)
-			{
-				renderMap.get(nbm).doRender(entity, x, y, z, par8, par9);
-			}
 			else
 			{
-				nbm = mob.getPokedexEntry().getBaseName() +  mob.getPokedexEntry().getModId();
-				if(renderMap.get(nbm) == instance)
-				{
-					setModel(nbm);
-					if(this.mainModel==null)
-					{
-						return;
-					}
-					super.doRender(entity, x, y, z, par8, par9);
-				}
-				else if(renderMap.get(nbm)!=null)
-				{
-//					renderMap.get(nbm).setRenderManager(renderManager);
-					renderMap.get(nbm).doRender(entity, x, y, z, par8, par9);
-				}
+				render.doRender(entity, x, y, z, par8, par9);
 			}
 		}
+    }
+    
+    //TODO ensure that this works for missing models for formes.
+    public Render getRenderer(PokedexEntry entry)
+    {
+        String nbm = entry.getName() +  entry.getModId();
+        Render ret;
+        if((ret = renderMap.get(nbm))==null)
+        {
+            String nbm2 = entry.getBaseName() +  entry.getModId();
+            if((ret = renderMap.get(nbm2))==null)
+            {
+                renderMap.put(nbm2, getInstance());
+                renderMap.put(nbm, getInstance());
+                return instance;
+            }
+        }
+        return ret;
     }
     
     @Override

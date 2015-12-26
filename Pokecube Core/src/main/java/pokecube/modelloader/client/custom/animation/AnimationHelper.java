@@ -36,18 +36,24 @@ public class AnimationHelper
         Vector3 temp = Vector3.getNewVectorFromPool();
         float x = 0, y = 0, z = 0;
 
+        float time = entity.worldObj.getTotalWorldTime() + partialTick;
+        time = time % animationLength;
         if (components != null) for (AnimationComponent component : components)
         {
-            float time = entity.worldObj.getTotalWorldTime() + partialTick;
-            time = time % animationLength;
             if (time >= component.startKey)
             {
                 animate = true;
                 float componentTimer = time - component.startKey;
-
+                boolean over = false;
                 if (componentTimer > component.length)
                 {
+                    over = true;
                     componentTimer = component.length;
+                }
+
+                if (partName.equals("Right_thigh"))
+                {
+                    System.out.println(component.rotOffset[0]+" "+component.rotChange[0]+" "+x+" "+over+" "+((float) (component.rotChange[0] / component.length * componentTimer + component.rotOffset[0])+x));
                 }
                 temp.addTo(component.posChange[0] / component.length * componentTimer + component.posOffset[0],
                         component.posChange[1] / component.length * componentTimer + component.posOffset[1],
@@ -60,10 +66,14 @@ public class AnimationHelper
         if (animate)
         {
             part.setPreTranslations(temp);
+            if (partName.equals("Right_thigh"))
+            {
+                System.out.println(partName + " " + x + " " + time+" "+animation.length);
+            }
             Vector4 angle = null;
             if (z != 0)
             {
-                angle = new Vector4(1, 0, 0, z);
+                angle = new Vector4(0, 0, 1, z);
             }
             if (y != 0)
             {
@@ -73,7 +83,7 @@ public class AnimationHelper
                 }
                 else
                 {
-                    angle = new Vector4(0, 0, 1, y);
+                    angle = new Vector4(0, 1, 0, y);
                 }
             }
             if (x != 0)
@@ -84,7 +94,7 @@ public class AnimationHelper
                 }
                 else
                 {
-                    angle = new Vector4(0, 1, 0, x);
+                    angle = new Vector4(1, 0, 0, x);
                 }
             }
             if (angle != null) part.setPreRotations(angle);

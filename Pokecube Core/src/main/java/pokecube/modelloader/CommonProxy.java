@@ -8,7 +8,10 @@ import java.util.HashMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 
@@ -16,7 +19,7 @@ import pokecube.core.database.PokedexEntry;
  * client side does.
  * 
  * @author Manchou */
-public class CommonProxy
+public class CommonProxy implements IGuiHandler
 {
     private HashMap<String, Object> mobProviders = new HashMap<String, Object>();
     public static final String      MODELPATH    = "models/pokemobs/";
@@ -135,5 +138,19 @@ public class CommonProxy
             }
         }
         return false;
+    }
+
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

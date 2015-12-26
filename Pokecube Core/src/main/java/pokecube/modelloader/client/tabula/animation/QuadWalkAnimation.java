@@ -64,7 +64,7 @@ public class QuadWalkAnimation extends Animation
             component3.name = ident + "3";
             component3.identifier = ident + "3";
             component3.startKey = 3 * duration / 4;
-            component3.rotChange[0] = -legAngle;
+            component3.rotChange[0] = legAngle;
 
             ArrayList<AnimationComponent> set = Lists.newArrayList();
 
@@ -95,7 +95,7 @@ public class QuadWalkAnimation extends Animation
             component3.name = ident + "3";
             component3.identifier = ident + "3";
             component3.startKey = 3 * duration / 4;
-            component3.rotChange[0] = legAngle;
+            component3.rotChange[0] = -legAngle;
 
             ArrayList<AnimationComponent> set = Lists.newArrayList();
 
@@ -126,7 +126,7 @@ public class QuadWalkAnimation extends Animation
             component3.name = ident + "3";
             component3.identifier = ident + "3";
             component3.startKey = 3 * duration / 4;
-            component3.rotChange[0] = -armAngle;
+            component3.rotChange[0] = armAngle;
 
             ArrayList<AnimationComponent> set = Lists.newArrayList();
 
@@ -157,7 +157,7 @@ public class QuadWalkAnimation extends Animation
             component3.name = ident + "3";
             component3.identifier = ident + "3";
             component3.startKey = 3 * duration / 4;
-            component3.rotChange[0] = armAngle;
+            component3.rotChange[0] = -armAngle;
 
             ArrayList<AnimationComponent> set = Lists.newArrayList();
 

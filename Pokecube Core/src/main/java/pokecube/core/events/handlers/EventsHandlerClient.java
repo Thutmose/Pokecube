@@ -359,7 +359,7 @@ public class EventsHandlerClient
         event.left.add(msg);
     }
 
-    static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
+    public static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
 
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
     {

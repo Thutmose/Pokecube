@@ -50,8 +50,10 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     public LoadedModel<T>      model;
     public IFlexibleBakedModel model2;
     public String              model2Loc;
-    private boolean            isTabula = false;
+    private boolean            isTabula     = false;
     final String               modelName;
+    public boolean             overrideAnim = false;
+    public String              anim         = "";
 
     public RenderAdvancedPokemobModel(String name, float par2)
     {
@@ -407,6 +409,12 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     private String getPhase(TabulaModelSet set, EntityLiving entity, float partialTick)
     {
         String phase = "idle";
+        
+        if(overrideAnim)
+        {
+            return anim;
+        }
+        
         ModelJson modelj = null;
         if (set != null) set.parser.modelMap.get(set.model);
         IPokemob pokemob = (IPokemob) entity;
@@ -524,7 +532,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     {
         if (set == null && model != null) { return LoadedModel.DEFAULTPHASE.equals(phase)
                 || model.animations.containsKey(phase); }
-        return set.loadedAnimations.containsKey(phase) || modelj!=null&&modelj.animationMap.containsKey(phase);
+        return set.loadedAnimations.containsKey(phase) || modelj != null && modelj.animationMap.containsKey(phase);
     }
 
     @Override

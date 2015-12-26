@@ -124,7 +124,7 @@ public class ClientProxy extends CommonProxy
             {
                 try
                 {
-                    ResourceLocation tex = new ResourceLocation(mod, p.getTexture((byte) 0));
+                    ResourceLocation tex = new ResourceLocation(mod, AnimationLoader.MODELPATH+p.getName()+".xml");
                     IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                     res.getInputStream().close();
                     ArrayList<String> models = modModels.get(mod);
@@ -136,7 +136,37 @@ public class ClientProxy extends CommonProxy
                 }
                 catch (Exception e)
                 {
+                    try
+                    {
+                        ResourceLocation tex = new ResourceLocation(mod, AnimationLoader.MODELPATH+p.getName()+".tbl");
+                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                        res.getInputStream().close();
+                        ArrayList<String> models = modModels.get(mod);
+                        if (models == null)
+                        {
+                            modModels.put(mod, models = new ArrayList<String>());
+                        }
+                        if (!models.contains(p.getName())) models.add(p.getName());
+                    }
+                    catch (Exception e1)
+                    {
+                        try
+                        {
+                            ResourceLocation tex = new ResourceLocation(mod, AnimationLoader.MODELPATH+p.getName()+".x3d");
+                            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                            res.getInputStream().close();
+                            ArrayList<String> models = modModels.get(mod);
+                            if (models == null)
+                            {
+                                modModels.put(mod, models = new ArrayList<String>());
+                            }
+                            if (!models.contains(p.getName())) models.add(p.getName());
+                        }
+                        catch (Exception e2)
+                        {
 
+                        }
+                    }
                 }
             }
             if (modModels.containsKey(mod))
@@ -148,7 +178,7 @@ public class ClientProxy extends CommonProxy
                         boolean has = AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s);
                         if (!has)
                         {
-                            System.err.println("Did not find model for " + s);
+//                            System.err.println("Did not find model for " + s);
                         }
                     }
                 }

@@ -336,7 +336,7 @@ public class PokedexEntry
 
     public String getTexture(byte gender)
     {
-        return getTexture(gender, 0);// texture;
+        return getTexture(gender, 0);
     }
 
     public String getTexture(byte gender, long time)

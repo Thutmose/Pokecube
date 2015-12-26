@@ -346,6 +346,7 @@ public class TabulaPackLoader extends AnimationLoader
             Vector3 offset = null;
             Vector5 rotation = null;
             Vector3 scale = null;
+
             for (int i = 0; i < modelList.getLength(); i++)
             {
                 Node modelNode = modelList.item(i);
@@ -358,7 +359,6 @@ public class TabulaPackLoader extends AnimationLoader
                         Node phase = part.getAttributes().getNamedItem("name") == null
                                 ? part.getAttributes().getNamedItem("type") : part.getAttributes().getNamedItem("name");
                         String phaseName = phase.getNodeValue();
-
                         // Look for preset animations to load in
                         boolean preset = false;
 

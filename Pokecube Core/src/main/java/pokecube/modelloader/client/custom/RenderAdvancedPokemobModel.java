@@ -416,7 +416,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         }
         
         ModelJson modelj = null;
-        if (set != null) set.parser.modelMap.get(set.model);
+        if (set != null) modelj = set.parser.modelMap.get(set.model);
         IPokemob pokemob = (IPokemob) entity;
         float walkspeed = entity.prevLimbSwingAmount
                 + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
@@ -532,7 +532,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     {
         if (set == null && model != null) { return LoadedModel.DEFAULTPHASE.equals(phase)
                 || model.animations.containsKey(phase); }
-        return set.loadedAnimations.containsKey(phase) || modelj != null && modelj.animationMap.containsKey(phase);
+        return set.loadedAnimations.containsKey(phase) || (modelj != null && modelj.animationMap.containsKey(phase));
     }
 
     @Override

@@ -204,7 +204,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 	@SideOnly(Side.CLIENT)
     public String getTexture(){
     	
-    	texture = this.getPokedexEntry().getTexture(this.getSexe(), worldObj.getWorldTime());
+    	texture = this.getPokedexEntry().getTexture(this.getSexe(), this.ticksExisted);
     	
     	if(this.getPokedexEntry().hasSpecialTextures[0] && red==0 && green!=0 && blue!=0)
     	{

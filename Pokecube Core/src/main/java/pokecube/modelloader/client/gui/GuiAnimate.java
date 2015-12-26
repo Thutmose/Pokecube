@@ -51,7 +51,8 @@ public class GuiAnimate extends GuiScreen
         posOff = new GuiTextField(0, fontRendererObj, xOffset, yOffset + 53, 100, 10);
         length = new GuiTextField(0, fontRendererObj, xOffset, yOffset + 63, 100, 10);
         start = new GuiTextField(0, fontRendererObj, xOffset, yOffset + 73, 100, 10);
-        buttonList.add(new GuiButton(2, width / 2 - xOffset, height / 2 - yOffset, 40, 20, "button"));
+        buttonList.add(new GuiButton(2, width / 2 - xOffset, height / 2 - yOffset, 40, 20, "button1"));
+        buttonList.add(new GuiButton(1, width / 2 - xOffset, height / 2 - yOffset - 20, 40, 20, "button2"));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -61,13 +62,16 @@ public class GuiAnimate extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         super.drawScreen(mouseX, mouseY, partialTicks);
+        int yOffset = height / 2 - 80;
+        int xOffset = width / 2;
+        fontRendererObj.drawString("Animation", xOffset, yOffset, 0xFFFFFF);
         anim.drawTextBox();
-        part.drawTextBox();
-        name.drawTextBox();
-        rotOff.drawTextBox();
-        posOff.drawTextBox();
-        length.drawTextBox();
-        start.drawTextBox();
+//        part.drawTextBox();
+//        name.drawTextBox();
+//        rotOff.drawTextBox();
+//        posOff.drawTextBox();
+//        length.drawTextBox();
+//        start.drawTextBox();
         PokedexEntry entry = null;
         if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
         IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
@@ -79,9 +83,11 @@ public class GuiAnimate extends GuiScreen
         float zLevel = 800;
         GL11.glPushMatrix();
         GlStateManager.translate(150, 150, zLevel);
-        double scale = 30/(entry.length+entry.width+entry.height);
-        GL11.glScaled(scale,scale, scale);
+        double size = Math.max(1,Math.max(entry.height, Math.max(entry.width, entry.length)));
+        double scale = 8 / Math.sqrt(size);
         
+        GL11.glScaled(scale, scale, scale);
+
         Object o;
         ((Entity) pokemob).ticksExisted = mc.thePlayer.ticksExisted;
         if ((o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
@@ -116,12 +122,12 @@ public class GuiAnimate extends GuiScreen
     {
         super.keyTyped(typedChar, keyCode);
         anim.textboxKeyTyped(typedChar, keyCode);
-        part.textboxKeyTyped(typedChar, keyCode);
-        name.textboxKeyTyped(typedChar, keyCode);
-        rotOff.textboxKeyTyped(typedChar, keyCode);
-        posOff.textboxKeyTyped(typedChar, keyCode);
-        length.textboxKeyTyped(typedChar, keyCode);
-        start.textboxKeyTyped(typedChar, keyCode);
+//        part.textboxKeyTyped(typedChar, keyCode);
+//        name.textboxKeyTyped(typedChar, keyCode);
+//        rotOff.textboxKeyTyped(typedChar, keyCode);
+//        posOff.textboxKeyTyped(typedChar, keyCode);
+//        length.textboxKeyTyped(typedChar, keyCode);
+//        start.textboxKeyTyped(typedChar, keyCode);
     }
 
     @Override
@@ -131,12 +137,12 @@ public class GuiAnimate extends GuiScreen
     {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         anim.mouseClicked(mouseX, mouseY, mouseButton);
-        part.mouseClicked(mouseX, mouseY, mouseButton);
-        name.mouseClicked(mouseX, mouseY, mouseButton);
-        rotOff.mouseClicked(mouseX, mouseY, mouseButton);
-        posOff.mouseClicked(mouseX, mouseY, mouseButton);
-        length.mouseClicked(mouseX, mouseY, mouseButton);
-        start.mouseClicked(mouseX, mouseY, mouseButton);
+//        part.mouseClicked(mouseX, mouseY, mouseButton);
+//        name.mouseClicked(mouseX, mouseY, mouseButton);
+//        rotOff.mouseClicked(mouseX, mouseY, mouseButton);
+//        posOff.mouseClicked(mouseX, mouseY, mouseButton);
+//        length.mouseClicked(mouseX, mouseY, mouseButton);
+//        start.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -145,11 +151,22 @@ public class GuiAnimate extends GuiScreen
     protected void actionPerformed(GuiButton button) throws IOException
     {
         System.out.println(button);
-        PokedexEntry entry = null;
-        if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
-        int num = Pokedex.getInstance().getNext(entry, 1).getPokedexNb();
-        if (num != pokedexNb) pokedexNb = num;
-        else pokedexNb = Pokedex.getInstance().getFirstEntry().getPokedexNb();
+        if (button.id == 2)
+        {
+            PokedexEntry entry = null;
+            if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
+            int num = Pokedex.getInstance().getNext(entry, 1).getPokedexNb();
+            if (num != pokedexNb) pokedexNb = num;
+            else pokedexNb = Pokedex.getInstance().getFirstEntry().getPokedexNb();
+        }
+        else
+        {
+            PokedexEntry entry = null;
+            if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
+            int num = Pokedex.getInstance().getPrevious(entry, 1).getPokedexNb();
+            if (num != pokedexNb) pokedexNb = num;
+            else pokedexNb = Pokedex.getInstance().getLastEntry().getPokedexNb();
+        }
     }
 
     @Override

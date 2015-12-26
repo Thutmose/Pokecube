@@ -44,16 +44,9 @@ public class AnimationHelper
             {
                 animate = true;
                 float componentTimer = time - component.startKey;
-                boolean over = false;
                 if (componentTimer > component.length)
                 {
-                    over = true;
                     componentTimer = component.length;
-                }
-
-                if (partName.equals("Right_thigh"))
-                {
-                    System.out.println(component.rotOffset[0]+" "+component.rotChange[0]+" "+x+" "+over+" "+((float) (component.rotChange[0] / component.length * componentTimer + component.rotOffset[0])+x));
                 }
                 temp.addTo(component.posChange[0] / component.length * componentTimer + component.posOffset[0],
                         component.posChange[1] / component.length * componentTimer + component.posOffset[1],
@@ -66,10 +59,6 @@ public class AnimationHelper
         if (animate)
         {
             part.setPreTranslations(temp);
-            if (partName.equals("Right_thigh"))
-            {
-                System.out.println(partName + " " + x + " " + time+" "+animation.length);
-            }
             Vector4 angle = null;
             if (z != 0)
             {

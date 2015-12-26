@@ -26,7 +26,7 @@ public class AnimationHelper
     public static boolean doAnimation(Animation animation, Entity entity, String partName, IExtendedModelPart part,
             float partialTick)
     {
-        ArrayList<AnimationComponent> components = animation.sets.get(partName);
+        ArrayList<AnimationComponent> components = animation.getComponents(partName);
         if (animation.getLength() < 0)
         {
             animation.initLength();

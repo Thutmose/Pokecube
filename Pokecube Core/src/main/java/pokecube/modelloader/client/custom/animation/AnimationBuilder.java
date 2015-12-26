@@ -67,8 +67,8 @@ public class AnimationBuilder
                         {
                             String[] vals = temp.getNodeValue().split(",");
                             comp.posChange[0] = Double.parseDouble(vals[0]);
-                            comp.posChange[1] = Double.parseDouble(vals[1]);
-                            comp.posChange[2] = Double.parseDouble(vals[2]);
+                            comp.posChange[2] = Double.parseDouble(vals[1]);
+                            comp.posChange[1] = Double.parseDouble(vals[2]);
                         }
                         if ((temp = component.getAttributes().getNamedItem("scaleChange")) != null)
                         {
@@ -88,8 +88,8 @@ public class AnimationBuilder
                         {
                             String[] vals = temp.getNodeValue().split(",");
                             comp.posOffset[0] = Double.parseDouble(vals[0]);
-                            comp.posOffset[1] = Double.parseDouble(vals[1]);
-                            comp.posOffset[2] = Double.parseDouble(vals[2]);
+                            comp.posOffset[2] = Double.parseDouble(vals[1]);
+                            comp.posOffset[1] = Double.parseDouble(vals[2]);
                         }
                         if ((temp = component.getAttributes().getNamedItem("scaleOffset")) != null)
                         {

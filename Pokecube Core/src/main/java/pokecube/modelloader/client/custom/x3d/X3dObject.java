@@ -83,6 +83,7 @@ public class X3dObject implements IExtendedModelPart
         rotateToParent();
         GL11.glTranslated(offset.x, offset.y, offset.z);
         GL11.glTranslated(preTrans.x, preTrans.y, preTrans.z);
+        rotations.glRotate();
         GlStateManager.rotate(90, 1, 0, 0);
         preRot.glRotate();
         GlStateManager.rotate(-90, 1, 0, 0);
@@ -91,7 +92,6 @@ public class X3dObject implements IExtendedModelPart
         GL11.glPushMatrix();
 
         GL11.glTranslated(offset.x, offset.y, offset.z);
-//        rotations.glRotate();
         postRot.glRotate();
         postRot1.glRotate();
         GL11.glScalef(scale.x, scale.y, scale.z);

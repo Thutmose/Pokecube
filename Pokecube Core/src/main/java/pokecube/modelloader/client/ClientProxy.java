@@ -53,6 +53,7 @@ public class ClientProxy extends CommonProxy
     public void postInit()
     {
         BakedRenderer.init();
+        AnimationLoader.loaded = true;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

@@ -152,7 +152,7 @@ public class PokecubePacketHandler
 
                 player.inventory.addItemStackToInventory(e);
                 pokedexNb = PokecubeManager.getPokedexNb(e);
-                if(pokedexNb > 0)
+                if (pokedexNb > 0)
                 {
                     StatsCollector.addCapture(PokecubeManager.itemToPokemob(e, player.worldObj));
                 }
@@ -225,20 +225,21 @@ public class PokecubePacketHandler
                     return;
                 }
             }
-//            ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-//            DataOutputStream outputStream = new DataOutputStream(bos);
-////TODO see what this was doing
-//            try
-//            {
-//                outputStream.writeInt(-1);
-//                PokecubeServerPacket pack = PokecubePacketHandler
-//                        .makeServerPacket(PokecubeServerPacket.EDITPOKEMOB, bos.toByteArray());
-//                PokecubePacketHandler.sendToServer(pack);
-//            }
-//            catch (Exception ex)
-//            {
-//                ex.printStackTrace();
-//            }
+            // ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+            // DataOutputStream outputStream = new DataOutputStream(bos);
+            //// TODO see what this was doing
+            // try
+            // {
+            // outputStream.writeInt(-1);
+            // PokecubeServerPacket pack = PokecubePacketHandler
+            // .makeServerPacket(PokecubeServerPacket.EDITPOKEMOB,
+            // bos.toByteArray());
+            // PokecubePacketHandler.sendToServer(pack);
+            // }
+            // catch (Exception ex)
+            // {
+            // ex.printStackTrace();
+            // }
         }
     }
 
@@ -413,7 +414,7 @@ public class PokecubePacketHandler
                 target.set(attacked);
             }
 
-            if (move.animation != null && attacker!=null)
+            if (move.animation != null && attacker != null)
             {
                 MoveAnimation anim = new MoveAnimation(attacker, attacked, target, move, move.animation.getDuration());
                 MoveAnimationHelper.Instance().addMove(attacker, anim);
@@ -443,7 +444,7 @@ public class PokecubePacketHandler
                 AISaveHandler.clearInstance();
                 GuiMoveMessages.clear();
                 new GuiScrollableLists();
-                
+
                 PokecubeSerializer.getInstance().readFromNBT(nbt);
             }
             else if (nbt.getBoolean("hasTerrain"))
@@ -513,8 +514,7 @@ public class PokecubePacketHandler
 
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
                 boolean teleport = dat.readBoolean();
-                dat.readStringFromBuffer(20);
-                
+
                 if (teleport)
                 {
                     NBTTagCompound teletag = new NBTTagCompound();
@@ -649,20 +649,20 @@ public class PokecubePacketHandler
     public static class PokecubeClientPacket implements IMessage
     {
 
-        public static final byte CHOOSE1ST = 0;
-        public static final byte MOVEANIMATION = 1;
-        public static final byte TERRAIN = 5;
-        public static final byte STATS = 6;
+        public static final byte CHOOSE1ST      = 0;
+        public static final byte MOVEANIMATION  = 1;
+        public static final byte TERRAIN        = 5;
+        public static final byte STATS          = 6;
         public static final byte TERRAINEFFECTS = 7;
-        public static final byte TELEPORTLIST = 8;
-        public static final byte MOVEMESSAGE = 10;
-        public static final byte KILLENTITY = 11;
-        public static final byte MOVEENTITY = 12;
-        public static final byte TELEPORTINDEX = 13;
-        public static final byte CHANGEFORME = 14;
+        public static final byte TELEPORTLIST   = 8;
+        public static final byte MOVEMESSAGE    = 10;
+        public static final byte KILLENTITY     = 11;
+        public static final byte MOVEENTITY     = 12;
+        public static final byte TELEPORTINDEX  = 13;
+        public static final byte CHANGEFORME    = 14;
 
         public static final byte WIKIWRITE = 15;
-        
+
         PacketBuffer buffer;
 
         public PokecubeClientPacket()
@@ -760,7 +760,7 @@ public class PokecubePacketHandler
                         effect.effects[i] = buffer.readLong();
                     }
                 }
-                else  if (channel == TELEPORTLIST)
+                else if (channel == TELEPORTLIST)
                 {
                     try
                     {
@@ -809,7 +809,7 @@ public class PokecubePacketHandler
                         e.printStackTrace();
                     }
                 }
-                else  if (channel == MOVEENTITY)
+                else if (channel == MOVEENTITY)
                 {
                     int id = buffer.readInt();
                     Entity e = player.worldObj.getEntityByID(id);
@@ -820,13 +820,13 @@ public class PokecubePacketHandler
                         v.moveEntity(e);
                     }
                 }
-                else  if (channel == TELEPORTINDEX)
+                else if (channel == TELEPORTINDEX)
                 {
-                    PokecubeServerPacket packet = new PokecubeServerPacket(
-                            new byte[] { PokecubeServerPacket.TELEPORT, (byte) GuiScrollableLists.instance().indexLocation });
+                    PokecubeServerPacket packet = new PokecubeServerPacket(new byte[] { PokecubeServerPacket.TELEPORT,
+                            (byte) GuiScrollableLists.instance().indexLocation });
                     PokecubePacketHandler.sendToServer(packet);
                 }
-                else  if (channel == CHANGEFORME)
+                else if (channel == CHANGEFORME)
                 {
                     try
                     {
@@ -870,16 +870,15 @@ public class PokecubePacketHandler
     public static class PokecubeServerPacket implements IMessage
     {
 
-        public static final byte CHOOSE1ST = 0;
-        public static final byte POKECENTER = 3;
+        public static final byte CHOOSE1ST      = 0;
+        public static final byte POKECENTER     = 3;
         public static final byte POKEMOBSPAWNER = 4;
-        public static final byte POKEDEX = 5;
-        public static final byte STATS = 6;
-        public static final byte POKECUBEUSE = 7;
-        public static final byte TELEPORT = 9;
-        public static final byte MEGAEVOLVE = 17;
-        
-        
+        public static final byte POKEDEX        = 5;
+        public static final byte STATS          = 6;
+        public static final byte POKECUBEUSE    = 7;
+        public static final byte TELEPORT       = 9;
+        public static final byte MEGAEVOLVE     = 17;
+
         PacketBuffer buffer;
 
         public PokecubeServerPacket()
@@ -942,7 +941,7 @@ public class PokecubePacketHandler
                 else if (channel == 1)
                 {
                     new Exception().printStackTrace();
-//                    handlePokemobMoveClientAnimation(message);
+                    // handlePokemobMoveClientAnimation(message);
                 }
                 else if (channel == POKECENTER)
                 {
@@ -983,7 +982,8 @@ public class PokecubePacketHandler
                                 NBTTagCompound teletag = new NBTTagCompound();
                                 PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(), teletag);
 
-                                PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST, teletag);
+                                PokecubeClientPacket packet = new PokecubeClientPacket(
+                                        PokecubeClientPacket.TELEPORTLIST, teletag);
                                 PokecubePacketHandler.sendToClient(packet, player);
                             }
                         }
@@ -1016,18 +1016,16 @@ public class PokecubePacketHandler
                     if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IPokecube)
                     {
                         Vector3 targetLocation = Vector3.getNewVectorFromPool();
-                        
+
                         long time = player.getEntityData().getLong("lastThrow");
-                        if(time==player.worldObj.getTotalWorldTime())
-                            return;
+                        if (time == player.worldObj.getTotalWorldTime()) return;
                         player.getEntityData().setLong("lastThrow", player.worldObj.getTotalWorldTime());
-                        
-                        
+
                         int id = buffer.readInt();
                         Entity target = player.worldObj.getEntityByID(id);
                         if (target != null && target instanceof IPokemob) targetLocation.set(target);
-                        boolean used = ((IPokecube) player.getHeldItem().getItem()).throwPokecube(player.worldObj, player,
-                                player.getHeldItem(), targetLocation, target);
+                        boolean used = ((IPokecube) player.getHeldItem().getItem()).throwPokecube(player.worldObj,
+                                player, player.getHeldItem(), targetLocation, target);
                         targetLocation.freeVectorFromPool();
                         if (player.getHeldItem() != null && !(!PokecubeManager.isFilled(player.getHeldItem())
                                 && player.capabilities.isCreativeMode) && used)

@@ -32,6 +32,7 @@ import thut.api.maths.Vector3;
 public class AnimationLoader
 {
     public static final String MODELPATH = "models/pokemobs/";
+    public static boolean      loaded    = false;
 
     /** texture folder */
     public final static String TEXTUREPATH = "textures/entities/";
@@ -190,7 +191,7 @@ public class AnimationLoader
                         String[] merges = part.getAttributes().getNamedItem("merge").getNodeValue().split("->");
                         mergedAnimations.put(merges[0], merges[1]);
                     }
-                    else if(part.getNodeName().equals("customTex"))
+                    else if (part.getNodeName().equals("customTex"))
                     {
                         texturer = new TextureHelper(part);
                     }
@@ -502,7 +503,7 @@ public class AnimationLoader
 
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
                     System.out.println("Registerd an x3d model for " + name);
-                    getModel(name);
+                    if (loaded) getModel(name);
                 }
                 else
                 {

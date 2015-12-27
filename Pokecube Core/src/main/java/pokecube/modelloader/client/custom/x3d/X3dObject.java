@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
-import pokecube.core.client.render.PTezzelator;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.IExtendedModelPart;
 import pokecube.modelloader.client.custom.IPartTexturer;
@@ -14,9 +12,9 @@ import thut.api.maths.Vector3;
 
 public class X3dObject implements IExtendedModelPart, IRetexturableModel
 {
-    private int mesh = 0;
-    //TODO support other draw modes too somehow
-    public int GLMODE = GL11.GL_TRIANGLES;
+    private int                meshId   = 0;
+    // TODO support other draw modes too somehow
+    public int                 GLMODE = GL11.GL_TRIANGLES;
     public Vertex[]            vertices;
     public TextureCoordinate[] textureCoordinates;
     public Integer[]           order;
@@ -84,56 +82,69 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
 
     public void render()
     {
+        //Rotate to the offset of the parent.
         rotateToParent();
+        //Translate of offset for rotation.
         GL11.glTranslated(offset.x, offset.y, offset.z);
-        GlStateManager.rotate(90, 1, 0, 0);
+        //Rotate by this to account for a coordinate difference.
+        GL11.glRotatef(90, 1, 0, 0);
         GL11.glTranslated(preTrans.x, preTrans.y, preTrans.z);
-        GlStateManager.rotate(-90, 1, 0, 0);
+        //UnRotate coordinate difference.
+        GL11.glRotatef(-90, 1, 0, 0);
+        //Apply initial part rotation
         rotations.glRotate();
-        GlStateManager.rotate(90, 1, 0, 0);
+        //Rotate by this to account for a coordinate difference.
+        GL11.glRotatef(90, 1, 0, 0);
+        //Apply PreOffset-Rotations.
         preRot.glRotate();
+        //Translate by post-PreOffset amount.
         GL11.glTranslated(postTrans.x, postTrans.y, postTrans.z);
-        GlStateManager.rotate(-90, 1, 0, 0);
+        //UnRotate coordinate difference.
+        GL11.glRotatef(-90, 1, 0, 0);
+        //Undo pre-translate offset.
         GL11.glTranslated(-offset.x, -offset.y, -offset.z);
         GL11.glPushMatrix();
+        //Translate to Offset.
         GL11.glTranslated(offset.x, offset.y, offset.z);
+        
+        //Apply first postRotation
         postRot.glRotate();
+        //Apply second post rotation.
         postRot1.glRotate();
+        //Scale
         GL11.glScalef(scale.x, scale.y, scale.z);
-        if (this.texturer != null) this.texturer.applyTexture(this.getName());
-        PTezzelator tez = PTezzelator.instance;
-        if (texturer != null)
-        {
-            texturer.shiftUVs(name, uvShift);
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            GL11.glTranslated(uvShift[0], uvShift[1], 0.0F);
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        }
-        GL11.glColor4f(red/255f, green/255f, blue/255f, alpha/255f);
-        addForRender(tez);
-        GL11.glMatrixMode(GL11.GL_TEXTURE);
-        GL11.glLoadIdentity();
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        //Renders the model.
+        addForRender();
         GL11.glPopMatrix();
     }
 
-    public void addForRender(PTezzelator tessellator)
+    public void addForRender()
     {
-        try
+        boolean textureShift = false;
+        //Apply Texturing.
+        if (texturer != null)
         {
-            compileList();
-            GL11.glCallList(mesh);
-            GL11.glFlush();
-        }
-        catch (Exception e)
-        {
-            int m = 0;
-            for (Integer i : order)
+            texturer.applyTexture(this.getName());
+            if (textureShift = texturer.shiftUVs(name, uvShift))
             {
-                m = Math.max(i, m);
+                GL11.glMatrixMode(GL11.GL_TEXTURE);
+                GL11.glTranslated(uvShift[0], uvShift[1], 0.0F);
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
             }
-            System.err.println(m);
-            e.printStackTrace();
+        }
+        //Applies Colour.
+        GL11.glColor4f(red / 255f, green / 255f, blue / 255f, alpha / 255f);
+        //Compiles the list of the meshId is invalid.
+        compileList();
+        //Call the list
+        GL11.glCallList(meshId);
+        GL11.glFlush();
+        //Reset Texture Matrix if changed.
+        if (textureShift)
+        {
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            GL11.glLoadIdentity();
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
         }
     }
 
@@ -251,10 +262,10 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
 
     private void compileList()
     {
-        if(!GL11.glIsList(mesh))
+        if (!GL11.glIsList(meshId))
         {
-            mesh = GL11.glGenLists(1);
-            GL11.glNewList(mesh, GL11.GL_COMPILE);
+            meshId = GL11.glGenLists(1);
+            GL11.glNewList(meshId, GL11.GL_COMPILE);
             Vertex vertex;
             TextureCoordinate textureCoordinate;
             GL11.glBegin(GLMODE);
@@ -269,7 +280,7 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             GL11.glEndList();
         }
     }
-    
+
     private void rotateToParent()
     {
         if (parent != null)

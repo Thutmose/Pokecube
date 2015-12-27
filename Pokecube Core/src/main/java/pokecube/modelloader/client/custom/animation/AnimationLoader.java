@@ -93,7 +93,7 @@ public class AnimationLoader
             int headAxis = 2;
             int headAxis2 = 1;
             float[] headCaps = { -180, 180 };
-            float[] headCaps1 = { -30, 30 };
+            float[] headCaps1 = { -30, 70 };
             Vector3 offset = null;
             Vector5 rotation = null;
             Vector3 scale = null;

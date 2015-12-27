@@ -6,5 +6,5 @@ public interface IPartTexturer
 
     void bindObject(Object thing);
 
-    void shiftUVs(String part, double[] toFill);
+    boolean shiftUVs(String part, double[] toFill);
 }

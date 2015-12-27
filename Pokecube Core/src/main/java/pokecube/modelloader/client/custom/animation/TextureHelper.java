@@ -77,13 +77,14 @@ public class TextureHelper implements IPartTexturer
     }
 
     @Override
-    public void shiftUVs(String part, double[] toFill)
+    public boolean shiftUVs(String part, double[] toFill)
     {
         TexState state;
         if ((state = texStates.get(part)) != null)
         {
-            state.applyState(toFill, pokemob);
+            return state.applyState(toFill, pokemob);
         }
+        return false;
     }
 
     public static int getState(String trigger)
@@ -142,7 +143,7 @@ public class TextureHelper implements IPartTexturer
             }
         }
 
-        void applyState(double[] toFill, IPokemob pokemob)
+        boolean applyState(double[] toFill, IPokemob pokemob)
         {
             double dx = 0;
             double dy = 0;
@@ -157,7 +158,7 @@ public class TextureHelper implements IPartTexturer
                     dy = arr[1];
                     toFill[0] = dx;
                     toFill[1] = dy;
-                    return;
+                    return true;
                 }
             }
             if (running != null)
@@ -171,6 +172,7 @@ public class TextureHelper implements IPartTexturer
                 {
                     running = null;
                 }
+                return true;
             }
             else for (RandomState state : randomStates)
             {
@@ -183,9 +185,10 @@ public class TextureHelper implements IPartTexturer
                     toFill[1] = dy;
                     running = state;
                     state.set = ((Entity) pokemob).ticksExisted;
-                    return;
+                    return true;
                 }
             }
+            return false;
         }
     }
 

@@ -24,7 +24,7 @@ group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-convention
 archivesBaseName = "Pokecube Mobs"
 
 minecraft {
-    version = "1.8.8-11.15.0.1635-1.8.8"
+    version = "1.8.8-11.15.0.1650-1.8.8"
     runDir = "run"
     
     replace "@VERSION@", project.version
@@ -35,7 +35,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20151129"
+    mappings = "snapshot_20151211"
     makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 

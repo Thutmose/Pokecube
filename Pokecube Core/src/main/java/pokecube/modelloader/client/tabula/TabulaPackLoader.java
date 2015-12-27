@@ -2,6 +2,7 @@ package pokecube.modelloader.client.tabula;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -23,10 +24,12 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.modelloader.client.custom.IPartTexturer;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
 import pokecube.modelloader.client.custom.animation.AnimationBuilder;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
 import pokecube.modelloader.client.custom.animation.AnimationRegistry;
+import pokecube.modelloader.client.custom.animation.TextureHelper;
 import pokecube.modelloader.client.custom.animation.AnimationRegistry.IPartRenamer;
 import pokecube.modelloader.client.tabula.components.Animation;
 import pokecube.modelloader.client.tabula.components.CubeGroup;
@@ -129,6 +132,7 @@ public class TabulaPackLoader extends AnimationLoader
         final PokedexEntry             entry;
         public final TabulaModel       model;
         public final TabulaModelParser parser;
+        public IPartTexturer                  texturer = null;
 
         /** Animations to merge together, animation key is merged into animation
          * value. so key of idle and value of walk will merge the idle animation
@@ -379,7 +383,7 @@ public class TabulaPackLoader extends AnimationLoader
                                 offset = getOffset(part, offset);
                                 scale = getScale(part, scale);
                                 rotation = getRotation(part, rotation);
-                                headAxis = getHeadAxis(part, 1);
+                                headAxis = getHeadAxis(part, headAxis);
                                 headDir = getHeadDir(part, headDir);
                                 headDir = Math.min(1, headDir);
                                 headDir = Math.max(-1, headDir);
@@ -395,10 +399,10 @@ public class TabulaPackLoader extends AnimationLoader
                         {
                             setTextureDetails(part, entry);
                         }
-                        //Try to load in an animation.
-                        else if(!preset)
+                        // Try to load in an animation.
+                        else if (!preset)
                         {
-                            Animation anim = AnimationBuilder.build(part, null);
+                            Animation anim = AnimationBuilder.build(part, this);
                             if (anim != null)
                             {
                                 addAnimation(anim);
@@ -410,6 +414,45 @@ public class TabulaPackLoader extends AnimationLoader
                     {
                         String[] merges = part.getAttributes().getNamedItem("merge").getNodeValue().split("->");
                         mergedAnimations.put(merges[0], merges[1]);
+                    }
+                    else if(part.getNodeName().equals("customTex"))
+                    {
+                        texturer = new TextureHelper(part);
+                    }
+                    if (part.getNodeName().equals("metadata"))
+                    {
+                        try
+                        {
+                            offset = getOffset(part, offset);
+                            scale = getScale(part, scale);
+                            rotation = getRotation(part, rotation);
+                            headDir = getHeadDir(part, headDir);
+                            headAxis = getHeadAxis(part, 1);
+                            Set<String> toAdd = Sets.newHashSet();
+                            addStrings("head", part, toAdd);
+                            ArrayList<String> temp = new ArrayList<String>(toAdd);
+                            toAdd.clear();
+                            String[] names = temp.toArray(new String[0]);
+                            this.convertToIdents(names);
+                            for(String s: names) headRoots.add(s);
+                            temp.clear();
+                            addStrings("shear", part, toAdd);
+                            temp.addAll(toAdd);
+                            toAdd.clear();
+                            names = temp.toArray(new String[0]);
+                            this.convertToIdents(names);
+                            for(String s: names) shearableIdents.add(s);
+                            addStrings("dye", part, toAdd);
+                            temp.addAll(toAdd);
+                            names = temp.toArray(new String[0]);
+                            this.convertToIdents(names);
+                            for(String s: names) dyeableIdents.add(s);
+                            setHeadCaps(part, headCaps);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

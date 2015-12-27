@@ -3,7 +3,6 @@ package pokecube.modelloader.client.custom;
 import java.util.HashMap;
 
 import pokecube.core.utils.Vector4;
-import pokecube.modelloader.client.custom.oldforgestuff.IModelCustom;
 import thut.api.maths.Vector3;
 
 public interface IExtendedModelPart extends IModelCustom{

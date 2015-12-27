@@ -10,9 +10,11 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.IExtendedModelPart;
+import pokecube.modelloader.client.custom.IPartTexturer;
+import pokecube.modelloader.client.custom.IRetexturableModel;
 import thut.api.maths.Vector3;
 
-public class X3dObject implements IExtendedModelPart
+public class X3dObject implements IExtendedModelPart, IRetexturableModel
 {
     public ArrayList<Vertex>            vertices           = new ArrayList<Vertex>();
     public ArrayList<Vertex>            vertexNormals      = new ArrayList<Vertex>();
@@ -22,6 +24,7 @@ public class X3dObject implements IExtendedModelPart
     public HashMap<String, IExtendedModelPart> childParts = new HashMap<String, IExtendedModelPart>();
     public final String                        name;
     public IExtendedModelPart                  parent     = null;
+    IPartTexturer                              texturer;
 
     public Vector4 preRot    = new Vector4();
     public Vector4 postRot   = new Vector4();
@@ -32,6 +35,7 @@ public class X3dObject implements IExtendedModelPart
     public Vector3 offset    = Vector3.getNewVectorFromPool();
     public Vector4 rotations = new Vector4();
     public Vertex  scale     = new Vertex(1, 1, 1);
+    private double[]  uvShift   = { 0, 0 };
 
     public X3dObject(String name)
     {
@@ -82,22 +86,27 @@ public class X3dObject implements IExtendedModelPart
     {
         rotateToParent();
         GL11.glTranslated(offset.x, offset.y, offset.z);
+        GlStateManager.rotate(90, 1, 0, 0);
         GL11.glTranslated(preTrans.x, preTrans.y, preTrans.z);
+        GlStateManager.rotate(-90, 1, 0, 0);
         rotations.glRotate();
         GlStateManager.rotate(90, 1, 0, 0);
         preRot.glRotate();
-        GlStateManager.rotate(-90, 1, 0, 0);
         GL11.glTranslated(postTrans.x, postTrans.y, postTrans.z);
+        GlStateManager.rotate(-90, 1, 0, 0);
         GL11.glTranslated(-offset.x, -offset.y, -offset.z);
         GL11.glPushMatrix();
-
         GL11.glTranslated(offset.x, offset.y, offset.z);
         postRot.glRotate();
         postRot1.glRotate();
         GL11.glScalef(scale.x, scale.y, scale.z);
+        if (this.texturer != null) this.texturer.applyTexture(this.getName());
         PTezzelator tez = PTezzelator.instance;
         tez.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.BLOCK);
         addForRender(tez);
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glLoadIdentity();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
         tez.end();
         GL11.glPopMatrix();
     }
@@ -108,17 +117,17 @@ public class X3dObject implements IExtendedModelPart
         {
             if (parent != null && parent instanceof X3dObject) brightness = ((X3dObject) parent).brightness;
 
+            if (this.texturer != null) this.texturer.shiftUVs(this.getName(), uvShift);;
             short j = (short) (brightness >> 16 & 65535);
             short k = (short) (brightness & 65535);
             for (Integer i : order)
             {
                 Vertex vertex = vertices.get(i);
                 TextureCoordinate textureCoordinate = i < textureCoordinates.size() ? textureCoordinates.get(i) : null;
-
+                
                 if (textureCoordinate != null)
                     tessellator.vertex(vertex.x, vertex.y, vertex.z).color(red, green, blue, alpha)
-                            .tex(textureCoordinate.u, textureCoordinate.v).tex2(j, k).endVertex();
-                else tessellator.vertex(vertex.x, vertex.y, vertex.z).endVertex();
+                            .tex(textureCoordinate.u + uvShift[0], textureCoordinate.v + uvShift[1]).tex2(j, k).endVertex();
             }
         }
         catch (Exception e)
@@ -267,5 +276,15 @@ public class X3dObject implements IExtendedModelPart
         postRot1.set(0, 1, 0, 0);
         preTrans.clear();
         postTrans.clear();
+    }
+
+    @Override
+    public void setTexturer(IPartTexturer texturer)
+    {
+        this.texturer = texturer;
+        for (IExtendedModelPart part : childParts.values())
+        {
+            if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setTexturer(texturer);
+        }
     }
 }

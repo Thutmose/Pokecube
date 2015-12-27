@@ -1,6 +1,7 @@
 package pokecube.modelloader.client.custom.oldforgestuff;
 
 import net.minecraft.util.ResourceLocation;
+import pokecube.modelloader.client.custom.IModelCustom;
 
 public interface IModelCustomLoader {
     /**

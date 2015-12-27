@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.custom.oldforgestuff;
+package pokecube.modelloader.client.custom;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

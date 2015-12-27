@@ -341,11 +341,16 @@ public class PokedexEntry
 
     public String getTexture(byte gender, long time)
     {
+        return getTexture(name, gender, time);
+    }
+    
+    public String getTexture(String original, byte gender, long time)
+    {
         int index = gender == IPokemob.FEMALE && textureDetails[1] != null ? 1 : 0;
         String[] textureSuffixs = textureDetails[index];
         long suffixIndex = ((time % textureSuffixs.length * 3) / textureSuffixs.length);
         String suffix = textureSuffixs[(int) suffixIndex];
-        return "textures/entities/" + name + suffix + ".png";// texture;
+        return "textures/entities/" + original + suffix + ".png";// texture;
     }
 
     /** @return the pokedexNb */

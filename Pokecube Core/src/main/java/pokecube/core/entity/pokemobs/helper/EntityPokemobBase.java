@@ -200,6 +200,44 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         return true;
     }
     
+
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public String modifyTexture(String texture)
+    {
+        
+        texture = this.getPokedexEntry().getTexture(texture, this.getSexe(), this.ticksExisted);
+        
+        if(this.getPokedexEntry().hasSpecialTextures[0] && red==0 && green!=0 && blue!=0)
+        {
+            String args = texture.substring(0,texture.length()-4);
+            return args+"Ra.png";
+        }
+        else if(this.getPokedexEntry().hasSpecialTextures[1] && blue==0 && green !=0 && red!=0)
+        {
+            String args = texture.substring(0,texture.length()-4);
+            return args+"Ga.png";
+        }
+        else if(this.getPokedexEntry().hasSpecialTextures[2] && blue!=0 && green ==0 && red!=0)
+        {
+            String args = texture.substring(0,texture.length()-4);
+            return args+"Ba.png";
+        }
+        if(wasShadow&&this.getPokedexEntry().hasSpecialTextures[3])
+        {
+            String args = texture.substring(0,texture.length()-4);
+            return args+"Sh.png";
+        }
+        
+        if(!shiny)// || !getPokedexEntry().hasSpecialTextures[3])
+            return texture;
+
+        String args = texture.substring(0,texture.length()-4);
+        return args+"S.png";
+    }
+    
+    
     @Override
 	@SideOnly(Side.CLIENT)
     public String getTexture(){

@@ -414,7 +414,14 @@ public interface IPokemob extends IMoveConstants
     /** Returns the texture path.
      * 
      * @return */
+    @SideOnly(Side.CLIENT)
     String getTexture();
+
+    /** Returns modified texture to account for shininess, animation, etc.
+     * 
+     * @return */
+    @SideOnly(Side.CLIENT)
+    String modifyTexture(String texture);
 
     /** Has pokemob been traded
      * 
@@ -459,16 +466,10 @@ public interface IPokemob extends IMoveConstants
      * @return */
     ItemStack wildHeldItem();
 
-    /**
-     * 
-     * @return how happy is the pokemob, see {@link HappinessType}
-     */
+    /** @return how happy is the pokemob, see {@link HappinessType} */
     int getHappiness();
 
-    /**
-     * 
-     * @return rgb colours in that order.
-     */
+    /** @return rgb colours in that order. */
     byte[] getColours();
 
     void setColours(byte[] colours);
@@ -480,10 +481,8 @@ public interface IPokemob extends IMoveConstants
     float getSize();
 
     void setSize(float size);
-    /**
-     * 
-     * adds to how happy is the pokemob, see {@link HappinessType}
-     */
+
+    /** adds to how happy is the pokemob, see {@link HappinessType} */
     void addHappiness(int toAdd);
 
     boolean isShadow();

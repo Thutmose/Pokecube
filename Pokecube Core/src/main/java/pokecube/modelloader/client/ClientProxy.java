@@ -175,11 +175,7 @@ public class ClientProxy extends CommonProxy
                 {
                     if (!TabulaPackLoader.loadModel(mod + ":" + AnimationLoader.MODELPATH + s))
                     {
-                        boolean has = AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s);
-                        if (!has)
-                        {
-//                            System.err.println("Did not find model for " + s);
-                        }
+                        AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s);
                     }
                 }
             }
@@ -190,7 +186,6 @@ public class ClientProxy extends CommonProxy
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        System.out.println("test");
         return new GuiAnimate();
     }
 }

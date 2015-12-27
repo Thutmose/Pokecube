@@ -95,7 +95,7 @@ public class AnimationLoader
             Vector3 offset = null;
             Vector5 rotation = null;
             Vector3 scale = null;
-
+            TextureHelper texturer = null;
             Set<String> headNames = Sets.newHashSet();
             Set<String> shear = Sets.newHashSet();
             Set<String> dye = Sets.newHashSet();
@@ -119,8 +119,8 @@ public class AnimationLoader
                             scale = getScale(part, scale);
                             rotation = getRotation(part, rotation);
                             headDir = getHeadDir(part, headDir);
-                            headAxis = getHeadAxis(part, 1);
-                            headAxis2 = getHeadAxis2(part, 1);
+                            headAxis = getHeadAxis(part, 2);
+                            headAxis2 = getHeadAxis2(part, 0);
                             addStrings("head", part, headNames);
                             addStrings("shear", part, shear);
                             addStrings("dye", part, dye);
@@ -153,8 +153,8 @@ public class AnimationLoader
                                 scale = getScale(part, scale);
                                 rotation = getRotation(part, rotation);
                                 headDir = getHeadDir(part, headDir);
-                                headAxis = getHeadAxis(part, 1);
-                                headAxis2 = getHeadAxis2(part, 1);
+                                headAxis = getHeadAxis(part, 2);
+                                headAxis2 = getHeadAxis2(part, 0);
                                 addStrings("head", part, headNames);
                                 addStrings("shear", part, shear);
                                 addStrings("dye", part, dye);
@@ -189,6 +189,10 @@ public class AnimationLoader
                         String[] merges = part.getAttributes().getNamedItem("merge").getNodeValue().split("->");
                         mergedAnimations.put(merges[0], merges[1]);
                     }
+                    else if(part.getNodeName().equals("customTex"))
+                    {
+                        texturer = new TextureHelper(part);
+                    }
                 }
 
                 LoadedModel<?> loaded = modelMaps.get(modelName);
@@ -203,6 +207,7 @@ public class AnimationLoader
                 loaded.headParts.addAll(headNames);
                 loaded.shearableParts.addAll(shear);
                 loaded.dyeableParts.addAll(dye);
+                loaded.texturer = texturer;
                 for (Animation anim : tblAnims)
                 {
                     if (anim != null)

@@ -149,7 +149,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
+        if (model.texturer == null) FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
         GlStateManager.enableBlend();
         GlStateManager.disableLighting();
         model.currentPhase = getPhase(null, entity, f1);
@@ -370,7 +370,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GlStateManager.disableCull();
         TabulaModelParser pars = ((TabulaModelParser) parser);
         ModelJson modelj = pars.modelMap.get(model);
-
+        modelj.texturer = set.texturer;
         String phase = getPhase(set, entity, partialTick);
         boolean inSet = false;
         if (modelj.animationMap.containsKey(phase) || (inSet = set.loadedAnimations.containsKey(phase)))
@@ -409,12 +409,9 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     private String getPhase(TabulaModelSet set, EntityLiving entity, float partialTick)
     {
         String phase = "idle";
-        
-        if(overrideAnim)
-        {
-            return anim;
-        }
-        
+
+        if (overrideAnim) { return anim; }
+
         ModelJson modelj = null;
         if (set != null) modelj = set.parser.modelMap.get(set.model);
         IPokemob pokemob = (IPokemob) entity;

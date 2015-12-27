@@ -59,7 +59,6 @@ public class Animation
                 if(s.startsWith("*") && key.matches(s.substring(1)))
                 {
                     comps = sets.get(s);
-                    System.out.println(key+" "+s.substring(1));
                     break;
                 }
             }

@@ -23,6 +23,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.animation.AnimationHelper;
 import pokecube.modelloader.client.custom.animation.AnimationLoader.Model;
+import pokecube.modelloader.client.custom.animation.TextureHelper;
 import pokecube.modelloader.client.custom.x3d.X3dModel;
 import pokecube.modelloader.client.tabula.components.Animation;
 import thut.api.maths.Vector3;
@@ -36,6 +37,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
     HashMap<String, ArrayList<Vector5>> global;
     public HashMap<String, Animation>   animations   = new HashMap<String, Animation>();
     public Set<String>                  headParts    = Sets.newHashSet();
+    public TextureHelper                texturer;
 
     public Vector3 offset    = Vector3.getNewVectorFromPool();;
     public Vector3 scale     = Vector3.getNewVectorFromPool();;
@@ -44,8 +46,8 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
     public IModel model;
 
     public int         headDir        = 2;
-    public int         headAxis       = -3;
-    public int         headAxis2      = -3;
+    public int         headAxis       = 2;
+    public int         headAxis2      = 0;
     /** A set of names of shearable parts. */
     public Set<String> shearableParts = Sets.newHashSet();
     /** A set of namess of dyeable parts. */
@@ -71,14 +73,6 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         if (headDir == 2)
         {
             headDir = (this.model instanceof X3dModel) ? 1 : -1;
-        }
-        if (headAxis == -3)
-        {
-            headAxis = (this.model instanceof X3dModel) ? 1 : 2;
-        }
-        if (headAxis2 == -3)
-        {
-            headAxis2 = (this.model instanceof X3dModel) ? 1 : 2;
         }
         this.global = global;
     }
@@ -181,6 +175,11 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             if (part == null) continue;
             try
             {
+                if(texturer!=null && part instanceof IRetexturableModel)
+                {
+                    texturer.bindObject(entity);
+                    ((IRetexturableModel)part).setTexturer(texturer);
+                }
                 if (part.getParent() == null)
                 {
                     GL11.glPushMatrix();
@@ -260,23 +259,22 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 
         if (isHead(parent.getName()))
         {
-            float ang = (entity.rotationYaw) % 360;
+            float ang;// = (entity.rotationYaw) % 360;
             float ang2 = -entity.rotationPitch;
-            float te = -entity.getRotationYawHead();
-
-            ang += te;
-
-            if (ang > 180) ang -= 360;
-
-            ang = Math.max(ang, headCaps[0]);
-            ang = Math.min(ang, headCaps[1]);
+            float head = (entity.getRotationYawHead() + 360) % 360 - 180;
+            float body = (entity.rotationYaw + 360) % 360 - 180;
+            headCaps[0] = -80;
+            headCaps[1] = 80;
+            if(headDir == -1) body*=-1;
+            else head*=-1;
+            float rot = Math.min(headCaps[1], head + body);
+            ang = Math.max(rot, headCaps[0]);
 
             ang2 = Math.max(ang2, headCaps[0]);
             ang2 = Math.min(ang2, headCaps[1]);
+            
             Vector4 dir;
-
-            headAxis = 2;
-            headAxis2 = 0;
+            
             if (headAxis == 0)
             {
                 dir = new Vector4(headDir, 0, 0, ang);

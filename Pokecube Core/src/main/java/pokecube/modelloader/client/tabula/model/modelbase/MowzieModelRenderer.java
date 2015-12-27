@@ -12,14 +12,16 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.modelloader.client.custom.IPartTexturer;
+import pokecube.modelloader.client.custom.IRetexturableModel;
 import pokecube.modelloader.client.custom.RenderAdvancedPokemobModel;
 import pokecube.modelloader.client.tabula.TabulaPackLoader;
 import pokecube.modelloader.client.tabula.TabulaPackLoader.TabulaModelSet;
 
-/** @author BobMowzie, gegy1000, FiskFille
+/** @author BobMowzie, gegy1000, FiskFille, Thutmose
  * @since 0.1.0 */
 @SideOnly(Side.CLIENT)
-public class MowzieModelRenderer extends ModelRenderer
+public class MowzieModelRenderer extends ModelRenderer implements IRetexturableModel
 {
     public float initRotateAngleX;
     public float initRotateAngleY;
@@ -33,13 +35,13 @@ public class MowzieModelRenderer extends ModelRenderer
     public float initRotationPointY;
     public float initRotationPointZ;
 
-    public float          initScaleX = 1f;
-    public float          initScaleY = 1f;
-    public float          initScaleZ = 1f;
+    public float initScaleX = 1f;
+    public float initScaleY = 1f;
+    public float initScaleZ = 1f;
 
-    public float          scaleX = 1f;
-    public float          scaleY = 1f;
-    public float          scaleZ = 1f;
+    public float          scaleX     = 1f;
+    public float          scaleY     = 1f;
+    public float          scaleZ     = 1f;
     public ModelRenderer  parent;
     public boolean        hasInitPose;
     private boolean       compiled;
@@ -47,6 +49,8 @@ public class MowzieModelRenderer extends ModelRenderer
     public String         name;
     public String         identifier;
     public TabulaModelSet set;
+    IPartTexturer         texturer;
+    double[]              texOffsets = { 0, 0 };
 
     public MowzieModelRenderer(ModelBase modelBase, String name)
     {
@@ -119,7 +123,7 @@ public class MowzieModelRenderer extends ModelRenderer
         initOffsetX = offsetX;
         initOffsetY = offsetY;
         initOffsetZ = offsetZ;
-        
+
         initScaleX = scaleX;
         initScaleY = scaleY;
         initScaleZ = scaleZ;
@@ -143,7 +147,7 @@ public class MowzieModelRenderer extends ModelRenderer
             offsetX = initOffsetX;
             offsetY = initOffsetY;
             offsetZ = initOffsetZ;
-            
+
             scaleX = initScaleX;
             scaleY = initScaleY;
             scaleZ = initScaleZ;
@@ -326,7 +330,20 @@ public class MowzieModelRenderer extends ModelRenderer
                         GL11.glPushMatrix();
                         // Apply Colour
                         GL11.glColor4f(red, green, blue, alpha);
+                        // Apply Texture
+                        if (texturer != null)
+                        {
+                            texturer.applyTexture(name);
+                            texturer.shiftUVs(name, texOffsets);
+                            GL11.glMatrixMode(GL11.GL_TEXTURE);
+                            GL11.glLoadIdentity();
+                            GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
+                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        }
                         GL11.glCallList(displayList);
+                        GL11.glMatrixMode(GL11.GL_TEXTURE);
+                        GL11.glLoadIdentity();
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glColor4f(1, 1, 1, 1);
                         GL11.glPopMatrix();
                         if (childModels != null)
@@ -344,7 +361,20 @@ public class MowzieModelRenderer extends ModelRenderer
                         GL11.glPushMatrix();
                         // Apply Colour
                         GL11.glColor4f(red, green, blue, alpha);
+                        // Apply Texture
+                        if (texturer != null)
+                        {
+                            texturer.applyTexture(name);
+                            texturer.shiftUVs(name, texOffsets);
+                            GL11.glMatrixMode(GL11.GL_TEXTURE);
+                            GL11.glLoadIdentity();
+                            GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
+                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        }
                         GL11.glCallList(displayList);
+                        GL11.glMatrixMode(GL11.GL_TEXTURE);
+                        GL11.glLoadIdentity();
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glColor4f(1, 1, 1, 1);
                         GL11.glPopMatrix();
 
@@ -382,7 +412,21 @@ public class MowzieModelRenderer extends ModelRenderer
                     GL11.glPushMatrix();
                     // Apply Colour
                     GL11.glColor4f(red, green, blue, alpha);
+                    // Apply Texture
+                    if (texturer != null)
+                    {
+                        texturer.applyTexture(name);
+                        texturer.shiftUVs(name, texOffsets);
+                        GL11.glMatrixMode(GL11.GL_TEXTURE);
+                        GL11.glLoadIdentity();
+                        GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                    }
                     GL11.glCallList(displayList);
+                    GL11.glMatrixMode(GL11.GL_TEXTURE);
+                    GL11.glLoadIdentity();
+                    GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
                     GL11.glColor4f(1, 1, 1, 1);
                     GL11.glPopMatrix();
 
@@ -463,5 +507,18 @@ public class MowzieModelRenderer extends ModelRenderer
         }
         GL11.glEndList();
         compiled = true;
+    }
+
+    @Override
+    public void setTexturer(IPartTexturer texturer)
+    {
+        this.texturer = texturer;
+        if (childModels != null)
+        {
+            for (Object part : childModels)
+            {
+                if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setTexturer(texturer);
+            }
+        }
     }
 }

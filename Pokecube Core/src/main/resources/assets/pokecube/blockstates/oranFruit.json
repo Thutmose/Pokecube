@@ -2,7 +2,7 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "#None": "pokecube:blocks/oran"
+            "#None": "pokecube:blocks/Oran"
         },
         "model": "pokecube:oran.obj"
      },

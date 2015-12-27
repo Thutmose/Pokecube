@@ -2,7 +2,7 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "#None": "pokecube:blocks/pecha"
+            "#None": "pokecube:blocks/Pecha"
         },
         "model": "pokecube:pecha.obj"
      },

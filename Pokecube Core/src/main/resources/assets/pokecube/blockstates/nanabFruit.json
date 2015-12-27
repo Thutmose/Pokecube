@@ -2,7 +2,7 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "#None": "pokecube:blocks/nanab"
+            "#None": "pokecube:blocks/Nanab"
         },
         "model": "pokecube:nanab.obj"
      },

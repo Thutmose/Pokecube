@@ -436,7 +436,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
             }
         }
-        
+
         if (getLover() != null)
         {
             if (inLove % 5 == 0)
@@ -498,7 +498,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.endSection();
     }
-    
+
     @Override
     protected void updateAITasks()
     {
@@ -990,7 +990,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 this.dropFewItems(this.recentlyHit > 0, i);
                 this.dropEquipment(this.recentlyHit > 0, i);
 
-                if (this.recentlyHit > 0 && this.rand.nextFloat() < 0.025F + (float)i * 0.01F)
+                if (this.recentlyHit > 0 && this.rand.nextFloat() < 0.025F + (float) i * 0.01F)
                 {
                     this.addRandomDrop();
                 }
@@ -1035,14 +1035,16 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         ItemStack itemstack = player.inventory.getCurrentItem();
 
         ItemStack key = new ItemStack(Items.shears);
-        if (getPokedexEntry().interact(key) && player.getHeldItem() != null && player.getHeldItem().isItemEqual(key))
-        {
-            return false;
-        }
+        // Check shearable interaction.
+        if (getPokedexEntry().interact(key) && player.getHeldItem() != null
+                && player.getHeldItem().isItemEqual(key)) { return false; }
 
+        // Check Pokedex Entry defined Interaction for player.
         if (getPokedexEntry().interact(player, this, true)) return true;
 
         Item torch = Item.getItemFromBlock(Blocks.torch);
+        // Either push pokemob around, or if sneaking, make it try to climb on
+        // shoulder
         if (player == getPokemonOwner() && itemstack != null
                 && (itemstack.getItem() == Items.stick || itemstack.getItem() == torch))
         {
@@ -1063,6 +1065,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             look.freeVectorFromPool();
             return false;
         }
+        // Debug thing to maximize happiness
         if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.apple)
         {
             if (player.capabilities.isCreativeMode && player.isSneaking())
@@ -1070,17 +1073,17 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 this.addHappiness(255);
             }
         }
+        // Debug thing to increase hunger time
         if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.golden_hoe)
         {
             if (player.capabilities.isCreativeMode && player.isSneaking())
             {
-                this.setHungerTime(this.getHungerTime()+1000);
+                this.setHungerTime(this.getHungerTime() + 1000);
             }
         }
 
-        if (player.getHeldItem() != null && getPokedexEntry().hasSpecialTextures[4]) // Can
-                                                                                     // be
-                                                                                     // Dyed
+        // is Dyeable
+        if (player.getHeldItem() != null && getPokedexEntry().hasSpecialTextures[4])
         {
             if (player.getHeldItem().getItem() == Items.dye)
             {
@@ -1092,7 +1095,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             else if (player.getHeldItem().getItem() == Items.shears) { return false; }
         }
 
-        // this.moveEntity(0, -0.07, 0.0);
+        //Check saddle for riding.
         if (getPokemonAIState(SADDLED) && !player.isSneaking() && player == getPokemonOwner()
                 && (itemstack == null || itemstack.getItem() != PokecubeItems.pokedex))
         {
@@ -1107,6 +1110,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
 
+        //Attempt to pick the pokemob up.
         if (!worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking() && player.getHeldItem() == null
                 && getWeight() < 40)
         {
@@ -1138,6 +1142,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if (getPokemonAIState(HELD)) return false;
 
+        //Open Pokedex Gui
         if (itemstack != null && itemstack.getItem() == PokecubeItems.pokedex)
         {
             if (mod_Pokecube.isOnClientSide() && !player.isSneaking())
@@ -1148,10 +1153,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             return true;
         }
 
+        //Owner only interactions.
         if (getPokemonAIState(TAMED) && player == getOwner() && !mod_Pokecube.isOnClientSide())
         {
             if (itemstack != null)
             {
+                //Check if it should evolve from item, do so if yes.
                 if (PokecubeItems.isValidEvoItem(itemstack) && canEvolve(itemstack))
                 {
                     IPokemob evolution = evolve(true, itemstack);
@@ -1168,6 +1175,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                     return true;
                 }
+                //Check if it is stew for happiness test. Report if yes.
                 else if (itemstack.isItemEqual(new ItemStack(Items.mushroom_stew)))
                 {
                     int happiness = getHappiness();
@@ -1204,63 +1212,58 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     player.addChatMessage(new ChatComponentText(message));
 
                 }
-            }
-
-            if (itemstack != null && itemstack.getItem() == Items.golden_apple)
-            {
-                if (!player.capabilities.isCreativeMode)
+                //Check if gold apple for breeding.
+                if (itemstack.getItem() == Items.golden_apple)
                 {
-                    --itemstack.stackSize;
+                    if (!player.capabilities.isCreativeMode)
+                    {
+                        --itemstack.stackSize;
+
+                        if (itemstack.stackSize <= 0)
+                        {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                        }
+                    }
+                    this.inLove = 600;
+                    this.setAttackTarget(null);
+                    this.worldObj.setEntityState(this, (byte) 18);
+                    return true;
+                }
+                //Otherwise check if useable item.
+                if (itemstack.getItem() instanceof IPokemobUseable)
+                {
+                    boolean used = ((IPokemobUseable) itemstack.getItem()).itemUse(itemstack, this, player);
+
+                    if (used)
+                    {
+                        itemstack.splitStack(1);
+                        return true;
+                    }
+                }
+                //Try to hold the item.
+                if (canBeHeld(itemstack))
+                {
+                    ItemStack heldItem = getHeldItem();
+
+                    if (heldItem != null)
+                    {
+                        dropItem();
+                    }
+
+                    setHeldItem(new ItemStack(itemstack.getItem(), 1, itemstack.getItemDamage()));
+                    itemstack.stackSize--;
 
                     if (itemstack.stackSize <= 0)
                     {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                     }
-                }
-                this.inLove = 600;
-                this.setAttackTarget(null);
-                this.worldObj.setEntityState(this, (byte) 18);
-                return true;
-            }
-
-            if (itemstack != null && itemstack.getItem() instanceof IPokemobUseable)
-            {
-                boolean used = ((IPokemobUseable) itemstack.getItem()).itemUse(itemstack, this, player);
-
-                if (used)
-                {
-                    itemstack.splitStack(1);
                     return true;
                 }
             }
-
-            if (canBeHeld(itemstack))
-            {
-                ItemStack heldItem = getHeldItem();
-
-                if (heldItem != null)
-                {
-                    dropItem();
-                }
-
-                setHeldItem(new ItemStack(itemstack.getItem(), 1, itemstack.getItemDamage()));
-                itemstack.stackSize--;
-
-                if (itemstack.stackSize <= 0)
-                {
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-                }
-                return true;
-            }
+            //Open Gui
             if (!mod_Pokecube.isOnClientSide() && getPokemonOwner() == player && itemstack == null)
             {
                 openGUI(player);
-                ItemStack toDrop = this.getEquipmentInSlot(0);
-                if (toDrop == null) return true;
-
-                EntityItem drop = new EntityItem(this.worldObj, this.posX, this.posY + 0.5, this.posZ, toDrop);
-                this.worldObj.spawnEntityInWorld(drop);
-                this.setCurrentItemOrArmor(0, null);
                 return true;
             }
         }
@@ -1273,13 +1276,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void jump()
     {
-//        if(true)
-//        {
-//            super.jump();
-//            return;
-//        }
-        
-        
+        // if(true)
+        // {
+        // super.jump();
+        // return;
+        // }
+
         if (worldObj.isRemote) return;
 
         if (!this.isInWater() && !this.isInLava())
@@ -1397,12 +1399,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         return ItemPokemobEgg.getEggStack(this);
     }
-    
+
     @Override
-    /**
-     * Checks if the entity is in range to render by using the past in distance and comparing it to its average edge
-     * length * 64 * renderDistanceWeight Args: distance
-     */
+    /** Checks if the entity is in range to render by using the past in distance
+     * and comparing it to its average edge length * 64 * renderDistanceWeight
+     * Args: distance */
     @SideOnly(Side.CLIENT)
     public boolean isInRangeToRenderDist(double distance)
     {

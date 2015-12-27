@@ -1,6 +1,5 @@
 package pokecube.modelloader.client.custom.x3d;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.lwjgl.opengl.GL11;
@@ -16,10 +15,10 @@ import thut.api.maths.Vector3;
 
 public class X3dObject implements IExtendedModelPart, IRetexturableModel
 {
-    public ArrayList<Vertex>            vertices           = new ArrayList<Vertex>();
-    public ArrayList<Vertex>            vertexNormals      = new ArrayList<Vertex>();
-    public ArrayList<TextureCoordinate> textureCoordinates = new ArrayList<TextureCoordinate>();
-    public ArrayList<Integer>           order              = new ArrayList<Integer>();
+    public Vertex[]            vertices;
+    public Vertex[]            vertexNormals;
+    public TextureCoordinate[] textureCoordinates;
+    public Integer[]           order;
 
     public HashMap<String, IExtendedModelPart> childParts = new HashMap<String, IExtendedModelPart>();
     public final String                        name;
@@ -32,10 +31,10 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     public Vector3 preTrans  = Vector3.getNewVectorFromPool();
     public Vector3 postTrans = Vector3.getNewVectorFromPool();
 
-    public Vector3 offset    = Vector3.getNewVectorFromPool();
-    public Vector4 rotations = new Vector4();
-    public Vertex  scale     = new Vertex(1, 1, 1);
-    private double[]  uvShift   = { 0, 0 };
+    public Vector3   offset    = Vector3.getNewVectorFromPool();
+    public Vector4   rotations = new Vector4();
+    public Vertex    scale     = new Vertex(1, 1, 1);
+    private double[] uvShift   = { 0, 0 };
 
     public X3dObject(String name)
     {
@@ -102,7 +101,8 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         GL11.glScalef(scale.x, scale.y, scale.z);
         if (this.texturer != null) this.texturer.applyTexture(this.getName());
         PTezzelator tez = PTezzelator.instance;
-        tez.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.BLOCK);
+        // tez.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.BLOCK);
+        tez.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR);
         addForRender(tez);
         GL11.glMatrixMode(GL11.GL_TEXTURE);
         GL11.glLoadIdentity();
@@ -115,20 +115,33 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     {
         try
         {
-            if (parent != null && parent instanceof X3dObject) brightness = ((X3dObject) parent).brightness;
-
-            if (this.texturer != null) this.texturer.shiftUVs(this.getName(), uvShift);;
-            short j = (short) (brightness >> 16 & 65535);
-            short k = (short) (brightness & 65535);
+            // if (parent != null && parent instanceof X3dObject) brightness =
+            // ((X3dObject) parent).brightness;
+            if (texturer != null)
+            {
+                texturer.applyTexture(name);
+                texturer.shiftUVs(name, uvShift);
+                GL11.glMatrixMode(GL11.GL_TEXTURE);
+                GL11.glLoadIdentity();
+                GL11.glTranslated(uvShift[0], uvShift[1], 0.0F);
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            }
+            Vertex vertex;
+            TextureCoordinate textureCoordinate;
             for (Integer i : order)
             {
-                Vertex vertex = vertices.get(i);
-                TextureCoordinate textureCoordinate = i < textureCoordinates.size() ? textureCoordinates.get(i) : null;
-                
-                if (textureCoordinate != null)
-                    tessellator.vertex(vertex.x, vertex.y, vertex.z).color(red, green, blue, alpha)
-                            .tex(textureCoordinate.u + uvShift[0], textureCoordinate.v + uvShift[1]).tex2(j, k).endVertex();
+                vertex = vertices[i];
+                textureCoordinate = textureCoordinates[i];
+
+                if (textureCoordinate != null) tessellator.vertex(vertex.x, vertex.y, vertex.z)
+                        .tex(textureCoordinate.u, textureCoordinate.v)
+                        .color(red, green, blue, alpha).endVertex();
             }
+
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            GL11.glLoadIdentity();
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
         }
         catch (Exception e)
         {

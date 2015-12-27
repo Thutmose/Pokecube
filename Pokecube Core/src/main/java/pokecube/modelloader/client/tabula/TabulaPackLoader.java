@@ -60,8 +60,6 @@ public class TabulaPackLoader extends AnimationLoader
         String name = args2[args2.length > 1 ? args2.length - 1 : 0];
         PokedexEntry entry = Database.getEntry(name);
 
-        if (modelMap.containsKey(entry)) return true;
-
         try
         {
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);

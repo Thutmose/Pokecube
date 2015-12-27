@@ -261,15 +261,26 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         {
             float ang;// = (entity.rotationYaw) % 360;
             float ang2 = -entity.rotationPitch;
-            float head = (entity.getRotationYawHead() + 360) % 360 - 180;
-            float body = (entity.rotationYaw + 360) % 360 - 180;
+            float head = (entity.getRotationYawHead()) % 360 + 180;
+            float diff = 0;
+//          float neg = (entity.rotationYaw - 180 + 360)%360;
+//          float pos = (entity.rotationYaw + 180 + 360)%360;
+//          float range = headCaps[1] - headCaps[0];
+            float body = (entity.rotationYaw) % 360;
             headCaps[0] = -80;
             headCaps[1] = 80;
             if(headDir == -1) body*=-1;
             else head*=-1;
-            float rot = Math.min(headCaps[1], head + body);
-            ang = Math.max(rot, headCaps[0]);
-
+            
+            diff = (head + body)%360;
+            
+            diff = (diff + 360)%360;
+            diff = (diff - 180)%360;
+            diff = Math.max(diff, headCaps[0]);
+            diff = Math.min(diff, headCaps[1]);
+            
+            ang = diff;
+            
             ang2 = Math.max(ang2, headCaps[0]);
             ang2 = Math.min(ang2, headCaps[1]);
             

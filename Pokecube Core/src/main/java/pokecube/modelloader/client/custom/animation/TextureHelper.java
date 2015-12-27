@@ -19,10 +19,11 @@ import pokecube.modelloader.client.custom.IPartTexturer;
 
 public class TextureHelper implements IPartTexturer
 {
-    IPokemob                      pokemob;
-    Map<String, String>           texNames  = Maps.newHashMap();
-    Map<String, ResourceLocation> texMap    = Maps.newHashMap();
-    Map<String, TexState>         texStates = Maps.newHashMap();
+    IPokemob                                 pokemob;
+    Map<String, String>                      texNames     = Maps.newHashMap();
+    Map<String, ResourceLocation>            texMap       = Maps.newHashMap();
+    Map<String, TexState>                    texStates    = Maps.newHashMap();
+    public final static Map<String, Integer> mappedStates = Maps.newHashMap();
 
     public TextureHelper(Node node)
     {
@@ -85,21 +86,50 @@ public class TextureHelper implements IPartTexturer
         }
     }
 
+    public static int getState(String trigger)
+    {
+        return getState(trigger, true);
+    }
+
+    static int getState(String trigger, boolean exception)
+    {
+        if (mappedStates.containsKey(trigger)) return mappedStates.get(trigger);
+        try
+        {
+            Field f;
+            int state = 0;
+            String[] args = trigger.split("\\+");
+            for (String s : args)
+            {
+                String test = s.trim().toUpperCase();
+                if ((f = IMoveConstants.class.getDeclaredField(test)) != null)
+                {
+                    state |= f.getInt(null);
+                }
+            }
+            return state;
+        }
+        catch (Exception e)
+        {
+            if (exception) e.printStackTrace();
+        }
+        return -1;
+    }
+
     private static class TexState
     {
-        final static Map<String, Integer> mappedStates = Maps.newHashMap();
-        Map<Integer, double[]>            aiStates     = Maps.newHashMap();
-        Set<RandomState>                  randomStates = Sets.newHashSet();
-        RandomState                       running      = null;
+        Map<Integer, double[]> aiStates     = Maps.newHashMap();
+        Set<RandomState>       randomStates = Sets.newHashSet();
+        RandomState            running      = null;
 
         void addState(String trigger, String[] diffs)
         {
             double[] arr = new double[2];
             arr[0] = Double.parseDouble(diffs[0]);
             arr[1] = Double.parseDouble(diffs[1]);
-            if (mappedStates.containsKey(trigger))
+            int state = getState(trigger, false);
+            if (state > 0)
             {
-                int state = mappedStates.get(trigger);
                 aiStates.put(state, arr);
             }
             else if (trigger.contains("random"))
@@ -108,21 +138,7 @@ public class TextureHelper implements IPartTexturer
             }
             else
             {
-                String test = trigger.toUpperCase();
-                try
-                {
-                    Field f;
-                    if ((f = IMoveConstants.class.getDeclaredField(test)) != null)
-                    {
-                        int state = f.getInt(null);
-                        mappedStates.put(trigger, state);
-                        aiStates.put(state, arr);
-                    }
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+                new NullPointerException("No Template found for " + trigger).printStackTrace();
             }
         }
 
@@ -151,7 +167,7 @@ public class TextureHelper implements IPartTexturer
                 dy = arr[1];
                 toFill[0] = dx;
                 toFill[1] = dy;
-                if(((Entity)pokemob).ticksExisted > running.set + running.duration)
+                if (((Entity) pokemob).ticksExisted > running.set + running.duration)
                 {
                     running = null;
                 }
@@ -166,7 +182,7 @@ public class TextureHelper implements IPartTexturer
                     toFill[0] = dx;
                     toFill[1] = dy;
                     running = state;
-                    state.set = ((Entity)pokemob).ticksExisted;
+                    state.set = ((Entity) pokemob).ticksExisted;
                     return;
                 }
             }
@@ -175,7 +191,7 @@ public class TextureHelper implements IPartTexturer
 
     private static class RandomState
     {
-        double   chance = 0.005;
+        double   chance   = 0.005;
         double[] arr;
         int      set;
         int      duration = 1;
@@ -184,11 +200,11 @@ public class TextureHelper implements IPartTexturer
         {
             this.arr = arr;
             String[] args = trigger.split(":");
-            if(args.length>1)
+            if (args.length > 1)
             {
                 chance = Double.parseDouble(args[1]);
             }
-            if(args.length>2)
+            if (args.length > 2)
             {
                 duration = Integer.parseInt(args[2]);
             }

@@ -4,9 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import pokecube.core.database.Database;
 import pokecube.modelloader.ModPokecubeML;
-import pokecube.modelloader.client.ClientProxy;
 
 public class ItemModelReloader extends Item
 {
@@ -22,13 +20,7 @@ public class ItemModelReloader extends Item
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
         if (!world.isRemote) return itemstack;
-        if (player.isSneaking())
-        {
-            player.openGui(ModPokecubeML.instance, 0, player.worldObj, 0, 0, 0);
-            return itemstack;
-        }
-        Database.updateSizes();
-        ClientProxy.populateModels();
+        player.openGui(ModPokecubeML.instance, 0, player.worldObj, 0, 0, 0);
         return itemstack;
     }
 

@@ -272,7 +272,6 @@ public class EventsHandlerClient
                     if (slot.getHasStack() && PokecubeManager.isFilled(slot.getStack()))
                     {
                         IPokemob pokemob = getPokemobForRender(slot.getStack(), gui.mc.theWorld);
-
                         int x = (w - xSize) / 2;
                         int y = (h - ySize) / 2;
                         int i, j;
@@ -280,6 +279,12 @@ public class EventsHandlerClient
                         j = slot.yDisplayPosition + 10;
                         GL11.glPushMatrix();
                         GL11.glTranslatef(i + x, j + y, 0F);
+                        EntityLiving entity = (EntityLiving) pokemob;
+                        entity.rotationYaw = 0;
+                        entity.rotationPitch = 0;
+                        entity.rotationYawHead = 0;
+                        pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
+                        entity.onGround = true;
                         renderMob(pokemob, event.renderPartialTicks);
                         GL11.glPopMatrix();
                     }
@@ -322,11 +327,16 @@ public class EventsHandlerClient
                 if (stack != null && PokecubeManager.isFilled(stack))
                 {
                     IPokemob pokemob = getPokemobForRender(stack, player.worldObj);
-
                     int x = (w - xSize) / 2;
                     int y = (h - ySize);
                     GL11.glPushMatrix();
                     GL11.glTranslatef(i + x + 20 * l, j + y, 0F);
+                    EntityLiving entity = (EntityLiving) pokemob;
+                    entity.rotationYaw = 0;
+                    entity.rotationPitch = 0;
+                    entity.rotationYawHead = 0;
+                    pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
+                    entity.onGround = true;
                     renderMob(pokemob, event.partialTicks);
                     GL11.glPopMatrix();
                 }
@@ -415,6 +425,11 @@ public class EventsHandlerClient
 
     public static void renderMob(IPokemob pokemob, float tick)
     {
+        renderMob(pokemob, tick, true);
+    }
+
+    public static void renderMob(IPokemob pokemob, float tick, boolean rotates)
+    {
         if (pokemob == null) return;
 
         EntityLiving entity = (EntityLiving) pokemob;
@@ -431,17 +446,10 @@ public class EventsHandlerClient
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         Minecraft.getMinecraft();
         long time = Minecraft.getSystemTime();
-        GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
+        if (rotates) GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
         RenderHelper.enableStandardItemLighting();
 
         GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-
-        entity.rotationYaw = 0;
-        entity.rotationPitch = 0;
-        entity.rotationYawHead = 0;
-
-        pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
-        entity.onGround = true;
 
         int i = 15728880;
         int j1 = i % 65536;

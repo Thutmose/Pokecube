@@ -29,8 +29,8 @@ import pokecube.modelloader.client.custom.LoadedModel.Vector5;
 import pokecube.modelloader.client.custom.animation.AnimationBuilder;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
 import pokecube.modelloader.client.custom.animation.AnimationRegistry;
-import pokecube.modelloader.client.custom.animation.TextureHelper;
 import pokecube.modelloader.client.custom.animation.AnimationRegistry.IPartRenamer;
+import pokecube.modelloader.client.custom.animation.TextureHelper;
 import pokecube.modelloader.client.tabula.components.Animation;
 import pokecube.modelloader.client.tabula.components.CubeGroup;
 import pokecube.modelloader.client.tabula.components.CubeInfo;
@@ -102,6 +102,7 @@ public class TabulaPackLoader extends AnimationLoader
                     set.scale.set(baseSet.scale);
                     set.shift.set(baseSet.shift);
                     set.headCap = baseSet.headCap;
+                    set.headCap1 = baseSet.headCap1;
                 }
                 else
                 {
@@ -130,7 +131,7 @@ public class TabulaPackLoader extends AnimationLoader
         final PokedexEntry             entry;
         public final TabulaModel       model;
         public final TabulaModelParser parser;
-        public IPartTexturer                  texturer = null;
+        public IPartTexturer           texturer = null;
 
         /** Animations to merge together, animation key is merged into animation
          * value. so key of idle and value of walk will merge the idle animation
@@ -152,8 +153,10 @@ public class TabulaPackLoader extends AnimationLoader
         public Vector5                    rotation;
         /** Scale of the model */
         public Vector3                    scale            = Vector3.getNewVectorFromPool();
-        /** Limits on the rotation of the head */
+        /** Limits on the rotation of the head yaw */
         public float[]                    headCap          = { -180, 180 };
+        /** Limits on the rotation of the head pitch */
+        public float[]                    headCap1         = { -30, 30 };
         /** Which axis the head rotates around, 0,1 or for x, y */
         public int                        headAxis         = 1;
         /** Which direction the head rotates */
@@ -344,7 +347,6 @@ public class TabulaPackLoader extends AnimationLoader
 
             NodeList modelList = doc.getElementsByTagName("model");
 
-            float[] headCaps = { -180, 180 };
             Vector3 offset = null;
             Vector5 rotation = null;
             Vector3 scale = null;
@@ -385,7 +387,7 @@ public class TabulaPackLoader extends AnimationLoader
                                 headDir = getHeadDir(part, headDir);
                                 headDir = Math.min(1, headDir);
                                 headDir = Math.max(-1, headDir);
-                                setHeadCaps(part, headCaps);
+                                setHeadCaps(part, headCap, headCap1);
                             }
                             catch (Exception e)
                             {
@@ -413,7 +415,7 @@ public class TabulaPackLoader extends AnimationLoader
                         String[] merges = part.getAttributes().getNamedItem("merge").getNodeValue().split("->");
                         mergedAnimations.put(merges[0], merges[1]);
                     }
-                    else if(part.getNodeName().equals("customTex"))
+                    else if (part.getNodeName().equals("customTex"))
                     {
                         texturer = new TextureHelper(part);
                     }
@@ -432,20 +434,23 @@ public class TabulaPackLoader extends AnimationLoader
                             toAdd.clear();
                             String[] names = temp.toArray(new String[0]);
                             this.convertToIdents(names);
-                            for(String s: names) headRoots.add(s);
+                            for (String s : names)
+                                headRoots.add(s);
                             temp.clear();
                             addStrings("shear", part, toAdd);
                             temp.addAll(toAdd);
                             toAdd.clear();
                             names = temp.toArray(new String[0]);
                             this.convertToIdents(names);
-                            for(String s: names) shearableIdents.add(s);
+                            for (String s : names)
+                                shearableIdents.add(s);
                             addStrings("dye", part, toAdd);
                             temp.addAll(toAdd);
                             names = temp.toArray(new String[0]);
                             this.convertToIdents(names);
-                            for(String s: names) dyeableIdents.add(s);
-                            setHeadCaps(part, headCaps);
+                            for (String s : names)
+                                dyeableIdents.add(s);
+                            setHeadCaps(part, headCap, headCap1);
                         }
                         catch (Exception e)
                         {
@@ -470,8 +475,6 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 this.rotation = new Vector5();
             }
-            this.headCap[0] = headCaps[0];
-            this.headCap[1] = headCaps[1];
         }
 
         @Override

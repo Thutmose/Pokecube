@@ -301,20 +301,32 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
                  * seperate method. */
                 if (set.isHeadRoot(identifier) && entity instanceof IPokemob)
                 {
-                    float head = (entity.getRotationYawHead() + 360) % 360;
-                    float body = (entity.rotationYaw + 360) % 360;
-                    // TODO improve on these caps.;
-                    float rot = Math.min(set.headCap[1], head - body);
-                    float headRot = Math.max(rot, set.headCap[0]);
-                    headRot *= set.headDir;
+                    float ang;
+                    float head = (entity.getRotationYawHead()) % 360 + 180;
+                    float diff = 0;
+                    float body = (entity.rotationYaw) % 360;
+                    if (set.headDir == 1) body *= -1;
+                    else head *= -1;
+
+                    diff = (head + body) % 360;
+
+                    diff = (diff + 360) % 360;
+                    diff = (diff - 180) % 360;
+                    diff = Math.max(diff, set.headCap[0]);
+                    diff = Math.min(diff, set.headCap[1]);
+
+                    ang = diff;
+
+                    float ang2 = Math.max(entity.rotationPitch, set.headCap1[0]);
+                    ang2 = Math.min(ang2, set.headCap1[1]);
 
                     GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
                     rotateToParent();
 
-                    if (set.headAxis == 2) GlStateManager.rotate(headRot, 0, 0, 1);
-                    else GlStateManager.rotate(headRot, 0, 1, 0);
-                    GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
+                    if (set.headAxis == 2) GlStateManager.rotate(ang, 0, 0, 1);
+                    else GlStateManager.rotate(ang, 0, 1, 0);
+                    GlStateManager.rotate(ang2, 1, 0, 0);
 
                     unRotateToParent();
 

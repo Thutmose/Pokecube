@@ -101,13 +101,19 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         GL11.glScalef(scale.x, scale.y, scale.z);
         if (this.texturer != null) this.texturer.applyTexture(this.getName());
         PTezzelator tez = PTezzelator.instance;
-        // tez.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.BLOCK);
+        if (texturer != null)
+        {
+            texturer.shiftUVs(name, uvShift);
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            GL11.glTranslated(uvShift[0], uvShift[1], 0.0F);
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        }
         tez.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR);
         addForRender(tez);
+        tez.end();
         GL11.glMatrixMode(GL11.GL_TEXTURE);
         GL11.glLoadIdentity();
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        tez.end();
         GL11.glPopMatrix();
     }
 
@@ -117,15 +123,6 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         {
             // if (parent != null && parent instanceof X3dObject) brightness =
             // ((X3dObject) parent).brightness;
-            if (texturer != null)
-            {
-                texturer.applyTexture(name);
-                texturer.shiftUVs(name, uvShift);
-                GL11.glMatrixMode(GL11.GL_TEXTURE);
-                GL11.glLoadIdentity();
-                GL11.glTranslated(uvShift[0], uvShift[1], 0.0F);
-                GL11.glMatrixMode(GL11.GL_MODELVIEW);
-            }
             Vertex vertex;
             TextureCoordinate textureCoordinate;
             for (Integer i : order)
@@ -137,10 +134,6 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
                         .tex(textureCoordinate.u, textureCoordinate.v)
                         .color(red, green, blue, alpha).endVertex();
             }
-
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            GL11.glLoadIdentity();
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
         }
         catch (Exception e)

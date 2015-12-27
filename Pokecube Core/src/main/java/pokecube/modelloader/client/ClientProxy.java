@@ -77,6 +77,7 @@ public class ClientProxy extends CommonProxy
                             RenderAdvancedPokemobModel render;
                             PokecubeMod.getProxy().registerPokemobRenderer(s,
                                     render = new RenderAdvancedPokemobModel(s, 1), mod);
+                            AnimationLoader.getModel(s);
                             render.model2Loc = model.model.toString();
                         }
                         else

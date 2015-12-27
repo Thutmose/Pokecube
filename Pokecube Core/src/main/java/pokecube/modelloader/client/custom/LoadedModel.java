@@ -53,7 +53,8 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
     /** A set of namess of dyeable parts. */
     public Set<String> dyeableParts   = Sets.newHashSet();
 
-    public float[] headCaps = { -180, 180 };
+    public float[] headCaps  = { -180, 180 };
+    public float[] headCaps1 = { -20, 40 };
 
     public float     rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
     public float     rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
@@ -175,10 +176,10 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             if (part == null) continue;
             try
             {
-                if(texturer!=null && part instanceof IRetexturableModel)
+                if (texturer != null && part instanceof IRetexturableModel)
                 {
                     texturer.bindObject(entity);
-                    ((IRetexturableModel)part).setTexturer(texturer);
+                    ((IRetexturableModel) part).setTexturer(texturer);
                 }
                 if (part.getParent() == null)
                 {
@@ -259,33 +260,28 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
 
         if (isHead(parent.getName()))
         {
-            float ang;// = (entity.rotationYaw) % 360;
+            float ang;
             float ang2 = -entity.rotationPitch;
             float head = (entity.getRotationYawHead()) % 360 + 180;
             float diff = 0;
-//          float neg = (entity.rotationYaw - 180 + 360)%360;
-//          float pos = (entity.rotationYaw + 180 + 360)%360;
-//          float range = headCaps[1] - headCaps[0];
             float body = (entity.rotationYaw) % 360;
-            headCaps[0] = -80;
-            headCaps[1] = 80;
-            if(headDir == -1) body*=-1;
-            else head*=-1;
-            
-            diff = (head + body)%360;
-            
-            diff = (diff + 360)%360;
-            diff = (diff - 180)%360;
+            if (headDir == -1) body *= -1;
+            else head *= -1;
+
+            diff = (head + body) % 360;
+
+            diff = (diff + 360) % 360;
+            diff = (diff - 180) % 360;
             diff = Math.max(diff, headCaps[0]);
             diff = Math.min(diff, headCaps[1]);
-            
+
             ang = diff;
-            
-            ang2 = Math.max(ang2, headCaps[0]);
-            ang2 = Math.min(ang2, headCaps[1]);
-            
+
+            ang2 = Math.max(ang2, headCaps1[0]);
+            ang2 = Math.min(ang2, headCaps1[1]);
+
             Vector4 dir;
-            
+
             if (headAxis == 0)
             {
                 dir = new Vector4(headDir, 0, 0, ang);

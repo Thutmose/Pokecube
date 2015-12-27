@@ -53,7 +53,7 @@ public class GuiAnimate extends GuiScreen
     {
         int yOffset = height / 2;
         int xOffset = width / 2;
-
+        pokedexNb = Pokedex.getInstance().getFirstEntry().getPokedexNb();
         anim = new GuiTextField(0, fontRendererObj, width - 101, yOffset + 13 - yOffset / 2, 100, 10);
         anim.setText("idle");
         state = new GuiTextField(0, fontRendererObj, width - 101, yOffset + 43 - yOffset / 2, 100, 10);

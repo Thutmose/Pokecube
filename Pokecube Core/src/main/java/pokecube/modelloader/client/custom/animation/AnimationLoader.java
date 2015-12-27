@@ -92,6 +92,7 @@ public class AnimationLoader
             int headAxis = 2;
             int headAxis2 = 1;
             float[] headCaps = { -180, 180 };
+            float[] headCaps1 = { -30, 30 };
             Vector3 offset = null;
             Vector5 rotation = null;
             Vector3 scale = null;
@@ -124,7 +125,7 @@ public class AnimationLoader
                             addStrings("head", part, headNames);
                             addStrings("shear", part, shear);
                             addStrings("dye", part, dye);
-                            setHeadCaps(part, headCaps);
+                            setHeadCaps(part, headCaps, headCaps1);
                         }
                         catch (Exception e)
                         {
@@ -158,7 +159,7 @@ public class AnimationLoader
                                 addStrings("head", part, headNames);
                                 addStrings("shear", part, shear);
                                 addStrings("dye", part, dye);
-                                setHeadCaps(part, headCaps);
+                                setHeadCaps(part, headCaps, headCaps1);
                             }
                             catch (Exception e)
                             {
@@ -256,6 +257,7 @@ public class AnimationLoader
                 loaded.headAxis = headAxis;
                 loaded.headAxis2 = headAxis2;
                 loaded.headCaps = headCaps;
+                loaded.headCaps1 = headCaps1;
 
                 models.put(modelName, model);
                 modelMaps.put(modelName, loaded);
@@ -290,13 +292,6 @@ public class AnimationLoader
         if (modelMaps.get(model.name) != null) return modelMaps.get(model.name);
         parse(model);
         if (modelMaps.get(model.name) != null) return modelMaps.get(model.name);
-
-        System.err.println("Model not found, finding a random one instead");
-        for (LoadedModel<?> m : modelMaps.values())
-        {
-            if (m != null) return m;
-        }
-        System.err.println("no models found");
         return null;
     }
 
@@ -405,7 +400,7 @@ public class AnimationLoader
         }
     }
 
-    public static void setHeadCaps(Node node, float[] toFill)
+    public static void setHeadCaps(Node node, float[] toFill, float[] toFill1)
     {
         if (node.getAttributes() == null) return;
         if (node.getAttributes().getNamedItem("headCap") != null)
@@ -416,6 +411,15 @@ public class AnimationLoader
             r = shift.split(",");
             toFill[0] = Float.parseFloat(r[0]);
             toFill[1] = Float.parseFloat(r[1]);
+        }
+        if (node.getAttributes().getNamedItem("headCap1") != null)
+        {
+            String shift;
+            String[] r;
+            shift = node.getAttributes().getNamedItem("headCap1").getNodeValue();
+            r = shift.split(",");
+            toFill1[0] = Float.parseFloat(r[0]);
+            toFill1[1] = Float.parseFloat(r[1]);
         }
     }
 
@@ -498,7 +502,7 @@ public class AnimationLoader
 
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
                     System.out.println("Registerd an x3d model for " + name);
-
+                    getModel(name);
                 }
                 else
                 {

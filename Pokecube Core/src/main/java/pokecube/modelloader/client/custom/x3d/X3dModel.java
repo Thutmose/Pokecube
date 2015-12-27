@@ -84,8 +84,7 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel, IRete
             X3dObject o = new X3dObject(s);
 
             o.vertices = parseVertices(points.get("coordinates")).toArray(new Vertex[0]);
-            o.textureCoordinates = parseTextures(points.get("textures")).toArray(new TextureCoordinate[0]);;
-            o.vertexNormals = parseVertices(points.get("normals")).toArray(new Vertex[0]);;
+            o.textureCoordinates = parseTextures(points.get("textures")).toArray(new TextureCoordinate[0]);
 
             String[] offset = partTranslations.get(s).get("translation").split(" ");
             o.offset = Vector3.getNewVectorFromPool().set(Float.parseFloat(offset[0]), Float.parseFloat(offset[1]),

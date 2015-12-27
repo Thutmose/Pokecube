@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.IExtendedModelPart;
@@ -15,8 +14,10 @@ import thut.api.maths.Vector3;
 
 public class X3dObject implements IExtendedModelPart, IRetexturableModel
 {
+    private int mesh = 0;
+    //TODO support other draw modes too somehow
+    public int GLMODE = GL11.GL_TRIANGLES;
     public Vertex[]            vertices;
-    public Vertex[]            vertexNormals;
     public TextureCoordinate[] textureCoordinates;
     public Integer[]           order;
 
@@ -108,9 +109,8 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             GL11.glTranslated(uvShift[0], uvShift[1], 0.0F);
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
         }
-        tez.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_COLOR);
+        GL11.glColor4f(red/255f, green/255f, blue/255f, alpha/255f);
         addForRender(tez);
-        tez.end();
         GL11.glMatrixMode(GL11.GL_TEXTURE);
         GL11.glLoadIdentity();
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -121,20 +121,9 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     {
         try
         {
-            // if (parent != null && parent instanceof X3dObject) brightness =
-            // ((X3dObject) parent).brightness;
-            Vertex vertex;
-            TextureCoordinate textureCoordinate;
-            for (Integer i : order)
-            {
-                vertex = vertices[i];
-                textureCoordinate = textureCoordinates[i];
-
-                if (textureCoordinate != null) tessellator.vertex(vertex.x, vertex.y, vertex.z)
-                        .tex(textureCoordinate.u, textureCoordinate.v)
-                        .color(red, green, blue, alpha).endVertex();
-            }
-
+            compileList();
+            GL11.glCallList(mesh);
+            GL11.glFlush();
         }
         catch (Exception e)
         {
@@ -260,6 +249,27 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         postRot1 = rotations;
     }
 
+    private void compileList()
+    {
+        if(!GL11.glIsList(mesh))
+        {
+            mesh = GL11.glGenLists(1);
+            GL11.glNewList(mesh, GL11.GL_COMPILE);
+            Vertex vertex;
+            TextureCoordinate textureCoordinate;
+            GL11.glBegin(GLMODE);
+            for (Integer i : order)
+            {
+                vertex = vertices[i];
+                textureCoordinate = textureCoordinates[i];
+                GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
+                GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
+            }
+            GL11.glEnd();
+            GL11.glEndList();
+        }
+    }
+    
     private void rotateToParent()
     {
         if (parent != null)

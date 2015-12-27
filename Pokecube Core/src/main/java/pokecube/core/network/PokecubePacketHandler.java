@@ -1057,9 +1057,10 @@ public class PokecubePacketHandler
                     Transporter.teleportEntity(player, link);
                     Transporter.teleportEntity(player, loc, dim, false);
                 }
-                else if (channel == 17)
+                else if (channel == MEGAEVOLVE)
                 {
                     int id = buffer.readInt();
+                    System.out.println("test");
                     EntityPokemob pokemob = (EntityPokemob) PokecubeSerializer.getInstance().getPokemob(id);
 
                     if (pokemob == null)

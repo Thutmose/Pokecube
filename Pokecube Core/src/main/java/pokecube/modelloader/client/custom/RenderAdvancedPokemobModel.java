@@ -149,7 +149,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
-        if (model.texturer == null) FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
+        if (model.texturer == null)
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
         GlStateManager.enableBlend();
         GlStateManager.disableLighting();
         model.currentPhase = getPhase(null, entity, f1);
@@ -270,24 +271,19 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
                 String n;// = ((IPokemob) entityliving).getDisplayName();
                 int colour = renderManager.livingPlayer.equals(((IPokemob) entityliving).getPokemonOwner()) ? 0xFFFFFF
                         : 0xAAAAAA;
-                int dx = 00;
                 if ((entityliving.hasCustomName()))
                 {
                     n = entityliving.getCustomNameTag();
-                    fontrenderer.drawString(n, length - dx - fontrenderer.getStringWidth(n), offset - 8, colour);
                 }
                 else
                 {
-
                     n = ((IPokemob) entityliving).getPokemonDisplayName();
-
-                    if (n.length() == 8) fontrenderer.drawString(n,
-                            length - (int) (fontrenderer.getStringWidth(n) * 1.45), offset - 8, colour);
-                    if (n.length() >= 9) fontrenderer.drawString(n,
-                            length - (int) (fontrenderer.getStringWidth(n) * 1.2), offset - 8, colour);
-                    if (n.length() < 8) fontrenderer.drawString(n,
-                            length - (int) (fontrenderer.getStringWidth(n) * 1.8), offset - 8, colour);
                 }
+
+                int n1 = length - fontrenderer.getStringWidth(n) / 2;
+
+                n1 = Math.max(0, n1);
+                fontrenderer.drawString(n, -length + n1, offset - 8, colour);
             }
 
             int color = 0xBBBBBB;

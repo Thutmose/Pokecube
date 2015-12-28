@@ -126,8 +126,7 @@ public class AdvancedFlapAnimation extends Animation
     {
         int flapdur = 0;
         float walkAngle2 = 20;
-        AdvancedFlapAnimation anim = new AdvancedFlapAnimation();
-
+        
         flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
         // Can have up to 255 wing segments, more than this would be silly.
         for (int i = 1; i <= 255; i++)
@@ -149,7 +148,6 @@ public class AdvancedFlapAnimation extends Animation
                 if (s != null) hl.add(s);
             for (String s : rh)
                 if (s != null) hr.add(s);
-
             if (map.getNamedItem("angle" + i) != null)
             {
                 String[] args = map.getNamedItem("angle" + i).getNodeValue().split(",");
@@ -164,7 +162,7 @@ public class AdvancedFlapAnimation extends Animation
             {
                 flapaxis = Integer.parseInt(map.getNamedItem("axis" + i).getNodeValue());
             }
-            anim.init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis, i > 1);
+            init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis, i > 1);
         }
         return this;
     }

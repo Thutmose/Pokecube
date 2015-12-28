@@ -1010,9 +1010,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     egg = eggItem;
                     worldObj.spawnEntityInWorld(egg);
                 }
-
             }
-
             if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, damageSource, capturedDrops, i,
                     recentlyHit > 0))
             {

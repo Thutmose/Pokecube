@@ -36,6 +36,8 @@ public class AnimationRegistry
         animations.put("snakeWalk", SnakeMovement.class);
         animations.put("snakeFly", SnakeMovement.class);
         animationPhases.put("snakeFly", "flying");
+        animations.put("snakeIdle", SnakeMovement.class);
+        animationPhases.put("snakeIdle", "idle");
         animations.put("snakeSwim", SnakeMovement.class);
         animationPhases.put("snakeSwim", "swimming");
     }

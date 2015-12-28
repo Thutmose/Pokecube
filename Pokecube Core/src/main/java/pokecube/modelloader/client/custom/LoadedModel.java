@@ -322,6 +322,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             blue = poke.getColours()[2] * 2;
         }
         parent.setRGBAB(new int[] { red, green, blue, alpha, brightness });
+        GlStateManager.disableCull();
         for (String partName : parent.getSubParts().keySet())
         {
             IExtendedModelPart part = parent.getSubParts().get(partName);

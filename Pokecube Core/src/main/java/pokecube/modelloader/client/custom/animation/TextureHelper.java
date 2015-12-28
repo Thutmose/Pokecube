@@ -55,7 +55,6 @@ public class TextureHelper implements IPartTexturer
     public void applyTexture(String part)
     {
         String tex = texNames.containsKey(part) ? texNames.get(part) : texNames.get("default");
-
         tex = pokemob.modifyTexture(tex);
         ResourceLocation loc;
         if ((loc = texMap.get(tex)) != null)
@@ -80,10 +79,7 @@ public class TextureHelper implements IPartTexturer
     public boolean shiftUVs(String part, double[] toFill)
     {
         TexState state;
-        if ((state = texStates.get(part)) != null)
-        {
-            return state.applyState(toFill, pokemob);
-        }
+        if ((state = texStates.get(part)) != null) { return state.applyState(toFill, pokemob); }
         return false;
     }
 
@@ -121,13 +117,14 @@ public class TextureHelper implements IPartTexturer
     {
         Map<Integer, double[]> aiStates     = Maps.newHashMap();
         Set<RandomState>       randomStates = Sets.newHashSet();
+        SequenceState          sequence     = null;
         RandomState            running      = null;
 
         void addState(String trigger, String[] diffs)
         {
-            double[] arr = new double[2];
-            arr[0] = Double.parseDouble(diffs[0]);
-            arr[1] = Double.parseDouble(diffs[1]);
+            double[] arr = new double[diffs.length];
+            for (int i = 0; i < arr.length; i++)
+                arr[i] = Double.parseDouble(diffs[i].trim());
             int state = getState(trigger, false);
             if (state > 0)
             {
@@ -136,6 +133,10 @@ public class TextureHelper implements IPartTexturer
             else if (trigger.contains("random"))
             {
                 randomStates.add(new RandomState(trigger, arr));
+            }
+            else if (trigger.equals("sequence"))
+            {
+                sequence = new SequenceState(arr);
             }
             else
             {
@@ -188,6 +189,15 @@ public class TextureHelper implements IPartTexturer
                     return true;
                 }
             }
+            if(sequence!=null)
+            {
+                int tick = ((Entity) pokemob).ticksExisted % (sequence.arr.length/2);
+                dx = sequence.arr[tick*2];
+                dy = sequence.arr[tick*2 + 1];
+                toFill[0] = dx;
+                toFill[1] = dy;
+                return true;
+            }
             return false;
         }
     }
@@ -211,6 +221,16 @@ public class TextureHelper implements IPartTexturer
             {
                 duration = Integer.parseInt(args[2]);
             }
+        }
+    }
+
+    private static class SequenceState
+    {
+        double[] arr;
+
+        SequenceState(double[] arr)
+        {
+            this.arr = arr;
         }
     }
 

@@ -91,6 +91,10 @@ public class SnakeMovement extends Animation
         {
             axis = Integer.parseInt(map.getNamedItem("axis").getNodeValue());
         }
+        if (map.getNamedItem("length") != null)
+        {
+            duration = Integer.parseInt(map.getNamedItem("length").getNodeValue());
+        }
         if (map.getNamedItem("duration") != null)
         {
             duration = Integer.parseInt(map.getNamedItem("duration").getNodeValue());

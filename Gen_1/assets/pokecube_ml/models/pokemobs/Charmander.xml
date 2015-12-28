@@ -3,6 +3,9 @@
     <model name="">
         <phase name="global" rotation="1,0,0,0" offset="0,-1.1,0" scale="0.7" headAxis="1" headCap="-50,50"/>
         <phase name="biWalk" leftLeg="leftleg" rightLeg="rightleg" leftArm="leftarm" rightArm="rightarm" duration="10" legAngle="45" armAngle="20"/>
-        <phase name="textures" male="1,2,3,4"/>
+        <customTex default="Charmander">
+            <part name="flame" tex="Charmander1"/>
+            <animation part="flame" trigger="sequence" diffs="0,0, 0,0, 0.125,0, 0.125,0, 0.25,0, 0.25,0, 0.375,0, 0.375,0"/>
+        </customTex> 
     </model>
 </ModelAnimator>

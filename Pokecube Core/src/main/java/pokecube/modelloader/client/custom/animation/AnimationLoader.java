@@ -500,9 +500,7 @@ public class AnimationLoader
                     PokedexEntry entry = Database.getEntry(name);
                     ResourceLocation animation = new ResourceLocation(
                             anim.replace(entry.getName(), entry.getBaseName()));
-
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
-                    System.out.println("Registerd an x3d model for " + name);
                     if (loaded) getModel(name);
                 }
                 else

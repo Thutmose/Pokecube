@@ -12,7 +12,6 @@ Pokémobs for Minecraft - page under construction.
 - Accelgor
 - Aegislash Blade
 - Aegislash Shield
-- ~~Aerodactyl~~
 - Aerodactyl Mega
 - Alakazam
 - Alakazam Mega
@@ -65,9 +64,7 @@ Pokémobs for Minecraft - page under construction.
 - Darmanitan Zen
 - Darumaka
 - Dedenne
-- ~~Deerling~~
 - Deino
-- ~~Delcatty~~
 - Dewgong
 - Dialga
 - Diggersby
@@ -88,8 +85,6 @@ Pokémobs for Minecraft - page under construction.
 - Excadrill
 - Exeggcute
 - Exeggutor
-- ~~Ferroseed~~
-- ~~Ferrothorn~~
 - Finneon
 - Flabébé
 - ~~Fletchinder~~
@@ -192,7 +187,6 @@ Pokémobs for Minecraft - page under construction.
 - Mr. Mime
 - Muk
 - Munchlax
-- ~~Ninetales~~
 - Noibat
 - Noivern
 - Nosepass
@@ -204,8 +198,6 @@ Pokémobs for Minecraft - page under construction.
 - Pansage
 - Pansear
 - Patrat
-- ~~Pichu~~
-- ~~Pikachu~~
 - Pinsir
 - Pinsir Mega
 - Probopass
@@ -217,7 +209,6 @@ Pokémobs for Minecraft - page under construction.
 - Purrloin
 - Purugly
 - Pyroar
-- ~~Raichu~~
 - Regigigas
 - Reshiram
 - Rhydon
@@ -235,7 +226,6 @@ Pokémobs for Minecraft - page under construction.
 - Sandshrew
 - Sandslash
 - Sawk
-- ~~Sawsbuck~~
 - Scatterbug
 - Scrafty
 - Scraggy
@@ -254,7 +244,6 @@ Pokémobs for Minecraft - page under construction.
 - Simisage
 - Simisear
 - Skiddo
-- ~~Skitty~~
 - Skorupi
 - Skrelp
 - Skuntank
@@ -308,7 +297,6 @@ Pokémobs for Minecraft - page under construction.
 - Vivillon
 - Volbeat
 - Vullaby
-- ~~Vulpix~~
 - Watchog
 - Weepinbell
 - Woobat

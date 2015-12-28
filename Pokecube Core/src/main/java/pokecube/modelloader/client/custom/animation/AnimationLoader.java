@@ -501,7 +501,7 @@ public class AnimationLoader
                     ResourceLocation animation = new ResourceLocation(
                             anim.replace(entry.getName(), entry.getBaseName()));
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
-                    if (loaded) getModel(name);
+                    if (loaded && ModPokecubeML.preload) getModel(name);
                 }
                 else
                 {

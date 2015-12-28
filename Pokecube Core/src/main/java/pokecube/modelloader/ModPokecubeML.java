@@ -50,6 +50,7 @@ public class ModPokecubeML
     public static Map<PokedexEntry, String> textureProviders = Maps.newHashMap();
 
     public static boolean info = false;
+    public static boolean preload = true;
 
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
     public static CommonProxy proxy;
@@ -81,6 +82,8 @@ public class ModPokecubeML
         String[] pokemon = config.getStringList("pokemon", Configuration.CATEGORY_GENERAL, new String[] {"Zubat"}, "extra Pokemobs to register on load");
         info = config.getBoolean("printAll", Configuration.CATEGORY_GENERAL, info,
                 "will print all pokemon names to console on load");
+        preload = config.getBoolean("preloadModels", Configuration.CATEGORY_GENERAL, preload,
+                "Will load all of the models when refreshed, if this is false, it will only load the model when it is first seen in game.");
         String[] files = config.getStringList("packs", Configuration.CATEGORY_GENERAL, new String[]{"Pokecube_Resources", "Gen_1", "Gen_2", "Gen_3", "Gen_4", "Gen_5", "Gen_6"}, "Resource Packs to add models");
         config.save();
         configDir = evt.getModConfigurationDirectory();

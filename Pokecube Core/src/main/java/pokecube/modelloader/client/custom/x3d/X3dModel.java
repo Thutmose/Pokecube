@@ -80,6 +80,13 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel, IRete
         }
         for (String s : partPoints.keySet())
         {
+            if(!partTranslations.containsKey(s))
+            {
+                System.out.println(s);
+                System.out.println(partTranslations.keySet());
+                continue;
+            }
+            
             HashMap<String, String> points = partPoints.get(s);
             X3dObject o = new X3dObject(s);
 

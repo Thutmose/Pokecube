@@ -30,6 +30,8 @@ public class GuiAnimate extends GuiScreen
 
     protected GuiTextField anim;
     protected GuiTextField state;
+    protected GuiTextField forme;
+    protected GuiTextField info;
 
     private float xRenderAngle     = 0;
     private float yRenderAngle     = 0;
@@ -58,6 +60,8 @@ public class GuiAnimate extends GuiScreen
         anim = new GuiTextField(0, fontRendererObj, width - 101, yOffset + 13 - yOffset / 2, 100, 10);
         anim.setText("idle");
         state = new GuiTextField(0, fontRendererObj, width - 101, yOffset + 43 - yOffset / 2, 100, 10);
+        forme = new GuiTextField(0, fontRendererObj, width - 101, yOffset + 73 - yOffset / 2, 100, 10);
+        info = new GuiTextField(0, fontRendererObj, width - 21, yOffset + 28 - yOffset / 2, 20, 10);
         yOffset += 0;
         buttonList.add(new GuiButton(2, width / 2 - xOffset, yOffset, 40, 20, "next"));
         buttonList.add(new GuiButton(1, width / 2 - xOffset, yOffset - 20, 40, 20, "prev"));
@@ -82,9 +86,12 @@ public class GuiAnimate extends GuiScreen
         int yOffset = height / 2;
         int xOffset = width / 2;
         fontRendererObj.drawString("Animation", width - 101, yOffset - yOffset / 2, 0xFFFFFF);
-        fontRendererObj.drawString("State", width - 101, yOffset + 30 - yOffset / 2, 0xFFFFFF);
+        fontRendererObj.drawString("State       Info:", width - 101, yOffset + 30 - yOffset / 2, 0xFFFFFF);
+        fontRendererObj.drawString("Forme", width - 101, yOffset + 60 - yOffset / 2, 0xFFFFFF);
         anim.drawTextBox();
         state.drawTextBox();
+        forme.drawTextBox();
+        info.drawTextBox();
         PokedexEntry entry = null;
         if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
         IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
@@ -92,7 +99,33 @@ public class GuiAnimate extends GuiScreen
         {
             EventsHandlerClient.renderMobs.put(entry,
                     pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+            pokemob.specificSpawnInit();
         }
+
+        String form = forme.getText();
+        PokedexEntry e1;
+        if(pokemob.getPokedexEntry().hasForm(form))
+        {
+            pokemob.changeForme(form);
+        }
+        else if(pokemob.getPokedexEntry().baseForme.hasForm(form))
+        {
+            pokemob.changeForme(form);
+        }
+        else if((e1=Database.getEntry(form))!=null && e1!=entry)
+        {
+            entry = e1;
+            pokedexNb = entry.getPokedexNb();
+            pokemob = EventsHandlerClient.renderMobs.get(entry);
+            if (pokemob == null)
+            {
+                EventsHandlerClient.renderMobs.put(entry,
+                        pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+                pokemob.specificSpawnInit();
+            }
+        }
+        
+        fontRendererObj.drawString(pokemob.getPokemonDisplayName(), xOffset, 10, 0xFFFFFF);
         float zLevel = 800;
         GL11.glPushMatrix();
         GlStateManager.translate(xOffset + shift[0], yOffset + shift[1], zLevel);
@@ -103,6 +136,7 @@ public class GuiAnimate extends GuiScreen
 
         Object o;
         String tex = state.getText().trim();
+
         if (!tex.isEmpty() && !state.isFocused())
         {
             int state = 0;
@@ -137,6 +171,18 @@ public class GuiAnimate extends GuiScreen
         entity.onGround = ground;
 
         ((Entity) pokemob).ticksExisted = mc.thePlayer.ticksExisted;
+        
+        String arg = info.getText();
+        try
+        {
+            int num = Integer.parseInt(arg);
+            pokemob.setSpecialInfo(num);
+        }
+        catch (NumberFormatException e)
+        {
+            
+        }
+        
         if ((o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
         {
             RenderAdvancedPokemobModel render = (RenderAdvancedPokemobModel) o;
@@ -170,6 +216,8 @@ public class GuiAnimate extends GuiScreen
         super.keyTyped(typedChar, keyCode);
         anim.textboxKeyTyped(typedChar, keyCode);
         state.textboxKeyTyped(typedChar, keyCode);
+        forme.textboxKeyTyped(typedChar, keyCode);
+        info.textboxKeyTyped(typedChar, keyCode);
     }
 
     @Override
@@ -180,6 +228,8 @@ public class GuiAnimate extends GuiScreen
         super.mouseClicked(mouseX, mouseY, mouseButton);
         anim.mouseClicked(mouseX, mouseY, mouseButton);
         state.mouseClicked(mouseX, mouseY, mouseButton);
+        forme.mouseClicked(mouseX, mouseY, mouseButton);
+        info.mouseClicked(mouseX, mouseY, mouseButton);
         int xConv = mouseX - ((width));
         boolean view = false;
 
@@ -198,21 +248,21 @@ public class GuiAnimate extends GuiScreen
      * pressed for buttons) */
     protected void actionPerformed(GuiButton button) throws IOException
     {
+        PokedexEntry entry = null;
         if (button.id == 2)
         {
-            PokedexEntry entry = null;
             if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
-            int num = Pokedex.getInstance().getNext(entry, 1).getPokedexNb();
+            int num = (entry = Pokedex.getInstance().getNext(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
-            else pokedexNb = Pokedex.getInstance().getFirstEntry().getPokedexNb();
+            else pokedexNb = (entry = Pokedex.getInstance().getFirstEntry()).getPokedexNb();
         }
         else if (button.id == 1)
         {
-            PokedexEntry entry = null;
             if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
-            int num = Pokedex.getInstance().getPrevious(entry, 1).getPokedexNb();
+            int num = (entry = Pokedex.getInstance().getPrevious(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
-            else pokedexNb = Pokedex.getInstance().getLastEntry().getPokedexNb();
+            else pokedexNb = (entry = Pokedex.getInstance().getLastEntry()).getPokedexNb();
+            
         }
         else if (button.id == 3)
         {
@@ -257,6 +307,18 @@ public class GuiAnimate extends GuiScreen
         else if (button.id == 11)
         {
             shift[1] -= isShiftKeyDown()?10:1;
+        }
+        if(entry!=null)
+        {
+            IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
+            if (pokemob == null)
+            {
+                EventsHandlerClient.renderMobs.put(entry,
+                        pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+                pokemob.specificSpawnInit();
+            }
+            forme.setText(pokemob.getPokedexEntry().getName());
+            info.setText(""+pokemob.getSpecialInfo());
         }
     }
 

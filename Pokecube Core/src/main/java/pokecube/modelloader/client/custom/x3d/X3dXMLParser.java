@@ -55,6 +55,7 @@ public class X3dXMLParser
             Node n;
             int j = 0;
 
+            String name = null;
             for (int i = 0; i < doc.getElementsByTagName("Transform").getLength(); i++)
             {
                 Node node = doc.getElementsByTagName("Transform").item(i);
@@ -62,7 +63,7 @@ public class X3dXMLParser
                 HashMap<String, String> items = new HashMap<String, String>();
                 if (tag.equals("Transform"))
                 {
-                    String name = node.getAttributes().getNamedItem("DEF").getNodeValue();
+                    name = node.getAttributes().getNamedItem("DEF").getNodeValue();
 
                     items.put("translation", node.getAttributes().getNamedItem("translation").getNodeValue());
                     items.put("scale", node.getAttributes().getNamedItem("scale").getNodeValue());
@@ -132,7 +133,7 @@ public class X3dXMLParser
                                 tex = l;
                             }
                         }
-                        String name = node.getAttributes().getNamedItem("DEF").getNodeValue();
+//                        String name = node.getAttributes().getNamedItem("DEF").getNodeValue();
                         String index = n.getAttributes().getNamedItem("index").getNodeValue();
                         items.put("index", index);
                         items.put("coordinates",
@@ -159,7 +160,7 @@ public class X3dXMLParser
                                 tex = l;
                             }
                         }
-                        String name = node.getAttributes().getNamedItem("DEF").getNodeValue();
+//                        String name = node.getAttributes().getNamedItem("DEF").getNodeValue();
                         String index = n.getAttributes().getNamedItem("coordIndex").getNodeValue();
                         items.put("index", index);
                         items.put("coordinates",

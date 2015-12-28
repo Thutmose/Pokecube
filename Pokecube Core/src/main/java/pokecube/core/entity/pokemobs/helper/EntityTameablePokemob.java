@@ -94,7 +94,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
     static final int STATMODDW         = 18;
     static final int BOOMSTATEDW       = 19;
     static final int EXPDW             = 20;
-    static final int SHEARDW           = 21;
+//    static final int SHEARDW           = 21;
     static final int NICKNAMEDW        = 22;
     static final int STATUSMOVEINDEXDW = 23;
     static final int EVS1DW            = 24;
@@ -119,8 +119,8 @@ public abstract class EntityTameablePokemob extends EntityTameable
         dataWatcher.addObject(STATMODDW, new Integer(1717986918));// stat
                                                                   // modifiers
         dataWatcher.addObject(EXPDW, new Integer(0));// exp for level 1
-        dataWatcher.addObject(SHEARDW, new Byte((byte) 0));// used for mareep
-                                                           // for sheared status
+//        dataWatcher.addObject(SHEARDW, new Byte((byte) 0));// used for mareep
+//                                                           // for sheared status
         dataWatcher.addObject(NICKNAMEDW, "");// nickname
         dataWatcher.addObject(EVS1DW, new Integer(1));// evs
         dataWatcher.addObject(EVS2DV, new Integer(1));// evs
@@ -784,22 +784,13 @@ public abstract class EntityTameablePokemob extends EntityTameable
     /** returns true if a sheeps wool has been sheared */
     public boolean getSheared()
     {
-        return (this.dataWatcher.getWatchableObjectByte(SHEARDW) & 16) != 0;
+        return getPokemonAIState(SHEARED);
     }
 
     /** make a sheep sheared if set to true */
     public void setSheared(boolean sheared)
     {
-        byte b0 = this.dataWatcher.getWatchableObjectByte(21);
-
-        if (sheared)
-        {
-            this.dataWatcher.updateObject(SHEARDW, Byte.valueOf((byte) (b0 | 16)));
-        }
-        else
-        {
-            this.dataWatcher.updateObject(SHEARDW, Byte.valueOf((byte) (b0 & -17)));
-        }
+        setPokemonAIState(SHEARED, sheared);
     }
 
     /** Used to get the state without continually looking up in datawatcher.

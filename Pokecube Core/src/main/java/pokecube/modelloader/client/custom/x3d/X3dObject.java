@@ -12,9 +12,9 @@ import thut.api.maths.Vector3;
 
 public class X3dObject implements IExtendedModelPart, IRetexturableModel
 {
-    private int                meshId   = 0;
-    // TODO support other draw modes too somehow
-    public int                 GLMODE = GL11.GL_TRIANGLES;
+    private int                meshId    = 0;
+    public int                 GLMODE    = GL11.GL_TRIANGLES;
+    public boolean             triangles = true;
     public Vertex[]            vertices;
     public TextureCoordinate[] textureCoordinates;
     public Integer[]           order;
@@ -82,38 +82,38 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
 
     public void render()
     {
-        //Rotate to the offset of the parent.
+        // Rotate to the offset of the parent.
         rotateToParent();
-        //Translate of offset for rotation.
+        // Translate of offset for rotation.
         GL11.glTranslated(offset.x, offset.y, offset.z);
-        //Rotate by this to account for a coordinate difference.
+        // Rotate by this to account for a coordinate difference.
         GL11.glRotatef(90, 1, 0, 0);
         GL11.glTranslated(preTrans.x, preTrans.y, preTrans.z);
-        //UnRotate coordinate difference.
+        // UnRotate coordinate difference.
         GL11.glRotatef(-90, 1, 0, 0);
-        //Apply initial part rotation
+        // Apply initial part rotation
         rotations.glRotate();
-        //Rotate by this to account for a coordinate difference.
+        // Rotate by this to account for a coordinate difference.
         GL11.glRotatef(90, 1, 0, 0);
-        //Apply PreOffset-Rotations.
+        // Apply PreOffset-Rotations.
         preRot.glRotate();
-        //Translate by post-PreOffset amount.
+        // Translate by post-PreOffset amount.
         GL11.glTranslated(postTrans.x, postTrans.y, postTrans.z);
-        //UnRotate coordinate difference.
+        // UnRotate coordinate difference.
         GL11.glRotatef(-90, 1, 0, 0);
-        //Undo pre-translate offset.
+        // Undo pre-translate offset.
         GL11.glTranslated(-offset.x, -offset.y, -offset.z);
         GL11.glPushMatrix();
-        //Translate to Offset.
+        // Translate to Offset.
         GL11.glTranslated(offset.x, offset.y, offset.z);
-        
-        //Apply first postRotation
+
+        // Apply first postRotation
         postRot.glRotate();
-        //Apply second post rotation.
+        // Apply second post rotation.
         postRot1.glRotate();
-        //Scale
+        // Scale
         GL11.glScalef(scale.x, scale.y, scale.z);
-        //Renders the model.
+        // Renders the model.
         addForRender();
         GL11.glPopMatrix();
     }
@@ -121,7 +121,7 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     public void addForRender()
     {
         boolean textureShift = false;
-        //Apply Texturing.
+        // Apply Texturing.
         if (texturer != null)
         {
             texturer.applyTexture(this.getName());
@@ -132,14 +132,14 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
                 GL11.glMatrixMode(GL11.GL_MODELVIEW);
             }
         }
-        //Applies Colour.
+        // Applies Colour.
         GL11.glColor4f(red / 255f, green / 255f, blue / 255f, alpha / 255f);
-        //Compiles the list of the meshId is invalid.
+        // Compiles the list of the meshId is invalid.
         compileList();
-        //Call the list
+        // Call the list
         GL11.glCallList(meshId);
         GL11.glFlush();
-        //Reset Texture Matrix if changed.
+        // Reset Texture Matrix if changed.
         if (textureShift)
         {
             GL11.glMatrixMode(GL11.GL_TEXTURE);
@@ -268,15 +268,38 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             GL11.glNewList(meshId, GL11.GL_COMPILE);
             Vertex vertex;
             TextureCoordinate textureCoordinate;
-            GL11.glBegin(GLMODE);
-            for (Integer i : order)
+            if (triangles)
             {
-                vertex = vertices[i];
-                textureCoordinate = textureCoordinates[i];
-                GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
-                GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
+                GL11.glBegin(GLMODE);
+                for (Integer i : order)
+                {
+                    vertex = vertices[i];
+                    textureCoordinate = textureCoordinates[i];
+                    GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
+                    GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
+                }
+                GL11.glEnd();
             }
-            GL11.glEnd();
+            else
+            {
+                GL11.glBegin(GL11.GL_QUADS);
+                for (Integer i : order)
+                {
+                    if(i!=-1)
+                    {
+                        vertex = vertices[i];
+                        textureCoordinate = textureCoordinates[i];
+                        GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
+                        GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
+                    }
+                    else
+                    {
+                        GL11.glEnd();
+                        GL11.glBegin(GL11.GL_QUADS);
+                    }
+                }
+                GL11.glEnd();
+            }
             GL11.glEndList();
         }
     }
@@ -288,7 +311,6 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             if (parent instanceof X3dObject)
             {
                 X3dObject parent = ((X3dObject) this.parent);
-                parent.rotateToParent();
                 parent.postRot.glRotate();
                 parent.postRot1.glRotate();
             }

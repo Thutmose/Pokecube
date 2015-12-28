@@ -85,7 +85,8 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel, IRete
 
             o.vertices = parseVertices(points.get("coordinates")).toArray(new Vertex[0]);
             o.textureCoordinates = parseTextures(points.get("textures")).toArray(new TextureCoordinate[0]);
-
+            o.triangles = parser.triangles;
+            
             String[] offset = partTranslations.get(s).get("translation").split(" ");
             o.offset = Vector3.getNewVectorFromPool().set(Float.parseFloat(offset[0]), Float.parseFloat(offset[1]),
                     Float.parseFloat(offset[2]));
@@ -109,7 +110,9 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel, IRete
             {
                 for (String s1 : childMap.get(s))
                 {
+                    if(parts.get(s1)!=null)
                     parts.get(s).addChild(parts.get(s1));
+//                    else new NullPointerException("null part "+s1+" as child of "+s).printStackTrace();
                 }
             }
         }

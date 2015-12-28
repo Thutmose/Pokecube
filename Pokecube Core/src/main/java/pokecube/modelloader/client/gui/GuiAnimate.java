@@ -32,6 +32,7 @@ public class GuiAnimate extends GuiScreen
     protected GuiTextField state;
 
     private float xRenderAngle     = 0;
+    private float yRenderAngle     = 0;
     private float yHeadRenderAngle = 0;
     private float xHeadRenderAngle = 0;
     private int   mouseRotateControl;
@@ -132,7 +133,7 @@ public class GuiAnimate extends GuiScreen
         entity.rotationPitch = xHeadRenderAngle;
         if (isAltKeyDown()) yHeadRenderAngle = xRenderAngle;
         entity.rotationYawHead = yHeadRenderAngle;
-
+        GL11.glRotated(yRenderAngle, 1, 0, 0);
         entity.onGround = ground;
 
         ((Entity) pokemob).ticksExisted = mc.thePlayer.ticksExisted;
@@ -226,6 +227,7 @@ public class GuiAnimate extends GuiScreen
         else if (button.id == 5)
         {
             xRenderAngle = 0;
+            yRenderAngle = 0;
             yHeadRenderAngle = 0;
             xHeadRenderAngle = 0;
             scale = 1;
@@ -269,6 +271,7 @@ public class GuiAnimate extends GuiScreen
         {
             xRenderAngle += prevX - x;
             prevX = x;
+            yRenderAngle += prevY - y;
             prevY = y;
         }
         else if (mouseRotateControl == 1)

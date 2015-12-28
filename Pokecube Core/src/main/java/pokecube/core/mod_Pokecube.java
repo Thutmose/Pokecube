@@ -437,7 +437,6 @@ public class mod_Pokecube extends PokecubeMod
         {
             System.err.println("Problem with entity with pokedexNb: " + pokedexNb);
             System.err.println(clazz + " ");
-//            new Exception().printStackTrace();
         }
 
         return entity;

@@ -327,6 +327,10 @@ public class EventsHandlerClient
                 if (stack != null && PokecubeManager.isFilled(stack))
                 {
                     IPokemob pokemob = getPokemobForRender(stack, player.worldObj);
+                    if(pokemob==null)
+                    {
+                        continue;
+                    }
                     int x = (w - xSize) / 2;
                     int y = (h - ySize);
                     GL11.glPushMatrix();

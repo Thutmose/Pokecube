@@ -16,7 +16,6 @@ public class Trace extends Ability
     {
         if (traced != null && ((EntityLiving)mob).getAttackTarget()==null)
         {
-            System.out.println(traced);
             traced.destroy();
             traced = null;
         }
@@ -30,7 +29,6 @@ public class Trace extends Ability
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
         if (traced != null) traced.onMoveUse(mob, move);
-        System.out.println(traced+" "+mob);
     }
 
     @Override

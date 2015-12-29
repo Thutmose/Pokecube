@@ -15,7 +15,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import pokecube.modelloader.ModPokecubeML;
 
-@Mod(modid = PokecubeMobs.MODID, name="Pokecube Mobs", version = PokecubeMobs.VERSION, dependencies = "required-after:pokecube", updateJSON = PokecubeMobs.UPDATEURL)
+@Mod(modid = PokecubeMobs.MODID, name="Pokecube Mobs", version = PokecubeMobs.VERSION, 
+dependencies = "required-after:pokecube", updateJSON = PokecubeMobs.UPDATEURL, acceptableRemoteVersions="*")
 public class PokecubeMobs
 {
     public static final String MODID = "pokecube_mobs";

@@ -84,7 +84,6 @@ public class AnimationLoader
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             InputStream stream = res.getInputStream();
             Document doc = dBuilder.parse(stream);
-
             doc.getDocumentElement().normalize();
 
             NodeList modelList = doc.getElementsByTagName("model");
@@ -498,8 +497,19 @@ public class AnimationLoader
                 if (Database.getEntry(name) != null)
                 {
                     PokedexEntry entry = Database.getEntry(name);
-                    ResourceLocation animation = new ResourceLocation(
-                            anim.replace(entry.getName(), entry.getBaseName()));
+
+                    ResourceLocation animation = null;
+                    try
+                    {
+                        animation = new ResourceLocation(anim);
+                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+                        res.getInputStream().close();
+                    }
+                    catch (IOException e3)
+                    {
+                        animation = new ResourceLocation(anim.replace(entry.getName(), entry.getBaseName()));
+                    }
+
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
                     if (loaded && ModPokecubeML.preload) getModel(name);
                 }

@@ -41,11 +41,6 @@ public class X3dXMLParser
             InputStream stream = res.getInputStream();
             Document doc = dBuilder.parse(stream);
 
-            // optional, but recommended
-            // read this -
-            // http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
-            doc.getDocumentElement().normalize();
-
             partName = doc.getElementsByTagName("meta").item(0).getAttributes().getNamedItem("content").getNodeValue()
                     .replace(".x3d", "");
 
@@ -54,7 +49,6 @@ public class X3dXMLParser
             partChildren = new HashMap<String, ArrayList<String>>();
             Node n;
             int j = 0;
-            boolean normals = false;
 
             String name = null;
             for (int i = 0; i < doc.getElementsByTagName("Transform").getLength(); i++)
@@ -137,10 +131,8 @@ public class X3dXMLParser
                             if (n.getChildNodes().item(l).getNodeName().equals("Normal"))
                             {
                                 normal = l;
-                                normals = true;
                             }
                         }
-//                        String name = node.getAttributes().getNamedItem("DEF").getNodeValue();
                         String index = n.getAttributes().getNamedItem("index").getNodeValue();
                         items.put("index", index);
                         items.put("coordinates",
@@ -172,10 +164,8 @@ public class X3dXMLParser
                             if (n.getChildNodes().item(l).getNodeName().equals("Normal"))
                             {
                                 normal = l;
-                                normals = true;
                             }
                         }
-//                        String name = node.getAttributes().getNamedItem("DEF").getNodeValue();
                         String index = n.getAttributes().getNamedItem("coordIndex").getNodeValue();
                         items.put("index", index);
                         items.put("coordinates",
@@ -191,15 +181,9 @@ public class X3dXMLParser
                 }
             }
 
-            if(!normals)
+            if (!triangles)
             {
-                new Exception(
-                        "Warning, no normals found, please re-export "+model.getResourcePath()+" with normals. ")
-                                .printStackTrace();
-            }
-            if(!triangles)
-            {
-                System.err.println(model.getResourcePath()+" Is not Triangulated, This may cause issues");
+                System.err.println(model.getResourcePath() + " Is not Triangulated, This may cause issues");
             }
             stream.close();
 

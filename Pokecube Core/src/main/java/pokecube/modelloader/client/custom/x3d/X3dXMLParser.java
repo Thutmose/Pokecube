@@ -54,6 +54,7 @@ public class X3dXMLParser
             partChildren = new HashMap<String, ArrayList<String>>();
             Node n;
             int j = 0;
+            boolean normals = false;
 
             String name = null;
             for (int i = 0; i < doc.getElementsByTagName("Transform").getLength(); i++)
@@ -122,6 +123,7 @@ public class X3dXMLParser
                         n = shape.getChildNodes().item(triIndex);
                         int points = -1;
                         int tex = -1;
+                        int normal = -1;
                         for (int l = 0; l < n.getChildNodes().getLength(); l++)
                         {
                             if (n.getChildNodes().item(l).getNodeName().equals("Coordinate"))
@@ -131,6 +133,11 @@ public class X3dXMLParser
                             if (n.getChildNodes().item(l).getNodeName().equals("TextureCoordinate"))
                             {
                                 tex = l;
+                            }
+                            if (n.getChildNodes().item(l).getNodeName().equals("Normal"))
+                            {
+                                normal = l;
+                                normals = true;
                             }
                         }
 //                        String name = node.getAttributes().getNamedItem("DEF").getNodeValue();
@@ -140,6 +147,8 @@ public class X3dXMLParser
                                 n.getChildNodes().item(points).getAttributes().getNamedItem("point").getNodeValue());
                         items.put("textures",
                                 n.getChildNodes().item(tex).getAttributes().getNamedItem("point").getNodeValue());
+                        if (normal != -1) items.put("normals",
+                                n.getChildNodes().item(normal).getAttributes().getNamedItem("vector").getNodeValue());
                         name = name.replace("group_ME_", "");
                         partPoints.put(name, items);
                     }
@@ -149,6 +158,7 @@ public class X3dXMLParser
                         n = shape.getChildNodes().item(faceIndex);
                         int points = -1;
                         int tex = -1;
+                        int normal = -1;
                         for (int l = 0; l < n.getChildNodes().getLength(); l++)
                         {
                             if (n.getChildNodes().item(l).getNodeName().equals("Coordinate"))
@@ -159,6 +169,11 @@ public class X3dXMLParser
                             {
                                 tex = l;
                             }
+                            if (n.getChildNodes().item(l).getNodeName().equals("Normal"))
+                            {
+                                normal = l;
+                                normals = true;
+                            }
                         }
 //                        String name = node.getAttributes().getNamedItem("DEF").getNodeValue();
                         String index = n.getAttributes().getNamedItem("coordIndex").getNodeValue();
@@ -167,6 +182,8 @@ public class X3dXMLParser
                                 n.getChildNodes().item(points).getAttributes().getNamedItem("point").getNodeValue());
                         items.put("textures",
                                 n.getChildNodes().item(tex).getAttributes().getNamedItem("point").getNodeValue());
+                        if (normal != -1) items.put("normals",
+                                n.getChildNodes().item(normal).getAttributes().getNamedItem("vector").getNodeValue());
                         name = name.replace("group_ME_", "");
                         partPoints.put(name, items);
                     }
@@ -174,11 +191,15 @@ public class X3dXMLParser
                 }
             }
 
-            if(!triangles)
+            if(!normals)
             {
                 new Exception(
-                        "Warning, This mode is buggy, please re-export "+model.getResourcePath()+" with triangulated faces. ")
+                        "Warning, no normals found, please re-export "+model.getResourcePath()+" with normals. ")
                                 .printStackTrace();
+            }
+            if(!triangles)
+            {
+                System.err.println(model.getResourcePath()+" Is not Triangulated, This may cause issues");
             }
             stream.close();
 

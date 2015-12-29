@@ -140,6 +140,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             return;
 
         GL11.glPushMatrix();
+        this.preRenderCallback(entity,f1);
+        GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
         if ((f1 != GuiPokedex.POKEDEX_RENDER))
         {
@@ -151,15 +153,25 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glTranslated(d0, d1, d2);
         if (model.texturer == null)
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
-        GlStateManager.enableBlend();
         GlStateManager.disableLighting();
+        
+        int i = entity.getBrightnessForRender(f);
+        if (entity.isBurning() || f1 == 1.5f)
+        {
+            i = 15728880;
+        }
+
+        int j = i % 65536;
+        int k = i / 65536;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
+        
         model.currentPhase = getPhase(null, entity, f1);
         model.doRender((T) entity, d0, d1, d2, f, f1);
-        GlStateManager.enableLighting();
         renderStatusModel(entity, d0, d1, d2, f, f1);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
         GL11.glPopMatrix();
         renderHp(entity, d0, d1, d2, f, f1);
+        GL11.glPopMatrix();
     }
 
     protected void renderHp(T entityliving, double d, double d1, double d2, float f, float f1)

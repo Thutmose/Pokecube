@@ -286,11 +286,11 @@ public class GuiAnimate extends GuiScreen
         }
         else if (button.id == 6)
         {
-            scale += 0.1;
+            scale += isShiftKeyDown()?1:0.1;
         }
         else if (button.id == 7)
         {
-            scale -= 0.1;
+            scale -= isShiftKeyDown()?1:0.1;
         }
         else if (button.id == 8)
         {

@@ -175,9 +175,9 @@ public class ClientProxy extends CommonProxy
             {
                 for (String s : modModels.get(mod))
                 {
-                    if (!TabulaPackLoader.loadModel(mod + ":" + AnimationLoader.MODELPATH + s))
+                    if (!AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s))
                     {
-                        AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s);
+                        TabulaPackLoader.loadModel(mod + ":" + AnimationLoader.MODELPATH + s);
                     }
                 }
             }

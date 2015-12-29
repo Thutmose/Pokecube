@@ -158,7 +158,6 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
 
         f4 = this.handleRotationFloat(entity, partialTick);
-        this.preRenderCallback(entity, partialTick);
         float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
 
         if (f6 > 1.0F)

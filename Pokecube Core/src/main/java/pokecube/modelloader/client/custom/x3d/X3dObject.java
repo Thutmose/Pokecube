@@ -1,8 +1,11 @@
 package pokecube.modelloader.client.custom.x3d;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Lists;
 
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.IExtendedModelPart;
@@ -16,6 +19,7 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     public int                 GLMODE    = GL11.GL_TRIANGLES;
     public boolean             triangles = true;
     public Vertex[]            vertices;
+    public Vertex[]            normals;
     public TextureCoordinate[] textureCoordinates;
     public Integer[]           order;
 
@@ -277,28 +281,67 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
                     textureCoordinate = textureCoordinates[i];
                     GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
                     GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
+                    if (normals != null)
+                    {
+                        vertex = normals[i];
+                        GL11.glNormal3f(vertex.x, vertex.y, vertex.z);
+                    }
                 }
                 GL11.glEnd();
             }
             else
             {
-                GL11.glBegin(GL11.GL_QUADS);
+                List<Integer> modes = Lists.newArrayList();
+                int num = 0;
                 for (Integer i : order)
                 {
-                    if(i!=-1)
+                    if (i == -1)
+                    {
+                        if (num == 3)
+                        {
+                            modes.add(GL11.GL_TRIANGLES);
+                        }
+                        else if (num == 4)
+                        {
+                            modes.add(GL11.GL_QUADS);
+                        }
+                        else
+                        {
+                            modes.add(GL11.GL_TRIANGLE_FAN);
+                        }
+                        num = 0;
+                    }
+                    else
+                    {
+                        num++;
+                    }
+                }
+                num = 0;
+
+                GL11.glBegin(modes.get(num++));
+                for (Integer i : order)
+                {
+                    if (i != -1)
                     {
                         vertex = vertices[i];
                         textureCoordinate = textureCoordinates[i];
                         GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
                         GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
+                        if (normals != null)
+                        {
+                            vertex = normals[i];
+                            GL11.glNormal3f(vertex.x, vertex.y, vertex.z);
+                        }
                     }
                     else
                     {
                         GL11.glEnd();
-                        GL11.glBegin(GL11.GL_QUADS);
+                        if (num < modes.size())
+                        {
+                            GL11.glBegin(modes.get(num++));
+                        }
                     }
                 }
-                GL11.glEnd();
             }
             GL11.glEndList();
         }

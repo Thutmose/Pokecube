@@ -19,7 +19,8 @@ public abstract class Ability
     public abstract void onMoveUse(IPokemob mob, MovePacket move);
 
     /** Calls when the pokemob first agresses the target.
-     * 
+     *  This is called by the agressor, so mob is the pokemob doing the agression.
+     *  Target is the agressed mob.
      * @param mob
      * @param target */
     public abstract void onAgress(IPokemob mob, EntityLivingBase target);

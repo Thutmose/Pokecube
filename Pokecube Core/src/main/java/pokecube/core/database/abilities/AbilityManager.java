@@ -22,10 +22,11 @@ public class AbilityManager
     private static HashMap<Integer, Class<? extends Ability>> idMap2   = Maps.newHashMap();
     static int                                                nextID   = 0;
 
-    private static Ability makeAbility(Object val, Object... args)
+    public static Ability makeAbility(Object val, Object... args)
     {
         Class<? extends Ability> abil = null;
         if (val instanceof String) abil = nameMap.get(val);
+        else if(val instanceof Class) abil = (Class<? extends Ability>) val;
         else abil = idMap2.get(val);
         if (abil == null) return null;
         Ability ret = null;
@@ -122,7 +123,6 @@ public class AbilityManager
             if (scannedUrl == null) { throw new IllegalArgumentException(
                     String.format(BAD_PACKAGE_ERROR, scannedPath, scannedPackage)); }
             File scannedDir = new File(scannedUrl.getFile().replace("%20", " "));
-            System.out.println(scannedDir + " " + scannedDir.exists() + " " + scannedDir.isDirectory());
 
             List<Class<?>> classes = new ArrayList<Class<?>>();
             if (scannedDir.exists()) for (File file : scannedDir.listFiles())

@@ -524,11 +524,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if (entity != null && entity.equals(this.getPokemonOwner())) { return; }
         if (entity != null && entity.equals(this)) { return; }
-        if (entity != null)
-        {
-            setPokemonAIState(SITTING, false);
-            ;
-        }
+        if (entity != null) setPokemonAIState(SITTING, false);
         if (entity != null && !worldObj.isRemote)
         {
             dataWatcher.updateObject(ATTACKTARGETIDDW, Integer.valueOf(entity.getEntityId()));
@@ -536,6 +532,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (entity == null && !worldObj.isRemote)
         {
             dataWatcher.updateObject(ATTACKTARGETIDDW, Integer.valueOf(-1));
+        }
+        if(entity!=getAttackTarget() && getMoveStats().ability != null)
+        {
+            getMoveStats().ability.onAgress(this, entity);
         }
         super.setAttackTarget(entity);
     }
@@ -909,7 +909,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         PokecubeSerializer.getInstance().removePokemob(this);
         PokemobAIThread.removeEntity(this);
-        if(getMoveStats().ability!=null)
+        if (getMoveStats().ability != null)
         {
             getMoveStats().ability.destroy();
         }
@@ -1097,7 +1097,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             else if (player.getHeldItem().getItem() == Items.shears) { return false; }
         }
 
-        //Check saddle for riding.
+        // Check saddle for riding.
         if (getPokemonAIState(SADDLED) && !player.isSneaking() && player == getPokemonOwner()
                 && (itemstack == null || itemstack.getItem() != PokecubeItems.pokedex))
         {
@@ -1112,7 +1112,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
 
-        //Attempt to pick the pokemob up.
+        // Attempt to pick the pokemob up.
         if (!worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking() && player.getHeldItem() == null
                 && getWeight() < 40)
         {
@@ -1144,7 +1144,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if (getPokemonAIState(HELD)) return false;
 
-        //Open Pokedex Gui
+        // Open Pokedex Gui
         if (itemstack != null && itemstack.getItem() == PokecubeItems.pokedex)
         {
             if (mod_Pokecube.isOnClientSide() && !player.isSneaking())
@@ -1155,12 +1155,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             return true;
         }
 
-        //Owner only interactions.
+        // Owner only interactions.
         if (getPokemonAIState(TAMED) && player == getOwner() && !mod_Pokecube.isOnClientSide())
         {
             if (itemstack != null)
             {
-                //Check if it should evolve from item, do so if yes.
+                // Check if it should evolve from item, do so if yes.
                 if (PokecubeItems.isValidEvoItem(itemstack) && canEvolve(itemstack))
                 {
                     IPokemob evolution = evolve(true, itemstack);
@@ -1177,7 +1177,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                     return true;
                 }
-                //Check if it is stew for happiness test. Report if yes.
+                // Check if it is stew for happiness test. Report if yes.
                 else if (itemstack.isItemEqual(new ItemStack(Items.mushroom_stew)))
                 {
                     int happiness = getHappiness();
@@ -1214,7 +1214,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     player.addChatMessage(new ChatComponentText(message));
 
                 }
-                //Check if gold apple for breeding.
+                // Check if gold apple for breeding.
                 if (itemstack.getItem() == Items.golden_apple)
                 {
                     if (!player.capabilities.isCreativeMode)
@@ -1231,7 +1231,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     this.worldObj.setEntityState(this, (byte) 18);
                     return true;
                 }
-                //Otherwise check if useable item.
+                // Otherwise check if useable item.
                 if (itemstack.getItem() instanceof IPokemobUseable)
                 {
                     boolean used = ((IPokemobUseable) itemstack.getItem()).itemUse(itemstack, this, player);
@@ -1242,7 +1242,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         return true;
                     }
                 }
-                //Try to hold the item.
+                // Try to hold the item.
                 if (canBeHeld(itemstack))
                 {
                     ItemStack heldItem = getHeldItem();
@@ -1262,7 +1262,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     return true;
                 }
             }
-            //Open Gui
+            // Open Gui
             if (!mod_Pokecube.isOnClientSide() && getPokemonOwner() == player && itemstack == null)
             {
                 openGUI(player);

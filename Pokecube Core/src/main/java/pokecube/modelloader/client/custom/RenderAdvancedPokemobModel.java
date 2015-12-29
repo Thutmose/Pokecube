@@ -153,7 +153,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glTranslated(d0, d1, d2);
         if (model.texturer == null)
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
-//        GlStateManager.disableLighting();
         
         int i = entity.getBrightnessForRender(f);
         if (entity.isBurning() || f1 == 1.5f)
@@ -181,7 +180,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) d + 0.0F, (float) d1 + entityliving.height, (float) d2);
+            GL11.glTranslatef((float) d + 0.0F, (float) d1 + entityliving.height - 0.35f, (float) d2);
             GL11.glNormal3f(0.0F, 1.0F, 0.0F);
             GL11.glRotatef(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);

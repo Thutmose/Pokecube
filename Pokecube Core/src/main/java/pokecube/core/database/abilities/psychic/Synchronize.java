@@ -1,4 +1,4 @@
-package pokecube.core.database.abilities.misc;
+package pokecube.core.database.abilities.psychic;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

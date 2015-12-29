@@ -69,7 +69,6 @@ public class Move_Transform extends Move_Basic {
 				else if (MovesUtils.contactAttack(attacker, attacked, f)){
 					MovesUtils.displayMoveMessages(attacker, attacked, IMoveNames.MOVE_TRANSFORM);
 					MovesUtils.displayEfficiencyMessages(attacker, attacked, 0F, 1F);
-				//	((EntityLivingBase)attacker).attackTime = MovesUtils.getDelayBetweenAttacks(attacker, IMoveNames.MOVE_TRANSFORM);
 				}
 			}
 			else if (attacked instanceof EntityPlayer) {

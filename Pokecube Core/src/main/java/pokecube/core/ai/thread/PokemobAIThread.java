@@ -26,7 +26,7 @@ public class PokemobAIThread
     /** Lock used to unsure that AI tasks run at the correct time. */
     private static final BitSet                          tickLock          = new BitSet();
     /** Lists of the AI stuff for each thread. */
-    private static Vector<AIStuff>[]                      aiStuffLists;
+    private static Vector<AIStuff>[]                     aiStuffLists;
     /** Map of dimension to players, used for thread-safe player access. */
     public static final HashMap<Integer, Vector<Object>> worldPlayers      = new HashMap<Integer, Vector<Object>>();
     /** Used for sorting the AI runnables for run order. */
@@ -200,12 +200,12 @@ public class PokemobAIThread
         {
             ArrayList<AIStuff> todo = new ArrayList();
 
-            for(Vector<AIStuff> v: aiStuffLists)
+            for (Vector<AIStuff> v : aiStuffLists)
             {
                 todo.addAll(v);
-                for(AIStuff stuff: todo)
+                for (AIStuff stuff : todo)
                 {
-                    if(stuff.entity.isDead)
+                    if (stuff.entity.isDead)
                     {
                         v.remove(stuff);
                     }
@@ -247,10 +247,10 @@ public class PokemobAIThread
         {
             aiLogic.add(logic);
         }
-        
+
         public void runServerThreadTasks(World world)
         {
-            for(IAIRunnable ai: aiTasks)
+            for (IAIRunnable ai : aiTasks)
             {
                 ai.doMainThreadTick(world);
             }

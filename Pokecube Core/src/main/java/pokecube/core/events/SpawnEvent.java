@@ -47,9 +47,9 @@ public class SpawnEvent extends Event
         }
     }
 
-    /** Called after the pokemob is spawned into the world. Cancelling this does
+    /** Called right before the pokemob is spawned into the world. Cancelling this does
      * nothing.<br>
-     * pokemob is the pokemob entity which has just spawned.
+     * pokemob is the pokemob entity which is about to spawn.
      * 
      * @author Thutmose */
     public static class Post extends SpawnEvent

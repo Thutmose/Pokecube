@@ -239,7 +239,7 @@ public class PokedexEntry
                 form = new PokedexEntry(pokedexNb, name, possibleMoves, lvlUpMoves);
                 this.copyToForm(form);
                 addForm(form);
-                System.out.println("new form for " + this + " as " + form);
+//                System.out.println("new form for " + this + " as " + form);
             }
             form.setBaseStats(HP, ATT, DEF, ATTSPE, DEFSPE, VIT, catchRate, pokeType, pokeType2);
         }

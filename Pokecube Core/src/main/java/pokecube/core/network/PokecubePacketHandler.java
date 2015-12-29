@@ -458,7 +458,6 @@ public class PokecubePacketHandler
 
                 if (temp != null) temp.freeVectorFromPool();
                 player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
-                System.out.println(player);
             }
             else if (nbt.getBoolean("toLoadTerrain"))
             {

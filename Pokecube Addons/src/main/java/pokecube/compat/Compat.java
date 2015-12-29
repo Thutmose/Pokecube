@@ -15,17 +15,17 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
 import net.minecraftforge.common.ForgeVersion.Status;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -39,7 +39,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.compat.ai.AIElectricalInterferance;
-import pokecube.compat.ai.AITendPlants;
 import pokecube.compat.ai.AIThermalInteferance;
 import pokecube.compat.blocks.rf.BlockSiphon;
 import pokecube.compat.blocks.rf.TileEntitySiphon;
@@ -200,7 +199,6 @@ public class Compat
 
             living.tasks.addTask(1, new AIElectricalInterferance((IPokemob) living));
             living.tasks.addTask(1, new AIThermalInteferance((IPokemob) living));
-            living.tasks.addTask(1, new AITendPlants(living));
         }
     }
 

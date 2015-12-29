@@ -31,10 +31,8 @@ public class X3dXMLParser
 
     public void parse()
     {
-
         try
         {
-
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

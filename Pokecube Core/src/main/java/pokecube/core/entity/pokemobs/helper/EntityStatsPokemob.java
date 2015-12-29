@@ -27,6 +27,7 @@ import pokecube.core.mod_Pokecube;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.LevelUpEvent;
@@ -55,9 +56,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
     protected Entity transformedTo;
 
-    protected int abilityNumber  = 0;
     /** The happiness value of the pokemob */
-    private int   bonusHappiness = 0;
+    private int bonusHappiness = 0;
 
     boolean wasShadow = false;
 
@@ -146,8 +146,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         nbttagcompound.setBoolean("shiny", shiny);
         nbttagcompound.setByte("nature", nature);
         nbttagcompound.setInteger("happiness", bonusHappiness);
-        nbttagcompound.setInteger("ability", abilityNumber);
-        // nbttagcompound.setBoolean("isShadow", isShadow);
+        if (getMoveStats().ability != null) nbttagcompound.setString("ability", getMoveStats().ability.toString());
         nbttagcompound.setBoolean("isAncient", isAncient);
         nbttagcompound.setBoolean("wasShadow", wasShadow);
         nbttagcompound.setString("forme", forme);
@@ -191,7 +190,27 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         blue = nbttagcompound.getByte("blue");
         shiny = nbttagcompound.getBoolean("shiny");
         addHappiness(nbttagcompound.getInteger("happiness"));
-        abilityNumber = nbttagcompound.getInteger("ability");
+        if(getMoveStats().ability!=null) getMoveStats().ability.destroy();
+        if (nbttagcompound.hasKey("ability", 8))
+            getMoveStats().ability = AbilityManager.getAbility(nbttagcompound.getString("ability"));
+        else if (nbttagcompound.hasKey("ability", 3))
+            getMoveStats().ability = getPokedexEntry().getAbility(nbttagcompound.getInteger("ability"));
+
+        if(getMoveStats().ability == null)
+        {
+            Random random = new Random();
+            int abilityNumber = random.nextInt(100)%2;
+            if(getPokedexEntry().getAbility(abilityNumber)==null)
+            {
+                if(abilityNumber!=0)
+                    abilityNumber = 0;
+                else
+                    abilityNumber = 1;
+            }
+            getMoveStats().ability = getPokedexEntry().getAbility(abilityNumber);
+        }
+        if(getMoveStats().ability!=null) getMoveStats().ability.init(this);
+        
         if (shiny)
         {
             red = green = blue = 127;
@@ -914,10 +933,10 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
                         this.attackedAtYaw = (float) (MathHelper.func_181159_b(d0, d1) * 180.0D / Math.PI
                                 - (double) this.rotationYaw);
-                        //Reduces knockback from distanced moves
+                        // Reduces knockback from distanced moves
                         if (source instanceof PokemobDamageSource)
                         {
-                            if(!source.isProjectile())
+                            if (!source.isProjectile())
                             {
                                 this.knockBack(entity, amount, d1, d0);
                             }

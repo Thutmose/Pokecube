@@ -1,10 +1,11 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/224362-pokecube-revival",
   "promos": {
-    "1.8.8-latest": "2.0.16",
-    "1.8.8-recommended": "2.0.16"
+    "1.8.8-latest": "2.0.17",
+    "1.8.8-recommended": "2.0.17"
   },
   "1.8.8": {
+    "2.0.17": "Updates to Core 2.0.31.",
     "2.0.16": "fixes some issues with trainer cooldowns.",
     "2.0.15": "Updates for Core 2.0.25.",
     "2.0.14": "Fixes a crash when trainers have null pokemobs. Removes integrated IGW-mod.",

@@ -99,7 +99,14 @@ public class GuiAnimate extends GuiScreen
         {
             EventsHandlerClient.renderMobs.put(entry,
                     pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+        }
+        if(pokemob!=null)
+        {
             pokemob.specificSpawnInit();
+        }
+        else
+        {
+            return;
         }
 
         String form = forme.getText();

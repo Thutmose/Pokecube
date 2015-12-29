@@ -7,6 +7,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
+import net.minecraft.world.Explosion;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.ExplosionEvent;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.database.Pokedex;
 import pokecube.core.interfaces.IPokemob;
@@ -82,24 +85,34 @@ public class Move_Explode extends Move_Ongoing
             if (pokemob.isType(normal)) f1 *= 1.5f;
             ExplosionCustom.MAX_RADIUS = 250;
 
-            MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);
-
-            mob.setHealth(0);
-            mob.onDeath(DamageSource.generic);
-            if (attacked instanceof IPokemob
-                    && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
+            Explosion boom = MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);
+            ExplosionEvent.Start evt = new ExplosionEvent.Start(mob.worldObj, boom);
+            MinecraftForge.EVENT_BUS.post(evt);
+            if(!evt.isCanceled())
             {
-                if (!(((IPokemob) attacked).getPokemonAIState(IPokemob.TAMED) && !Mod_Pokecube_Helper.pvpExp))
+                ((ExplosionCustom)boom).doExplosion();
+                mob.setHealth(0);
+                mob.onDeath(DamageSource.generic);
+                if (attacked instanceof IPokemob
+                        && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
                 {
-                    // voltorb's enemy wins XP and EVs even if it didn't attack
-                    ((IPokemob) attacked).setExp(
-                            ((IPokemob) attacked).getExp() + Tools.getExp(1, pokemob.getBaseXP(), pokemob.getLevel()),
-                            true, false);
-                    byte[] evsToAdd = Pokedex.getInstance().getEntry(pokemob.getPokedexNb()).getEVs();
-                    ((IPokemob) attacked).addEVs(evsToAdd);
+                    if (!(((IPokemob) attacked).getPokemonAIState(IPokemob.TAMED) && !Mod_Pokecube_Helper.pvpExp))
+                    {
+                        // voltorb's enemy wins XP and EVs even if it didn't attack
+                        ((IPokemob) attacked).setExp(
+                                ((IPokemob) attacked).getExp() + Tools.getExp(1, pokemob.getBaseXP(), pokemob.getLevel()),
+                                true, false);
+                        byte[] evsToAdd = Pokedex.getInstance().getEntry(pokemob.getPokedexNb()).getEVs();
+                        ((IPokemob) attacked).addEVs(evsToAdd);
+                    }
                 }
+                pokemob.returnToPokecube();
             }
-            pokemob.returnToPokecube();
+            else
+            {
+                pokemob.setExplosionState(-1);
+                pokemob.getMoveStats().timeSinceIgnited = 0;
+            }
         }
         else if(pokemob.getMoveStats().timeSinceIgnited<0 && pokemob.getExplosionState()>0)
         {

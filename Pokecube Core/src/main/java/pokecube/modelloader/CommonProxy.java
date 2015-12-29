@@ -3,11 +3,13 @@
  */
 package pokecube.modelloader;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -75,66 +77,59 @@ public class CommonProxy implements IGuiHandler
 
     private boolean providesModel(String modid, PokedexEntry entry)
     {
-        try
+        ResourceLocation tex;
+        tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".tbl");
+        if (fileExists(tex)) return true;
+        tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".xml");
+        if (fileExists(tex)) return true;
+        tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".x3d");
+        if (fileExists(tex)) return true;
+        return false;
+    }
+
+    private boolean fileExists(ResourceLocation file)
+    {
+        File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
+        // Check Resource Packs
+        if (checkInFolder(file, resourceDir)) return true;
+        // Check jars.
+        resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
+        if (checkInFolder(file, resourceDir)) return true;
+        return false;
+    }
+
+    private boolean checkInFolder(ResourceLocation file, File resourceDir)
+    {
+        if(!resourceDir.exists()) return false;
+        for (File folder : resourceDir.listFiles())
         {
-            ResourceLocation tex = new ResourceLocation(modid, entry.getTexture((byte) 0));
-            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-            res.getInputStream().close();
-            return true;
-        }
-        catch (Exception e1)
-        {
-            try
+            if (folder.isDirectory())
             {
-                ResourceLocation tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".tbl");
-                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                res.getInputStream().close();
-                return true;
+                File f = new File(folder,
+                        "assets" + File.separator + file.getResourceDomain() + File.separator + file.getResourcePath());
+                if (f.exists()) { return true; }
             }
-            catch (Exception e2)
+            else if (folder.getName().contains(".zip") || folder.getName().contains(".jar"))
             {
+
                 try
                 {
-                    ResourceLocation tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".xml");
-                    IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                    res.getInputStream().close();
-                    return true;
+                    ZipFile zip = new ZipFile(folder);
+                    Enumeration<? extends ZipEntry> entries = zip.entries();
+                    int n = 0;
+                    while (entries.hasMoreElements() && n < 10)
+                    {
+                        ZipEntry entry = entries.nextElement();
+                        String s = entry.getName();
+                        if (s.contains(file.getResourceDomain()) && s.endsWith(file.getResourcePath())) { return true; }
+                    }
+                    zip.close();
                 }
-                catch (Exception e3)
+                catch (Exception e)
                 {
-                    try
-                    {
-                        ResourceLocation tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".x3d");
-                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                        res.getInputStream().close();
-                        return true;
-                    }
-                    catch (Exception e4)
-                    {
-                        try
-                        {
-                            ResourceLocation tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".b3d");
-                            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                            res.getInputStream().close();
-                            return true;
-                        }
-                        catch (Exception e5)
-                        {
-
-                            try
-                            {
-                                ResourceLocation tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".obj");
-                                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                                res.getInputStream().close();
-                                return true;
-                            }
-                            catch (Exception e6)
-                            {
-
-                            }
-                        }
-                    }
+                    if (!folder.getName().contains(".jar")) e.printStackTrace();
                 }
+
             }
         }
         return false;

@@ -1063,12 +1063,6 @@ public class MovesUtils implements IMoveConstants
                 var11.owner = PokecubeMod.getFakePlayer();
             }
         }
-        var11.doExplosion();
-
-        if (!par10)
-        {
-            var11.affectedBlockPositions.clear();
-        }
         return var11;
     }
 

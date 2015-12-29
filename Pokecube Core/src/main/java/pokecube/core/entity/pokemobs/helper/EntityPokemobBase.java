@@ -124,7 +124,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     	}
     	
         Random random = new Random();
-    	abilityNumber = random.nextInt(100)%2;
+    	int abilityNumber = random.nextInt(100)%2;
     	if(getPokedexEntry().getAbility(abilityNumber)==null)
     	{
     		if(abilityNumber!=0)
@@ -132,6 +132,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     		else
     			abilityNumber = 1;
     	}
+    	getMoveStats().ability = getPokedexEntry().getAbility(abilityNumber);
+    	if(getMoveStats().ability!=null) getMoveStats().ability.init(this);
     	
     	
         this.scale = 1+scaleFactor*(float)(random).nextGaussian();

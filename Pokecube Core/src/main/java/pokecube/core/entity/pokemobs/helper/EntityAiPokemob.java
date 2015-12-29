@@ -909,6 +909,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         PokecubeSerializer.getInstance().removePokemob(this);
         PokemobAIThread.removeEntity(this);
+        if(getMoveStats().ability!=null)
+        {
+            getMoveStats().ability.destroy();
+        }
         if (currentTerrain != null)
         {
             PokemobTerrainEffects effect = (PokemobTerrainEffects) currentTerrain.geTerrainEffect("pokemobEffects");
@@ -1031,7 +1035,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public boolean interact(EntityPlayer player)
     {
         ItemStack itemstack = player.inventory.getCurrentItem();
-
+        System.out.println(getMoveStats().ability);
         ItemStack key = new ItemStack(Items.shears);
         // Check shearable interaction.
         if (getPokedexEntry().interact(key) && player.getHeldItem() != null

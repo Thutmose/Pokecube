@@ -29,6 +29,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.database.Database;
 import pokecube.core.database.MoveEntry;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
@@ -987,8 +988,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void writeSpawnData(ByteBuf data)
     {
+        int abilityNumber = getMoveStats().ability==null?-1:AbilityManager.getIdForAbility(getMoveStats().ability);
         data.writeInt(abilityNumber);
-        moveInfo.ability = getPokedexEntry().getAbility(abilityNumber);
         super.writeSpawnData(data);
     }
 
@@ -996,8 +997,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void readSpawnData(ByteBuf data)
     {
-        abilityNumber = data.readInt();
-        moveInfo.ability = getPokedexEntry().getAbility(abilityNumber);
+        int abilityNumber = data.readInt();
+        moveInfo.ability = AbilityManager.getAbility(abilityNumber, this);
         super.readSpawnData(data);
     }
 

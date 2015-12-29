@@ -1,438 +1,197 @@
 package pokecube.core.database.abilities;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import pokecube.core.PokecubeItems;
-import pokecube.core.interfaces.IMoveConstants;
+import com.google.common.collect.Maps;
+
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemob.MovePacket;
-import pokecube.core.interfaces.Move_Base;
-import pokecube.core.utils.PokeType;
 
-public class AbilityManager {
-	private static HashMap<String, Ability> abilities = new HashMap<String, Ability>();
-	
-	public static Ability getAbility(String name)
-	{
-		if(name==null)
-			return null;
-		
-		return abilities.get(name);
-	}
-	
-	static 
-	{
-		abilities.put("Wonder Guard", new Ability("Wonder Guard") {
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
-				
-		    	Move_Base attack = move.getMove();
-		    	
-		    	IPokemob attacker = move.attacker;
-		    	
-		    	if(attacker==mob || !move.pre ||  attacker==move.attacked) 
-		    		return;
-				
-	    		float eff = PokeType.getAttackEfficiency(attack.getType(), mob.getType1(), mob.getType2());
-	    		if(eff<=1 && attack.getPWR(attacker, (Entity) mob) > 0)
-	    		{
-	    			move.canceled = true;
-	    		}
-			}
+@SuppressWarnings("unchecked")
+public class AbilityManager
+{
+    private static HashMap<String, Class<? extends Ability>>  nameMap  = Maps.newHashMap();
+    private static HashMap<Class<? extends Ability>, String>  nameMap2 = Maps.newHashMap();
+    private static HashMap<Class<? extends Ability>, Integer> idMap    = Maps.newHashMap();
+    private static HashMap<Integer, Class<? extends Ability>> idMap2   = Maps.newHashMap();
+    static int                                                nextID   = 0;
 
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
+    private static Ability makeAbility(Object val, Object... args)
+    {
+        Class<? extends Ability> abil = null;
+        if (val instanceof String) abil = nameMap.get(val);
+        else abil = idMap2.get(val);
+        if (abil == null) return null;
+        Ability ret = null;
+        try
+        {
+            ret = abil.newInstance().init(args);
+            ret.init(args);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return ret;
+    }
 
-		addGrassAbilities();
-		addFireAbilities();
-		addWaterAbilities();
-		addBugAbilities();
-		addElectricAbilities();
-		addMiscAbilities();
-		
-	}
+    public static Ability getAbility(String name, Object... args)
+    {
+        if (name == null) return null;
+        return makeAbility(name.toLowerCase().replaceAll("[^\\w\\s ]", ""), args);
+    }
 
-	private static void addGrassAbilities()
-	{
-		abilities.put("Effect Spore", new Ability("Effect Spore") {
-			
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
-		    	Move_Base attack = move.getMove();
-		    	
-		    	IPokemob attacker = move.attacker;
-		    	if(attacker==mob || move.pre ||  attacker==move.attacked || attacker.isType(PokeType.grass)) 
-		    		return;
-		    	if(move.hit && attack.getAttackCategory() == IMoveConstants.CATEGORY_CONTACT && Math.random() > 0.7)
-		    	{
-		    		int num = new Random().nextInt(30);
-		    		if(num < 9)
-		    		{
-		    			move.attacker.setStatus(IMoveConstants.STATUS_PSN);
-		    		}
-		    		if(num < 19)
-		    		{
-		    			move.attacker.setStatus(IMoveConstants.STATUS_PAR);
-		    		}
-		    		else
-		    		{
-		    			move.attacker.setStatus(IMoveConstants.STATUS_SLP);
-		    		}
-		    	}
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-		
+    public static Ability getAbility(Integer id, Object... args)
+    {
+        return makeAbility(id, args);
+    }
 
-		abilities.put("Overgrow", new Ability("Overgrow") {
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
+    public static void addAbility(Class<? extends Ability> ability, String name)
+    {
+        name = name.trim().toLowerCase().replaceAll("[^\\w\\s ]", "");
+        nameMap.put(name, ability);
+        nameMap2.put(ability, name);
+        idMap.put(ability, nextID);
+        idMap2.put(nextID, ability);
+        nextID++;
+    }
 
-				if(!move.pre)
-					return;
-				if(mob==move.attacker && move.attackType == PokeType.grass && ((EntityLivingBase)mob).getHealth() < ((EntityLivingBase)mob).getMaxHealth()/3)
-				{
-					move.PWR *= 1.5;
-				}
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-		
-	}
-	private static void addFireAbilities()
-	{
-		abilities.put("Blaze", new Ability("Blaze") {
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
+    public static int getIdForAbility(Ability ability)
+    {
+        return idMap.get(ability.getClass());
+    }
 
-				if(!move.pre)
-					return;
-				if(mob==move.attacker && move.attackType == PokeType.fire && ((EntityLivingBase)mob).getHealth() < ((EntityLivingBase)mob).getMaxHealth()/3)
-				{
-					move.PWR *= 1.5;
-				}
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
+    public static String getNameForAbility(Ability ability)
+    {
+        return nameMap2.get(ability.getClass());
+    }
 
-		abilities.put("Flame Body", new Ability("Flame Body") {
-			
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
-		    	Move_Base attack = move.getMove();
-		    	
-		    	IPokemob attacker = move.attacker;
-		    	if(attacker==mob || move.pre ||  attacker==move.attacked) 
-		    		return;
-		    	if(move.hit && attack.getAttackCategory() == IMoveConstants.CATEGORY_CONTACT && Math.random() > 0.7)
-		    	{
-		    		move.attacker.setStatus(IMoveConstants.STATUS_BRN);
-		    	}
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-		
-		abilities.put("Magma Armor", new Ability("Magma Armor")  {
-			
-			@Override
-			public void onUpdate(IPokemob mob) 
-			{
-				if(mob.getStatus() == IMoveConstants.STATUS_FRZ)
-					mob.setStatus(IMoveConstants.STATUS_NON);
-			}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
-		    	IPokemob attacker = move.attacker;
-		    	if(attacker==mob || !move.pre ||  attacker==move.attacked) 
-		    		return;
-		    	if(move.statusChange == IMoveConstants.STATUS_FRZ)
-		    		move.statusChange = IMoveConstants.STATUS_FRZ;
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-	}
-	private static void addWaterAbilities()
-	{
+    public static void addAbility(Class<? extends Ability> ability)
+    {
+        addAbility(ability, ability.getSimpleName());
+    }
 
-		abilities.put("Torrent", new Ability("Torrent") {
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
+    public static boolean hasAbility(String abilityName, IPokemob pokemob)
+    {
+        Ability ability = pokemob.getMoveStats().ability;
+        if (ability == null) { return false; }
+        return ability.toString().equalsIgnoreCase(abilityName.trim().toLowerCase().replaceAll("[^\\w\\s ]", ""));
+    }
 
-				if(!move.pre)
-					return;
-				if(mob==move.attacker && move.attackType == PokeType.water && ((EntityLivingBase)mob).getHealth() < ((EntityLivingBase)mob).getMaxHealth()/3)
-				{
-					move.PWR *= 1.5;
-				}
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-	}
-	private static void addBugAbilities()
-	{
+    static
+    {
+        List<Class<?>> foundClasses;
+        try
+        {
+            foundClasses = ClassFinder.find(AbilityManager.class.getPackage().getName());
+            for (Class<?> candidateClass : foundClasses)
+            {
+                if (Ability.class.isAssignableFrom(candidateClass) && candidateClass != Ability.class)
+                {
+                    addAbility((Class<? extends Ability>) candidateClass);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
-		abilities.put("Swarm", new Ability("Swarm") {
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
+    public static class ClassFinder
+    {
 
-				if(!move.pre)
-					return;
-				if(mob==move.attacker && move.attackType == PokeType.bug && ((EntityLivingBase)mob).getHealth() < ((EntityLivingBase)mob).getMaxHealth()/3)
-				{
-					move.PWR *= 1.5;
-				}
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-	}
-	private static void addElectricAbilities()
-	{
+        private static final char DOT = '.';
 
-		abilities.put("Static", new Ability("Static") {
-			
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
-		    	Move_Base attack = move.getMove();
-		    	
-		    	IPokemob attacker = move.attacker;
-		    	if(attacker==mob || move.pre ||  attacker==move.attacked) 
-		    		return;
-		    	if(move.hit && attack.getAttackCategory() == IMoveConstants.CATEGORY_CONTACT && Math.random() > 0.7)
-		    	{
-		    		move.attacker.setStatus(IMoveConstants.STATUS_PAR);
-		    	}
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-	}
-	private static void addMiscAbilities()
-	{
-		abilities.put("Levitate", new Ability("Levitate") {
-			
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
-		    	Move_Base attack = move.getMove();
-		    	
-		    	IPokemob attacker = move.attacker;
-		    	if(attacker==mob || !move.pre ||  attacker==move.attacked) 
-		    		return;
-		    	if(attack.getType() == PokeType.ground)
-		    		move.canceled = true;
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-		abilities.put("Insomnia", new Ability("Insomnia") {
-			
-			@Override
-			public void onUpdate(IPokemob mob) {
-				if(mob.getStatus() == IMoveConstants.STATUS_SLP)
-					mob.setStatus(IMoveConstants.STATUS_NON);
-			}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
-		    	IPokemob attacker = move.attacker;
-		    	if(attacker==mob || !move.pre ||  attacker==move.attacked) 
-		    		return;
-		    	if(move.statusChange == IMoveConstants.STATUS_SLP)
-		    		move.statusChange = IMoveConstants.STATUS_NON;
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-		
-		abilities.put("Adaptability", new Ability("Adaptability") {
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
+        private static final char SLASH = '/';
 
-				if(!move.pre)
-					return;
-				if(mob==move.attacker)
-					move.stabFactor = 2;
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-		
-		abilities.put("Aerilate", new Ability("Aerilate") {
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
+        private static final String CLASS_SUFFIX = ".class";
 
-				if(!move.pre)
-					return;
-		    	if(move.attackType == PokeType.normal && mob==move.attacker)
-		    	{
-		    		move.attackType = PokeType.flying;
-		    	}
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-		
-		abilities.put("Shed Skin", new Ability("Shed Skin") {
-			@Override
-			public void onUpdate(IPokemob mob) 
-			{
-				if(mob.getStatus()!=IMoveConstants.STATUS_NON)
-				{
-					EntityLivingBase poke = (EntityLivingBase) mob;
-					if(poke.ticksExisted%20==0 && Math.random() < 0.3)
-					{
-						mob.setStatus(IMoveConstants.STATUS_NON);
-					}
-				}
-			}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-		
-		abilities.put("Rivalry", new Ability("Rivalry") {
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {
-				
-				if(!move.pre)
-					return;
-				
-				if(mob==move.attacker && move.attacked instanceof IPokemob)
-				{
-					IPokemob target = (IPokemob) move.attacked;
-					byte mobGender = mob.getSexe();
-					byte targetGender = target.getSexe();
-					if(mobGender == IPokemob.SEXLEGENDARY || targetGender == IPokemob.SEXLEGENDARY || mobGender == IPokemob.NOSEXE || targetGender == IPokemob.NOSEXE)
-					{
-						return;
-					}
-					
-					if(mobGender == targetGender)
-					{
-						move.PWR *= 1.25;
-					}
-					else
-					{
-						move.PWR *= 0.75;
-					}
-				}
-			}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
+        private static final String BAD_PACKAGE_ERROR = "Unable to get resources from path '%s'. Are you sure the package '%s' exists?";
 
-		abilities.put("Pickup", new Ability("Pickup") {
-			@Override
-			public void onUpdate(IPokemob mob) 
-			{
-				EntityLivingBase poke = (EntityLivingBase) mob;
-				if(poke.ticksExisted%200==0 && Math.random() < 0.1)
-				{
-					if(poke.getHeldItem()==null)
-					{
-						List<?> items = new ArrayList<Object>(PokecubeItems.heldItems);
-						Collections.shuffle(items);
-						ItemStack item = (ItemStack) items.get(0);
-						
-						if(item!=null)
-							poke.setCurrentItemOrArmor(0, item.copy());
-					}
-				}
-			}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-		
-		abilities.put("Honey Gather", new Ability("Honey Gather") {
-			@Override
-			public void onUpdate(IPokemob mob) {}
-			
-			@Override
-			public void onMoveUse(IPokemob mob, MovePacket move) {}
-			
-			@Override
-			public void onAgress(IPokemob mob, EntityLivingBase target) {}
-		});
-	}
-	
-	public static boolean hasAbility(String abilityName, IPokemob pokemob)
-	{
-		Ability ability = pokemob.getMoveStats().ability;
-		if(ability==null)
-		{
-			return false;
-		}
-		return ability.name.equalsIgnoreCase(abilityName);
-	}
+        public static List<Class<?>> find(String scannedPackage)
+        {
+            String scannedPath = scannedPackage.replace(DOT, SLASH);
+            URL scannedUrl = Thread.currentThread().getContextClassLoader().getResource(scannedPath);
+            if (scannedUrl == null) { throw new IllegalArgumentException(
+                    String.format(BAD_PACKAGE_ERROR, scannedPath, scannedPackage)); }
+            File scannedDir = new File(scannedUrl.getFile().replace("%20", " "));
+            System.out.println(scannedDir + " " + scannedDir.exists() + " " + scannedDir.isDirectory());
+
+            List<Class<?>> classes = new ArrayList<Class<?>>();
+            if (scannedDir.exists()) for (File file : scannedDir.listFiles())
+            {
+                classes.addAll(findInFolder(file, scannedPackage));
+            }
+            else if (scannedDir.toString().contains("file:") && scannedDir.toString().contains(".jar"))
+            {
+                String name = scannedDir.toString();
+                String pack = name.split("!")[1].replace(File.separatorChar, SLASH).substring(1)+SLASH;
+                name = name.replace("file:", "");
+                name = name.replaceAll("(.jar)(.*)", ".jar");
+                scannedDir = new File(name);
+                try
+                {
+                    ZipFile zip = new ZipFile(scannedDir);
+                    Enumeration<? extends ZipEntry> entries = zip.entries();
+                    int n = 0;
+                    while (entries.hasMoreElements() && n < 10)
+                    {
+                        ZipEntry entry = entries.nextElement();
+                        String s = entry.getName();
+                        if (s.contains(pack) && s.endsWith(CLASS_SUFFIX))
+                        {
+                            try
+                            {
+                                classes.add(Class.forName(s.replace(CLASS_SUFFIX, "").replace(SLASH, DOT)));
+                            }
+                            catch (ClassNotFoundException ignore)
+                            {
+                            }
+                        }
+                    }
+                    zip.close();
+                }
+                catch (Exception e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            return classes;
+        }
+
+        private static List<Class<?>> findInFolder(File file, String scannedPackage)
+        {
+            List<Class<?>> classes = new ArrayList<Class<?>>();
+            String resource = scannedPackage + DOT + file.getName();
+            if (file.isDirectory())
+            {
+                for (File child : file.listFiles())
+                {
+                    classes.addAll(findInFolder(child, resource));
+                }
+            }
+            else if (resource.endsWith(CLASS_SUFFIX))
+            {
+                int endIndex = resource.length() - CLASS_SUFFIX.length();
+                String className = resource.substring(0, endIndex);
+                try
+                {
+                    classes.add(Class.forName(className));
+                }
+                catch (ClassNotFoundException ignore)
+                {
+                }
+            }
+            return classes;
+        }
+
+    }
 }

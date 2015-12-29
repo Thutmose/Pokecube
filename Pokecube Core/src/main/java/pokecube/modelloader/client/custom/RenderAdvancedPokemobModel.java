@@ -107,7 +107,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         {
             if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
                 return;
-            renderHp(entity, d0, d1, d2, f, f1);
             GL11.glPushMatrix();
             GL11.glTranslated(d0, d1, d2);
             if ((f1 != GuiPokedex.POKEDEX_RENDER))
@@ -124,6 +123,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
                 renderTabula(entity, d0, d1, d2, f, f1);
                 renderStatusModel(entity, d0, d1, d2, f, f1);
                 GL11.glPopMatrix();
+                renderHp(entity, d0, d1, d2, f, f1);
                 isTabula = true;
             }
             catch (Exception e)

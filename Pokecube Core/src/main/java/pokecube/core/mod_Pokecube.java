@@ -258,10 +258,9 @@ public class mod_Pokecube extends PokecubeMod
                 // in case of double definition, the Manchou's implementation
                 // will have the priority by default, or whatever is set in
                 // config.
-                if (previousEntry == null || modId.equals(defaultMod) || !registered.get(pokedexNb))
+                if (!registered.get(pokedexNb))
                 {
-                    int id = getUniqueEntityId(mod);
-                    EntityRegistry.registerModEntity(clazz, name, id, mod, 80, 3, true);
+                    EntityRegistry.registerModEntity(clazz, name, 25+pokedexNb, mod, 80, 3, true);
 
                     if (!pokemobEggs.containsKey(pokedexNb))
                     {

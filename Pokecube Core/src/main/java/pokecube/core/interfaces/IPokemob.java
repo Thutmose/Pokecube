@@ -436,11 +436,6 @@ public interface IPokemob extends IMoveConstants
      * @param effect */
     void addOngoingEffect(Move_Base effect);
 
-    /** List of modifiers of natures
-     * 
-     * @return */
-    byte[] getNatureModifiers();
-
     /** This is called during move use to both the attacker and the attacked
      * entity, in that order. This can be used to add in abilities, In
      * EntityMovesPokemob, this is used for accounting for moves like curse,
@@ -453,13 +448,13 @@ public interface IPokemob extends IMoveConstants
     /** {@link IMoveConstants#HARDY} for an example of a nature byte
      * 
      * @return the nature */
-    byte getNature();
+    Nature getNature();
 
     /** Sets the pokemobs's nature {@link IMoveConstants#HARDY} for an example
      * of a nature byte
      * 
      * @param nature */
-    void setNature(byte nature);
+    void setNature(Nature nature);
 
     /** Returns the held item this pokemob should have when found wild.
      * 

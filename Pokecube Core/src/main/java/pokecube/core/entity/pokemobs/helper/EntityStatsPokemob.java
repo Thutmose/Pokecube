@@ -33,6 +33,7 @@ import pokecube.core.events.KillEvent;
 import pokecube.core.events.LevelUpEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.network.PokecubePacketHandler;
@@ -49,7 +50,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     double moveSpeed;
 
     byte[]         ivs      = new byte[] { 0, 0, 0, 0, 0, 0 };
-    protected byte nature   = 0;
+    protected Nature nature   = Nature.HARDY;
     public int     oldLevel = 0;
     PokedexEntry   entry;
     String         forme    = "";
@@ -100,7 +101,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
         if (mod_Pokecube.isOnClientSide()) this.setHealth(getMaxHealth());
         else this.setHealth(0);
-        nature = (byte) (new Random()).nextInt(25);
+        nature = Nature.values()[(byte) (new Random()).nextInt(25)];
         setRandomColour();
     }
 
@@ -144,7 +145,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         nbttagcompound.setByte("green", green);
         nbttagcompound.setByte("blue", blue);
         nbttagcompound.setBoolean("shiny", shiny);
-        nbttagcompound.setByte("nature", nature);
+        nbttagcompound.setByte("nature", (byte) nature.ordinal());
         nbttagcompound.setInteger("happiness", bonusHappiness);
         if (getMoveStats().ability != null) nbttagcompound.setString("ability", getMoveStats().ability.toString());
         nbttagcompound.setBoolean("isAncient", isAncient);
@@ -215,7 +216,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             red = green = blue = 127;
         }
-        nature = nbttagcompound.getByte("nature");
+        nature = Nature.values()[nbttagcompound.getByte("nature")];
         forme = nbttagcompound.getString("forme");
         this.changeForme(forme);
         getEntityData().setBoolean("dittotag", nbttagcompound.getBoolean("dittotag"));
@@ -271,9 +272,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         int ATT = getPokedexEntry().getStatATT();
         int ATTSPE = getPokedexEntry().getStatATTSPE();
         float mult = getPokemonAIState(SHADOW) ? 2 : 1;
-
+        
         return mult * (Tools.getStat((ATT + ATTSPE) / 2, 0, 0, getLevel(), (getModifiers()[1] + getModifiers()[3]) / 2,
-                (getNatureModifiers()[1] + getNatureModifiers()[3]) / 2) / 3);
+                (nature.getStatsMod()[1] + nature.getStatsMod()[3]) / 2) / 3);
     }
 
     private void setMaxHealth(float maxHealth)
@@ -325,7 +326,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         stats[0] = Tools.getHP(stats[0], ivs[0], evs[0], level);
         for (int i = 1; i < stats.length; i++)
         {
-            stats[i] = Tools.getStat(stats[i], ivs[i], evs[i], level, mods[i], getNature());
+            stats[i] = Tools.getStat(stats[i], ivs[i], evs[i], level, mods[i], getNature().getStatsMod()[i]);
         }
         return stats;
     }
@@ -678,7 +679,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         data.writeBoolean(shiny);
         data.writeBoolean(wasShadow);
         data.writeBoolean(isAncient);
-        data.writeByte(nature);
+        data.writeByte((byte)nature.ordinal());
         data.writeBytes(ivs);
         boolean noTags = getEntityData().hasNoTags();
         data.writeBoolean(!noTags);
@@ -698,7 +699,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         shiny = data.readBoolean();
         wasShadow = data.readBoolean();
         isAncient = data.readBoolean();
-        nature = data.readByte();
+        nature = Nature.values()[data.readByte()];
         this.changeForme(forme);
         for (int i = 0; i < ivs.length; i++)
         {
@@ -813,19 +814,13 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public byte[] getNatureModifiers()
-    {
-        return PokeType.statsModFromNature(nature);
-    }
-
-    @Override
-    public byte getNature()
+    public Nature getNature()
     {
         return nature;
     }
 
     @Override
-    public void setNature(byte nature)
+    public void setNature(Nature nature)
     {
         this.nature = nature;
     }

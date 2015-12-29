@@ -45,9 +45,9 @@ public class PokemobAIThread
         public int compare(IPokemob o1, IPokemob o2)
         {
             int speed1 = Tools.getStat(o1.getBaseStats()[5], o1.getIVs()[5], o1.getEVs()[5], o1.getLevel(),
-                    o1.getModifiers()[5], o1.getNature());
+                    o1.getModifiers()[5], o1.getNature().getStatsMod()[5]);
             int speed2 = Tools.getStat(o2.getBaseStats()[5], o2.getIVs()[5], o2.getEVs()[5], o2.getLevel(),
-                    o2.getModifiers()[5], o2.getNature());
+                    o2.getModifiers()[5], o2.getNature().getStatsMod()[5]);
             // TODO include checks for mob's selected attack and include attack
             // priority.
             return speed2 - speed1;

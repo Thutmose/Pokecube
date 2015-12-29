@@ -781,7 +781,7 @@ public class GuiPokedex extends GuiScreen
             String level = "L. " + pokemob.getLevel();
             drawString(fontRendererObj, level, xOffset + 15, yOffset + 11, 0xffffff);
             drawCenteredString(fontRendererObj, gender, xOffset + 57, yOffset + 11, genderColor);
-            byte[] nature = pokemob.getNatureModifiers();
+            byte[] nature = pokemob.getNature().getStatsMod();
             int[] stats = Tools.getStats(pokemob);
 
             if (canEditPokemob() || PokecubeMod.debug)

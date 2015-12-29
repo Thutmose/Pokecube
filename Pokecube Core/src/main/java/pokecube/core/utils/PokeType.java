@@ -1,7 +1,6 @@
 package pokecube.core.utils;
 
 import net.minecraft.util.StatCollector;
-import pokecube.core.interfaces.Nature;
 
 public enum PokeType
 {
@@ -115,10 +114,4 @@ public enum PokeType
         }
         return unknown;
     }
-
-    public static byte[] statsModFromNature(byte nature)
-    {
-        return Nature.values()[nature].getStatsMod();
-    }
-
 }

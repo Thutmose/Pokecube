@@ -320,7 +320,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
     @Override
     public int computeCheckSum(){
-    	int checkSum = getExp()*getPokedexNb() + getPokecubeId() + ((int)getSize() * 1000) + (shiny?1234:4321) * nature + red*green*blue;
+    	int checkSum = getExp()*getPokedexNb() + getPokecubeId() + ((int)getSize() * 1000) + (shiny?1234:4321) * nature.ordinal() + red*green*blue;
     	String movesString = dataWatcher.getWatchableObjectString(30);
     	checkSum += movesString.hashCode();
     	int[] IVs = PokecubeSerializer.byteArrayAsIntArray(ivs);

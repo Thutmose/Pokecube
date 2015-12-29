@@ -254,7 +254,6 @@ public class mod_Pokecube extends PokecubeMod
             PokedexEntry previousEntry = Pokedex.getInstance().getEntry(pokedexEntry.getPokedexNb());
             try
             {
-
                 // in case of double definition, the Manchou's implementation
                 // will have the priority by default, or whatever is set in
                 // config.

@@ -1,10 +1,11 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/238253-pokecube-core",
   "promos": {
-    "1.8.8-latest": "2.0.28",
-    "1.8.8-recommended": "2.0.28"
+    "1.8.8-latest": "2.0.29",
+    "1.8.8-recommended": "2.0.29"
   },
   "1.8.8": {
+    "2.0.28": "More Improvements to animations, improvements to Animation GUI, tweaks to x3d renderer.",
     "2.0.28": "Fixes crash from using F to command an attack, Improvements to animations, cleaned up some texture warnings.",
     "2.0.27": "Overhaul of the x3d model loading system, extended that and the tabula system to allow support for multiple textures per model.",
     "2.0.26": "Texture info for pokemobs is now registered in the XML, rather than database.  See charizard, combee and pikachu for examples.",

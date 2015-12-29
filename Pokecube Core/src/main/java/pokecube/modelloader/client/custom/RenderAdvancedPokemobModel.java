@@ -153,7 +153,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glTranslated(d0, d1, d2);
         if (model.texturer == null)
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
-        GlStateManager.disableLighting();
+//        GlStateManager.disableLighting();
         
         int i = entity.getBrightnessForRender(f);
         if (entity.isBurning() || f1 == 1.5f)

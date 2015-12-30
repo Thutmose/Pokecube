@@ -1,4 +1,4 @@
-package pokecube.core.database.abilities.misc;
+package pokecube.core.database.abilities.bug;
 
 import java.util.Random;
 

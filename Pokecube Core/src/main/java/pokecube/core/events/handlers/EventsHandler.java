@@ -207,7 +207,10 @@ public class EventsHandler
             Vector3 temp = Vector3.getNewVectorFromPool().set(evt.entityPlayer).addTo(0,
                     evt.entityPlayer.getEyeHeight(), 0);
 
-            Entity target = MovesUtils.targetHit(temp, look, 32, evt.world, evt.entityPlayer, true, EntityPokecube.class);//temp.firstEntityExcluding(32, look, evt.entityPlayer.worldObj, false, evt.entityPlayer);
+            Entity target = MovesUtils.targetHit(temp, look, 32, evt.world, evt.entityPlayer, true,
+                    EntityPokecube.class);// temp.firstEntityExcluding(32, look,
+                                          // evt.entityPlayer.worldObj, false,
+                                          // evt.entityPlayer);
 
             look.freeVectorFromPool();
             temp.freeVectorFromPool();
@@ -658,5 +661,28 @@ public class EventsHandler
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }
+    }
+
+    public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
+    {
+        float scale = tag.getFloat("scale");
+        if (scale > 0)
+        {
+            pokemob.setSize(scale);
+        }
+        pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
+        byte red = tag.getByte("red");
+        byte green = tag.getByte("green");
+        byte blue = tag.getByte("blue");
+        boolean shiny = tag.getBoolean("shiny");
+        pokemob.setShiny(shiny);
+        byte[] cols = pokemob.getColours();
+        cols[0] = red;
+        cols[1] = green;
+        cols[2] = blue;
+        String forme = tag.getString("forme");
+        pokemob.changeForme(forme);
+        pokemob.setColours(cols);
+        pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 }

@@ -9,11 +9,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.PlayerAsPokemobManager;
@@ -199,6 +201,7 @@ public class PacketPokeAdv
 
     public static class MessageServer implements IMessage
     {
+        public static final byte MESSAGEGUIAFA = 11;
         PacketBuffer buffer;
 
         public MessageServer()
@@ -309,6 +312,12 @@ public class PacketPokeAdv
                             MovesUtils.doAttack(moveName, pokemob, hit, 0);
                         }
                     }
+                }
+                if(channel == MESSAGEGUIAFA)
+                {
+                    BlockPos pos = buffer.readBlockPos();
+                    TileEntityAFA tile = (TileEntityAFA) player.worldObj.getTileEntity(pos);
+                    tile.setField(buffer.readInt(), buffer.readInt());
                 }
             }
 

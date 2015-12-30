@@ -33,6 +33,7 @@ import pokecube.adventures.client.gui.GuiAFA;
 import pokecube.adventures.client.gui.GuiBag;
 import pokecube.adventures.client.gui.GuiCloner;
 import pokecube.adventures.client.gui.GuiTrainerEdit;
+import pokecube.adventures.client.render.blocks.RenderAFA;
 import pokecube.adventures.client.render.entity.RenderTarget;
 import pokecube.adventures.client.render.entity.RenderTrainer;
 import pokecube.adventures.entity.trainers.EntityLeader;
@@ -82,6 +83,7 @@ public class ClientProxy extends CommonProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class, new RenderTarget());
         RenderingRegistry.registerEntityRenderingHandler(EntityTrainer.class, new RenderTrainer());
         RenderingRegistry.registerEntityRenderingHandler(EntityLeader.class, new RenderTrainer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
 
         RenderHandler h = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(h);

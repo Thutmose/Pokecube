@@ -52,7 +52,6 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
@@ -391,7 +390,7 @@ public class EventsHandlerClient
                 renderMobs.put(entry, pokemob);
             }
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
-            SetFromNBT(pokemob, pokeTag);
+            EventsHandler.setFromNBT(pokemob, pokeTag);
             pokemob.popFromPokecube();
             pokemob.setPokecubeId(PokecubeItems.getCubeId(itemStack));
             ((EntityLivingBase) pokemob).setHealth(
@@ -402,29 +401,6 @@ public class EventsHandlerClient
         }
 
         return null;
-    }
-
-    private static void SetFromNBT(IPokemob pokemob, NBTTagCompound tag)
-    {
-        float scale = tag.getFloat("scale");
-        if (scale > 0)
-        {
-            pokemob.setSize(scale);
-        }
-        pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
-        byte red = tag.getByte("red");
-        byte green = tag.getByte("green");
-        byte blue = tag.getByte("blue");
-        boolean shiny = tag.getBoolean("shiny");
-        pokemob.setShiny(shiny);
-        byte[] cols = pokemob.getColours();
-        cols[0] = red;
-        cols[1] = green;
-        cols[2] = blue;
-        String forme = tag.getString("forme");
-        pokemob.changeForme(forme);
-        pokemob.setColours(cols);
-        pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 
     public static void renderMob(IPokemob pokemob, float tick)

@@ -3,10 +3,12 @@ package pokecube.adventures.blocks.afa;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import pokecube.core.items.pokecubes.PokecubeManager;
 
 public class ContainerAFA extends Container
 {
@@ -32,7 +34,7 @@ public class ContainerAFA extends Container
     {
         clearSlots();
         bindPlayerInventory(playerInv);
-        addSlotToContainer(new Slot(tile, 0, 15, 12));
+        addSlotToContainer(new AFASlot(tile, 0, 15, 12));
     }
 
     private void bindPlayerInventory(InventoryPlayer playerInventory)
@@ -113,4 +115,17 @@ public class ContainerAFA extends Container
         }
     }
 
+    private static class AFASlot extends Slot
+    {
+
+        public AFASlot(IInventory inventoryIn, int index, int xPosition, int yPosition)
+        {
+            super(inventoryIn, index, xPosition, yPosition);
+        }
+        @Override
+        public boolean isItemValid(ItemStack itemstack)
+        {
+            return PokecubeManager.isFilled(itemstack);
+        }
+    }
 }

@@ -1,30 +1,79 @@
 package pokecube.adventures.blocks.afa;
 
 import cofh.api.energy.TileEnergyHandler;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
+import pokecube.core.database.abilities.Ability;
+import pokecube.core.database.abilities.AbilityManager;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.PokecubeSerializer;
 
 public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITickable
 {
-    private ItemStack[]         inventory = new ItemStack[10];
+    public IPokemob     pokemob   = null;
+    private ItemStack[] inventory = new ItemStack[1];
+    public Ability      ability   = null;;
+    int                 distance  = 4;
+    boolean             noEnergy  = false;
 
     public TileEntityAFA()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override
     public void update()
     {
-        // TODO Auto-generated method stub
-        
+        if(worldObj.isRemote) return;
+        if (inventory[0] != null && pokemob == null)
+        {
+            refreshAbility();
+        }
+        else if (inventory[0] == null && ability != null)
+        {
+            refreshAbility();
+        }
+        if (pokemob != null && ability != null)
+        {
+            // TODO use energy here if not noEnergy
+            ability.onUpdate(pokemob);
+        }
+    }
+
+    public void refreshAbility()
+    {
+        if (pokemob != null)
+        {
+            ((Entity) pokemob).setDead();
+            if(ability!=null) ability.destroy();
+            pokemob = null;
+            ability = null;
+        }
+        if (inventory[0] == null) return;
+        if (ability != null)
+        {
+            ability.destroy();
+            ability = null;
+        }
+        pokemob = PokecubeManager.itemToPokemob(inventory[0], getWorld());
+        if (pokemob != null && pokemob.getMoveStats().ability != null)
+        {
+            ability = pokemob.getMoveStats().ability;
+            ability.destroy();
+            ((Entity)pokemob).setPosition(getPos().getX()+0.5, getPos().getY()+0.5, getPos().getZ()+0.5);
+            ability.init(pokemob, distance);
+        }
     }
 
     @Override
@@ -45,8 +94,10 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
             }
         }
         nbt.setTag("Inventory", itemList);
+        nbt.setInteger("distance", distance);
+        nbt.setBoolean("noEnergy", noEnergy);
     }
-    
+
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
@@ -65,6 +116,38 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
                     inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
                 }
             }
+        }
+        distance = nbt.getInteger("distance");
+        noEnergy = nbt.getBoolean("noEnergy");
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+    }
+
+    /** Called when you receive a TileEntityData packet for the location this
+     * TileEntity is currently in. On the client, the NetworkManager will always
+     * be the remote server. On the server, it will be whomever is responsible
+     * for sending the packet.
+     *
+     * @param net
+     *            The NetworkManager the packet originated from
+     * @param pkt
+     *            The data packet */
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    {
+        if (worldObj.isRemote)
+        {
+            NBTTagCompound nbt = pkt.getNbtCompound();
+            readFromNBT(nbt);
         }
     }
 
@@ -112,6 +195,7 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
             if (inventory[slot].stackSize <= 0)
             {
                 inventory[slot] = null;
+                pokemob = null;
             }
             return itemStack;
         }
@@ -125,6 +209,7 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
         {
             ItemStack stack = inventory[slot];
             inventory[slot] = null;
+            pokemob = null;
             return stack;
         }
         return null;
@@ -135,6 +220,7 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
     {
         if (stack == null || stack.stackSize <= 0) inventory[index] = null;
         else inventory[index] = stack;
+        refreshAbility();
     }
 
     @Override
@@ -162,31 +248,68 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        return index != 0;
+        return PokecubeManager.isFilled(stack);
     }
 
     @Override
     public int getField(int id)
     {
-        return storage.getEnergyStored();
+        if (id == 0) return storage.getEnergyStored();
+        if (id == 1) return distance;
+        if (id == 2) return noEnergy ? 1 : 0;
+
+        return 0;
     }
 
     @Override
     public void setField(int id, int value)
     {
-        storage.setEnergyStored(value);
+        if (id == 0) storage.setEnergyStored(value);
+        if (id == 1) distance = value;
+        if (id == 2) noEnergy = value != 0;
+        distance = Math.max(0, distance);
+        refreshAbility();
+        System.out.println(id+" "+value);
     }
 
     @Override
     public int getFieldCount()
     {
-        return 1;
+        return 3;
     }
 
     @Override
     public void clear()
     {
-        for (int i = 0; i < 10; i++)
-            inventory[i] = null;
+        inventory[0] = null;
+    }
+
+    public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
+    {
+        float scale = tag.getFloat("scale");
+        if (scale > 0)
+        {
+            pokemob.setSize(scale);
+        }
+        pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
+        byte red = tag.getByte("red");
+        byte green = tag.getByte("green");
+        byte blue = tag.getByte("blue");
+        boolean shiny = tag.getBoolean("shiny");
+        String ability = tag.getString("ability");
+        if (!ability.isEmpty())
+        {
+            Ability abil = AbilityManager.getAbility(ability);
+            pokemob.getMoveStats().ability = abil;
+        }
+        pokemob.setShiny(shiny);
+        byte[] cols = pokemob.getColours();
+        cols[0] = red;
+        cols[1] = green;
+        cols[2] = blue;
+        String forme = tag.getString("forme");
+        pokemob.changeForme(forme);
+        pokemob.setColours(cols);
+        pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 }

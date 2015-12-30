@@ -20,10 +20,10 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public class EntityPokemobEgg extends EntityLiving
 {
-    int     delayBeforeCanPickup = 0;
-    int     age                  = 0;
-    int     hatch;
-    Vector3 here                 = Vector3.getNewVectorFromPool();
+    int        delayBeforeCanPickup = 0;
+    public int age                  = 0;
+    int        hatch;
+    Vector3    here                 = Vector3.getNewVectorFromPool();
 
     /** Do not call this, this is here only for vanilla reasons
      * 

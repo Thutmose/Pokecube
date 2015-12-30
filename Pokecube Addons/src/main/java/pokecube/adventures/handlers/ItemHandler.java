@@ -35,7 +35,6 @@ public class ItemHandler
         }
         
         PokecubeItems.addToHoldables("exp_share");
-//        ItemStack share = PokecubeItems.getStack("exp_share");
         
         Item mewHair = (new ItemTranslated()).setModId(
                 PokecubeAdv.ID).setUnlocalizedName("silkyhair");

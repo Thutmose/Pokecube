@@ -1,5 +1,6 @@
 package pokecube.adventures.client;
 
+import static pokecube.adventures.handlers.BlockHandler.afa;
 import static pokecube.adventures.handlers.BlockHandler.cloner;
 import static pokecube.adventures.handlers.BlockHandler.warppad;
 import static pokecube.core.PokecubeItems.registerItemTexture;
@@ -25,8 +26,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.CommonProxy;
 import pokecube.adventures.LegendaryConditions;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.client.gui.GUIBiomeSetter;
+import pokecube.adventures.client.gui.GuiAFA;
 import pokecube.adventures.client.gui.GuiBag;
 import pokecube.adventures.client.gui.GuiCloner;
 import pokecube.adventures.client.gui.GuiTrainerEdit;
@@ -53,6 +56,9 @@ public class ClientProxy extends CommonProxy
 
         registerItemTexture(Item.getItemFromBlock(cloner), 0,
                 new ModelResourceLocation("pokecube_adventures:cloner", "inventory"));
+        
+        registerItemTexture(Item.getItemFromBlock(afa), 0,
+                new ModelResourceLocation("pokecube_adventures:afa", "inventory"));
 
         registerItemTexture(Item.getItemFromBlock(warppad), 0,
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));
@@ -159,7 +165,11 @@ public class ClientProxy extends CommonProxy
         {
             return new GuiCloner(player.inventory, (TileEntityCloner) world.getTileEntity(pos));
         }
-        else if (guiID == 5) { return new GUIBiomeSetter(player.getHeldItem()); }
+        else if (guiID == PokecubeAdv.GUIBIOMESETTER_ID) { return new GUIBiomeSetter(player.getHeldItem()); }
+        else if (guiID == PokecubeAdv.GUIAFA_ID)
+        {
+            return new GuiAFA(player.inventory, (TileEntityAFA) world.getTileEntity(pos));
+        }
         return null;
     }
 

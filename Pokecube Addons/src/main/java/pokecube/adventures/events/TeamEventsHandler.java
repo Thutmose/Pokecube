@@ -119,13 +119,11 @@ public class TeamEventsHandler
     public void BreakBlock(BreakEvent evt)
     {
     	EntityPlayer player = evt.getPlayer();
-    	
     	if(player!=null && player.getTeam()!=null)//TODO interface with forge permissions API here as well
     	{
-            ChunkCoordinate c = new ChunkCoordinate(evt.pos, player.dimension);
+            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.pos, player.dimension);
         	if(!TeamManager.getInstance().isOwned(c))
         		return;
-        	
     		if(!player.worldObj.isRemote)
     		{
 				UserListOpsEntry userentry = (UserListOpsEntry)((EntityPlayerMP)player).mcServer.getConfigurationManager().getOppedPlayers().getEntry(player.getGameProfile());

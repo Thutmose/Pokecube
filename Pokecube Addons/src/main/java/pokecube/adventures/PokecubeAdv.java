@@ -42,100 +42,102 @@ import pokecube.core.network.PokecubePacketHandler;
 @Mod(modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = "required-after:pokecube", updateJSON = PokecubeAdv.UPDATEURL)
 public class PokecubeAdv
 {
-	public static final String	ID		= "pokecube_adventures";
-	public static final String	version	= "@VERSION@";
+    public static final String ID      = "pokecube_adventures";
+    public static final String version = "@VERSION@";
 
-    public final static String UPDATEURL = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Addons/versions.json";
-	public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
+    public final static String UPDATEURL          = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Addons/versions.json";
+    public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
 
-	public static String CUSTOMTRAINERFILE;
+    public static String CUSTOMTRAINERFILE;
 
-	public static int	GUITRAINER_ID		= 2;
-	public static int	GUIBAG_ID			= 3;
-	public static int	GUICLONER_ID		= 4;
+    public static int GUITRAINER_ID     = 2;
+    public static int GUIBAG_ID         = 3;
+    public static int GUICLONER_ID      = 4;
+    public static int GUIBIOMESETTER_ID = 5;
+    public static int GUIAFA_ID         = 6;
 
-	@SidedProxy(clientSide = "pokecube.adventures.client.ClientProxy", serverSide = "pokecube.adventures.CommonProxy")
-	public static CommonProxy proxy;
+    @SidedProxy(clientSide = "pokecube.adventures.client.ClientProxy", serverSide = "pokecube.adventures.CommonProxy")
+    public static CommonProxy proxy;
 
-	@Instance(ID)
-	public static PokecubeAdv instance;
+    @Instance(ID)
+    public static PokecubeAdv instance;
 
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent e)
-	{
-		BlockHandler.registerBlocks();
-		ItemHandler.registerItems();
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent e)
+    {
+        BlockHandler.registerBlocks();
+        ItemHandler.registerItems();
 
-		Configuration config = PokecubeMod.core.getPokecubeConfig(e);
-		ConfigHandler.load(config);
-		setTrainerConfig(e);
-		MinecraftForge.EVENT_BUS.register(this);
-		proxy.preinit();
-	}
+        Configuration config = PokecubeMod.core.getPokecubeConfig(e);
+        ConfigHandler.load(config);
+        setTrainerConfig(e);
+        MinecraftForge.EVENT_BUS.register(this);
+        proxy.preinit();
+    }
 
-	@EventHandler
-	public void load(FMLInitializationEvent evt)
-	{
-		proxy.initClient();
+    @EventHandler
+    public void load(FMLInitializationEvent evt)
+    {
+        proxy.initClient();
 
-		ItemHandler.postInitItems();
+        ItemHandler.postInitItems();
 
-		PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
-				mod_Pokecube.getMessageID(), Side.CLIENT);
-		PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
-				mod_Pokecube.getMessageID(), Side.SERVER);
+        PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
+                mod_Pokecube.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
+                mod_Pokecube.getMessageID(), Side.SERVER);
 
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 
-//		VillageHandlerCubeSalesman.init();
+        // VillageHandlerCubeSalesman.init();
 
         EntityRegistry.registerModEntity(EntityTarget.class, "targetParticles", 0, this, 16, 3, true);
 
-		EntityRegistry.registerModEntity(EntityTrainer.class, "pokecube:trainer", 1, this, 80, 3, true);
-		EntityRegistry.registerModEntity(EntityLeader.class, "pokecube:leader", 2, this, 80, 3, true);
-		EntityRegistry.registerModEntity(EntityTrader.class, "pokecube:trader", 3, this, 80, 3, true);
+        EntityRegistry.registerModEntity(EntityTrainer.class, "pokecube:trainer", 1, this, 80, 3, true);
+        EntityRegistry.registerModEntity(EntityLeader.class, "pokecube:leader", 2, this, 80, 3, true);
+        EntityRegistry.registerModEntity(EntityTrader.class, "pokecube:trader", 3, this, 80, 3, true);
 
-		PAEventsHandler events = new PAEventsHandler();
-		TeamEventsHandler teams = new TeamEventsHandler();
-		MinecraftForge.EVENT_BUS.register(teams);
-		MinecraftForge.EVENT_BUS.register(events);
-		new TrainerSpawnHandler();
-		RecipeHandler.register();
-	}
+        PAEventsHandler events = new PAEventsHandler();
+        TeamEventsHandler teams = new TeamEventsHandler();
+        MinecraftForge.EVENT_BUS.register(teams);
+        MinecraftForge.EVENT_BUS.register(events);
+        new TrainerSpawnHandler();
+        RecipeHandler.register();
+    }
 
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent e)
-	{
-		PokecubePacketHandler.giveHealer = false;
-	}
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent e)
+    {
+        PokecubePacketHandler.giveHealer = false;
+    }
 
-	@SubscribeEvent
-	public void postPostInit(PostPostInit e)
-	{
-		DBLoader.load();
-		ConfigHandler.parseBiomes();
-		LegendaryConditions.registerSpecialConditions();
-	}
+    @SubscribeEvent
+    public void postPostInit(PostPostInit e)
+    {
+        DBLoader.load();
+        ConfigHandler.parseBiomes();
+        LegendaryConditions.registerSpecialConditions();
+    }
 
-	@EventHandler
-	public void serverLoad(FMLServerStartingEvent event)
-	{
-		event.registerServerCommand(new GeneralCommands());
-		event.registerServerCommand(new TeamCommands());
-	}
+    @EventHandler
+    public void serverLoad(FMLServerStartingEvent event)
+    {
+        event.registerServerCommand(new GeneralCommands());
+        event.registerServerCommand(new TeamCommands());
+    }
 
-	public static void setTrainerConfig(FMLPreInitializationEvent evt)
-	{
-		File file = evt.getSuggestedConfigurationFile();
-		String seperator = System.getProperty("file.separator");
+    public static void setTrainerConfig(FMLPreInitializationEvent evt)
+    {
+        File file = evt.getSuggestedConfigurationFile();
+        String seperator = System.getProperty("file.separator");
 
-		String folder = file.getAbsolutePath();
-		String name = file.getName();
-		folder = folder.replace(name, "pokecube" + seperator + "trainers" + seperator + "trainers.csv");
+        String folder = file.getAbsolutePath();
+        String name = file.getName();
+        folder = folder.replace(name, "pokecube" + seperator + "trainers" + seperator + "trainers.csv");
 
-		CUSTOMTRAINERFILE = folder;
+        CUSTOMTRAINERFILE = folder;
 
-		return;
-	}
+        return;
+    }
 
 }

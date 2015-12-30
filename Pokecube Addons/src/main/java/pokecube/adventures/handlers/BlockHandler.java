@@ -3,6 +3,8 @@ package pokecube.adventures.handlers;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.adventures.LegendaryConditions;
+import pokecube.adventures.blocks.afa.BlockAFA;
+import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.cloner.BlockCloner;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.blocks.legendary.BlockLegendSpawner;
@@ -17,6 +19,7 @@ public class BlockHandler
 {
     public static Block warppad;
     public static Block cloner;
+    public static Block afa;
 
     public static void registerBlocks()
     {
@@ -29,6 +32,11 @@ public class BlockHandler
         cloner.setCreativeTab(mod_Pokecube.creativeTabPokecubeBlocks);
         PokecubeItems.register(cloner, "cloner");
         GameRegistry.registerTileEntity(TileEntityCloner.class, "cloner");
+
+        afa = new BlockAFA().setUnlocalizedName("afa");
+        afa.setCreativeTab(mod_Pokecube.creativeTabPokecubeBlocks);
+        PokecubeItems.register(afa, "afa");
+        GameRegistry.registerTileEntity(TileEntityAFA.class, "afa");
 
         LegendaryConditions.spawner1 = new BlockLegendSpawner();
         LegendaryConditions.spawner1.setUnlocalizedName("legendSpawner");

@@ -404,6 +404,16 @@ public class MovesUtils implements IMoveConstants
             displayEfficiencyMessages(attacker, attacked, -2, 0);
             return 0;
         }
+        
+        if(packet.infatuate[0] && attacked instanceof IPokemob)
+        {
+            ((IPokemob)attacked).getMoveStats().infatuateTarget = (Entity) attacker;
+        }
+        
+        if(packet.infatuate[1] && attacker instanceof IPokemob)
+        {
+            ((IPokemob)attacker).getMoveStats().infatuateTarget = (Entity) attacked;
+        }
 
         attacker = packet.attacker;
         attacked = packet.attacked;

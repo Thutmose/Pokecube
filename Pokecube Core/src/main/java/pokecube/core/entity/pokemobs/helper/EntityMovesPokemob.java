@@ -265,12 +265,12 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
             try
             {
-                //message, id, move0, move1, movenum
+                // message, id, move0, move1, movenum
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
                 buffer.writeByte(MessageServer.MOVESWAP);
                 buffer.writeInt(getEntityId());
-                buffer.writeByte((byte)moveIndex0);
-                buffer.writeByte((byte)moveIndex1);
+                buffer.writeByte((byte) moveIndex0);
+                buffer.writeByte((byte) moveIndex1);
                 buffer.writeInt(moveInfo.num);
                 MessageServer packet = new MessageServer(buffer);
                 PokecubePacketHandler.sendToServer(packet);
@@ -585,7 +585,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
                 buffer.writeByte(MessageServer.MOVEINDEX);
                 buffer.writeInt(getEntityId());
-                buffer.writeByte((byte)moveIndex);
+                buffer.writeByte((byte) moveIndex);
                 MessageServer packet = new MessageServer(buffer);
                 PokecubePacketHandler.sendToServer(packet);
             }
@@ -662,6 +662,21 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             else if (Math.random() > 0.5)
             {
                 MovesUtils.doAttack("pokemob.status.confusion", this, this, f);
+                return;
+            }
+        }
+
+        if (getMoveStats().infatuateTarget != null)
+        {
+            if (getMoveStats().infatuateTarget.isDead)
+            {
+                getMoveStats().infatuateTarget = null;
+            }
+            else if (Math.random() > 0.5)
+            {
+                String message = StatCollector.translateToLocalFormatted("pokemob.status.infatuate",
+                        getPokemonDisplayName());
+                displayMessageToOwner("\u00a7c" + message);
                 return;
             }
         }
@@ -988,7 +1003,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void writeSpawnData(ByteBuf data)
     {
-        int abilityNumber = getMoveStats().ability==null?-1:AbilityManager.getIdForAbility(getMoveStats().ability);
+        int abilityNumber = getMoveStats().ability == null ? -1
+                : AbilityManager.getIdForAbility(getMoveStats().ability);
         data.writeInt(abilityNumber);
         super.writeSpawnData(data);
     }

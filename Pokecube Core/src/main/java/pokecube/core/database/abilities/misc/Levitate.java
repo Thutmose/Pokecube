@@ -19,7 +19,6 @@ public class Levitate extends Ability
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
         Move_Base attack = move.getMove();
-
         IPokemob attacker = move.attacker;
         if (attacker == mob || !move.pre || attacker == move.attacked) return;
         if (attack.getType() == PokeType.ground) move.canceled = true;

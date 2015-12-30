@@ -3,7 +3,9 @@ package pokecube.core.database.abilities.psychic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
@@ -44,6 +46,7 @@ public class Synchronize extends Ability
     @Override
     public Ability init(Object... args)
     {
+        if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT) return this;
         for (int i = 0; i < 1; i++)
             if (args != null && args.length > i)
             {
@@ -64,6 +67,7 @@ public class Synchronize extends Ability
     @Override
     public void destroy()
     {
+        if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT) return;
         MinecraftForge.EVENT_BUS.unregister(this);
     }
     

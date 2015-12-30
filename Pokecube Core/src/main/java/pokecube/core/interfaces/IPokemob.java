@@ -464,12 +464,12 @@ public interface IPokemob extends IMoveConstants
     /** @return how happy is the pokemob, see {@link HappinessType} */
     int getHappiness();
 
-//    @Deprecated
-//    /** @return rgb colours in that order. */
-//    byte[] getColours();
-//
-//    @Deprecated
-//    void setColours(byte[] colours);
+    // @Deprecated
+    // /** @return rgb colours in that order. */
+    // byte[] getColours();
+    //
+    // @Deprecated
+    // void setColours(byte[] colours);
 
     boolean isShiny();
 
@@ -626,7 +626,10 @@ public interface IPokemob extends IMoveConstants
 
         /** Used in the protection moves, accounts their accuracy via this
          * variable */
-        public boolean failed = false;
+        public boolean   failed    = false;
+        /** index 0 is to infatuate the attacked target, index 1 infatuates the
+         * attacker. */
+        public boolean[] infatuate = { false, false };
 
         public MovePacket(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR, int criticalLevel,
                 byte statusChange, byte changeAddition, boolean pre)
@@ -653,6 +656,8 @@ public interface IPokemob extends IMoveConstants
     {
         public Entity weapon1;
         public Entity weapon2;
+
+        public Entity infatuateTarget;
 
         public static final int TYPE_CRIT = 2;
 

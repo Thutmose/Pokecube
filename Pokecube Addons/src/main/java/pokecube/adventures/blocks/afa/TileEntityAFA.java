@@ -53,7 +53,7 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
             if (!noEnergy)
             {
                 int level = pokemob.getLevel();
-                int needed = (int) Math.ceil(distance * distance * distance / ((double) level));
+                int needed = (int) Math.ceil(distance * distance * distance / ((double) 50 + 5*level));
                 int energy = extractEnergy(EnumFacing.DOWN, needed, false);
                 if (energy < needed) return;
             }

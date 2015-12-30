@@ -922,7 +922,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
             effect.removePokemon(this);
         }
-        if (getHome() != null)
+        if (getHome() != null && getHome().getY()>0 && worldObj.isAreaLoaded(getHome(), 2))
         {
             TileEntity te = worldObj.getTileEntity(getHome());
             if (te != null && te instanceof TileEntityNest)

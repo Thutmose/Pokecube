@@ -45,6 +45,7 @@ import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -1223,21 +1224,20 @@ public class GuiPokedex extends GuiScreen
                 if (entity instanceof IPokemob)
                 {
                     IPokemob mob = (IPokemob) entity;
-                    mob.setColours(new byte[] { 0, 0, 0 });
                     mob.setSize(1);
                     mob.setShiny(false);
                 }
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(0, 0, 0, 255);
             }
             else
             {
                 if (entity instanceof IPokemob)
                 {
                     IPokemob mob = (IPokemob) entity;
-                    mob.setColours(new byte[] { 127, 127, 127 });
                     mob.setSize(1);
                     mob.setShiny(false);
-                    // System.out.println(pokemob.getPokedexEntry().width+":"+pokemob.getPokedexEntry().height+":"+pokemob.getPokedexEntry().modelScale);
                 }
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(255, 255, 255, 255);
             }
 
             pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);

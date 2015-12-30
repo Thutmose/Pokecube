@@ -46,6 +46,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.StarterEvent;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -247,9 +248,9 @@ public class PokecubePacketHandler
     {
         public final String name;
         public final String data;
-        public byte         red   = 127;
-        public byte         green = 127;
-        public byte         blue  = 127;
+        public int         red   = 255;
+        public int         green = 255;
+        public int         blue  = 255;
         public boolean      shiny = false;
 
         private List<String> moves = Lists.newArrayList();
@@ -310,7 +311,7 @@ public class PokecubePacketHandler
                     entity.setPokecubeId(0);
                     entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), false, false);
                     if (shiny) entity.setShiny(true);
-                    entity.setColours(new byte[] { red, green, blue });
+                    ((IMobColourable)entity).setRGBA(red, green, blue);
 
                     if (moves.size() > 4)
                     {

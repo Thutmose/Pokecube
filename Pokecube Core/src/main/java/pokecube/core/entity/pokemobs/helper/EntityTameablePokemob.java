@@ -40,6 +40,7 @@ import pokecube.core.events.KillEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IHungrymob;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -52,7 +53,7 @@ import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
 public abstract class EntityTameablePokemob extends EntityTameable
-        implements IPokemob, IMob, IInvBasic, IHungrymob, IPathingMob, IShearable, IBreedingMob
+        implements IPokemob, IMob, IInvBasic, IHungrymob, IPathingMob, IShearable, IBreedingMob, IMobColourable
 {
     public static int EXITCUBEDURATION = 40;
 

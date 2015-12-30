@@ -346,6 +346,7 @@ public class PokedexEntry
     
     public String getTexture(String original, byte gender, long time)
     {
+        if(original == null) original = name;
         int index = gender == IPokemob.FEMALE && textureDetails[1] != null ? 1 : 0;
         String[] textureSuffixs = textureDetails[index];
         long suffixIndex = ((time % textureSuffixs.length * 3) / textureSuffixs.length);

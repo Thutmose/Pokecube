@@ -19,6 +19,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.animation.AnimationHelper;
@@ -313,12 +314,13 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         int red = 255, green = 255, blue = 255;
         int brightness = entity.getBrightnessForRender(partialTick);
         int alpha = 255;
-        if (entity instanceof IPokemob)
+        if (entity instanceof IMobColourable)
         {
-            IPokemob poke = (IPokemob) entity;
-            red = poke.getColours()[0] * 2;
-            green = poke.getColours()[1] * 2;
-            blue = poke.getColours()[2] * 2;
+            IMobColourable poke = (IMobColourable) entity;
+            red = poke.getRGBA()[0];
+            green = poke.getRGBA()[1];
+            blue = poke.getRGBA()[2];
+            alpha = poke.getRGBA()[3];
         }
         parent.setRGBAB(new int[] { red, green, blue, alpha, brightness });
         GlStateManager.disableCull();

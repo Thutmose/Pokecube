@@ -16,6 +16,7 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokecubeSerializer;
@@ -35,7 +36,7 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
     @Override
     public void update()
     {
-        if (worldObj.isRemote) return;
+//        if (worldObj.isRemote) return;
         if (inventory[0] != null && pokemob == null)
         {
             refreshAbility();
@@ -47,6 +48,7 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
         if (pokemob != null && ability != null)
         {
             // TODO use energy here if not noEnergy
+            ((Entity)pokemob).ticksExisted++;
             ability.onUpdate(pokemob);
         }
     }
@@ -291,24 +293,33 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
             pokemob.setSize(scale);
         }
         pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
-        byte red = tag.getByte("red");
-        byte green = tag.getByte("green");
-        byte blue = tag.getByte("blue");
         boolean shiny = tag.getBoolean("shiny");
+        pokemob.setShiny(shiny);
         String ability = tag.getString("ability");
         if (!ability.isEmpty())
         {
             Ability abil = AbilityManager.getAbility(ability);
             pokemob.getMoveStats().ability = abil;
         }
-        pokemob.setShiny(shiny);
-        byte[] cols = pokemob.getColours();
-        cols[0] = red;
-        cols[1] = green;
-        cols[2] = blue;
+        byte[] rgbaBytes = new byte[4];
+        // TODO remove the legacy colour support eventually.
+        if (tag.hasKey("colours", 7))
+        {
+            rgbaBytes = tag.getByteArray("colours");
+        }
+        else
+        {
+            rgbaBytes[0] = tag.getByte("red");
+            rgbaBytes[1] = tag.getByte("green");
+            rgbaBytes[2] = tag.getByte("blue");
+            rgbaBytes[3] = 127;
+        }
+        if(pokemob instanceof IMobColourable)
+        {
+            ((IMobColourable)pokemob).setRGBA(rgbaBytes[0]+128, rgbaBytes[1]+128, rgbaBytes[2]+128, rgbaBytes[2]+128);
+        }
         String forme = tag.getString("forme");
         pokemob.changeForme(forme);
-        pokemob.setColours(cols);
         pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 }

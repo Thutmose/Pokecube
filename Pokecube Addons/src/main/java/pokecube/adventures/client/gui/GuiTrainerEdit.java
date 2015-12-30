@@ -25,6 +25,7 @@ import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
@@ -461,10 +462,10 @@ public class GuiTrainerEdit extends GuiScreen
 
             if (entity instanceof IPokemob)
             {
-                pokemob.setColours(new byte[] { 127, 127, 127 });
                 pokemob.setShiny(false);
                 pokemob.setSize(4);
             }
+            if (entity instanceof IMobColourable) ((IMobColourable) pokemob).setRGBA(255, 255, 255, 255);
             size = Math.max(entity.width, entity.height);
             j = (width - 100) / 2;
             k = (height - 100) / 2;

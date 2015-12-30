@@ -163,7 +163,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         int j = i % 65536;
         int k = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
-        
         model.currentPhase = getPhase(null, entity, f1);
         model.doRender((T) entity, d0, d1, d2, f, f1);
         renderStatusModel(entity, d0, d1, d2, f, f1);

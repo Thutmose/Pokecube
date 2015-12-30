@@ -33,6 +33,7 @@ import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -247,8 +248,8 @@ public class GuiNewChooseFirstPokemob extends GuiScreen
             {
                 outputStream.writeInt(pokedexNb);
                 outputStream.writeBoolean(fixed);
-                PokecubeServerPacket packet = PokecubePacketHandler
-                        .makeServerPacket(PokecubeServerPacket.CHOOSE1ST, bos.toByteArray());
+                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
+                        bos.toByteArray());
                 PokecubePacketHandler.sendToServer(packet);
             }
             catch (Exception ex)
@@ -298,10 +299,11 @@ public class GuiNewChooseFirstPokemob extends GuiScreen
 
             if (entity instanceof IPokemob)
             {
-                pokemob.setColours(new byte[] { 127, 127, 127 });
                 pokemob.setShiny(false);
                 pokemob.setSize(4);
             }
+
+            if (entity instanceof IMobColourable) ((IMobColourable) pokemob).setRGBA(255, 255, 255, 255);
             size = Math.max(entity.width, entity.height);
             j = (width - xSize) / 2;
             k = (height - ySize) / 2;

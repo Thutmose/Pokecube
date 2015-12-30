@@ -326,7 +326,7 @@ public class EventsHandlerClient
                 if (stack != null && PokecubeManager.isFilled(stack))
                 {
                     IPokemob pokemob = getPokemobForRender(stack, player.worldObj);
-                    if(pokemob==null)
+                    if (pokemob == null)
                     {
                         continue;
                     }
@@ -416,12 +416,14 @@ public class EventsHandlerClient
 
         float size = 0;
 
-        size = Math.max(entity.width, entity.height) * 4;
+        float mobScale = pokemob.getSize();
+        size = Math.max(pokemob.getPokedexEntry().width * mobScale,
+                Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
 
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glPushMatrix();
-        float zoom = 30f / size;
+        float zoom = (float) (10f / Math.sqrt(size));
         GL11.glScalef(-zoom, zoom, zoom);
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         Minecraft.getMinecraft();

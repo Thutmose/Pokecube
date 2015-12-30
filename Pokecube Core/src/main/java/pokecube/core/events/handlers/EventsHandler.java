@@ -73,6 +73,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -671,18 +672,27 @@ public class EventsHandler
             pokemob.setSize(scale);
         }
         pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
-        byte red = tag.getByte("red");
-        byte green = tag.getByte("green");
-        byte blue = tag.getByte("blue");
         boolean shiny = tag.getBoolean("shiny");
         pokemob.setShiny(shiny);
-        byte[] cols = pokemob.getColours();
-        cols[0] = red;
-        cols[1] = green;
-        cols[2] = blue;
+        byte[] rgbaBytes = new byte[4];
+        // TODO remove the legacy colour support eventually.
+        if (tag.hasKey("colours", 7))
+        {
+            rgbaBytes = tag.getByteArray("colours");
+        }
+        else
+        {
+            rgbaBytes[0] = tag.getByte("red");
+            rgbaBytes[1] = tag.getByte("green");
+            rgbaBytes[2] = tag.getByte("blue");
+            rgbaBytes[3] = 127;
+        }
+        if(pokemob instanceof IMobColourable)
+        {
+            ((IMobColourable)pokemob).setRGBA(rgbaBytes[0]+128, rgbaBytes[1]+128, rgbaBytes[2]+128, rgbaBytes[2]+128);
+        }
         String forme = tag.getString("forme");
         pokemob.changeForme(forme);
-        pokemob.setColours(cols);
         pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 }

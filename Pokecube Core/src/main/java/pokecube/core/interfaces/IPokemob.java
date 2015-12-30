@@ -464,10 +464,12 @@ public interface IPokemob extends IMoveConstants
     /** @return how happy is the pokemob, see {@link HappinessType} */
     int getHappiness();
 
-    /** @return rgb colours in that order. */
-    byte[] getColours();
-
-    void setColours(byte[] colours);
+//    @Deprecated
+//    /** @return rgb colours in that order. */
+//    byte[] getColours();
+//
+//    @Deprecated
+//    void setColours(byte[] colours);
 
     boolean isShiny();
 

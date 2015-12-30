@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.custom.IPartTexturer;
 import pokecube.modelloader.client.custom.IRetexturableModel;
@@ -269,7 +270,22 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
 
         // Allows specific part recolouring, this could possibly be moved over
         // to a method inside this class somehow
-        int rgba = RenderAdvancedPokemobModel.getColour(identifier, set, (IPokemob) entity, 0xFFFFFFFF);
+        
+        int rgba = 0;
+        if(entity instanceof IMobColourable)
+        {
+            int[] cols = ((IMobColourable)entity).getRGBA();
+            rgba += cols[2];
+            rgba += cols[1] << 8;
+            rgba += cols[2] << 16;;
+            rgba += cols[3] << 24;
+        }
+        else
+        {
+            rgba = 0xFFFFFFFF;
+        }
+        
+        rgba = RenderAdvancedPokemobModel.getColour(identifier, set, (IPokemob) entity, rgba);
 
         float alpha = ((rgba >> 24) & 255) / 255f;
         float red = ((rgba >> 16) & 255) / 255f;

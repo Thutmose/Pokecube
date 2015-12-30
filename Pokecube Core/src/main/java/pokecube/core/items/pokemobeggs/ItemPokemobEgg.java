@@ -28,6 +28,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
@@ -164,7 +165,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         byte[] ivs = getIVs(father.getIVs(), mother.getIVs(), father.getEVs(), mother.getEVs());
         long ivsL = PokecubeSerializer.byteArrayAsLong(ivs);
         nbt.setLong("ivs", ivsL);
-        nbt.setByteArray("colour", getColour(father.getColours(), mother.getColours()));
+        nbt.setByteArray("colour", getColour(((IMobColourable)father).getRGBA(), ((IMobColourable)mother).getRGBA()));
         nbt.setFloat("size", getSize(father.getSize(), mother.getSize()));
         nbt.setByte("nature", getNature(mother.getNature(), father.getNature()));
 
@@ -237,8 +238,20 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             {
                 if (s != null && !s.isEmpty()) mob.learn(s);
             }
-            ((Entity)mob).isDead = false;
-            mob.setColours(nbt.getByteArray("colour"));
+            ((Entity)mob).isDead = false;      
+            byte[] rgba = new byte[4];
+            if (nbt.hasKey("colour", 7))
+            {
+                rgba = nbt.getByteArray("colour");
+                if(rgba.length==4)
+                {
+                    ((IMobColourable)mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128, rgba[3] + 128);
+                }
+                else if(rgba.length==3)
+                {
+                    ((IMobColourable)mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128);
+                }
+            }
             mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
             mob.setNature(Nature.values()[nbt.getByte("nature")]);
             mob.setSize(nbt.getFloat("size"));
@@ -311,15 +324,14 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         return ret;
     }
 
-    public static byte[] getColour(byte[] fatherColours, byte[] motherColours)
+    public static byte[] getColour(int[] fatherColours, int[] motherColours)
     {
-        byte[] ret = new byte[] { 127, 127, 127 };
+        byte[] ret = new byte[] { 127, 127, 127, 127 };
         if (fatherColours.length < 3 && motherColours.length < 3) return ret;
         for (int i = 0; i < 3; i++)
         {
-            ret[i] = (byte) ((fatherColours[i] + motherColours[i]) / 2);
+            ret[i] = (byte) (((fatherColours[i] + motherColours[i]) / 2) - 128);
         }
-
         return ret;
     }
 

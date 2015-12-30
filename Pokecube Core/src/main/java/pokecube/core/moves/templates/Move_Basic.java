@@ -12,6 +12,7 @@ import pokecube.core.mod_Pokecube;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
@@ -170,8 +171,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                         changeAddition = move.change;
                     }
                     int pwr;
-                    int finalAttackStrength = MovesUtils.attack(attacker, attacked, name, move.type,
-                            pwr = getPWR(attacker, attacked), move.crit, statusChange, changeAddition);
+                    int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
+                            pwr = getPWR(attacker, attacked), move.crit, statusChange, changeAddition));
 
                     postAttack(attacker, attacked, pwr, finalAttackStrength);
                 }
@@ -201,8 +202,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 {
                     changeAddition = move.change;
                 }
-                int finalAttackStrength = MovesUtils.attack(attacker, attacked, name, move.type,
-                        getPWR(attacker, attacked), move.crit, statusChange, changeAddition);
+                int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
+                        getPWR(attacker, attacked), move.crit, statusChange, changeAddition));
                 postAttack(attacker, attacked, f, finalAttackStrength);
             }
         }
@@ -225,7 +226,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             Vector3 v = Vector3.getNewVectorFromPool().set(mob);
             notifyClient((Entity) mob, v, (Entity) mob);
             v.freeVectorFromPool();
-            MovesUtils.attack(mob, (Entity) mob, name, move.type, getPWR(), move.crit, (byte) 0, (byte) 0, false);
+            MovesUtils.attack(new MovePacket(mob, (Entity) mob, name, move.type, getPWR(), move.crit, (byte) 0, (byte) 0, false));
             postAttack(mob, (Entity) mob, f, 0);
         }
     }

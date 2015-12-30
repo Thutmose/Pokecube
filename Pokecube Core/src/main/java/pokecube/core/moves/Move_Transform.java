@@ -13,6 +13,7 @@ import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.templates.Move_Basic;
 import thut.api.maths.Vector3;
 
@@ -74,7 +75,7 @@ public class Move_Transform extends Move_Basic {
 			else if (attacked instanceof EntityPlayer) {
 				if (MovesUtils.contactAttack(attacker, attacked, f)) {
 					if (doAttack(attacker, attacked, f))
-						MovesUtils.attack(attacker, attacked, name, move.type, 25, 1, IMoveConstants.STATUS_NON, IMoveConstants.CHANGE_NONE);
+						MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type, 25, 1, IMoveConstants.STATUS_NON, IMoveConstants.CHANGE_NONE));
 				}
 			}
 		}

@@ -632,6 +632,12 @@ public interface IPokemob extends IMoveConstants
         public boolean[] infatuate = { false, false };
 
         public MovePacket(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR, int criticalLevel,
+                byte statusChange, byte changeAddition)
+        {
+            this(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition, true);
+        }
+        
+        public MovePacket(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR, int criticalLevel,
                 byte statusChange, byte changeAddition, boolean pre)
         {
             this.attacker = attacker;

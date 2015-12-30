@@ -337,10 +337,9 @@ public class MovesUtils implements IMoveConstants
         return ret; // should be between around 10 and 80
     }
 
-    public static int attack(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR,
-            int criticalLevel, byte statusChange, byte changeAddition)
+    public static int attack(MovePacket packet)
     {
-        return attack(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition, true);
+        return attack(packet, true);
     }
 
     /** Computes the statistics. Displays the messages to the owners, Damages
@@ -367,15 +366,20 @@ public class MovesUtils implements IMoveConstants
      *            if a change should be added, specify here the change or
      *            CHANGE_NONE if none
      * @return the number of HPs the attack takes from target */
-    public static int attack(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR,
-            int criticalLevel, byte statusChange, byte changeAddition, boolean message)
+    public static int attack(MovePacket packet, boolean message)
     {
-        MoveEntry move = MoveEntry.get(attack);
-        Move_Base atk = getMoveFromName(attack);
-        MovePacket packet = new MovePacket(attacker, attacked, attack, type, PWR, criticalLevel, statusChange,
-                changeAddition, true);
-        if (!(attacked instanceof EntityLivingBase)) return 0;
+        IPokemob attacker = packet.attacker;
+        Entity attacked = packet.attacked;
+        String attack = packet.attack;
+        PokeType type = packet.attackType;
+        int PWR = packet.PWR;
+        int criticalLevel = packet.criticalLevel;
+        byte statusChange = packet.statusChange;
+        byte changeAddition = packet.changeAddition;
+        if (!(packet.attacked instanceof EntityLivingBase) || packet.getMove() == null) return 0;
 
+        Move_Base atk = packet.getMove();
+        MoveEntry move = atk.move;
         attacker.onMoveUse(packet);
         if (attacked instanceof IPokemob)
         {
@@ -404,15 +408,15 @@ public class MovesUtils implements IMoveConstants
             displayEfficiencyMessages(attacker, attacked, -2, 0);
             return 0;
         }
-        
-        if(packet.infatuate[0] && attacked instanceof IPokemob)
+
+        if (packet.infatuate[0] && attacked instanceof IPokemob)
         {
-            ((IPokemob)attacked).getMoveStats().infatuateTarget = (Entity) attacker;
+            ((IPokemob) attacked).getMoveStats().infatuateTarget = (Entity) attacker;
         }
-        
-        if(packet.infatuate[1] && attacker instanceof IPokemob)
+
+        if (packet.infatuate[1] && attacker instanceof IPokemob)
         {
-            ((IPokemob)attacker).getMoveStats().infatuateTarget = (Entity) attacked;
+            ((IPokemob) attacker).getMoveStats().infatuateTarget = (Entity) attacked;
         }
 
         attacker = packet.attacker;

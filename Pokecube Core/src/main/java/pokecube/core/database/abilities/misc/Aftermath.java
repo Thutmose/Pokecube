@@ -11,7 +11,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.Move_Base;
-import pokecube.core.moves.MovesUtils;
 
 public class Aftermath extends Ability
 {
@@ -19,15 +18,13 @@ public class Aftermath extends Ability
     @Override
     public void onUpdate(IPokemob mob)
     {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
         if (mob != move.attacked || move.pre || move.attacker == move.attacked) return;
-        Move_Base attack = MovesUtils.getMoveFromName(move.attack);
+        Move_Base attack = move.getMove();
         if(attack==null || (attack.getAttackCategory() & IMoveConstants.CATEGORY_CONTACT)== 0) return;
         
         if (((EntityLiving) mob).getHealth() <= 0)

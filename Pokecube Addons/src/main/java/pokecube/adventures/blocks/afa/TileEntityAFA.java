@@ -12,6 +12,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import pokecube.core.database.abilities.Ability;
@@ -36,7 +37,6 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
     @Override
     public void update()
     {
-//        if (worldObj.isRemote) return;
         if (inventory[0] != null && pokemob == null)
         {
             refreshAbility();
@@ -47,9 +47,18 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
         }
         if (pokemob != null && ability != null)
         {
-            // TODO use energy here if not noEnergy
-            ((Entity)pokemob).ticksExisted++;
-            ability.onUpdate(pokemob);
+            //Tick increase incase ability tracks this for update.
+            //Renderer can also then render it animated.
+            ((Entity) pokemob).ticksExisted++;
+            if (!noEnergy)
+            {
+                int level = pokemob.getLevel();
+                int needed = (int) Math.ceil(distance * distance * distance / ((double) level));
+                int energy = extractEnergy(EnumFacing.DOWN, needed, false);
+                if (energy < needed) return;
+            }
+            //Do not call ability update on client.
+            if (!worldObj.isRemote) ability.onUpdate(pokemob);
         }
     }
 
@@ -314,9 +323,10 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
             rgbaBytes[2] = tag.getByte("blue");
             rgbaBytes[3] = 127;
         }
-        if(pokemob instanceof IMobColourable)
+        if (pokemob instanceof IMobColourable)
         {
-            ((IMobColourable)pokemob).setRGBA(rgbaBytes[0]+128, rgbaBytes[1]+128, rgbaBytes[2]+128, rgbaBytes[2]+128);
+            ((IMobColourable) pokemob).setRGBA(rgbaBytes[0] + 128, rgbaBytes[1] + 128, rgbaBytes[2] + 128,
+                    rgbaBytes[2] + 128);
         }
         String forme = tag.getString("forme");
         pokemob.changeForme(forme);

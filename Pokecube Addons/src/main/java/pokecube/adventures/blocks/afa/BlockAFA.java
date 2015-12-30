@@ -16,9 +16,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.core.blocks.healtable.BlockHealTable;
-import pokecube.core.utils.PokecubeSerializer;
-import thut.api.maths.Vector3;
 
 public final class BlockAFA extends Block implements ITileEntityProvider
 {
@@ -49,12 +46,6 @@ public final class BlockAFA extends Block implements ITileEntityProvider
     public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
         dropItems(world, pos);
-        Vector3 v = Vector3.getNewVectorFromPool();
-        if(!world.isRemote && !((Boolean)state.getValue(BlockHealTable.FIXED)))
-        {
-            PokecubeSerializer.getInstance().removeChunks(world, v.set(pos));
-        }
-        v.freeVectorFromPool();
         super.breakBlock(world, pos, state);
     }
 

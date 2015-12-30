@@ -12,7 +12,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 
 public class ContainerAFA extends Container
 {
-    TileEntityAFA   tile;
+    public TileEntityAFA   tile;
     public World    worldObj;
     public BlockPos pos;
 

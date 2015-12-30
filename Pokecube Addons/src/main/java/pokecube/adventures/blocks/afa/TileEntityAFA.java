@@ -26,12 +26,14 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
 {
     public IPokemob     pokemob   = null;
     private ItemStack[] inventory = new ItemStack[1];
-    public Ability      ability   = null;;
+    public Ability      ability   = null;
+    int                 energy    = 0;
     int                 distance  = 4;
     boolean             noEnergy  = false;
 
     public TileEntityAFA()
     {
+        super();
     }
 
     @Override
@@ -47,17 +49,17 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
         }
         if (pokemob != null && ability != null)
         {
-            //Tick increase incase ability tracks this for update.
-            //Renderer can also then render it animated.
+            // Tick increase incase ability tracks this for update.
+            // Renderer can also then render it animated.
             ((Entity) pokemob).ticksExisted++;
-            if (!noEnergy)
+            if (!noEnergy && !worldObj.isRemote)
             {
                 int level = pokemob.getLevel();
-                int needed = (int) Math.ceil(distance * distance * distance / ((double) 50 + 5*level));
+                int needed = (int) Math.ceil(distance * distance * distance / ((double) 50 + 5 * level));
                 int energy = extractEnergy(EnumFacing.DOWN, needed, false);
                 if (energy < needed) return;
             }
-            //Do not call ability update on client.
+            // Do not call ability update on client.
             if (!worldObj.isRemote) ability.onUpdate(pokemob);
         }
     }
@@ -265,17 +267,17 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
     @Override
     public int getField(int id)
     {
-        if (id == 0) return storage.getEnergyStored();
+        if (id == 0) return worldObj.isRemote ? energy : storage.getEnergyStored();
         if (id == 1) return distance;
         if (id == 2) return noEnergy ? 1 : 0;
-
         return 0;
     }
 
     @Override
     public void setField(int id, int value)
     {
-        if (id == 0) storage.setEnergyStored(value);
+        if (id == 0) if (worldObj.isRemote) energy = value;
+        else storage.setEnergyStored(value);
         if (id == 1) distance = value;
         if (id == 2) noEnergy = value != 0;
         distance = Math.max(0, distance);

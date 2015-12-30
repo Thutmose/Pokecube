@@ -20,10 +20,6 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
         GL11.glPushMatrix();
         GL11.glPushMatrix();
         float offset = 1.2f;
-        if(mob.getPokedexEntry().height < 0.5)
-        {
-            offset+= mob.getPokedexEntry().height;
-        }
         GL11.glTranslatef((float) x + 0.5F, (float) y + offset, (float) z + 0.5F);
 
         GL11.glRotatef(180, 0, 0, 1);

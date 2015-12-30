@@ -22,6 +22,8 @@ public class GuiAFA extends GuiContainer
     private static final ResourceLocation guiTexture = new ResourceLocation(
             "pokecube_adventures:textures/gui/afaGui.png");
 
+    long last = 0;
+
     public GuiAFA(InventoryPlayer inventory, TileEntityAFA tile)
     {
         super(new ContainerAFA(tile, inventory));
@@ -34,15 +36,12 @@ public class GuiAFA extends GuiContainer
     {
         super.initGui();
         int xOffset = 0;
-        int yOffset = -11;          
-        buttonList.add(new GuiButton(0, width / 2 - xOffset + 64, height
-                / 2 - yOffset - 85, 20, 20, "\u25b2"));
-        buttonList.add(new GuiButton(1, width / 2 - xOffset + 64, height
-                / 2 - yOffset - 65, 20, 20, "\u25bc"));
+        int yOffset = -11;
+        buttonList.add(new GuiButton(0, width / 2 - xOffset + 64, height / 2 - yOffset - 85, 20, 20, "\u25b2"));
+        buttonList.add(new GuiButton(1, width / 2 - xOffset + 64, height / 2 - yOffset - 65, 20, 20, "\u25bc"));
         if (mc.thePlayer.capabilities.isCreativeMode)
         {
-            buttonList.add(new GuiButton(2, width / 2 - xOffset - 137, height
-                    / 2 - yOffset - 45, 50, 20, "energy"));
+            buttonList.add(new GuiButton(2, width / 2 - xOffset + 64, height / 2 - yOffset - 45, 20, 20, "X"));
         }
     }
 
@@ -62,6 +61,16 @@ public class GuiAFA extends GuiContainer
 
             TileEntityAFA cloner = (TileEntityAFA) te;
 
+            if(last!=cloner.getWorld().getTotalWorldTime())
+            {
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(1));
+                buffer.writeByte(MessageServer.MESSAGEGUIAFA);
+                last = cloner.getWorld().getTotalWorldTime();
+                MessageServer message;
+                message = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(message);
+            }
+            
             String mess;
             int energy = cloner.getField(0);
             mess = "e:" + energy;
@@ -70,14 +79,8 @@ public class GuiAFA extends GuiContainer
             int distance = cloner.getField(1);
             mess = "r:" + distance;
             this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 26, 4210752);
-            if(cloner.ability!=null && cloner.getStackInSlot(0) !=null)
+            if (cloner.ability != null && cloner.getStackInSlot(0) != null)
                 this.fontRendererObj.drawString("" + cloner.ability.getName(), 48, 6, 4210752);
-
-            if (mc.thePlayer.capabilities.isCreativeMode)
-            {
-                int needspower = cloner.getField(2);
-                this.fontRendererObj.drawString("" + needspower, 128, 46, 4210752);
-            }
         }
     }
 
@@ -92,32 +95,31 @@ public class GuiAFA extends GuiContainer
         MessageServer message;
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(21));
         buffer.writeByte(MessageServer.MESSAGEGUIAFA);
-        buffer.writeBlockPos(tile.getPos());
-        int diff = isShiftKeyDown()?10:1;
+        int diff = isShiftKeyDown() ? 10 : 1;
         if (button.id == 0)
         {
-            tile.setField(1, tile.getField(1)+diff);
+            tile.setField(1, tile.getField(1) + diff);
             buffer.writeInt(1);
             buffer.writeInt(tile.getField(1));
         }
         else if (button.id == 1)
         {
-            tile.setField(1, tile.getField(1)-diff);
+            tile.setField(1, tile.getField(1) - diff);
             buffer.writeInt(1);
             buffer.writeInt(tile.getField(1));
         }
         else if (button.id == 2)
         {
             int num = tile.getField(2);
-            if(num==0)
+            if (num == 0)
             {
                 tile.setField(2, 1);
-                button.displayString = "noEnergy";
+                button.displayString = "O";
             }
             else
             {
                 tile.setField(2, 0);
-                button.displayString = "energy";
+                button.displayString = "X";
             }
             buffer.writeInt(2);
             buffer.writeInt(tile.getField(2));

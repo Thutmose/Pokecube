@@ -19,31 +19,31 @@ public class HoneyGather extends Ability
     @Override
     public void onUpdate(IPokemob mob)
     {
-        if (Math.random() < 0.999) return;
+        double diff = (0.0002 * range * range);
+        diff = Math.min(0.5, diff);
+        if (Math.random() < 1 - diff) return;
+
         Vector3 here = Vector3.getNewVectorFromPool().set(mob);
         EntityLiving entity = (EntityLiving) mob;
         Random rand = entity.getRNG();
-        for (int i = 0; i < range * range * range; i++)
+
+        here.set(mob).addTo(range * (rand.nextDouble() - 0.5), Math.min(10, range) * (rand.nextDouble() - 0.5),
+                range * (rand.nextDouble() - 0.5));
+
+        IBlockState state = here.getBlockState(entity.worldObj);
+        Block block = state.getBlock();
+        if (block instanceof IGrowable)
         {
-
-            here.set(mob).addTo(5 * (rand.nextDouble() - 0.5), 5 * (rand.nextDouble() - 0.5),
-                    5 * (rand.nextDouble() - 0.5));
-
-            IBlockState state = here.getBlockState(entity.worldObj);
-            Block block = state.getBlock();
-            if (block instanceof IGrowable)
+            IGrowable growable = (IGrowable) block;
+            if (growable.canGrow(entity.worldObj, here.getPos(), here.getBlockState(entity.worldObj),
+                    entity.worldObj.isRemote))
             {
-                IGrowable growable = (IGrowable) block;
-                if (growable.canGrow(entity.worldObj, here.getPos(), here.getBlockState(entity.worldObj),
-                        entity.worldObj.isRemote))
+                if (!entity.worldObj.isRemote)
                 {
-                    if (!entity.worldObj.isRemote)
+                    if (growable.canUseBonemeal(entity.worldObj, entity.worldObj.rand, here.getPos(), state))
                     {
-                        if (growable.canUseBonemeal(entity.worldObj, entity.worldObj.rand, here.getPos(), state))
-                        {
-                            growable.grow(entity.worldObj, entity.worldObj.rand, here.getPos(), state);
-                            return;
-                        }
+                        growable.grow(entity.worldObj, entity.worldObj.rand, here.getPos(), state);
+                        return;
                     }
                 }
             }
@@ -64,12 +64,12 @@ public class HoneyGather extends Ability
     @Override
     public Ability init(Object... args)
     {
-        for (int i = 1; i < 2; i++)
+        for (int i = 0; i < 2; i++)
             if (args != null && args.length > i)
             {
-                if (args[i - 1] instanceof Integer)
+                if (args[i] instanceof Integer)
                 {
-                    range = (int) args[i - 1];
+                    range = (int) args[i];
                     return this;
                 }
             }

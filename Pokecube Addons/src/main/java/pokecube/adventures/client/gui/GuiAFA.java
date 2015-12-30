@@ -68,7 +68,7 @@ public class GuiAFA extends GuiContainer
             int distance = cloner.getField(1);
             this.fontRendererObj.drawString("" + distance, 128, 26, 4210752);
             if(cloner.ability!=null && cloner.getStackInSlot(0) !=null)
-                this.fontRendererObj.drawString("Ability: " + cloner.ability.getName(), 48, 6, 4210752);
+                this.fontRendererObj.drawString("" + cloner.ability.getName(), 48, 6, 4210752);
 
             if (mc.thePlayer.capabilities.isCreativeMode)
             {

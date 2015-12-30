@@ -35,12 +35,12 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
     @Override
     public void update()
     {
-        if(worldObj.isRemote) return;
+        if (worldObj.isRemote) return;
         if (inventory[0] != null && pokemob == null)
         {
             refreshAbility();
         }
-        else if (inventory[0] == null && ability != null)
+        else if (inventory[0] == null)
         {
             refreshAbility();
         }
@@ -56,10 +56,10 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
         if (pokemob != null)
         {
             ((Entity) pokemob).setDead();
-            if(ability!=null) ability.destroy();
             pokemob = null;
             ability = null;
         }
+        if (ability != null) ability.destroy();
         if (inventory[0] == null) return;
         if (ability != null)
         {
@@ -71,7 +71,7 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
         {
             ability = pokemob.getMoveStats().ability;
             ability.destroy();
-            ((Entity)pokemob).setPosition(getPos().getX()+0.5, getPos().getY()+0.5, getPos().getZ()+0.5);
+            ((Entity) pokemob).setPosition(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
             ability.init(pokemob, distance);
         }
     }
@@ -269,7 +269,6 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
         if (id == 2) noEnergy = value != 0;
         distance = Math.max(0, distance);
         refreshAbility();
-        System.out.println(id+" "+value);
     }
 
     @Override

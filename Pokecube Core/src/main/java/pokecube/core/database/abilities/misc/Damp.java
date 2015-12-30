@@ -6,13 +6,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.templates.Move_Explode;
-import scala.actors.threadpool.Arrays;
 import thut.api.maths.Vector3;
 
 public class Damp extends Ability
@@ -51,7 +49,6 @@ public class Damp extends Ability
                 if (args[i] instanceof IPokemob)
                 {
                     MinecraftForge.EVENT_BUS.register(this);
-                    System.out.println("Initing "+Arrays.toString(args));
                     mob = (IPokemob) (args[i]);
                 }
                 if (args[i] instanceof Integer)
@@ -67,17 +64,6 @@ public class Damp extends Ability
     {
         if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT) return;
         MinecraftForge.EVENT_BUS.unregister(this);
-        System.out.println("unIniting "+mob+" "+range);
-    }
-    
-    @SubscribeEvent
-    public void tick(ServerTickEvent evt)
-    {
-//        MinecraftForge.EVENT_BUS.unregister(this);
-        if(mob==null || ((Entity)mob).isDead)
-        {
-            destroy();
-        }
     }
     
     @SubscribeEvent

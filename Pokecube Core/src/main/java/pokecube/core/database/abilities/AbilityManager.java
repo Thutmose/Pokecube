@@ -45,7 +45,7 @@ public class AbilityManager
     public static Ability getAbility(String name, Object... args)
     {
         if (name == null) return null;
-        return makeAbility(name.toLowerCase().replaceAll("[^\\w\\s ]", ""), args);
+        return makeAbility(name.toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""), args);
     }
 
     public static Ability getAbility(Integer id, Object... args)
@@ -55,7 +55,7 @@ public class AbilityManager
 
     public static void addAbility(Class<? extends Ability> ability, String name)
     {
-        name = name.trim().toLowerCase().replaceAll("[^\\w\\s ]", "");
+        name = name.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
         nameMap.put(name, ability);
         nameMap2.put(ability, name);
         idMap.put(ability, nextID);
@@ -82,7 +82,7 @@ public class AbilityManager
     {
         Ability ability = pokemob.getMoveStats().ability;
         if (ability == null) { return false; }
-        return ability.toString().equalsIgnoreCase(abilityName.trim().toLowerCase().replaceAll("[^\\w\\s ]", ""));
+        return ability.toString().equalsIgnoreCase(abilityName.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""));
     }
 
     static

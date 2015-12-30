@@ -20,10 +20,11 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public class EntityPokemobEgg extends EntityLiving
 {
-    int        delayBeforeCanPickup = 0;
-    public int age                  = 0;
-    int        hatch;
-    Vector3    here                 = Vector3.getNewVectorFromPool();
+    int     delayBeforeCanPickup = 0;
+    int     age                  = 0;
+    int     lastIncubate         = 0;
+    int     hatch;
+    Vector3 here                 = Vector3.getNewVectorFromPool();
 
     /** Do not call this, this is here only for vanilla reasons
      * 
@@ -63,6 +64,15 @@ public class EntityPokemobEgg extends EntityLiving
         this.setCurrentItemOrArmor(0, itemstack);
         this.setPosition(d, d1, d2);
         delayBeforeCanPickup = 20;
+    }
+
+    public void incubateEgg()
+    {
+        if(ticksExisted!=lastIncubate)
+        {
+            lastIncubate = ticksExisted;
+            age++;
+        }
     }
 
     @Override

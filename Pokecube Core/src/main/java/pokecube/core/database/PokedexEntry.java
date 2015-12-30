@@ -985,7 +985,6 @@ public class PokedexEntry
     public Ability getAbility(int number)
     {
         if (number < 3) { return AbilityManager.getAbility(abilities[number]); }
-
         return null;
     }
 

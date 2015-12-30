@@ -8,6 +8,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -50,7 +51,7 @@ public class ItemHandler
         register(target);
         if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-        	ModelBakery.addVariantName(target, "pokecube_adventures:spawner");
+        	ModelBakery.registerItemVariants(target, new ResourceLocation("pokecube_adventures:spawner"));
 	    	PokecubeItems.registerItemTexture(target, 0, new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
 	    	PokecubeItems.registerItemTexture(target, 1, new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
 	    	PokecubeItems.registerItemTexture(target, 2, new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
@@ -61,7 +62,7 @@ public class ItemHandler
         addSpecificItemStack("traderSpawner", new ItemStack(trainer, 1, 2));
         if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-        	ModelBakery.addVariantName(trainer, "pokecube_adventures:spawner");
+        	ModelBakery.registerItemVariants(trainer, new ResourceLocation("pokecube_adventures:spawner"));
 	    	PokecubeItems.registerItemTexture(trainer, 0, new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
 	    	PokecubeItems.registerItemTexture(trainer, 1, new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
 	    	PokecubeItems.registerItemTexture(trainer, 2, new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
@@ -71,7 +72,7 @@ public class ItemHandler
         register(bag);
         if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-        	ModelBakery.addVariantName(bag, "pokecube_adventures:bag");
+        	ModelBakery.registerItemVariants(bag, new ResourceLocation("pokecube_adventures:bag"));
         	PokecubeItems.registerItemTexture(bag, 0, new ModelResourceLocation("pokecube_adventures:bag", "inventory"));
         }
         addSpecificItemStack("warplinker", new ItemStack(target,1,1));

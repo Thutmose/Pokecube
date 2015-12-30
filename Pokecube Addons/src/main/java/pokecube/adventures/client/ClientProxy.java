@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -62,7 +63,7 @@ public class ClientProxy extends CommonProxy
         
         for (int i = 0; i < LegendaryConditions.spawner1.types.size(); i++)
         {
-            ModelBakery.addVariantName(item, "pokecube_adventures:" + i + "_spawner");
+            ModelBakery.registerItemVariants(item, new ResourceLocation("pokecube_adventures:" + i + "_spawner"));
             PokecubeItems.registerItemTexture(item, i,
                     new ModelResourceLocation("pokecube_adventures:" + i + "_spawner", "inventory"));
         }
@@ -78,13 +79,6 @@ public class ClientProxy extends CommonProxy
 
         RenderHandler h = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(h);
-
-        // if(!(Minecraft.getMinecraft().getRenderManager().entityRenderMap.get(EntityPlayer.class)
-        // instanceof RenderPlayerPokemob))
-        // {
-        // Minecraft.getMinecraft().getRenderManager().entityRenderMap.put(EntityPlayer.class,
-        // new RenderPlayerPokemob());
-        // }
 
         try
         {

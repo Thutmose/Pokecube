@@ -76,7 +76,7 @@ public class RecipeHandler {
                     "CCC", 'C', Blocks.wool, 'O', getStack("pctop").getItem()
                 });
 
-        //Warp Linker
+        //Mega Stone Linker
         if(getStack("legendaryorb")!=null)
 	        GameRegistry.addRecipe(getStack("megastone"), new Object[]
 	                {

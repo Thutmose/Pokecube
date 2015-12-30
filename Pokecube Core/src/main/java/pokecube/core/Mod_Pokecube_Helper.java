@@ -280,6 +280,16 @@ public class Mod_Pokecube_Helper
 
         WeightedRandomChestContent smashContent = new WeightedRandomChestContent(rockSmash, 1, 1, 20);
         ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, smashContent);
+        
+        ItemStack stone = new ItemStack(getItem("megastone"));
+        WeightedRandomChestContent stoneContent = new WeightedRandomChestContent(stone, 1, 1, 20);
+        ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, stoneContent);
+        ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, stoneContent);
+        
+        ItemStack ring = new ItemStack(getItem("megaring"));
+        WeightedRandomChestContent ringContent = new WeightedRandomChestContent(ring, 1, 1, 5);
+        ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, ringContent);
+        ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, ringContent);
     }
 
     public void addItems()

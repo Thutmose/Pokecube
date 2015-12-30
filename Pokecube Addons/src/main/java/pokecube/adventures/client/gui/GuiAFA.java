@@ -35,10 +35,10 @@ public class GuiAFA extends GuiContainer
         super.initGui();
         int xOffset = 0;
         int yOffset = -11;          
-        buttonList.add(new GuiButton(0, width / 2 - xOffset - 137, height
-                / 2 - yOffset - 85, 50, 20, "up"));
-        buttonList.add(new GuiButton(1, width / 2 - xOffset - 137, height
-                / 2 - yOffset - 65, 50, 20, "down"));
+        buttonList.add(new GuiButton(0, width / 2 - xOffset + 64, height
+                / 2 - yOffset - 85, 20, 20, "\u25b2"));
+        buttonList.add(new GuiButton(1, width / 2 - xOffset + 64, height
+                / 2 - yOffset - 65, 20, 20, "\u25bc"));
         if (mc.thePlayer.capabilities.isCreativeMode)
         {
             buttonList.add(new GuiButton(2, width / 2 - xOffset - 137, height
@@ -62,11 +62,14 @@ public class GuiAFA extends GuiContainer
 
             TileEntityAFA cloner = (TileEntityAFA) te;
 
+            String mess;
             int energy = cloner.getField(0);
-            this.fontRendererObj.drawString("e:" + energy, 128, 6, 4210752);
+            mess = "e:" + energy;
+            this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 66, 4210752);
 
             int distance = cloner.getField(1);
-            this.fontRendererObj.drawString("r:" + distance, 128, 26, 4210752);
+            mess = "r:" + distance;
+            this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 26, 4210752);
             if(cloner.ability!=null && cloner.getStackInSlot(0) !=null)
                 this.fontRendererObj.drawString("" + cloner.ability.getName(), 48, 6, 4210752);
 

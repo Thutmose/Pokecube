@@ -1035,7 +1035,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public boolean interact(EntityPlayer player)
     {
         ItemStack itemstack = player.inventory.getCurrentItem();
-        System.out.println(getMoveStats().ability+" "+getPokedexEntry().getAbility(0)+" "+getPokedexEntry().getAbility(1));
         ItemStack key = new ItemStack(Items.shears);
         // Check shearable interaction.
         if (getPokedexEntry().interact(key) && player.getHeldItem() != null

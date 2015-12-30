@@ -63,10 +63,10 @@ public class GuiAFA extends GuiContainer
             TileEntityAFA cloner = (TileEntityAFA) te;
 
             int energy = cloner.getField(0);
-            this.fontRendererObj.drawString("" + energy, 128, 6, 4210752);
+            this.fontRendererObj.drawString("e:" + energy, 128, 6, 4210752);
 
             int distance = cloner.getField(1);
-            this.fontRendererObj.drawString("" + distance, 128, 26, 4210752);
+            this.fontRendererObj.drawString("r:" + distance, 128, 26, 4210752);
             if(cloner.ability!=null && cloner.getStackInSlot(0) !=null)
                 this.fontRendererObj.drawString("" + cloner.ability.getName(), 48, 6, 4210752);
 

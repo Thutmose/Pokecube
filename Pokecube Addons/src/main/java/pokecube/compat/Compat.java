@@ -52,7 +52,7 @@ import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 
-@Mod(modid = "pokecube_compat", name = "Pokecube Compat", version = "1.0")
+@Mod(modid = "pokecube_compat", name = "Pokecube Compat", version = "1.0", acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
 public class Compat
 {
     GCCompat             gccompat;

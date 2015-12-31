@@ -15,21 +15,21 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import pokecube.modelloader.ModPokecubeML;
 
-@Mod(modid = PokecubeMobs.MODID, name="Pokecube Mobs", version = PokecubeMobs.VERSION, 
-dependencies = "required-after:pokecube", updateJSON = PokecubeMobs.UPDATEURL, acceptableRemoteVersions="*")
+@Mod(modid = PokecubeMobs.MODID, name = "Pokecube Mobs", version = PokecubeMobs.VERSION, dependencies = "required-after:pokecube", updateJSON = PokecubeMobs.UPDATEURL, acceptableRemoteVersions = "*", acceptedMinecraftVersions = PokecubeMobs.MCVERSIONS)
 public class PokecubeMobs
 {
-    public static final String MODID = "pokecube_mobs";
-    public static final String VERSION = "@VERSION@";
-    public static final String UPDATEURL = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Mobs/versions.json";
-    
+    public static final String MODID      = "pokecube_mobs";
+    public static final String VERSION    = "@VERSION@";
+    public static final String UPDATEURL  = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Mobs/versions.json";
+    public final static String MCVERSIONS = "[1.8.8,1.8.9]";
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         new UpdateNotifier();
         ModPokecubeML.proxy.registerModelProvider(MODID, this);
     }
-    
+
     public static class UpdateNotifier
     {
         public UpdateNotifier()

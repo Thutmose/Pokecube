@@ -36,6 +36,7 @@ public abstract class PokecubeMod
 {
     public final static String ID = "pokecube";
     public final static String VERSION = "@VERSION@";
+    public final static String MCVERSIONS = "[1.8.8,1.8.9]";
     
     public final static String UPDATEURL = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Core/versions.json";
 	

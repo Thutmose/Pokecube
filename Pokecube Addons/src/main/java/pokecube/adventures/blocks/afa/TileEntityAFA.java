@@ -1,5 +1,6 @@
 package pokecube.adventures.blocks.afa;
 
+import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.TileEnergyHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,6 +35,7 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
     public TileEntityAFA()
     {
         super();
+        storage = new EnergyStorage(3200);
     }
 
     @Override

@@ -10,20 +10,27 @@ public abstract class Ability
     /** Called during the pokemob's update tick.
      * 
      * @param mob */
-    public abstract void onUpdate(IPokemob mob);
+    public void onUpdate(IPokemob mob)
+    {
+    }
 
     /** Called whenever a move is used.
      * 
      * @param mob
      * @param move */
-    public abstract void onMoveUse(IPokemob mob, MovePacket move);
+    public void onMoveUse(IPokemob mob, MovePacket move)
+    {
+    }
 
-    /** Calls when the pokemob first agresses the target.
-     *  This is called by the agressor, so mob is the pokemob doing the agression.
-     *  Target is the agressed mob.
+    /** Calls when the pokemob first agresses the target. This is called by the
+     * agressor, so mob is the pokemob doing the agression. Target is the
+     * agressed mob.
+     * 
      * @param mob
      * @param target */
-    public abstract void onAgress(IPokemob mob, EntityLivingBase target);
+    public void onAgress(IPokemob mob, EntityLivingBase target)
+    {
+    }
 
     /** Inits the Ability, if args isn't null, it will usually have the Pokemob
      * passed in as the first argument.<br>

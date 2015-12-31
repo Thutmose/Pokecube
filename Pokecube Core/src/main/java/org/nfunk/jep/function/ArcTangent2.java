@@ -17,6 +17,7 @@ import org.nfunk.jep.ParseException;
  * atan2(y, x) Returns the angle whose tangent is y/x. 
  * @author nathan
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ArcTangent2 extends PostfixMathCommand
 {
 	public ArcTangent2()

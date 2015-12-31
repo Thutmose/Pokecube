@@ -25,7 +25,9 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     int ticks = 0;
+    int tick1 = -20;
     boolean stopped = false;
+    static boolean noSound = false;
     @Override
     public void update()
     {
@@ -33,23 +35,28 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         if (power == 0)
         {
             ticks = 0;
+            tick1 = -20;
             worldObj.playRecord(pos, null);
             return;
         }
         here.set(this);
-        if (worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
+        if (!noSound && worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
         {
-            System.out.println("loop");
             if(stopped)
             {
                 worldObj.playRecord(pos, "pokecube:pokecenterloop");
                 stopped = false;
+                tick1 = ticks;
             }
             else
             {
                 worldObj.playRecord(pos, null);
                 stopped = true;
             }
+        }
+        if(tick1 > ticks - 3)
+        {
+            noSound = true;
         }
         ticks++;
     }

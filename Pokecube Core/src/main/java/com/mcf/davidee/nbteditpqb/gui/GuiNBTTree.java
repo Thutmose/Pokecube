@@ -24,13 +24,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiControls;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import pokecube.core.client.render.PTezzelator;
 import net.minecraft.util.ResourceLocation;
+import pokecube.core.client.render.PTezzelator;
 
 /*
  * The main Gui class for NBTEdit. This implementation is messy, naive, and
@@ -458,6 +456,7 @@ public class GuiNBTTree extends Gui
             {
                 if (focused == null) setFocused(tree.getRoot());
 
+                @SuppressWarnings("unchecked")
                 Entry<String, NBTBase> firstEntry = (Entry<String, NBTBase>) nbtMap.entrySet().toArray()[0];
                 assert firstEntry != null;
                 String name = firstEntry.getKey();

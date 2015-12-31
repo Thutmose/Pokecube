@@ -19,6 +19,7 @@ import org.nfunk.jep.type.Complex;
  * RJM change return real results for positive real arguments.
  * Speedup by using static final fields.
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Logarithm extends PostfixMathCommand
 {
 	private static final double LOG10 = Math.log(10);

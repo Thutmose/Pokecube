@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -33,6 +34,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
+import pokecube.modelloader.client.custom.obj.BakedRenderer;
 import pokecube.modelloader.client.tabula.TabulaPackLoader;
 import pokecube.modelloader.client.tabula.TabulaPackLoader.TabulaModelSet;
 import pokecube.modelloader.client.tabula.components.ModelJson;
@@ -45,8 +47,13 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
     static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
 
-    public LoadedModel<T> model;
-    final String          modelName;
+    public LoadedModel<T>      model;
+    public IFlexibleBakedModel model2;
+    public String              model2Loc;
+    private boolean            isTabula     = false;
+    final String               modelName;
+    public boolean             overrideAnim = false;
+    public String              anim         = "";
 
     public RenderAdvancedPokemobModel(String name, float par2)
     {
@@ -60,7 +67,13 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     {
 
         model = (LoadedModel<T>) AnimationLoader.getModel(modelName);
-        if (model == null)
+
+        if (model2 == null && model2Loc != null)
+        {
+            model2Loc = model2Loc.replace("models/", "");
+            model2 = BakedRenderer.loadModel("pokecube_ml:pokemobs/Onix.b3d");
+        }
+        if (model2 != null)
         {
             if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
                 return;
@@ -78,9 +91,40 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
                 GL11.glPushMatrix();
                 GL11.glTranslated(d0, d1, d2);
                 FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
+                BakedRenderer.renderModel(model2);
+                GL11.glPopMatrix();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
+
+            return;
+        }
+        if (isTabula || model == null)
+        {
+            if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
+                return;
+            GL11.glPushMatrix();
+            GL11.glTranslated(d0, d1, d2);
+            if ((f1 != GuiPokedex.POKEDEX_RENDER))
+            {
+                RenderPokemob.renderEvolution((IPokemob) entity, f);
+                RenderPokemob.renderExitCube((IPokemob) entity, f);
+            }
+            GL11.glPopMatrix();
+            try
+            {
+                GL11.glPushMatrix();
+                GL11.glTranslated(d0, d1, d2);
+                FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
                 renderTabula(entity, d0, d1, d2, f, f1);
                 renderStatusModel(entity, d0, d1, d2, f, f1);
                 GL11.glPopMatrix();
+                renderHp(entity, d0, d1, d2, f, f1);
+                isTabula = true;
             }
             catch (Exception e)
             {
@@ -95,7 +139,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
             return;
 
-        renderHp(entity, d0, d1, d2, f, f1);
+        GL11.glPushMatrix();
+        this.preRenderCallback(entity,f1);
         GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
         if ((f1 != GuiPokedex.POKEDEX_RENDER))
@@ -106,10 +151,24 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
+        if (model.texturer == null)
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
+        
+        int i = entity.getBrightnessForRender(f);
+        if (entity.isBurning() || f1 == 1.5f)
+        {
+            i = 15728880;
+        }
+
+        int j = i % 65536;
+        int k = i / 65536;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
+        model.currentPhase = getPhase(null, entity, f1);
         model.doRender((T) entity, d0, d1, d2, f, f1);
-        // renderStatusModel(entity, d0, d1, d2, f, f1);
+        renderStatusModel(entity, d0, d1, d2, f, f1);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
+        GL11.glPopMatrix();
+        renderHp(entity, d0, d1, d2, f, f1);
         GL11.glPopMatrix();
     }
 
@@ -120,7 +179,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) d + 0.0F, (float) d1 + entityliving.height, (float) d2);
+            GL11.glTranslatef((float) d + 0.0F, (float) d1 + entityliving.height - 0.35f, (float) d2);
             GL11.glNormal3f(0.0F, 1.0F, 0.0F);
             GL11.glRotatef(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
@@ -135,6 +194,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
             GlStateManager.disableTexture2D();
             GlStateManager.disableLighting();
+            GlStateManager.enableBlend();
 
             int length = 40;
             float health = entityliving.getHealth();// getHealth()
@@ -150,8 +210,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             float shift = length * 2 * relativeHp;
 
             VertexFormat format;
-
-            GlStateManager.enableBlend();
             int mode = 7;
             format = DefaultVertexFormats.POSITION_COLOR;
 
@@ -223,24 +281,19 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
                 String n;// = ((IPokemob) entityliving).getDisplayName();
                 int colour = renderManager.livingPlayer.equals(((IPokemob) entityliving).getPokemonOwner()) ? 0xFFFFFF
                         : 0xAAAAAA;
-                int dx = 00;
                 if ((entityliving.hasCustomName()))
                 {
                     n = entityliving.getCustomNameTag();
-                    fontrenderer.drawString(n, length - dx - fontrenderer.getStringWidth(n), offset - 8, colour);
                 }
                 else
                 {
-
                     n = ((IPokemob) entityliving).getPokemonDisplayName();
-
-                    if (n.length() == 8) fontrenderer.drawString(n,
-                            length - (int) (fontrenderer.getStringWidth(n) * 1.45), offset - 8, colour);
-                    if (n.length() >= 9) fontrenderer.drawString(n,
-                            length - (int) (fontrenderer.getStringWidth(n) * 1.2), offset - 8, colour);
-                    if (n.length() < 8) fontrenderer.drawString(n,
-                            length - (int) (fontrenderer.getStringWidth(n) * 1.8), offset - 8, colour);
                 }
+
+                int n1 = length - fontrenderer.getStringWidth(n) / 2;
+
+                n1 = Math.max(0, n1);
+                fontrenderer.drawString(n, -length + n1, offset - 8, colour);
             }
 
             int color = 0xBBBBBB;
@@ -256,8 +309,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
             String s = "L." + ((IPokemob) entityliving).getLevel();
             fontrenderer.drawString(s, -length, offset + 5, color);
-            GlStateManager.disableBlend();
             GlStateManager.enableLighting();
+            GlStateManager.disableBlend();
             GL11.glPopMatrix();
         }
     }
@@ -323,7 +376,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GlStateManager.disableCull();
         TabulaModelParser pars = ((TabulaModelParser) parser);
         ModelJson modelj = pars.modelMap.get(model);
-
+        modelj.texturer = set.texturer;
         String phase = getPhase(set, entity, partialTick);
         boolean inSet = false;
         if (modelj.animationMap.containsKey(phase) || (inSet = set.loadedAnimations.containsKey(phase)))
@@ -362,7 +415,11 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     private String getPhase(TabulaModelSet set, EntityLiving entity, float partialTick)
     {
         String phase = "idle";
-        ModelJson modelj = set.parser.modelMap.get(set.model);
+
+        if (overrideAnim) { return anim; }
+
+        ModelJson modelj = null;
+        if (set != null) modelj = set.parser.modelMap.get(set.model);
         IPokemob pokemob = (IPokemob) entity;
         float walkspeed = entity.prevLimbSwingAmount
                 + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
@@ -414,8 +471,12 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         return phase;
     }
 
+    // TODO allow this to handle non-tabula models properly as well.
     private void renderStatusModel(T entity, double d0, double d1, double d2, float f, float partialTick)
     {
+        if (model != null) {
+
+        return; }
         IPokemob pokemob = (IPokemob) entity;
         byte status;
         if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
@@ -472,7 +533,9 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     private boolean hasPhase(TabulaModelSet set, ModelJson modelj, String phase)
     {
-        return modelj.animationMap.containsKey(phase) || set.loadedAnimations.containsKey(phase);
+        if (set == null && model != null) { return LoadedModel.DEFAULTPHASE.equals(phase)
+                || model.animations.containsKey(phase); }
+        return set.loadedAnimations.containsKey(phase) || (modelj != null && modelj.animationMap.containsKey(phase));
     }
 
     @Override

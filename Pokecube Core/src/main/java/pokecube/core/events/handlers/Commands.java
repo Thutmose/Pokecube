@@ -29,6 +29,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.ConfigHandler;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
@@ -659,9 +660,9 @@ public class Commands implements ICommand
                         String owner = "";
                         boolean shiny = false;
                         boolean shadow = false;
-                        byte red, green, blue;
+                        int red, green, blue;
                         byte gender = -3;
-                        red = green = blue = 127;
+                        red = green = blue = 255;
                         boolean ancient = false;
 
                         int exp = 10;
@@ -745,7 +746,7 @@ public class Commands implements ICommand
                         }
                         mob.setShiny(shiny);
                         if (gender != -3) mob.setSexe(gender);
-                        mob.setColours(new byte[] { red, green, blue });
+                        if(mob instanceof IMobColourable) ((IMobColourable)mob).setRGBA(red, green, blue, 255);
                         if (shadow) mob.setShadow(shadow);
                         if (ancient) mob.setAncient(ancient);
                         mob.setExp(exp, true, true);
@@ -957,9 +958,9 @@ public class Commands implements ICommand
 
                     boolean shiny = false;
                     boolean shadow = false;
-                    byte red, green, blue;
+                    int red, green, blue;
                     byte gender = -3;
-                    red = green = blue = 127;
+                    red = green = blue = 255;
 
                     int exp = 10;
                     int level = -1;
@@ -1016,7 +1017,7 @@ public class Commands implements ICommand
                     mob.setExp(exp, false, true);
                     mob.setShiny(shiny);
                     if (gender != -3) mob.setSexe(gender);
-                    mob.setColours(new byte[] { red, green, blue });
+                    if(mob instanceof IMobColourable) ((IMobColourable)mob).setRGBA(red, green, blue, 255);
                     if (shadow) mob.setShadow(shadow);
                     for (int i = 0; i < 4; i++)
                     {

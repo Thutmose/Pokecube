@@ -66,12 +66,14 @@ import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.ai.properties.GuardAIProperties;
+import pokecube.core.ai.properties.StorageAIProperties;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -164,6 +166,10 @@ public class EventsHandler
             {
                 GuardAIProperties.register((EntityLiving) event.entity);
             }
+            if (StorageAIProperties.get((EntityLiving) event.entity) == null)
+            {
+                StorageAIProperties.register((EntityLiving) event.entity);
+            }
         }
     }
 
@@ -202,7 +208,10 @@ public class EventsHandler
             Vector3 temp = Vector3.getNewVectorFromPool().set(evt.entityPlayer).addTo(0,
                     evt.entityPlayer.getEyeHeight(), 0);
 
-            Entity target = MovesUtils.targetHit(temp, look, 32, evt.world, evt.entityPlayer, true, EntityPokecube.class);//temp.firstEntityExcluding(32, look, evt.entityPlayer.worldObj, false, evt.entityPlayer);
+            Entity target = MovesUtils.targetHit(temp, look, 32, evt.world, evt.entityPlayer, true,
+                    EntityPokecube.class);// temp.firstEntityExcluding(32, look,
+                                          // evt.entityPlayer.worldObj, false,
+                                          // evt.entityPlayer);
 
             look.freeVectorFromPool();
             temp.freeVectorFromPool();
@@ -653,5 +662,37 @@ public class EventsHandler
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }
+    }
+
+    public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
+    {
+        float scale = tag.getFloat("scale");
+        if (scale > 0)
+        {
+            pokemob.setSize(scale);
+        }
+        pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
+        boolean shiny = tag.getBoolean("shiny");
+        pokemob.setShiny(shiny);
+        byte[] rgbaBytes = new byte[4];
+        // TODO remove the legacy colour support eventually.
+        if (tag.hasKey("colours", 7))
+        {
+            rgbaBytes = tag.getByteArray("colours");
+        }
+        else
+        {
+            rgbaBytes[0] = tag.getByte("red");
+            rgbaBytes[1] = tag.getByte("green");
+            rgbaBytes[2] = tag.getByte("blue");
+            rgbaBytes[3] = 127;
+        }
+        if(pokemob instanceof IMobColourable)
+        {
+            ((IMobColourable)pokemob).setRGBA(rgbaBytes[0]+128, rgbaBytes[1]+128, rgbaBytes[2]+128, rgbaBytes[2]+128);
+        }
+        String forme = tag.getString("forme");
+        pokemob.changeForme(forme);
+        pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 }

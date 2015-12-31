@@ -95,15 +95,15 @@ public class Tools
         int[] ret = new int[6];
         ret[0] = getHP(mob.getBaseStats()[0], mob.getIVs()[0], mob.getEVs()[0], mob.getLevel());
         ret[1] = getStat(mob.getBaseStats()[1], mob.getIVs()[1], mob.getEVs()[1], mob.getLevel(), mob.getModifiers()[1],
-                mob.getNatureModifiers()[1]);
+                mob.getNature().getStatsMod()[1]);
         ret[2] = getStat(mob.getBaseStats()[2], mob.getIVs()[2], mob.getEVs()[2], mob.getLevel(), mob.getModifiers()[2],
-                mob.getNatureModifiers()[2]);
+                mob.getNature().getStatsMod()[2]);
         ret[3] = getStat(mob.getBaseStats()[3], mob.getIVs()[3], mob.getEVs()[3], mob.getLevel(), mob.getModifiers()[3],
-                mob.getNatureModifiers()[3]);
+                mob.getNature().getStatsMod()[3]);
         ret[4] = getStat(mob.getBaseStats()[4], mob.getIVs()[4], mob.getEVs()[4], mob.getLevel(), mob.getModifiers()[4],
-                mob.getNatureModifiers()[4]);
+                mob.getNature().getStatsMod()[4]);
         ret[5] = getStat(mob.getBaseStats()[5], mob.getIVs()[5], mob.getEVs()[5], mob.getLevel(), mob.getModifiers()[5],
-                mob.getNatureModifiers()[5]);
+                mob.getNature().getStatsMod()[5]);
         return ret;
     }
 
@@ -112,15 +112,15 @@ public class Tools
         int[] ret = new int[6];
         ret[0] = getHP(mob.getPokedexEntry().getStatHP(), mob.getIVs()[0], mob.getEVs()[0], mob.getLevel());
         ret[1] = getStat(mob.getPokedexEntry().getStatATT(), mob.getIVs()[1], mob.getEVs()[1], mob.getLevel(),
-                mob.getNatureModifiers()[1]);
+                mob.getNature().getStatsMod()[1]);
         ret[2] = getStat(mob.getPokedexEntry().getStatDEF(), mob.getIVs()[2], mob.getEVs()[2], mob.getLevel(),
-                mob.getNatureModifiers()[2]);
+                mob.getNature().getStatsMod()[2]);
         ret[3] = getStat(mob.getPokedexEntry().getStatATTSPE(), mob.getIVs()[3], mob.getEVs()[3], mob.getLevel(),
-                mob.getNatureModifiers()[3]);
+                mob.getNature().getStatsMod()[3]);
         ret[4] = getStat(mob.getPokedexEntry().getStatDEFSPE(), mob.getIVs()[4], mob.getEVs()[4], mob.getLevel(),
-                mob.getNatureModifiers()[4]);
+                mob.getNature().getStatsMod()[4]);
         ret[5] = getStat(mob.getPokedexEntry().getStatVIT(), mob.getIVs()[5], mob.getEVs()[5], mob.getLevel(),
-                mob.getNatureModifiers()[5]);
+                mob.getNature().getStatsMod()[5]);
         return ret;
     }
 

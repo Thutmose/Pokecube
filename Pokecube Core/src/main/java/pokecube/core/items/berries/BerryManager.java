@@ -13,6 +13,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeItems;
@@ -41,7 +42,7 @@ public class BerryManager implements IMoveConstants
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            ModelBakery.addVariantName(PokecubeItems.berries, "pokecube:" + name + "Berry");
+            ModelBakery.registerItemVariants(PokecubeItems.berries, new ResourceLocation("pokecube:" + name + "Berry"));
             registerItemTexture(PokecubeItems.berries, id,
                     new ModelResourceLocation("pokecube:" + name + "Berry", "inventory"));
         }

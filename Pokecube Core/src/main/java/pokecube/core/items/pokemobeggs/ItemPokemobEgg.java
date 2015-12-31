@@ -28,10 +28,11 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -164,7 +165,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         byte[] ivs = getIVs(father.getIVs(), mother.getIVs(), father.getEVs(), mother.getEVs());
         long ivsL = PokecubeSerializer.byteArrayAsLong(ivs);
         nbt.setLong("ivs", ivsL);
-        nbt.setByteArray("colour", getColour(father.getColours(), mother.getColours()));
+        nbt.setByteArray("colour", getColour(((IMobColourable)father).getRGBA(), ((IMobColourable)mother).getRGBA()));
         nbt.setFloat("size", getSize(father.getSize(), mother.getSize()));
         nbt.setByte("nature", getNature(mother.getNature(), father.getNature()));
 
@@ -237,10 +238,22 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             {
                 if (s != null && !s.isEmpty()) mob.learn(s);
             }
-            ((Entity)mob).isDead = false;
-            mob.setColours(nbt.getByteArray("colour"));
+            ((Entity)mob).isDead = false;      
+            byte[] rgba = new byte[4];
+            if (nbt.hasKey("colour", 7))
+            {
+                rgba = nbt.getByteArray("colour");
+                if(rgba.length==4)
+                {
+                    ((IMobColourable)mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128, rgba[3] + 128);
+                }
+                else if(rgba.length==3)
+                {
+                    ((IMobColourable)mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128);
+                }
+            }
             mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
-            mob.setNature(nbt.getByte("nature"));
+            mob.setNature(Nature.values()[nbt.getByte("nature")]);
             mob.setSize(nbt.getFloat("size"));
         }
         
@@ -311,15 +324,14 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         return ret;
     }
 
-    public static byte[] getColour(byte[] fatherColours, byte[] motherColours)
+    public static byte[] getColour(int[] fatherColours, int[] motherColours)
     {
-        byte[] ret = new byte[] { 127, 127, 127 };
+        byte[] ret = new byte[] { 127, 127, 127, 127 };
         if (fatherColours.length < 3 && motherColours.length < 3) return ret;
         for (int i = 0; i < 3; i++)
         {
-            ret[i] = (byte) ((fatherColours[i] + motherColours[i]) / 2);
+            ret[i] = (byte) (((fatherColours[i] + motherColours[i]) / 2) - 128);
         }
-
         return ret;
     }
 
@@ -332,13 +344,13 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         return ret;
     }
 
-    public static byte getNature(byte motherNature, byte fatherNature)
+    public static byte getNature(Nature nature, Nature nature2)
     {
         byte ret = 0;
         Random rand = new Random();
 
-        byte[] motherMods = PokeType.statsModFromNature(motherNature);
-        byte[] fatherMods = PokeType.statsModFromNature(fatherNature);
+        byte[] motherMods = nature.getStatsMod();
+        byte[] fatherMods = nature2.getStatsMod();
 
         byte[] sum = new byte[6];
         for (int i = 0; i < 6; i++)
@@ -369,7 +381,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         {
             for (byte i = 0; i < 25; i++)
             {
-                if (PokeType.statsModFromNature(i)[pos] > 0 && PokeType.statsModFromNature(i)[neg] < 0)
+                if (Nature.values()[i].getStatsMod()[pos] > 0 && Nature.values()[i].getStatsMod()[neg] < 0)
                 {
                     ret = i;
                     break;
@@ -381,7 +393,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             start = rand.nextInt(1000);
             for (byte i = 0; i < 25; i++)
             {
-                if (PokeType.statsModFromNature((byte) ((i + start) % 25))[pos] > 0)
+                if (Nature.values()[(byte) ((i + start) % 25)].getStatsMod()[pos] > 0)
                 {
                     ret = (byte) ((i + start) % 25);
                     break;
@@ -393,7 +405,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             start = rand.nextInt(1000);
             for (byte i = 0; i < 25; i++)
             {
-                if (PokeType.statsModFromNature((byte) ((i + start) % 25))[neg] < 0)
+                if (Nature.values()[(byte) ((i + start) % 25)].getStatsMod()[neg] < 0)
                 {
                     ret = (byte) ((i + start) % 25);
                     break;
@@ -402,7 +414,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         }
         else
         {
-            ret = rand.nextGaussian() > 0 ? motherNature : fatherNature;
+            ret = (byte) (rand.nextGaussian() > 0 ? nature.ordinal() : nature2.ordinal());
         }
 
         return ret;

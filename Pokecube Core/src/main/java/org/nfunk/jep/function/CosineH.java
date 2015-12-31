@@ -13,6 +13,7 @@ import java.util.Stack;
 import org.nfunk.jep.ParseException;
 import org.nfunk.jep.type.Complex;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class CosineH extends PostfixMathCommand
 {
 	public CosineH()

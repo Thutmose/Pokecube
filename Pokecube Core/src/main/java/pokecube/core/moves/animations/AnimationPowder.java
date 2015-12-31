@@ -61,8 +61,6 @@ public class AnimationPowder extends MoveAnimationBase
             {
                 int alpha = 255;
                 rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
-                new Exception().printStackTrace();
-                System.out.println(val+" "+rgba);
                 customColour = true;
             }
             else if(ident.equals("t"))

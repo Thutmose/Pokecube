@@ -40,7 +40,6 @@ public class GuiEditNBTTree extends GuiScreen{
 		guiTree = new GuiNBTTree(new NBTTree(tag));
 	}
 
-	@SuppressWarnings("unchecked")
 	public void initGui() {
 		Keyboard.enableRepeatEvents(true);
 		buttonList.clear();

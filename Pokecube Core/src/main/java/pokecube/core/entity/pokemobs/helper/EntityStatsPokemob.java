@@ -27,11 +27,13 @@ import pokecube.core.mod_Pokecube;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.LevelUpEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.network.PokecubePacketHandler;
@@ -47,17 +49,16 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
     double moveSpeed;
 
-    byte[]         ivs      = new byte[] { 0, 0, 0, 0, 0, 0 };
-    protected byte nature   = 0;
-    public int     oldLevel = 0;
-    PokedexEntry   entry;
-    String         forme    = "";
+    byte[]           ivs      = new byte[] { 0, 0, 0, 0, 0, 0 };
+    protected Nature nature   = Nature.HARDY;
+    public int       oldLevel = 0;
+    PokedexEntry     entry;
+    String           forme    = "";
 
     protected Entity transformedTo;
 
-    protected int abilityNumber  = 0;
     /** The happiness value of the pokemob */
-    private int   bonusHappiness = 0;
+    private int bonusHappiness = 0;
 
     boolean wasShadow = false;
 
@@ -67,7 +68,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     private double colourDiffFactor = 0.25;
 
     /** Used for the random colour differences */
-    public byte red = 127, green = 127, blue = 127;
+    int[] rgba = { 255, 255, 255, 255 };
 
     /** Used for if there is a special texture */
     public boolean shiny = false;
@@ -100,7 +101,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
         if (mod_Pokecube.isOnClientSide()) this.setHealth(getMaxHealth());
         else this.setHealth(0);
-        nature = (byte) (new Random()).nextInt(25);
+        nature = Nature.values()[(byte) (new Random()).nextInt(25)];
         setRandomColour();
     }
 
@@ -140,14 +141,13 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         nbttagcompound.setString(PokecubeSerializer.NICKNAME, getPokemonNickname());
         nbttagcompound.setLong(PokecubeSerializer.EVS, PokecubeSerializer.byteArrayAsLong(getEVs()));
         nbttagcompound.setLong(PokecubeSerializer.IVS, PokecubeSerializer.byteArrayAsLong(getIVs()));
-        nbttagcompound.setByte("red", red);
-        nbttagcompound.setByte("green", green);
-        nbttagcompound.setByte("blue", blue);
+        byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),
+                (byte) (rgba[3] - 128) };
+        nbttagcompound.setByteArray("colours", rgbaBytes);
         nbttagcompound.setBoolean("shiny", shiny);
-        nbttagcompound.setByte("nature", nature);
+        nbttagcompound.setByte("nature", (byte) nature.ordinal());
         nbttagcompound.setInteger("happiness", bonusHappiness);
-        nbttagcompound.setInteger("ability", abilityNumber);
-        // nbttagcompound.setBoolean("isShadow", isShadow);
+        if (getMoveStats().ability != null) nbttagcompound.setString("ability", getMoveStats().ability.toString());
         nbttagcompound.setBoolean("isAncient", isAncient);
         nbttagcompound.setBoolean("wasShadow", wasShadow);
         nbttagcompound.setString("forme", forme);
@@ -186,17 +186,45 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         isAncient = nbttagcompound.getBoolean("isAncient");
         wasShadow = nbttagcompound.getBoolean("wasShadow");
         // this.setShadow(isShadow);
-        red = nbttagcompound.getByte("red");
-        green = nbttagcompound.getByte("green");
-        blue = nbttagcompound.getByte("blue");
+
+        byte[] rgbaBytes = new byte[4];
+        // TODO remove the legacy colour support eventually.
+        if (nbttagcompound.hasKey("colours", 7))
+        {
+            rgbaBytes = nbttagcompound.getByteArray("colours");
+        }
+        else
+        {
+            rgbaBytes[0] = nbttagcompound.getByte("red");
+            rgbaBytes[1] = nbttagcompound.getByte("green");
+            rgbaBytes[2] = nbttagcompound.getByte("blue");
+            rgbaBytes[3] = 127;
+        }
+        for (int i = 0; i < 4; i++)
+            rgba[i] = rgbaBytes[i] + 128;
+
         shiny = nbttagcompound.getBoolean("shiny");
         addHappiness(nbttagcompound.getInteger("happiness"));
-        abilityNumber = nbttagcompound.getInteger("ability");
-        if (shiny)
+        if (getMoveStats().ability != null) getMoveStats().ability.destroy();
+        if (nbttagcompound.hasKey("ability", 8))
+            getMoveStats().ability = AbilityManager.getAbility(nbttagcompound.getString("ability"));
+        else if (nbttagcompound.hasKey("ability", 3))
+            getMoveStats().ability = getPokedexEntry().getAbility(nbttagcompound.getInteger("ability"));
+
+        if (getMoveStats().ability == null)
         {
-            red = green = blue = 127;
+            Random random = new Random();
+            int abilityNumber = random.nextInt(100) % 2;
+            if (getPokedexEntry().getAbility(abilityNumber) == null)
+            {
+                if (abilityNumber != 0) abilityNumber = 0;
+                else abilityNumber = 1;
+            }
+            getMoveStats().ability = getPokedexEntry().getAbility(abilityNumber);
         }
-        nature = nbttagcompound.getByte("nature");
+        if (getMoveStats().ability != null) getMoveStats().ability.init(this);
+
+        nature = Nature.values()[nbttagcompound.getByte("nature")];
         forme = nbttagcompound.getString("forme");
         this.changeForme(forme);
         getEntityData().setBoolean("dittotag", nbttagcompound.getBoolean("dittotag"));
@@ -254,7 +282,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         float mult = getPokemonAIState(SHADOW) ? 2 : 1;
 
         return mult * (Tools.getStat((ATT + ATTSPE) / 2, 0, 0, getLevel(), (getModifiers()[1] + getModifiers()[3]) / 2,
-                (getNatureModifiers()[1] + getNatureModifiers()[3]) / 2) / 3);
+                (nature.getStatsMod()[1] + nature.getStatsMod()[3]) / 2) / 3);
     }
 
     private void setMaxHealth(float maxHealth)
@@ -306,7 +334,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         stats[0] = Tools.getHP(stats[0], ivs[0], evs[0], level);
         for (int i = 1; i < stats.length; i++)
         {
-            stats[i] = Tools.getStat(stats[i], ivs[i], evs[i], level, mods[i], getNature());
+            stats[i] = Tools.getStat(stats[i], ivs[i], evs[i], level, mods[i], getNature().getStatsMod()[i]);
         }
         return stats;
     }
@@ -340,17 +368,18 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public byte[] getColours()
+    public int[] getRGBA()
     {
-        return new byte[] { red, green, blue };
+        return rgba;
     }
 
     @Override
-    public void setColours(byte[] colours)
+    public void setRGBA(int... colours)
     {
-        red = colours[0];
-        green = colours[1];
-        blue = colours[2];
+        for(int i = 0; i<colours.length && i < rgba.length; i++)
+        {
+            rgba[i] = colours[i];
+        }
     }
 
     @Override
@@ -659,7 +688,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         data.writeBoolean(shiny);
         data.writeBoolean(wasShadow);
         data.writeBoolean(isAncient);
-        data.writeByte(nature);
+        data.writeByte((byte) nature.ordinal());
         data.writeBytes(ivs);
         boolean noTags = getEntityData().hasNoTags();
         data.writeBoolean(!noTags);
@@ -679,7 +708,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         shiny = data.readBoolean();
         wasShadow = data.readBoolean();
         isAncient = data.readBoolean();
-        nature = data.readByte();
+        nature = Nature.values()[data.readByte()];
         this.changeForme(forme);
         for (int i = 0; i < ivs.length; i++)
         {
@@ -742,7 +771,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         Random r = new Random();
         int first = r.nextInt(3);
-
+        byte red = 127, green = 127, blue = 127;
         if (first == 0)
         {
             int min = 0;
@@ -778,7 +807,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             green = (byte) Math.max(Math.min(((5 - Math.abs(colourDiffFactor * r.nextGaussian())) * 32), 127), min);
 
         }
-
+        rgba[0] = red + 128;
+        rgba[1] = green + 128;
+        rgba[2] = blue + 128;
     }
 
     @Override
@@ -794,19 +825,13 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public byte[] getNatureModifiers()
-    {
-        return PokeType.statsModFromNature(nature);
-    }
-
-    @Override
-    public byte getNature()
+    public Nature getNature()
     {
         return nature;
     }
 
     @Override
-    public void setNature(byte nature)
+    public void setNature(Nature nature)
     {
         this.nature = nature;
     }
@@ -912,12 +937,12 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                             d1 = (Math.random() - Math.random()) * 0.01D;
                         }
 
-                        this.attackedAtYaw = (float) (MathHelper.func_181159_b(d0, d1) * 180.0D / Math.PI
+                        this.attackedAtYaw = (float) (MathHelper.atan2(d0, d1) * 180.0D / Math.PI
                                 - (double) this.rotationYaw);
-                        //Reduces knockback from distanced moves
+                        // Reduces knockback from distanced moves
                         if (source instanceof PokemobDamageSource)
                         {
-                            if(!source.isProjectile())
+                            if (!source.isProjectile())
                             {
                                 this.knockBack(entity, amount, d1, d0);
                             }

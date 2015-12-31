@@ -3,9 +3,11 @@ package pokecube.core;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -115,7 +117,7 @@ import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
-@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION)
+@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION, dependencies = "required-after:Forge@[11.15.0.1650,)")
 public class mod_Pokecube extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")
@@ -252,14 +254,12 @@ public class mod_Pokecube extends PokecubeMod
             PokedexEntry previousEntry = Pokedex.getInstance().getEntry(pokedexEntry.getPokedexNb());
             try
             {
-
                 // in case of double definition, the Manchou's implementation
                 // will have the priority by default, or whatever is set in
                 // config.
-                if (previousEntry == null || modId.equals(defaultMod) || !registered.get(pokedexNb))
+                if (!registered.get(pokedexNb))
                 {
-                    int id = getUniqueEntityId(mod);
-                    EntityRegistry.registerModEntity(clazz, name, id, mod, 80, 3, true);
+                    EntityRegistry.registerModEntity(clazz, name, 25+pokedexNb, mod, 80, 3, true);
 
                     if (!pokemobEggs.containsKey(pokedexNb))
                     {
@@ -338,7 +338,10 @@ public class mod_Pokecube extends PokecubeMod
         Class c = genericMobClasses.get(pokedexNb);
         if (c == null)
         {
-            System.err.println("Class for " + pokedexNb + " Has not been made, Making now");
+            if (loader == null)
+            {
+                loader = new ByteClassLoader(GenericPokemob.class.getClassLoader());
+            }
             try
             {
                 c = loader.generatePokemobClass(pokedexNb);
@@ -346,6 +349,7 @@ public class mod_Pokecube extends PokecubeMod
             }
             catch (ClassNotFoundException e)
             {
+                System.err.println("Error Making Class for  " + Database.getEntry(pokedexNb));
                 e.printStackTrace();
             }
         }
@@ -431,7 +435,6 @@ public class mod_Pokecube extends PokecubeMod
         {
             System.err.println("Problem with entity with pokedexNb: " + pokedexNb);
             System.err.println(clazz + " ");
-            new Exception().printStackTrace();
         }
 
         return entity;
@@ -485,23 +488,6 @@ public class mod_Pokecube extends PokecubeMod
         // used to register the moves from the spreadsheets
         Database.init(evt);
 
-        loader = new ByteClassLoader(GenericPokemob.class.getClassLoader());
-
-        System.out.println("Generating Generic Pokemob Classes");
-        int n = 0;
-        for (int i = 1; i < 722; i++)
-        {
-            try
-            {
-                genericMobClasses.put(i, loader.generatePokemobClass(i));
-                n++;
-            }
-            catch (ClassNotFoundException e)
-            {
-            }
-        }
-        System.out.println("Generated " + n + " Pokemon Classes");
-
         System.out.println("Registering Moves");
         MovesAdder.registerMoves();
 
@@ -549,7 +535,7 @@ public class mod_Pokecube extends PokecubeMod
                 PCPacketHandler.MessageServer.class, mod_Pokecube.getMessageID(), Side.SERVER);
 
         helper.addItems();
-        Reader fileIn;
+        Reader fileIn = null;
         BufferedReader br;
 
         String giftLoc = "https://gist.githubusercontent.com/Thutmose/b2b592fd6d554e9cd55f/raw";
@@ -557,10 +543,14 @@ public class mod_Pokecube extends PokecubeMod
 
         for (String location : giftLocations)
         {
-
             try
             {
-                fileIn = new InputStreamReader(new URL(location).openStream());
+                URL url = new URL(location);
+                URLConnection con = url.openConnection();
+                con.setConnectTimeout(1000);
+                con.setReadTimeout(1000);
+                InputStream in = con.getInputStream();
+                fileIn = new InputStreamReader(in);
             }
             catch (Exception e1)
             {
@@ -634,7 +624,7 @@ public class mod_Pokecube extends PokecubeMod
         {
 
         }
-        // TODO figure out good spawn weights
+        // TODO figure out good spawn weights, Also config for these
         GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
@@ -734,12 +724,6 @@ public class mod_Pokecube extends PokecubeMod
             {
                 p.setSound(ID + ":mobs." + p.getName());
                 n++;
-                //TODO read this from database instead of here
-                if (p.getPokedexNb() == 345 || p.getPokedexNb() == 346 || p.getPokedexNb() == 91)
-                {
-                    p.isStationary = true;
-                }
-
             }
             else
             {
@@ -763,7 +747,7 @@ public class mod_Pokecube extends PokecubeMod
 
         if (Mod_Pokecube_Helper.deactivateAnimals)
         {
-            // TODO add rabbit
+            EntityRegistry.removeSpawn(EntityRabbit.class, EnumCreatureType.CREATURE, biomes);
             EntityRegistry.removeSpawn(EntityChicken.class, EnumCreatureType.CREATURE, biomes);
             EntityRegistry.removeSpawn(EntityCow.class, EnumCreatureType.CREATURE, biomes);
             EntityRegistry.removeSpawn(EntityPig.class, EnumCreatureType.CREATURE, biomes);

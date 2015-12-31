@@ -37,7 +37,6 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         Item pokecube = getEmptyCube(0);
         Item greatcube = getEmptyCube(1);
         Item ultracube = getEmptyCube(2);
-       // Item mastercube = getEmptyCube(3);
         Item pokeseal = getEmptyCube(-2);
         Item duskcube = getEmptyCube(5);
         Item quickcube = getEmptyCube(6);
@@ -151,7 +150,6 @@ public class RecipeHandler extends Mod_Pokecube_Helper
 
         PokecubeItems.addSpecificItemStack("dubiousdisc", new ItemStack(Items.record_cat));
         PokecubeItems.addSpecificItemStack("upgrade", new ItemStack(Items.record_11));
-        // addToList(TerrainSegment.industrialBlocks, industrial);
 
         BrewingRecipeRegistry.addRecipe(new RecipeBrewBerries());
     }

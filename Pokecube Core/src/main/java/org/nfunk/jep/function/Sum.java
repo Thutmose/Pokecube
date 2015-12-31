@@ -17,6 +17,7 @@ import org.nfunk.jep.ParseException;
  * This class serves mainly as an example of a function that accepts any number
  * of parameters. Note that the numberOfParameters is initialized to -1.
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Sum extends PostfixMathCommand {
 	private Add addFun = new Add();
 

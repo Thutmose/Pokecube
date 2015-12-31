@@ -17,6 +17,7 @@ import org.nfunk.jep.ParserVisitor;
  * @author Rich Morris
  * Created on 18-Nov-2003
  */
+@SuppressWarnings({ "rawtypes" })
 public interface SpecialEvaluationI {
 
 	/**

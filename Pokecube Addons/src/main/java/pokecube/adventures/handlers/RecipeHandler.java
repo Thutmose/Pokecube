@@ -29,6 +29,15 @@ public class RecipeHandler {
                     "SMS", 'R', getStack("tradingtable"), 'S', Blocks.iron_block, 'M', new ItemStack(Items.golden_apple, 1, 1), 'I',
                     Items.iron_ingot
                 });
+        
+        //AFA
+        GameRegistry.addRecipe(getStack("afa"), new Object[]
+                {
+                    "III", 
+                    "SRS", 
+                    "SMS", 'R', getStack("tradingtable"), 'S', Blocks.iron_block, 'M', Items.redstone, 'I',
+                    Items.iron_ingot
+                });
 
         //Target
         GameRegistry.addRecipe(getStack("pokemobTarget"), new Object[]
@@ -76,7 +85,7 @@ public class RecipeHandler {
                     "CCC", 'C', Blocks.wool, 'O', getStack("pctop").getItem()
                 });
 
-        //Warp Linker
+        //Mega Stone Linker
         if(getStack("legendaryorb")!=null)
 	        GameRegistry.addRecipe(getStack("megastone"), new Object[]
 	                {

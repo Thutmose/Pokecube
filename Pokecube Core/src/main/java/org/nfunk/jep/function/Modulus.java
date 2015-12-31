@@ -13,6 +13,7 @@ import java.util.Stack;
 
 import org.nfunk.jep.ParseException;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Modulus extends PostfixMathCommand
 {
 	public Modulus()

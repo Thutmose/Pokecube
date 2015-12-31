@@ -1,0 +1,17 @@
+{
+  "homepage": "http://www.curse.com/mc-mods/minecraft/239105-pokecube-mobs",
+  "promos": {
+    "1.8.8-latest": "1.0.2",
+    "1.8.8-recommended": "1.0.2",
+    "1.8.9-latest": "1.1.0",
+    "1.8.9-recommended": "1.1.0"
+  },
+  "1.8.9": {
+    "1.1.0": "initial 1.8.9 port"
+  },
+  "1.8.8": {
+    "1.0.2": "adds Vulpix, Skitty, Ferroseed and Deerling lines, Aerodactyl, Updates Ampharos.",
+    "1.0.1": "adds Pikachu line.",
+    "1.0.0": "initial release"
+  }
+}

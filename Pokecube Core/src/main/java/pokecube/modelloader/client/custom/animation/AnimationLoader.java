@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,6 +13,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
@@ -20,30 +23,31 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.ModPokecubeML;
-import pokecube.modelloader.client.custom.IExtendedModelPart;
 import pokecube.modelloader.client.custom.LoadedModel;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
 import pokecube.modelloader.client.custom.PartInfo;
+import pokecube.modelloader.client.tabula.components.Animation;
 import thut.api.maths.Vector3;
 
 public class AnimationLoader
 {
     public static final String MODELPATH = "models/pokemobs/";
+    public static boolean      loaded    = false;
 
     /** texture folder */
     public final static String TEXTUREPATH = "textures/entities/";
 
-    static String                              file       = "";
+    static String                              file      = "";
     @SuppressWarnings("rawtypes")
-    public static HashMap<String, LoadedModel> modelMaps  = new HashMap<String, LoadedModel>();
-    public static HashMap<String, Model>       models     = new HashMap<String, Model>();
+    public static HashMap<String, LoadedModel> modelMaps = new HashMap<String, LoadedModel>();
+    public static HashMap<String, Model>       models    = new HashMap<String, Model>();
 
     public static void clear()
     {
         models.clear();
         modelMaps.clear();
     }
-    
+
     public static class Model
     {
         public ResourceLocation model;
@@ -80,125 +84,115 @@ public class AnimationLoader
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             InputStream stream = res.getInputStream();
             Document doc = dBuilder.parse(stream);
-
             doc.getDocumentElement().normalize();
 
             NodeList modelList = doc.getElementsByTagName("model");
 
-            HashSet<String> hl = new HashSet<String>();
-            HashSet<String> hr = new HashSet<String>();
-            HashSet<String> fl = new HashSet<String>();
-            HashSet<String> fr = new HashSet<String>();
             int headDir = 2;
             int headAxis = 2;
+            int headAxis2 = 1;
             float[] headCaps = { -180, 180 };
-            int quadwalkdur = 0;
-            int biwalkdur = 0;
-            float walkAngle1 = 20;
-            float walkAngle2 = 20;
+            float[] headCaps1 = { -30, 70 };
             Vector3 offset = null;
             Vector5 rotation = null;
             Vector3 scale = null;
-            ArrayList<String> names = new ArrayList<String>();
-            HashMap<String, ModelAnimation> loadedPresets = new HashMap<String, ModelAnimation>();
+            TextureHelper texturer = null;
+            Set<String> headNames = Sets.newHashSet();
+            Set<String> shear = Sets.newHashSet();
+            Set<String> dye = Sets.newHashSet();
+            Set<Animation> tblAnims = Sets.newHashSet();
+            HashMap<String, String> mergedAnimations = Maps.newHashMap();
             for (int i = 0; i < modelList.getLength(); i++)
             {
                 Node modelNode = modelList.item(i);
-                String modelName = model.name;// modelNode.getAttributes().getNamedItem("name").getNodeValue();
+                String modelName = model.name;
                 HashMap<String, PartInfo> parts = new HashMap<String, PartInfo>();
                 HashMap<String, ArrayList<Vector5>> phaseList = new HashMap<String, ArrayList<Vector5>>();
-
-                names.add(modelNode.getAttributes().getNamedItem("name").getNodeValue());
                 NodeList partsList = modelNode.getChildNodes();
                 for (int j = 0; j < partsList.getLength(); j++)
                 {
                     Node part = partsList.item(j);
-                    if (part.getNodeName().equals("part"))
+                    if (part.getNodeName().equals("metadata"))
                     {
-                        parts.put(part.getAttributes().getNamedItem("name").getNodeValue(), getPart(part));
-
+                        try
+                        {
+                            offset = getOffset(part, offset);
+                            scale = getScale(part, scale);
+                            rotation = getRotation(part, rotation);
+                            headDir = getHeadDir(part, headDir);
+                            headAxis = getHeadAxis(part, 2);
+                            headAxis2 = getHeadAxis2(part, 0);
+                            addStrings("head", part, headNames);
+                            addStrings("shear", part, shear);
+                            addStrings("dye", part, dye);
+                            setHeadCaps(part, headCaps, headCaps1);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
                     }
-                    if (part.getNodeName().equals("phase"))
+                    else if (part.getNodeName().equals("phase"))
                     {
-                        ArrayList<Vector5> phase = new ArrayList<LoadedModel.Vector5>();
-                        String phaseName = part.getAttributes().getNamedItem("name").getNodeValue();
-
+                        Node phase = part.getAttributes().getNamedItem("name") == null
+                                ? part.getAttributes().getNamedItem("type") : part.getAttributes().getNamedItem("name");
+                        String phaseName = phase.getNodeValue();
+                        boolean preset = false;
+                        for (String s : AnimationRegistry.animations.keySet())
+                        {
+                            if (phaseName.equals(s))
+                            {
+                                tblAnims.add(AnimationRegistry.make(s, part.getAttributes(), null));
+                                preset = true;
+                            }
+                        }
                         if (phaseName.equals("global"))
                         {
                             try
                             {
-                                offset = getOffset(part);
-                                scale = getScale(part);
-                                rotation = getRotation(part);
-                                headDir = getHeadDir(part);
-                                headAxis = getHeadAxis(part);
-                                setHeadCaps(part, headCaps);
+                                offset = getOffset(part, offset);
+                                scale = getScale(part, scale);
+                                rotation = getRotation(part, rotation);
+                                headDir = getHeadDir(part, headDir);
+                                headAxis = getHeadAxis(part, 2);
+                                headAxis2 = getHeadAxis2(part, 0);
+                                addStrings("head", part, headNames);
+                                addStrings("shear", part, shear);
+                                addStrings("dye", part, dye);
+                                setHeadCaps(part, headCaps, headCaps1);
                             }
                             catch (Exception e)
                             {
                                 e.printStackTrace();
                             }
                         }
-                        else if (phaseName.equals("quadWalk"))
+                        else if (!preset)
                         {
-                            String[] lh = part.getAttributes().getNamedItem("leftHind").getNodeValue().split(":");
-                            String[] rh = part.getAttributes().getNamedItem("rightHind").getNodeValue().split(":");
-                            String[] lf = part.getAttributes().getNamedItem("leftFront").getNodeValue().split(":");
-                            String[] rf = part.getAttributes().getNamedItem("rightFront").getNodeValue().split(":");
-                            for (String s : lh)
-                                hl.add(s);
-                            for (String s : rh)
-                                hr.add(s);
-                            for (String s : rf)
-                                fr.add(s);
-                            for (String s : lf)
-                                fl.add(s);
-                            if (part.getAttributes().getNamedItem("angle") != null)
+                            Animation anim = AnimationBuilder.build(part, null);
+                            if (anim != null)
                             {
-                                walkAngle1 = Float
-                                        .parseFloat(part.getAttributes().getNamedItem("angle").getNodeValue());
-                            }
-                            quadwalkdur = Integer
-                                    .parseInt(part.getAttributes().getNamedItem("duration").getNodeValue());
-                        }
-                        else if (phaseName.equals("biWalk"))
-                        {
-                            String[] lh = part.getAttributes().getNamedItem("leftLeg").getNodeValue().split(":");
-                            String[] rh = part.getAttributes().getNamedItem("rightLeg").getNodeValue().split(":");
-                            String[] lf = part.getAttributes().getNamedItem("leftArm").getNodeValue().split(":");
-                            String[] rf = part.getAttributes().getNamedItem("rightArm").getNodeValue().split(":");
-                            for (String s : lh)
-                                hl.add(s);
-                            for (String s : rh)
-                                hr.add(s);
-                            for (String s : rf)
-                                fr.add(s);
-                            for (String s : lf)
-                                fl.add(s);
-                            biwalkdur = Integer.parseInt(part.getAttributes().getNamedItem("duration").getNodeValue());
-                            try
-                            {
-                                if (part.getAttributes().getNamedItem("legAngle") != null)
+                                Animation old = null;
+                                for (Animation a : tblAnims)
                                 {
-                                    walkAngle1 = Float
-                                            .parseFloat(part.getAttributes().getNamedItem("legAngle").getNodeValue());
+                                    if (a.name.equals(anim.name))
+                                    {
+                                        old = a;
+                                        break;
+                                    }
                                 }
-                                if (part.getAttributes().getNamedItem("armAngle") != null)
-                                {
-                                    walkAngle2 = Float
-                                            .parseFloat(part.getAttributes().getNamedItem("armAngle").getNodeValue());
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                e.printStackTrace();
+                                if (old != null) AnimationBuilder.merge(anim, old);
+                                else tblAnims.add(anim);
                             }
                         }
-                        else
-                        {
-                            addVectors(part.getChildNodes(), phase);
-                            phaseList.put(phaseName, phase);
-                        }
+                    }
+                    else if (part.getNodeName().equals("merges"))
+                    {
+                        String[] merges = part.getAttributes().getNamedItem("merge").getNodeValue().split("->");
+                        mergedAnimations.put(merges[0], merges[1]);
+                    }
+                    else if (part.getNodeName().equals("customTex"))
+                    {
+                        texturer = new TextureHelper(part);
                     }
                 }
 
@@ -207,92 +201,53 @@ public class AnimationLoader
                 {
                     loaded = new LoadedModel(parts, phaseList, model);
                 }
-                if (quadwalkdur > 0)
-                {
-                    HashSet<IExtendedModelPart> modelParts = loaded.getAllParts();
-                    HashSet<IExtendedModelPart> phl = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> phr = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> pfl = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> pfr = new HashSet<IExtendedModelPart>();
-
-                    for (IExtendedModelPart p : modelParts)
-                    {
-                        if (hl.contains(p.getName()))
-                        {
-                            phl.add(p);
-                        }
-                        if (hr.contains(p.getName()))
-                        {
-                            phr.add(p);
-                        }
-                        if (fl.contains(p.getName()))
-                        {
-                            pfl.add(p);
-                        }
-                        if (fr.contains(p.getName()))
-                        {
-                            pfr.add(p);
-                        }
-                    }
-
-                    AnimationQuadrupedWalk w = new AnimationQuadrupedWalk();
-                    w.maxAngle = walkAngle1;
-                    w.initAnimation(pfl, pfr, phl, phr, quadwalkdur);
-                    loadedPresets.put("walking", w);
-                }
-                if (biwalkdur > 0)
-                {
-                    HashSet<IExtendedModelPart> modelParts = loaded.getAllParts();
-                    HashSet<IExtendedModelPart> phl = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> phr = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> pfl = new HashSet<IExtendedModelPart>();
-                    HashSet<IExtendedModelPart> pfr = new HashSet<IExtendedModelPart>();
-
-                    for (IExtendedModelPart p : modelParts)
-                    {
-                        if (hl.contains(p.getName()))
-                        {
-                            phl.add(p);
-                        }
-                        if (hr.contains(p.getName()))
-                        {
-                            phr.add(p);
-                        }
-                        if (fl.contains(p.getName()))
-                        {
-                            pfl.add(p);
-                        }
-                        if (fr.contains(p.getName()))
-                        {
-                            pfr.add(p);
-                        }
-                    }
-                    AnimationBipedWalk w = new AnimationBipedWalk();
-                    w.angleArms = walkAngle2;
-                    w.angleLegs = walkAngle1;
-                    w.initAnimation(phl, phr, pfr, pfl, biwalkdur);
-                    loadedPresets.put("walking", w);
-                }
                 loaded.updateModel(parts, phaseList, model);
                 loaded.offset.set(offset);
                 loaded.scale.set(scale);
                 loaded.rotations = rotation;
-
-                for (String s : loadedPresets.keySet())
+                loaded.headParts.addAll(headNames);
+                loaded.shearableParts.addAll(shear);
+                loaded.dyeableParts.addAll(dye);
+                loaded.texturer = texturer;
+                for (Animation anim : tblAnims)
                 {
-                    ModelAnimation m = loadedPresets.get(s);
-                    ModelAnimation old = (ModelAnimation) loaded.phaseMap.get(s);
-                    if (old == null || m.getClass().isInstance(m))
+                    if (anim != null)
                     {
-                        loaded.phaseMap.put(s, m);
+                        loaded.animations.put(anim.name, anim);
                     }
                     else
                     {
-                        for (String s1 : old.animations.keySet())
+                        new NullPointerException("Why is there a null animation?").printStackTrace();
+                    }
+                }
+                for (String s : mergedAnimations.keySet())
+                {
+                    String toName = mergedAnimations.get(s);
+                    Animation to = null;
+                    Animation from = null;
+                    for (Animation anim : loaded.animations.values())
+                    {
+                        if (s.equals(anim.name))
                         {
-                            // if (!m.animations.containsKey(s))
-                            m.animations.put(s, old.animations.get(s1));
+                            from = anim;
                         }
+                        if (toName.equals(anim.name))
+                        {
+                            to = anim;
+                        }
+                        if (to != null && from != null) break;
+                    }
+                    if (from != null && to == null)
+                    {
+                        to = new Animation();
+                        to.name = toName;
+                        to.identifier = toName;
+                        to.loops = from.loops;
+                        loaded.animations.put(toName, to);
+                    }
+                    if (to != null && from != null)
+                    {
+                        AnimationBuilder.merge(from, to);
                     }
                 }
 
@@ -300,7 +255,9 @@ public class AnimationLoader
 
                 if (headDir != 2) loaded.headDir = headDir;
                 loaded.headAxis = headAxis;
+                loaded.headAxis2 = headAxis2;
                 loaded.headCaps = headCaps;
+                loaded.headCaps1 = headCaps1;
 
                 models.put(modelName, model);
                 modelMaps.put(modelName, loaded);
@@ -323,6 +280,7 @@ public class AnimationLoader
             models.put(model.name, model);
             modelMaps.put(model.name, loaded);
             System.err.println("No Animation found for " + model.name + " " + model.model);
+            e.printStackTrace();
         }
 
     }
@@ -330,83 +288,16 @@ public class AnimationLoader
     public static LoadedModel<?> getModel(String name)
     {
         Model model = models.get(name);
-        if (model == null)
-        {
-            return null;
-        }
+        if (model == null) { return null; }
         if (modelMaps.get(model.name) != null) return modelMaps.get(model.name);
         parse(model);
         if (modelMaps.get(model.name) != null) return modelMaps.get(model.name);
-
-        System.err.println("Model not found, finding a random one instead");
-        for (LoadedModel<?> m : modelMaps.values())
-        {
-            if (m != null) return m;
-        }
-        System.err.println("no models found");
         return null;
     }
 
-    static PartInfo getPart(Node node)
+    public static Vector5 getRotation(Node node, Vector5 default_)
     {
-        if (node.getAttributes().getNamedItem("name") == null) { return null; }
-
-        String name = node.getAttributes().getNamedItem("name").getNodeValue();
-        PartInfo ret = new PartInfo(name);
-
-        NodeList children = node.getChildNodes();
-
-        HashMap<String, ArrayList<Vector5>> phaseList = new HashMap<String, ArrayList<Vector5>>();
-        HashMap<String, PartInfo> partsList = new HashMap<String, PartInfo>();
-
-        for (int i = 0; i < children.getLength(); i++)
-        {
-            Node child = children.item(i);
-            if (child.getNodeName().equals("phase"))
-            {
-                String phaseName = child.getAttributes().getNamedItem("name").getNodeValue();
-                NodeList phases = child.getChildNodes();
-
-                ArrayList<Vector5> vectors = new ArrayList<Vector5>();
-                addVectors(phases, vectors);
-                phaseList.put(phaseName, vectors);
-
-            }
-            if (child.getNodeName().equals("part"))
-            {
-                String partName = child.getAttributes().getNamedItem("name").getNodeValue();
-                partsList.put(partName, getPart(child));
-            }
-        }
-
-        ret.children = partsList;
-        ret.setPhaseInfo(phaseList);
-
-        return ret;
-    }
-
-    static void addVectors(NodeList nodes, ArrayList<Vector5> list)
-    {
-
-        for (int j = 0; j < nodes.getLength(); j++)
-        {
-            Node node = nodes.item(j);
-            try
-            {
-                Vector5 vect = getRotation(node);
-                if (vect != null) list.add(vect);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static Vector5 getRotation(Node node)
-    {
-        Vector5 vect = null;
-        if (node.getAttributes() == null) return vect;
+        if (node.getAttributes() == null) return default_;
         if (node.getAttributes().getNamedItem("rotation") != null)
         {
             String rotation;
@@ -421,15 +312,15 @@ public class AnimationLoader
             t = Integer.parseInt(time);
             ro.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()),
                     Float.parseFloat(r[3].trim()));
-            vect = new Vector5(ro, t);
+            return new Vector5(ro, t);
         }
-        return vect;
+        return default_;
     }
 
-    public static Vector3 getOffset(Node node)
+    public static Vector3 getOffset(Node node, Vector3 default_)
     {
+        if (node.getAttributes() == null) return default_;
         Vector3 vect = null;
-        if (node.getAttributes() == null) return vect;
         if (node.getAttributes().getNamedItem("offset") != null)
         {
             vect = Vector3.getNewVectorFromPool();
@@ -438,16 +329,17 @@ public class AnimationLoader
             shift = node.getAttributes().getNamedItem("offset").getNodeValue();
             r = shift.split(",");
             vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()));
+            return vect;
         }
-        return vect;
+        return default_;
     }
 
-    public static Vector3 getScale(Node node)
+    public static Vector3 getScale(Node node, Vector3 default_)
     {
-        Vector3 vect = null;
-        if (node.getAttributes() == null) return vect;
+        if (node.getAttributes() == null) return default_;
         if (node.getAttributes().getNamedItem("scale") != null)
         {
+            Vector3 vect = null;
             vect = Vector3.getNewVectorFromPool();
             String shift;
             String[] r;
@@ -457,13 +349,14 @@ public class AnimationLoader
             if (r.length == 3)
                 vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()));
             else vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[0].trim()), Float.parseFloat(r[0].trim()));
+            return vect;
         }
-        return vect;
+        return default_;
     }
 
-    public static int getHeadDir(Node node)
+    public static int getHeadDir(Node node, int default_)
     {
-        int ret = 2;
+        int ret = default_;
         if (node.getAttributes() == null) return ret;
         if (node.getAttributes().getNamedItem("headDir") != null)
         {
@@ -472,9 +365,9 @@ public class AnimationLoader
         return ret;
     }
 
-    public static int getHeadAxis(Node node)
+    public static int getHeadAxis(Node node, int default_)
     {
-        int ret = 2;
+        int ret = default_;
         if (node.getAttributes() == null) return ret;
         if (node.getAttributes().getNamedItem("headAxis") != null)
         {
@@ -483,7 +376,31 @@ public class AnimationLoader
         return ret;
     }
 
-    public static void setHeadCaps(Node node, float[] toFill)
+    public static int getHeadAxis2(Node node, int default_)
+    {
+        int ret = default_;
+        if (node.getAttributes() == null) return ret;
+        if (node.getAttributes().getNamedItem("headAxis2") != null)
+        {
+            ret = Integer.parseInt(node.getAttributes().getNamedItem("headAxis2").getNodeValue());
+        }
+        return ret;
+    }
+
+    public static void addStrings(String key, Node node, Set<String> toAddTo)
+    {
+        if (node.getAttributes() == null) return;
+        if (node.getAttributes().getNamedItem(key) != null)
+        {
+            String[] names = node.getAttributes().getNamedItem(key).getNodeValue().split(":");
+            for (String s : names)
+            {
+                toAddTo.add(s);
+            }
+        }
+    }
+
+    public static void setHeadCaps(Node node, float[] toFill, float[] toFill1)
     {
         if (node.getAttributes() == null) return;
         if (node.getAttributes().getNamedItem("headCap") != null)
@@ -495,13 +412,48 @@ public class AnimationLoader
             toFill[0] = Float.parseFloat(r[0]);
             toFill[1] = Float.parseFloat(r[1]);
         }
+        if (node.getAttributes().getNamedItem("headCap1") != null)
+        {
+            String shift;
+            String[] r;
+            shift = node.getAttributes().getNamedItem("headCap1").getNodeValue();
+            r = shift.split(",");
+            toFill1[0] = Float.parseFloat(r[0]);
+            toFill1[1] = Float.parseFloat(r[1]);
+        }
+    }
+
+    public static void setTextureDetails(Node node, PokedexEntry entry)
+    {
+        if (node.getAttributes() == null) return;
+        String[] male = null, female = null;
+        if (node.getAttributes().getNamedItem("male") != null)
+        {
+            String shift;
+            shift = node.getAttributes().getNamedItem("male").getNodeValue();
+            male = shift.split(",");
+        }
+        if (node.getAttributes().getNamedItem("female") != null)
+        {
+            String shift;
+            shift = node.getAttributes().getNamedItem("female").getNodeValue();
+            female = shift.split(",");
+        }
+        if (female == null && male != null)
+        {
+            female = male;
+        }
+        if (male != null)
+        {
+            entry.textureDetails[0] = male;
+            entry.textureDetails[1] = female;
+        }
     }
 
     public static boolean initModel(String s)
     {
         ResourceLocation model = null;
         String anim = s + ".xml";
-
         // System.out.println(anim);
 
         ResourceLocation texture = new ResourceLocation(s.replace(MODELPATH, TEXTUREPATH) + ".png");
@@ -513,8 +465,26 @@ public class AnimationLoader
         }
         catch (IOException e1)
         {
-//            System.out.println("did not find "+s);
-            model = null;
+            try
+            {
+                model = new ResourceLocation(s + ".b3d");
+                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+                res.getInputStream().close();
+            }
+            catch (IOException e2)
+            {
+                try
+                {
+                    model = new ResourceLocation(s + ".obj");
+                    IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+                    res.getInputStream().close();
+                }
+                catch (IOException e3)
+                {
+                    // System.out.println("did not find "+s);
+                    model = null;
+                }
+            }
         }
         try
         {
@@ -527,10 +497,21 @@ public class AnimationLoader
                 if (Database.getEntry(name) != null)
                 {
                     PokedexEntry entry = Database.getEntry(name);
-                    ResourceLocation animation = new ResourceLocation(
-                            anim.replace(entry.getName(), entry.getBaseName()));
+
+                    ResourceLocation animation = null;
+                    try
+                    {
+                        animation = new ResourceLocation(anim);
+                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+                        res.getInputStream().close();
+                    }
+                    catch (IOException e3)
+                    {
+                        animation = new ResourceLocation(anim.replace(entry.getName(), entry.getBaseName()));
+                    }
+
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
-                    System.out.println("Registerd an x3d model for "+name);
+                    if (loaded && ModPokecubeML.preload) getModel(name);
                 }
                 else
                 {

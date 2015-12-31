@@ -97,6 +97,7 @@ public class ListTagBuilder {
      *
      * @return a new builder
      */
+    @SuppressWarnings("unchecked")
     public static <T extends Tag> ListTagBuilder createWith(T ... entries) {
         checkNotNull(entries);
 

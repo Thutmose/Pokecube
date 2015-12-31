@@ -16,7 +16,7 @@ import pokecube.core.moves.TreeRemover;
 
 public class BerryPlantManager extends BerryManager
 {
-    public static HashMap<String, Block> toRegister = new HashMap<String, Block>();
+    public static HashMap<String, Block> cropsToRegister = new HashMap<String, Block>();
 
     public static void addBerry(String name, int id)
     {
@@ -28,7 +28,7 @@ public class BerryPlantManager extends BerryManager
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            toRegister.put("pokecube_adventures:" + name + "Crop", crop);
+            cropsToRegister.put("pokecube_adventures:" + name + "Crop", crop);
         }
 
         BlockBerryFruit fruit = (BlockBerryFruit) new BlockBerryFruit(id).setHardness(0F)

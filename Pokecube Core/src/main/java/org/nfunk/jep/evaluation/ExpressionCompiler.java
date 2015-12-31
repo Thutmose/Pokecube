@@ -23,6 +23,7 @@ import org.nfunk.jep.ParserVisitor;
 import org.nfunk.jep.SimpleNode;
 
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ExpressionCompiler implements ParserVisitor {
 	/** Commands */
 	private Vector commands;

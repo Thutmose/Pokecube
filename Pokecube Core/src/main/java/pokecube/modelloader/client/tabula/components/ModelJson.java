@@ -17,7 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.modelloader.client.tabula.animation.IModelAnimator;
+import pokecube.modelloader.client.custom.IPartTexturer;
 import pokecube.modelloader.client.tabula.json.JsonTabulaModel;
 import pokecube.modelloader.client.tabula.model.modelbase.MowzieModelBase;
 import pokecube.modelloader.client.tabula.model.modelbase.MowzieModelRenderer;
@@ -39,8 +39,6 @@ public class ModelJson extends MowzieModelBase
      * the above list to get keys */
     public Map<String, Set<MowzieModelRenderer>> groupMap    = Maps.newHashMap();
 
-    private IModelAnimator animator;
-
     public ArrayList<Animation>       animations   = Lists.newArrayList();
     /** Map of names to animations, used to get animations for rendering more
      * easily */
@@ -48,6 +46,7 @@ public class ModelJson extends MowzieModelBase
 
     public Set<Animation> playing = Sets.newHashSet();
 
+    public IPartTexturer texturer;
     public Animation playingAnimation;
     private float    animationTimer;
     private int      animationLength;
@@ -81,12 +80,6 @@ public class ModelJson extends MowzieModelBase
         setInitPose();
     }
 
-    public ModelJson(JsonTabulaModel model, IModelAnimator animator)
-    {
-        this(model);
-        this.animator = animator;
-    }
-
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float rotation, float rotationYaw,
             float rotationPitch, float scale)
     {
@@ -103,6 +96,8 @@ public class ModelJson extends MowzieModelBase
             {
                 if (cube != null)
                 {
+                    if(texturer!=null) texturer.bindObject(entity);
+                    cube.setTexturer(texturer);
                     cube.render(0.0625f, entity);
                 }
             }
@@ -129,12 +124,6 @@ public class ModelJson extends MowzieModelBase
             if (playingAnimation != null || !playing.isEmpty())
             {
                 updateAnimation(entity, partialTicks);
-            }
-
-            if (animator != null)
-            {
-                animator.setRotationAngles(this, limbSwing, limbSwingAmount, rotation, rotationYaw, rotationPitch,
-                        partialTicks, entity);
             }
         }
     }
@@ -250,16 +239,12 @@ public class ModelJson extends MowzieModelBase
         {
             playingAnimation = animation;
             animationLength = 0;
-            for (Entry<String, ArrayList<AnimationComponent>> entry : playingAnimation.sets.entrySet())
+            
+            if(animation.getLength() < 0)
             {
-                for (AnimationComponent component : entry.getValue())
-                {
-                    if (component.startKey + component.length > animationLength)
-                    {
-                        animationLength = component.startKey + component.length;
-                    }
-                }
+                animation.initLength();
             }
+            animationLength = animation.getLength();
         }
     }
 
@@ -294,11 +279,11 @@ public class ModelJson extends MowzieModelBase
                     {
                         componentTimer = component.length;
                     }
-////TODO get the scale working properly, probably need saving the original scale somewhere.
-//                    animating.scaleX = (float) (1 + component.scaleChange[0] / component.length * componentTimer);
-//                    animating.scaleY = (float) (1 + component.scaleChange[1] / component.length * componentTimer);
-//                    animating.scaleZ = (float) (1 + component.scaleChange[2] / component.length * componentTimer);
-//                    
+////TODO See that this works.
+                    animating.scaleX += (float) (component.scaleChange[0] / component.length * componentTimer);
+                    animating.scaleY += (float) (component.scaleChange[1] / component.length * componentTimer);
+                    animating.scaleZ += (float) (component.scaleChange[2] / component.length * componentTimer);
+                    
                     animating.rotationPointX += component.posChange[0] / component.length * componentTimer;
                     animating.rotationPointY += component.posChange[1] / component.length * componentTimer;
                     animating.rotationPointZ += component.posChange[2] / component.length * componentTimer;

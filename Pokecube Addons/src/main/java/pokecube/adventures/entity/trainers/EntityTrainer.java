@@ -83,6 +83,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 		super(par1World);
 
         this.setSize(0.6F, 1.8F);
+        this.renderDistanceWeight = 4;
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(1, new EntityAITrainer(this, EntityPlayer.class));
         this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
@@ -304,6 +305,26 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     	return ret;
     }
     
+    public void lowerCooldowns()
+    {
+        boolean done = attackCooldown[0]<=0;
+        if(done)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                attackCooldown[i] = -1;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                attackCooldown[i]--;
+            }
+        }
+        cooldown--;
+    }
+    
     public void throwCubeAt(Entity target)
     {
       	for(int j = 0; j<6; j++)
@@ -312,14 +333,21 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
       		if(i!=null&&attackCooldown[j]<0)
       		{
       			EntityPokecube entity = new EntityPokecube(worldObj, this, target, i.copy());
-      			
       			worldObj.spawnEntityInWorld(entity);
       			out++;
       			attackCooldown[j] = ATTACKCOOLDOWN;
-      			cooldown = 200;
-      			globalCooldown = 200;
+      			cooldown = ATTACKCOOLDOWN;
+      			globalCooldown = 1000;
       			pokecubes[j] = null;
+      			for(int k = j+1; k<6; k++)
+      			{
+      			    attackCooldown[k] = 20;
+      			}
       			return;
+      		}
+      		if(i!=null && attackCooldown[j]<30)
+      		{
+      		    return;
       		}
       	}
       	if(globalCooldown > 0 && out==0)

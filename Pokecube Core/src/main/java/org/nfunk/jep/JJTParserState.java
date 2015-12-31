@@ -10,6 +10,7 @@ JEP - Java Math Expression Parser 2.3.1
 
 package org.nfunk.jep;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 class JJTParserState {
   private java.util.Stack nodes;
   private java.util.Stack marks;

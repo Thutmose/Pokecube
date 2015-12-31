@@ -10,6 +10,7 @@ package org.nfunk.jep;
 import java.util.Hashtable;
 
 import org.nfunk.jep.function.PostfixMathCommandI;
+@SuppressWarnings({ "serial", "rawtypes", "unchecked" })
 public class FunctionTable extends Hashtable
 {
 	public FunctionTable()

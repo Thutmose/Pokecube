@@ -110,11 +110,7 @@ public class PokemobPacketHandler
                     else if ((e = (Entity) PokecubeSerializer.getInstance().getPokemob(id)) != null)
                     {
                         Vector3 v = Vector3.readFromBuff(buffer);
-                        Vector3 v2 = Vector3.getNewVectorFromPool().set(e);
-                        if (v.distanceTo(v2) > e.width)
-                        {
-                            v.moveEntity(e);
-                        }
+                        v.moveEntity(e);
                     }
                 }
             }

@@ -1,3 +1,0 @@
-Auto recipe test:
-
-[crafting{200,50,key=block/button}]

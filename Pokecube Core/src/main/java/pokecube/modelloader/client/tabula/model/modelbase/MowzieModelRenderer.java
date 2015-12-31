@@ -11,15 +11,18 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.modelloader.client.custom.IPartTexturer;
+import pokecube.modelloader.client.custom.IRetexturableModel;
 import pokecube.modelloader.client.custom.RenderAdvancedPokemobModel;
 import pokecube.modelloader.client.tabula.TabulaPackLoader;
 import pokecube.modelloader.client.tabula.TabulaPackLoader.TabulaModelSet;
 
-/** @author BobMowzie, gegy1000, FiskFille
+/** @author BobMowzie, gegy1000, FiskFille, Thutmose
  * @since 0.1.0 */
 @SideOnly(Side.CLIENT)
-public class MowzieModelRenderer extends ModelRenderer
+public class MowzieModelRenderer extends ModelRenderer implements IRetexturableModel
 {
     public float initRotateAngleX;
     public float initRotateAngleY;
@@ -33,9 +36,13 @@ public class MowzieModelRenderer extends ModelRenderer
     public float initRotationPointY;
     public float initRotationPointZ;
 
-    public float          scaleX = 1f;
-    public float          scaleY = 1f;
-    public float          scaleZ = 1f;
+    public float initScaleX = 1f;
+    public float initScaleY = 1f;
+    public float initScaleZ = 1f;
+
+    public float          scaleX     = 1f;
+    public float          scaleY     = 1f;
+    public float          scaleZ     = 1f;
     public ModelRenderer  parent;
     public boolean        hasInitPose;
     private boolean       compiled;
@@ -43,6 +50,8 @@ public class MowzieModelRenderer extends ModelRenderer
     public String         name;
     public String         identifier;
     public TabulaModelSet set;
+    IPartTexturer         texturer;
+    double[]              texOffsets = { 0, 0 };
 
     public MowzieModelRenderer(ModelBase modelBase, String name)
     {
@@ -116,6 +125,10 @@ public class MowzieModelRenderer extends ModelRenderer
         initOffsetY = offsetY;
         initOffsetZ = offsetZ;
 
+        initScaleX = scaleX;
+        initScaleY = scaleY;
+        initScaleZ = scaleZ;
+
         hasInitPose = true;
     }
 
@@ -135,6 +148,10 @@ public class MowzieModelRenderer extends ModelRenderer
             offsetX = initOffsetX;
             offsetY = initOffsetY;
             offsetZ = initOffsetZ;
+
+            scaleX = initScaleX;
+            scaleY = initScaleY;
+            scaleZ = initScaleZ;
         }
     }
 
@@ -253,7 +270,22 @@ public class MowzieModelRenderer extends ModelRenderer
 
         // Allows specific part recolouring, this could possibly be moved over
         // to a method inside this class somehow
-        int rgba = RenderAdvancedPokemobModel.getColour(identifier, set, (IPokemob) entity, 0xFFFFFFFF);
+        
+        int rgba = 0;
+        if(entity instanceof IMobColourable)
+        {
+            int[] cols = ((IMobColourable)entity).getRGBA();
+            rgba += cols[2];
+            rgba += cols[1] << 8;
+            rgba += cols[2] << 16;;
+            rgba += cols[3] << 24;
+        }
+        else
+        {
+            rgba = 0xFFFFFFFF;
+        }
+        
+        rgba = RenderAdvancedPokemobModel.getColour(identifier, set, (IPokemob) entity, rgba);
 
         float alpha = ((rgba >> 24) & 255) / 255f;
         float red = ((rgba >> 16) & 255) / 255f;
@@ -285,20 +317,32 @@ public class MowzieModelRenderer extends ModelRenderer
                  * seperate method. */
                 if (set.isHeadRoot(identifier) && entity instanceof IPokemob)
                 {
-                    float head = (entity.getRotationYawHead() + 360) % 360;
-                    float body = (entity.rotationYaw + 360) % 360;
-                    // TODO improve on these caps.;
-                    float rot = Math.min(set.headCap[1], head - body);
-                    float headRot = Math.max(rot, set.headCap[0]);
-                    headRot *= set.headDir;
+                    float ang;
+                    float head = (entity.getRotationYawHead()) % 360 + 180;
+                    float diff = 0;
+                    float body = (entity.rotationYaw) % 360;
+                    if (set.headDir == 1) body *= -1;
+                    else head *= -1;
+
+                    diff = (head + body) % 360;
+
+                    diff = (diff + 360) % 360;
+                    diff = (diff - 180) % 360;
+                    diff = Math.max(diff, set.headCap[0]);
+                    diff = Math.min(diff, set.headCap[1]);
+
+                    ang = diff;
+
+                    float ang2 = Math.max(entity.rotationPitch, set.headCap1[0]);
+                    ang2 = Math.min(ang2, set.headCap1[1]);
 
                     GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
                     rotateToParent();
 
-                    if (set.headAxis == 2) GlStateManager.rotate(headRot, 0, 0, 1);
-                    else GlStateManager.rotate(headRot, 0, 1, 0);
-                    GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
+                    if (set.headAxis == 2) GlStateManager.rotate(ang, 0, 0, 1);
+                    else GlStateManager.rotate(ang, 0, 1, 0);
+                    GlStateManager.rotate(ang2, 1, 0, 0);
 
                     unRotateToParent();
 
@@ -314,7 +358,20 @@ public class MowzieModelRenderer extends ModelRenderer
                         GL11.glPushMatrix();
                         // Apply Colour
                         GL11.glColor4f(red, green, blue, alpha);
+                        // Apply Texture
+                        if (texturer != null)
+                        {
+                            texturer.applyTexture(name);
+                            texturer.shiftUVs(name, texOffsets);
+                            GL11.glMatrixMode(GL11.GL_TEXTURE);
+                            GL11.glLoadIdentity();
+                            GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
+                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        }
                         GL11.glCallList(displayList);
+                        GL11.glMatrixMode(GL11.GL_TEXTURE);
+                        GL11.glLoadIdentity();
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glColor4f(1, 1, 1, 1);
                         GL11.glPopMatrix();
                         if (childModels != null)
@@ -332,7 +389,20 @@ public class MowzieModelRenderer extends ModelRenderer
                         GL11.glPushMatrix();
                         // Apply Colour
                         GL11.glColor4f(red, green, blue, alpha);
+                        // Apply Texture
+                        if (texturer != null)
+                        {
+                            texturer.applyTexture(name);
+                            texturer.shiftUVs(name, texOffsets);
+                            GL11.glMatrixMode(GL11.GL_TEXTURE);
+                            GL11.glLoadIdentity();
+                            GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
+                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        }
                         GL11.glCallList(displayList);
+                        GL11.glMatrixMode(GL11.GL_TEXTURE);
+                        GL11.glLoadIdentity();
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
                         GL11.glColor4f(1, 1, 1, 1);
                         GL11.glPopMatrix();
 
@@ -370,7 +440,21 @@ public class MowzieModelRenderer extends ModelRenderer
                     GL11.glPushMatrix();
                     // Apply Colour
                     GL11.glColor4f(red, green, blue, alpha);
+                    // Apply Texture
+                    if (texturer != null)
+                    {
+                        texturer.applyTexture(name);
+                        texturer.shiftUVs(name, texOffsets);
+                        GL11.glMatrixMode(GL11.GL_TEXTURE);
+                        GL11.glLoadIdentity();
+                        GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                    }
                     GL11.glCallList(displayList);
+                    GL11.glMatrixMode(GL11.GL_TEXTURE);
+                    GL11.glLoadIdentity();
+                    GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
                     GL11.glColor4f(1, 1, 1, 1);
                     GL11.glPopMatrix();
 
@@ -451,5 +535,18 @@ public class MowzieModelRenderer extends ModelRenderer
         }
         GL11.glEndList();
         compiled = true;
+    }
+
+    @Override
+    public void setTexturer(IPartTexturer texturer)
+    {
+        this.texturer = texturer;
+        if (childModels != null)
+        {
+            for (Object part : childModels)
+            {
+                if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setTexturer(texturer);
+            }
+        }
     }
 }

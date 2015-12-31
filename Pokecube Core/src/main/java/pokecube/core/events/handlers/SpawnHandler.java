@@ -441,6 +441,8 @@ public final class SpawnHandler
                         {
                             if (creatureSpecificInit(entityliving, world, x, y, z, v3.set(entityliving)))
                             {
+                                SpawnEvent.Post evt = new SpawnEvent.Post(dbe, v3, world, (IPokemob) entityliving);
+                                MinecraftForge.EVENT_BUS.post(evt);
                                 world.spawnEntityInWorld(entityliving);
                                 totalSpawnCount++;
                             }
@@ -504,7 +506,7 @@ public final class SpawnHandler
         if (!temp.set(location).addTo(0, 0, -entry.width / 2).clearOfBlocks(worldObj)) return false;
         if (!temp.set(location).addTo(-entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
 
-        SpawnEvent.Spawn evt = new SpawnEvent.Spawn(entry, location, worldObj);
+        SpawnEvent.Pre evt = new SpawnEvent.Pre(entry, location, worldObj);
         MinecraftForge.EVENT_BUS.post(evt);
         if (evt.isCanceled()) return false;
 

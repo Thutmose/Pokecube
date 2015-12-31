@@ -32,6 +32,7 @@ import org.nfunk.jep.type.Complex;
  * @author Rich Morris
  * Created on 18-Nov-2003
  */
+@SuppressWarnings({ "rawtypes" })
 public class If extends PostfixMathCommand implements SpecialEvaluationI {
 
 	/**

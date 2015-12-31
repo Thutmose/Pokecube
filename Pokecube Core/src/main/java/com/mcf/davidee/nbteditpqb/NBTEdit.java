@@ -17,7 +17,6 @@ import net.minecraft.command.ServerCommandManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -144,7 +143,7 @@ public class NBTEdit
         m.modId = MODID;
         m.version = VERSION;
         m.name = NAME;
-        m.updateUrl = "";
+//        m.updateUrl = "";
         m.authorList.add("Davidee, Thutmose");
 
         m.credits = "Thanks to Mojang, Forge, and all your support.";

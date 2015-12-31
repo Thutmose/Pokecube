@@ -173,7 +173,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
     @Override
     public int getSizeInventory()
     {
-        return 10;
+        return inventory.length;
     }
 
     @Override

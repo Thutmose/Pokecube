@@ -10,18 +10,21 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.client.Resources;
@@ -33,7 +36,6 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
-import pokecube.core.utils.Vector4;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -59,13 +61,15 @@ public class GuiDisplayPokecubeInfo extends Gui
         return instance;
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void onRenderWorldLast(RenderWorldLastEvent event)
+    public void onRenderHotbar(RenderGameOverlayEvent.Post event)
     {
         try
         {
             if (minecraft.currentScreen == null
-                    && !((Minecraft) mod_Pokecube.getMinecraftInstance()).gameSettings.hideGUI)
+                    && !((Minecraft) mod_Pokecube.getMinecraftInstance()).gameSettings.hideGUI
+                    && event.type == ElementType.HOTBAR)
                 draw(event);
         }
         catch (Throwable e)
@@ -74,19 +78,18 @@ public class GuiDisplayPokecubeInfo extends Gui
         }
     }
 
-    private void draw(RenderWorldLastEvent event)
+    private void draw(RenderGameOverlayEvent.Post event)
     {
         int h = Mod_Pokecube_Helper.guiOffset[0];
         int w = Mod_Pokecube_Helper.guiOffset[1];
 
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(false);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glEnable(GL11.GL_BLEND);
-        RenderHelper.disableStandardItemLighting();
+        GL11.glPushMatrix();
+
+        minecraft.entityRenderer.setupOverlayRendering();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 
         GL11.glNormal3f(0.0F, -1.0F, 0.0F);
-        minecraft.entityRenderer.setupOverlayRendering();
 
         IPokemob[] pokemobs = getPokemobsToDisplay();
         if (indexPokemob < 0)
@@ -94,8 +97,6 @@ public class GuiDisplayPokecubeInfo extends Gui
             indexPokemob = 0;
         }
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        minecraft.entityRenderer.setupOverlayRendering();
 
         if (indexPokemob > pokemobs.length)
         {
@@ -107,12 +108,15 @@ public class GuiDisplayPokecubeInfo extends Gui
         {
             indexPokemob = 0;
         }
-        if (indexPokemob >= pokemobs.length) { return; }
+        if (indexPokemob >= pokemobs.length)
+        {
+            GL11.glPopMatrix();
+            return;
+        }
         IPokemob pokemob = pokemobs[indexPokemob];
         int n = pokemobs.length;
         if (pokemob != null)
         {
-
             pokemob.setMoveIndex(pokemob.getMoveIndex());
 
             if (pokemob.getMoveIndex() == 5)
@@ -155,17 +159,8 @@ public class GuiDisplayPokecubeInfo extends Gui
 
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
                     this.drawTexturedModalRect(0 + h, 13 + 12 * moveIndex + w, 0, 13, 91, 12);
-                    GL11.glPushMatrix();
-                    Color moveColor = new Color(move.getType().colour);// TODO
-                                                                       // see
-                                                                       // why
-                                                                       // both
-                                                                       // of
-                                                                       // these
-                                                                       // colour
-                                                                       // methods
-                                                                       // are
-                                                                       // needed.
+                    GL11.glPushMatrix();// TODO find out why both needed
+                    Color moveColor = new Color(move.getType().colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);
                     fontRenderer.drawString(MovesUtils.getTranslatedMove(move.getName()), 5 + 0 + h,
@@ -176,11 +171,9 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
 
         }
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_BLEND);
-        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
+        GL11.glPopMatrix();
     }
 
     IPokemob[] arrayRet       = new IPokemob[0];
@@ -215,8 +208,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             {
                 ret.add(pokemob);
             }
-            // if (ret.size()>=5)
-            // break;
+
         }
         arrayRet = ret.toArray(new IPokemob[ret.size()]);
         Arrays.sort(arrayRet, new Comparator<IPokemob>()
@@ -237,7 +229,6 @@ public class GuiDisplayPokecubeInfo extends Gui
                 return e1.ticksExisted - e2.ticksExisted;
             }
         });
-        // Arrays.sort(arrayRet, PokemobAIThread.pokemobComparator);
 
         return arrayRet;
     }
@@ -261,7 +252,6 @@ public class GuiDisplayPokecubeInfo extends Gui
     /** Incremenrs pokemob move index */
     public void nextMove()
     {
-
         IPokemob pokemob = getCurrentPokemob();
         if (pokemob != null)
         {
@@ -275,7 +265,6 @@ public class GuiDisplayPokecubeInfo extends Gui
     /** Decrements pokemob move index */
     public void previousMove()
     {
-
         IPokemob pokemob = getCurrentPokemob();
         if (pokemob != null)
         {
@@ -350,7 +339,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         EntityPlayer player = minecraft.thePlayer;
         Vector3 look = Vector3.getNewVectorFromPool().set(player.getLook(1));
         Vector3 temp = Vector3.getNewVectorFromPool().set(player).addTo(0, player.getEyeHeight(), 0);
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
         buffer.writeBytes(message);
 
         Entity target = temp.firstEntityExcluding(32, look, player.worldObj, true, player);
@@ -375,7 +364,9 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
 
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner) pokemob.displayMessageToOwner(
-                    "You tell " + pokemob.getPokemonDisplayName() + " to attack " + target.getName());//TODO localize this
+                    "You tell " + pokemob.getPokemonDisplayName() + " to attack " + target.getName());// TODO
+                                                                                                      // localize
+                                                                                                      // this
             buffer.writeInt(((Entity) pokemob).getEntityId());
             if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
             {
@@ -394,15 +385,15 @@ public class GuiDisplayPokecubeInfo extends Gui
 
                     if (locations.size() > 0)
                     {
-                        Vector4 location = locations
-                                .get((GuiScrollableLists.instance().indexLocation) % locations.size()).loc;
-                        buffer.writeInt((int) location.w);
-                        buffer.writeFloat(location.x);
-                        buffer.writeFloat(location.y);
-                        buffer.writeFloat(location.z);
+                        buffer.writeBoolean(true);
+                    }
+                    else
+                    {
+                        buffer.writeBoolean(false);
                     }
                 }
             }
+            buffer.writeBoolean(false);
         }
         PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS,
                 buffer.array());
@@ -414,8 +405,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     public void pokemobStance()
     {
         byte[] message = { (byte) 22 };
-        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS,
-                message);
+        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS, message);
         PokecubePacketHandler.sendToServer(packet);
     }
 

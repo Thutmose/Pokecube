@@ -59,8 +59,9 @@ public class PokedexEntry
     public String[]            species;
     /** Inital list of species which are prey */
     protected String[]         food;
-    /** Array used for animated or gender based textures. */
-    protected String[][]       textureDetails     = { { "" }, null };
+    /** Array used for animated or gender based textures. Index 0 is the male
+     * textures, index 1 is the females */
+    public String[][]          textureDetails     = { { "" }, null };
     /** The abilities available to the pokedex entry. */
     protected String[]         abilities          = { null, null, null };
     /** Initial Happiness of the pokemob */
@@ -238,7 +239,7 @@ public class PokedexEntry
                 form = new PokedexEntry(pokedexNb, name, possibleMoves, lvlUpMoves);
                 this.copyToForm(form);
                 addForm(form);
-                System.out.println("new form for " + this + " as " + form);
+//                System.out.println("new form for " + this + " as " + form);
             }
             form.setBaseStats(HP, ATT, DEF, ATTSPE, DEFSPE, VIT, catchRate, pokeType, pokeType2);
         }
@@ -335,16 +336,22 @@ public class PokedexEntry
 
     public String getTexture(byte gender)
     {
-        return getTexture(gender, 0);// texture;
+        return getTexture(gender, 0);
     }
 
     public String getTexture(byte gender, long time)
     {
+        return getTexture(name, gender, time);
+    }
+    
+    public String getTexture(String original, byte gender, long time)
+    {
+        if(original == null) original = name;
         int index = gender == IPokemob.FEMALE && textureDetails[1] != null ? 1 : 0;
         String[] textureSuffixs = textureDetails[index];
         long suffixIndex = ((time % textureSuffixs.length * 3) / textureSuffixs.length);
         String suffix = textureSuffixs[(int) suffixIndex];
-        return "textures/entities/" + name + suffix + ".png";// texture;
+        return "textures/entities/" + original + suffix + ".png";// texture;
     }
 
     /** @return the pokedexNb */
@@ -979,7 +986,6 @@ public class PokedexEntry
     public Ability getAbility(int number)
     {
         if (number < 3) { return AbilityManager.getAbility(abilities[number]); }
-
         return null;
     }
 

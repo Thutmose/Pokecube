@@ -60,9 +60,7 @@ public class EntityAITrainer extends EntityAIBase {
 			}
 		}
 
-		for (int i = 0; i < 6; i++)
-			trainer.attackCooldown[i]--;
-		trainer.cooldown--;
+		trainer.lowerCooldowns();
 		
 		trainer.setTrainerTarget(target);
 		return target != null;

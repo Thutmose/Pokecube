@@ -1,5 +1,6 @@
 package pokecube.adventures.client;
 
+import static pokecube.adventures.handlers.BlockHandler.afa;
 import static pokecube.adventures.handlers.BlockHandler.cloner;
 import static pokecube.adventures.handlers.BlockHandler.warppad;
 import static pokecube.core.PokecubeItems.registerItemTexture;
@@ -14,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,11 +26,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.CommonProxy;
 import pokecube.adventures.LegendaryConditions;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.client.gui.GUIBiomeSetter;
+import pokecube.adventures.client.gui.GuiAFA;
 import pokecube.adventures.client.gui.GuiBag;
 import pokecube.adventures.client.gui.GuiCloner;
 import pokecube.adventures.client.gui.GuiTrainerEdit;
+import pokecube.adventures.client.render.blocks.RenderAFA;
 import pokecube.adventures.client.render.entity.RenderTarget;
 import pokecube.adventures.client.render.entity.RenderTrainer;
 import pokecube.adventures.entity.trainers.EntityLeader;
@@ -52,6 +57,9 @@ public class ClientProxy extends CommonProxy
 
         registerItemTexture(Item.getItemFromBlock(cloner), 0,
                 new ModelResourceLocation("pokecube_adventures:cloner", "inventory"));
+        
+        registerItemTexture(Item.getItemFromBlock(afa), 0,
+                new ModelResourceLocation("pokecube_adventures:afa", "inventory"));
 
         registerItemTexture(Item.getItemFromBlock(warppad), 0,
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));
@@ -62,7 +70,7 @@ public class ClientProxy extends CommonProxy
         
         for (int i = 0; i < LegendaryConditions.spawner1.types.size(); i++)
         {
-            ModelBakery.addVariantName(item, "pokecube_adventures:" + i + "_spawner");
+            ModelBakery.registerItemVariants(item, new ResourceLocation("pokecube_adventures:" + i + "_spawner"));
             PokecubeItems.registerItemTexture(item, i,
                     new ModelResourceLocation("pokecube_adventures:" + i + "_spawner", "inventory"));
         }
@@ -75,16 +83,10 @@ public class ClientProxy extends CommonProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class, new RenderTarget());
         RenderingRegistry.registerEntityRenderingHandler(EntityTrainer.class, new RenderTrainer());
         RenderingRegistry.registerEntityRenderingHandler(EntityLeader.class, new RenderTrainer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
 
         RenderHandler h = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(h);
-
-        // if(!(Minecraft.getMinecraft().getRenderManager().entityRenderMap.get(EntityPlayer.class)
-        // instanceof RenderPlayerPokemob))
-        // {
-        // Minecraft.getMinecraft().getRenderManager().entityRenderMap.put(EntityPlayer.class,
-        // new RenderPlayerPokemob());
-        // }
 
         try
         {
@@ -165,7 +167,11 @@ public class ClientProxy extends CommonProxy
         {
             return new GuiCloner(player.inventory, (TileEntityCloner) world.getTileEntity(pos));
         }
-        else if (guiID == 5) { return new GUIBiomeSetter(player.getHeldItem()); }
+        else if (guiID == PokecubeAdv.GUIBIOMESETTER_ID) { return new GUIBiomeSetter(player.getHeldItem()); }
+        else if (guiID == PokecubeAdv.GUIAFA_ID)
+        {
+            return new GuiAFA(player.inventory, (TileEntityAFA) world.getTileEntity(pos));
+        }
         return null;
     }
 

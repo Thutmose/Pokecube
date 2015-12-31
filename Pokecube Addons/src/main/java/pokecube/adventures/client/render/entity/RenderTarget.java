@@ -12,8 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public class RenderTarget extends RendererLivingEntity
+public class RenderTarget<T extends EntityLivingBase> extends RendererLivingEntity<EntityLivingBase>
 {
 
     public RenderTarget(ModelBase par1ModelBase, float par2)
@@ -33,9 +32,15 @@ public class RenderTarget extends RendererLivingEntity
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity entity)
+    protected ResourceLocation getEntityTexture(EntityLivingBase entity)
     {
         return new ResourceLocation(PokecubeAdv.ID, "textures/hologram.png");
+    }
+
+    @Override
+    protected boolean canRenderName(EntityLivingBase entity)
+    {
+        return false;
     }
 
     public static class ModelTarget extends ModelBase

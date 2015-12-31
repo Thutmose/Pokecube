@@ -1,0 +1,16 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#pc_top": "pokecube:blocks/pc_top"
+        },
+        "model": "pokecube:pc_top.obj"
+     },
+    "variants": {
+        "top=true": [{}],
+        "top=false": [{}],
+        "inventory": [{
+            "transform": "forge:default-block"
+        }]
+    }
+}

@@ -3,6 +3,7 @@ package pokecube.core.items.pokecubes;
 import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -16,6 +17,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
@@ -35,6 +37,8 @@ import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMultibox;
 import thut.api.maths.Vector3;
@@ -352,7 +356,19 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             worldObj.spawnEntityInWorld((Entity) entity1);
             ((IMultibox) entity1).setBoxes();
             ((IMultibox) entity1).setOffsets();
-
+            
+            if(!worldObj.isRemote)
+            {
+                MessageClient message;
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(20));
+                buffer.writeByte(MessageClient.ALIVECHECK);
+                buffer.writeInt(((Entity)entity1).getEntityId());
+                buffer.writeBoolean(true);
+                v0.set(entity1).writeToBuff(buffer);
+                message = new MessageClient(buffer);
+                PokecubePacketHandler.sendToAllNear(message, v0, dimension, 30);
+            }
+            
             boolean outOfBlock = true;
 
             if (!outOfBlock)

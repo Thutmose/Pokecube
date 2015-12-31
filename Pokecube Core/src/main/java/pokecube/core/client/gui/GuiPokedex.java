@@ -16,13 +16,14 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -36,7 +37,6 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.Resources;
-import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
@@ -45,6 +45,7 @@ import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -131,6 +132,8 @@ public class GuiPokedex extends GuiScreen
     @Override
     public void initGui()
     {
+        super.initGui();
+
         buttonList.clear();
         int yOffset = height / 2 - 80;
         int xOffset = width / 2;
@@ -187,7 +190,7 @@ public class GuiPokedex extends GuiScreen
     @Override
     protected void keyTyped(char par1, int par2) throws IOException
     {
-        if (par2 == Keyboard.KEY_LMENU) return;
+        if (isAltKeyDown()) return;
         if (page == 4)
         {
             nicknameTextField.setEnabled(true);
@@ -233,7 +236,8 @@ public class GuiPokedex extends GuiScreen
 
                     PokecubeSerializer.getInstance().unsetTeleport(location,
                             minecraft.thePlayer.getUniqueID().toString());
-                    PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX, buffer.array());
+                    PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
+                            buffer.array());
                     PokecubePacketHandler.sendToServer(packet);
                 }
 
@@ -679,20 +683,23 @@ public class GuiPokedex extends GuiScreen
     @Override
     public void drawScreen(int i, int j, float f)
     {
+        super.drawScreen(i, j, f);
+
         Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         minecraft.renderEngine.bindTexture(Resources.GUI_POKEDEX);
         int j2 = (width - xSize) / 2;
         int k2 = (height - ySize) / 2;
         drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);
+
         GL11.glPushMatrix();
 
         int yOffset = height / 2 - 80;
         int xOffset = width / 2;
 
-        renderMob();
-
+        GL11.glPushMatrix();
+        renderMob();// TODO find out why rendering player messes up shaders
+        GL11.glPopMatrix();
         nicknameTextField.drawTextBox();
         if (page == 0)
         {
@@ -744,9 +751,7 @@ public class GuiPokedex extends GuiScreen
                 // e.printStackTrace();
             }
         }
-
         GL11.glPopMatrix();
-        super.drawScreen(i, j, f);
     }
 
     /** Draws the first page of the pokedex, this is the page with the pokemob's
@@ -777,7 +782,7 @@ public class GuiPokedex extends GuiScreen
             String level = "L. " + pokemob.getLevel();
             drawString(fontRendererObj, level, xOffset + 15, yOffset + 11, 0xffffff);
             drawCenteredString(fontRendererObj, gender, xOffset + 57, yOffset + 11, genderColor);
-            byte[] nature = pokemob.getNatureModifiers();
+            byte[] nature = pokemob.getNature().getStatsMod();
             int[] stats = Tools.getStats(pokemob);
 
             if (canEditPokemob() || PokecubeMod.debug)
@@ -833,15 +838,15 @@ public class GuiPokedex extends GuiScreen
         {
             int num = 1;
             PokedexEntry test = Pokedex.getInstance().getFirstEntry();
-            while(test != pokedexEntry && num < 1500)
+            while (test != pokedexEntry && num < 1500)
             {
                 test = Pokedex.getInstance().getNext(test, 1);
                 num++;
             }
-            
+
             String level = "N. " + num;
             drawString(fontRendererObj, level, xOffset + 15, yOffset + 11, 0xffffff);
-            
+
             if (!closestVillage.isEmpty())
             {
                 GL11.glPushMatrix();
@@ -1033,7 +1038,7 @@ public class GuiPokedex extends GuiScreen
             Ability ability = pokemob.getMoveStats().ability;
             if (ability != null)
             {
-                drawString(fontRendererObj, ability.name, xOffset + 14, yOffset + 99, 0xFFFFFF);
+                drawString(fontRendererObj, ability.getName(), xOffset + 14, yOffset + 99, 0xFFFFFF);
             }
         }
     }
@@ -1162,34 +1167,14 @@ public class GuiPokedex extends GuiScreen
     @Override
     public void drawWorldBackground(int tint)
     {
-        if (this.mc.theWorld != null)
-        {
-            this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
-        }
-        else
-        {
-            this.drawBackground(tint);
-        }
+        super.drawWorldBackground(tint);
     }
 
     @Override
     /** Draws the background (i is always 0 as of 1.2.2) */
     public void drawBackground(int tint)
     {
-        GlStateManager.disableLighting();
-        GlStateManager.disableFog();
-        PTezzelator tez = PTezzelator.instance;
-        this.mc.getTextureManager().bindTexture(optionsBackground);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        float f = 32.0F;
-        tez.begin();
-        tez.color(4210752);
-        tez.vertex(0.0D, (double) this.height, 0.0D).tex(0.0D, (double) ((float) this.height / f + (float) tint));
-        tez.vertex((double) this.width, (double) this.height, 0.0D).tex((double) ((float) this.width / f),
-                (double) ((float) this.height / f + (float) tint));
-        tez.vertex((double) this.width, 0.0D, 0.0D).tex((double) ((float) this.width / f), (double) tint);
-        tez.vertex(0.0D, 0.0D, 0.0D).tex(0.0D, (double) tint);
-        tez.end();
+        super.drawBackground(tint);
     }
 
     private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
@@ -1205,7 +1190,7 @@ public class GuiPokedex extends GuiScreen
             pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(),
                     entityPlayer.worldObj);
 
-            ((IPokemob)pokemob).specificSpawnInit();
+            ((IPokemob) pokemob).specificSpawnInit();
             if (pokemob != null)
             {
                 entityToDisplayMap.put(pokedexEntry.getPokedexNb(), pokemob);
@@ -1239,21 +1224,20 @@ public class GuiPokedex extends GuiScreen
                 if (entity instanceof IPokemob)
                 {
                     IPokemob mob = (IPokemob) entity;
-                    mob.setColours(new byte[] { 0, 0, 0 });
                     mob.setSize(1);
                     mob.setShiny(false);
                 }
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(0, 0, 0, 255);
             }
             else
             {
                 if (entity instanceof IPokemob)
                 {
                     IPokemob mob = (IPokemob) entity;
-                    mob.setColours(new byte[] { 127, 127, 127 });
                     mob.setSize(1);
                     mob.setShiny(false);
-                    // System.out.println(pokemob.getPokedexEntry().width+":"+pokemob.getPokedexEntry().height+":"+pokemob.getPokedexEntry().modelScale);
                 }
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(255, 255, 255, 255);
             }
 
             pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
@@ -1277,26 +1261,6 @@ public class GuiPokedex extends GuiScreen
             entity.rotationPitch = xHeadRenderAngle;
             entity.rotationYawHead = entity.rotationYaw;
             GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-            float offset = 1.6f;
-
-            float f, f1, f2;
-            f = entityPlayer.rotationPitch;
-            f1 = entityPlayer.rotationYaw;
-            f2 = entityPlayer.rotationYawHead;
-
-            entityPlayer.rotationPitch = 00;
-            entityPlayer.renderYawOffset = 50;
-            entityPlayer.rotationYawHead = 40;
-            Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entityPlayer, offset + entity.width / 2f,
-                    1.0D, 1.0D, 1.0F, 1.0F);
-
-            entityPlayer.rotationPitch = f;
-            entityPlayer.renderYawOffset = f1;
-            entityPlayer.rotationYawHead = f2;
-
-            int i1 = entityPlayer.getBrightnessForRender(0);
-            int j1 = i1 % 65536;
-            int k1 = i1 / 65536;
 
             entity.setPosition(entityPlayer.posX, entityPlayer.posY + 1, entityPlayer.posZ);
 
@@ -1304,21 +1268,47 @@ public class GuiPokedex extends GuiScreen
             entity.limbSwingAmount = 0;
             entity.prevLimbSwingAmount = 0;
             entity.onGround = ((IPokemob) entity).getType1() != flying && ((IPokemob) entity).getType2() != flying;
-            int i = 15728880;
-            j1 = i % 65536;
-            k1 = i / 65536;
 
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            if (isAltKeyDown())
             {
                 entity.onGround = true;
                 entity.limbSwingAmount = 0.05f;
                 entity.prevLimbSwingAmount = entity.limbSwingAmount - 0.5f;
             }
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
+            int i = 15728880;
+            int j2 = i % 65536;
+            int k2 = i / 65536;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j2 / 1.0F, k2 / 1.0F);
 
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            RenderHelper.enableStandardItemLighting();
             Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, 0, 0, 1, POKEDEX_RENDER);
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
             GL11.glPopMatrix();
+
+            // GL11.glPushMatrix();
+            //
+            // float offset = 1.6f;
+            //
+            // float f, f1, f2;
+            // f = entityPlayer.rotationPitch;
+            // f1 = entityPlayer.rotationYaw;
+            // f2 = entityPlayer.rotationYawHead;
+            //
+            // entityPlayer.rotationPitch = 00;
+            // entityPlayer.renderYawOffset = 50;
+            // entityPlayer.rotationYawHead = 40;
+            // Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entityPlayer,
+            // offset + entity.width / 2f,
+            // 1.0D, 1.0D, 1.0F, 1.0F);
+            //
+            // entityPlayer.rotationPitch = f;
+            // entityPlayer.renderYawOffset = f1;
+            // entityPlayer.rotationYawHead = f2;
+            // GL11.glPopMatrix();
 
         }
         catch (Throwable e)

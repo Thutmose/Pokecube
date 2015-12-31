@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ModelAnimator version="0.1">
+    <model name="">
+        <phase name="global" rotation="1,0,0,0" offset="0,0,0" scale="0.4"/>
+        <phase name="quadWalk" leftHind="Left_back_hind_leg" rightHind="Right_back_hind_leg" leftFront="Left_foreleg" rightFront="Right_foreleg" duration="10" angle="50"/>
+        <metadata head="Head_base" headCap="-90,90" headAxis="1"/>
+        <phase type="idle">
+            <part name="*(Tail_pt)(.*)">
+                <component name="1" rotChange="0,2,0" length="5" startKey="0"/>
+                <component name="2" rotChange="0,-2,0" length="5" startKey="5"/>
+            </part>
+        </phase>
+        <merges merge="idle->walking" />
+    </model>
+</ModelAnimator>

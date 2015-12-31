@@ -19,6 +19,7 @@ import org.nfunk.jep.type.Complex;
  * @author Rich Morris
  * Created on 24-Mar-2004
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Polar extends PostfixMathCommand
 {
 	public Polar()

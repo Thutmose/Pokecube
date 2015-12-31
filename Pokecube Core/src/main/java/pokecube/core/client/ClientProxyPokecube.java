@@ -76,7 +76,6 @@ import pokecube.core.client.gui.blocks.GuiPC;
 import pokecube.core.client.gui.blocks.GuiTMCreator;
 import pokecube.core.client.gui.blocks.GuiTradingTable;
 import pokecube.core.client.models.ModelPokemobEgg;
-import pokecube.core.client.render.blocks.RenderBerries;
 import pokecube.core.client.render.blocks.RenderPC;
 import pokecube.core.client.render.blocks.RenderPokecubeTable;
 import pokecube.core.client.render.blocks.RenderTradingTable;
@@ -92,7 +91,6 @@ import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.berries.TileEntityBerryFruit;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.maths.Vector3;
@@ -207,7 +205,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPC.class, new RenderPC());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBerryFruit.class, new RenderBerries());
+        // ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBerryFruit.class,
+        // new RenderBerries());
 
         MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
         MinecraftForge.EVENT_BUS.register(new GuiScrollableLists());
@@ -310,13 +309,13 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
         for (int i = 0; i < 19; i++)
         {
-            ModelBakery.addVariantName(tm, "pokecube:tm" + i);
+            ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:tm" + i));
             PokecubeItems.registerItemTexture(tm, i, new ModelResourceLocation("pokecube:tm" + i, "inventory"));
         }
-        ModelBakery.addVariantName(tm, "pokecube:rarecandy");
+        ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:rarecandy"));
         PokecubeItems.registerItemTexture(tm, 20, new ModelResourceLocation("pokecube:rarecandy", "inventory"));
 
-        ModelBakery.addVariantName(tm, "pokecube:emerald_shard");
+        ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:emerald_shard"));
         PokecubeItems.registerItemTexture(tm, 19, new ModelResourceLocation("pokecube:emerald_shard", "inventory"));
 
         StateMap map = (new StateMap.Builder()).ignore(new IProperty[] { BlockPC.FACING }).build();
@@ -335,7 +334,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
         OBJLoader.instance.addDomain(PokecubeMod.ID.toLowerCase());
         item2 = Item.getItemFromBlock(PokecubeItems.getBlock("pc"));
-        ModelBakery.addVariantName(item2, PokecubeMod.ID + ":pc_base", PokecubeMod.ID + ":pc_top");
+        ModelBakery.registerItemVariants(item2, new ResourceLocation(PokecubeMod.ID + ":pc_base", PokecubeMod.ID + ":pc_top"));
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":pc_base", "inventory"));
         ModelLoader.setCustomModelResourceLocation(item2, 8,
@@ -360,12 +359,12 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelLoader.setCustomStateMapper(plank0,
                 (new StateMap.Builder()).withName(BlockBerryWood.VARIANT).withSuffix("Plank").build());
 
-        ModelBakery.addVariantName(Item.getItemFromBlock(plank0), "pokecube:pechaPlank");
-        ModelBakery.addVariantName(Item.getItemFromBlock(plank0), "pokecube:oranPlank");
-        ModelBakery.addVariantName(Item.getItemFromBlock(plank0), "pokecube:leppaPlank");
-        ModelBakery.addVariantName(Item.getItemFromBlock(plank0), "pokecube:sitrusPlank");
-        ModelBakery.addVariantName(Item.getItemFromBlock(plank0), "pokecube:enigmaPlank");
-        ModelBakery.addVariantName(Item.getItemFromBlock(plank0), "pokecube:nanabPlank");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:pechaPlank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:oranPlank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:leppaPlank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation( "pokecube:sitrusPlank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:enigmaPlank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:nanabPlank"));
         registerItemTexture(Item.getItemFromBlock(plank0), 0,
                 new ModelResourceLocation("pokecube:pechaPlank", "inventory"));
         registerItemTexture(Item.getItemFromBlock(plank0), 1,
@@ -379,49 +378,49 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         registerItemTexture(Item.getItemFromBlock(plank0), 5,
                 new ModelResourceLocation("pokecube:nanabPlank", "inventory"));
 
-        ModelBakery.addVariantName(Item.getItemFromBlock(leaf0), "pokecube:pechaLeaves");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf0), new ResourceLocation("pokecube:pechaLeaves"));
         registerItemTexture(Item.getItemFromBlock(leaf0), 0,
                 new ModelResourceLocation("pokecube:pechaLeaves", "inventory"));
-        ModelBakery.addVariantName(Item.getItemFromBlock(leaf0), "pokecube:oranLeaves");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf0), new ResourceLocation("pokecube:oranLeaves"));
         registerItemTexture(Item.getItemFromBlock(leaf0), 1,
                 new ModelResourceLocation("pokecube:oranLeaves", "inventory"));
-        ModelBakery.addVariantName(Item.getItemFromBlock(leaf0), "pokecube:leppaLeaves");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf0), new ResourceLocation("pokecube:leppaLeaves"));
         registerItemTexture(Item.getItemFromBlock(leaf0), 2,
                 new ModelResourceLocation("pokecube:leppaLeaves", "inventory"));
-        ModelBakery.addVariantName(Item.getItemFromBlock(leaf0), "pokecube:sitrusLeaves");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf0), new ResourceLocation("pokecube:sitrusLeaves"));
         registerItemTexture(Item.getItemFromBlock(leaf0), 3,
                 new ModelResourceLocation("pokecube:sitrusLeaves", "inventory"));
 
-        ModelBakery.addVariantName(Item.getItemFromBlock(log0), "pokecube:pechaWood");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:pechaWood"));
         registerItemTexture(Item.getItemFromBlock(log0), 0,
                 new ModelResourceLocation("pokecube:pechaWood", "inventory"));
-        ModelBakery.addVariantName(Item.getItemFromBlock(log0), "pokecube:oranWood");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:oranWood"));
         registerItemTexture(Item.getItemFromBlock(log0), 1,
                 new ModelResourceLocation("pokecube:oranWood", "inventory"));
-        ModelBakery.addVariantName(Item.getItemFromBlock(log0), "pokecube:leppaWood");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:leppaWood"));
         registerItemTexture(Item.getItemFromBlock(log0), 2,
                 new ModelResourceLocation("pokecube:leppaWood", "inventory"));
-        ModelBakery.addVariantName(Item.getItemFromBlock(log0), "pokecube:sitrusWood");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:sitrusWood"));
         registerItemTexture(Item.getItemFromBlock(log0), 3,
                 new ModelResourceLocation("pokecube:sitrusWood", "inventory"));
 
-        ModelBakery.addVariantName(Item.getItemFromBlock(leaf1), "pokecube:enigmaLeaves");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf1), new ResourceLocation("pokecube:enigmaLeaves"));
         registerItemTexture(Item.getItemFromBlock(leaf1), 0,
                 new ModelResourceLocation("pokecube:enigmaLeaves", "inventory"));
-        ModelBakery.addVariantName(Item.getItemFromBlock(leaf1), "pokecube:nanabLeaves");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf1), new ResourceLocation("pokecube:nanabLeaves"));
         registerItemTexture(Item.getItemFromBlock(leaf1), 1,
                 new ModelResourceLocation("pokecube:nanabLeaves", "inventory"));
 
-        ModelBakery.addVariantName(Item.getItemFromBlock(log1), "pokecube:enigmaWood");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:enigmaWood"));
         registerItemTexture(Item.getItemFromBlock(log1), 0,
                 new ModelResourceLocation("pokecube:enigmaWood", "inventory"));
-        ModelBakery.addVariantName(Item.getItemFromBlock(log1), "pokecube:nanabWood");
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:nanabWood"));
         registerItemTexture(Item.getItemFromBlock(log1), 1,
                 new ModelResourceLocation("pokecube:nanabWood", "inventory"));
 
-        for (String ident : BerryPlantManager.toRegister.keySet())
+        for (String ident : BerryPlantManager.cropsToRegister.keySet())
         {
-            Block crop = BerryPlantManager.toRegister.get(ident);
+            Block crop = BerryPlantManager.cropsToRegister.get(ident);
             map = (new StateMap.Builder()).ignore(new IProperty[] { BlockBerryCrop.AGE }).withSuffix("").build();
             registerItemTexture(Item.getItemFromBlock(crop), 0, new ModelResourceLocation(ident, "inventory"));
             ModelLoader.setCustomStateMapper(crop, map);
@@ -432,7 +431,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
-        EntityPlayer entityPlayer = mod_Pokecube.getPlayer(null);
         Entity entityHit = null;
 
         if (mod_Pokecube.isOnClientSide())
@@ -462,8 +460,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
         else if (guiID == Mod_Pokecube_Helper.GUIPOKEDEX_ID)
         {
-            if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, entityPlayer);
-            else return new GuiPokedex(null, entityPlayer);
+            if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, player);
+            else return new GuiPokedex(null, player);
         }
         else if (guiID == Mod_Pokecube_Helper.GUIPOKEMOB_ID)
         {
@@ -488,7 +486,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             boolean fixed = false;
             return new GuiNewChooseFirstPokemob(null, fixed);
         }
-
         return null;
     }
 
@@ -514,29 +511,22 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public EntityPlayer getPlayer(String playerName)
     {
-        if (isOnClientSide())
+        if (playerName != null)
         {
-            if (playerName != null)
+            try
             {
-                try
-                {
-                    UUID.fromString(playerName);
-                    return getWorld().getPlayerEntityByUUID(UUID.fromString(playerName));
-                }
-                catch (Exception e)
-                {
+                UUID.fromString(playerName);
+                return getWorld().getPlayerEntityByUUID(UUID.fromString(playerName));
+            }
+            catch (Exception e)
+            {
 
-                }
-                return getWorld().getPlayerEntityByName(playerName);
             }
-            else
-            {
-                return Minecraft.getMinecraft().thePlayer;
-            }
+            return getWorld().getPlayerEntityByName(playerName);
         }
         else
         {
-            return super.getPlayer(playerName);
+            return Minecraft.getMinecraft().thePlayer;
         }
     }
 

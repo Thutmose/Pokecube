@@ -26,7 +26,7 @@ public class PokemobAIThread
     /** Lock used to unsure that AI tasks run at the correct time. */
     private static final BitSet                          tickLock          = new BitSet();
     /** Lists of the AI stuff for each thread. */
-    private static Vector<AIStuff>[]                      aiStuffLists;
+    private static Vector<AIStuff>[]                     aiStuffLists;
     /** Map of dimension to players, used for thread-safe player access. */
     public static final HashMap<Integer, Vector<Object>> worldPlayers      = new HashMap<Integer, Vector<Object>>();
     /** Used for sorting the AI runnables for run order. */
@@ -45,9 +45,9 @@ public class PokemobAIThread
         public int compare(IPokemob o1, IPokemob o2)
         {
             int speed1 = Tools.getStat(o1.getBaseStats()[5], o1.getIVs()[5], o1.getEVs()[5], o1.getLevel(),
-                    o1.getModifiers()[5], o1.getNature());
+                    o1.getModifiers()[5], o1.getNature().getStatsMod()[5]);
             int speed2 = Tools.getStat(o2.getBaseStats()[5], o2.getIVs()[5], o2.getEVs()[5], o2.getLevel(),
-                    o2.getModifiers()[5], o2.getNature());
+                    o2.getModifiers()[5], o2.getNature().getStatsMod()[5]);
             // TODO include checks for mob's selected attack and include attack
             // priority.
             return speed2 - speed1;
@@ -200,12 +200,19 @@ public class PokemobAIThread
         {
             ArrayList<AIStuff> todo = new ArrayList();
 
-            for(Vector<AIStuff> v: aiStuffLists)
+            for (Vector<AIStuff> v : aiStuffLists)
             {
                 todo.addAll(v);
-                for(AIStuff stuff: todo)
+                for (AIStuff stuff : todo)
                 {
-                    stuff.runServerThreadTasks(evt.world);
+                    if (stuff.entity.isDead)
+                    {
+                        v.remove(stuff);
+                    }
+                    else
+                    {
+                        stuff.runServerThreadTasks(evt.world);
+                    }
                 }
                 todo.clear();
             }
@@ -240,10 +247,10 @@ public class PokemobAIThread
         {
             aiLogic.add(logic);
         }
-        
+
         public void runServerThreadTasks(World world)
         {
-            for(IAIRunnable ai: aiTasks)
+            for (IAIRunnable ai : aiTasks)
             {
                 ai.doMainThreadTick(world);
             }
@@ -296,7 +303,7 @@ public class PokemobAIThread
                                 }
                                 try
                                 {
-                                    unloadedMobs = b.worldObj.unloadedEntityList;
+                                    unloadedMobs = new ArrayList(b.worldObj.unloadedEntityList);
                                 }
                                 catch (Exception e1)
                                 {
@@ -324,7 +331,7 @@ public class PokemobAIThread
                                         if (uid % threadCount != id) continue;
                                     }
 
-                                    ArrayList list = stuff.aiTasks;
+                                    ArrayList list = (ArrayList) stuff.aiTasks.clone();
                                     if (list != null) for (IAIRunnable ai : (ArrayList<IAIRunnable>) list)
                                     {
                                         try

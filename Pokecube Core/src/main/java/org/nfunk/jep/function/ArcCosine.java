@@ -18,6 +18,7 @@ import org.nfunk.jep.type.Complex;
  * @author Nathan Funk
  * TODO How to handle acos(x) for real x with x>1 or x<-1
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ArcCosine extends PostfixMathCommand
 {
 	public ArcCosine()

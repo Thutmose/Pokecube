@@ -8,10 +8,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import pokecube.core.client.render.PTezzelator;
 import net.minecraft.util.ChatAllowedCharacters;
+import pokecube.core.client.render.PTezzelator;
 
 public class GuiTextField extends Gui{
 

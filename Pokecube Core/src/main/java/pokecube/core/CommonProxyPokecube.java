@@ -84,7 +84,6 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
 
                 return cont;
             }
-
         }
         return null;
 

@@ -19,8 +19,8 @@ public class BlockSiphon extends Block implements ITileEntityProvider
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-		return new TileEntitySiphon(p_149915_1_);
+	public TileEntity createNewTileEntity(World world, int metadata) {
+		return new TileEntitySiphon(world);
 	}
 
     /**

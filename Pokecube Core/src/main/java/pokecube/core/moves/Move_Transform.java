@@ -8,10 +8,12 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.IWorldAccess;
+import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.templates.Move_Basic;
 import thut.api.maths.Vector3;
 
@@ -49,7 +51,7 @@ public class Move_Transform extends Move_Basic {
 		        	if (attacked instanceof IPokemob){
 		        		//((EntityPokemob) attacked).setTarget((Entity) attacker);
 						attacker.setStats(((IPokemob)attacked).getBaseStats());
-						if(attacked!=((IPokemob) attacker).getLover())
+						if(!(attacked instanceof IBreedingMob) || attacked!=((IBreedingMob) attacker).getLover())
 							((EntityCreature) attacked).setAttackTarget((EntityLivingBase) attacker);
 		            }
 		        	
@@ -68,13 +70,12 @@ public class Move_Transform extends Move_Basic {
 				else if (MovesUtils.contactAttack(attacker, attacked, f)){
 					MovesUtils.displayMoveMessages(attacker, attacked, IMoveNames.MOVE_TRANSFORM);
 					MovesUtils.displayEfficiencyMessages(attacker, attacked, 0F, 1F);
-				//	((EntityLivingBase)attacker).attackTime = MovesUtils.getDelayBetweenAttacks(attacker, IMoveNames.MOVE_TRANSFORM);
 				}
 			}
 			else if (attacked instanceof EntityPlayer) {
 				if (MovesUtils.contactAttack(attacker, attacked, f)) {
 					if (doAttack(attacker, attacked, f))
-						MovesUtils.attack(attacker, attacked, name, move.type, 25, 1, IMoveConstants.STATUS_NON, IMoveConstants.CHANGE_NONE);
+						MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type, 25, 1, IMoveConstants.STATUS_NON, IMoveConstants.CHANGE_NONE));
 				}
 			}
 		}

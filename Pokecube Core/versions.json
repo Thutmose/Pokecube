@@ -1,10 +1,23 @@
 {
   "homepage": "http://www.curse.com/mc-mods/minecraft/238253-pokecube-core",
   "promos": {
-    "1.8.8-latest": "2.0.23",
-    "1.8.8-recommended": "2.0.23"
+    "1.8.8-latest": "2.0.31",
+    "1.8.8-recommended": "2.0.31",
+    "1.8.9-latest": "2.1.0",
+    "1.8.9-recommended": "2.1.0"
+  },
+  "1.8.9": {
+    "2.1.0": "initial 1.8.9 port"
   },
   "1.8.8": {
+    "2.0.31": "Fixes Server crash, Fixes server issue with pokemobs having different model on client sometimes, Overhaul of ability system.",
+    "2.0.30": "Fixes shading and lighting issues with x3d models.",
+    "2.0.29": "More Improvements to animations, improvements to Animation GUI, tweaks to x3d renderer.",
+    "2.0.28": "Fixes crash from using F to command an attack, Improvements to animations, cleaned up some texture warnings.",
+    "2.0.27": "Overhaul of the x3d model loading system, extended that and the tabula system to allow support for multiple textures per model.",
+    "2.0.26": "Texture info for pokemobs is now registered in the XML, rather than database.  See charizard, combee and pikachu for examples.",
+    "2.0.25": "Re-adds ability to load from a sub-mod instead of just from resource packs.  Adds some internal events.",
+    "2.0.24": "Adds gather and storage AI, fixes some gui issues with shaders. See GitHub for full list of changes.",
     "2.0.23": "fixes some lag issues with smokescreen, fixes some issues with statscollector, needed to enable some of the stuff for WAILA compat",
     "2.0.22": "improvements to animation system. Baubles has been removed, as the 1.8 version works with 1.8.8. Backend AI changes",
     "2.0.21": "fixes the override database config not actually working.",

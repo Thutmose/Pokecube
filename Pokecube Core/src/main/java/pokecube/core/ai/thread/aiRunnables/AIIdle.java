@@ -39,7 +39,7 @@ public class AIIdle extends AIBase
         PathEntity current = null;
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
-        if (world == null) return false;
+        if (world == null || mob.getPokedexEntry().isStationary) return false;
         if ((current = entity.getNavigator().getPath()) != null && entity.getNavigator().noPath())
         {
             addEntityPath(entity.getEntityId(), entity.dimension, null, speed);
@@ -87,7 +87,6 @@ public class AIIdle extends AIBase
                 }
                 distance = (int) Math.min(distance, mob.getHomeDistance());
                 v.set(mob.getHome());
-                v.set(entity);
             }
             else
             {

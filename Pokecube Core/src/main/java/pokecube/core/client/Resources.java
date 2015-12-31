@@ -16,8 +16,6 @@ public class Resources {
     public final static String TEXTURE_FOLDER = "textures/";
     public final static String TEXTURE_GUI_FOLDER = TEXTURE_FOLDER+"gui/";
 
-//    public final static String TEXTURE_ITEMS  	 = TEXTURE_FOLDER + "items.png";
-//    public final static String TEXTURE_BLOCKS 	 = TEXTURE_FOLDER + "blocks.png";
     public final static String TEXTURE_PARTICLES = TEXTURE_FOLDER + "particles.png";
 
 	public final static ResourceLocation GUI_POKEDEX = 

@@ -115,7 +115,7 @@ public class MovesAdder implements IMoveConstants
         MoveEntry.oneHitKos.add(MOVE_HORNDRILL);
         MoveEntry.oneHitKos.add(MOVE_GUILLOTINE);
         MoveEntry.oneHitKos.add(MOVE_SHEERCOLD);
-        
+
         MovesUtils.registerMove(new Move_Transform(IMoveNames.MOVE_TRANSFORM));
     }
 
@@ -152,7 +152,7 @@ public class MovesAdder implements IMoveConstants
                 }
                 else
                 {
-                    if((move.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0)
+                    if ((move.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0)
                     {
                         anim += "d:0.1";
                         move.setAnimation(new ParticlesOnSource(anim));
@@ -309,7 +309,7 @@ public class MovesAdder implements IMoveConstants
                     MovesUtils.handleStats2(attacker, attacked, SPATACK, HARSH);
                 }
             }
-        });//);//setAnimtion(new ParticleFlow("leavesBig")));
+        });// );//setAnimtion(new ParticleFlow("leavesBig")));
 
         registerMove(new Move_Basic(MOVE_OVERHEAT)
         {
@@ -318,7 +318,7 @@ public class MovesAdder implements IMoveConstants
             {
                 if (finalAttackStrength > 0) MovesUtils.handleStats2(attacker, attacked, SPATACK, HARSH);
             }
-        });//);//setAnimtion(new ParticleFlow("flame")));
+        });// );//setAnimtion(new ParticleFlow("flame")));
 
         registerMove(new Move_Basic(MOVE_DRACOMETEOR)
         {
@@ -327,7 +327,7 @@ public class MovesAdder implements IMoveConstants
             {
                 if (finalAttackStrength > 0) MovesUtils.handleStats2(attacker, attacked, SPATACK, HARSH);
             }
-        });//);//setAnimtion(new ParticlesOnTarget("largeexplode")));
+        });// );//setAnimtion(new ParticlesOnTarget("largeexplode")));
 
         registerMove(new Move_Basic(MOVE_PSYCHOBOOST)
         {
@@ -336,7 +336,8 @@ public class MovesAdder implements IMoveConstants
             {
                 if (finalAttackStrength > 0) MovesUtils.handleStats2(attacker, attacked, SPATACK, HARSH);
             }
-        }.setNotInterceptable());//setAnimtion(new ParticlesOnTarget("aurora")));
+        }.setNotInterceptable());// setAnimtion(new
+                                 // ParticlesOnTarget("aurora")));
     }
 
     /** things like Acupressure, Power Split, Power Trick, etc */
@@ -377,7 +378,8 @@ public class MovesAdder implements IMoveConstants
                         ((Entity) mob).worldObj.playSoundAtEntity((Entity) mob, sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    MovesUtils.attack(mob, (Entity) mob, name, move.type, getPWR(), move.crit, (byte) 0, (byte) 0,
+                    MovesUtils.attack(
+                            new MovePacket(mob, (Entity) mob, name, move.type, getPWR(), move.crit, (byte) 0, (byte) 0),
                             false);
                     postAttack(mob, (Entity) mob, f, 0);
                 }
@@ -545,8 +547,9 @@ public class MovesAdder implements IMoveConstants
                     {
                         int damage = 2 * ((IPokemob) attacker).getMoveStats().SPECIALDAMAGETAKENCOUNTER;
                         ((IPokemob) attacker).getMoveStats().SPECIALDAMAGETAKENCOUNTER = 0;
-                        if (attacked != null) attacked.attackEntityFrom(
-                                new PokemobDamageSource("mob", (EntityLivingBase) attacker, this), damage);
+                        if (attacked != null)
+                            attacked.attackEntityFrom(new PokemobDamageSource("mob", (EntityLivingBase) attacker, this),
+                                    damage);
                         ((IPokemob) attacker).getMoveStats().biding = false;
                     }
                 }
@@ -642,6 +645,31 @@ public class MovesAdder implements IMoveConstants
                 }
             }
         });
+
+        registerMove(new Move_Basic(MOVE_ATTRACT)
+        {
+            @Override
+            protected void finalAttack(IPokemob attacker, Entity attacked, float f, boolean message)
+            {
+                if (doAttack(attacker, attacked, f))
+                {
+                    if (message) MovesUtils.displayMoveMessages(attacker, attacked, name);
+                    Vector3 v = Vector3.getNewVectorFromPool();
+                    Entity temp = attacked;
+                    if (attacked == null) attacked = temp;
+                    notifyClient((Entity) attacker, v.set(attacked), attacked);
+                    v.freeVectorFromPool();
+                    byte statusChange = STATUS_NON;
+                    byte changeAddition = CHANGE_NONE;
+                    MovePacket packet = new MovePacket(attacker, attacked, name, move.type, getPWR(attacker, attacked),
+                            move.crit, statusChange, changeAddition);
+                    packet.infatuate[0] = true;
+                    int finalAttackStrength = MovesUtils.attack(packet);
+                    postAttack(attacker, attacked, f, finalAttackStrength);
+                }
+
+            }
+        });
     }
 
     static void registerStandardNormalMoves()
@@ -709,17 +737,23 @@ public class MovesAdder implements IMoveConstants
     static void registerStandardPoisonMoves()
     {
 
-        registerMove(new Move_Basic(MOVE_ACID));//setAnimtion(new ParticleFlow("poison")));
+        registerMove(new Move_Basic(MOVE_ACID));// setAnimtion(new
+                                                // ParticleFlow("poison")));
 
-        registerMove(new Move_Basic(MOVE_SLUDGE));//setAnimtion(new ParticleFlow("poison")));
+        registerMove(new Move_Basic(MOVE_SLUDGE));// setAnimtion(new
+                                                  // ParticleFlow("poison")));
 
-        registerMove(new Move_Basic(MOVE_SLUDGEBOMB));//setAnimtion(new ParticleFlow("poison")));
+        registerMove(new Move_Basic(MOVE_SLUDGEBOMB));// setAnimtion(new
+                                                      // ParticleFlow("poison")));
 
-        registerMove(new Move_Basic(MOVE_SMOG));//setAnimtion(new ParticleFlow("largesmoke")));
+        registerMove(new Move_Basic(MOVE_SMOG));// setAnimtion(new
+                                                // ParticleFlow("largesmoke")));
 
-        registerMove(new Move_Basic(MOVE_POISONJAB));//setAnimtion(new ParticlesOnTarget("poison")));
+        registerMove(new Move_Basic(MOVE_POISONJAB));// setAnimtion(new
+                                                     // ParticlesOnTarget("poison")));
 
-        registerMove(new Move_Basic(MOVE_POISONSTING));//setAnimtion(new ThrowParticle("sting")));
+        registerMove(new Move_Basic(MOVE_POISONSTING));// setAnimtion(new
+                                                       // ThrowParticle("sting")));
     }
 
     static void registerStandardGroundMoves()
@@ -748,8 +782,8 @@ public class MovesAdder implements IMoveConstants
                                 || (e instanceof EntityPlayer && !PokecubeMod.hardMode))
                             continue;
                         attacked = e;
-                        int finalAttackStrength = MovesUtils.attack(attacker, attacked, name, move.type, getPWR(),
-                                move.crit, (byte) 0, (byte) 0);
+                        int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
+                                getPWR(), move.crit, (byte) 0, (byte) 0));
                         postAttack(attacker, attacked, f, finalAttackStrength);
 
                     }
@@ -791,8 +825,8 @@ public class MovesAdder implements IMoveConstants
                                 || (e instanceof EntityPlayer && !PokecubeMod.hardMode))
                             continue;
                         attacked = e;
-                        int finalAttackStrength = MovesUtils.attack(attacker, attacked, name, move.type, PWR, move.crit,
-                                (byte) 0, (byte) 0);
+                        int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
+                                PWR, move.crit, (byte) 0, (byte) 0));
                         postAttack(attacker, attacked, f, finalAttackStrength);
 
                     }
@@ -800,12 +834,14 @@ public class MovesAdder implements IMoveConstants
             }
         }.setSound("ambient.weather.thunder"));
 
-        registerMove(new Move_Basic(MOVE_MUDSLAP));//setAnimtion(new ParticleFlow("brown")));
+        registerMove(new Move_Basic(MOVE_MUDSLAP));// setAnimtion(new
+                                                   // ParticleFlow("brown")));
     }
 
     static void registerStandardRockMoves()
     {
-        registerMove(new Move_Basic(MOVE_ROCKTHROW));//setAnimtion(new ThrowParticle("rock")));
+        registerMove(new Move_Basic(MOVE_ROCKTHROW));// setAnimtion(new
+                                                     // ThrowParticle("rock")));
 
         registerMove(new Move_Basic(MOVE_ROLLOUT)
         {
@@ -839,8 +875,8 @@ public class MovesAdder implements IMoveConstants
                         rollOut = ((IPokemob) attacker).getMoveStats().ROLLOUTCOUNTER = 0;
                     }
                     int PWR = (int) Math.max(getPWR(), (rollOut * 1.5) * this.getPWR() * defCurl);
-                    int finalAttackStrength = MovesUtils.attack(attacker, attacked, name, move.type, PWR, move.crit,
-                            statusChange, changeAddition);
+                    int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type, PWR,
+                            move.crit, statusChange, changeAddition));
 
                     postAttack(attacker, attacked, f, finalAttackStrength);
                     if (finalAttackStrength == 0)
@@ -853,7 +889,8 @@ public class MovesAdder implements IMoveConstants
 
         });
 
-        registerMove(new Move_Basic(MOVE_ANCIENTPOWER));//setAnimtion(new ParticleFlow("rock")));
+        registerMove(new Move_Basic(MOVE_ANCIENTPOWER));// setAnimtion(new
+                                                        // ParticleFlow("rock")));
     }
 
     static void registerStandardBugMoves()
@@ -889,8 +926,8 @@ public class MovesAdder implements IMoveConstants
                     }
                     double rollOut = ((IPokemob) attacker).getMoveStats().FURYCUTTERCOUNTER;
                     int PWR = (int) Math.max(this.getPWR(), Math.min(160, (rollOut * 2) * this.getPWR()));
-                    int finalAttackStrength = MovesUtils.attack(attacker, attacked, name, move.type, PWR, move.crit,
-                            statusChange, changeAddition);
+                    int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type, PWR,
+                            move.crit, statusChange, changeAddition));
 
                     postAttack(attacker, attacked, f, finalAttackStrength);
                     if (finalAttackStrength == 0)
@@ -919,11 +956,12 @@ public class MovesAdder implements IMoveConstants
     static void registerStandardFireMoves()
     {
 
-        registerMove(new Move_Basic(MOVE_EMBER));//setAnimtion(new ParticleFlow("flame")));
+        registerMove(new Move_Basic(MOVE_EMBER));// setAnimtion(new
+                                                 // ParticleFlow("flame")));
         registerMove(new Move_Basic(MOVE_FLAMETHROWER).setMultiTarget());
         registerMove(new Move_Basic(MOVE_FIREBLAST).setAnimation(new MoveAnimationBase()
         {
-            
+
             @Override
             public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
             {
@@ -942,7 +980,7 @@ public class MovesAdder implements IMoveConstants
                 Vector3 temp2 = temp.copy();
 
                 initColour(info.currentTick * 300, partialTick, info.move);
-                
+
                 renderPart(temp, temp2, factor);
 
                 temp.set(source).subtractFrom(target).add(0, 0.5, 0);
@@ -959,11 +997,11 @@ public class MovesAdder implements IMoveConstants
                 temp2.set(temp);
 
                 renderPart(temp, temp2, factor);
-                
+
                 temp.freeVectorFromPool();
                 temp2.freeVectorFromPool();
             }
-            
+
             private void renderPart(Vector3 temp, Vector3 temp2, double factor)
             {
                 PTezzelator tez = PTezzelator.instance;
@@ -980,8 +1018,7 @@ public class MovesAdder implements IMoveConstants
                 GL11.glColor4f(red / 255f, green / 255f, blue / 255f, alpha / 255f);
                 for (int i = 0; i < 500; i++)
                 {
-                    temp.set(rand.nextGaussian() * factor, rand.nextGaussian() * factor,
-                            rand.nextGaussian() * factor);
+                    temp.set(rand.nextGaussian() * factor, rand.nextGaussian() * factor, rand.nextGaussian() * factor);
                     temp.scalarMult(0.001);
                     temp.addTo(temp2);
                     double size = 0.01;
@@ -995,12 +1032,12 @@ public class MovesAdder implements IMoveConstants
 
                 GL11.glPopMatrix();
             }
-            
+
             @Override
             public void initColour(long time, float partialTicks, Move_Base move)
             {
                 rgba = getColourFromMove(move, 255);
-                
+
             }
         }).setSound("mob.wither.shoot").setMultiTarget());
 
@@ -1008,9 +1045,11 @@ public class MovesAdder implements IMoveConstants
 
     static void registerStandardWaterMoves()
     {
-        registerMove(new Move_Basic(MOVE_WATERGUN));//setAnimtion(new ParticleFlow("splash")));
+        registerMove(new Move_Basic(MOVE_WATERGUN));// setAnimtion(new
+                                                    // ParticleFlow("splash")));
 
-        registerMove(new Move_Basic(MOVE_BUBBLE));//setAnimtion(new ParticleFlow("airbubble")));
+        registerMove(new Move_Basic(MOVE_BUBBLE));// setAnimtion(new
+                                                  // ParticleFlow("airbubble")));
 
         registerMove(new Move_Basic(MOVE_BUBBLEBEAM).setMultiTarget());
 
@@ -1061,7 +1100,7 @@ public class MovesAdder implements IMoveConstants
                     ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + doesntAffect);
                 }
             }
-        });//setAnimtion(new ParticlesOnSource("splash")));
+        });// setAnimtion(new ParticlesOnSource("splash")));
     }
 
     static void registerStandardGrassMoves()
@@ -1086,7 +1125,8 @@ public class MovesAdder implements IMoveConstants
 
     static void registerStandardElectricMoves()
     {
-        registerMove(new Move_Basic(MOVE_DISCHARGE));//setAnimtion(new ParticleFlow("spark")));
+        registerMove(new Move_Basic(MOVE_DISCHARGE));// setAnimtion(new
+                                                     // ParticleFlow("spark")));
 
         registerMove(new Move_Basic(MOVE_ZAPCANNON));
 
@@ -1096,9 +1136,11 @@ public class MovesAdder implements IMoveConstants
 
         registerMove(new Move_Basic(MOVE_THUNDER).setSound("ambient.weather.thunder").setAnimation(new Thunder()));
 
-        registerMove(new Move_Basic(MOVE_SPARK));//setAnimtion(new ParticlesOnTarget("spark")));
+        registerMove(new Move_Basic(MOVE_SPARK));// setAnimtion(new
+                                                 // ParticlesOnTarget("spark")));
 
-        registerMove(new Move_Basic(MOVE_ELECTROWEB));//setAnimtion(new ParticleFlow("yellow")));
+        registerMove(new Move_Basic(MOVE_ELECTROWEB));// setAnimtion(new
+                                                      // ParticleFlow("yellow")));
 
         registerMove(new Move_Basic(MOVE_SHOCKWAVE)
         {// TODO better animation
@@ -1132,8 +1174,8 @@ public class MovesAdder implements IMoveConstants
                         {
                             changeAddition = move.change;
                         }
-                        int finalAttackStrength = MovesUtils.attack(attacker, attacked, name, move.type, getPWR(),
-                                move.crit, statusChange, changeAddition);
+                        int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
+                                getPWR(), move.crit, statusChange, changeAddition));
                         postAttack(attacker, attacked, f, finalAttackStrength);
 
                     }
@@ -1197,7 +1239,7 @@ public class MovesAdder implements IMoveConstants
                 // MovesUtils.getDelayBetweenAttacks(attacker) * 2 / 3; // will
                 // reattack faster
             }
-        });//setAnimtion(new ThrowParticle("iceshard")));
+        });// setAnimtion(new ThrowParticle("iceshard")));
 
         registerMove(new Move_Basic(MOVE_AURORABEAM).setAnimation(new ParticleBeam("aurora")).setMultiTarget());
 
@@ -1235,8 +1277,8 @@ public class MovesAdder implements IMoveConstants
                         rollOut = ((IPokemob) attacker).getMoveStats().ROLLOUTCOUNTER = 0;
                     }
                     int PWR = (int) Math.min(this.getPWR(), (rollOut * 1.5) * this.getPWR() * defCurl);
-                    int finalAttackStrength = MovesUtils.attack(attacker, attacked, name, move.type, PWR, move.crit,
-                            statusChange, changeAddition);
+                    int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type, PWR,
+                            move.crit, statusChange, changeAddition));
                     postAttack(attacker, attacked, f, finalAttackStrength);
                     ((IPokemob) attacker).getMoveStats().ROLLOUTCOUNTER++;
                 }
@@ -1262,7 +1304,8 @@ public class MovesAdder implements IMoveConstants
 
     static void registerStandardFairyMoves()
     {
-        registerMove(new Move_Basic(MOVE_DAZZLINGGLEAM));//setAnimtion(new ParticleBeam("white")).setMultiTarget());
+        registerMove(new Move_Basic(MOVE_DAZZLINGGLEAM));// setAnimtion(new
+                                                         // ParticleBeam("white")).setMultiTarget());
     }
 
     static void registerRecoilMoves()
@@ -1311,7 +1354,8 @@ public class MovesAdder implements IMoveConstants
             // attacked), damage);
             // }
             // }
-        }.setSound("game.neutral.hurt.fall.big"));//setAnimtion(new ParticlesOnTarget("flame")));
+        }.setSound("game.neutral.hurt.fall.big"));// setAnimtion(new
+                                                  // ParticlesOnTarget("flame")));
     }
 
     /** Moves that hit multiple times */
@@ -1327,7 +1371,7 @@ public class MovesAdder implements IMoveConstants
                 super.finalAttack(attacker, attacked, f);
                 super.finalAttack(attacker, attacked, f);
             };
-        });//setAnimtion(new ThrowParticle("rock")));
+        });// setAnimtion(new ThrowParticle("rock")));
         registerMove(new Move_Basic(MOVE_DOUBLEHIT)
         {
 
@@ -1406,7 +1450,7 @@ public class MovesAdder implements IMoveConstants
                 for (int i = 0; i <= count; i++)
                     super.finalAttack(attacker, attacked, f);
             };
-        });//setAnimtion(new ThrowParticle("iceshard")));
+        });// setAnimtion(new ThrowParticle("iceshard")));
         registerMove(new Move_Basic(MOVE_FURYATTACK)
         {
 
@@ -1570,7 +1614,7 @@ public class MovesAdder implements IMoveConstants
                 for (int i = 0; i <= count; i++)
                     super.finalAttack(attacker, attacked, f, false);
             };
-        });//setAnimtion(new ThrowParticle("sting")));
+        });// setAnimtion(new ThrowParticle("sting")));
         registerMove(new Move_Basic(MOVE_COMETPUNCH)
         {
 
@@ -1651,7 +1695,7 @@ public class MovesAdder implements IMoveConstants
                 for (int i = 0; i <= count; i++)
                     super.finalAttack(attacker, attacked, f, false);
             };
-        });//setAnimtion(new ThrowParticle("iceshard")));
+        });// setAnimtion(new ThrowParticle("iceshard")));
         registerMove(new Move_Basic(MOVE_PINMISSILE)
         {
 
@@ -1678,7 +1722,7 @@ public class MovesAdder implements IMoveConstants
                 for (int i = 0; i <= count; i++)
                     super.finalAttack(attacker, attacked, f, false);
             };
-        });//setAnimtion(new ThrowParticle("sting")));
+        });// setAnimtion(new ThrowParticle("sting")));
         registerMove(new Move_Basic(MOVE_ROCKBLAST)
         {
 
@@ -1705,7 +1749,7 @@ public class MovesAdder implements IMoveConstants
                 for (int i = 0; i <= count; i++)
                     super.finalAttack(attacker, attacked, f, false);
             };
-        });//setAnimtion(new ThrowParticle("rock")));
+        });// setAnimtion(new ThrowParticle("rock")));
         registerMove(new Move_Basic(MOVE_SPIKECANNON)
         {
 
@@ -1732,7 +1776,7 @@ public class MovesAdder implements IMoveConstants
                 for (int i = 0; i <= count; i++)
                     super.finalAttack(attacker, attacked, f, false);
             };
-        });//setAnimtion(new ThrowParticle("sting")));
+        });// setAnimtion(new ThrowParticle("sting")));
         registerMove(new Move_Basic(MOVE_TAILSLAP)
         {
 
@@ -1788,8 +1832,8 @@ public class MovesAdder implements IMoveConstants
                     {
                         changeAddition = move.change;
                     }
-                    int finalAttackStrength = MovesUtils.attack(attacker, attacked, name, move.type, PWR, move.crit,
-                            statusChange, changeAddition);
+                    int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type, PWR,
+                            move.crit, statusChange, changeAddition));
                     if (finalAttackStrength != 0) PWR += 10;
                     else break;
                 }
@@ -1822,7 +1866,8 @@ public class MovesAdder implements IMoveConstants
             }
         });
         registerMove(new Move_Basic(MOVE_SANDATTACK).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_STRINGSHOT));//setAnimtion(new ParticleFlow("string")));
+        registerMove(new Move_Basic(MOVE_STRINGSHOT));// setAnimtion(new
+                                                      // ParticleFlow("string")));
         registerMove(new Move_Basic(MOVE_DOUBLETEAM)); // TODO make this make
                                                        // multiple fake images
 
@@ -1840,7 +1885,8 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_STUNSPORE).setMultiTarget());
         registerMove(new Move_Basic(MOVE_SPORE).setMultiTarget());
 
-        registerMove(new Move_Basic(MOVE_WILLOWISP));//setAnimtion(new ParticleFlow("flameblue")));
+        registerMove(new Move_Basic(MOVE_WILLOWISP));// setAnimtion(new
+                                                     // ParticleFlow("flameblue")));
         registerMove(new Move_Basic(MOVE_THUNDERWAVE).setAnimation(new Thunder()).setSound("ambient.weather.thunder"));
         registerMove(new Move_Basic(MOVE_SING)
         {
@@ -1850,9 +1896,11 @@ public class MovesAdder implements IMoveConstants
                 sound = ((IPokemob) attacker).getSound();
                 super.finalAttack(attacker, attacked, f);
             }
-        });//setAnimtion(new ParticlesOnSource("note")));
-        registerMove(new Move_Basic(MOVE_GRASSWHISTLE));//setAnimtion(new ParticlesOnSource("note")));
-        registerMove(new Move_Basic(MOVE_SUPERSONIC));//setAnimtion(new ParticleFlow("note")));
+        });// setAnimtion(new ParticlesOnSource("note")));
+        registerMove(new Move_Basic(MOVE_GRASSWHISTLE));// setAnimtion(new
+                                                        // ParticlesOnSource("note")));
+        registerMove(new Move_Basic(MOVE_SUPERSONIC));// setAnimtion(new
+                                                      // ParticleFlow("note")));
 
     }
 
@@ -1882,7 +1930,7 @@ public class MovesAdder implements IMoveConstants
             {
                 return 20;
             }
-        });//setAnimtion(new ParticleFlow("note")));
+        });// setAnimtion(new ParticleFlow("note")));
         registerMove(new Move_Basic(MOVE_DRAGONRAGE)
         {
             @Override
@@ -1890,7 +1938,7 @@ public class MovesAdder implements IMoveConstants
             {
                 return 40;
             }
-        });//setAnimtion(new ParticleFlow("flame")));
+        });// setAnimtion(new ParticleFlow("flame")));
 
         registerMove(new Move_Basic(MOVE_LOWKICK)
         {

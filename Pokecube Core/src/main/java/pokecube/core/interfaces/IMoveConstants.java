@@ -68,35 +68,6 @@ public interface IMoveConstants extends IMoveNames
     String DEFAULT_MOVE = "tackle";
 
     /*
-     * Natures
-     */
-    byte HARDY   = 0;
-    byte LONELY  = 1;
-    byte BRAVE   = 2;
-    byte ADAMANT = 3;
-    byte NAUGHTY = 4;
-    byte BOLD    = 5;
-    byte DOCILE  = 6;
-    byte RELAXED = 7;
-    byte IMPISH  = 8;
-    byte LAX     = 9;
-    byte TIMID   = 10;
-    byte HASTY   = 11;
-    byte SERIOUS = 12;
-    byte JOLLY   = 13;
-    byte NAIVE   = 14;
-    byte MODEST  = 15;
-    byte MILD    = 16;
-    byte QUIET   = 17;
-    byte BASHFUL = 19;
-    byte RASH    = 18;
-    byte CALM    = 20;
-    byte GENTLE  = 21;
-    byte SASSY   = 22;
-    byte CAREFUL = 23;
-    byte QUIRKY  = 24;
-
-    /*
      * Types
      */
     PokeType unknown  = PokeType.unknown;
@@ -179,7 +150,9 @@ public interface IMoveConstants extends IMoveNames
     static final int INWATER        = 1 << 23;
     /** is the pokemob tired */
     static final int TIRED          = 1 << 24;
-    /** is a player watching the pokemob */
+    /** is the pokemob evolving */
     static final int EVOLVING       = 1 << 25;
+    /** is the pokemob sheared */
+    static final int SHEARED        = 1 << 26;
 
 }

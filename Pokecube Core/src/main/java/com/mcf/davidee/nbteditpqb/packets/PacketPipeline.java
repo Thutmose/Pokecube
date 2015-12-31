@@ -34,7 +34,6 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
     private EnumMap<Side, FMLEmbeddedChannel> channels;
     private List<Class<? extends AbstractPacket>> packets;
     
-    @SuppressWarnings("unchecked")
 	public PacketPipeline() {
     	packets = Arrays.asList(MouseOverPacket.class, EntityRequestPacket.class, TileRequestPacket.class, 
     			EntityNBTPacket.class, TileNBTPacket.class, TileNBTUpdatePacket.class);

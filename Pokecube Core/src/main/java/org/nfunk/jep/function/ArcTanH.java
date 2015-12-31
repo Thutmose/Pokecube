@@ -19,6 +19,7 @@ import org.nfunk.jep.type.Complex;
  * @author Nathan Funk
  * @since 2.3.0 beta 2 - Now returns Double result rather than Complex for -1<x<1 
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ArcTanH extends PostfixMathCommand
 {
 	public ArcTanH()

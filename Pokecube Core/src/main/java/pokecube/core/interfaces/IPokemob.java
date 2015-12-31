@@ -269,27 +269,6 @@ public interface IPokemob extends IMoveConstants
      *            the byte sexe */
     void setSexe(byte sexe);
 
-    /** Will be called by the mother before she lays to know what baby to put in
-     * the egg.
-     *
-     * @param male
-     *            the male
-     * @return the pokedex number of the child */
-    int getChildSpecies(IPokemob male);
-
-    /** Which entity is this pokemob trying to breed with
-     * 
-     * @return */
-    Entity getLover();
-
-    /** Sets the entity to try to breed with
-     * 
-     * @param lover */
-    void setLover(Entity lover);
-
-    /** resets the status of being in love */
-    void resetLoveStatus();
-
     /** Returns the name to display in any GUI. Can be the nickname or the
      * Pokemob translated name.
      *
@@ -435,7 +414,14 @@ public interface IPokemob extends IMoveConstants
     /** Returns the texture path.
      * 
      * @return */
+    @SideOnly(Side.CLIENT)
     String getTexture();
+
+    /** Returns modified texture to account for shininess, animation, etc.
+     * 
+     * @return */
+    @SideOnly(Side.CLIENT)
+    String modifyTexture(String texture);
 
     /** Has pokemob been traded
      * 
@@ -450,11 +436,6 @@ public interface IPokemob extends IMoveConstants
      * @param effect */
     void addOngoingEffect(Move_Base effect);
 
-    /** List of modifiers of natures
-     * 
-     * @return */
-    byte[] getNatureModifiers();
-
     /** This is called during move use to both the attacker and the attacked
      * entity, in that order. This can be used to add in abilities, In
      * EntityMovesPokemob, this is used for accounting for moves like curse,
@@ -467,32 +448,28 @@ public interface IPokemob extends IMoveConstants
     /** {@link IMoveConstants#HARDY} for an example of a nature byte
      * 
      * @return the nature */
-    byte getNature();
+    Nature getNature();
 
     /** Sets the pokemobs's nature {@link IMoveConstants#HARDY} for an example
      * of a nature byte
      * 
      * @param nature */
-    void setNature(byte nature);
+    void setNature(Nature nature);
 
     /** Returns the held item this pokemob should have when found wild.
      * 
      * @return */
     ItemStack wildHeldItem();
 
-    /**
-     * 
-     * @return how happy is the pokemob, see {@link HappinessType}
-     */
+    /** @return how happy is the pokemob, see {@link HappinessType} */
     int getHappiness();
 
-    /**
-     * 
-     * @return rgb colours in that order.
-     */
-    byte[] getColours();
-
-    void setColours(byte[] colours);
+    // @Deprecated
+    // /** @return rgb colours in that order. */
+    // byte[] getColours();
+    //
+    // @Deprecated
+    // void setColours(byte[] colours);
 
     boolean isShiny();
 
@@ -501,10 +478,8 @@ public interface IPokemob extends IMoveConstants
     float getSize();
 
     void setSize(float size);
-    /**
-     * 
-     * adds to how happy is the pokemob, see {@link HappinessType}
-     */
+
+    /** adds to how happy is the pokemob, see {@link HappinessType} */
     void addHappiness(int toAdd);
 
     boolean isShadow();
@@ -651,8 +626,17 @@ public interface IPokemob extends IMoveConstants
 
         /** Used in the protection moves, accounts their accuracy via this
          * variable */
-        public boolean failed = false;
+        public boolean   failed    = false;
+        /** index 0 is to infatuate the attacked target, index 1 infatuates the
+         * attacker. */
+        public boolean[] infatuate = { false, false };
 
+        public MovePacket(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR, int criticalLevel,
+                byte statusChange, byte changeAddition)
+        {
+            this(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition, true);
+        }
+        
         public MovePacket(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR, int criticalLevel,
                 byte statusChange, byte changeAddition, boolean pre)
         {
@@ -678,6 +662,8 @@ public interface IPokemob extends IMoveConstants
     {
         public Entity weapon1;
         public Entity weapon2;
+
+        public Entity infatuateTarget;
 
         public static final int TYPE_CRIT = 2;
 

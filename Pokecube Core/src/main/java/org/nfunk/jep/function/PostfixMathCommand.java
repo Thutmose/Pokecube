@@ -20,6 +20,7 @@ import org.nfunk.jep.ParseException;
  * all classes extending this class. If an arbitrary number of parameters
  * should be allowed, initialize this member to -1.
  */
+@SuppressWarnings({ "rawtypes" })
 public class PostfixMathCommand implements PostfixMathCommandI
 {
 	/**

@@ -59,6 +59,7 @@ import org.nfunk.jep.type.NumberFactory;
  *
  * @author Nathan Funk
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class JEP {
 
 	/** Debug flag for extra command line output */

@@ -14,6 +14,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.blocks.afa.ContainerAFA;
+import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.PlayerAsPokemobManager;
@@ -47,7 +49,8 @@ public class PacketPokeAdv
 
     public static class MessageClient implements IMessage
     {
-        PacketBuffer buffer;
+        PacketBuffer             buffer;
+        public static final byte MESSAGEGUIAFA = 11;
 
         public MessageClient()
         {
@@ -184,6 +187,15 @@ public class PacketPokeAdv
                     }
                     player.worldObj.playSoundEffect(v.x, v.y, v.z, "mob.endermen.portal", 1.0F, 1.0F);
                 }
+                if (channel == MESSAGEGUIAFA && player.openContainer instanceof ContainerAFA)
+                {
+                    ContainerAFA cont = (ContainerAFA) player.openContainer;
+                    TileEntityAFA tile = cont.tile;
+                    int energy = buffer.readInt();
+                    // System.out.println(tile.getEnergyStored(EnumFacing.DOWN)+"
+                    // "+energy);
+                    tile.setField(0, energy);
+                }
             }
 
             @Override
@@ -199,7 +211,8 @@ public class PacketPokeAdv
 
     public static class MessageServer implements IMessage
     {
-        PacketBuffer buffer;
+        public static final byte MESSAGEGUIAFA = 11;
+        PacketBuffer             buffer;
 
         public MessageServer()
         {
@@ -246,7 +259,7 @@ public class PacketPokeAdv
 
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
         {
-            public void handleServerSide(EntityPlayer player, PacketBuffer buffer)
+            public IMessage handleServerSide(EntityPlayer player, PacketBuffer buffer)
             {
                 byte channel = buffer.readByte();
                 byte[] message = new byte[buffer.array().length - 1];
@@ -310,14 +323,33 @@ public class PacketPokeAdv
                         }
                     }
                 }
+                if (channel == MESSAGEGUIAFA && player.openContainer instanceof ContainerAFA)
+                {
+                    ContainerAFA cont = (ContainerAFA) player.openContainer;
+                    TileEntityAFA tile = cont.tile;
+                    if (buffer.readableBytes() > 7)
+                    {
+                        int id = buffer.readInt();
+                        int val = buffer.readInt();
+                        System.out.println(id+" "+ val);
+                        tile.setField(id, val);
+                    }
+                    PacketBuffer retBuf = new PacketBuffer(Unpooled.buffer(5));
+                    retBuf.writeByte(MessageClient.MESSAGEGUIAFA);
+                    retBuf.writeInt(tile.getField(0));
+                    MessageClient ret = new MessageClient(retBuf);
+                    return ret;
+
+                }
+                return null;
             }
 
             @Override
             public IMessage onMessage(MessageServer message, MessageContext ctx)
             {
                 EntityPlayer player = ctx.getServerHandler().playerEntity;
-                handleServerSide(player, message.buffer);
-                return null;
+
+                return handleServerSide(player, message.buffer);
             }
 
         }

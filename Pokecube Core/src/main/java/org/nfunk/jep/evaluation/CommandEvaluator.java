@@ -18,6 +18,7 @@ import org.nfunk.jep.function.PostfixMathCommandI;
  * 
  * @author nathan
  */
+@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 public class CommandEvaluator {
 	private int                 nCommands, nParam;
 	private CommandElement      command;

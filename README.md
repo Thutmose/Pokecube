@@ -1,9 +1,6 @@
 # Pokécube
 Pokémobs for Minecraft - page under construction.
 
-##Currently Missing Pokemob Models from before
-- Pikachu/Raichu/Pichu
-
 ##Currently known Messed up texures/other glitches
 - Trevenant - Legs are funny
 
@@ -15,7 +12,6 @@ Pokémobs for Minecraft - page under construction.
 - Accelgor
 - Aegislash Blade
 - Aegislash Shield
-- Aerodactyl
 - Aerodactyl Mega
 - Alakazam
 - Alakazam Mega
@@ -36,8 +32,8 @@ Pokémobs for Minecraft - page under construction.
 - Beautifly
 - Beheeyem
 - Bellsprout
-- Bibarel
-- Bidoof
+- ~~Bibarel~~
+- ~~Bidoof~~
 - Binacle
 - Boldore
 - Bouffalant
@@ -68,9 +64,7 @@ Pokémobs for Minecraft - page under construction.
 - Darmanitan Zen
 - Darumaka
 - Dedenne
-- Deerling
 - Deino
-- Delcatty
 - Dewgong
 - Dialga
 - Diggersby
@@ -91,12 +85,10 @@ Pokémobs for Minecraft - page under construction.
 - Excadrill
 - Exeggcute
 - Exeggutor
-- Ferroseed
-- Ferrothorn
 - Finneon
 - Flabébé
-- Fletchinder
-- Fletchling
+- ~~Fletchinder~~
+- ~~Fletchling~~
 - Floatzel
 - Floette
 - Florges
@@ -195,7 +187,6 @@ Pokémobs for Minecraft - page under construction.
 - Mr. Mime
 - Muk
 - Munchlax
-- Ninetales
 - Noibat
 - Noivern
 - Nosepass
@@ -207,8 +198,6 @@ Pokémobs for Minecraft - page under construction.
 - Pansage
 - Pansear
 - Patrat
-- Pichu
-- Pikachu
 - Pinsir
 - Pinsir Mega
 - Probopass
@@ -220,7 +209,6 @@ Pokémobs for Minecraft - page under construction.
 - Purrloin
 - Purugly
 - Pyroar
-- Raichu
 - Regigigas
 - Reshiram
 - Rhydon
@@ -238,7 +226,6 @@ Pokémobs for Minecraft - page under construction.
 - Sandshrew
 - Sandslash
 - Sawk
-- Sawsbuck
 - Scatterbug
 - Scrafty
 - Scraggy
@@ -257,7 +244,6 @@ Pokémobs for Minecraft - page under construction.
 - Simisage
 - Simisear
 - Skiddo
-- Skitty
 - Skorupi
 - Skrelp
 - Skuntank
@@ -268,20 +254,19 @@ Pokémobs for Minecraft - page under construction.
 - Snover
 - Spewpa
 - Spinda
-- Spiritomb
+- ~~Spiritomb~~
 - Spoink
 - Spritzee
 - Starmie
 - Staryu
 - Stoutland
-- Stunfisk
 - Stunky
 - Surskit
 - Swadloon
 - Swanna
 - Swirlix
 - Swoobat
-- Talonflame
+- ~~Talonflame~~
 - Tangela
 - Tangrowth
 - Terrakion
@@ -312,7 +297,6 @@ Pokémobs for Minecraft - page under construction.
 - Vivillon
 - Volbeat
 - Vullaby
-- Vulpix
 - Watchog
 - Weepinbell
 - Woobat

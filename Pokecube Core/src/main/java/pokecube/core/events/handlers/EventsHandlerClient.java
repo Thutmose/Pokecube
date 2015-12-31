@@ -11,6 +11,7 @@ import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -51,7 +52,6 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
@@ -152,9 +152,9 @@ public class EventsHandlerClient
 
         if (GameSettings.isKeyDown(ClientProxyPokecube.nextMob))
         {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            if (GuiScreen.isAltKeyDown())
             {
-                int num = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 10 : 1;
+                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
                 GuiDisplayPokecubeInfo.instance().moveGui(num, 0);
             }
             else
@@ -164,9 +164,9 @@ public class EventsHandlerClient
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.previousMob))
         {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            if (GuiScreen.isAltKeyDown())
             {
-                int num = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 10 : 1;
+                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
                 GuiDisplayPokecubeInfo.instance().moveGui(-num, 0);
             }
             else
@@ -176,9 +176,9 @@ public class EventsHandlerClient
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.nextMove))
         {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            if (GuiScreen.isAltKeyDown())
             {
-                int num = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 10 : 1;
+                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
                 GuiDisplayPokecubeInfo.instance().moveGui(0, num);
             }
             else
@@ -190,9 +190,9 @@ public class EventsHandlerClient
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.previousMove))
         {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            if (GuiScreen.isAltKeyDown())
             {
-                int num = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 10 : 1;
+                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
                 GuiDisplayPokecubeInfo.instance().moveGui(0, -num);
             }
             else
@@ -249,13 +249,13 @@ public class EventsHandlerClient
             if ((event.gui instanceof GuiContainer))
             {
                 GuiContainer gui = (GuiContainer) event.gui;
-                if (gui.mc.thePlayer == null || !Keyboard.isKeyDown(Keyboard.KEY_LMENU)) { return; }
+                if (gui.mc.thePlayer == null || !GuiScreen.isAltKeyDown()) { return; }
 
                 if (rainXCoords == null)
                 {
                     rainXCoords = new float[] { 0 };
                 }
-                
+
                 if (rainXCoords[0] == event.renderPartialTicks) return;
                 rainXCoords[0] = event.renderPartialTicks;
                 List<Slot> slots = gui.inventorySlots.inventorySlots;
@@ -271,7 +271,6 @@ public class EventsHandlerClient
                     if (slot.getHasStack() && PokecubeManager.isFilled(slot.getStack()))
                     {
                         IPokemob pokemob = getPokemobForRender(slot.getStack(), gui.mc.theWorld);
-
                         int x = (w - xSize) / 2;
                         int y = (h - ySize) / 2;
                         int i, j;
@@ -279,6 +278,12 @@ public class EventsHandlerClient
                         j = slot.yDisplayPosition + 10;
                         GL11.glPushMatrix();
                         GL11.glTranslatef(i + x, j + y, 0F);
+                        EntityLiving entity = (EntityLiving) pokemob;
+                        entity.rotationYaw = 0;
+                        entity.rotationPitch = 0;
+                        entity.rotationYawHead = 0;
+                        pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
+                        entity.onGround = true;
                         renderMob(pokemob, event.renderPartialTicks);
                         GL11.glPopMatrix();
                     }
@@ -299,7 +304,7 @@ public class EventsHandlerClient
         if (event.type == ElementType.HOTBAR)
         {
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-            if (player == null || !Keyboard.isKeyDown(Keyboard.KEY_LMENU)
+            if (player == null || !GuiScreen.isAltKeyDown()
                     || Minecraft.getMinecraft().currentScreen != null) { return; }
 
             int w = event.resolution.getScaledWidth();
@@ -321,11 +326,20 @@ public class EventsHandlerClient
                 if (stack != null && PokecubeManager.isFilled(stack))
                 {
                     IPokemob pokemob = getPokemobForRender(stack, player.worldObj);
-
+                    if (pokemob == null)
+                    {
+                        continue;
+                    }
                     int x = (w - xSize) / 2;
                     int y = (h - ySize);
                     GL11.glPushMatrix();
                     GL11.glTranslatef(i + x + 20 * l, j + y, 0F);
+                    EntityLiving entity = (EntityLiving) pokemob;
+                    entity.rotationYaw = 0;
+                    entity.rotationPitch = 0;
+                    entity.rotationYawHead = 0;
+                    pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
+                    entity.onGround = true;
                     renderMob(pokemob, event.partialTicks);
                     GL11.glPopMatrix();
                 }
@@ -358,7 +372,7 @@ public class EventsHandlerClient
         event.left.add(msg);
     }
 
-    static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
+    public static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
 
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
     {
@@ -376,7 +390,7 @@ public class EventsHandlerClient
                 renderMobs.put(entry, pokemob);
             }
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
-            SetFromNBT(pokemob, pokeTag);
+            EventsHandler.setFromNBT(pokemob, pokeTag);
             pokemob.popFromPokecube();
             pokemob.setPokecubeId(PokecubeItems.getCubeId(itemStack));
             ((EntityLivingBase) pokemob).setHealth(
@@ -389,59 +403,35 @@ public class EventsHandlerClient
         return null;
     }
 
-    private static void SetFromNBT(IPokemob pokemob, NBTTagCompound tag)
-    {
-        float scale = tag.getFloat("scale");
-        if (scale > 0)
-        {
-            pokemob.setSize(scale);
-        }
-        pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
-        byte red = tag.getByte("red");
-        byte green = tag.getByte("green");
-        byte blue = tag.getByte("blue");
-        boolean shiny = tag.getBoolean("shiny");
-        pokemob.setShiny(shiny);
-        byte[] cols = pokemob.getColours();
-        cols[0] = red;
-        cols[1] = green;
-        cols[2] = blue;
-        String forme = tag.getString("forme");
-        pokemob.changeForme(forme);
-        pokemob.setColours(cols);
-        pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
-    }
-
     public static void renderMob(IPokemob pokemob, float tick)
     {
-        if(pokemob==null) return;
-        
-        
+        renderMob(pokemob, tick, true);
+    }
+
+    public static void renderMob(IPokemob pokemob, float tick, boolean rotates)
+    {
+        if (pokemob == null) return;
+
         EntityLiving entity = (EntityLiving) pokemob;
 
         float size = 0;
 
-        size = Math.max(entity.width, entity.height) * 4;
+        float mobScale = pokemob.getSize();
+        size = Math.max(pokemob.getPokedexEntry().width * mobScale,
+                Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
 
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glPushMatrix();
-        float zoom = 30f / size;
+        float zoom = (float) (10f / Math.sqrt(size));
         GL11.glScalef(-zoom, zoom, zoom);
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         Minecraft.getMinecraft();
         long time = Minecraft.getSystemTime();
-        GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
+        if (rotates) GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
         RenderHelper.enableStandardItemLighting();
 
         GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-
-        entity.rotationYaw = 0;
-        entity.rotationPitch = 0;
-        entity.rotationYawHead = 0;
-
-        pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
-        entity.onGround = true;
 
         int i = 15728880;
         int j1 = i % 65536;

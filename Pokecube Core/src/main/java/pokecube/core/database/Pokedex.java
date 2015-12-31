@@ -119,6 +119,26 @@ public class Pokedex
         return null;
     }
 
+    public PokedexEntry getLastEntry()
+    {
+        int pokedexNb = 1500;
+        PokedexEntry returned = null;
+
+        do
+        {
+            pokedexNb -= 1;
+            returned = getEntry(pokedexNb);
+
+            if (returned != null)
+            {
+                return returned;
+            }
+        }
+        while (pokedexNb > 00);
+
+        return null;
+    }
+
 	public HashSet<Integer> getEntries()
 	{
 		return entries;

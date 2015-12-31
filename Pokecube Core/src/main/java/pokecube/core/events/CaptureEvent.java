@@ -38,6 +38,10 @@ public class CaptureEvent extends Event
     }
 
     @Cancelable
+    /** Pre is sent before the capture is completed, canceling it will prevent
+     * capture.
+     * 
+     * @author Thutmose */
     public static class Pre extends CaptureEvent
     {
         public Pre(IPokemob hit, EntityPokecube pokecube)
@@ -48,6 +52,10 @@ public class CaptureEvent extends Event
     }
 
     @Cancelable
+    /** Post is sent after the capture is completed, canceling it will prevent
+     * the capture from being recorded, and will destroy the cube and the mob.
+     * 
+     * @author Thutmose */
     public static class Post extends CaptureEvent
     {
         public Post(EntityPokecube pokecube)

@@ -937,7 +937,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                             d1 = (Math.random() - Math.random()) * 0.01D;
                         }
 
-                        this.attackedAtYaw = (float) (MathHelper.func_181159_b(d0, d1) * 180.0D / Math.PI
+                        this.attackedAtYaw = (float) (MathHelper.atan2(d0, d1) * 180.0D / Math.PI
                                 - (double) this.rotationYaw);
                         // Reduces knockback from distanced moves
                         if (source instanceof PokemobDamageSource)

@@ -4,15 +4,19 @@
 package pokecube.modelloader;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -51,77 +55,132 @@ public class CommonProxy implements IGuiHandler
     public void init()
     {
         ArrayList<String> toAdd = ModPokecubeML.addedPokemon;
+        ArrayList<PokedexEntry> entries = Lists.newArrayList();
+        for (PokedexEntry entry : Database.allFormes)
+        {
+            entries.add(entry);
+        }
+        PokedexEntry[] entryArr = entries.toArray(new PokedexEntry[0]);
+        boolean[] has = new boolean[entryArr.length];
+        System.out.println(entryArr.length + " Entries " + has.length);
+        for (int i = 0; i < has.length; i++)
+        {
+            if (entryArr[i] == null)
+            {
+                new Exception().printStackTrace();
+                continue;
+            }
+            if (toAdd.contains(entryArr[i].getName()))
+            {
+                has[i] = true;
+                ModPokecubeML.textureProviders.put(entryArr[i], ModPokecubeML.ID);
+            }
+        }
         for (String modId : mobProviders.keySet())
         {
-            for (PokedexEntry entry : Database.allFormes)
+            Object mod = mobProviders.get(modId);
+            boolean[] hasArr = providesModels(modId, mod, entryArr);
+            for (int i = 0; i < hasArr.length; i++)
             {
-                String name = entry.getName();
-                if (toAdd.contains(name) || !providesModel(modId, entry)) continue;
-                boolean has = false;
-                for (String s1 : toAdd)
-                {
-                    if (s1.equals(name))
-                    {
-                        has = true;
-                        break;
-                    }
-                }
-                if (!has)
-                {
-                    ModPokecubeML.textureProviders.put(entry, modId);
-                    toAdd.add(name);
-                }
+                if (!hasArr[i] || has[i]) continue;
+                PokedexEntry entry = entryArr[i];
+                toAdd.add(entry.getName());
+                ModPokecubeML.textureProviders.put(entry, modId);
             }
         }
     }
 
-    private boolean providesModel(String modid, PokedexEntry entry)
+    private boolean[] providesModels(String modid, Object mod, PokedexEntry... entry)
     {
-        ResourceLocation tex;
-        tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".tbl");
-        if (fileExists(tex)) return true;
-        tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".xml");
-        if (fileExists(tex)) return true;
-        tex = new ResourceLocation(modid, MODELPATH + entry.getName() + ".x3d");
-        if (fileExists(tex)) return true;
-        return false;
+        ResourceLocation[] tex;
+        boolean[] ret = new boolean[entry.length];
+        tex = toLocations(modid, ".x3d", entry);
+        filesExist(mod, ret, tex);
+        tex = toLocations(modid, ".xml", entry);
+        filesExist(mod, ret, tex);
+        tex = toLocations(modid, ".tbl", entry);
+        filesExist(mod, ret, tex);
+        return ret;
     }
 
-    private boolean fileExists(ResourceLocation file)
+    private ResourceLocation[] toLocations(String modid, String ext, PokedexEntry... entries)
+    {
+        ResourceLocation[] ret = new ResourceLocation[entries.length];
+        for (int i = 0; i < entries.length; i++)
+        {
+            ret[i] = new ResourceLocation(modid, MODELPATH + entries[i].getName() + ext);
+        }
+        return ret;
+    }
+
+    private void filesExist(Object mod, boolean[] ret, ResourceLocation[] file)
     {
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
         // Check Resource Packs
-        if (checkInFolder(file, resourceDir)) return true;
+        checkInFolder(resourceDir, ret, file);
+
         // Check jars.
-        resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
-        if (checkInFolder(file, resourceDir)) return true;
-        return false;
+        String scannedPackage = mod.getClass().getPackage().getName();
+        String scannedPath = scannedPackage.replace(DOT, SLASH);
+        URL scannedUrl = Thread.currentThread().getContextClassLoader().getResource(scannedPath);
+        if (scannedUrl == null) return;
+        resourceDir = new File(scannedUrl.getFile().replace("%20", " "));
+        if (resourceDir.toString().contains("file:") && resourceDir.toString().contains(".jar"))
+        {
+            String name = resourceDir.toString();
+            name = name.replace("file:", "");
+            name = name.replaceAll("(.jar)(.*)", ".jar");
+            resourceDir = new File(name);
+            FMLLog.getLogger().debug("Checking in " + resourceDir + " " + mod);
+        }
+        else resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
+        checkInFolder(resourceDir, ret, file);
     }
 
-    private boolean checkInFolder(ResourceLocation file, File resourceDir)
+    private static final char DOT = '.';
+
+    private static final char SLASH = '/';
+
+    private void checkInFolder(File resourceDir, boolean[] ret, ResourceLocation[] files)
     {
-        if(!resourceDir.exists()) return false;
-        for (File folder : resourceDir.listFiles())
+        if (!resourceDir.exists()) return;
+        int n = 0;
+        if (resourceDir.isDirectory()) for (File folder : resourceDir.listFiles())
         {
             if (folder.isDirectory())
             {
-                File f = new File(folder,
-                        "assets" + File.separator + file.getResourceDomain() + File.separator + file.getResourcePath());
-                if (f.exists()) { return true; }
+                for (n = 0; n < files.length; n++)
+                {
+                    ResourceLocation file = files[n];
+                    if (file == null) continue;
+                    File f = new File(folder, "assets" + File.separator + file.getResourceDomain() + File.separator
+                            + file.getResourcePath());
+                    if (f.exists())
+                    {
+                        ret[n] = true;
+                    }
+                }
             }
             else if (folder.getName().contains(".zip") || folder.getName().contains(".jar"))
             {
-
                 try
                 {
                     ZipFile zip = new ZipFile(folder);
                     Enumeration<? extends ZipEntry> entries = zip.entries();
-                    int n = 0;
-                    while (entries.hasMoreElements() && n < 10)
+                    while (entries.hasMoreElements())
                     {
                         ZipEntry entry = entries.nextElement();
                         String s = entry.getName();
-                        if (s.contains(file.getResourceDomain()) && s.endsWith(file.getResourcePath())) { return true; }
+                        for (n = 0; n < files.length; n++)
+                        {
+                            ResourceLocation file = files[n];
+                            if (file == null) continue;
+                            if (s.contains(file.getResourceDomain()) && s.endsWith(file.getResourcePath()))
+                            {
+                                zip.close();
+                                ret[n] = true;
+                            }
+                        }
                     }
                     zip.close();
                 }
@@ -132,7 +191,37 @@ public class CommonProxy implements IGuiHandler
 
             }
         }
-        return false;
+        else
+        {
+            if (resourceDir.getName().contains(".zip") || resourceDir.getName().contains(".jar"))
+            {
+                try
+                {
+                    ZipFile zip = new ZipFile(resourceDir);
+                    Enumeration<? extends ZipEntry> entries = zip.entries();
+                    while (entries.hasMoreElements())
+                    {
+                        ZipEntry entry = entries.nextElement();
+                        String s = entry.getName();
+                        for (n = 0; n < files.length; n++)
+                        {
+                            ResourceLocation file = files[n];
+                            if (file == null) continue;
+                            if (s.contains(file.getResourceDomain()) && s.endsWith(file.getResourcePath()))
+                            {
+                                ret[n] = true;
+                            }
+                        }
+                    }
+                    zip.close();
+                }
+                catch (Exception e)
+                {
+                    if (!resourceDir.getName().contains(".jar")) e.printStackTrace();
+                }
+
+            }
+        }
     }
 
     @Override

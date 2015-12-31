@@ -62,7 +62,7 @@ public class CommonProxy implements IGuiHandler
         }
         PokedexEntry[] entryArr = entries.toArray(new PokedexEntry[0]);
         boolean[] has = new boolean[entryArr.length];
-        System.out.println(entryArr.length + " Entries " + has.length);
+        
         for (int i = 0; i < has.length; i++)
         {
             if (entryArr[i] == null)

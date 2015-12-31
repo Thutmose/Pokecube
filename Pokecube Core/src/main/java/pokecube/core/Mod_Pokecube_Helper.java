@@ -69,7 +69,7 @@ public class Mod_Pokecube_Helper
 
     /** This is also the radius which mobs spawn in. Is only despawn radius if
      * cull is true */
-    public static int     mobDespawnRadius   = 32;
+    public static int     mobDespawnRadius   = 64;
     /** closest distance to a player the pokemob can spawn. */
     public static int     mobSpawnRadius     = 16;
     /** Distance to player needed to agress the player */

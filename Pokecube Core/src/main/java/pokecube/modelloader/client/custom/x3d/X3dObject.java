@@ -143,8 +143,8 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         // Compiles the list of the meshId is invalid.
         compileList();
         // Call the list
-        GL11.glCallList(meshId);
-        GL11.glFlush();
+         GL11.glCallList(meshId);
+         GL11.glFlush();
         // Reset Texture Matrix if changed.
         if (textureShift)
         {
@@ -272,130 +272,148 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         {
             meshId = GL11.glGenLists(1);
             GL11.glNewList(meshId, GL11.GL_COMPILE);
-            Vertex vertex;
-            TextureCoordinate textureCoordinate;
             if (triangles)
             {
-                Vector3f[] normalList = new Vector3f[order.length];
-                // Calculate the normals for each triangle.
-                for (int i = 0; i < order.length; i += 3)
+                addTris();
+            }
+            else
+            {
+                addFaces();
+            }
+            GL11.glEndList();
+        }
+    }
+    
+    void addTris()
+    {
+        Vertex vertex;
+        TextureCoordinate textureCoordinate;
+        Vector3f[] normalList = new Vector3f[order.length];
+        // Calculate the normals for each triangle.
+        for (int i = 0; i < order.length; i += 3)
+        {
+            Vector3f v1, v2, v3;
+            vertex = vertices[order[i]];
+            v1 = new Vector3f(vertex.x, vertex.y, vertex.z);
+            vertex = vertices[order[i + 1]];
+            v2 = new Vector3f(vertex.x, vertex.y, vertex.z);
+            vertex = vertices[order[i + 2]];
+            v3 = new Vector3f(vertex.x, vertex.y, vertex.z);
+            Vector3f a = new Vector3f(v2);
+            a.sub(v1);
+            Vector3f b = new Vector3f(v3);
+            b.sub(v1);
+            Vector3f c = new Vector3f();
+            c.cross(a, b);
+            c.normalize();
+            normalList[i] = c;
+            normalList[i + 1] = c;
+            normalList[i + 2] = c;
+        }
+        // TODO see if there is a better way to interpolate the normals.
+        // GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glBegin(GLMODE);
+        int n = 0;
+        for (Integer i : order)
+        {
+            textureCoordinate = textureCoordinates[i];
+            GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
+            vertex = vertices[i];
+            GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
+            // vertex = normals[i];
+            // GL11.glNormal3f(vertex.x, vertex.y, vertex.z);
+             if(n%3==0)
+            {
+                Vector3f norm = normalList[n];
+                GL11.glNormal3f(norm.x, norm.y, norm.z);
+            }
+            n++;
+        }
+        GL11.glEnd();
+    }
+
+    void addFaces()
+    {
+        Vertex vertex;
+        TextureCoordinate textureCoordinate;
+        List<Integer> modes = Lists.newArrayList();
+        int num = 0, n = 0, n1 = 0;
+
+        List<Vector3f> normalList = Lists.newArrayList();
+        Vector3f[] norms = new Vector3f[order.length];
+        Vector3f c = null;
+        for (Integer i : order)
+        {
+            if (i == -1)
+            {
+                if (num == 3)
+                {
+                    modes.add(GL11.GL_TRIANGLES);
+                }
+                else if (num == 4)
+                {
+                    modes.add(GL11.GL_QUADS);
+                }
+                else
+                {
+                    modes.add(GL11.GL_TRIANGLE_FAN);
+                }
+                num = 0;
+            }
+            else
+            {
+                // Calculate a face normal, using just the first 3
+                // points, Every face has at least them
+                if (num == 0)
                 {
                     Vector3f v1, v2, v3;
-                    vertex = vertices[order[i]];
+                    vertex = vertices[order[n]];
                     v1 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                    vertex = vertices[order[i + 1]];
+                    vertex = vertices[order[n + 1]];
                     v2 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                    vertex = vertices[order[i + 2]];
+                    vertex = vertices[order[n + 2]];
                     v3 = new Vector3f(vertex.x, vertex.y, vertex.z);
                     Vector3f a = new Vector3f(v2);
                     a.sub(v1);
                     Vector3f b = new Vector3f(v3);
                     b.sub(v1);
-                    Vector3f c = new Vector3f();
+                    c = new Vector3f();
                     c.cross(a, b);
                     c.normalize();
-                    normalList[i] = c;
-                    normalList[i+1] = c;
-                    normalList[i+2] = c;
+                    normalList.add(c);
                 }
-                //TODO see if there is a better way to interpolate the normals.
-                GL11.glBegin(GLMODE);
-                int n = 0;
-                for (Integer i : order)
-                {
-                    textureCoordinate = textureCoordinates[i];
-                    GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
-                    vertex = vertices[i];
-                    GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
-                    if(n%3==0)
-                    {
-                        Vector3f norm = normalList[n];
-                        GL11.glNormal3f(norm.x, norm.y, norm.z);
-                    }
-                    n++;
-                }
-                GL11.glEnd();
+                norms[n1] = c;
+                n1++;
+                num++;
+            }
+            n++;
+        }
+        num = n = 0;
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glBegin(modes.get(num++));
+        for (Integer i : order)
+        {
+            if (i != -1)
+            {
+                vertex = vertices[i];
+                textureCoordinate = textureCoordinates[i];
+                GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
+                GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
+                vertex = normals[i];
+                GL11.glNormal3f(vertex.x, vertex.y, vertex.z);
+
+                // Vector3f norm1 = norms[n];
+                // GL11.glNormal3f(norm1.x, norm1.y, norm1.z);
+                n++;
             }
             else
             {
-                List<Integer> modes = Lists.newArrayList();
-                int num = 0, n = 0, n1 = 0;
-
-                List<Vector3f> normalList = Lists.newArrayList();
-                Vector3f[] norms = new Vector3f[order.length];
-                Vector3f c = null;
-                for (Integer i : order)
+                GL11.glEnd();
+                if (num < modes.size())
                 {
-                    if (i == -1)
-                    {
-                        if (num == 3)
-                        {
-                            modes.add(GL11.GL_TRIANGLES);
-                        }
-                        else if (num == 4)
-                        {
-                            modes.add(GL11.GL_QUADS);
-                        }
-                        else
-                        {
-                            modes.add(GL11.GL_TRIANGLE_FAN);
-                        }
-                        num = 0;
-                    }
-                    else
-                    { 
-                        // Calculate a face normal, using just the first 3
-                        // points, Every face has at least them
-                        if (num == 0)
-                        {
-                            Vector3f v1, v2, v3;
-                            vertex = vertices[order[n]];
-                            v1 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                            vertex = vertices[order[n + 1]];
-                            v2 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                            vertex = vertices[order[n + 2]];
-                            v3 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                            Vector3f a = new Vector3f(v2);
-                            a.sub(v1);
-                            Vector3f b = new Vector3f(v3);
-                            b.sub(v1);
-                            c = new Vector3f();
-                            c.cross(a, b);
-                            c.normalize();
-                            normalList.add(c);
-                        }
-                        norms[n1] = c;
-                        n1++;
-                        num++;
-                    }
-                    n++;
-                }
-                num = n = 0;
-                GL11.glBegin(modes.get(num++));
-                for (Integer i : order)
-                {
-                    if (i != -1)
-                    {
-                        vertex = vertices[i];
-                        textureCoordinate = textureCoordinates[i];
-                        GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
-                        GL11.glVertex3f(vertex.x, vertex.y, vertex.z);      
-                        
-                        Vector3f norm1 = norms[n];
-                        GL11.glNormal3f(norm1.x, norm1.y, norm1.z);
-                        n++;
-                    }
-                    else
-                    {
-                        GL11.glEnd();
-                        if (num < modes.size())
-                        {
-                            GL11.glBegin(modes.get(num++));
-                        }
-                    }
+                    GL11.glBegin(modes.get(num++));
                 }
             }
-            GL11.glEndList();
         }
     }
 

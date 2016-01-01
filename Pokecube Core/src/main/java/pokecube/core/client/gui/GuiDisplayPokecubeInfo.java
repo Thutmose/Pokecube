@@ -83,6 +83,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         int h = Mod_Pokecube_Helper.guiOffset[0];
         int w = Mod_Pokecube_Helper.guiOffset[1];
 
+        if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
         GL11.glPushMatrix();
 
         minecraft.entityRenderer.setupOverlayRendering();

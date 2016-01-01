@@ -24,7 +24,7 @@ group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-convention
 archivesBaseName = "Pokecube Mobs"
 
 minecraft {
-    version = "1.8.9-11.15.0.1663"
+    version = "1.8.9-11.15.0.1668"
     runDir = "run"
     
     replace "@VERSION@", project.version

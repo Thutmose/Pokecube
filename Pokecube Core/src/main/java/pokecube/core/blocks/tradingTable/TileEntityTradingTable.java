@@ -511,7 +511,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             if (id == PokecubeItems.getBlock("pc"))
             {
                 pc = true;
-                this.pc = (TileEntityPC) here.getTileEntity(getWorld());
+                this.pc = (TileEntityPC) here.offset(side).getTileEntity(getWorld());
                 break;
             }
             here.freeVectorFromPool();

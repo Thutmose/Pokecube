@@ -53,6 +53,7 @@ public class ClientProxy extends CommonProxy
 
     public static KeyBinding bag;
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void preinit()
     {
@@ -77,12 +78,7 @@ public class ClientProxy extends CommonProxy
             PokecubeItems.registerItemTexture(item, i,
                     new ModelResourceLocation("pokecube_adventures:" + i + "_spawner", "inventory"));
         }
-    }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
-    public void initClient()
-    {
         RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class, new IRenderFactory<Entity>()
         {
             @Override
@@ -108,6 +104,11 @@ public class ClientProxy extends CommonProxy
             }
         });
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
+    }
+
+    @Override
+    public void initClient()
+    {
 
         RenderHandler h = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(h);

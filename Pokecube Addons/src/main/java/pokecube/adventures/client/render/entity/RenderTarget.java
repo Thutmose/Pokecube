@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,9 +21,9 @@ public class RenderTarget<T extends EntityLivingBase> extends RendererLivingEnti
         super(Minecraft.getMinecraft().getRenderManager(), par1ModelBase, par2);
     }
 
-    public RenderTarget()
+    public RenderTarget(RenderManager manager)
     {
-        super(Minecraft.getMinecraft().getRenderManager(), new ModelTarget(), 0);
+        super(manager, new ModelTarget(), 0);
     }
 
     @Override

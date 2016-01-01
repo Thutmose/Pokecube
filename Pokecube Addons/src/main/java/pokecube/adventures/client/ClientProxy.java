@@ -7,6 +7,8 @@ import static pokecube.core.PokecubeItems.registerItemTexture;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
@@ -20,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -80,9 +83,30 @@ public class ClientProxy extends CommonProxy
     @Override
     public void initClient()
     {
-        RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class, new RenderTarget());
-        RenderingRegistry.registerEntityRenderingHandler(EntityTrainer.class, new RenderTrainer());
-        RenderingRegistry.registerEntityRenderingHandler(EntityLeader.class, new RenderTrainer());
+        RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class, new IRenderFactory<Entity>()
+        {
+            @Override
+            public Render<? super Entity> createRenderFor(RenderManager manager)
+            {
+                return new RenderTarget(manager);
+            }
+        });
+        RenderingRegistry.registerEntityRenderingHandler(EntityTrainer.class, new IRenderFactory<Entity>()
+        {
+            @Override
+            public Render<? super Entity> createRenderFor(RenderManager manager)
+            {
+                return new RenderTrainer(manager);
+            }
+        });
+        RenderingRegistry.registerEntityRenderingHandler(EntityLeader.class, new IRenderFactory<Entity>()
+        {
+            @Override
+            public Render<? super Entity> createRenderFor(RenderManager manager)
+            {
+                return new RenderTrainer(manager);
+            }
+        });
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
 
         RenderHandler h = new RenderHandler();

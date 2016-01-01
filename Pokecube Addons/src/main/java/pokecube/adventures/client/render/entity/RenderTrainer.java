@@ -1,8 +1,8 @@
 package pokecube.adventures.client.render.entity;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderBiped;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
@@ -13,9 +13,9 @@ import pokecube.adventures.entity.villager.EntityTrader;
 public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
 {
 	
-    public RenderTrainer()
+    public RenderTrainer(RenderManager manager)
     {
-        super(Minecraft.getMinecraft().getRenderManager(), new ModelBiped(0.0F), 0.5f);
+        super(manager, new ModelBiped(0.0F), 0.5f);
     }
 	
     @SuppressWarnings("unchecked")

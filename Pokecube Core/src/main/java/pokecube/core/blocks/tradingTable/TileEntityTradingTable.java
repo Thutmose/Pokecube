@@ -7,6 +7,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.collect.Lists;
+
+import li.cil.oc.api.Network;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.Message;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.Visibility;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -30,6 +40,7 @@ import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.blocks.pc.InventoryPC;
+import pokecube.core.blocks.pc.TileEntityPC;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.TradeEvent;
@@ -44,7 +55,7 @@ import pokecube.core.network.PCPacketHandler.MessageClient;
 import pokecube.core.network.PokecubePacketHandler;
 import thut.api.maths.Vector3;
 
-public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, ITickable
+public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, ITickable, Environment
 {
     private ItemStack[] inventory  = new ItemStack[2];
     private ItemStack[] inventory2 = new ItemStack[1];
@@ -58,9 +69,24 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
     public int time = 0;
 
-    public boolean trade = true;
-    public int renderpass;
-    boolean        init  = true;
+    public boolean       trade = true;
+    public int           renderpass;
+    boolean              init  = true;
+    private TileEntityPC pc;
+
+    public TileEntityTradingTable()
+    {
+        super();
+        try
+        {
+            node = Network.newNode(this, Visibility.Network).withConnector()
+                    .withComponent("tradingtable", Visibility.Network).create();
+        }
+        catch (Exception e)
+        {
+            // e.printStackTrace();
+        }
+    }
 
     public void addPlayer(EntityPlayer player)
     {
@@ -70,8 +96,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             player2 = null;
             String message = 9 + "," + getPos().getX() + "," + getPos().getY() + "," + getPos().getZ() + ",0,0";
             Vector3 point = Vector3.getNewVectorFromPool().set(player);
-            MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE,
-                    message.getBytes());
+            MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
             PokecubePacketHandler.sendToAllNear(packet, point, worldObj.provider.getDimensionId(), 10);
             point.freeVectorFromPool();
             return;
@@ -99,8 +124,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                         message += "," + 0;
                     }
                     Vector3 point = Vector3.getNewVectorFromPool().set(player);
-                    MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE,
-                            message.getBytes());
+                    MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
                     PokecubePacketHandler.sendToAllNear(packet, point, player.dimension, 10);
                     point.freeVectorFromPool();
                 }
@@ -138,8 +162,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                     }
 
                     Vector3 point = Vector3.getNewVectorFromPool().set(player);
-                    MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE,
-                            message.getBytes());
+                    MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
                     PokecubePacketHandler.sendToAllNear(packet, point, player.dimension, 10);
                     point.freeVectorFromPool();
                 }
@@ -300,6 +323,11 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             init = false;
             hasPC();
         }
+        if (!addedToNetwork)
+        {
+            addedToNetwork = true;
+            Network.joinOrCreateNetwork(this);
+        }
         time++;
     }
 
@@ -419,6 +447,14 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                 }
             }
         }
+        if (node != null && node.host() == this)
+        {
+            // This restores the node's address, which is required for networks
+            // to continue working without interruption across loads. If the
+            // node is a power connector this is also required to restore the
+            // internal energy buffer of the node.
+            node.load(tagCompound.getCompoundTag("oc:node"));
+        }
         inventory[0] = both[0];
         inventory[1] = both[1];
         inventory2[0] = both[2];
@@ -449,17 +485,25 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         }
         tagCompound.setBoolean("trade", trade);
         tagCompound.setTag("Inventory", itemList);
+
+        if (node != null && node.host() == this)
+        {
+            final NBTTagCompound nodeNbt = new NBTTagCompound();
+            node.save(nodeNbt);
+            tagCompound.setTag("oc:node", nodeNbt);
+        }
     }
 
     public void openGUI(EntityPlayer player)
     {
-        player.openGui(PokecubeMod.core, Mod_Pokecube_Helper.GUITRADINGTABLE_ID, worldObj, getPos().getX(), getPos().getY(),
-                getPos().getZ());
+        player.openGui(PokecubeMod.core, Mod_Pokecube_Helper.GUITRADINGTABLE_ID, worldObj, getPos().getX(),
+                getPos().getY(), getPos().getZ());
     }
 
     protected boolean hasPC()
     {
         boolean pc = false;
+        this.pc = null;
         for (EnumFacing side : EnumFacing.values())
         {
             Vector3 here = Vector3.getNewVectorFromPool().set(this);
@@ -467,6 +511,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             if (id == PokecubeItems.getBlock("pc"))
             {
                 pc = true;
+                this.pc = (TileEntityPC) here.getTileEntity(getWorld());
                 break;
             }
             here.freeVectorFromPool();
@@ -484,70 +529,73 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         return pc;
     }
 
+    public ArrayList<String> getMoves(InventoryPC pcInv)
+    {
+        ArrayList<String> moves = new ArrayList<String>();
+        HashSet<ItemStack> stacks = pcInv.getContents();
+
+        for (ItemStack stack : stacks)
+        {
+            if (PokecubeManager.isFilled(stack))
+            {
+                IPokemob mob = (IPokemob) PokecubeManager.itemToPokemob(stack, worldObj);
+
+                if (mob == null)
+                {
+                    System.err.println("Corrupted Pokemon in PC");
+                    continue;
+                }
+
+                String[] forgotten = getForgottenMoves(mob);
+                String[] current = mob.getMoves();
+                for (String s : forgotten)
+                {
+                    if (s == null || s.contentEquals("") || !MovesUtils.isMoveImplemented(s)) continue;
+
+                    boolean toAdd = true;
+                    if (moves.size() > 0) for (String s1 : moves)
+                    {
+                        if (s1 == null || s1.contentEquals("") || !MovesUtils.isMoveImplemented(s1)) continue;
+                        if (s1.contentEquals(s)) toAdd = false;
+                    }
+                    if (toAdd) moves.add(s);
+                }
+                for (String s : current)
+                {
+                    if (s == null || s.contentEquals("") || !MovesUtils.isMoveImplemented(s)) continue;
+
+                    boolean toAdd = true;
+                    if (moves.size() > 0) for (String s1 : moves)
+                    {
+                        if (s1 == null)
+                        {
+                            continue;
+                        }
+                        if (s1.contentEquals(s)) toAdd = false;
+                    }
+                    if (toAdd) moves.add(s);
+                }
+            }
+        }
+        Collections.sort(moves);
+        return moves;
+    }
+
     public ArrayList<String> moves(EntityPlayer player)
     {
         if (!player.worldObj.isRemote)
         {
-            ArrayList<String> moves = new ArrayList<String>();
             boolean pc = hasPC();
-            if (!pc) { return moves; }
+            if (!pc) { return Lists.newArrayList(); }
             InventoryPC pcInv = InventoryPC.getPC(player.getUniqueID().toString());
-            HashSet<ItemStack> stacks = pcInv.getContents();
-
-            for (ItemStack stack : stacks)
-            {
-                if (PokecubeManager.isFilled(stack))
-                {
-                    IPokemob mob = (IPokemob) PokecubeManager.itemToPokemob(stack, worldObj);
-
-                    if (mob == null)
-                    {
-                        System.err.println("Corrupted Pokemon in PC");
-                        continue;
-                    }
-
-                    String[] forgotten = getForgottenMoves(mob);
-                    String[] current = mob.getMoves();
-                    for (String s : forgotten)
-                    {
-                        if (s == null || s.contentEquals("") || !MovesUtils.isMoveImplemented(s)) continue;
-
-                        boolean toAdd = true;
-                        if (moves.size() > 0) for (String s1 : moves)
-                        {
-                            if (s1 == null || s1.contentEquals("") || !MovesUtils.isMoveImplemented(s1)) continue;
-                            if (s1.contentEquals(s)) toAdd = false;
-                        }
-                        if (toAdd) moves.add(s);
-                    }
-                    for (String s : current)
-                    {
-                        if (s == null || s.contentEquals("") || !MovesUtils.isMoveImplemented(s)) continue;
-
-                        boolean toAdd = true;
-                        if (moves.size() > 0) for (String s1 : moves)
-                        {
-                            if (s1 == null)
-                            {
-                                continue;
-                            }
-                            if (s1.contentEquals(s)) toAdd = false;
-                        }
-                        if (toAdd) moves.add(s);
-                    }
-                }
-            }
-
+            ArrayList<String> moves = getMoves(pcInv);
             Collections.sort(moves);
-
             String message = "" + 3 + "," + player.getUniqueID().toString();
             for (String s : moves)
-                message += "," + s;// .trim();
+                message += "," + s;
 
-            MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE,
-                    message.getBytes());
+            MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
             PokecubePacketHandler.sendToClient(packet, player);
-
             this.moves.put(player.getName(), moves);
             return moves;
         }
@@ -681,10 +729,100 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         return 65536.0D;
     }
 
+    protected Node node;
+
+    // See updateEntity().
+    protected boolean addedToNetwork = false;
+
+    // -----------------------------------------------------------------------
+    // //
+
     @Override
-    public boolean shouldRenderInPass(int pass)
+    public Node node()
     {
-        renderpass = pass;
-        return true;
+        return node;
+    }
+
+    @Override
+    public void onConnect(final Node node)
+    {
+        // This is called when the call to Network.joinOrCreateNetwork(this) in
+        // updateEntity was successful, in which case `node == this`.
+        // This is also called for any other node that gets connected to the
+        // network our node is in, in which case `node` is the added node.
+        // If our node is added to an existing network, this is called for each
+        // node already in said network.
+    }
+
+    @Override
+    public void onDisconnect(final Node node)
+    {
+        // This is called when this node is removed from its network when the
+        // tile entity is removed from the world (see onChunkUnload() and
+        // invalidate()), in which case `node == this`.
+        // This is also called for each other node that gets removed from the
+        // network our node is in, in which case `node` is the removed node.
+        // If a net-split occurs this is called for each node that is no longer
+        // connected to our node.
+    }
+
+    @Override
+    public void onMessage(final Message message)
+    {
+        // This is used to deliver messages sent via node.sendToXYZ. Handle
+        // messages at your own discretion. If you do not wish to handle a
+        // message you should *not* throw an exception, though.
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        super.onChunkUnload();
+        // Make sure to remove the node from its network when its environment,
+        // meaning this tile entity, gets unloaded.
+        if (node != null) node.remove();
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        // Make sure to remove the node from its network when its environment,
+        // meaning this tile entity, gets unloaded.
+        if (node != null) node.remove();
+    }
+
+    @Callback
+    public Object[] getMovesList(Context context, Arguments args)
+    {
+        if (hasPC() && pc.isBound())
+        {
+            InventoryPC inv = pc.getPC();
+            ArrayList<String> moves = getMoves(inv);
+            return moves.toArray();
+        }
+        else
+        {
+            return new Object[0];
+        }
+    }
+    
+    public Object[] applyMove(Context context, Arguments args)
+    {
+        if (hasPC() && pc.isBound())
+        {
+            InventoryPC inv = pc.getPC();
+            ArrayList<String> moves = getMoves(inv);
+            String move = args.checkString(0);
+            for(String s: moves)
+            {
+                if(s.equalsIgnoreCase(move))
+                {
+                    addMoveToTM(s);
+                    break;
+                }
+            }
+        }
+        return new Object[0];
     }
 }

@@ -25,6 +25,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
@@ -42,6 +43,7 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -184,22 +186,47 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         super.registerRenderInformation();
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new RenderProfessor());
-        RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class,
-                new RenderPokecube(Minecraft.getMinecraft().getRenderManager()));
+        RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new IRenderFactory<Entity>()
+        {
+            @Override
+            public Render<? super Entity> createRenderFor(RenderManager manager)
+            {
+                return new RenderProfessor();
+            }
+        });
+        RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class, new IRenderFactory<Entity>()
+        {
+            @Override
+            public Render<? super Entity> createRenderFor(RenderManager manager)
+            {
+                return new RenderPokecube(manager);
+            }
+        });
         // Register rendering entity for other pokemobs
-        RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class, RenderPokemobs.getInstance());
+        RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class, new IRenderFactory<Entity>()
+        {
+            @Override
+            public Render<? super Entity> createRenderFor(RenderManager manager)
+            {
+                return RenderPokemobs.getInstance(manager);
+            }
+        });
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class,
-                new RenderLiving(Minecraft.getMinecraft().getRenderManager(), new ModelPokemobEgg(), 0.25f)
+        RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class, new IRenderFactory<Entity>()
+        {
+            @Override
+            public Render<? super Entity> createRenderFor(RenderManager manager)
+            {
+                return new RenderLiving(Minecraft.getMinecraft().getRenderManager(), new ModelPokemobEgg(), 0.25f)
                 {
-
                     @Override
                     protected ResourceLocation getEntityTexture(Entity p_110775_1_)
                     {
                         return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
                     }
-                });
+                };
+            }
+        });
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPokecubeTable.class, new RenderPokecubeTable());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPC.class, new RenderPC());

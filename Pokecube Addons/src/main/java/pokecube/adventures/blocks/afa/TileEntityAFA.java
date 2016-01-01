@@ -1,7 +1,15 @@
 package pokecube.adventures.blocks.afa;
 
 import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.TileEnergyHandler;
+import cofh.api.energy.IEnergyReceiver;
+import li.cil.oc.api.Network;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.Message;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -12,6 +20,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
@@ -23,24 +32,41 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokecubeSerializer;
 
-public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITickable
+public class TileEntityAFA extends TileEntity implements IInventory, IEnergyReceiver, ITickable, Environment
 {
-    public IPokemob     pokemob   = null;
-    private ItemStack[] inventory = new ItemStack[1];
-    public Ability      ability   = null;
-    int                 energy    = 0;
-    int                 distance  = 4;
-    boolean             noEnergy  = false;
+    public IPokemob         pokemob   = null;
+    private ItemStack[]     inventory = new ItemStack[1];
+    public Ability          ability   = null;
+    int                     energy    = 0;
+    int                     distance  = 4;
+    boolean                 noEnergy  = false;
+    protected EnergyStorage storage;
 
     public TileEntityAFA()
     {
         super();
         storage = new EnergyStorage(3200);
+        try
+        {
+            node = Network.newNode(this, Visibility.Network).withConnector()
+                    .withComponent("afa", Visibility.Network).create();
+        }
+        catch (Exception e)
+        {
+            // e.printStackTrace();
+        }
     }
+
+    protected boolean addedToNetwork = false;
 
     @Override
     public void update()
     {
+        if (!addedToNetwork)
+        {
+            addedToNetwork = true;
+            Network.joinOrCreateNetwork(this);
+        }
         if (inventory[0] != null && pokemob == null)
         {
             refreshAbility();
@@ -58,7 +84,7 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
             {
                 int level = pokemob.getLevel();
                 int needed = (int) Math.ceil(distance * distance * distance / ((double) 50 + 5 * level));
-                int energy = extractEnergy(EnumFacing.DOWN, needed, false);
+                int energy = storage.extractEnergy(needed, false);
                 if (energy < needed) return;
             }
             // Do not call ability update on client.
@@ -111,6 +137,11 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
         nbt.setTag("Inventory", itemList);
         nbt.setInteger("distance", distance);
         nbt.setBoolean("noEnergy", noEnergy);
+        storage.writeToNBT(nbt);
+        if (node != null && node.host() == this)
+        {
+            node.load(nbt.getCompoundTag("oc:node"));
+        }
     }
 
     @Override
@@ -134,6 +165,13 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
         }
         distance = nbt.getInteger("distance");
         noEnergy = nbt.getBoolean("noEnergy");
+        storage.readFromNBT(nbt);
+        if (node != null && node.host() == this)
+        {
+            final NBTTagCompound nodeNbt = new NBTTagCompound();
+            node.save(nodeNbt);
+            nbt.setTag("oc:node", nodeNbt);
+        }
     }
 
     /** Overriden in a sign to provide the text. */
@@ -335,5 +373,102 @@ public class TileEntityAFA extends TileEnergyHandler implements IInventory, ITic
         String forme = tag.getString("forme");
         pokemob.changeForme(forme);
         pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
+    }
+
+    // Energy related things after here
+    @Override
+    public boolean canConnectEnergy(EnumFacing facing)
+    {
+        return facing == EnumFacing.DOWN;
+    }
+
+    @Override
+    public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
+    {
+
+        return storage.receiveEnergy(maxReceive, simulate);
+    }
+
+    @Override
+    public int getEnergyStored(EnumFacing facing)
+    {
+
+        return storage.getEnergyStored();
+    }
+
+    @Override
+    public int getMaxEnergyStored(EnumFacing facing)
+    {
+
+        return storage.getMaxEnergyStored();
+    }
+
+    // OpenComputers compatibility stuff after here, the Open Computers API
+    // comes with ThutCore, so is no extra dependency.
+    Node node;
+
+    @Override
+    public Node node()
+    {
+        return node;
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        super.onChunkUnload();
+        // Make sure to remove the node from its network when its environment,
+        // meaning this tile entity, gets unloaded.
+        if (node != null) node.remove();
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        // Make sure to remove the node from its network when its environment,
+        // meaning this tile entity, gets unloaded.
+        if (node != null) node.remove();
+    }
+
+    @Override
+    public void onConnect(Node arg0)
+    {
+    }
+
+    @Override
+    public void onDisconnect(Node arg0)
+    {
+    }
+
+    @Override
+    public void onMessage(Message arg0)
+    {
+    }
+
+    @Callback
+    public Object[] getEnergy(Context context, Arguments args)
+    {
+        return new Object[] { storage.getEnergyStored() };
+    }
+
+    @Callback
+    public Object[] getRange(Context context, Arguments args)
+    {
+        return new Object[] { distance };
+    }
+
+    @Callback
+    public Object[] setRange(Context context, Arguments args)
+    {
+        distance = args.checkInteger(0);
+        return new Object[] { distance };
+    }
+
+    @Callback
+    public Object[] getAbility(Context context, Arguments args)
+    {
+        String arg = ability == null ? "" : ability.getName();
+        return new Object[] { arg };
     }
 }

@@ -161,15 +161,26 @@ public class RenderPokemobs extends RenderPokemob {
 	{
 		renderMap.put(name, renderer);
 	}
-	
-	public static RenderPokemobs getInstance() {
-		if(instance==null)
-			instance = new RenderPokemobs(Minecraft.getMinecraft().getRenderManager());
-		if(instance.renderManager==null)
-		{
-			System.out.println(Minecraft.getMinecraft().getRenderManager());
-			new Exception().printStackTrace();
-		}
-		return instance;
-	}
+    
+    public static RenderPokemobs getInstance() {
+        if(instance==null)
+            instance = new RenderPokemobs(Minecraft.getMinecraft().getRenderManager());
+        if(instance.renderManager==null)
+        {
+            System.out.println(Minecraft.getMinecraft().getRenderManager());
+            new Exception().printStackTrace();
+        }
+        return instance;
+    }
+    
+    public static RenderPokemobs getInstance(RenderManager manager) {
+        if(instance==null)
+            instance = new RenderPokemobs(manager);
+        if(instance.renderManager==null)
+        {
+            System.out.println(Minecraft.getMinecraft().getRenderManager());
+            new Exception().printStackTrace();
+        }
+        return instance;
+    }
 }

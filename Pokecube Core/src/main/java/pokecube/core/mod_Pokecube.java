@@ -117,7 +117,7 @@ import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
-@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION, dependencies = "required-after:Forge@[11.15.0.1650,)", acceptedMinecraftVersions=PokecubeMod.MCVERSIONS)
+@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION, dependencies = "required-after:Forge@"+PokecubeMod.MINFORGEVERSION, acceptedMinecraftVersions=PokecubeMod.MCVERSIONS)
 public class mod_Pokecube extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")
@@ -585,6 +585,7 @@ public class mod_Pokecube extends PokecubeMod
         MinecraftForge.EVENT_BUS.register(save);
         PCEventsHandler events = new PCEventsHandler();
         MinecraftForge.EVENT_BUS.register(events);
+        proxy.registerRenderInformation();
 
     }
 
@@ -629,7 +630,6 @@ public class mod_Pokecube extends PokecubeMod
         GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
         Mod_Pokecube_Helper.initAllBlocks();
-        proxy.registerRenderInformation();
         proxy.registerKeyBindings();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
         Mod_Pokecube_Helper.postInit();

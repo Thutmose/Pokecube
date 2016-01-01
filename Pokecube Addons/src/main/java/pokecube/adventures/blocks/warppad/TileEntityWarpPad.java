@@ -273,7 +273,6 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
     @Callback
     public Object[] setDestination(Context context, Arguments args)
     {
-
         if (args.isDouble(0) && args.isDouble(1) && args.isDouble(2) && args.isDouble(3))
         {
             float x = (float) args.checkDouble(0);
@@ -308,21 +307,18 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
     @Override
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
-
         return storage.receiveEnergy(maxReceive, simulate);
     }
 
     @Override
     public int getEnergyStored(EnumFacing facing)
     {
-
         return storage.getEnergyStored();
     }
 
     @Override
     public int getMaxEnergyStored(EnumFacing facing)
     {
-
         return storage.getMaxEnergyStored();
     }
 }

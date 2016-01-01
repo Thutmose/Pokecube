@@ -61,17 +61,18 @@ public class ClientProxy extends CommonProxy
 
         registerItemTexture(Item.getItemFromBlock(cloner), 0,
                 new ModelResourceLocation("pokecube_adventures:cloner", "inventory"));
-        
+
         registerItemTexture(Item.getItemFromBlock(afa), 0,
                 new ModelResourceLocation("pokecube_adventures:afa", "inventory"));
 
         registerItemTexture(Item.getItemFromBlock(warppad), 0,
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));
 
-        StateMap map = (new StateMap.Builder()).withName(LegendaryConditions.spawner1.TYPE).withSuffix("_spawner").build();
+        StateMap map = (new StateMap.Builder()).withName(LegendaryConditions.spawner1.TYPE).withSuffix("_spawner")
+                .build();
         ModelLoader.setCustomStateMapper(LegendaryConditions.spawner1, map);
         Item item = Item.getItemFromBlock(LegendaryConditions.spawner1);
-        
+
         for (int i = 0; i < LegendaryConditions.spawner1.types.size(); i++)
         {
             ModelBakery.registerItemVariants(item, new ResourceLocation("pokecube_adventures:" + i + "_spawner"));
@@ -79,36 +80,43 @@ public class ClientProxy extends CommonProxy
                     new ModelResourceLocation("pokecube_adventures:" + i + "_spawner", "inventory"));
         }
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class, new IRenderFactory<Entity>()
-        {
-            @Override
-            public Render<? super Entity> createRenderFor(RenderManager manager)
-            {
-                return new RenderTarget(manager);
-            }
-        });
-        RenderingRegistry.registerEntityRenderingHandler(EntityTrainer.class, new IRenderFactory<Entity>()
-        {
-            @Override
-            public Render<? super Entity> createRenderFor(RenderManager manager)
-            {
-                return new RenderTrainer(manager);
-            }
-        });
-        RenderingRegistry.registerEntityRenderingHandler(EntityLeader.class, new IRenderFactory<Entity>()
-        {
-            @Override
-            public Render<? super Entity> createRenderFor(RenderManager manager)
-            {
-                return new RenderTrainer(manager);
-            }
-        });
+//        RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class, new IRenderFactory<Entity>()
+//        {
+//            @Override
+//            public Render<? super Entity> createRenderFor(RenderManager manager)
+//            {
+//                return new RenderTarget(manager);
+//            }
+//        });
+//        RenderingRegistry.registerEntityRenderingHandler(EntityTrainer.class, new IRenderFactory<Entity>()
+//        {
+//            @Override
+//            public Render<? super Entity> createRenderFor(RenderManager manager)
+//            {
+//                return new RenderTrainer(manager);
+//            }
+//        });
+//        RenderingRegistry.registerEntityRenderingHandler(EntityLeader.class, new IRenderFactory<Entity>()
+//        {
+//            @Override
+//            public Render<? super Entity> createRenderFor(RenderManager manager)
+//            {
+//                return new RenderTrainer(manager);
+//            }
+//        });
+        
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
     }
 
     @Override
     public void initClient()
     {
+        RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class,
+                new RenderTarget(Minecraft.getMinecraft().getRenderManager()));
+        RenderingRegistry.registerEntityRenderingHandler(EntityTrainer.class,
+                new RenderTrainer(Minecraft.getMinecraft().getRenderManager()));
+        RenderingRegistry.registerEntityRenderingHandler(EntityLeader.class,
+                new RenderTrainer(Minecraft.getMinecraft().getRenderManager()));
 
         RenderHandler h = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(h);
@@ -192,11 +200,12 @@ public class ClientProxy extends CommonProxy
         {
             return new GuiCloner(player.inventory, (TileEntityCloner) world.getTileEntity(pos));
         }
-        else if (guiID == PokecubeAdv.GUIBIOMESETTER_ID) { return new GUIBiomeSetter(player.getHeldItem()); }
-        else if (guiID == PokecubeAdv.GUIAFA_ID)
+        else if (guiID == PokecubeAdv.GUIBIOMESETTER_ID)
         {
-            return new GuiAFA(player.inventory, (TileEntityAFA) world.getTileEntity(pos));
+            return new GUIBiomeSetter(player.getHeldItem());
         }
+        else if (guiID == PokecubeAdv.GUIAFA_ID) { return new GuiAFA(player.inventory,
+                (TileEntityAFA) world.getTileEntity(pos)); }
         return null;
     }
 

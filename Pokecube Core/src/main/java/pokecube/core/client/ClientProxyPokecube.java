@@ -186,47 +186,65 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         super.registerRenderInformation();
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new IRenderFactory<Entity>()
-        {
-            @Override
-            public Render<? super Entity> createRenderFor(RenderManager manager)
-            {
-                return new RenderProfessor();
-            }
-        });
-        RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class, new IRenderFactory<Entity>()
-        {
-            @Override
-            public Render<? super Entity> createRenderFor(RenderManager manager)
-            {
-                return new RenderPokecube(manager);
-            }
-        });
+//        RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new IRenderFactory<Entity>()
+//        {
+//            @Override
+//            public Render<? super Entity> createRenderFor(RenderManager manager)
+//            {
+//                return new RenderProfessor();
+//            }
+//        });
+//        RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class, new IRenderFactory<Entity>()
+//        {
+//            @Override
+//            public Render<? super Entity> createRenderFor(RenderManager manager)
+//            {
+//                return new RenderPokecube(manager);
+//            }
+//        });
+//        // Register rendering entity for other pokemobs
+//        RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class, new IRenderFactory<Entity>()
+//        {
+//            @Override
+//            public Render<? super Entity> createRenderFor(RenderManager manager)
+//            {
+//                return RenderPokemobs.getInstance(manager);
+//            }
+//        });
+//
+//        RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class, new IRenderFactory<Entity>()
+//        {
+//            @Override
+//            public Render<? super Entity> createRenderFor(RenderManager manager)
+//            {
+//                return new RenderLiving(Minecraft.getMinecraft().getRenderManager(), new ModelPokemobEgg(), 0.25f)
+//                {
+//                    @Override
+//                    protected ResourceLocation getEntityTexture(Entity p_110775_1_)
+//                    {
+//                        return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
+//                    }
+//                };
+//            }
+//        });
+        
+        RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new RenderProfessor());
+        RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class,
+                new RenderPokecube(Minecraft.getMinecraft().getRenderManager()));
         // Register rendering entity for other pokemobs
-        RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class, new IRenderFactory<Entity>()
-        {
-            @Override
-            public Render<? super Entity> createRenderFor(RenderManager manager)
-            {
-                return RenderPokemobs.getInstance(manager);
-            }
-        });
+        RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class, RenderPokemobs.getInstance());
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class, new IRenderFactory<Entity>()
-        {
-            @Override
-            public Render<? super Entity> createRenderFor(RenderManager manager)
-            {
-                return new RenderLiving(Minecraft.getMinecraft().getRenderManager(), new ModelPokemobEgg(), 0.25f)
+        RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class,
+                new RenderLiving(Minecraft.getMinecraft().getRenderManager(), new ModelPokemobEgg(), 0.25f)
                 {
+
                     @Override
                     protected ResourceLocation getEntityTexture(Entity p_110775_1_)
                     {
                         return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
                     }
-                };
-            }
-        });
+                });
+        
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPokecubeTable.class, new RenderPokecubeTable());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPC.class, new RenderPC());

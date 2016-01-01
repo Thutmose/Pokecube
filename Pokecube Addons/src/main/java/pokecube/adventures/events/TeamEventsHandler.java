@@ -38,6 +38,10 @@ public class TeamEventsHandler
     	}
     }
     
+    /**
+     * Uses player interact here to also prevent opening of inventories.
+     * @param evt
+     */
     @SubscribeEvent
     public void placeEvent(PlayerInteractEvent evt)
     {

@@ -585,7 +585,7 @@ public class mod_Pokecube extends PokecubeMod
         MinecraftForge.EVENT_BUS.register(save);
         PCEventsHandler events = new PCEventsHandler();
         MinecraftForge.EVENT_BUS.register(events);
-        proxy.registerRenderInformation();
+//        proxy.registerRenderInformation();//TODO move back to here for 1.9
 
     }
 
@@ -593,6 +593,7 @@ public class mod_Pokecube extends PokecubeMod
     private void init(FMLInitializationEvent evt)
     {
         System.out.println("mod_pokecube.init() " + FMLCommonHandler.instance().getEffectiveSide());
+        proxy.registerRenderInformation();
         EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,
                 1, true);
         EntityRegistry.registerModEntity(EntityProfessor.class, "pokecube:Professor", getUniqueEntityId(this), this, 80,

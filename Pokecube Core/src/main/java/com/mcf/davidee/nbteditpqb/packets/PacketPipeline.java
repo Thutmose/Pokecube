@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.mod_Pokecube;
 
 /**
  * Packet pipeline class. Directs all registered packet data to be handled by the packets themselves.
@@ -64,7 +65,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 
         switch (FMLCommonHandler.instance().getEffectiveSide()) {
             case CLIENT:
-                pkt.handleClientSide(this.getClientPlayer());
+                pkt.handleClientSide(mod_Pokecube.getPlayer(null));
                 break;
             case SERVER:
                 INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();

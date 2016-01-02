@@ -20,6 +20,7 @@ public class TreeRemover
 		woodTypes.add(Blocks.log);
 		woodTypes.add(Blocks.log2);
 		
+		plantTypes.add(Blocks.double_plant);
 		plantTypes.add(Blocks.tallgrass);
 		plantTypes.add(Blocks.carrots);
 		plantTypes.add(Blocks.cocoa);

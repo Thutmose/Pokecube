@@ -167,6 +167,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         }
         GL11.glPushMatrix();
 
+        GlStateManager.disableCull();
         transformGlobal(currentPhase, entity, d, d1, d2, partialTick, f3 - f2, f13);
         updateAnimation(entity, currentPhase, partialTick);
 
@@ -323,7 +324,6 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             alpha = poke.getRGBA()[3];
         }
         parent.setRGBAB(new int[] { red, green, blue, alpha, brightness });
-        GlStateManager.disableCull();
         for (String partName : parent.getSubParts().keySet())
         {
             IExtendedModelPart part = parent.getSubParts().get(partName);

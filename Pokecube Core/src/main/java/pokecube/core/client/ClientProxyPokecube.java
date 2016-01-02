@@ -139,15 +139,12 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
             Mod annotation = mod.getClass().getAnnotation(Mod.class);
             RenderPokemobs.addModel(Database.getEntry(name) + annotation.modid(), model);
-            //
             int number = Database.getEntry(name).getPokedexNb();
             if (models.get(number))
             {
                 String modid = annotation.modid();
                 if (!modid.equals(PokecubeMod.defaultMod)) return;
             }
-            // RenderingRegistry.registerEntityRenderingHandler(clas, new
-            // RenderPokemob(model, 1, 1));
             models.set(number);
         }
     }
@@ -186,48 +183,53 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         super.registerRenderInformation();
 
-//        RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new IRenderFactory<Entity>()
-//        {
-//            @Override
-//            public Render<? super Entity> createRenderFor(RenderManager manager)
-//            {
-//                return new RenderProfessor();
-//            }
-//        });
-//        RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class, new IRenderFactory<Entity>()
-//        {
-//            @Override
-//            public Render<? super Entity> createRenderFor(RenderManager manager)
-//            {
-//                return new RenderPokecube(manager);
-//            }
-//        });
-//        // Register rendering entity for other pokemobs
-//        RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class, new IRenderFactory<Entity>()
-//        {
-//            @Override
-//            public Render<? super Entity> createRenderFor(RenderManager manager)
-//            {
-//                return RenderPokemobs.getInstance(manager);
-//            }
-//        });
-//
-//        RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class, new IRenderFactory<Entity>()
-//        {
-//            @Override
-//            public Render<? super Entity> createRenderFor(RenderManager manager)
-//            {
-//                return new RenderLiving(Minecraft.getMinecraft().getRenderManager(), new ModelPokemobEgg(), 0.25f)
-//                {
-//                    @Override
-//                    protected ResourceLocation getEntityTexture(Entity p_110775_1_)
-//                    {
-//                        return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
-//                    }
-//                };
-//            }
-//        });
-        
+        // RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return new RenderProfessor();
+        // }
+        // });
+        // RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return new RenderPokecube(manager);
+        // }
+        // });
+        // // Register rendering entity for other pokemobs
+        // RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return RenderPokemobs.getInstance(manager);
+        // }
+        // });
+        //
+        // RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return new RenderLiving(Minecraft.getMinecraft().getRenderManager(),
+        // new ModelPokemobEgg(), 0.25f)
+        // {
+        // @Override
+        // protected ResourceLocation getEntityTexture(Entity p_110775_1_)
+        // {
+        // return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
+        // }
+        // };
+        // }
+        // });
+
         RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new RenderProfessor());
         RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class,
                 new RenderPokecube(Minecraft.getMinecraft().getRenderManager()));
@@ -244,14 +246,10 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                         return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
                     }
                 });
-        
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPokecubeTable.class, new RenderPokecubeTable());
 
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPokecubeTable.class, new RenderPokecubeTable());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPC.class, new RenderPC());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
-
-        // ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBerryFruit.class,
-        // new RenderBerries());
 
         MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
         MinecraftForge.EVENT_BUS.register(new GuiScrollableLists());
@@ -269,7 +267,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public void initClient()
     {
-
+        super.initClient();
     }
 
     private HashMap<Integer, Object> cubeRenders = new HashMap<Integer, Object>();
@@ -327,8 +325,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public void registerKeyBindings()
     {
-        // MinecraftForge.EVENT_BUS.register(this);
-
         ClientRegistry.registerKeyBinding(nextMob = new KeyBinding("Next Pokemob", 205, "Pokecube"));
         ClientRegistry.registerKeyBinding(previousMob = new KeyBinding("Previous Pokemob", 203, "Pokecube"));
         ClientRegistry.registerKeyBinding(nextMove = new KeyBinding("Next Move", 208, "Pokecube"));
@@ -342,7 +338,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ClientRegistry.registerKeyBinding(mobMove2 = new KeyBinding("Move 2", 45, "Pokecube"));
         ClientRegistry.registerKeyBinding(mobMove3 = new KeyBinding("Move 3", 46, "Pokecube"));
         ClientRegistry.registerKeyBinding(mobMove4 = new KeyBinding("Move 4", 47, "Pokecube"));
-
     }
 
     @Override
@@ -377,9 +372,9 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":pokecube_table", "inventory"));
 
-        OBJLoader.instance.addDomain(PokecubeMod.ID.toLowerCase());
         item2 = Item.getItemFromBlock(PokecubeItems.getBlock("pc"));
-        ModelBakery.registerItemVariants(item2, new ResourceLocation(PokecubeMod.ID + ":pc_base", PokecubeMod.ID + ":pc_top"));
+        ModelBakery.registerItemVariants(item2,
+                new ResourceLocation(PokecubeMod.ID + ":pc_base", PokecubeMod.ID + ":pc_top"));
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":pc_base", "inventory"));
         ModelLoader.setCustomModelResourceLocation(item2, 8,
@@ -407,7 +402,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:pechaPlank"));
         ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:oranPlank"));
         ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:leppaPlank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation( "pokecube:sitrusPlank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:sitrusPlank"));
         ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:enigmaPlank"));
         ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:nanabPlank"));
         registerItemTexture(Item.getItemFromBlock(plank0), 0,

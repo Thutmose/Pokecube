@@ -9,9 +9,6 @@ import static pokecube.core.interfaces.PokecubeMod.HMs;
 import static pokecube.core.mod_Pokecube.getWorld;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -210,7 +207,8 @@ public class Mod_Pokecube_Helper
 
                 if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.stone).apply(b.getDefaultState()))
                     getCaveBlocks().add(b);
-                else if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.netherrack).apply(b.getDefaultState()))
+                else if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.netherrack)
+                        .apply(b.getDefaultState()))
                     getCaveBlocks().add(b);
                 else if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.dirt).apply(b.getDefaultState()))
                     getCaveBlocks().add(b);
@@ -250,7 +248,7 @@ public class Mod_Pokecube_Helper
                 }
                 catch (Exception e)
                 {
-                    System.err.println("not wood");
+                    System.err.println("not wood " + e + " " + b);
                 }
             }
         }
@@ -280,12 +278,12 @@ public class Mod_Pokecube_Helper
 
         WeightedRandomChestContent smashContent = new WeightedRandomChestContent(rockSmash, 1, 1, 20);
         ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, smashContent);
-        
+
         ItemStack stone = new ItemStack(getItem("megastone"));
         WeightedRandomChestContent stoneContent = new WeightedRandomChestContent(stone, 1, 1, 20);
         ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, stoneContent);
         ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, stoneContent);
-        
+
         ItemStack ring = new ItemStack(getItem("megaring"));
         WeightedRandomChestContent ringContent = new WeightedRandomChestContent(ring, 1, 1, 5);
         ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, ringContent);
@@ -295,313 +293,6 @@ public class Mod_Pokecube_Helper
     public void addItems()
     {
         ItemHandler.addItems(this);
-    }
-
-    private static PrintWriter out;
-    private static FileWriter  fwriter;
-
-    protected static void generateCubeJsons(String cube)
-    {
-
-        boolean makejson = false;
-        if (!makejson) return;
-
-        String seperator = System.getProperty("file.separator");
-        File temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + "pokecube" + seperator
-                + "models" + seperator + "block");
-        if (!temp.exists())
-        {
-            temp.mkdirs();
-        }
-        temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + "pokecube" + seperator
-                + "models" + seperator + "item");
-        if (!temp.exists())
-        {
-            temp.mkdirs();
-        }
-
-        temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + "pokecube" + seperator
-                + "models" + seperator + "block" + seperator + cube + ".json");
-        try
-        {
-            fwriter = new FileWriter(temp);
-            out = new PrintWriter(fwriter);
-            out.println("{");
-            out.println("    \"parent\": \"block/orientable\",");
-            out.println("    \"textures\": {");
-            out.println("        \"top\": \"pokecube:items/" + cube + "top\",");
-            out.println("        \"bottom\": \"pokecube:items/" + cube + "bottom\",");
-            out.println("        \"front\": \"pokecube:items/" + cube + "front\",");
-            out.println("        \"side\": \"pokecube:items/" + cube + "side\"");
-            out.println("    }");
-            out.println("}");
-            out.close();
-            fwriter.close();
-
-            temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + "pokecube" + seperator
-                    + "models" + seperator + "item" + seperator + cube + ".json");
-
-            fwriter = new FileWriter(temp);
-            out = new PrintWriter(fwriter);
-            out.println("{");
-            out.println("    \"parent\": \"pokecube:block/" + cube + "\",");
-            out.println("    \"display\": {");
-            out.println("    \"thirdperson\": {");
-            out.println("        \"rotation\": [ 10, -45, 170 ],");
-            out.println("        \"translation\": [ 0, 1.5, -2.75 ],");
-            out.println("        \"scale\": [ 0.375, 0.375, 0.375 ]");
-            out.println("		}");
-            out.println("    }");
-            out.println("}");
-            out.close();
-            fwriter.close();
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public static void generateBlockJsons(String identifier, String texturelocation, String modid, boolean blockstate,
-            String parent)
-    {
-        String seperator = System.getProperty("file.separator");
-        File temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid + seperator
-                + "models" + seperator + "block");
-        if (!temp.exists())
-        {
-            temp.mkdirs();
-        }
-        temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid + seperator
-                + "models" + seperator + "block" + seperator + identifier + ".json");
-        try
-        {
-
-            if (parent.equalsIgnoreCase("crop"))
-            {
-                for (int i = 0; i < 8; i++)
-                {
-                    temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid
-                            + seperator + "models" + seperator + "block" + seperator + identifier + "_" + i + ".json");
-                    String num = "_" + i;
-                    num = "";
-                    fwriter = new FileWriter(temp);
-                    out = new PrintWriter(fwriter);
-                    out.println("{");
-                    out.println("    \"parent\": \"block/" + parent + "\",");
-                    out.println("    \"textures\": {");
-                    out.println("        \"crop\": \"" + modid + ":" + texturelocation + "/" + identifier + num + "\"");
-                    out.println("    }");
-                    out.println("}");
-                    out.close();
-                    fwriter.close();
-                }
-            }
-            else if (parent.equalsIgnoreCase("cross"))
-            {
-                temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid + seperator
-                        + "models" + seperator + "block" + seperator + identifier + ".json");
-
-                fwriter = new FileWriter(temp);
-                out = new PrintWriter(fwriter);
-                out.println("{");
-                out.println("    \"parent\": \"block/" + parent + "\",");
-                out.println("    \"textures\": {");
-                out.println("        \"cross\": \"" + modid + ":" + texturelocation + "/" + identifier + "\"");
-                out.println("    }");
-                out.println("}");
-                out.close();
-                fwriter.close();
-            }
-            else if (parent.equalsIgnoreCase("log"))
-            {
-                temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid + seperator
-                        + "models" + seperator + "block" + seperator + identifier + ".json");
-                fwriter = new FileWriter(temp);
-                out = new PrintWriter(fwriter);
-                out.println("{");
-                out.println("    \"parent\": \"block/cube_column\",");
-                out.println("    \"textures\": {");
-                out.println("        \"end\": \"" + modid + ":" + texturelocation + "/" + identifier + "_top\",");
-                out.println("        \"side\": \"" + modid + ":" + texturelocation + "/" + identifier + "\"");
-                out.println("    }");
-                out.println("}");
-                out.close();
-                fwriter.close();
-                temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid + seperator
-                        + "models" + seperator + "block" + seperator + identifier + "_side.json");
-                fwriter = new FileWriter(temp);
-                out = new PrintWriter(fwriter);
-                out.println("{");
-                out.println("    \"parent\": \"block/column_side\",");
-                out.println("    \"textures\": {");
-                out.println("        \"end\": \"" + modid + ":" + texturelocation + "/" + identifier + "_top\",");
-                out.println("        \"side\": \"" + modid + ":" + texturelocation + "/" + identifier + "\"");
-                out.println("    }");
-                out.println("}");
-                out.close();
-                fwriter.close();
-                temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid + seperator
-                        + "models" + seperator + "block" + seperator + identifier + "_bark.json");
-                fwriter = new FileWriter(temp);
-                out = new PrintWriter(fwriter);
-                out.println("{");
-                out.println("    \"parent\": \"block/cube_all\",");
-                out.println("    \"textures\": {");
-                out.println("        \"all\": \"" + modid + ":" + texturelocation + "/" + identifier + "\"");
-                out.println("    }");
-                out.println("}");
-                out.close();
-                fwriter.close();
-            }
-            else
-            {
-                fwriter = new FileWriter(temp);
-                out = new PrintWriter(fwriter);
-                out.println("{");
-                out.println("    \"parent\": \"block/" + parent + "\",");
-                out.println("    \"textures\": {");
-
-                if (parent.equalsIgnoreCase("orientable"))
-                {
-                    out.println("        \"top\": \"" + modid + ":" + texturelocation + "/" + identifier + "top\",");
-                    out.println(
-                            "        \"bottom\": \"" + modid + ":" + texturelocation + "/" + identifier + "bottom\",");
-                    out.println(
-                            "        \"front\": \"" + modid + ":" + texturelocation + "/" + identifier + "front\",");
-                    out.println("        \"side\": \"" + modid + ":" + texturelocation + "/" + identifier + "side\"");
-                }
-                else if (parent.equalsIgnoreCase("cube_all") || parent.equalsIgnoreCase("leaves"))
-                {
-                    out.println("        \"all\": \"" + modid + ":" + texturelocation + "/" + identifier + "\"");
-                }
-                out.println("    }");
-                out.println("}");
-                out.close();
-                fwriter.close();
-            }
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        if (blockstate)
-        {
-            temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid + seperator
-                    + "blockstates");
-            if (!temp.exists())
-            {
-                temp.mkdirs();
-            }
-            temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid + seperator
-                    + "blockstates" + seperator + identifier + ".json");
-            try
-            {
-                fwriter = new FileWriter(temp);
-                out = new PrintWriter(fwriter);
-                out.println("{");
-                out.println("   \"variants\": {");
-
-                if (parent.equalsIgnoreCase("crop"))
-                {
-                    out.println("       \"age=0\": { \"model\": \"" + modid + ":" + identifier + "_0\" },");
-                    out.println("       \"age=1\": { \"model\": \"" + modid + ":" + identifier + "_1\" },");
-                    out.println("       \"age=2\": { \"model\": \"" + modid + ":" + identifier + "_2\" },");
-                    out.println("       \"age=3\": { \"model\": \"" + modid + ":" + identifier + "_3\" },");
-                    out.println("       \"age=4\": { \"model\": \"" + modid + ":" + identifier + "_4\" },");
-                    out.println("       \"age=5\": { \"model\": \"" + modid + ":" + identifier + "_5\" },");
-                    out.println("       \"age=6\": { \"model\": \"" + modid + ":" + identifier + "_6\" },");
-                    out.println("       \"age=7\": { \"model\": \"" + modid + ":" + identifier + "_7\" }");
-                }
-                else if (parent.equalsIgnoreCase("log"))
-                {
-                    out.println("       \"axis=y\": { \"model\": \"" + modid + ":" + identifier + "\" },");
-                    out.println("       \"axis=z\": { \"model\": \"" + modid + ":" + identifier + "_side\" },");
-                    out.println(
-                            "       \"axis=x\": { \"model\": \"" + modid + ":" + identifier + "_side\", \"y\": 90  },");
-                    out.println("       \"axis=none\": { \"model\": \"" + modid + ":" + identifier + "_bark\" }");
-                }
-                else if (parent.equalsIgnoreCase("cross"))
-                {
-                    out.println("   \"normal\": { \"model\": \"" + modid + ":" + identifier + "\" }");
-                }
-                else
-                {
-                    out.println("   \"normal\": { \"model\": \"" + modid + ":" + identifier + "\" }");
-                }
-                out.println("    }");
-                out.println("}");
-                out.close();
-                fwriter.close();
-
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-
-        }
-
-        generateItemJsons(identifier, "block", modid, true);
-    }
-
-    public static void generateItemJsons(String identifier, String parent, String modid, boolean blockModel)
-    {
-        String seperator = System.getProperty("file.separator");
-        File temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid + seperator
-                + "models" + seperator + "item");
-        if (!temp.exists())
-        {
-            temp.mkdirs();
-        }
-        try
-        {
-            temp = new File("mods" + seperator + "pokecube" + seperator + "assets" + seperator + modid + seperator
-                    + "models" + seperator + "item" + seperator + identifier + ".json");
-
-            fwriter = new FileWriter(temp);
-            out = new PrintWriter(fwriter);
-            out.println("{");
-
-            if (blockModel)
-            {
-                out.println("    \"parent\": \"" + modid + ":" + parent + "/" + identifier + "\",");
-            }
-            else
-            {
-                out.println("    \"parent\": \"builtin/generated\",");
-                out.println("    \"textures\": {");
-                out.println("    	\"layer0\": \"" + modid + ":" + parent + "/" + identifier + "\"");
-                out.println("    },");
-            }
-            String comma = blockModel ? "" : ",";
-            out.println("    \"display\": {");
-            out.println("    \"thirdperson\": {");
-            out.println("        \"rotation\": [ 10, -45, 170 ],");
-            out.println("        \"translation\": [ 0, 1.5, -2.75 ],");
-            out.println("        \"scale\": [ 0.375, 0.375, 0.375 ]");
-            out.println("		}" + comma);
-            if (!blockModel)
-            {
-                out.println("    \"firstperson\": {");
-                out.println("        \"rotation\": [0, -135, 25 ],");
-                out.println("        \"translation\": [0, 4, 2 ],");
-                out.println("        \"scale\": [1.7, 1.7, 1.7]");
-                out.println("       }");
-            }
-            out.println("    }");
-            out.println("}");
-            out.close();
-            fwriter.close();
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
     }
 
     public static void addVillagerTrades()

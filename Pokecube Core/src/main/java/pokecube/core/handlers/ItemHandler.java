@@ -389,105 +389,90 @@ public class ItemHandler extends Mod_Pokecube_Helper
         register(pokecube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(pokecube, 0, new ModelResourceLocation("pokecube:pokecube", "inventory"));
-        generateCubeJsons("pokecube");
 
         Pokecube greatcube = new Pokecube();
         greatcube.setUnlocalizedName("greatcube").setCreativeTab(creativeTabPokecubes);
         register(greatcube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(greatcube, 0, new ModelResourceLocation("pokecube:greatcube", "inventory"));
-        generateCubeJsons("greatcube");
 
         Pokecube ultracube = new Pokecube();
         ultracube.setUnlocalizedName("ultracube").setCreativeTab(creativeTabPokecubes);
         register(ultracube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(ultracube, 0, new ModelResourceLocation("pokecube:ultracube", "inventory"));
-        generateCubeJsons("ultracube");
 
         Pokecube mastercube = new Pokecube();
         mastercube.setUnlocalizedName("mastercube").setCreativeTab(creativeTabPokecubes);
         register(mastercube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(mastercube, 0, new ModelResourceLocation("pokecube:mastercube", "inventory"));
-        generateCubeJsons("mastercube");
 
         Pokecube snagcube = new Pokecube();
         snagcube.setUnlocalizedName("snagcube").setCreativeTab(creativeTabPokecubes);
         register(snagcube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(snagcube, 0, new ModelResourceLocation("pokecube:snagcube", "inventory"));
-        generateCubeJsons("snagcube");
 
         Pokecube duskcube = new Pokecube();
         duskcube.setUnlocalizedName("duskcube").setCreativeTab(creativeTabPokecubes);
         register(duskcube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(duskcube, 0, new ModelResourceLocation("pokecube:duskcube", "inventory"));
-        generateCubeJsons("duskcube");
 
         Pokecube quickcube = new Pokecube();
         quickcube.setUnlocalizedName("quickcube").setCreativeTab(creativeTabPokecubes);
         register(quickcube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(quickcube, 0, new ModelResourceLocation("pokecube:quickcube", "inventory"));
-        generateCubeJsons("quickcube");
 
         Pokecube timercube = new Pokecube();
         timercube.setUnlocalizedName("timercube").setCreativeTab(creativeTabPokecubes);
         register(timercube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(timercube, 0, new ModelResourceLocation("pokecube:timercube", "inventory"));
-        generateCubeJsons("timercube");
 
         Pokecube netcube = new Pokecube();
         netcube.setUnlocalizedName("netcube").setCreativeTab(creativeTabPokecubes);
         register(netcube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(netcube, 0, new ModelResourceLocation("pokecube:netcube", "inventory"));
-        generateCubeJsons("netcube");
 
         Pokecube nestcube = new Pokecube();
         nestcube.setUnlocalizedName("nestcube").setCreativeTab(creativeTabPokecubes);
         register(nestcube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(nestcube, 0, new ModelResourceLocation("pokecube:nestcube", "inventory"));
-        generateCubeJsons("nestcube");
 
         Pokecube divecube = new Pokecube();
         divecube.setUnlocalizedName("divecube").setCreativeTab(creativeTabPokecubes);
         register(divecube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(divecube, 0, new ModelResourceLocation("pokecube:divecube", "inventory"));
-        generateCubeJsons("divecube");
 
         Pokecube repeatcube = new Pokecube();
         repeatcube.setUnlocalizedName("repeatcube").setCreativeTab(creativeTabPokecubes);
         register(repeatcube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(repeatcube, 0, new ModelResourceLocation("pokecube:repeatcube", "inventory"));
-        generateCubeJsons("repeatcube");
 
         Pokecube premiercube = new Pokecube();
         premiercube.setUnlocalizedName("premiercube").setCreativeTab(creativeTabPokecubes);
         register(premiercube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(premiercube, 0, new ModelResourceLocation("pokecube:premiercube", "inventory"));
-        generateCubeJsons("premiercube");
 
         Pokecube cherishcube = new Pokecube();
         cherishcube.setUnlocalizedName("cherishcube").setCreativeTab(creativeTabPokecubes);
         register(cherishcube);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(cherishcube, 0, new ModelResourceLocation("pokecube:cherishcube", "inventory"));
-        generateCubeJsons("cherishcube");
 
         Pokecube pokeseal = new Pokecube();
         pokeseal.setUnlocalizedName("pokeseal").setCreativeTab(creativeTabPokecubes);
         register(pokeseal);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(pokeseal, 0, new ModelResourceLocation("pokecube:pokeseal", "inventory"));
-        generateCubeJsons("pokeseal");
 
         PokecubeItems.addCube(0, new Object[] { pokecube });
         PokecubeItems.addCube(1, new Object[] { greatcube });

@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL13;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -63,7 +62,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void doRender(T entity, double d0, double d1, double d2, float f, float f1)
+    public void doRender(T entity, double d0, double d1, double d2, float yaw, float partialTick)
     {
 
         model = (LoadedModel<T>) AnimationLoader.getModel(modelName);
@@ -77,13 +76,13 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         {
             if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
                 return;
-            renderHp(entity, d0, d1, d2, f, f1);
+            renderHp(entity, d0, d1, d2, yaw, partialTick);
             GL11.glPushMatrix();
             GL11.glTranslated(d0, d1, d2);
-            if ((f1 != GuiPokedex.POKEDEX_RENDER))
+            if ((partialTick != GuiPokedex.POKEDEX_RENDER))
             {
-                RenderPokemob.renderEvolution((IPokemob) entity, f);
-                RenderPokemob.renderExitCube((IPokemob) entity, f);
+                RenderPokemob.renderEvolution((IPokemob) entity, yaw);
+                RenderPokemob.renderExitCube((IPokemob) entity, yaw);
             }
             GL11.glPopMatrix();
             try
@@ -109,10 +108,10 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
                 return;
             GL11.glPushMatrix();
             GL11.glTranslated(d0, d1, d2);
-            if ((f1 != GuiPokedex.POKEDEX_RENDER))
+            if ((partialTick != GuiPokedex.POKEDEX_RENDER))
             {
-                RenderPokemob.renderEvolution((IPokemob) entity, f);
-                RenderPokemob.renderExitCube((IPokemob) entity, f);
+                RenderPokemob.renderEvolution((IPokemob) entity, yaw);
+                RenderPokemob.renderExitCube((IPokemob) entity, yaw);
             }
             GL11.glPopMatrix();
             try
@@ -120,10 +119,14 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
                 GL11.glPushMatrix();
                 GL11.glTranslated(d0, d1, d2);
                 FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
-                renderTabula(entity, d0, d1, d2, f, f1);
-                renderStatusModel(entity, d0, d1, d2, f, f1);
+                float f8 = this.handleRotationFloat(entity, partialTick);
+                this.rotateCorpse(entity, f8, yaw, partialTick);
+                //Lighting
+                func_177105_a(entity, partialTick);
+                renderTabula(entity, d0, d1, d2, yaw, partialTick);
+                renderStatusModel(entity, d0, d1, d2, yaw, partialTick);
                 GL11.glPopMatrix();
-                renderHp(entity, d0, d1, d2, f, f1);
+                renderHp(entity, d0, d1, d2, yaw, partialTick);
                 isTabula = true;
             }
             catch (Exception e)
@@ -140,35 +143,29 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             return;
 
         GL11.glPushMatrix();
-        this.preRenderCallback(entity,f1);
+        this.preRenderCallback(entity,partialTick);
         GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
-        if ((f1 != GuiPokedex.POKEDEX_RENDER))
+        if ((partialTick != GuiPokedex.POKEDEX_RENDER))
         {
-            RenderPokemob.renderEvolution((IPokemob) entity, f);
-            RenderPokemob.renderExitCube((IPokemob) entity, f);
+            RenderPokemob.renderEvolution((IPokemob) entity, yaw);
+            RenderPokemob.renderExitCube((IPokemob) entity, yaw);
         }
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
         if (model.texturer == null)
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
-        
-        int i = entity.getBrightnessForRender(f);
-        if (entity.isBurning() || f1 == 1.5f)
-        {
-            i = 15728880;
-        }
-
-        int j = i % 65536;
-        int k = i / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
-        model.currentPhase = getPhase(null, entity, f1);
-        model.doRender((T) entity, d0, d1, d2, f, f1);
-        renderStatusModel(entity, d0, d1, d2, f, f1);
+        float f8 = this.handleRotationFloat(entity, partialTick);
+        this.rotateCorpse(entity, f8, yaw, partialTick);
+        //Lighting
+        func_177105_a(entity, partialTick);
+        model.currentPhase = getPhase(null, entity, partialTick);
+        model.doRender((T) entity, d0, d1, d2, yaw, partialTick);
+        renderStatusModel(entity, d0, d1, d2, yaw, partialTick);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
         GL11.glPopMatrix();
-        renderHp(entity, d0, d1, d2, f, f1);
+        renderHp(entity, d0, d1, d2, yaw, partialTick);
         GL11.glPopMatrix();
     }
 
@@ -360,19 +357,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         if (model == null || parser == null) { return false; }
 
         GlStateManager.pushMatrix();
-
-        int i = entity.getBrightnessForRender(f);
-        if (entity.isBurning() || partialTick == 1.5f)
-        {
-            i = 15728880;
-        }
-
-        int j = i % 65536;
-        int k = i / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
-
-        GlStateManager.color(1f, 1f, 1f, 1f);
-
         GlStateManager.disableCull();
         TabulaModelParser pars = ((TabulaModelParser) parser);
         ModelJson modelj = pars.modelMap.get(model);

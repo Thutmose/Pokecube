@@ -105,7 +105,7 @@ public class ContainerBag extends Container {
 	@Override
 	 public void onContainerClosed(EntityPlayer player)
 	 {
-		PASaveHandler.getInstance().saveBag();
+		PASaveHandler.getInstance().saveBag(player.getUniqueID().toString());
 		 super.onContainerClosed(player);
 	 }
 	

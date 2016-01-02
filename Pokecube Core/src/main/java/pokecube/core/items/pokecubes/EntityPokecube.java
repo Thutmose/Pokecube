@@ -46,10 +46,11 @@ import thut.api.maths.Vector3;
 public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpawnData, IProjectile
 {
 
-    public int              time = 0;
-    public int              tilt = -1;
+    public int              time           = 0;
+    public int              tilt           = -1;
     public EntityLivingBase shootingEntity;
     public EntityLivingBase targetEntity;
+    public Vector3          targetLocation = Vector3.getNewVectorFromPool();
     public UUID             shooter;
 
     private Vector3 v0    = Vector3.getNewVectorFromPool();
@@ -257,10 +258,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             super.applyEntityCollision(e);
             return;
         }
-        if(shootingEntity!=null && e instanceof IPokemob && ((IPokemob)e).getPokemonOwner() == shootingEntity)
-        {
-            return;
-        }
+        if (shootingEntity != null && e instanceof IPokemob
+                && ((IPokemob) e).getPokemonOwner() == shootingEntity) { return; }
 
         if (e instanceof EntityLivingBase && e instanceof IPokemob && ((EntityLivingBase) e).getHealth() > 0
                 && tilt == -1 && !((IPokemob) e).getPokemonAIState(IPokemob.TAMED))
@@ -356,19 +355,19 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             worldObj.spawnEntityInWorld((Entity) entity1);
             ((IMultibox) entity1).setBoxes();
             ((IMultibox) entity1).setOffsets();
-            
-            if(!worldObj.isRemote)
+
+            if (!worldObj.isRemote)
             {
                 MessageClient message;
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(20));
                 buffer.writeByte(MessageClient.ALIVECHECK);
-                buffer.writeInt(((Entity)entity1).getEntityId());
+                buffer.writeInt(((Entity) entity1).getEntityId());
                 buffer.writeBoolean(true);
                 v0.set(entity1).writeToBuff(buffer);
                 message = new MessageClient(buffer);
                 PokecubePacketHandler.sendToAllNear(message, v0, dimension, 30);
             }
-            
+
             boolean outOfBlock = true;
 
             if (!outOfBlock)
@@ -653,20 +652,32 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         if (tilt > 0 || (targetEntity != null && targetEntity.isDead))
         {
             targetEntity = null;
+            targetLocation.clear();
         }
 
+        Vector3 target = Vector3.getNewVectorFromPool();
         if (targetEntity != null)
         {
+            target.set(targetEntity);
+        }
+        else
+        {
+            target.set(targetLocation);
+        }
+
+        if (!target.isEmpty())
+        {
             Vector3 here = Vector3.getNewVectorFromPool().set(this);
-            Vector3 dir = Vector3.getNewVectorFromPool().set(targetEntity);
+            Vector3 dir = Vector3.getNewVectorFromPool().set(target);
             double dist = dir.distanceTo(here);
+            if (dist > 1) dist = 1 / dist;
             dir.subtractFrom(here);
-            dir.scalarMultBy(1 / (dist));
+            dir.scalarMultBy(dist);
             dir.setVelocities(this);
             here.freeVectorFromPool();
             dir.freeVectorFromPool();
         }
-
+        target.freeVectorFromPool();
     }
 
     @Override

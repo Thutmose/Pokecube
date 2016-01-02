@@ -213,8 +213,6 @@ public class EventsHandler
                                           // evt.entityPlayer.worldObj, false,
                                           // evt.entityPlayer);
 
-            look.freeVectorFromPool();
-            temp.freeVectorFromPool();
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(5));
             buffer.writeByte(PokecubeServerPacket.POKECUBEUSE);
             if (target != null)
@@ -223,8 +221,13 @@ public class EventsHandler
             }
             else
             {
-                buffer.writeInt(-1);
+                temp.set(evt.entityPlayer).addTo(0, evt.entityPlayer.getEyeHeight(), 0);
+                look.set(evt.entityPlayer.getLook(1));
+                Vector3 hit = Vector3.getNextSurfacePoint(evt.world, temp, look, 32);
+                if (hit != null) hit.writeToBuff(buffer);
             }
+            look.freeVectorFromPool();
+            temp.freeVectorFromPool();
             PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
             if (evt.action == Action.RIGHT_CLICK_AIR) PokecubePacketHandler.sendToServer(packet);
 
@@ -687,9 +690,10 @@ public class EventsHandler
             rgbaBytes[2] = tag.getByte("blue");
             rgbaBytes[3] = 127;
         }
-        if(pokemob instanceof IMobColourable)
+        if (pokemob instanceof IMobColourable)
         {
-            ((IMobColourable)pokemob).setRGBA(rgbaBytes[0]+128, rgbaBytes[1]+128, rgbaBytes[2]+128, rgbaBytes[2]+128);
+            ((IMobColourable) pokemob).setRGBA(rgbaBytes[0] + 128, rgbaBytes[1] + 128, rgbaBytes[2] + 128,
+                    rgbaBytes[2] + 128);
         }
         String forme = tag.getString("forme");
         pokemob.changeForme(forme);

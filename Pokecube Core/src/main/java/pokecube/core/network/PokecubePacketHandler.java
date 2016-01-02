@@ -248,9 +248,9 @@ public class PokecubePacketHandler
     {
         public final String name;
         public final String data;
-        public int         red   = 255;
-        public int         green = 255;
-        public int         blue  = 255;
+        public int          red   = 255;
+        public int          green = 255;
+        public int          blue  = 255;
         public boolean      shiny = false;
 
         private List<String> moves = Lists.newArrayList();
@@ -311,7 +311,7 @@ public class PokecubePacketHandler
                     entity.setPokecubeId(0);
                     entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), false, false);
                     if (shiny) entity.setShiny(true);
-                    ((IMobColourable)entity).setRGBA(red, green, blue);
+                    ((IMobColourable) entity).setRGBA(red, green, blue);
 
                     if (moves.size() > 4)
                     {
@@ -1015,18 +1015,29 @@ public class PokecubePacketHandler
                 {
                     if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IPokecube)
                     {
-                        Vector3 targetLocation = Vector3.getNewVectorFromPool();
-
+                        Vector3 targetLocation = null;
+                        Entity target = null;
                         long time = player.getEntityData().getLong("lastThrow");
                         if (time == player.worldObj.getTotalWorldTime()) return;
                         player.getEntityData().setLong("lastThrow", player.worldObj.getTotalWorldTime());
 
-                        int id = buffer.readInt();
-                        Entity target = player.worldObj.getEntityByID(id);
+                        if (buffer.readableBytes() == 4)
+                        {
+                            int id = buffer.readInt();
+                            target = player.worldObj.getEntityByID(id);
+                            targetLocation = Vector3.getNewVectorFromPool();
+                        }
+                        else if(buffer.readableBytes() == 24)
+                        {
+                            targetLocation = Vector3.readFromBuff(buffer);
+                        }
+
                         if (target != null && target instanceof IPokemob) targetLocation.set(target);
+
                         boolean used = ((IPokecube) player.getHeldItem().getItem()).throwPokecube(player.worldObj,
                                 player, player.getHeldItem(), targetLocation, target);
                         targetLocation.freeVectorFromPool();
+
                         if (player.getHeldItem() != null && !(!PokecubeManager.isFilled(player.getHeldItem())
                                 && player.capabilities.isCreativeMode) && used)
                         {

@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -27,6 +28,7 @@ import pokecube.adventures.handlers.GeneralCommands;
 import pokecube.adventures.handlers.ItemHandler;
 import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TeamCommands;
+import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
@@ -127,6 +129,13 @@ public class PokecubeAdv
     {
         event.registerServerCommand(new GeneralCommands());
         event.registerServerCommand(new TeamCommands());
+    }
+    
+    @EventHandler
+    public void WorldUnloadEvent(FMLServerStoppedEvent evt)
+    {
+        TrainerSpawnHandler.trainers.clear();
+        TeamManager.clearInstance();
     }
 
     public static void setTrainerConfig(FMLPreInitializationEvent evt)

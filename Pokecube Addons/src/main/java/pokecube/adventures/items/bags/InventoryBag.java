@@ -446,7 +446,7 @@ public class InventoryBag implements IInventory
 	@Override
 	public void closeInventory(EntityPlayer player) 
 	{
-		PASaveHandler.getInstance().saveBag();
+		PASaveHandler.getInstance().saveBag(player.getUniqueID().toString());
 	}
 
 	@Override

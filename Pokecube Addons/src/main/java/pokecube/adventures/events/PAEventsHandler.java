@@ -31,14 +31,13 @@ public class PAEventsHandler
     public void PlayerLoggin(PlayerLoggedInEvent evt)
     {
         EntityPlayer entityPlayer = evt.player;
-        System.out.println(entityPlayer);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
 
         NBTTagCompound nbt;
         MessageClient packet;
 
         nbt = new NBTTagCompound();
-        TeamManager.getInstance().saveToNBT(nbt);
+        TeamManager.getInstance().saveToNBT(nbt, false);
         packet = new MessageClient((byte) 7, nbt);
         PokecubePacketHandler.sendToClient(packet, entityPlayer);
 
@@ -81,14 +80,12 @@ public class PAEventsHandler
 
         if (!evt.player.worldObj.isRemote)
         {
-            System.out.println(evt.pick + " " + evt.starterPack.length);
             List<ItemStack> toPC = new ArrayList<ItemStack>();
             ItemStack starter = null;
             boolean replaced = false;
             for (int i = 0; i < evt.starterPack.length; i++)
             {
                 ItemStack e = evt.starterPack[i];
-                System.out.println(e.getDisplayName());
                 int num;
                 if ((num = PokecubeManager.getPokedexNb(e)) > 0 && num != evt.pick)
                 {

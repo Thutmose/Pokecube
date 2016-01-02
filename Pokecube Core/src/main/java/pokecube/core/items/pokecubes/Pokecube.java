@@ -240,17 +240,17 @@ public class Pokecube extends ItemTranslated implements IPokecube
     public boolean throwPokecube(World world, EntityPlayer player, ItemStack cube, Vector3 targetLocation,
             Entity target)
     {
-        pokecube.core.items.pokecubes.EntityPokecube entity = null;
+        EntityPokecube entity = null;
         int id = PokecubeItems.getCubeId(cube.getItem());
         if (id < 0) return false;
         ItemStack stack = ItemStack.copyItemStack(cube);
         stack.stackSize = 1;
-        entity = new pokecube.core.items.pokecubes.EntityPokecube(world, player, stack);
+        entity = new EntityPokecube(world, player, stack);
 
         if (target instanceof EntityLivingBase || PokecubeManager.isFilled(cube) || player.isSneaking() || (player instanceof FakePlayer))
         {
             entity.targetEntity = (EntityLivingBase) target;
-
+            entity.targetLocation.set(targetLocation);
             if (player.isSneaking())
             {
                 Vector3 temp = Vector3.getNewVectorFromPool().set(player).add(0, player.getEyeHeight(), 0);
@@ -259,6 +259,7 @@ public class Pokecube extends ItemTranslated implements IPokecube
                 temp.addTo(temp1).moveEntity(entity);
                 temp.clear().setVelocities(entity);
                 entity.targetEntity = null;
+                entity.targetLocation.clear();
             }
 
             if (!world.isRemote)

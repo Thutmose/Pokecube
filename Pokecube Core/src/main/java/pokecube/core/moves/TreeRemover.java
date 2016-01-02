@@ -92,7 +92,7 @@ public class TreeRemover
                 if (woodTypes.contains(temp.set(centre).addTo(i, 0, j).getBlock(worldObj)))
                 {
                     boolean valid = false;
-                    while (centre.intY() + k > 1)
+                    while (centre.intY() + k > 0)
                     {
                         if (woodTypes.contains(temp.set(centre).addTo(i, k, j).getBlock(worldObj)))
                         {
@@ -177,7 +177,7 @@ public class TreeRemover
         Vector3 temp = Vector3.getNewVectorFromPool();
         for (int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++)
-                for (int k = 0; k <= 1; k++)
+                for (int k = -1; k <= 1; k++)
                 {
                     temp.set(prev).addTo(i, k, j);
                     if (woodTypes.contains(temp.getBlock(worldObj)))

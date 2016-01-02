@@ -80,7 +80,7 @@ public final class BlockAFA extends Block implements ITileEntityProvider
                             .getTagCompound().copy());
                 }
 
-                float factor = 0.5F;
+                float factor = 0.005F;
                 entity_item.motionX = rand.nextGaussian() * factor;
                 entity_item.motionY = rand.nextGaussian() * factor + 0.2F;
                 entity_item.motionZ = rand.nextGaussian() * factor;

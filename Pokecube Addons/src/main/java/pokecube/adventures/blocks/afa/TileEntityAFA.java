@@ -36,6 +36,8 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
 {
     public IPokemob         pokemob   = null;
     private ItemStack[]     inventory = new ItemStack[1];
+    public int[]            shift     = { 0, 0, 0 };
+    public int              scale     = 1000;
     public Ability          ability   = null;
     int                     energy    = 0;
     int                     distance  = 4;
@@ -48,8 +50,8 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
         storage = new EnergyStorage(3200);
         try
         {
-            node = Network.newNode(this, Visibility.Network).withConnector()
-                    .withComponent("afa", Visibility.Network).create();
+            node = Network.newNode(this, Visibility.Network).withConnector().withComponent("afa", Visibility.Network)
+                    .create();
         }
         catch (Exception e)
         {
@@ -134,6 +136,8 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
                 itemList.appendTag(tag);
             }
         }
+        nbt.setIntArray("shift", shift);
+        nbt.setInteger("scale", scale);
         nbt.setTag("Inventory", itemList);
         nbt.setInteger("distance", distance);
         nbt.setBoolean("noEnergy", noEnergy);
@@ -163,6 +167,8 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
                 }
             }
         }
+        shift = nbt.getIntArray("shift");
+        if (nbt.hasKey("scale")) scale = nbt.getInteger("scale");
         distance = nbt.getInteger("distance");
         noEnergy = nbt.getBoolean("noEnergy");
         storage.readFromNBT(nbt);
@@ -310,6 +316,10 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
         if (id == 0) return worldObj.isRemote ? energy : storage.getEnergyStored();
         if (id == 1) return distance;
         if (id == 2) return noEnergy ? 1 : 0;
+        if (id == 3) return scale;
+        if (id == 4) return shift[0];
+        if (id == 5) return shift[1];
+        if (id == 6) return shift[2];
         return 0;
     }
 
@@ -320,6 +330,10 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
         else storage.setEnergyStored(value);
         if (id == 1) distance = value;
         if (id == 2) noEnergy = value != 0;
+        if (id == 3) scale = value;
+        if (id == 4) shift[0] = value;
+        if (id == 5) shift[1] = value;
+        if (id == 6) shift[2] = value;
         distance = Math.max(0, distance);
         refreshAbility();
     }
@@ -327,7 +341,7 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
     @Override
     public int getFieldCount()
     {
-        return 3;
+        return 7;
     }
 
     @Override

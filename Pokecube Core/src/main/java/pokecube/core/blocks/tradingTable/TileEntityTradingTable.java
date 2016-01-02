@@ -806,7 +806,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             return new Object[0];
         }
     }
-    
+
+    @Callback
     public Object[] applyMove(Context context, Arguments args)
     {
         if (hasPC() && pc.isBound())

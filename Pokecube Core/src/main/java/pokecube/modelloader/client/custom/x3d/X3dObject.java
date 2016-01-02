@@ -311,7 +311,7 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             normalList[i + 2] = c;
         }
         // TODO see if there is a better way to interpolate the normals.
-        // GL11.glShadeModel(GL11.GL_SMOOTH);
+//        GL11.glShadeModel(GL11.GL_FLAT);
         GL11.glBegin(GLMODE);
         int n = 0;
         for (Integer i : order)
@@ -320,8 +320,8 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
             vertex = vertices[i];
             GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
-            // vertex = normals[i];
-            // GL11.glNormal3f(vertex.x, vertex.y, vertex.z);
+//             vertex = normals[i];
+//             GL11.glNormal3f(vertex.x, vertex.y, vertex.z);
              if(n%3==0)
             {
                 Vector3f norm = normalList[n];

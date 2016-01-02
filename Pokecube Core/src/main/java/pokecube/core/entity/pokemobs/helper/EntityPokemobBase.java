@@ -733,7 +733,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             double x0 = x, y0 = y, z0 = z;
             setBoxes();
             setOffsets();
-            IBlockAccess world = ((PokeNavigator) getNavigator()).pathfinder.chunks;
+            IBlockAccess world = worldObj;//((PokeNavigator) getNavigator()).pathfinder.chunks;
             if (world == null)
             {
                 ((PokeNavigator) getNavigator()).refreshCache();

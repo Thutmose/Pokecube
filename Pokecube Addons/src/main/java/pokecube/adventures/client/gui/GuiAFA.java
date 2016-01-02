@@ -37,12 +37,29 @@ public class GuiAFA extends GuiContainer
         super.initGui();
         int xOffset = 0;
         int yOffset = -11;
+        // Range Control
         buttonList.add(new GuiButton(0, width / 2 - xOffset + 64, height / 2 - yOffset - 85, 20, 20, "\u25b2"));
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 64, height / 2 - yOffset - 65, 20, 20, "\u25bc"));
         if (mc.thePlayer.capabilities.isCreativeMode)
         {
-            buttonList.add(new GuiButton(2, width / 2 - xOffset + 64, height / 2 - yOffset - 45, 20, 20, "X"));
+            ContainerAFA container = (ContainerAFA) inventorySlots;
+            int num = container.tile.getField(2);
+            // Power need toggle
+            buttonList.add(new GuiButton(2, width / 2 - xOffset + 64, height / 2 - yOffset - 45, 20, 20,
+                    num == 1 ? "O" : "X"));
         }
+        // Scale Buttons
+        buttonList.add(new GuiButton(3, width / 2 - xOffset + 10, height / 2 - yOffset - 65, 20, 20, "+"));
+        buttonList.add(new GuiButton(4, width / 2 - xOffset + 10, height / 2 - yOffset - 45, 20, 20, "-"));
+        // Position Buttons
+        buttonList.add(new GuiButton(5, width / 2 - xOffset - 12, height / 2 - yOffset - 65, 20, 20, "\u25c0"));
+        buttonList.add(new GuiButton(6, width / 2 - xOffset - 12, height / 2 - yOffset - 45, 20, 20, "\u25b6"));
+        // Position Buttons
+        buttonList.add(new GuiButton(7, width / 2 - xOffset - 32, height / 2 - yOffset - 65, 20, 20, "\u25b2"));
+        buttonList.add(new GuiButton(8, width / 2 - xOffset - 32, height / 2 - yOffset - 45, 20, 20, "\u25bc"));
+        // Position Buttons
+        buttonList.add(new GuiButton(9, width / 2 - xOffset - 52, height / 2 - yOffset - 65, 20, 20, "\u25c0"));
+        buttonList.add(new GuiButton(10, width / 2 - xOffset - 52, height / 2 - yOffset - 45, 20, 20, "\u25b6"));
     }
 
     /** Draw the foreground layer for the GuiContainer (everything in front of
@@ -61,7 +78,7 @@ public class GuiAFA extends GuiContainer
 
             TileEntityAFA cloner = (TileEntityAFA) te;
 
-            if(last!=cloner.getWorld().getTotalWorldTime())
+            if (last != cloner.getWorld().getTotalWorldTime())
             {
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(1));
                 buffer.writeByte(MessageServer.MESSAGEGUIAFA);
@@ -70,7 +87,7 @@ public class GuiAFA extends GuiContainer
                 message = new MessageServer(buffer);
                 PokecubePacketHandler.sendToServer(message);
             }
-            
+
             String mess;
             int energy = cloner.getField(0);
             mess = "e:" + energy;
@@ -123,6 +140,62 @@ public class GuiAFA extends GuiContainer
             }
             buffer.writeInt(2);
             buffer.writeInt(tile.getField(2));
+        }
+        if (button.id == 3)
+        {
+            diff = isCtrlKeyDown() ? diff * 10 : diff;
+            tile.setField(3, tile.getField(3) + diff);
+            buffer.writeInt(3);
+            buffer.writeInt(tile.getField(3));
+        }
+        else if (button.id == 4)
+        {
+            diff = isCtrlKeyDown() ? diff * 10 : diff;
+            tile.setField(3, tile.getField(3) - diff);
+            buffer.writeInt(3);
+            buffer.writeInt(tile.getField(3));
+        }
+        if (button.id == 5)
+        {
+            diff = isCtrlKeyDown() ? diff * 10 : diff;
+            tile.setField(4, tile.getField(4) + diff);
+            buffer.writeInt(4);
+            buffer.writeInt(tile.getField(4));
+        }
+        else if (button.id == 6)
+        {
+            diff = isCtrlKeyDown() ? diff * 10 : diff;
+            tile.setField(4, tile.getField(4) - diff);
+            buffer.writeInt(4);
+            buffer.writeInt(tile.getField(4));
+        }
+        if (button.id == 7)
+        {
+            diff = isCtrlKeyDown() ? diff * 10 : diff;
+            tile.setField(5, tile.getField(5) + diff);
+            buffer.writeInt(5);
+            buffer.writeInt(tile.getField(5));
+        }
+        else if (button.id == 8)
+        {
+            diff = isCtrlKeyDown() ? diff * 10 : diff;
+            tile.setField(5, tile.getField(5) - diff);
+            buffer.writeInt(5);
+            buffer.writeInt(tile.getField(5));
+        }
+        if (button.id == 9)
+        {
+            diff = isCtrlKeyDown() ? diff * 10 : diff;
+            tile.setField(6, tile.getField(6) + diff);
+            buffer.writeInt(6);
+            buffer.writeInt(tile.getField(6));
+        }
+        else if (button.id == 10)
+        {
+            diff = isCtrlKeyDown() ? diff * 10 : diff;
+            tile.setField(6, tile.getField(6) - diff);
+            buffer.writeInt(6);
+            buffer.writeInt(tile.getField(6));
         }
         message = new MessageServer(buffer);
         PokecubePacketHandler.sendToServer(message);

@@ -117,7 +117,8 @@ import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
-@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION, dependencies = "required-after:Forge@"+PokecubeMod.MINFORGEVERSION, acceptedMinecraftVersions=PokecubeMod.MCVERSIONS)
+@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION, dependencies = "required-after:Forge@"
+        + PokecubeMod.MINFORGEVERSION, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS)
 public class mod_Pokecube extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")
@@ -259,7 +260,7 @@ public class mod_Pokecube extends PokecubeMod
                 // config.
                 if (!registered.get(pokedexNb))
                 {
-                    EntityRegistry.registerModEntity(clazz, name, 25+pokedexNb, mod, 80, 3, true);
+                    EntityRegistry.registerModEntity(clazz, name, 25 + pokedexNb, mod, 80, 3, true);
 
                     if (!pokemobEggs.containsKey(pokedexNb))
                     {
@@ -418,7 +419,10 @@ public class mod_Pokecube extends PokecubeMod
     {
         Entity entity = null;
         Class clazz = null;
-        if (entity == null) try
+
+        if (!registered.get(pokedexNb)) return null;
+
+        try
         {
             clazz = getEntityClassFromPokedexNumber(pokedexNb);
 
@@ -585,7 +589,7 @@ public class mod_Pokecube extends PokecubeMod
         MinecraftForge.EVENT_BUS.register(save);
         PCEventsHandler events = new PCEventsHandler();
         MinecraftForge.EVENT_BUS.register(events);
-//        proxy.registerRenderInformation();//TODO move back to here for 1.9
+        // proxy.registerRenderInformation();//TODO move back to here for 1.9
 
     }
 

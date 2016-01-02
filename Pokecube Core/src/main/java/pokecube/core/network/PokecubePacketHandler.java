@@ -1027,7 +1027,7 @@ public class PokecubePacketHandler
                             target = player.worldObj.getEntityByID(id);
                             targetLocation = Vector3.getNewVectorFromPool();
                         }
-                        else if(buffer.readableBytes() == 24)
+                        else if (buffer.readableBytes() == 24)
                         {
                             targetLocation = Vector3.readFromBuff(buffer);
                         }
@@ -1036,7 +1036,7 @@ public class PokecubePacketHandler
 
                         boolean used = ((IPokecube) player.getHeldItem().getItem()).throwPokecube(player.worldObj,
                                 player, player.getHeldItem(), targetLocation, target);
-                        targetLocation.freeVectorFromPool();
+                        if (targetLocation != null) targetLocation.freeVectorFromPool();
 
                         if (player.getHeldItem() != null && !(!PokecubeManager.isFilled(player.getHeldItem())
                                 && player.capabilities.isCreativeMode) && used)

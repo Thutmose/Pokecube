@@ -271,6 +271,7 @@ public class EventsHandlerClient
                     if (slot.getHasStack() && PokecubeManager.isFilled(slot.getStack()))
                     {
                         IPokemob pokemob = getPokemobForRender(slot.getStack(), gui.mc.theWorld);
+                        if(pokemob==null) continue;
                         int x = (w - xSize) / 2;
                         int y = (h - ySize) / 2;
                         int i, j;

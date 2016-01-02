@@ -24,7 +24,6 @@ public class PokecubeManager
             IPokemob pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(num, world);
             if (pokemob == null)
             {
-                // new Exception().printStackTrace();
                 return null;
             }
             Entity poke = (Entity) pokemob;

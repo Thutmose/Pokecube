@@ -401,6 +401,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         }
         else
         {
+            this.entityDropItem(getEntityItem(), 0.5f);
             this.setDead();
         }
         return entity1;

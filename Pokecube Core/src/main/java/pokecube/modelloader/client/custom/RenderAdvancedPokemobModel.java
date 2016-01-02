@@ -120,8 +120,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
                 GL11.glTranslated(d0, d1, d2);
                 FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
                 float f8 = this.handleRotationFloat(entity, partialTick);
-                this.rotateCorpse(entity, f8, yaw, partialTick);
-                //Lighting
+                if (entity.getHealth() <= 0) this.rotateCorpse(entity, f8, yaw, partialTick);
+                // Lighting
                 func_177105_a(entity, partialTick);
                 renderTabula(entity, d0, d1, d2, yaw, partialTick);
                 renderStatusModel(entity, d0, d1, d2, yaw, partialTick);
@@ -143,7 +143,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             return;
 
         GL11.glPushMatrix();
-        this.preRenderCallback(entity,partialTick);
+        this.preRenderCallback(entity, partialTick);
         GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
         if ((partialTick != GuiPokedex.POKEDEX_RENDER))
@@ -157,8 +157,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         if (model.texturer == null)
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
         float f8 = this.handleRotationFloat(entity, partialTick);
-        this.rotateCorpse(entity, f8, yaw, partialTick);
-        //Lighting
+        if (entity.getHealth() <= 0) this.rotateCorpse(entity, f8, yaw, partialTick);
+        // Lighting
         func_177105_a(entity, partialTick);
         model.currentPhase = getPhase(null, entity, partialTick);
         model.doRender((T) entity, d0, d1, d2, yaw, partialTick);

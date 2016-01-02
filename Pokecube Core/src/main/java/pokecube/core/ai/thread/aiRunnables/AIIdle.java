@@ -39,7 +39,7 @@ public class AIIdle extends AIBase
         PathEntity current = null;
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
-        if (world == null || mob.getPokedexEntry().isStationary) return false;
+        if (world == null || mob.getPokedexEntry().isStationary || mob.getPokemonAIState(IPokemob.EXECUTINGMOVE)) return false;
         if ((current = entity.getNavigator().getPath()) != null && entity.getNavigator().noPath())
         {
             addEntityPath(entity.getEntityId(), entity.dimension, null, speed);
@@ -97,7 +97,7 @@ public class AIIdle extends AIBase
                             : v);
             Vector3 v = SpawnHandler.getRandomPointNear(world, v1, distance);
 
-            double diff = entity.width;// TODO times length
+            double diff = Math.max(mob.getPokedexEntry().length * mob.getSize(), mob.getPokedexEntry().width * mob.getSize());
             diff = Math.max(2, diff);
             if (v == null || this.v.distToSq(v) < diff)
             {

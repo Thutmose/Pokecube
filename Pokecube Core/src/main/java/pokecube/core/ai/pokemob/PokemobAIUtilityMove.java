@@ -116,7 +116,7 @@ public class PokemobAIUtilityMove extends EntityAIBase {
     	entity.getLookHelper().setLookPosition(destination.x, destination.y, destination.z, 10, entity.getVerticalFaceSpeed());
     	Vector3 loc = Vector3.getNewVectorFromPool().set(entity, false);
     	double dist = loc.distToSq(destination);
-    	double var1 = 9;
+    	double var1 = 16;
         Move_Base move = MovesUtils.getMoveFromName(pokemon.getMove(pokemon.getMoveIndex()));
     	
     	if(move==null)

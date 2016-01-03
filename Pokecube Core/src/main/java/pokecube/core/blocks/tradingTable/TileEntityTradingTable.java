@@ -33,6 +33,9 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.Mod_Pokecube_Helper;
@@ -317,8 +320,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     @Override
     public void onLoad()
     {
-        hasPC();
-        Network.joinOrCreateNetwork(this);
+        new TMCConverter(this);
     }
 
     @Override
@@ -815,5 +817,56 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             }
         }
         return new Object[0];
+    }
+
+    private static class TMCConverter
+    {
+        final TileEntityTradingTable toConvert;
+
+        public TMCConverter(TileEntityTradingTable tile)
+        {
+            toConvert = tile;
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void convert(WorldTickEvent event)
+        {
+            if (event.world.isRemote)
+            {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                return;
+            }
+
+            if (event.phase == Phase.END)
+            {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                Network.joinOrCreateNetwork(toConvert);
+                boolean pc = false;
+                toConvert.pc = null;
+                for (EnumFacing side : EnumFacing.values())
+                {
+                    Vector3 here = Vector3.getNewVectorFromPool().set(toConvert);
+                    Block id = here.offset(side).getBlock(toConvert.worldObj);
+                    if (id == PokecubeItems.getBlock("pc"))
+                    {
+                        pc = true;
+                        toConvert.pc = (TileEntityPC) here.offset(side).getTileEntity(toConvert.getWorld());
+                        break;
+                    }
+                    here.freeVectorFromPool();
+                }
+                toConvert.trade = !pc;
+
+                if (!toConvert.trade)
+                {
+                    IBlockState state = toConvert.worldObj.getBlockState(toConvert.getPos());
+                    if (!(Boolean) state.getValue(BlockTradingTable.TMC))
+                    {
+                        toConvert.worldObj.setBlockState(toConvert.getPos(), state.withProperty(BlockTradingTable.TMC, true));
+                    }
+                }
+            }
+        }
     }
 }

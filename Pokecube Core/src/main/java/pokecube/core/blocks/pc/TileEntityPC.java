@@ -23,6 +23,10 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import pokecube.core.blocks.TileEntityOwnable;
 
 public class TileEntityPC extends TileEntityOwnable implements IInventory, Environment
@@ -343,8 +347,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Envir
     @Override
     public void onLoad()
     {
-        addedToNetwork = true;
-        Network.joinOrCreateNetwork(this);
+        new Init(this);
     }
 
     @Callback
@@ -364,6 +367,33 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Envir
         else
         {
             return new Object[0];
+        }
+    }
+
+    public static class Init
+    {
+        final TileEntityPC pc;
+
+        public Init(TileEntityPC tile)
+        {
+            pc = tile;
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void convert(WorldTickEvent event)
+        {
+            if (event.world.isRemote)
+            {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                return;
+            }
+
+            if (event.phase == Phase.END)
+            {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                Network.joinOrCreateNetwork(pc);
+            }
         }
     }
 }

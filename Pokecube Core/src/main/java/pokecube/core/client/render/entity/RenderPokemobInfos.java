@@ -37,8 +37,9 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
 
         EntityLivingBase player = Minecraft.getMinecraft().thePlayer;
         float d = entity.getDistanceToEntity(player);
-
-        if ((((IPokemob) entity).getPokemonAIState(IPokemob.TAMED) && d < 35) || d < 8)
+        IPokemob pokemob = ((IPokemob) entity);
+        boolean tameFactor = pokemob.getPokemonAIState(IPokemob.TAMED) && !pokemob.getPokemonAIState(IPokemob.STAYING); 
+        if (( tameFactor && d < 35) || d < 8)
         {
             return true;
         }

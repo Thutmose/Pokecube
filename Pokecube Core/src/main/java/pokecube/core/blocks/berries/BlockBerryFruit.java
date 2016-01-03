@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -28,6 +29,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
     public BlockBerryFruit(int par1)
     {
         super();
+        this.setCreativeTab(null);
         this.setTickRandomly(true);
         float var3 = 0.4F;
         this.setBlockBounds(0.5F - var3, 0F, 0.5F - var3, 0.5F + var3, 0.7F, 0.5F + var3);

@@ -20,6 +20,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -58,6 +59,7 @@ public class ClientProxy extends CommonProxy
     public void preinit()
     {
         super.preinit();
+        OBJLoader.instance.addDomain(PokecubeAdv.ID.toLowerCase());
 
         registerItemTexture(Item.getItemFromBlock(cloner), 0,
                 new ModelResourceLocation("pokecube_adventures:cloner", "inventory"));

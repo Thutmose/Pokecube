@@ -1,5 +1,15 @@
 {
-   "variants": {
-   "normal": { "model": "pokecube_adventures:afa" }
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#None": "pokecube_adventures:blocks/afa"
+        },
+        "model": "pokecube_adventures:afa.obj"
+     },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{
+            "transform": "forge:default-block"
+        }]
     }
 }

@@ -52,14 +52,13 @@ public class ContainerAFA extends Container
     @Override
     public boolean canInteractWith(EntityPlayer playerIn)
     {
-        return true;
+        return playerIn.getUniqueID().equals(tile.placer);
     }
 
     @Override
     public ItemStack slotClick(int i, int j, int flag, EntityPlayer entityplayer)
     {
         if (i == -999) return null;
-        // LoggerPokecube.logMessage("i="+i+" | j="+j+" | flag="+flag);
         if (flag != 0 && flag != 5)
         {
             ItemStack itemstack = null;

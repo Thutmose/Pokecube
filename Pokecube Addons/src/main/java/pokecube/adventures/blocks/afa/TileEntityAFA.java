@@ -9,6 +9,7 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.SidedEnvironment;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,11 +21,13 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IMobColourable;
@@ -32,7 +35,8 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokecubeSerializer;
 
-public class TileEntityAFA extends TileEntity implements IInventory, IEnergyReceiver, ITickable, Environment
+public class TileEntityAFA extends TileEntityOwnable
+        implements IInventory, IEnergyReceiver, ITickable, SidedEnvironment, Environment
 {
     public IPokemob         pokemob   = null;
     private ItemStack[]     inventory = new ItemStack[1];
@@ -210,6 +214,13 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    public net.minecraft.util.AxisAlignedBB getRenderBoundingBox()
+    {
+        net.minecraft.util.AxisAlignedBB bb = INFINITE_EXTENT_AABB;
+        return bb;
+    }
+
     @Override
     public String getName()
     {
@@ -334,6 +345,11 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
         if (id == 4) shift[0] = value;
         if (id == 5) shift[1] = value;
         if (id == 6) shift[2] = value;
+        if (id == 7)
+        {
+            shift[0] = shift[1] = shift[2] = 0;
+            scale = 1000;
+        }
         distance = Math.max(0, distance);
         refreshAbility();
     }
@@ -341,7 +357,7 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
     @Override
     public int getFieldCount()
     {
-        return 7;
+        return 8;
     }
 
     @Override
@@ -484,5 +500,27 @@ public class TileEntityAFA extends TileEntity implements IInventory, IEnergyRece
     {
         String arg = ability == null ? "" : ability.getName();
         return new Object[] { arg };
+    }
+
+    @Callback
+    public Object[] setHoloState(Context context, Arguments args)
+    {
+        scale = args.checkInteger(0);
+        shift[0] = args.checkInteger(1);
+        shift[1] = args.checkInteger(2);
+        shift[2] = args.checkInteger(3);
+        return new Object[0];
+    }
+
+    @Override
+    public boolean canConnect(EnumFacing arg0)
+    {
+        return arg0 == EnumFacing.DOWN;
+    }
+
+    @Override
+    public Node sidedNode(EnumFacing arg0)
+    {
+        return node;
     }
 }

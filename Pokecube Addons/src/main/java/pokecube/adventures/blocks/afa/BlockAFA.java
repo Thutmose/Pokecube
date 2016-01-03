@@ -90,4 +90,22 @@ public final class BlockAFA extends Block implements ITileEntityProvider
         }
     }
 
+    @Override
+    public boolean isOpaqueCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isVisuallyOpaque()
+    {
+        return false;
+    }
+
 }

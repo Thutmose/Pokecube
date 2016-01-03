@@ -60,6 +60,8 @@ public class GuiAFA extends GuiContainer
         // Position Buttons
         buttonList.add(new GuiButton(9, width / 2 - xOffset - 52, height / 2 - yOffset - 65, 20, 20, "\u25c0"));
         buttonList.add(new GuiButton(10, width / 2 - xOffset - 52, height / 2 - yOffset - 45, 20, 20, "\u25b6"));
+        //Reset Button
+        buttonList.add(new GuiButton(11, width / 2 - xOffset - 72, height / 2 - yOffset - 45, 20, 20, "X"));
     }
 
     /** Draw the foreground layer for the GuiContainer (everything in front of
@@ -196,6 +198,12 @@ public class GuiAFA extends GuiContainer
             tile.setField(6, tile.getField(6) - diff);
             buffer.writeInt(6);
             buffer.writeInt(tile.getField(6));
+        }
+        else if (button.id == 11)
+        {
+            tile.setField(7, 0);
+            buffer.writeInt(7);
+            buffer.writeInt(0);
         }
         message = new MessageServer(buffer);
         PokecubePacketHandler.sendToServer(message);

@@ -30,7 +30,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
@@ -55,7 +54,7 @@ import pokecube.core.network.PCPacketHandler.MessageClient;
 import pokecube.core.network.PokecubePacketHandler;
 import thut.api.maths.Vector3;
 
-public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, ITickable, Environment
+public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, Environment
 {
     private ItemStack[] inventory  = new ItemStack[2];
     private ItemStack[] inventory2 = new ItemStack[1];
@@ -316,19 +315,10 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     }
 
     @Override
-    public void update()
+    public void onLoad()
     {
-        if (init)
-        {
-            init = false;
-            hasPC();
-        }
-        if (!addedToNetwork)
-        {
-            addedToNetwork = true;
-            Network.joinOrCreateNetwork(this);
-        }
-        time++;
+        hasPC();
+        Network.joinOrCreateNetwork(this);
     }
 
     @Override
@@ -815,9 +805,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             InventoryPC inv = pc.getPC();
             ArrayList<String> moves = getMoves(inv);
             String move = args.checkString(0);
-            for(String s: moves)
+            for (String s : moves)
             {
-                if(s.equalsIgnoreCase(move))
+                if (s.equalsIgnoreCase(move))
                 {
                     addMoveToTM(s);
                     break;

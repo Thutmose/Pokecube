@@ -4,6 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.collect.Lists;
+
+import li.cil.oc.api.Network;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.Message;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -15,7 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IChatComponent;
 import pokecube.core.blocks.TileEntityOwnable;
 
-public class TileEntityPC extends TileEntityOwnable implements IInventory
+public class TileEntityPC extends TileEntityOwnable implements IInventory, Environment
 {
     private boolean     bound   = false;
     private String      boundId = "";
@@ -23,7 +33,16 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory
 
     public TileEntityPC()
     {
-
+        super();
+        try
+        {
+            node = Network.newNode(this, Visibility.Network).withConnector()
+                    .withComponent("pokecubepc", Visibility.Network).create();
+        }
+        catch (Exception e)
+        {
+            // e.printStackTrace();
+        }
     }
 
     /** Reads a tile entity from NBT. */
@@ -37,6 +56,14 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory
         {
             boundId = new UUID(1234, 4321).toString();
         }
+        if (node != null && node.host() == this)
+        {
+            // This restores the node's address, which is required for networks
+            // to continue working without interruption across loads. If the
+            // node is a power connector this is also required to restore the
+            // internal energy buffer of the node.
+            node.load(par1NBTTagCompound.getCompoundTag("oc:node"));
+        }
     }
 
     /** Writes a tile entity to NBT. */
@@ -46,6 +73,12 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory
         super.writeToNBT(par1NBTTagCompound);
         par1NBTTagCompound.setBoolean("bound", bound);
         par1NBTTagCompound.setString("boundID", boundId);
+        if (node != null && node.host() == this)
+        {
+            final NBTTagCompound nodeNbt = new NBTTagCompound();
+            node.save(nodeNbt);
+            par1NBTTagCompound.setTag("oc:node", nodeNbt);
+        }
     }
 
     /** Overriden in a sign to provide the text. */
@@ -242,5 +275,95 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory
     @Override
     public void clear()
     {
+    }
+
+    protected Node node;
+
+    // See updateEntity().
+    protected boolean addedToNetwork = false;
+
+    // -----------------------------------------------------------------------
+    // //
+
+    @Override
+    public Node node()
+    {
+        return node;
+    }
+
+    @Override
+    public void onConnect(final Node node)
+    {
+        // This is called when the call to Network.joinOrCreateNetwork(this) in
+        // updateEntity was successful, in which case `node == this`.
+        // This is also called for any other node that gets connected to the
+        // network our node is in, in which case `node` is the added node.
+        // If our node is added to an existing network, this is called for each
+        // node already in said network.
+    }
+
+    @Override
+    public void onDisconnect(final Node node)
+    {
+        // This is called when this node is removed from its network when the
+        // tile entity is removed from the world (see onChunkUnload() and
+        // invalidate()), in which case `node == this`.
+        // This is also called for each other node that gets removed from the
+        // network our node is in, in which case `node` is the removed node.
+        // If a net-split occurs this is called for each node that is no longer
+        // connected to our node.
+    }
+
+    @Override
+    public void onMessage(final Message message)
+    {
+        // This is used to deliver messages sent via node.sendToXYZ. Handle
+        // messages at your own discretion. If you do not wish to handle a
+        // message you should *not* throw an exception, though.
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        super.onChunkUnload();
+        // Make sure to remove the node from its network when its environment,
+        // meaning this tile entity, gets unloaded.
+        if (node != null) node.remove();
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        // Make sure to remove the node from its network when its environment,
+        // meaning this tile entity, gets unloaded.
+        if (node != null) node.remove();
+    }
+
+    @Override
+    public void onLoad()
+    {
+        addedToNetwork = true;
+        Network.joinOrCreateNetwork(this);
+    }
+
+    @Callback
+    public Object[] getItemList(Context context, Arguments args)
+    {
+        if (isBound())
+        {
+            InventoryPC inv = getPC();
+            ArrayList<Object> items = Lists.newArrayList();
+            for (int i = 0; i < inv.getSizeInventory(); i++)
+            {
+                ItemStack stack = inv.getStackInSlot(i);
+                if (stack != null) items.add(stack.getDisplayName());
+            }
+            return items.toArray();
+        }
+        else
+        {
+            return new Object[0];
+        }
     }
 }

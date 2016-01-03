@@ -176,6 +176,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
             GL11.glPushMatrix();
+            GlStateManager.disableDepth();
             GL11.glTranslatef((float) d + 0.0F, (float) d1 + entityliving.height - 0.35f, (float) d2);
             GL11.glNormal3f(0.0F, 1.0F, 0.0F);
             GL11.glRotatef(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
@@ -306,8 +307,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
             String s = "L." + ((IPokemob) entityliving).getLevel();
             fontrenderer.drawString(s, -length, offset + 5, color);
-            GlStateManager.enableLighting();
-            GlStateManager.disableBlend();
+            GlStateManager.enableDepth();
             GL11.glPopMatrix();
         }
     }

@@ -324,7 +324,7 @@ public class TeamManager
 
     public boolean isPublic(ChunkCoordinate c)
     {
-        System.out.println(publicBlocks + " " + c + " " + publicBlocks.contains(c));
+//        System.out.println(publicBlocks + " " + c + " " + publicBlocks.contains(c));
         return publicBlocks.contains(c);
     }
 

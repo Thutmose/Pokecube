@@ -3,8 +3,8 @@ package pokecube.compat.blocks.rf;
 import java.util.List;
 
 import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import cofh.api.energy.TileEnergyHandler;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -26,15 +26,15 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
-public class TileEntitySiphon extends TileEnergyHandler implements ITickable, Environment
+public class TileEntitySiphon extends TileEntity implements ITickable, Environment, IEnergyProvider
 {
-    AxisAlignedBB     box;
-    public static int maxOutput = 256;
-    private int       lastInput = 0;
+    AxisAlignedBB           box;
+    public static int       maxOutput = 256;
+    int                     lastInput = 0;
+    protected EnergyStorage storage   = new EnergyStorage(maxOutput);
 
     public TileEntitySiphon()
     {
-        storage = new EnergyStorage(maxOutput, 0, maxOutput);
         try
         {
             node = Network.newNode(this, Visibility.Network).withConnector()
@@ -73,8 +73,8 @@ public class TileEntitySiphon extends TileEnergyHandler implements ITickable, En
             if (te != null && te instanceof IEnergyReceiver)
             {
                 IEnergyReceiver h = (IEnergyReceiver) te;
-
                 int toSend = h.receiveEnergy(side.getOpposite(), storage.getEnergyStored(), true);
+                storage.extractEnergy(toSend, false);
                 h.receiveEnergy(side.getOpposite(), toSend, false);
             }
         }
@@ -92,44 +92,40 @@ public class TileEntitySiphon extends TileEnergyHandler implements ITickable, En
             if (o != null && o instanceof IPokemob)
             {
                 IPokemob poke = (IPokemob) o;
+                EntityLiving living = (EntityLiving) o;
                 if (poke.isType(PokeType.electric))
                 {
                     int spAtk = poke.getBaseStats()[3];
                     int atk = poke.getBaseStats()[1];
                     int level = poke.getLevel();
-                    double dSq = ((EntityLiving) poke).getDistanceSq(getPos().getX() + 0.5, getPos().getY() + 0.5,
+                    double dSq = living.getDistanceSq(getPos().getX() + 0.5, getPos().getY() + 0.5,
                             getPos().getZ() + 0.5) * 1024;
-                    double pokeEnergy = 0;
                     int maxEnergy = getMaxEnergy(level, spAtk, atk, poke.getPokedexEntry());
-                    int dE = getEnergyGain(level, spAtk, atk, poke.getPokedexEntry());
+                    int pokeEnergy = maxEnergy;
+                    int dE;
                     long energyTime = worldObj.getTotalWorldTime();
-                    if (((EntityLiving) poke).getEntityData().hasKey("energyTime"))
+                    boolean first = true;
+                    if (living.getEntityData().hasKey("energyRemaining"))
                     {
-                        long time = ((EntityLiving) poke).getEntityData().getLong("energyTime");
-                        int dt = (int) (worldObj.getTotalWorldTime() - time);
+                        long time = living.getEntityData().getLong("energyTime");
 
-                        if (dt > 0)
+                        if (energyTime != time)
                         {
-                            pokeEnergy = dE * dt;
-
-                            if (pokeEnergy > maxEnergy)
-                            {
-                                int dt2 = maxEnergy / dE;
-                                pokeEnergy = maxEnergy;
-                                energyTime -= dt2;
-                            }
+                            pokeEnergy = maxEnergy;
                         }
-
+                        else
+                        {
+                            first = false;
+                            pokeEnergy = living.getEntityData().getInteger("energyRemaining");
+                        }
                     }
-                    else
-                    {
-                        pokeEnergy = maxEnergy;
-                        int dt2 = maxEnergy / dE;
-                        energyTime -= dt2;
-                    }
-                    ret += pokeEnergy / dSq;
-                    ((EntityLiving) poke).getEntityData().setLong("energyTime", energyTime);
-                    if (((EntityLiving) poke).ticksExisted % 2 == 0)
+                    dE = (int) (pokeEnergy / dSq);
+                    ret += dE;
+                    // Always drain at least 1
+                    dE = Math.max(1, dE);
+                    living.getEntityData().setLong("energyTime", energyTime);
+                    living.getEntityData().setInteger("energyRemaining", pokeEnergy - dE);
+                    if (first && living.ticksExisted % 2 == 0)
                     {
                         int time = ((IHungrymob) poke).getHungerTime();
                         ((IHungrymob) poke).setHungerTime(time + 1);
@@ -149,7 +145,7 @@ public class TileEntitySiphon extends TileEnergyHandler implements ITickable, En
 
     public int getMaxEnergy(int level, int spAtk, int atk, PokedexEntry entry)
     {
-        return 100 * getEnergyGain(level, spAtk, atk, entry);
+        return 10 * getEnergyGain(level, spAtk, atk, entry);
     }
 
     @Override
@@ -251,6 +247,30 @@ public class TileEntitySiphon extends TileEnergyHandler implements ITickable, En
     public Object[] getPower(Context context, Arguments args)
     {
         return new Object[] { lastInput };
+    }
+
+    @Override
+    public boolean canConnectEnergy(EnumFacing facing)
+    {
+        return true;
+    }
+
+    @Override
+    public int extractEnergy(EnumFacing facing, int maxExtract, boolean simulate)
+    {
+        return storage.extractEnergy(maxExtract, simulate);
+    }
+
+    @Override
+    public int getEnergyStored(EnumFacing facing)
+    {
+        return storage.getEnergyStored();
+    }
+
+    @Override
+    public int getMaxEnergyStored(EnumFacing facing)
+    {
+        return storage.getMaxEnergyStored();
     }
 
 }

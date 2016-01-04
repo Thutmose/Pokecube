@@ -308,6 +308,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             String s = "L." + ((IPokemob) entityliving).getLevel();
             fontrenderer.drawString(s, -length, offset + 5, color);
             GlStateManager.enableDepth();
+            GlStateManager.enableLighting();
             GL11.glPopMatrix();
         }
     }

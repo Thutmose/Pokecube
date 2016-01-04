@@ -31,7 +31,7 @@ public class BlockSiphon extends Block implements ITileEntityProvider
     {
     	TileEntitySiphon te = (TileEntitySiphon) worldIn.getTileEntity(pos);
     	
-    	int stored = te.getEnergyStored(null);
+    	int stored = te.lastInput;
     	if(!worldIn.isRemote)
     		playerIn.addChatMessage(new ChatComponentText(stored+" RF/t"));
     	

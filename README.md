@@ -303,7 +303,6 @@ Pokémobs for Minecraft - page under construction.
 
 
 ##Related/Contained projects
-Currently contains [IGW-mod](https://github.com/MineMaarten/IGW-mod) until it is updated to 1.8.8, then it will revert to using them as libraries
 
 Contains a modifed version of [NBTEdit](https://github.com/DavidGoldman/NBTEdit) which is currently used for debugging, will probably be removed eventually as well.
 

@@ -5,6 +5,9 @@ import java.util.Vector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityAnimal;
 
+/** This interface is used for mobs which can breed with other mobs.
+ * 
+ * @author Thutmose */
 public interface IBreedingMob
 {
     /** @return the byte sexe */
@@ -34,7 +37,7 @@ public interface IBreedingMob
      * 
      * @param value */
     void setLoveTimer(int value);
-    
+
     boolean tryToBreed();
 
     /** Will be called by the mother before she lays to know what baby to put in
@@ -44,10 +47,10 @@ public interface IBreedingMob
      *            the male
      * @return the pokedex number of the child */
     Object getChild(IBreedingMob male);
-    
+
     Vector<IBreedingMob> getMalesForBreeding();
-    
+
     boolean canMateWith(EntityAnimal entityAnimal);
-    
+
     void mateWith(IBreedingMob male);
 }

@@ -74,7 +74,7 @@ public class IGWSupportNotifier{
     @SubscribeEvent
     public void onPlayerJoin(TickEvent.PlayerTickEvent event){
         if(event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity()) {
-            event.player.addChatComponentMessage(IChatComponent.Serializer.jsonToComponent("[\"" + EnumChatFormatting.GOLD + "The mod " + supportingMod + " is supporting In-Game Wiki mod. " + EnumChatFormatting.GOLD + "However, In-Game Wiki isn't installed! " + "[\"," + "{\"text\":\"Download Latest\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/igwmod_download\"}}," + "\"]\"]"));
+//       //TODO readd this once IGWMod is fixed.     event.player.addChatComponentMessage(IChatComponent.Serializer.jsonToComponent("[\"" + EnumChatFormatting.GOLD + "The mod " + supportingMod + " is supporting In-Game Wiki mod. " + EnumChatFormatting.GOLD + "However, In-Game Wiki isn't installed! " + "[\"," + "{\"text\":\"Download Latest\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/igwmod_download\"}}," + "\"]\"]"));
             MinecraftForge.EVENT_BUS.unregister(this);
         }
     }

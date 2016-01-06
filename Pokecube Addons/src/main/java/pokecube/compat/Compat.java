@@ -131,6 +131,14 @@ public class Compat
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
     }
 
+    @Optional.Method(modid = "reccomplex")//TODO implement this once updated.
+    @EventHandler
+    public void RecComplex_Compat(FMLPostInitializationEvent evt)
+    {
+        System.out.println("Recurrent Complex Compat");
+        pokecube.compat.reccomplex.ReComplexCompat.register();
+    }
+
     @Optional.Method(modid = "DynamicLights")
     @EventHandler
     public void AS_DLCompat(FMLPostInitializationEvent evt)

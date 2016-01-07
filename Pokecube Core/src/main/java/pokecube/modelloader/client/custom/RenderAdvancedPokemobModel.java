@@ -400,7 +400,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     private String getPhase(TabulaModelSet set, EntityLiving entity, float partialTick)
     {
         String phase = "idle";
-
+        //TODO add in a set of sub-phases, with random weights, so there can be some more 
+        // randomizion/customization to animations.
         if (overrideAnim) { return anim; }
 
         ModelJson modelj = null;

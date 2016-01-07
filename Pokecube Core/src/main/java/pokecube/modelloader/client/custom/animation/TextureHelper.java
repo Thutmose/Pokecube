@@ -115,10 +115,12 @@ public class TextureHelper implements IPartTexturer
 
     private static class TexState
     {
-        Map<Integer, double[]> aiStates     = Maps.newHashMap();
-        Set<RandomState>       randomStates = Sets.newHashSet();
-        SequenceState          sequence     = null;
-        RandomState            running      = null;
+        Map<Integer, double[]>    aiStates     = Maps.newHashMap();
+        Set<RandomState>          randomStates = Sets.newHashSet();
+        SequenceState             sequence     = null;
+        // TODO way to handle cheaning this up.
+        Map<Integer, RandomState> running      = Maps.newHashMap();
+        Map<Integer, Integer>     setTimes     = Maps.newHashMap();
 
         void addState(String trigger, String[] diffs)
         {
@@ -162,16 +164,18 @@ public class TextureHelper implements IPartTexturer
                     return true;
                 }
             }
-            if (running != null)
+            if (running.containsKey(((Entity) pokemob).getEntityId()))
             {
-                double[] arr = running.arr;
+                RandomState run = running.get(((Entity) pokemob).getEntityId());
+                double[] arr = run.arr;
                 dx = arr[0];
                 dy = arr[1];
                 toFill[0] = dx;
                 toFill[1] = dy;
-                if (((Entity) pokemob).ticksExisted > running.set + running.duration)
+                if (((Entity) pokemob).ticksExisted > setTimes.get(((Entity) pokemob).getEntityId()) + run.duration)
                 {
-                    running = null;
+                    running.remove(((Entity) pokemob).getEntityId());
+                    setTimes.remove(((Entity) pokemob).getEntityId());
                 }
                 return true;
             }
@@ -184,16 +188,16 @@ public class TextureHelper implements IPartTexturer
                     dy = arr[1];
                     toFill[0] = dx;
                     toFill[1] = dy;
-                    running = state;
-                    state.set = ((Entity) pokemob).ticksExisted;
+                    running.put(((Entity) pokemob).getEntityId(), state);
+                    setTimes.put(((Entity) pokemob).getEntityId(), ((Entity) pokemob).ticksExisted);
                     return true;
                 }
             }
-            if(sequence!=null)
+            if (sequence != null)
             {
-                int tick = ((Entity) pokemob).ticksExisted % (sequence.arr.length/2);
-                dx = sequence.arr[tick*2];
-                dy = sequence.arr[tick*2 + 1];
+                int tick = ((Entity) pokemob).ticksExisted % (sequence.arr.length / 2);
+                dx = sequence.arr[tick * 2];
+                dy = sequence.arr[tick * 2 + 1];
                 toFill[0] = dx;
                 toFill[1] = dy;
                 return true;
@@ -206,7 +210,6 @@ public class TextureHelper implements IPartTexturer
     {
         double   chance   = 0.005;
         double[] arr;
-        int      set;
         int      duration = 1;
 
         RandomState(String trigger, double[] arr)

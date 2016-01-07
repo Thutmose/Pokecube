@@ -39,6 +39,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
     public HashMap<String, Animation>   animations   = new HashMap<String, Animation>();
     public Set<String>                  headParts    = Sets.newHashSet();
     public TextureHelper                texturer;
+    public IAnimationChanger            animator;
 
     public Vector3 offset    = Vector3.getNewVectorFromPool();;
     public Vector3 scale     = Vector3.getNewVectorFromPool();;
@@ -166,7 +167,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             f6 = 1.0F;
         }
         GL11.glPushMatrix();
-
+        if(animator!=null) currentPhase = animator.modifyAnimation(entity, partialTick, currentPhase);
         GlStateManager.disableCull();
         transformGlobal(currentPhase, entity, d, d1, d2, partialTick, f3 - f2, f13);
         updateAnimation(entity, currentPhase, partialTick);

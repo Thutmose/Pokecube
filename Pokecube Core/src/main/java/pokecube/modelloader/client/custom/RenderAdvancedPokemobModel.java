@@ -363,6 +363,10 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         ModelJson modelj = pars.modelMap.get(model);
         modelj.texturer = set.texturer;
         String phase = getPhase(set, entity, partialTick);
+        if(set.animator!=null)
+        {
+            phase = set.animator.modifyAnimation(entity, partialTick, phase);
+        }
         boolean inSet = false;
         if (modelj.animationMap.containsKey(phase) || (inSet = set.loadedAnimations.containsKey(phase)))
         {
@@ -400,8 +404,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     private String getPhase(TabulaModelSet set, EntityLiving entity, float partialTick)
     {
         String phase = "idle";
-        //TODO add in a set of sub-phases, with random weights, so there can be some more 
-        // randomizion/customization to animations.
         if (overrideAnim) { return anim; }
 
         ModelJson modelj = null;

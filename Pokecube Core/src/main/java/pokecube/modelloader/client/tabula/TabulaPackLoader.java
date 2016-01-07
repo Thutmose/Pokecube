@@ -28,6 +28,7 @@ import pokecube.modelloader.client.custom.IPartTexturer;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
 import pokecube.modelloader.client.custom.animation.AnimationBuilder;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
+import pokecube.modelloader.client.custom.animation.AnimationRandomizer;
 import pokecube.modelloader.client.custom.animation.AnimationRegistry;
 import pokecube.modelloader.client.custom.animation.AnimationRegistry.IPartRenamer;
 import pokecube.modelloader.client.custom.animation.TextureHelper;
@@ -132,6 +133,7 @@ public class TabulaPackLoader extends AnimationLoader
         public final TabulaModel       model;
         public final TabulaModelParser parser;
         public IPartTexturer           texturer = null;
+        public AnimationRandomizer     animator = null;
 
         /** Animations to merge together, animation key is merged into animation
          * value. so key of idle and value of walk will merge the idle animation
@@ -308,6 +310,13 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 loadedAnimations.remove(s);
             }
+            if(animator!=null)
+            {
+                Set<Animation> anims = Sets.newHashSet();
+                anims.addAll(model.getAnimations());
+                anims.addAll(loadedAnimations.values());
+                animator.init(anims);
+            }
             if (toRemove.size() > 0) System.out.println("Merged " + toRemove.size() + " Animations for " + entry);
         }
 
@@ -419,7 +428,11 @@ public class TabulaPackLoader extends AnimationLoader
                     {
                         texturer = new TextureHelper(part);
                     }
-                    if (part.getNodeName().equals("metadata"))
+                    else if (part.getNodeName().equals("subAnims"))
+                    {
+                        animator = new AnimationRandomizer(part);
+                    }
+                    else if (part.getNodeName().equals("metadata"))
                     {
                         try
                         {

@@ -706,7 +706,7 @@ public final class SpawnHandler
                         Vector3 location = Vector3.getNextSurfacePoint(world, v, direction, 255);
                         if (location != null)
                         {
-                            float energy = (float) Math.abs((rand.nextGaussian() + 1) * 100);
+                            float energy = (float) Math.abs((rand.nextGaussian() + 1) * 50);
                             ExplosionCustom boom = new ExplosionCustom(world, PokecubeMod.getFakePlayer(world),
                                     location, energy).setMeteor(true);
                             String message = "Meteor at " + v + " with Direction of " + direction + " and energy of "

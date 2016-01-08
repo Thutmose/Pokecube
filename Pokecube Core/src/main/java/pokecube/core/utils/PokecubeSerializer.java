@@ -63,7 +63,7 @@ public class PokecubeSerializer
     public static final byte[] noEVs = new byte[] { Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE,
             Byte.MIN_VALUE, Byte.MIN_VALUE };
 
-    public static int MeteorDistance = 200 * 200;
+    public static int MeteorDistance = 5000 * 5000;
 
     public static Long byteArrayAsLong(byte[] stats)
     {

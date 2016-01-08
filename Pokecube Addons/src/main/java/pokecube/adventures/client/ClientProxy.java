@@ -82,6 +82,7 @@ public class ClientProxy extends CommonProxy
                     new ModelResourceLocation("pokecube_adventures:" + i + "_spawner", "inventory"));
         }
 
+        //TODO in 1.9, this will need to be commented back in.
 //        RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class, new IRenderFactory<Entity>()
 //        {
 //            @Override

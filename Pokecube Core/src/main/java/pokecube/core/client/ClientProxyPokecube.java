@@ -183,6 +183,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         super.registerRenderInformation();
 
+        //TODO in 1.9, this will need to be commented back in, and moved to pre-init.
         // RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class,
         // new IRenderFactory<Entity>()
         // {

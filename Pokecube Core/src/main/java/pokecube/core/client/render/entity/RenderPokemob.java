@@ -84,8 +84,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     /** Updates creeper scale in prerender callback */
     protected void updateCreeperScale(EntityLiving par1EntityCreeper, float par2)
     {
-        // float var4 = par1EntityCreeper.getCreeperFlashIntensity(par2);//TODO
-        // findout what this was for
+        // float var4 = par1EntityCreeper.getCreeperFlashIntensity(par2);//TODO findout what this was for
         // float var5 = 1.0F + MathHelper.sin(var4 * 100.0F) * var4 * 0.01F;
         //
         // if (var4 < 0.0F)

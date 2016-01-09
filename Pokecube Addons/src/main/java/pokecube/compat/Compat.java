@@ -131,7 +131,7 @@ public class Compat
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
     }
 
-    @Optional.Method(modid = "reccomplex")//TODO implement this once updated.
+    @Optional.Method(modid = "reccomplex")
     @EventHandler
     public void RecComplex_Compat(FMLPostInitializationEvent evt)
     {

@@ -93,9 +93,7 @@ public class TeamEventsHandler
     public void BreakBlock(BreakEvent evt)
     {
         EntityPlayer player = evt.getPlayer();
-        if (player != null && player.getTeam() != null) // TODO interface with
-                                                        // forge permissions API
-                                                        // here as well
+        if (player != null && player.getTeam() != null) // TODO interface with forge permissions API here as well
         {
             ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.pos, player.dimension);
             if (!TeamManager.getInstance().isOwned(c)) return;

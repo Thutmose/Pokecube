@@ -55,7 +55,6 @@ public abstract class Ability
         return AbilityManager.getNameForAbility(this);
     }
 
-    // TODO localize these in lang files
     public String getName()
     {
         String translated = StatCollector.translateToLocal("ability." + toString() + ".name").trim();

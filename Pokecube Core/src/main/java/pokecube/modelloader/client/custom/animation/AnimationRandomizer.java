@@ -67,7 +67,6 @@ public class AnimationRandomizer implements IAnimationChanger
                 }
             }
         }
-        System.out.println(sets);
     }
 
     private void addAnimationSet(Animation animation, double chance, String parent)

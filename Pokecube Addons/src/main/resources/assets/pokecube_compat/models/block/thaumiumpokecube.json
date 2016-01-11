@@ -1,0 +1,9 @@
+{
+    "parent": "pokecube:block/pokecubes",
+    "textures": {
+        "top": "pokecube:items/thaumiumpokecubetop",
+        "bottom": "pokecube:items/thaumiumpokecubebottom",
+        "front": "pokecube:items/thaumiumpokecubefront",
+        "side": "pokecube:items/thaumiumpokecubeside"
+    }
+}

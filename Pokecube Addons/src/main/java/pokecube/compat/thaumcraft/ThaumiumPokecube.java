@@ -1,9 +1,13 @@
 package pokecube.compat.thaumcraft;
 
 import static pokecube.core.PokecubeItems.register;
+import static pokecube.core.PokecubeItems.registerItemTexture;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubes;
 
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.compat.CompatPokecubes;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.CaptureEvent.Post;
@@ -25,6 +29,8 @@ public class ThaumiumPokecube// extends Mod_Pokecube_Helper
         Pokecube thaumiumpokecube = new CompatPokecubes();
         thaumiumpokecube.setUnlocalizedName("thaumiumpokecube").setCreativeTab(creativeTabPokecubes);
         register(thaumiumpokecube);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+            registerItemTexture(thaumiumpokecube, 0, new ModelResourceLocation("pokecube_compat:thaumiumpokecube", "inventory"));
 
         PokecubeItems.addCube(98, new Object[] { thaumiumpokecube });
 

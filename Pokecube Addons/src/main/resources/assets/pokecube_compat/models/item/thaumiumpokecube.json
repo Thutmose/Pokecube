@@ -1,5 +1,5 @@
 {
-    "parent": "pokecube:block/thaumiumpokecube",
+    "parent": "pokecube_compat:block/thaumiumpokecube",
     "display": {
     "thirdperson": {
         "rotation": [ 10, -45, 170 ],

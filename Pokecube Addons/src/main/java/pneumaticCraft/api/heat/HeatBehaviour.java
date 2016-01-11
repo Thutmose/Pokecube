@@ -1,11 +1,10 @@
-package pneumaticCraft.api.tileentity;
+package pneumaticCraft.api.heat;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import pneumaticCraft.api.IHeatExchangerLogic;
 
 /**
  * Extend this class, and register it via {@link PneumaticRegistry.getInstance().registerHeatBehaviour()}
@@ -16,26 +15,20 @@ public abstract class HeatBehaviour<Tile extends TileEntity> {
 
     private IHeatExchangerLogic connectedHeatLogic;
     private World world;
-    private int x, y, z;
     private BlockPos pos;
     private Tile cachedTE;
-    private Block block;
+    private IBlockState block;
 
     /**
      * Called by the connected IHeatExchangerLogic.
      * @param connectedHeatLogic
      * @param world
-     * @param x
-     * @param y
-     * @param z
+     * @param pos
      */
-    public void initialize(IHeatExchangerLogic connectedHeatLogic, World world, int x, int y, int z){
+    public void initialize(IHeatExchangerLogic connectedHeatLogic, World world, BlockPos pos){
         this.connectedHeatLogic = connectedHeatLogic;
         this.world = world;
-        pos = new BlockPos(x,y,z);
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.pos = pos;
         cachedTE = null;
         block = null;
     }
@@ -48,26 +41,17 @@ public abstract class HeatBehaviour<Tile extends TileEntity> {
         return world;
     }
 
-    public int getX(){
-        return x;
+    public BlockPos getPos(){
+        return pos;
     }
 
-    public int getY(){
-        return y;
-    }
-
-    public int getZ(){
-        return z;
-    }
-
-    @SuppressWarnings("unchecked")
     public Tile getTileEntity(){
         if(cachedTE == null || cachedTE.isInvalid()) cachedTE = (Tile)world.getTileEntity(pos);
         return cachedTE;
     }
 
-    public Block getBlock(){
-        if(block == null) block = world.getBlockState(pos).getBlock();
+    public IBlockState getBlockState(){
+        if(block == null) block = world.getBlockState(pos);
         return block;
     }
 
@@ -89,23 +73,20 @@ public abstract class HeatBehaviour<Tile extends TileEntity> {
     public abstract void update();
 
     public void writeToNBT(NBTTagCompound tag){
-        tag.setInteger("x", x);
-        tag.setInteger("y", y);
-        tag.setInteger("z", z);
+        tag.setInteger("x", pos.getX());
+        tag.setInteger("y", pos.getY());
+        tag.setInteger("z", pos.getZ());
     }
 
     public void readFromNBT(NBTTagCompound tag){
-        x = tag.getInteger("x");
-        y = tag.getInteger("y");
-        z = tag.getInteger("z");
+        pos = new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public boolean equals(Object o){
         if(o instanceof HeatBehaviour) {
             HeatBehaviour behaviour = (HeatBehaviour)o;
-            return behaviour.getId().equals(getId()) && behaviour.getX() == getX() && behaviour.getY() == getY() && behaviour.getZ() == getZ();
+            return behaviour.getId().equals(getId()) && behaviour.getPos().equals(getPos());
         } else {
             return false;
         }
@@ -114,9 +95,7 @@ public abstract class HeatBehaviour<Tile extends TileEntity> {
     @Override
     public int hashCode(){
         int i = getId().hashCode();
-        i = i * 31 + getX();
-        i = i * 31 + getY();
-        i = i * 31 + getZ();
+        i = i * 31 + getPos().hashCode();
         return i;
     }
 }

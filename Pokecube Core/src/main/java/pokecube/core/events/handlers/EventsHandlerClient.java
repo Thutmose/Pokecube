@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL12;
 
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -24,7 +23,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -50,7 +48,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -113,9 +110,9 @@ public class EventsHandlerClient
 
         if (Keyboard.getEventNanoseconds() == eventTime) return;
 
-        eventTime = Keyboard.getEventNanoseconds();
-
         EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
+        
+        eventTime = Keyboard.getEventNanoseconds();
         if (key == Keyboard.KEY_SPACE && player.ridingEntity instanceof IPokemob)
         {
             MessageServer packet = new MessageServer(MessageServer.JUMP, player.ridingEntity.getEntityId());
@@ -141,12 +138,9 @@ public class EventsHandlerClient
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING))
             {
-                PacketBuffer buf = new PacketBuffer(Unpooled.buffer(5));
-                buf.writeByte(PokecubeServerPacket.MEGAEVOLVE);
-                buf.writeInt(current.getPokemonUID());
-
-                PokecubeServerPacket packet = new PokecubeServerPacket(buf);
-                PokecubePacketHandler.sendToServer(packet);
+                current.setPokemonAIState(IMoveConstants.EVOLVING, true);
+                MessageServer message = new MessageServer(MessageServer.CHANGEFORM, current.getPokemonUID());
+                PokecubePacketHandler.sendToServer(message);
             }
         }
 

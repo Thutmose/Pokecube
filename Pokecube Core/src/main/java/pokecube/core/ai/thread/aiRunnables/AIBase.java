@@ -27,11 +27,10 @@ import thut.api.maths.Vector3;
 
 public abstract class AIBase implements IAIRunnable
 {
-    IBlockAccess                 world;
-    int                          priority = 0;
-    int                          mutex    = 0;
-    protected Vector<IRunnable>  toRun    = new Vector<IRunnable>();
-    private ArrayList<IRunnable> runs     = Lists.newArrayList();
+    IBlockAccess                world;
+    int                         priority = 0;
+    int                         mutex    = 0;
+    protected Vector<IRunnable> toRun    = new Vector<IRunnable>();
 
     @Override
     public int getPriority()
@@ -62,6 +61,7 @@ public abstract class AIBase implements IAIRunnable
     @Override
     public void doMainThreadTick(World world)
     {
+        ArrayList<IRunnable> runs = Lists.newArrayList();
         runs.addAll(toRun);
         for (IRunnable run : runs)
         {
@@ -71,7 +71,6 @@ public abstract class AIBase implements IAIRunnable
                 toRun.remove(run);
             }
         }
-        runs.clear();
     }
 
     /** Thread safe AI state setting
@@ -121,7 +120,7 @@ public abstract class AIBase implements IAIRunnable
     {
         toRun.add(new PathInfo(id, dim, path, speed));
     }
-    
+
     List<Object> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)
     {
         Vector<?> entities = ExplosionCustom.worldEntities.get(source.dimension);

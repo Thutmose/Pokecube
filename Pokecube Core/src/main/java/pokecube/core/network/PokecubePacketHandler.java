@@ -44,15 +44,12 @@ import pokecube.core.client.gui.GuiScrollableLists;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
-import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.interfaces.IMobColourable;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.megastuff.ItemMegastone;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
@@ -877,7 +874,6 @@ public class PokecubePacketHandler
         public static final byte STATS          = 6;
         public static final byte POKECUBEUSE    = 7;
         public static final byte TELEPORT       = 9;
-        public static final byte MEGAEVOLVE     = 17;
 
         PacketBuffer buffer;
 
@@ -1067,80 +1063,6 @@ public class PokecubePacketHandler
                             loc.intY(), loc.intZ());
                     Transporter.teleportEntity(player, link);
                     Transporter.teleportEntity(player, loc, dim, false);
-                }
-                else if (channel == MEGAEVOLVE)
-                {
-                    int id = buffer.readInt();
-                    System.out.println("test");
-                    EntityPokemob pokemob = (EntityPokemob) PokecubeSerializer.getInstance().getPokemob(id);
-
-                    if (pokemob == null)
-                    {
-                        System.err.println(id + " " + player.worldObj);
-                        new Exception().printStackTrace();
-                        return;
-                    }
-                    if (pokemob.getPokemonAIState(IMoveConstants.EVOLVING)) return;
-
-                    int happiness = pokemob.getHappiness();
-                    ItemStack held = pokemob.getHeldItem();
-                    if (held == null || !(held.getItem() instanceof ItemMegastone)
-                            || (happiness < 255 && !player.capabilities.isCreativeMode))
-                    {
-                        player.addChatMessage(new ChatComponentText(
-                                pokemob.getPokemonDisplayName() + " is not currently able to Mega evolve"));
-                        return;
-                    }
-                    NBTTagCompound tag = held.getTagCompound();
-                    if (tag == null)
-                    {
-                        held.setTagCompound(tag = new NBTTagCompound());
-                    }
-                    String stackname = tag.getString("pokemon");
-
-                    String forme = null;
-
-                    if (!(stackname == null || stackname.isEmpty()))
-                    {
-                        forme = stackname;
-                    }
-                    if (forme == null)
-                    {
-                        List<String> keys = new ArrayList<String>(pokemob.getPokedexEntry().forms.keySet());
-                        Collections.shuffle(keys);
-                        for (String s : keys)
-                        {
-                            String name = pokemob.getPokedexEntry().forms.get(s).getName();
-                            String[] args = name.split(" ");
-                            if (args.length > 1)
-                            {
-                                String mega = args[1];
-                                if (mega.toLowerCase().contains("mega"))
-                                {
-                                    forme = s;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (forme != null)
-                    {
-                        if (stackname == null || stackname.isEmpty())
-                        {
-                            tag.setString("pokemon", forme);
-                            held.setTagCompound(tag);
-                        }
-
-                        if (pokemob.getPokedexEntry() == Database.getEntry(forme))
-                        {
-                            pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
-                        }
-                        else
-                        {
-                            pokemob.megaEvolve(forme);
-                        }
-                    }
-
                 }
 
             }

@@ -1305,6 +1305,13 @@ pokemob.stance.stand=STAND
 
 pokemob.agress=A wild %1$s has appeared
 
+pokemob.megaevolve.success=%1$s Mega-evolved into %2$s
+pokemob.megaevolve.revert=%1$s Reverted to %2$s
+pokemob.megaevolve.wrongstone=%1$s has the wrong megastone
+pokemob.megaevolve.nomega=%1$s cannot mega evolve
+pokemob.megaevolve.nostone=%1$s has no mega stone
+pokemob.megaevolve.nothappy=%1$s does not like you enough to mega evolve
+
 ability.adaptability.name=Adaptability
 ability.aerilate.name=Aerilate
 ability.aftermath.name=Aftermath

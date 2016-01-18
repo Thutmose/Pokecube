@@ -3,10 +3,11 @@
   "promos": {
     "1.8.8-latest": "2.1.4",
     "1.8.8-recommended": "2.1.4",
-    "1.8.9-latest": "2.1.4",
-    "1.8.9-recommended": "2.1.4"
+    "1.8.9-latest": "2.1.6",
+    "1.8.9-recommended": "2.1.6"
   },
   "1.8.9": {
+    "2.1.6": "fixes some mega evolution issues."
     "2.1.0": "initial 1.8.9 port"
   },
   "1.8.8": {

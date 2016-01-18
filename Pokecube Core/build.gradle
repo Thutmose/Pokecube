@@ -12,15 +12,17 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "2.1.5"
+version = "2.1.6"
 group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Pokecube Core"
 
 minecraft {
-    version = "1.8.9-11.15.0.1684"
+    version = "1.8.9-11.15.0.1708"
     runDir = "run"
     
     replace "@VERSION@", project.version
+    replaceIn "PokecubeMod.java"
+    replace "@MCVERSION@", "[1.8.8,1.8.9]"
     replaceIn "PokecubeMod.java"
     
     // the mappings can be changed at any time, and must be in the following format.

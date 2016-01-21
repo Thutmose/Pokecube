@@ -23,6 +23,7 @@ import pokecube.core.interfaces.IPokemob;
 
 public class TileEntityCloner extends TileEnergyHandler implements IInventory, ITickable
 {
+    //TODO Open Computer support, to get the egg/pokemob info out of the items inside the inventory.
     public CraftMatrix          craftMatrix;
     public InventoryCraftResult result;
     private ItemStack[]         inventory = new ItemStack[10];

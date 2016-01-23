@@ -923,6 +923,7 @@ public class PokedexEntry
         {
             j += this.rand.nextInt(looting + 1);
         }
+        j = Math.max(1, j);
         ret.stackSize = j;
 
         return ret;

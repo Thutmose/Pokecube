@@ -21,7 +21,8 @@ public class JERCompat extends CompatBase
 {
     public static void register()
     {
-        EnumHelper.addEnum(ModList.class, "pokecube", new Class[] { String.class, Class.class }, new Object[] { "pokecube", JERCompat.class });
+        EnumHelper.addEnum(ModList.class, "pokecube", new Class[] { String.class, Class.class },
+                new Object[] { "pokecube", JERCompat.class });
         System.out.println("Added Enum");
         new Exception().printStackTrace();
         System.out.println(Arrays.toString(ModList.values()));
@@ -59,37 +60,40 @@ public class JERCompat extends CompatBase
         if (!hasDrops) return null;
 
         ArrayList<DropItem> drops = new ArrayList<DropItem>();
-        if(foodDrop!=null) drops.add(new DropItem(foodDrop));
-
+        DropItem drop = null;
+        if (foodDrop != null) drops.add(drop = new DropItem(foodDrop));
+        if (drop != null) drop.conditionals.add("food");
         int totalRare = entry.rareDrops.size();
         int totalCommon = entry.commonDrops.size();
 
-        if(totalCommon > 0)
+        if (totalCommon > 0)
         {
-            for(ItemStack stack: entry.commonDrops.keySet())
+            for (ItemStack stack : entry.commonDrops.keySet())
             {
-                float chance = entry.commonDrops.get(stack)/100f;
-                chance /= (float)totalCommon;
-                drops.add(new DropItem(stack, chance));
+                if (stack == null) continue;
+                float chance = entry.commonDrops.get(stack) / 100f;
+                chance /= (float) totalCommon;
+                drops.add(drop = new DropItem(stack, chance));
             }
         }
-        if(totalRare > 0)
+        if (totalRare > 0)
         {
-            for(ItemStack stack: entry.rareDrops.keySet())
+            for (ItemStack stack : entry.rareDrops.keySet())
             {
-                float chance = entry.rareDrops.get(stack)/100f;
-                chance /= (float)totalRare;
-                drops.add(new DropItem(stack, chance));
+                if (stack == null) continue;
+                float chance = (1 / 7f) * entry.rareDrops.get(stack) / 100f;
+                chance /= (float) totalRare;
+                drops.add(drop = new DropItem(stack, chance));
             }
         }
-        for(ItemStack stack: entry.heldItems.keySet())
+        for (ItemStack stack : entry.heldItems.keySet())
         {
-            float chance = entry.heldItems.get(stack)/100f;
-            chance /= (float)entry.heldItems.size();
-            drops.add(new DropItem(stack, chance));
+            if (stack == null) continue;
+            float chance = entry.heldItems.get(stack) / 100f;
+            chance /= (float) entry.heldItems.size();
+            drops.add(drop = new DropItem(stack, chance));
+            drop.conditionals.add("held");
         }
-        
-        
         return drops.toArray(new DropItem[0]);
     }
 }

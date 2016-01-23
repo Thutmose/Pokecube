@@ -313,6 +313,7 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
                 int i;
 
                 TabulaModelSet set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry());
+                if(set==null) set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry().baseForme);
                 /** Rotate the head, this should probably also be moved to a
                  * seperate method. */
                 if (set.isHeadRoot(identifier) && entity instanceof IPokemob)

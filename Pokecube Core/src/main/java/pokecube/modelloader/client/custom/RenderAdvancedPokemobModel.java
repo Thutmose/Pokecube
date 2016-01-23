@@ -352,6 +352,12 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
         TabulaModelSet set = TabulaPackLoader.modelMap.get(entry);
 
+        if(set==null)
+        {
+            System.err.println(entry);
+            set = TabulaPackLoader.modelMap.get(entry.baseForme);
+        }
+        
         TabulaModel model = set.model;
         IModelParser<TabulaModel> parser = set.parser;
 

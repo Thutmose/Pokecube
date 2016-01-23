@@ -170,6 +170,7 @@ public class RenderHandler
     {
         EntityPlayer player = evt.entityPlayer;
         ItemStack stack = evt.itemStack;
+        if (player == null || player.openContainer == null || stack == null) return;
         if (player.openContainer instanceof ContainerCloner && stack.getItem() instanceof ItemPokemobEgg)
         {
             if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))

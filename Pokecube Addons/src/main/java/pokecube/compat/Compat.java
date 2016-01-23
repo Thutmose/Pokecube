@@ -184,6 +184,14 @@ public class Compat
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    @Optional.Method(modid = "jeresources")
+    @EventHandler
+    public void JERInit(FMLPreInitializationEvent evt)
+    {
+        pokecube.compat.jer.JERCompat.register();
+    }
+
     @SubscribeEvent
     public void pokemobSpawnCheck(SpawnEvent.Pre evt)
     {

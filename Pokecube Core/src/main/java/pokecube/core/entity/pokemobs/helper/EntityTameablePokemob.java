@@ -558,7 +558,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
 
     protected void handleArmourAndSaddle()
     {
-        if (!this.worldObj.isRemote)
+        if (worldObj!=null && !this.worldObj.isRemote)
         {
             setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != null);
         }

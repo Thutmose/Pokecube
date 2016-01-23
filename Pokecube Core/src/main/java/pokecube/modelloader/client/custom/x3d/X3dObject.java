@@ -9,6 +9,9 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.IExtendedModelPart;
 import pokecube.modelloader.client.custom.IPartTexturer;
@@ -143,8 +146,11 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         // Compiles the list of the meshId is invalid.
         compileList();
         // Call the list
-         GL11.glCallList(meshId);
-         GL11.glFlush();
+        GL11.glCallList(meshId);
+        GL11.glFlush();
+
+        // addTris();
+
         // Reset Texture Matrix if changed.
         if (textureShift)
         {
@@ -283,10 +289,11 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             GL11.glEndList();
         }
     }
-    
+
     void addTris()
     {
         Vertex vertex;
+        Vertex normal;
         TextureCoordinate textureCoordinate;
         Vector3f[] normalList = new Vector3f[order.length];
         // Calculate the normals for each triangle.
@@ -311,7 +318,8 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             normalList[i + 2] = c;
         }
         // TODO see if there is a better way to interpolate the normals.
-//        GL11.glShadeModel(GL11.GL_FLAT);
+        // GL11.glShadeModel(GL11.GL_FLAT);
+        // GL11.glShadeModel(GL11.GL_SMOOTH);
         GL11.glBegin(GLMODE);
         int n = 0;
         for (Integer i : order)
@@ -320,16 +328,40 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
             vertex = vertices[i];
             GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
-//             vertex = normals[i];
-//             GL11.glNormal3f(vertex.x, vertex.y, vertex.z);
-             if(n%3==0)
-            {
-                Vector3f norm = normalList[n];
-                GL11.glNormal3f(norm.x, norm.y, norm.z);
-            }
+            Vector3f norm = normalList[n];
+            GL11.glNormal3f(norm.x, norm.y, norm.z);
             n++;
         }
         GL11.glEnd();
+        //TODO figure out how to get lighting working using the Tessellator stuff, which
+        // Would allow compatiblity with things like optifine.
+        // WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        // wr.begin(GLMODE, DefaultVertexFormats.POSITION_TEX_NORMAL);
+        // int n = 0;
+        //// int k2 = brightness;
+        //// int l2 = k2 >> 16 & 65535;
+        //// int i3 = k2 & 65535;
+        // for (Integer i : order)
+        // {
+        // textureCoordinate = textureCoordinates[i];
+        // vertex = vertices[i];
+        // normal = normals[i];//
+        // wr.pos(vertex.x, vertex.y, vertex.z);
+        // wr.tex(textureCoordinate.u, textureCoordinate.v);
+        //// wr.lightmap(l2, i3);
+        //// wr.color(red, green, blue, alpha);
+        // wr.normal(normal.x, normal.y, normal.z);
+        // //
+        // // if(n%3==0)
+        //// {
+        //// Vector3f norm = normalList[n];
+        //// wr.normal(norm.x, norm.y, norm.z);
+        //// }
+        // n++;
+        // wr.endVertex();
+        // }
+        //
+        // Tessellator.getInstance().draw();
     }
 
     void addFaces()

@@ -1,6 +1,17 @@
 package pokecube.adventures.blocks.cloner;
 
+import java.util.ArrayList;
+
+import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.TileEnergyHandler;
+import li.cil.oc.api.Network;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.Message;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -21,17 +32,40 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.interfaces.IPokemob;
 
-public class TileEntityCloner extends TileEnergyHandler implements IInventory, ITickable
+public class TileEntityCloner extends TileEnergyHandler implements IInventory, ITickable, Environment
 {
-    //TODO Open Computer support, to get the egg/pokemob info out of the items inside the inventory.
+    // TODO Open Computer support, to get the egg/pokemob info out of the items
+    // inside the inventory.
+    public TileEntityCloner()
+    {
+        super();
+        storage = new EnergyStorage(3200);
+        try
+        {
+            node = Network.newNode(this, Visibility.Network).withConnector().withComponent("splicer", Visibility.Network)
+                    .create();
+        }
+        catch (Exception e)
+        {
+            // e.printStackTrace();
+        }
+    }
+
     public CraftMatrix          craftMatrix;
     public InventoryCraftResult result;
     private ItemStack[]         inventory = new ItemStack[10];
     EntityPlayer                user;
 
+    protected boolean addedToNetwork = false;
+
     @Override
     public void update()
     {
+        if (!addedToNetwork)
+        {
+            addedToNetwork = true;
+            Network.joinOrCreateNetwork(this);
+        }
         if (worldObj.getTotalWorldTime() % 10 == 0 && !worldObj.isRemote)
         {
             int index = -1;
@@ -93,6 +127,12 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
                 }
             }
         }
+        if (node != null && node.host() == this)
+        {
+            final NBTTagCompound nodeNbt = new NBTTagCompound();
+            node.save(nodeNbt);
+            nbt.setTag("oc:node", nodeNbt);
+        }
     }
 
     @Override
@@ -113,6 +153,10 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
             }
         }
         nbt.setTag("Inventory", itemList);
+        if (node != null && node.host() == this)
+        {
+            node.load(nbt.getCompoundTag("oc:node"));
+        }
     }
 
     /** Overriden in a sign to provide the text. */
@@ -454,9 +498,70 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
 
         public void clear()
         {
-            System.out.println("clearing");
             cloner.setInventorySlotContents(9, null);
         }
 
     }
+
+    Node node;
+
+    @Override
+    public Node node()
+    {
+        return node;
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        super.onChunkUnload();
+        // Make sure to remove the node from its network when its environment,
+        // meaning this tile entity, gets unloaded.
+        if (node != null) node.remove();
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        // Make sure to remove the node from its network when its environment,
+        // meaning this tile entity, gets unloaded.
+        if (node != null) node.remove();
+    }
+
+    @Override
+    public void onConnect(Node arg0)
+    {
+    }
+
+    @Override
+    public void onDisconnect(Node arg0)
+    {
+    }
+
+    @Override
+    public void onMessage(Message arg0)
+    {
+    }
+
+    @Callback
+    public Object[] getInfo(Context context, Arguments args)
+    {
+        ArrayList<Object> ret = new ArrayList<>();
+        int i = args.checkInteger(0);
+        if (i < 0 || i > inventory.length) i = 0;
+        ItemStack stack = inventory[i];
+        if (stack != null)
+        {
+            ret.add(stack.getDisplayName());
+            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))
+            {
+                ret.add(stack.getTagCompound().getLong("ivs"));
+                ret.add(stack.getTagCompound().getFloat("size"));
+                ret.add(stack.getTagCompound().getByte("nature"));
+            }
+        }
+        return ret.toArray();
+    }
+
 }

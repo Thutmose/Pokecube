@@ -42,8 +42,8 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
         storage = new EnergyStorage(3200);
         try
         {
-            node = Network.newNode(this, Visibility.Network).withConnector().withComponent("splicer", Visibility.Network)
-                    .create();
+            node = Network.newNode(this, Visibility.Network).withConnector()
+                    .withComponent("splicer", Visibility.Network).create();
         }
         catch (Exception e)
         {
@@ -545,6 +545,17 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
     }
 
     @Callback
+    /** Returns the info for the slot number given in args. <br>
+     * <br>
+     * If the slot is out of bounds, it returns the info for slot 0.<br>
+     * <br>
+     * Returns the following: Stack name, ivs, size, nature.<br>
+     * <br>
+     * ivs are a long.
+     * 
+     * @param context
+     * @param args
+     * @return */
     public Object[] getInfo(Context context, Arguments args)
     {
         ArrayList<Object> ret = new ArrayList<>();

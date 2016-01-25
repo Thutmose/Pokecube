@@ -111,7 +111,7 @@ Number,Name,Exp Yield,HP EV,Atk EV,Def EV,SpAtk EV,SpDef EV,Spd EV,Experience Mo
 110,Weezing ,172,0,0,2,0,0,0,Medium Fast,127,70,2:gunpowder,,,0,largesmoke:75,,FALSE,,,,
 111,Rhyhorn ,69,0,0,1,0,0,0,Slow,127,70,,,,0,,,FALSE,,grass,,
 112,Rhydon ,170,0,2,0,0,0,0,Slow,127,70,,,,0,,,FALSE,,grass,,
-113,Chansey ,395,2,0,0,0,0,0,Fast,254,140,,,,0,,,FALSE,,,,
+113,Chansey ,395,2,0,0,0,0,0,Fast,254,140,,,,1:ovalstone:0:50 1:luckyegg:0:5,,,FALSE,,,,
 114,Tangela ,87,0,0,1,0,0,0,Medium Fast,127,70,,,,0,,,FALSE,,light,,
 115,Kangaskhan ,172,2,0,0,0,0,0,Medium Fast,254,70,,,,0,,,FALSE,,,,
 116,Horsea ,59,0,0,0,1,0,0,Medium Fast,127,70,1:dye:0,,1:fish,0,,,FALSE,,water,,

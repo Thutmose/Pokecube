@@ -108,7 +108,7 @@ public class GuiAnimate extends GuiScreen
         {
             return;
         }
-
+        //TODO make a way to handle shininess.
         String form = forme.getText();
         PokedexEntry e1;
         if(pokemob.getPokedexEntry().hasForm(form))

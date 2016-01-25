@@ -6,6 +6,7 @@ package pokecube.core.database;
 import static thut.api.terrain.BiomeType.NONE;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -239,7 +240,7 @@ public class PokedexEntry
                 form = new PokedexEntry(pokedexNb, name, possibleMoves, lvlUpMoves);
                 this.copyToForm(form);
                 addForm(form);
-//                System.out.println("new form for " + this + " as " + form);
+                // System.out.println("new form for " + this + " as " + form);
             }
             form.setBaseStats(HP, ATT, DEF, ATTSPE, DEFSPE, VIT, catchRate, pokeType, pokeType2);
         }
@@ -343,10 +344,10 @@ public class PokedexEntry
     {
         return getTexture(name, gender, time);
     }
-    
+
     public String getTexture(String original, byte gender, long time)
     {
-        if(original == null) original = name;
+        if (original == null) original = name;
         int index = gender == IPokemob.FEMALE && textureDetails[1] != null ? 1 : 0;
         String[] textureSuffixs = textureDetails[index];
         long suffixIndex = ((time % textureSuffixs.length * 3) / textureSuffixs.length);
@@ -976,12 +977,16 @@ public class PokedexEntry
         ItemStack ret = null;
         ArrayList<ItemStack> items = new ArrayList<ItemStack>();
         items.addAll(heldItems.keySet());
-        int index = rand.nextInt(items.size());
-        ret = items.get(index);
-        int chance = heldItems.get(ret);
-        if (ret == null || rand.nextInt(100) > chance) return null;
-        ret = ret.copy();
-        return ret;
+        Collections.shuffle(items);
+        for (int index = 0; index < items.size(); index++)
+        {
+            ret = items.get(index);
+            int chance = heldItems.get(ret);
+            if (ret == null || rand.nextInt(100) > chance) continue;
+            ret = ret.copy();
+            return ret;
+        }
+        return null;
     }
 
     public Ability getAbility(int number)

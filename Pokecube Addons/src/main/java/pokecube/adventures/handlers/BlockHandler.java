@@ -1,6 +1,7 @@
 package pokecube.adventures.handlers;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.adventures.LegendaryConditions;
 import pokecube.adventures.blocks.afa.BlockAFA;
@@ -43,6 +44,13 @@ public class BlockHandler
         PokecubeItems.register(LegendaryConditions.spawner1, ItemBlockMeta.class, "legendSpawner");
         LegendaryConditions.spawner1.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         LegendaryConditions.registerPreInit();
+        PokecubeItems.addSpecificItemStack("registeelspawner", new ItemStack(LegendaryConditions.spawner1, 1, 0));
+        PokecubeItems.addSpecificItemStack("regicespawner", new ItemStack(LegendaryConditions.spawner1, 1, 1));
+        PokecubeItems.addSpecificItemStack("regirockspawner", new ItemStack(LegendaryConditions.spawner1, 1, 2));
+        PokecubeItems.addSpecificItemStack("celebispawner", new ItemStack(LegendaryConditions.spawner1, 1, 3));
+        PokecubeItems.addSpecificItemStack("hoohspawner", new ItemStack(LegendaryConditions.spawner1, 1, 4));
+        PokecubeItems.addSpecificItemStack("kyogrespawner", new ItemStack(LegendaryConditions.spawner1, 1, 5));
+        PokecubeItems.addSpecificItemStack("groudonspawner", new ItemStack(LegendaryConditions.spawner1, 1, 6));
 
     }
 }

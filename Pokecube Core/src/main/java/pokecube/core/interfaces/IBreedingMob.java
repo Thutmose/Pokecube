@@ -50,7 +50,7 @@ public interface IBreedingMob
 
     Vector<IBreedingMob> getMalesForBreeding();
 
-    boolean canMateWith(EntityAnimal entityAnimal);
+    boolean canMate(EntityAnimal entityAnimal);
 
     void mateWith(IBreedingMob male);
 }

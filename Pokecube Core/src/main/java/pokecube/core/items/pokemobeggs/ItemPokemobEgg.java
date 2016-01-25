@@ -215,10 +215,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         String[] moves = moveString.split(";");
         long ivs = nbt.getLong("ivs");
 
-        if (fixedShiny)
-        {
-            mob.setShiny(true);
-        }
+        mob.setShiny(fixedShiny);
         if (!nbt.hasKey("ivs"))
         {
 

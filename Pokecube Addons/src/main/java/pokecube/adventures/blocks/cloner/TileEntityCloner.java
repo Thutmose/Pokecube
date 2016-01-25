@@ -39,7 +39,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
     public TileEntityCloner()
     {
         super();
-        storage = new EnergyStorage(3200);
+        storage = new EnergyStorage(32000);
         try
         {
             node = Network.newNode(this, Visibility.Network).withConnector()
@@ -129,9 +129,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
         }
         if (node != null && node.host() == this)
         {
-            final NBTTagCompound nodeNbt = new NBTTagCompound();
-            node.save(nodeNbt);
-            nbt.setTag("oc:node", nodeNbt);
+            node.load(nbt.getCompoundTag("oc:node"));
         }
     }
 
@@ -155,7 +153,9 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
         nbt.setTag("Inventory", itemList);
         if (node != null && node.host() == this)
         {
-            node.load(nbt.getCompoundTag("oc:node"));
+            final NBTTagCompound nodeNbt = new NBTTagCompound();
+            node.save(nodeNbt);
+            nbt.setTag("oc:node", nodeNbt);
         }
     }
 
@@ -545,7 +545,8 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
     }
 
     @Callback
-    /** Returns the info for the slot number given in args. <br>
+    /** Returns the info for the slot number given in args. the second argument
+     * is which info to return.<br>
      * <br>
      * If the slot is out of bounds, it returns the info for slot 0.<br>
      * <br>
@@ -560,16 +561,19 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
     {
         ArrayList<Object> ret = new ArrayList<>();
         int i = args.checkInteger(0);
+        int j = args.checkInteger(1);
         if (i < 0 || i > inventory.length) i = 0;
         ItemStack stack = inventory[i];
         if (stack != null)
         {
-            ret.add(stack.getDisplayName());
+            if (j == 0) ret.add(stack.getDisplayName());
             if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))
             {
-                ret.add(stack.getTagCompound().getLong("ivs"));
-                ret.add(stack.getTagCompound().getFloat("size"));
-                ret.add(stack.getTagCompound().getByte("nature"));
+                if (j == 1) ret.add(stack.getTagCompound().getLong("ivs"));
+                if (j == 2) ret.add(stack.getTagCompound().getFloat("size"));
+                if (j == 3) ret.add(stack.getTagCompound().getByte("nature"));
+                if (j == 4) ret.add(stack.getTagCompound().getString("moves"));
+                if (j == 5) ret.add(stack.getTagCompound().getBoolean("shiny"));
             }
         }
         return ret.toArray();

@@ -1,7 +1,6 @@
 package pokecube.compat.jer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import jeresources.api.utils.DropItem;
 import jeresources.api.utils.LightLevel;
@@ -21,18 +20,13 @@ public class JERCompat extends CompatBase
 {
     public static void register()
     {
-        EnumHelper.addEnum(ModList.class, "pokecube", new Class[] { String.class, Class.class },
-                new Object[] { "pokecube", JERCompat.class });
-        System.out.println("Added Enum");
-        new Exception().printStackTrace();
-        System.out.println(Arrays.toString(ModList.values()));
+        EnumHelper.addEnum(ModList.class, "pokecube", new Class[] { String.class, Class.class }, new Object[] { "pokecube", JERCompat.class });
     }
 
     @Override
     protected void init(boolean initOres)
     {
         registerMobs();
-        System.out.println("Registered Mob Drops");
     }
 
     private void registerMobs()

@@ -205,7 +205,7 @@ public class AIMate extends AIBase
                         || entityanimal.getPokemonAIState(IPokemob.TAMED) != pokemob.getPokemonAIState(IPokemob.TAMED))
                     continue;
 
-                boolean validMate = breedingMob.canMateWith((EntityAnimal) entityanimal);
+                boolean validMate = breedingMob.canMate((EntityAnimal) entityanimal);
 
                 if (!validMate
                         || entity.getDistanceSqToEntity((Entity) entityanimal) > searchingLoveDist * searchingLoveDist)

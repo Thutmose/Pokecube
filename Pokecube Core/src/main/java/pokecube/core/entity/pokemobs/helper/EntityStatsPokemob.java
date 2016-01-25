@@ -93,7 +93,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             setIVs(new byte[] { 31, 31, 31, 31, 31, 31 });
         }
-        if (nb == 132 && !worldObj.isRemote)
+        if (nb == 132 && worldObj!=null && !worldObj.isRemote)
         {
             boolean glitch = Math.random() > 0.95;
             getEntityData().setBoolean("dittotag", glitch);

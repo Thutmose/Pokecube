@@ -540,7 +540,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     public static boolean isHidden(String partIdentifier, TabulaModelSet set, IPokemob pokemob, boolean default_)
     {
-        if (set.shearableIdents.contains(partIdentifier))
+        if (set!=null && set.shearableIdents.contains(partIdentifier))
         {
             boolean shearable = ((IShearable) pokemob).isShearable(new ItemStack(Items.shears),
                     ((Entity) pokemob).worldObj, ((Entity) pokemob).getPosition());
@@ -551,7 +551,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     public static int getColour(String partIdentifier, TabulaModelSet set, IPokemob pokemob, int default_)
     {
-        if (set.dyeableIdents.contains(partIdentifier))
+        if (set!=null && set.dyeableIdents.contains(partIdentifier))
         {
             int rgba = 0xFF000000;
             rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;

@@ -217,7 +217,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
                         || entityanimal.getPokemonAIState(IPokemob.TAMED) != this.getPokemonAIState(IPokemob.TAMED))
                     continue;
 
-                boolean validMate = this.canMateWith(entityanimal);
+                boolean validMate = this.canMate(entityanimal);
 
                 if (!validMate || getDistanceSqToEntity(entityanimal) > searchingLoveDist * searchingLoveDist) continue;
 
@@ -334,7 +334,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     }
 
     @Override
-    public boolean canMateWith(EntityAnimal entityAnimal)
+    public boolean canMate(EntityAnimal entityAnimal)
     {
         if (entityAnimal instanceof IPokemob)
         {

@@ -576,6 +576,8 @@ public class PokecubeItems extends Items
         addGeneric("reapercloth", Blocks.carpet);
         addGeneric("dragonscale", Items.emerald);
         addGeneric("prismscale", Items.diamond);
+        
+        addGeneric("metalcoat", Items.iron_chestplate);
 
         addToEvos("ice");
         addToEvos("mossStone");
@@ -585,6 +587,7 @@ public class PokecubeItems extends Items
         addToEvos("reapercloth");
         addToEvos("dragonscale");
         addToEvos("prismscale");
+        addToEvos("metalcoat");
 
     }
 

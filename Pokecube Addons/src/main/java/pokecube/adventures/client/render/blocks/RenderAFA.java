@@ -3,6 +3,7 @@ package pokecube.adventures.client.render.blocks;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -43,7 +44,6 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
             ((IMobColourable) mob).setRGBA(col);
         }
         EventsHandlerClient.renderMob(mob, partialTicks);
-        
         GL11.glPopMatrix();
         GL11.glTranslatef(0.405f, 0.645f, -0.5f);
         GL11.glScaled(0.15, 0.15, 0.15);
@@ -51,6 +51,7 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         ItemStack item = te.getStackInSlot(0);
         Minecraft.getMinecraft().getItemRenderer().renderItem(player, item, null);//TransformType.NONE);
+        RenderHelper.enableStandardItemLighting();
         GL11.glPopMatrix();
     }
 

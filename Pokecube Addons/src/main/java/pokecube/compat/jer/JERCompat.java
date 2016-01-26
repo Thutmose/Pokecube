@@ -100,7 +100,7 @@ public class JERCompat extends CompatBase
                 }
             }
         }
-        if (biomes.isEmpty()) biomes.add("None");
+        if (biomes.isEmpty()) biomes.add("Unknown");
         return biomes.toArray(new String[0]);
     }
     

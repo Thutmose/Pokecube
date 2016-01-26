@@ -129,7 +129,7 @@ public class Commands implements ICommand
         doMake(cSender, args, isOp, targets);
         doReset(cSender, args, isOp, targets);
         doTM(cSender, args, isOp, targets);
-
+        //TODO Add a doMeteor command, arguments should be size and optional direction.
         // cSender.addChatMessage(new ChatComponentText("Invalid Command"));
     }
 

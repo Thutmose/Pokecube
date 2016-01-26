@@ -713,7 +713,6 @@ public final class SpawnHandler
                                     + energy;
                             System.out.println(message);
                             boom.doExplosion();
-
                             PokecubeSerializer.getInstance().addMeteorLocation(v);
 
                         }

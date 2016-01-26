@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import io.netty.buffer.ByteBuf;
@@ -38,6 +39,7 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
 
 public class Commands implements ICommand
@@ -129,7 +131,10 @@ public class Commands implements ICommand
         doMake(cSender, args, isOp, targets);
         doReset(cSender, args, isOp, targets);
         doTM(cSender, args, isOp, targets);
-        //TODO Add a doMeteor command, arguments should be size and optional direction.
+        doMeteor(cSender, args, isOp, targets);
+        
+        // TODO Add a doMeteor command, arguments should be size and optional
+        // direction.
         // cSender.addChatMessage(new ChatComponentText("Invalid Command"));
     }
 
@@ -357,7 +362,7 @@ public class Commands implements ICommand
                     if (o instanceof IPokemob)
                     {
                         IPokemob e = (IPokemob) o;
-//                        System.out.println(e);
+                        // System.out.println(e);
                         if (!all || e.getPokedexEntry() == Database.getEntry(name))
                         {
                             if (((Entity) e).getDistance(cSender.getPositionVector().xCoord,
@@ -746,7 +751,7 @@ public class Commands implements ICommand
                         }
                         mob.setShiny(shiny);
                         if (gender != -3) mob.setSexe(gender);
-                        if(mob instanceof IMobColourable) ((IMobColourable)mob).setRGBA(red, green, blue, 255);
+                        if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
                         if (shadow) mob.setShadow(shadow);
                         if (ancient) mob.setAncient(ancient);
                         mob.setExp(exp, true, true);
@@ -911,8 +916,7 @@ public class Commands implements ICommand
                             PokecubeClientPacket packet = new PokecubeClientPacket(buf);
                             PokecubePacketHandler.sendToClient(packet, player);
 
-                            cSender.addChatMessage(
-                                    new ChatComponentText("Reset Starter for " + player.getName()));
+                            cSender.addChatMessage(new ChatComponentText("Reset Starter for " + player.getName()));
                             player.addChatMessage(new ChatComponentText("You may choose a new starter"));
                         }
                     }
@@ -1017,7 +1021,7 @@ public class Commands implements ICommand
                     mob.setExp(exp, false, true);
                     mob.setShiny(shiny);
                     if (gender != -3) mob.setSexe(gender);
-                    if(mob instanceof IMobColourable) ((IMobColourable)mob).setRGBA(red, green, blue, 255);
+                    if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
                     if (shadow) mob.setShadow(shadow);
                     for (int i = 0; i < 4; i++)
                     {
@@ -1051,6 +1055,47 @@ public class Commands implements ICommand
             }
             cSender.addChatMessage(new ChatComponentText("You need to enter a code!"));
             return false;
+        }
+        return false;
+    }
+
+    private boolean doMeteor(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
+    {
+
+        if (args[0].equalsIgnoreCase("meteor"))
+        {
+            if (isOp)
+            {
+                Random rand = new Random();
+                float energy = (float) Math.abs((rand.nextGaussian() + 1) * 50);
+                if (args.length > 1)
+                {
+                    try
+                    {
+                        energy = Float.parseFloat(args[1]);
+                    }
+                    catch (NumberFormatException e)
+                    {
+
+                    }
+                }
+                Vector3 v = Vector3.getNewVectorFromPool().set(cSender).add(0, 255 - cSender.getPosition().getY(), 0);
+                if (energy > 0)
+                {
+                    Vector3 location = Vector3.getNextSurfacePoint(cSender.getEntityWorld(), v, Vector3.secondAxisNeg,
+                            255);
+                    ExplosionCustom boom = new ExplosionCustom(cSender.getEntityWorld(),
+                            PokecubeMod.getFakePlayer(cSender.getEntityWorld()), location, energy).setMeteor(true);
+                    boom.doExplosion();
+                }
+                PokecubeSerializer.getInstance().addMeteorLocation(v);
+                return true;
+            }
+            else
+            {
+                cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
+                return false;
+            }
         }
         return false;
     }

@@ -68,41 +68,54 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
         }
         if (worldObj.getTotalWorldTime() % 10 == 0 && !worldObj.isRemote)
         {
-            int index = -1;
-            for (int i = 0; i < 9; i++)
+            checkFossil();
+            checkMewtwo();
+        }
+    }
+
+    private void checkMewtwo()
+    {
+        // TODO check if there are two different pokemob eggs, a mew hair and a
+        // regeneration potion. If this is the case, then spent 30k energy and
+        // spawn a lvl 70 mewtwo ontop of the block, it should be wild.
+    }
+
+    private void checkFossil()
+    {
+        int fossilIndex = -1;
+        for (int i = 0; i < 9; i++)
+        {
+            ItemStack stack = inventory[i];
+            int num = PokecubeItems.getFossilNumber(stack);
+            if (num > 0)
             {
-                ItemStack stack = inventory[i];
-                int num = PokecubeItems.getFossilNumber(stack);
-                if (num > 0)
-                {
-                    index = i;
-                    break;
-                }
+                fossilIndex = i;
+                break;
             }
-            if (index >= 0)
+        }
+        if (fossilIndex >= 0)
+        {
+            ItemStack stack = inventory[fossilIndex];
+            int num = PokecubeItems.getFossilNumber(stack);
+            int energy = storage.getEnergyStored();
+            if (energy >= 20000)
             {
-                ItemStack stack = inventory[index];
-                int num = PokecubeItems.getFossilNumber(stack);
-                int energy = storage.getEnergyStored();
-                if (energy >= 20000)
+                storage.extractEnergy(20000, false);
+                EntityLiving entity = (EntityLiving) mod_Pokecube.core.createEntityByPokedexNb(num, worldObj);
+                if (entity != null)
                 {
-                    storage.extractEnergy(20000, false);
-                    EntityLiving entity = (EntityLiving) mod_Pokecube.core.createEntityByPokedexNb(num, worldObj);
-                    if (entity != null)
-                    {
-                        entity.setHealth(entity.getMaxHealth());
-                        // to avoid the death on spawn
-                        int maxXP = 6000;
-                        // that will make your pokemob around level 3-5.
-                        // You can give him more XP if you want
-                        ((IPokemob) entity).setExp(worldObj.rand.nextInt(maxXP) + 50, true, true);
-                        if (user != null) ((IPokemob) entity).setPokemonOwner(user);
-                        entity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(),
-                                worldObj.rand.nextFloat() * 360F, 0.0F);
-                        worldObj.spawnEntityInWorld(entity);
-                        entity.playLivingSound();
-                        stack.stackSize--;
-                    }
+                    entity.setHealth(entity.getMaxHealth());
+                    // to avoid the death on spawn
+                    int maxXP = 6000;
+                    // that will make your pokemob around level 3-5.
+                    // You can give him more XP if you want
+                    ((IPokemob) entity).setExp(worldObj.rand.nextInt(maxXP) + 50, true, true);
+                    if (user != null) ((IPokemob) entity).setPokemonOwner(user);
+                    entity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(),
+                            worldObj.rand.nextFloat() * 360F, 0.0F);
+                    worldObj.spawnEntityInWorld(entity);
+                    entity.playLivingSound();
+                    stack.stackSize--;
                 }
             }
         }

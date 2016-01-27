@@ -1,6 +1,7 @@
 package pokecube.adventures.blocks.cloner;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.TileEnergyHandler;
@@ -18,6 +19,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,12 +27,15 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import pokecube.core.utils.Tools;
 
 public class TileEntityCloner extends TileEnergyHandler implements IInventory, ITickable, Environment
 {
@@ -75,9 +80,70 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
 
     private void checkMewtwo()
     {
-        // TODO check if there are two different pokemob eggs, a mew hair and a
-        // regeneration potion. If this is the case, then spent 30k energy and
-        // spawn a lvl 70 mewtwo ontop of the block, it should be wild.
+        int mewHairIndex = -1;
+        int eggIndex = -1;
+        int potionIndex = -1;
+        for (int i = 0; i < 9; i++)
+        {
+            ItemStack stack = inventory[i];
+            if(stack==null)
+            {
+                
+            }
+            else if (stack.isItemEqual(PokecubeItems.getStack("mewHair")))
+            {
+                mewHairIndex = i;
+            }
+            else if (stack.getItem() instanceof ItemPokemobEgg)
+            {
+                eggIndex = i;
+            }
+            else if( stack.getItem() instanceof ItemPotion)
+            {
+                ItemPotion potion = (ItemPotion) stack.getItem();
+                List<PotionEffect> effects = potion.getEffects(stack);
+                for(PotionEffect effect: effects)
+                {
+                    if(effect!=null && effect.getEffectName().contains("regeneration"))
+                    {
+                        potionIndex = i;
+                        break;
+                    }
+                }
+            }
+            
+        }
+        
+        if (mewHairIndex >= 0 && potionIndex >= 0 && eggIndex >= 0)
+        {
+            ItemStack hair = inventory[mewHairIndex];
+            ItemStack egg = inventory[eggIndex];
+            ItemStack potion = inventory[potionIndex];
+            int energy = storage.getEnergyStored();
+            if (energy >= 30000)
+            {
+                storage.extractEnergy(30000, false);
+                egg = egg.splitStack(1);
+                if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
+                egg.getTagCompound().setInteger("pokemobNumber", 150);
+                
+                IPokemob mob = ItemPokemobEgg.getPokemob(getWorld(), egg);
+                if(mob!=null)
+                {
+                    EntityLiving entity = (EntityLiving) mob;
+                    entity.setHealth(entity.getMaxHealth());
+                    ((IPokemob) entity).setExp(Tools.levelToXp(mob.getExperienceMode(), 70), true, true);
+                    entity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(),
+                            worldObj.rand.nextFloat() * 360F, 0.0F);
+                    worldObj.spawnEntityInWorld(entity);
+                    entity.playLivingSound();
+                    hair.stackSize--;
+                    inventory[potionIndex] = null;
+                }
+                
+            }
+        }
+                
     }
 
     private void checkFossil()

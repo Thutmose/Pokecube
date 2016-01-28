@@ -86,9 +86,8 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
         for (int i = 0; i < 9; i++)
         {
             ItemStack stack = inventory[i];
-            if(stack==null)
+            if (stack == null)
             {
-                
             }
             else if (stack.isItemEqual(PokecubeItems.getStack("mewHair")))
             {
@@ -98,22 +97,21 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
             {
                 eggIndex = i;
             }
-            else if( stack.getItem() instanceof ItemPotion)
+            else if (stack.getItem() instanceof ItemPotion)
             {
                 ItemPotion potion = (ItemPotion) stack.getItem();
                 List<PotionEffect> effects = potion.getEffects(stack);
-                for(PotionEffect effect: effects)
+                for (PotionEffect effect : effects)
                 {
-                    if(effect!=null && effect.getEffectName().contains("regeneration"))
+                    if (effect != null && effect.getEffectName().contains("regeneration"))
                     {
                         potionIndex = i;
                         break;
                     }
                 }
             }
-            
         }
-        
+
         if (mewHairIndex >= 0 && potionIndex >= 0 && eggIndex >= 0)
         {
             ItemStack hair = inventory[mewHairIndex];
@@ -126,9 +124,9 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
                 egg = egg.splitStack(1);
                 if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
                 egg.getTagCompound().setInteger("pokemobNumber", 150);
-                
+
                 IPokemob mob = ItemPokemobEgg.getPokemob(getWorld(), egg);
-                if(mob!=null)
+                if (mob != null)
                 {
                     EntityLiving entity = (EntityLiving) mob;
                     entity.setHealth(entity.getMaxHealth());
@@ -140,10 +138,8 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
                     hair.stackSize--;
                     inventory[potionIndex] = null;
                 }
-                
             }
         }
-                
     }
 
     private void checkFossil()

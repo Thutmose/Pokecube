@@ -20,15 +20,25 @@ import pokecube.modelloader.client.custom.IPartTexturer;
 public class TextureHelper implements IPartTexturer
 {
     IPokemob                                 pokemob;
-    Map<String, String>                      texNames     = Maps.newHashMap();
-    Map<String, ResourceLocation>            texMap       = Maps.newHashMap();
-    Map<String, TexState>                    texStates    = Maps.newHashMap();
-    public final static Map<String, Integer> mappedStates = Maps.newHashMap();
+    Map<String, String>                      texNames          = Maps.newHashMap();
+    String                                   default_tex;
+    Map<String, Boolean>                     smoothing         = Maps.newHashMap();
+    boolean                                  default_smoothing = true;
+    Map<String, ResourceLocation>            texMap            = Maps.newHashMap();
+    Map<String, TexState>                    texStates         = Maps.newHashMap();
+    public final static Map<String, Integer> mappedStates      = Maps.newHashMap();
 
     public TextureHelper(Node node)
     {
         if (node.getAttributes().getNamedItem("default") != null)
-            texNames.put("default", node.getAttributes().getNamedItem("default").getNodeValue());
+        {
+            default_tex = node.getAttributes().getNamedItem("default").getNodeValue();
+        }
+        if (node.getAttributes().getNamedItem("smoothing") != null)
+        {
+            boolean flat = !node.getAttributes().getNamedItem("smoothing").getNodeValue().equalsIgnoreCase("smooth");
+            default_smoothing = flat;
+        }
         NodeList parts = node.getChildNodes();
         for (int i = 0; i < parts.getLength(); i++)
         {
@@ -38,6 +48,12 @@ public class TextureHelper implements IPartTexturer
                 String partName = part.getAttributes().getNamedItem("name").getNodeValue();
                 String partTex = part.getAttributes().getNamedItem("tex").getNodeValue();
                 texNames.put(partName, partTex);
+                if (part.getAttributes().getNamedItem("smoothing") != null)
+                {
+                    boolean flat = !node.getAttributes().getNamedItem("smoothing").getNodeValue()
+                            .equalsIgnoreCase("smooth");
+                    smoothing.put(partName, flat);
+                }
             }
             else if (part.getNodeName().equals("animation"))
             {
@@ -54,7 +70,7 @@ public class TextureHelper implements IPartTexturer
     @Override
     public void applyTexture(String part)
     {
-        String tex = texNames.containsKey(part) ? texNames.get(part) : texNames.get("default");
+        String tex = texNames.containsKey(part) ? texNames.get(part) : default_tex;
         tex = pokemob.modifyTexture(tex);
         ResourceLocation loc;
         if ((loc = texMap.get(tex)) != null)
@@ -235,6 +251,13 @@ public class TextureHelper implements IPartTexturer
         {
             this.arr = arr;
         }
+    }
+
+    @Override
+    public boolean isFlat(String part)
+    {
+        if (smoothing.containsKey(part)) { return smoothing.get(part); }
+        return default_smoothing;
     }
 
 }

@@ -24,6 +24,7 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
 {
     private int                meshId    = 0;
     public int                 GLMODE    = GL11.GL_TRIANGLES;
+    public boolean             flat      = true;
     public boolean             triangles = true;
     public Vertex[]            vertices;
     public Vertex[]            normals;
@@ -151,7 +152,7 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         GL11.glCallList(meshId);
         GL11.glFlush();
 
-//         addTris();
+        // addTris();
 
         // Reset Texture Matrix if changed.
         if (textureShift)
@@ -298,31 +299,37 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         Vertex normal;
         TextureCoordinate textureCoordinate;
         Vector3f[] normalList = new Vector3f[order.length];
-        // Calculate the normals for each triangle.
-        for (int i = 0; i < order.length; i += 3)
+        if (texturer != null) flat = texturer.isFlat(this.getName());
+        if (flat)
         {
-            Vector3f v1, v2, v3;
-            vertex = vertices[order[i]];
-            v1 = new Vector3f(vertex.x, vertex.y, vertex.z);
-            vertex = vertices[order[i + 1]];
-            v2 = new Vector3f(vertex.x, vertex.y, vertex.z);
-            vertex = vertices[order[i + 2]];
-            v3 = new Vector3f(vertex.x, vertex.y, vertex.z);
-            Vector3f a = new Vector3f(v2);
-            a.sub(v1);
-            Vector3f b = new Vector3f(v3);
-            b.sub(v1);
-            Vector3f c = new Vector3f();
-            c.cross(a, b);
-            c.normalize();
-            normalList[i] = c;
-            normalList[i + 1] = c;
-            normalList[i + 2] = c;
+            // Calculate the normals for each triangle.
+            for (int i = 0; i < order.length; i += 3)
+            {
+                Vector3f v1, v2, v3;
+                vertex = vertices[order[i]];
+                v1 = new Vector3f(vertex.x, vertex.y, vertex.z);
+                vertex = vertices[order[i + 1]];
+                v2 = new Vector3f(vertex.x, vertex.y, vertex.z);
+                vertex = vertices[order[i + 2]];
+                v3 = new Vector3f(vertex.x, vertex.y, vertex.z);
+                Vector3f a = new Vector3f(v2);
+                a.sub(v1);
+                Vector3f b = new Vector3f(v3);
+                b.sub(v1);
+                Vector3f c = new Vector3f();
+                c.cross(a, b);
+                c.normalize();
+                normalList[i] = c;
+                normalList[i + 1] = c;
+                normalList[i + 2] = c;
+            }
+            GL11.glShadeModel(GL11.GL_FLAT);
         }
-        //*
-        // TODO see if there is a better way to interpolate the normals.
-         GL11.glShadeModel(GL11.GL_FLAT);
-//        GL11.glShadeModel(GL11.GL_SMOOTH);
+        else
+        {
+            GL11.glShadeModel(GL11.GL_SMOOTH);
+        }
+
         GL11.glBegin(GLMODE);
         int n = 0;
         for (Integer i : order)
@@ -330,60 +337,20 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             textureCoordinate = textureCoordinates[i];
             GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
             vertex = vertices[i];
-            GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
-            Vector3f norm = normalList[n];
-            GL11.glNormal3f(norm.x, norm.y, norm.z);
-//            normal = normals[i];
-//            GL11.glNormal3f(normal.x, normal.y, normal.z);
+            if (flat)
+            {
+                Vector3f norm = normalList[n];
+                GL11.glNormal3f(norm.x, norm.y, norm.z);
+            }
+            else
+            {
+                normal = normals[i];
+                GL11.glNormal3f(normal.x, normal.y, normal.z);
+            }
             n++;
-//            if(n%3==0 && n < order.length)
-//            {
-//                GL11.glEnd();
-//                GL11.glShadeModel(GL11.GL_SMOOTH);
-//                GL11.glShadeModel(GL11.GL_FLAT);
-//                GL11.glBegin(GLMODE);
-//            }
+            GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
         }
         GL11.glEnd();
-        
-        //*/
-        
-        /*/
-        //TODO figure out how to get lighting working using the Tessellator stuff, which
-        // Would allow compatiblity with things like optifine.
-//        RenderHelper.enableStandardItemLighting();
-        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
-        int n = 0;
-         int k2 = brightness;
-         int l2 = k2 >> 16 & 65535;
-         int i3 = k2 & 65535;
-        wr.begin(GLMODE, DefaultVertexFormats.POSITION_TEX_NORMAL);
-        for (Integer i : order)
-        {
-            textureCoordinate = textureCoordinates[i];
-            vertex = vertices[i];
-            normal = normals[i];//
-            wr.pos(vertex.x, vertex.y, vertex.z);
-            wr.tex(textureCoordinate.u, textureCoordinate.v);
-//            wr.lightmap(l2, i3);
-//            wr.color(red, green, blue, alpha);
-            wr.normal(normal.x, normal.y, normal.z);
-            //
-            // if(n%3==0)
-            // {
-//             Vector3f norm = normalList[n];
-//             wr.normal(norm.x, norm.y, norm.z);
-            // }
-            wr.endVertex();
-            n++;
-//            if(n%3==0)
-//            {
-//                Tessellator.getInstance().draw();
-//                wr.begin(GLMODE, DefaultVertexFormats.OLDMODEL_POSITION_TEX_NORMAL);
-//            }
-        }
-        Tessellator.getInstance().draw();
-        //*/
     }
 
     void addFaces()

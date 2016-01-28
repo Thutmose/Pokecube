@@ -7,4 +7,6 @@ public interface IPartTexturer
     void bindObject(Object thing);
 
     boolean shiftUVs(String part, double[] toFill);
+    
+    boolean isFlat(String part);
 }

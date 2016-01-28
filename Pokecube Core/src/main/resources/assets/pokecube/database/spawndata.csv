@@ -1,7 +1,7 @@
 Name,Special Cases,Biomes - any acceptable,Biomes - all needed,Excluded biomes
-Bulbasaur,starter day night ,,,
-Charmander,starter day night ,,,
-Squirtle,starter day night ,,,
+Bulbasaur,starter day night ,forest 0.01,,
+Charmander,starter day night ,forest 0.01,,
+Squirtle,starter day night ,lake 0.01,,
 Caterpie,day night ,wet 0.2:8:4;forest 0.2:8:4,,dry cold sparse
 Weedle,day night ,wet 0.2:8:4;forest 0.2:8:4,,dry cold sparse
 Pidgey,day night ,plains 0.4,,wet
@@ -77,9 +77,9 @@ Moltres,legendary day night ,mountain 0.01:1:1,,
 Dratini,day night water,ocean 0.01,,
 Mewtwo,legendary,,,
 Mew,day night,,jungle hills 0.001,
-Chikorita,starter day night ,,,
-Cyndaquil,starter day night ,,,
-Totodile,starter day night ,,,
+Chikorita,starter day night ,forest 0.01,,
+Cyndaquil,starter day night ,forest 0.01,,
+Totodile,starter day night ,lake 0.01,,
 Sentret,day ,plains 0.3,,
 Hoothoot,night ,forest hills 0.3,,
 Ledyba,day ,forest 0.1,,cold
@@ -128,9 +128,9 @@ Larvitar,day,mountain 0.1,mountain cave 0.15,
 Lugia,legendary day night ,beach 0.001:1:1,,
 Ho-Oh,legendary day night ,forest 0.0,,wet cold dry hills mountain savanna
 Celebi,legendary day night ,forest 0.0,,cold savanna dry
-Treecko,starter day night ,,,
-Torchic,starter day night ,,,
-Mudkip,starter day night ,,,
+Treecko,starter day night ,forest 0.01,,
+Torchic,starter day night ,forest 0.01,,
+Mudkip,starter day night ,swamp 0.01,,
 Poochyena,day night ,forest 0.3,,cold
 Zigzagoon,day night ,forest plains 0.3,,cold
 Wurmple,day night ,,wet forest 0.4,cold sparse dry
@@ -198,12 +198,12 @@ Latias,legendary day night ,beach 0.01:2:2,,
 Latios,legendary day night ,beach 0.01:2:2,,
 Kyogre,legendary day night,,ocean cave 0.0,
 Groudon,legendary day night,,wasteland mountain cave 0; nether cave 0,wet cold
-Rayquaza,legendary day night ,,,
-Jirachi,legendary day night ,,,
-Deoxys,legendary day night ,,,
-Turtwig,starter day night ,,,
-Chimchar,starter day night ,,,
-Piplup,starter day night ,,,
+Rayquaza,legendary day night ,sky 0.001:1:1,,
+Jirachi,legendary day night ,meteor 0.001:1:1,,
+Deoxys,legendary day night ,meteor 0.001:1:1,,
+Turtwig,starter day night ,forest 0.01,,
+Chimchar,starter day night ,forest 0.01,,
+Piplup,starter day night ,beach 0.01,,
 Starly,day night ,plains 0.4,,cold snowy
 Bidoof,day night water+,plains 0.6;forest 0.6,,cold jungle
 Kricketot,day night ,forest 0.2,,cold
@@ -247,9 +247,9 @@ Manaphy,legendary day night ,ocean 0.01,,
 Shaymin,legendary day night ,,,
 Arceus,legendary day night ,,,
 Victini,legendary day night ,,,
-Snivy,starter day night ,,,
-Tepig,starter day night ,,,
-Oshawott,starter day night ,,,
+Snivy,starter day night ,forest 0.01,,
+Tepig,starter day night ,forest 0.01,,
+Oshawott,starter day night ,river 0.01,,
 Patrat,day night ,plains 0.4,,
 Lillipup,day night ,forest plains 0.1,,cold snowy
 Purrloin,day night ,plains 0.1,,cold snowy
@@ -328,13 +328,13 @@ Kyurem,legendary day night ,,,
 Keldeo,legendary day night ,,,
 Meloetta,legendary day night ,,,
 Genesect,legendary day night ,,,
-Chespin,starter day night ,,,
-Fennekin,starter day night ,,,
-Froakie,starter day night ,,,
+Chespin,starter day night ,forest 0.01,,
+Fennekin,starter day night ,forest 0.01,,
+Froakie,starter day night ,swamp 0.01,,
 Bunnelby,day night ,plains 0.2,plains cave 0.3,
 Fletchling,day night ,forest 0.3,,cold
 Scatterbug,day ,all 0.4,,
-Litleo,day night ,sandy plains 0.3;,,mesa
+Litleo,day night ,sandy plains 0.3,,mesa
 Flabébé,,flower 0.8,,
 Skiddo,day ,hills 0.3,,
 Pancham,night ,forest 0.1,,wet savanna
@@ -359,8 +359,8 @@ Phantump,night,,forest spooky 0.2,
 Pumpkaboo,,,,
 Bergmite,day night,,mountain snowy 0.3; mountain cold 0.3,
 Noibat,,,,
-Xerneas,,,,
-Yveltal,,,,
+Xerneas,forest 0.001:1:1,,,
+Yveltal,forest 0.001:1:1,,,
 Zygarde,,,,
 Diancie,,,,
 Volcanion,,,,

@@ -15,10 +15,12 @@ import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -33,7 +35,9 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
+import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.Tools;
 
@@ -73,13 +77,87 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
         }
         if (worldObj.getTotalWorldTime() % 10 == 0 && !worldObj.isRemote)
         {
-            checkFossil();
             checkMewtwo();
+            checkGenesect();
+            checkFossil();
         }
     }
 
+    private void checkGenesect()
+    {
+        if (!Database.entryExists(649)) return;
+        int redstoneBlockIndex = -1;
+        int ironBlockIndex = -1;
+        int diamondBlockIndex = -1;
+        int domeFossilIndex = -1;
+        int potionIndex = -1;
+        for (int i = 0; i < 9; i++)
+        {
+            ItemStack stack = inventory[i];
+            if (stack == null)
+            {
+            }
+            else if (stack.isItemEqual(PokecubeItems.getStack("fossilDome")))
+            {
+                domeFossilIndex = i;
+            }
+            else if (stack.getItem() == Item.getItemFromBlock(Blocks.iron_block))
+            {
+                ironBlockIndex = i;
+            }
+            else if (stack.getItem() == Item.getItemFromBlock(Blocks.redstone_block))
+            {
+                redstoneBlockIndex = i;
+            }
+            else if (stack.getItem() == Item.getItemFromBlock(Blocks.diamond_block))
+            {
+                diamondBlockIndex = i;
+            }
+            else if (stack.getItem() instanceof ItemPotion)
+            {
+                ItemPotion potion = (ItemPotion) stack.getItem();
+                List<PotionEffect> effects = potion.getEffects(stack);
+                for (PotionEffect effect : effects)
+                {
+                    if (effect != null && effect.getEffectName().contains("regeneration") && effect.getAmplifier() == 1)
+                    {
+                        potionIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+        if(domeFossilIndex >= 0 && potionIndex >= 0 && redstoneBlockIndex >= 0 && diamondBlockIndex >= 0 && ironBlockIndex >= 0)
+        {
+            int energy = storage.getEnergyStored();
+            if (energy >= 30000)
+            {
+                storage.extractEnergy(30000, false);
+
+                IPokemob mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(649, getWorld());
+                if (mob != null)
+                {
+                    EntityLiving entity = (EntityLiving) mob;
+                    entity.setHealth(entity.getMaxHealth());
+                    ((IPokemob) entity).setExp(Tools.levelToXp(mob.getExperienceMode(), 70), true, true);
+                    entity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(),
+                            worldObj.rand.nextFloat() * 360F, 0.0F);
+                    worldObj.spawnEntityInWorld(entity);
+                    entity.playLivingSound();
+                    inventory[domeFossilIndex].stackSize--;
+                    inventory[redstoneBlockIndex].stackSize--;
+                    inventory[ironBlockIndex].stackSize--;
+                    inventory[diamondBlockIndex].stackSize--;
+                    inventory[potionIndex] = null;
+                }
+            }
+        }
+    }
+    
     private void checkMewtwo()
     {
+        if (!Database.entryExists(150)) return;
+
         int mewHairIndex = -1;
         int eggIndex = -1;
         int potionIndex = -1;
@@ -103,7 +181,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
                 List<PotionEffect> effects = potion.getEffects(stack);
                 for (PotionEffect effect : effects)
                 {
-                    if (effect != null && effect.getEffectName().contains("regeneration"))
+                    if (effect != null && effect.getEffectName().contains("regeneration") && effect.getAmplifier() == 1)
                     {
                         potionIndex = i;
                         break;
@@ -116,7 +194,6 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
         {
             ItemStack hair = inventory[mewHairIndex];
             ItemStack egg = inventory[eggIndex];
-            ItemStack potion = inventory[potionIndex];
             int energy = storage.getEnergyStored();
             if (energy >= 30000)
             {

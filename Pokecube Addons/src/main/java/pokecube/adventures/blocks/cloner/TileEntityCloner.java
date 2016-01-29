@@ -127,7 +127,8 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
                 }
             }
         }
-        if(domeFossilIndex >= 0 && potionIndex >= 0 && redstoneBlockIndex >= 0 && diamondBlockIndex >= 0 && ironBlockIndex >= 0)
+        if (domeFossilIndex >= 0 && potionIndex >= 0 && redstoneBlockIndex >= 0 && diamondBlockIndex >= 0
+                && ironBlockIndex >= 0)
         {
             int energy = storage.getEnergyStored();
             if (energy >= 30000)
@@ -153,7 +154,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
             }
         }
     }
-    
+
     private void checkMewtwo()
     {
         if (!Database.entryExists(150)) return;
@@ -161,6 +162,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
         int mewHairIndex = -1;
         int eggIndex = -1;
         int potionIndex = -1;
+        boolean correctPotion = false;
         for (int i = 0; i < 9; i++)
         {
             ItemStack stack = inventory[i];
@@ -179,11 +181,12 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
             {
                 ItemPotion potion = (ItemPotion) stack.getItem();
                 List<PotionEffect> effects = potion.getEffects(stack);
+                if (!correctPotion) potionIndex = i;
                 for (PotionEffect effect : effects)
                 {
                     if (effect != null && effect.getEffectName().contains("regeneration") && effect.getAmplifier() == 1)
                     {
-                        potionIndex = i;
+                        correctPotion = true;
                         break;
                     }
                 }
@@ -195,7 +198,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
             ItemStack hair = inventory[mewHairIndex];
             ItemStack egg = inventory[eggIndex];
             int energy = storage.getEnergyStored();
-            if (energy >= 30000)
+            if (energy >= 30000 && correctPotion)
             {
                 storage.extractEnergy(30000, false);
                 egg = egg.splitStack(1);
@@ -213,6 +216,26 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
                     worldObj.spawnEntityInWorld(entity);
                     entity.playLivingSound();
                     hair.stackSize--;
+                    inventory[potionIndex] = null;
+                }
+            }
+            else if (energy >= 10000 && !correctPotion)
+            {
+                storage.extractEnergy(10000, false);
+                egg = egg.splitStack(1);
+                if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
+                egg.getTagCompound().setInteger("pokemobNumber", 132);
+
+                IPokemob mob = ItemPokemobEgg.getPokemob(getWorld(), egg);
+                if (mob != null)
+                {
+                    EntityLiving entity = (EntityLiving) mob;
+                    entity.setHealth(entity.getMaxHealth());
+                    ((IPokemob) entity).setExp(Tools.levelToXp(mob.getExperienceMode(), 10), true, true);
+                    entity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(),
+                            worldObj.rand.nextFloat() * 360F, 0.0F);
+                    worldObj.spawnEntityInWorld(entity);
+                    entity.playLivingSound();
                     inventory[potionIndex] = null;
                 }
             }

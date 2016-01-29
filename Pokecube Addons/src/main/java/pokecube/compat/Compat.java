@@ -186,10 +186,10 @@ public class Compat
 
     @SideOnly(Side.CLIENT)
     @Optional.Method(modid = "jeresources")
-    @EventHandler
-    public void JERInit(FMLPreInitializationEvent evt)
+    @SubscribeEvent
+    public void JERInit(PostPostInit evt)
     {
-        pokecube.compat.jer.JERCompat.register();
+        new pokecube.compat.jer.JERCompat().register();
     }
 
     @SubscribeEvent

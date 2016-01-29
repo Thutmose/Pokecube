@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
+import jeresources.api.IJERAPI;
+import jeresources.api.JERPlugin;
 import jeresources.api.conditionals.LightLevel;
 import jeresources.api.distributions.DistributionSquare;
 import jeresources.api.drop.DropItem;
@@ -11,15 +13,10 @@ import jeresources.api.render.IMobRenderHook;
 import jeresources.api.restrictions.BiomeRestriction;
 import jeresources.api.restrictions.Restriction;
 import jeresources.api.restrictions.Type;
-import jeresources.compatibility.CompatBase;
-import jeresources.compatibility.ModList;
-import jeresources.entries.MobEntry;
-import jeresources.entries.WorldGenEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.util.EnumHelper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -29,16 +26,12 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.terrain.BiomeType;
 
-public class JERCompat extends CompatBase
+public class JERCompat
 {
-    public static void register()
-    {
-        EnumHelper.addEnum(ModList.class, "pokecube", new Class[] { String.class, Class.class },
-                new Object[] { "pokecube", JERCompat.class });
-    }
+    @JERPlugin
+    public static IJERAPI JERAPI;
 
-    @Override
-    protected void init(boolean initOres)
+    public void register()
     {
         registerMobs();
         registerOres();
@@ -49,9 +42,8 @@ public class JERCompat extends CompatBase
         BiomeRestriction biomes = new BiomeRestriction(Type.WHITELIST, BiomeGenBase.desertHills, BiomeGenBase.desert,
                 BiomeGenBase.jungle, BiomeGenBase.jungleHills, BiomeGenBase.ocean);
         Restriction restriction = new Restriction(biomes);
-        
-        registerWorldGen(new WorldGenEntry(PokecubeItems.getStack("fossilstone"), new DistributionSquare(7, 5, 5, 45),
-                restriction, true, getFossils()));
+        JERAPI.getWorldGenRegistry().register(PokecubeItems.getStack("fossilstone"),
+                new DistributionSquare(7, 5, 5, 45), restriction, true, getFossils());
     }
 
     @SuppressWarnings("unchecked")
@@ -61,14 +53,14 @@ public class JERCompat extends CompatBase
         {
             DropItem[] drops = getDrops(e);
             if (drops == null) continue;
-            Entity poke = PokecubeMod.core.createEntityByPokedexNb(e.getPokedexNb(), world);
+            Entity poke = PokecubeMod.core.createEntityByPokedexNb(e.getPokedexNb(), null);
             if (poke == null) continue;
             ((IPokemob) poke).changeForme(e.getName());
             ((IPokemob) poke).setShiny(false);
             ((IPokemob) poke).setSize(1);
-            MobEntry entry = new MobEntry((EntityLivingBase) poke, getLightLevel(e), getSpawns(e), drops);
-            registerMob(entry);
-            registerMobRenderHook(PokecubeMod.core.getEntityClassFromPokedexNumber(e.getPokedexNb()), POKEMOB);
+            JERAPI.getMobRegistry().register((EntityLivingBase) poke, getLightLevel(e), getSpawns(e), drops);
+            JERAPI.getMobRegistry()
+                    .registerRenderHook(PokecubeMod.core.getEntityClassFromPokedexNumber(e.getPokedexNb()), POKEMOB);
         }
     }
 
@@ -79,9 +71,9 @@ public class JERCompat extends CompatBase
 
     private String[] getSpawns(PokedexEntry entry)
     {
-        int num = entry.getChildNb();
         ArrayList<String> biomes = new ArrayList<String>();
-        PokedexEntry spawnable = Database.getEntry(num);
+        PokedexEntry spawnable = entry;
+        if (entry.getSpawnData() == null) spawnable = Database.getEntry(entry.getChildNb());
         SpawnData data;
         if ((data = spawnable.getSpawnData()) != null)
         {
@@ -103,13 +95,13 @@ public class JERCompat extends CompatBase
         if (biomes.isEmpty()) biomes.add("Unknown");
         return biomes.toArray(new String[0]);
     }
-    
+
     private DropItem[] getFossils()
     {
         ArrayList<DropItem> drops = new ArrayList<DropItem>();
-        for(ItemStack stack: PokecubeItems.fossils.keySet())
+        for (ItemStack stack : PokecubeItems.fossils.keySet())
         {
-            drops.add(new DropItem(stack, 0.5f/(float)PokecubeItems.fossils.size()));
+            drops.add(new DropItem(stack, 0.5f / (float) PokecubeItems.fossils.size()));
         }
         return drops.toArray(new DropItem[0]);
     }
@@ -167,7 +159,6 @@ public class JERCompat extends CompatBase
         @Override
         public IMobRenderHook.RenderInfo transform(IMobRenderHook.RenderInfo renderInfo, EntityPokemob pokemob)
         {
-            GL11.glRotated(180, 0, 1, 0);
             float mobScale = pokemob.getSize();
             float size = Math.max(pokemob.getPokedexEntry().width * mobScale,
                     Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));

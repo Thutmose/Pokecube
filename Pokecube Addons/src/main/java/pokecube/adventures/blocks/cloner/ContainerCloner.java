@@ -2,6 +2,7 @@ package pokecube.adventures.blocks.cloner;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
@@ -22,14 +23,15 @@ import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
 public class ContainerCloner extends Container// Workbench
 {
-    public InventoryPlayer   inv;
-    public World             worldObj;
-    int energy;
-    TileEntityCloner         tile;
-    public BlockPos          pos;
-    ItemStack                cube        = null;
-    ItemStack                egg         = null;
-    ItemStack                result      = null;
+    public InventoryPlayer inv;
+    public World           worldObj;
+    int                    energy;
+    TileEntityCloner       tile;
+    public BlockPos        pos;
+    ItemStack              cube   = null;
+    ItemStack              egg    = null;
+    ItemStack              star   = null;
+    ItemStack              result = null;
 
     public ContainerCloner(InventoryPlayer inv, TileEntityCloner tile)
     {
@@ -41,7 +43,7 @@ public class ContainerCloner extends Container// Workbench
 
         tile.craftMatrix = new TileEntityCloner.CraftMatrix(this, tile);
         tile.result = new TileEntityCloner.CraftResult(tile);
-        
+
         this.addSlotToContainer(new SlotCrafting(inv.player, tile.craftMatrix, tile.result, 0, 124, 35));
 
         for (int i = 0; i < 3; ++i)
@@ -64,7 +66,7 @@ public class ContainerCloner extends Container// Workbench
         {
             this.addSlotToContainer(new Slot(inv, l, 8 + l * 18, 142));
         }
-        
+
         this.onCraftMatrixChanged(tile.craftMatrix);
         tile.openInventory(inv.player);
     }
@@ -76,10 +78,11 @@ public class ContainerCloner extends Container// Workbench
         ItemStack item = CraftingManager.getInstance().findMatchingRecipe(tile.craftMatrix, this.worldObj);
         egg = null;
         cube = null;
+        star = null;
         result = null;
         if (worldObj == null) return;
         int energy = tile.getField(0);
-//        System.out.println(energy + " " + worldObj.isRemote);
+        // System.out.println(energy + " " + worldObj.isRemote);
         if (item != null)
         {
             tile.setInventorySlotContents(9, item);
@@ -112,12 +115,21 @@ public class ContainerCloner extends Container// Workbench
                     egg = item.copy();
                     continue;
                 }
+                else if (item.getItem() == Items.nether_star)
+                {
+                    if (star != null)
+                    {
+                        wrongnum = true;
+                        break;
+                    }
+                    star = item.copy();
+                    continue;
+                }
                 wrongnum = true;
                 break;
             }
             if (!wrongnum && cube != null && egg != null)
             {
-                item = egg;
                 int pokenb = PokecubeManager.getPokedexNb(cube);
                 PokedexEntry entry = Database.getEntry(pokenb);
                 pokenb = entry.getChildNb();
@@ -141,7 +153,7 @@ public class ContainerCloner extends Container// Workbench
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot)this.inventorySlots.get(index);
+        Slot slot = (Slot) this.inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack())
         {
@@ -150,45 +162,30 @@ public class ContainerCloner extends Container// Workbench
 
             if (index == 0)
             {
-                if (!this.mergeItemStack(itemstack1, 10, 46, true))
-                {
-                    return null;
-                }
+                if (!this.mergeItemStack(itemstack1, 10, 46, true)) { return null; }
 
                 slot.onSlotChange(itemstack1, itemstack);
             }
             else if (index >= 10 && index < 37)
             {
-                if (!this.mergeItemStack(itemstack1, 37, 46, false))
-                {
-                    return null;
-                }
+                if (!this.mergeItemStack(itemstack1, 37, 46, false)) { return null; }
             }
             else if (index >= 37 && index < 46)
             {
-                if (!this.mergeItemStack(itemstack1, 10, 37, false))
-                {
-                    return null;
-                }
+                if (!this.mergeItemStack(itemstack1, 10, 37, false)) { return null; }
             }
-            else if (!this.mergeItemStack(itemstack1, 10, 46, false))
-            {
-                return null;
-            }
+            else if (!this.mergeItemStack(itemstack1, 10, 46, false)) { return null; }
 
             if (itemstack1.stackSize == 0)
             {
-                slot.putStack((ItemStack)null);
+                slot.putStack((ItemStack) null);
             }
             else
             {
                 slot.onSlotChanged();
             }
 
-            if (itemstack1.stackSize == itemstack.stackSize)
-            {
-                return null;
-            }
+            if (itemstack1.stackSize == itemstack.stackSize) { return null; }
 
             slot.onPickupFromSlot(playerIn, itemstack1);
         }
@@ -206,23 +203,35 @@ public class ContainerCloner extends Container// Workbench
     {
         if (slotId == 0 && getSlot(0).getHasStack() && egg != null)
         {
-            tile.setField(0, tile.getField(0)-10000);
+            tile.setField(0, tile.getField(0) - 10000);
+            // If there is a nether star, consume it, but leave a pokecube
+            // behind.
+            for (int i = 0; i < tile.craftMatrix.getSizeInventory(); i++)
+            {
+                ItemStack item = tile.craftMatrix.getStackInSlot(i);
+                if (star != null && item != null && item.isItemEqual(cube))
+                {
+                    cube.stackSize = 2;
+                    tile.craftMatrix.setInventorySlotContents(i, cube);
+                    break;
+                }
+            }
+
         }
         return super.slotClick(slotId, clickedButton, mode, playerIn);
     }
 
     @Override
-    /**
-     * Looks for changes made in the container, sends them to every listener.
-     */
+    /** Looks for changes made in the container, sends them to every
+     * listener. */
     public void detectAndSendChanges()
     {
         super.detectAndSendChanges();
 
         for (int i = 0; i < this.crafters.size(); ++i)
-        {            
-            ICrafting icrafting = (ICrafting)this.crafters.get(i);
-            if(energy!=tile.getField(0))
+        {
+            ICrafting icrafting = (ICrafting) this.crafters.get(i);
+            if (energy != tile.getField(0))
             {
                 icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
                 this.onCraftMatrixChanged(tile.craftMatrix);
@@ -243,10 +252,8 @@ public class ContainerCloner extends Container// Workbench
     {
         return true;
     }
-    
-    /**
-     * Called when the container is closed.
-     */
+
+    /** Called when the container is closed. */
     public void onContainerClosed(EntityPlayer playerIn)
     {
         super.onContainerClosed(playerIn);

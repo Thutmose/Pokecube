@@ -74,7 +74,7 @@ public class ClonerRecipeCategory implements IRecipeCategory
     public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper)
     {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-
+        
         guiItemStacks.init(craftOutputSlot, false, 94, 18);
 
         for (int y = 0; y < 3; ++y)
@@ -86,7 +86,23 @@ public class ClonerRecipeCategory implements IRecipeCategory
             }
         }
 
-        if (recipeWrapper instanceof IShapedCraftingRecipeWrapper)
+        if(recipeWrapper instanceof ClonerRecipeWrapper)
+        {
+            ClonerRecipeWrapper clonerwrapper = (ClonerRecipeWrapper) recipeWrapper;
+            if(clonerwrapper.isVanilla())
+            {
+                ICraftingRecipeWrapper wrapper = (ICraftingRecipeWrapper) recipeWrapper;
+                craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());
+                craftingGridHelper.setOutput(guiItemStacks, wrapper.getOutputs());
+            }
+            else
+            {
+                ICraftingRecipeWrapper wrapper = (ICraftingRecipeWrapper) recipeWrapper;
+                craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());
+                
+            }
+        }
+        else if (recipeWrapper instanceof IShapedCraftingRecipeWrapper)
         {
             IShapedCraftingRecipeWrapper wrapper = (IShapedCraftingRecipeWrapper) recipeWrapper;
             craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs(), wrapper.getWidth(), wrapper.getHeight());

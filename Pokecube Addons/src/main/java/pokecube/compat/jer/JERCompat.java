@@ -9,10 +9,12 @@ import jeresources.api.JERPlugin;
 import jeresources.api.conditionals.LightLevel;
 import jeresources.api.distributions.DistributionSquare;
 import jeresources.api.drop.DropItem;
+import jeresources.api.drop.PlantDrop;
 import jeresources.api.render.IMobRenderHook;
 import jeresources.api.restrictions.BiomeRestriction;
 import jeresources.api.restrictions.Restriction;
 import jeresources.api.restrictions.Type;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -24,6 +26,7 @@ import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.berries.BerryManager;
 import thut.api.terrain.BiomeType;
 
 public class JERCompat
@@ -35,6 +38,17 @@ public class JERCompat
     {
         registerMobs();
         registerOres();
+        registerPlants();
+    }
+
+    private void registerPlants()
+    {
+        for(Integer i: BerryManager.berryCrops.keySet())
+        {
+            Block crop = BerryManager.berryCrops.get(i);
+            ItemStack berry = BerryManager.getBerryItem(BerryManager.berryNames.get(i));
+            JERAPI.getPlantRegistry().register(new ItemStack(crop), new PlantDrop(berry, 1, 1));
+        }
     }
 
     private void registerOres()

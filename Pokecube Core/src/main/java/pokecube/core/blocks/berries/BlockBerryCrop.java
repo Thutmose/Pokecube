@@ -158,6 +158,7 @@ public class BlockBerryCrop extends BlockCrops {
         return BerryManager.getBerryItem(berryName).getItem();
     }
     
+    @Override
     @SideOnly(Side.CLIENT)
     public Item getItem(World worldIn, BlockPos pos)
     {

@@ -54,10 +54,10 @@ public class JEICompat implements IModPlugin
     @Override
     public void register(IModRegistry registry)
     {
-        Thread.dumpStack();
-        if (added) return;
+//        Thread.dumpStack();
+//        if (added) return;
+//        added = true;
         IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
-        added = true;
         registry.addRecipeCategories(new ClonerRecipeCategory(guiHelper));
         registry.addRecipeHandlers(new ClonerRecipeHandler());
         registry.addRecipeClickArea(GuiCloner.class, 88, 32, 28, 23, CLONER);

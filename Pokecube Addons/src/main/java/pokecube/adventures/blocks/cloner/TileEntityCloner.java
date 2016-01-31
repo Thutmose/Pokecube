@@ -7,7 +7,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.TileEnergyHandler;
+import cofh.api.energy.IEnergyReceiver;
 import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -33,7 +33,9 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import pokecube.core.PokecubeItems;
@@ -44,14 +46,13 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.Tools;
 
-public class TileEntityCloner extends TileEnergyHandler implements IInventory, ITickable, Environment
+public class TileEntityCloner extends TileEntity implements IInventory, ITickable, Environment, IEnergyReceiver
 {
-    // TODO Open Computer support, to get the egg/pokemob info out of the items
-    // inside the inventory.
+    protected EnergyStorage storage = new EnergyStorage(32000);
+    
     public TileEntityCloner()
     {
         super();
-        storage = new EnergyStorage(32000);
         try
         {
             node = Network.newNode(this, Visibility.Network).withConnector()
@@ -305,6 +306,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
                 }
             }
         }
+         storage.readFromNBT(nbt);
         if (node != null && node.host() == this)
         {
             node.load(nbt.getCompoundTag("oc:node"));
@@ -329,6 +331,7 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
             }
         }
         nbt.setTag("Inventory", itemList);
+         storage.writeToNBT(nbt);
         if (node != null && node.host() == this)
         {
             final NBTTagCompound nodeNbt = new NBTTagCompound();
@@ -787,6 +790,33 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
             return ret.toArray();
         }
         throw new Exception("no item in slot " + i);
+    }
+
+    /* IEnergyConnection */
+    @Override
+    public boolean canConnectEnergy(EnumFacing facing) {
+
+        return true;
+    }
+
+    /* IEnergyReceiver */
+    @Override
+    public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
+    {
+        return storage.receiveEnergy(maxReceive, simulate);
+    }
+
+    /* IEnergyReceiver and IEnergyProvider */
+    @Override
+    public int getEnergyStored(EnumFacing facing)
+    {
+        return storage.getEnergyStored();
+    }
+
+    @Override
+    public int getMaxEnergyStored(EnumFacing facing)
+    {
+        return storage.getMaxEnergyStored();
     }
 
 }

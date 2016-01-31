@@ -21,7 +21,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
-public class ContainerCloner extends Container// Workbench
+public class ContainerCloner extends Container
 {
     public InventoryPlayer inv;
     public World           worldObj;

@@ -105,7 +105,7 @@ public class RenderHandler
 
         GL11.glRotatef(180, 0, 0, 1);
 
-        dispatchRenders(inv, event, RenderType.BODY);
+        dispatchRenders(inv, event, RenderType.BODY, event.partialRenderTick);
         GL11.glPopMatrix();
 
         yaw = player.prevRotationYawHead
@@ -119,7 +119,7 @@ public class RenderHandler
         GL11.glRotatef(yawOffset, 0, -1, 0);
         GL11.glRotatef(yaw - 270, 0, 1, 0);
         GL11.glRotatef(pitch, 0, 0, 1);
-        dispatchRenders(inv, event, RenderType.HEAD);
+        dispatchRenders(inv, event, RenderType.HEAD, event.partialRenderTick);
 
         GL11.glPopMatrix();
     }
@@ -245,7 +245,7 @@ public class RenderHandler
         GlStateManager.depthMask(true);
     }
 
-    private void dispatchRenders(InventoryBaubles inv, RenderPlayerEvent event, RenderType type)
+    private void dispatchRenders(InventoryBaubles inv, RenderPlayerEvent event, RenderType type, float partialTick)
     {
         for (int i = 0; i < inv.getSizeInventory(); i++)
         {
@@ -262,7 +262,7 @@ public class RenderHandler
                     {
                         GL11.glPushMatrix();
                         GL11.glColor4f(1F, 1F, 1F, 1F);
-                        ((IBaubleRender) cosmetic.getItem()).onPlayerBaubleRender(cosmetic, event, type);
+                        ((IBaubleRender) cosmetic.getItem()).onPlayerBaubleRender(cosmetic, event.entityPlayer, type, partialTick);
                         GL11.glPopMatrix();
                         continue;
                     }
@@ -272,7 +272,7 @@ public class RenderHandler
                 {
                     GL11.glPushMatrix();
                     GL11.glColor4f(1F, 1F, 1F, 1F);
-                    ((IBaubleRender) stack.getItem()).onPlayerBaubleRender(stack, event, type);
+                    ((IBaubleRender) stack.getItem()).onPlayerBaubleRender(stack, event.entityPlayer, type, partialTick);
                     GL11.glPopMatrix();
                 }
             }

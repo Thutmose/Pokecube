@@ -76,7 +76,8 @@ print("Nature: "..natures[args])
 
 args = splicer.getInfo(tonumber(num),4)
 print()
-print("Egg Moves: "..args)
+print("Egg Moves")
+for k,v in pairs(args) do print("   "..v) end
 
 args = splicer.getInfo(tonumber(num),5)
 print()

@@ -222,7 +222,7 @@ public class ItemTarget extends Item
             return itemstack;
         }
 
-        if (player.isSneaking() && meta != 3)
+        if (player.isSneaking() && meta == 10)
         {
             TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(player);
             t.refresh(world);

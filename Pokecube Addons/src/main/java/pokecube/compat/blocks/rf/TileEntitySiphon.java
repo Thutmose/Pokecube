@@ -42,7 +42,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
         }
         catch (Exception e)
         {
-            // e.printStackTrace();
+             e.printStackTrace();
         }
     }
 

@@ -2,6 +2,9 @@ package pokecube.adventures.blocks.cloner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.TileEnergyHandler;
@@ -719,7 +722,9 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
     {
     }
 
-    @Callback
+    @Callback(doc = "function(slot:number, info:number) -- slot is which slot to get the info for,"
+            + " info is which information to return." + " 0 is the name," + " 1 is the ivs," + " 2 is the size,"
+            + " 3 is the nature," + " 4 is the list of egg moves," + " 5 is shininess ")
     /** Returns the info for the slot number given in args. the second argument
      * is which info to return.<br>
      * <br>
@@ -732,26 +737,56 @@ public class TileEntityCloner extends TileEnergyHandler implements IInventory, I
      * @param context
      * @param args
      * @return */
-    public Object[] getInfo(Context context, Arguments args)
+    public Object[] getInfo(Context context, Arguments args) throws Exception
     {
         ArrayList<Object> ret = new ArrayList<>();
         int i = args.checkInteger(0);
         int j = args.checkInteger(1);
-        if (i < 0 || i > inventory.length) i = 0;
+        if (i < 0 || i > inventory.length) throw new Exception("index out of bounds");
         ItemStack stack = inventory[i];
         if (stack != null)
         {
             if (j == 0) ret.add(stack.getDisplayName());
-            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))
+            else if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))
             {
-                if (j == 1) ret.add(stack.getTagCompound().getLong("ivs"));
-                if (j == 2) ret.add(stack.getTagCompound().getFloat("size"));
-                if (j == 3) ret.add(stack.getTagCompound().getByte("nature"));
-                if (j == 4) ret.add(stack.getTagCompound().getString("moves"));
-                if (j == 5) ret.add(stack.getTagCompound().getBoolean("shiny"));
+                if (j == 1)
+                {
+                    if (!stack.getTagCompound().hasKey("ivs")) throw new Exception("no ivs found");
+                    ret.add(stack.getTagCompound().getLong("ivs"));
+                }
+                if (j == 2)
+                {
+                    if (!stack.getTagCompound().hasKey("size")) throw new Exception("no size found");
+                    ret.add(stack.getTagCompound().getFloat("size"));
+                }
+                if (j == 3)
+                {
+                    if (!stack.getTagCompound().hasKey("nature")) throw new Exception("no nature found");
+                    ret.add(stack.getTagCompound().getByte("nature"));
+                }
+                if (j == 4)
+                {
+                    if (!stack.getTagCompound().hasKey("moves")) throw new Exception("no egg moves found");
+                    Map<Integer, String> moves = Maps.newHashMap();
+                    String eggMoves[] = stack.getTagCompound().getString("moves").split(";");
+                    if (eggMoves.length == 0) throw new Exception("no egg moves found");
+                    for (int k = 1; k < eggMoves.length + 1; k++)
+                    {
+                        moves.put(k, eggMoves[k - 1]);
+                    }
+                    ret.add(moves);
+                }
+                if (j == 5)
+                {
+                    if (!stack.getTagCompound().hasKey("shiny")) throw new Exception("no shinyInfo found");
+                    ret.add(stack.getTagCompound().getBoolean("shiny"));
+                }
             }
+            else throw new Exception("the itemstack does not contain the required info");
+
+            return ret.toArray();
         }
-        return ret.toArray();
+        throw new Exception("no item in slot " + i);
     }
 
 }

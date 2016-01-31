@@ -785,7 +785,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     }
 
     @Callback
-    public Object[] getMovesList(Context context, Arguments args)
+    public Object[] getMovesList(Context context, Arguments args) throws Exception
     {
         if (hasPC() && pc.isBound())
         {
@@ -793,14 +793,12 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             ArrayList<String> moves = getMoves(inv);
             return moves.toArray();
         }
-        else
-        {
-            return new Object[0];
-        }
+        if(!hasPC()) throw new Exception("no connected PC");
+        else throw new Exception("connected PC is not bound to a player");
     }
 
     @Callback
-    public Object[] applyMove(Context context, Arguments args)
+    public Object[] applyMove(Context context, Arguments args) throws Exception
     {
         if (hasPC() && pc.isBound())
         {
@@ -812,11 +810,13 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                 if (s.equalsIgnoreCase(move))
                 {
                     addMoveToTM(s);
-                    break;
+                    return new Object[]{};
                 }
             }
+            throw new Exception("requested move not found");
         }
-        return new Object[0];
+        if(!hasPC()) throw new Exception("no connected PC");
+        else throw new Exception("connected PC is not bound to a player");
     }
 
     private static class TMCConverter

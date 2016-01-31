@@ -271,7 +271,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
     }
 
     @Callback
-    public Object[] setDestination(Context context, Arguments args)
+    public Object[] setDestination(Context context, Arguments args) throws Exception
     {
         if (args.isDouble(0) && args.isDouble(1) && args.isDouble(2) && args.isDouble(3))
         {
@@ -287,15 +287,16 @@ public class TileEntityWarpPad extends TileEntityOwnable implements Environment,
             {
                 link.set(x, y, z, w);
             }
+            return new Object[] {};
         }
-        return new Object[] {};
+        throw new Exception("invalid arguments, expected number,number,number,number");
     }
 
     @Callback
-    public Object[] getDestination(Context context, Arguments args)
+    public Object[] getDestination(Context context, Arguments args) throws Exception
     {
         if (link != null) { return new Object[] { link.x, link.y, link.z, link.w }; }
-        return new Object[] {};
+        throw new Exception("no link");
     }
 
     @Override

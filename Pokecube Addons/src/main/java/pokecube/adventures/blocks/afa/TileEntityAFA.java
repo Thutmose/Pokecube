@@ -496,10 +496,14 @@ public class TileEntityAFA extends TileEntityOwnable
     }
 
     @Callback
-    public Object[] getAbility(Context context, Arguments args)
+    public Object[] getAbility(Context context, Arguments args) throws Exception
     {
-        String arg = ability == null ? "" : ability.getName();
-        return new Object[] { arg };
+        if (ability != null)
+        {
+            String arg = ability.getName();
+            return new Object[] { arg };
+        }
+        throw new Exception("no ability");
     }
 
     @Callback

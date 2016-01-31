@@ -351,7 +351,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Envir
     }
 
     @Callback
-    public Object[] getItemList(Context context, Arguments args)
+    public Object[] getItemList(Context context, Arguments args) throws Exception
     {
         if (isBound())
         {
@@ -364,10 +364,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Envir
             }
             return items.toArray();
         }
-        else
-        {
-            return new Object[0];
-        }
+        throw new Exception("PC not bound");
     }
 
     public static class Init

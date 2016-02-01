@@ -409,14 +409,18 @@ public class TileEntityAFA extends TileEntityOwnable
     @Override
     public boolean canConnectEnergy(EnumFacing facing)
     {
-        return facing == EnumFacing.DOWN;
+        return true;
     }
 
     @Override
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
-
-        return storage.receiveEnergy(maxReceive, simulate);
+        int receive = storage.receiveEnergy(maxReceive, simulate);
+        if (!simulate && receive > 0)
+        {
+            this.markDirty();
+        }
+        return receive;
     }
 
     @Override

@@ -18,6 +18,7 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
 
 	public BlockWarpPad() {
 		super(Material.rock);
+		this.setHardness(10);
 		this.setCreativeTab(mod_Pokecube.creativeTabPokecube);
 	}
 	

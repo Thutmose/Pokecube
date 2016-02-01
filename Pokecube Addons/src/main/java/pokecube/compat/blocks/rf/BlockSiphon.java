@@ -16,6 +16,7 @@ public class BlockSiphon extends Block implements ITileEntityProvider
 
 	public BlockSiphon() {
 		super(Material.iron);
+		this.setHardness(10);
 	}
 
 	@Override

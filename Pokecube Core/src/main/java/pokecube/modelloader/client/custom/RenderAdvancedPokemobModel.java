@@ -176,7 +176,10 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
             GL11.glPushMatrix();
-            GlStateManager.disableDepth();
+            EntityLivingBase player = Minecraft.getMinecraft().thePlayer;
+            float dist = entityliving.getDistanceToEntity(player);
+            if (dist < 2) GlStateManager.disableDepth();
+
             GL11.glTranslatef((float) d + 0.0F, (float) d1 + entityliving.height - 0.35f, (float) d2);
             GL11.glNormal3f(0.0F, 1.0F, 0.0F);
             GL11.glRotatef(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
@@ -352,12 +355,12 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
         TabulaModelSet set = TabulaPackLoader.modelMap.get(entry);
 
-        if(set==null)
+        if (set == null)
         {
             System.err.println(entry);
             set = TabulaPackLoader.modelMap.get(entry.baseForme);
         }
-        
+
         TabulaModel model = set.model;
         IModelParser<TabulaModel> parser = set.parser;
 
@@ -369,7 +372,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         ModelJson modelj = pars.modelMap.get(model);
         modelj.texturer = set.texturer;
         String phase = getPhase(set, entity, partialTick);
-        if(set.animator!=null)
+        if (set.animator != null)
         {
             phase = set.animator.modifyAnimation(entity, partialTick, phase);
         }
@@ -540,7 +543,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     public static boolean isHidden(String partIdentifier, TabulaModelSet set, IPokemob pokemob, boolean default_)
     {
-        if (set!=null && set.shearableIdents.contains(partIdentifier))
+        if (set != null && set.shearableIdents.contains(partIdentifier))
         {
             boolean shearable = ((IShearable) pokemob).isShearable(new ItemStack(Items.shears),
                     ((Entity) pokemob).worldObj, ((Entity) pokemob).getPosition());
@@ -551,7 +554,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     public static int getColour(String partIdentifier, TabulaModelSet set, IPokemob pokemob, int default_)
     {
-        if (set!=null && set.dyeableIdents.contains(partIdentifier))
+        if (set != null && set.dyeableIdents.contains(partIdentifier))
         {
             int rgba = 0xFF000000;
             rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;

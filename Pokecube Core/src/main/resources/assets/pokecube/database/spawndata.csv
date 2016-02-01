@@ -198,7 +198,7 @@ Latias,legendary day night ,beach 0.01:2:2,,
 Latios,legendary day night ,beach 0.01:2:2,,
 Kyogre,legendary day night,,ocean cave 0.0,
 Groudon,legendary day night,,wasteland mountain cave 0; nether cave 0,wet cold
-Rayquaza,legendary day night ,sky 0.001:1:1,,
+Rayquaza,legendary day night ,sky 0.00001:1:1,,
 Jirachi,legendary day night ,meteor 0.001:1:1,,
 Deoxys,legendary day night ,meteor 0.001:1:1,,
 Turtwig,starter day night ,forest 0.01,,

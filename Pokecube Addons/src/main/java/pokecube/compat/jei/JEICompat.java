@@ -20,7 +20,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.potion.Potion;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.client.gui.GuiCloner;
 import pokecube.compat.jei.cloner.ClonerRecipe;
@@ -54,7 +53,6 @@ public class JEICompat implements IModPlugin
     @Override
     public void register(IModRegistry registry)
     {
-        Thread.dumpStack();
         if (added) return;
         added = true;
         IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
@@ -95,12 +93,10 @@ public class JEICompat implements IModPlugin
         ClonerRecipe newRecipe = new ClonerRecipe(egg, Lists.newArrayList(mewhair, egg, potion), 132, 10000);
         newRecipes.add(newRecipe);
         potion = new ItemStack(Items.potionitem, 1, 8225);
-        newRecipe = new ClonerRecipe(egg, Lists.newArrayList(ironBlock, redstoneBlock, diamondBlock, dome, potion), 649, 30000);
+        newRecipe = new ClonerRecipe(egg, Lists.newArrayList(ironBlock, redstoneBlock, diamondBlock, dome, potion), 649,
+                30000);
         newRecipes.add(newRecipe);
-//        newRecipe = new ClonerRecipe(egg, Lists.newArrayList(mewhair, egg, potion), 150, 30000);
-//        newRecipes.add(newRecipe);
-        
-        
+
         registry.addRecipes(newRecipes);
     }
 

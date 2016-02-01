@@ -8,7 +8,9 @@ import static pokecube.core.PokecubeItems.registerItemTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderEntity;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
@@ -40,6 +42,7 @@ import pokecube.adventures.client.gui.GuiTrainerEdit;
 import pokecube.adventures.client.render.blocks.RenderAFA;
 import pokecube.adventures.client.render.entity.RenderTarget;
 import pokecube.adventures.client.render.entity.RenderTrainer;
+import pokecube.adventures.client.render.item.BaubleRenderHandler;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.events.RenderHandler;
@@ -131,7 +134,6 @@ public class ClientProxy extends CommonProxy
         }
         catch (ClassNotFoundException e)
         {
-
         }
 
         ClientRegistry.registerKeyBinding(bag = new KeyBinding("Open Bag", 23, "Pokecube"));

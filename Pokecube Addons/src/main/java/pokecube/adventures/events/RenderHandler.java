@@ -1,7 +1,11 @@
 package pokecube.adventures.events;
 
+import java.util.Set;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Sets;
 
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
@@ -9,6 +13,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -24,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.client.ClientProxy;
+import pokecube.adventures.client.render.item.BaubleRenderHandler;
 import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.bags.ItemBag;
@@ -37,9 +43,6 @@ import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
-import vazkii.botania.api.item.IBaubleRender;
-import vazkii.botania.api.item.IBaubleRender.RenderType;
-import vazkii.botania.api.item.ICosmeticAttachable;
 
 @SideOnly(Side.CLIENT)
 public class RenderHandler
@@ -47,6 +50,7 @@ public class RenderHandler
 
     public static float   partialTicks = 0.0F;
     public static boolean BOTANIA      = false;
+    private Set<RenderPlayer> addedLayers = Sets.newHashSet();
 
     public RenderHandler()
     {
@@ -55,73 +59,9 @@ public class RenderHandler
     @SubscribeEvent
     public void onPlayerRender(RenderPlayerEvent.Post event)
     {
-
-        if (BOTANIA) { return; }
-
-        EntityPlayer player = event.entityPlayer;
-        InventoryBaubles inv = PlayerHandler.getPlayerBaubles(player);
-
-        GL11.glPushMatrix();
-        float yaw = 180;
-        float yawOffset = player.prevRenderYawOffset
-                + (player.renderYawOffset - player.prevRenderYawOffset) * event.partialRenderTick;
-        yaw += yawOffset;
-
-        if (player != Minecraft.getMinecraft().thePlayer)
-        {
-            Vector3 source = Vector3.getNewVectorFromPool().set(Minecraft.getMinecraft().thePlayer);
-            Vector3 target = Vector3.getNewVectorFromPool().set(player);
-
-            source.set(target.subtract(source));
-
-            GL11.glTranslated(source.x, source.y, source.z);
-            // Clear out the jitteryness from rendering
-            // TODO get this interpolated correctly, it needs to be done for
-            // both player's movement.
-            // source.x = player.prevPosX - player.posX;
-            // source.y = player.prevPosY - player.posY;
-            // source.z = player.prevPosZ - player.posZ;
-            //
-            // source.scalarMultBy(event.partialRenderTick);
-            // GL11.glTranslated(source.x, source.y, source.z);
-        }
-        GL11.glRotatef(-yaw, 0, 1, 0);
-        GL11.glTranslated(0, 1.4, 0);
-
-        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-        boolean loop = false;
-        for (int i = 2; i < trace.length; i++)
-        {
-            if (trace[i].getClassName().toLowerCase().contains("pokedex"))
-            {
-                loop = true;
-                break;
-            }
-        }
-        if (loop)
-        {
-            GL11.glTranslated(-1, 0.35, 2);
-        }
-
-        GL11.glRotatef(180, 0, 0, 1);
-
-        dispatchRenders(inv, event, RenderType.BODY, event.partialRenderTick);
-        GL11.glPopMatrix();
-
-        yaw = player.prevRotationYawHead
-                + (player.rotationYawHead - player.prevRotationYawHead) * event.partialRenderTick;
-        yawOffset = player.prevRenderYawOffset
-                + (player.renderYawOffset - player.prevRenderYawOffset) * event.partialRenderTick;
-        float pitch = player.prevRotationPitch
-                + (player.rotationPitch - player.prevRotationPitch) * event.partialRenderTick;
-
-        GL11.glPushMatrix();
-        GL11.glRotatef(yawOffset, 0, -1, 0);
-        GL11.glRotatef(yaw - 270, 0, 1, 0);
-        GL11.glRotatef(pitch, 0, 0, 1);
-        dispatchRenders(inv, event, RenderType.HEAD, event.partialRenderTick);
-
-        GL11.glPopMatrix();
+        if (BOTANIA || addedLayers.contains(event.renderer)) { return; }
+        event.renderer.addLayer(new BaubleRenderHandler());
+        addedLayers.add(event.renderer);
     }
 
     @SubscribeEvent
@@ -243,39 +183,5 @@ public class RenderHandler
         GlStateManager.enableCull();
         GlStateManager.disableBlend();
         GlStateManager.depthMask(true);
-    }
-
-    private void dispatchRenders(InventoryBaubles inv, RenderPlayerEvent event, RenderType type, float partialTick)
-    {
-        for (int i = 0; i < inv.getSizeInventory(); i++)
-        {
-            ItemStack stack = inv.getStackInSlot(i);
-            if (stack != null)
-            {
-                Item item = stack.getItem();
-
-                if (item instanceof ICosmeticAttachable)
-                {
-                    ICosmeticAttachable attachable = (ICosmeticAttachable) item;
-                    ItemStack cosmetic = attachable.getCosmeticItem(stack);
-                    if (cosmetic != null)
-                    {
-                        GL11.glPushMatrix();
-                        GL11.glColor4f(1F, 1F, 1F, 1F);
-                        ((IBaubleRender) cosmetic.getItem()).onPlayerBaubleRender(cosmetic, event.entityPlayer, type, partialTick);
-                        GL11.glPopMatrix();
-                        continue;
-                    }
-                }
-
-                if (item instanceof IBaubleRender)
-                {
-                    GL11.glPushMatrix();
-                    GL11.glColor4f(1F, 1F, 1F, 1F);
-                    ((IBaubleRender) stack.getItem()).onPlayerBaubleRender(stack, event.entityPlayer, type, partialTick);
-                    GL11.glPopMatrix();
-                }
-            }
-        }
     }
 }

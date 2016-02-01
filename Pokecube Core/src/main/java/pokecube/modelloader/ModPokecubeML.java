@@ -152,7 +152,7 @@ public class ModPokecubeML
         proxy.init();
         if (info)
         {
-            for (PokedexEntry e : Database.data.values())
+            for (PokedexEntry e : Database.allFormes)
             {
                 System.out.println(e.getName());
             }

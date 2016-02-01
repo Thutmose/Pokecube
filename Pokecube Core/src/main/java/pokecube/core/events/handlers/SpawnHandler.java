@@ -293,7 +293,7 @@ public final class SpawnHandler
         if (!v.doChunksExist(world, 10)) return ret;
         AxisAlignedBB box = v.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, 20,
+                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, 40,
                         Mod_Pokecube_Helper.mobDespawnRadius));
 
         int num = 0;

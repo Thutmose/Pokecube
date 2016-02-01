@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-public class TileEntityOwnable extends TileEntity
+public class TileEntityOwnable extends TileEntity implements IOwnableTE
 {
     public UUID placer;
 

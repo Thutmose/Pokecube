@@ -2,7 +2,6 @@ package pokecube.core.events.handlers;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -57,7 +56,6 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
@@ -68,6 +66,7 @@ import pokecube.core.mod_Pokecube;
 import pokecube.core.ai.properties.GuardAIProperties;
 import pokecube.core.ai.properties.StorageAIProperties;
 import pokecube.core.ai.thread.PokemobAIThread;
+import pokecube.core.blocks.IOwnableTE;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -110,8 +109,6 @@ public class EventsHandler
     static double mean       = 0;
     static long   starttime  = 0;
 
-    private HashSet<Integer> pendingStarters = new HashSet<Integer>();
-
     @SubscribeEvent
     public void worldLoadEvent(Load evt)
     {
@@ -132,9 +129,9 @@ public class EventsHandler
     public void placeEvent(PlaceEvent event)
     {
         TileEntity te = event.world.getTileEntity(event.pos);
-        if (te != null && te instanceof TileEntityOwnable)
+        if (te != null && te instanceof IOwnableTE)
         {
-            TileEntityOwnable ownable = (TileEntityOwnable) te;
+            IOwnableTE ownable = (IOwnableTE) te;
             ownable.setPlacer(event.player);
         }
     }
@@ -309,7 +306,7 @@ public class EventsHandler
         {
             NBTTagCompound nbt = new NBTTagCompound();
             StatsCollector.writeToNBT(nbt);
-
+            nbt.setBoolean("playerhasstarter", PokecubeSerializer.getInstance().hasStarter(entityPlayer));
             PokecubeSerializer.getInstance().writeToNBT2(nbt);
             nbt.setBoolean("hasSerializer", true);
             boolean offline = !FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode();
@@ -322,18 +319,8 @@ public class EventsHandler
         {
             if (Mod_Pokecube_Helper.guiOnLogin && !PokecubeSerializer.getInstance().hasStarter(entityPlayer))
             {
-                pendingStarters.add(evt.player.getEntityId());
+                new ChooseFirst(evt.player);
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void PlayerLoggout(PlayerLoggedOutEvent evt)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide() != Side.CLIENT
-                && !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
-        {
-            pendingStarters.clear();
         }
     }
 
@@ -418,13 +405,6 @@ public class EventsHandler
             if (player.getTeam() == null)
             {
                 player.worldObj.getScoreboard().addPlayerToTeam(player.getName(), "Trainers");
-            }
-            if (pendingStarters.contains(player.getEntityId()))
-            {
-                PokecubeClientPacket packet2 = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.CHOOSE1ST });
-                System.out.println("Sending Packet to " + player);
-                PokecubePacketHandler.sendToClient(packet2, player);
-                pendingStarters.remove(player.getEntityId());
             }
         }
 
@@ -662,6 +642,27 @@ public class EventsHandler
                     mess += "\nIf you find bugs, please update and check if they still occur before reporting them.";
                     (event.player).addChatMessage(new ChatComponentText(mess));
                 }
+                MinecraftForge.EVENT_BUS.unregister(this);
+            }
+        }
+    }
+
+    public static class ChooseFirst
+    {
+        final EntityPlayer player;
+        public ChooseFirst(EntityPlayer player)
+        {
+            this.player = player;
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void onPlayerJoin(TickEvent.PlayerTickEvent event)
+        {
+            if (event.player == player)
+            {
+                PokecubeClientPacket packet2 = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.CHOOSE1ST });
+                PokecubePacketHandler.sendToClient(packet2, event.player);
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }

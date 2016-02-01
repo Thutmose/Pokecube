@@ -30,6 +30,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -198,8 +200,11 @@ public class PokecubePacketHandler
             }
             pokecube.core.client.gui.GuiNewChooseFirstPokemob.starters = starters.toArray(new Integer[0]);
 
-            player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 1,
-                    0);
+            // player.openGui(mod_Pokecube.instance,
+            // Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0,
+            // 1,
+            // 0);
+            new GuiOpener(player);
             return;
         }
 
@@ -208,8 +213,11 @@ public class PokecubePacketHandler
         boolean special = specialStarters.containsKey(username);
         if (!special || (evt.isCanceled() && evt.getResult() != Result.DENY))
         {
-            player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 0,
-                    0);
+            // player.openGui(mod_Pokecube.instance,
+            // Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0,
+            // 0,
+            // 0);
+            new GuiOpener(player);
         }
         else
         {
@@ -218,27 +226,35 @@ public class PokecubePacketHandler
             {
                 if (i == null)
                 {
-                    player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj,
-                            0, 0, 0);
+                    // player.openGui(mod_Pokecube.instance,
+                    // Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID,
+                    // player.worldObj,
+                    // 0, 0, 0);
+                    new GuiOpener(player);
                     return;
                 }
             }
-            // ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-            // DataOutputStream outputStream = new DataOutputStream(bos);
-            //// TODO see what this was doing
-            // try
-            // {
-            // outputStream.writeInt(-1);
-            // PokecubeServerPacket pack = PokecubePacketHandler
-            // .makeServerPacket(PokecubeServerPacket.EDITPOKEMOB,
-            // bos.toByteArray());
-            // PokecubePacketHandler.sendToServer(pack);
-            // }
-            // catch (Exception ex)
-            // {
-            // ex.printStackTrace();
-            // }
         }
+    }
+
+    private static class GuiOpener
+    {
+        final EntityPlayer player;
+
+        public GuiOpener(EntityPlayer player)
+        {
+            this.player = player;
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void tick(ClientTickEvent event)
+        {
+            player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 0,
+                    0);
+            MinecraftForge.EVENT_BUS.unregister(this);
+        }
+
     }
 
     public static class StarterInfo
@@ -444,6 +460,7 @@ public class PokecubePacketHandler
                 new GuiScrollableLists();
 
                 PokecubeSerializer.getInstance().readFromNBT(nbt);
+                PokecubeSerializer.getInstance().setHasStarter(player, nbt.getBoolean("playerhasstarter"));
             }
             else if (nbt.getBoolean("hasTerrain"))
             {

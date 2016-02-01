@@ -12,6 +12,7 @@ import static pokecube.core.handlers.ItemHandler.log0;
 import static pokecube.core.handlers.ItemHandler.log1;
 import static pokecube.core.handlers.ItemHandler.plank0;
 
+import java.io.InputStream;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.UUID;
@@ -26,6 +27,7 @@ import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
@@ -269,6 +271,17 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public void initClient()
     {
         super.initClient();
+        
+        ResourceLocation pokecenterloop = new ResourceLocation("pokecube:sounds/pokecenterloop.ogg");
+        try
+        {
+            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(pokecenterloop);
+            res.getInputStream().close();
+        }
+        catch(Exception e)
+        {
+            TileHealTable.noSound = true;
+        }
     }
 
     private HashMap<Integer, Object> cubeRenders = new HashMap<Integer, Object>();

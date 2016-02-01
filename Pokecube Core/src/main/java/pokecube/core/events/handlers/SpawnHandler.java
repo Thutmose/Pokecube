@@ -293,7 +293,7 @@ public final class SpawnHandler
         if (!v.doChunksExist(world, 10)) return ret;
         AxisAlignedBB box = v.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, Mod_Pokecube_Helper.mobDespawnRadius,
+                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, 20,
                         Mod_Pokecube_Helper.mobDespawnRadius));
 
         int num = 0;
@@ -331,7 +331,7 @@ public final class SpawnHandler
             if (index >= entries.size()) return ret;
             PokedexEntry dbe = entries.get(index);
             float weight = dbe.getSpawnData().getWeight(b);
-            if (b > 256) weight += (1 - weight) / 2;
+            if (b > 256) weight *= 10;
             if (Math.random() > weight) return ret;
 
             if (!dbe.flys())

@@ -27,7 +27,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     int ticks = 0;
     int tick1 = -20;
     boolean stopped = false;
-    static boolean noSound = false;
+    public static boolean noSound = false;
     @Override
     public void update()
     {
@@ -53,10 +53,6 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
                 worldObj.playRecord(pos, null);
                 stopped = true;
             }
-        }
-        if(tick1 > ticks - 3)
-        {
-            noSound = true;
         }
         ticks++;
     }

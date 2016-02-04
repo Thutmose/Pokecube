@@ -120,6 +120,11 @@ public abstract class AIBase implements IAIRunnable
     {
         toRun.add(new PathInfo(id, dim, path, speed));
     }
+    
+    protected void addEntityPath(Entity entity, PathEntity path, double speed)
+    {
+        toRun.add(new PathInfo(entity.getEntityId(), entity.dimension, path, speed));
+    }
 
     List<Object> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)
     {

@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import pokecube.core.items.megastuff.ItemMegaring;
 
@@ -30,30 +29,24 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
 
         InventoryBaubles inv = PlayerHandler.getPlayerBaubles(player);
 
-        int n = 0;
-        for (int i = 0; i < inv.getSizeInventory(); i++)
+        boolean left = false;
+        boolean right = false;
+
+        if (inv.getStackInSlot(1) != null && inv.getStackInSlot(1).getItem() instanceof ItemMegaring)
         {
-            ItemStack stack = inv.getStackInSlot(i);
-            if (stack != null)
-            {
-                Item item = stack.getItem();
-                if (item instanceof ItemMegaring)
-                {
-                    itemstack = stack;
-                    n = i;
-                    break;
-                }
-            }
+            right = true;
         }
-        if (itemstack != null)
+        if (inv.getStackInSlot(2) != null && inv.getStackInSlot(2).getItem() instanceof ItemMegaring)
         {
+            left = true;
+        }
+
+        if (left)
+        {
+            itemstack = inv.getStackInSlot(2);
             GlStateManager.pushMatrix();
-            if (n == 1 ) ((ModelBiped) this.livingEntityRenderer.getMainModel()).bipedRightArm.postRender(0.0625F);
-            else 
-            {
-                ((ModelBiped) this.livingEntityRenderer.getMainModel()).bipedLeftArm.postRender(0.0625f);
-                GlStateManager.translate(0.1, -0.01, 0);
-            }
+            ((ModelBiped) this.livingEntityRenderer.getMainModel()).bipedLeftArm.postRender(0.0625f);
+            GlStateManager.translate(0.1, -0.01, 0);
             GlStateManager.translate(-0.0625F, 0.4375F, 0.0625F);
 
             Minecraft minecraft = Minecraft.getMinecraft();
@@ -62,7 +55,24 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
             {
                 GlStateManager.translate(0.0F, 0.203125F, 0.0F);
             }
-            //TODO actual ring model here.
+            // TODO actual ring model here.
+            minecraft.getItemRenderer().renderItem(player, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON);
+            GlStateManager.popMatrix();
+        }
+        if (right)
+        {
+            itemstack = inv.getStackInSlot(1);
+            GlStateManager.pushMatrix();
+            ((ModelBiped) this.livingEntityRenderer.getMainModel()).bipedRightArm.postRender(0.0625F);
+            GlStateManager.translate(-0.0625F, 0.4375F, 0.0625F);
+
+            Minecraft minecraft = Minecraft.getMinecraft();
+
+            if (player.isSneaking())
+            {
+                GlStateManager.translate(0.0F, 0.203125F, 0.0F);
+            }
+            // TODO actual ring model here.
             minecraft.getItemRenderer().renderItem(player, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON);
             GlStateManager.popMatrix();
         }

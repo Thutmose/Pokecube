@@ -253,11 +253,12 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob {
     	return getPokedexEntry().foods[3];
     }
     
-    // 0 is sunrise, 6000 noon, 12000 dusk, 18000 midnight, 23999 TODO refine this
+    // 0 is sunrise, 6000 noon, 12000 dusk, 18000 midnight, 23999
     public boolean isGoodSleepingSpot(ChunkCoordinate c)
     {
     	float light = this.getBrightness(0);
     	List<TimePeriod> active = getPokedexEntry().activeTimes();
+    	//TODO make this check if near to home location.
     	for(TimePeriod p : active)
     	{
     		if(p.contains(18000))

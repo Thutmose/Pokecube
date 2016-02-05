@@ -36,6 +36,7 @@ import pokecube.adventures.items.bags.ItemBag;
 import pokecube.adventures.network.PacketPokeAdv;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.client.ClientProxyPokecube;
+import pokecube.core.client.render.entity.RingRenderer;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
@@ -61,6 +62,7 @@ public class RenderHandler
     {
         if (BOTANIA || addedLayers.contains(event.renderer)) { return; }
         event.renderer.addLayer(new BaubleRenderHandler());
+        event.renderer.addLayer(new RingRenderer(event.renderer));
         addedLayers.add(event.renderer);
     }
 

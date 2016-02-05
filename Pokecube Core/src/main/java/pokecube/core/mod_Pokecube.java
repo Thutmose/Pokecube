@@ -611,7 +611,6 @@ public class mod_Pokecube extends PokecubeMod
         {
             VillagerRegistry.instance().registerVillageCreationHandler(new PokeCentreCreationHandler());
             VillagerRegistry.instance().registerVillageCreationHandler(new PokeMartCreationHandler());
-            GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
             PokecubePacketHandler.giveHealer = false;
             try
             {
@@ -630,6 +629,7 @@ public class mod_Pokecube extends PokecubeMod
         {
 
         }
+        GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
         // TODO figure out good spawn weights, Also config for these
         GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);

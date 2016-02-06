@@ -543,7 +543,7 @@ public class mod_Pokecube extends PokecubeMod
         Reader fileIn = null;
         BufferedReader br;
 
-        String giftLoc = "https://gist.githubusercontent.com/Thutmose/b2b592fd6d554e9cd55f/raw";
+        String giftLoc = GIFTURL;
         giftLocations.add(giftLoc);
 
         for (String location : giftLocations)

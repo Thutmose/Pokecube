@@ -110,7 +110,6 @@ public final class SpawnHandler
 
     public static void addSpawn(PokedexEntry entry)
     {
-
         SpawnData spawn = entry.getSpawnData();
         if (spawn == null) return;
 
@@ -146,7 +145,6 @@ public final class SpawnHandler
 
     public static void addSpawn(PokedexEntry entry, BiomeGenBase b)
     {
-
         SpawnData spawn = entry.getSpawnData();
         if (spawn == null) return;
 
@@ -179,7 +177,6 @@ public final class SpawnHandler
     /** Given a player, find a random position near it. */
     public static Vector3 getRandomSpawningPointNearEntity(World world, Entity player, int maxRange)
     {
-
         if (player == null) return null;
 
         Vector3 temp;
@@ -385,7 +382,6 @@ public final class SpawnHandler
 
     private int doSpawnForType(World world, Vector3 loc, PokedexEntry dbe, JEP parser, TerrainSegment t)
     {
-
         SpawnData entry = dbe.getSpawnData();
 
         int totalSpawnCount = 0;
@@ -538,7 +534,6 @@ public final class SpawnHandler
     public static boolean creatureSpecificInit(EntityLiving entityliving, World world, double posX, double posY,
             double posZ, Vector3 spawnPoint)
     {
-
         if (ForgeEventFactory.doSpecialSpawn(entityliving, world, (float) posX, (float) posY,
                 (float) posZ)) { return false; }
 

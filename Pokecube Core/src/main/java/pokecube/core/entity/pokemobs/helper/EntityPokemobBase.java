@@ -374,6 +374,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             // return;
         }
+        Vector3 temp = Vector3.getNewVectorFromPool().set(here);
+        Vector3 temp1 = Vector3.getNewVectorFromPool().setToVelocity(this);
         super.onUpdate();
 
         boolean aNan = false;
@@ -396,6 +398,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (aNan)
         {
             System.err.println(this + " had a NaN component in velocity");
+            System.out.println(here+" "+temp);
+            System.out.println(temp1);
             new Exception().printStackTrace();
             this.returnToPokecube();
         }

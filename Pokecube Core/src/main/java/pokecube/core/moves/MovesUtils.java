@@ -925,6 +925,7 @@ public class MovesUtils implements IMoveConstants
             double d0 = attacked.posX - entityAttacker.posX;
             double d1 = attacked.posZ - entityAttacker.posZ;
             float f1 = MathHelper.sqrt_double(d0 * d0 + d1 * d1);
+            f1 = Math.max(f1, 0.25f);
             entityAttacker.motionX += d0 / f1 * 0.25D * 0.8D + entityAttacker.motionX * 0.2D;
             entityAttacker.motionZ += d1 / f1 * 0.25D * 0.8D + entityAttacker.motionZ * 0.2D;
             entityAttacker.motionY = 0.2d;

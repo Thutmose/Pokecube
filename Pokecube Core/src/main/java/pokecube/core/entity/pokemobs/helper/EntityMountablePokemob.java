@@ -15,6 +15,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -147,15 +148,18 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
                 && !((EntityPlayer) this.riddenByEntity).capabilities.isCreativeMode)
         {
             int hunger = getHungerTime();
-            if (hunger < 0.5 * Mod_Pokecube_Helper.pokemobLifeSpan)
+            if (hunger < 0.85 * Mod_Pokecube_Helper.pokemobLifeSpan)
             {
                 hungerFactor = 1;
                 return true;
             }
             else
             {
-                if (this.ticksExisted % 20 == 0 && !worldObj.isRemote) ((EntityPlayer) this.riddenByEntity)
-                        .addChatMessage(new ChatComponentText("Your pokemob is too hungry to move quickly"));
+                if (this.ticksExisted % 20 == 0 && !worldObj.isRemote)
+                {
+                    String mess = StatCollector.translateToLocal("pokemob.hungry.slow");
+                    ((EntityPlayer) this.riddenByEntity).addChatMessage(new ChatComponentText(mess));
+                }
                 hungerFactor = 0.01f;
                 return false;
             }
@@ -338,10 +342,9 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
         speedFactor = ((float) this.getPokedexEntry().getStatVIT()) / 75;
 
-        if (Math.random() < 0.05 / (this.getLevel()))
+        if (Math.random() < 0.1 / (this.getLevel()))
         {
-            System.out.println(" " + this.getHungerTime());
-            this.setHungerTime(this.getHungerTime() + 10);
+            this.setHungerTime(this.getHungerTime() + Mod_Pokecube_Helper.pokemobLifeSpan / 5);
         }
         checkHunger();
 

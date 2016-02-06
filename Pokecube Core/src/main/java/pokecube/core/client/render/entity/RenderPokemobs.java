@@ -98,7 +98,6 @@ public class RenderPokemobs extends RenderPokemob
     @Override
     protected ResourceLocation getPokemobTexture(IPokemob entity)
     {
-
         IPokemob mob = (IPokemob) entity;
 
         if (mob.getTransformedTo() instanceof IPokemob)
@@ -108,7 +107,8 @@ public class RenderPokemobs extends RenderPokemob
             if (num == 132)
             {
                 if (((EntityLiving) mob).getEntityData()
-                        .getBoolean("dittotag")) { return super.getPokemobTexture(mob); }
+                        .getBoolean("dittotag")) 
+                { return super.getPokemobTexture(mob); }
             }
             mob = (IPokemob) mob.getTransformedTo();
         }

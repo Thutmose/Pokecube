@@ -64,14 +64,15 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     @Override
     public void doRender(T entity, double d0, double d1, double d2, float yaw, float partialTick)
     {
+        IPokemob mob = (IPokemob) entity;
+        T toRender = entity;
+        if (mob.getTransformedTo() instanceof IPokemob)
+        {
+            toRender = (T) mob.getTransformedTo();
+        }
 
         model = (LoadedModel<T>) AnimationLoader.getModel(modelName);
 
-        if (model2 == null && model2Loc != null)
-        {
-            model2Loc = model2Loc.replace("models/", "");
-            model2 = BakedRenderer.loadModel("pokecube_ml:pokemobs/Onix.b3d");
-        }
         if (model2 != null)
         {
             if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
@@ -123,8 +124,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
                 if (entity.getHealth() <= 0) this.rotateCorpse(entity, f8, yaw, partialTick);
                 // Lighting
                 func_177105_a(entity, partialTick);
-                renderTabula(entity, d0, d1, d2, yaw, partialTick);
-                renderStatusModel(entity, d0, d1, d2, yaw, partialTick);
+                renderTabula(toRender, d0, d1, d2, yaw, partialTick);
+                renderStatusModel(toRender, d0, d1, d2, yaw, partialTick);
                 GL11.glPopMatrix();
                 renderHp(entity, d0, d1, d2, yaw, partialTick);
                 isTabula = true;
@@ -133,9 +134,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             {
                 e.printStackTrace();
             }
-
             MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
-
             return;
         }
 
@@ -161,8 +160,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         // Lighting
         func_177105_a(entity, partialTick);
         model.currentPhase = getPhase(null, entity, partialTick);
-        model.doRender((T) entity, d0, d1, d2, yaw, partialTick);
-        renderStatusModel(entity, d0, d1, d2, yaw, partialTick);
+        model.doRender(toRender, d0, d1, d2, yaw, partialTick);
+        renderStatusModel(toRender, d0, d1, d2, yaw, partialTick);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
         GL11.glPopMatrix();
         renderHp(entity, d0, d1, d2, yaw, partialTick);

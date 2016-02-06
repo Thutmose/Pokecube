@@ -51,7 +51,6 @@ public class ClientProxy extends CommonProxy
 
     public static KeyBinding bag;
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void preinit()
     {

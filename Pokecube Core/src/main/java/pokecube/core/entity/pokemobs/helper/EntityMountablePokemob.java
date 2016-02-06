@@ -18,11 +18,11 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod.Type;
-import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.utils.PokeType;
 
 /** Handles the HM behaviour.
@@ -141,22 +141,21 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         return this;
     }
 
-    public boolean consumeBerry()
+    public boolean checkHunger()
     {
-        if (this.riddenByEntity instanceof EntityPlayer)
+        if (this.riddenByEntity instanceof EntityPlayer
+                && !((EntityPlayer) this.riddenByEntity).capabilities.isCreativeMode)
         {
-            int berries = Move_Utility.countBerries(this, (EntityPlayer) this.riddenByEntity);
-            if (berries > 0)
+            int hunger = getHungerTime();
+            if (hunger < 0.5 * Mod_Pokecube_Helper.pokemobLifeSpan)
             {
-                Move_Utility.consumeBerries(this, 1);
-
-                ((EntityPlayer) this.riddenByEntity).addChatMessage(new ChatComponentText("Your pokemon eats a berry"));
                 hungerFactor = 1;
                 return true;
             }
             else
             {
-                ((EntityPlayer) this.riddenByEntity).addChatMessage(new ChatComponentText("Your pokemon is Hungry"));
+                if (this.ticksExisted % 20 == 0 && !worldObj.isRemote) ((EntityPlayer) this.riddenByEntity)
+                        .addChatMessage(new ChatComponentText("Your pokemob is too hungry to move quickly"));
                 hungerFactor = 0.01f;
                 return false;
             }
@@ -341,8 +340,10 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
         if (Math.random() < 0.05 / (this.getLevel()))
         {
-            consumeBerry();
+            System.out.println(" " + this.getHungerTime());
+            this.setHungerTime(this.getHungerTime() + 10);
         }
+        checkHunger();
 
         if (this.isInWater() && (!(this.canUseSurf())))
         {

@@ -47,7 +47,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     public void onLivingUpdate()
     {
         super.onLivingUpdate();
-
+        int hungerTime = getHungerTime();
         sleepy = true;
         for (TimePeriod p : getPokedexEntry().activeTimes())
         {
@@ -136,7 +136,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         }
         vec.set(vBak);
 
-        hungerTime = 0;
+        setHungerTime(0);
         hungerCooldown = 0;
 
         setPokemonAIState(HUNTING, false);
@@ -354,13 +354,13 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     @Override
     public int getHungerTime()
     {
-        return hungerTime;
+        return getDataWatcher().getWatchableObjectInt(HUNGERDW);
     }
 
     @Override
     public void setHungerTime(int hungerTime)
     {
-        this.hungerTime = hungerTime;
+        getDataWatcher().updateObject(HUNGERDW, hungerTime);
     }
 
     @Override

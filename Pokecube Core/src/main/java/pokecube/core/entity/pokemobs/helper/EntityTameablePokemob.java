@@ -66,7 +66,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
     protected float            prevTimePokemonIsShaking;
     protected int              pokedexNb = 0;
     public float               length    = 1;
-    protected int              hungerTime;
+    // protected int hungerTime;
     protected EntityLivingBase owner;
 
     private String ownerName = "";
@@ -95,7 +95,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
     static final int STATMODDW         = 18;
     static final int BOOMSTATEDW       = 19;
     static final int EXPDW             = 20;
-//    static final int SHEARDW           = 21;
+    static final int HUNGERDW          = 21;
     static final int NICKNAMEDW        = 22;
     static final int STATUSMOVEINDEXDW = 23;
     static final int EVS1DW            = 24;
@@ -120,8 +120,8 @@ public abstract class EntityTameablePokemob extends EntityTameable
         dataWatcher.addObject(STATMODDW, new Integer(1717986918));// stat
                                                                   // modifiers
         dataWatcher.addObject(EXPDW, new Integer(0));// exp for level 1
-//        dataWatcher.addObject(SHEARDW, new Byte((byte) 0));// used for mareep
-//                                                           // for sheared status
+        dataWatcher.addObject(HUNGERDW, new Integer(0));// Hunger time
+        // // for sheared status
         dataWatcher.addObject(NICKNAMEDW, "");// nickname
         dataWatcher.addObject(EVS1DW, new Integer(1));// evs
         dataWatcher.addObject(EVS2DV, new Integer(1));// evs
@@ -172,7 +172,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setInteger(PokecubeSerializer.POKEDEXNB, pokedexNb);
         nbttagcompound.setInteger("PokemobActionState", dataWatcher.getWatchableObjectInt(5));
-        nbttagcompound.setInteger("hungerTime", hungerTime);
+        nbttagcompound.setInteger("hungerTime", getHungerTime());
         nbttagcompound.setInteger("specialInfo", getSpecialInfo());
         nbttagcompound.setIntArray("homeLocation",
                 new int[] { getHome().getX(), getHome().getY(), getHome().getZ(), (int) getHomeDistance() });
@@ -210,7 +210,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
         this.setPokedexEntry(Database.getEntry(pokedexNb));
         this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
         dataWatcher.updateObject(5, nbttagcompound.getInteger("PokemobActionState"));
-        hungerTime = nbttagcompound.getInteger("hungerTime");
+        setHungerTime(nbttagcompound.getInteger("hungerTime"));
         int[] home = nbttagcompound.getIntArray("homeLocation");
         if (home.length == 4)
         {
@@ -558,7 +558,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
 
     protected void handleArmourAndSaddle()
     {
-        if (worldObj!=null && !this.worldObj.isRemote)
+        if (worldObj != null && !this.worldObj.isRemote)
         {
             setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != null);
         }

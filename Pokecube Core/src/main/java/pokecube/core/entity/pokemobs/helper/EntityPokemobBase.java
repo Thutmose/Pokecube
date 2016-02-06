@@ -299,7 +299,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     protected boolean canDespawn()
     {
-        boolean canDespawn = hungerTime > Mod_Pokecube_Helper.pokemobLifeSpan;
+        boolean canDespawn = getHungerTime() > Mod_Pokecube_Helper.pokemobLifeSpan;
         boolean checks = getPokemonAIState(TAMED) || this.getPokemonOwner() != null || getPokemonAIState(ANGRY)
                 || getAttackTarget() != null || this.hasCustomName() || isAncient();
 

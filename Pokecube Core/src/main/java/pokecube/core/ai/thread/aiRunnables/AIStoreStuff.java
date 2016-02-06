@@ -20,7 +20,7 @@ import thut.api.maths.Vector3;
 
 public class AIStoreStuff extends AIBase implements StorableAI
 {
-    public static int  COOLDOWN  = 2000;
+    public static int  COOLDOWN  = 500;
     final EntityLiving entity;
     final boolean[]    states    = { false, false };
     final int[]        cooldowns = { 0, 0 };
@@ -155,7 +155,7 @@ public class AIStoreStuff extends AIBase implements StorableAI
         else
         {
             //Longer cooldown if there is no inventory found at all.
-            cooldowns[1] = cooldowns[0] = 10*COOLDOWN;
+            cooldowns[1] = cooldowns[0] = 50*COOLDOWN;
         }
     }
 

@@ -293,7 +293,7 @@ public final class SpawnHandler
         if (!v.doChunksExist(world, 10)) return ret;
         AxisAlignedBB box = v.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, Math.min(40, Mod_Pokecube_Helper.mobDespawnRadius/2),
+                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, Math.min(40, Mod_Pokecube_Helper.mobDespawnRadius / 2),
                         Mod_Pokecube_Helper.mobDespawnRadius));
 
         int num = 0;
@@ -675,6 +675,8 @@ public final class SpawnHandler
         }
         try
         {
+            // Only tick once per second
+            if (world.getTotalWorldTime() % 20 != 0) return;
 
             if (world.getGameRules().getBoolean("doMobSpawning") && Mod_Pokecube_Helper.deactivateAnimals
                     && Mod_Pokecube_Helper.deactivateMonsters)

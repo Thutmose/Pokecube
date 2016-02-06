@@ -40,6 +40,7 @@ public abstract class PokecubeMod
     public final static String MINFORGEVERSION = "[11.15.0.1650,)";
     
     public final static String UPDATEURL = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Core/versions.json";
+    public final static String CONTRIBURL = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/contributors.json";
 	
     public static final int MAX_DAMAGE = 0x7FFF;
     public static final int FULL_HEALTH = MAX_DAMAGE-1;

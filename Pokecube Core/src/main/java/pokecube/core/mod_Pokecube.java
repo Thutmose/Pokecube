@@ -87,6 +87,7 @@ import pokecube.core.events.handlers.Commands;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
@@ -646,7 +647,7 @@ public class mod_Pokecube extends PokecubeMod
         removeAllMobs();
         PokecubeItems.init();
         Database.postInit();
-        StarterInfo.processStarterInfo(Database.defaultStarts);
+        StarterInfo.processStarterInfo(ConfigHandler.defaultStarts);
         postInitPokemobs();
         Mod_Pokecube_Helper.addVillagerTrades();
         Mod_Pokecube_Helper.registerStarterTrades();

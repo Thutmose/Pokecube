@@ -3,7 +3,18 @@ package pokecube.core.handlers;
 import static pokecube.core.interfaces.PokecubeMod.hardMode;
 import static pokecube.core.interfaces.PokecubeMod.semiHardMode;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import net.minecraft.init.Blocks;
 import net.minecraftforge.common.config.Configuration;
@@ -17,10 +28,13 @@ import pokecube.core.utils.PokecubeSerializer;
 
 public class ConfigHandler extends Mod_Pokecube_Helper
 {
+    public static String[] defaultStarts = {};
+
     public static void loadConfig(Mod_Pokecube_Helper helper, Configuration config)
     {
         configFile = config.getConfigFile();
         Mod_Pokecube_Helper.config = config;
+        initDefaultStarts();
         deactivateMonsters = config.get(Configuration.CATEGORY_GENERAL, "deactivateMonsters", deactivateMonsters,
                 "Whether spawn of hostile Minecraft mobs should be deactivated.").getBoolean(true);
         pokemonSpawn = config.get(Configuration.CATEGORY_GENERAL, "pokemonSpawn", pokemonSpawn,
@@ -193,18 +207,17 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
             if (config.hasKey(CATEGORY_ADVANCED, "starteroverrides"))
             {
-                String[] defaults = config.get(CATEGORY_ADVANCED, "starteroverrides", Database.defaultStarts)
-                        .getStringList();
+                String[] defaults = config.get(CATEGORY_ADVANCED, "starteroverrides", defaultStarts).getStringList();
                 ArrayList<String> def = new ArrayList<String>();
                 for (String s : defaults)
                 {
                     def.add(s);
                 }
-                for (String s : Database.defaultStarts)
+                for (String s : defaultStarts)
                 {
                     def.add(s);
                 }
-                Database.defaultStarts = def.toArray(new String[0]);
+                defaultStarts = def.toArray(new String[0]);
             }
             String[] strings = config
                     .get(CATEGORY_ADVANCED, "functions", new String[] { "0:(10^6)*(sin(x*10^-3)^8 + sin(y*10^-3)^8)",
@@ -270,5 +283,38 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
         config.get(CATEGORY_ADVANCED, "functions", funcs.toArray(new String[0])).set(funcs.toArray(new String[0]));
         config.save();
+    }
+
+    public static void initDefaultStarts()
+    {
+        try
+        {
+            JsonParser parser = new JsonParser();
+            URL url = new URL(PokecubeMod.CONTRIBURL);
+            URLConnection con = url.openConnection();
+            con.setConnectTimeout(1000);
+            con.setReadTimeout(1000);
+            InputStream in = con.getInputStream();
+            JsonElement element = parser.parse(new InputStreamReader(in));
+            JsonElement element1 = element.getAsJsonObject().get("contributors");
+            JsonArray contribArray = element1.getAsJsonArray();
+            List<String> defaults = Lists.newArrayList();
+            for(int i = 0; i<contribArray.size(); i++)
+            {
+                element1 = contribArray.get(i);
+                JsonObject obj = element1.getAsJsonObject();
+                String name = obj.get("username").getAsString();
+                String info = obj.get("info").getAsString();
+                defaults.add(name+":"+info);
+            }
+            
+            defaultStarts = defaults.toArray(new String[0]);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        
     }
 }

@@ -9,11 +9,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.IExtendedModelPart;
 import pokecube.modelloader.client.custom.IPartTexturer;
@@ -416,12 +411,12 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         {
             if (i != -1)
             {
-                vertex = vertices[i];
                 textureCoordinate = textureCoordinates[i];
                 GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
-                GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
                 vertex = normals[i];
                 GL11.glNormal3f(vertex.x, vertex.y, vertex.z);
+                vertex = vertices[i];
+                GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
 
                 // Vector3f norm1 = norms[n];
                 // GL11.glNormal3f(norm1.x, norm1.y, norm1.z);

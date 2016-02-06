@@ -133,7 +133,12 @@ public class PokecubePacketHandler
                     else
                     {
                         ItemStack start = i.makeStack(player);
-                        items.add(start);
+                        if (start == null && !starterGiven)
+                        {
+                            start = i.makeStack(player, pokedexNb);
+                            starterGiven = true;
+                        }
+                        if (start != null) items.add(start);
                     }
 
                 }
@@ -199,11 +204,6 @@ public class PokecubePacketHandler
                 starters.add(i);
             }
             pokecube.core.client.gui.GuiNewChooseFirstPokemob.starters = starters.toArray(new Integer[0]);
-
-            // player.openGui(mod_Pokecube.instance,
-            // Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0,
-            // 1,
-            // 0);
             new GuiOpener(player);
             return;
         }
@@ -213,10 +213,6 @@ public class PokecubePacketHandler
         boolean special = specialStarters.containsKey(username);
         if (!special || (evt.isCanceled() && evt.getResult() != Result.DENY))
         {
-            // player.openGui(mod_Pokecube.instance,
-            // Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0,
-            // 0,
-            // 0);
             new GuiOpener(player);
         }
         else
@@ -226,10 +222,6 @@ public class PokecubePacketHandler
             {
                 if (i == null)
                 {
-                    // player.openGui(mod_Pokecube.instance,
-                    // Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID,
-                    // player.worldObj,
-                    // 0, 0, 0);
                     new GuiOpener(player);
                     return;
                 }
@@ -311,8 +303,13 @@ public class PokecubePacketHandler
 
         public ItemStack makeStack(EntityPlayer owner)
         {
+            return makeStack(owner, 0);
+        }
+
+        public ItemStack makeStack(EntityPlayer owner, int number)
+        {
             ItemStack ret = null;
-            PokedexEntry entry = Database.getEntry(name);
+            PokedexEntry entry = (name != null) ? Database.getEntry(name) : Database.getEntry(number);
             if (entry != null)
             {
                 World worldObj = owner.worldObj;
@@ -348,6 +345,7 @@ public class PokecubePacketHandler
 
         public static void processStarterInfo(String[] infos)
         {
+            specialStarters.clear();
             for (String s : infos)
             {
                 String[] data = s.split(":");
@@ -371,12 +369,12 @@ public class PokecubePacketHandler
                     if (Database.getEntry(name) != null)
                     {
                         String s2 = dat.length > 1 ? dat[1] : "";
-
                         info[i] = new StarterInfo(name, s2);
                     }
                     else
                     {
-                        info[i] = null;
+                        String s2 = dat.length > 1 ? dat[1] : "";
+                        info[i] = new StarterInfo(null, s2);
                     }
                 }
                 specialStarters.put(username, info);

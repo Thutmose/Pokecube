@@ -54,10 +54,6 @@ public class Database implements IMoveConstants
 
     private static List<String> externalStatDatabases = new ArrayList<String>();
     private static List<String> externalEVXPDatabases = new ArrayList<String>();
-    public static String[]      defaultStarts         = new String[] {
-            "Thutmose:mew;Sshiny`Micebeam:shuckle;Sshiny`Mrollout`Macupressure`Mrest`Mgyroball:null",
-            "Legnak:beldum;R0:null", "Oracion:mew:Sshiny:null", "Manchou:mew:Sshiny:null", "cflame13:mew:Sshiny:null",
-            "Kaividian:magikarp;Sshiny`Mhyperbeam:null" };
 
     public static void init(FMLPreInitializationEvent evt)
     {

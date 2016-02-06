@@ -54,7 +54,7 @@ public class PAEventsHandler
                 StarterInfo[] info = PokecubePacketHandler.specialStarters.get(playerName);
                 for (StarterInfo i : info)
                 {
-                    if (i == null)
+                    if (i == null || i.name == null)
                     {
                         evt.setCanceled(true);
                     }
@@ -72,6 +72,7 @@ public class PAEventsHandler
             evt.starterPack[temp.length] = PokecubeItems.getStack("pokecubebag");
             return;
         }
+
         ItemStack[] temp = evt.starterPack.clone();
         evt.starterPack = new ItemStack[temp.length + 1];
         for (int i = 0; i < temp.length; i++)
@@ -83,7 +84,20 @@ public class PAEventsHandler
             List<ItemStack> toPC = new ArrayList<ItemStack>();
             ItemStack starter = null;
             boolean replaced = false;
-            for (int i = 0; i < evt.starterPack.length; i++)
+
+            if (PokecubePacketHandler.specialStarters.containsKey(playerName))
+            {
+                StarterInfo[] info = PokecubePacketHandler.specialStarters.get(playerName);
+                for (StarterInfo i : info)
+                {
+                    if (i != null && i.name != null)
+                    {
+                        replaced = true;
+                    }
+                }
+            }
+
+            if (!replaced) for (int i = 0; i < evt.starterPack.length; i++)
             {
                 ItemStack e = evt.starterPack[i];
                 int num;

@@ -1,8 +1,32 @@
 {"contributors":[
-    {"username":"Thutmose", "info":"mew;S`Micebeam:shuckle;S`Mrollout`Macupressure`Mrest`Mgyroball"},
-    {"username":"Manchou", "info":"mew:S:null"},
-    {"username":"Oracion", "info":"mew:S:null"},
-    {"username":"cflame13", "info":"mew:S:null"},
-    {"username":"Legnak", "info":"beldum;R:null"},
-    {"username":"Kaividian", "info":"magikarp;S`Mhyperbeam:null"}
+    {
+        "username":"Thutmose",
+        "type":"dev",
+        "info":"mew;S`Micebeam:shuckle;S`Mrollout`Macupressure`Mrest`Mgyroball"
+    },
+    {
+        "username":"Manchou",
+        "type":"dev",
+        "info":"mew:S:null"
+    },
+    {
+        "username":"Oracion",
+        "type":"dev",
+        "info":"mew:S:null"
+    },
+    {
+        "username":"cflame13",
+        "type":"dev",
+        "info":"mew:S:null"
+    },
+    {
+        "username":"Kaividian",
+        "type":"dev,modeller",
+        "info":"magikarp;S`Mhyperbeam:null"
+    },
+    {
+        "username":"Legnak",
+        "type":"modeller",
+        "info":"beldum;R:null"
+    }
 ]}

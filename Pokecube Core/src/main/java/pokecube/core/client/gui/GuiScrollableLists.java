@@ -10,8 +10,9 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.mod_Pokecube;
@@ -57,12 +58,13 @@ public class GuiScrollableLists extends Gui
     }
 
     @SubscribeEvent
-    public void onRenderWorldLast(RenderWorldLastEvent event)
+    public void onRenderHotbar(RenderGameOverlayEvent.Post event)
     {
         try
         {
-            if (state && minecraft.currentScreen == null
-                    && !((Minecraft) mod_Pokecube.getMinecraftInstance()).gameSettings.hideGUI)
+            if (instance().state && minecraft.currentScreen == null
+                    && !((Minecraft) mod_Pokecube.getMinecraftInstance()).gameSettings.hideGUI
+                    && event.type == ElementType.HOTBAR)
                 draw(event);
         }
         catch (Throwable e)
@@ -71,23 +73,18 @@ public class GuiScrollableLists extends Gui
         }
     }
 
-    private void draw(RenderWorldLastEvent event)
+    private void draw(RenderGameOverlayEvent.Post event)
     {
         int h = Mod_Pokecube_Helper.guiOffset[0];
         int w = Mod_Pokecube_Helper.guiOffset[1];
-
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(false);
+        GlStateManager.pushMatrix();
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glEnable(GL11.GL_BLEND);
-        RenderHelper.disableStandardItemLighting();
 
         GL11.glNormal3f(0.0F, -1.0F, 0.0F);
         minecraft.entityRenderer.setupOverlayRendering();
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        minecraft.entityRenderer.setupOverlayRendering();
 
         locations = PokecubeSerializer.getInstance().getTeleports(minecraft.thePlayer.getUniqueID().toString());
 
@@ -104,8 +101,8 @@ public class GuiScrollableLists extends Gui
 
         for (int k = 0; k < 1; k++)
         {
-            if (k >= locations.size()) break;
-            TeleDest location = locations.get((k + indexLocation) % locations.size());
+            if (k >= instance().locations.size()) break;
+            TeleDest location = instance().locations.get((k + instance().indexLocation) % instance().locations.size());
             if (location != null)
             {
 
@@ -122,38 +119,34 @@ public class GuiScrollableLists extends Gui
             }
             i++;
         }
-
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_BLEND);
-        RenderHelper.disableStandardItemLighting();
-
+        GlStateManager.popMatrix();
     }
 
     public int indexLocation = 0;
 
     public void nextMove()
     {
-        indexLocation++;
-        if (locations.size() > 0) indexLocation = indexLocation % locations.size();
-        else indexLocation = 0;
+        instance().indexLocation++;
+        if (instance().locations.size() > 0)
+            instance().indexLocation = instance().indexLocation % instance().locations.size();
+        else instance().indexLocation = 0;
     }
 
     boolean state = false;
 
     public void setState(boolean state)
     {
-        this.state = state;
+        instance().state = state;
     }
 
     public boolean getState()
     {
-        return state;
+        return instance().state;
     }
 
     public void previousMove()
     {
-        indexLocation--;
-        if (indexLocation < 0) indexLocation = Math.max(0, locations.size() - 1);
+        instance().indexLocation--;
+        if (instance().indexLocation < 0) instance().indexLocation = Math.max(0, instance().locations.size() - 1);
     }
 }

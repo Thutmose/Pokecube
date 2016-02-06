@@ -110,7 +110,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             mobDespawnRadius = config
                     .get(CATEGORY_ADVANCED, "despawnRadius", mobDespawnRadius,
                             "If there are no players within this close to the pokemob, it will immediately despawn (does not apply to tamed or angry.")
-                    .getInt(96);
+                    .getInt(32);
 
             mobSpawnRadius = config.get(CATEGORY_ADVANCED, "spawnRadius", mobSpawnRadius,
                     "mobs will not spawn closer than this to the player.").getInt(10);

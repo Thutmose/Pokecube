@@ -317,7 +317,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             Vector3 look = Vector3.getNewVectorFromPool().set(player.getLook(1));
             Vector3 temp = Vector3.getNewVectorFromPool().set(player).addTo(0, player.getEyeHeight(), 0);
 
-            Entity target = temp.firstEntityExcluding(32, look, player.worldObj, false, player);
+            Entity target = temp.firstEntityExcluding(32, look, player.worldObj, player.isSneaking(), player);
             temp.freeVectorFromPool();
             look.freeVectorFromPool();
             if (target != null && target instanceof IPokemob && ((IPokemob) target).getPokemonOwner() == player)
@@ -343,7 +343,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
         buffer.writeBytes(message);
 
-        Entity target = temp.firstEntityExcluding(32, look, player.worldObj, true, player);
+        Entity target = temp.firstEntityExcluding(32, look, player.worldObj, player.isSneaking(), player);
 
         temp.freeVectorFromPool();
         look.freeVectorFromPool();
@@ -371,6 +371,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             buffer.writeInt(((Entity) pokemob).getEntityId());
             if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
             {
+                System.out.println(GuiScrollableLists.instance().getState()+" ");
                 if (!GuiScrollableLists.instance().getState())
                 {
                     GuiScrollableLists.instance().setState(true);

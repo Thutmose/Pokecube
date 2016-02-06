@@ -308,6 +308,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         boolean cull = Mod_Pokecube_Helper.cull
                 && worldObj.getClosestPlayerToEntity(this, Mod_Pokecube_Helper.mobDespawnRadius) == null;
 
+        if(!cull && !Mod_Pokecube_Helper.cull)
+        {
+            cull = worldObj.getClosestPlayerToEntity(this, Mod_Pokecube_Helper.mobDespawnRadius * 3) == null;
+        }
+        
         return canDespawn || cull;
     }
 

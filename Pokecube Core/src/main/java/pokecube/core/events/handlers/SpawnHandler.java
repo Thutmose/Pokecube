@@ -82,7 +82,7 @@ public final class SpawnHandler
     }
 
     public static double MAX_DENSITY = 1;
-    public static int    MAXNUM      = 25;
+    public static int    MAXNUM      = 2;
 
     public static void sortSpawnables()
     {
@@ -293,7 +293,7 @@ public final class SpawnHandler
         if (!v.doChunksExist(world, 10)) return ret;
         AxisAlignedBB box = v.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, 40,
+                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, Math.min(40, Mod_Pokecube_Helper.mobDespawnRadius/2),
                         Mod_Pokecube_Helper.mobDespawnRadius));
 
         int num = 0;

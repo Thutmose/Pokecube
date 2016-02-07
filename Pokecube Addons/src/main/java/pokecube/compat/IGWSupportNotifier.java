@@ -43,7 +43,6 @@ import net.minecraftforge.fml.relauncher.Side;
 public class IGWSupportNotifier{
     private String supportingMod;
     private static final String LATEST_DL_URL = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/latest";
-    private static final String DL_URL_1_7_10 = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/2248719/download";
 
     /**
      * Needs to be instantiated somewhere in your mod's loading stage.
@@ -116,7 +115,7 @@ public class IGWSupportNotifier{
             try {
                 if(Minecraft.getMinecraft().thePlayer != null) Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Downloading IGW-Mod..."));
 
-                URL url = new URL(Loader.MC_VERSION.equals("1.7.10") ? DL_URL_1_7_10 : LATEST_DL_URL);
+                URL url = new URL(LATEST_DL_URL);
                 URLConnection connection = url.openConnection();
                 connection.connect();
                 File dir = new File(".", "mods");

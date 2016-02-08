@@ -16,7 +16,7 @@ public class BigPecks extends Ability
     @Override
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
-        if(mob == move.attacked && move.attackedStatModification[0]<0)
+        if (mob == move.attacked && move.attackedStatModification[0]<0)
         {
             move.attackedStatModProb = 0;
         }

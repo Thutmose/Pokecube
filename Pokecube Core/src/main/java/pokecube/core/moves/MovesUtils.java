@@ -614,9 +614,6 @@ public class MovesUtils implements IMoveConstants
                     Math.min(((EntityLiving) attacker).getMaxHealth(), ((EntityLiving) attacker).getHealth() + toHeal));
         }
 
-        packet = new MovePacket(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition,
-                false);
-
         if (attacked instanceof IPokemob && atk.hasStatModTarget && efficiency > 0)
         {
             if ((!handleStats((IPokemob) attacked, (Entity) attacker, packet, true)))
@@ -639,6 +636,9 @@ public class MovesUtils implements IMoveConstants
                     ((EntityLiving) attacker).getHealth() + (((EntityLiving) attacker).getMaxHealth() * healRatio)));
             ((IPokemob) attacker).getMoveStats().SELFRAISECOUNTER = 80;
         }
+
+        packet = new MovePacket(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition,
+                false);
         packet.hit = efficiency >= 0;
         packet.didCrit = criticalRatio > 1;
 

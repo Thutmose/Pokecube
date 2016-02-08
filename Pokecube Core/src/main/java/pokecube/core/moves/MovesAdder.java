@@ -617,7 +617,8 @@ public class MovesAdder implements IMoveConstants
                 }
                 else if (attacked != attacker && attacked != null)
                 {
-                    MovesUtils.handleStats(attacker, (Entity) attacker, MovesUtils.getMoveFromName(MOVE_CURSE), true);
+                    MovePacket packet = new MovePacket(attacker, attacked, MovesUtils.getMoveFromName(MOVE_CURSE));
+                    MovesUtils.handleStats(attacker, (Entity) attacked, packet, true);
                 }
             }
         });

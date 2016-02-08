@@ -620,23 +620,37 @@ public interface IPokemob extends IMoveConstants
         public final boolean pre;
         /** Detect, Protect, wonder guard will set this true. */
         public boolean       canceled   = false;
-
+        /** Did the move crit */
+        public boolean       didCrit    = false;
         /** False swipe, sturdy ability and focus items would set this true. */
-        public boolean noFaint = false;
-
+        public boolean       noFaint    = false;
         /** Used in the protection moves, accounts their accuracy via this
          * variable */
-        public boolean   failed    = false;
+        public boolean       failed     = false;
         /** index 0 is to infatuate the attacked target, index 1 infatuates the
          * attacker. */
-        public boolean[] infatuate = { false, false };
+        public boolean[]     infatuate  = { false, false };
+        /** Stat modifications for target */
+        public int[]         attackedStatModification;
+        /** Stat modifications for attacker */
+        public int[]         attackerStatModification;
+        /** Stat modifications chance for target */
+        public float         attackedStatModProb;
+        /** Stat modifications chance for attacker */
+        public float         attackerStatModProb;
 
         public MovePacket(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR, int criticalLevel,
                 byte statusChange, byte changeAddition)
         {
             this(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition, true);
         }
-        
+
+        public MovePacket(IPokemob attacker, Entity attacked, Move_Base move)
+        {
+            this(attacker, attacked, move.name, move.getType(), move.getPWR(), move.move.crit, move.move.statusChange,
+                    move.move.change);
+        }
+
         public MovePacket(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR, int criticalLevel,
                 byte statusChange, byte changeAddition, boolean pre)
         {
@@ -649,6 +663,11 @@ public interface IPokemob extends IMoveConstants
             this.statusChange = statusChange;
             this.changeAddition = changeAddition;
             this.pre = pre;
+            Move_Base move = getMove();
+            this.attackedStatModification = move.move.attackedStatModification;
+            this.attackerStatModification = move.move.attackerStatModification;
+            this.attackedStatModProb = move.move.attackedStatModProb;
+            this.attackerStatModProb = move.move.attackerStatModProb;
         }
 
         public Move_Base getMove()

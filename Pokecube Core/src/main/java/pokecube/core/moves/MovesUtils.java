@@ -370,12 +370,7 @@ public class MovesUtils implements IMoveConstants
     {
         IPokemob attacker = packet.attacker;
         Entity attacked = packet.attacked;
-        String attack = packet.attack;
-        PokeType type = packet.attackType;
-        int PWR = packet.PWR;
-        int criticalLevel = packet.criticalLevel;
-        byte statusChange = packet.statusChange;
-        byte changeAddition = packet.changeAddition;
+
         if (!(packet.attacked instanceof EntityLivingBase) || packet.getMove() == null) return 0;
 
         Move_Base atk = packet.getMove();
@@ -385,6 +380,12 @@ public class MovesUtils implements IMoveConstants
         {
             ((IPokemob) attacked).onMoveUse(packet);
         }
+        String attack = packet.attack;
+        PokeType type = packet.attackType;
+        int PWR = packet.PWR;
+        int criticalLevel = packet.criticalLevel;
+        byte statusChange = packet.statusChange;
+        byte changeAddition = packet.changeAddition;
 
         TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(attacked);
 
@@ -468,7 +469,7 @@ public class MovesUtils implements IMoveConstants
             critcalRate = 2;
         }
 
-        if (rand.nextInt(critcalRate) == 0)
+        if (criticalLevel > 0 && rand.nextInt(critcalRate) == 0)
         {
             criticalRatio = 1.5f;
         }
@@ -613,15 +614,18 @@ public class MovesUtils implements IMoveConstants
                     Math.min(((EntityLiving) attacker).getMaxHealth(), ((EntityLiving) attacker).getHealth() + toHeal));
         }
 
+        packet = new MovePacket(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition,
+                false);
+
         if (attacked instanceof IPokemob && atk.hasStatModTarget && efficiency > 0)
         {
-            if ((!handleStats((IPokemob) attacked, (Entity) attacker, atk, true)))
+            if ((!handleStats((IPokemob) attacked, (Entity) attacker, packet, true)))
                 if (message) displayStatsMessage((IPokemob) attacked, (Entity) attacker, -2, (byte) 0, (byte) 0);
             ((IPokemob) attacker).getMoveStats().TARGETLOWERCOUNTER = 80;
         }
         else if (atk.hasStatModSelf)
         {
-            if ((!handleStats(attacker, attacked, atk, false)))
+            if ((!handleStats(attacker, attacked, packet, false)))
                 if (message) displayStatsMessage(attacker, (Entity) attacker, -2, (byte) 0, (byte) 0);
 
             ((IPokemob) attacker).getMoveStats().SELFRAISECOUNTER = 80;
@@ -635,10 +639,8 @@ public class MovesUtils implements IMoveConstants
                     ((EntityLiving) attacker).getHealth() + (((EntityLiving) attacker).getMaxHealth() * healRatio)));
             ((IPokemob) attacker).getMoveStats().SELFRAISECOUNTER = 80;
         }
-
-        packet = new MovePacket(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition,
-                false);
         packet.hit = efficiency >= 0;
+        packet.didCrit = criticalRatio > 1;
 
         attacker.onMoveUse(packet);
         if (attacked instanceof IPokemob)
@@ -781,32 +783,25 @@ public class MovesUtils implements IMoveConstants
      * @param attacked
      *            whether the mob is the attacked mob, or the attacker
      * @return */
-    public static boolean handleStats(IPokemob mob, Entity target, Move_Base atk, boolean attacked)
+    public static boolean handleStats(IPokemob mob, Entity target, MovePacket atk, boolean attacked)
     {
-        int[] stats = attacked ? atk.move.attackedStatModification : atk.move.attackerStatModification;
+        int[] stats = attacked ? atk.attackedStatModification : atk.attackerStatModification;
         byte[] modifiers = mob.getModifiers();
         byte[] old = modifiers.clone();
 
-        if (attacked ? atk.move.attackedStatModProb / 100f > Math.random()
-                : atk.move.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
             modifiers[1] = (byte) Math.max(-6, Math.min(6, modifiers[1] + stats[1]));
-        if (attacked ? atk.move.attackedStatModProb / 100f > Math.random()
-                : atk.move.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
             modifiers[2] = (byte) Math.max(-6, Math.min(6, modifiers[2] + stats[2]));
-        if (attacked ? atk.move.attackedStatModProb / 100f > Math.random()
-                : atk.move.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
             modifiers[3] = (byte) Math.max(-6, Math.min(6, modifiers[3] + stats[3]));
-        if (attacked ? atk.move.attackedStatModProb / 100f > Math.random()
-                : atk.move.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
             modifiers[4] = (byte) Math.max(-6, Math.min(6, modifiers[4] + stats[4]));
-        if (attacked ? atk.move.attackedStatModProb / 100f > Math.random()
-                : atk.move.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
             modifiers[5] = (byte) Math.max(-6, Math.min(6, modifiers[5] + stats[5]));
-        if (attacked ? atk.move.attackedStatModProb / 100f > Math.random()
-                : atk.move.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
             modifiers[6] = (byte) Math.max(-6, Math.min(6, modifiers[6] + stats[6]));
-        if (attacked ? atk.move.attackedStatModProb / 100f > Math.random()
-                : atk.move.attackerStatModProb / 100f > Math.random())
+        if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
             modifiers[7] = (byte) Math.max(-6, Math.min(6, modifiers[7] + stats[7]));
         mob.setModifiers(modifiers);
 

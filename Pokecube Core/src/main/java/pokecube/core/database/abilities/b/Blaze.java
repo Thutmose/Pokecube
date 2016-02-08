@@ -17,7 +17,6 @@ public class Blaze extends Ability
     @Override
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
-
         if (!move.pre) return;
         if (mob == move.attacker && move.attackType == PokeType.fire
                 && ((EntityLivingBase) mob).getHealth() < ((EntityLivingBase) mob).getMaxHealth() / 3)

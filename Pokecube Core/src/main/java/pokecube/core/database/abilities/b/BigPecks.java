@@ -11,22 +11,20 @@ public class BigPecks extends Ability
     @Override
     public void onUpdate(IPokemob mob)
     {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
-        // TODO Auto-generated method stub
-
+        if(mob == move.attacked && move.attackedStatModification[0]<0)
+        {
+            move.attackedStatModProb = 0;
+        }
     }
 
     @Override
     public void onAgress(IPokemob mob, EntityLivingBase target)
     {
-        // TODO Auto-generated method stub
-
     }
 
 }

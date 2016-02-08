@@ -17,7 +17,6 @@ public class Aerilate extends Ability
     @Override
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
-
         if (!move.pre) return;
         if (move.attackType == PokeType.normal && mob == move.attacker)
         {

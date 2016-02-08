@@ -108,7 +108,7 @@ class ExportX3D(bpy.types.Operator, ExportHelper, IOX3DOrientationHelper):
     use_normals = BoolProperty(
             name="Normals",
             description="Write normals with geometry",
-            default=False,
+            default=True,
             )
     use_compress = BoolProperty(
             name="Compress",

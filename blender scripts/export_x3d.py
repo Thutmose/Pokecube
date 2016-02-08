@@ -18,7 +18,7 @@
 
 # <pep8 compliant>
 
-# Contributors: bart:neeneenee*de, http://www.neeneenee.de/vrml, Campbell Barton, Thutmose
+# Contributors: bart:neeneenee*de, http://www.neeneenee.de/vrml, Campbell Barton
 
 """
 This script exports to X3D format.
@@ -220,7 +220,7 @@ def export(file,
            scene,
            use_mesh_modifiers=False,
            use_selection=True,
-           use_triangulate=True,
+           use_triangulate=False,
            use_normals=False,
            use_hierarchy=True,
            use_h3d=False,
@@ -634,6 +634,7 @@ def export(file,
                     ident += '\t'
 
                     if image and not use_h3d:
+                        writeImageTexture(ident, image)
 
                         if mesh_materials_use_face_texture[material_index]:
                             if image.use_tiles:
@@ -1100,6 +1101,7 @@ def export(file,
                 if uniform['type'] == gpu.GPU_DYNAMIC_SAMPLER_2DIMAGE:
                     field_descr = " <!--- Dynamic Sampler 2d Image -->"
                     fw('%s<field name="%s" type="SFNode" accessType="inputOutput">%s\n' % (ident, uniform['varname'], field_descr))
+                    writeImageTexture(ident + '\t', uniform['image'])
                     fw('%s</field>\n' % ident)
 
                 elif uniform['type'] == gpu.GPU_DYNAMIC_LAMP_DYNCO:
@@ -1255,6 +1257,38 @@ def export(file,
             ident = ident[:-1]
 
             fw('%s</ComposedShader>\n' % ident)
+
+    def writeImageTexture(ident, image):
+        image_id = quoteattr(unique_name(image, IM_ + image.name, uuid_cache_image, clean_func=clean_def, sep="_"))
+
+        if image.tag:
+            fw('%s<ImageTexture USE=%s />\n' % (ident, image_id))
+        else:
+            image.tag = True
+
+            ident_step = ident + (' ' * (-len(ident) + \
+            fw('%s<ImageTexture ' % ident)))
+            fw('DEF=%s\n' % image_id)
+
+            # collect image paths, can load multiple
+            # [relative, name-only, absolute]
+            filepath = image.filepath
+            filepath_full = bpy.path.abspath(filepath, library=image.library)
+            filepath_ref = bpy_extras.io_utils.path_reference(filepath_full, base_src, base_dst, path_mode, "textures", copy_set, image.library)
+            filepath_base = os.path.basename(filepath_full)
+
+            images = [
+                filepath_ref,
+                filepath_base,
+            ]
+            if path_mode != 'RELATIVE':
+                images.append(filepath_full)
+
+            images = [f.replace('\\', '/') for f in images]
+            images = [f for i, f in enumerate(images) if f not in images[:i]]
+
+            fw(ident_step + "url='%s'\n" % ' '.join(['"%s"' % escape(f) for f in images]))
+            fw(ident_step + '/>\n')
 
     def writeBackground(ident, world):
 
@@ -1515,7 +1549,7 @@ def gzip_open_utf8(filepath, mode):
 def save(operator, context, filepath="",
          use_selection=True,
          use_mesh_modifiers=False,
-         use_triangulate=True,
+         use_triangulate=False,
          use_normals=False,
          use_compress=False,
          use_hierarchy=True,

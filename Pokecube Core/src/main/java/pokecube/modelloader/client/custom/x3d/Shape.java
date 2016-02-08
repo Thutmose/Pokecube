@@ -92,7 +92,7 @@ public class Shape
         TextureCoordinate textureCoordinate;
         Vector3f[] normalList = new Vector3f[order.length];
         boolean flat = false;
-        if (texturer != null) flat = texturer.isFlat(material.name);
+        if (texturer != null) flat = texturer.isFlat(name);
         if (flat)
         {
             // Calculate the normals for each triangle.

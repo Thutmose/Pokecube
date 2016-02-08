@@ -119,6 +119,9 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
 
     public void addForRender()
     {
+        //Set colours.
+        GL11.glColor4f(red/255f, green/255f, blue/255f, alpha/255f);
+        //Render each Shape
         for (Shape s : shapes)
         {
             s.renderShape(texturer);

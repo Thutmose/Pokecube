@@ -32,74 +32,18 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel, IRete
 
     }
 
-    public ArrayList<Vertex> parseVertices(String line) throws ModelFormatException
-    {
-        ArrayList<Vertex> ret = new ArrayList<Vertex>();
-
-        String[] points = line.split(" ");
-        if (points.length
-                % 3 != 0) { throw new ModelFormatException("Invalid number of elements in the points string"); }
-        for (int i = 0; i < points.length; i += 3)
-        {
-            Vertex toAdd = new Vertex(Float.parseFloat(points[i]), Float.parseFloat(points[i + 1]),
-                    Float.parseFloat(points[i + 2]));
-            ret.add(toAdd);
-        }
-        return ret;
-    }
-
-    public ArrayList<TextureCoordinate> parseTextures(String line) throws ModelFormatException
-    {
-        ArrayList<TextureCoordinate> ret = new ArrayList<TextureCoordinate>();
-
-        String[] points = line.split(" ");
-        if (points.length % 2 != 0) { throw new ModelFormatException(
-                "Invalid number of elements in the points string " + points.length); }
-        for (int i = 0; i < points.length; i += 2)
-        {
-            TextureCoordinate toAdd = new TextureCoordinate(Float.parseFloat(points[i]),
-                    1 - Float.parseFloat(points[i + 1]));
-            ret.add(toAdd);
-        }
-
-        return ret;
-    }
-
     HashMap<String, IExtendedModelPart> makeObjects(X3dXMLParser parser) throws Exception
     {
         HashMap<String, HashMap<String, String>> partTranslations = parser.partTranslations;
-        HashMap<String, HashMap<String, String>> partPoints = parser.partPoints;
         HashMap<String, ArrayList<String>> childMap = parser.partChildren;
+
         String name = parser.partName;
         this.name = name;
 
-        if (partTranslations.size() != partPoints.size())
+        for (String s : parser.shapeMap.keySet())
         {
-            System.out.println(partTranslations.keySet() + " " + partPoints.keySet());
-            // throw new Exception();
-        }
-        for (String s : partPoints.keySet())
-        {
-            if(!partTranslations.containsKey(s))
-            {
-                System.out.println(s);
-                System.out.println(partTranslations.keySet());
-                continue;
-            }
-            
-            HashMap<String, String> points = partPoints.get(s);
             X3dObject o = new X3dObject(s);
-
-            o.vertices = parseVertices(points.get("coordinates")).toArray(new Vertex[0]);
-            o.textureCoordinates = parseTextures(points.get("textures")).toArray(new TextureCoordinate[0]);
-            
-            if(points.containsKey("normals"))
-            {
-                o.normals = parseVertices(points.get("normals")).toArray(new Vertex[0]);
-            }
-            
-            o.triangles = parser.triangles;
-            
+            o.shapes = parser.shapeMap.get(s);
             String[] offset = partTranslations.get(s).get("translation").split(" ");
             o.offset = Vector3.getNewVectorFromPool().set(Float.parseFloat(offset[0]), Float.parseFloat(offset[1]),
                     Float.parseFloat(offset[2]));
@@ -108,13 +52,6 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel, IRete
             offset = partTranslations.get(s).get("rotation").split(" ");
             o.rotations.set(Float.parseFloat(offset[0]), Float.parseFloat(offset[1]), Float.parseFloat(offset[2]),
                     (float) toDegrees(Float.parseFloat(offset[3])));
-            offset = points.get("index").split(" ");
-            o.order = new Integer[offset.length];
-            for (int i = 0; i<offset.length; i++)
-            {
-                String s1 = offset[i];
-                o.order[i] = (Integer.parseInt(s1));
-            }
             parts.put(s, o);
         }
         for (String s : parts.keySet())
@@ -123,13 +60,10 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel, IRete
             {
                 for (String s1 : childMap.get(s))
                 {
-                    if(parts.get(s1)!=null)
-                    parts.get(s).addChild(parts.get(s1));
-//                    else new NullPointerException("null part "+s1+" as child of "+s).printStackTrace();
+                    if (parts.get(s1) != null) parts.get(s).addChild(parts.get(s1));
                 }
             }
         }
-
         return parts;
     }
 

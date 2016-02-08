@@ -9,6 +9,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -20,6 +23,8 @@ public class X3dXMLParser
     HashMap<String, HashMap<String, String>> partTranslations;
     HashMap<String, HashMap<String, String>> partPoints;
     HashMap<String, ArrayList<String>>       partChildren;
+    HashMap<String, ArrayList<Shape>>        shapeMap;
+    HashMap<String, Material>                matMap;
     String                                   partName;
     ResourceLocation                         model;
     public boolean                           triangles = true;
@@ -45,13 +50,52 @@ public class X3dXMLParser
             partTranslations = new HashMap<String, HashMap<String, String>>();
             partPoints = new HashMap<String, HashMap<String, String>>();
             partChildren = new HashMap<String, ArrayList<String>>();
+            matMap = new HashMap<>();
+            shapeMap = new HashMap<>();
             Node n;
-            int j = 0;
+            NodeList parts = doc.getElementsByTagName("Transform");
+            NodeList appearences = doc.getElementsByTagName("Appearance");
 
-            String name = null;
-            for (int i = 0; i < doc.getElementsByTagName("Transform").getLength(); i++)
+            for (int i = 0; i < appearences.getLength(); i++)
             {
-                Node node = doc.getElementsByTagName("Transform").item(i);
+
+                Node appearence = appearences.item(i);
+                Node mat = null;
+                Node tex = null;
+                for (int l = 0; l < appearence.getChildNodes().getLength(); l++)
+                {
+                    if (appearence.getChildNodes().item(l) == null)
+                    {
+                        continue;
+                    }
+                    else if (appearence.getChildNodes().item(l).getNodeName().equals("Material"))
+                    {
+                        mat = appearence.getChildNodes().item(l);
+                    }
+                    else if (appearence.getChildNodes().item(l).getNodeName().equals("ImageTexture"))
+                    {
+                        tex = appearence.getChildNodes().item(l);
+                    }
+                }
+                if (mat != null && tex != null && mat.hasAttributes())
+                {
+                    if (mat.getAttributes().getNamedItem("DEF") != null
+                            && tex.getAttributes().getNamedItem("DEF") != null)
+                    {
+                        String matName = mat.getAttributes().getNamedItem("DEF").getNodeValue().substring(3);
+                        String texName = tex.getAttributes().getNamedItem("DEF").getNodeValue().substring(3);
+                        texName = texName.substring(0, texName.lastIndexOf("_png"));
+                        Material material = new Material(matName, texName);
+                        matMap.put(matName, material);
+                    }
+                }
+            }
+
+            int j = 0;
+            String name = null;
+            for (int i = 0; i < parts.getLength(); i++)
+            {
+                Node node = parts.item(i);
                 String tag = node.getChildNodes().item(1).getNodeName();
                 HashMap<String, String> items = new HashMap<String, String>();
                 if (tag.equals("Transform"))
@@ -84,97 +128,10 @@ public class X3dXMLParser
                         }
                     }
                 }
-
                 if (tag.equals("Group"))
                 {
                     node = doc.getElementsByTagName("Group").item(j);
-                    int shapeIndex = -1;
-                    for (int l = 0; l < node.getChildNodes().getLength(); l++)
-                    {
-                        if (node.getChildNodes().item(l).getNodeName().equals("Shape"))
-                        {
-                            shapeIndex = l;
-                        }
-                    }
-                    Node shape = node.getChildNodes().item(shapeIndex);
-                    int triIndex = -1;
-                    int faceIndex = -1;
-                    for (int l = 0; l < shape.getChildNodes().getLength(); l++)
-                    {
-                        if (shape.getChildNodes().item(l).getNodeName().equals("IndexedFaceSet"))
-                        {
-                            faceIndex = l;
-                        }
-                        if (shape.getChildNodes().item(l).getNodeName().equals("IndexedTriangleSet"))
-                        {
-                            triIndex = l;
-                        }
-                    }
-                    if (triIndex != -1)
-                    {
-                        n = shape.getChildNodes().item(triIndex);
-                        int points = -1;
-                        int tex = -1;
-                        int normal = -1;
-                        for (int l = 0; l < n.getChildNodes().getLength(); l++)
-                        {
-                            if (n.getChildNodes().item(l).getNodeName().equals("Coordinate"))
-                            {
-                                points = l;
-                            }
-                            if (n.getChildNodes().item(l).getNodeName().equals("TextureCoordinate"))
-                            {
-                                tex = l;
-                            }
-                            if (n.getChildNodes().item(l).getNodeName().equals("Normal"))
-                            {
-                                normal = l;
-                            }
-                        }
-                        String index = n.getAttributes().getNamedItem("index").getNodeValue();
-                        items.put("index", index);
-                        items.put("coordinates",
-                                n.getChildNodes().item(points).getAttributes().getNamedItem("point").getNodeValue());
-                        items.put("textures",
-                                n.getChildNodes().item(tex).getAttributes().getNamedItem("point").getNodeValue());
-                        if (normal != -1) items.put("normals",
-                                n.getChildNodes().item(normal).getAttributes().getNamedItem("vector").getNodeValue());
-                        name = name.replace("group_ME_", "");
-                        partPoints.put(name, items);
-                    }
-                    else if (faceIndex != -1)
-                    {
-                        triangles = false;
-                        n = shape.getChildNodes().item(faceIndex);
-                        int points = -1;
-                        int tex = -1;
-                        int normal = -1;
-                        for (int l = 0; l < n.getChildNodes().getLength(); l++)
-                        {
-                            if (n.getChildNodes().item(l).getNodeName().equals("Coordinate"))
-                            {
-                                points = l;
-                            }
-                            if (n.getChildNodes().item(l).getNodeName().equals("TextureCoordinate"))
-                            {
-                                tex = l;
-                            }
-                            if (n.getChildNodes().item(l).getNodeName().equals("Normal"))
-                            {
-                                normal = l;
-                            }
-                        }
-                        String index = n.getAttributes().getNamedItem("coordIndex").getNodeValue();
-                        items.put("index", index);
-                        items.put("coordinates",
-                                n.getChildNodes().item(points).getAttributes().getNamedItem("point").getNodeValue());
-                        items.put("textures",
-                                n.getChildNodes().item(tex).getAttributes().getNamedItem("point").getNodeValue());
-                        if (normal != -1) items.put("normals",
-                                n.getChildNodes().item(normal).getAttributes().getNamedItem("vector").getNodeValue());
-                        name = name.replace("group_ME_", "");
-                        partPoints.put(name, items);
-                    }
+                    parseGroup(node, name);
                     j++;
                 }
             }
@@ -190,6 +147,113 @@ public class X3dXMLParser
         {
             e.printStackTrace();
         }
+    }
+
+    private void parseGroup(Node group, String name)
+    {
+        for (int i = 0; i < group.getChildNodes().getLength(); i++)
+        {
+            if (group.getChildNodes().item(i).getNodeName().equals("Shape"))
+            {
+                Node shapeNode = group.getChildNodes().item(i);
+                int triIndex = -1;
+                int appIndex = -1;
+                Material material = null;
+
+                for (int l = 0; l < shapeNode.getChildNodes().getLength(); l++)
+                {
+                    if (shapeNode.getChildNodes().item(l).getNodeName().equals("IndexedTriangleSet"))
+                    {
+                        triIndex = l;
+                    }
+                    else if (shapeNode.getChildNodes().item(l).getNodeName().equals("Appearance"))
+                    {
+                        appIndex = l;
+                    }
+                }
+                if (appIndex != -1)
+                {
+                    Node appearence = shapeNode.getChildNodes().item(appIndex);
+                    Node mat = null;
+                    for (int l = 0; l < appearence.getChildNodes().getLength(); l++)
+                    {
+                        if (appearence.getChildNodes().item(l) == null)
+                        {
+                            continue;
+                        }
+                        else if (appearence.getChildNodes().item(l).getNodeName().equals("Material"))
+                        {
+                            mat = appearence.getChildNodes().item(l);
+                        }
+                    }
+                    if (mat != null && mat.hasAttributes())
+                    {
+                        String matName = null;
+                        if (mat.getAttributes().getNamedItem("DEF") != null)
+                        {
+                            matName = mat.getAttributes().getNamedItem("DEF").getNodeValue().substring(3);
+                        }
+                        else if (mat.getAttributes().getNamedItem("USE") != null)
+                        {
+                            matName = mat.getAttributes().getNamedItem("USE").getNodeValue().substring(3);
+                        }
+
+                        material = matMap.get(matName);
+                    }
+                }
+
+                if (triIndex != -1)
+                {
+                    Node n = shapeNode.getChildNodes().item(triIndex);
+                    int points = -1;
+                    int tex = -1;
+                    int normal = -1;
+                    for (int l = 0; l < n.getChildNodes().getLength(); l++)
+                    {
+                        if (n.getChildNodes().item(l).getNodeName().equals("Coordinate"))
+                        {
+                            points = l;
+                        }
+                        if (n.getChildNodes().item(l).getNodeName().equals("TextureCoordinate"))
+                        {
+                            tex = l;
+                        }
+                        if (n.getChildNodes().item(l).getNodeName().equals("Normal"))
+                        {
+                            normal = l;
+                        }
+                    }
+                    String index = n.getAttributes().getNamedItem("index").getNodeValue();
+                    String coordinate = n.getChildNodes().item(points).getAttributes().getNamedItem("point")
+                            .getNodeValue();
+                    String texture = n.getChildNodes().item(tex).getAttributes().getNamedItem("point").getNodeValue();
+                    String normals = null;
+                    if (normal != -1)
+                        normals = n.getChildNodes().item(normal).getAttributes().getNamedItem("vector").getNodeValue();
+                    name = name.replace("group_ME_", "");
+                    Shape shape = new Shape(index, coordinate, normals, texture);
+                    if (material != null) shape.setMaterial(material);
+                    else shape.name = name;
+                    addShape(name, shape);
+                }
+            }
+        }
+
+    }
+
+    private void addShape(String name, Shape shape)
+    {
+        ArrayList<Shape> list;
+        if (shapeMap.containsKey(name))
+        {
+            list = shapeMap.get(name);
+        }
+        else
+        {
+            list = Lists.newArrayList();
+            shapeMap.put(name, list);
+        }
+        list.add(shape);
     }
 
 }

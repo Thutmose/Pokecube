@@ -47,7 +47,7 @@ public class TextureHelper implements IPartTexturer
             {
                 String partName = part.getAttributes().getNamedItem("name").getNodeValue();
                 String partTex = part.getAttributes().getNamedItem("tex").getNodeValue();
-                texNames.put(partName, partTex);
+                addMapping(partName, partTex);
                 if (part.getAttributes().getNamedItem("smoothing") != null)
                 {
                     boolean flat = !node.getAttributes().getNamedItem("smoothing").getNodeValue()
@@ -258,6 +258,12 @@ public class TextureHelper implements IPartTexturer
     {
         if (smoothing.containsKey(part)) { return smoothing.get(part); }
         return default_smoothing;
+    }
+
+    @Override
+    public void addMapping(String part, String tex)
+    {
+        texNames.put(part, tex);
     }
 
 }

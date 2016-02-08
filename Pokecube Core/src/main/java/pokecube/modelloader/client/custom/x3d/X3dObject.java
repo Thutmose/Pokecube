@@ -3,8 +3,6 @@ package pokecube.modelloader.client.custom.x3d;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.vecmath.Vector3f;
-
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
@@ -17,14 +15,9 @@ import thut.api.maths.Vector3;
 
 public class X3dObject implements IExtendedModelPart, IRetexturableModel
 {
-    private int                meshId    = 0;
-    public int                 GLMODE    = GL11.GL_TRIANGLES;
-    public boolean             flat      = true;
-    public boolean             triangles = true;
-    public Vertex[]            vertices;
-    public Vertex[]            normals;
-    public TextureCoordinate[] textureCoordinates;
-    public Integer[]           order;
+    public int GLMODE = GL11.GL_TRIANGLES;
+
+    public List<Shape> shapes = Lists.newArrayList();
 
     public HashMap<String, IExtendedModelPart> childParts = new HashMap<String, IExtendedModelPart>();
     public final String                        name;
@@ -37,10 +30,9 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     public Vector3 preTrans  = Vector3.getNewVectorFromPool();
     public Vector3 postTrans = Vector3.getNewVectorFromPool();
 
-    public Vector3   offset    = Vector3.getNewVectorFromPool();
-    public Vector4   rotations = new Vector4();
-    public Vertex    scale     = new Vertex(1, 1, 1);
-    private double[] uvShift   = { 0, 0 };
+    public Vector3 offset    = Vector3.getNewVectorFromPool();
+    public Vector4 rotations = new Vector4();
+    public Vertex  scale     = new Vertex(1, 1, 1);
 
     public X3dObject(String name)
     {
@@ -127,34 +119,9 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
 
     public void addForRender()
     {
-        boolean textureShift = false;
-        // Apply Texturing.
-        if (texturer != null)
+        for (Shape s : shapes)
         {
-            texturer.applyTexture(this.getName());
-            if (textureShift = texturer.shiftUVs(name, uvShift))
-            {
-                GL11.glMatrixMode(GL11.GL_TEXTURE);
-                GL11.glTranslated(uvShift[0], uvShift[1], 0.0F);
-                GL11.glMatrixMode(GL11.GL_MODELVIEW);
-            }
-        }
-        // Applies Colour.
-        GL11.glColor4f(red / 255f, green / 255f, blue / 255f, alpha / 255f);
-        // Compiles the list of the meshId is invalid.
-        compileList();
-        // Call the list
-        GL11.glCallList(meshId);
-        GL11.glFlush();
-
-        // addTris();
-
-        // Reset Texture Matrix if changed.
-        if (textureShift)
-        {
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            GL11.glLoadIdentity();
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            s.renderShape(texturer);
         }
     }
 
@@ -268,169 +235,6 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     public void setPostRotations2(Vector4 rotations)
     {
         postRot1 = rotations;
-    }
-
-    private void compileList()
-    {
-        if (!GL11.glIsList(meshId))
-        {
-            meshId = GL11.glGenLists(1);
-            GL11.glNewList(meshId, GL11.GL_COMPILE);
-            if (triangles)
-            {
-                addTris();
-            }
-            else
-            {
-                addFaces();
-            }
-            GL11.glEndList();
-        }
-    }
-
-    void addTris()
-    {
-        Vertex vertex;
-        Vertex normal;
-        TextureCoordinate textureCoordinate;
-        Vector3f[] normalList = new Vector3f[order.length];
-        if (texturer != null) flat = texturer.isFlat(this.getName());
-        if (flat)
-        {
-            // Calculate the normals for each triangle.
-            for (int i = 0; i < order.length; i += 3)
-            {
-                Vector3f v1, v2, v3;
-                vertex = vertices[order[i]];
-                v1 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                vertex = vertices[order[i + 1]];
-                v2 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                vertex = vertices[order[i + 2]];
-                v3 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                Vector3f a = new Vector3f(v2);
-                a.sub(v1);
-                Vector3f b = new Vector3f(v3);
-                b.sub(v1);
-                Vector3f c = new Vector3f();
-                c.cross(a, b);
-                c.normalize();
-                normalList[i] = c;
-                normalList[i + 1] = c;
-                normalList[i + 2] = c;
-            }
-            GL11.glShadeModel(GL11.GL_FLAT);
-        }
-        else
-        {
-            GL11.glShadeModel(GL11.GL_SMOOTH);
-        }
-
-        GL11.glBegin(GLMODE);
-        int n = 0;
-        for (Integer i : order)
-        {
-            textureCoordinate = textureCoordinates[i];
-            GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
-            vertex = vertices[i];
-            if (flat)
-            {
-                Vector3f norm = normalList[n];
-                GL11.glNormal3f(norm.x, norm.y, norm.z);
-            }
-            else
-            {
-                normal = normals[i];
-                GL11.glNormal3f(normal.x, normal.y, normal.z);
-            }
-            n++;
-            GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
-        }
-        GL11.glEnd();
-    }
-
-    void addFaces()
-    {
-        Vertex vertex;
-        TextureCoordinate textureCoordinate;
-        List<Integer> modes = Lists.newArrayList();
-        int num = 0, n = 0, n1 = 0;
-
-        List<Vector3f> normalList = Lists.newArrayList();
-        Vector3f[] norms = new Vector3f[order.length];
-        Vector3f c = null;
-        for (Integer i : order)
-        {
-            if (i == -1)
-            {
-                if (num == 3)
-                {
-                    modes.add(GL11.GL_TRIANGLES);
-                }
-                else if (num == 4)
-                {
-                    modes.add(GL11.GL_QUADS);
-                }
-                else
-                {
-                    modes.add(GL11.GL_TRIANGLE_FAN);
-                }
-                num = 0;
-            }
-            else
-            {
-                // Calculate a face normal, using just the first 3
-                // points, Every face has at least them
-                if (num == 0)
-                {
-                    Vector3f v1, v2, v3;
-                    vertex = vertices[order[n]];
-                    v1 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                    vertex = vertices[order[n + 1]];
-                    v2 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                    vertex = vertices[order[n + 2]];
-                    v3 = new Vector3f(vertex.x, vertex.y, vertex.z);
-                    Vector3f a = new Vector3f(v2);
-                    a.sub(v1);
-                    Vector3f b = new Vector3f(v3);
-                    b.sub(v1);
-                    c = new Vector3f();
-                    c.cross(a, b);
-                    c.normalize();
-                    normalList.add(c);
-                }
-                norms[n1] = c;
-                n1++;
-                num++;
-            }
-            n++;
-        }
-        num = n = 0;
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glBegin(modes.get(num++));
-        for (Integer i : order)
-        {
-            if (i != -1)
-            {
-                textureCoordinate = textureCoordinates[i];
-                GL11.glTexCoord2d(textureCoordinate.u, textureCoordinate.v);
-                vertex = normals[i];
-                GL11.glNormal3f(vertex.x, vertex.y, vertex.z);
-                vertex = vertices[i];
-                GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
-
-                // Vector3f norm1 = norms[n];
-                // GL11.glNormal3f(norm1.x, norm1.y, norm1.z);
-                n++;
-            }
-            else
-            {
-                GL11.glEnd();
-                if (num < modes.size())
-                {
-                    GL11.glBegin(modes.get(num++));
-                }
-            }
-        }
     }
 
     private void rotateToParent()

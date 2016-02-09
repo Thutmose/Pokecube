@@ -6,301 +6,329 @@ Pokémobs for Minecraft - page under construction.
 
 ##Other needed models - Pull requests with these would be nice.
 
-- Abomasnow
-- Abomasnow Mega
-- Abra
-- Accelgor
-- Aegislash Blade
-- Aegislash Shield
-- Aerodactyl Mega
-- Alakazam
-- Alakazam Mega
-- Amaura
-- Arbok
-- Arcanine
-- Arceus
-- Archen
-- Archeops
-- Aromatisse
-- Audino
-- Audino Mega
-- Aurorus
-- Azelf
-- Barbaracle
-- Basculin
-- Beartic
-- Beautifly
-- Beheeyem
-- Bellsprout
-- ~~Bibarel~~
-- ~~Bidoof~~
-- Binacle
-- Boldore
-- Bouffalant
-- Braviary
-- Buizel
-- Buneary
-- Bunnelby
-- Camerupt
-- Carnivine
-- Carracosta
-- Cascoon
-- Castform
-- Chatot
-- Cherrim
-- Cherubi
-- Cinccino
-- Clamperl
-- Clauncher
-- Clawitzer
-- Cobalion
-- Cofagrigus
-- Conkeldurr
-- Croagunk
-- Cryogonal
-- Cubchoo
-- Darkrai
-- Darmanitan
-- Darmanitan Zen
-- Darumaka
-- Dedenne
-- Deino
-- Dewgong
-- Dialga
-- Diggersby
-- Doublade
-- Dragalge
-- Drapion
-- Drilbur
-- Drowzee
-- Druddigon
-- Ducklett
-- Dustox
-- Ekans
-- Electivire
-- Electrike
-- Elgyem
-- Escavalier
-- Espurr
-- Excadrill
-- Exeggcute
-- Exeggutor
-- Finneon
-- Flabébé
-- Floatzel
-- Floette
-- Florges
-- Frillish
-- Furfrou
-- Garbodor
-- Garchomp Mega
-- Gastrodon
-- Genesect
-- Gigalith
-- Glameow
-- Gogoat
-- Goldeen
-- Golduck
-- Golett
-- Golurk
-- Gorebyss
-- Gothita
-- Gothitelle
-- Gothorita
-- Gourgeist Average
-- Gourgeist Large
-- Gourgeist Small
-- Gourgeist Super
-- Grimer
-- Growlithe
-- Grumpig
-- Gurdurr
-- Hariyama
-- Hawlucha
-- Heatmor
-- Heatran
-- Heliolisk
-- Helioptile
-- Herdier
-- Honedge
-- Huntail
-- Hydreigon
-- Hypno
-- Illumise
-- Inkay
-- Jellicent
-- Kadabra
-- Kangaskhan
-- Kangaskhan Mega
-- Karrablast
-- Kecleon
-- Keldeo
-- Kingler
-- Klang
-- Klink
-- Klinklang
-- Krabby
-- Kricketot
-- Kricketune
-- Kyurem
-- Kyurem Black
-- Kyurem White
-- Landorus Incarnate
-- Landorus Therian
-- Leavanny
-- Ledian
-- Ledyba
-- Lickilicky
-- Lickitung
-- Liepard
-- Lillipup
-- Litleo
-- Lopunny
-- Lopunny Mega
-- Lumineon
-- Luvdisc
-- Luxio
-- Luxray
-- Magmortar
-- Makuhita
-- Malamar
-- Mandibuzz
-- Manectric
-- Manectric Mega
-- Masquerain
-- Medicham
-- Medicham Mega
-- Meditite
-- Meloetta Aria
-- Meloetta Pirouette
-- Meowstic
-- Mesprit
-- Mienfoo
-- Mienshao
-- Mime Jr.
-- Minccino
-- Mr. Mime
-- Muk
-- Munchlax
-- Noibat
-- Noivern
-- Nosepass
-- Numel
-- Palkia
-- Pancham
-- Pangoro
-- Panpour
-- Pansage
-- Pansear
-- Patrat
-- Pinsir
-- Pinsir Mega
-- Probopass
-- Psyduck
-- Pumpkaboo Average
-- Pumpkaboo Large
-- Pumpkaboo Small
-- Pumpkaboo Super
-- Purrloin
-- Purugly
-- Pyroar
-- Regigigas
-- Reshiram
-- Rhydon
-- Rhyperior
-- Roggenrola
-- Rotom
-- Rotom Fan
-- Rotom Frost
-- Rotom Heat
-- Rotom Mow
-- Rotom Wash
-- Rufflet
-- Sableye
-- Sableye Mega
-- Sandshrew
-- Sandslash
-- Sawk
-- Scatterbug
-- Scrafty
-- Scraggy
-- Seaking
-- Seel
-- Seviper
-- Sewaddle
-- Shaymin Land
-- Shaymin Sky
-- Shellos
-- Shelmet
-- Shinx
-- Sigilyph
-- Silcoon
-- Simipour
-- Simisage
-- Simisear
-- Skiddo
-- Skorupi
-- Skrelp
-- Skuntank
-- Slaking
-- Slakoth
-- Slurpuff
-- Snorlax
-- Snover
-- Spewpa
-- Spinda
-- ~~Spiritomb~~
-- Spoink
-- Spritzee
-- Starmie
-- Staryu
-- Stoutland
-- Stunky
-- Surskit
-- Swadloon
-- Swanna
-- Swirlix
-- Swoobat
-- Tangela
-- Tangrowth
-- Terrakion
-- Throh
-- Thundurus Incarnate
-- Thundurus Therian
-- Timburr
-- Tirtouga
-- Togekiss
-- Togepi
-- Togetic
-- Torkoal
-- Tornadus Incarnate
-- Tornadus Therian
-- Toxicroak
-- Trubbish
-- Tyrantrum
-- Tyrunt
-- Uxie
-- Vanillish
-- Vanillite
-- Vanilluxe
-- Venomoth
-- Venonat
-- Victreebel
-- Vigoroth
-- Virizion
-- Vivillon
-- Volbeat
-- Vullaby
-- Watchog
-- Weepinbell
-- Woobat
-- Wurmple
-- Yamask
-- Zangoose
-- Zekrom
-- Zweilous
-- Zygarde
-
+- 	Venusaur Mega
+- 	Charizard Mega-X
+- 	Charizard Mega-Y
+- 	Blastoise Mega
+- 	Ekans
+- 	Arbok
+- 	Sandshrew
+- 	Sandslash
+- 	Venonat
+- 	Venomoth
+- 	Psyduck
+- 	Golduck
+- 	Growlithe
+- 	Arcanine
+- 	Abra
+- 	Kadabra
+- 	Alakazam
+- 	Alakazam Mega
+- 	Bellsprout
+- 	Weepinbell
+- 	Victreebel
+- 	Slowbro Mega
+- 	Seel
+- 	Dewgong
+- 	Grimer
+- 	Muk
+- 	Gengar Mega
+- 	Drowzee
+- 	Hypno
+- 	Krabby
+- 	Kingler
+- 	Exeggcute
+- 	Exeggutor
+- 	Lickitung
+- 	Rhydon
+- 	Tangela
+- 	Kangaskhan Mega
+- 	Kangaskhan
+- 	Goldeen
+- 	Seaking
+- 	Staryu
+- 	Starmie
+- 	Mr. Mime
+- 	Pinsir
+- 	Pinsir Mega
+- 	Gyarados Mega
+- 	Aerodactyl Mega
+- 	Snorlax
+- 	Mewtwo Mega-X
+- 	Mewtwo Mega-Y
+- 	Ledyba
+- 	Ledian
+- 	Togepi
+- 	Togetic
+- 	Ampharos Mega
+- 	Heracross Mega
+- 	Houndoom Mega
+- 	Tyranitar Mega
+- 	Sceptile Mega
+- 	Blaziken Mega
+- 	Swampert Mega
+- 	Wurmple
+- 	Silcoon
+- 	Beautifly
+- 	Cascoon
+- 	Dustox
+- 	Surskit
+- 	Masquerain
+- 	Slakoth
+- 	Vigoroth
+- 	Slaking
+- 	Makuhita
+- 	Hariyama
+- 	Nosepass
+- 	Sableye Mega
+- 	Sableye
+- 	Mawile Mega
+- 	Aggron Mega
+- 	Meditite
+- 	Medicham Mega
+- 	Medicham
+- 	Electrike
+- 	Manectric Mega
+- 	Manectric
+- 	Volbeat
+- 	Illumise
+- 	Numel
+- 	Camerupt
+- 	Torkoal
+- 	Spoink
+- 	Grumpig
+- 	Spinda
+- 	Altaria Mega
+- 	Zangoose
+- 	Seviper
+- 	Castform
+- 	Kecleon
+- 	Banette Mega
+- 	Absol Mega
+- 	Clamperl
+- 	Huntail
+- 	Gorebyss
+- 	Luvdisc
+- 	Metagross Mega
+- 	Kyogre Primal
+- 	Groudon Primal
+- 	Bidoof
+- 	Bibarel
+- 	Kricketot
+- 	Kricketune
+- 	Shinx
+- 	Luxio
+- 	Luxray
+- 	Wormadam Trash
+- 	Wormadam Sandy
+- 	Buizel
+- 	Floatzel
+- 	Cherubi
+- 	Cherrim
+- 	Shellos
+- 	Gastrodon
+- 	Buneary
+- 	Lopunny
+- 	Lopunny Mega
+- 	Glameow
+- 	Purugly
+- 	Stunky
+- 	Skuntank
+- 	Mime Jr.
+- 	Chatot
+- 	Spiritomb
+- 	Garchomp Mega
+- 	Munchlax
+- 	Lucario Mega
+- 	Skorupi
+- 	Drapion
+- 	Croagunk
+- 	Toxicroak
+- 	Carnivine
+- 	Finneon
+- 	Lumineon
+- 	Snover
+- 	Abomasnow
+- 	Abomasnow Mega
+- 	Lickilicky
+- 	Rhyperior
+- 	Tangrowth
+- 	Electivire
+- 	Magmortar
+- 	Togekiss
+- 	Probopass
+- 	Rotom Frost
+- 	Rotom Heat
+- 	Rotom Wash
+- 	Rotom
+- 	Rotom Mow
+- 	Rotom Fan
+- 	Uxie
+- 	Mesprit
+- 	Azelf
+- 	Dialga
+- 	Palkia
+- 	Heatran
+- 	Regigigas
+- 	Giratina Altered
+- 	Giratina Origin
+- 	Darkrai
+- 	Shaymin Sky
+- 	Shaymin Land
+- 	Arceus
+- 	Patrat
+- 	Watchog
+- 	Lillipup
+- 	Herdier
+- 	Stoutland
+- 	Purrloin
+- 	Liepard
+- 	Pansage
+- 	Simisage
+- 	Pansear
+- 	Simisear
+- 	Panpour
+- 	Simipour
+- 	Roggenrola
+- 	Boldore
+- 	Gigalith
+- 	Woobat
+- 	Swoobat
+- 	Drilbur
+- 	Excadrill
+- 	Audino
+- 	Audino Mega
+- 	Timburr
+- 	Gurdurr
+- 	Conkeldurr
+- 	Throh
+- 	Sawk
+- 	Sewaddle
+- 	Swadloon
+- 	Leavanny
+- 	Basculin
+- 	Darumaka
+- 	Darmanitan
+- 	Darmanitan Zen
+- 	Scraggy
+- 	Scrafty
+- 	Sigilyph
+- 	Yamask
+- 	Cofagrigus
+- 	Tirtouga
+- 	Carracosta
+- 	Archen
+- 	Archeops
+- 	Trubbish
+- 	Garbodor
+- 	Minccino
+- 	Cinccino
+- 	Gothita
+- 	Gothorita
+- 	Gothitelle
+- 	Ducklett
+- 	Swanna
+- 	Vanillite
+- 	Vanillish
+- 	Vanilluxe
+- 	Karrablast
+- 	Escavalier
+- 	Frillish
+- 	Jellicent
+- 	Klink
+- 	Klang
+- 	Klinklang
+- 	Elgyem
+- 	Beheeyem
+- 	Cubchoo
+- 	Beartic
+- 	Cryogonal
+- 	Shelmet
+- 	Accelgor
+- 	Mienfoo
+- 	Mienshao
+- 	Druddigon
+- 	Golett
+- 	Golurk
+- 	Bouffalant
+- 	Rufflet
+- 	Braviary
+- 	Vullaby
+- 	Mandibuzz
+- 	Heatmor
+- 	Deino
+- 	Zweilous
+- 	Hydreigon
+- 	Cobalion
+- 	Terrakion
+- 	Virizion
+- 	Tornadus Incarnate
+- 	Tornadus Therian
+- 	Thundurus Incarnate
+- 	Thundurus Therian
+- 	Reshiram
+- 	Zekrom
+- 	Landorus Therian
+- 	Landorus Incarnate
+- 	Kyurem
+- 	Kyurem Black
+- 	Kyurem White
+- 	Keldeo
+- 	Meloetta Aria
+- 	Meloetta Pirouette
+- 	Genesect
+- 	Bunnelby
+- 	Diggersby
+- 	Scatterbug
+- 	Spewpa
+- 	Vivillon
+- 	Litleo
+- 	Pyroar
+- 	Flabébé
+- 	Floette
+- 	Florges
+- 	Skiddo
+- 	Gogoat
+- 	Pancham
+- 	Pangoro
+- 	Furfrou
+- 	Espurr
+- 	Meowstic
+- 	Honedge
+- 	Doublade
+- 	Aegislash Shield
+- 	Aegislash Blade
+- 	Spritzee
+- 	Aromatisse
+- 	Swirlix
+- 	Slurpuff
+- 	Inkay
+- 	Malamar
+- 	Binacle
+- 	Barbaracle
+- 	Skrelp
+- 	Dragalge
+- 	Clauncher
+- 	Clawitzer
+- 	Helioptile
+- 	Heliolisk
+- 	Tyrunt
+- 	Tyrantrum
+- 	Amaura
+- 	Aurorus
+- 	Hawlucha
+- 	Dedenne
+- 	Pumpkaboo Large
+- 	Pumpkaboo Average
+- 	Pumpkaboo Small
+- 	Pumpkaboo Super
+- 	Gourgeist Large
+- 	Gourgeist Average
+- 	Gourgeist Super
+- 	Gourgeist Small
+- 	Noibat
+- 	Noivern
+- 	Zygarde
 
 ##Related/Contained projects
 

@@ -101,7 +101,6 @@ public class Database implements IMoveConstants
         for (PokedexEntry p : toRemove)
         {
             data.remove(p.pokedexNb);
-            // System.out.println(p);
             spawnables.remove(p);
         }
         System.err.println("Removed " + toRemove.size() + " Missing Pokedex Entries");
@@ -188,6 +187,7 @@ public class Database implements IMoveConstants
                     continue;
                 }
                 toRemove.add(e);
+//                System.out.println(e.pokedexNb + "," + e);
             }
         }
 

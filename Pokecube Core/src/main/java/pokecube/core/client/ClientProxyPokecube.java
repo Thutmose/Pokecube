@@ -185,7 +185,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         super.registerRenderInformation();
 
-        //TODO in 1.9, this will need to be commented back in, and moved to pre-init.
+        // TODO in 1.9, this will need to be commented back in, and moved to
+        // pre-init.
         // RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class,
         // new IRenderFactory<Entity>()
         // {
@@ -271,14 +272,14 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public void initClient()
     {
         super.initClient();
-        
+
         ResourceLocation pokecenterloop = new ResourceLocation("pokecube:sounds/pokecenterloop.ogg");
         try
         {
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(pokecenterloop);
             res.getInputStream().close();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             TileHealTable.noSound = true;
         }

@@ -641,6 +641,8 @@ public interface IPokemob extends IMoveConstants
         public float         attackerStatModProb;
         /** modifies supereffectiveness */
         public float         superEffectMult = 1;
+        /** Stat multpliers */
+        public float[]       statMults       = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
         public MovePacket(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR, int criticalLevel,
                 byte statusChange, byte changeAddition)

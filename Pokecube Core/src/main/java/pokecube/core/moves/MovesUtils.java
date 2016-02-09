@@ -280,8 +280,9 @@ public class MovesUtils implements IMoveConstants
         }
     }
 
-    public static float getAttackStrength(IPokemob attacker, IPokemob attacked, byte type, int PWR, Move_Base move)
+    public static float getAttackStrength(IPokemob attacker, IPokemob attacked, byte type, int PWR, MovePacket movePacket)
     {
+        Move_Base move = movePacket.getMove();
         if (move.fixedDamage) { return move.getPWR(attacker, (Entity) attacked); }
 
         if (PWR <= 0) return 0;
@@ -295,12 +296,12 @@ public class MovesUtils implements IMoveConstants
 
         if (type == SPECIAL)
         {
-            ATT = Tools.getStats(attacker)[3];
+            ATT = (int) (Tools.getStats(attacker)[3] * movePacket.statMults[3]);
             DEF = Tools.getStats(attacked)[4];
         }
         else
         {
-            ATT = Tools.getStats(attacker)[1];
+            ATT = (int) (Tools.getStats(attacker)[1] * movePacket.statMults[1]);
             DEF = Tools.getStats(attacked)[2];
         }
 
@@ -487,7 +488,7 @@ public class MovesUtils implements IMoveConstants
 
         if (attacked instanceof IPokemob)
         {
-            attackStrength = getAttackStrength(attacker, (IPokemob) attacked, move.category, PWR, atk);
+            attackStrength = getAttackStrength(attacker, (IPokemob) attacked, move.category, PWR, packet);
 
             int moveAcc = move.accuracy;
             if (moveAcc > 0)

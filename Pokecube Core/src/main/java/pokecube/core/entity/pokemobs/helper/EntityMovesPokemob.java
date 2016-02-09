@@ -745,7 +745,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (moveInfo.substituteHP > 0 && attacked == this)
         {
             float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, move.getMove().move.category,
-                    move.PWR, attack);
+                    move.PWR, move);
             attacker.displayMessageToOwner("\u00a7c" + "Move Absorbed by substitute");
             displayMessageToOwner("\u00a7a" + "move absorbed by substitute");
             moveInfo.substituteHP -= damage;

@@ -386,6 +386,15 @@ public class MovesUtils implements IMoveConstants
         int criticalLevel = packet.criticalLevel;
         byte statusChange = packet.statusChange;
         byte changeAddition = packet.changeAddition;
+        float stabFactor = packet.stabFactor;
+        if (!packet.stab)
+        {
+            packet.stab = packet.attacker.isType(packet.attackType);
+        }
+        if (!packet.stab)
+        {
+            stabFactor = 1;
+        }
 
         TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(attacked);
 
@@ -527,8 +536,8 @@ public class MovesUtils implements IMoveConstants
 
         float terrainDamageModifier = getTerrainDamageModifier(type, (Entity) attacker, terrain);
 
-        int finalAttackStrength = Math.max(0,
-                Math.round(attackStrength * efficiency * criticalRatio * terrainDamageModifier));
+        int finalAttackStrength = Math.max(0, Math.round(attackStrength * efficiency * criticalRatio
+                * terrainDamageModifier * stabFactor * packet.superEffectMult));
 
         float healRatio;
         float damageRatio;
@@ -548,6 +557,15 @@ public class MovesUtils implements IMoveConstants
         if (Mod_Pokecube_Helper.maxPlayerDamage > 0 && attacked instanceof EntityPlayer)
         {
             finalAttackStrength = (int) Math.min(Mod_Pokecube_Helper.maxPlayerDamage, finalAttackStrength);
+        }
+
+        if (attacked instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) attacked;
+            if (mob.getMoveStats().ability != null)
+            {
+                finalAttackStrength = mob.getMoveStats().ability.beforeDamage(mob, packet, finalAttackStrength);
+            }
         }
 
         if (!(move.attackCategory == CATEGORY_SELF && PWR == 0) && finalAttackStrength > 0)

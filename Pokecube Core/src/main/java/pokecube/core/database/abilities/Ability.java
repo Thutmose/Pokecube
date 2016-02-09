@@ -32,6 +32,18 @@ public abstract class Ability
     {
     }
 
+    /** Called for the attacked target right before damage is dealt, after other
+     * calculations are done.
+     * 
+     * @param mob
+     * @param move
+     * @param damage
+     * @return the actual damage dealt */
+    public int beforeDamage(IPokemob mob, MovePacket move, int damage)
+    {
+        return damage;
+    }
+
     /** Inits the Ability, if args isn't null, it will usually have the Pokemob
      * passed in as the first argument.<br>
      * If there is a second argument, it should be and integer range for the

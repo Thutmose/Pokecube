@@ -7,26 +7,16 @@ import pokecube.core.interfaces.IPokemob.MovePacket;
 
 public class Sturdy extends Ability
 {
-
     @Override
-    public void onUpdate(IPokemob mob)
+    public int beforeDamage(IPokemob mob, MovePacket move, int damage)
     {
-        // TODO Auto-generated method stub
-
+        if (mob == move.attacked)
+        {
+            EntityLivingBase target = (EntityLivingBase) mob;
+            float hp = target.getHealth();
+            float maxHp = target.getMaxHealth();
+            if (hp == maxHp && damage >= hp) { return (int) (maxHp) - 1; }
+        }
+        return damage;
     }
-
-    @Override
-    public void onMoveUse(IPokemob mob, MovePacket move)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
 }

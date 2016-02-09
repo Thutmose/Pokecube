@@ -770,11 +770,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             moveInfo.ability.onMoveUse(this, move);
         }
 
-        if (attacker == this && this.isType(move.attackType))
-        {
-            move.PWR *= move.stabFactor;
-        }
-
         if (attack.getName().equals(MOVE_FALSESWIPE))
         {
             move.noFaint = true;

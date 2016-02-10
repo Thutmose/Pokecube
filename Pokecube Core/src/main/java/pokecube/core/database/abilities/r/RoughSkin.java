@@ -1,32 +1,24 @@
 package pokecube.core.database.abilities.r;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.DamageSource;
 import pokecube.core.database.abilities.Ability;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 
 public class RoughSkin extends Ability
 {
-
     @Override
-    public void onUpdate(IPokemob mob)
+    public int beforeDamage(IPokemob mob, MovePacket move, int damage)
     {
-        // TODO Auto-generated method stub
-
+        if((move.getMove().getAttackCategory() & IMoveConstants.CATEGORY_CONTACT) > 0)
+        {
+            EntityLivingBase entity = (EntityLivingBase) move.attacker;
+            float maxHp = entity.getMaxHealth();
+            //TODO message about recoil
+            entity.attackEntityFrom(DamageSource.magic, 0.125f * maxHp);
+        }
+        return damage;
     }
-
-    @Override
-    public void onMoveUse(IPokemob mob, MovePacket move)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
 }

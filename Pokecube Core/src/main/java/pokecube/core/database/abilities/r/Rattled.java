@@ -1,32 +1,26 @@
 package pokecube.core.database.abilities.r;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import pokecube.core.database.abilities.Ability;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.moves.MovesUtils;
+import pokecube.core.utils.PokeType;
 
 public class Rattled extends Ability
 {
-
-    @Override
-    public void onUpdate(IPokemob mob)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
     @Override
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
-        // TODO Auto-generated method stub
-
+        if (mob == move.attacked && !move.pre && isCorrectType(move.attackType))
+        {
+            MovesUtils.handleStats2(mob, (Entity) mob, IMoveConstants.VIT, IMoveConstants.RAISE);
+        }
     }
 
-    @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
+    private boolean isCorrectType(PokeType type)
     {
-        // TODO Auto-generated method stub
-
+        return type == PokeType.dark || type == PokeType.bug || type == PokeType.ghost;
     }
-
 }

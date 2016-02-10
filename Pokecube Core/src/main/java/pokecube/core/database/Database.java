@@ -187,7 +187,7 @@ public class Database implements IMoveConstants
                     continue;
                 }
                 toRemove.add(e);
-//                System.out.println(e.pokedexNb + "," + e);
+                // System.out.println(e.pokedexNb + "," + e);
             }
         }
 
@@ -251,6 +251,8 @@ public class Database implements IMoveConstants
                 return e;
             }
         }
+        if (name.toLowerCase()
+                .contains("mega ")) { return getEntry((name.toLowerCase().replace("mega ", "") + " mega").trim()); }
         return ret;
     }
 
@@ -1323,20 +1325,20 @@ public class Database implements IMoveConstants
         for (ArrayList<String> s : rows)
         {
             int num = Integer.parseInt(s.get(0).trim());
-            PokedexEntry e = getEntry(num);
+            String name = s.get(1);
+            PokedexEntry e = getEntry(name);
+            
             if (e == null)
             {
-                System.err.println("missing entry for " + num);
+                e = getEntry(num);
+            }
+            if (e == null)
+            {
+                System.err.println("Missing Ability for " + num + " " + name);
                 continue;
             }
 
-            String name = s.get(1);
-            // TODO abilities for megas here
-            if (name.contains("Mega"))
-            {
-
-            }
-            else
+            if (e != null)
             {
                 String a1 = s.get(2).trim();
 

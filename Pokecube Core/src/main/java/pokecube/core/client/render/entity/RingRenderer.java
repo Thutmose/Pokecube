@@ -5,7 +5,6 @@ import baubles.common.lib.PlayerHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +24,7 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
     public void doRenderLayer(EntityPlayer player, float p_177141_2_, float p_177141_3_, float partialTicks,
             float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale)
     {
-        ItemStack itemstack = null;
+//        ItemStack itemstack = null;
 
         InventoryBaubles inv = PlayerHandler.getPlayerBaubles(player);
 
@@ -43,37 +42,33 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
 
         if (left)
         {
-            itemstack = inv.getStackInSlot(2);
+//            itemstack = inv.getStackInSlot(2);
             GlStateManager.pushMatrix();
             ((ModelBiped) this.livingEntityRenderer.getMainModel()).bipedLeftArm.postRender(0.0625f);
             GlStateManager.translate(0.1, -0.01, 0);
             GlStateManager.translate(-0.0625F, 0.4375F, 0.0625F);
-
-            Minecraft minecraft = Minecraft.getMinecraft();
-
+            
             if (player.isSneaking())
             {
                 GlStateManager.translate(0.0F, 0.203125F, 0.0F);
             }
-            // TODO actual ring model here.
-            minecraft.getItemRenderer().renderItem(player, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON);
+            // TODO render ring model here.
+            
             GlStateManager.popMatrix();
         }
         if (right)
         {
-            itemstack = inv.getStackInSlot(1);
+//            itemstack = inv.getStackInSlot(1);
             GlStateManager.pushMatrix();
             ((ModelBiped) this.livingEntityRenderer.getMainModel()).bipedRightArm.postRender(0.0625F);
             GlStateManager.translate(-0.0625F, 0.4375F, 0.0625F);
-
-            Minecraft minecraft = Minecraft.getMinecraft();
-
+            
             if (player.isSneaking())
             {
                 GlStateManager.translate(0.0F, 0.203125F, 0.0F);
             }
-            // TODO actual ring model here.
-            minecraft.getItemRenderer().renderItem(player, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON);
+            // TODO render ring model here.
+            
             GlStateManager.popMatrix();
         }
     }

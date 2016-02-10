@@ -1307,6 +1307,12 @@ pokemob.agress=A wild %1$s has appeared
 
 pokemob.hungry.slow=Your pokemob is too hungry to move quickly
 
+pokemob.command.attack=You tell %1$s to attack %2$s
+
+pokemob.action.sendout=%1$s was sent out
+pokemob.action.return=%1$s has returned to the Pokecube
+pokemob.action.usemove=You tell %1$s to use %2$s
+
 pokemob.megaevolve.success=%1$s Mega-evolved into %2$s
 pokemob.megaevolve.revert=%1$s Reverted to %2$s
 pokemob.megaevolve.wrongstone=%1$s has the wrong megastone

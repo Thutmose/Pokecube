@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -371,11 +372,10 @@ public abstract class EntityTameablePokemob extends EntityTameable
         else
         {
             Entity owner = this.getPokemonOwner();
-
             if (owner instanceof EntityPlayer && !this.isDead)
             {
                 NBTTagCompound nbt = new NBTTagCompound();
-                nbt.setInteger("id", getEntityId());
+                nbt.setInteger("id", owner.getEntityId());
                 nbt.setString("message", message);
                 PokecubeClientPacket mess = new PokecubeClientPacket(PokecubeClientPacket.MOVEMESSAGE, nbt);
                 PokecubePacketHandler.sendToClient(mess, (EntityPlayer) owner);
@@ -611,7 +611,6 @@ public abstract class EntityTameablePokemob extends EntityTameable
                 boolean added = false;
                 if (((EntityPlayer) owner).inventory.getFirstEmptyStack() == -1)
                 {
-
                     ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
                     MinecraftForge.EVENT_BUS.post(toss);
                 }
@@ -626,6 +625,9 @@ public abstract class EntityTameablePokemob extends EntityTameable
                 {
                     ((EntityPlayerMP) owner).sendContainerToPlayer(((EntityPlayerMP) owner).inventoryContainer);
                 }
+
+                String mess = StatCollector.translateToLocalFormatted("pokemob.action.return", getPokemonDisplayName());
+                displayMessageToOwner(mess);
             }
             else if (getPokemonOwnerName() != null && !getPokemonOwnerName().isEmpty())
             {

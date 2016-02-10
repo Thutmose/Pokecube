@@ -19,6 +19,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.config.Configuration;
@@ -363,15 +364,17 @@ public class GuiDisplayPokecubeInfo extends Gui
                 look.freeVectorFromPool();
                 return;
             }
-
-            if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner) pokemob.displayMessageToOwner(
-                    "You tell " + pokemob.getPokemonDisplayName() + " to attack " + target.getName());// TODO
-                                                                                                      // localize
-                                                                                                      // this
+            boolean attack = false;
+            if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
+            {
+                String mess = StatCollector.translateToLocalFormatted("pokemob.command.attack",
+                        pokemob.getPokemonDisplayName(), target.getName());
+                pokemob.displayMessageToOwner(mess);
+                attack = true;
+            }
             buffer.writeInt(((Entity) pokemob).getEntityId());
             if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
             {
-                System.out.println(GuiScrollableLists.instance().getState()+" ");
                 if (!GuiScrollableLists.instance().getState())
                 {
                     GuiScrollableLists.instance().setState(true);
@@ -393,6 +396,16 @@ public class GuiDisplayPokecubeInfo extends Gui
                     {
                         buffer.writeBoolean(false);
                     }
+                }
+            }
+            else if(!attack)
+            {
+                Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
+                if (move != null)
+                {
+                    String mess = StatCollector.translateToLocalFormatted("pokemob.action.usemove",
+                            pokemob.getPokemonDisplayName(), MovesUtils.getTranslatedMove(move.getName()));
+                    pokemob.displayMessageToOwner(mess);
                 }
             }
             buffer.writeBoolean(false);

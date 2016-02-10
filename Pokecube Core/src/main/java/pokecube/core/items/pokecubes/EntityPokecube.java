@@ -356,6 +356,14 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             entity1.setPokemonAIState(IPokemob.TAMED, true);
             entity1.setPokemonAIState(IPokemob.EXITINGCUBE, true);
 
+            Entity owner = entity1.getPokemonOwner();
+            if (owner instanceof EntityPlayer)
+            {
+                String mess = StatCollector.translateToLocalFormatted("pokemob.action.sendout",
+                        entity1.getPokemonDisplayName());
+                entity1.displayMessageToOwner(mess);
+            }
+
             if (((EntityLiving) entity1).getHealth() <= 0)
             {
                 // notify the mob is dead

@@ -643,6 +643,12 @@ public class EventsHandler
                     mess += "\nPlease update from either Minecraftforum.net or Curseforge, those are the only offical locations to download Pokecube, and any other location may contain malware.";
                     (event.player).addChatMessage(new ChatComponentText(mess));
                 }
+                else
+                {
+                    String mess = "Pokecube Core is currently running latest/recommended version of " + PokecubeMod.VERSION + ".";
+                    mess += "\nPlease note that Curseforge, is the only offical location to download Pokecube, and any other location may contain malware.";
+                    (event.player).addChatMessage(new ChatComponentText(mess));
+                }
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }

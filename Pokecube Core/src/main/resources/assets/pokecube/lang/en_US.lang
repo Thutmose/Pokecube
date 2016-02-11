@@ -1312,6 +1312,7 @@ pokemob.command.attack=You tell %1$s to attack %2$s
 pokemob.action.sendout=%1$s was sent out
 pokemob.action.return=%1$s has returned to the Pokecube
 pokemob.action.usemove=You tell %1$s to use %2$s
+pokemob.action.faint=%1$s has fainted
 
 pokemob.megaevolve.success=%1$s Mega-evolved into %2$s
 pokemob.megaevolve.revert=%1$s Reverted to %2$s

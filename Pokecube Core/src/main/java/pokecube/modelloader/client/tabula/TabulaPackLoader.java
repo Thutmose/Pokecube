@@ -107,7 +107,7 @@ public class TabulaPackLoader extends AnimationLoader
                 }
                 else
                 {
-                    System.err.println("Cannot find base forme for " + entry + " " + entry.baseForme);
+                    //Not really important for tabula models, they can have this built in.
                 }
             }
             set.postInitAnimations();

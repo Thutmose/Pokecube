@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.vecmath.Vector3f;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -85,7 +86,11 @@ public class X3dXMLParser
                         String matName = mat.getAttributes().getNamedItem("DEF").getNodeValue().substring(3);
                         String texName = tex.getAttributes().getNamedItem("DEF").getNodeValue().substring(3);
                         texName = texName.substring(0, texName.lastIndexOf("_png"));
-                        Material material = new Material(matName, texName);
+
+                        Material material = new Material(matName, texName, getVector(mat, "diffuseColor"),
+                                getVector(mat, "specularColor"), getVector(mat, "emissiveColor"),
+                                getFloat(mat, "ambientIntensity"), getFloat(mat, "shininess"),
+                                getFloat(mat, "transparency"));
                         matMap.put(matName, material);
                     }
                 }
@@ -256,4 +261,14 @@ public class X3dXMLParser
         list.add(shape);
     }
 
+    private Vector3f getVector(Node node, String key)
+    {
+        String[] var = node.getAttributes().getNamedItem(key).getNodeValue().split(" ");
+        return new Vector3f(Float.parseFloat(var[0]), Float.parseFloat(var[1]), Float.parseFloat(var[2]));
+    }
+
+    private float getFloat(Node node, String key)
+    {
+        return Float.parseFloat(node.getAttributes().getNamedItem(key).getNodeValue());
+    }
 }

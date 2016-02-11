@@ -118,7 +118,6 @@ public class ClientProxy extends CommonProxy
 
     public static void populateModels()
     {
-        System.out.println("Looking for models");
         TabulaPackLoader.clear();
         for (String mod : modelProviders.keySet())
         {

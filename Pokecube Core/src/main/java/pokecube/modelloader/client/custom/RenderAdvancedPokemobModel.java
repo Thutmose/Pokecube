@@ -194,7 +194,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
             GlStateManager.disableTexture2D();
             GlStateManager.disableLighting();
-            GlStateManager.enableBlend();
 
             int length = 40;
             float health = entityliving.getHealth();// getHealth()

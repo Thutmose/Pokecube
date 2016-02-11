@@ -61,8 +61,9 @@ public class Shape
             }
         }
         // Call the list
-        GL11.glCallList(meshId);
-        GL11.glFlush();
+        // GL11.glCallList(meshId);
+        // GL11.glFlush();
+        addTris(texturer);
 
         // Reset Texture Matrix if changed.
         if (textureShift)
@@ -121,6 +122,20 @@ public class Shape
         else
         {
             GL11.glShadeModel(GL11.GL_SMOOTH);
+        }
+
+        if (material != null)
+        {
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+
+            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT, material.makeBuffer(material.ambientIntensity));
+            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, material.makeBuffer(material.diffuseColor));
+            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, material.makeBuffer(material.specularColor));
+            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SHININESS, material.makeBuffer(material.shininess));
+            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_EMISSION, material.makeBuffer(material.emissiveColor));
+
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            GL11.glEnable(GL11.GL_LIGHTING);
         }
 
         GL11.glBegin(GL11.GL_TRIANGLES);

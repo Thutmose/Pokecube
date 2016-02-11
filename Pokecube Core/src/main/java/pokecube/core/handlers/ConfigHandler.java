@@ -29,6 +29,7 @@ import pokecube.core.utils.PokecubeSerializer;
 public class ConfigHandler extends Mod_Pokecube_Helper
 {
     public static String[] defaultStarts = {};
+    public static boolean  loginmessage  = true;
 
     public static void loadConfig(Mod_Pokecube_Helper helper, Configuration config)
     {
@@ -51,6 +52,13 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                         "Are addons that add FakeMons allowed to add spawns or starters to the world.")
                 .getBoolean(true);
         meteors = config.get(Configuration.CATEGORY_GENERAL, "meteors", meteors, "do meteors fall.").getBoolean(true);
+
+        if (config.hasKey(Configuration.CATEGORY_GENERAL, "loginmessage")
+                && config.hasKey(Configuration.CATEGORY_GENERAL, "version"))
+        {
+            if (config.getString("version", Configuration.CATEGORY_GENERAL, "", "").equals(PokecubeMod.VERSION))
+                loginmessage = config.get(Configuration.CATEGORY_GENERAL, "loginmessage", false).getBoolean(false);
+        }
 
         cull = config.get(Configuration.CATEGORY_GENERAL, "cullDistanced", cull,
                 "do pokemon that get too far from a player despawn instantly").getBoolean(false);
@@ -256,6 +264,15 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         System.out.println("Pokecube Config Loaded");
     }
 
+    public static void seenMessage()
+    {
+        Configuration config = new Configuration(configFile);
+        config.load();
+        config.get(Configuration.CATEGORY_GENERAL, "loginmessage", false).set(false);
+        config.get(Configuration.CATEGORY_GENERAL, "version", PokecubeMod.VERSION).set(PokecubeMod.VERSION);
+        config.save();
+    }
+
     public static void saveConfig()
     {
         Configuration config = new Configuration(configFile);
@@ -299,22 +316,21 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             JsonElement element1 = element.getAsJsonObject().get("contributors");
             JsonArray contribArray = element1.getAsJsonArray();
             List<String> defaults = Lists.newArrayList();
-            for(int i = 0; i<contribArray.size(); i++)
+            for (int i = 0; i < contribArray.size(); i++)
             {
                 element1 = contribArray.get(i);
                 JsonObject obj = element1.getAsJsonObject();
                 String name = obj.get("username").getAsString();
                 String info = obj.get("info").getAsString();
-                defaults.add(name+":"+info);
+                defaults.add(name + ":" + info);
             }
-            
+
             defaultStarts = defaults.toArray(new String[0]);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-        
-        
+
     }
 }

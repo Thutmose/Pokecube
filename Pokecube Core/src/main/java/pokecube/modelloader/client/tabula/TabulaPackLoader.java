@@ -192,7 +192,7 @@ public class TabulaPackLoader extends AnimationLoader
                 }
                 catch (Exception e1)
                 {
-                    System.out.println("did not find " + test2 + " " + e1);
+                    //Not really important for tabula models, they can have animations built in.
                 }
             }
         }

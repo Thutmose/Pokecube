@@ -72,6 +72,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
@@ -643,11 +644,12 @@ public class EventsHandler
                     mess += "\nPlease update from either Minecraftforum.net or Curseforge, those are the only offical locations to download Pokecube, and any other location may contain malware.";
                     (event.player).addChatMessage(new ChatComponentText(mess));
                 }
-                else
+                else if(ConfigHandler.loginmessage)
                 {
                     String mess = "Pokecube Core is currently running latest/recommended version of " + PokecubeMod.VERSION + ".";
                     mess += "\nPlease note that Curseforge, is the only offical location to download Pokecube, and any other location may contain malware.";
                     (event.player).addChatMessage(new ChatComponentText(mess));
+                    ConfigHandler.seenMessage();
                 }
                 MinecraftForge.EVENT_BUS.unregister(this);
             }

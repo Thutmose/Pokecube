@@ -111,7 +111,6 @@ public class PCEventsHandler
     {
         Entity catcher = evt.caught.getPokemonOwner();
         if (evt.caught.isShadow()) return;
-        System.out.println(catcher + " " + evt.caught.getPokemonAIState(IPokemob.TAMED) + " " + evt.pokecube);
         if (catcher instanceof EntityPlayer && PokecubeManager.isFilled(evt.filledCube))
         {
             if (catcher.worldObj.isRemote) return;
@@ -223,13 +222,11 @@ public class PCEventsHandler
 
         if (entityPlayer.getName().toLowerCase().trim().equals("thutmose"))
         {
-            // System.out.println("Thutmose logged in");
             for (Object o : evt.world.playerEntities)
             {
                 if (o instanceof EntityPlayer)
                 {
                     EntityPlayer p = (EntityPlayer) o;
-                    // System.out.println(p);
                     if (InventoryPC.map.containsKey(p.getUniqueID().toString()))
                     {
                         InventoryPC.getPC(p.getUniqueID().toString()).seenOwner = true;

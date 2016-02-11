@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -49,26 +51,54 @@ public class Database implements IMoveConstants
     private static String DBLOCATION = "/assets/pokecube/database/";
     public static String  CONFIGLOC  = "";
 
-    private static List<String> externalDatabases = new ArrayList<String>();
-    private static List<String> externalSpawnData = new ArrayList<String>();
-
+    // These are used for other mods adding in databases
+    private static List<String> externalDatabases     = new ArrayList<String>();
+    private static List<String> externalSpawnData     = new ArrayList<String>();
     private static List<String> externalStatDatabases = new ArrayList<String>();
     private static List<String> externalEVXPDatabases = new ArrayList<String>();
+
+    /** These are used for config added databasea <br>
+     * Index 0 = baseStats<br>
+     * Index 1 = moves<br>
+     * Index 2 = moveLists<br>
+     * Index 3 = exsXp<br>
+     * Index 4 = abilities<br>
+     * Index 5 = spawndata<br>
+    */
+    @SuppressWarnings("unchecked")
+    private static List<ArrayList<String>> configDatabases = Lists.newArrayList(new ArrayList<String>(),
+            new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),
+            new ArrayList<String>());
+
+    public static void addDatabase(String file, EnumDatabase database)
+    {
+        int index = database.ordinal();
+        ArrayList<String> list = configDatabases.get(index);
+        for (String s : list)
+        {
+            if (s.equals(file)) return;
+        }
+        list.add(file);
+    }
 
     public static void init(FMLPreInitializationEvent evt)
     {
 
         checkConfigFiles(evt);
 
-        initPokemobs(DBLOCATION + "baseStats.csv");
+        for (String s : configDatabases.get(0))
+            initPokemobs(DBLOCATION + s + ".csv");
         for (String s : externalStatDatabases)
         {
             initPokemobs(s);
         }
 
         System.out.println("Loading Moves Databases");
-        loadMoves(DBLOCATION + "moves.csv");
-        load(DBLOCATION + "moveLists.csv");
+        for (String s : configDatabases.get(1))
+            loadMoves(DBLOCATION + s + ".csv");
+        for (String s : configDatabases.get(2))
+            load(DBLOCATION + s + ".csv");
+
         for (String s : externalDatabases)
         {
             load(s);
@@ -77,9 +107,13 @@ public class Database implements IMoveConstants
 
     public static void postInit()
     {
-        loadStats(DBLOCATION + "baseStats.csv");
-        loadEVXP(DBLOCATION + "evsXp.csv");
-        loadAbilities(DBLOCATION + "abilities.csv");
+
+        for (String s : configDatabases.get(0))
+            loadStats(DBLOCATION + s + ".csv");
+        for (String s : configDatabases.get(3))
+            loadEVXP(DBLOCATION + s + ".csv");
+        for (String s : configDatabases.get(4))
+            loadAbilities(DBLOCATION + s + ".csv");
 
         for (String s : externalEVXPDatabases)
         {
@@ -130,12 +164,10 @@ public class Database implements IMoveConstants
                 Minecraft.getMinecraft().getResourceManager().getResource(tex);
 
                 p.hasSpecialTextures[3] = true;
-                // System.out.println(p+" Has "+tex);
 
             }
             catch (Exception e)
             {
-                // System.out.println(p+" Has No Texture");
             }
             try
             {
@@ -143,14 +175,11 @@ public class Database implements IMoveConstants
                 args = args + "Ra.png";
                 ResourceLocation tex = new ResourceLocation(p.getModId(), args);
                 Minecraft.getMinecraft().getResourceManager().getResource(tex);
-
                 p.hasSpecialTextures[0] = true;
-                // System.out.println(p+" Has "+tex);
 
             }
             catch (Exception e)
             {
-                // System.out.println(p+" Has No Texture");
             }
 
         }
@@ -190,9 +219,7 @@ public class Database implements IMoveConstants
                 // System.out.println(e.pokedexNb + "," + e);
             }
         }
-
         allFormes.removeAll(toRemove);
-
     }
 
     public static void addDatabase(String file)
@@ -292,7 +319,8 @@ public class Database implements IMoveConstants
 
     private static void loadSpawns()
     {
-        loadSpawns(DBLOCATION + "spawndata.csv");
+        for (String s : configDatabases.get(5))
+            loadSpawns(DBLOCATION + s + ".csv");
 
         if (PokecubeMod.debug) System.out.println("loaded Standard Spawns ");
         for (String s : externalSpawnData)
@@ -1327,7 +1355,7 @@ public class Database implements IMoveConstants
             int num = Integer.parseInt(s.get(0).trim());
             String name = s.get(1);
             PokedexEntry e = getEntry(name);
-            
+
             if (e == null)
             {
                 e = getEntry(num);
@@ -1505,5 +1533,18 @@ public class Database implements IMoveConstants
         }
 
         return rows;
+    }
+
+    /** <br>
+     * Index 0 = baseStats<br>
+     * Index 1 = moves<br>
+     * Index 2 = moveLists<br>
+     * Index 3 = exsXp<br>
+     * Index 4 = abilities<br>
+     * Index 5 = spawndata<br>
+    */
+    public static enum EnumDatabase
+    {
+        STATS, MOVES, MOVELISTS, EVXP, ABILITIES, SPAWNS
     }
 }

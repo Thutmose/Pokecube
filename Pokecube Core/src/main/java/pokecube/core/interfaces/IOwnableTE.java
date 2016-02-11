@@ -1,4 +1,4 @@
-package pokecube.core.blocks;
+package pokecube.core.interfaces;
 
 import net.minecraft.entity.Entity;
 

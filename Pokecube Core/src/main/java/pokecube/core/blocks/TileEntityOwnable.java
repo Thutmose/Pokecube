@@ -5,6 +5,7 @@ import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import pokecube.core.interfaces.IOwnableTE;
 
 public class TileEntityOwnable extends TileEntity implements IOwnableTE
 {

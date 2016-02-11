@@ -21,6 +21,7 @@ import net.minecraftforge.common.config.Configuration;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
+import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
@@ -58,6 +59,25 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         {
             if (config.getString("version", Configuration.CATEGORY_GENERAL, "", "").equals(PokecubeMod.VERSION))
                 loginmessage = config.get(Configuration.CATEGORY_GENERAL, "loginmessage", false).getBoolean(false);
+        }
+
+        String[] defaultDatabases = { "baseStats", "moves", "moveLists", "evsXp", "abilities", "spawndata" };
+
+        String[] configDatabases = config.getStringList("databases", CATEGORY_ADVANCED, defaultDatabases,
+                "Databases for pokemob information Add additional databases by appending ;<newfile>.  If you remove any of the strings here, things will break.");
+
+        if (configDatabases.length != defaultDatabases.length)
+        {
+            configDatabases = defaultDatabases;
+        }
+
+        for (int i = 0; i < 6; i++)
+        {
+            String[] args = configDatabases[i].split(";");
+            for (String s : args)
+            {
+                Database.addDatabase(s, EnumDatabase.values()[i]);
+            }
         }
 
         cull = config.get(Configuration.CATEGORY_GENERAL, "cullDistanced", cull,

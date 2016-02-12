@@ -3,11 +3,10 @@ package pokecube.compat.ai;
 import java.util.HashSet;
 import java.util.Set;
 
-import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyStorage;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokeType;
@@ -80,29 +79,16 @@ public class AIElectricalInterferance extends EntityAIBase
 			
 			TileEntity tile = mobLoc.getTileEntity(entity.worldObj);
 
-			if(tile instanceof IEnergyHandler)
+			if(tile instanceof IEnergyStorage)
 			{
 				int radSq = (int) toFill.magSq();
 				radSq = Math.max(1, radSq);
-				IEnergyHandler energySource = (IEnergyHandler) tile;
+				IEnergyStorage energySource = (IEnergyStorage) tile;
 				int num = statFactor / radSq;
 				
 				if(num==0)
 					return;
-				directions:
-				for(EnumFacing dir: EnumFacing.VALUES)
-				{
-					if(num < 0)
-					{
-						if(energySource.extractEnergy(dir, num, false)!=0)
-							break directions;
-					}
-					else
-					{
-						if(energySource.receiveEnergy(dir, num, false)!=0)
-							break directions;
-					}
-				}
+				energySource.receiveEnergy(num, false);
 			}
 			else if(tile!=null && eln)
 			{

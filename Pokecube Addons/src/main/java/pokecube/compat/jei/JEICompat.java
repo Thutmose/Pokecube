@@ -90,6 +90,7 @@ public class JEICompat implements IModPlugin
         ItemStack diamondBlock = new ItemStack(Blocks.diamond_block);
         ItemStack dome = PokecubeItems.getStack("domeFossil");
         ItemStack potion = new ItemStack(Items.potionitem, 1, Short.MAX_VALUE);
+        
         ClonerRecipe newRecipe = new ClonerRecipe(egg, Lists.newArrayList(mewhair, egg, potion), 132, 10000);
         newRecipes.add(newRecipe);
         potion = new ItemStack(Items.potionitem, 1, 8225);

@@ -82,7 +82,6 @@ public class ContainerCloner extends Container
         result = null;
         if (worldObj == null) return;
         int energy = tile.getField(0);
-        // System.out.println(energy + " " + worldObj.isRemote);
         if (item != null)
         {
             tile.setInventorySlotContents(9, item);
@@ -145,6 +144,7 @@ public class ContainerCloner extends Container
             }
             tile.setInventorySlotContents(9, null);
         }
+        tile.setInventorySlotContents(9, null);
     }
 
     @Override
@@ -159,7 +159,6 @@ public class ContainerCloner extends Container
         {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-
             if (index == 0)
             {
                 if (!this.mergeItemStack(itemstack1, 10, 46, true)) { return null; }
@@ -189,7 +188,6 @@ public class ContainerCloner extends Container
 
             slot.onPickupFromSlot(playerIn, itemstack1);
         }
-
         return itemstack;
     }
 

@@ -1,9 +1,11 @@
 package pokecube.modelloader.client.custom.x3d;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import pokecube.modelloader.client.custom.IPartTexturer;
@@ -128,11 +130,11 @@ public class Shape
         {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
 
-            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT, material.makeBuffer(material.ambientIntensity));
-            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, material.makeBuffer(material.diffuseColor));
-            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, material.makeBuffer(material.specularColor));
-            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SHININESS, material.makeBuffer(material.shininess));
-            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_EMISSION, material.makeBuffer(material.emissiveColor));
+            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT, makeBuffer(material.ambientIntensity));
+            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, makeBuffer(material.diffuseColor));
+            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, makeBuffer(material.specularColor));
+            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SHININESS, makeBuffer(material.shininess));
+            GL11.glMaterial(GL11.GL_FRONT, GL11.GL_EMISSION, makeBuffer(material.emissiveColor));
 
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
             GL11.glEnable(GL11.GL_LIGHTING);
@@ -189,6 +191,20 @@ public class Shape
                     1 - Float.parseFloat(points[i + 1]));
             ret.add(toAdd);
         }
+        return ret;
+    }
+
+    private FloatBuffer makeBuffer(Vector3f vector)
+    {
+        FloatBuffer ret = BufferUtils.createFloatBuffer(3 + 4);
+        ret.put(new float[] { vector.x, vector.y, vector.z });
+        return ret;
+    }
+
+    private FloatBuffer makeBuffer(float value)
+    {
+        FloatBuffer ret = BufferUtils.createFloatBuffer(1 + 4);
+        ret.put(new float[] { value });
         return ret;
     }
 }

@@ -286,9 +286,7 @@ public class Database implements IMoveConstants
     public static boolean compare(String a, String b)
     {
         boolean ret = false;
-
         ret = a.toLowerCase().replaceAll("(\\W)", "").equals(b.toLowerCase().replaceAll("(\\W)", ""));
-
         return ret;
     }
 

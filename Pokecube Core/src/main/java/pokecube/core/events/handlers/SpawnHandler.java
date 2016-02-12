@@ -82,7 +82,7 @@ public final class SpawnHandler
     }
 
     public static double MAX_DENSITY = 1;
-    public static int    MAXNUM      = 2;
+    public static int    MAXNUM      = 10;
 
     public static void sortSpawnables()
     {

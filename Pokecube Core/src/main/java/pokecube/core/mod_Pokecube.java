@@ -118,8 +118,8 @@ import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
-@Mod(modid = mod_Pokecube.ID, name = "Pokecube", version = mod_Pokecube.VERSION, dependencies = "required-after:Forge@"
-        + PokecubeMod.MINFORGEVERSION, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS)
+@Mod(modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:Forge@"
+        + PokecubeMod.MINFORGEVERSION + PokecubeMod.DEPSTRING, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS)
 public class mod_Pokecube extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")

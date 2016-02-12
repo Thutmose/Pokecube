@@ -61,6 +61,9 @@ public class ClonerRecipeWrapper extends VanillaRecipeWrapper implements ICrafti
         if (!isVanilla())
         {
             IPokemob pokemob = getPokemob();
+
+            if (pokemob == null) return;
+
             int num = pokemob.getPokedexNb();
             PokedexEntry entry;
             pokemob = EventsHandlerClient.renderMobs.get(entry = pokemob.getPokedexEntry());

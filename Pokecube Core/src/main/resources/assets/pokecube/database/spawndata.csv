@@ -15,7 +15,7 @@ NidoranF,day night ,plains 0.25,,wet cold
 Clefairy,day night,meteor 0.25;cave 0.25,,
 Vulpix,day night ,plains 0.2,,
 Jigglypuff,day night,meteor 0.3;cave 0.2,,
-Zubat,night,all 0.05:50:5,,
+Zubat,night,all 0.25:10:5,,
 Oddish,day ,plains 0.2,,dry savanna
 Paras,day night,mushroom 0.3; cave 0.2,jungle hills 0.15,
 Venonat,night ,forest 0.2,,

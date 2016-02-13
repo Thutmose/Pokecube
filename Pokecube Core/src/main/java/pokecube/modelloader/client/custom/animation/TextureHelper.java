@@ -20,13 +20,13 @@ import pokecube.modelloader.client.custom.IPartTexturer;
 public class TextureHelper implements IPartTexturer
 {
     IPokemob                                 pokemob;
-    Map<String, String>                      texNames          = Maps.newHashMap();
+    Map<String, String>                      texNames     = Maps.newHashMap();
     String                                   default_tex;
-    Map<String, Boolean>                     smoothing         = Maps.newHashMap();
-    boolean                                  default_smoothing = true;
-    Map<String, ResourceLocation>            texMap            = Maps.newHashMap();
-    Map<String, TexState>                    texStates         = Maps.newHashMap();
-    public final static Map<String, Integer> mappedStates      = Maps.newHashMap();
+    Map<String, Boolean>                     smoothing    = Maps.newHashMap();
+    boolean                                  default_flat = true;
+    Map<String, ResourceLocation>            texMap       = Maps.newHashMap();
+    Map<String, TexState>                    texStates    = Maps.newHashMap();
+    public final static Map<String, Integer> mappedStates = Maps.newHashMap();
 
     public TextureHelper(Node node)
     {
@@ -37,7 +37,7 @@ public class TextureHelper implements IPartTexturer
         if (node.getAttributes().getNamedItem("smoothing") != null)
         {
             boolean flat = !node.getAttributes().getNamedItem("smoothing").getNodeValue().equalsIgnoreCase("smooth");
-            default_smoothing = flat;
+            default_flat = flat;
         }
         NodeList parts = node.getChildNodes();
         for (int i = 0; i < parts.getLength(); i++)
@@ -257,7 +257,7 @@ public class TextureHelper implements IPartTexturer
     public boolean isFlat(String part)
     {
         if (smoothing.containsKey(part)) { return smoothing.get(part); }
-        return default_smoothing;
+        return default_flat;
     }
 
     @Override

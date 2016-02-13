@@ -94,7 +94,7 @@ public class Shape
         Vertex normal;
         TextureCoordinate textureCoordinate;
         Vector3f[] normalList = new Vector3f[order.length];
-        boolean flat = false;
+        boolean flat = true;
         if (texturer != null) flat = texturer.isFlat(name);
         if (flat)
         {

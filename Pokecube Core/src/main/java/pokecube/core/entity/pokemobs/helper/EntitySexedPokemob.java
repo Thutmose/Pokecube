@@ -21,6 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
+import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -40,8 +41,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     protected int                  inLove;
     protected byte                 sexe = 0;
     protected Vector<IBreedingMob> males;
-
-    public static int BREEDINGDELAY = 4000;
 
     /** @param par1World */
     public EntitySexedPokemob(World world)
@@ -225,21 +224,14 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
                         || entityanimal.getPokemonAIState(IPokemob.ANGRY))
                     continue;
 
-                if (entityanimal != this && entityanimal.getHealth() > entityanimal.getMaxHealth() / 1.5f) // &&
-                                                                                                           // entityanimal.lover
-                                                                                                           // ==
-                                                                                                           // null
-                                                                                                           // &&
-                                                                                                           // entityanimal.inLove
-                                                                                                           // >
-                                                                                                           // 0)
+                if (entityanimal != this && entityanimal.getHealth() > entityanimal.getMaxHealth() / 1.5f)
                 {
                     if (!males.contains(entityanimal))
                     {
                         entityanimal.setLover(this);
                         if (transforms) lover = entityanimal;
                         males.add(entityanimal);
-                        entityanimal.inLove = 20;
+                        entityanimal.inLove = 200;
                     }
                 }
             }
@@ -367,7 +359,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
     public int getBreedingDelay(IPokemob mate)
     {
-        return BREEDINGDELAY;
+        return ConfigHandler.BREEDINGDELAY;
     }
 
     @Override

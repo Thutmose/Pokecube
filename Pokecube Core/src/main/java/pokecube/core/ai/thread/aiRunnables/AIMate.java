@@ -9,6 +9,7 @@ import java.util.Vector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
+import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -46,17 +47,16 @@ public class AIMate extends AIBase
         if ((breedingMob.getLover() != null && breedingMob.getLover() instanceof IBreedingMob
                 && !((IBreedingMob) breedingMob.getLover()).tryToBreed()) || (isMating && males.isEmpty()))
             breedingMob.resetLoveStatus();
-        ;
-        if (isMating) return true;
 
+        if (isMating) return true;
         if (breedingMob.getLover() != null)
         {
             pokemob.setPokemonAIState(IPokemob.MATING, true);
             return true;
         }
+        findLover();
         if (pokemob.getSexe() == IPokemob.MALE || !breedingMob.tryToBreed()) return false;
 
-        findLover();
         if (males.size() == 0) return false;
 
         ArrayList<IBreedingMob> toRemove = new ArrayList<IBreedingMob>();
@@ -122,7 +122,6 @@ public class AIMate extends AIBase
                             .setPokemonAIState(IPokemob.MATEFIGHT, true);
                     ((EntityAnimal) ((IBreedingMob) targetMate).getMalesForBreeding().get(0))
                             .setAttackTarget(((EntityAnimal) ((IBreedingMob) targetMate).getMalesForBreeding().get(1)));
-                    // System.out.println("fight");
                 }
 
             }
@@ -154,22 +153,23 @@ public class AIMate extends AIBase
         }
         if (rePath) this.entity.getNavigator().tryMoveToEntityLiving(breedingMob.getLover(), entity.getAIMoveSpeed());
 
-        ++this.spawnBabyDelay;
-        if (this.spawnBabyDelay >= 60 && this.entity.getDistanceSqToEntity(breedingMob.getLover()) < 9.0D)
+        this.spawnBabyDelay++;
+
+        if (this.spawnBabyDelay >= 60 && this.entity.getDistanceSqToEntity(breedingMob.getLover()) < 2.0D)
         {
             breedingMob.mateWith((IBreedingMob) breedingMob.getLover());
+            this.spawnBabyDelay = 0;
         }
         if (this.spawnBabyDelay > 200)
         {
             breedingMob.resetLoveStatus();
+            this.spawnBabyDelay = 0;
         }
     }
 
     @Override
     public void reset()
     {
-        breedingMob.resetLoveStatus();
-        this.spawnBabyDelay = 0;
     }
 
     public Entity findLover()
@@ -185,6 +185,8 @@ public class AIMate extends AIBase
         if (breedingMob.getLover() != null) { return breedingMob.getLover(); }
 
         if ((pokemob.getSexe() == IPokemob.MALE && !transforms) || males.size() > 0) { return null; }
+
+        breedingMob.setLoveTimer(breedingMob.getLoveTimer() + 1 * ConfigHandler.mateMultiplier);
 
         if (breedingMob.getLoveTimer() > 0)
         {
@@ -224,7 +226,7 @@ public class AIMate extends AIBase
                         males.add((IBreedingMob) entityanimal);
                         if (entityanimal instanceof IBreedingMob)
                         {
-                            ((IBreedingMob) entityanimal).setLoveTimer(20);
+                            ((IBreedingMob) entityanimal).setLoveTimer(200);
                         }
                     }
                 }

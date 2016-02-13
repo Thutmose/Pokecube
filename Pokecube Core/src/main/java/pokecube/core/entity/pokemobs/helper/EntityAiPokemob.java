@@ -438,9 +438,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
 
-        if (getLover() != null)
+        if (getPokemonAIState(MATING))
         {
-            if (inLove % 5 == 0)
+            if (ticksExisted % 5 == 0)
             {
                 double d = rand.nextGaussian() * 0.02D;
                 double d1 = rand.nextGaussian() * 0.02D;
@@ -1045,7 +1045,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         // Check Pokedex Entry defined Interaction for player.
         if (getPokedexEntry().interact(player, this, true)) return true;
-
         Item torch = Item.getItemFromBlock(Blocks.torch);
         // Either push pokemob around, or if sneaking, make it try to climb on
         // shoulder

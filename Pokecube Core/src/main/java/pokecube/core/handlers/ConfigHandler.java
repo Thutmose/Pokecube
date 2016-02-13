@@ -29,8 +29,10 @@ import pokecube.core.utils.PokecubeSerializer;
 
 public class ConfigHandler extends Mod_Pokecube_Helper
 {
-    public static String[] defaultStarts = {};
-    public static boolean  loginmessage  = true;
+    public static String[] defaultStarts  = {};
+    public static boolean  loginmessage   = true;
+    public static int      mateMultiplier = 1;
+    public static int      BREEDINGDELAY  = 4000;
 
     public static void loadConfig(Mod_Pokecube_Helper helper, Configuration config)
     {
@@ -156,6 +158,15 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
             mobSpawnRadius = config.get(CATEGORY_ADVANCED, "spawnRadius", mobSpawnRadius,
                     "mobs will not spawn closer than this to the player.").getInt(10);
+
+            mateMultiplier = config
+                    .get(CATEGORY_ADVANCED, "breedingrate", mateMultiplier,
+                            "the number of ticks to increment for breeding at a time, increasing this number speeds up mating.")
+                    .getInt(1);
+
+            BREEDINGDELAY = config.get(CATEGORY_ADVANCED, "breedingdelay", BREEDINGDELAY,
+                    "Approximate number of ticks between breeding.").getInt(BREEDINGDELAY);
+            if (BREEDINGDELAY < 600) BREEDINGDELAY = 1000;
 
             mobAggroRadius = config
                     .get(CATEGORY_ADVANCED, "agroRadius", mobAggroRadius, "mobs might agro a player closer than this.")

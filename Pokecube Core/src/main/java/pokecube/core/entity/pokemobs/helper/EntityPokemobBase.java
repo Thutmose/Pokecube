@@ -55,8 +55,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public static float   scaleFactor = 0.075f;
     public static boolean multibox    = true;
 
-    private int   uid        = -1;
-    protected int pokecubeId = 0;
+    private int   uid          = -1;
+    protected int pokecubeId   = 0;
+    private int   despawntimer = 0;
 
     protected int    particleIntensity = 0;
     protected int    particleCounter   = 0;
@@ -302,17 +303,26 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         boolean canDespawn = getHungerTime() > Mod_Pokecube_Helper.pokemobLifeSpan;
         boolean checks = getPokemonAIState(TAMED) || this.getPokemonOwner() != null || getPokemonAIState(ANGRY)
                 || getAttackTarget() != null || this.hasCustomName() || isAncient();
-
+        despawntimer--;
         if (checks) return false;
 
         boolean cull = Mod_Pokecube_Helper.cull
                 && worldObj.getClosestPlayerToEntity(this, Mod_Pokecube_Helper.mobDespawnRadius) == null;
 
-        if(!cull && !Mod_Pokecube_Helper.cull)
+        if (!cull && !Mod_Pokecube_Helper.cull)
         {
             cull = worldObj.getClosestPlayerToEntity(this, Mod_Pokecube_Helper.mobDespawnRadius * 3) == null;
+            if(cull && despawntimer < 0)
+            {
+                despawntimer = 80;
+                cull = false;
+            }
+            else if(cull && despawntimer > 0)
+            {
+                cull = false;
+            }
         }
-        
+
         return canDespawn || cull;
     }
 
@@ -398,7 +408,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (aNan)
         {
             System.err.println(this + " had a NaN component in velocity");
-            System.out.println(here+" "+temp);
+            System.out.println(here + " " + temp);
             System.out.println(temp1);
             new Exception().printStackTrace();
             this.returnToPokecube();
@@ -742,7 +752,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             double x0 = x, y0 = y, z0 = z;
             setBoxes();
             setOffsets();
-            IBlockAccess world = worldObj;//((PokeNavigator) getNavigator()).pathfinder.chunks;
+            IBlockAccess world = worldObj;// ((PokeNavigator)
+                                          // getNavigator()).pathfinder.chunks;
             if (world == null)
             {
                 ((PokeNavigator) getNavigator()).refreshCache();

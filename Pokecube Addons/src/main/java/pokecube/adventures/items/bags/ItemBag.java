@@ -7,13 +7,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.client.models.items.ModelBag;
-import vazkii.botania.api.item.IBaubleRender;
 
-public class ItemBag extends Item implements IBauble, IBaubleRender
+public class ItemBag extends Item implements IBauble//, IBaubleRender
 {
     public ItemBag()
     {
@@ -64,15 +60,5 @@ public class ItemBag extends Item implements IBauble, IBaubleRender
     public void onWornTick(ItemStack arg0, EntityLivingBase arg1)
     {
 
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void onPlayerBaubleRender(ItemStack stack, EntityPlayer player, RenderType type, float partialTicks)
-    {
-        if (type == RenderType.BODY)
-        {
-            ModelBag.model.render(0.5f);
-        }
     }
 }

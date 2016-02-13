@@ -29,7 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.client.ClientProxy;
-import pokecube.adventures.client.render.item.BaubleRenderHandler;
+import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.adventures.client.render.item.RingRenderer;
 import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
@@ -50,7 +50,7 @@ public class RenderHandler
 {
 
     public static float   partialTicks = 0.0F;
-    public static boolean BOTANIA      = false;
+//    public static boolean BOTANIA      = false;
     private Set<RenderPlayer> addedLayers = Sets.newHashSet();
 
     public RenderHandler()
@@ -60,9 +60,10 @@ public class RenderHandler
     @SubscribeEvent
     public void onPlayerRender(RenderPlayerEvent.Post event)
     {
-        if (BOTANIA || addedLayers.contains(event.renderer)) { return; }
-        event.renderer.addLayer(new BaubleRenderHandler());
+        if (addedLayers.contains(event.renderer)) { return; }
+//        event.renderer.addLayer(new BaubleRenderHandler());
         event.renderer.addLayer(new RingRenderer(event.renderer));
+        event.renderer.addLayer(new BagRenderer(event.renderer));
         addedLayers.add(event.renderer);
     }
 

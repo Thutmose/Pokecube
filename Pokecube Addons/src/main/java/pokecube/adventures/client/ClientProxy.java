@@ -120,14 +120,14 @@ public class ClientProxy extends CommonProxy
         RenderHandler h = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(h);
 
-        try
-        {
-            Class.forName("vazkii.botania.client.core.helper.RenderHelper");
-            RenderHandler.BOTANIA = true;
-        }
-        catch (ClassNotFoundException e)
-        {
-        }
+//        try
+//        {
+//            Class.forName("vazkii.botania.client.core.helper.RenderHelper");
+//            RenderHandler.BOTANIA = true;
+//        }
+//        catch (ClassNotFoundException e)
+//        {
+//        }
 
         ClientRegistry.registerKeyBinding(bag = new KeyBinding("Open Bag", 23, "Pokecube"));
     }

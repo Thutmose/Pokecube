@@ -8,6 +8,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class ModelBag extends ModelBase {
+    ResourceLocation texture = new ResourceLocation(
+            "pokecube_adventures:textures/Bag.png");
 	// fields
 	ModelRenderer Pack_pt1;
 	ModelRenderer Pack_pt2;
@@ -57,9 +59,6 @@ public class ModelBag extends ModelBase {
 		GL11.glPushMatrix();
 		GL11.glTranslated(0.0, 0.4, 0.1);
 		GL11.glScaled(0.1, 0.1, 0.1);
-
-		ResourceLocation texture = new ResourceLocation(
-				"pokecube_adventures:textures/Bag.png");
 		FMLClientHandler.instance().getClient().renderEngine
 				.bindTexture(texture);
 		Pack_pt1.render(f5);

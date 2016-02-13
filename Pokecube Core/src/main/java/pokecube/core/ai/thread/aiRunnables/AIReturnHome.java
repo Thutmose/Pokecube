@@ -3,7 +3,9 @@ package pokecube.core.ai.thread.aiRunnables;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.util.BlockPos;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
@@ -30,30 +32,31 @@ public class AIReturnHome extends AIBase
     @Override
     public boolean shouldRun()
     {
-        // TODO make this run if the pokemob should go home at the end of the
-        // "day"
-        // TODO Auto-generated method stub
-        
+        BlockPos home = mob.getHome();
+        if (mob.getHomeDistance() * mob.getHomeDistance() < home.distanceSq(entity.getPosition())) { return false; }
+
         PokedexEntry entry = mob.getPokedexEntry();
-        for(TimePeriod active: entry.activeTimes())
+        boolean activeTime = false;
+        for (TimePeriod active : entry.activeTimes())
         {
-            
+            if (active.contains(entity.worldObj.getWorldTime()))
+            {
+                activeTime = true;
+            }
         }
-        return false;
+        return !activeTime && !mob.getPokemonAIState(IMoveConstants.ANGRY);
     }
 
     @Override
     public void run()
     {
         PathEntity path = entity.getNavigator().getPathToPos(mob.getHome());
-        if(path!=null) addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
+        if (path != null) addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
     }
 
     @Override
     public void reset()
     {
-        // TODO Auto-generated method stub
-
     }
 
 }

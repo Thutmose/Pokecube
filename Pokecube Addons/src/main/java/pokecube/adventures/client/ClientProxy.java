@@ -78,32 +78,35 @@ public class ClientProxy extends CommonProxy
                     new ModelResourceLocation("pokecube_adventures:" + i + "_spawner", "inventory"));
         }
 
-        //TODO in 1.9, this will need to be commented back in.
-//        RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class, new IRenderFactory<Entity>()
-//        {
-//            @Override
-//            public Render<? super Entity> createRenderFor(RenderManager manager)
-//            {
-//                return new RenderTarget(manager);
-//            }
-//        });
-//        RenderingRegistry.registerEntityRenderingHandler(EntityTrainer.class, new IRenderFactory<Entity>()
-//        {
-//            @Override
-//            public Render<? super Entity> createRenderFor(RenderManager manager)
-//            {
-//                return new RenderTrainer(manager);
-//            }
-//        });
-//        RenderingRegistry.registerEntityRenderingHandler(EntityLeader.class, new IRenderFactory<Entity>()
-//        {
-//            @Override
-//            public Render<? super Entity> createRenderFor(RenderManager manager)
-//            {
-//                return new RenderTrainer(manager);
-//            }
-//        });
-        
+        // TODO in 1.9, this will need to be commented back in.
+        // RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return new RenderTarget(manager);
+        // }
+        // });
+        // RenderingRegistry.registerEntityRenderingHandler(EntityTrainer.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return new RenderTrainer(manager);
+        // }
+        // });
+        // RenderingRegistry.registerEntityRenderingHandler(EntityLeader.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return new RenderTrainer(manager);
+        // }
+        // });
+
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
     }
 
@@ -119,15 +122,6 @@ public class ClientProxy extends CommonProxy
 
         RenderHandler h = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(h);
-
-//        try
-//        {
-//            Class.forName("vazkii.botania.client.core.helper.RenderHelper");
-//            RenderHandler.BOTANIA = true;
-//        }
-//        catch (ClassNotFoundException e)
-//        {
-//        }
 
         ClientRegistry.registerKeyBinding(bag = new KeyBinding("Open Bag", 23, "Pokecube"));
     }

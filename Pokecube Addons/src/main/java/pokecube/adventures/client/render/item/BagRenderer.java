@@ -10,11 +10,8 @@ import pokecube.adventures.items.bags.ItemBag;
 
 public class BagRenderer implements LayerRenderer<EntityPlayer>
 {
-//    private final RendererLivingEntity<?> livingEntityRenderer;
-
     public BagRenderer(RendererLivingEntity<?> livingEntityRendererIn)
     {
-//        this.livingEntityRenderer = livingEntityRendererIn;
     }
 
     @Override

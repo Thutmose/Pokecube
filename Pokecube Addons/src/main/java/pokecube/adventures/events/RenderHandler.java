@@ -61,7 +61,6 @@ public class RenderHandler
     public void onPlayerRender(RenderPlayerEvent.Post event)
     {
         if (addedLayers.contains(event.renderer)) { return; }
-//        event.renderer.addLayer(new BaubleRenderHandler());
         event.renderer.addLayer(new RingRenderer(event.renderer));
         event.renderer.addLayer(new BagRenderer(event.renderer));
         addedLayers.add(event.renderer);

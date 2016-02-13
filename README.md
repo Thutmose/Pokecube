@@ -8,8 +8,6 @@ Pokémobs for Minecraft - page under construction.
 
 - 	Venusaur Mega
 - 	Charizard Mega-X
-- 	Charizard Mega-Y
-- 	Blastoise Mega
 - 	Ekans
 - 	Arbok
 - 	Sandshrew
@@ -112,8 +110,6 @@ Pokémobs for Minecraft - page under construction.
 - 	Metagross Mega
 - 	Kyogre Primal
 - 	Groudon Primal
-- 	Bidoof
-- 	Bibarel
 - 	Kricketot
 - 	Kricketune
 - 	Shinx

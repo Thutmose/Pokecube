@@ -241,6 +241,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             setPokemonAIState(TAMED, false);
         }
+        
+        if(inLove > 600)
+        {
+            resetLoveStatus();
+        }
 
         PokedexEntry entry = getPokedexEntry();
 

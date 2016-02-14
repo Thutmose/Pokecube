@@ -185,55 +185,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         super.registerRenderInformation();
 
-        // TODO in 1.9, this will need to be commented back in, and moved to
-        // pre-init.
-        // RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class,
-        // new IRenderFactory<Entity>()
-        // {
-        // @Override
-        // public Render<? super Entity> createRenderFor(RenderManager manager)
-        // {
-        // return new RenderProfessor();
-        // }
-        // });
-        // RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class,
-        // new IRenderFactory<Entity>()
-        // {
-        // @Override
-        // public Render<? super Entity> createRenderFor(RenderManager manager)
-        // {
-        // return new RenderPokecube(manager);
-        // }
-        // });
-        // // Register rendering entity for other pokemobs
-        // RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class,
-        // new IRenderFactory<Entity>()
-        // {
-        // @Override
-        // public Render<? super Entity> createRenderFor(RenderManager manager)
-        // {
-        // return RenderPokemobs.getInstance(manager);
-        // }
-        // });
-        //
-        // RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class,
-        // new IRenderFactory<Entity>()
-        // {
-        // @Override
-        // public Render<? super Entity> createRenderFor(RenderManager manager)
-        // {
-        // return new RenderLiving(Minecraft.getMinecraft().getRenderManager(),
-        // new ModelPokemobEgg(), 0.25f)
-        // {
-        // @Override
-        // protected ResourceLocation getEntityTexture(Entity p_110775_1_)
-        // {
-        // return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
-        // }
-        // };
-        // }
-        // });
-
         RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new RenderProfessor());
         RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class,
                 new RenderPokecube(Minecraft.getMinecraft().getRenderManager()));
@@ -360,6 +311,55 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         super.preInit(evt);
 
+
+        // TODO in 1.9, this will need to be commented back in
+        // RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return new RenderProfessor();
+        // }
+        // });
+        // RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return new RenderPokecube(manager);
+        // }
+        // });
+        // // Register rendering entity for other pokemobs
+        // RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return RenderPokemobs.getInstance(manager);
+        // }
+        // });
+        //
+        // RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class,
+        // new IRenderFactory<Entity>()
+        // {
+        // @Override
+        // public Render<? super Entity> createRenderFor(RenderManager manager)
+        // {
+        // return new RenderLiving(Minecraft.getMinecraft().getRenderManager(),
+        // new ModelPokemobEgg(), 0.25f)
+        // {
+        // @Override
+        // protected ResourceLocation getEntityTexture(Entity p_110775_1_)
+        // {
+        // return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
+        // }
+        // };
+        // }
+        // });
+        
         Item tm = PokecubeItems.getItem("tm");
 
         for (int i = 0; i < 19; i++)

@@ -28,7 +28,7 @@ import pokecube.modelloader.client.tabula.model.tabula.TabulaModelParser;
 
 public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T>implements IModelRenderer<T>
 {
-    private String phase = "";
+    private String        phase = "";
     public TabulaModelSet set;
 
     public TabulaModelRenderer(TabulaModelSet set)
@@ -190,5 +190,13 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
     public HashMap<String, Animation> getAnimations()
     {
         return set.loadedAnimations;
+    }
+
+    @Override
+    public boolean hasPhase(String phase)
+    {
+        ModelJson modelj = null;
+        if (set != null) modelj = set.parser.modelMap.get(set.model);
+        return set.loadedAnimations.containsKey(phase) || (modelj != null && modelj.animationMap.containsKey(phase));
     }
 }

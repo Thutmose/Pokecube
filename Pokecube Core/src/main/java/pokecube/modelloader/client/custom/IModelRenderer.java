@@ -9,8 +9,8 @@ import pokecube.modelloader.client.tabula.components.Animation;
 
 public interface IModelRenderer<T extends EntityLiving>
 {
-    static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
-    static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
+    public static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
+    public static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
 
     void doRender(T entity, double d, double d1, double d2, float f, float partialTick);
 
@@ -21,4 +21,6 @@ public interface IModelRenderer<T extends EntityLiving>
     IPartTexturer getTexturer();
 
     HashMap<String, Animation> getAnimations();
+    
+    boolean hasPhase(String phase);
 }

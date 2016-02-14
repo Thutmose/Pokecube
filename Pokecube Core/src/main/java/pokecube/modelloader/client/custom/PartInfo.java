@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-import pokecube.modelloader.client.custom.LoadedModel.Vector5;
+import pokecube.modelloader.client.custom.DefaultIModelRenderer.Vector5;
 import thut.api.maths.Vector3;
 
 public class PartInfo

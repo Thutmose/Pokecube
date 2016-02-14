@@ -9,7 +9,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import pokecube.modelloader.client.custom.IPartTexturer;
-import pokecube.modelloader.client.custom.oldforgestuff.ModelFormatException;
 
 public class Shape
 {

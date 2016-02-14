@@ -9,13 +9,16 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.IShearable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.custom.IPartTexturer;
 import pokecube.modelloader.client.custom.IRetexturableModel;
-import pokecube.modelloader.client.custom.RenderAdvancedPokemobModel;
 import pokecube.modelloader.client.tabula.TabulaPackLoader;
 import pokecube.modelloader.client.tabula.TabulaPackLoader.TabulaModelSet;
 
@@ -270,22 +273,23 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
 
         // Allows specific part recolouring, this could possibly be moved over
         // to a method inside this class somehow
-        
+
         int rgba = 0;
-        if(entity instanceof IMobColourable)
+        if (entity instanceof IMobColourable)
         {
-            int[] cols = ((IMobColourable)entity).getRGBA();
+            int[] cols = ((IMobColourable) entity).getRGBA();
             rgba += cols[2];
             rgba += cols[1] << 8;
-            rgba += cols[2] << 16;;
+            rgba += cols[2] << 16;
+            ;
             rgba += cols[3] << 24;
         }
         else
         {
             rgba = 0xFFFFFFFF;
         }
-        
-        rgba = RenderAdvancedPokemobModel.getColour(identifier, set, (IPokemob) entity, rgba);
+
+        rgba = getColour(identifier, set, (IPokemob) entity, rgba);
 
         float alpha = ((rgba >> 24) & 255) / 255f;
         float red = ((rgba >> 16) & 255) / 255f;
@@ -294,7 +298,7 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
 
         // Allows specific part hiding based on entity state. should probably be
         // somehow moved over to this class somewhere
-        isHidden = RenderAdvancedPokemobModel.isHidden(identifier, set, (IPokemob) entity, isHidden);
+        isHidden = isHidden(identifier, set, (IPokemob) entity, isHidden);
 
         if (!isHidden)
         {
@@ -313,7 +317,7 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
                 int i;
 
                 TabulaModelSet set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry());
-                if(set==null) set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry().baseForme);
+                if (set == null) set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry().baseForme);
                 /** Rotate the head, this should probably also be moved to a
                  * seperate method. */
                 if (set.isHeadRoot(identifier) && entity instanceof IPokemob)
@@ -549,5 +553,27 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
                 if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setTexturer(texturer);
             }
         }
+    }
+
+    public static boolean isHidden(String partIdentifier, TabulaModelSet set, IPokemob pokemob, boolean default_)
+    {
+        if (set != null && set.shearableIdents.contains(partIdentifier))
+        {
+            boolean shearable = ((IShearable) pokemob).isShearable(new ItemStack(Items.shears),
+                    ((Entity) pokemob).worldObj, ((Entity) pokemob).getPosition());
+            return !shearable;
+        }
+        return default_;
+    }
+
+    public static int getColour(String partIdentifier, TabulaModelSet set, IPokemob pokemob, int default_)
+    {
+        if (set != null && set.dyeableIdents.contains(partIdentifier))
+        {
+            int rgba = 0xFF000000;
+            rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;
+            return rgba;
+        }
+        return default_;
     }
 }

@@ -31,7 +31,7 @@ import pokecube.modelloader.client.custom.x3d.X3dModel;
 import pokecube.modelloader.client.tabula.components.Animation;
 import thut.api.maths.Vector3;
 
-public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T> implements IModelRenderer<T>
+public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T>implements IModelRenderer<T>
 {
     public static final String          DEFAULTPHASE = "idle";
     public String                       name;
@@ -64,7 +64,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
     public float     rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
     ResourceLocation texture;
 
-    public LoadedModel(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global, Model model)
+    public DefaultIModelRenderer(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global, Model model)
     {
         super(Minecraft.getMinecraft().getRenderManager(), null, 0);
         name = model.name;
@@ -169,7 +169,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
             f6 = 1.0F;
         }
         GL11.glPushMatrix();
-        if(animator!=null) currentPhase = animator.modifyAnimation(entity, partialTick, currentPhase);
+        if (animator != null) currentPhase = animator.modifyAnimation(entity, partialTick, currentPhase);
         GlStateManager.disableCull();
         transformGlobal(currentPhase, entity, d, d1, d2, partialTick, f3 - f2, f13);
         updateAnimation(entity, currentPhase, partialTick);
@@ -527,7 +527,7 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
         if (texture == null) return;
 
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-        
+
         float time = (((Entity) pokemob).ticksExisted + partialTick);
         GL11.glPushMatrix();
 
@@ -567,5 +567,11 @@ public class LoadedModel<T extends EntityLiving> extends RendererLivingEntity<T>
     public HashMap<String, Animation> getAnimations()
     {
         return animations;
+    }
+
+    @Override
+    public boolean hasPhase(String phase)
+    {
+        return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || getAnimations().containsKey(phase);
     }
 }

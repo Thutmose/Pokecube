@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -24,8 +25,8 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.custom.IModelRenderer;
-import pokecube.modelloader.client.custom.LoadedModel;
-import pokecube.modelloader.client.custom.LoadedModel.Vector5;
+import pokecube.modelloader.client.custom.DefaultIModelRenderer;
+import pokecube.modelloader.client.custom.DefaultIModelRenderer.Vector5;
 import pokecube.modelloader.client.custom.PartInfo;
 import pokecube.modelloader.client.tabula.components.Animation;
 import thut.api.maths.Vector3;
@@ -203,11 +204,11 @@ public class AnimationLoader
                 }
 
                 IModelRenderer<?> renderer = modelMaps.get(modelName);
-                LoadedModel<?> loaded = null;
-                if (renderer instanceof LoadedModel) loaded = (LoadedModel) renderer;
+                DefaultIModelRenderer<?> loaded = null;
+                if (renderer instanceof DefaultIModelRenderer) loaded = (DefaultIModelRenderer) renderer;
                 if (loaded == null)
                 {
-                    loaded = new LoadedModel(parts, phaseList, model);
+                    loaded = new DefaultIModelRenderer(parts, phaseList, model);
                 }
                 loaded.updateModel(parts, phaseList, model);
                 loaded.offset.set(offset);
@@ -282,11 +283,11 @@ public class AnimationLoader
         catch (Exception e)
         {
             IModelRenderer<?> renderer = modelMaps.get(model.name);
-            LoadedModel<?> loaded = null;
-            if (renderer instanceof LoadedModel) loaded = (LoadedModel) renderer;
+            DefaultIModelRenderer<?> loaded = null;
+            if (renderer instanceof DefaultIModelRenderer) loaded = (DefaultIModelRenderer) renderer;
             if (loaded == null)
             {
-                loaded = new LoadedModel(new HashMap<String, PartInfo>(), new HashMap<String, ArrayList<Vector5>>(),
+                loaded = new DefaultIModelRenderer(new HashMap<String, PartInfo>(), new HashMap<String, ArrayList<Vector5>>(),
                         model);
             }
             else
@@ -304,7 +305,7 @@ public class AnimationLoader
     public static IModelRenderer<?> getModel(String name)
     {
         IModelRenderer<?> ret = modelMaps.get(name);
-        if(ret!=null) return ret;
+        if (ret != null) return ret;
         Model model = models.get(name);
         if (model == null) { return null; }
         if ((ret = modelMaps.get(model.name)) != null) return ret;
@@ -468,11 +469,10 @@ public class AnimationLoader
         }
     }
 
-    public static boolean initModel(String s)
+    public static boolean initModel(String s, HashSet<String> toReload)
     {
         ResourceLocation model = null;
         String anim = s + ".xml";
-        // System.out.println(anim);
 
         ResourceLocation texture = new ResourceLocation(s.replace(MODELPATH, TEXTUREPATH) + ".png");
         try
@@ -483,26 +483,7 @@ public class AnimationLoader
         }
         catch (IOException e1)
         {
-            try
-            {
-                model = new ResourceLocation(s + ".b3d");
-                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
-                res.getInputStream().close();
-            }
-            catch (IOException e2)
-            {
-                try
-                {
-                    model = new ResourceLocation(s + ".obj");
-                    IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
-                    res.getInputStream().close();
-                }
-                catch (IOException e3)
-                {
-                    // System.out.println("did not find "+s);
-                    model = null;
-                }
-            }
+            model = null;
         }
         try
         {
@@ -511,7 +492,6 @@ public class AnimationLoader
                 String[] args = s.split(":");
                 String[] args2 = args[1].split("/");
                 String name = args2[args2.length > 1 ? args2.length - 1 : 0];
-                // System.out.println(name);
                 if (Database.getEntry(name) != null)
                 {
                     PokedexEntry entry = Database.getEntry(name);

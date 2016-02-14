@@ -25,7 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.modelloader.client.custom.IPartTexturer;
-import pokecube.modelloader.client.custom.LoadedModel.Vector5;
+import pokecube.modelloader.client.custom.DefaultIModelRenderer.Vector5;
 import pokecube.modelloader.client.custom.animation.AnimationBuilder;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
 import pokecube.modelloader.client.custom.animation.AnimationRandomizer;
@@ -51,7 +51,7 @@ public class TabulaPackLoader extends AnimationLoader
         modelMap.clear();
     }
 
-    public static boolean loadModel(String path)
+    public static boolean loadModel(String path, HashSet<String> toReload)
     {
         ResourceLocation model = new ResourceLocation(path + ".tbl");
         String anim = path + ".xml";

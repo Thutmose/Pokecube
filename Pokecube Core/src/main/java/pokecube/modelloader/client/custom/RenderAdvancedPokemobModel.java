@@ -9,16 +9,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.gui.GuiPokedex;
@@ -26,19 +20,11 @@ import pokecube.core.client.render.PTezzelator;
 import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobInfos;
 import pokecube.core.client.render.entity.RenderPokemobs;
-import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
-import pokecube.modelloader.client.tabula.TabulaPackLoader;
-import pokecube.modelloader.client.tabula.TabulaPackLoader.TabulaModelSet;
-import pokecube.modelloader.client.tabula.components.ModelJson;
-import pokecube.modelloader.client.tabula.model.IModelParser;
-import pokecube.modelloader.client.tabula.model.TabulaModelRenderer;
-import pokecube.modelloader.client.tabula.model.tabula.TabulaModel;
-import pokecube.modelloader.client.tabula.model.tabula.TabulaModelParser;
 
 public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLiving<T>
 {
@@ -66,7 +52,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         {
             toRender = (T) mob.getTransformedTo();
         }
-        model = getRenderer(modelName, entity);
+        model = (IModelRenderer<T>) getRenderer(modelName, entity);
 
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
             return;
@@ -90,11 +76,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         // Lighting
         func_177105_a(entity, partialTick);
 
-        if (model instanceof TabulaModelRenderer)
-        {
-            model.setPhase(getPhase(((TabulaModelRenderer) model).set, entity, partialTick));
-        }
-        else model.setPhase(getPhase(null, entity, partialTick));
+        model.setPhase(getPhase(entity, partialTick));
         model.doRender(toRender, d0, d1, d2, yaw, partialTick);
         model.renderStatus(toRender, d0, d1, d2, yaw, partialTick);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
@@ -249,91 +231,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         }
     }
 
-    protected void renderTabula(T entity, double d0, double d1, double d2, float f, float partialTick)
-    {
-        PokedexEntry entry = null;
-        if (entity instanceof IPokemob) entry = ((IPokemob) entity).getPokedexEntry();
-        else return;
-
-        float f2 = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
-        float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
-        float f4;
-        if (entity.isRiding() && entity.ridingEntity instanceof EntityLivingBase)
-        {
-            EntityLivingBase entitylivingbase1 = (EntityLivingBase) entity.ridingEntity;
-            f2 = this.interpolateRotation(entitylivingbase1.prevRenderYawOffset, entitylivingbase1.renderYawOffset,
-                    partialTick);
-            f4 = MathHelper.wrapAngleTo180_float(f3 - f2);
-
-            if (f4 < -85.0F)
-            {
-                f4 = -85.0F;
-            }
-
-            if (f4 >= 85.0F)
-            {
-                f4 = 85.0F;
-            }
-
-            f2 = f3 - f4;
-
-            if (f4 * f4 > 2500.0F)
-            {
-                f2 += f4 * 0.2F;
-            }
-        }
-
-        f4 = this.handleRotationFloat(entity, partialTick);
-        this.preRenderCallback(entity, partialTick);
-
-        TabulaModelSet set = TabulaPackLoader.modelMap.get(entry);
-
-        if (set == null)
-        {
-            System.err.println(entry);
-            set = TabulaPackLoader.modelMap.get(entry.baseForme);
-        }
-
-        TabulaModel model = set.model;
-        IModelParser<TabulaModel> parser = set.parser;
-
-        if (model == null || parser == null) { return; }
-
-        GlStateManager.pushMatrix();
-        GlStateManager.disableCull();
-        TabulaModelParser pars = ((TabulaModelParser) parser);
-        ModelJson modelj = pars.modelMap.get(model);
-        modelj.texturer = set.texturer;
-        String phase = getPhase(set, entity, partialTick);
-        if (set.animator != null)
-        {
-            phase = set.animator.modifyAnimation(entity, partialTick, phase);
-        }
-        boolean inSet = false;
-        if (modelj.animationMap.containsKey(phase) || (inSet = set.loadedAnimations.containsKey(phase)))
-        {
-            if (!inSet) modelj.startAnimation(phase);
-            else modelj.startAnimation(set.loadedAnimations.get(phase));
-        }
-        else if (modelj.isAnimationInProgress())
-        {
-            modelj.stopAnimation();
-        }
-
-        GlStateManager.rotate(180f, 0f, 0f, 1f);
-
-        GlStateManager.rotate(entity.rotationYaw + 180, 0, 1, 0);
-
-        set.rotation.rotations.glRotate();
-        GlStateManager.translate(set.shift.x, set.shift.y, set.shift.z);
-        GlStateManager.scale(set.scale.x, set.scale.y, set.scale.z);
-
-        parser.render(model, entity);
-
-        GlStateManager.enableCull();
-        GlStateManager.popMatrix();
-    }
-
     @Override
     protected void preRenderCallback(T entity, float f)
     {
@@ -342,13 +239,11 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    private String getPhase(TabulaModelSet set, EntityLiving entity, float partialTick)
+    private String getPhase(EntityLiving entity, float partialTick)
     {
         String phase = "idle";
         if (overrideAnim) { return anim; }
 
-        ModelJson modelj = null;
-        if (set != null) modelj = set.parser.modelMap.get(set.model);
         IPokemob pokemob = (IPokemob) entity;
         float walkspeed = entity.prevLimbSwingAmount
                 + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
@@ -356,42 +251,42 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         boolean asleep = pokemob.getStatus() == IMoveConstants.STATUS_SLP
                 || pokemob.getPokemonAIState(IMoveConstants.SLEEPING);
 
-        if (asleep && hasPhase(set, modelj, "sleeping"))
+        if (asleep && model.hasPhase("sleeping"))
         {
             phase = "sleeping";
             return phase;
         }
-        if (asleep && hasPhase(set, modelj, "asleep"))
+        if (asleep && model.hasPhase("asleep"))
         {
             phase = "asleep";
             return phase;
         }
-        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && hasPhase(set, modelj, "sitting"))
+        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && model.hasPhase("sitting"))
         {
             phase = "sitting";
             return phase;
         }
-        if (!entity.onGround && hasPhase(set, modelj, "flight"))
+        if (!entity.onGround && model.hasPhase("flight"))
         {
             phase = "flight";
             return phase;
         }
-        if (!entity.onGround && hasPhase(set, modelj, "flying"))
+        if (!entity.onGround && model.hasPhase("flying"))
         {
             phase = "flying";
             return phase;
         }
-        if (entity.isInWater() && hasPhase(set, modelj, "swimming"))
+        if (entity.isInWater() && model.hasPhase("swimming"))
         {
             phase = "swimming";
             return phase;
         }
-        if (entity.onGround && walkspeed > 0.1 && hasPhase(set, modelj, "walking"))
+        if (entity.onGround && walkspeed > 0.1 && model.hasPhase("walking"))
         {
             phase = "walking";
             return phase;
         }
-        if (entity.onGround && walkspeed > 0.1 && hasPhase(set, modelj, "walk"))
+        if (entity.onGround && walkspeed > 0.1 && model.hasPhase("walk"))
         {
             phase = "walk";
             return phase;
@@ -400,45 +295,14 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         return phase;
     }
 
-    private boolean hasPhase(TabulaModelSet set, ModelJson modelj, String phase)
-    {
-        if (set == null && model != null) { return LoadedModel.DEFAULTPHASE.equals(phase)
-                || model.getAnimations().containsKey(phase); }
-        return set.loadedAnimations.containsKey(phase) || (modelj != null && modelj.animationMap.containsKey(phase));
-    }
-
     @Override
     protected ResourceLocation getEntityTexture(T entity)
     {
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
     }
 
-    @SuppressWarnings("rawtypes")
-    public static IModelRenderer getRenderer(String name, EntityLiving entity)
+    public static IModelRenderer<?> getRenderer(String name, EntityLiving entity)
     {
         return AnimationLoader.getModel(name);
     }
-
-    public static boolean isHidden(String partIdentifier, TabulaModelSet set, IPokemob pokemob, boolean default_)
-    {
-        if (set != null && set.shearableIdents.contains(partIdentifier))
-        {
-            boolean shearable = ((IShearable) pokemob).isShearable(new ItemStack(Items.shears),
-                    ((Entity) pokemob).worldObj, ((Entity) pokemob).getPosition());
-            return !shearable;
-        }
-        return default_;
-    }
-
-    public static int getColour(String partIdentifier, TabulaModelSet set, IPokemob pokemob, int default_)
-    {
-        if (set != null && set.dyeableIdents.contains(partIdentifier))
-        {
-            int rgba = 0xFF000000;
-            rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;
-            return rgba;
-        }
-        return default_;
-    }
-
 }

@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.custom.oldforgestuff;
+package pokecube.modelloader.client.custom.x3d;
 
 public class ModelFormatException extends RuntimeException {
 

@@ -5,6 +5,9 @@ package pokecube.modelloader.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -157,11 +160,19 @@ public class ClientProxy extends CommonProxy
             }
             if (modModels.containsKey(mod))
             {
+                HashSet<String> alternateFormes = Sets.newHashSet();
                 for (String s : modModels.get(mod))
                 {
-                    if (!AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s))
+                    if (!AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s, alternateFormes))
                     {
-                        TabulaPackLoader.loadModel(mod + ":" + AnimationLoader.MODELPATH + s);
+                        TabulaPackLoader.loadModel(mod + ":" + AnimationLoader.MODELPATH + s, alternateFormes);
+                    }
+                }
+                for (String s : alternateFormes)
+                {
+                    if (!AnimationLoader.initModel(s, alternateFormes))
+                    {
+                        TabulaPackLoader.loadModel(s, alternateFormes);
                     }
                 }
             }

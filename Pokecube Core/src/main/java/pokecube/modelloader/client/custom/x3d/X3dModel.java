@@ -11,11 +11,9 @@ import pokecube.modelloader.client.custom.IModel;
 import pokecube.modelloader.client.custom.IModelCustom;
 import pokecube.modelloader.client.custom.IPartTexturer;
 import pokecube.modelloader.client.custom.IRetexturableModel;
-import pokecube.modelloader.client.custom.oldforgestuff.IModelCustomLoader;
-import pokecube.modelloader.client.custom.oldforgestuff.ModelFormatException;
 import thut.api.maths.Vector3;
 
-public class X3dModel implements IModelCustom, IModelCustomLoader, IModel, IRetexturableModel
+public class X3dModel implements IModelCustom, IModel, IRetexturableModel
 {
     private HashMap<String, IExtendedModelPart> parts = new HashMap<String, IExtendedModelPart>();
     public String                               name;
@@ -93,12 +91,6 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel, IRete
     }
 
     @Override
-    public String getType()
-    {
-        return "x3d";
-    }
-
-    @Override
     public void renderOnly(String... groupNames)
     {
         for (String s : groupNames)
@@ -129,19 +121,6 @@ public class X3dModel implements IModelCustom, IModelCustomLoader, IModel, IRete
     public void renderPart(String partName)
     {
         if (parts.containsKey(partName)) parts.get(partName).renderPart(partName);
-    }
-
-    @Override
-    public String[] getSuffixes()
-    {
-        return new String[] { "x3d" };
-    }
-
-    @Override
-    public IModelCustom loadInstance(ResourceLocation resource) throws ModelFormatException
-    {
-        loadModel(resource);
-        return this;
     }
 
     @Override

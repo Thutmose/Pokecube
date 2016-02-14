@@ -23,6 +23,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.ModPokecubeML;
+import pokecube.modelloader.client.custom.IModelRenderer;
 import pokecube.modelloader.client.custom.LoadedModel;
 import pokecube.modelloader.client.custom.LoadedModel.Vector5;
 import pokecube.modelloader.client.custom.PartInfo;
@@ -37,10 +38,10 @@ public class AnimationLoader
     /** texture folder */
     public final static String TEXTUREPATH = "textures/entities/";
 
-    static String                              file      = "";
+    static String                                 file      = "";
     @SuppressWarnings("rawtypes")
-    public static HashMap<String, LoadedModel> modelMaps = new HashMap<String, LoadedModel>();
-    public static HashMap<String, Model>       models    = new HashMap<String, Model>();
+    public static HashMap<String, IModelRenderer> modelMaps = new HashMap<String, IModelRenderer>();
+    public static HashMap<String, Model>          models    = new HashMap<String, Model>();
 
     public static void clear()
     {
@@ -201,7 +202,9 @@ public class AnimationLoader
                     }
                 }
 
-                LoadedModel<?> loaded = modelMaps.get(modelName);
+                IModelRenderer<?> renderer = modelMaps.get(modelName);
+                LoadedModel<?> loaded = null;
+                if (renderer instanceof LoadedModel) loaded = (LoadedModel) renderer;
                 if (loaded == null)
                 {
                     loaded = new LoadedModel(parts, phaseList, model);
@@ -278,7 +281,9 @@ public class AnimationLoader
         }
         catch (Exception e)
         {
-            LoadedModel<?> loaded = modelMaps.get(model.name);
+            IModelRenderer<?> renderer = modelMaps.get(model.name);
+            LoadedModel<?> loaded = null;
+            if (renderer instanceof LoadedModel) loaded = (LoadedModel) renderer;
             if (loaded == null)
             {
                 loaded = new LoadedModel(new HashMap<String, PartInfo>(), new HashMap<String, ArrayList<Vector5>>(),
@@ -296,14 +301,16 @@ public class AnimationLoader
 
     }
 
-    public static LoadedModel<?> getModel(String name)
+    public static IModelRenderer<?> getModel(String name)
     {
+        IModelRenderer<?> ret = modelMaps.get(name);
+        if(ret!=null) return ret;
         Model model = models.get(name);
         if (model == null) { return null; }
-        if (modelMaps.get(model.name) != null) return modelMaps.get(model.name);
+        if ((ret = modelMaps.get(model.name)) != null) return ret;
         parse(model);
-        if (modelMaps.get(model.name) != null) return modelMaps.get(model.name);
-        return null;
+        if ((ret = modelMaps.get(model.name)) != null) return ret;
+        return ret;
     }
 
     public static Vector5 getRotation(Node node, Vector5 default_)

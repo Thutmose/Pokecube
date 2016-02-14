@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -33,11 +32,11 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
-import pokecube.modelloader.client.custom.obj.BakedRenderer;
 import pokecube.modelloader.client.tabula.TabulaPackLoader;
 import pokecube.modelloader.client.tabula.TabulaPackLoader.TabulaModelSet;
 import pokecube.modelloader.client.tabula.components.ModelJson;
 import pokecube.modelloader.client.tabula.model.IModelParser;
+import pokecube.modelloader.client.tabula.model.TabulaModelRenderer;
 import pokecube.modelloader.client.tabula.model.tabula.TabulaModel;
 import pokecube.modelloader.client.tabula.model.tabula.TabulaModelParser;
 
@@ -46,13 +45,10 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
     static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
 
-    public LoadedModel<T>      model;
-    public IFlexibleBakedModel model2;
-    public String              model2Loc;
-    private boolean            isTabula     = false;
-    final String               modelName;
-    public boolean             overrideAnim = false;
-    public String              anim         = "";
+    public IModelRenderer<T> model;
+    final String             modelName;
+    public boolean           overrideAnim = false;
+    public String            anim         = "";
 
     public RenderAdvancedPokemobModel(String name, float par2)
     {
@@ -70,73 +66,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         {
             toRender = (T) mob.getTransformedTo();
         }
-
-        model = (LoadedModel<T>) AnimationLoader.getModel(modelName);
-
-        if (model2 != null)
-        {
-            if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
-                return;
-            renderHp(entity, d0, d1, d2, yaw, partialTick);
-            GL11.glPushMatrix();
-            GL11.glTranslated(d0, d1, d2);
-            if ((partialTick != GuiPokedex.POKEDEX_RENDER))
-            {
-                RenderPokemob.renderEvolution((IPokemob) entity, yaw);
-                RenderPokemob.renderExitCube((IPokemob) entity, yaw);
-            }
-            GL11.glPopMatrix();
-            try
-            {
-                GL11.glPushMatrix();
-                GL11.glTranslated(d0, d1, d2);
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
-                BakedRenderer.renderModel(model2);
-                GL11.glPopMatrix();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-
-            MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
-
-            return;
-        }
-        if (isTabula || model == null)
-        {
-            if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
-                return;
-            GL11.glPushMatrix();
-            GL11.glTranslated(d0, d1, d2);
-            if ((partialTick != GuiPokedex.POKEDEX_RENDER))
-            {
-                RenderPokemob.renderEvolution((IPokemob) entity, yaw);
-                RenderPokemob.renderExitCube((IPokemob) entity, yaw);
-            }
-            GL11.glPopMatrix();
-            try
-            {
-                GL11.glPushMatrix();
-                GL11.glTranslated(d0, d1, d2);
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
-                float f8 = this.handleRotationFloat(entity, partialTick);
-                if (entity.getHealth() <= 0) this.rotateCorpse(entity, f8, yaw, partialTick);
-                // Lighting
-                func_177105_a(entity, partialTick);
-                renderTabula(toRender, d0, d1, d2, yaw, partialTick);
-                renderStatusModel(toRender, d0, d1, d2, yaw, partialTick);
-                GL11.glPopMatrix();
-                renderHp(entity, d0, d1, d2, yaw, partialTick);
-                isTabula = true;
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
-            return;
-        }
+        model = getRenderer(modelName, entity);
 
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
             return;
@@ -153,15 +83,20 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(d0, d1, d2);
-        if (model.texturer == null)
+        if (model.getTexturer() == null)
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
         float f8 = this.handleRotationFloat(entity, partialTick);
         if (entity.getHealth() <= 0) this.rotateCorpse(entity, f8, yaw, partialTick);
         // Lighting
         func_177105_a(entity, partialTick);
-        model.currentPhase = getPhase(null, entity, partialTick);
+
+        if (model instanceof TabulaModelRenderer)
+        {
+            model.setPhase(getPhase(((TabulaModelRenderer) model).set, entity, partialTick));
+        }
+        else model.setPhase(getPhase(null, entity, partialTick));
         model.doRender(toRender, d0, d1, d2, yaw, partialTick);
-        renderStatusModel(toRender, d0, d1, d2, yaw, partialTick);
+        model.renderStatus(toRender, d0, d1, d2, yaw, partialTick);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
         GL11.glPopMatrix();
         renderHp(entity, d0, d1, d2, yaw, partialTick);
@@ -314,11 +249,11 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         }
     }
 
-    protected boolean renderTabula(T entity, double d0, double d1, double d2, float f, float partialTick)
+    protected void renderTabula(T entity, double d0, double d1, double d2, float f, float partialTick)
     {
         PokedexEntry entry = null;
         if (entity instanceof IPokemob) entry = ((IPokemob) entity).getPokedexEntry();
-        else return false;
+        else return;
 
         float f2 = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
         float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
@@ -362,7 +297,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         TabulaModel model = set.model;
         IModelParser<TabulaModel> parser = set.parser;
 
-        if (model == null || parser == null) { return false; }
+        if (model == null || parser == null) { return; }
 
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
@@ -397,7 +332,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
         GlStateManager.enableCull();
         GlStateManager.popMatrix();
-        return true;
     }
 
     @Override
@@ -466,70 +400,10 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         return phase;
     }
 
-    // TODO allow this to handle non-tabula models properly as well.
-    private void renderStatusModel(T entity, double d0, double d1, double d2, float f, float partialTick)
-    {
-        if (model != null) {
-
-        return; }
-        IPokemob pokemob = (IPokemob) entity;
-        byte status;
-        if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
-        ResourceLocation texture = null;
-        if (status == IMoveConstants.STATUS_FRZ)
-        {
-            texture = FRZ;
-        }
-        else if (status == IMoveConstants.STATUS_PAR)
-        {
-            texture = PAR;
-        }
-        if (texture == null) return;
-
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-        if (model == null)
-        {
-            float time = (((Entity) pokemob).ticksExisted + partialTick);
-            GL11.glPushMatrix();
-
-            float speed = status == IMoveConstants.STATUS_FRZ ? 0.001f : 0.005f;
-
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            GL11.glLoadIdentity();
-            float var5 = time * speed;
-            float var6 = time * speed;
-            GL11.glTranslatef(var5, var6, 0.0F);
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-            GL11.glEnable(GL11.GL_BLEND);
-            float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
-            GL11.glColor4f(var7, var7, var7, 0.5F);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-            var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
-            GL11.glScalef(var7, var7, var7);
-
-            renderTabula(entity, d0, d1, d2, f, partialTick);
-
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            GL11.glLoadIdentity();
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-            GL11.glPopMatrix();
-        }
-        else
-        {
-            GL11.glPushMatrix();
-            GL11.glScaled(1.1, 1.1, 1.1);
-            model.doRender(entity, d0, d1, d2, f, partialTick);
-            GL11.glPopMatrix();
-        }
-    }
-
     private boolean hasPhase(TabulaModelSet set, ModelJson modelj, String phase)
     {
         if (set == null && model != null) { return LoadedModel.DEFAULTPHASE.equals(phase)
-                || model.animations.containsKey(phase); }
+                || model.getAnimations().containsKey(phase); }
         return set.loadedAnimations.containsKey(phase) || (modelj != null && modelj.animationMap.containsKey(phase));
     }
 
@@ -537,6 +411,12 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     protected ResourceLocation getEntityTexture(T entity)
     {
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static IModelRenderer getRenderer(String name, EntityLiving entity)
+    {
+        return AnimationLoader.getModel(name);
     }
 
     public static boolean isHidden(String partIdentifier, TabulaModelSet set, IPokemob pokemob, boolean default_)

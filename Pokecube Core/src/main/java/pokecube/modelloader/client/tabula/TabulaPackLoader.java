@@ -36,6 +36,7 @@ import pokecube.modelloader.client.tabula.components.Animation;
 import pokecube.modelloader.client.tabula.components.CubeGroup;
 import pokecube.modelloader.client.tabula.components.CubeInfo;
 import pokecube.modelloader.client.tabula.components.ModelJson;
+import pokecube.modelloader.client.tabula.model.TabulaModelRenderer;
 import pokecube.modelloader.client.tabula.model.tabula.TabulaModel;
 import pokecube.modelloader.client.tabula.model.tabula.TabulaModelParser;
 import thut.api.maths.Vector3;
@@ -76,6 +77,7 @@ public class TabulaPackLoader extends AnimationLoader
                 TabulaModel tbl = parser.parse(json);
                 TabulaModelSet set = new TabulaModelSet(tbl, parser, extraData, entry);
                 modelMap.put(entry, set);
+                AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
             }
             scanner.close();
             return entry != null;
@@ -107,7 +109,8 @@ public class TabulaPackLoader extends AnimationLoader
                 }
                 else
                 {
-                    //Not really important for tabula models, they can have this built in.
+                    // Not really important for tabula models, they can have
+                    // this built in.
                 }
             }
             set.postInitAnimations();
@@ -192,7 +195,8 @@ public class TabulaPackLoader extends AnimationLoader
                 }
                 catch (Exception e1)
                 {
-                    //Not really important for tabula models, they can have animations built in.
+                    // Not really important for tabula models, they can have
+                    // animations built in.
                 }
             }
         }
@@ -310,7 +314,7 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 loadedAnimations.remove(s);
             }
-            if(animator!=null)
+            if (animator != null)
             {
                 Set<Animation> anims = Sets.newHashSet();
                 anims.addAll(model.getAnimations());

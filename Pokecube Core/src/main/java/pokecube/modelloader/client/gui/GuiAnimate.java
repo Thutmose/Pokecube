@@ -100,7 +100,7 @@ public class GuiAnimate extends GuiScreen
             EventsHandlerClient.renderMobs.put(entry,
                     pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
         }
-        if(pokemob!=null)
+        if (pokemob != null)
         {
             pokemob.specificSpawnInit();
         }
@@ -108,30 +108,30 @@ public class GuiAnimate extends GuiScreen
         {
             return;
         }
-        //TODO make a way to handle shininess.
+        // TODO make a way to handle shininess.
         String form = forme.getText();
         PokedexEntry e1;
-        if(pokemob.getPokedexEntry().hasForm(form))
+        if (pokemob.getPokedexEntry().hasForm(form))
         {
             pokemob.changeForme(form);
         }
-        else if(pokemob.getPokedexEntry().baseForme.hasForm(form))
+        else if (pokemob.getPokedexEntry().baseForme.hasForm(form))
         {
             pokemob.changeForme(form);
         }
-        else if((e1=Database.getEntry(form))!=null && e1!=entry)
+        else if ((e1 = Database.getEntry(form)) != null && e1 != entry)
         {
             entry = e1;
             pokedexNb = entry.getPokedexNb();
             pokemob = EventsHandlerClient.renderMobs.get(entry);
             if (pokemob == null)
             {
-                EventsHandlerClient.renderMobs.put(entry,
-                        pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+                EventsHandlerClient.renderMobs.put(entry, pokemob = (IPokemob) PokecubeMod.core
+                        .createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
                 pokemob.specificSpawnInit();
             }
         }
-        
+
         fontRendererObj.drawString(pokemob.getPokemonDisplayName(), xOffset, 10, 0xFFFFFF);
         float zLevel = 800;
         GL11.glPushMatrix();
@@ -178,7 +178,7 @@ public class GuiAnimate extends GuiScreen
         entity.onGround = ground;
 
         ((Entity) pokemob).ticksExisted = mc.thePlayer.ticksExisted;
-        
+
         String arg = info.getText();
         try
         {
@@ -187,9 +187,9 @@ public class GuiAnimate extends GuiScreen
         }
         catch (NumberFormatException e)
         {
-            
+
         }
-        
+
         if ((o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
         {
             RenderAdvancedPokemobModel render = (RenderAdvancedPokemobModel) o;
@@ -269,7 +269,7 @@ public class GuiAnimate extends GuiScreen
             int num = (entry = Pokedex.getInstance().getPrevious(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
             else pokedexNb = (entry = Pokedex.getInstance().getLastEntry()).getPokedexNb();
-            
+
         }
         else if (button.id == 3)
         {
@@ -293,39 +293,39 @@ public class GuiAnimate extends GuiScreen
         }
         else if (button.id == 6)
         {
-            scale += isShiftKeyDown()?1:0.1;
+            scale += isShiftKeyDown() ? 1 : 0.1;
         }
         else if (button.id == 7)
         {
-            scale -= isShiftKeyDown()?1:0.1;
+            scale -= isShiftKeyDown() ? 1 : 0.1;
         }
         else if (button.id == 8)
         {
-            shift[0] += isShiftKeyDown()?10:1;
+            shift[0] += isShiftKeyDown() ? 10 : 1;
         }
         else if (button.id == 9)
         {
-            shift[0] -= isShiftKeyDown()?10:1;
+            shift[0] -= isShiftKeyDown() ? 10 : 1;
         }
         else if (button.id == 10)
         {
-            shift[1] += isShiftKeyDown()?10:1;
+            shift[1] += isShiftKeyDown() ? 10 : 1;
         }
         else if (button.id == 11)
         {
-            shift[1] -= isShiftKeyDown()?10:1;
+            shift[1] -= isShiftKeyDown() ? 10 : 1;
         }
-        if(entry!=null)
+        if (entry != null)
         {
             IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
             if (pokemob == null)
             {
-                EventsHandlerClient.renderMobs.put(entry,
-                        pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+                EventsHandlerClient.renderMobs.put(entry, pokemob = (IPokemob) PokecubeMod.core
+                        .createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
                 pokemob.specificSpawnInit();
             }
             forme.setText(pokemob.getPokedexEntry().getName());
-            info.setText(""+pokemob.getSpecialInfo());
+            info.setText("" + pokemob.getSpecialInfo());
         }
     }
 

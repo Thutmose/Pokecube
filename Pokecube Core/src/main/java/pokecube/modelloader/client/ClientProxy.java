@@ -4,9 +4,13 @@
 package pokecube.modelloader.client;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
@@ -104,7 +108,21 @@ public class ClientProxy extends CommonProxy
     public static void populateModels()
     {
         TabulaPackLoader.clear();
-        for (String mod : modelProviders.keySet())
+
+        List<String> modList = Lists.newArrayList(modelProviders.keySet());
+        // Sort to prioritise default mod
+        Collections.sort(modList, new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                if (o1.equals(PokecubeMod.defaultMod)) return Integer.MAX_VALUE;
+                else if (o2.equals(PokecubeMod.defaultMod)) return Integer.MIN_VALUE;
+                return o1.compareTo(o2);
+            }
+        });
+
+        for (String mod : modList)
         {
             for (PokedexEntry p : Database.allFormes)
             {

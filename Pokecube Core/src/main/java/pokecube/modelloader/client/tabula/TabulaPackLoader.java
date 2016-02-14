@@ -30,8 +30,8 @@ import pokecube.modelloader.client.custom.animation.AnimationLoader;
 import pokecube.modelloader.client.custom.animation.AnimationRandomizer;
 import pokecube.modelloader.client.custom.animation.AnimationRegistry;
 import pokecube.modelloader.client.custom.animation.AnimationRegistry.IPartRenamer;
-import pokecube.modelloader.client.custom.model.IPartTexturer;
 import pokecube.modelloader.client.custom.animation.TextureHelper;
+import pokecube.modelloader.client.custom.model.IPartTexturer;
 import pokecube.modelloader.client.tabula.components.Animation;
 import pokecube.modelloader.client.tabula.components.CubeGroup;
 import pokecube.modelloader.client.tabula.components.CubeInfo;
@@ -77,7 +77,9 @@ public class TabulaPackLoader extends AnimationLoader
                 TabulaModel tbl = parser.parse(json);
                 TabulaModelSet set = new TabulaModelSet(tbl, parser, extraData, entry);
                 modelMap.put(entry, set);
-                AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
+                if (!modelMaps.containsKey(entry.getName())
+                        || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
+                    AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
             }
             scanner.close();
             return entry != null;

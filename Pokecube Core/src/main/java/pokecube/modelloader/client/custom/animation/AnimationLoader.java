@@ -26,8 +26,8 @@ import pokecube.core.utils.Vector4;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.custom.DefaultIModelRenderer;
 import pokecube.modelloader.client.custom.DefaultIModelRenderer.Vector5;
-import pokecube.modelloader.client.custom.model.IModelRenderer;
 import pokecube.modelloader.client.custom.PartInfo;
+import pokecube.modelloader.client.custom.model.IModelRenderer;
 import pokecube.modelloader.client.tabula.components.Animation;
 import thut.api.maths.Vector3;
 
@@ -507,9 +507,12 @@ public class AnimationLoader
                     {
                         animation = new ResourceLocation(anim.replace(entry.getName(), entry.getBaseName()));
                     }
-
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
-                    if (loaded && ModPokecubeML.preload) getModel(name);
+                    if (loaded && ModPokecubeML.preload)
+                    {
+                        System.out.println(name + " " + getModel(name));
+                        getModel(name);
+                    }
                 }
                 else
                 {

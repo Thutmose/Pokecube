@@ -20,10 +20,14 @@ import pokecube.modelloader.client.custom.model.IPartTexturer;
 public class TextureHelper implements IPartTexturer
 {
     IPokemob                                 pokemob;
+    /** Map of part/material name -> texture name */
     Map<String, String>                      texNames     = Maps.newHashMap();
+    /** Map of part/material name -> map of custom state -> texture name */
+    Map<String, Map<String, String>>         texNames2    = Maps.newHashMap();
     String                                   default_tex;
     Map<String, Boolean>                     smoothing    = Maps.newHashMap();
     boolean                                  default_flat = true;
+    /** Map of part/material name -> resource location */
     Map<String, ResourceLocation>            texMap       = Maps.newHashMap();
     Map<String, TexState>                    texStates    = Maps.newHashMap();
     public final static Map<String, Integer> mappedStates = Maps.newHashMap();
@@ -64,13 +68,40 @@ public class TextureHelper implements IPartTexturer
                 if (states == null) texStates.put(partName, states = new TexState());
                 states.addState(trigger, diffs);
             }
+            else if (part.getNodeName().equals("custom"))
+            {
+                String partName = part.getAttributes().getNamedItem("part").getNodeValue();
+                String state = part.getAttributes().getNamedItem("state").getNodeValue();
+                String partTex = part.getAttributes().getNamedItem("tex").getNodeValue();
+                addCustomMapping(partName, state, partTex);
+            }
         }
     }
 
     @Override
     public void applyTexture(String part)
     {
+        if (bindPerState(part)) return;
         String tex = texNames.containsKey(part) ? texNames.get(part) : default_tex;
+        bindTex(tex);
+    }
+
+    @Override
+    public void bindObject(Object thing)
+    {
+        pokemob = (IPokemob) thing;
+    }
+
+    @Override
+    public boolean shiftUVs(String part, double[] toFill)
+    {
+        TexState state;
+        if ((state = texStates.get(part)) != null) { return state.applyState(toFill, pokemob); }
+        return false;
+    }
+
+    private void bindTex(String tex)
+    {
         tex = pokemob.modifyTexture(tex);
         ResourceLocation loc;
         if ((loc = texMap.get(tex)) != null)
@@ -85,17 +116,44 @@ public class TextureHelper implements IPartTexturer
         }
     }
 
-    @Override
-    public void bindObject(Object thing)
+    private boolean bindPerState(String part)
     {
-        pokemob = (IPokemob) thing;
+        Map<String, String> partNames = texNames2.get(part);
+        if (partNames == null) return false;
+        for (String key : partNames.keySet())
+        {
+            if (isState(key))
+            {
+                String texKey = part + key;
+                String tex;
+                if ((tex = texNames.get(texKey)) != null)
+                {
+                }
+                else
+                {
+                    tex = partNames.get(key);
+                    texNames.put(texKey, tex);
+                }
+                bindTex(tex);
+                return true;
+            }
+        }
+        return false;
     }
 
-    @Override
-    public boolean shiftUVs(String part, double[] toFill)
+    private boolean isState(String state)
     {
-        TexState state;
-        if ((state = texStates.get(part)) != null) { return state.applyState(toFill, pokemob); }
+        int info = pokemob.getSpecialInfo();
+        try
+        {
+            int i = Integer.parseInt(state);
+            return i == info;
+        }
+        catch (Exception e)
+        {
+            int i = getState(state, false);
+            if (i > 0) return pokemob.getPokemonAIState(i);
+        }
         return false;
     }
 
@@ -132,6 +190,7 @@ public class TextureHelper implements IPartTexturer
     private static class TexState
     {
         Map<Integer, double[]>    aiStates     = Maps.newHashMap();
+        Map<Integer, double[]>    infoStates   = Maps.newHashMap();
         Set<RandomState>          randomStates = Sets.newHashSet();
         SequenceState             sequence     = null;
         // TODO way to handle cheaning this up.
@@ -143,8 +202,24 @@ public class TextureHelper implements IPartTexturer
             double[] arr = new double[diffs.length];
             for (int i = 0; i < arr.length; i++)
                 arr[i] = Double.parseDouble(diffs[i].trim());
-            int state = getState(trigger, false);
-            if (state > 0)
+
+            int state = -1;
+            boolean info = false;
+            try
+            {
+                int i = Integer.parseInt(trigger);
+                infoStates.put(i, arr);
+                info = true;
+            }
+            catch (Exception e)
+            {
+                state = getState(trigger, false);
+            }
+            if (info)
+            {
+
+            }
+            else if (state > 0)
             {
                 aiStates.put(state, arr);
             }
@@ -168,6 +243,18 @@ public class TextureHelper implements IPartTexturer
             double dy = 0;
             toFill[0] = dx;
             toFill[1] = dy;
+            int info = pokemob.getSpecialInfo();
+
+            if (infoStates.containsKey(info))
+            {
+                double[] arr = infoStates.get(info);
+                dx = arr[0];
+                dy = arr[1];
+                toFill[0] = dx;
+                toFill[1] = dy;
+                return true;
+            }
+
             for (Integer i : aiStates.keySet())
             {
                 if (pokemob.getPokemonAIState(i))
@@ -264,6 +351,18 @@ public class TextureHelper implements IPartTexturer
     public void addMapping(String part, String tex)
     {
         texNames.put(part, tex);
+    }
+
+    @Override
+    public void addCustomMapping(String part, String state, String tex)
+    {
+        Map<String, String> partMap = texNames2.get(part);
+        if (partMap == null)
+        {
+            partMap = Maps.newHashMap();
+            texNames2.put(part, partMap);
+        }
+        partMap.put(state, tex);
     }
 
 }

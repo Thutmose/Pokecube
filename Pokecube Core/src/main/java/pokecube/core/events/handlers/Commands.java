@@ -132,7 +132,7 @@ public class Commands implements ICommand
         doReset(cSender, args, isOp, targets);
         doTM(cSender, args, isOp, targets);
         doMeteor(cSender, args, isOp, targets);
-        
+
         // TODO Add a doMeteor command, arguments should be size and optional
         // direction.
         // cSender.addChatMessage(new ChatComponentText("Invalid Command"));
@@ -584,16 +584,25 @@ public class Commands implements ICommand
                         return false;
                     }
                 }
-
             }
         }
-
         return false;
     }
 
     private boolean doMake(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
     {
-        if (args[0].equalsIgnoreCase("make"))
+        boolean deobfuscated = false;
+        try
+        {
+            World.class.getDeclaredField("provider");
+            deobfuscated = true;
+        }
+        catch (Exception e1)
+        {
+        }
+        boolean commandBlock = !(cSender instanceof EntityPlayer);
+
+        if ((deobfuscated || commandBlock) && args[0].equalsIgnoreCase("make"))
         {
             String name;
             IPokemob mob = null;

@@ -510,7 +510,6 @@ public class AnimationLoader
                     models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
                     if (loaded && ModPokecubeML.preload)
                     {
-                        System.out.println(name + " " + getModel(name));
                         getModel(name);
                     }
                 }

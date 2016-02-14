@@ -15,9 +15,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
@@ -104,8 +106,15 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         }
     }
 
+    @Override
     public void mateWith(IBreedingMob male)
     {
+        new MateTask(this, male);
+    }
+
+    protected void mate(IBreedingMob male)
+    {
+        if (male == null || ((Entity) male).isDead) return;
         if (this.getSexe() == MALE || male.getSexe() == FEMALE)
         {
             ((EntityPokemob) male).mateWith(this);
@@ -120,20 +129,9 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
             ((EntityPokemob) male).setLover(null);
             ((EntityPokemob) male).resetInLove();
-            ;
 
             setAttackTarget(null);
             ((EntityPokemob) male).setAttackTarget(null);
-
-            for (int i = 0; i < 7; i++)
-            {
-                double d = rand.nextGaussian() * 0.02D;
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                worldObj.spawnParticle(EnumParticleTypes.HEART, (posX + rand.nextFloat() * width * 2.0F) - width,
-                        posY + 0.5D + rand.nextFloat() * height, (posZ + rand.nextFloat() * width * 2.0F) - width, d,
-                        d1, d2);
-            }
 
             lay(childPokedexNb, (IPokemob) male);
         }
@@ -402,5 +400,28 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public boolean tryToBreed()
     {
         return isInLove();
+    }
+
+    public static class MateTask
+    {
+        final EntitySexedPokemob pokemob;
+        final IBreedingMob       male;
+
+        public MateTask(EntitySexedPokemob pokemob, IBreedingMob male)
+        {
+            MinecraftForge.EVENT_BUS.register(this);
+            this.pokemob = pokemob;
+            this.male = male;
+        }
+
+        @SubscribeEvent
+        public void tick(WorldTickEvent evt)
+        {
+            if (evt.phase == Phase.START)
+            {
+                pokemob.mate(male);
+                MinecraftForge.EVENT_BUS.unregister(this);
+            }
+        }
     }
 }

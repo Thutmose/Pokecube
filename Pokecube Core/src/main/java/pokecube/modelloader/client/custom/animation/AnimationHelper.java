@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.Entity;
 import pokecube.core.utils.Vector4;
-import pokecube.modelloader.client.custom.IExtendedModelPart;
+import pokecube.modelloader.client.custom.model.IExtendedModelPart;
 import pokecube.modelloader.client.tabula.components.Animation;
 import pokecube.modelloader.client.tabula.components.AnimationComponent;
 import thut.api.maths.Vector3;

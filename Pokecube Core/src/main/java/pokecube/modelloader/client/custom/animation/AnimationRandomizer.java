@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLiving;
-import pokecube.modelloader.client.custom.IAnimationChanger;
+import pokecube.modelloader.client.custom.model.IAnimationChanger;
 import pokecube.modelloader.client.tabula.components.Animation;
 import pokecube.modelloader.client.tabula.components.AnimationComponent;
 

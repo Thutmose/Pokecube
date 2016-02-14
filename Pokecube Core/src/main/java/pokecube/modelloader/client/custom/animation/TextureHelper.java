@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.modelloader.client.custom.IPartTexturer;
+import pokecube.modelloader.client.custom.model.IPartTexturer;
 
 public class TextureHelper implements IPartTexturer
 {

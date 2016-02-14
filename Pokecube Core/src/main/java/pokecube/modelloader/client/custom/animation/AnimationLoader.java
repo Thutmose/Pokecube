@@ -24,9 +24,9 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.ModPokecubeML;
-import pokecube.modelloader.client.custom.IModelRenderer;
 import pokecube.modelloader.client.custom.DefaultIModelRenderer;
 import pokecube.modelloader.client.custom.DefaultIModelRenderer.Vector5;
+import pokecube.modelloader.client.custom.model.IModelRenderer;
 import pokecube.modelloader.client.custom.PartInfo;
 import pokecube.modelloader.client.tabula.components.Animation;
 import thut.api.maths.Vector3;
@@ -287,8 +287,8 @@ public class AnimationLoader
             if (renderer instanceof DefaultIModelRenderer) loaded = (DefaultIModelRenderer) renderer;
             if (loaded == null)
             {
-                loaded = new DefaultIModelRenderer(new HashMap<String, PartInfo>(), new HashMap<String, ArrayList<Vector5>>(),
-                        model);
+                loaded = new DefaultIModelRenderer(new HashMap<String, PartInfo>(),
+                        new HashMap<String, ArrayList<Vector5>>(), model);
             }
             else
             {

@@ -37,7 +37,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
 import pokecube.modelloader.items.ItemModelReloader;
 
-@Mod(modid = ModPokecubeML.ID, name = "Pokecube Model Loader", version = "0.1.0", acceptedMinecraftVersions=PokecubeMod.MCVERSIONS)
+@Mod(modid = ModPokecubeML.ID, name = "Pokecube Model Loader", version = "0.1.0", acceptedMinecraftVersions = PokecubeMod.MCVERSIONS)
 public class ModPokecubeML
 {
     /** The id of your mod */
@@ -46,25 +46,19 @@ public class ModPokecubeML
     @Instance(ID)
     public static ModPokecubeML instance;
 
-    public static ArrayList<String> addedPokemon;
+    public static ArrayList<String>         addedPokemon;
     public static Map<PokedexEntry, String> textureProviders = Maps.newHashMap();
 
-    public static boolean info = false;
+    public static boolean info    = false;
     public static boolean preload = true;
 
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
     public static CommonProxy proxy;
     public static File        configDir;
 
-    public ModPokecubeML()
-    {
-        // do nothing
-    }
-
     private void doMetastuff()
     {
         ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
-
         meta.parent = PokecubeMod.ID;
     }
 
@@ -79,12 +73,15 @@ public class ModPokecubeML
         proxy.preInit();
         doMetastuff();
         config.load();
-        String[] pokemon = config.getStringList("pokemon", Configuration.CATEGORY_GENERAL, new String[] {"Zubat"}, "extra Pokemobs to register on load");
+        String[] pokemon = config.getStringList("pokemon", Configuration.CATEGORY_GENERAL, new String[] { "Zubat" },
+                "extra Pokemobs to register on load");
         info = config.getBoolean("printAll", Configuration.CATEGORY_GENERAL, info,
                 "will print all pokemon names to console on load");
         preload = config.getBoolean("preloadModels", Configuration.CATEGORY_GENERAL, preload,
                 "Will load all of the models when refreshed, if this is false, it will only load the model when it is first seen in game.");
-        String[] files = config.getStringList("packs", Configuration.CATEGORY_GENERAL, new String[]{"Pokecube_Resources", "Gen_1", "Gen_2", "Gen_3", "Gen_4", "Gen_5", "Gen_6"}, "Resource Packs to add models");
+        String[] files = config.getStringList("packs", Configuration.CATEGORY_GENERAL,
+                new String[] { "Pokecube_Resources", "Gen_1", "Gen_2", "Gen_3", "Gen_4", "Gen_5", "Gen_6" },
+                "Resource Packs to add models");
         config.save();
         configDir = evt.getModConfigurationDirectory();
         ArrayList<String> toAdd = Lists.newArrayList(pokemon);
@@ -92,9 +89,9 @@ public class ModPokecubeML
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
 
         String modelDir = "assets/pokecube_ml/models/pokemobs/";
-        for(String file: files)
+        for (String file : files)
         {
-            File pack = new File(resourceDir, file+".zip");
+            File pack = new File(resourceDir, file + ".zip");
             if (pack.exists())
             {
                 try
@@ -124,7 +121,7 @@ public class ModPokecubeML
                             }
                         }
                     }
-    
+
                     zip.close();
                 }
                 catch (Exception e)
@@ -134,7 +131,7 @@ public class ModPokecubeML
             }
             else
             {
-                System.err.println("No Resource Pack "+pack);
+                System.err.println("No Resource Pack " + pack);
             }
         }
 
@@ -164,7 +161,7 @@ public class ModPokecubeML
             if ((e = Database.getEntry(s)) != null)
             {
                 PokecubeMod.core.registerPokemon(true, this, s);
-                if(textureProviders.containsKey(e))
+                if (textureProviders.containsKey(e))
                 {
                     e.setModId(textureProviders.get(e));
                 }
@@ -186,5 +183,4 @@ public class ModPokecubeML
     {
         AnimationLoader.load();
     }
-
 }

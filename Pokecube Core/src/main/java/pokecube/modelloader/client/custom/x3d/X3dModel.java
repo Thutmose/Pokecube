@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.util.ResourceLocation;
-import pokecube.modelloader.client.custom.IExtendedModelPart;
-import pokecube.modelloader.client.custom.IModel;
-import pokecube.modelloader.client.custom.IModelCustom;
-import pokecube.modelloader.client.custom.IPartTexturer;
-import pokecube.modelloader.client.custom.IRetexturableModel;
+import pokecube.modelloader.client.custom.model.IExtendedModelPart;
+import pokecube.modelloader.client.custom.model.IModel;
+import pokecube.modelloader.client.custom.model.IModelCustom;
+import pokecube.modelloader.client.custom.model.IPartTexturer;
+import pokecube.modelloader.client.custom.model.IRetexturableModel;
 import thut.api.maths.Vector3;
 
 public class X3dModel implements IModelCustom, IModel, IRetexturableModel

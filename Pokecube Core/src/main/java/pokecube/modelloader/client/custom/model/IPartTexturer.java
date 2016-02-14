@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.custom;
+package pokecube.modelloader.client.custom.model;
 
 public interface IPartTexturer
 {

@@ -8,9 +8,9 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.Lists;
 
 import pokecube.core.utils.Vector4;
-import pokecube.modelloader.client.custom.IExtendedModelPart;
-import pokecube.modelloader.client.custom.IPartTexturer;
-import pokecube.modelloader.client.custom.IRetexturableModel;
+import pokecube.modelloader.client.custom.model.IExtendedModelPart;
+import pokecube.modelloader.client.custom.model.IPartTexturer;
+import pokecube.modelloader.client.custom.model.IRetexturableModel;
 import thut.api.maths.Vector3;
 
 public class X3dObject implements IExtendedModelPart, IRetexturableModel
@@ -119,9 +119,9 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
 
     public void addForRender()
     {
-        //Set colours.
-        GL11.glColor4f(red/255f, green/255f, blue/255f, alpha/255f);
-        //Render each Shape
+        // Set colours.
+        GL11.glColor4f(red / 255f, green / 255f, blue / 255f, alpha / 255f);
+        // Render each Shape
         for (Shape s : shapes)
         {
             s.renderShape(texturer);

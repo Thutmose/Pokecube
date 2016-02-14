@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.custom;
+package pokecube.modelloader.client.custom.model;
 
 import java.util.HashMap;
 
@@ -21,6 +21,6 @@ public interface IModelRenderer<T extends EntityLiving>
     IPartTexturer getTexturer();
 
     HashMap<String, Animation> getAnimations();
-    
+
     boolean hasPhase(String phase);
 }

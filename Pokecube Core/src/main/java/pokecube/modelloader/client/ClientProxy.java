@@ -56,7 +56,6 @@ public class ClientProxy extends CommonProxy
         AnimationLoader.loaded = true;
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Override
     public void registerRenderInformation()
     {
@@ -71,7 +70,7 @@ public class ClientProxy extends CommonProxy
                 {
                     if (AnimationLoader.models.containsKey(s))
                     {
-                        PokecubeMod.getProxy().registerPokemobRenderer(s, new RenderAdvancedPokemobModel(s, 1), mod);
+                        PokecubeMod.getProxy().registerPokemobRenderer(s, new RenderAdvancedPokemobModel<>(s, 1), mod);
                     }
                 }
             }
@@ -90,7 +89,7 @@ public class ClientProxy extends CommonProxy
                 }
             }
             if (mod != null) PokecubeMod.getProxy().registerPokemobRenderer(entry.getName(),
-                    new RenderAdvancedPokemobModel(entry.getName(), 1), mod);
+                    new RenderAdvancedPokemobModel<>(entry.getName(), 1), mod);
         }
     }
 

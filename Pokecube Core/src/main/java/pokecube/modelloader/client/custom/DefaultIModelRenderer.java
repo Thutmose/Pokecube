@@ -2,7 +2,6 @@ package pokecube.modelloader.client.custom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
@@ -26,6 +25,12 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.animation.AnimationHelper;
 import pokecube.modelloader.client.custom.animation.AnimationLoader.Model;
+import pokecube.modelloader.client.custom.model.IAnimationChanger;
+import pokecube.modelloader.client.custom.model.IExtendedModelPart;
+import pokecube.modelloader.client.custom.model.IModel;
+import pokecube.modelloader.client.custom.model.IModelRenderer;
+import pokecube.modelloader.client.custom.model.IPartTexturer;
+import pokecube.modelloader.client.custom.model.IRetexturableModel;
 import pokecube.modelloader.client.custom.animation.TextureHelper;
 import pokecube.modelloader.client.custom.x3d.X3dModel;
 import pokecube.modelloader.client.tabula.components.Animation;
@@ -64,7 +69,8 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
     public float     rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
     ResourceLocation texture;
 
-    public DefaultIModelRenderer(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global, Model model)
+    public DefaultIModelRenderer(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global,
+            Model model)
     {
         super(Minecraft.getMinecraft().getRenderManager(), null, 0);
         name = model.name;
@@ -117,15 +123,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
             partsList.put(s, p);
         }
         return partsList;
-    }
-
-    public HashSet<IExtendedModelPart> getAllParts()
-    {
-        HashSet<IExtendedModelPart> ret = new HashSet<IExtendedModelPart>();
-
-        ret.addAll(model.getParts().values());
-
-        return ret;
     }
 
     @Override
@@ -339,61 +336,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
         return headParts.contains(partName);
     }
 
-    public static class Vector5
-    {
-        public Vector4 rotations;
-        public int     time;
-
-        public Vector5(Vector4 rotation, int time)
-        {
-            this.rotations = rotation;
-            this.time = time;
-        }
-
-        public Vector5()
-        {
-            this.time = 0;
-            this.rotations = new Vector4();
-        }
-
-        @Override
-        public String toString()
-        {
-            return "|r:" + rotations + "|t:" + time;
-        }
-
-        public Vector5 interpolate(Vector5 v, float time, boolean wrap)
-        {
-            if (v.time == 0) return this;
-            // wrap = true;
-
-            if (Double.isNaN(rotations.x))
-            {
-                rotations = new Vector4();
-            }
-            Vector4 rotDiff = rotations.copy();
-
-            if (rotations.x == rotations.z && rotations.z == rotations.y && rotations.y == rotations.w
-                    && rotations.w == 0)
-            {
-                rotations.x = 1;
-            }
-
-            if (!v.rotations.equals(rotations))
-            {
-                rotDiff = v.rotations.subtractAngles(rotations);
-
-                rotDiff = rotations.addAngles(rotDiff.scalarMult(time));
-            }
-            if (Double.isNaN(rotDiff.x))
-            {
-                rotDiff = new Vector4(0, 1, 0, 0);
-            }
-            Vector5 ret = new Vector5(rotDiff, v.time);
-            return ret;
-        }
-    }
-
     public void translate()
     {
         GL11.glTranslated(rotationPointX, rotationPointY, rotationPointZ);
@@ -481,28 +423,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    /** Returns a rotation angle that is inbetween two other rotation angles.
-     * par1 and par2 are the angles between which to interpolate, par3 is
-     * probably a float between 0.0 and 1.0 that tells us where "between" the
-     * two angles we are. Example: par1 = 30, par2 = 50, par3 = 0.5, then return
-     * = 40 */
-    public float interpolateRotation(float low, float high, float diff)
-    {
-        float f3;
-
-        for (f3 = high - low; f3 < -180.0F; f3 += 360.0F)
-        {
-            ;
-        }
-
-        while (f3 >= 180.0F)
-        {
-            f3 -= 360.0F;
-        }
-
-        return low + diff * f3;
-    }
-
     @Override
     public void setPhase(String phase)
     {
@@ -573,5 +493,60 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
     public boolean hasPhase(String phase)
     {
         return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || getAnimations().containsKey(phase);
+    }
+
+    public static class Vector5
+    {
+        public Vector4 rotations;
+        public int     time;
+
+        public Vector5(Vector4 rotation, int time)
+        {
+            this.rotations = rotation;
+            this.time = time;
+        }
+
+        public Vector5()
+        {
+            this.time = 0;
+            this.rotations = new Vector4();
+        }
+
+        @Override
+        public String toString()
+        {
+            return "|r:" + rotations + "|t:" + time;
+        }
+
+        public Vector5 interpolate(Vector5 v, float time, boolean wrap)
+        {
+            if (v.time == 0) return this;
+            // wrap = true;
+
+            if (Double.isNaN(rotations.x))
+            {
+                rotations = new Vector4();
+            }
+            Vector4 rotDiff = rotations.copy();
+
+            if (rotations.x == rotations.z && rotations.z == rotations.y && rotations.y == rotations.w
+                    && rotations.w == 0)
+            {
+                rotations.x = 1;
+            }
+
+            if (!v.rotations.equals(rotations))
+            {
+                rotDiff = v.rotations.subtractAngles(rotations);
+
+                rotDiff = rotations.addAngles(rotDiff.scalarMult(time));
+            }
+            if (Double.isNaN(rotDiff.x))
+            {
+                rotDiff = new Vector4(0, 1, 0, 0);
+            }
+            Vector5 ret = new Vector5(rotDiff, v.time);
+            return ret;
+        }
     }
 }

@@ -25,6 +25,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import pokecube.modelloader.client.custom.animation.AnimationLoader;
+import pokecube.modelloader.client.custom.model.IModelRenderer;
 
 public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLiving<T>
 {

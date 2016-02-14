@@ -17,8 +17,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.modelloader.client.custom.IPartTexturer;
-import pokecube.modelloader.client.custom.IRetexturableModel;
+import pokecube.modelloader.client.custom.model.IPartTexturer;
+import pokecube.modelloader.client.custom.model.IRetexturableModel;
 import pokecube.modelloader.client.tabula.TabulaPackLoader;
 import pokecube.modelloader.client.tabula.TabulaPackLoader.TabulaModelSet;
 

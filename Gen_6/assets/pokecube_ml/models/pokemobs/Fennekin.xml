@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ModelAnimator version="0.1">
-	<model name="Fennekin">
-			<phase name="global" rotation="1,0,0,0" offset="0,-0.325,0" headAxis="1" scale="0.2,0.2,0.2"/>
-        <phase name="quadWalk" leftHind="leg2" rightHind="leg1" leftFront="leg4" rightFront="leg3" duration="10" angle="50"/>
-	</model>
-</ModelAnimator>
-
-

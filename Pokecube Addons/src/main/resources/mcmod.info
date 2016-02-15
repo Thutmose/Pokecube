@@ -1,0 +1,17 @@
+[
+{
+  "modid": "",
+  "name": "Pokécube Revival",
+  "description": "Additional Features for Pokécube.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "logoFile": "pokecube_logo.png",
+  "url": "http://www.curse.com/mc-mods/minecraft/224362-pokecube-revival",
+  "updateUrl": "",
+  "authorList": ["Thutmose"],
+  "credits": "",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

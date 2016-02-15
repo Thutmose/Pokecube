@@ -1,0 +1,17 @@
+[
+{
+  "modid": "",
+  "name": "Pokécube Mobs",
+  "description": "Official Mobs for Pokécube.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "logoFile": "pokecube_logo.png",
+  "url": "http://www.curse.com/mc-mods/minecraft/239105-pokecube-mobs",
+  "updateUrl": "",
+  "authorList": ["Thutmose"],
+  "credits": "",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

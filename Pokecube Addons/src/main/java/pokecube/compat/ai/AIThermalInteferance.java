@@ -4,8 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import pneumaticCraft.api.heat.IHeatExchangerLogic;
-import pneumaticCraft.api.tileentity.IHeatExchanger;
+import net.minecraftforge.fml.common.Loader;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IMoveConstants;
@@ -14,10 +13,16 @@ import thut.api.maths.Vector3;
 
 public class AIThermalInteferance extends EntityAIBase
 {
+    static boolean PCloaded = false;
 	final IPokemob pokemob;
 	final Vector3 mobLoc = Vector3.getNewVectorFromPool();
 	final Entity entity;
 	double tempLastTick = 0;
+	
+	static
+	{
+	    PCloaded = Loader.isModLoaded("PneumaticCraft");
+	}
 
 	public AIThermalInteferance(IPokemob pokemob_)
 	{
@@ -72,10 +77,19 @@ public class AIThermalInteferance extends EntityAIBase
 			mobLoc.set(pokemob);
 			mobLoc.addTo(0, 0.5, 0);
 			TileEntity tile = mobLoc.getTileEntity(entity.worldObj, EnumFacing.DOWN);
-			if(tile instanceof IHeatExchanger)
+			
+			boolean pcheat = false;
+			
+			if(PCloaded)
 			{
-				IHeatExchanger heater = (IHeatExchanger) tile;
-				IHeatExchangerLogic logic = heater.getHeatExchangerLogic(EnumFacing.UP);
+			    pcheat = tile instanceof pneumaticCraft.api.tileentity.IHeatExchanger;
+			}
+			
+			
+			if(pcheat)
+			{
+			    pneumaticCraft.api.tileentity.IHeatExchanger heater = (pneumaticCraft.api.tileentity.IHeatExchanger) tile;
+			    pneumaticCraft.api.heat.IHeatExchangerLogic logic = heater.getHeatExchangerLogic(EnumFacing.UP);
 				if(logic!=null)
 				{
 					temp = logic.getTemperature();

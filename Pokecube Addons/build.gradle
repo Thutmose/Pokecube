@@ -20,7 +20,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "2.1.15"
+version = "2.1.16"
 group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Pokecube Revival"
 
@@ -39,7 +39,19 @@ minecraft {
     mappings = "stable_20"
     makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
+repositories {
+  maven {
+    url "http://dvs1.progwml6.com/files/maven"
+  }
+}
 
+minecraft {
+  useDepAts = true
+}
+
+dependencies {
+  deobfCompile "mezz.jei:jei_1.8.9:2.26.0.154"
+}
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
@@ -57,6 +69,7 @@ dependencies {
     // except that these dependencies get remapped to your current MCP mappings
     //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
     //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+    
 
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

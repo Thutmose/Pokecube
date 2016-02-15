@@ -12,13 +12,51 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "2.1.17"
+repositories {
+    maven {
+        name = "forge"
+        url = "http://files.minecraftforge.net/maven"
+    }
+    maven {
+        name = "jei"
+        url =  "http://dvs1.progwml6.com/files/maven"
+    }
+    ivy {
+        name = "baubles"
+        url = "https://dl.dropboxusercontent.com/u/47135879/"
+        layout "pattern", {
+            artifact "[module]-${version_minecraft}-[revision]-deobf.[ext]"
+        }
+    }
+    ivy {
+        name = "thutcore"
+        url = "https://github.com/Thutmose/Thut/raw/master/ThutCore/deobf/"
+        layout "pattern", {
+            artifact "[module]-${version_minecraft}-[revision]-dev.[ext]"
+        }
+    }
+    maven {
+        name = "IGW"
+        url = "http://maven.k-4u.nl/"
+    }
+}
+
+dependencies {
+    deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
+    deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
+    deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
+    
+    compile "igwmod:IGW-Mod-1.8.9:1.2.3-3:userdev"
+}
+
 group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Pokecube Core"
 
 minecraft {
-    version = "1.8.9-11.15.1.1722"
+    version = "${version_minecraft}-${version_forge}"
+    mappings = "${version_mappings}"
     runDir = "run"
+    
     useDepAts = true
     
     replace "@VERSION@", project.version
@@ -28,38 +66,7 @@ minecraft {
     replace "@MCVERSION@", "[1.8.8,1.8.9]"
     replaceIn "PokecubeMod.java"
     
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not allways work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "stable_20"
-    makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-}
-
-repositories {
-  maven {
-    url "http://dvs1.progwml6.com/files/maven"
-  }
-}
-
-minecraft {
-  useDepAts = true
-}
-
-dependencies {
-  deobfCompile "mezz.jei:jei_1.8.9:2.26.0.154"
-}
-
-repositories {
-    maven {
-        name = "IGW"
-        url = "http://maven.k-4u.nl/"
-    }
-}
-
-dependencies{
-    compile "igwmod:IGW-Mod-1.8.9:1.2.3-3:userdev"
+    makeObfSourceJar = false
 }
 
 processResources

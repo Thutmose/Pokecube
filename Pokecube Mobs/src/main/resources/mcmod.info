@@ -1,6 +1,6 @@
 [
 {
-  "modid": "",
+  "modid": "pokecube_mobs",
   "name": "Pokécube Mobs",
   "description": "Official Mobs for Pokécube.",
   "version": "${version}",

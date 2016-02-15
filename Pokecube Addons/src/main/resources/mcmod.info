@@ -1,6 +1,6 @@
 [
 {
-  "modid": "",
+  "modid": "pokecube_adventures",
   "name": "Pokécube Revival",
   "description": "Additional Features for Pokécube.",
   "version": "${version}",

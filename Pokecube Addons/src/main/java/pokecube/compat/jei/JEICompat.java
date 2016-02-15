@@ -1,5 +1,6 @@
 package pokecube.compat.jei;
 
+import java.awt.Rectangle;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -12,6 +13,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.IRecipeRegistry;
 import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.gui.IAdvancedGuiHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -26,6 +28,7 @@ import pokecube.compat.jei.cloner.ClonerRecipe;
 import pokecube.compat.jei.cloner.ClonerRecipeCategory;
 import pokecube.compat.jei.cloner.ClonerRecipeHandler;
 import pokecube.core.PokecubeItems;
+import pokecube.core.client.gui.blocks.GuiPC;
 import pokecube.core.database.Database;
 
 @JEIPlugin
@@ -90,7 +93,7 @@ public class JEICompat implements IModPlugin
         ItemStack diamondBlock = new ItemStack(Blocks.diamond_block);
         ItemStack dome = PokecubeItems.getStack("domeFossil");
         ItemStack potion = new ItemStack(Items.potionitem, 1, Short.MAX_VALUE);
-        
+
         ClonerRecipe newRecipe = new ClonerRecipe(egg, Lists.newArrayList(mewhair, egg, potion), 132, 10000);
         newRecipes.add(newRecipe);
         potion = new ItemStack(Items.potionitem, 1, 8225);
@@ -99,6 +102,21 @@ public class JEICompat implements IModPlugin
         newRecipes.add(newRecipe);
 
         registry.addRecipes(newRecipes);
+
+        registry.addAdvancedGuiHandlers(new IAdvancedGuiHandler<GuiPC>()
+        {
+            @Override
+            public Class<GuiPC> getGuiContainerClass()
+            {
+                return GuiPC.class;
+            }
+
+            @Override
+            public List<Rectangle> getGuiExtraAreas(GuiPC guiContainer)
+            {
+                return getPCModuleAreas(guiContainer);
+            }
+        });
     }
 
     @Override
@@ -109,6 +127,13 @@ public class JEICompat implements IModPlugin
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
     {
+    }
+    
+    public static List<Rectangle> getPCModuleAreas(GuiPC gui)
+    {
+        List<Rectangle> retList = Lists.newArrayList();
+        retList.add(new Rectangle(gui.guiLeft, gui.guiTop, gui.xSize + 40, 53));
+        return retList;
     }
 
 }

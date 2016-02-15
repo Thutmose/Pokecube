@@ -1,3 +1,4 @@
+
 package pokecube.compat;
 
 import java.awt.Desktop;
@@ -9,13 +10,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -34,6 +28,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 /**
  * This class is meant to be copied to your own mod which implements IGW-Mod. When properly implemented by instantiating a new instance somewhere in your mod
  * loading stage, this will notify the player when it doesn't have IGW in the instance. It also needs to have the config option enabled to
@@ -42,7 +43,9 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class IGWSupportNotifier{
     private String supportingMod;
-    private static final String LATEST_DL_URL = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/latest";
+    //TODO update this as needed, until curseforge fixes the problem.
+    private static final String LATEST_DL_URL = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/2276687/download";
+    private static final String DL_URL_1_7_10 = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/2248719/download";
 
     /**
      * Needs to be instantiated somewhere in your mod's loading stage.
@@ -73,7 +76,7 @@ public class IGWSupportNotifier{
     @SubscribeEvent
     public void onPlayerJoin(TickEvent.PlayerTickEvent event){
         if(event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity()) {
-//       //TODO readd this once IGWMod is fixed.     event.player.addChatComponentMessage(IChatComponent.Serializer.jsonToComponent("[\"" + EnumChatFormatting.GOLD + "The mod " + supportingMod + " is supporting In-Game Wiki mod. " + EnumChatFormatting.GOLD + "However, In-Game Wiki isn't installed! " + "[\"," + "{\"text\":\"Download Latest\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/igwmod_download\"}}," + "\"]\"]"));
+            event.player.addChatComponentMessage(IChatComponent.Serializer.jsonToComponent("[\"" + EnumChatFormatting.GOLD + "The mod " + supportingMod + " is supporting In-Game Wiki mod. " + EnumChatFormatting.GOLD + "However, In-Game Wiki isn't installed! " + "[\"," + "{\"text\":\"Download Latest\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/igwmod_download\"}}," + "\"]\"]"));
             MinecraftForge.EVENT_BUS.unregister(this);
         }
     }
@@ -115,7 +118,7 @@ public class IGWSupportNotifier{
             try {
                 if(Minecraft.getMinecraft().thePlayer != null) Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Downloading IGW-Mod..."));
 
-                URL url = new URL(LATEST_DL_URL);
+                URL url = new URL(Loader.MC_VERSION.equals("1.7.10") ? DL_URL_1_7_10 : LATEST_DL_URL);
                 URLConnection connection = url.openConnection();
                 connection.connect();
                 File dir = new File(".", "mods");

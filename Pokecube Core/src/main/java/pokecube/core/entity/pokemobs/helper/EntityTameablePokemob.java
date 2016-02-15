@@ -35,7 +35,7 @@ import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.blocks.nests.TileEntityNest;
-import pokecube.core.client.gui.GuiMoveMessages;
+import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.database.Database;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.RecallEvent;
@@ -366,7 +366,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
 
             if (owner instanceof EntityPlayer)
             {
-                GuiMoveMessages.addMessage(message);
+                GuiInfoMessages.addMessage(message);
             }
         }
         else

@@ -66,9 +66,9 @@ import pokecube.core.blocks.pokecubeTable.TileEntityPokecubeTable;
 import pokecube.core.blocks.tradingTable.BlockTradingTable;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
-import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
-import pokecube.core.client.gui.GuiMoveMessages;
 import pokecube.core.client.gui.GuiChooseFirstPokemob;
+import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
+import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.client.gui.GuiPokemob;
 import pokecube.core.client.gui.GuiTeleport;
@@ -77,7 +77,6 @@ import pokecube.core.client.gui.blocks.GuiPC;
 import pokecube.core.client.gui.blocks.GuiTMCreator;
 import pokecube.core.client.gui.blocks.GuiTradingTable;
 import pokecube.core.client.models.ModelPokemobEgg;
-import pokecube.core.client.render.blocks.RenderPC;
 import pokecube.core.client.render.blocks.RenderPokecubeTable;
 import pokecube.core.client.render.blocks.RenderTradingTable;
 import pokecube.core.client.render.entity.RenderPokecube;
@@ -199,12 +198,11 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 });
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPokecubeTable.class, new RenderPokecubeTable());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPC.class, new RenderPC());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
 
         MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
         MinecraftForge.EVENT_BUS.register(new GuiTeleport());
-        new GuiMoveMessages();
+        new GuiInfoMessages();
     }
 
     @Override

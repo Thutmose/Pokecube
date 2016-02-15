@@ -41,7 +41,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.healtable.ContainerHealTable;
-import pokecube.core.client.gui.GuiMoveMessages;
+import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -454,7 +454,7 @@ public class PokecubePacketHandler
             {
                 PokecubeSerializer.getInstance().clearInstance();
                 AISaveHandler.clearInstance();
-                GuiMoveMessages.clear();
+                GuiInfoMessages.clear();
                 new GuiTeleport();
 
                 PokecubeSerializer.getInstance().readFromNBT(nbt);
@@ -799,7 +799,7 @@ public class PokecubePacketHandler
                         }
                         else if (e instanceof EntityPlayer)
                         {
-                            pokecube.core.client.gui.GuiMoveMessages.addMessage(mess);
+                            pokecube.core.client.gui.GuiInfoMessages.addMessage(mess);
                         }
 
                     }

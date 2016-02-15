@@ -64,7 +64,6 @@ import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 
-/** @author Manchou */
 public class GuiPokedex extends GuiScreen
 {
     protected IPokemob     pokemob      = null;
@@ -173,7 +172,7 @@ public class GuiPokedex extends GuiScreen
 
             if (locations.size() > 0)
             {
-                TeleDest location = locations.get((GuiScrollableLists.instance().indexLocation) % locations.size());
+                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
                 nicknameTextField.setText(location.getName());
             }
             nicknameTextField.setEnabled(true);
@@ -199,7 +198,7 @@ public class GuiPokedex extends GuiScreen
             if (page == 4 && (par2 == ClientProxyPokecube.nextMove.getKeyCode()
                     || par2 == ClientProxyPokecube.previousMove.getKeyCode()))
             {
-                GuiScrollableLists.instance().nextMove();
+                GuiTeleport.instance().nextMove();
 
                 Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
@@ -207,7 +206,7 @@ public class GuiPokedex extends GuiScreen
 
                 if (locations.size() > 0)
                 {
-                    TeleDest location = locations.get((GuiScrollableLists.instance().indexLocation) % locations.size());
+                    TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
                     nicknameTextField.setText(location.getName());
                 }
                 nicknameTextField.setEnabled(true);
@@ -224,7 +223,7 @@ public class GuiPokedex extends GuiScreen
                 {
                     PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
                     Vector4 location = locations
-                            .get((GuiScrollableLists.instance().indexLocation) % locations.size()).loc;
+                            .get((GuiTeleport.instance().indexLocation) % locations.size()).loc;
                     if (index == 0) buffer.writeByte(-1);
                     else if (index == 4) buffer.writeByte(-2);
                     buffer.writeInt((int) location.w);
@@ -497,14 +496,14 @@ public class GuiPokedex extends GuiScreen
         {
             nicknameTextField.setEnabled(true);
             nicknameTextField.setFocused(true);
-            GuiScrollableLists.instance().nextMove();
+            GuiTeleport.instance().nextMove();
             Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
                     .getTeleports(minecraft.thePlayer.getUniqueID().toString());
 
             if (locations.size() > 0)
             {
-                TeleDest location = locations.get((GuiScrollableLists.instance().indexLocation) % locations.size());
+                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
                 nicknameTextField.setText(location.getName());
             }
             nicknameTextField.setEnabled(true);
@@ -513,14 +512,14 @@ public class GuiPokedex extends GuiScreen
         {
             nicknameTextField.setEnabled(true);
             nicknameTextField.setFocused(true);
-            GuiScrollableLists.instance().previousMove();
+            GuiTeleport.instance().previousMove();
             Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
                     .getTeleports(minecraft.thePlayer.getUniqueID().toString());
 
             if (locations.size() > 0)
             {
-                TeleDest location = locations.get((GuiScrollableLists.instance().indexLocation) % locations.size());
+                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
                 nicknameTextField.setText(location.getName());
             }
             nicknameTextField.setEnabled(true);
@@ -1055,7 +1054,7 @@ public class GuiPokedex extends GuiScreen
 
         if (locations.size() == 0) { return; }
 
-        TeleDest location = locations.get((GuiScrollableLists.instance().indexLocation) % locations.size());
+        TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
 
         if (location != null) drawString(fontRendererObj, location.loc.toIntString(), xOffset + 14,
                 yOffset + 99 + 14 * index, PokeType.fire.colour);

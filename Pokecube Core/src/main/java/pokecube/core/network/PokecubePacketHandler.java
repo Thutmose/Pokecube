@@ -42,7 +42,7 @@ import pokecube.core.mod_Pokecube;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.client.gui.GuiMoveMessages;
-import pokecube.core.client.gui.GuiScrollableLists;
+import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
@@ -203,7 +203,7 @@ public class PokecubePacketHandler
             {
                 starters.add(i);
             }
-            pokecube.core.client.gui.GuiNewChooseFirstPokemob.starters = starters.toArray(new Integer[0]);
+            pokecube.core.client.gui.GuiChooseFirstPokemob.starters = starters.toArray(new Integer[0]);
             new GuiOpener(player);
             return;
         }
@@ -455,7 +455,7 @@ public class PokecubePacketHandler
                 PokecubeSerializer.getInstance().clearInstance();
                 AISaveHandler.clearInstance();
                 GuiMoveMessages.clear();
-                new GuiScrollableLists();
+                new GuiTeleport();
 
                 PokecubeSerializer.getInstance().readFromNBT(nbt);
                 PokecubeSerializer.getInstance().setHasStarter(player, nbt.getBoolean("playerhasstarter"));
@@ -778,7 +778,7 @@ public class PokecubePacketHandler
                     {
                         NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
                         PokecubeSerializer.getInstance().readPlayerTeleports(nbt);
-                        GuiScrollableLists.instance().refresh();
+                        GuiTeleport.instance().refresh();
                     }
                     catch (IOException e)
                     {
@@ -835,7 +835,7 @@ public class PokecubePacketHandler
                 else if (channel == TELEPORTINDEX)
                 {
                     PokecubeServerPacket packet = new PokecubeServerPacket(new byte[] { PokecubeServerPacket.TELEPORT,
-                            (byte) GuiScrollableLists.instance().indexLocation });
+                            (byte) GuiTeleport.instance().indexLocation });
                     PokecubePacketHandler.sendToServer(packet);
                 }
                 else if (channel == CHANGEFORME)

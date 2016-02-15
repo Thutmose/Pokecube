@@ -12,7 +12,6 @@ import static pokecube.core.handlers.ItemHandler.log0;
 import static pokecube.core.handlers.ItemHandler.log1;
 import static pokecube.core.handlers.ItemHandler.plank0;
 
-import java.io.InputStream;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.UUID;
@@ -26,7 +25,6 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -45,7 +43,6 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -71,10 +68,10 @@ import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiMoveMessages;
-import pokecube.core.client.gui.GuiNewChooseFirstPokemob;
+import pokecube.core.client.gui.GuiChooseFirstPokemob;
 import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.client.gui.GuiPokemob;
-import pokecube.core.client.gui.GuiScrollableLists;
+import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.client.gui.blocks.GuiHealTable;
 import pokecube.core.client.gui.blocks.GuiPC;
 import pokecube.core.client.gui.blocks.GuiTMCreator;
@@ -99,7 +96,6 @@ import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.maths.Vector3;
 
-/** @author Manchou */
 @SideOnly(Side.CLIENT)
 @SuppressWarnings("rawtypes")
 public class ClientProxyPokecube extends CommonProxyPokecube
@@ -207,7 +203,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
 
         MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
-        MinecraftForge.EVENT_BUS.register(new GuiScrollableLists());
+        MinecraftForge.EVENT_BUS.register(new GuiTeleport());
         new GuiMoveMessages();
     }
 
@@ -311,7 +307,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         super.preInit(evt);
 
-
         // TODO in 1.9, this will need to be commented back in
         // RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class,
         // new IRenderFactory<Entity>()
@@ -359,7 +354,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         // };
         // }
         // });
-        
+
         Item tm = PokecubeItems.getItem("tm");
 
         for (int i = 0; i < 19; i++)
@@ -537,7 +532,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         if (guiID == Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID)
         {
             boolean fixed = false;
-            return new GuiNewChooseFirstPokemob(null, fixed);
+            return new GuiChooseFirstPokemob(null, fixed);
         }
         return null;
     }

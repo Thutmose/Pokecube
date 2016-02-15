@@ -39,7 +39,6 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import thut.api.maths.Vector3;
 
-/** @author Manchou */
 public class GuiDisplayPokecubeInfo extends Gui
 {
     protected FontRenderer                fontRenderer;
@@ -375,14 +374,14 @@ public class GuiDisplayPokecubeInfo extends Gui
             buffer.writeInt(((Entity) pokemob).getEntityId());
             if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
             {
-                if (!GuiScrollableLists.instance().getState())
+                if (!GuiTeleport.instance().getState())
                 {
-                    GuiScrollableLists.instance().setState(true);
+                    GuiTeleport.instance().setState(true);
                     return;
                 }
                 else
                 {
-                    GuiScrollableLists.instance().setState(false);
+                    GuiTeleport.instance().setState(false);
 
                     Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
                     List<TeleDest> locations = PokecubeSerializer.getInstance()

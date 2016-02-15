@@ -21,18 +21,17 @@ import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 
-/** @author Manchou */
-public class GuiScrollableLists extends Gui
+public class GuiTeleport extends Gui
 {
     protected FontRenderer            fontRenderer;
     protected Minecraft               minecraft;
     protected static int              lightGrey = 0xDDDDDD;
-    private static GuiScrollableLists instance;
+    private static GuiTeleport instance;
 
     /**
      *
      */
-    public GuiScrollableLists()
+    public GuiTeleport()
     {
         minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
         fontRenderer = minecraft.fontRendererObj;
@@ -41,9 +40,9 @@ public class GuiScrollableLists extends Gui
 
     public List<TeleDest> locations;
 
-    public static GuiScrollableLists instance()
+    public static GuiTeleport instance()
     {
-        if (instance == null) new GuiScrollableLists();
+        if (instance == null) new GuiTeleport();
 
         if (instance.locations == null) instance.locations = PokecubeSerializer.getInstance()
                 .getTeleports(instance.minecraft.thePlayer.getUniqueID().toString());

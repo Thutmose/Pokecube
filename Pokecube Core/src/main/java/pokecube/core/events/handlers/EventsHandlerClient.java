@@ -38,7 +38,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
-import pokecube.core.client.gui.GuiScrollableLists;
+import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -176,7 +176,7 @@ public class EventsHandlerClient
             }
             else
             {
-                if (GuiScrollableLists.instance().getState()) GuiScrollableLists.instance().nextMove();
+                if (GuiTeleport.instance().getState()) GuiTeleport.instance().nextMove();
                 else GuiDisplayPokecubeInfo.instance().nextMove();
             }
 
@@ -190,16 +190,16 @@ public class EventsHandlerClient
             }
             else
             {
-                if (GuiScrollableLists.instance().getState()) GuiScrollableLists.instance().previousMove();
+                if (GuiTeleport.instance().getState()) GuiTeleport.instance().previousMove();
                 else GuiDisplayPokecubeInfo.instance().previousMove();
             }
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.mobBack))
         {
 
-            if (GuiScrollableLists.instance().getState())
+            if (GuiTeleport.instance().getState())
             {
-                GuiScrollableLists.instance().setState(false);
+                GuiTeleport.instance().setState(false);
             }
             else
             {

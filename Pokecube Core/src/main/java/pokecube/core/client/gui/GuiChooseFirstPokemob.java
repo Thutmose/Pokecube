@@ -42,7 +42,7 @@ import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokeType;
 
 @SuppressWarnings("deprecation")
-public class GuiNewChooseFirstPokemob extends GuiScreen
+public class GuiChooseFirstPokemob extends GuiScreen
 {
 
     int xSize = 150;
@@ -63,12 +63,12 @@ public class GuiNewChooseFirstPokemob extends GuiScreen
     int                     index        = 0;
     boolean                 fixed        = false;
 
-    public GuiNewChooseFirstPokemob(Integer[] _starters, boolean fixed)
+    public GuiChooseFirstPokemob(Integer[] _starters, boolean fixed)
     {
         this(_starters);
     }
 
-    public GuiNewChooseFirstPokemob(Integer[] _starters)
+    public GuiChooseFirstPokemob(Integer[] _starters)
     {
         super();
         fixed = true;
@@ -103,7 +103,7 @@ public class GuiNewChooseFirstPokemob extends GuiScreen
                 starts.add(_starters[i]);
             }
         }
-        GuiNewChooseFirstPokemob.starters = starts.toArray(new Integer[0]);
+        GuiChooseFirstPokemob.starters = starts.toArray(new Integer[0]);
         System.out.println(entityPlayer);
         entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
     }

@@ -33,31 +33,27 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.terrain.BiomeType;
 
-/**
- * @author Manchou
- *
- */
 public class GuiGifCapture extends GuiScreen
 {
-    protected IPokemob pokemob = null;
+    protected IPokemob     pokemob      = null;
     protected EntityPlayer entityPlayer = null;
-    
+
     public static PokedexEntry pokedexEntry = null;
-    
 
     /** The X size of the inventory window in pixels. */
     protected int xSize = 127;
 
     /** The Y size of the inventory window in pixels. */
-    protected int ySize = 180;//old:166
-    private float yRenderAngle = 10;
-    private float xRenderAngle = 0;
+    protected int ySize            = 180;// old:166
+    private float yRenderAngle     = 10;
+    private float xRenderAngle     = 0;
     private float yHeadRenderAngle = 10;
     private float xHeadRenderAngle = 0;
-    private int mouseRotateControl;
-    
-    private int page = 0;
+    private int   mouseRotateControl;
+
+    private int   page   = 0;
     List<Integer> biomes = new ArrayList<Integer>();
+
     /**
      *
      */
@@ -66,11 +62,11 @@ public class GuiGifCapture extends GuiScreen
         this.pokemob = pokemob;
         this.entityPlayer = entityPlayer;
         ItemStack item = entityPlayer.getHeldItem();
-        if(item!=null)
+        if (item != null)
         {
-        	page = item.getItemDamage();
+            page = item.getItemDamage();
         }
-        
+
         if (pokemob != null)
         {
             pokedexEntry = pokemob.getPokedexEntry();
@@ -80,17 +76,17 @@ public class GuiGifCapture extends GuiScreen
             pokedexEntry = Pokedex.getInstance().getFirstEntry();
         }
 
-    	for(BiomeGenBase b: BiomeGenBase.getBiomeGenArray())
-    	{
-    		if(b!=null)
-    		{
-    			biomes.add(b.biomeID);
-    		}
-    	}
-    	for(BiomeType b: BiomeType.values())
-    	{
-    		biomes.add(b.getType());
-    	}
+        for (BiomeGenBase b : BiomeGenBase.getBiomeGenArray())
+        {
+            if (b != null)
+            {
+                biomes.add(b.biomeID);
+            }
+        }
+        for (BiomeType b : BiomeType.values())
+        {
+            biomes.add(b.getType());
+        }
     }
 
     @Override
@@ -98,18 +94,16 @@ public class GuiGifCapture extends GuiScreen
     {
         x = this.width;
         y = this.height;
-    	
+
         buttonList.clear();
-        
+
     }
 
     private boolean canEditPokemob()
     {
-        return 		pokemob != null
-                && pokedexEntry.getPokedexNb() == pokemob.getPokedexNb()
-                && ((pokemob.getPokemonAIState(IPokemob.TAMED)
-                && entityPlayer == pokemob.getPokemonOwner())
-                ||entityPlayer.capabilities.isCreativeMode);
+        return pokemob != null && pokedexEntry.getPokedexNb() == pokemob.getPokedexNb()
+                && ((pokemob.getPokemonAIState(IPokemob.TAMED) && entityPlayer == pokemob.getPokemonOwner())
+                        || entityPlayer.capabilities.isCreativeMode);
     }
 
     @Override
@@ -120,14 +114,14 @@ public class GuiGifCapture extends GuiScreen
             mc.displayGuiScreen(null);
             mc.setIngameFocus();
         }
-    	
+
     }
 
     private int getButtonId(int x, int y)
     {
         int xConv = x - ((width - xSize) / 2) - 74;
         int yConv = y - ((height - ySize) / 2) - 107;
- //       System.out.println("("+xConv+","+yConv+")");
+        // System.out.println("("+xConv+","+yConv+")");
         int button = 0;
 
         if (xConv >= 35 && xConv <= 42 && yConv >= 52 && yConv <= 58)
@@ -172,13 +166,13 @@ public class GuiGifCapture extends GuiScreen
         {
             button = 10;// Rotate Mouse control
         }
-        else if(xConv>=167&&xConv<=172 && yConv<=-40&&yConv>=-52)
+        else if (xConv >= 167 && xConv <= 172 && yConv <= -40 && yConv >= -52)
         {
-        	button = 11;//swap page
+            button = 11;// swap page
         }
-        else if(xConv>=167&&xConv<=172 && yConv<=-22&&yConv>=-34)
+        else if (xConv >= 167 && xConv <= 172 && yConv <= -22 && yConv >= -34)
         {
-        	button = 12;//swap page
+            button = 12;// swap page
         }
 
         return button;
@@ -186,20 +180,20 @@ public class GuiGifCapture extends GuiScreen
 
     int prevX = 0;
     int prevY = 0;
-    
+
     @Override
     public void handleMouseInput() throws IOException
     {
         int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-        
+
         this.handleMouseMove(x, y, Mouse.getEventButton());
         super.handleMouseInput();
     }
 
     private void handleMouseMove(int x, int y, int mouseButton)
     {
-//    	System.out.println("handleMouseMove("+x+", "+y+", "+mouseButton+")");
+        // System.out.println("handleMouseMove("+x+", "+y+", "+mouseButton+")");
         if (mouseButton != -1)
         {
             mouseRotateControl = -1;
@@ -252,19 +246,17 @@ public class GuiGifCapture extends GuiScreen
         }
     }
 
-    /**
-     * Called when the mouse is clicked.
-     */
+    /** Called when the mouse is clicked. */
     @Override
     protected void mouseClicked(int x, int y, int mouseButton)
     {
         int button = getButtonId(x, y);
-        
-        if (page==0&&button == 3)
+
+        if (page == 0 && button == 3)
         {
             pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 10);
         }
-        else if (page==0&&button == 4)
+        else if (page == 0 && button == 4)
         {
             pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 10);
         }
@@ -275,7 +267,7 @@ public class GuiGifCapture extends GuiScreen
             prevY = y;
         }
 
-        if (page==0&&button >= 1 && button <= 5||button==5)
+        if (page == 0 && button >= 1 && button <= 5 || button == 5)
         {
             float volume = 0.2F;
 
@@ -284,8 +276,11 @@ public class GuiGifCapture extends GuiScreen
                 volume = 1F;
             }
 
-          // mod_Pokecube.getWorld().playSoundAtEntity(entityPlayer, pokedexEntry.getSound(), volume, 1.0F);
-            mc.theWorld.playSoundAtEntity(mc.thePlayer, pokedexEntry.getSound(), volume, 1.0F);//.playSoundFX(pokedexEntry.getSound(), volume, 1.0F);
+            // mod_Pokecube.getWorld().playSoundAtEntity(entityPlayer,
+            // pokedexEntry.getSound(), volume, 1.0F);
+            mc.theWorld.playSoundAtEntity(mc.thePlayer, pokedexEntry.getSound(), volume, 1.0F);// .playSoundFX(pokedexEntry.getSound(),
+                                                                                               // volume,
+                                                                                               // 1.0F);
             mc.thePlayer.playSound(pokedexEntry.getSound(), volume, 1.0F);
         }
         else if (canEditPokemob())
@@ -308,14 +303,17 @@ public class GuiGifCapture extends GuiScreen
             }
         }
     }
-    private static final ResourceLocation GUIIMG = new ResourceLocation(PokecubeMod.ID, "textures/gui/" + "wikiCapture.png");
+
+    private static final ResourceLocation GUIIMG = new ResourceLocation(PokecubeMod.ID,
+            "textures/gui/" + "wikiCapture.png");
+
     @Override
     public void drawScreen(int i, int j, float f)
     {
-    	Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+        Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
-        int j3 = 0xF0F0F0;//61680;
+        int j3 = 0xF0F0F0;// 61680;
         int k = j3 % 0x000100;
         int l = j3 / 0xFFFFFF;
         GL13.glMultiTexCoord2f(GL13.GL_TEXTURE1, k / 1.0F, l / 1.0F);
@@ -324,19 +322,19 @@ public class GuiGifCapture extends GuiScreen
         int k2 = (height - ySize) / 2;
         drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);
         GL11.glPushMatrix();
-//        GL11.glScalef(2.0F, 2.0F, 2.0F);
-        
+        // GL11.glScalef(2.0F, 2.0F, 2.0F);
+
         renderMob();
-        
+
         GL11.glPopMatrix();
         GL11.glEnable(GL11.GL_LIGHTING);
         super.drawScreen(i, j, f);
     }
-    
+
     @Override
     public void drawBackground(int n)
     {
-    	super.drawBackground(n);
+        super.drawBackground(n);
     }
 
     @Override
@@ -346,15 +344,17 @@ public class GuiGifCapture extends GuiScreen
     }
 
     private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
- 
-   private EntityLiving getEntityToDisplay()
+
+    private EntityLiving getEntityToDisplay()
     {
         EntityLiving pokemob = entityToDisplayMap.get(pokedexEntry.getPokedexNb());
 
         if (pokemob == null)
         {
-//    		int entityId = mod_Pokecube.getEntityIdFromPokedexNumber(pokedexEntry.getPokedexNb());
-            pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(), entityPlayer.worldObj);
+            // int entityId =
+            // mod_Pokecube.getEntityIdFromPokedexNumber(pokedexEntry.getPokedexNb());
+            pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(),
+                    entityPlayer.worldObj);
 
             if (pokemob != null)
             {
@@ -365,37 +365,38 @@ public class GuiGifCapture extends GuiScreen
         return pokemob;
     }
 
-   public static int x;
-   public static int y;
+    public static int x;
+    public static int y;
+
     private void renderMob()
     {
         try
         {
             EntityLiving entity = getEntityToDisplay();
-            
+
             float size = 0;
             int j = 0;
-            int k = 0; 
-            
-            if(entity instanceof IPokemob)
+            int k = 0;
+
+            if (entity instanceof IPokemob)
             {
             }
-            
-            if(entity instanceof EntityPokemob)
+
+            if (entity instanceof EntityPokemob)
             {
-            		((EntityPokemob)entity).setRGBA(255, 255, 255, 255);
-            		((EntityPokemob)entity).scale = 1;
-            		((EntityPokemob)entity).shiny = false;
+                ((EntityPokemob) entity).setRGBA(255, 255, 255, 255);
+                ((EntityPokemob) entity).scale = 1;
+                ((EntityPokemob) entity).shiny = false;
             }
             size = Math.max(entity.width, entity.height);
             j = (width - xSize) / 2;
             k = (height - ySize) / 2;
-	            
+
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
             GL11.glPushMatrix();
             GL11.glTranslatef(j + 55, k + 120, 50F);
-            float zoom = 23f/size;//(float)(23F / Math.sqrt(size + 0.6));
+            float zoom = 23f / size;// (float)(23F / Math.sqrt(size + 0.6));
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
             float f5 = ((k + 75) - 50) - ySize;
@@ -404,14 +405,14 @@ public class GuiGifCapture extends GuiScreen
             RenderHelper.enableStandardItemLighting();
 
             GL11.glRotatef(-135F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(-(float)Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
             entity.renderYawOffset = 0F;
             entity.rotationYaw = yHeadRenderAngle;
             entity.rotationPitch = xHeadRenderAngle;
             entity.rotationYawHead = entity.rotationYaw;
-           // GL11.glTranslatef(0.0F, entity.yOffset, 0.0F);
+            // GL11.glTranslatef(0.0F, entity.yOffset, 0.0F);
             float offset = 0.4f;
-            float f,f1,f2;
+            float f, f1, f2;
             f = entityPlayer.rotationPitch;
             f1 = entityPlayer.rotationYaw;
             f2 = entityPlayer.rotationYawHead;
@@ -419,23 +420,25 @@ public class GuiGifCapture extends GuiScreen
             entityPlayer.rotationPitch = 00;
             entityPlayer.renderYawOffset = 50;
             entityPlayer.rotationYawHead = 40;
-            Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entityPlayer, offset+ entity.width, 1.6D, 0.0D, 1.0F, 1.0F);
-            
+            Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entityPlayer, offset + entity.width,
+                    1.6D, 0.0D, 1.0F, 1.0F);
+
             entityPlayer.rotationPitch = f;
             entityPlayer.renderYawOffset = f1;
             entityPlayer.rotationYawHead = f2;
 
-        	yRenderAngle = -30;
-        	xRenderAngle = 0;
-            
+            yRenderAngle = -30;
+            xRenderAngle = 0;
+
             GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(xRenderAngle, 1.0F, 0.0F, 0.0F);
-            ((EntityPokemob)entity).setPokemonAIState(IPokemob.SITTING, false);
+            ((EntityPokemob) entity).setPokemonAIState(IPokemob.SITTING, false);
             entity.setPosition(entityPlayer.posX, entityPlayer.posY + 1, entityPlayer.posZ);
-       //     System.err.println(""+triangle);
+            // System.err.println(""+triangle);
             entity.limbSwing = 0;
             entity.limbSwingAmount = 0;
-            entity.onGround = ((EntityPokemob)entity).getType1() != flying && ((EntityPokemob)entity).getType2() != flying;
+            entity.onGround = ((EntityPokemob) entity).getType1() != flying
+                    && ((EntityPokemob) entity).getType2() != flying;
             int i = 15728880;
             int j1 = i % 65536;
             int k1 = i / 65536;
@@ -444,12 +447,12 @@ public class GuiGifCapture extends GuiScreen
             GL11.glPopMatrix();
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            
-            float time = MathHelper.cos(((EntityPokemob)entity).worldObj.getWorldTime()/3f * 0.6662f);
 
-            if(time!=lastTime)
+            float time = MathHelper.cos(((EntityPokemob) entity).worldObj.getWorldTime() / 3f * 0.6662f);
+
+            if (time != lastTime)
             {
-            	//WikiWriter.doCapturePokemobGif();//TODO re-instate this
+                // WikiWriter.doCapturePokemobGif();//TODO re-instate this
             }
             lastTime = time;
         }
@@ -458,9 +461,9 @@ public class GuiGifCapture extends GuiScreen
             e.printStackTrace();
         }
     }
-    static float lastTime = 0;
-    /**
-     * to pass as last parameter when rendering the mob so that the render knows the rendering is asked by the pokedex gui
-     */
+
+    static float              lastTime       = 0;
+    /** to pass as last parameter when rendering the mob so that the render
+     * knows the rendering is asked by the pokedex gui */
     public final static float POKEDEX_RENDER = 1.5f;
 }

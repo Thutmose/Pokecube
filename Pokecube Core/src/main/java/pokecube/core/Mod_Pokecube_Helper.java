@@ -21,10 +21,13 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.handlers.RecipeHandler;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
 import pokecube.core.moves.TreeRemover;
 
@@ -195,6 +198,15 @@ public class Mod_Pokecube_Helper
     public void loadConfig(Configuration config)
     {
         ConfigHandler.loadConfig(this, config);
+    }
+    
+    @SubscribeEvent
+    public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
+    {
+        if (event.modID.equalsIgnoreCase(PokecubeMod.ID))
+        {
+            loadConfig(Mod_Pokecube_Helper.config);
+        }
     }
 
     public static void postInit()

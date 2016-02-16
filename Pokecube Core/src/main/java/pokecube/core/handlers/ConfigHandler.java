@@ -17,7 +17,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.minecraft.init.Blocks;
+import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.config.IConfigElement;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
@@ -153,7 +155,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
             mobDespawnRadius = config
                     .get(CATEGORY_ADVANCED, "despawnRadius", mobDespawnRadius,
-                            "If there are no players within this close to the pokemob, it will immediately despawn (does not apply to tamed or angry.")
+                            "If there are no players within this close to the pokemob, it will immediately despawn if cullDistanced is true (does not apply to tamed or angry.")
                     .getInt(32);
 
             mobSpawnRadius = config.get(CATEGORY_ADVANCED, "spawnRadius", mobSpawnRadius,
@@ -363,5 +365,20 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             e.printStackTrace();
         }
 
+    }
+
+    public static List<IConfigElement> getConfigElements()
+    {
+        List<IConfigElement> list = new ArrayList<IConfigElement>();
+        for (IConfigElement e : new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL))
+                .getChildElements())
+        {
+            if (!e.getName().equals("version")) list.add(e);
+        }
+        for (IConfigElement e : new ConfigElement(config.getCategory(CATEGORY_ADVANCED)).getChildElements())
+        {
+            list.add(e);
+        }
+        return list;
     }
 }

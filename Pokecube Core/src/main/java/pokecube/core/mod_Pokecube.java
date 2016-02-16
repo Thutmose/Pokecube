@@ -119,7 +119,8 @@ import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
 @Mod(modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:Forge@"
-        + PokecubeMod.MINFORGEVERSION + PokecubeMod.DEPSTRING, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS)
+        + PokecubeMod.MINFORGEVERSION
+        + PokecubeMod.DEPSTRING, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, guiFactory = "pokecube.core.client.gui.config.ModGuiFactory")
 public class mod_Pokecube extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")
@@ -472,9 +473,9 @@ public class mod_Pokecube extends PokecubeMod
         return new Configuration(file);
     }
 
-    public String       newVersion;
-    public String       newAlphaVersion;
-    Mod_Pokecube_Helper helper;
+    public String              newVersion;
+    public String              newAlphaVersion;
+    public Mod_Pokecube_Helper helper;
 
     @EventHandler
     private void preInit(FMLPreInitializationEvent evt)
@@ -489,6 +490,7 @@ public class mod_Pokecube extends PokecubeMod
         config.load();
 
         helper = new Mod_Pokecube_Helper();
+        MinecraftForge.EVENT_BUS.register(helper);
         helper.loadConfig(config);
         // used to register the moves from the spreadsheets
         Database.init(evt);

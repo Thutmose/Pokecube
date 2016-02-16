@@ -80,7 +80,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
         Vector3 v = Vector3.getNewVectorFromPool().set(this);
         if (box == null)
         {
-            box = v.getAABB().expand(5, 5, 5);
+            box = v.getAABB().expand(10, 10, 10);
         }
         lastInput = getInput();
         storage.setEnergyStored(lastInput);

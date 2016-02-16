@@ -274,7 +274,7 @@ public class Pokecube extends ItemTranslated implements IPokecube
             return false;
         }
 
-        if (!cube.hasTagCompound()) return true;
+        if (!PokecubeManager.isFilled(cube)) return true;
         cube.getTagCompound().setBoolean("delete", true);
         // itemstack = new ItemStack(this);
         int current = player.inventory.currentItem;

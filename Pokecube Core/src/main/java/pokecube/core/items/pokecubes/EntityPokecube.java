@@ -263,12 +263,32 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             IPokemob hitten = (IPokemob) e;
             if (hitten.getPokemonOwner() == shootingEntity) { return; }
 
+            int tiltBak = tilt;
             CaptureEvent.Pre capturePre = new Pre(hitten, this);
             MinecraftForge.EVENT_BUS.post(capturePre);
-
             if (capturePre.isCanceled())
             {
-
+                if (tilt != tiltBak)
+                {
+                    if (tilt == 5)
+                    {
+                        time = 10;
+                    }
+                    else
+                    {
+                        time = 20 * tilt;
+                    }
+                    hitten.setPokecubeId(PokecubeItems.getCubeId(getEntityItem()));
+                    setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
+                    PokecubeManager.setTilt(getEntityItem(), tilt);
+                    ((Entity) hitten).setDead();
+                    Vector3 v = Vector3.getNewVectorFromPool();
+                    v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
+                    motionX = 0;
+                    motionY = 0.1;
+                    motionZ = 0;
+                    v.freeVectorFromPool();
+                }
             }
             else
             {
@@ -489,6 +509,13 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             int pokedexNumber = PokecubeManager.getPokedexNb(getEntityItem());
             IPokemob mob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
 
+            if(mob==null)
+            {
+                new NullPointerException("Mob is null").printStackTrace();
+                return;
+            }
+            
+            
             HappinessType.applyHappiness(mob, HappinessType.TRADE);
             if (shootingEntity != null) mob.setPokemonOwner(((EntityPlayer) shootingEntity));
             ItemStack mobStack = PokecubeManager.pokemobToItem(mob);

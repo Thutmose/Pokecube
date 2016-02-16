@@ -670,17 +670,7 @@ public final class SpawnHandler
         }
         try
         {
-            // Only tick once per second
-            if (world.getTotalWorldTime() % 20 != 0) return;
-
-            if (world.getGameRules().getBoolean("doMobSpawning") && Mod_Pokecube_Helper.deactivateAnimals
-                    && Mod_Pokecube_Helper.deactivateMonsters)
-            {
-                world.getGameRules().setOrCreateGameRule("doMobSpawning", "false");
-            }
-
             spawn(world);
-
             if (Mod_Pokecube_Helper.meteors)
             {
                 if (!world.provider.isSurfaceWorld()) return;

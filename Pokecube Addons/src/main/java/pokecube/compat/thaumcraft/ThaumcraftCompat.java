@@ -1,7 +1,10 @@
 package pokecube.compat.thaumcraft;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
@@ -188,15 +191,14 @@ public class ThaumcraftCompat
         return new Object[] { "aspect", new NBTTagString(aspectString) };
     }
 
-    static InfusionRecipe InfusedThaumiumPokecube()
+    static InfusionRecipe InfusedThaumiumPokecube(PokeType type)
     {
-        Aspect aspect = Aspect.ORDER;
+        Aspect aspect = fromType(type);
         String item = "shard";
         ItemStack stack = PokecubeItems.getStack(item);
-        return ThaumcraftApi.addInfusionCraftingRecipe("THAUMIUMPOKECUBE",
-                infuse(aspect), 1,
-                (new AspectList()).add(Aspect.TRAP, 1).add(aspect, 1),
-                new ItemStack(PokecubeItems.getEmptyCube(98)), new ItemStack[] { stack.copy(), stack.copy(), stack });
+        return ThaumcraftApi.addInfusionCraftingRecipe("THAUMIUMPOKECUBE", infuse(aspect), 1,
+                (new AspectList()).add(Aspect.TRAP, 16).add(aspect, 16), new ItemStack(PokecubeItems.getEmptyCube(98)),
+                new ItemStack[] { stack.copy(), stack.copy(), stack });
     }
 
     public static void addPage()
@@ -208,12 +210,25 @@ public class ThaumcraftCompat
 
     public static void addResearch()
     {
+        ArrayList<ResearchPage> pagelist = Lists.newArrayList();
+        pagelist.add(new ResearchPage("tc.research_page.THAUMIUMPOKECUBE.1"));
+        pagelist.add(new ResearchPage(RecipeThaumiumPokecube()));
+        ArrayList<InfusionRecipe> recipes = Lists.newArrayList();
+        for (PokeType type : PokeType.values())
+        {
+            recipes.add(InfusedThaumiumPokecube(type));
+        }
+        pagelist.add(new ResearchPage(recipes.toArray(new InfusionRecipe[0])));
+
         new ResearchItem("THAUMIUMPOKECUBE", "POKECUBE",
                 (new AspectList()).add(Aspect.METAL, 3).add(Aspect.AURA, 2).add(Aspect.TRAP, 2), 0, 3, 2,
-                new ItemStack(PokecubeItems.getEmptyCube(98)))
-                        .setPages(new ResearchPage[] { new ResearchPage("tc.research_page.THAUMIUMPOKECUBE.1"),
-                                new ResearchPage(RecipeThaumiumPokecube()), new ResearchPage(InfusedThaumiumPokecube())
-                // (new ItemStack(PokecubeItems.getEmptyCube(98))))
-        }).registerResearchItem();
+                new ItemStack(PokecubeItems.getEmptyCube(98))).setPages(pagelist.toArray(new ResearchPage[0]))
+                        .registerResearchItem();
+    }
+
+    static Aspect fromType(PokeType type)
+    {
+        AspectList list = pokeTypeToAspects.get(type);
+        return list.getAspects()[0];
     }
 }

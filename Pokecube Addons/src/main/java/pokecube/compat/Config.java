@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import pokecube.compat.blocks.rf.TileEntitySiphon;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.terrain.BiomeType;
@@ -67,6 +68,7 @@ public class Config {
 	};
 	
 	public static int[] dimensionBlackList;
+	public static String RFLevelFunction = "";
 	
 	public Config(FMLPreInitializationEvent e) {
 		loadConfig(e);
@@ -93,7 +95,10 @@ public class Config {
 			   ranchables, "ranchable pokemon via Minefactory Reloaded.\nnote that the double : in camerupt makes it give lava as a fluid, not an item.  \nformat: pokemon:<item>:delay or pokemon:<item>:fluid:delay, fluids are always 1 bucket \n<item> can be: itemname or itemname,number or itemname,number,meta").getStringList();
  	   
  	   dimensionBlackList = config.get(Configuration.CATEGORY_GENERAL, "dimensionBlackList", new int[]{}).getIntList();
- 	   
+
+       TileEntitySiphon.maxOutput = config.get(Configuration.CATEGORY_GENERAL, "maxrf", 256, "maximum RF/t of an RFSiphon").getInt();
+       TileEntitySiphon.function = config.get(Configuration.CATEGORY_GENERAL, "powerfunction", "a*x/10", "Function of power and level to RF output, a = maximum offensive stat, x = level").getString();
+
  	   config.save();
 	}
 	

@@ -2,6 +2,8 @@ package pokecube.compat.blocks.rf;
 
 import java.util.List;
 
+import org.nfunk.jep.JEP;
+
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -29,12 +31,15 @@ import thut.api.maths.Vector3;
 public class TileEntitySiphon extends TileEntity implements ITickable, Environment, IEnergyProvider
 {
     AxisAlignedBB           box;
-    public static int       maxOutput = 256;
-    int                     lastInput = 0;
-    protected EnergyStorage storage   = new EnergyStorage(maxOutput);
+    public static int       maxOutput   = 256;
+    public static String function;
+    public JEP       parser = new JEP();
+    int                     lastInput   = 0;
+    protected EnergyStorage storage     = new EnergyStorage(maxOutput);
 
     public TileEntitySiphon()
     {
+        initParser();
         try
         {
             node = Network.newNode(this, Visibility.Network).withConnector()
@@ -42,13 +47,26 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
         }
         catch (Exception e)
         {
-//             e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 
     public TileEntitySiphon(World world)
     {
         this();
+    }
+    
+    private void initParser()
+    {
+        parser.initFunTab(); // clear the contents of the function table
+        parser.addStandardFunctions();
+        parser.initSymTab(); // clear the contents of the symbol table
+        parser.addStandardConstants();
+        parser.addComplex(); // among other things adds i to the symbol
+                             // table
+        parser.addVariable("x", 0);
+        parser.addVariable("a", 0);
+        parser.parseExpression(function);
     }
 
     @Override
@@ -95,11 +113,12 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
                 EntityLiving living = (EntityLiving) o;
                 if (poke.isType(PokeType.electric))
                 {
-                    int spAtk = poke.getBaseStats()[3];
-                    int atk = poke.getBaseStats()[1];
+                    int spAtk = poke.getActualStats()[3];
+                    int atk = poke.getActualStats()[1];
                     int level = poke.getLevel();
                     double dSq = living.getDistanceSq(getPos().getX() + 0.5, getPos().getY() + 0.5,
-                            getPos().getZ() + 0.5) * 1024;
+                            getPos().getZ() + 0.5);
+                    dSq = Math.max(dSq, 1);
                     int maxEnergy = getMaxEnergy(level, spAtk, atk, poke.getPokedexEntry());
                     int pokeEnergy = maxEnergy;
                     int dE;
@@ -121,8 +140,11 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
                     }
                     dE = (int) (pokeEnergy / dSq);
                     ret += dE;
+                    ret = Math.max(0, ret);
                     // Always drain at least 1
                     dE = Math.max(1, dE);
+                    if(living.ticksExisted%100==0)
+                    System.out.println(pokeEnergy + " " + maxEnergy + " " + dE);
                     living.getEntityData().setLong("energyTime", energyTime);
                     living.getEntityData().setInteger("energyRemaining", pokeEnergy - dE);
                     if (first && living.ticksExisted % 2 == 0)
@@ -139,13 +161,25 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
 
     public int getEnergyGain(int level, int spAtk, int atk, PokedexEntry entry)
     {
-        int power = Math.max(atk, spAtk) * level;
-        return power;
+        int power = Math.max(atk, spAtk);
+        parser.setVarValue("x", level);
+        parser.setVarValue("a", power);
+        double value = parser.getValue();
+        if(Double.isNaN(value))
+        {
+            initParser();
+            parser.setVarValue("x", level);
+            parser.setVarValue("a", power);
+            value = parser.getValue();
+            new Exception().printStackTrace();
+        }
+        power = (int) value;
+        return Math.max(1, power);
     }
 
     public int getMaxEnergy(int level, int spAtk, int atk, PokedexEntry entry)
     {
-        return 10 * getEnergyGain(level, spAtk, atk, entry);
+        return getEnergyGain(level, spAtk, atk, entry);
     }
 
     @Override

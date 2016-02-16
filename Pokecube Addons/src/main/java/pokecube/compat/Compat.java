@@ -120,7 +120,7 @@ public class Compat
         conf.postInit();
 
         GameRegistry.addRecipe(new ShapedOreRecipe(PokecubeItems.getBlock("pokesiphon"), new Object[] { "RrR", "rCr",
-                "RrR", 'R', Blocks.redstone_block, 'C', PokecubeItems.getBlock("cloner"), 'r', Items.redstone }));
+                "RrR", 'R', Blocks.redstone_block, 'C', PokecubeItems.getBlock("afa"), 'r', Items.redstone }));
     }
 
     @Optional.Method(modid = "AS_Ruins")

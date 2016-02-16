@@ -139,12 +139,11 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
                         }
                     }
                     dE = (int) (pokeEnergy / dSq);
+                    //If out of power, no power
+                    dE = Math.max(0, dE);
                     ret += dE;
-                    ret = Math.max(0, ret);
                     // Always drain at least 1
                     dE = Math.max(1, dE);
-                    if(living.ticksExisted%100==0)
-                    System.out.println(pokeEnergy + " " + maxEnergy + " " + dE);
                     living.getEntityData().setLong("energyTime", energyTime);
                     living.getEntityData().setInteger("energyRemaining", pokeEnergy - dE);
                     if (first && living.ticksExisted % 2 == 0)

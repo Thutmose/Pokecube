@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.entity.trainers.EntityTrainer;
@@ -20,16 +19,12 @@ import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import thaumcraft.api.ThaumcraftApi;
-import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectHelper;
 import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.aspects.AspectSourceHelper;
 import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
-import thaumcraft.common.Thaumcraft;
 
 public class ThaumcraftCompat
 {
@@ -178,7 +173,6 @@ public class ThaumcraftCompat
             }
         }
     }
-    // public static void addRecipes(){
 
     static InfusionRecipe RecipeThaumiumPokecube()
     {
@@ -192,8 +186,6 @@ public class ThaumcraftCompat
 
     static Object infuse(Aspect aspect)
     {
-        // String aspectString = aspect.getName();
-        // return new Object[] { "aspect", new NBTTagString(aspectString) };
         ItemStack ret = new ItemStack(PokecubeItems.getEmptyCube(98));
         ret.setTagCompound(new NBTTagCompound());
         AspectList list = new AspectList();
@@ -206,9 +198,7 @@ public class ThaumcraftCompat
     {
         Aspect aspect = fromType(type);
         String item = "crystal_essence";
-        // TODO replace this with a crystal with aspect.
         ItemStack stack = PokecubeItems.getStack(item);
-
         stack.setTagCompound(new NBTTagCompound());
         AspectList list = new AspectList();
         list.add(aspect, 1);

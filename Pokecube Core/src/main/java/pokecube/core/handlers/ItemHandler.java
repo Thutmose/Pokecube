@@ -527,12 +527,10 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 mob.setPokemonAIState(IPokemob.TAMED, false);
                 ((Entity) mob).entityDropItem(PokecubeManager.pokemobToItem(mob), 0.0F);
             }
-
         };
 
         PokecubeBehavior repeat = new PokecubeBehavior()
         {
-
             @Override
             public void onPreCapture(Pre evt)
             {

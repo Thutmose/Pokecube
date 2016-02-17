@@ -119,6 +119,7 @@ public class ThaumcraftCompat
         registerTrainersThaumcraft();
         addPage();
         addResearch();
+        addLoot();
     }
 
     public void registerTrainersThaumcraft()
@@ -235,5 +236,34 @@ public class ThaumcraftCompat
     {
         AspectList list = pokeTypeToAspects.get(type);
         return list.getAspects()[0];
+    }
+
+    public static void addLoot()
+    {
+        ItemStack pokecube = PokecubeItems.getStack("pokecube");
+        ItemStack greatcube = PokecubeItems.getStack("greatcube");
+        ItemStack ultracube = PokecubeItems.getStack("ultracube");
+        ItemStack mastercube = PokecubeItems.getStack("mastercube");
+        ItemStack expshare = PokecubeItems.getStack("exp_share");
+
+        pokecube.stackSize = 4;
+        greatcube.stackSize = 2;
+
+        ThaumcraftApi.addLootBagItem(pokecube, 50, 0);
+        ThaumcraftApi.addLootBagItem(greatcube, 10, 0);
+        ThaumcraftApi.addLootBagItem(ultracube, 5, 0);
+        
+        ThaumcraftApi.addLootBagItem(pokecube, 500, 1);
+        ThaumcraftApi.addLootBagItem(greatcube, 100, 1);
+        ThaumcraftApi.addLootBagItem(ultracube, 50, 1);
+        
+        ThaumcraftApi.addLootBagItem(ultracube, 200, 2);
+        ThaumcraftApi.addLootBagItem(mastercube, 20, 2);
+        ThaumcraftApi.addLootBagItem(expshare, 100, 2);
+
+        for (ItemStack stack : PokecubeMod.HMs)
+        {
+            ThaumcraftApi.addLootBagItem(stack.copy(), 10, 0);
+        }
     }
 }

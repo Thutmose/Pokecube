@@ -176,8 +176,7 @@ public class ThaumcraftCompat
 
     static InfusionRecipe RecipeThaumiumPokecube()
     {
-        String item = "shard";
-        ItemStack stack = PokecubeItems.getStack(item);
+        ItemStack stack = new ItemStack(thaumcraft.api.items.ItemsTC.ingots);
         return ThaumcraftApi.addInfusionCraftingRecipe("THAUMIUMPOKECUBE",
                 new ItemStack(PokecubeItems.getEmptyCube(98)), 1,
                 (new AspectList()).add(Aspect.METAL, 8).add(Aspect.TRAP, 8).add(Aspect.AURA, 4),

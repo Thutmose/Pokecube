@@ -25,11 +25,14 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.profiler.IPlayerUsage;
@@ -43,6 +46,7 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -96,7 +100,7 @@ import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.maths.Vector3;
 
 @SideOnly(Side.CLIENT)
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ClientProxyPokecube extends CommonProxyPokecube
 {
     private static BitSet models = new BitSet();
@@ -174,29 +178,10 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
     }
 
-    @SuppressWarnings({ "unchecked" })
     @Override
     public void registerRenderInformation()
     {
         super.registerRenderInformation();
-
-        RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new RenderProfessor());
-        RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class,
-                new RenderPokecube(Minecraft.getMinecraft().getRenderManager()));
-        // Register rendering entity for other pokemobs
-        RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class, RenderPokemobs.getInstance());
-
-        RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class,
-                new RenderLiving(Minecraft.getMinecraft().getRenderManager(), new ModelPokemobEgg(), 0.25f)
-                {
-
-                    @Override
-                    protected ResourceLocation getEntityTexture(Entity p_110775_1_)
-                    {
-                        return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
-                    }
-                });
-
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPokecubeTable.class, new RenderPokecubeTable());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
 
@@ -305,53 +290,45 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         super.preInit(evt);
 
-        // TODO in 1.9, this will need to be commented back in
-        // RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class,
-        // new IRenderFactory<Entity>()
-        // {
-        // @Override
-        // public Render<? super Entity> createRenderFor(RenderManager manager)
-        // {
-        // return new RenderProfessor();
-        // }
-        // });
-        // RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class,
-        // new IRenderFactory<Entity>()
-        // {
-        // @Override
-        // public Render<? super Entity> createRenderFor(RenderManager manager)
-        // {
-        // return new RenderPokecube(manager);
-        // }
-        // });
-        // // Register rendering entity for other pokemobs
-        // RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class,
-        // new IRenderFactory<Entity>()
-        // {
-        // @Override
-        // public Render<? super Entity> createRenderFor(RenderManager manager)
-        // {
-        // return RenderPokemobs.getInstance(manager);
-        // }
-        // });
-        //
-        // RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class,
-        // new IRenderFactory<Entity>()
-        // {
-        // @Override
-        // public Render<? super Entity> createRenderFor(RenderManager manager)
-        // {
-        // return new RenderLiving(Minecraft.getMinecraft().getRenderManager(),
-        // new ModelPokemobEgg(), 0.25f)
-        // {
-        // @Override
-        // protected ResourceLocation getEntityTexture(Entity p_110775_1_)
-        // {
-        // return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
-        // }
-        // };
-        // }
-        // });
+        RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new IRenderFactory<EntityLiving>()
+        {
+            @Override
+            public Render<? super EntityLiving> createRenderFor(RenderManager manager)
+            {
+                return new RenderProfessor<>();
+            }
+        });
+        RenderingRegistry.registerEntityRenderingHandler(EntityPokecube.class, new IRenderFactory<EntityLiving>()
+        {
+            @Override
+            public Render<? super EntityLiving> createRenderFor(RenderManager manager)
+            {
+                return new RenderPokecube<>(manager);
+            }
+        });
+        RenderingRegistry.registerEntityRenderingHandler(EntityPokemob.class, new IRenderFactory<EntityLivingBase>()
+        {
+            @Override
+            public Render<? super EntityLivingBase> createRenderFor(RenderManager manager)
+            {
+                return RenderPokemobs.getInstance(manager);
+            }
+        });
+        RenderingRegistry.registerEntityRenderingHandler(EntityPokemobEgg.class, new IRenderFactory<Entity>()
+        {
+            @Override
+            public Render<? super Entity> createRenderFor(RenderManager manager)
+            {
+                return new RenderLiving(manager, new ModelPokemobEgg(), 0.25f)
+                {
+                    @Override
+                    protected ResourceLocation getEntityTexture(Entity egg)
+                    {
+                        return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
+                    }
+                };
+            }
+        });
 
         Item tm = PokecubeItems.getItem("tm");
 

@@ -63,7 +63,7 @@ minecraft {
     replaceIn "PokecubeMod.java"
     replace "@VERSION@", project.version
     replaceIn "mcmod.info"
-    replace "@MCVERSION@", "[1.8.8,1.8.9]"
+    replace "@MCVERSION@", "${version_mcsupport}"
     replaceIn "PokecubeMod.java"
     
     makeObfSourceJar = false

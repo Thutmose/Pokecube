@@ -21,7 +21,7 @@ public class PokecubeMobs
     public static final String MODID      = "pokecube_mobs";
     public static final String VERSION    = "@VERSION@";
     public static final String UPDATEURL  = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Mobs/versions.json";
-    public final static String MCVERSIONS = "[1.8.8,1.8.9]";
+    public final static String MCVERSIONS = "[1.8.9]";
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)

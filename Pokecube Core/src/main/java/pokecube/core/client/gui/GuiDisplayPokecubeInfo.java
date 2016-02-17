@@ -314,10 +314,10 @@ public class GuiDisplayPokecubeInfo extends Gui
         else
         {
             EntityPlayer player = minecraft.thePlayer;
+            Entity target = null;
             Vector3 look = Vector3.getNewVectorFromPool().set(player.getLook(1));
             Vector3 temp = Vector3.getNewVectorFromPool().set(player).addTo(0, player.getEyeHeight(), 0);
-
-            Entity target = temp.firstEntityExcluding(32, look, player.worldObj, player.isSneaking(), player);
+            target = temp.firstEntityExcluding(32, look, player.worldObj, player.isSneaking(), player);
             temp.freeVectorFromPool();
             look.freeVectorFromPool();
             if (target != null && target instanceof IPokemob && ((IPokemob) target).getPokemonOwner() == player)
@@ -397,7 +397,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                     }
                 }
             }
-            else if(!attack)
+            else if (!attack)
             {
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
                 if (move != null)

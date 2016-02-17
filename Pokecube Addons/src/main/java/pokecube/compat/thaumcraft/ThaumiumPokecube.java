@@ -38,15 +38,22 @@ public class ThaumiumPokecube// extends Mod_Pokecube_Helper
             public void onPreCapture(Pre evt)
             {
                 EntityPokecube cube = (EntityPokecube) evt.pokecube;
-                String tag = "";
+                AspectList aspects = new AspectList();
                 if (cube.getEntityItem().hasTagCompound())
                 {
-                    tag = cube.getEntityItem().getTagCompound().getString("aspect");
+                    aspects.readFromNBT(cube.getEntityItem().getTagCompound(), "Aspects");
                 }
-                int m = matches(evt.caught, tag);
+                int m = matches(evt.caught, aspects);
                 double rate = m;
-                cube.tilt = Tools.computeCatchRate(evt.caught, rate);
-                evt.setCanceled(true);
+                if (m > 0)
+                {
+                    cube.tilt = Tools.computeCatchRate(evt.caught, rate);
+                    evt.setCanceled(true);
+                }
+                else
+                {
+                    evt.pokecube.entityDropItem(((EntityPokecube) evt.pokecube).getEntityItem(), (float) 0.5);
+                }
             }
 
             @Override
@@ -58,20 +65,23 @@ public class ThaumiumPokecube// extends Mod_Pokecube_Helper
         PokecubeBehavior.addCubeBehavior(98, thaumic);
     }
 
-    static int matches(IPokemob mob, String aspect)
+    static int matches(IPokemob mob, AspectList list)
     {
         AspectList list1 = ThaumcraftCompat.pokeTypeToAspects.get(mob.getType1());
         AspectList list2 = ThaumcraftCompat.pokeTypeToAspects.get(mob.getType2());
-        int ret = has(list1, aspect) ? 3 : 0;
-        if (mob.getType1() != mob.getType2() && mob.getType2() != PokeType.unknown ) ret += has(list2, aspect) ? 3 : 0;
+        int ret = has(list1, list) ? 3 : 0;
+        if (mob.getType1() != mob.getType2() && mob.getType2() != PokeType.unknown) ret += has(list2, list) ? 3 : 0;
         return ret;
     }
 
-    static boolean has(AspectList list, String aspect)
+    static boolean has(AspectList list, AspectList listoriginal)
     {
-        for (Aspect a : list.aspects.keySet())
+        for (Aspect a : list.getAspects())
         {
-            if (a.getName().equalsIgnoreCase(aspect)) return true;
+            for (Aspect b : listoriginal.getAspects())
+            {
+                if (a == b) return true;
+            }
         }
         return false;
     }

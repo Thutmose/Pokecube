@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,12 +20,16 @@ import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import thaumcraft.api.ThaumcraftApi;
+import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectHelper;
 import thaumcraft.api.aspects.AspectList;
+import thaumcraft.api.aspects.AspectSourceHelper;
 import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchItem;
 import thaumcraft.api.research.ResearchPage;
+import thaumcraft.common.Thaumcraft;
 
 public class ThaumcraftCompat
 {
@@ -187,15 +192,27 @@ public class ThaumcraftCompat
 
     static Object infuse(Aspect aspect)
     {
-        String aspectString = aspect.getName();
-        return new Object[] { "aspect", new NBTTagString(aspectString) };
+        // String aspectString = aspect.getName();
+        // return new Object[] { "aspect", new NBTTagString(aspectString) };
+        ItemStack ret = new ItemStack(PokecubeItems.getEmptyCube(98));
+        ret.setTagCompound(new NBTTagCompound());
+        AspectList list = new AspectList();
+        list.add(aspect, 3);
+        list.writeToNBT(ret.getTagCompound(), "Aspects");
+        return ret;
     }
 
     static InfusionRecipe InfusedThaumiumPokecube(PokeType type)
     {
         Aspect aspect = fromType(type);
-        String item = "shard";
+        String item = "crystal_essence";
+        // TODO replace this with a crystal with aspect.
         ItemStack stack = PokecubeItems.getStack(item);
+
+        stack.setTagCompound(new NBTTagCompound());
+        AspectList list = new AspectList();
+        list.add(aspect, 1);
+        list.writeToNBT(stack.getTagCompound(), "Aspects");
         return ThaumcraftApi.addInfusionCraftingRecipe("THAUMIUMPOKECUBE", infuse(aspect), 1,
                 (new AspectList()).add(Aspect.TRAP, 16).add(aspect, 16), new ItemStack(PokecubeItems.getEmptyCube(98)),
                 new ItemStack[] { stack.copy(), stack.copy(), stack });
@@ -219,7 +236,6 @@ public class ThaumcraftCompat
             recipes.add(InfusedThaumiumPokecube(type));
         }
         pagelist.add(new ResearchPage(recipes.toArray(new InfusionRecipe[0])));
-
         new ResearchItem("THAUMIUMPOKECUBE", "POKECUBE",
                 (new AspectList()).add(Aspect.METAL, 3).add(Aspect.AURA, 2).add(Aspect.TRAP, 2), 0, 3, 2,
                 new ItemStack(PokecubeItems.getEmptyCube(98))).setPages(pagelist.toArray(new ResearchPage[0]))

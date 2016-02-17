@@ -62,9 +62,8 @@ public class Shape
             }
         }
         // Call the list
-        // GL11.glCallList(meshId);
-        // GL11.glFlush();
-        addTris(texturer);
+        GL11.glCallList(meshId);
+        GL11.glFlush();
 
         // Reset Texture Matrix if changed.
         if (textureShift)
@@ -79,7 +78,7 @@ public class Shape
     {
         if (!GL11.glIsList(meshId))
         {
-            if (material != null) texturer.addMapping(material.name, material.texture);
+            if (material != null && texturer != null) texturer.addMapping(material.name, material.texture);
             meshId = GL11.glGenLists(1);
             GL11.glNewList(meshId, GL11.GL_COMPILE);
             addTris(texturer);

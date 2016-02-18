@@ -26,9 +26,14 @@ public class AnimationBuilder
         Animation ret = null;
         if (node.getAttributes().getNamedItem("type") == null) { return null; }
         String animName = node.getAttributes().getNamedItem("type").getNodeValue();
-
+        
         ret = new Animation();
         ret.name = animName;
+        ret.loops = true;
+        if(node.getAttributes().getNamedItem("loops")!=null)
+        {
+            ret.loops = Boolean.parseBoolean(node.getAttributes().getNamedItem("loops").getNodeValue());
+        }
 
         NodeList parts = node.getChildNodes();
         Node temp;

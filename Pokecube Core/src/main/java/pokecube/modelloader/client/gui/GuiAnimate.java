@@ -131,6 +131,7 @@ public class GuiAnimate extends GuiScreen
                 pokemob.specificSpawnInit();
             }
         }
+        entry = pokemob.getPokedexEntry();
 
         fontRendererObj.drawString(pokemob.getPokemonDisplayName(), xOffset, 10, 0xFFFFFF);
         float zLevel = 800;

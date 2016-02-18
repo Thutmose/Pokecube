@@ -223,7 +223,7 @@ public class AnimationLoader
                 {
                     if (anim != null)
                     {
-                        loaded.animations.put(anim.name, anim);
+                        if (!anim.sets.isEmpty()) loaded.animations.put(anim.name, anim);
                     }
                     else
                     {

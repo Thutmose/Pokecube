@@ -245,12 +245,12 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
         parent.resetToInit();
 
         boolean anim = animations.containsKey(currentPhase);
+
         if (anim)
         {
             if (AnimationHelper.doAnimation(animations.get(currentPhase), entity, parent.getName(), parent,
                     partialTick))
             {
-
             }
             else if (animations.containsKey(DEFAULTPHASE))
             {

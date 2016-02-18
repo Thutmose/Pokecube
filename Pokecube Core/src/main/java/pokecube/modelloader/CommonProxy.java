@@ -62,7 +62,7 @@ public class CommonProxy implements IGuiHandler
         }
         PokedexEntry[] entryArr = entries.toArray(new PokedexEntry[0]);
         boolean[] has = new boolean[entryArr.length];
-        
+
         for (int i = 0; i < has.length; i++)
         {
             if (entryArr[i] == null)
@@ -177,7 +177,6 @@ public class CommonProxy implements IGuiHandler
                             if (file == null) continue;
                             if (s.contains(file.getResourceDomain()) && s.endsWith(file.getResourcePath()))
                             {
-                                zip.close();
                                 ret[n] = true;
                             }
                         }

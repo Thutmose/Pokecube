@@ -36,13 +36,13 @@ public class Mod_Pokecube_Helper
 {
 
     /** Do monsters not spawn. */
-    public static boolean deactivateMonsters   = true;
+    public static boolean deactivateMonsters   = false;
     /** do Pokemobs spawn */
     public static boolean pokemonSpawn         = true;
     /** do monster spawns get swapped with shadow pokemobs */
     public static boolean disableMonsters      = false;
     /** do animals not spawn */
-    public static boolean deactivateAnimals    = true;
+    public static boolean deactivateAnimals    = false;
     /** are not-real pokemobs allowed. */
     public static boolean allowFakeMons        = true;
     /** is there a choose first gui on login */

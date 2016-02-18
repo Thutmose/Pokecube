@@ -42,7 +42,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         Mod_Pokecube_Helper.config = config;
         initDefaultStarts();
         deactivateMonsters = config.get(Configuration.CATEGORY_GENERAL, "deactivateMonsters", deactivateMonsters,
-                "Whether spawn of hostile Minecraft mobs should be deactivated.").getBoolean(true);
+                "Whether spawn of hostile Minecraft mobs should be deactivated.").getBoolean(false);
         pokemonSpawn = config.get(Configuration.CATEGORY_GENERAL, "pokemonSpawn", pokemonSpawn,
                 "Do pokemon spawn via the pokecube spawning code.").getBoolean(true);
         pvpExp = config
@@ -51,7 +51,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         disableMonsters = config.get(Configuration.CATEGORY_GENERAL, "disableMonsters", disableMonsters,
                 "Whether ALL spawn of hostile Minecraft mobs should be deactivated.").getBoolean(false);
         deactivateAnimals = config.get(Configuration.CATEGORY_GENERAL, "deactivateAnimals", deactivateAnimals,
-                "Whether spawn of non-hostile Minecraft mobs should be deactivated.").getBoolean(true);
+                "Whether spawn of non-hostile Minecraft mobs should be deactivated.").getBoolean(false);
         allowFakeMons = config
                 .get(Configuration.CATEGORY_GENERAL, "fakemonsAllowed", allowFakeMons,
                         "Are addons that add FakeMons allowed to add spawns or starters to the world.")

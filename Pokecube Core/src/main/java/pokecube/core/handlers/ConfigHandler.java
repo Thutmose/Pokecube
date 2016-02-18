@@ -35,6 +35,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
     public static boolean  loginmessage   = true;
     public static int      mateMultiplier = 1;
     public static int      BREEDINGDELAY  = 4000;
+    public static int      EGGHATCHTIME   = 10000;
 
     public static void loadConfig(Mod_Pokecube_Helper helper, Configuration config)
     {
@@ -84,8 +85,10 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             }
         }
 
-        cull = config.get(Configuration.CATEGORY_GENERAL, "cullDistanced", cull,
-                "do pokemon that get too far from a player despawn instantly").getBoolean(false);
+        cull = config
+                .get(Configuration.CATEGORY_GENERAL, "cullDistanced", cull,
+                        "do pokemon that get more than despawnDistance from a player despawn instantly")
+                .getBoolean(false);
         mysterygift = config.get(Configuration.CATEGORY_GENERAL, "mysterygift", mysterygift,
                 "allows players to accept special reward pokemon from particular events").getBoolean(true);
         minLegendLevel = config.getInt("minLegendLevel", Configuration.CATEGORY_GENERAL, 1, 1, 100,
@@ -155,7 +158,8 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
             mobDespawnRadius = config
                     .get(CATEGORY_ADVANCED, "despawnRadius", mobDespawnRadius,
-                            "If there are no players within this close to the pokemob, it will immediately despawn if cullDistanced is true (does not apply to tamed or angry.")
+                            "If there are no players within this close to the pokemob, it will immediately despawn if cullDistanced is true (does not apply to tamed or angry)."
+                                    + "  This is also the maximum distance from a player for a pokemob to spawn.")
                     .getInt(32);
 
             mobSpawnRadius = config.get(CATEGORY_ADVANCED, "spawnRadius", mobSpawnRadius,
@@ -169,6 +173,8 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             BREEDINGDELAY = config.get(CATEGORY_ADVANCED, "breedingdelay", BREEDINGDELAY,
                     "Approximate number of ticks between breeding.").getInt(BREEDINGDELAY);
             if (BREEDINGDELAY < 600) BREEDINGDELAY = 1000;
+            
+            EGGHATCHTIME = config.getInt("egghatchtime", CATEGORY_ADVANCED, 10000, 1, Integer.MAX_VALUE, "twice the Average time to hatch eggs in ticks, actual hatch time is 100 + random.nextInt(egghatchtime)");
 
             mobAggroRadius = config
                     .get(CATEGORY_ADVANCED, "agroRadius", mobAggroRadius, "mobs might agro a player closer than this.")
@@ -216,7 +222,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
             defaultMobs = config
                     .get(CATEGORY_ADVANCED, "Default Mod", "",
-                            "if you put something here, Mobs from this mod will be considered as the default mobs.")
+                            "if you put a modid here, Mobs from this mod will be considered as the default mobs.")
                     .getString();
 
             if (config.hasKey(CATEGORY_ADVANCED, "stdev"))
@@ -243,7 +249,6 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             {
                 PokecubeItems.resetTimeTags = config.get(CATEGORY_ADVANCED, "reset", true).getBoolean(true);
                 config.get(CATEGORY_ADVANCED, "reset", true).set(false);
-
             }
 
             if (config.hasKey(CATEGORY_ADVANCED, "starteroverrides"))

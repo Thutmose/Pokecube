@@ -41,12 +41,11 @@ import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 
-@Mod(modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = "required-after:pokecube"
-, updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
+@Mod(modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = "required-after:pokecube", guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
 public class PokecubeAdv
 {
-    public static final String ID      = "pokecube_adventures";
-    public static final String version = "@VERSION@";
+    public static final String ID         = "pokecube_adventures";
+    public static final String version    = "@VERSION@";
     public final static String MCVERSIONS = "[1.8.9]";
     public final static String MINVERSION = "[2.1,)";
 
@@ -130,7 +129,7 @@ public class PokecubeAdv
         event.registerServerCommand(new GeneralCommands());
         event.registerServerCommand(new TeamCommands());
     }
-    
+
     @EventHandler
     public void WorldUnloadEvent(FMLServerStoppedEvent evt)
     {

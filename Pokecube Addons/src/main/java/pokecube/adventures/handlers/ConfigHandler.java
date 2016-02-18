@@ -2,8 +2,11 @@ package pokecube.adventures.handlers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
+import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.config.IConfigElement;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
@@ -12,12 +15,13 @@ import thut.api.terrain.BiomeType;
 
 public class ConfigHandler
 {
-    public static File configFile;
+    public static File          configFile;
+    public static Configuration config;
 
-    public static boolean trainerSpawn   = true;
-    public static boolean trainersInvul  = false;
-    public static boolean ONLYPOKECUBES  = true;
-    public static boolean ENERGY         = true;
+    public static boolean trainerSpawn  = true;
+    public static boolean trainersInvul = false;
+    public static boolean ONLYPOKECUBES = true;
+    public static boolean ENERGY        = true;
     static String[]       biomes;
 
     public static ArrayList<String> overrides = new ArrayList<String>();
@@ -30,6 +34,7 @@ public class ConfigHandler
     public static void load(Configuration conf)
     {
         conf.load();
+        config = conf;
         configFile = conf.getConfigFile();
         InventoryPC.PAGECOUNT = conf
                 .get(Configuration.CATEGORY_GENERAL, "boxCount", 32, "The number of boxes in the pc").getInt();
@@ -49,8 +54,7 @@ public class ConfigHandler
         trainersInvul = conf
                 .get(Configuration.CATEGORY_GENERAL, "trainers unvulnerable", false, "are trainers immune to damage.")
                 .getBoolean(false);
-        ENERGY = conf
-                .get(Configuration.CATEGORY_GENERAL, "energy", true, "Do various blocks require RF to run.")
+        ENERGY = conf.get(Configuration.CATEGORY_GENERAL, "energy", true, "Do various blocks require RF to run.")
                 .getBoolean(true);
         RecipeHandler.tmRecipe = conf.get(Configuration.CATEGORY_GENERAL, "tm's Craftable", true).getBoolean(true);
         if (conf.hasKey(Configuration.CATEGORY_GENERAL, "starteroverrides"))
@@ -70,6 +74,17 @@ public class ConfigHandler
 
         parseBiomes();
         conf.save();
+    }
+
+    public static List<IConfigElement> getConfigElements()
+    {
+        List<IConfigElement> list = new ArrayList<IConfigElement>();
+        for (IConfigElement e : new ConfigElement(config.getCategory(Configuration.CATEGORY_GENERAL))
+                .getChildElements())
+        {
+            list.add(e);
+        }
+        return list;
     }
 
     public static void parseBiomes()

@@ -15,7 +15,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -23,7 +22,6 @@ import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
 public class EntityProfessor extends EntityAgeable
@@ -67,8 +65,6 @@ public class EntityProfessor extends EntityAgeable
     public void setStationary(Vector3 location)
     {
     	stationary = true;
-    	this.tasks.addTask(2, new GuardAI(this, new BlockPos(location.intX(), location.intY(), location.intZ()),
-				1.0f, 48.0f, new TimePeriod(0.00, 1), false));
     }
     
     public void setStationary(boolean stationary)

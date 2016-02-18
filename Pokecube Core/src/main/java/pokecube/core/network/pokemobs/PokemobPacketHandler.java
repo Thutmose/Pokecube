@@ -13,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
@@ -428,23 +427,28 @@ public class PokemobPacketHandler
                     if (type == 1)
                     {
                         pokemob.setPokemonAIState(IPokemob.GUARDING, true);
-                        ((GuardAI) pokemob.getGuardAI()).guardPeriod = TimePeriod.fullDay;
                         TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity((Entity) pokemob);
                         Vector3 mid = terrain.getCentre();
                         pokemob.setHome(mid.intX(), mid.intY(), mid.intZ(), 16);
-                        ((GuardAI) pokemob.getGuardAI()).pos = new BlockPos(mid.intX(), mid.intY(), mid.intZ());
                         pokemob.setPokemonAIState(IPokemob.STAYING, false);
+                        if (pokemob.getGuardAI() != null)
+                        {
+                            ((GuardAI) pokemob.getGuardAI()).setTimePeriod(TimePeriod.fullDay);
+                            ((GuardAI) pokemob.getGuardAI()).setPos(mid.getPos());
+                        }
                     }
                     else if (type == 2)
                     {
                         pokemob.setPokemonAIState(IPokemob.GUARDING, false);
-                        ((GuardAI) pokemob.getGuardAI()).guardPeriod = TimePeriod.fullDay;
+                        if (pokemob.getGuardAI() != null)
+                            ((GuardAI) pokemob.getGuardAI()).setTimePeriod(TimePeriod.fullDay);
                         pokemob.setPokemonAIState(IPokemob.STAYING, true);
                     }
                     else if (type == 3)
                     {
                         pokemob.setPokemonAIState(IPokemob.STAYING, false);
-                        ((GuardAI) pokemob.getGuardAI()).guardPeriod = new TimePeriod(0, 0);
+                        if (pokemob.getGuardAI() != null)
+                            ((GuardAI) pokemob.getGuardAI()).setTimePeriod(new TimePeriod(0,0));
                         pokemob.setPokemonAIState(IPokemob.GUARDING, false);
                     }
                     else if (dir == 4)

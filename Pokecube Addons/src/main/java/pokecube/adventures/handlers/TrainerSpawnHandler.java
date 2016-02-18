@@ -11,10 +11,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -23,8 +27,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
-import pokecube.core.ai.properties.GuardAIProperties;
+import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.database.Database;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
@@ -94,15 +99,40 @@ public class TrainerSpawnHandler
 	}
 	
 	@SubscribeEvent
-	public void onEntityConstructing(EntityConstructing event)
+    public void onEntityCapabilityAttach(AttachCapabilitiesEvent.Entity event)
 	{
-		if( event.entity instanceof EntityVillager )
+		if( event.getEntity()instanceof EntityVillager )
 		{
-			EntityVillager villager = (EntityVillager)event.entity;
-			if(null == GuardAIProperties.get(villager) )
-			{
-				GuardAIProperties.register(villager);
-			}
+            class Provider extends GuardAICapability implements ICapabilitySerializable<NBTTagCompound>
+            {
+                @Override
+                public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+                {
+                    return EventsHandler.GUARDAI_CAP != null && capability == EventsHandler.GUARDAI_CAP;
+                }
+
+                @SuppressWarnings("unchecked") // There isnt anything sane we
+                                               // can do about this.
+                @Override
+                public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+                {
+                    if (EventsHandler.GUARDAI_CAP != null && capability == EventsHandler.GUARDAI_CAP) return (T) this;
+                    return null;
+                }
+
+                @Override
+                public NBTTagCompound serializeNBT()
+                {
+                    return (NBTTagCompound) EventsHandler.storage.writeNBT(EventsHandler.GUARDAI_CAP, this, null);
+                }
+
+                @Override
+                public void deserializeNBT(NBTTagCompound nbt)
+                {
+                    EventsHandler.storage.readNBT(EventsHandler.GUARDAI_CAP, this, null, nbt);
+                }
+            }
+            event.addCapability(new ResourceLocation("pokecube_adventures:GuardAI"), new Provider());
 		}
 	}
 	

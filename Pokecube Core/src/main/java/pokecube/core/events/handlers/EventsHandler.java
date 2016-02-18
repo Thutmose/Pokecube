@@ -29,13 +29,19 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
 import net.minecraftforge.common.ForgeVersion.Status;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -63,8 +69,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.mod_Pokecube;
-import pokecube.core.ai.properties.GuardAIProperties;
-import pokecube.core.ai.properties.StorageAIProperties;
+import pokecube.core.ai.properties.GuardAICapability;
+import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.Database;
@@ -96,8 +102,14 @@ import thut.api.terrain.TerrainSegment;
 
 public class EventsHandler
 {
+    @CapabilityInject(IGuardAICapability.class)
+    public static final Capability<IGuardAICapability> GUARDAI_CAP = null;
+    public static IGuardAICapability.Storage           storage;
+
     public EventsHandler()
     {
+        CapabilityManager.INSTANCE.register(IGuardAICapability.class, storage = new IGuardAICapability.Storage(),
+                GuardAICapability.class);
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         PokemobAIThread aiTicker = new PokemobAIThread();
         MinecraftForge.EVENT_BUS.register(aiTicker);
@@ -156,18 +168,40 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void onEntityConstructing(EntityConstructing event)
+    public void onEntityCapabilityAttach(AttachCapabilitiesEvent.Entity event)
     {
-        if (event.entity instanceof EntityLiving)
+        if (event.getEntity() instanceof IPokemob)
         {
-            if (GuardAIProperties.get((EntityLiving) event.entity) == null)
+            class Provider extends GuardAICapability implements ICapabilitySerializable<NBTTagCompound>
             {
-                GuardAIProperties.register((EntityLiving) event.entity);
+                @Override
+                public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+                {
+                    return GUARDAI_CAP != null && capability == GUARDAI_CAP;
+                }
+
+                @SuppressWarnings("unchecked") // There isnt anything sane we
+                                               // can do about this.
+                @Override
+                public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+                {
+                    if (GUARDAI_CAP != null && capability == GUARDAI_CAP) return (T) this;
+                    return null;
+                }
+
+                @Override
+                public NBTTagCompound serializeNBT()
+                {
+                    return (NBTTagCompound) storage.writeNBT(GUARDAI_CAP, this, null);
+                }
+
+                @Override
+                public void deserializeNBT(NBTTagCompound nbt)
+                {
+                    storage.readNBT(GUARDAI_CAP, this, null, nbt);
+                }
             }
-            if (StorageAIProperties.get((EntityLiving) event.entity) == null)
-            {
-                StorageAIProperties.register((EntityLiving) event.entity);
-            }
+            event.addCapability(new ResourceLocation("pokecube:GuardAI"), new Provider());
         }
     }
 
@@ -644,9 +678,10 @@ public class EventsHandler
                     mess += "\nPlease update from either Minecraftforum.net or Curseforge, those are the only offical locations to download Pokecube, and any other location may contain malware.";
                     (event.player).addChatMessage(new ChatComponentText(mess));
                 }
-                else if(ConfigHandler.loginmessage)
+                else if (ConfigHandler.loginmessage)
                 {
-                    String mess = "Pokecube Core is currently running latest/recommended version of " + PokecubeMod.VERSION + ".";
+                    String mess = "Pokecube Core is currently running latest/recommended version of "
+                            + PokecubeMod.VERSION + ".";
                     mess += "\nPlease note that Curseforge, is the only offical location to download Pokecube, and any other location may contain malware.";
                     (event.player).addChatMessage(new ChatComponentText(mess));
                     ConfigHandler.seenMessage();
@@ -659,6 +694,7 @@ public class EventsHandler
     public static class ChooseFirst
     {
         final EntityPlayer player;
+
         public ChooseFirst(EntityPlayer player)
         {
             this.player = player;

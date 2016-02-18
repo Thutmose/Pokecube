@@ -12,13 +12,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
-import pokecube.core.ai.utils.StorableAI;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.berries.ItemBerry;
 import thut.api.TickHandler;
 import thut.api.maths.Vector3;
 
-public class AIStoreStuff extends AIBase implements StorableAI
+public class AIStoreStuff extends AIBase
 {
     public static int  COOLDOWN  = 500;
     final EntityLiving entity;
@@ -157,13 +156,6 @@ public class AIStoreStuff extends AIBase implements StorableAI
             //Longer cooldown if there is no inventory found at all.
             cooldowns[1] = cooldowns[0] = 50*COOLDOWN;
         }
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound data)
-    {
-        // TODO Auto-generated method stub
-
     }
 
     /** Adds the item stack to the inventory, returns false if it is

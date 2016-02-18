@@ -1,10 +1,14 @@
 package pokecube.adventures.items;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,8 +25,9 @@ import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.entity.villager.EntityTrader;
-import pokecube.core.ai.properties.GuardAIProperties;
+import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
@@ -78,8 +83,20 @@ public class ItemTrainer extends Item
             EntityTrader t = new EntityTrader(world);
             location.offset(EnumFacing.UP).moveEntity(t);
             world.spawnEntityInWorld(t);
-            t.tasks.addTask(2, new GuardAI(t, new BlockPos(location.intX(), location.intY(), location.intZ()), 1.0f,
-                    48.0f, new TimePeriod(0.00, 1), false));
+            ArrayList<EntityAIBase> toRemove = Lists.newArrayList();
+            for (EntityAITaskEntry task : t.tasks.taskEntries)
+            {
+                if (task.action instanceof GuardAI)
+                {
+                    toRemove.add(task.action);
+                }
+            }
+            for (EntityAIBase ai : toRemove)
+                t.tasks.removeTask(ai);
+            IGuardAICapability capability = t.getCapability(EventsHandler.GUARDAI_CAP, null);
+            capability.setActiveTime(new TimePeriod(0,0.5));
+            capability.setPos(t.getPosition());
+            t.tasks.addTask(2, new GuardAI(t, capability));
         }
 
         location.freeVectorFromPool();
@@ -128,15 +145,22 @@ public class ItemTrainer extends Item
             }
         }
 
-        Vector3 pos = Vector3.getNewVectorFromPool().set(target);
-        v.tasks.addTask(2, new GuardAI(v, new BlockPos(pos.intX(), pos.intY(), pos.intZ()), 1.0f, 48.0f,
-                new TimePeriod(0.00, 0.5), false));
-        GuardAIProperties props = new GuardAIProperties();
-        props.init(v, v.worldObj);
-        NBTTagCompound nbt = new NBTTagCompound();
-        v.writeToNBT(nbt);
-        props.saveNBTData(nbt);
-        v.readFromNBT(nbt);
+        IGuardAICapability capability = v.getCapability(EventsHandler.GUARDAI_CAP, null);
+        capability.setActiveTime(TimePeriod.fullDay);
+        capability.setPos(v.getPosition());
+        v.tasks.addTask(2, new GuardAI(v, capability));
+        System.out.println(capability);
+        // Vector3 pos = Vector3.getNewVectorFromPool().set(target);//TODO
+        // interact with capability instead
+        // v.tasks.addTask(2, new GuardAI(v, new BlockPos(pos.intX(),
+        // pos.intY(), pos.intZ()), 1.0f, 48.0f,
+        // new TimePeriod(0.00, 0.5), false));
+        // GuardAIProperties props = new GuardAIProperties();
+        // props.init(v, v.worldObj);
+        // NBTTagCompound nbt = new NBTTagCompound();
+        // v.writeToNBT(nbt);
+        // props.saveNBTData(nbt);
+        // v.readFromNBT(nbt);
         return true;
     }
 

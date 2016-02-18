@@ -153,9 +153,9 @@ public class ComponentPokeMart extends ComponentVillageBase
                 int globalX = getXWithOffset(4, 7);
                 int globalY = getYWithOffset(1);
                 int globalZ = getZWithOffset(4, 7);
-                // villager.tasks.taskEntries.clear();
-                villager.tasks.addTask(2, new GuardAI(villager, new BlockPos(globalX, globalY, globalZ), 1.0f, 48.0f,
-                        new TimePeriod(0.00, 1), false));
+                // villager.tasks.taskEntries.clear();//TODO villager stationary AI
+//                villager.tasks.addTask(2, new GuardAI(villager, new BlockPos(globalX, globalY, globalZ), 1.0f, 48.0f,
+//                        new TimePeriod(0.00, 1), false));
             }
         }
 

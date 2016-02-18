@@ -49,7 +49,6 @@ import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
 import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
-import pokecube.core.ai.thread.logicRunnables.LogicCollision;
 import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
@@ -59,6 +58,7 @@ import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.EggEvent;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod.Type;
@@ -67,7 +67,6 @@ import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -76,8 +75,7 @@ import thut.api.terrain.TerrainSegment;
 public abstract class EntityAiPokemob extends EntityMountablePokemob
 {
 
-    public GuardAI        guardAI  = new GuardAI(this, getHome(), 16, 16, new TimePeriod(0, 0), false);
-    public LogicCollision collider = new LogicCollision(this);
+    public GuardAI guardAI;
 
     private int lastHadTargetTime = 0;
 
@@ -122,12 +120,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getNavigator().setSpeed(moveSpeed);
         this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(moveSpeed);
 
-        // if(true) return;
-
         this.tasks.addTask(1, new PokemobAISwimming(this));
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(1, new PokemobAIDodge(this));
         this.tasks.addTask(4, this.aiSit);
+
+        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
         this.tasks.addTask(5, guardAI);
         this.tasks.addTask(5, new PokemobAIUtilityMove(this));
 
@@ -160,7 +158,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         PokemobAIThread.addAI(this, new AIFindTarget(this).setPriority(400));
 
         PokemobAIThread.addLogic(this, new LogicInLiquid(this));
-        PokemobAIThread.addLogic(this, collider);
 
     }
 
@@ -241,8 +238,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             setPokemonAIState(TAMED, false);
         }
-        
-        if(inLove > 600)
+
+        if (inLove > 600)
         {
             resetLoveStatus();
         }
@@ -539,7 +536,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             dataWatcher.updateObject(ATTACKTARGETIDDW, Integer.valueOf(-1));
         }
-        if(entity!=getAttackTarget() && getMoveStats().ability != null)
+        if (entity != getAttackTarget() && getMoveStats().ability != null)
         {
             getMoveStats().ability.onAgress(this, entity);
         }
@@ -928,7 +925,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
             effect.removePokemon(this);
         }
-        if (getHome() != null && getHome().getY()>0 && worldObj.isAreaLoaded(getHome(), 2))
+        if (getHome() != null && getHome().getY() > 0 && worldObj.isAreaLoaded(getHome(), 2))
         {
             TileEntity te = worldObj.getTileEntity(getHome());
             if (te != null && te instanceof TileEntityNest)

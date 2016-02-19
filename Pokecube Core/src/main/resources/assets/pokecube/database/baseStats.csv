@@ -1,4 +1,4 @@
-Pokedex Number,Pokemon Name,Hp,Atk,Def,SpAtk,SpDef,Spd,Capture Rate,Type1,Type2,Species : Food Species,Evolves To,Evolution Mode,Evolution Animation,Width : lenght,Height,un-used,Movement Type,Ridden Offset,Mass (Kg),Special Egg Species Rules
+number,name,Hp,Atk,Def,SpAtk,SpDef,Spd,Capture Rate,Type1,Type2,Species : Food Species,Evolves To,Evolution Mode,Evolution Animation,Width : lenght,Height,un-used,Movement Type,Ridden Offset,Mass (Kg),Special Egg Species Rules
 1,Bulbasaur ,45,49,49,65,65,45,45,Grass ,Poison ,Plant Frog,2,Level:16,tile crack_18,0.45,0.55,0,normal,,6.9,
 2,Ivysaur ,60,62,63,80,80,60,45,Grass ,Poison ,Plant Frog,3,Level:32,tile crack_18,0.8,0.9,0,normal,,13,
 3,Venusaur ,80,82,83,100,100,80,45,Grass ,Poison,Plant Frog,,Level:-1,tile crack_3,1.3,1.7,0,normal,0.6,100,

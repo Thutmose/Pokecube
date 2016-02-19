@@ -41,6 +41,7 @@ import thut.api.terrain.BiomeType;
 /** @author Manchou */
 public class PokedexEntry
 {
+    //TODO write a way to load this from a single file, so I can have 1 file per entry.
     Random                     rand               = new Random();
     protected int              pokedexNb;
     protected String           name;

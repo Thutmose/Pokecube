@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeGenBase;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
@@ -310,7 +310,7 @@ public class GuiGifCapture extends GuiScreen
     @Override
     public void drawScreen(int i, int j, float f)
     {
-        Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+        Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
         int j3 = 0xF0F0F0;// 61680;

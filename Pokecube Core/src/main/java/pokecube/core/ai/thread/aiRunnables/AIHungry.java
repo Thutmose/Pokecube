@@ -30,11 +30,11 @@ public class AIHungry extends AIBase
     final double       distance;
     IHungrymob         hungrymob;
     IPokemob           pokemob;
-    Vector3            foodLoc = Vector3.getNewVectorFromPool();
+    Vector3            foodLoc = Vector3.getNewVector();
     boolean            block   = false;
     double             moveSpeed;
-    Vector3            v       = Vector3.getNewVectorFromPool();
-    Vector3            v1      = Vector3.getNewVectorFromPool();
+    Vector3            v       = Vector3.getNewVector();
+    Vector3            v1      = Vector3.getNewVector();
 
     public AIHungry(final EntityLiving entity, final EntityItem berry_, double distance)
     {
@@ -134,7 +134,6 @@ public class AIHungry extends AIBase
                     block = true;
                     foodLoc.set(temp);
                 }
-                if (temp != null) temp.freeVectorFromPool();
                 if (!foodLoc.isEmpty()) return;
             }
             else
@@ -178,40 +177,7 @@ public class AIHungry extends AIBase
 
         if (pokemob.getPokedexEntry().swims())
         {
-            // List<Entity> list =
-            // world.getEntitiesWithinAABB(EntityFishHook.class,
-            // AxisAlignedBB
-            // .getBoundingBox(entity.posX, entity.posY, entity.posZ,
-            // entity.posX + 1.0D, entity.posY + 1.0D, entity.posZ + 1.0D)
-            // .expand(20D, 20D, 20D));//TODO threadsafe this
-            // if (!list.isEmpty())
-            // {
-            // Entity nearest = null;
-            // double ds = 600;
-            // double dt;
-            // Vector3 v = Vector3.getNewVectorFromPool();
-            // for (Entity e : list)
-            // {
-            // dt = e.getDistanceSqToEntity(entity);
-            // if (dt < ds && Vector3.isVisibleEntityFromEntity(e, entity))
-            // {
-            // ds = dt;
-            // nearest = e;
-            // }
-            // }
-            // v.freeVectorFromPool();
-            // if (nearest != null)
-            // {
-            // System.out.println("Found a bait " +
-            // pokemob.getPokemonDisplayName());
-            //
-            // PathEntity path
-            // =entity.getNavigator().getPathToEntityLiving(nearest);
-            // PokemobAIThread.addEntityPath(entity.getEntityId(),
-            // entity.dimension, path, moveSpeed);
-            // return false;
-            // }
-            // }
+            // TODO find a fish hook to attack
         }
 
         // check inventory for berries
@@ -259,14 +225,9 @@ public class AIHungry extends AIBase
                         PathEntity path = entity.getNavigator().getPathToXYZ(temp.x, temp.y, temp.z);
                         addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
                         hungrymob.eat(berry);
-                        temp.freeVectorFromPool();
                         return;
                     }
                 }
-            }
-            if (temp != null)
-            {
-                temp.freeVectorFromPool();
             }
         }
 
@@ -293,7 +254,6 @@ public class AIHungry extends AIBase
                     block = true;
                     foodLoc.set(temp);
                 }
-                if (temp != null) temp.freeVectorFromPool();
             }
             if (!block && hungrymob.isHerbivore())
             {
@@ -303,7 +263,6 @@ public class AIHungry extends AIBase
                     block = true;
                     foodLoc.set(temp);
                 }
-                if (temp != null) temp.freeVectorFromPool();
             }
             if (!block && hungrymob.filterFeeder())
             {
@@ -314,13 +273,11 @@ public class AIHungry extends AIBase
                     setPokemobAIState(pokemob, IPokemob.HUNTING, false);
                     return;
                 }
-
                 if (temp != null)
                 {
                     block = true;
                     foodLoc.set(temp);
                 }
-                if (temp != null) temp.freeVectorFromPool();
             }
         }
 
@@ -408,7 +365,6 @@ public class AIHungry extends AIBase
                     block = true;
                     foodLoc.set(temp);
                 }
-                if (temp != null) temp.freeVectorFromPool();
             }
 
             if (!block && hungrymob.eatsBerries())
@@ -419,7 +375,6 @@ public class AIHungry extends AIBase
                     block = true;
                     foodLoc.set(temp);
                 }
-                if (temp != null) temp.freeVectorFromPool();
             }
 
             if (!this.entity.getNavigator().noPath())
@@ -482,7 +437,6 @@ public class AIHungry extends AIBase
                 block = true;
                 foodLoc.set(temp);
             }
-            if (temp != null) temp.freeVectorFromPool();
 
             Vector3 p, m;
             if (!this.entity.getNavigator().noPath())

@@ -9,14 +9,10 @@ import java.util.UUID;
 
 import com.google.common.collect.Lists;
 
-import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Environment;
-import li.cil.oc.api.network.Message;
-import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.Visibility;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -33,6 +29,8 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
@@ -57,7 +55,8 @@ import pokecube.core.network.PCPacketHandler.MessageClient;
 import pokecube.core.network.PokecubePacketHandler;
 import thut.api.maths.Vector3;
 
-public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, Environment
+@Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
+public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, SimpleComponent
 {
     private ItemStack[] inventory  = new ItemStack[2];
     private ItemStack[] inventory2 = new ItemStack[1];
@@ -79,15 +78,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     public TileEntityTradingTable()
     {
         super();
-        try
-        {
-            node = Network.newNode(this, Visibility.Network).withConnector()
-                    .withComponent("tradingtable", Visibility.Network).create();
-        }
-        catch (Exception e)
-        {
-            // e.printStackTrace();
-        }
     }
 
     public void addPlayer(EntityPlayer player)
@@ -97,10 +87,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             player1 = null;
             player2 = null;
             String message = 9 + "," + getPos().getX() + "," + getPos().getY() + "," + getPos().getZ() + ",0,0";
-            Vector3 point = Vector3.getNewVectorFromPool().set(player);
+            Vector3 point = Vector3.getNewVector().set(player);
             MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
             PokecubePacketHandler.sendToAllNear(packet, point, worldObj.provider.getDimensionId(), 10);
-            point.freeVectorFromPool();
             return;
         }
         if (inventory[0] != null)
@@ -125,10 +114,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                     {
                         message += "," + 0;
                     }
-                    Vector3 point = Vector3.getNewVectorFromPool().set(player);
+                    Vector3 point = Vector3.getNewVector().set(player);
                     MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
                     PokecubePacketHandler.sendToAllNear(packet, point, player.dimension, 10);
-                    point.freeVectorFromPool();
                 }
                 if (player2 == null)
                 {
@@ -143,7 +131,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         {
             if (PokecubeManager.isFilled(inventory[1])
                     && (PokecubeManager.getOwner(inventory[1]).equals(player.getUniqueID().toString())
-            // || player.worldObj.isRemote
             ))
             {
                 if (player2 == null) player2 = player;
@@ -163,10 +150,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                         message += "," + 0;
                     }
 
-                    Vector3 point = Vector3.getNewVectorFromPool().set(player);
+                    Vector3 point = Vector3.getNewVector().set(player);
                     MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
                     PokecubePacketHandler.sendToAllNear(packet, point, player.dimension, 10);
-                    point.freeVectorFromPool();
                 }
                 if (player1 == null)
                 {
@@ -197,7 +183,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
         if (!(PokecubeManager.isFilled(poke1) && PokecubeManager.isFilled(poke2)))
         {
-            // System.err.println("Not filled Pokecubes");
             return;
         }
 
@@ -439,14 +424,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                 }
             }
         }
-        if (node != null && node.host() == this)
-        {
-            // This restores the node's address, which is required for networks
-            // to continue working without interruption across loads. If the
-            // node is a power connector this is also required to restore the
-            // internal energy buffer of the node.
-            node.load(tagCompound.getCompoundTag("oc:node"));
-        }
         inventory[0] = both[0];
         inventory[1] = both[1];
         inventory2[0] = both[2];
@@ -477,13 +454,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         }
         tagCompound.setBoolean("trade", trade);
         tagCompound.setTag("Inventory", itemList);
-
-        if (node != null && node.host() == this)
-        {
-            final NBTTagCompound nodeNbt = new NBTTagCompound();
-            node.save(nodeNbt);
-            tagCompound.setTag("oc:node", nodeNbt);
-        }
     }
 
     public void openGUI(EntityPlayer player)
@@ -498,7 +468,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         this.pc = null;
         for (EnumFacing side : EnumFacing.values())
         {
-            Vector3 here = Vector3.getNewVectorFromPool().set(this);
+            Vector3 here = Vector3.getNewVector().set(this);
             Block id = here.offset(side).getBlock(worldObj);
             if (id == PokecubeItems.getBlock("pc"))
             {
@@ -506,7 +476,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                 this.pc = (TileEntityPC) here.offset(side).getTileEntity(getWorld());
                 break;
             }
-            here.freeVectorFromPool();
         }
         trade = !pc;
 
@@ -721,70 +690,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         return 65536.0D;
     }
 
-    protected Node node;
-
-    // See updateEntity().
-    protected boolean addedToNetwork = false;
-
-    // -----------------------------------------------------------------------
-    // //
-
-    @Override
-    public Node node()
-    {
-        return node;
-    }
-
-    @Override
-    public void onConnect(final Node node)
-    {
-        // This is called when the call to Network.joinOrCreateNetwork(this) in
-        // updateEntity was successful, in which case `node == this`.
-        // This is also called for any other node that gets connected to the
-        // network our node is in, in which case `node` is the added node.
-        // If our node is added to an existing network, this is called for each
-        // node already in said network.
-    }
-
-    @Override
-    public void onDisconnect(final Node node)
-    {
-        // This is called when this node is removed from its network when the
-        // tile entity is removed from the world (see onChunkUnload() and
-        // invalidate()), in which case `node == this`.
-        // This is also called for each other node that gets removed from the
-        // network our node is in, in which case `node` is the removed node.
-        // If a net-split occurs this is called for each node that is no longer
-        // connected to our node.
-    }
-
-    @Override
-    public void onMessage(final Message message)
-    {
-        // This is used to deliver messages sent via node.sendToXYZ. Handle
-        // messages at your own discretion. If you do not wish to handle a
-        // message you should *not* throw an exception, though.
-    }
-
-    @Override
-    public void onChunkUnload()
-    {
-        super.onChunkUnload();
-        // Make sure to remove the node from its network when its environment,
-        // meaning this tile entity, gets unloaded.
-        if (node != null) node.remove();
-    }
-
-    @Override
-    public void invalidate()
-    {
-        super.invalidate();
-        // Make sure to remove the node from its network when its environment,
-        // meaning this tile entity, gets unloaded.
-        if (node != null) node.remove();
-    }
-
     @Callback
+    @Optional.Method(modid = "OpenComputers")
     public Object[] getMovesList(Context context, Arguments args) throws Exception
     {
         if (hasPC() && pc.isBound())
@@ -793,11 +700,12 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             ArrayList<String> moves = getMoves(inv);
             return moves.toArray();
         }
-        if(!hasPC()) throw new Exception("no connected PC");
+        if (!hasPC()) throw new Exception("no connected PC");
         else throw new Exception("connected PC is not bound to a player");
     }
 
     @Callback
+    @Optional.Method(modid = "OpenComputers")
     public Object[] applyMove(Context context, Arguments args) throws Exception
     {
         if (hasPC() && pc.isBound())
@@ -810,12 +718,12 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                 if (s.equalsIgnoreCase(move))
                 {
                     addMoveToTM(s);
-                    return new Object[]{};
+                    return new Object[] {};
                 }
             }
             throw new Exception("requested move not found");
         }
-        if(!hasPC()) throw new Exception("no connected PC");
+        if (!hasPC()) throw new Exception("no connected PC");
         else throw new Exception("connected PC is not bound to a player");
     }
 
@@ -841,12 +749,11 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             if (event.phase == Phase.END)
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
-                Network.joinOrCreateNetwork(toConvert);
                 boolean pc = false;
                 toConvert.pc = null;
                 for (EnumFacing side : EnumFacing.values())
                 {
-                    Vector3 here = Vector3.getNewVectorFromPool().set(toConvert);
+                    Vector3 here = Vector3.getNewVector().set(toConvert);
                     Block id = here.offset(side).getBlock(toConvert.worldObj);
                     if (id == PokecubeItems.getBlock("pc"))
                     {
@@ -854,7 +761,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                         toConvert.pc = (TileEntityPC) here.offset(side).getTileEntity(toConvert.getWorld());
                         break;
                     }
-                    here.freeVectorFromPool();
                 }
                 toConvert.trade = !pc;
 
@@ -863,10 +769,17 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                     IBlockState state = toConvert.worldObj.getBlockState(toConvert.getPos());
                     if (!(Boolean) state.getValue(BlockTradingTable.TMC))
                     {
-                        toConvert.worldObj.setBlockState(toConvert.getPos(), state.withProperty(BlockTradingTable.TMC, true));
+                        toConvert.worldObj.setBlockState(toConvert.getPos(),
+                                state.withProperty(BlockTradingTable.TMC, true));
                     }
                 }
             }
         }
+    }
+
+    @Override
+    public String getComponentName()
+    {
+        return "tradingtable";
     }
 }

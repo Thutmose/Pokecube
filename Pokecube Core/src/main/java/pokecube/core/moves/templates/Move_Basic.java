@@ -8,7 +8,7 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -21,8 +21,8 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public class Move_Basic extends Move_Base implements IMoveConstants
 {
-    Vector3 v  = Vector3.getNewVectorFromPool();
-    Vector3 v1 = Vector3.getNewVectorFromPool();
+    Vector3 v  = Vector3.getNewVector();
+    Vector3 v1 = Vector3.getNewVector();
 
     /** Constructor for a Pokemob move. <br/>
      * The attack category defines the way the mob will move in order to make
@@ -223,10 +223,10 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 ((Entity) mob).worldObj.playSoundAtEntity((Entity) mob, sound, 0.5F,
                         1F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
             }
-            Vector3 v = Vector3.getNewVectorFromPool().set(mob);
+            Vector3 v = Vector3.getNewVector().set(mob);
             notifyClient((Entity) mob, v, (Entity) mob);
-            v.freeVectorFromPool();
-            MovesUtils.attack(new MovePacket(mob, (Entity) mob, name, move.type, getPWR(), move.crit, (byte) 0, (byte) 0, false));
+            MovesUtils.attack(
+                    new MovePacket(mob, (Entity) mob, name, move.type, getPWR(), move.crit, (byte) 0, (byte) 0, false));
             postAttack(mob, (Entity) mob, f, 0);
         }
     }
@@ -251,7 +251,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     @Override
     public void notifyClient(Entity attacker, Vector3 attacked, Entity target)
     {
-        if (!mod_Pokecube.isOnClientSide())
+        if (!PokecubeCore.isOnClientSide())
         {
             String toSend = getName();
 
@@ -267,8 +267,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             {
                 toSend += "`" + 0;
             }
-            PokecubeClientPacket packet = PokecubePacketHandler
-                    .makeClientPacket(PokecubeClientPacket.MOVEANIMATION, toSend.getBytes());
+            PokecubeClientPacket packet = PokecubePacketHandler.makeClientPacket(PokecubeClientPacket.MOVEANIMATION,
+                    toSend.getBytes());
             PokecubePacketHandler.sendToAllNear(packet, v1.set(attacker), attacker.dimension, 64);
 
         }

@@ -23,7 +23,7 @@ public class AIStoreStuff extends AIBase
     final EntityLiving entity;
     final boolean[]    states    = { false, false };
     final int[]        cooldowns = { 0, 0 };
-    Vector3            seeking   = Vector3.getNewVectorFromPool();
+    Vector3            seeking   = Vector3.getNewVector();
 
     public AIStoreStuff(EntityLiving entity)
     {
@@ -67,7 +67,7 @@ public class AIStoreStuff extends AIBase
     public void run()
     {
         IPokemob pokemob = (IPokemob) entity;
-        Vector3 temp = Vector3.getNewVectorFromPool();
+        Vector3 temp = Vector3.getNewVector();
         temp.set(pokemob.getHome()).offsetBy(EnumFacing.UP);
 
         temp.set(temp.findClosestVisibleObject(world, true, 10, IInventory.class));
@@ -78,10 +78,8 @@ public class AIStoreStuff extends AIBase
         {
             PathEntity path = this.entity.getNavigator().getPathToPos(temp.getPos());
             addEntityPath(entity.getEntityId(), entity.dimension, path, entity.getAIMoveSpeed());
-            temp.freeVectorFromPool();
             return;
         }
-        temp.freeVectorFromPool();
     }
 
     @Override
@@ -101,7 +99,7 @@ public class AIStoreStuff extends AIBase
         cooldowns[1]--;
 
         // If too far away, path to the nest for items, that is done on other
-        // thread.  here is just returns if too far, or on cooldown
+        // thread. here is just returns if too far, or on cooldown
         if (cooldowns[0] > 0 || cooldowns[1] > 0 || temp.distToEntity(entity) > 3) { return; }
 
         TileEntity tile = temp.getTileEntity(world);
@@ -153,8 +151,8 @@ public class AIStoreStuff extends AIBase
         }
         else
         {
-            //Longer cooldown if there is no inventory found at all.
-            cooldowns[1] = cooldowns[0] = 50*COOLDOWN;
+            // Longer cooldown if there is no inventory found at all.
+            cooldowns[1] = cooldowns[0] = 50 * COOLDOWN;
         }
     }
 

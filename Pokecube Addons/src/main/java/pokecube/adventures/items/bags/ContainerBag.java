@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
@@ -111,7 +111,7 @@ public class ContainerBag extends Container {
 	
 	public void updateInventoryPages(int dir, InventoryPlayer invent)
 	{
-		if(!(mod_Pokecube.isOnClientSide()&&FMLClientHandler.instance().getServer()!=null))
+		if(!(PokecubeCore.isOnClientSide()&&FMLClientHandler.instance().getServer()!=null))
 		{
 			inv.setPage((inv.getPage()==0)&&(dir==-1)?InventoryBag.PAGECOUNT-1:(inv.getPage()+dir)%InventoryBag.PAGECOUNT);
 		}
@@ -125,7 +125,7 @@ public class ContainerBag extends Container {
 		
 		inv.setPage(page-1);
 
-		if(mod_Pokecube.isOnClientSide())
+		if(PokecubeCore.isOnClientSide())
 		{
 			boolean toReopen = true;
 			if(FMLClientHandler.instance().getServer()==null)
@@ -147,7 +147,7 @@ public class ContainerBag extends Container {
 	{
 		inv.boxes[inv.getPage()] = name;
 		
-		if(mod_Pokecube.isOnClientSide())
+		if(PokecubeCore.isOnClientSide())
 		{
 			byte[] string = name.getBytes();
 			byte[] message = new byte[string.length+2];
@@ -184,7 +184,7 @@ public class ContainerBag extends Container {
 //    	
     	if (i < 0)
     		return null;
-		if(mod_Pokecube.isOnClientSide()&&FMLClientHandler.instance().getServer()!=null)
+		if(PokecubeCore.isOnClientSide()&&FMLClientHandler.instance().getServer()!=null)
 		{
 			return clientSlotClick(i, j, flag, entityplayer);
 		}

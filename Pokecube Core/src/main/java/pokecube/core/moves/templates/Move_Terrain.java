@@ -18,61 +18,60 @@ import thut.api.terrain.TerrainSegment;
 public class Move_Terrain extends Move_Basic
 {
 
-	public final int effect;
-	public int duration = 300;
-	/**
-	 * See TerrainSegment for the types of effects.
-	 * @param name
-	 * @param effect
-	 */
-	public Move_Terrain(String name, int effect) {
-		super(name);
-		this.effect = effect;
-	}
-	
-	@Override
-    /**
-     * Called after the attack for special post attack treatment.
+    public final int effect;
+    public int       duration = 300;
+
+    /** See TerrainSegment for the types of effects.
+     * 
+     * @param name
+     * @param effect */
+    public Move_Terrain(String name, int effect)
+    {
+        super(name);
+        this.effect = effect;
+    }
+
+    @Override
+    /** Called after the attack for special post attack treatment.
      * 
      * @param attacker
      * @param attacked
      * @param f
-     * @param finalAttackStrength the number of HPs the attack takes from target
-     */
-    public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength) 
-	{ 
-		duration = 300 + new Random().nextInt(600);
-		TerrainSegment segment = TerrainManager.getInstance().getTerrainForEntity(attacked);
-		
-		PokemobTerrainEffects teffect = (PokemobTerrainEffects) segment.geTerrainEffect("pokemobEffects");
-		if(teffect==null)
-		{
-			segment.addEffect(teffect = new PokemobTerrainEffects(), "pokemobEffects");
-		}
-		
-		if(segment!=null && attacked.worldObj!=null)
-			teffect.setEffect(effect, duration + attacked.worldObj.getTotalWorldTime());
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-		{
-			PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(73));
-			buffer.writeByte(PokecubeClientPacket.TERRAINEFFECTS);
-			buffer.writeInt(segment.chunkX);
-			buffer.writeInt(segment.chunkY);
-			buffer.writeInt(segment.chunkZ);
-			for(int i = 0; i<16; i++)
-			{
-				buffer.writeLong(teffect.effects[i]);
-			}
-        	PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
-        	Vector3 v = Vector3.getNewVectorFromPool().set(attacked);
-        	PokecubePacketHandler.sendToAllNear(packet, v, attacked.worldObj.provider.getDimensionId(), 64);
-        	v.freeVectorFromPool();
-		}
-		
-	}
-	
-	public void setDuration(int duration)
-	{
-		this.duration = duration;
-	}
+     * @param finalAttackStrength
+     *            the number of HPs the attack takes from target */
+    public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+    {
+        duration = 300 + new Random().nextInt(600);
+        TerrainSegment segment = TerrainManager.getInstance().getTerrainForEntity(attacked);
+
+        PokemobTerrainEffects teffect = (PokemobTerrainEffects) segment.geTerrainEffect("pokemobEffects");
+        if (teffect == null)
+        {
+            segment.addEffect(teffect = new PokemobTerrainEffects(), "pokemobEffects");
+        }
+
+        if (segment != null && attacked.worldObj != null)
+            teffect.setEffect(effect, duration + attacked.worldObj.getTotalWorldTime());
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        {
+            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(73));
+            buffer.writeByte(PokecubeClientPacket.TERRAINEFFECTS);
+            buffer.writeInt(segment.chunkX);
+            buffer.writeInt(segment.chunkY);
+            buffer.writeInt(segment.chunkZ);
+            for (int i = 0; i < 16; i++)
+            {
+                buffer.writeLong(teffect.effects[i]);
+            }
+            PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
+            Vector3 v = Vector3.getNewVector().set(attacked);
+            PokecubePacketHandler.sendToAllNear(packet, v, attacked.worldObj.provider.getDimensionId(), 64);
+        }
+
+    }
+
+    public void setDuration(int duration)
+    {
+        this.duration = duration;
+    }
 }

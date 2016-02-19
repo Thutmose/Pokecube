@@ -27,10 +27,10 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     public Vector4 preRot    = new Vector4();
     public Vector4 postRot   = new Vector4();
     public Vector4 postRot1  = new Vector4();
-    public Vector3 preTrans  = Vector3.getNewVectorFromPool();
-    public Vector3 postTrans = Vector3.getNewVectorFromPool();
+    public Vector3 preTrans  = Vector3.getNewVector();
+    public Vector3 postTrans = Vector3.getNewVector();
 
-    public Vector3 offset    = Vector3.getNewVectorFromPool();
+    public Vector3 offset    = Vector3.getNewVector();
     public Vector4 rotations = new Vector4();
     public Vertex  scale     = new Vertex(1, 1, 1);
 

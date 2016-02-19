@@ -15,7 +15,7 @@ public class AIThermalInteferance extends EntityAIBase
 {
     static boolean PCloaded = false;
 	final IPokemob pokemob;
-	final Vector3 mobLoc = Vector3.getNewVectorFromPool();
+	final Vector3 mobLoc = Vector3.getNewVector();
 	final Entity entity;
 	double tempLastTick = 0;
 	

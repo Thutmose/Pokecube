@@ -20,7 +20,7 @@ public class ReComplexCompat {
 //		
 //		if(evt instanceof StructureGenerationEventLite.Post)
 //		{
-//			Vector3 pos = Vector3.getNewVectorFromPool().set(evt.coordinates);
+//			Vector3 pos = Vector3.getNewVector().set(evt.coordinates);
 //			AxisAlignedBB box = pos.addTo(evt.size[0]/2,evt.size[1]/2,evt.size[2]/2).getAABB().expand(evt.size[0]/2,evt.size[1]/2,evt.size[2]/2);
 //			List entities = evt.world.getEntitiesWithinAABB(Entity.class, box);
 //			if(entities!=null && !entities.isEmpty())
@@ -85,7 +85,7 @@ public class ReComplexCompat {
 //		}
 //		
 //		int biome = biomeMap.get(evt.structureName.toLowerCase());
-//		Vector3 pos = Vector3.getNewVectorFromPool().set(evt.coordinates);
+//		Vector3 pos = Vector3.getNewVector().set(evt.coordinates);
 //		System.out.println("Setting "+evt.structureName+" as biome type "+BiomeDatabase.getReadableNameFromType(biome));
 //		for(int i = 0; i<evt.size[0]; i++)
 //		{
@@ -109,7 +109,7 @@ public class ReComplexCompat {
 ////		}
 ////		else
 //		{
-//			Vector3 loc = Vector3.getNewVectorFromPool().set(trainer);
+//			Vector3 loc = Vector3.getNewVector().set(trainer);
 //			int maxXp = SpawnHandler.getSpawnXp( trainer.worldObj, loc, Database.getEntry(1));
 //			trainer.initTrainer(trainer.getType(), maxXp);
 //			System.out.println("Randomized "+trainer.name);

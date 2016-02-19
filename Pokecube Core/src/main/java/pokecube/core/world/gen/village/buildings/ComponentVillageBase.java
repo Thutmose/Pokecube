@@ -259,7 +259,7 @@ public abstract class ComponentVillageBase extends House1
         int k1 = this.getYWithOffset(y);
         int l1 = this.getZWithOffset(x, z);
 
-        return Vector3.getNewVectorFromPool().set(j1, k1, l1);
+        return Vector3.getNewVector().set(j1, k1, l1);
     }
 
     int getDir()

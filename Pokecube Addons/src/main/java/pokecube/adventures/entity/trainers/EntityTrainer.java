@@ -113,19 +113,18 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             return;
         }
         IGuardAICapability capability = getCapability(EventsHandler.GUARDAI_CAP, null);
-        if(capability!=null)
+        if (capability != null)
         {
             capability.setActiveTime(TimePeriod.fullDay);
             capability.setPos(getPosition());
             tasks.addTask(2, new GuardAI(this, capability));
         }
         setAIState(STATIONARY, true);
-        location.freeVectorFromPool();
     }
 
     public void setStationary(boolean stationary)
     {
-        if (stationary && !getAIState(STATIONARY)) setStationary(Vector3.getNewVectorFromPool().set(this));
+        if (stationary && !getAIState(STATIONARY)) setStationary(Vector3.getNewVector().set(this));
         else if (!stationary && getAIState(STATIONARY))
         {
             for (Object o : this.tasks.taskEntries)

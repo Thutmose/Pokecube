@@ -110,7 +110,7 @@ public class EventsHandlerClient
         if (Keyboard.getEventNanoseconds() == eventTime) return;
 
         EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
-        
+
         eventTime = Keyboard.getEventNanoseconds();
         if (key == Keyboard.KEY_SPACE && player.ridingEntity instanceof IPokemob)
         {
@@ -264,7 +264,7 @@ public class EventsHandlerClient
                     if (slot.getHasStack() && PokecubeManager.isFilled(slot.getStack()))
                     {
                         IPokemob pokemob = getPokemobForRender(slot.getStack(), gui.mc.theWorld);
-                        if(pokemob==null) continue;
+                        if (pokemob == null) continue;
                         int x = (w - xSize) / 2;
                         int y = (h - ySize) / 2;
                         int i, j;
@@ -352,9 +352,8 @@ public class EventsHandlerClient
     {
         if (!debug) return;
         TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(Minecraft.getMinecraft().thePlayer);
-        Vector3 v = Vector3.getNewVectorFromPool().set(Minecraft.getMinecraft().thePlayer);
+        Vector3 v = Vector3.getNewVector().set(Minecraft.getMinecraft().thePlayer);
         String msg = "Sub-Biome: " + BiomeDatabase.getReadableNameFromType(t.getBiome(v));
-        v.freeVectorFromPool();
         // Until forge stops sending the same event, with the same list 8 times,
         // this is needed
         for (String s : event.left)

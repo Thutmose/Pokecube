@@ -74,6 +74,7 @@ public class ModelPokemobEgg extends ModelBase
         GL11.glTranslated(0, 4.4, 0);
 
         IPokemob pokemob = ((EntityPokemobEgg) entity).getPokemob();
+
         Color colour = new Color(PokeType.normal.colour);
         float red = colour.getRed() / 255f;
         float green = colour.getGreen() / 255f;
@@ -81,9 +82,11 @@ public class ModelPokemobEgg extends ModelBase
 
         GL11.glColor3f(red, green, blue);
 
-
-        if (pokemob.getType2() != PokeType.unknown) colour = new Color(pokemob.getType2().colour);
-        else colour = new Color(pokemob.getType1().colour);
+        if (pokemob != null)
+        {
+            if (pokemob.getType2() != PokeType.unknown) colour = new Color(pokemob.getType2().colour);
+            else colour = new Color(pokemob.getType1().colour);
+        }
 
         red = colour.getRed() / 255f;
         green = colour.getGreen() / 255f;
@@ -91,12 +94,10 @@ public class ModelPokemobEgg extends ModelBase
 
         GL11.glColor3f(red, green, blue);
 
-
         this.Egg10.render(f5);
         this.Egg9.render(f5);
         this.Egg7.render(f5);
         this.Egg8.render(f5);
-        
 
         this.Egg11.render(f5);
         this.Egg3.render(f5);
@@ -104,7 +105,7 @@ public class ModelPokemobEgg extends ModelBase
         this.Egg5.render(f5);
         this.Egg4.render(f5);
 
-        colour = new Color(pokemob.getType1().colour);
+        if (pokemob != null) colour = new Color(pokemob.getType1().colour);
         red = colour.getRed() / 255f;
         green = colour.getGreen() / 255f;
         blue = colour.getBlue() / 255f;

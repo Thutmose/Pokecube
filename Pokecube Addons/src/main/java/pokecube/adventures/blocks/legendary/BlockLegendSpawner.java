@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.LegendaryConditions;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.IMetaBlock;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -38,7 +38,7 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
     public BlockLegendSpawner()
     {
         super(Material.rock);
-        this.setCreativeTab(mod_Pokecube.creativeTabPokecubeBlocks);
+        this.setCreativeTab(PokecubeCore.creativeTabPokecubeBlocks);
         this.setHardness(10);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE, Integer.valueOf(0)));
     }
@@ -73,7 +73,7 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
     {
         return false;
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     public EnumWorldBlockLayer getBlockLayer()
@@ -96,10 +96,10 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
         ISpecialSpawnCondition condition = ISpecialSpawnCondition.spawnMap.get(pokedexNb);
         if (condition != null)
         {
-            Vector3 location = Vector3.getNewVectorFromPool().set(pos);
+            Vector3 location = Vector3.getNewVector().set(pos);
             if (condition.canSpawn(player, location))
             {
-                EntityLiving entity = (EntityLiving) mod_Pokecube.core.createEntityByPokedexNb(pokedexNb, worldIn);
+                EntityLiving entity = (EntityLiving) PokecubeCore.core.createEntityByPokedexNb(pokedexNb, worldIn);
                 entity.setHealth(entity.getMaxHealth());
                 location.add(0, 1, 0).moveEntity(entity);
                 condition.onSpawn((IPokemob) entity);
@@ -109,10 +109,8 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
                     ((IPokemob) entity).setExp(6000, true, true);
                 }
                 worldIn.spawnEntityInWorld(entity);
-                location.freeVectorFromPool();
                 return true;
             }
-            location.freeVectorFromPool();
         }
         return false;
     }

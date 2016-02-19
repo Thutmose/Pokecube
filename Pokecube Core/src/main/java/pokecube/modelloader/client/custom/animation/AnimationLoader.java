@@ -266,7 +266,6 @@ public class AnimationLoader
                     anims.addAll(loaded.animations.values());
                     animator.init(anims);
                 }
-                if (scale != null) scale.freeVectorFromPool();
 
                 if (headDir != 2) loaded.headDir = headDir;
                 loaded.headAxis = headAxis;
@@ -342,7 +341,7 @@ public class AnimationLoader
         Vector3 vect = null;
         if (node.getAttributes().getNamedItem("offset") != null)
         {
-            vect = Vector3.getNewVectorFromPool();
+            vect = Vector3.getNewVector();
             String shift;
             String[] r;
             shift = node.getAttributes().getNamedItem("offset").getNodeValue();
@@ -359,7 +358,7 @@ public class AnimationLoader
         if (node.getAttributes().getNamedItem("scale") != null)
         {
             Vector3 vect = null;
-            vect = Vector3.getNewVectorFromPool();
+            vect = Vector3.getNewVector();
             String shift;
             String[] r;
             shift = node.getAttributes().getNamedItem("scale").getNodeValue();

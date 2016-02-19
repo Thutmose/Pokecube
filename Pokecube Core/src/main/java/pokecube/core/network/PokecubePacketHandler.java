@@ -37,8 +37,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.Mod_Pokecube_Helper;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.client.gui.GuiInfoMessages;
@@ -242,7 +242,7 @@ public class PokecubePacketHandler
         @SubscribeEvent
         public void tick(ClientTickEvent event)
         {
-            player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 0,
+            player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 0,
                     0);
             MinecraftForge.EVENT_BUS.unregister(this);
         }
@@ -413,7 +413,7 @@ public class PokecubePacketHandler
             String moveName = args[0];
             int attackerId = Integer.valueOf(args[1]);
             int attackedId = Integer.valueOf(args[5]);
-            Vector3 target = Vector3.getNewVectorFromPool().set(Double.valueOf(args[2]), Double.valueOf(args[3]),
+            Vector3 target = Vector3.getNewVector().set(Double.valueOf(args[2]), Double.valueOf(args[3]),
                     Double.valueOf(args[4]));
 
             Move_Base move = MovesUtils.getMoveFromName(moveName);
@@ -431,7 +431,6 @@ public class PokecubePacketHandler
                 MoveAnimation anim = new MoveAnimation(attacker, attacked, target, move, move.animation.getDuration());
                 MoveAnimationHelper.Instance().addMove(attacker, anim);
             }
-            else target.freeVectorFromPool();
         }
         catch (Exception e)
         {
@@ -468,9 +467,7 @@ public class PokecubePacketHandler
                 Vector3 temp = Vector3.readFromNBT(tag, "village");
                 if (temp != null) pokecube.core.client.gui.GuiPokedex.closestVillage.set(temp);
                 else pokecube.core.client.gui.GuiPokedex.closestVillage.clear();
-
-                if (temp != null) temp.freeVectorFromPool();
-                player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
+                player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
             }
             else if (nbt.getBoolean("toLoadTerrain"))
             {
@@ -495,7 +492,7 @@ public class PokecubePacketHandler
         byte message = 0;
         message = packet[0];
         EntityPlayerMP sender = (EntityPlayerMP) player;
-        Vector3 v = Vector3.getNewVectorFromPool();
+        Vector3 v = Vector3.getNewVector();
         if (message == 21)
         {
             byte[] arr = new byte[packet.length - 2];
@@ -834,8 +831,8 @@ public class PokecubePacketHandler
                 }
                 else if (channel == TELEPORTINDEX)
                 {
-                    PokecubeServerPacket packet = new PokecubeServerPacket(new byte[] { PokecubeServerPacket.TELEPORT,
-                            (byte) GuiTeleport.instance().indexLocation });
+                    PokecubeServerPacket packet = new PokecubeServerPacket(
+                            new byte[] { PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
                     PokecubePacketHandler.sendToServer(packet);
                 }
                 else if (channel == CHANGEFORME)
@@ -871,7 +868,7 @@ public class PokecubePacketHandler
             @Override
             public PokecubeServerPacket onMessage(PokecubeClientPacket message, MessageContext ctx)
             {
-                EntityPlayer player = mod_Pokecube.getPlayer(null);
+                EntityPlayer player = PokecubeCore.getPlayer(null);
                 handleClientSide(player, message.buffer);
 
                 return null;
@@ -1036,7 +1033,7 @@ public class PokecubePacketHandler
                         {
                             int id = buffer.readInt();
                             target = player.worldObj.getEntityByID(id);
-                            targetLocation = Vector3.getNewVectorFromPool();
+                            targetLocation = Vector3.getNewVector();
                         }
                         else if (buffer.readableBytes() == 24)
                         {
@@ -1047,8 +1044,6 @@ public class PokecubePacketHandler
 
                         boolean used = ((IPokecube) player.getHeldItem().getItem()).throwPokecube(player.worldObj,
                                 player, player.getHeldItem(), targetLocation, target);
-                        if (targetLocation != null) targetLocation.freeVectorFromPool();
-
                         if (player.getHeldItem() != null && !(!PokecubeManager.isFilled(player.getHeldItem())
                                 && player.capabilities.isCreativeMode) && used)
                         {

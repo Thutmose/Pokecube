@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.database.Database;
@@ -73,11 +73,11 @@ public abstract class EntityTameablePokemob extends EntityTameable
     private String ownerName = "";
     private UUID   original  = new UUID(1234, 4321);
 
-    protected Vector3 here = Vector3.getNewVectorFromPool();
-    protected Vector3 vec  = Vector3.getNewVectorFromPool();
-    protected Vector3 v1   = Vector3.getNewVectorFromPool();
-    protected Vector3 v2   = Vector3.getNewVectorFromPool();
-    protected Vector3 vBak = Vector3.getNewVectorFromPool();
+    protected Vector3 here = Vector3.getNewVector();
+    protected Vector3 vec  = Vector3.getNewVector();
+    protected Vector3 v1   = Vector3.getNewVector();
+    protected Vector3 v2   = Vector3.getNewVector();
+    protected Vector3 vBak = Vector3.getNewVector();
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -314,7 +314,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
     @Override
     public void setPokemonOwnerByName(String s)
     {
-        EntityPlayer player = mod_Pokecube.getPlayer(s);
+        EntityPlayer player = PokecubeCore.getPlayer(s);
 
         this.setPokemonOwner(player);
         super.setOwnerId(s);
@@ -576,7 +576,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
     {
         if (returning) return;
         returning = true;
-        if (mod_Pokecube.isOnClientSide())
+        if (PokecubeCore.isOnClientSide())
         {
             try
             {

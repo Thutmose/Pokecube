@@ -16,8 +16,8 @@ public class PokemobMoveHelper extends EntityMoveHelper
     private double posX;
     private double posY;
     private double posZ;
-    private Vector3 pos = Vector3.getNewVectorFromPool();
-    private Vector3 lastPos = Vector3.getNewVectorFromPool();
+    private Vector3 pos = Vector3.getNewVector();
+    private Vector3 lastPos = Vector3.getNewVector();
     /** The speed at which the entity should move */
     private double speed;
     private boolean update;

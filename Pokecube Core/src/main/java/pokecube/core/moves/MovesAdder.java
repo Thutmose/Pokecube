@@ -655,11 +655,10 @@ public class MovesAdder implements IMoveConstants
                 if (doAttack(attacker, attacked, f))
                 {
                     if (message) MovesUtils.displayMoveMessages(attacker, attacked, name);
-                    Vector3 v = Vector3.getNewVectorFromPool();
+                    Vector3 v = Vector3.getNewVector();
                     Entity temp = attacked;
                     if (attacked == null) attacked = temp;
                     notifyClient((Entity) attacker, v.set(attacked), attacked);
-                    v.freeVectorFromPool();
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;
                     MovePacket packet = new MovePacket(attacker, attacked, name, move.type, getPWR(attacker, attacked),
@@ -771,11 +770,10 @@ public class MovesAdder implements IMoveConstants
                         ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVectorFromPool().set(attacked);
+                    Vector3 v = Vector3.getNewVector().set(attacked);
                     notifyClient((Entity) attacker, v, attacked);
 
                     List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker), v, 2, 8);
-                    v.freeVectorFromPool();
                     for (Entity e : hit)
                     {
                         if (!(e.onGround || e.fallDistance < 0.5)) continue;
@@ -814,11 +812,10 @@ public class MovesAdder implements IMoveConstants
                         ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVectorFromPool().set(attacked);
+                    Vector3 v = Vector3.getNewVector().set(attacked);
                     notifyClient((Entity) attacker, v, attacked);
 
                     List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker), v, 2, 8);
-                    v.freeVectorFromPool();
                     for (Entity e : hit)
                     {
                         if (!(e.onGround || e.fallDistance < 0.5)) continue;
@@ -856,9 +853,8 @@ public class MovesAdder implements IMoveConstants
                         ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVectorFromPool().set(attacked);
+                    Vector3 v = Vector3.getNewVector().set(attacked);
                     notifyClient((Entity) attacker, v, attacked);
-                    v.freeVectorFromPool();
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;
                     if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
@@ -912,9 +908,8 @@ public class MovesAdder implements IMoveConstants
                         ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVectorFromPool().set(attacked);
+                    Vector3 v = Vector3.getNewVector().set(attacked);
                     notifyClient((Entity) attacker, v, attacked);
-                    v.freeVectorFromPool();
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;
                     if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
@@ -971,7 +966,7 @@ public class MovesAdder implements IMoveConstants
                 ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
                 FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
                 double dist = source.distanceTo(target);
-                Vector3 temp = Vector3.getNewVectorFromPool().set(source).subtractFrom(target);
+                Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
 
                 GlStateManager.translate(temp.x, temp.y, temp.z);
                 double factor = (info.currentTick + partialTick) / (double) getDuration();
@@ -998,9 +993,6 @@ public class MovesAdder implements IMoveConstants
                 temp2.set(temp);
 
                 renderPart(temp, temp2, factor);
-
-                temp.freeVectorFromPool();
-                temp2.freeVectorFromPool();
             }
 
             private void renderPart(Vector3 temp, Vector3 temp2, double factor)
@@ -1155,12 +1147,10 @@ public class MovesAdder implements IMoveConstants
                         ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVectorFromPool().set(attacked);
+                    Vector3 v = Vector3.getNewVector().set(attacked);
                     notifyClient((Entity) attacker, v, attacked);
 
                     List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker), v, 2, 8);
-                    v.freeVectorFromPool();
-
                     for (Entity e : hit)
                     {
                         if ((!PokecubeMod.hardMode) && e instanceof EntityPlayer) continue;
@@ -1258,9 +1248,8 @@ public class MovesAdder implements IMoveConstants
                         ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVectorFromPool().set(attacked);
+                    Vector3 v = Vector3.getNewVector().set(attacked);
                     notifyClient((Entity) attacker, v, attacked);
-                    v.freeVectorFromPool();
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;
                     if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
@@ -1820,9 +1809,8 @@ public class MovesAdder implements IMoveConstants
                         ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVectorFromPool().set(attacked);
+                    Vector3 v = Vector3.getNewVector().set(attacked);
                     notifyClient((Entity) attacker, v, attacked);
-                    v.freeVectorFromPool();
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;
                     if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)

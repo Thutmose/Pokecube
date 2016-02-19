@@ -97,8 +97,8 @@ public class RenderHandler
         IPokemob entity = PlayerAsPokemobManager.getInstance().getTransformed(player);
         if (entity != null && Keyboard.getEventKey() == ClientProxyPokecube.mobAttack.getKeyCode())
         {
-            Vector3 here = Vector3.getNewVectorFromPool().set(player, false);
-            Entity hit = here.firstEntityExcluding(16, Vector3.getNewVectorFromPool().set(player.getLookVec()),
+            Vector3 here = Vector3.getNewVector().set(player, false);
+            Entity hit = here.firstEntityExcluding(16, Vector3.getNewVector().set(player.getLookVec()),
                     player.worldObj, false, player);
             if (hit != null)
             {
@@ -151,11 +151,11 @@ public class RenderHandler
             GL11.glPushMatrix();
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
             TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(player);
-            Vector3 v = Vector3.getNewVectorFromPool();// .set(evt.entity);
-            Vector3 source = Vector3.getNewVectorFromPool().set(player);
+            Vector3 v = Vector3.getNewVector();// .set(evt.entity);
+            Vector3 source = Vector3.getNewVector().set(player);
             Vector3 target = t.getCentre();
             source.set(target.subtract(source));
-            Vector3 diff = Vector3.getNewVectorFromPool();
+            Vector3 diff = Vector3.getNewVector();
             diff.x = player.prevPosX - player.posX;
             diff.y = player.prevPosY - player.posY;
             diff.z = player.prevPosZ - player.posZ;

@@ -18,7 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
@@ -49,7 +49,7 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
     @Override
     protected ResourceLocation getEntityTexture(T entity)
     {
-        return new ResourceLocation(mod_Pokecube.ID, "textures/items/pokecubefront.png");
+        return new ResourceLocation(PokecubeCore.ID, "textures/items/pokecubefront.png");
     }
 
     public static class ModelPokecube extends ModelBase

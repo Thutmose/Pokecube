@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.events.CaptureEvent;
@@ -88,7 +88,7 @@ public class PCEventsHandler
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
         String uuid = player.getUniqueID().toString();
-        if (!mod_Pokecube.isOnClientSide())
+        if (!PokecubeCore.isOnClientSide())
         {
             PCSaveHandler.getInstance().savePC(uuid);
             NBTTagCompound nbt = new NBTTagCompound();
@@ -283,7 +283,7 @@ public class PCEventsHandler
         if (sentToPC && player instanceof EntityPlayer)
         {
             String uuid = player.getUniqueID().toString();
-            if (!mod_Pokecube.isOnClientSide())
+            if (!PokecubeCore.isOnClientSide())
             {
                 PCSaveHandler.getInstance().savePC(uuid);
                 NBTTagCompound nbt = new NBTTagCompound();

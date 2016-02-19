@@ -41,7 +41,7 @@ public class ItemTarget extends Item
     public boolean onItemUse(ItemStack stack, EntityPlayer entityplayer, World world, BlockPos pos, EnumFacing side,
             float hitX, float hitY, float hitZ)
     {
-        Vector3 hit = Vector3.getNewVectorFromPool().set(pos);
+        Vector3 hit = Vector3.getNewVector().set(pos);
         Block block = hit.getBlock(world);
         int meta = stack.getItemDamage();
 
@@ -49,11 +49,9 @@ public class ItemTarget extends Item
         {
             ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(pos, entityplayer.dimension);
             String team = TeamManager.getInstance().getLandOwner(c);
-            String playerTeam = world.getScoreboard().getPlayersTeam(entityplayer.getName())
-                    .getRegisteredName();
-            if (team != null && team.equalsIgnoreCase(playerTeam)
-                    && TeamManager.getInstance().isAdmin(entityplayer.getName(),
-                            world.getScoreboard().getPlayersTeam(entityplayer.getName())))
+            String playerTeam = world.getScoreboard().getPlayersTeam(entityplayer.getName()).getRegisteredName();
+            if (team != null && team.equalsIgnoreCase(playerTeam) && TeamManager.getInstance()
+                    .isAdmin(entityplayer.getName(), world.getScoreboard().getPlayersTeam(entityplayer.getName())))
             {
                 ChunkCoordinate blockLoc = new ChunkCoordinate(pos, entityplayer.dimension);
                 if (TeamManager.getInstance().isPublic(blockLoc))
@@ -67,7 +65,6 @@ public class ItemTarget extends Item
                     TeamManager.getInstance().setPublic(blockLoc);
                 }
             }
-            hit.freeVectorFromPool();
             return true;
         }
 
@@ -137,8 +134,6 @@ public class ItemTarget extends Item
                                 t = TerrainManager.getInstance().getTerrian(world, pos1);
                                 t.setBiome(pos1, type.getType());
                             }
-
-                    pos1.freeVectorFromPool();
                     try
                     {
                         entityplayer.addChatMessage(
@@ -152,8 +147,6 @@ public class ItemTarget extends Item
             }
             return true;
         }
-
-        hit.freeVectorFromPool();
         return super.onItemUse(stack, entityplayer, world, pos, side, hitX, hitY, hitZ);
     }
 
@@ -162,43 +155,39 @@ public class ItemTarget extends Item
     {
         int meta = itemstack.getItemDamage();
 
-        Vector3 p = Vector3.getNewVectorFromPool().set(player, false);
-        Vector3 d = Vector3.getNewVectorFromPool().set(player.getLookVec());
-        
+        Vector3 p = Vector3.getNewVector().set(player, false);
+        Vector3 d = Vector3.getNewVector().set(player.getLookVec());
+
         List<Entity> e = p.allEntityLocationExcluding(2, 1, d, p, world, player);
-        
-        for(Object o: e)
+
+        for (Object o : e)
         {
-            if(o instanceof IPokemob)
+            if (o instanceof IPokemob)
             {
                 IPokemob poke = (IPokemob) o;
                 PokedexEntry entry = poke.getPokedexEntry();
-                if(poke.getPokemonOwner()!=player)
-                    continue;
-                
-                if(entry.getName().equalsIgnoreCase("deoxys"))
+                if (poke.getPokemonOwner() != player) continue;
+
+                if (entry.getName().equalsIgnoreCase("deoxys"))
                 {
                     poke.changeForme("deoxys speed");
                 }
-                if(entry.getName().equalsIgnoreCase("deoxys speed"))
+                if (entry.getName().equalsIgnoreCase("deoxys speed"))
                 {
                     poke.changeForme("deoxys attack");
                 }
-                if(entry.getName().equalsIgnoreCase("deoxys attack"))
+                if (entry.getName().equalsIgnoreCase("deoxys attack"))
                 {
                     poke.changeForme("deoxys defense");
                 }
-                if(entry.getName().equalsIgnoreCase("deoxys defense"))
+                if (entry.getName().equalsIgnoreCase("deoxys defense"))
                 {
                     poke.changeForme("deoxys");
                 }
             }
         }
-        p.freeVectorFromPool();
-        d.freeVectorFromPool();
-        if(e!=null && !e.isEmpty())
-            return itemstack;
-        
+        if (e != null && !e.isEmpty()) return itemstack;
+
         if (world.isRemote)
         {
 
@@ -241,8 +230,8 @@ public class ItemTarget extends Item
         }
         else if (!player.isSneaking())
         {
-            Vector3 location = Vector3.getNewVectorFromPool().set(player)
-                    .add(Vector3.getNewVectorFromPool().set(player.getLookVec())).add(0, 1.62, 0);
+            Vector3 location = Vector3.getNewVector().set(player).add(Vector3.getNewVector().set(player.getLookVec()))
+                    .add(0, 1.62, 0);
             EntityTarget t = new EntityTarget(world);
             location.moveEntity(t);
             world.spawnEntityInWorld(t);

@@ -8,14 +8,10 @@ import com.google.common.collect.Maps;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
-import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Environment;
-import li.cil.oc.api.network.Message;
-import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.Visibility;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -38,30 +34,24 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Interface;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.Tools;
 
-public class TileEntityCloner extends TileEntity implements IInventory, ITickable, Environment, IEnergyReceiver
+@Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
+public class TileEntityCloner extends TileEntity implements IInventory, ITickable, SimpleComponent, IEnergyReceiver
 {
     protected EnergyStorage storage = new EnergyStorage(32000);
-    
+
     public TileEntityCloner()
     {
         super();
-        try
-        {
-            node = Network.newNode(this, Visibility.Network).withConnector()
-                    .withComponent("splicer", Visibility.Network).create();
-        }
-        catch (Exception e)
-        {
-            // e.printStackTrace();
-        }
     }
 
     public CraftMatrix          craftMatrix;
@@ -69,16 +59,9 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     private ItemStack[]         inventory = new ItemStack[10];
     EntityPlayer                user;
 
-    protected boolean addedToNetwork = false;
-
     @Override
     public void update()
     {
-        if (!addedToNetwork)
-        {
-            addedToNetwork = true;
-            Network.joinOrCreateNetwork(this);
-        }
         if (worldObj.getTotalWorldTime() % 10 == 0 && !worldObj.isRemote)
         {
             checkMewtwo();
@@ -267,7 +250,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             if (energy >= 20000)
             {
                 storage.extractEnergy(20000, false);
-                EntityLiving entity = (EntityLiving) mod_Pokecube.core.createEntityByPokedexNb(num, worldObj);
+                EntityLiving entity = (EntityLiving) PokecubeCore.core.createEntityByPokedexNb(num, worldObj);
                 if (entity != null)
                 {
                     entity.setHealth(entity.getMaxHealth());
@@ -306,11 +289,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                 }
             }
         }
-         storage.readFromNBT(nbt);
-        if (node != null && node.host() == this)
-        {
-            node.load(nbt.getCompoundTag("oc:node"));
-        }
+        storage.readFromNBT(nbt);
     }
 
     @Override
@@ -331,13 +310,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             }
         }
         nbt.setTag("Inventory", itemList);
-         storage.writeToNBT(nbt);
-        if (node != null && node.host() == this)
-        {
-            final NBTTagCompound nodeNbt = new NBTTagCompound();
-            node.save(nodeNbt);
-            nbt.setTag("oc:node", nodeNbt);
-        }
+        storage.writeToNBT(nbt);
     }
 
     /** Overriden in a sign to provide the text. */
@@ -684,45 +657,16 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
 
     }
 
-    Node node;
-
-    @Override
-    public Node node()
-    {
-        return node;
-    }
-
     @Override
     public void onChunkUnload()
     {
         super.onChunkUnload();
-        // Make sure to remove the node from its network when its environment,
-        // meaning this tile entity, gets unloaded.
-        if (node != null) node.remove();
     }
 
     @Override
     public void invalidate()
     {
         super.invalidate();
-        // Make sure to remove the node from its network when its environment,
-        // meaning this tile entity, gets unloaded.
-        if (node != null) node.remove();
-    }
-
-    @Override
-    public void onConnect(Node arg0)
-    {
-    }
-
-    @Override
-    public void onDisconnect(Node arg0)
-    {
-    }
-
-    @Override
-    public void onMessage(Message arg0)
-    {
     }
 
     @Callback(doc = "function(slot:number, info:number) -- slot is which slot to get the info for,"
@@ -740,6 +684,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
      * @param context
      * @param args
      * @return */
+    @Optional.Method(modid = "OpenComputers")
     public Object[] getInfo(Context context, Arguments args) throws Exception
     {
         ArrayList<Object> ret = new ArrayList<>();
@@ -794,7 +739,8 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
 
     /* IEnergyConnection */
     @Override
-    public boolean canConnectEnergy(EnumFacing facing) {
+    public boolean canConnectEnergy(EnumFacing facing)
+    {
 
         return true;
     }
@@ -822,6 +768,12 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     public int getMaxEnergyStored(EnumFacing facing)
     {
         return storage.getMaxEnergyStored();
+    }
+
+    @Override
+    public String getComponentName()
+    {
+        return "splicer";
     }
 
 }

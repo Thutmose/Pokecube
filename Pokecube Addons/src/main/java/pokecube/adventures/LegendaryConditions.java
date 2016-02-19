@@ -60,7 +60,7 @@ public class LegendaryConditions
             @Override
             public boolean canSpawn(Entity trainer)
             {
-                Vector3 v = Vector3.getNewVectorFromPool().set(trainer);
+                Vector3 v = Vector3.getNewVector().set(trainer);
 
                 boolean relicanth = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("relicanth")) > 0;
@@ -70,12 +70,7 @@ public class LegendaryConditions
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
                 boolean biome = SpawnHandler.canSpawn(t, Database.getEntry("regirock").getSpawnData(), v,
                         trainer.worldObj);
-                if (relicanth && wailord && biome)
-                {
-                    v.freeVectorFromPool();
-                    return true;
-                }
-                v.freeVectorFromPool();
+                if (relicanth && wailord && biome) { return true; }
                 String message = "msg.noregirockhere.txt";
                 message = StatCollector.translateToLocal(message);
                 trainer.addChatMessage(new ChatComponentText(message));
@@ -95,16 +90,12 @@ public class LegendaryConditions
                 locations.add(location.add(-1, -1, 0));
                 locations.add(location.add(1, -1, 0));
                 check = isBlock(world, locations, Blocks.obsidian);
-                for (Vector3 v : locations)
-                    v.freeVectorFromPool();
                 if (check)
                 {
                     locations.clear();
                     locations.add(location.add(-1, 0, 0));
                     locations.add(location.add(1, 0, 0));
                     check = isBlock(world, locations, Blocks.hardened_clay);
-                    for (Vector3 v : locations)
-                        v.freeVectorFromPool();
                 }
                 else
                 {
@@ -114,16 +105,12 @@ public class LegendaryConditions
                     locations.add(location.add(0, -1, 1));
                     locations.add(location.add(0, -1, -1));
                     check = isBlock(world, locations, Blocks.obsidian);
-                    for (Vector3 v : locations)
-                        v.freeVectorFromPool();
                     if (check)
                     {
                         locations.clear();
                         locations.add(location.add(0, 0, 1));
                         locations.add(location.add(0, 0, -1));
                         check = isBlock(world, locations, Blocks.hardened_clay);
-                        for (Vector3 v : locations)
-                            v.freeVectorFromPool();
                     }
 
                 }
@@ -142,7 +129,7 @@ public class LegendaryConditions
             public void onSpawn(IPokemob mob)
             {
                 mob.setExp(54500, true, true);
-                Vector3 location = Vector3.getNewVectorFromPool().set(mob).addTo(0, -1, 0);
+                Vector3 location = Vector3.getNewVector().set(mob).addTo(0, -1, 0);
 
                 ArrayList<Vector3> locations = new ArrayList<Vector3>();
                 World world = ((Entity) mob).worldObj;
@@ -161,10 +148,8 @@ public class LegendaryConditions
                 for (Vector3 v : locations)
                 {
                     v.setAir(world);
-                    v.freeVectorFromPool();
                 }
                 location.setAir(world);
-                location.freeVectorFromPool();
             }
 
         };
@@ -175,7 +160,7 @@ public class LegendaryConditions
             @Override
             public boolean canSpawn(Entity trainer)
             {
-                Vector3 v = Vector3.getNewVectorFromPool().set(trainer);
+                Vector3 v = Vector3.getNewVector().set(trainer);
                 boolean relicanth = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("relicanth")) > 0;
                 boolean wailord = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
@@ -183,13 +168,8 @@ public class LegendaryConditions
 
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
 
-                if (relicanth && wailord
-                        && SpawnHandler.canSpawn(t, Database.getEntry("regice").getSpawnData(), v, trainer.worldObj))
-                {
-                    v.freeVectorFromPool();
-                    return true;
-                }
-                v.freeVectorFromPool();
+                if (relicanth && wailord && SpawnHandler.canSpawn(t, Database.getEntry("regice").getSpawnData(), v,
+                        trainer.worldObj)) { return true; }
                 String message = "msg.noregicehere.txt";
                 message = StatCollector.translateToLocal(message);
                 trainer.addChatMessage(new ChatComponentText(message));
@@ -210,8 +190,6 @@ public class LegendaryConditions
                 locations.add(location.add(-1, -1, 0));
                 locations.add(location.add(1, -1, 0));
                 check = isBlock(world, locations, Blocks.ice) || isBlock(world, locations, Blocks.packed_ice);
-                for (Vector3 v : locations)
-                    v.freeVectorFromPool();
                 if (check)
                 {
                     Block b = location.add(0, -1, 1).getBlock(world);
@@ -230,8 +208,6 @@ public class LegendaryConditions
                     locations.add(location.add(0, -1, 1));
                     locations.add(location.add(0, -1, -1));
                     check = isBlock(world, locations, Blocks.ice) || isBlock(world, locations, Blocks.packed_ice);
-                    for (Vector3 v : locations)
-                        v.freeVectorFromPool();
                     if (check)
                     {
                         Block b = location.add(1, -1, 0).getBlock(world);
@@ -258,7 +234,7 @@ public class LegendaryConditions
             public void onSpawn(IPokemob mob)
             {
                 mob.setExp(54500, true, true);
-                Vector3 location = Vector3.getNewVectorFromPool().set(mob).add(0, -1, 0);
+                Vector3 location = Vector3.getNewVector().set(mob).add(0, -1, 0);
 
                 ArrayList<Vector3> locations = new ArrayList<Vector3>();
                 World world = ((Entity) mob).worldObj;
@@ -273,10 +249,8 @@ public class LegendaryConditions
                 for (Vector3 v : locations)
                 {
                     v.setAir(world);
-                    v.freeVectorFromPool();
                 }
                 location.setAir(world);
-                location.freeVectorFromPool();
             }
 
         };
@@ -287,7 +261,7 @@ public class LegendaryConditions
             @Override
             public boolean canSpawn(Entity trainer)
             {
-                Vector3 v = Vector3.getNewVectorFromPool().set(trainer);
+                Vector3 v = Vector3.getNewVector().set(trainer);
 
                 boolean relicanth = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("relicanth")) > 0;
@@ -296,17 +270,12 @@ public class LegendaryConditions
 
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
 
-                if (relicanth && wailord
-                        && SpawnHandler.canSpawn(t, Database.getEntry("registeel").getSpawnData(), v, trainer.worldObj))
-                {
-                    v.freeVectorFromPool();
-                    return true;
-                }
+                if (relicanth && wailord && SpawnHandler.canSpawn(t, Database.getEntry("registeel").getSpawnData(), v,
+                        trainer.worldObj)) { return true; }
 
                 String message = "msg.noregisteelhere.txt";
                 message = StatCollector.translateToLocal(message);
                 trainer.addChatMessage(new ChatComponentText(message));
-                v.freeVectorFromPool();
                 return false;
 
             }
@@ -325,8 +294,6 @@ public class LegendaryConditions
                 locations.add(location.add(0, -2, 0));
 
                 check = isBlock(world, locations, Blocks.iron_block);
-                for (Vector3 v : locations)
-                    v.freeVectorFromPool();
                 if (!check)
                 {
                     locations.clear();
@@ -336,8 +303,6 @@ public class LegendaryConditions
                     locations.add(location.add(0, -2, 0));
 
                     check = isBlock(world, locations, Blocks.iron_block);
-                    for (Vector3 v : locations)
-                        v.freeVectorFromPool();
                 }
                 if (!check)
                 {
@@ -353,7 +318,7 @@ public class LegendaryConditions
             public void onSpawn(IPokemob mob)
             {
                 mob.setExp(54500, true, true);
-                Vector3 location = Vector3.getNewVectorFromPool().set(mob).add(0, -1, 0);
+                Vector3 location = Vector3.getNewVector().set(mob).add(0, -1, 0);
 
                 ArrayList<Vector3> locations = new ArrayList<Vector3>();
                 boolean check = false;
@@ -365,8 +330,6 @@ public class LegendaryConditions
                 locations.add(location.add(0, -2, 0));
 
                 check = isBlock(world, locations, Blocks.iron_block);
-                for (Vector3 v : locations)
-                    v.freeVectorFromPool();
                 if (!check)
                 {
                     locations.clear();
@@ -376,17 +339,13 @@ public class LegendaryConditions
                     locations.add(location.add(0, -2, 0));
 
                     check = isBlock(world, locations, Blocks.iron_block);
-                    for (Vector3 v : locations)
-                        v.freeVectorFromPool();
                     if (check)
                     {
                         for (Vector3 v : locations)
                         {
                             v.setAir(world);
-                            v.freeVectorFromPool();
                         }
                         location.setAir(world);
-                        location.freeVectorFromPool();
                     }
                 }
                 else
@@ -394,10 +353,8 @@ public class LegendaryConditions
                     for (Vector3 v : locations)
                     {
                         v.setAir(world);
-                        v.freeVectorFromPool();
                     }
                     location.setAir(world);
-                    location.freeVectorFromPool();
                 }
 
             }
@@ -420,7 +377,7 @@ public class LegendaryConditions
                 if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("kyogre")) > 0)
                     return false;
-                Vector3 v = Vector3.getNewVectorFromPool().set(trainer);
+                Vector3 v = Vector3.getNewVector().set(trainer);
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
 
                 if (SpawnHandler.canSpawn(t, Database.getEntry("kyogre").getSpawnData(), v, trainer.worldObj))
@@ -430,7 +387,6 @@ public class LegendaryConditions
                 }
                 else
                 {
-                    v.freeVectorFromPool();
                     String message = "msg.nokyogrehere.txt";
                     message = StatCollector.translateToLocal(message);
                     trainer.addChatMessage(new ChatComponentText(message));
@@ -460,18 +416,16 @@ public class LegendaryConditions
                 if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("groudon")) > 0)
                     return false;
-                Vector3 v = Vector3.getNewVectorFromPool().set(trainer);
+                Vector3 v = Vector3.getNewVector().set(trainer);
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
 
                 if (SpawnHandler.canSpawn(t, Database.getEntry("groudon").getSpawnData(), v, trainer.worldObj))
                 {
-                    v.freeVectorFromPool();
                     boolean here = Tools.countPokemon(v, trainer.worldObj, 32, Database.getEntry("groudon")) > 0;
                     return !here;
                 }
                 else
                 {
-                    v.freeVectorFromPool();
                     String message = "msg.nogroudonhere.txt";
                     message = StatCollector.translateToLocal(message);
                     trainer.addChatMessage(new ChatComponentText(message));
@@ -572,7 +526,7 @@ public class LegendaryConditions
                     return false;
 
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
-                Vector3 v = Vector3.getNewVectorFromPool().set(trainer);
+                Vector3 v = Vector3.getNewVector().set(trainer);
                 if (SpawnHandler.canSpawn(t, Database.getEntry("celebi").getSpawnData(), v, trainer.worldObj))
                 {
                     boolean hasCelebi = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
@@ -580,19 +534,13 @@ public class LegendaryConditions
                     boolean hasKilled = KillStats.getTotalNumberOfPokemobKilledBy(trainer.getUniqueID().toString(),
                             Database.getEntry("celebi")) > 2;
 
-                    if (hasKilled || hasCelebi)
-                    {
-                        v.freeVectorFromPool();
-                        return false;
-                    }
+                    if (hasKilled || hasCelebi) { return false; }
                     boolean celebiHere = Tools.countPokemon(v, trainer.worldObj, 32, Database.getEntry("celebi")) > 0;
-                    v.freeVectorFromPool();
                     if (celebiHere) return false;
                     return SpecialCaseRegister.getCaptureCondition("celebi").canCapture(trainer);
                 }
                 else
                 {
-                    v.freeVectorFromPool();
                     String message = "msg.nocelebihere.txt";
                     message = StatCollector.translateToLocal(message);
                     trainer.addChatMessage(new ChatComponentText(message));
@@ -623,7 +571,7 @@ public class LegendaryConditions
                 if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("hooh")) > 0)
                     return false;
-                Vector3 v = Vector3.getNewVectorFromPool().set(trainer);
+                Vector3 v = Vector3.getNewVector().set(trainer);
 
                 boolean raikou = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("raikou")) > 0;
@@ -633,7 +581,6 @@ public class LegendaryConditions
                         Database.getEntry("entei")) > 0;
                 if (!(raikou && entei && suicune))
                 {
-                    v.freeVectorFromPool();
                     String message = "msg.nohoohtrust.txt";
                     message = StatCollector.translateToLocal(message);
                     trainer.addChatMessage(new ChatComponentText(message));
@@ -644,14 +591,12 @@ public class LegendaryConditions
                 if (biome)
                 {
                     boolean here = Tools.countPokemon(v, trainer.worldObj, 32, Database.getEntry("hooh")) > 0;
-                    v.freeVectorFromPool();
                     if (here) return false;
 
                     return true;
                 }
                 else
                 {
-                    v.freeVectorFromPool();
                     String message = "msg.nohoohhere.txt";
                     message = StatCollector.translateToLocal(message);
                     trainer.addChatMessage(new ChatComponentText(message));
@@ -724,7 +669,7 @@ public class LegendaryConditions
                         message = StatCollector.translateToLocal(message);
                         trainer.addChatMessage(new ChatComponentText(message));
                     }
-                    else if (count1 < count2) 
+                    else if (count1 < count2)
                     {
                         String message = "msg.celebiangry.txt";
                         message = StatCollector.translateToLocal(message);
@@ -790,7 +735,7 @@ public class LegendaryConditions
                         Database.getEntry("zapdos")) > 0;
                 boolean moltres = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("moltres")) > 0;
-                if (!(articuno && moltres && zapdos)) 
+                if (!(articuno && moltres && zapdos))
                 {
                     String message = "msg.nolugiatrust.txt";
                     message = StatCollector.translateToLocal(message);

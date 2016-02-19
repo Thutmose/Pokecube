@@ -48,7 +48,7 @@ import pokecube.adventures.events.RenderHandler;
 import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import thut.api.maths.Vector3;
 
 public class ClientProxy extends CommonProxy
@@ -162,7 +162,7 @@ public class ClientProxy extends CommonProxy
     public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
         Entity entityHit = null;
-        MovingObjectPosition objectClicked = ((Minecraft) mod_Pokecube.getMinecraftInstance()).objectMouseOver;
+        MovingObjectPosition objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
 
         if (objectClicked != null)
         {
@@ -179,7 +179,7 @@ public class ClientProxy extends CommonProxy
         else if (guiID == PokecubeAdv.GUIBAG_ID)
         {
             ContainerBag cont = new ContainerBag(player.inventory);
-            return new GuiBag(cont, Vector3.getNewVectorFromPool().set(x, y, z));
+            return new GuiBag(cont, Vector3.getNewVector().set(x, y, z));
         }
         else if (guiID == PokecubeAdv.GUICLONER_ID)
         {

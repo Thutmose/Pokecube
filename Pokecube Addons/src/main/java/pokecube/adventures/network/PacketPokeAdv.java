@@ -22,7 +22,7 @@ import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.ItemTarget;
 import pokecube.adventures.items.bags.ContainerBag;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.MovesUtils;
@@ -201,7 +201,7 @@ public class PacketPokeAdv
             @Override
             public MessageServer onMessage(MessageClient message, MessageContext ctx)
             {
-                handleClientSide(mod_Pokecube.getPlayer(null), message.buffer);
+                handleClientSide(PokecubeCore.getPlayer(null), message.buffer);
                 return null;
             }
 

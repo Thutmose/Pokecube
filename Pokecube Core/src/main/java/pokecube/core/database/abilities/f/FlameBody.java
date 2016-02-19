@@ -19,14 +19,13 @@ public class FlameBody extends Ability
     @Override
     public void onUpdate(IPokemob mob)
     {
-        Vector3 v = Vector3.getNewVectorFromPool().set(mob);
+        Vector3 v = Vector3.getNewVector().set(mob);
         List<EntityPokemobEgg> eggs = ((Entity) mob).worldObj.getEntitiesWithinAABB(EntityPokemobEgg.class,
                 v.getAABB().expand(range, range, range));
         for (EntityPokemobEgg egg : eggs)
         {
             egg.incubateEgg();
         }
-        v.freeVectorFromPool();
     }
 
     @Override

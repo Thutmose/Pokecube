@@ -30,7 +30,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
@@ -71,10 +71,10 @@ public final class SpawnHandler
     public static final HashMap<Integer, ArrayList<PokedexEntry>> spawnLists = new HashMap<Integer, ArrayList<PokedexEntry>>();
     public static int                                             number     = 0;
 
-    private static Vector3 vec  = Vector3.getNewVectorFromPool();
-    private static Vector3 vec1 = Vector3.getNewVectorFromPool();
-    private static Vector3 vec2 = Vector3.getNewVectorFromPool();
-    private static Vector3 temp = Vector3.getNewVectorFromPool();
+    private static Vector3 vec  = Vector3.getNewVector();
+    private static Vector3 vec1 = Vector3.getNewVector();
+    private static Vector3 vec2 = Vector3.getNewVector();
+    private static Vector3 temp = Vector3.getNewVector();
 
     public SpawnHandler()
     {
@@ -203,14 +203,13 @@ public final class SpawnHandler
 
         }
 
-        if (temp == null) temp = Vector3.getNewVectorFromPool().set(player);
+        if (temp == null) temp = Vector3.getNewVector().set(player);
 
         temp1 = Vector3.getNextSurfacePoint2(world, temp, vec2.set(EnumFacing.DOWN), temp.y);
 
         if (temp1 != null)
         {
             temp1.y++;
-            temp.freeVectorFromPool();
             return temp1;
         }
         return temp;
@@ -234,7 +233,6 @@ public final class SpawnHandler
             if (temp.isClearOfBlocks(world)) { return temp; }
 
         }
-        temp.freeVectorFromPool();
         return null;
     }
 
@@ -656,14 +654,14 @@ public final class SpawnHandler
 
     public static long time   = 0;
     public JEP         parser = new JEP();
-    Vector3            v      = Vector3.getNewVectorFromPool();
-    Vector3            v1     = Vector3.getNewVectorFromPool();
-    Vector3            v2     = Vector3.getNewVectorFromPool();
-    Vector3            v3     = Vector3.getNewVectorFromPool();
+    Vector3            v      = Vector3.getNewVector();
+    Vector3            v1     = Vector3.getNewVector();
+    Vector3            v2     = Vector3.getNewVector();
+    Vector3            v3     = Vector3.getNewVector();
 
     public void tick(World world)
     {
-        if (mod_Pokecube.isOnClientSide())
+        if (PokecubeCore.isOnClientSide())
         {
             System.out.println(FMLCommonHandler.instance().getEffectiveSide());
             return;

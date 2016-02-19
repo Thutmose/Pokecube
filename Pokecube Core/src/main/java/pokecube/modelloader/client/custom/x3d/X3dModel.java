@@ -43,7 +43,7 @@ public class X3dModel implements IModelCustom, IModel, IRetexturableModel
             X3dObject o = new X3dObject(s);
             o.shapes = parser.shapeMap.get(s);
             String[] offset = partTranslations.get(s).get("translation").split(" ");
-            o.offset = Vector3.getNewVectorFromPool().set(Float.parseFloat(offset[0]), Float.parseFloat(offset[1]),
+            o.offset = Vector3.getNewVector().set(Float.parseFloat(offset[0]), Float.parseFloat(offset[1]),
                     Float.parseFloat(offset[2]));
             offset = partTranslations.get(s).get("scale").split(" ");
             o.scale = new Vertex(Float.parseFloat(offset[0]), Float.parseFloat(offset[1]), Float.parseFloat(offset[2]));

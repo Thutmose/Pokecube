@@ -253,8 +253,8 @@ public class Pokecube extends ItemTranslated implements IPokecube
             entity.targetLocation.set(targetLocation);
             if (player.isSneaking())
             {
-                Vector3 temp = Vector3.getNewVectorFromPool().set(player).add(0, player.getEyeHeight(), 0);
-                Vector3 temp1 = Vector3.getNewVectorFromPool().set(player.getLookVec()).scalarMultBy(1.5);
+                Vector3 temp = Vector3.getNewVector().set(player).add(0, player.getEyeHeight(), 0);
+                Vector3 temp1 = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1.5);
 
                 temp.addTo(temp1).moveEntity(entity);
                 temp.clear().setVelocities(entity);

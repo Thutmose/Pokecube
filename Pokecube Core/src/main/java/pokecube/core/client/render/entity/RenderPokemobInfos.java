@@ -14,7 +14,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Tools;
@@ -29,7 +29,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
 
     public static boolean shouldShow(EntityLivingBase entity)
     {
-        if (((Minecraft) mod_Pokecube.getMinecraftInstance()).gameSettings.hideGUI || entity.riddenByEntity != null)
+        if (((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI || entity.riddenByEntity != null)
         {
             return false;
         }

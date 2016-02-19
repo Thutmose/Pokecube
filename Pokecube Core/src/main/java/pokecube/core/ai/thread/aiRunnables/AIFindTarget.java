@@ -11,7 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.interfaces.IHungrymob;
@@ -26,8 +26,8 @@ public class AIFindTarget extends AIBase implements IAICombat
     final IPokemob     pokemob;
     final IHungrymob   hungryMob;
     final EntityLiving entity;
-    Vector3            v  = Vector3.getNewVectorFromPool();
-    Vector3            v1 = Vector3.getNewVectorFromPool();
+    Vector3            v  = Vector3.getNewVector();
+    Vector3            v1 = Vector3.getNewVector();
 
     public AIFindTarget(EntityLivingBase mob)
     {
@@ -72,7 +72,7 @@ public class AIFindTarget extends AIBase implements IAICombat
     public void run()
     {
         if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IPokemob.STAYING)
-                && pokemob.getPokemonAIState(IPokemob.TAMED) && !mod_Pokecube.isOnClientSide())
+                && pokemob.getPokemonAIState(IPokemob.TAMED) && !PokecubeCore.isOnClientSide())
         {
             List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
             if (!list.isEmpty() && pokemob.getPokemonOwner() != null)

@@ -42,7 +42,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.BlockRepel;
 import pokecube.core.blocks.TileEntityRepel;
 import pokecube.core.blocks.berries.BerryPlantManager;
@@ -93,7 +93,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
     public static Block plank0;
     public static Block leaf0;
     public static Block leaf1;
-    
+
     public static void addItems(Mod_Pokecube_Helper helper)
     {
         addPokecubes();
@@ -101,7 +101,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         addBerries();
         addVitamins();
         addFossils();
-        
+
         GameRegistry.registerTileEntity(TileEntityRepel.class, "repel");
         repelBlock = new BlockRepel();
         repelBlock.setUnlocalizedName("repel");
@@ -184,13 +184,13 @@ public class ItemHandler extends Mod_Pokecube_Helper
         addToHoldables("revive");
 
         tradingtable = (new BlockTradingTable()).setUnlocalizedName("tradingtable");
-        tradingtable.setCreativeTab(mod_Pokecube.creativeTabPokecubeBlocks);
+        tradingtable.setCreativeTab(PokecubeCore.creativeTabPokecubeBlocks);
         GameRegistry.registerTileEntity(TileEntityTradingTable.class, "tradingtable");
         PokecubeItems.register(tradingtable, "tradingtable");
 
         pc = (BlockPC) (new BlockPC()).setUnlocalizedName("pc");
         GameRegistry.registerTileEntity(pokecube.core.blocks.pc.TileEntityPC.class, "pc");
-        pc.setCreativeTab(mod_Pokecube.creativeTabPokecubeBlocks);
+        pc.setCreativeTab(PokecubeCore.creativeTabPokecubeBlocks);
         PokecubeItems.register(pc, ItemBlockPC.class, "pc");
         PokecubeItems.addSpecificItemStack("pctop", new ItemStack(pc, 1, 8));
         PokecubeItems.addSpecificItemStack("pcbase", new ItemStack(pc, 1, 0));
@@ -201,58 +201,62 @@ public class ItemHandler extends Mod_Pokecube_Helper
         addSpecificItemStack("rarecandy", new ItemStack(tm, 1, 20));
         addSpecificItemStack("emerald_shard", new ItemStack(tm, 1, 19));
     }
-    
+
     private static void addFossils()
     {
-        Block fossilStone = (new BlockFossilStone()).setHardness(3F).setResistance(4F).setUnlocalizedName("fossilstone");
+        Block fossilStone = (new BlockFossilStone()).setHardness(3F).setResistance(4F)
+                .setUnlocalizedName("fossilstone");
         PokecubeItems.register(fossilStone, "fossilstone");
         fossilStone.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(Item.getItemFromBlock(fossilStone), 0,
                     new ModelResourceLocation("pokecube:fossilstone", "inventory"));
-        
-        
+
         Item fossilLileep = (new Item().setUnlocalizedName("LileepFossil"));
         PokecubeItems.register(fossilLileep, "fossilLileep");
         fossilLileep.setCreativeTab(PokecubeMod.creativeTabPokecube);
         PokecubeItems.registerFossil(PokecubeItems.getStack("fossilLileep"), "lileep");
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            PokecubeItems.registerItemTexture(fossilLileep, 0, new ModelResourceLocation("pokecube:fossilLileep", "inventory"));
+            PokecubeItems.registerItemTexture(fossilLileep, 0,
+                    new ModelResourceLocation("pokecube:fossilLileep", "inventory"));
         }
-        
+
         Item fossilAnorith = (new Item().setUnlocalizedName("AnorithFossil"));
         PokecubeItems.register(fossilAnorith, "fossilAnorith");
         fossilAnorith.setCreativeTab(PokecubeMod.creativeTabPokecube);
         PokecubeItems.registerFossil(PokecubeItems.getStack("fossilAnorith"), "anorith");
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            PokecubeItems.registerItemTexture(fossilAnorith, 0, new ModelResourceLocation("pokecube:fossilAnorith", "inventory"));
+            PokecubeItems.registerItemTexture(fossilAnorith, 0,
+                    new ModelResourceLocation("pokecube:fossilAnorith", "inventory"));
         }
-        
+
         Item fossilCranidos = (new Item().setUnlocalizedName("CranidosFossil"));
         PokecubeItems.register(fossilCranidos, "fossilCranidos");
         fossilCranidos.setCreativeTab(PokecubeMod.creativeTabPokecube);
         PokecubeItems.registerFossil(PokecubeItems.getStack("fossilCranidos"), "cranidos");
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            PokecubeItems.registerItemTexture(fossilCranidos, 0, new ModelResourceLocation("pokecube:fossilCranidos", "inventory"));
+            PokecubeItems.registerItemTexture(fossilCranidos, 0,
+                    new ModelResourceLocation("pokecube:fossilCranidos", "inventory"));
         }
-        
+
         Item fossilShieldon = (new Item().setUnlocalizedName("ShieldonFossil"));
         PokecubeItems.register(fossilShieldon, "fossilShieldon");
         fossilShieldon.setCreativeTab(PokecubeMod.creativeTabPokecube);
         PokecubeItems.registerFossil(PokecubeItems.getStack("fossilShieldon"), "shieldon");
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            PokecubeItems.registerItemTexture(fossilShieldon, 0, new ModelResourceLocation("pokecube:fossilShieldon", "inventory"));
+            PokecubeItems.registerItemTexture(fossilShieldon, 0,
+                    new ModelResourceLocation("pokecube:fossilShieldon", "inventory"));
         }
-        
+
         Item dome = (new Item().setUnlocalizedName("DomeFossil"));
         PokecubeItems.register(dome, "fossilDome");
         dome.setCreativeTab(PokecubeMod.creativeTabPokecube);
         PokecubeItems.registerFossil(PokecubeItems.getStack("fossilDome"), "kabuto");
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             PokecubeItems.registerItemTexture(dome, 0, new ModelResourceLocation("pokecube:fossilDome", "inventory"));
         }
@@ -261,12 +265,12 @@ public class ItemHandler extends Mod_Pokecube_Helper
         PokecubeItems.register(helix, "fossilHelix");
         helix.setCreativeTab(PokecubeMod.creativeTabPokecube);
         PokecubeItems.registerFossil(PokecubeItems.getStack("fossilHelix"), "omanyte");
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             PokecubeItems.registerItemTexture(helix, 0, new ModelResourceLocation("pokecube:fossilHelix", "inventory"));
         }
     }
-    
+
     private static void addVitamins()
     {
         VitaminManager.addVitamin("carbos", 1);
@@ -316,8 +320,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
                                                             // foe if holder is
                                                             // hit by a special
                                                             // move
-        
-        
+
         BerryPlantManager.addBerry("cheri", 1);// Cures Paralysis
         BerryPlantManager.addBerry("chesto", 2);// Cures sleep
         BerryPlantManager.addBerry("pecha", 3);// Cures poison
@@ -379,7 +382,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         TreeRemover.woodTypes.add(log0);
         TreeRemover.plantTypes.add(leaf0);
         TreeRemover.plantTypes.add(leaf1);
-        
+
     }
 
     private static void addPokecubes()
@@ -500,16 +503,15 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 {
                     EntityPokecube cube = (EntityPokecube) evt.pokecube;
 
-                    IPokemob mob = (IPokemob) mod_Pokecube.instance.createEntityByPokedexNb(evt.caught.getPokedexNb(),
+                    IPokemob mob = (IPokemob) PokecubeCore.instance.createEntityByPokedexNb(evt.caught.getPokedexNb(),
                             cube.worldObj);
-                    Vector3 v = Vector3.getNewVectorFromPool();
+                    Vector3 v = Vector3.getNewVector();
                     cube.tilt = Tools.computeCatchRate(mob, 1);
                     cube.time = cube.tilt * 20;
                     evt.caught.setPokecubeId(PokecubeItems.getCubeId(evt.filledCube));
                     cube.setEntityItemStack(PokecubeManager.pokemobToItem(evt.caught));
                     PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
                     v.set(evt.caught).moveEntity(cube);
-                    v.freeVectorFromPool();
                     ((Entity) evt.caught).setDead();
                     cube.setVelocity(0, 0.1, 0);
                     cube.worldObj.spawnEntityInWorld(cube.copy());
@@ -536,9 +538,9 @@ public class ItemHandler extends Mod_Pokecube_Helper
             {
                 EntityPokecube cube = (EntityPokecube) evt.pokecube;
 
-                IPokemob mob = (IPokemob) mod_Pokecube.instance.createEntityByPokedexNb(evt.caught.getPokedexNb(),
+                IPokemob mob = (IPokemob) PokecubeCore.instance.createEntityByPokedexNb(evt.caught.getPokedexNb(),
                         cube.worldObj);
-                Vector3 v = Vector3.getNewVectorFromPool();
+                Vector3 v = Vector3.getNewVector();
                 Entity thrower = cube.shootingEntity;
                 int has = CaptureStats.getTotalNumberOfPokemobCaughtBy(thrower.getUniqueID().toString(),
                         mob.getPokedexEntry());
@@ -551,7 +553,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 cube.setEntityItemStack(PokecubeManager.pokemobToItem(evt.caught));
                 PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
                 v.set(evt.caught).moveEntity(cube);
-                v.freeVectorFromPool();
                 ((Entity) evt.caught).setDead();
                 cube.setVelocity(0, 0.1, 0);
                 cube.worldObj.spawnEntityInWorld(cube.copy());

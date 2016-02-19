@@ -41,7 +41,7 @@ public class TrainerSpawnHandler
 	public static int trainerBox = 64;
 	
 	private static TrainerSpawnHandler instance;
-	Vector3 v = Vector3.getNewVectorFromPool(), v1 = Vector3.getNewVectorFromPool(), v2 = Vector3.getNewVectorFromPool();
+	Vector3 v = Vector3.getNewVector(), v1 = Vector3.getNewVector(), v2 = Vector3.getNewVector();
 	
 	public TrainerSpawnHandler()
 	{

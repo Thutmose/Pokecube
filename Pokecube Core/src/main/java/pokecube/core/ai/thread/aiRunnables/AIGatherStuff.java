@@ -26,12 +26,12 @@ public class AIGatherStuff extends AIBase
     IPokemob           pokemob;
     boolean            block     = false;
     EntityItem         stuff     = null;
-    Vector3            stuffLoc  = Vector3.getNewVectorFromPool();
+    Vector3            stuffLoc  = Vector3.getNewVector();
     final boolean[]    states    = { false, false };
     final int[]        cooldowns = { 0, 0 };
-    Vector3            seeking   = Vector3.getNewVectorFromPool();
-    Vector3            v         = Vector3.getNewVectorFromPool();
-    Vector3            v1        = Vector3.getNewVectorFromPool();
+    Vector3            seeking   = Vector3.getNewVector();
+    Vector3            v         = Vector3.getNewVector();
+    Vector3            v1        = Vector3.getNewVector();
 
     public AIGatherStuff(EntityLiving entity, double distance)
     {
@@ -48,8 +48,8 @@ public class AIGatherStuff extends AIBase
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
         if (world == null || pokemob.isAncient() || tameCheck()) return false;
 
-        int rate = pokemob.getPokemonAIState(IPokemob.TAMED)?10:100;
-        if (pokemob.getHome() == null || entity.ticksExisted%rate!=0) return false;
+        int rate = pokemob.getPokemonAIState(IPokemob.TAMED) ? 10 : 100;
+        if (pokemob.getHome() == null || entity.ticksExisted % rate != 0) return false;
 
         if (stuffLoc.distToEntity(entity) > 32) stuffLoc.clear();
         if (cooldowns[0] > 0) return false;
@@ -98,7 +98,7 @@ public class AIGatherStuff extends AIBase
         {
             if (stuff != null)
             {
-                double close = entity.width*entity.width;
+                double close = entity.width * entity.width;
                 close = Math.max(close, 2);
                 if (stuff.getDistanceToEntity(entity) < close)
                 {
@@ -151,38 +151,7 @@ public class AIGatherStuff extends AIBase
                 block = true;
                 stuffLoc.set(temp);
             }
-            if (temp != null) temp.freeVectorFromPool();
         }
-//        if (!block && hungrymob.isHerbivore())
-//        {
-//            Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
-//            if (temp != null)
-//            {
-//                block = true;
-//                stuffLoc.set(temp);
-//            }
-//            if (temp != null) temp.freeVectorFromPool();
-//        }
-//        if (hungrymob.isLithotroph())
-//        {
-//            Block b = v.getBlock(world, EnumFacing.DOWN);
-//            if (!Mod_Pokecube_Helper.getRocks().contains(b) || b == Blocks.gravel)
-//            {
-//                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, Mod_Pokecube_Helper.getRocks());
-//                if (temp != null)
-//                {
-//                    block = true;
-//                    stuffLoc.set(temp);
-//                }
-//                if (temp != null) temp.freeVectorFromPool();
-//                if (!stuffLoc.isEmpty()) return;
-//            }
-//            else
-//            {
-//                stuffLoc.set(v.set(hungrymob).offsetBy(EnumFacing.DOWN));
-//                return;
-//            }
-//        }
         if (hungrymob.isElectrotroph())
         {
 
@@ -213,14 +182,14 @@ public class AIGatherStuff extends AIBase
                 }
             }
         }
-        else if(!stuffLoc.isEmpty())
+        else if (!stuffLoc.isEmpty())
         {
             double diff = 2;
             diff = Math.max(diff, entity.width);
             double dist = stuffLoc.distToEntity(entity);
             v.set(entity).subtractFrom(stuffLoc);
             double dot = v.normalize().dot(Vector3.secondAxis);
-            if(dot<-0.9 && entity.onGround)
+            if (dot < -0.9 && entity.onGround)
             {
                 diff = Math.max(3, diff);
             }

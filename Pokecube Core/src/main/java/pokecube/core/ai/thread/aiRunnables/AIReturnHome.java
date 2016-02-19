@@ -17,8 +17,8 @@ public class AIReturnHome extends AIBase
     final PokedexEntry         entry;
     private double             speed;
 
-    Vector3 v  = Vector3.getNewVectorFromPool();
-    Vector3 v1 = Vector3.getNewVectorFromPool();
+    Vector3 v  = Vector3.getNewVector();
+    Vector3 v1 = Vector3.getNewVector();
 
     public AIReturnHome(EntityLiving entity)
     {

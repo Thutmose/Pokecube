@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod.Type;
@@ -537,7 +537,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         }
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
-                && ridingEntity == mod_Pokecube.getProxy().getPlayer(null))
+                && ridingEntity == PokecubeCore.getProxy().getPlayer(null))
         {
             ret = -ridingEntity.height + 0.25;
             this.onGround = true;

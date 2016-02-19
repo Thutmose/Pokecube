@@ -17,7 +17,7 @@ public class EntityAITrainer extends EntityAIBase {
 	// The entity (normally a player) that is the target of this trainer.
 	EntityLivingBase target;
 	Class<? extends EntityLivingBase> targetClass;
-	Vector3 loc = Vector3.getNewVectorFromPool();
+	Vector3 loc = Vector3.getNewVector();
 
 	// The trainer Entity
 	final EntityTrainer trainer;

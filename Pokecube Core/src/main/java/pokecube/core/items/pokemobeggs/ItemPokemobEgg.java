@@ -64,14 +64,12 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         {
             d = 0.5D;
         }
-        Vector3 loc = Vector3.getNewVectorFromPool().set(newPos).addTo(hitX, d, hitZ);
+        Vector3 loc = Vector3.getNewVector().set(newPos).addTo(hitX, d, hitZ);
 
         if (dropEgg(worldIn, stack, loc, playerIn) && !playerIn.capabilities.isCreativeMode)
         {
             stack.stackSize--;
         }
-        loc.freeVectorFromPool();
-
         return true;
     }
 
@@ -165,7 +163,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         byte[] ivs = getIVs(father.getIVs(), mother.getIVs(), father.getEVs(), mother.getEVs());
         long ivsL = PokecubeSerializer.byteArrayAsLong(ivs);
         nbt.setLong("ivs", ivsL);
-        nbt.setByteArray("colour", getColour(((IMobColourable)father).getRGBA(), ((IMobColourable)mother).getRGBA()));
+        nbt.setByteArray("colour", getColour(((IMobColourable) father).getRGBA(), ((IMobColourable) mother).getRGBA()));
         nbt.setFloat("size", getSize(father.getSize(), mother.getSize()));
         nbt.setByte("nature", getNature(mother.getNature(), father.getNature()));
 
@@ -229,33 +227,32 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
                     mob.setMove(4 - i, null);
                 }
             }
-            //IsDead is set to prevent it notifiying owner of move learning.
-            ((Entity)mob).isDead = true;
+            // IsDead is set to prevent it notifiying owner of move learning.
+            ((Entity) mob).isDead = true;
             for (String s : moves)
             {
                 if (s != null && !s.isEmpty()) mob.learn(s);
             }
-            ((Entity)mob).isDead = false;      
+            ((Entity) mob).isDead = false;
             byte[] rgba = new byte[4];
             if (nbt.hasKey("colour", 7))
             {
                 rgba = nbt.getByteArray("colour");
-                if(rgba.length==4)
+                if (rgba.length == 4)
                 {
-                    ((IMobColourable)mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128, rgba[3] + 128);
+                    ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128, rgba[3] + 128);
                 }
-                else if(rgba.length==3)
+                else if (rgba.length == 3)
                 {
-                    ((IMobColourable)mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128);
+                    ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128);
                 }
             }
             mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
             mob.setNature(Nature.values()[nbt.getByte("nature")]);
             mob.setSize(nbt.getFloat("size"));
         }
-        
 
-        Vector3 location = Vector3.getNewVectorFromPool().set(mob);
+        Vector3 location = Vector3.getNewVector().set(mob);
         EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 8);
         if (player == null)
         {

@@ -280,7 +280,8 @@ public class MovesUtils implements IMoveConstants
         }
     }
 
-    public static float getAttackStrength(IPokemob attacker, IPokemob attacked, byte type, int PWR, MovePacket movePacket)
+    public static float getAttackStrength(IPokemob attacker, IPokemob attacked, byte type, int PWR,
+            MovePacket movePacket)
     {
         Move_Base move = movePacket.getMove();
         if (move.fixedDamage) { return move.getPWR(attacker, (Entity) attacked); }
@@ -672,7 +673,7 @@ public class MovesUtils implements IMoveConstants
 
     public static Entity targetHit(Entity attacker, Vector3 dest)
     {
-        Vector3 source = Vector3.getNewVectorFromPool().set(attacker, true);
+        Vector3 source = Vector3.getNewVector().set(attacker, true);
         source.y += attacker.height / 4;
         return targetHit(source, dest.subtract(source), 16, attacker.worldObj, attacker, false);
     }
@@ -685,7 +686,6 @@ public class MovesUtils implements IMoveConstants
         Entity target = null;
 
         List<Entity> targets = source.allEntityLocationExcluding(distance, 0.5, dir, source, worldObj, attacker);
-        source.freeVectorFromPool();
         double closest = 16;
 
         if (targets != null) for (Entity e : targets)
@@ -720,7 +720,7 @@ public class MovesUtils implements IMoveConstants
 
     public static List<EntityLivingBase> targetsHit(Entity attacker, Vector3 dest)
     {
-        Vector3 source = Vector3.getNewVectorFromPool().set(attacker, true);
+        Vector3 source = Vector3.getNewVector().set(attacker, true);
         // Vector3 dest = Vector3.getVector().set(target, true);
 
         source.y += attacker.height / 4;
@@ -729,7 +729,6 @@ public class MovesUtils implements IMoveConstants
         List<Entity> targets = source.allEntityLocationExcluding(16, 0.1, dest.subtract(source), source,
                 attacker.worldObj, attacker);
         List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
-        source.freeVectorFromPool();
         if (targets != null) for (Entity e : targets)
         {
             if (e instanceof EntityLivingBase && (PokecubeMod.hardMode || !(e instanceof EntityPlayer)))
@@ -743,13 +742,12 @@ public class MovesUtils implements IMoveConstants
 
     public static List<EntityLivingBase> targetsHit(Entity attacker, Vector3 dest, int range, double area)
     {
-        Vector3 source = Vector3.getNewVectorFromPool().set(attacker);
+        Vector3 source = Vector3.getNewVector().set(attacker);
         // Vector3 dest = Vector3.getVector().set(target);
 
         List<Entity> targets = source.allEntityLocationExcluding(range, area, dest.subtract(source), source,
                 attacker.worldObj, attacker);
         List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
-        source.freeVectorFromPool();
         if (targets != null) for (Entity e : targets)
         {
             if (e instanceof EntityLivingBase)

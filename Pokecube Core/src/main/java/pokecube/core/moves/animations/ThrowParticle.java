@@ -24,7 +24,7 @@ public class ThrowParticle extends MoveAnimationBase
     public ThrowParticle(String particle)
     {
         this.particle = particle;
-        
+
         String[] args = particle.split(":");
         for (int i = 1; i < args.length; i++)
         {
@@ -53,7 +53,7 @@ public class ThrowParticle extends MoveAnimationBase
         ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
         double dist = source.distanceTo(target);
-        Vector3 temp = Vector3.getNewVectorFromPool().set(source).subtractFrom(target);
+        Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
 
         GlStateManager.translate(temp.x, temp.y, temp.z);
         double factor = (info.currentTick + partialTick) / (double) getDuration();
@@ -66,20 +66,19 @@ public class ThrowParticle extends MoveAnimationBase
         GL11.glPushMatrix();
 
         initColour(info.currentTick * 300, partialTick, info.move);
-        float alpha = ((rgba >> 24) & 255)/255f;
-        float red = ((rgba >> 16) & 255)/255f;
-        float green = ((rgba >> 8) & 255)/255f;
-        float blue = (rgba & 255)/255f;
+        float alpha = ((rgba >> 24) & 255) / 255f;
+        float red = ((rgba >> 16) & 255) / 255f;
+        float green = ((rgba >> 8) & 255) / 255f;
+        float blue = (rgba & 255) / 255f;
 
         long hash = (long) (temp.x * 1000000l + temp.z * 1000000000000l);
         Random rand = new Random(hash);
         factor = width * 0.2;
         tez.begin(6);
-        
+
         for (int i = 0; i < 500; i++)
         {
-            temp.set(rand.nextGaussian() * factor, rand.nextGaussian() * factor,
-                    rand.nextGaussian() * factor);
+            temp.set(rand.nextGaussian() * factor, rand.nextGaussian() * factor, rand.nextGaussian() * factor);
             temp.scalarMult(0.010);
             temp.addTo(temp2);
             double size = 0.01;
@@ -92,10 +91,6 @@ public class ThrowParticle extends MoveAnimationBase
         tez.end();
 
         GL11.glPopMatrix();
-
-        temp.freeVectorFromPool();
-        temp2.freeVectorFromPool();
-
     }
 
     @Override

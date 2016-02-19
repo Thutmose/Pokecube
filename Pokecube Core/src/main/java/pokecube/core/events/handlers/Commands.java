@@ -660,16 +660,14 @@ public class Commands implements ICommand
                             return false;
                         }
                         mob.changeForme(name);
-                        Vector3 offset = Vector3.getNewVectorFromPool().set(0, 1, 0);
-                        Vector3 temp = Vector3.getNewVectorFromPool();
+                        Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
+                        Vector3 temp = Vector3.getNewVector();
                         if (player != null)
                         {
                             offset = offset.add(temp.set(player.getLookVec()));
                         }
                         temp.set(cSender.getPosition()).addTo(offset);
                         temp.moveEntity((Entity) mob);
-                        temp.freeVectorFromPool();
-                        offset.freeVectorFromPool();
 
                         String owner = "";
                         boolean shiny = false;
@@ -1088,7 +1086,7 @@ public class Commands implements ICommand
 
                     }
                 }
-                Vector3 v = Vector3.getNewVectorFromPool().set(cSender).add(0, 255 - cSender.getPosition().getY(), 0);
+                Vector3 v = Vector3.getNewVector().set(cSender).add(0, 255 - cSender.getPosition().getY(), 0);
                 if (energy > 0)
                 {
                     Vector3 location = Vector3.getNextSurfacePoint(cSender.getEntityWorld(), v, Vector3.secondAxisNeg,

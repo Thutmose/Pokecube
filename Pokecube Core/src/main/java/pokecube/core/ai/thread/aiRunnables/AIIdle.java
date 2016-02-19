@@ -21,8 +21,8 @@ public class AIIdle extends AIBase
     private double             zPosition;
     private double             speed;
 
-    Vector3 v  = Vector3.getNewVectorFromPool();
-    Vector3 v1 = Vector3.getNewVectorFromPool();
+    Vector3 v  = Vector3.getNewVector();
+    Vector3 v1 = Vector3.getNewVector();
 
     public AIIdle(EntityLiving entity)
     {
@@ -39,7 +39,8 @@ public class AIIdle extends AIBase
         PathEntity current = null;
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
-        if (world == null || mob.getPokedexEntry().isStationary || mob.getPokemonAIState(IPokemob.EXECUTINGMOVE)) return false;
+        if (world == null || mob.getPokedexEntry().isStationary || mob.getPokemonAIState(IPokemob.EXECUTINGMOVE))
+            return false;
         if ((current = entity.getNavigator().getPath()) != null && entity.getNavigator().noPath())
         {
             addEntityPath(entity.getEntityId(), entity.dimension, null, speed);
@@ -97,11 +98,11 @@ public class AIIdle extends AIBase
                             : v);
             Vector3 v = SpawnHandler.getRandomPointNear(world, v1, distance);
 
-            double diff = Math.max(mob.getPokedexEntry().length * mob.getSize(), mob.getPokedexEntry().width * mob.getSize());
+            double diff = Math.max(mob.getPokedexEntry().length * mob.getSize(),
+                    mob.getPokedexEntry().width * mob.getSize());
             diff = Math.max(2, diff);
             if (v == null || this.v.distToSq(v) < diff)
             {
-                if (v != null) v.freeVectorFromPool();
                 return false;
             }
             else
@@ -109,7 +110,6 @@ public class AIIdle extends AIBase
                 this.xPosition = v.x;
                 this.yPosition = v.y;
                 this.zPosition = v.z;
-                v.freeVectorFromPool();
                 return true;
             }
         }
@@ -166,7 +166,6 @@ public class AIIdle extends AIBase
         Vector3 temp = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
         if (temp == null) return;
         yPosition = temp.y + entry.preferedHeight;
-        temp.freeVectorFromPool();
     }
 
     private void doGroundIdle()
@@ -175,7 +174,6 @@ public class AIIdle extends AIBase
         Vector3 temp = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
         if (temp == null) return;
         yPosition = temp.y;
-        temp.freeVectorFromPool();
     }
 
     public void doWaterIdle()

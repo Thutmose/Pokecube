@@ -23,7 +23,7 @@ public class HoneyGather extends Ability
         diff = Math.min(0.5, diff);
         if (Math.random() < 1 - diff) return;
 
-        Vector3 here = Vector3.getNewVectorFromPool().set(mob);
+        Vector3 here = Vector3.getNewVector().set(mob);
         EntityLiving entity = (EntityLiving) mob;
         Random rand = entity.getRNG();
 
@@ -48,7 +48,6 @@ public class HoneyGather extends Ability
                 }
             }
         }
-        here.freeVectorFromPool();
     }
 
     @Override

@@ -32,7 +32,7 @@ import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IPokemob;
@@ -139,7 +139,7 @@ public class PokecubeSerializer
         public TeleDest(Vector4 loc)
         {
             this.loc = loc;
-            subLoc = Vector3.getNewVectorFromPool().set(loc.x, loc.y, loc.z);
+            subLoc = Vector3.getNewVector().set(loc.x, loc.y, loc.z);
             name = loc.toIntString();
         }
 
@@ -198,8 +198,8 @@ public class PokecubeSerializer
     public static PokecubeSerializer getInstance()
     {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        String serverId = mod_Pokecube.proxy.getFolderName();
-        if (mod_Pokecube
+        String serverId = PokecubeCore.proxy.getFolderName();
+        if (PokecubeCore
                 .isOnClientSide()) { return instance == null ? instance = new PokecubeSerializer(server) : instance; }
 
         if (instance == null || instance.serverId == null || !instance.serverId.equals(serverId))
@@ -220,12 +220,12 @@ public class PokecubeSerializer
 
             if (!toNew)
             {
-                instance.myWorld = mod_Pokecube.proxy.getWorld();// surface
+                instance.myWorld = PokecubeCore.proxy.getWorld();// surface
                                                                  // world folder
                                                                  // will be used
                                                                  // to save the
                                                                  // file
-                serverId = mod_Pokecube.proxy.getFolderName();
+                serverId = PokecubeCore.proxy.getFolderName();
                 if (instance.myWorld != null) instance.saveHandler = instance.myWorld.getSaveHandler();
             }
             if (toNew)
@@ -251,9 +251,9 @@ public class PokecubeSerializer
 
     private PokecubeSerializer(MinecraftServer server)
     {
-        myWorld = mod_Pokecube.proxy.getWorld();// surface world folder will be
+        myWorld = PokecubeCore.proxy.getWorld();// surface world folder will be
                                                 // used to save the file
-        serverId = mod_Pokecube.proxy.getFolderName();
+        serverId = PokecubeCore.proxy.getFolderName();
         if (myWorld != null) saveHandler = myWorld.getSaveHandler();
         pokemobsMap = new HashMap<Integer, IPokemob>();
         lastId = 0;
@@ -885,7 +885,7 @@ public class PokecubeSerializer
         {
             if (!found)
             {
-                Ticket ticket = ForgeChunkManager.requestTicket(mod_Pokecube.instance, world,
+                Ticket ticket = ForgeChunkManager.requestTicket(PokecubeCore.instance, world,
                         ForgeChunkManager.Type.NORMAL);
                 for (int i = -1; i < 2; i++)
                     for (int j = -1; j < 2; j++)

@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -273,9 +273,9 @@ public class InventoryPC implements IInventory
     	{
     		if(map.containsKey(uuid))
     		{
-    			if(mod_Pokecube.proxy.getPlayer(uuid)!=null)
+    			if(PokecubeCore.proxy.getPlayer(uuid)!=null)
     			{
-    				String username = mod_Pokecube.proxy.getPlayer(uuid).getName();
+    				String username = PokecubeCore.proxy.getPlayer(uuid).getName();
     				map.remove(username);
     			}
     			return map.get(uuid);
@@ -329,7 +329,7 @@ public class InventoryPC implements IInventory
     		addStackToPC(player, mob);
     	}
         String uuid = player;
-		if(!mod_Pokecube.isOnClientSide() && mod_Pokecube.proxy.getPlayer(uuid)!=null)
+		if(!PokecubeCore.isOnClientSide() && PokecubeCore.proxy.getPlayer(uuid)!=null)
 		{
 			PCSaveHandler.getInstance().savePC(uuid);
 	        NBTTagCompound nbt = new NBTTagCompound();
@@ -338,7 +338,7 @@ public class InventoryPC implements IInventory
 	        nbt.setTag("pc", tags);
 	        
 	        MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
-	        PokecubePacketHandler.sendToClient(packet, mod_Pokecube.proxy.getPlayer(uuid));
+	        PokecubePacketHandler.sendToClient(packet, PokecubeCore.proxy.getPlayer(uuid));
 		}
     }
     
@@ -361,8 +361,8 @@ public class InventoryPC implements IInventory
 		{
 	        ItemStack stack = mob;
 	        heal(stack);
-			if(mod_Pokecube.proxy.getPlayer(uuid)!=null)
-				mod_Pokecube.proxy.getPlayer(uuid).addChatMessage(new ChatComponentText(message));
+			if(PokecubeCore.proxy.getPlayer(uuid)!=null)
+				PokecubeCore.proxy.getPlayer(uuid).addChatMessage(new ChatComponentText(message));
 		}
     	pc.addItem(mob.copy());
     	mob = null;
@@ -491,7 +491,7 @@ public class InventoryPC implements IInventory
 
 	@Override
 	public String getName() {
-		EntityPlayer player = mod_Pokecube.getPlayer(owner);
+		EntityPlayer player = PokecubeCore.getPlayer(owner);
 		String name = "Public";
 		
 		if(!owner.equals(defaultId.toString()))

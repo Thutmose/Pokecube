@@ -121,13 +121,13 @@ import thut.api.maths.Vector3;
 @Mod(modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:Forge@"
         + PokecubeMod.MINFORGEVERSION
         + PokecubeMod.DEPSTRING, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, guiFactory = "pokecube.core.client.gui.config.ModGuiFactory")
-public class mod_Pokecube extends PokecubeMod
+public class PokecubeCore extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")
     public static CommonProxyPokecube proxy;
 
     @Instance(ID)
-    public static mod_Pokecube instance;
+    public static PokecubeCore instance;
 
     public SpawnHandler spawner;
 
@@ -156,7 +156,7 @@ public class mod_Pokecube extends PokecubeMod
 
     /** Should be useless on final install. But needed in Eclipse.
      * 
-     * @return the Proxy depending on the environment */
+     * @return the Proxy depending on the SimpleComponent */
     public static CommonProxyPokecube getProxy()
     {
         return proxy;
@@ -454,7 +454,7 @@ public class mod_Pokecube extends PokecubeMod
         return messageId;
     }
 
-    public mod_Pokecube()
+    public PokecubeCore()
     {
         new Tools();
         core = this;
@@ -531,15 +531,15 @@ public class mod_Pokecube extends PokecubeMod
 
         // Packets for Pokemobs
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
-                mod_Pokecube.getMessageID(), Side.CLIENT);
+                PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
-                mod_Pokecube.getMessageID(), Side.SERVER);
+                PokecubeCore.getMessageID(), Side.SERVER);
 
         // Packets for PCs and Trading
         PokecubeMod.packetPipeline.registerMessage(PCPacketHandler.MessageClient.MessageHandlerClient.class,
-                PCPacketHandler.MessageClient.class, mod_Pokecube.getMessageID(), Side.CLIENT);
+                PCPacketHandler.MessageClient.class, PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PCPacketHandler.MessageServer.MessageHandlerServer.class,
-                PCPacketHandler.MessageServer.class, mod_Pokecube.getMessageID(), Side.SERVER);
+                PCPacketHandler.MessageServer.class, PokecubeCore.getMessageID(), Side.SERVER);
 
         helper.addItems();
         Reader fileIn = null;

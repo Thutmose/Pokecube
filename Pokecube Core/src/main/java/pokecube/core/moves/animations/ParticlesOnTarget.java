@@ -49,17 +49,17 @@ public class ParticlesOnTarget extends MoveAnimationBase
         Vector3 target = info.target;
         ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-        Vector3 temp = Vector3.getNewVectorFromPool().set(source).subtractFrom(target);
+        Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
 
         PTezzelator tez = PTezzelator.instance;
 
         GL11.glPushMatrix();
 
         initColour(info.currentTick * 300, partialTick, info.move);
-        float alpha = ((rgba >> 24) & 255)/255f;
-        float red = ((rgba >> 16) & 255)/255f;
-        float green = ((rgba >> 8) & 255)/255f;
-        float blue = (rgba & 255)/255f;
+        float alpha = ((rgba >> 24) & 255) / 255f;
+        float red = ((rgba >> 16) & 255) / 255f;
+        float green = ((rgba >> 8) & 255) / 255f;
+        float blue = (rgba & 255) / 255f;
 
         VertexFormat format = DefaultVertexFormats.POSITION_COLOR;
         Random rand = new Random(info.currentTick);
@@ -78,8 +78,6 @@ public class ParticlesOnTarget extends MoveAnimationBase
         }
 
         GL11.glPopMatrix();
-
-        temp.freeVectorFromPool();
     }
 
     @Override

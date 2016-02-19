@@ -2,15 +2,11 @@ package pokecube.adventures.blocks.afa;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
-import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Environment;
-import li.cil.oc.api.network.Message;
-import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.SidedEnvironment;
-import li.cil.oc.api.network.Visibility;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -25,6 +21,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.TileEntityOwnable;
@@ -35,8 +33,10 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokecubeSerializer;
 
+@Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+        @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityAFA extends TileEntityOwnable
-        implements IInventory, IEnergyReceiver, ITickable, SidedEnvironment, Environment
+        implements IInventory, IEnergyReceiver, ITickable, SimpleComponent, SidedComponent
 {
     public IPokemob         pokemob   = null;
     private ItemStack[]     inventory = new ItemStack[1];
@@ -52,15 +52,6 @@ public class TileEntityAFA extends TileEntityOwnable
     {
         super();
         storage = new EnergyStorage(3200);
-        try
-        {
-            node = Network.newNode(this, Visibility.Network).withConnector().withComponent("afa", Visibility.Network)
-                    .create();
-        }
-        catch (Exception e)
-        {
-            // e.printStackTrace();
-        }
     }
 
     protected boolean addedToNetwork = false;
@@ -68,11 +59,6 @@ public class TileEntityAFA extends TileEntityOwnable
     @Override
     public void update()
     {
-        if (!addedToNetwork)
-        {
-            addedToNetwork = true;
-            Network.joinOrCreateNetwork(this);
-        }
         if (inventory[0] != null && pokemob == null)
         {
             refreshAbility();
@@ -146,10 +132,6 @@ public class TileEntityAFA extends TileEntityOwnable
         nbt.setInteger("distance", distance);
         nbt.setBoolean("noEnergy", noEnergy);
         storage.writeToNBT(nbt);
-        if (node != null && node.host() == this)
-        {
-            node.load(nbt.getCompoundTag("oc:node"));
-        }
     }
 
     @Override
@@ -176,12 +158,6 @@ public class TileEntityAFA extends TileEntityOwnable
         distance = nbt.getInteger("distance");
         noEnergy = nbt.getBoolean("noEnergy");
         storage.readFromNBT(nbt);
-        if (node != null && node.host() == this)
-        {
-            final NBTTagCompound nodeNbt = new NBTTagCompound();
-            node.save(nodeNbt);
-            nbt.setTag("oc:node", nodeNbt);
-        }
     }
 
     /** Overriden in a sign to provide the text. */
@@ -437,62 +413,34 @@ public class TileEntityAFA extends TileEntityOwnable
         return storage.getMaxEnergyStored();
     }
 
-    // OpenComputers compatibility stuff after here, the Open Computers API
-    // comes with ThutCore, so is no extra dependency.
-    Node node;
-
-    @Override
-    public Node node()
-    {
-        return node;
-    }
-
     @Override
     public void onChunkUnload()
     {
         super.onChunkUnload();
-        // Make sure to remove the node from its network when its environment,
-        // meaning this tile entity, gets unloaded.
-        if (node != null) node.remove();
     }
 
     @Override
     public void invalidate()
     {
         super.invalidate();
-        // Make sure to remove the node from its network when its environment,
-        // meaning this tile entity, gets unloaded.
-        if (node != null) node.remove();
-    }
-
-    @Override
-    public void onConnect(Node arg0)
-    {
-    }
-
-    @Override
-    public void onDisconnect(Node arg0)
-    {
-    }
-
-    @Override
-    public void onMessage(Message arg0)
-    {
     }
 
     @Callback
+    @Optional.Method(modid = "OpenComputers")
     public Object[] getEnergy(Context context, Arguments args)
     {
         return new Object[] { storage.getEnergyStored() };
     }
 
     @Callback
+    @Optional.Method(modid = "OpenComputers")
     public Object[] getRange(Context context, Arguments args)
     {
         return new Object[] { distance };
     }
 
     @Callback
+    @Optional.Method(modid = "OpenComputers")
     public Object[] setRange(Context context, Arguments args)
     {
         distance = args.checkInteger(0);
@@ -500,6 +448,7 @@ public class TileEntityAFA extends TileEntityOwnable
     }
 
     @Callback
+    @Optional.Method(modid = "OpenComputers")
     public Object[] getAbility(Context context, Arguments args) throws Exception
     {
         if (ability != null)
@@ -511,6 +460,7 @@ public class TileEntityAFA extends TileEntityOwnable
     }
 
     @Callback
+    @Optional.Method(modid = "OpenComputers")
     public Object[] setHoloState(Context context, Arguments args)
     {
         scale = args.checkInteger(0);
@@ -521,14 +471,14 @@ public class TileEntityAFA extends TileEntityOwnable
     }
 
     @Override
-    public boolean canConnect(EnumFacing arg0)
+    public String getComponentName()
     {
-        return arg0 == EnumFacing.DOWN;
+        return "afa";
     }
 
     @Override
-    public Node sidedNode(EnumFacing arg0)
+    public boolean canConnectNode(EnumFacing side)
     {
-        return node;
+        return side == EnumFacing.DOWN;
     }
 }

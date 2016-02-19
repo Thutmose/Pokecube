@@ -34,7 +34,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.Resources;
 import pokecube.core.database.Pokedex;
@@ -87,7 +87,7 @@ public class GuiPokedex extends GuiScreen
     private int index  = 0;
     private int index2 = 0;
 
-    public static Vector3 closestVillage = Vector3.getNewVectorFromPool();
+    public static Vector3 closestVillage = Vector3.getNewVector();
 
     private static final int PAGECOUNT = 5;
 
@@ -151,9 +151,8 @@ public class GuiPokedex extends GuiScreen
         {
             TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
             // t.refresh(entityPlayer.worldObj);
-            Vector3 location = Vector3.getNewVectorFromPool().set(entityPlayer);
+            Vector3 location = Vector3.getNewVector().set(entityPlayer);
             int type = t.getBiome(location);
-            location.freeVectorFromPool();
             for (int i = 0; i < biomes.size(); i++)
             {
                 if (biomes.get(i) == (type))
@@ -166,7 +165,7 @@ public class GuiPokedex extends GuiScreen
         }
         if (page == 4)
         {
-            Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
                     .getTeleports(minecraft.thePlayer.getUniqueID().toString());
 
@@ -200,7 +199,7 @@ public class GuiPokedex extends GuiScreen
             {
                 GuiTeleport.instance().nextMove();
 
-                Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
                         .getTeleports(minecraft.thePlayer.getUniqueID().toString());
 
@@ -215,15 +214,14 @@ public class GuiPokedex extends GuiScreen
             else if (page == 4 && par2 == 28 && index == 0 || index == 4)
             {
 
-                Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
                         .getTeleports(minecraft.thePlayer.getUniqueID().toString());
 
                 if (locations.size() > 0)
                 {
                     PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-                    Vector4 location = locations
-                            .get((GuiTeleport.instance().indexLocation) % locations.size()).loc;
+                    Vector4 location = locations.get((GuiTeleport.instance().indexLocation) % locations.size()).loc;
                     if (index == 0) buffer.writeByte(-1);
                     else if (index == 4) buffer.writeByte(-2);
                     buffer.writeInt((int) location.w);
@@ -497,7 +495,7 @@ public class GuiPokedex extends GuiScreen
             nicknameTextField.setEnabled(true);
             nicknameTextField.setFocused(true);
             GuiTeleport.instance().nextMove();
-            Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
                     .getTeleports(minecraft.thePlayer.getUniqueID().toString());
 
@@ -513,7 +511,7 @@ public class GuiPokedex extends GuiScreen
             nicknameTextField.setEnabled(true);
             nicknameTextField.setFocused(true);
             GuiTeleport.instance().previousMove();
-            Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
                     .getTeleports(minecraft.thePlayer.getUniqueID().toString());
 
@@ -604,9 +602,8 @@ public class GuiPokedex extends GuiScreen
                 if (page == 1)
                 {
                     TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-                    Vector3 location = Vector3.getNewVectorFromPool().set(entityPlayer);
+                    Vector3 location = Vector3.getNewVector().set(entityPlayer);
                     int type = t.getBiome(location.intX(), location.intY(), location.intZ());
-                    location.freeVectorFromPool();
                     for (int i = 0; i < biomes.size(); i++)
                     {
                         if (biomes.get(i) == (type))
@@ -633,9 +630,8 @@ public class GuiPokedex extends GuiScreen
                 if (page == 1)
                 {
                     TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-                    Vector3 location = Vector3.getNewVectorFromPool().set(entityPlayer);
+                    Vector3 location = Vector3.getNewVector().set(entityPlayer);
                     int type = t.getBiome(location.intX(), location.intY(), location.intZ());
-                    location.freeVectorFromPool();
                     for (int i = 0; i < biomes.size(); i++)
                     {
                         if (biomes.get(i) == (type))
@@ -684,7 +680,7 @@ public class GuiPokedex extends GuiScreen
     {
         super.drawScreen(i, j, f);
 
-        Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+        Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
 
         minecraft.renderEngine.bindTexture(Resources.GUI_POKEDEX);
         int j2 = (width - xSize) / 2;
@@ -850,7 +846,7 @@ public class GuiPokedex extends GuiScreen
             {
                 GL11.glPushMatrix();
                 GL11.glTranslated(xSize + 45, ySize / 2 + 23, 0);
-                Vector3 v = Vector3.getNewVectorFromPool().set(entityPlayer).subtractFrom(closestVillage);
+                Vector3 v = Vector3.getNewVector().set(entityPlayer).subtractFrom(closestVillage);
                 v.reverse();
                 v.set(v.normalize());
                 double angle = Math.atan2(v.z, v.x) * 180 / Math.PI - entityPlayer.rotationYaw % 360 + 180;
@@ -864,8 +860,6 @@ public class GuiPokedex extends GuiScreen
                 mess = ((int) v.set(closestVillage).distToEntity(entityPlayer)) + "";
                 width = fontRendererObj.getStringWidth(mess);
                 drawString(fontRendererObj, mess, xOffset - width / 2 + 60, yOffset + 99, 0x78C850);
-                v.freeVectorFromPool();
-
             }
         }
     }
@@ -1048,7 +1042,7 @@ public class GuiPokedex extends GuiScreen
      * @param yOffset */
     private void drawPage4(int xOffset, int yOffset)
     {
-        Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+        Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
         List<TeleDest> locations = PokecubeSerializer.getInstance()
                 .getTeleports(minecraft.thePlayer.getUniqueID().toString());
 

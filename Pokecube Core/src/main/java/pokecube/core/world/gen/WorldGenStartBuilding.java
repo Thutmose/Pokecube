@@ -36,7 +36,7 @@ public class WorldGenStartBuilding implements IWorldGenerator
         building = true;
         int y = getAverageHeight(world, chunkX * 16, chunkZ * 16) - 1;
 
-        Vector3 centre = Vector3.getNewVectorFromPool().set(chunkX * 16, y - 1, chunkZ * 16);
+        Vector3 centre = Vector3.getNewVector().set(chunkX * 16, y - 1, chunkZ * 16);
 
         makePokecenter(centre, world);
 
@@ -104,8 +104,8 @@ public class WorldGenStartBuilding implements IWorldGenerator
 
     public static void makePokecenter(Vector3 centre, World world)
     {
-        Vector3 temp1 = Vector3.getNewVectorFromPool();
-        Vector3 temp2 = Vector3.getNewVectorFromPool();
+        Vector3 temp1 = Vector3.getNewVector();
+        Vector3 temp2 = Vector3.getNewVector();
 
         // Hollow it out
         fillWithBlocks(world, centre, temp1.set(0, 0, 0), temp2.set(8, 8, 8), Blocks.air, 0);
@@ -175,15 +175,7 @@ public class WorldGenStartBuilding implements IWorldGenerator
         temp1.set(centre).addTo(4, 2, 7).setBlock(world, Blocks.redstone_torch.getDefaultState());// table
                                                                                                   // power
 
-        // DOOR
-        // temp1.set(centre).addTo(4, 4, 0).setBlock(world,
-        // Blocks.air.getDefaultState());//door
-        // temp1.set(centre).addTo(4, 3, 0).setBlock(world,
-        // Blocks.oak_door.getDefaultState());//door
         ItemDoor.placeDoor(world, temp1.set(centre).addTo(4, 3, 0).getPos(), EnumFacing.SOUTH, Blocks.oak_door);
-
-        temp1.freeVectorFromPool();
-        temp2.freeVectorFromPool();
     }
 
     public static void fillWithBlocks(World world, Vector3 centre, Vector3 lower, Vector3 upper, Block block, int meta)
@@ -194,14 +186,13 @@ public class WorldGenStartBuilding implements IWorldGenerator
     public static void fillWithBlocks(World world, Vector3 centre, Vector3 lower, Vector3 upper, IBlockState state)
     {
         int x, y, z;
-        Vector3 temp = Vector3.getNewVectorFromPool();
+        Vector3 temp = Vector3.getNewVector();
         for (x = lower.intX(); x <= upper.x; x++)
             for (y = lower.intY(); y <= upper.y; y++)
                 for (z = lower.intZ(); z <= upper.z; z++)
                 {
                     temp.set(centre).addTo(x, y, z).setBlock(world, state);
                 }
-        temp.freeVectorFromPool();
     }
 
 }

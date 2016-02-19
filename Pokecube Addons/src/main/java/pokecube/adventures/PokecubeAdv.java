@@ -36,18 +36,18 @@ import pokecube.adventures.network.PacketPokeAdv.MessageClient.MessageHandlerCli
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer.MessageHandlerServer;
 import pokecube.adventures.utils.DBLoader;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 
-@Mod(modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = "required-after:pokecube", guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
+@Mod(modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = "required-after:pokecube"+PokecubeAdv.MINVERSION, guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
 public class PokecubeAdv
 {
     public static final String ID         = "pokecube_adventures";
     public static final String version    = "@VERSION@";
     public final static String MCVERSIONS = "[1.8.9]";
-    public final static String MINVERSION = "[2.1,)";
+    public final static String MINVERSION = "@[2.2,)";//"";//
 
     public final static String UPDATEURL          = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Addons/versions.json";
     public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
@@ -87,9 +87,9 @@ public class PokecubeAdv
         ItemHandler.postInitItems();
 
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
-                mod_Pokecube.getMessageID(), Side.CLIENT);
+                PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
-                mod_Pokecube.getMessageID(), Side.SERVER);
+                PokecubeCore.getMessageID(), Side.SERVER);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 

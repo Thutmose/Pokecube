@@ -46,11 +46,11 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     public int              tilt           = -1;
     public EntityLivingBase shootingEntity;
     public EntityLivingBase targetEntity;
-    public Vector3          targetLocation = Vector3.getNewVectorFromPool();
+    public Vector3          targetLocation = Vector3.getNewVector();
     public UUID             shooter;
 
-    private Vector3 v0    = Vector3.getNewVectorFromPool();
-    private Vector3 v1    = Vector3.getNewVectorFromPool();
+    private Vector3 v0    = Vector3.getNewVector();
+    private Vector3 v1    = Vector3.getNewVector();
     public double   speed = 2;
 
     private BlockPos tilePos;
@@ -77,12 +77,10 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         this(world);
         if (shootingEntity != null)
         {
-            Vector3 start = Vector3.getNewVectorFromPool().set(shootingEntity, false);
-            Vector3 dir = Vector3.getNewVectorFromPool().set(shootingEntity.getLookVec());
+            Vector3 start = Vector3.getNewVector().set(shootingEntity, false);
+            Vector3 dir = Vector3.getNewVector().set(shootingEntity.getLookVec());
             start.addTo(dir).moveEntity(this);
             setVelocity(speed, dir);
-            dir.freeVectorFromPool();
-            start.freeVectorFromPool();
             shooter = shootingEntity.getPersistentID();
         }
         this.setEntityItemStack(entityItem);
@@ -96,12 +94,10 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         this.setEntityItemStack(entityItem);
         if (shootingEntity != null) shooter = shootingEntity.getPersistentID();
 
-        Vector3 start = Vector3.getNewVectorFromPool().set(shootingEntity, false);
+        Vector3 start = Vector3.getNewVector().set(shootingEntity, false);
         start.moveEntity(this);
-        Vector3 dir = Vector3.getNewVectorFromPool().set(target, false).subtract(start).normalize();
+        Vector3 dir = Vector3.getNewVector().set(target, false).subtract(start).normalize();
         setVelocity(speed, dir);
-        start.freeVectorFromPool();
-        dir.freeVectorFromPool();
         this.shootingEntity = shootingEntity;
         if (PokecubeManager.isFilled(entityItem)) tilt = -2;
     }
@@ -282,12 +278,11 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                     setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
                     PokecubeManager.setTilt(getEntityItem(), tilt);
                     ((Entity) hitten).setDead();
-                    Vector3 v = Vector3.getNewVectorFromPool();
+                    Vector3 v = Vector3.getNewVector();
                     v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
                     motionX = 0;
                     motionY = 0.1;
                     motionZ = 0;
-                    v.freeVectorFromPool();
                 }
             }
             else
@@ -308,13 +303,11 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
                 PokecubeManager.setTilt(getEntityItem(), n);
                 ((Entity) hitten).setDead();
-                Vector3 v = Vector3.getNewVectorFromPool();
+                Vector3 v = Vector3.getNewVector();
                 v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
                 motionX = 0;
                 motionY = 0.1;
                 motionZ = 0;
-                v.freeVectorFromPool();
-
             }
         }
         else if (PokecubeManager.isFilled(getEntityItem()))
@@ -509,13 +502,12 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             int pokedexNumber = PokecubeManager.getPokedexNb(getEntityItem());
             IPokemob mob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
 
-            if(mob==null)
+            if (mob == null)
             {
                 new NullPointerException("Mob is null").printStackTrace();
                 return;
             }
-            
-            
+
             HappinessType.applyHappiness(mob, HappinessType.TRADE);
             if (shootingEntity != null) mob.setPokemonOwner(((EntityPlayer) shootingEntity));
             ItemStack mobStack = PokecubeManager.pokemobToItem(mob);
@@ -548,15 +540,12 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         {
             if (shootingEntity != null)
             {
-                Vector3 here = Vector3.getNewVectorFromPool().set(this);
-                Vector3 dir = Vector3.getNewVectorFromPool().set(shootingEntity);
+                Vector3 here = Vector3.getNewVector().set(this);
+                Vector3 dir = Vector3.getNewVector().set(shootingEntity);
                 double dist = dir.distanceTo(here);
                 dir.subtractFrom(here);
                 dir.scalarMultBy(1 / (dist));
                 dir.setVelocities(this);
-                here.freeVectorFromPool();
-                dir.freeVectorFromPool();
-
             }
         }
         else if (time <= 0 && tilt >= 0) // Missed the pokemon
@@ -658,7 +647,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             targetLocation.clear();
         }
 
-        Vector3 target = Vector3.getNewVectorFromPool();
+        Vector3 target = Vector3.getNewVector();
         if (targetEntity != null)
         {
             target.set(targetEntity);
@@ -670,17 +659,14 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
 
         if (!target.isEmpty())
         {
-            Vector3 here = Vector3.getNewVectorFromPool().set(this);
-            Vector3 dir = Vector3.getNewVectorFromPool().set(target);
+            Vector3 here = Vector3.getNewVector().set(this);
+            Vector3 dir = Vector3.getNewVector().set(target);
             double dist = dir.distanceTo(here);
             if (dist > 1) dist = 1 / dist;
             dir.subtractFrom(here);
             dir.scalarMultBy(dist);
             dir.setVelocities(this);
-            here.freeVectorFromPool();
-            dir.freeVectorFromPool();
         }
-        target.freeVectorFromPool();
     }
 
     @Override

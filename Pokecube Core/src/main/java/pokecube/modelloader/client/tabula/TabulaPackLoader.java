@@ -155,11 +155,11 @@ public class TabulaPackLoader extends AnimationLoader
         /** Animations loaded from the XML */
         public HashMap<String, Animation> loadedAnimations = Maps.newHashMap();
         /** Translation of the model */
-        public Vector3                    shift            = Vector3.getNewVectorFromPool();
+        public Vector3                    shift            = Vector3.getNewVector();
         /** Global rotation of the model */
         public Vector5                    rotation;
         /** Scale of the model */
-        public Vector3                    scale            = Vector3.getNewVectorFromPool();
+        public Vector3                    scale            = Vector3.getNewVector();
         /** Limits on the rotation of the head yaw */
         public float[]                    headCap          = { -180, 180 };
         /** Limits on the rotation of the head pitch */

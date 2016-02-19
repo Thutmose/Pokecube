@@ -70,7 +70,7 @@ public class EntityProfessor extends EntityAgeable
     public void setStationary(boolean stationary)
     {
     	if(stationary&&!this.stationary)
-    		setStationary(Vector3.getNewVectorFromPool().set(this));
+    		setStationary(Vector3.getNewVector().set(this));
     	else if(!stationary && this.stationary)
     	{
     		for(Object o: this.tasks.taskEntries)

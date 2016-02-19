@@ -57,7 +57,8 @@ public class Move_Teleport extends Move_Utility
                     EventsHandler.recallAllPokemobsExcluding((EntityPlayer) attacker.getPokemonOwner(),
                             (IPokemob) null);
 
-                    PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.TELEPORTINDEX });
+                    PokecubeClientPacket packet = new PokecubeClientPacket(
+                            new byte[] { PokecubeClientPacket.TELEPORTINDEX });
                     PokecubePacketHandler.sendToClient(packet, (EntityPlayer) attacker.getPokemonOwner());
                 }
             }
@@ -74,7 +75,6 @@ public class Move_Teleport extends Move_Utility
         var1 = v.x;
         var3 = v.y;
         var5 = v.z;
-        v.freeVectorFromPool();
         return teleportTo(toTeleport, var1, var3, var5);
     }
 
@@ -86,7 +86,7 @@ public class Move_Teleport extends Move_Utility
         int num;
 
         toTeleport.setPosition(par1, par3, par5);
-        
+
         for (num = 0; num < var30; ++num)
         {
             double var19 = num / (var30 - 1.0D);

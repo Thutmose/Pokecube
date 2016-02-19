@@ -44,8 +44,8 @@ public class ItemTrainer extends Item
     {
         if (world.isRemote) { return itemstack; }
 
-        Vector3 location = Vector3.getNewVectorFromPool().set(player)
-                .add(Vector3.getNewVectorFromPool().set(player.getLookVec()));
+        Vector3 location = Vector3.getNewVector().set(player)
+                .add(Vector3.getNewVector().set(player.getLookVec()));
         if (player.capabilities.isCreativeMode)
         {
             if (player.isSneaking())
@@ -98,8 +98,6 @@ public class ItemTrainer extends Item
             capability.setPos(t.getPosition());
             t.tasks.addTask(2, new GuardAI(t, capability));
         }
-
-        location.freeVectorFromPool();
         return itemstack;
     }
 
@@ -119,12 +117,9 @@ public class ItemTrainer extends Item
             return true;
         }
 
-        Vector3 v = Vector3.getNewVectorFromPool().set(pos);
+        Vector3 v = Vector3.getNewVector().set(pos);
         Block b = v.getBlock(world);
         b.rotateBlock(world, pos, EnumFacing.DOWN);
-
-        v.freeVectorFromPool();
-
         return false;
     }
 
@@ -150,7 +145,7 @@ public class ItemTrainer extends Item
         capability.setPos(v.getPosition());
         v.tasks.addTask(2, new GuardAI(v, capability));
         System.out.println(capability);
-        // Vector3 pos = Vector3.getNewVectorFromPool().set(target);//TODO
+        // Vector3 pos = Vector3.getNewVector().set(target);//TODO
         // interact with capability instead
         // v.tasks.addTask(2, new GuardAI(v, new BlockPos(pos.intX(),
         // pos.intY(), pos.intZ()), 1.0f, 48.0f,

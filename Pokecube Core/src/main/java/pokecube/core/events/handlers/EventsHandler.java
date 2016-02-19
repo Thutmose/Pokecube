@@ -68,7 +68,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.thread.PokemobAIThread;
@@ -236,9 +236,8 @@ public class EventsHandler
                 block = evt.world.getBlockState(evt.pos).getBlock();
             }
 
-            Vector3 look = Vector3.getNewVectorFromPool().set(evt.entityPlayer.getLook(1));
-            Vector3 temp = Vector3.getNewVectorFromPool().set(evt.entityPlayer).addTo(0,
-                    evt.entityPlayer.getEyeHeight(), 0);
+            Vector3 look = Vector3.getNewVector().set(evt.entityPlayer.getLook(1));
+            Vector3 temp = Vector3.getNewVector().set(evt.entityPlayer).addTo(0, evt.entityPlayer.getEyeHeight(), 0);
 
             Entity target = MovesUtils.targetHit(temp, look, 32, evt.world, evt.entityPlayer, true,
                     EntityPokecube.class);// temp.firstEntityExcluding(32, look,
@@ -258,8 +257,6 @@ public class EventsHandler
                 Vector3 hit = Vector3.getNextSurfacePoint(evt.world, temp, look, 32);
                 if (hit != null) hit.writeToBuff(buffer);
             }
-            look.freeVectorFromPool();
-            temp.freeVectorFromPool();
             PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
             if (evt.action == Action.RIGHT_CLICK_AIR) PokecubePacketHandler.sendToServer(packet);
 
@@ -319,7 +316,7 @@ public class EventsHandler
     {
         if (evt.phase == Phase.END && evt.side != Side.CLIENT)
         {
-            mod_Pokecube.instance.spawner.tick(evt.world);
+            PokecubeCore.instance.spawner.tick(evt.world);
         }
     }
 
@@ -368,13 +365,12 @@ public class EventsHandler
                 && !(evt.entity instanceof EntityDragon || evt.entity instanceof EntityDragonPart))
         {
             evt.entity.setDead();
-            Vector3 location = Vector3.getNewVectorFromPool().set(evt.entity);
+            Vector3 location = Vector3.getNewVector().set(evt.entity);
             int num = getShadowPokemonNb(evt.entity);
             Entity shadow = PokecubeMod.core.createEntityByPokedexNb(num, evt.world);
             if (shadow == null)
             {
                 System.err.println(num);
-                location.freeVectorFromPool();
                 return;
             }
 
@@ -391,7 +387,6 @@ public class EventsHandler
             ((EntityLiving) shadow).setHealth(((EntityLiving) shadow).getMaxHealth());
             evt.world.spawnEntityInWorld(shadow);
             evt.setCanceled(true);
-            location.freeVectorFromPool();
         }
     }
 

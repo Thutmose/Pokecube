@@ -30,10 +30,10 @@ public class PokeNavigator extends PathNavigate
     /** The PathEntity being followed. */
     private PathEntity               currentPath;
     private double                   speed;
-    Vector3                          v            = Vector3.getNewVectorFromPool();
-    Vector3                          v1           = Vector3.getNewVectorFromPool();
-    Vector3                          v2           = Vector3.getNewVectorFromPool();
-    Vector3                          v3           = Vector3.getNewVectorFromPool();
+    Vector3                          v            = Vector3.getNewVector();
+    Vector3                          v1           = Vector3.getNewVector();
+    Vector3                          v2           = Vector3.getNewVector();
+    Vector3                          v3           = Vector3.getNewVector();
     /** The number of blocks (extra) +/- in each axis that get pulled out as
      * cache for the pathfinder's search space */
     private final IAttributeInstance pathSearchRange;
@@ -222,17 +222,13 @@ public class PokeNavigator extends PathNavigate
 
             if (!this.noPath())
             {
-                Vector3 targetLoc = Vector3.getNewVectorFromPool();
+                Vector3 targetLoc = Vector3.getNewVector();
                 targetLoc.set(this.currentPath.getPosition(this.theEntity));
 
-                if (targetLoc.isEmpty())
-                {
-                    targetLoc.freeVectorFromPool();
-                    return;
-                }
+                if (targetLoc.isEmpty()) { return; }
 
                 float f = this.theEntity.width;
-                
+
                 f = Math.max(f, 0.5f);
                 v.set(theEntity);
                 v1.set(currentPath.getFinalPathPoint());
@@ -240,7 +236,6 @@ public class PokeNavigator extends PathNavigate
                 if (v.distTo(v1) < f)
                 {
                     this.clearPathEntity();
-                    targetLoc.freeVectorFromPool();
                     return;
                 }
 
@@ -250,8 +245,6 @@ public class PokeNavigator extends PathNavigate
                     speed *= 2;
                 }
                 this.theEntity.getMoveHelper().setMoveTo(targetLoc.x, targetLoc.y, targetLoc.z, speed);
-                targetLoc.freeVectorFromPool();
-
             }
         }
     }

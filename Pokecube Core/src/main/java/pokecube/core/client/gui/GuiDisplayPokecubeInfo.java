@@ -27,7 +27,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -51,7 +51,7 @@ public class GuiDisplayPokecubeInfo extends Gui
      */
     public GuiDisplayPokecubeInfo()
     {
-        minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+        minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
         fontRenderer = minecraft.fontRendererObj;
         instance = this;
     }
@@ -68,7 +68,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         try
         {
             if (minecraft.currentScreen == null
-                    && !((Minecraft) mod_Pokecube.getMinecraftInstance()).gameSettings.hideGUI
+                    && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
                     && event.type == ElementType.HOTBAR)
                 draw(event);
         }
@@ -315,11 +315,9 @@ public class GuiDisplayPokecubeInfo extends Gui
         {
             EntityPlayer player = minecraft.thePlayer;
             Entity target = null;
-            Vector3 look = Vector3.getNewVectorFromPool().set(player.getLook(1));
-            Vector3 temp = Vector3.getNewVectorFromPool().set(player).addTo(0, player.getEyeHeight(), 0);
+            Vector3 look = Vector3.getNewVector().set(player.getLook(1));
+            Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
             target = temp.firstEntityExcluding(32, look, player.worldObj, player.isSneaking(), player);
-            temp.freeVectorFromPool();
-            look.freeVectorFromPool();
             if (target != null && target instanceof IPokemob && ((IPokemob) target).getPokemonOwner() == player)
             {
                 ((IPokemob) target).returnToPokecube();
@@ -338,15 +336,13 @@ public class GuiDisplayPokecubeInfo extends Gui
         byte[] message = { (byte) 21, (byte) indexPokemob };
 
         EntityPlayer player = minecraft.thePlayer;
-        Vector3 look = Vector3.getNewVectorFromPool().set(player.getLook(1));
-        Vector3 temp = Vector3.getNewVectorFromPool().set(player).addTo(0, player.getEyeHeight(), 0);
+        Vector3 look = Vector3.getNewVector().set(player.getLook(1));
+        Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
         buffer.writeBytes(message);
 
         Entity target = temp.firstEntityExcluding(32, look, player.worldObj, player.isSneaking(), player);
 
-        temp.freeVectorFromPool();
-        look.freeVectorFromPool();
         buffer.writeInt(target != null ? target.getEntityId() : 0);
         boolean sameOwner = false;
         if (target instanceof IPokemob)
@@ -358,11 +354,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
         if (pokemob != null)
         {
-            if (pokemob.getMove(pokemob.getMoveIndex()) == null)
-            {
-                look.freeVectorFromPool();
-                return;
-            }
+            if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
@@ -383,7 +375,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                 {
                     GuiTeleport.instance().setState(false);
 
-                    Minecraft minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+                    Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                     List<TeleDest> locations = PokecubeSerializer.getInstance()
                             .getTeleports(minecraft.thePlayer.getUniqueID().toString());
 

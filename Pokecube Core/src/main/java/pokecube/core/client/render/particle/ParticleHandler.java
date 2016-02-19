@@ -67,7 +67,7 @@ public class ParticleHandler
                 if (particle.getDuration() < 0) continue;
 
                 EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-                Vector3 source = Vector3.getNewVectorFromPool().set(player);
+                Vector3 source = Vector3.getNewVector().set(player);
                 GL11.glPushMatrix();
 
                 source.x = location.x - source.x;
@@ -85,7 +85,6 @@ public class ParticleHandler
                 // the player stops or starts moving
                 particle.render(event.renderPartialTicks);
                 GL11.glPopMatrix();
-                source.freeVectorFromPool();
             }
             // particles.clear();
             GL11.glPopMatrix();

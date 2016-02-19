@@ -32,7 +32,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 
 public class BlockTradingTable extends Block implements ITileEntityProvider
 {
@@ -45,7 +45,7 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     {
         super(Material.cloth);
         this.setBlockBounds(0, 0, 0, 1, 0.75f, 1);
-        this.setCreativeTab(mod_Pokecube.creativeTabPokecube);
+        this.setCreativeTab(PokecubeCore.creativeTabPokecube);
         this.setDefaultState(
                 this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TMC, false));
         this.setHardness(100);

@@ -20,6 +20,10 @@ repositories {
         url = "http://files.minecraftforge.net/maven"
     }
     maven {
+        name = "OpenComputers"
+        url = "http://maven.cil.li/"
+    }
+    maven {
         name = "jei"
         url =  "http://dvs1.progwml6.com/files/maven"
     }
@@ -58,6 +62,7 @@ repositories {
 }
 
 dependencies {
+    compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
     deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
     deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
     deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'

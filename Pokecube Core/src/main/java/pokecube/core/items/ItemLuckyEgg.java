@@ -31,8 +31,7 @@ public class ItemLuckyEgg extends ItemTranslated
         if (player.capabilities.isCreativeMode)
         {
             int metadata = itemstack.getItemDamage();
-            Vector3 location = Vector3.getNewVectorFromPool().set(player)
-                    .add(Vector3.getNewVectorFromPool().set(player.getLookVec()));
+            Vector3 location = Vector3.getNewVector().set(player).add(Vector3.getNewVector().set(player.getLookVec()));
             if (metadata == 0 && player.isSneaking())
             {
                 EntityProfessor p = new EntityProfessor(world, location.offset(EnumFacing.UP));
@@ -41,9 +40,8 @@ public class ItemLuckyEgg extends ItemTranslated
             else
             {
                 boolean meteor = PokecubeSerializer.getInstance().canMeteorLand(location);
-                player.addChatMessage(new ChatComponentText("Meteor Can Land: "+meteor));
+                player.addChatMessage(new ChatComponentText("Meteor Can Land: " + meteor));
             }
-            location.freeVectorFromPool();
         }
         return itemstack;
     }

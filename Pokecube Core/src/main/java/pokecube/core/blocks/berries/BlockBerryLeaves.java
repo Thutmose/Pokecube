@@ -22,7 +22,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 
 public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
 {
@@ -53,7 +53,7 @@ public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
         LEAF_TYPES = names;
         shift = logShift;
         BlockBerryCrop.leaves.add(this);
-        setCreativeTab(mod_Pokecube.creativeTabPokecubeBerries);
+        setCreativeTab(PokecubeCore.creativeTabPokecubeBerries);
         this.setDefaultState(this.blockState.getBaseState()
                 .withProperty(shift == 0 ? VARIANT0 : VARIANT4, BlockBerryWood.EnumType.byMetadata(shift))
                 .withProperty(CHECK_DECAY, Boolean.valueOf(true)).withProperty(DECAYABLE, Boolean.valueOf(true)));

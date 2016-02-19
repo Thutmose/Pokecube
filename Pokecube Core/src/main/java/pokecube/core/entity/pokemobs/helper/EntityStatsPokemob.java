@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -99,7 +99,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             getEntityData().setBoolean("dittotag", glitch);
         }
 
-        if (mod_Pokecube.isOnClientSide()) this.setHealth(getMaxHealth());
+        if (PokecubeCore.isOnClientSide()) this.setHealth(getMaxHealth());
         else this.setHealth(0);
         nature = Nature.values()[(byte) (new Random()).nextInt(25)];
         setRandomColour();
@@ -525,7 +525,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void setPokemonNickname(String nickname)
     {
-        if (mod_Pokecube.isOnClientSide() && nickname != getPokemonNickname())
+        if (PokecubeCore.isOnClientSide() && nickname != getPokemonNickname())
         {
             try
             {

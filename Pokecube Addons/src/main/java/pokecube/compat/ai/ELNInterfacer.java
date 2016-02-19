@@ -244,7 +244,7 @@ public class ELNInterfacer
                     List<Object> cableElectricalComps = getCableComponents(cable);
                     List<Object> cableLoads = getCableLoads(cable);
                     Object cableLoad = getCableLoad(cable);
-                    Vector3 cableLoc = Vector3.getNewVectorFromPool().set(tile);
+                    Vector3 cableLoc = Vector3.getNewVector().set(tile);
                     CablePacket pack = new CablePacket(cableLoc, resistor, voltageSource, loadA, loadB, cable,
                             cableLoad);
                     addCableEffect(entity, pack);
@@ -407,7 +407,6 @@ public class ELNInterfacer
             }
             cableLoads.removeAll(toRemove);
             connect(cable);
-            location.freeVectorFromPool();
         }
 
         public double getDistance(EntityLiving entity)

@@ -24,14 +24,14 @@ public class AIAttack extends AIBase implements IAICombat
 {
     final EntityLiving attacker;
     EntityLivingBase   entityTarget;
-    Vector3            targetLoc   = Vector3.getNewVectorFromPool();
+    Vector3            targetLoc   = Vector3.getNewVector();
     Move_Base          attack;
     Matrix3            targetBox   = new Matrix3();
     Matrix3            attackerBox = new Matrix3();
 
-    Vector3 v  = Vector3.getNewVectorFromPool();
-    Vector3 v1 = Vector3.getNewVectorFromPool();
-    Vector3 v2 = Vector3.getNewVectorFromPool();
+    Vector3 v  = Vector3.getNewVector();
+    Vector3 v1 = Vector3.getNewVector();
+    Vector3 v2 = Vector3.getNewVector();
     double  movementSpeed;
 
     private int chaseTime;

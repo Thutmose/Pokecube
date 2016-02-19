@@ -17,7 +17,7 @@ import net.minecraft.util.IChatComponent;
 public class TileHealTable extends TileEntity implements IInventory, ITickable
 {
     private ItemStack[] inventory;
-    Vector3 here = Vector3.getNewVectorFromPool();
+    Vector3 here = Vector3.getNewVector();
 
     public TileHealTable()
     {

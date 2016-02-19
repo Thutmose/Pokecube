@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.items.berries.BerryManager;
 
 public class BlockBerryWood extends Block implements IMetaBlock
@@ -26,7 +26,7 @@ public class BlockBerryWood extends Block implements IMetaBlock
 		super(Material.wood);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, EnumType.PECHA));
 		woodType = names;
-		setCreativeTab(mod_Pokecube.creativeTabPokecubeBerries);
+		setCreativeTab(PokecubeCore.creativeTabPokecubeBerries);
 	}
 
 	/** The type of tree this block came from. */

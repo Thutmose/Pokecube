@@ -122,8 +122,8 @@ public class ItemTM extends ItemPokemobUseable {
     {
         if(!world.isRemote)return itemstack;
         
-        Vector3 loc = Vector3.getNewVectorFromPool().set(player).addTo(0,1,0);
-        Vector3 look = Vector3.getNewVectorFromPool().set(player.getLookVec());
+        Vector3 loc = Vector3.getNewVector().set(player).addTo(0,1,0);
+        Vector3 look = Vector3.getNewVector().set(player.getLookVec());
         loc.addTo(look);
         PokecubeMod.core.spawnParticle("leaf", loc, look.scalarMultBy(0.5));
     	return itemstack;

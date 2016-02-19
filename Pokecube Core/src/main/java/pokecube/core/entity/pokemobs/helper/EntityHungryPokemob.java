@@ -28,7 +28,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
 
     public static int HUNGERDELAY = 6000;
     boolean           sleepy      = false;
-    Vector3           sizes       = Vector3.getNewVectorFromPool();
+    Vector3           sizes       = Vector3.getNewVector();
 
     public EntityHungryPokemob(World world)
     {

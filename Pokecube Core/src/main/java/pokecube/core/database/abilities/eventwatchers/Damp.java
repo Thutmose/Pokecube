@@ -16,8 +16,8 @@ import thut.api.maths.Vector3;
 public class Damp extends Ability
 {
     IPokemob mob;
-    int range = 16;
-    
+    int      range = 16;
+
     @Override
     public void onUpdate(IPokemob mob)
     {
@@ -27,7 +27,7 @@ public class Damp extends Ability
     @Override
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
-        if(move.getMove() instanceof Move_Explode)
+        if (move.getMove() instanceof Move_Explode)
         {
             move.failed = true;
             move.canceled = true;
@@ -38,11 +38,11 @@ public class Damp extends Ability
     public void onAgress(IPokemob mob, EntityLivingBase target)
     {
     }
-    
+
     @Override
     public Ability init(Object... args)
     {
-        if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT) return this;
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return this;
         for (int i = 0; i < 2; i++)
             if (args != null && args.length > i)
             {
@@ -62,20 +62,18 @@ public class Damp extends Ability
     @Override
     public void destroy()
     {
-        if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT) return;
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
         MinecraftForge.EVENT_BUS.unregister(this);
     }
-    
+
     @SubscribeEvent
     public void denyBoom(ExplosionEvent.Start boom)
     {
-        Vector3 boomLoc = Vector3.getNewVectorFromPool().set(boom.explosion.getPosition());
-        System.out.println(boomLoc+" "+mob+" "+((Entity)mob).isDead+" "+boomLoc.distToEntity((Entity) mob)+" "+range);
-        if(boomLoc.distToEntity((Entity) mob)<range)
+        Vector3 boomLoc = Vector3.getNewVector().set(boom.explosion.getPosition());
+        if (boomLoc.distToEntity((Entity) mob) < range)
         {
             boom.setCanceled(true);
         }
-        boomLoc.freeVectorFromPool();
     }
 
 }

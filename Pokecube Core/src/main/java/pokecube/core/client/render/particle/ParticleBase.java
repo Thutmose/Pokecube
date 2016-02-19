@@ -73,7 +73,7 @@ public class ParticleBase implements IParticle, IAnimatedParticle
     {
         if (velocity != Vector3.empty && velocity != null)
         {
-//            velocity.freeVectorFromPool();
+            // velocity.freeVectorFromPool();
         }
     }
 
@@ -107,7 +107,7 @@ public class ParticleBase implements IParticle, IAnimatedParticle
 
         int u = tex[num][0], v = tex[num][1];
 
-        Vector3 temp = Vector3.getNewVectorFromPool();
+        Vector3 temp = Vector3.getNewVector();
 
         double factor = ((lifetime - getDuration()) + renderPartialTicks);
 
@@ -127,7 +127,6 @@ public class ParticleBase implements IParticle, IAnimatedParticle
         tez.vertex(temp.x, temp.y + size, temp.z).tex(u2, v1).color(red, green, blue, alpha).endVertex();
         tez.vertex(temp.x, temp.y - size, temp.z).tex(u2, v2).color(red, green, blue, alpha).endVertex();
         tez.end();
-        temp.freeVectorFromPool();
         GL11.glPopMatrix();
     }
 

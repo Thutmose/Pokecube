@@ -64,14 +64,14 @@ public class ParticleOrientable extends ParticleBase
 
         int u = tex[num][0], v = tex[num][1];
 
-        Vector3 temp = Vector3.getNewVectorFromPool();
+        Vector3 temp = Vector3.getNewVector();
 
         double factor = ((lifetime - getDuration()) + renderPartialTicks);
         temp.set(velocity).scalarMultBy(factor);
         if (getDuration() > 149)
         {
             System.out.println(temp + " " + velocity.scalarMult(-lifetime));
-            System.out.println(lifetime+" "+getDuration());
+            System.out.println(lifetime + " " + getDuration());
         }
         // temp.reverse();
         // GlStateManager.translate(temp.x, temp.y, temp.z);
@@ -94,7 +94,6 @@ public class ParticleOrientable extends ParticleBase
         tez.vertex(0.0, 0.0 + size, 0.0).tex(u2, v1).color(red, green, blue, alpha).endVertex();
         tez.vertex(0.0, 0.0 - size, 0.0).tex(u2, v2).color(red, green, blue, alpha).endVertex();
         tez.end();
-        temp.freeVectorFromPool();
         GL11.glPopMatrix();
     }
 

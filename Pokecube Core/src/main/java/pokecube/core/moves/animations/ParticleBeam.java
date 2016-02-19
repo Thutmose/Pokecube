@@ -22,8 +22,8 @@ public class ParticleBeam extends MoveAnimationBase
         rgba = 0xFFFFFFFF;
     }
 
-    Vector3 v  = Vector3.getNewVectorFromPool();
-    Vector3 v1 = Vector3.getNewVectorFromPool();
+    Vector3 v  = Vector3.getNewVector();
+    Vector3 v1 = Vector3.getNewVector();
 
     @Override
     public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
@@ -34,7 +34,7 @@ public class ParticleBeam extends MoveAnimationBase
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
         // GL11.glScaled(0.75, 0.75, 0.75);
         double dist = source.distanceTo(target);
-        Vector3 temp = Vector3.getNewVectorFromPool().set(source).subtractFrom(target);
+        Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
 
         GlStateManager.translate(temp.x, temp.y, temp.z);
         double factor = (info.currentTick + partialTick) / (double) getDuration();
@@ -49,10 +49,10 @@ public class ParticleBeam extends MoveAnimationBase
         GL11.glEnable(GL11.GL_BLEND);
 
         initColour((long) (factor * 1000 + info.attacker.worldObj.getWorldTime()) * 20, partialTick, info.move);
-        float alpha = ((rgba >> 24) & 255)/255f;
-        float red = ((rgba >> 16) & 255)/255f;
-        float green = ((rgba >> 8) & 255)/255f;
-        float blue = (rgba & 255)/255f;
+        float alpha = ((rgba >> 24) & 255) / 255f;
+        float red = ((rgba >> 16) & 255) / 255f;
+        float green = ((rgba >> 8) & 255) / 255f;
+        float blue = (rgba & 255) / 255f;
 
         tez.begin(7);
 
@@ -81,8 +81,6 @@ public class ParticleBeam extends MoveAnimationBase
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopAttrib();
         GL11.glPopMatrix();
-
-        temp.freeVectorFromPool();
 
     }
 

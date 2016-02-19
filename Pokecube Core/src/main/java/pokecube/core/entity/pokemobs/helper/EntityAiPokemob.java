@@ -34,7 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.ai.pokemob.PokemobAIDodge;
 import pokecube.core.ai.pokemob.PokemobAIFollowOwner;
 import pokecube.core.ai.pokemob.PokemobAIHurt;
@@ -91,7 +91,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public EntityAiPokemob(World world)
     {
         super(world);
-        here = Vector3.getNewVectorFromPool();
+        here = Vector3.getNewVector();
     }
 
     @Override
@@ -269,7 +269,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             float floatHeight = (float) entry.preferedHeight;
             if (here == null)
             {
-                here = Vector3.getNewVectorFromPool();
+                here = Vector3.getNewVector();
                 here.set(this);
             }
             Vector3 down = Vector3.getNextSurfacePoint(worldObj, here.set(this), Vector3.secondAxisNeg, floatHeight);
@@ -944,7 +944,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     protected void onDeathUpdate()
     {
-        if (!mod_Pokecube.isOnClientSide() && getPokemonAIState(TAMED))
+        if (!PokecubeCore.isOnClientSide() && getPokemonAIState(TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
             String mess = StatCollector.translateToLocalFormatted("pokemob.action.faint", getPokemonDisplayName());
@@ -1063,11 +1063,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
                 return true;
             }
-            Vector3 look = Vector3.getNewVectorFromPool().set(player.getLookVec()).scalarMultBy(0.1);
+            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(0.1);
             this.motionX += look.x;
             this.motionY += look.y;
             this.motionZ += look.z;
-            look.freeVectorFromPool();
             return false;
         }
         // Debug thing to maximize happiness
@@ -1150,16 +1149,16 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Open Pokedex Gui
         if (itemstack != null && itemstack.getItem() == PokecubeItems.pokedex)
         {
-            if (mod_Pokecube.isOnClientSide() && !player.isSneaking())
+            if (PokecubeCore.isOnClientSide() && !player.isSneaking())
             {
-                player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, worldObj, (int) posX,
+                player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, worldObj, (int) posX,
                         (int) posY, (int) posZ);
             }
             return true;
         }
 
         // Owner only interactions.
-        if (getPokemonAIState(TAMED) && player == getOwner() && !mod_Pokecube.isOnClientSide())
+        if (getPokemonAIState(TAMED) && player == getOwner() && !PokecubeCore.isOnClientSide())
         {
             if (itemstack != null)
             {
@@ -1266,7 +1265,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
             }
             // Open Gui
-            if (!mod_Pokecube.isOnClientSide() && getPokemonOwner() == player && itemstack == null)
+            if (!PokecubeCore.isOnClientSide() && getPokemonOwner() == player && itemstack == null)
             {
                 openGUI(player);
                 return true;

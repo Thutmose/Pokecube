@@ -48,8 +48,8 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
     public TextureHelper                texturer;
     public IAnimationChanger            animator;
 
-    public Vector3 offset    = Vector3.getNewVectorFromPool();;
-    public Vector3 scale     = Vector3.getNewVectorFromPool();;
+    public Vector3 offset    = Vector3.getNewVector();;
+    public Vector3 scale     = Vector3.getNewVector();;
     public Vector5 rotations = new Vector5();
 
     public IModel model;

@@ -59,7 +59,6 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
                     Entity nearest = null;
                     double ds = 600;
                     double dt;
-                    Vector3 v = Vector3.getNewVectorFromPool();
                     for (Entity e : list)
                     {
                         dt = e.getDistanceSqToEntity(leaper);
@@ -69,12 +68,9 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
                             nearest = e;
                         }
                     }
-                    v.freeVectorFromPool();
                     if (nearest != null)
                     {
                         System.out.println("Found a bait " + pokemob.getPokemonDisplayName());
-                        // leaper.getNavigator().tryMoveToEntityLiving(nearest,
-                        // leaper.getMovementSpeed());
                         leapTarget = nearest;
                         return true;
                     }
@@ -136,8 +132,8 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
         }
         pokemob.setPokemonAIState(IPokemob.LEAPING, true);
 
-        Vector3 targetLoc = Vector3.getNewVectorFromPool().set(leapTarget);
-        Vector3 leaperLoc = Vector3.getNewVectorFromPool().set(leaper);
+        Vector3 targetLoc = Vector3.getNewVector().set(leapTarget);
+        Vector3 leaperLoc = Vector3.getNewVector().set(leaper);
 
         Vector3 dir = targetLoc.subtract(leaperLoc).scalarMultBy(0.5f);
         if (dir.magSq() < 1) dir.norm();
@@ -148,10 +144,5 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
             dir.clear();
         }
         dir.addVelocities(leaper);
-
-        dir.freeVectorFromPool();
-        leaperLoc.freeVectorFromPool();
-        targetLoc.freeVectorFromPool();
-
     }
 }

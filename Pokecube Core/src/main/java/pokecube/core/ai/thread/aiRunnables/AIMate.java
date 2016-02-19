@@ -144,12 +144,10 @@ public class AIMate extends AIBase
 
         if (entity.getNavigator().getPath() != null)
         {
-            Vector3 temp = Vector3.getNewVectorFromPool();
-            Vector3 temp1 = Vector3.getNewVectorFromPool().set(breedingMob.getLover());
+            Vector3 temp = Vector3.getNewVector();
+            Vector3 temp1 = Vector3.getNewVector().set(breedingMob.getLover());
             temp.set(entity.getNavigator().getPath().getFinalPathPoint());
             if (temp.distToSq(temp1) < 4) rePath = false;
-            temp.freeVectorFromPool();
-            temp1.freeVectorFromPool();
         }
         if (rePath) this.entity.getNavigator().tryMoveToEntityLiving(breedingMob.getLover(), entity.getAIMoveSpeed());
 

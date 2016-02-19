@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IPokemob;
 
 public class AISaveHandler
@@ -42,7 +42,7 @@ public class AISaveHandler
 
 	private AISaveHandler()
 	{
-		saveHandler = mod_Pokecube.proxy.getWorld().getSaveHandler();
+		saveHandler = PokecubeCore.proxy.getWorld().getSaveHandler();
 		loadData();
 	}
 

@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.blocks.pc.SlotPC;
@@ -143,7 +143,7 @@ public class GuiPC extends GuiContainer {
 				}
 				toRename = !toRename;
 			} else if (guibutton.id == 3) {
-				if (!(mod_Pokecube.isOnClientSide() && FMLClientHandler
+				if (!(PokecubeCore.isOnClientSide() && FMLClientHandler
 						.instance().getServer() != null)) {
 					cont.inv.autoToPC = !cont.inv.autoToPC;
 				}
@@ -197,7 +197,7 @@ public class GuiPC extends GuiContainer {
 //				PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
 //				buf.writeByte(7);
 //				buf.writeBoolean(true);
-//				Vector3 loc = Vector3.getNewVectorFromPool().set(cont.pcTile);
+//				Vector3 loc = Vector3.getNewVector().set(cont.pcTile);
 //				loc.writeToBuff(buf);
 //				loc.freeVectorFromPool();
 //				packet = new MessageServer(buf);

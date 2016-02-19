@@ -33,7 +33,7 @@ public class AnimationHelper
         }
         int animationLength = animation.getLength();
         boolean animate = false;
-        Vector3 temp = Vector3.getNewVectorFromPool();
+        Vector3 temp = Vector3.getNewVector();
         float x = 0, y = 0, z = 0;
 
         float time = entity.worldObj.getTotalWorldTime() + partialTick;
@@ -88,8 +88,6 @@ public class AnimationHelper
             }
             if (angle != null) part.setPreRotations(angle);
         }
-        temp.freeVectorFromPool();
-
         return animate;
     }
 }

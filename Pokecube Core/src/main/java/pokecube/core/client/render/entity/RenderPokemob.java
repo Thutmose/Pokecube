@@ -39,7 +39,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 {
     protected float     scale;
     protected ModelBase modelStatus;
-    Vector3             v = Vector3.getNewVectorFromPool();
+    Vector3             v = Vector3.getNewVector();
 
     public RenderPokemob(RenderManager m, ModelBase modelbase, float shadowSize)
     {

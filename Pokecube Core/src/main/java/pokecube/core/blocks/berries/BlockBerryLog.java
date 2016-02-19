@@ -14,7 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.BlockBerryWood.EnumType;
 
 public class BlockBerryLog extends BlockLog implements IMetaBlock
@@ -54,7 +54,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 		PropertyEnum<EnumType> property = shift == 0 ? VARIANT0 : VARIANT4;
 		state = state.withProperty(property, type);
 		this.setDefaultState(state.withProperty(LOG_AXIS, BlockLog.EnumAxis.Y));
-		setCreativeTab(mod_Pokecube.creativeTabPokecubeBerries);
+		setCreativeTab(PokecubeCore.creativeTabPokecubeBerries);
 	}
 
 	@SideOnly(Side.CLIENT)

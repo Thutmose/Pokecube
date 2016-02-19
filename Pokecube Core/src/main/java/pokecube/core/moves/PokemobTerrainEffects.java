@@ -266,9 +266,8 @@ public class PokemobTerrainEffects implements ITerrainEffect
                     buffer.writeLong(effects[i]);
                 }
                 PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
-                Vector3 v = Vector3.getNewVectorFromPool().set(e);
+                Vector3 v = Vector3.getNewVector().set(e);
                 PokecubePacketHandler.sendToAllNear(packet, v, e.worldObj.provider.getDimensionId(), 64);
-                v.freeVectorFromPool();
             }
         }
     }

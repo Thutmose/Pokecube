@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.blocks.pc.SlotPC;
@@ -132,7 +132,7 @@ public class PCPacketHandler
             @Override
             public MessageServer onMessage(MessageClient message, MessageContext ctx)
             {
-                handleClientSide(mod_Pokecube.getPlayer(null), message.buffer);
+                handleClientSide(PokecubeCore.getPlayer(null), message.buffer);
                 return null;
             }
 
@@ -323,10 +323,9 @@ public class PCPacketHandler
                 tile.addPlayer(null);
 
                 mes = 9 + "," + x + "," + y + "," + z + "," + player.getEntityId() + ",0";
-                Vector3 point = Vector3.getNewVectorFromPool().set(player);
+                Vector3 point = Vector3.getNewVector().set(player);
                 MessageClient pac = makeClientPacket(MessageClient.TRADE, mes.getBytes());
                 PokecubePacketHandler.sendToAllNear(pac, point, player.dimension, 10);
-                point.freeVectorFromPool();
                 return;
 
             }
@@ -380,7 +379,7 @@ public class PCPacketHandler
         }
         if (message == 10)
         {
-            player.openGui(mod_Pokecube.instance, Mod_Pokecube_Helper.GUIPC_ID, mod_Pokecube.getWorld(), 0, 0, 0);
+            player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUIPC_ID, PokecubeCore.getWorld(), 0, 0, 0);
             return;
         }
         if (message == 11)

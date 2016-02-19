@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IChatComponent;
 import pokecube.adventures.handlers.PASaveHandler;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.PokecubeMod;
 
 public class InventoryBag implements IInventory
@@ -256,9 +256,9 @@ public class InventoryBag implements IInventory
     	{
     		if(map.containsKey(uuid))
     		{
-    			if(mod_Pokecube.proxy.getPlayer(uuid)!=null)
+    			if(PokecubeCore.proxy.getPlayer(uuid)!=null)
     			{
-    				String username = mod_Pokecube.proxy.getPlayer(uuid).getName();
+    				String username = PokecubeCore.proxy.getPlayer(uuid).getName();
     				map.remove(username);
     			}
     			return map.get(uuid);

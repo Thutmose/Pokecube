@@ -66,9 +66,9 @@ public class MoveAnimationHelper
 
                 for (MoveAnimation move : moves)
                 {
-                    Vector3 target = Vector3.getNewVectorFromPool().set(move.targetLoc);
+                    Vector3 target = Vector3.getNewVector().set(move.targetLoc);
                     EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-                    Vector3 source = Vector3.getNewVectorFromPool().set(player);
+                    Vector3 source = Vector3.getNewVector().set(player);
                     GL11.glPushMatrix();
                     source.set(target.subtract(source));
 
@@ -84,8 +84,6 @@ public class MoveAnimationHelper
 
                     move.render(event.renderPartialTicks);
                     GL11.glPopMatrix();
-                    source.freeVectorFromPool();
-                    target.freeVectorFromPool();
                 }
 
             }
@@ -159,7 +157,7 @@ public class MoveAnimationHelper
             this.attacker = attacker;
             this.targetEnt = targetEnt;
             this.targetLoc = targetLoc;
-            this.sourceStart = Vector3.getNewVectorFromPool().set(attacker).addTo(0, attacker.getEyeHeight(), 0);
+            this.sourceStart = Vector3.getNewVector().set(attacker).addTo(0, attacker.getEyeHeight(), 0);
             this.move = move;
             info = new MovePacketInfo(move, attacker, targetEnt, sourceStart, targetLoc);
             duration = time;

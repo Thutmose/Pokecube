@@ -21,7 +21,7 @@ import thut.api.maths.Vector3;
 
 public class TeamEventsHandler
 {
-    Vector3 v = Vector3.getNewVectorFromPool(), v1 = Vector3.getNewVectorFromPool();
+    Vector3 v = Vector3.getNewVector(), v1 = Vector3.getNewVector();
 
     public static boolean shouldRenderVolume = false;
 

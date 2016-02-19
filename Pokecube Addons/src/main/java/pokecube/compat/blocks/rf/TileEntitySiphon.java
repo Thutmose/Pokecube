@@ -7,14 +7,10 @@ import org.nfunk.jep.JEP;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import li.cil.oc.api.Network;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Environment;
-import li.cil.oc.api.network.Message;
-import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.Visibility;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -22,40 +18,34 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
-public class TileEntitySiphon extends TileEntity implements ITickable, Environment, IEnergyProvider
+@Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
+public class TileEntitySiphon extends TileEntity implements ITickable, SimpleComponent, IEnergyProvider
 {
     AxisAlignedBB           box;
-    public static int       maxOutput   = 256;
-    public static String function;
-    public JEP       parser = new JEP();
-    int                     lastInput   = 0;
-    protected EnergyStorage storage     = new EnergyStorage(maxOutput);
+    public static int       maxOutput = 256;
+    public static String    function;
+    public JEP              parser    = new JEP();
+    int                     lastInput = 0;
+    protected EnergyStorage storage   = new EnergyStorage(maxOutput);
 
     public TileEntitySiphon()
     {
         initParser();
-        try
-        {
-            node = Network.newNode(this, Visibility.Network).withConnector()
-                    .withComponent("pokesiphon", Visibility.Network).create();
-        }
-        catch (Exception e)
-        {
-            // e.printStackTrace();
-        }
     }
 
     public TileEntitySiphon(World world)
     {
         this();
     }
-    
+
     private void initParser()
     {
         parser.initFunTab(); // clear the contents of the function table
@@ -72,12 +62,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
     @Override
     public void update()
     {
-        if (!addedToNetwork)
-        {
-            addedToNetwork = true;
-            Network.joinOrCreateNetwork(this);
-        }
-        Vector3 v = Vector3.getNewVectorFromPool().set(this);
+        Vector3 v = Vector3.getNewVector().set(this);
         if (box == null)
         {
             box = v.getAABB().expand(10, 10, 10);
@@ -96,9 +81,6 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
                 h.receiveEnergy(side.getOpposite(), toSend, false);
             }
         }
-
-        v.freeVectorFromPool();
-
     }
 
     public int getInput()
@@ -139,7 +121,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
                         }
                     }
                     dE = (int) (pokeEnergy / dSq);
-                    //If out of power, no power
+                    // If out of power, no power
                     dE = Math.max(0, dE);
                     ret += dE;
                     // Always drain at least 1
@@ -164,7 +146,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
         parser.setVarValue("x", level);
         parser.setVarValue("a", power);
         double value = parser.getValue();
-        if(Double.isNaN(value))
+        if (Double.isNaN(value))
         {
             initParser();
             parser.setVarValue("x", level);
@@ -185,98 +167,35 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
     public void writeToNBT(NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
-        if (node != null && node.host() == this)
-        {
-            final NBTTagCompound nodeNbt = new NBTTagCompound();
-            node.save(nodeNbt);
-            tagCompound.setTag("oc:node", nodeNbt);
-        }
     }
 
     @Override
     public void readFromNBT(NBTTagCompound tagCompound)
     {
         super.readFromNBT(tagCompound);
-        if (node != null && node.host() == this)
-        {
-            // This restores the node's address, which is required for networks
-            // to continue working without interruption across loads. If the
-            // node is a power connector this is also required to restore the
-            // internal energy buffer of the node.
-            node.load(tagCompound.getCompoundTag("oc:node"));
-        }
-    }
-
-    protected Node node;
-
-    // See updateEntity().
-    protected boolean addedToNetwork = false;
-
-    // -----------------------------------------------------------------------
-    // //
-
-    @Override
-    public Node node()
-    {
-        return node;
-    }
-
-    @Override
-    public void onConnect(final Node node)
-    {
-        // This is called when the call to Network.joinOrCreateNetwork(this) in
-        // updateEntity was successful, in which case `node == this`.
-        // This is also called for any other node that gets connected to the
-        // network our node is in, in which case `node` is the added node.
-        // If our node is added to an existing network, this is called for each
-        // node already in said network.
-    }
-
-    @Override
-    public void onDisconnect(final Node node)
-    {
-        // This is called when this node is removed from its network when the
-        // tile entity is removed from the world (see onChunkUnload() and
-        // invalidate()), in which case `node == this`.
-        // This is also called for each other node that gets removed from the
-        // network our node is in, in which case `node` is the removed node.
-        // If a net-split occurs this is called for each node that is no longer
-        // connected to our node.
-    }
-
-    @Override
-    public void onMessage(final Message message)
-    {
-        // This is used to deliver messages sent via node.sendToXYZ. Handle
-        // messages at your own discretion. If you do not wish to handle a
-        // message you should *not* throw an exception, though.
     }
 
     @Override
     public void onChunkUnload()
     {
         super.onChunkUnload();
-        // Make sure to remove the node from its network when its environment,
-        // meaning this tile entity, gets unloaded.
-        if (node != null) node.remove();
     }
 
     @Override
     public void invalidate()
     {
         super.invalidate();
-        // Make sure to remove the node from its network when its environment,
-        // meaning this tile entity, gets unloaded.
-        if (node != null) node.remove();
     }
 
     @Callback
+    @Optional.Method(modid = "OpenComputers")
     public Object[] getEnergy(Context context, Arguments args)
     {
         return new Object[] { storage.getEnergyStored() };
     }
 
     @Callback
+    @Optional.Method(modid = "OpenComputers")
     public Object[] getPower(Context context, Arguments args)
     {
         return new Object[] { lastInput };
@@ -304,6 +223,12 @@ public class TileEntitySiphon extends TileEntity implements ITickable, Environme
     public int getMaxEnergyStored(EnumFacing facing)
     {
         return storage.getMaxEnergyStored();
+    }
+
+    @Override
+    public String getComponentName()
+    {
+        return "pokesiphon";
     }
 
 }

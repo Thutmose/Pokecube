@@ -25,7 +25,7 @@ public class EntityPokemobEgg extends EntityLiving
     int     age                  = 0;
     int     lastIncubate         = 0;
     int     hatch;
-    Vector3 here                 = Vector3.getNewVectorFromPool();
+    Vector3 here                 = Vector3.getNewVector();
 
     /** Do not call this, this is here only for vanilla reasons
      * 

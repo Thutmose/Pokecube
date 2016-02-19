@@ -19,7 +19,7 @@ public class AIElectricalInterferance extends EntityAIBase
 	static boolean eln = false;
 	
 	final IPokemob pokemob;
-	final Vector3 mobLoc = Vector3.getNewVectorFromPool();
+	final Vector3 mobLoc = Vector3.getNewVector();
 	final EntityLiving entity;
 	final Set<?> linesAffectedThisTick = new HashSet<Object>();
 	
@@ -69,7 +69,7 @@ public class AIElectricalInterferance extends EntityAIBase
 		}
 		statFactor = tempFactor;
 		
-		Vector3 toFill = Vector3.getNewVectorFromPool();
+		Vector3 toFill = Vector3.getNewVector();
 		range *= 2;
 		for(int i = 0; i<range*range*range; i++)
 		{
@@ -102,7 +102,6 @@ public class AIElectricalInterferance extends EntityAIBase
 				}
 			}
 		}
-		toFill.freeVectorFromPool();
 	}
 	
 }

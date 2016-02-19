@@ -58,7 +58,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.CommonProxyPokecube;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.BerryPlantManager;
 import pokecube.core.blocks.berries.BlockBerryCrop;
 import pokecube.core.blocks.berries.BlockBerryLeaves;
@@ -230,7 +230,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         else
         {
             Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            if (annotation.modid().equals(mod_Pokecube.defaultMod))
+            if (annotation.modid().equals(PokecubeCore.defaultMod))
             {
                 RenderPokecube.pokecubeRenderers.put(cubeId, renderer);
                 cubeRenders.put(cubeId, mod);
@@ -329,7 +329,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                     @Override
                     protected ResourceLocation getEntityTexture(Entity egg)
                     {
-                        return new ResourceLocation(mod_Pokecube.ID + ":textures/egg.png");
+                        return new ResourceLocation(PokecubeCore.ID + ":textures/egg.png");
                     }
                 };
             }
@@ -461,9 +461,9 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         Entity entityHit = null;
 
-        if (mod_Pokecube.isOnClientSide())
+        if (PokecubeCore.isOnClientSide())
         {
-            MovingObjectPosition objectClicked = ((Minecraft) mod_Pokecube.getMinecraftInstance()).objectMouseOver;
+            MovingObjectPosition objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
 
             if (objectClicked != null)
             {

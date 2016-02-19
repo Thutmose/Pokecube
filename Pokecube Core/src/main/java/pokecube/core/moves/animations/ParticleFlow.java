@@ -67,7 +67,7 @@ public class ParticleFlow extends MoveAnimationBase
         ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
         double dist = source.distanceTo(target);
-        Vector3 temp = Vector3.getNewVectorFromPool().set(source).subtractFrom(target);
+        Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
 
         if (!reverse) GlStateManager.translate(temp.x, temp.y, temp.z);
         double factor = (info.currentTick + partialTick) / (double) getDuration();
@@ -80,10 +80,10 @@ public class ParticleFlow extends MoveAnimationBase
         GL11.glPushMatrix();
 
         initColour(info.currentTick * 300, partialTick, info.move);
-        float alpha = ((rgba >> 24) & 255)/255f;
-        float red = ((rgba >> 16) & 255)/255f;
-        float green = ((rgba >> 8) & 255)/255f;
-        float blue = (rgba & 255)/255f;
+        float alpha = ((rgba >> 24) & 255) / 255f;
+        float red = ((rgba >> 16) & 255) / 255f;
+        float green = ((rgba >> 8) & 255) / 255f;
+        float blue = (rgba & 255) / 255f;
 
         VertexFormat format = DefaultVertexFormats.POSITION_COLOR;
         Random rand = new Random(info.currentTick);
@@ -106,9 +106,6 @@ public class ParticleFlow extends MoveAnimationBase
         }
 
         GL11.glPopMatrix();
-
-        temp.freeVectorFromPool();
-        temp2.freeVectorFromPool();
 
     }
 

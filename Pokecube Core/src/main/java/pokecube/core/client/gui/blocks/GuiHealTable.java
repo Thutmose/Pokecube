@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.client.Resources;
@@ -32,7 +32,7 @@ public class GuiHealTable extends GuiContainer
         	PokecubePacketHandler.sendToServer(packet);
         	
             ((ContainerHealTable) inventorySlots).heal();// client side
-            mc.thePlayer.playSound(mod_Pokecube.ID+":pokecenter", 3, 1);
+            mc.thePlayer.playSound(PokecubeCore.ID+":pokecenter", 3, 1);
         }
     }
 

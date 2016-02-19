@@ -105,9 +105,8 @@ public class EntityTrader extends EntityVillager
     {
         for (BlockPos c1 : chests)
         {
-            Vector3 chest = Vector3.getNewVectorFromPool().set(c1);
+            Vector3 chest = Vector3.getNewVector().set(c1);
             TileEntity te = chest.getTileEntity(worldObj);
-            chest.freeVectorFromPool();
             if (te instanceof IInventory)
             {
                 IInventory inv = (IInventory) te;
@@ -163,7 +162,7 @@ public class EntityTrader extends EntityVillager
     public void useRecipe(MerchantRecipe p)
     {
 
-        Vector3 chest = Vector3.getNewVectorFromPool();
+        Vector3 chest = Vector3.getNewVector();
 
         // for(BlockPos c1: map.keySet())
         {// TODO write a method for comparing sales
@@ -171,7 +170,7 @@ public class EntityTrader extends EntityVillager
          // if(p1!=null && p1.hasSameIDsAs(p) &&
          // p1.getItemToSell().isItemEqual(p.getItemToSell()))
          // {
-         // chest = Vector3.getNewVectorFromPool().set(c1);
+         // chest = Vector3.getNewVector().set(c1);
          // break;
          // }
         }
@@ -187,7 +186,6 @@ public class EntityTrader extends EntityVillager
             if (c != null) c = c.copy();
 
             TileEntity te = chest.getTileEntity(worldObj);
-            chest.freeVectorFromPool();
             if (te instanceof IInventory)
             {
                 IInventory inv = (IInventory) te;
@@ -312,11 +310,10 @@ public class EntityTrader extends EntityVillager
                 ChunkCoordinate c = new ChunkCoordinate(MathHelper.floor_double(posX / 16f), (int) posY / 16,
                         MathHelper.floor_double(posZ / 16f), dimension);
                 String owner = TeamManager.getInstance().getLandOwner(c);
-                Vector3 v = Vector3.getNewVectorFromPool().set(this);
+                Vector3 v = Vector3.getNewVector().set(this);
                 String owner1 = TeamManager.getInstance()
                         .getLandOwner(new ChunkCoordinate(MathHelper.floor_double(v.intX() / 16f), v.intY() / 16,
                                 MathHelper.floor_double(v.intZ() / 16f), dimension));
-                v.freeVectorFromPool();
                 if (owner1 == null || !owner1.equals(owner)) { return false; }
                 String team = worldObj.getScoreboard().getPlayersTeam(p.getName()).getRegisteredName();
                 if (owner == null) return false;
@@ -384,19 +381,18 @@ public class EntityTrader extends EntityVillager
                     ChunkCoordinate c = new ChunkCoordinate(MathHelper.floor_double(loc[0] / 16f), loc[1] / 16,
                             MathHelper.floor_double(loc[2] / 16f), dimension);
                     String owner = TeamManager.getInstance().getLandOwner(c);
-                    Vector3 v = Vector3.getNewVectorFromPool().set(this);
+                    Vector3 v = Vector3.getNewVector().set(this);
                     String owner1 = TeamManager.getInstance()
                             .getLandOwner(new ChunkCoordinate(MathHelper.floor_double(v.intX() / 16f), v.intY() / 16,
                                     MathHelper.floor_double(v.intZ() / 16f), dimension));
                     if (owner1 == null || !owner1.equals(owner)) { return false; }
                     String team = worldObj.getScoreboard().getPlayersTeam(p.getName()).getRegisteredName();
                     if (owner == null) return false;
-                    if (!owner.equals(team) || !TeamManager.getInstance().isAdmin(p.getName(),
-                            p.getTeam())) { return false; }
+                    if (!owner.equals(team)
+                            || !TeamManager.getInstance().isAdmin(p.getName(), p.getTeam())) { return false; }
                     BlockPos c1 = new BlockPos(loc[0], loc[1], loc[2]);
                     if (chests.contains(c1)) chests.remove(c1);
                     else chests.add(c1);
-                    v.freeVectorFromPool();
                 }
             }
             return true;

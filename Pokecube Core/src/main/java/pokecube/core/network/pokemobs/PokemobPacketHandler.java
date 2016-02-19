@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -127,7 +127,7 @@ public class PokemobPacketHandler
             @Override
             public MessageServer onMessage(MessageClient message, MessageContext ctx)
             {
-                handleClientSide(mod_Pokecube.getPlayer(null), message.buffer);
+                handleClientSide(PokecubeCore.getPlayer(null), message.buffer);
                 return null;
             }
         }
@@ -218,7 +218,7 @@ public class PokemobPacketHandler
 
                 if (channel == ALIVECHECK)
                 {
-                    Vector3 v = Vector3.getNewVectorFromPool();
+                    Vector3 v = Vector3.getNewVector();
                     Entity e = (Entity) pokemob;
                     if (e.isDead)
                     {
@@ -239,7 +239,6 @@ public class PokemobPacketHandler
                         MessageClient message = new MessageClient(ret);
                         PokecubePacketHandler.sendToClient(message, player);
                     }
-                    v.freeVectorFromPool();
                 }
                 else if (channel == RETURN)
                 {
@@ -448,7 +447,7 @@ public class PokemobPacketHandler
                     {
                         pokemob.setPokemonAIState(IPokemob.STAYING, false);
                         if (pokemob.getGuardAI() != null)
-                            ((GuardAI) pokemob.getGuardAI()).setTimePeriod(new TimePeriod(0,0));
+                            ((GuardAI) pokemob.getGuardAI()).setTimePeriod(new TimePeriod(0, 0));
                         pokemob.setPokemonAIState(IPokemob.GUARDING, false);
                     }
                     else if (dir == 4)

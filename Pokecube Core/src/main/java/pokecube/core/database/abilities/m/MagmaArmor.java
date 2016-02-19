@@ -20,14 +20,13 @@ public class MagmaArmor extends Ability
     public void onUpdate(IPokemob mob)
     {
         if (mob.getStatus() == IMoveConstants.STATUS_FRZ) mob.setStatus(IMoveConstants.STATUS_NON);
-        Vector3 v = Vector3.getNewVectorFromPool().set(mob);
+        Vector3 v = Vector3.getNewVector().set(mob);
         List<EntityPokemobEgg> eggs = ((Entity) mob).worldObj.getEntitiesWithinAABB(EntityPokemobEgg.class,
                 v.getAABB().expand(range, range, range));
         for (EntityPokemobEgg egg : eggs)
         {
             egg.incubateEgg();
         }
-        v.freeVectorFromPool();
     }
 
     @Override

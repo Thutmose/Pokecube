@@ -58,17 +58,6 @@ public class TreeRemover
 
     public void clear()
     {
-        int n = 0;
-        for (Vector3 v : blocks)
-        {
-            if (n++ > 0) v.freeVectorFromPool();
-        }
-        n = 0;
-        for (Vector3 v : checked)
-        {
-            if (n++ > 0) v.freeVectorFromPool();
-        }
-
         blocks.clear();
         checked.clear();
     }
@@ -81,10 +70,10 @@ public class TreeRemover
         }
         else if (blocks.size() > 0) { return cutPoints(count); }
 
-        Vector3 base = Vector3.getNewVectorFromPool();
+        Vector3 base = Vector3.getNewVector();
         int ret = 0;
         int k = -1;
-        Vector3 temp = Vector3.getNewVectorFromPool();
+        Vector3 temp = Vector3.getNewVector();
 
         for (int i = -3; i < 4; i++)
             for (int j = -3; j < 4; j++)
@@ -118,14 +107,12 @@ public class TreeRemover
             populateList(base);
             ret = cutPoints(count);
         }
-        temp.freeVectorFromPool();
-        base.freeVectorFromPool();
         return ret;
     }
 
     public void cutGrass()
     {
-        Vector3 temp = Vector3.getNewVectorFromPool();
+        Vector3 temp = Vector3.getNewVector();
         for (int i = -4; i < 5; i++)
             for (int j = -4; j < 5; j++)
                 for (int k = -1; k < 6; k++)
@@ -136,7 +123,6 @@ public class TreeRemover
                         temp.breakBlock(worldObj, true);
                     }
                 }
-        temp.freeVectorFromPool();
     }
 
     private void populateList(Vector3 base)
@@ -174,7 +160,7 @@ public class TreeRemover
     {
         boolean ret = false;
 
-        Vector3 temp = Vector3.getNewVectorFromPool();
+        Vector3 temp = Vector3.getNewVector();
         for (int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++)
                 for (int k = -1; k <= 1; k++)
@@ -186,7 +172,6 @@ public class TreeRemover
                         ret = true;
                     }
                 }
-        temp.freeVectorFromPool();
         checked.add(prev);
         return ret;
     }

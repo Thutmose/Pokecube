@@ -6,7 +6,7 @@ package pokecube.core;
 import static pokecube.core.PokecubeItems.getItem;
 import static pokecube.core.PokecubeItems.removeFromHoldables;
 import static pokecube.core.interfaces.PokecubeMod.HMs;
-import static pokecube.core.mod_Pokecube.getWorld;
+import static pokecube.core.PokecubeCore.getWorld;
 
 import java.io.File;
 import java.util.ArrayList;

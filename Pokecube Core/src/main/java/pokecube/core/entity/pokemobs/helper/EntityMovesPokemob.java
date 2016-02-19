@@ -26,7 +26,7 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.MoveEntry;
 import pokecube.core.database.abilities.AbilityManager;
@@ -251,7 +251,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void exchangeMoves(int moveIndex0, int moveIndex1)
     {
-        if (mod_Pokecube.isOnClientSide() && getPokemonAIState(IPokemob.TAMED))
+        if (PokecubeCore.isOnClientSide() && getPokemonAIState(IPokemob.TAMED))
         {
             String[] moves = getMoves();
             if (moveIndex0 >= moves.length && moveIndex1 >= moves.length)
@@ -578,7 +578,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         moveInfo.ROLLOUTCOUNTER = 0;
         moveInfo.FURYCUTTERCOUNTER = 0;
 
-        if (mod_Pokecube.isOnClientSide() && getPokemonAIState(IPokemob.TAMED))
+        if (PokecubeCore.isOnClientSide() && getPokemonAIState(IPokemob.TAMED))
         {
             try
             {
@@ -979,9 +979,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     protected void attackEntityAsPokemob(Entity entity, float f)
     {
         if (getLover() == entity) return;
-        Vector3 v = Vector3.getNewVectorFromPool().set(entity);
+        Vector3 v = Vector3.getNewVector().set(entity);
         executeMove(entity, v, f);
-        v.freeVectorFromPool();
     }
 
     public void setTransformedTo(Entity to)

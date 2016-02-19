@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -296,7 +296,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     {
         if (itemstack != null && itemstack.isItemEqual(PokecubeItems.getStack("Everstone"))) return false;
 
-        if (this.getPokedexEntry().canEvolve() && !mod_Pokecube.isOnClientSide())
+        if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
         {
             if (evolution.isEmpty())
             {

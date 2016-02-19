@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PCPacketHandler.MessageServer;
 import pokecube.core.network.PokecubePacketHandler;
@@ -137,7 +137,7 @@ public class ContainerPC extends Container{
 	{
 		inv.boxes[inv.getPage()] = name;
 		
-		if(mod_Pokecube.isOnClientSide())
+		if(PokecubeCore.isOnClientSide())
 		{
 			byte[] string = name.getBytes();
 			byte[] message = new byte[string.length+2];
@@ -182,7 +182,7 @@ public class ContainerPC extends Container{
 //    	
     	if (i < 0)
     		return null;
-		if(mod_Pokecube.isOnClientSide()&&FMLClientHandler.instance().getServer()!=null)
+		if(PokecubeCore.isOnClientSide()&&FMLClientHandler.instance().getServer()!=null)
 		{
 			return clientSlotClick(i, j, flag, entityplayer);
 		}

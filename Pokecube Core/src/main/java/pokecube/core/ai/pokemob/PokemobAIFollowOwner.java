@@ -28,8 +28,8 @@ public class PokemobAIFollowOwner extends EntityAIBase {
 	    private int field_75343_h;
 	    float maxDist;
 	    float minDist;
-	    Vector3 v = Vector3.getNewVectorFromPool();
-		Vector3 v1 = Vector3.getNewVectorFromPool();
+	    Vector3 v = Vector3.getNewVector();
+		Vector3 v1 = Vector3.getNewVector();
 
 		public PokemobAIFollowOwner(EntityLiving entity,
 				float min, float max) {

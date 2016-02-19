@@ -19,7 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.gui.GuiGifCapture;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -354,7 +354,7 @@ public class WikiWriter {
 	static private void openPokedex()
 	{
 		Minecraft.getMinecraft().thePlayer.openGui(
-				mod_Pokecube.instance, 20, Minecraft.getMinecraft().thePlayer.worldObj, 0, 0, 0);
+				PokecubeCore.instance, 20, Minecraft.getMinecraft().thePlayer.worldObj, 0, 0, 0);
 	}
 	
 //	static private void setPokedexBeginning()

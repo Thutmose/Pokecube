@@ -19,9 +19,8 @@ public class ParticlesOnSource extends ParticlesOnTarget
     {
         Vector3 source = info.source;
         Vector3 target = info.target;
-        Vector3 temp = Vector3.getNewVectorFromPool().set(source).subtractFrom(target);
+        Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
         GlStateManager.translate(temp.x, temp.y, temp.z);
         super.clientAnimation(info, world, partialTick);
-        temp.freeVectorFromPool();
     }
 }

@@ -15,7 +15,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.mod_Pokecube;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
@@ -33,7 +33,7 @@ public class GuiTeleport extends Gui
      */
     public GuiTeleport()
     {
-        minecraft = (Minecraft) mod_Pokecube.getMinecraftInstance();
+        minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
         fontRenderer = minecraft.fontRendererObj;
         instance = this;
     }
@@ -62,7 +62,7 @@ public class GuiTeleport extends Gui
         try
         {
             if (instance().state && minecraft.currentScreen == null
-                    && !((Minecraft) mod_Pokecube.getMinecraftInstance()).gameSettings.hideGUI
+                    && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
                     && event.type == ElementType.HOTBAR)
                 draw(event);
         }

@@ -12,7 +12,6 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
@@ -27,7 +26,6 @@ import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
-import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -35,8 +33,8 @@ import thut.api.terrain.TerrainSegment;
 public class TileEntityNest extends TileEntity implements ITickable, IInventory
 {
 
-    private ItemStack[] inventory  = new ItemStack[27];
-    
+    private ItemStack[] inventory = new ItemStack[27];
+
     int pokedexNb = 0;
 
     HashSet<IPokemob> residents = new HashSet<IPokemob>();
@@ -68,23 +66,18 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         SpawnData data = entry.getSpawnData();
         if (data != null)
         {
-            Vector3 here = Vector3.getNewVectorFromPool().set(this);
+            Vector3 here = Vector3.getNewVector().set(this);
 
             TerrainSegment t = TerrainManager.getInstance().getTerrian(worldObj, here);
             int b = t.getBiome(here);
             int min = data.getMin(b);
             num = min + worldObj.rand.nextInt(data.getMax(b) - min + 1);
-            here.freeVectorFromPool();
         }
         // System.out.println("tick");
         if (residents.size() < num && time > 200 + worldObj.rand.nextInt(2000))
         {
             time = 0;
-            Vector3 here = Vector3.getNewVectorFromPool().set(this);
-            AxisAlignedBB aabb = here.getAABB().expand(16, 16, 16);
-
             ItemStack eggItem = ItemPokemobEgg.getEggStack(pokedexNb);
-
             NBTTagCompound nbt = eggItem.getTagCompound();
             nbt.setIntArray("nestLocation", new int[] { getPos().getX(), getPos().getY(), getPos().getZ() });
             eggItem.setTagCompound(nbt);
@@ -97,8 +90,6 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
             {
                 worldObj.spawnEntityInWorld(egg);
             }
-            Matrix3.freeAABB(aabb);
-            here.freeVectorFromPool();
         }
     }
 
@@ -114,7 +105,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
     public void init()
     {
-        Vector3 here = Vector3.getNewVectorFromPool().set(this);
+        Vector3 here = Vector3.getNewVector().set(this);
 
         TerrainSegment t = TerrainManager.getInstance().getTerrian(worldObj, here);
         t.refresh(worldObj);
@@ -142,14 +133,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
                 pokedexNb = dbe.getPokedexNb();
             }
-            // System.out.println("Set Spawn Pokemon to " +
-            // Database.getEntry(pokedexNb));
         }
-        // if(pokedexNb==0)
-        // worldObj.setBlock(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord,
-        // yCoord - 1, zCoord));
-
-        here.freeVectorFromPool();
     }
 
     /** Reads a tile entity from NBT. */

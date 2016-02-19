@@ -68,7 +68,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     protected String texture;
 
     public Matrix3                  mainBox;
-    private Vector3                 offset  = Vector3.getNewVectorFromPool();
+    private Vector3                 offset  = Vector3.getNewVector();
     public HashMap<String, Matrix3> boxes   = new HashMap<String, Matrix3>();
     public HashMap<String, Vector3> offsets = new HashMap<String, Vector3>();
 
@@ -312,12 +312,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (!cull && !Mod_Pokecube_Helper.cull)
         {
             cull = worldObj.getClosestPlayerToEntity(this, Mod_Pokecube_Helper.mobDespawnRadius * 3) == null;
-            if(cull && despawntimer < 0)
+            if (cull && despawntimer < 0)
             {
                 despawntimer = 80;
                 cull = false;
             }
-            else if(cull && despawntimer > 0)
+            else if (cull && despawntimer > 0)
             {
                 cull = false;
             }
@@ -384,8 +384,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             // return;
         }
-        Vector3 temp = Vector3.getNewVectorFromPool().set(here);
-        Vector3 temp1 = Vector3.getNewVectorFromPool().setToVelocity(this);
+        Vector3 temp = Vector3.getNewVector().set(here);
+        Vector3 temp1 = Vector3.getNewVector().setToVelocity(this);
         super.onUpdate();
 
         boolean aNan = false;
@@ -491,11 +491,10 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (calendar.get(Calendar.DAY_OF_MONTH) == 25 && calendar.get(Calendar.MONTH) == 11)
         {
             float scale = width * 2;
-            Vector3 offset = Vector3.getNewVectorFromPool().set(rand.nextDouble() - 0.5, rand.nextDouble() + height / 2,
+            Vector3 offset = Vector3.getNewVector().set(rand.nextDouble() - 0.5, rand.nextDouble() + height / 2,
                     rand.nextDouble() - 0.5);
             offset.scalarMultBy(scale);
             particleLoc.addTo(offset);
-            offset.freeVectorFromPool();
             particle = "aurora";// Merry Xmas
             particleIntensity = 90;
         }
@@ -693,7 +692,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void setOffsets()
     {
-        if (offset == null) offset = Vector3.getNewVectorFromPool();
+        if (offset == null) offset = Vector3.getNewVector();
         offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
         offsets.put("main", offset);
     }
@@ -761,7 +760,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 if (world == null) return;
             }
 
-            Vector3 diffs = Vector3.getNewVectorFromPool();
+            Vector3 diffs = Vector3.getNewVector();
             diffs.set(x, y, z);
 
             for (String s : getBoxes().keySet())
@@ -771,10 +770,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 Vector3 offset = getOffsets().get(s);
                 if (offset == null) offset = Vector3.empty;
                 Vector3 pos = offset.add(here);
-                Vector3 v;
-                diffs.set(v = box.doTileCollision(world, this, pos, diffs));
-                pos.freeVectorFromPool();
-                v.freeVectorFromPool();
+                diffs.set(box.doTileCollision(world, this, pos, diffs));
                 x = diffs.x;
                 y = diffs.y;
                 z = diffs.z;
@@ -783,8 +779,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             x = diffs.x;
             y = diffs.y;
             z = diffs.z;
-
-            diffs.freeVectorFromPool();
 
             double dy = 0;
             if (this.riddenByEntity != null && worldObj.isRemote)

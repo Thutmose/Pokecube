@@ -29,7 +29,7 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         {
             if (world.provider.doesWaterVaporize()) return -1;
             boolean sky = false;
-            Vector3 temp1 = Vector3.getNewVectorFromPool();
+            Vector3 temp1 = Vector3.getNewVector();
             outer:
             for (int i = 0; i < GRIDSIZE; i++)
                 for (int j = 0; j < GRIDSIZE; j++)
@@ -40,7 +40,6 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
                             sky = sky || temp1.isOnSurfaceIgnoringWater(chunk, world);
                         if (sky) break outer;
                     }
-            temp1.freeVectorFromPool();
             if (sky) return -1;
             if (count(world, Blocks.water, v, 1) > 2) return BiomeType.CAVE_WATER.getType();
             else if (isCaveFloor(v, world)) return BiomeType.CAVE.getType();
@@ -57,7 +56,6 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         Vector3 top = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
         if (top == null) return false;
         b = top.getBlock(world);
-        top.freeVectorFromPool();
         return Mod_Pokecube_Helper.getCaveBlocks().contains(b);
     }
 

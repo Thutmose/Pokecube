@@ -333,6 +333,10 @@ public class PokedexEntryLoader
                 entry.length = Float.parseFloat(node.getAttribute("length"));
                 entry.width = Float.parseFloat(node.getAttribute("width"));
             }
+            else if (node.hasAttribute("width"))
+            {
+                entry.length = entry.width = Float.parseFloat(node.getAttribute("width"));
+            }
             else
             {
                 entry.length = entry.width = entry.height;

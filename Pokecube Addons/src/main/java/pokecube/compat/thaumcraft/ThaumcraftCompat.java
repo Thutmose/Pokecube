@@ -149,14 +149,22 @@ public class ThaumcraftCompat
             PokedexEntry entry = Pokedex.getInstance().getEntry(i);
             Class<?> klass = PokecubeMod.core.getEntityClassFromPokedexNumber(entry.getPokedexNb());
 
-            if (klass != null)
+            if (klass != null && entry != null)
             {
                 String name = (String) EntityList.classToStringMapping.get(klass);
 
                 if (name != null)
                 {
-                    ThaumcraftApi.registerEntityTag(name, getAspects(entry),
-                            new ThaumcraftApi.EntityTagsNBT("pokedexNb", Integer.valueOf(entry.getPokedexNb())));
+                    try
+                    {
+                        ThaumcraftApi.registerEntityTag(name, getAspects(entry),
+                                new ThaumcraftApi.EntityTagsNBT("pokedexNb", Integer.valueOf(entry.getPokedexNb())));
+                    }
+                    catch (Exception e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
                 else
                 {
@@ -252,11 +260,11 @@ public class ThaumcraftCompat
         ThaumcraftApi.addLootBagItem(pokecube, 50, 0);
         ThaumcraftApi.addLootBagItem(greatcube, 10, 0);
         ThaumcraftApi.addLootBagItem(ultracube, 5, 0);
-        
+
         ThaumcraftApi.addLootBagItem(pokecube, 500, 1);
         ThaumcraftApi.addLootBagItem(greatcube, 100, 1);
         ThaumcraftApi.addLootBagItem(ultracube, 50, 1);
-        
+
         ThaumcraftApi.addLootBagItem(ultracube, 200, 2);
         ThaumcraftApi.addLootBagItem(mastercube, 20, 2);
         ThaumcraftApi.addLootBagItem(expshare, 100, 2);

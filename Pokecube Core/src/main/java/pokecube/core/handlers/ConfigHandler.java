@@ -19,6 +19,7 @@ import com.google.gson.JsonParser;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
@@ -31,28 +32,24 @@ import pokecube.core.utils.PokecubeSerializer;
 
 public class ConfigHandler extends Mod_Pokecube_Helper
 {
-    public static String[] defaultStarts  = {};
-    public static boolean  loginmessage   = true;
-    public static int      mateMultiplier = 1;
-    public static int      BREEDINGDELAY  = 4000;
-    public static int      EGGHATCHTIME   = 10000;
+    public static final String CATEGORY_SPAWNING = "mobspawning";
+    public static final String CATEGORY_DATABASE = "databases";
+    public static String[]     defaultStarts     = {};
+    public static boolean      loginmessage      = true;
+    public static int          mateMultiplier    = 1;
+    public static int          BREEDINGDELAY     = 4000;
+    public static int          EGGHATCHTIME      = 10000;
 
     public static void loadConfig(Mod_Pokecube_Helper helper, Configuration config)
     {
+        Property prop;
         configFile = config.getConfigFile();
         Mod_Pokecube_Helper.config = config;
         initDefaultStarts();
-        deactivateMonsters = config.get(Configuration.CATEGORY_GENERAL, "deactivateMonsters", deactivateMonsters,
-                "Whether spawn of hostile Minecraft mobs should be deactivated.").getBoolean(false);
-        pokemonSpawn = config.get(Configuration.CATEGORY_GENERAL, "pokemonSpawn", pokemonSpawn,
-                "Do pokemon spawn via the pokecube spawning code.").getBoolean(true);
+        loadSpawnConfigs();
         pvpExp = config
                 .get(Configuration.CATEGORY_GENERAL, "pvpExp", pvpExp, "do tame pokemon give experience when defeated.")
                 .getBoolean(false);
-        disableMonsters = config.get(Configuration.CATEGORY_GENERAL, "disableMonsters", disableMonsters,
-                "Whether ALL spawn of hostile Minecraft mobs should be deactivated.").getBoolean(false);
-        deactivateAnimals = config.get(Configuration.CATEGORY_GENERAL, "deactivateAnimals", deactivateAnimals,
-                "Whether spawn of non-hostile Minecraft mobs should be deactivated.").getBoolean(false);
         allowFakeMons = config
                 .get(Configuration.CATEGORY_GENERAL, "fakemonsAllowed", allowFakeMons,
                         "Are addons that add FakeMons allowed to add spawns or starters to the world.")
@@ -66,33 +63,29 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                 loginmessage = config.get(Configuration.CATEGORY_GENERAL, "loginmessage", false).getBoolean(false);
         }
 
-        String[] defaultDatabases = { "baseStats", "moves", "moveLists", "evsXp", "abilities", "spawndata" };
+        String[] defaultDatabases = { "gen1, gen2, gen3, gen4, gen5, gen6", "moves" };
 
-        String[] configDatabases = config.getStringList("databases", CATEGORY_ADVANCED, defaultDatabases,
-                "Databases for pokemob information Add additional databases by appending ;<newfile>.  If you remove any of the strings here, things will break.");
-
-        if (configDatabases.length != defaultDatabases.length)
+        (prop = config.get(CATEGORY_DATABASE, "databases", defaultDatabases,
+                "Databases for pokemob information Add additional databases by appending , <newfile>."
+                        + "  If you remove any of the strings here, things will break.")).set(defaultDatabases);
+        String[] configDatabases = prop.getStringList();
+        if (configDatabases.length != 2)
         {
             configDatabases = defaultDatabases;
         }
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < EnumDatabase.values().length; i++)
         {
-            String[] args = configDatabases[i].split(";");
+            String[] args = configDatabases[i].split(",");
             for (String s : args)
             {
-                Database.addDatabase(s, EnumDatabase.values()[i]);
+                Database.addDatabase(s.trim(), EnumDatabase.values()[i]);
             }
         }
 
-        cull = config
-                .get(Configuration.CATEGORY_GENERAL, "cullDistanced", cull,
-                        "do pokemon that get more than despawnDistance from a player despawn instantly")
-                .getBoolean(false);
         mysterygift = config.get(Configuration.CATEGORY_GENERAL, "mysterygift", mysterygift,
                 "allows players to accept special reward pokemon from particular events").getBoolean(true);
-        minLegendLevel = config.getInt("minLegendLevel", Configuration.CATEGORY_GENERAL, 1, 1, 100,
-                "Minimum Level a legendary can spawn at");
+
         boolean advanced = config
                 .get(CATEGORY_ADVANCED, "advancedOptions", false,
                         "set this to true, run the game, and some more advanced config options will be enabled in this file.")
@@ -114,9 +107,6 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                 .getBoolean(false);
         if (hardMode) semiHardMode = true;
 
-        SpawnHandler.MAX_DENSITY = config.get(CATEGORY_ADVANCED, "mobDensity", SpawnHandler.MAX_DENSITY,
-                "Spawn density factor, scales the occurance of wild pokemon.").getDouble();
-
         guiOffset = config.get(CATEGORY_ADVANCED, "guiOffset", new int[] { 0, 0 }, "offset of pokemon moves gui.")
                 .getIntList();
 
@@ -124,6 +114,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                 .get(CATEGORY_ADVANCED, "aiThreads", 2,
                         "How many AI threads are generated, note that it will at most make as many as processors are available, so setting this value above that number will not do anything.")
                 .getInt(2);
+
         pokemobagresswarning = config.get(CATEGORY_ADVANCED, "agresswarning", pokemobagresswarning,
                 "is there a warning before a wild pokemob attacks the player.").getBoolean(false);
 
@@ -137,12 +128,6 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
         if (advanced)
         {
-
-            SpawnHandler.MAXNUM = config
-                    .get(CATEGORY_ADVANCED, "mobNumber", SpawnHandler.MAXNUM,
-                            "Number of Pokemobs that can spawn inside the despawn radius, this is multiplied by spawn density")
-                    .getInt();
-
             int dist = config.get(CATEGORY_ADVANCED, "minMeteorDistance", 3000,
                     "The minimum distance between two meteor impacts").getInt(3000);
             PokecubeSerializer.MeteorDistance = dist * dist;
@@ -155,35 +140,6 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
             refreshNests = config.get(CATEGORY_ADVANCED, "nestsRefresh", false,
                     "set true to generate nests in an already generated world.").getBoolean(false);
-
-            mobDespawnRadius = config
-                    .get(CATEGORY_ADVANCED, "despawnRadius", mobDespawnRadius,
-                            "If there are no players within this close to the pokemob, it will immediately despawn if cullDistanced is true (does not apply to tamed or angry)."
-                                    + "  This is also the maximum distance from a player for a pokemob to spawn.")
-                    .getInt(32);
-
-            mobSpawnRadius = config.get(CATEGORY_ADVANCED, "spawnRadius", mobSpawnRadius,
-                    "mobs will not spawn closer than this to the player.").getInt(10);
-
-            mateMultiplier = config
-                    .get(CATEGORY_ADVANCED, "breedingrate", mateMultiplier,
-                            "the number of ticks to increment for breeding at a time, increasing this number speeds up mating.")
-                    .getInt(1);
-
-            BREEDINGDELAY = config.get(CATEGORY_ADVANCED, "breedingdelay", BREEDINGDELAY,
-                    "Approximate number of ticks between breeding.").getInt(BREEDINGDELAY);
-            if (BREEDINGDELAY < 600) BREEDINGDELAY = 1000;
-            
-            EGGHATCHTIME = config.getInt("egghatchtime", CATEGORY_ADVANCED, 10000, 1, Integer.MAX_VALUE, "twice the Average time to hatch eggs in ticks, actual hatch time is 100 + random.nextInt(egghatchtime)");
-
-            mobAggroRadius = config
-                    .get(CATEGORY_ADVANCED, "agroRadius", mobAggroRadius, "mobs might agro a player closer than this.")
-                    .getInt(5);
-
-            pokemobLifeSpan = config
-                    .get(CATEGORY_ADVANCED, "lifeTime", pokemobLifeSpan,
-                            "the minimum number of ticks that a pokemob will live for in the wild, this value is extended by wild pokemon eating.")
-                    .getInt(10000);
 
             Mod_Pokecube_Helper.cave = config
                     .get(CATEGORY_ADVANCED, "Cave Spawns",
@@ -217,8 +173,10 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                             "any block listed here will have decreased drop rates from dig with high level pokemon, use same format as for the other lists.")
                     .getString();
 
-            Mod_Pokecube_Helper.industrial = config.get(CATEGORY_ADVANCED, "Industrial Area Blocks", "",
-                    "Blocks here count towards an industrial area.").getString();
+            // TODO possibly re-implement this.
+            // Mod_Pokecube_Helper.industrial = config.get(CATEGORY_ADVANCED,
+            // "Industrial Area Blocks", "",
+            // "Blocks here count towards an industrial area.").getString();
 
             defaultMobs = config
                     .get(CATEGORY_ADVANCED, "Default Mod", "",
@@ -240,10 +198,6 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             if (config.hasKey(CATEGORY_ADVANCED, "juicechance"))
             {
                 EventsHandler.juiceChance = config.get(CATEGORY_ADVANCED, "juicechance", 3).getDouble(3);
-            }
-            if (config.hasKey(CATEGORY_ADVANCED, "cap"))
-            {
-                SpawnHandler.lvlCap = config.get(CATEGORY_ADVANCED, "cap", true).getBoolean(true);
             }
             if (config.hasKey(CATEGORY_ADVANCED, "reset"))
             {
@@ -302,6 +256,70 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         System.out.println("Pokecube Config Loaded");
     }
 
+    private static void loadSpawnConfigs()
+    {
+        deactivateMonsters = config.get(CATEGORY_SPAWNING, "deactivateMonsters", deactivateMonsters,
+                "Whether spawn of hostile Minecraft mobs should be deactivated.").getBoolean(false);
+        deactivateAnimals = config.get(CATEGORY_SPAWNING, "deactivateAnimals", deactivateAnimals,
+                "Whether spawn of non-hostile Minecraft mobs should be deactivated.").getBoolean(false);
+        disableMonsters = config
+                .get(CATEGORY_SPAWNING, "disableMonsters", disableMonsters,
+                        "Whether ALL spawn of hostile Minecraft mobs should be deactivated. This may mess up mod compatiblity if enabled")
+                .getBoolean(false);
+
+        pokemonSpawn = config.get(CATEGORY_SPAWNING, "pokemonSpawn", pokemonSpawn,
+                "Do pokemon spawn via the pokecube spawning code.").getBoolean(true);
+
+        cull = config
+                .get(CATEGORY_SPAWNING, "cullDistanced", cull,
+                        "do pokemon that get more than despawnDistance from a player despawn instantly")
+                .getBoolean(false);
+
+        SpawnHandler.lvlCap = config.getBoolean("cap", CATEGORY_SPAWNING, true,
+                "will a level cap be applied, if true, pokemobs will not spawn higher than lvl levelCap");
+        SpawnHandler.capLevel = config.getInt("levelCap", CATEGORY_SPAWNING, 50, 1, 100,
+                "the maximum level wild pokemobs can spawn at, if cap is enabled");
+        minLegendLevel = config.getInt("minLegendLevel", CATEGORY_SPAWNING, 1, 1, 100,
+                "Minimum Level a legendary can spawn at");
+
+        pokemobLifeSpan = config
+                .get(CATEGORY_SPAWNING, "lifeTime", pokemobLifeSpan,
+                        "the minimum number of ticks that a pokemob will live for in the wild, this value is extended by wild pokemon eating.")
+                .getInt(10000);
+
+        mateMultiplier = config
+                .get(CATEGORY_SPAWNING, "breedingrate", mateMultiplier,
+                        "the number of ticks to increment for breeding at a time, increasing this number speeds up mating.")
+                .getInt(1);
+
+        BREEDINGDELAY = config
+                .get(CATEGORY_SPAWNING, "breedingdelay", BREEDINGDELAY, "Approximate number of ticks between breeding.")
+                .getInt(BREEDINGDELAY);
+        if (BREEDINGDELAY < 600) BREEDINGDELAY = 1000;
+
+        EGGHATCHTIME = config.getInt("egghatchtime", CATEGORY_SPAWNING, 10000, 1, Integer.MAX_VALUE,
+                "twice the Average time to hatch eggs in ticks, actual hatch time is 100 + random.nextInt(egghatchtime)");
+
+        SpawnHandler.MAX_DENSITY = config.get(CATEGORY_SPAWNING, "mobDensity", SpawnHandler.MAX_DENSITY,
+                "Spawn density factor, scales the occurance of wild pokemon.").getDouble();
+
+        SpawnHandler.MAXNUM = config
+                .get(CATEGORY_SPAWNING, "mobNumber", SpawnHandler.MAXNUM,
+                        "Number of Pokemobs that can spawn inside the despawnRadius of a player, this is multiplied by spawn density")
+                .getInt();
+
+        mobDespawnRadius = config
+                .get(CATEGORY_SPAWNING, "despawnRadius", mobDespawnRadius,
+                        "If there are no players within this close to the pokemob, it will immediately despawn if cullDistanced is true (does not apply to tamed or angry)."
+                                + "  This is also the maximum distance from a player for a pokemob to spawn.")
+                .getInt(32);
+        mobSpawnRadius = config.get(CATEGORY_SPAWNING, "spawnRadius", mobSpawnRadius,
+                "mobs will not spawn closer than this to the player.").getInt(10);
+        mobAggroRadius = config
+                .get(CATEGORY_SPAWNING, "agroRadius", mobAggroRadius, "mobs might agro a player closer than this.")
+                .getInt(5);
+    }
+
     public static void seenMessage()
     {
         Configuration config = new Configuration(configFile);
@@ -320,8 +338,10 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         config.get(CATEGORY_ADVANCED, "semiHMode", semiHardMode).set(semiHardMode);
         config.get(CATEGORY_ADVANCED, "loginGui", guiOnLogin).set(guiOnLogin);
         config.get(CATEGORY_ADVANCED, "advancedOptions", false).set(true);
-        config.get(CATEGORY_ADVANCED, "mobNumber", SpawnHandler.MAXNUM).set(SpawnHandler.MAXNUM);
-        config.get(CATEGORY_ADVANCED, "despawnRadius", mobDespawnRadius).set(mobDespawnRadius);
+
+        config.get(CATEGORY_SPAWNING, "mobNumber", SpawnHandler.MAXNUM).set(SpawnHandler.MAXNUM);
+        config.get(CATEGORY_SPAWNING, "despawnRadius", mobDespawnRadius).set(mobDespawnRadius);
+
         if (config.hasKey(CATEGORY_ADVANCED, "explosions") || !explosions)
         {
             config.get(CATEGORY_ADVANCED, "explosions", explosions).set(explosions);
@@ -336,7 +356,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             }
         }
 
-        config.get(CATEGORY_ADVANCED, "functions", funcs.toArray(new String[0])).set(funcs.toArray(new String[0]));
+        config.get(CATEGORY_SPAWNING, "functions", funcs.toArray(new String[0])).set(funcs.toArray(new String[0]));
         config.save();
     }
 
@@ -381,6 +401,10 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             if (!e.getName().equals("version")) list.add(e);
         }
         for (IConfigElement e : new ConfigElement(config.getCategory(CATEGORY_ADVANCED)).getChildElements())
+        {
+            list.add(e);
+        }
+        for (IConfigElement e : new ConfigElement(config.getCategory(CATEGORY_SPAWNING)).getChildElements())
         {
             list.add(e);
         }

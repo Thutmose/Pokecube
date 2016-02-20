@@ -279,7 +279,6 @@ public class GuiAnimate extends GuiScreen
         }
         else if (button.id == 4)
         {
-            Database.updateSizes();
             ClientProxy.populateModels();
         }
         else if (button.id == 5)

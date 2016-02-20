@@ -527,7 +527,8 @@ public final class SpawnHandler
                 net.minecraft.entity.EntityLiving.SpawnPlacementType.ON_GROUND);// validSurfaces.contains(down);
     }
 
-    public static boolean lvlCap = true;
+    public static boolean lvlCap   = false;
+    public static int     capLevel = 50;
 
     public static boolean creatureSpecificInit(EntityLiving entityliving, World world, double posX, double posY,
             double posZ, Vector3 spawnPoint)
@@ -539,7 +540,8 @@ public final class SpawnHandler
         {
             int maxXP = getSpawnXp(world, vec.set(entityliving), ((IPokemob) entityliving).getPokedexEntry());
 
-            if (lvlCap) maxXP = Math.min(maxXP, 600000);
+            if (lvlCap) maxXP = Math.min(maxXP,
+                    Tools.levelToXp(((IPokemob) entityliving).getPokedexEntry().getEvolutionMode(), capLevel));
             maxXP = Math.max(10, maxXP);
 
             ((IPokemob) entityliving).setExp(maxXP, false, true);

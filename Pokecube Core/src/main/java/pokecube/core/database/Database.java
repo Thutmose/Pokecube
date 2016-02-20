@@ -1,7 +1,5 @@
 package pokecube.core.database;
 
-import static pokecube.core.utils.PokeType.getType;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,9 +15,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -27,15 +29,12 @@ import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.database.PokedexEntry.EvolutionData;
-import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.TypeEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.Tools;
 import thut.api.terrain.BiomeType;
 
 public class Database implements IMoveConstants
@@ -51,29 +50,25 @@ public class Database implements IMoveConstants
     private static String DBLOCATION = "/assets/pokecube/database/";
     public static String  CONFIGLOC  = "";
 
-    // These are used for other mods adding in databases
-    private static List<String> externalDatabases     = new ArrayList<String>();
-    private static List<String> externalSpawnData     = new ArrayList<String>();
-    private static List<String> externalStatDatabases = new ArrayList<String>();
-    private static List<String> externalEVXPDatabases = new ArrayList<String>();
+    private static HashSet<String> defaultDatabases = Sets.newHashSet("gen1.xml", "gen2.xml", "gen3.xml", "gen4.xml",
+            "gen5.xml", "gen6.xml");
 
+    private static HashSet<String>         extraDatabases  = Sets.newHashSet();
+    private static HashSet<String>         spawnDatabases  = Sets.newHashSet();
     /** These are used for config added databasea <br>
-     * Index 0 = baseStats<br>
+     * Index 0 = pokemon<br>
      * Index 1 = moves<br>
-     * Index 2 = moveLists<br>
-     * Index 3 = exsXp<br>
-     * Index 4 = abilities<br>
-     * Index 5 = spawndata<br>
     */
     @SuppressWarnings("unchecked")
     private static List<ArrayList<String>> configDatabases = Lists.newArrayList(new ArrayList<String>(),
-            new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(),
             new ArrayList<String>());
 
     public static void addDatabase(String file, EnumDatabase database)
     {
         int index = database.ordinal();
         ArrayList<String> list = configDatabases.get(index);
+        if (database == EnumDatabase.POKEMON && !file.endsWith(".xml")) file = file + ".xml";
+        else if (!file.endsWith(".csv")) file = file + ".csv";
         for (String s : list)
         {
             if (s.equals(file)) return;
@@ -83,45 +78,62 @@ public class Database implements IMoveConstants
 
     public static void init(FMLPreInitializationEvent evt)
     {
-
         checkConfigFiles(evt);
-
-        for (String s : configDatabases.get(0))
-            initPokemobs(DBLOCATION + s + ".csv");
-        for (String s : externalStatDatabases)
-        {
-            initPokemobs(s);
-        }
-
-        System.out.println("Loading Moves Databases");
         for (String s : configDatabases.get(1))
-            loadMoves(DBLOCATION + s + ".csv");
-        for (String s : configDatabases.get(2))
-            load(DBLOCATION + s + ".csv");
+            loadMoves(DBLOCATION + s);
 
-        for (String s : externalDatabases)
+        for (String s : configDatabases.get(EnumDatabase.POKEMON.ordinal()))
         {
-            load(s);
+            try
+            {
+                PokedexEntryLoader.makeEntries(new File(DBLOCATION + s), true);
+            }
+            catch (ParserConfigurationException | SAXException | IOException e)
+            {
+                e.printStackTrace();
+            }
         }
+
+        for (String s : extraDatabases)
+        {
+            try
+            {
+                PokedexEntryLoader.makeEntries(new File(s), true);
+            }
+            catch (ParserConfigurationException | SAXException | IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println(
+                "Loaded " + data.size() + " by number, and " + allFormes.size() + " by formes from databases.");
     }
 
     public static void postInit()
     {
-
-        for (String s : configDatabases.get(0))
-            loadStats(DBLOCATION + s + ".csv");
-        for (String s : configDatabases.get(3))
-            loadEVXP(DBLOCATION + s + ".csv");
-        for (String s : configDatabases.get(4))
-            loadAbilities(DBLOCATION + s + ".csv");
-
-        for (String s : externalEVXPDatabases)
+        for (String s : defaultDatabases)
         {
-            if (s != null) loadEVXP(s);
+            try
+            {
+                PokedexEntryLoader.makeEntries(new File(DBLOCATION + s), false);
+            }
+            catch (ParserConfigurationException | SAXException | IOException e)
+            {
+                e.printStackTrace();
+            }
         }
-        for (String s : externalStatDatabases)
+
+        for (String s : extraDatabases)
         {
-            loadStats(s);
+            try
+            {
+                PokedexEntryLoader.makeEntries(new File(s), false);
+            }
+            catch (ParserConfigurationException | SAXException | IOException e)
+            {
+                e.printStackTrace();
+            }
         }
         loadSpawns();
         List<PokedexEntry> toRemove = new ArrayList<PokedexEntry>();
@@ -137,7 +149,7 @@ public class Database implements IMoveConstants
             data.remove(p.pokedexNb);
             spawnables.remove(p);
         }
-        System.err.println("Removed " + toRemove.size() + " Missing Pokedex Entries");
+        System.err.println("Removed " + toRemove.size() + " Missing Pokemon");
 
         for (PokedexEntry p : data.values())
         {
@@ -183,9 +195,6 @@ public class Database implements IMoveConstants
             }
 
         }
-        // Reloads all the sizes for any formes which were missed on the first
-        // pass due to lack of pokedex entries
-        updateSizes();
         toRemove.clear();
         for (PokedexEntry e : allFormes)
         {
@@ -203,12 +212,22 @@ public class Database implements IMoveConstants
                 e.foodDrop = e.baseForme.foodDrop;
                 e.commonDrops = e.baseForme.commonDrops;
                 e.rareDrops = e.baseForme.rareDrops;
+                Thread.dumpStack();
+            }
+            if (e.mobType == null)
+            {
+                e.mobType = PokecubeMod.Type.NORMAL;
+                System.out.println(e);
+                Thread.dumpStack();
             }
             if (e.species == null && e.baseForme != null)
             {
                 e.childNumbers = e.baseForme.childNumbers;
                 e.species = e.baseForme.species;
+                System.out.println(e);
+                Thread.dumpStack();
             }
+            if (e.type2 == null) e.type2 = PokeType.unknown;
             if (!Pokedex.getInstance().getEntries().contains(e.getPokedexNb()))
             {
                 if (e.baseForme != null && Pokedex.getInstance().getEntries().contains(e.baseForme.getPokedexNb()))
@@ -216,30 +235,24 @@ public class Database implements IMoveConstants
                     continue;
                 }
                 toRemove.add(e);
-                // System.out.println(e.pokedexNb + "," + e);
             }
         }
-        allFormes.removeAll(toRemove);
-    }
 
-    public static void addDatabase(String file)
-    {
-        externalDatabases.add(file);
+        System.out.println(toRemove.size() + " Pokemon Formes Removed");
+        allFormes.removeAll(toRemove);
+
+        for (PokedexEntry e : allFormes)
+        {
+            if (e.stats == null || e.evs == null)
+            {
+                System.err.println(new NullPointerException(e + " is missing stats or evs " + e.stats + " " + e.evs));
+            }
+        }
     }
 
     public static void addSpawnData(String file)
     {
-        externalSpawnData.add(file);
-    }
-
-    public static void addStatDatabase(String file)
-    {
-        externalStatDatabases.add(file);
-    }
-
-    public static void addEVXPSpawnData(String file)
-    {
-        externalEVXPDatabases.add(file);
+        spawnDatabases.add(file);
     }
 
     public static void addEntry(PokedexEntry entry)
@@ -317,407 +330,20 @@ public class Database implements IMoveConstants
 
     private static void loadSpawns()
     {
-        for (String s : configDatabases.get(5))
-            loadSpawns(DBLOCATION + s + ".csv");
-
-        if (PokecubeMod.debug) System.out.println("loaded Standard Spawns ");
-        for (String s : externalSpawnData)
+        for (String s : spawnDatabases)
         {
-            if (s != null) if (PokecubeMod.debug) System.out.println("loading from " + s);
             if (s != null) loadSpawns(s);
         }
     }
 
-    public static void updateSizes()
-    {
-        loadStats(DBLOCATION + "baseStats.csv", true, false);
-    }
-
-    private static void loadStats(String file)
-    {
-        loadStats(file, false, false);
-    }
-
-    private static void initPokemobs(String file)
-    {
-        loadStats(file, false, true);
-    }
-
-    private static void loadStats(String file, boolean justSize, boolean justMaking)
-    {
-        ArrayList<ArrayList<String>> rows = getRows(file);
-        for (ArrayList<String> s : rows)
-        {
-            int num = 0;
-
-            try
-            {
-                num = Integer.parseInt(s.get(0));
-            }
-            catch (NumberFormatException e2)
-            {
-                continue;
-            }
-
-            PokedexEntry e = getEntry(num);
-            if (justMaking)
-            {
-                if (e == null)
-                {
-                    e = new PokedexEntry(num, s.get(1).trim());
-                    addEntry(e);
-                }
-                continue;
-            }
-
-            e = getEntry(num);
-
-            if (e != null)
-            {
-                int catchRate = 3;
-                String first = "";
-                String second = "";
-                String name = e.name;
-                String forme = s.get(1).trim();
-
-                if (s.size() == 2)
-                {
-                    PokedexEntry copy = Database.getEntry(forme);
-                    if (copy == null)
-                    {
-                        copy = new PokedexEntry(e.pokedexNb, forme);
-                    }
-                    e.copyToForm(copy);
-                    e.addForm(copy);
-                    continue;
-                }
-
-                if (!justSize)
-                {
-
-                    if (forme.contains(" "))
-                    {
-                        catchRate = e.catchRate;
-                    }
-                    else if (s.size() > 9) try
-                    {
-                        catchRate = Integer.parseInt(s.get(8));
-                    }
-                    catch (NumberFormatException e1)
-                    {
-                        System.err.println("Missing Catch Rate for " + forme);
-                    }
-                    if (s.size() > 9) first = s.get(9);
-                    if (s.size() > 10) second = s.get(10);
-
-                    if (forme.equals("")) System.err.println("Missing name in Stats file for a form of " + name);
-                    else name = forme.trim();
-
-                    if (getType(first) == getType(second)) System.err.println("Error in Types for form " + name + " of "
-                            + e.name + ", Listed as '" + first + "' and '" + second + "'");
-
-                    e.addStats(name, Integer.parseInt(s.get(2)), Integer.parseInt(s.get(3)), Integer.parseInt(s.get(4)),
-                            Integer.parseInt(s.get(5)), Integer.parseInt(s.get(6)), Integer.parseInt(s.get(7)),
-                            catchRate, getType(first), getType(second));
-
-                    String species = s.get(11);
-                    e.species = species.toLowerCase().trim().split(":")[0].split(" ");
-                    if (species.toLowerCase().trim().split(":").length > 1)
-                    {
-                        e.food = species.toLowerCase().trim().split(":")[1].split(" ");
-                    }
-
-                    String evolutionNbs = s.get(12);
-                    if (evolutionNbs != null && !evolutionNbs.isEmpty())
-                    {
-                        String[] evols = s.get(12).split(" ");
-                        String[] evolData = s.get(13).split(" ");
-                        String[] evolFX = s.get(14).split(" ");
-                        if (evols.length != evolData.length)
-                        {
-                            System.out.println("Error with evolution data for " + name);
-                            new Exception().printStackTrace();
-                        }
-                        else
-                        {
-                            for (int i = 0; i < evols.length; i++)
-                            {
-                                String s1 = evols[i];
-                                int evolNum = Integer.parseInt(s1);
-                                String s2 = evolFX[i];
-                                e.addEvolution(new EvolutionData(evolNum, evolData[i], s2));
-                                if (num == evolNum)
-                                {
-                                    System.err.println("Problem in Evolution Data for " + name);
-                                    // Integer.parseInt("time to crash");
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (forme.contains(" "))
-                {
-                    e = e.getForm(forme);
-                    if (e == null) continue;
-                }
-
-                String[] args = s.get(15).split(":");
-                e.width = Float.parseFloat(args[0]);
-                if (args.length > 1)
-                {
-                    e.length = Float.parseFloat(args[1]);
-                }
-                else
-                {
-                    e.length = e.width;
-                }
-                e.height = Float.parseFloat(s.get(16));
-
-                if (s.size() > 21 && !s.get(21).isEmpty())
-                {
-                    String[] matedata = s.get(21).split(";");
-                    for (String s1 : matedata)
-                    {
-                        args = s1.split(":");
-                        int fatherNb = Integer.parseInt(args[0]);
-                        String[] args1 = args[1].split("`");
-                        int[] childNbs = new int[args1.length];
-                        for (int i = 0; i < args1.length; i++)
-                        {
-                            childNbs[i] = Integer.parseInt(args1[i]);
-                        }
-                        e.childNumbers.put(fatherNb, childNbs);
-                    }
-                }
-                if (s.size() > 18)
-                {
-                    String[] strings = s.get(18).trim().split(":");
-                    e.mobType = PokecubeMod.Type.getType(strings[0]);
-                    if (strings.length > 1)
-                    {
-                        e.preferedHeight = Double.parseDouble(strings[1]);
-                    }
-                }
-                if (s.size() > 19 && !s.get(19).isEmpty())
-                {
-                    try
-                    {
-                        e.mountedOffset = Double.parseDouble(s.get(19));
-                    }
-                    catch (NumberFormatException e1)
-                    {
-                        System.out.println("derp");
-                    }
-                }
-                try
-                {
-                    e.mass = Double.parseDouble(s.get(20));
-                }
-                catch (Exception e1)
-                {
-                }
-            }
-        }
-
-    }
-
-    private static void loadEVXP(String s2)
-    {
-        ArrayList<ArrayList<String>> rows = getRows(s2);
-
-        for (ArrayList<String> s : rows)
-        {
-            int num = 0;
-
-            try
-            {
-                num = Integer.parseInt(s.get(0));
-            }
-            catch (NumberFormatException e2)
-            {
-                continue;
-            }
-            PokedexEntry e = getEntry(num);
-            if (e != null)
-            {
-                int xpGain = 142;
-                int evolutionMode = -1;
-                int happiness = 70;
-                int sexRatio = e.sexeRatio;
-                String name = e.getName();
-                try
-                {
-                    xpGain = Integer.parseInt(s.get(2));
-                }
-                catch (NumberFormatException e1)
-                {
-                    if (PokecubeMod.debug)
-                        System.err.println("Missing XP gain for " + e + ", setting to a default of 142");
-                    // e1.printStackTrace();
-                }
-                if (s.get(1).equals("")) System.err.println("Missing name in EV file for a form of " + name);
-                else name = s.get(1).trim();
-
-                try
-                {
-                    evolutionMode = Tools.getType(s.get(9));
-                }
-                catch (Exception e1)
-                {
-
-                }
-                try
-                {
-                    sexRatio = Integer.parseInt(s.get(10));
-                }
-                catch (Exception e1)
-                {
-
-                }
-                try
-                {
-                    happiness = Integer.parseInt(s.get(11));
-                }
-                catch (Exception e1)
-                {
-
-                }
-
-                e.addItems(s.get(12), e.commonDrops);
-                e.addItems(s.get(13), e.rareDrops);
-                e.foodDrop = e.parseStack(s.get(14));
-                e.addItems(s.get(15), e.heldItems);
-                e.shouldFly = e.isType(flying);
-
-                if (s.size() > 16 && !s.get(16).isEmpty())
-                {
-                    e.particleData = s.get(16).split(":");
-                }
-                if (s.size() > 17 && !s.get(17).isEmpty())
-                {
-                    e.hatedMaterial = s.get(17).split(":");
-                }
-                if (s.size() > 18)
-                {
-                    String[] args = s.get(18).split(":");
-                    e.canSitShoulder = Boolean.parseBoolean(args[0]);
-                    if (args.length > 1 && !args[1].isEmpty()) e.shouldFly = Boolean.parseBoolean(args[1]);
-                    if (args.length > 2 && !args[2].isEmpty()) e.shouldDive = Boolean.parseBoolean(args[2]);
-                    if (args.length > 3 && !args[3].isEmpty())
-                    {
-                        e.hasSpecialTextures[4] = Boolean.parseBoolean(args[3].split("#")[0]);
-                        e.defaultSpecial = Integer.parseInt(args[3].split("#")[1]);
-                    }
-                    if (args.length > 4 && !args[4].isEmpty()) e.isStationary = Boolean.parseBoolean(args[2]);
-                }
-                if (s.size() > 19)
-                {
-                    String[] replaces = s.get(19).split(":");
-                    for (String s1 : replaces)
-                    {
-                        s1 = s1.toLowerCase().trim().replace(" ", "");
-                        if (s.isEmpty()) continue;
-
-                        if (mobReplacements.containsKey(s1))
-                        {
-                            mobReplacements.get(s1).add(e);
-                        }
-                        else
-                        {
-                            mobReplacements.put(s1, new ArrayList<PokedexEntry>());
-                            mobReplacements.get(s1).add(e);
-                        }
-                    }
-                }
-                if (s.size() > 20)
-                {
-                    String[] foods = s.get(20).split(" ");
-                    for (String s1 : foods)
-                    {
-                        if (s1.equalsIgnoreCase("light"))
-                        {
-                            e.activeTimes.add(PokedexEntry.day);
-                            e.foods[0] = true;
-                        }
-                        else if (s1.equalsIgnoreCase("rock"))
-                        {
-                            e.foods[1] = true;
-                        }
-                        else if (s1.equalsIgnoreCase("electricity"))
-                        {
-                            e.foods[2] = true;
-                        }
-                        else if (s1.equalsIgnoreCase("grass"))
-                        {
-                            e.foods[3] = true;
-                        }
-                        else if (s1.equalsIgnoreCase("water"))
-                        {
-                            e.foods[6] = true;
-                        }
-                        else if (s1.equalsIgnoreCase("none"))
-                        {
-                            e.foods[4] = true;
-                        }
-                    }
-                }
-
-                if (e.isType(ghost)) e.foods[4] = true;
-
-                if (s.size() > 21)
-                {
-                    String[] times = s.get(21).split(" ");
-                    for (String s1 : times)
-                    {
-                        if (s1.equalsIgnoreCase("day"))
-                        {
-                            e.activeTimes.add(PokedexEntry.day);
-                        }
-                        else if (s1.equalsIgnoreCase("night"))
-                        {
-                            e.activeTimes.add(PokedexEntry.night);
-                        }
-                        else if (s1.equalsIgnoreCase("dusk"))
-                        {
-                            e.activeTimes.add(PokedexEntry.dusk);
-                        }
-                        else if (s1.equalsIgnoreCase("dawn"))
-                        {
-                            e.activeTimes.add(PokedexEntry.dawn);
-                        }
-                    }
-                }
-                if (s.size() > 22 && !s.get(22).trim().isEmpty())
-                {
-                    InteractionLogic.initForEntry(e, s.get(22));
-                }
-                else
-                {
-                    InteractionLogic.initForEntry(e);
-                }
-
-                if (evolutionMode == -1)
-                {
-                    System.err.println("Missing XP type for " + name + ", setting default as Medium Slow ");
-                    evolutionMode = 2;
-                }
-                if (sexRatio == -1)
-                {
-                    System.err.println("Missing Sex Ratio for " + name + ", setting default as 50/50");
-                    sexRatio = 127;
-                }
-
-                e.addEVXP(name, Integer.parseInt(s.get(3)), Integer.parseInt(s.get(4)), Integer.parseInt(s.get(5)),
-                        Integer.parseInt(s.get(6)), Integer.parseInt(s.get(7)), Integer.parseInt(s.get(8)), xpGain,
-                        evolutionMode, sexRatio);
-                e.baseHappiness = happiness;
-            }
-        }
-    }
-
+    /** This method should only be called for override files, such as the one
+     * added by Pokecube Compat
+     * 
+     * @param file */
     private static void loadSpawns(String file)
     {
+        System.out.println(file);
+
         ArrayList<ArrayList<String>> rows = getRows(file);
 
         for (ArrayList<String> s : rows)
@@ -1288,112 +914,6 @@ public class Database implements IMoveConstants
         return rows;
     }
 
-    private static void load(String file)
-    {
-        ArrayList<ArrayList<String>> rows = getRows(file);
-
-        for (int i = 0; i < rows.size() - 1; i += 2)
-        {
-            ArrayList<String> row = rows.get(i);
-            ArrayList<String> row2 = rows.get(i + 1);
-            if (row.size() < 2) continue;
-            if (row2.size() < 2) continue;
-
-            String[] levels = row.get(1).split(":");
-            String[] moves = row2.get(1).split(":");
-            int nb = Integer.parseInt(row2.get(0).trim());
-            PokedexEntry dbe = getEntry(nb);
-
-            if (levels.length > moves.length)
-            {
-                System.err.println("Error in moves for " + dbe);
-                continue;
-            }
-
-            // if (dbe == null)
-            {
-                Map<Integer, ArrayList<String>> lvlUpMoves = new HashMap<Integer, ArrayList<String>>();
-                ArrayList<String> allMoves = new ArrayList<String>();
-                int n = 0;
-                for (n = 0; n < levels.length; n++)
-                {
-                    int level = 0;
-                    try
-                    {
-                        level = Integer.parseInt(levels[n]);
-                    }
-                    catch (NumberFormatException e1)
-                    {
-                    }
-                    ArrayList<String> movesForLevel = lvlUpMoves.get(level);
-                    if (movesForLevel == null)
-                    {
-                        movesForLevel = new ArrayList<String>();
-                        lvlUpMoves.put(level, movesForLevel);
-                    }
-                    movesForLevel.add(convertMoveName(moves[n].trim()));
-                    allMoves.add(convertMoveName(moves[n].trim()));
-                }
-                for (n = levels.length; n < moves.length; n++)
-                {
-                    if (!moves[n].trim().isEmpty() && !allMoves.contains(convertMoveName(moves[n].trim())))
-                        allMoves.add(convertMoveName(moves[n].trim()));
-                }
-                dbe.addMoves(allMoves, lvlUpMoves);
-            }
-        }
-    }
-
-    private static void loadAbilities(String file)
-    {
-        ArrayList<ArrayList<String>> rows = getRows(file);
-
-        for (ArrayList<String> s : rows)
-        {
-            int num = Integer.parseInt(s.get(0).trim());
-            String name = s.get(1);
-            PokedexEntry e = getEntry(name);
-
-            if (e == null)
-            {
-                e = getEntry(num);
-            }
-            if (e == null)
-            {
-                System.err.println("Missing Ability for " + num + " " + name);
-                continue;
-            }
-
-            if (e != null)
-            {
-                String a1 = s.get(2).trim();
-
-                if (!a1.isEmpty())
-                {
-                    e.abilities[0] = a1;
-                }
-
-                if (s.size() > 3)
-                {
-                    String a2 = s.get(3).trim();
-                    if (!a2.isEmpty())
-                    {
-                        e.abilities[1] = a2;
-                    }
-                }
-                if (s.size() > 4)
-                {
-                    String a3 = s.get(4).trim();
-                    if (!a3.isEmpty())
-                    {
-                        e.abilities[2] = a3;
-                    }
-                }
-            }
-
-        }
-    }
-
     public static String convertMoveName(String moveNameFromBulbapedia)
     {
 
@@ -1433,12 +953,15 @@ public class Database implements IMoveConstants
             {
                 temp.mkdirs();
             }
-            copyDatabaseFile("baseStats.csv");
-            copyDatabaseFile("evsXp.csv");
-            copyDatabaseFile("abilities.csv");
+
             copyDatabaseFile("moves.csv");
-            copyDatabaseFile("moveLists.csv");
-            copyDatabaseFile("spawndata.csv");
+
+            copyDatabaseFile("gen1.xml");
+            copyDatabaseFile("gen2.xml");
+            copyDatabaseFile("gen3.xml");
+            copyDatabaseFile("gen4.xml");
+            copyDatabaseFile("gen5.xml");
+            copyDatabaseFile("gen6.xml");
 
             DBLOCATION = CONFIGLOC;
 
@@ -1543,6 +1066,6 @@ public class Database implements IMoveConstants
     */
     public static enum EnumDatabase
     {
-        STATS, MOVES, MOVELISTS, EVXP, ABILITIES, SPAWNS
+        POKEMON, MOVES
     }
 }

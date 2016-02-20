@@ -303,13 +303,6 @@ public class PokecubeCore extends PokecubeMod
                                 + pokedexEntry.getModId());
                     }
                 }
-                else
-                {
-                    if (previousEntry != null)
-                    {
-                        System.err.println("Not registering additional " + pokedexEntry + " by " + modId);
-                    }
-                }
             }
             catch (Throwable e)
             {

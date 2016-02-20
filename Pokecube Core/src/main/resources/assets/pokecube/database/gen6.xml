@@ -1,0 +1,2211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document>
+    <Pokemon name="Chespin" number="650">
+        <STATS>
+            <EVOLUTIONMODE>Level:16</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_18</EVOLUTIONANIMATION>
+            <SPECIES>Plant</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>9</MASSKG>
+            <EVOLVESTO>651</EVOLVESTO>
+            <EXPYIELD>63</EXPYIELD>
+            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <FOODMATERIAL>light</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>forest 0.01</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>starter day night</SPECIALCASES>
+            <BASESTATS atk="61" def="65" hp="56" spatk="48" spd="33" spdef="45"/>
+            <EVYIELD atk="0" def="1" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="0.5" length="0.5" width="0.5"/>
+            <TYPE type1="Grass"/>
+            <ABILITY hidden="Bulletproof" normal="Overgrow"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, GROWL" lvl_11="BITE"
+                lvl_15="LEECHSEED" lvl_18="PINMISSILE"
+                lvl_21="NEEDLEARM" lvl_27="TAKEDOWN" lvl_32="SEEDBOMB"
+                lvl_35="MUDSHOT" lvl_39="BULKUP" lvl_42="BODYSLAM"
+                lvl_45="PAINSPLIT" lvl_48="WOODHAMMER" lvl_5="VINEWHIP" lvl_8="ROLLOUT"/>
+            <MISC moves="ROAR, TOXIC, BULKUP, HIDDENPOWER, SUNNYDAY, TAUNT, PROTECT, FRUSTRATION, SOLARBEAM, SMACKDOWN, RETURN, DIG, BRICKBREAK, DOUBLETEAM, REFLECT, SLUDGEBOMB, ROCKTOMB, AERIALACE, FACADE, REST, ATTRACT, LOWSWEEP, ROUND, ENERGYBALL, FLING, SHADOWCLAW, PAYBACK, RETALIATE, FLASH, STONEEDGE, GYROBALL, SWORDSDANCE, BULLDOZE, ROCKSLIDE, POISONJAB, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, NATUREPOWER, POWERUPPUNCH, CONFIDE, CUT, STRENGTH, BELLYDRUM, CURSE, DEFENSECURL, QUICKGUARD, ROLLOUT, SPIKES, SYNTHESIS, GRASSPLEDGE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Quilladin" number="651">
+        <STATS>
+            <EVOLUTIONMODE>Level:36</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_18</EVOLUTIONANIMATION>
+            <SPECIES>Plant</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>29</MASSKG>
+            <EVOLVESTO>652</EVOLVESTO>
+            <EXPYIELD>142</EXPYIELD>
+            <COMMONDROP>2:wheat_seeds</COMMONDROP>
+            <FOODMATERIAL>light</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <RAREDROP>1:iron_chestplate</RAREDROP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="78" def="95" hp="61" spatk="56" spd="57" spdef="58"/>
+            <EVYIELD atk="0" def="2" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="0.7" length="0.7" width="0.7"/>
+            <TYPE type1="Grass"/>
+            <ABILITY hidden="Bulletproof" normal="Overgrow"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, GROWL" lvl_11="BITE"
+                lvl_15="LEECHSEED" lvl_20="PINMISSILE"
+                lvl_26="NEEDLEARM" lvl_30="TAKEDOWN" lvl_35="SEEDBOMB"
+                lvl_39="MUDSHOT" lvl_44="BULKUP" lvl_48="BODYSLAM"
+                lvl_5="VINEWHIP" lvl_52="PAINSPLIT" lvl_55="WOODHAMMER" lvl_8="ROLLOUT"/>
+            <MISC moves="HONECLAWS, ROAR, TOXIC, BULKUP, HIDDENPOWER, SUNNYDAY, TAUNT, PROTECT, FRUSTRATION, SOLARBEAM, SMACKDOWN, RETURN, DIG, BRICKBREAK, DOUBLETEAM, REFLECT, SLUDGEBOMB, ROCKTOMB, AERIALACE, FACADE, REST, ATTRACT, LOWSWEEP, ROUND, ENERGYBALL, FLING, SHADOWCLAW, PAYBACK, RETALIATE, FLASH, STONEEDGE, GYROBALL, SWORDSDANCE, BULLDOZE, ROCKSLIDE, POISONJAB, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, NATUREPOWER, POWERUPPUNCH, CONFIDE, CUT, STRENGTH, BELLYDRUM, CURSE, DEFENSECURL, QUICKGUARD, ROLLOUT, SPIKES, SYNTHESIS, GRASSPLEDGE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Chesnaught" number="652">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Plant</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>90</MASSKG>
+            <EXPYIELD>239</EXPYIELD>
+            <COMMONDROP>3:wheat_seeds</COMMONDROP>
+            <FOODMATERIAL>light</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <RAREDROP>1:iron_chestplate</RAREDROP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="107" def="122" hp="88" spatk="74" spd="64" spdef="75"/>
+            <EVYIELD atk="0" def="3" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.8" length="1.2" width="1.2"/>
+            <TYPE type1="Grass" type2="Fighting"/>
+            <ABILITY hidden="Bulletproof" normal="Overgrow"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="FEINT, HAMMERARM, BELLYDRUM, TACKLE, GROWL"
+                lvl_11="BITE" lvl_15="LEECHSEED" lvl_20="PINMISSILE"
+                lvl_26="NEEDLEARM" lvl_30="TAKEDOWN" lvl_35="SEEDBOMB"
+                lvl_36="SPIKYSHIELD" lvl_41="MUDSHOT" lvl_44="BULKUP"
+                lvl_48="BODYSLAM" lvl_5="VINEWHIP" lvl_52="PAINSPLIT"
+                lvl_55="WOODHAMMER" lvl_60="HAMMERARM"
+                lvl_70="GIGAIMPACT" lvl_75="SPIKYSHIELD" lvl_8="ROLLOUT"/>
+            <MISC moves="HONECLAWS, DRAGONCLAW, ROAR, TOXIC, BULKUP, HIDDENPOWER, SUNNYDAY, TAUNT, HYPERBEAM, PROTECT, FRUSTRATION, SOLARBEAM, SMACKDOWN, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, REFLECT, SLUDGEBOMB, ROCKTOMB, AERIALACE, FACADE, REST, ATTRACT, LOWSWEEP, ROUND, FOCUSBLAST, ENERGYBALL, FLING, SHADOWCLAW, PAYBACK, RETALIATE, GIGAIMPACT, FLASH, STONEEDGE, GYROBALL, SWORDSDANCE, BULLDOZE, ROCKSLIDE, POISONJAB, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, NATUREPOWER, POWERUPPUNCH, CONFIDE, CUT, STRENGTH, BELLYDRUM, CURSE, DEFENSECURL, QUICKGUARD, ROLLOUT, SPIKES, SYNTHESIS, FRENZYPLANT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Fennekin" number="653">
+        <STATS>
+            <EVOLUTIONMODE>Level:16</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_55</EVOLUTIONANIMATION>
+            <SPECIES>Fox</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>9.4</MASSKG>
+            <EVOLVESTO>654</EVOLVESTO>
+            <EXPYIELD>61</EXPYIELD>
+            <COMMONDROP>1:coal</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>forest 0.01</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>starter day night</SPECIALCASES>
+            <BASESTATS atk="45" def="40" hp="40" spatk="62" spd="60" spdef="60"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="1" spd="0" spdef="0"/>
+            <SIZES height="0.6" length="0.5" width="0.5"/>
+            <TYPE type1="Fire"/>
+            <ABILITY hidden="Magician" normal="Blaze"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SCRATCH, TAILWHIP" lvl_11="HOWL"
+                lvl_14="FLAMECHARGE" lvl_17="PSYBEAM" lvl_20="FIRESPIN"
+                lvl_25="LUCKYCHANT" lvl_27="LIGHTSCREEN"
+                lvl_31="PSYSHOCK" lvl_35="FLAMETHROWER"
+                lvl_38="WILLOWISP" lvl_41="PSYCHIC" lvl_43="SUNNYDAY"
+                lvl_46="MAGICROOM" lvl_48="FIREBLAST" lvl_5="EMBER"/>
+            <MISC moves="PSYSHOCK, TOXIC, HIDDENPOWER, SUNNYDAY, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, DOUBLETEAM, FLAMETHROWER, FIREBLAST, FACADE, FLAMECHARGE, REST, ATTRACT, THIEF, ROUND, ECHOEDVOICE, OVERHEAT, INCINERATE, WILLOWISP, EMBARGO, PSYCHUP, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, POWERUPPUNCH, CONFIDE, CUT, HEATWAVE, HYPNOSIS, MAGICCOAT, WISH, FIREPLEDGE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Braixen" number="654">
+        <STATS>
+            <EVOLUTIONMODE>Level:36</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_55</EVOLUTIONANIMATION>
+            <SPECIES>Fox</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>14.5</MASSKG>
+            <EVOLVESTO>655</EVOLVESTO>
+            <EXPYIELD>143</EXPYIELD>
+            <COMMONDROP>2:coal 1:stick</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <RAREDROP>1:blaze_powder</RAREDROP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="59" def="58" hp="59" spatk="90" spd="73" spdef="70"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="2" spd="0" spdef="0"/>
+            <SIZES height="1.2" length="1.0" width="1.0"/>
+            <TYPE type1="Fire"/>
+            <ABILITY hidden="Magician" normal="Blaze"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SCRATCH, TAILWHIP" lvl_11="HOWL"
+                lvl_14="FLAMECHARGE" lvl_18="PSYBEAM" lvl_22="FIRESPIN"
+                lvl_27="LUCKYCHANT" lvl_30="LIGHTSCREEN"
+                lvl_34="PSYSHOCK" lvl_41="FLAMETHROWER"
+                lvl_45="WILLOWISP" lvl_48="PSYCHIC" lvl_5="EMBER"
+                lvl_51="SUNNYDAY" lvl_53="MAGICROOM" lvl_55="FIREBLAST"/>
+            <MISC moves="PSYSHOCK, TOXIC, HIDDENPOWER, SUNNYDAY, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, DOUBLETEAM, FLAMETHROWER, FIREBLAST, FACADE, FLAMECHARGE, REST, ATTRACT, THIEF, ROUND, ECHOEDVOICE, OVERHEAT, INCINERATE, WILLOWISP, EMBARGO, PSYCHUP, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, POWERUPPUNCH, CONFIDE, CUT, HEATWAVE, HYPNOSIS, MAGICCOAT, WISH, FIREPLEDGE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Delphox" number="655">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Fox</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>39</MASSKG>
+            <EXPYIELD>240</EXPYIELD>
+            <COMMONDROP>3:coal 3:stick</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <RAREDROP>1:blaze_powder 1:blaze_rod</RAREDROP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="69" def="72" hp="75" spatk="114" spd="104" spdef="100"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="3" spd="0" spdef="0"/>
+            <SIZES height="1.7" length="1.2" width="1.2"/>
+            <TYPE type1="Fire" type2="Psychic"/>
+            <ABILITY hidden="Magician" normal="Blaze"/>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_0="FUTURESIGHT, ROLEPLAY, SWITCHEROO, SHADOWBALL, SCRATCH, TAILWHIP"
+                lvl_11="HOWL" lvl_14="FLAMECHARGE" lvl_18="PSYBEAM"
+                lvl_22="FIRESPIN" lvl_27="LUCKYCHANT"
+                lvl_30="LIGHTSCREEN" lvl_34="PSYSHOCK"
+                lvl_36="MYSTICALFIRE" lvl_42="FLAMETHROWER"
+                lvl_47="WILLOWISP" lvl_5="EMBER" lvl_51="PSYCHIC"
+                lvl_55="SUNNYDAY" lvl_58="MAGICROOM" lvl_61="FIREBLAST"
+                lvl_69="FUTURESIGHT" lvl_75="MYSTICALFIRE"/>
+            <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, SHADOWBALL, DOUBLETEAM, FLAMETHROWER, FIREBLAST, FACADE, FLAMECHARGE, REST, ATTRACT, THIEF, ROUND, ECHOEDVOICE, OVERHEAT, INCINERATE, WILLOWISP, EMBARGO, GIGAIMPACT, PSYCHUP, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, POWERUPPUNCH, CONFIDE, CUT, HEATWAVE, HYPNOSIS, MAGICCOAT, WISH, BLASTBURN, FIREPLEDGE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Froakie" number="656">
+        <STATS>
+            <EVOLUTIONMODE>Level:16</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_9</EVOLUTIONANIMATION>
+            <SPECIES>Frog</SPECIES>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <MASSKG>7</MASSKG>
+            <EVOLVESTO>657</EVOLVESTO>
+            <EXPYIELD>63</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>swamp 0.01</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>starter day night</SPECIALCASES>
+            <BASESTATS atk="56" def="40" hp="41" spatk="62" spd="71" spdef="44"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="1" spdef="0"/>
+            <SIZES height="0.7" length="0.6" width="0.6"/>
+            <TYPE type1="Water"/>
+            <ABILITY hidden="Protean" normal="Torrent"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="POUND, GROWL" lvl_10="LICK"
+                lvl_14="WATERPULSE" lvl_18="SMOKESCREEN" lvl_21="ROUND"
+                lvl_25="FLING" lvl_29="SMACKDOWN" lvl_35="SUBSTITUTE"
+                lvl_39="BOUNCE" lvl_43="DOUBLETEAM" lvl_48="HYDROPUMP"
+                lvl_5="BUBBLE" lvl_8="QUICKATTACK"/>
+            <MISC moves="TOXIC, HIDDENPOWER, TAUNT, ICEBEAM, BLIZZARD, PROTECT, RAINDANCE, FRUSTRATION, SMACKDOWN, RETURN, DIG, DOUBLETEAM, ROCKTOMB, AERIALACE, FACADE, REST, ATTRACT, THIEF, ROUND, ECHOEDVOICE, SCALD, FLING, ACROBATICS, ROCKSLIDE, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, ROCKSMASH, POWERUPPUNCH, CONFIDE, CUT, SURF, STRENGTH, WATERFALL, BESTOW, CAMOUFLAGE, MINDREADER, MUDSPORT, TOXICSPIKES, WATERSPORT, SPIKES, WATERPLEDGE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Frogadier" number="657">
+        <STATS>
+            <EVOLUTIONMODE>Level:36</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_9</EVOLUTIONANIMATION>
+            <SPECIES>Frog</SPECIES>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <MASSKG>10.9</MASSKG>
+            <EVOLVESTO>658</EVOLVESTO>
+            <EXPYIELD>142</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="63" def="52" hp="54" spatk="83" spd="97" spdef="56"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="2" spdef="0"/>
+            <SIZES height="1.0" length="0.8" width="0.8"/>
+            <TYPE type1="Water"/>
+            <ABILITY hidden="Protean" normal="Torrent"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="POUND, GROWL" lvl_10="LICK"
+                lvl_14="WATERPULSE" lvl_20="SMOKESCREEN" lvl_23="ROUND"
+                lvl_28="FLING" lvl_33="SMACKDOWN" lvl_38="SUBSTITUTE"
+                lvl_44="BOUNCE" lvl_48="DOUBLETEAM" lvl_5="BUBBLE"
+                lvl_55="HYDROPUMP" lvl_8="QUICKATTACK"/>
+            <MISC moves="TOXIC, HIDDENPOWER, TAUNT, ICEBEAM, BLIZZARD, PROTECT, RAINDANCE, FRUSTRATION, SMACKDOWN, RETURN, DIG, DOUBLETEAM, ROCKTOMB, AERIALACE, FACADE, REST, ATTRACT, THIEF, ROUND, ECHOEDVOICE, SCALD, FLING, ACROBATICS, ROCKSLIDE, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, ROCKSMASH, DARKPULSE, POWERUPPUNCH, CONFIDE, CUT, SURF, STRENGTH, WATERFALL, BESTOW, CAMOUFLAGE, MINDREADER, MUDSPORT, TOXICSPIKES, WATERSPORT, WATERPLEDGE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Greninja" number="658">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Frog</SPECIES>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <MASSKG>40</MASSKG>
+            <EXPYIELD>239</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="95" def="67" hp="72" spatk="103" spd="122" spdef="71"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="3" spdef="0"/>
+            <SIZES height="1.7" length="1.3" width="1.3"/>
+            <TYPE type1="Water" type2="Dark"/>
+            <ABILITY hidden="Protean" normal="Torrent"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="NIGHTSLASH, ROLEPLAY, MATBLOCK, POUND, GROWL"
+                lvl_10="LICK" lvl_14="WATERPULSE" lvl_20="SMOKESCREEN"
+                lvl_23="SHADOWSNEAK" lvl_28="SPIKES"
+                lvl_33="FEINTATTACK" lvl_36="WATERSHURIKEN"
+                lvl_43="SUBSTITUTE" lvl_49="EXTRASENSORY" lvl_5="BUBBLE"
+                lvl_52="DOUBLETEAM" lvl_56="HAZE" lvl_60="HYDROPUMP"
+                lvl_70="NIGHTSLASH" lvl_75="WATERSHURIKEN" lvl_8="QUICKATTACK"/>
+            <MISC moves="TOXIC, HIDDENPOWER, TAUNT, ICEBEAM, BLIZZARD, HYPERBEAM, PROTECT, RAINDANCE, FRUSTRATION, SMACKDOWN, RETURN, DIG, DOUBLETEAM, ROCKTOMB, AERIALACE, FACADE, REST, ATTRACT, THIEF, ROUND, ECHOEDVOICE, SCALD, FLING, ACROBATICS, GIGAIMPACT, ROCKSLIDE, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, ROCKSMASH, DARKPULSE, POWERUPPUNCH, CONFIDE, CUT, SURF, STRENGTH, WATERFALL, BESTOW, CAMOUFLAGE, MINDREADER, MUDSPORT, TOXICSPIKES, WATERSPORT, HYDROCANNON, WATERPLEDGE, BOUNCE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Bunnelby" number="659">
+        <STATS>
+            <EVOLUTIONMODE>Level:20</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Leporidae</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>5</MASSKG>
+            <EVOLVESTO>660</EVOLVESTO>
+            <EXPYIELD>47</EXPYIELD>
+            <FOODDROP>1:rabbit</FOODDROP>
+            <FOODMATERIAL>grass</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESALLNEEDED>plains cave 0.3</BIOMESALLNEEDED>
+            <BIOMESANYACCEPTABLE>plains 0.2</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>day night</SPECIALCASES>
+            <BASESTATS atk="36" def="38" hp="38" spatk="32" spd="57" spdef="36"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="1" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Normal"/>
+            <ABILITY hidden="Huge Power" normal="Pickup, Cheek Pouch"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, AGILITY, LEER" lvl_10="DOUBLESLAP"
+                lvl_13="MUDSLAP" lvl_15="TAKEDOWN" lvl_18="MUDSHOT"
+                lvl_20="DOUBLEKICK" lvl_25="ODORSLEUTH" lvl_29="FLAIL"
+                lvl_33="DIG" lvl_38="BOUNCE" lvl_42="SUPERFANG"
+                lvl_47="FACADE" lvl_49="EARTHQUAKE" lvl_7="QUICKATTACK"/>
+            <MISC moves="TOXIC, BULKUP, HIDDENPOWER, PROTECT, FRUSTRATION, SMACKDOWN, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, SLUDGEBOMB, SANDSTORM, ROCKTOMB, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, FLING, PAYBACK, STONEEDGE, BULLDOZE, ROCKSLIDE, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, WILDCHARGE, ROCKSMASH, NATUREPOWER, POWERUPPUNCH, CONFIDE, CUT, SURF, STRENGTH, DEFENSECURL, ROLLOUT, SPIKES"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Diggersby" number="660">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Leporidae</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>42.4</MASSKG>
+            <EXPYIELD>148</EXPYIELD>
+            <FOODDROP>1:rabbit</FOODDROP>
+            <FOODMATERIAL>grass</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="56" def="77" hp="85" spatk="50" spd="78" spdef="77"/>
+            <EVYIELD atk="2" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Normal" type2="Ground"/>
+            <ABILITY hidden="Huge Power" normal="Pickup, Cheek Pouch"/>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_0="HAMMERARM, ROTOTILLER, BULLDOZE, SWORDSDANCE, TACKLE, AGILITY, LEER"
+                lvl_13="MUDSLAP" lvl_15="TAKEDOWN" lvl_18="MUDSHOT"
+                lvl_20="DOUBLEKICK" lvl_26="ODORSLEUTH" lvl_31="FLAIL"
+                lvl_37="DIG" lvl_42="BOUNCE" lvl_48="SUPERFANG"
+                lvl_53="FACADE" lvl_57="EARTHQUAKE" lvl_60="HAMMERARM" lvl_7="QUICKATTACK"/>
+            <MISC moves="TOXIC, BULKUP, HIDDENPOWER, HYPERBEAM, PROTECT, FRUSTRATION, SMACKDOWN, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, SLUDGEBOMB, SANDSTORM, ROCKTOMB, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, FLING, PAYBACK, GIGAIMPACT, STONEEDGE, SWORDSDANCE, BULLDOZE, ROCKSLIDE, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, WILDCHARGE, ROCKSMASH, NATUREPOWER, POWERUPPUNCH, CONFIDE, CUT, SURF, STRENGTH, DEFENSECURL, ROLLOUT, SPIKES"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Fletchling" number="661">
+        <STATS>
+            <EVOLUTIONMODE>Level:17</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Bird</SPECIES>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <MASSKG>1.7</MASSKG>
+            <EVOLVESTO>662</EVOLVESTO>
+            <EXPYIELD>56</EXPYIELD>
+            <FOODDROP>1:chicken</FOODDROP>
+            <COMMONDROP>1:feather</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="TRUE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>forest 0.3</BIOMESANYACCEPTABLE>
+            <EXCLUDEDBIOMES>cold</EXCLUDEDBIOMES>
+            <SPECIALCASES>day night</SPECIALCASES>
+            <BASESTATS atk="50" def="43" hp="45" spatk="40" spd="62" spdef="38"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="1" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Normal" type2="Flying"/>
+            <ABILITY hidden="Gale Wings" normal="Big Pecks"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, GROWL" lvl_10="PECK" lvl_13="AGILITY"
+                lvl_16="FLAIL" lvl_21="ROOST" lvl_25="RAZORWIND"
+                lvl_29="NATURALGIFT" lvl_34="FLAMECHARGE"
+                lvl_39="ACROBATICS" lvl_41="MEFIRST" lvl_45="TAILWIND"
+                lvl_48="STEELWING" lvl_6="QUICKATTACK"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, PROTECT, ROOST, FRUSTRATION, RETURN, DOUBLETEAM, AERIALACE, FACADE, FLAMECHARGE, REST, ATTRACT, THIEF, ROUND, OVERHEAT, STEELWING, ACROBATICS, SWORDSDANCE, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, CONFIDE, FLY, QUICKGUARD, SNATCH, TAILWIND"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Fletchinder" number="662">
+        <STATS>
+            <EVOLUTIONMODE>Level:35</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Bird</SPECIES>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <MASSKG>16</MASSKG>
+            <EVOLVESTO>663</EVOLVESTO>
+            <EXPYIELD>134</EXPYIELD>
+            <FOODDROP>1:chicken</FOODDROP>
+            <COMMONDROP>2:feather</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="73" def="55" hp="62" spatk="56" spd="84" spdef="52"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="2" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fire" type2="Flying"/>
+            <ABILITY hidden="Gale Wings" normal="Flame Body"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, GROWL" lvl_10="PECK" lvl_13="AGILITY"
+                lvl_16="FLAIL" lvl_17="EMBER" lvl_25="ROOST"
+                lvl_27="RAZORWIND" lvl_31="NATURALGIFT"
+                lvl_38="FLAMECHARGE" lvl_42="ACROBATICS"
+                lvl_46="MEFIRST" lvl_51="TAILWIND" lvl_55="STEELWING" lvl_6="QUICKATTACK"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, PROTECT, ROOST, FRUSTRATION, RETURN, DOUBLETEAM, FLAMETHROWER, FIREBLAST, AERIALACE, FACADE, FLAMECHARGE, REST, ATTRACT, THIEF, ROUND, OVERHEAT, STEELWING, INCINERATE, WILLOWISP, ACROBATICS, SWORDSDANCE, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, CONFIDE, FLY, QUICKGUARD, SNATCH, TAILWIND"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Talonflame" number="663">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Bird</SPECIES>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <MASSKG>24.5</MASSKG>
+            <EXPYIELD>175</EXPYIELD>
+            <FOODDROP>1:chicken</FOODDROP>
+            <COMMONDROP>3:feather</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="81" def="71" hp="78" spatk="74" spd="126" spdef="69"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="3" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fire" type2="Flying"/>
+            <ABILITY hidden="Gale Wings" normal="Flame Body"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="BRAVEBIRD, FLAREBLITZ, TACKLE, GROWL"
+                lvl_10="PECK" lvl_13="AGILITY" lvl_16="FLAIL"
+                lvl_17="EMBER" lvl_25="ROOST" lvl_27="RAZORWIND"
+                lvl_31="NATURALGIFT" lvl_39="FLAMECHARGE"
+                lvl_44="ACROBATICS" lvl_49="MEFIRST" lvl_55="TAILWIND"
+                lvl_6="QUICKATTACK" lvl_60="STEELWING" lvl_64="BRAVEBIRD"/>
+            <MISC moves="HONECLAWS, TOXIC, BULKUP, HIDDENPOWER, SUNNYDAY, TAUNT, HYPERBEAM, PROTECT, ROOST, FRUSTRATION, SOLARBEAM, RETURN, DOUBLETEAM, FLAMETHROWER, FIREBLAST, AERIALACE, FACADE, FLAMECHARGE, REST, ATTRACT, THIEF, ROUND, OVERHEAT, STEELWING, INCINERATE, WILLOWISP, ACROBATICS, GIGAIMPACT, SWORDSDANCE, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, CONFIDE, FLY, QUICK, GUARD, SNATCH, TAILWIND"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Scatterbug" number="664">
+        <STATS>
+            <EVOLUTIONMODE>Level:9</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Insecta</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>2.5</MASSKG>
+            <EVOLVESTO>665</EVOLVESTO>
+            <EXPYIELD>40</EXPYIELD>
+            <COMMONDROP>1:string</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>all 0.4</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>day</SPECIALCASES>
+            <BASESTATS atk="35" def="40" hp="38" spatk="27" spd="35" spdef="25"/>
+            <EVYIELD atk="0" def="1" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Bug"/>
+            <ABILITY hidden="Friend Guard" normal="Shield Dust, Compound Eyes"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, STRINGSHOT" lvl_15="BUGBITE" lvl_6="STUNSPORE"/>
+            <MISC moves="POISONPOWDER, RAGEPOWDER, STUNSPORE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Spewpa" number="665">
+        <STATS>
+            <EVOLUTIONMODE>Level:12</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Insecta</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>8.4</MASSKG>
+            <EVOLVESTO>666</EVOLVESTO>
+            <EXPYIELD>75</EXPYIELD>
+            <COMMONDROP>2:string</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="22" def="60" hp="45" spatk="27" spd="29" spdef="30"/>
+            <EVYIELD atk="0" def="2" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Bug"/>
+            <ABILITY hidden="Friend Guard" normal="Shed Skin"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="HARDEN" lvl_9="PROTECT"/>
+            <MISC moves="PROTECT, POISONPOWDER, RAGEPOWDER, STUNSPORE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Vivillon" number="666">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Insecta</SPECIES>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <MASSKG>17</MASSKG>
+            <EXPYIELD>185</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="52" def="50" hp="80" spatk="90" spd="89" spdef="50"/>
+            <EVYIELD atk="0" def="0" hp="1" spatk="1" spd="1" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Bug" type2="Flying"/>
+            <ABILITY hidden="Friend Guard" normal="Shield Dust, Compound Eyes"/>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_0="POISONPOWDER, STUNSPORE, GUST, LIGHTSCREEN, POWDER, SLEEPPOWDER"
+                lvl_12="STRUGGLEBUG" lvl_17="PSYBEAM"
+                lvl_21="SUPERSONIC" lvl_25="DRAININGKISS"
+                lvl_31="AROMATHERAPY" lvl_35="BUGBUZZ"
+                lvl_41="SAFEGUARD" lvl_45="QUIVERDANCE"
+                lvl_50="HURRICANE" lvl_55="POWDER"/>
+            <MISC moves="CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, ROOST, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, DOUBLETEAM, AERIALACE, FACADE, REST, ATTRACT, THIEF, ROUND, ENERGYBALL, ACROBATICS, GIGAIMPACT, FLASH, STRUGGLEBUG, PSYCHUP, INFESTATION, DREAMEATER, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, CONFIDE, POISONPOWDER, RAGEPOWDER, STUNSPORE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Litleo" number="667">
+        <STATS>
+            <EVOLUTIONMODE>Level:35</EVOLUTIONMODE>
+            <CAPTURERATE>200</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Cat</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>13.5</MASSKG>
+            <EVOLVESTO>668</EVOLVESTO>
+            <EXPYIELD>74</EXPYIELD>
+            <FOODDROP>1:rabbit</FOODDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>191</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>sandy plains 0.3</BIOMESANYACCEPTABLE>
+            <EXCLUDEDBIOMES>mesa</EXCLUDEDBIOMES>
+            <SPECIALCASES>day night</SPECIALCASES>
+            <BASESTATS atk="50" def="58" hp="62" spatk="73" spd="72" spdef="54"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="1" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fire" type2="Normal"/>
+            <ABILITY hidden="Moxie" normal="Rivalry, Unnerve"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, LEER" lvl_11="HEADBUTT"
+                lvl_15="NOBLEROAR" lvl_20="TAKEDOWN" lvl_23="FIREFANG"
+                lvl_28="ENDEAVOR" lvl_33="ECHOEDVOICE"
+                lvl_36="FLAMETHROWER" lvl_39="CRUNCH"
+                lvl_43="HYPERVOICE" lvl_46="INCINERATE" lvl_5="EMBER"
+                lvl_50="OVERHEAT" lvl_8="WORKUP"/>
+            <MISC moves="ROAR, TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, PROTECT, RAINDANCE, FRUSTRATION, SOLARBEAM, RETURN, DIG, DOUBLETEAM, FLAMETHROWER, FIREBLAST, FACADE, FLAMECHARGE, REST, ATTRACT, THIEF, ROUND, ECHOEDVOICE, OVERHEAT, INCINERATE, WILLOWISP, PAYBACK, RETALIATE, BULLDOZE, SWAGGER, SLEEPTALK, SUBSTITUTE, WILDCHARGE, ROCKSMASH, SNARL, DARKPULSE, CONFIDE, STRENGTH, ENTRAINMENT, FIRESPIN, SNATCH, YAWN"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Pyroar" number="668">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>200</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Cat</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>81.5</MASSKG>
+            <EXPYIELD>177</EXPYIELD>
+            <FOODDROP>1:rabbit</FOODDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
+            <GENDERRATIO>191</GENDERRATIO>
+            <BASESTATS atk="68" def="72" hp="86" spatk="109" spd="106" spdef="66"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="2" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fire" type2="Normal"/>
+            <ABILITY hidden="Moxie" normal="Rivalry, Unnerve"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="HYPERBEAM, TACKLE, LEER" lvl_11="HEADBUTT"
+                lvl_15="NOBLEROAR" lvl_20="TAKEDOWN" lvl_23="FIREFANG"
+                lvl_28="ENDEAVOR" lvl_33="ECHOEDVOICE"
+                lvl_38="FLAMETHROWER" lvl_42="CRUNCH"
+                lvl_48="HYPERVOICE" lvl_5="EMBER" lvl_51="INCINERATE"
+                lvl_57="OVERHEAT" lvl_8="WORKUP"/>
+            <MISC moves="ROAR, TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, HYPERBEAM, PROTECT, RAINDANCE, FRUSTRATION, SOLARBEAM, RETURN, DIG, DOUBLETEAM, FLAMETHROWER, FIREBLAST, FACADE, FLAMECHARGE, REST, ATTRACT, THIEF, ROUND, ECHOEDVOICE, OVERHEAT, INCINERATE, WILLOWISP, PAYBACK, RETALIATE, GIGAIMPACT, BULLDOZE, SWAGGER, SLEEPTALK, SUBSTITUTE, WILDCHARGE, ROCKSMASH, SNARL, DARKPULSE, CONFIDE, STRENGTH, ENTRAINMENT, FIRESPIN, SNATCH, YAWN"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Flabébé" number="669">
+        <STATS>
+            <EVOLUTIONMODE>Level:19</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Fairy Plant</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>0.1</MASSKG>
+            <EVOLVESTO>670</EVOLVESTO>
+            <EXPYIELD>61</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>254</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>flower 0.8</BIOMESANYACCEPTABLE>
+            <BASESTATS atk="38" def="39" hp="44" spatk="61" spd="42" spdef="79"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="0" spdef="1"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fairy"/>
+            <ABILITY hidden="Symbiosis" normal="Flower Veil"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, VINEWHIP" lvl_10="LUCKYCHANT"
+                lvl_15="RAZORLEAF" lvl_20="WISH" lvl_22="MAGICALLEAF"
+                lvl_24="GRASSYTERRAIN" lvl_28="PETALBLIZZARD"
+                lvl_33="AROMATHERAPY" lvl_37="MISTYTERRAIN"
+                lvl_41="MOONBLAST" lvl_45="PETALDANCE"
+                lvl_48="SOLARBEAM" lvl_6="FAIRYWIND"/>
+            <MISC moves="CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, DOUBLETEAM, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, ENERGYBALL, FLASH, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, NATUREPOWER, DAZZLINGGLEAM, CONFIDE, CAMOUFLAGE, CAPTIVATE, COPYCAT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Floette" number="670">
+        <STATS>
+            <EVOLUTIONMODE>Stone:shiny</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Fairy Plant</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>0.9</MASSKG>
+            <EVOLVESTO>671</EVOLVESTO>
+            <EXPYIELD>130</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>254</GENDERRATIO>
+            <BASESTATS atk="45" def="47" hp="54" spatk="75" spd="52" spdef="98"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="0" spdef="2"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fairy"/>
+            <ABILITY hidden="Symbiosis" normal="Flower Veil"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, VINEWHIP" lvl_10="LUCKYCHANT"
+                lvl_15="RAZORLEAF" lvl_20="WISH" lvl_25="MAGICALLEAF"
+                lvl_27="GRASSYTERRAIN" lvl_33="PETALBLIZZARD"
+                lvl_38="AROMATHERAPY" lvl_43="MISTYTERRAIN"
+                lvl_46="MOONBLAST" lvl_51="PETALDANCE"
+                lvl_58="SOLARBEAM" lvl_6="FAIRYWIND"/>
+            <MISC moves="CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, DOUBLETEAM, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, ENERGYBALL, FLASH, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, NATUREPOWER, DAZZLINGGLEAM, CONFIDE, CAMOUFLAGE, CAPTIVATE, COPYCAT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Florges" number="671">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Fairy Plant</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>10</MASSKG>
+            <EXPYIELD>248</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>254</GENDERRATIO>
+            <BASESTATS atk="65" def="68" hp="78" spatk="112" spd="75" spdef="154"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="0" spdef="3"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fairy"/>
+            <ABILITY hidden="Symbiosis" normal="Flower Veil"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="DISARMINGVOICE, LUCKYCHANT, WISH, MAGICALLEAF, FLOWERSHIELD, GRASSKNOT, GRASSYTERRAIN, MISTYTERRAIN, PETALBLIZZARD, MOONBLAST, PETALDANCE, AROMATHERAPY"/>
+            <MISC moves="CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, DOUBLETEAM, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, ENERGYBALL, GIGAIMPACT, FLASH, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, NATUREPOWER, DAZZLINGGLEAM, CONFIDE, CAMOUFLAGE, CAPTIVATE, COPYCAT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Skiddo" number="672">
+        <STATS>
+            <EVOLUTIONMODE>Level:32</EVOLUTIONMODE>
+            <CAPTURERATE>160</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Artiodactyla</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>31</MASSKG>
+            <EVOLVESTO>673</EVOLVESTO>
+            <EXPYIELD>70</EXPYIELD>
+            <FOODDROP>1:mutton</FOODDROP>
+            <FOODMATERIAL>grass</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>hills 0.3</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>day</SPECIALCASES>
+            <BASESTATS atk="65" def="48" hp="66" spatk="62" spd="52" spdef="57"/>
+            <EVYIELD atk="0" def="0" hp="1" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Grass"/>
+            <ABILITY hidden="Grass Pelt" normal="Sap Sipper"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, GROWTH" lvl_12="LEECHSEED"
+                lvl_13="RAZORLEAF" lvl_16="WORRYSEED" lvl_20="SYNTHESIS"
+                lvl_22="TAKEDOWN" lvl_26="BULLDOZE" lvl_30="SEEDBOMB"
+                lvl_34="BULKUP" lvl_38="DOUBLEEDGE" lvl_42="HORNLEECH"
+                lvl_45="LEAFBLADE" lvl_50="MILKDRINK" lvl_7="VINEWHIP" lvl_9="TAILWHIP"/>
+            <MISC moves="ROAR, TOXIC, BULKUP, HIDDENPOWER, SUNNYDAY, PROTECT, RAINDANCE, FRUSTRATION, SOLARBEAM, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, AERIALACE, FACADE, REST, ATTRACT, ROUND, ENERGYBALL, PAYBACK, RETALIATE, BULLDOZE, ROCKSLIDE, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, WILDCHARGE, ROCKSMASH, NATUREPOWER, CONFIDE, SURF, STRENGTH, DEFENSECURL, MILKDRINK, ROLLOUT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Gogoat" number="673">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>160</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Artiodactyla</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>91</MASSKG>
+            <EXPYIELD>186</EXPYIELD>
+            <FOODDROP>1:mutton</FOODDROP>
+            <FOODMATERIAL>grass</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="100" def="62" hp="123" spatk="97" spd="68" spdef="81"/>
+            <EVYIELD atk="0" def="0" hp="2" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Grass"/>
+            <ABILITY hidden="Grass Pelt" normal="Sap Sipper"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="AERIALACE, TACKLE, GROWTH" lvl_12="LEECHSEED"
+                lvl_13="RAZORLEAF" lvl_16="WORRYSEED" lvl_20="SYNTHESIS"
+                lvl_22="TAKEDOWN" lvl_26="BULLDOZE" lvl_30="SEEDBOMB"
+                lvl_34="BULKUP" lvl_40="DOUBLEEDGE" lvl_47="HORNLEECH"
+                lvl_55="LEAFBLADE" lvl_58="MILKDRINK"
+                lvl_60="EARTHQUAKE" lvl_65="AERIALACE" lvl_7="VINEWHIP" lvl_9="TAILWHIP"/>
+            <MISC moves="ROAR, TOXIC, BULKUP, HIDDENPOWER, SUNNYDAY, HYPERBEAM, PROTECT, RAINDANCE, FRUSTRATION, SOLARBEAM, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, AERIALACE, FACADE, REST, ATTRACT, ROUND, ENERGYBALL, PAYBACK, RETALIATE, GIGAIMPACT, BULLDOZE, ROCKSLIDE, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, WILDCHARGE, ROCKSMASH, NATUREPOWER, CONFIDE, SURF, STRENGTH, DEFENSECURL, MILKDRINK, ROLLOUT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Pancham" number="674">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>128</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Playful</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>8</MASSKG>
+            <EVOLVESTO>675</EVOLVESTO>
+            <EXPYIELD>70</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>forest 0.1</BIOMESANYACCEPTABLE>
+            <EXCLUDEDBIOMES>wet savanna</EXCLUDEDBIOMES>
+            <SPECIALCASES>night</SPECIALCASES>
+            <BASESTATS atk="82" def="62" hp="67" spatk="46" spd="43" spdef="48"/>
+            <EVYIELD atk="1" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fighting"/>
+            <ABILITY hidden="Scrappy" normal="Iron Fist, Mold Breaker"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, LEER" lvl_10="WORKUP"
+                lvl_12="KARATECHOP" lvl_15="COMETPUNCH" lvl_20="SLASH"
+                lvl_25="CIRCLETHROW" lvl_27="VITALTHROW"
+                lvl_33="BODYSLAM" lvl_39="CRUNCH" lvl_42="ENTRAINMENT"
+                lvl_45="PARTINGSHOT" lvl_48="SKYUPPERCUT" lvl_7="ARMTHRUST"/>
+            <MISC moves="ROAR, TOXIC, BULKUP, HIDDENPOWER, SUNNYDAY, PROTECT, RAINDANCE, FRUSTRATION, RETURN, DIG, BRICKBREAK, DOUBLETEAM, SLUDGEBOMB, ROCKTOMB, AERIALACE, FACADE, REST, ATTRACT, LOWSWEEP, ROUND, ECHOEDVOICE, FALSESWIPE, FLING, SHADOWCLAW, PAYBACK, RETALIATE, STONEEDGE, SWORDSDANCE, BULLDOZE, ROCKSLIDE, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, DARKPULSE, POWERUPPUNCH, CONFIDE, CUT, SURF, STRENGTH, FOULPLAY, MEFIRST, QUASH, QUICKGUARD, STORMTHROW"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Pangoro" number="675">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>128</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Daunting</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>136</MASSKG>
+            <EXPYIELD>173</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="124" def="78" hp="95" spatk="69" spd="58" spdef="71"/>
+            <EVYIELD atk="2" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fighting" type2="Dark"/>
+            <ABILITY hidden="Scrappy" normal="Iron Fist, Mold Breaker"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="ENTRAINMENT, HAMMERARM, TACKLE, LEER"
+                lvl_10="WORKUP" lvl_12="KARATECHOP" lvl_15="COMETPUNCH"
+                lvl_20="SLASH" lvl_25="CIRCLETHROW" lvl_27="VITALTHROW"
+                lvl_35="BODYSLAM" lvl_42="CRUNCH" lvl_45="ENTRAINMENT"
+                lvl_48="PARTINGSHOT" lvl_52="SKYUPPERCUT"
+                lvl_57="HAMMERARM" lvl_65="TAUNT" lvl_7="ARMTHRUST" lvl_70="LOWSWEEP"/>
+            <MISC moves="HONECLAWS, DRAGONCLAW, ROAR, TOXIC, BULKUP, HIDDENPOWER, SUNNYDAY, TAUNT, HYPERBEAM, PROTECT, RAINDANCE, FRUSTRATION, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, SLUDGEBOMB, ROCKTOMB, AERIALACE, TORMENT, FACADE, REST, ATTRACT, THIEF, LOWSWEEP, ROUND, ECHOEDVOICE, FOCUSBLAST, FALSESWIPE, FLING, QUASH, EMBARGO, SHADOWCLAW, PAYBACK, RETALIATE, GIGAIMPACT, STONEEDGE, SWORDSDANCE, BULLDOZE, ROCKSLIDE, XSCISSOR, INFESTATION, POISONJAB, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, SNARL, DARKPULSE, POWERUPPUNCH, CONFIDE, CUT, SURF, STRENGTH, FOULPLAY, MEFIRST, QUICKGUARD"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Furfrou" number="676">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>120</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Dog</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>28</MASSKG>
+            <EXPYIELD>165</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>village 0.08</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>day</SPECIALCASES>
+            <BASESTATS atk="80" def="60" hp="75" spatk="65" spd="102" spdef="90"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="1" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Normal"/>
+            <ABILITY normal="Fur Coat"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, GROWL" lvl_12="HEADBUTT"
+                lvl_15="TAILWHIP" lvl_22="BITE" lvl_27="ODORSLEUTH"
+                lvl_33="RETALIATE" lvl_35="TAKEDOWN" lvl_38="CHARM"
+                lvl_42="SUCKERPUNCH" lvl_48="COTTONGUARD"
+                lvl_5="SANDATTACK" lvl_9="BABYDOLLEYES"/>
+            <MISC moves="ROAR, TOXIC, HIDDENPOWER, SUNNYDAY, PROTECT, RAINDANCE, FRUSTRATION, RETURN, DIG, DOUBLETEAM, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, CHARGEBEAM, RETALIATE, GIGAIMPACT, FLASH, THUNDERWAVE, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, WILDCHARGE, ROCKSMASH, SNARL, DARKPULSE, CONFIDE, SURF, CAPTIVATE, MIMIC, REFRESH, ROLEPLAY, WORKUP"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Espurr" number="677">
+        <STATS>
+            <EVOLUTIONMODE>Level:25</EVOLUTIONMODE>
+            <CAPTURERATE>228</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Restraint</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>3.5</MASSKG>
+            <EVOLVESTO>678</EVOLVESTO>
+            <EXPYIELD>71</EXPYIELD>
+            <FOODDROP>1:rabbit</FOODDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>plains 0.1</BIOMESANYACCEPTABLE>
+            <EXCLUDEDBIOMES>wet</EXCLUDEDBIOMES>
+            <SPECIALCASES>night</SPECIALCASES>
+            <BASESTATS atk="48" def="54" hp="62" spatk="63" spd="68" spdef="60"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="1" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Psychic"/>
+            <ABILITY hidden="Own Tempo" normal="Keen Eye, Infiltrator"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SCRATCH, LEER" lvl_13="LIGHTSCREEN"
+                lvl_17="PSYBEAM" lvl_19="FAKEOUT"
+                lvl_22="DISARMINGVOICE" lvl_25="PSYSHOCK" lvl_5="COVET" lvl_9="CONFUSION"/>
+            <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, THUNDERBOLT, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, TORMENT, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, ENERGYBALL, CHARGEBEAM, PAYBACK, FLASH, THUNDERWAVE, PSYCHUP, DREAMEATER, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, DARKPULSE, CONFIDE, CUT, ASSIST, BARRIER, TRICK, YAWN"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Meowstic" number="678">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>228</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Constraint</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>8.5</MASSKG>
+            <EXPYIELD>163</EXPYIELD>
+            <FOODDROP>1:rabbit</FOODDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="48" def="76" hp="74" spatk="83" spd="104" spdef="81"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="2" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Psychic"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SCRATCH, LEER" lvl_13="LIGHTSCREEN"
+                lvl_17="PSYBEAM" lvl_19="FAKEOUT" lvl_25="PSYSHOCK"
+                lvl_5="COVET" lvl_9="CONFUSION"/>
+            <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, THUNDERBOLT, RETURN, DIG, PSYCHIC, SHADOWBALL, DOUBLETEAM, REFLECT, TORMENT, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, ENERGYBALL, CHARGEBEAM, PAYBACK, GIGAIMPACT, FLASH, THUNDERWAVE, PSYCHUP, DREAMEATER, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, DARKPULSE, POWERUPPUNCH, CONFIDE, CUT, ASSIST, BARRIER, TRICK, YAWN"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Honedge" number="679">
+        <STATS>
+            <EVOLUTIONMODE>Level:35</EVOLUTIONMODE>
+            <CAPTURERATE>222</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Sword</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>2</MASSKG>
+            <EVOLVESTO>680</EVOLVESTO>
+            <EXPYIELD>65</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>ruin 0.1</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>cave</SPECIALCASES>
+            <BASESTATS atk="80" def="100" hp="45" spatk="35" spd="28" spdef="37"/>
+            <EVYIELD atk="0" def="1" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Steel" type2="Ghost"/>
+            <ABILITY normal="No Guard"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, SWORDSDANCE" lvl_13="PURSUIT"
+                lvl_18="AUTOTOMIZE" lvl_20="SHADOWSNEAK"
+                lvl_22="AERIALACE" lvl_26="RETALIATE" lvl_29="SLASH"
+                lvl_32="IRONDEFENSE" lvl_35="NIGHTSLASH"
+                lvl_39="POWERTRICK" lvl_42="IRONHEAD"
+                lvl_47="SACREDSWORD" lvl_5="FURYCUTTER" lvl_8="METALSOUND"/>
+            <MISC moves="TOXIC, HIDDENPOWER, PROTECT, RAINDANCE, FRUSTRATION, RETURN, BRICKBREAK, DOUBLETEAM, REFLECT, AERIALACE, FACADE, REST, ATTRACT, FALSESWIPE, SHADOWCLAW, RETALIATE, GYROBALL, SWORDSDANCE, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, ROCKSMASH, CONFIDE, CUT, DESTINYBOND, METALSOUND, SHADOWSNEAK, WIDEGUARD"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Doublade" number="680">
+        <STATS>
+            <EVOLUTIONMODE>Stone:dusk</EVOLUTIONMODE>
+            <CAPTURERATE>222</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Sword</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>4.5</MASSKG>
+            <EVOLVESTO>681</EVOLVESTO>
+            <EXPYIELD>157</EXPYIELD>
+            <FOODMATERIAL>none</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="110" def="150" hp="59" spatk="45" spd="35" spdef="49"/>
+            <EVYIELD atk="0" def="2" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Steel" type2="Ghost"/>
+            <ABILITY normal="No Guard"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, SWORDSDANCE" lvl_13="PURSUIT"
+                lvl_18="AUTOTOMIZE" lvl_20="SHADOWSNEAK"
+                lvl_22="AERIALACE" lvl_26="RETALIATE" lvl_29="SLASH"
+                lvl_32="IRONDEFENSE" lvl_36="NIGHTSLASH"
+                lvl_41="POWERTRICK" lvl_45="IRONHEAD" lvl_5="FURYCUTTER"
+                lvl_51="SACREDSWORD" lvl_8="METALSOUND"/>
+            <MISC moves="TOXIC, HIDDENPOWER, PROTECT, RAINDANCE, FRUSTRATION, RETURN, BRICKBREAK, DOUBLETEAM, REFLECT, AERIALACE, FACADE, REST, ATTRACT, FALSESWIPE, SHADOWCLAW, RETALIATE, GYROBALL, SWORDSDANCE, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, ROCKSMASH, CONFIDE, CUT, DESTINYBOND, METALSOUND, SHADOWSNEAK, WIDEGUARD"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Aegislash Blade" number="681">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>222</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Sword</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>53</MASSKG>
+            <EXPYIELD>234</EXPYIELD>
+            <FOODMATERIAL>none</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="150" def="50" hp="60" spatk="150" spd="60" spdef="50"/>
+            <EVYIELD atk="0" def="2" hp="0" spatk="0" spd="0" spdef="1"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Steel" type2="Ghost"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="FURYCUTTER, PURSUIT, AUTOTOMIZE, SHADOWSNEAK, SLASH, IRONDEFENSE, NIGHTSLASH, POWERTRICK, IRONHEAD, HEADSMASH, SWORDSDANCE, AERIALACE, KINGSSHIELD, SACREDSWORD"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, PROTECT, RAINDANCE, FRUSTRATION, RETURN, SHADOWBALL, BRICKBREAK, DOUBLETEAM, REFLECT, AERIALACE, FACADE, REST, ATTRACT, ROUND, FALSESWIPE, SHADOWCLAW, RETALIATE, GIGAIMPACT, GYROBALL, SWORDSDANCE, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, ROCKSMASH, CONFIDE, CUT, DESTINYBOND, METALSOUND, SHADOWSNEAK, WIDEGUARD"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Aegislash Shield" number="681">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>222</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>53</MASSKG>
+            <BASESTATS atk="50" def="150" hp="60" spatk="50" spd="60" spdef="150"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Steel" type2="Ghost"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Spritzee" number="682">
+        <STATS>
+            <EVOLUTIONMODE>Trade:sachet</EVOLUTIONMODE>
+            <CAPTURERATE>200</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Perfume</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>0.5</MASSKG>
+            <EVOLVESTO>683</EVOLVESTO>
+            <EXPYIELD>68</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>village 0.08</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>day</SPECIALCASES>
+            <BASESTATS atk="52" def="60" hp="78" spatk="63" spd="23" spdef="65"/>
+            <EVYIELD atk="0" def="0" hp="1" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fairy"/>
+            <ABILITY hidden="Aroma Veil" normal="Healer"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SWEETSCENT, FAIRYWIND" lvl_13="ECHOEDVOICE"
+                lvl_17="CALMMIND" lvl_21="DRAININGKISS"
+                lvl_25="AROMATHERAPY" lvl_29="ATTRACT"
+                lvl_31="MOONBLAST" lvl_35="CHARM" lvl_38="FLAIL"
+                lvl_42="MISTYTERRAIN" lvl_44="SKILLSWAP"
+                lvl_48="PSYCHIC" lvl_50="DISARMINGVOICE"
+                lvl_6="SWEETKISS" lvl_8="ODORSLEUTH"/>
+            <MISC moves="CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, LIGHTSCREEN, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, TORMENT, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, ENERGYBALL, CHARGEBEAM, FLASH, GYROBALL, PSYCHUP, DREAMEATER, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, TRICKROOM, DAZZLINGGLEAM, CONFIDE, CAPTIVATE, DISABLE, REFRESH, WISH"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Aromatisse" number="683">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>200</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Fragrance</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>15.5</MASSKG>
+            <EXPYIELD>162</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="72" def="72" hp="101" spatk="99" spd="29" spdef="89"/>
+            <EVYIELD atk="0" def="0" hp="2" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fairy"/>
+            <ABILITY hidden="Aroma Veil" normal="Healer"/>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_0="AROMATICMIST, HEALPULSE, SWEETSCENT, FAIRYWIND"
+                lvl_13="ECHOEDVOICE" lvl_17="CALMMIND"
+                lvl_21="DRAININGKISS" lvl_25="AROMATHERAPY"
+                lvl_29="ATTRACT" lvl_31="MOONBLAST" lvl_35="CHARM"
+                lvl_38="FLAIL" lvl_42="MISTYTERRAIN" lvl_44="SKILLSWAP"
+                lvl_48="PSYCHIC" lvl_53="DISARMINGVOICE"
+                lvl_57="REFLECT" lvl_6="SWEETKISS" lvl_64="PSYCHUP" lvl_8="ODORSLEUTH"/>
+            <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, THUNDER, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, TORMENT, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, ENERGYBALL, CHARGEBEAM, GIGAIMPACT, FLASH, GYROBALL, PSYCHUP, DREAMEATER, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, TRICKROOM, DAZZLINGGLEAM, CONFIDE, CAPTIVATE, DISABLE, REFRESH, WISH"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Swirlix" number="684">
+        <STATS>
+            <EVOLUTIONMODE>Trade:whippeddream</EVOLUTIONMODE>
+            <CAPTURERATE>200</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>CottonCandy</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>3.5</MASSKG>
+            <EVOLVESTO>685</EVOLVESTO>
+            <EXPYIELD>68</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>village 0.08</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>day</SPECIALCASES>
+            <BASESTATS atk="48" def="66" hp="62" spatk="59" spd="49" spdef="57"/>
+            <EVYIELD atk="0" def="1" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fairy"/>
+            <ABILITY hidden="Unburden" normal="Sweet Veil"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SWEETSCENT, TACKLE" lvl_10="FAKETEARS"
+                lvl_13="ROUND" lvl_17="COTTONSPORE" lvl_21="ENDEAVOR"
+                lvl_26="AROMATHERAPY" lvl_31="DRAININGKISS"
+                lvl_36="ENERGYBALL" lvl_41="COTTONGUARD" lvl_45="WISH"
+                lvl_49="PLAYROUGH" lvl_5="FAIRYWIND"
+                lvl_58="LIGHTSCREEN" lvl_67="SAFEGUARD" lvl_8="PLAYNICE"/>
+            <MISC moves="CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, THUNDERBOLT, RETURN, PSYCHIC, DOUBLETEAM, FLAMETHROWER, FACADE, REST, ATTRACT, THIEF, ROUND, ENERGYBALL, FLASH, PSYCHUP, DREAMEATER, SWAGGER, SLEEPTALK, SUBSTITUTE, DAZZLINGGLEAM, CONFIDE, SURF, AFTERYOU, BELLYDRUM, COPYCAT, YAWN"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Slurpuff" number="685">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>200</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Meringue</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>5</MASSKG>
+            <EXPYIELD>168</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="80" def="86" hp="82" spatk="85" spd="72" spdef="75"/>
+            <EVYIELD atk="0" def="2" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fairy"/>
+            <ABILITY hidden="Unburden" normal="Sweet Veil"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SWEETSCENT, TACKLE" lvl_10="FAKETEARS"
+                lvl_13="ROUND" lvl_17="COTTONSPORE" lvl_21="ENDEAVOR"
+                lvl_26="AROMATHERAPY" lvl_31="DRAININGKISS"
+                lvl_36="ENERGYBALL" lvl_41="COTTONGUARD" lvl_45="WISH"
+                lvl_49="PLAYROUGH" lvl_5="FAIRYWIND"
+                lvl_58="LIGHTSCREEN" lvl_67="SAFEGUARD" lvl_8="PLAYNICE"/>
+            <MISC moves="CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, THUNDERBOLT, RETURN, PSYCHIC, DOUBLETEAM, FLAMETHROWER, FACADE, REST, ATTRACT, THIEF, ROUND, ENERGYBALL, GIGAIMPACT, FLASH, PSYCHUP, DREAMEATER, SWAGGER, SLEEPTALK, SUBSTITUTE, DAZZLINGGLEAM, CONFIDE, SURF, AFTERYOU, BELLYDRUM, COPYCAT, YAWN"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Inkay" number="686">
+        <STATS>
+            <EVOLUTIONMODE>Level:30</EVOLUTIONMODE>
+            <CAPTURERATE>120</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Cephalopoda</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>3.5</MASSKG>
+            <EVOLVESTO>687</EVOLVESTO>
+            <EXPYIELD>58</EXPYIELD>
+            <COMMONDROP>1:dye:0</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>ocean beach 0.9</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>night water</SPECIALCASES>
+            <BASESTATS atk="54" def="37" hp="53" spatk="46" spd="45" spdef="45"/>
+            <EVYIELD atk="1" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Dark" type2="Psychic"/>
+            <ABILITY hidden="Infiltrator" normal="Contrary, Suction Cups"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, PECK, CONSTRICT" lvl_12="SWAGGER"
+                lvl_13="PSYWAVE" lvl_15="TOPSYTURVY" lvl_18="HYPNOSIS"
+                lvl_21="PSYBEAM" lvl_23="SWITCHEROO" lvl_27="PAYBACK"
+                lvl_31="LIGHTSCREEN" lvl_35="PLUCK" lvl_39="PSYCHOCUT"
+                lvl_4="REFLECT" lvl_43="SLASH" lvl_46="NIGHTSLASH"
+                lvl_48="SUPERPOWER" lvl_8="FOULPLAY"/>
+            <MISC moves="CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, LIGHTSCREEN, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, FLAMETHROWER, AERIALACE, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, FLING, EMBARGO, PAYBACK, RETALIATE, FLASH, PSYCHUP, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, DARKPULSE, CONFIDE, CUT, CAMOUFLAGE, DESTINYBOND, FLATTER, POWERSPLIT, SIMPLEBEAM, HAPPYHOUR"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Malamar" number="687">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>120</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Cephalopoda</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>47</MASSKG>
+            <EXPYIELD>169</EXPYIELD>
+            <COMMONDROP>2:dye:0</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="92" def="88" hp="86" spatk="68" spd="73" spdef="75"/>
+            <EVYIELD atk="2" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Dark" type2="Psychic"/>
+            <ABILITY hidden="Infiltrator" normal="Contrary, Suction Cups"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SUPERPOWER, REVERSAL, TACKLE, PECK, CONSTRICT"
+                lvl_12="SWAGGER" lvl_13="PSYWAVE" lvl_15="TOPSYTURVY"
+                lvl_18="HYPNOSIS" lvl_21="PSYBEAM" lvl_23="SWITCHEROO"
+                lvl_27="PAYBACK" lvl_31="LIGHTSCREEN" lvl_35="PLUCK"
+                lvl_39="PSYCHOCUT" lvl_4="REFLECT" lvl_43="SLASH"
+                lvl_46="NIGHTSLASH" lvl_48="SUPERPOWER" lvl_8="FOULPLAY"/>
+            <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, FLAMETHROWER, AERIALACE, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, FLING, EMBARGO, PAYBACK, RETALIATE, GIGAIMPACT, FLASH, PSYCHUP, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, DARKPULSE, CONFIDE, CUT, CAMOUFLAGE, DESTINYBOND, FLATTER, POWERSPLIT, SIMPLEBEAM"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Binacle" number="688">
+        <STATS>
+            <EVOLUTIONMODE>Level:39</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Crustacea</SPECIES>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <MASSKG>31</MASSKG>
+            <EVOLVESTO>689</EVOLVESTO>
+            <EXPYIELD>61</EXPYIELD>
+            <FOODMATERIAL>water</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>beach 0.2</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>day night</SPECIALCASES>
+            <BASESTATS atk="52" def="67" hp="42" spatk="39" spd="50" spdef="56"/>
+            <EVYIELD atk="1" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Rock" type2="Water"/>
+            <ABILITY hidden="Pickpocket" normal="Tough Claws, Sniper"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SHELLSMASH, SCRATCH, SANDATTACK"
+                lvl_10="FURYSWIPES" lvl_13="SLASH" lvl_18="MUDSLAP"
+                lvl_20="CLAMP" lvl_24="ROCKPOLISH" lvl_28="ANCIENTPOWER"
+                lvl_32="HONECLAWS" lvl_37="FURYCUTTER" lvl_4="WATERGUN"
+                lvl_41="NIGHTSLASH" lvl_45="RAZORSHELL"
+                lvl_49="CROSSCHOP" lvl_7="WITHDRAW"/>
+            <MISC moves="HONECLAWS, TOXIC, HIDDENPOWER, TAUNT, ICEBEAM, BLIZZARD, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, SMACKDOWN, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, SANDSTORM, ROCKTOMB, AERIALACE, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, FALSESWIPE, SCALD, FLING, EMBARGO, SHADOWCLAW, PAYBACK, ROCKPOLISH, STONEEDGE, SWORDSDANCE, BULLDOZE, ROCKSLIDE, XSCISSOR, INFESTATION, POISONJAB, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, NATUREPOWER, POWERUPPUNCH, CONFIDE, CUT, SURF, STRENGTH, HELPINGHAND, SWITCHEROO, TICKLE, WATERSPORT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Barbaracle" number="689">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Crustacea</SPECIES>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <MASSKG>96</MASSKG>
+            <EXPYIELD>175</EXPYIELD>
+            <FOODMATERIAL>water</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="105" def="115" hp="72" spatk="54" spd="68" spdef="86"/>
+            <EVYIELD atk="2" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Rock" type2="Water"/>
+            <ABILITY hidden="Pickpocket" normal="Tough Claws, Sniper"/>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_0="STONEEDGE, SKULLBASH, SHELLSMASH, SCRATCH, SANDATTACK"
+                lvl_10="FURYSWIPES" lvl_13="SLASH" lvl_18="MUDSLAP"
+                lvl_20="CLAMP" lvl_24="ROCKPOLISH" lvl_28="ANCIENTPOWER"
+                lvl_32="HONECLAWS" lvl_37="FURYCUTTER" lvl_4="WATERGUN"
+                lvl_44="NIGHTSLASH" lvl_48="RAZORSHELL"
+                lvl_55="CROSSCHOP" lvl_60="STONEEDGE" lvl_65="SKULLBASH" lvl_7="WITHDRAW"/>
+            <MISC moves="HONECLAWS, DRAGONCLAW, TOXIC, BULKUP, HIDDENPOWER, TAUNT, ICEBEAM, BLIZZARD, HYPERBEAM, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, SMACKDOWN, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, SANDSTORM, ROCKTOMB, AERIALACE, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, FOCUSBLAST, FALSESWIPE, SCALD, FLING, EMBARGO, SHADOWCLAW, PAYBACK, GIGAIMPACT, ROCKPOLISH, STONEEDGE, SWORDSDANCE, BULLDOZE, ROCKSLIDE, XSCISSOR, INFESTATION, POISONJAB, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, NATUREPOWER, POWERUPPUNCH, CONFIDE, CUT, SURF, STRENGTH, HELPINGHAND, SWITCHEROO, TICKLE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Skrelp" number="690">
+        <STATS>
+            <EVOLUTIONMODE>Level:48</EVOLUTIONMODE>
+            <CAPTURERATE>225</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Fish</SPECIES>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <MASSKG>7.3</MASSKG>
+            <EVOLVESTO>691</EVOLVESTO>
+            <EXPYIELD>64</EXPYIELD>
+            <FOODDROP>1:fish</FOODDROP>
+            <FOODMATERIAL>water</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>ocean 0.4</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>day night water</SPECIALCASES>
+            <BASESTATS atk="60" def="60" hp="50" spatk="60" spd="30" spdef="60"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="0" spdef="1"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Poison" type2="Water"/>
+            <ABILITY hidden="Adaptability" normal="Poison Point, Poison Touch"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, SMOKESCREEN, WATERGUN" lvl_12="BUBBLE"
+                lvl_15="ACID" lvl_19="CAMOUFLAGE" lvl_23="POISONTAIL"
+                lvl_25="WATERPULSE" lvl_28="DOUBLETEAM" lvl_32="TOXIC"
+                lvl_35="AQUATAIL" lvl_38="SLUDGEBOMB" lvl_42="HYDROPUMP"
+                lvl_49="DRAGONPULSE" lvl_5="FEINTATTACK" lvl_9="TAILWHIP"/>
+            <MISC moves="TOXIC, HAIL, VENOSHOCK, HIDDENPOWER, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, RETURN, SHADOWBALL, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, FACADE, REST, ATTRACT, ROUND, SCALD, SWAGGER, SLEEPTALK, SUBSTITUTE, CONFIDE, SURF, WATERFALL, ACIDARMOR, HAZE, PLAYROUGH, TOXICSPIKES, VENOMDRENCH"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Dragalge" number="691">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>225</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Fish Dragon</SPECIES>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <MASSKG>81.5</MASSKG>
+            <EXPYIELD>173</EXPYIELD>
+            <FOODDROP>2:fish</FOODDROP>
+            <FOODMATERIAL>water</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="75" def="90" hp="65" spatk="97" spd="44" spdef="123"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="0" spdef="2"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Poison" type2="Dragon"/>
+            <ABILITY hidden="Adaptability" normal="Poison Point, Poison Touch"/>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_0="DRAGONTAIL, TWISTER, TACKLE, SMOKESCREEN, WATERGUN"
+                lvl_12="BUBBLE" lvl_15="ACID" lvl_19="CAMOUFLAGE"
+                lvl_23="POISONTAIL" lvl_25="WATERPULSE"
+                lvl_28="DOUBLETEAM" lvl_32="TOXIC" lvl_35="AQUATAIL"
+                lvl_38="SLUDGEBOMB" lvl_42="HYDROPUMP"
+                lvl_5="FEINTATTACK" lvl_53="DRAGONPULSE"
+                lvl_59="DRAGONTAIL" lvl_67="TWISTER" lvl_9="TAILWHIP"/>
+            <MISC moves="TOXIC, HAIL, VENOSHOCK, HIDDENPOWER, HYPERBEAM, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, THUNDER, RETURN, SHADOWBALL, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, FACADE, REST, ATTRACT, ROUND, FOCUSBLAST, SCALD, GIGAIMPACT, DRAGONTAIL, SWAGGER, SLEEPTALK, SUBSTITUTE, CONFIDE, SURF, WATERFALL, ACIDARMOR, HAZE, PLAYROUGH, TOXICSPIKES, VENOMDRENCH, DRACOMETEOR"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Clauncher" number="692">
+        <STATS>
+            <EVOLUTIONMODE>Level:37</EVOLUTIONMODE>
+            <CAPTURERATE>155</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Crustacea</SPECIES>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <MASSKG>8.3</MASSKG>
+            <EVOLVESTO>693</EVOLVESTO>
+            <EXPYIELD>66</EXPYIELD>
+            <FOODMATERIAL>water</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="53" def="62" hp="50" spatk="58" spd="44" spdef="63"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="1" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Water"/>
+            <ABILITY normal="Mega Launcher"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SPLASH, WATERGUN" lvl_12="BUBBLE"
+                lvl_16="FLAIL" lvl_20="BUBBLEBEAM" lvl_25="SWORDSDANCE"
+                lvl_30="CRABHAMMER" lvl_34="WATERPULSE"
+                lvl_39="SMACKDOWN" lvl_43="AQUAJET" lvl_48="MUDDYWATER"
+                lvl_7="WATERSPORT" lvl_9="VICEGRIP"/>
+            <MISC moves="TOXIC, VENOSHOCK, HIDDENPOWER, ICEBEAM, PROTECT, RAINDANCE, FRUSTRATION, SMACKDOWN, RETURN, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, FACADE, REST, ATTRACT, ROUND, SCALD, SWORDSDANCE, ROCKSLIDE, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, FLASHCANNON, CONFIDE, CUT, SURF, WATERFALL, AQUAJET, CRABHAMMER, ENDURE, ENTRAINMENT, HELPINGHAND"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Clawitzer" number="693">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>155</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Crustacea</SPECIES>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <MASSKG>35.3</MASSKG>
+            <EXPYIELD>100</EXPYIELD>
+            <FOODMATERIAL>water</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="73" def="88" hp="71" spatk="120" spd="59" spdef="89"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="2" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Water"/>
+            <ABILITY normal="Mega Launcher"/>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_0="HEALPULSE, DARKPULSE, DRAGONPULSE, AURASPHERE, SPLASH, WATERGUN"
+                lvl_12="BUBBLE" lvl_16="FLAIL" lvl_20="BUBBLEBEAM"
+                lvl_25="SWORDSDANCE" lvl_30="CRABHAMMER"
+                lvl_34="WATERPULSE" lvl_42="SMACKDOWN" lvl_47="AQUAJET"
+                lvl_53="MUDDYWATER" lvl_57="DARKPULSE"
+                lvl_63="DRAGONPULSE" lvl_67="AURASPHERE"
+                lvl_7="WATERSPORT" lvl_9="VICEGRIP"/>
+            <MISC moves="TOXIC, VENOSHOCK, HIDDENPOWER, ICEBEAM, HYPERBEAM, PROTECT, RAINDANCE, FRUSTRATION, SMACKDOWN, RETURN, SHADOWBALL, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, FACADE, REST, ATTRACT, ROUND, FOCUSBLAST, SCALD, GIGAIMPACT, SWORDSDANCE, ROCKSLIDE, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, FLASHCANNON, DARKPULSE, CONFIDE, CUT, SURF, WATERFALL, AQUAJET, CRABHAMMER, ENDURE, ENTRAINMENT, HELPINGHAND"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Helioptile" number="694">
+        <STATS>
+            <EVOLUTIONMODE>Stone:sun</EVOLUTIONMODE>
+            <CAPTURERATE>90</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Lizard</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>6</MASSKG>
+            <EVOLVESTO>695</EVOLVESTO>
+            <EXPYIELD>58</EXPYIELD>
+            <COMMONDROP>1:redstone</COMMONDROP>
+            <FOODMATERIAL>light</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="38" def="33" hp="44" spatk="61" spd="70" spdef="43"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="1" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Electric" type2="Normal"/>
+            <ABILITY hidden="Solar Power" normal="Dry Skin, Sand Veil"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="POUND, TAILWHIP" lvl_11="CHARGE"
+                lvl_13="MUDSLAP" lvl_17="QUICKATTACK" lvl_22="RAZORWIND"
+                lvl_25="PARABOLICCHARGE" lvl_31="THUNDERWAVE"
+                lvl_35="BULLDOZE" lvl_40="VOLTSWITCH" lvl_45="ELECTRIFY"
+                lvl_49="THUNDERBOLT" lvl_6="THUNDERSHOCK"/>
+            <MISC moves="TOXIC, HIDDENPOWER, LIGHTSCREEN, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, THUNDER, RETURN, DIG, DOUBLETEAM, SANDSTORM, ROCKTOMB, FACADE, REST, ATTRACT, LOWSWEEP, ROUND, CHARGEBEAM, FLASH, VOLTSWITCH, THUNDERWAVE, PSYCHUP, BULLDOZE, ROCKSLIDE, DRAGONTAIL, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, WILDCHARGE, DARKPULSE, CONFIDE, CUT, SURF, AGILITY, CAMOUFLAGE, ELECTRICTERRAIN, GLARE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Heliolisk" number="695">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>90</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Lizard</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>21</MASSKG>
+            <EXPYIELD>168</EXPYIELD>
+            <COMMONDROP>2:redstone</COMMONDROP>
+            <FOODMATERIAL>light</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="55" def="52" hp="62" spatk="109" spd="109" spdef="94"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="1" spd="1" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Electric" type2="Normal"/>
+            <ABILITY hidden="Solar Power" normal="Dry Skin, Sand Veil"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="EERIEIMPULSE, ELECTRIFY, RAZORWIND, QUICKATTACK, THUNDER, CHARGE, PARABOLICCHARGE"/>
+            <MISC moves="TOXIC, HIDDENPOWER, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, THUNDER, RETURN, DIG, DOUBLETEAM, SANDSTORM, ROCKTOMB, FACADE, REST, ATTRACT, LOWSWEEP, ROUND, FOCUSBLAST, CHARGEBEAM, GIGAIMPACT, FLASH, VOLTSWITCH, THUNDERWAVE, PSYCHUP, BULLDOZE, ROCKSLIDE, DRAGONTAIL, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, WILDCHARGE, DARKPULSE, CONFIDE, CUT, SURF, AGILITY, CAMOUFLAGE, ELECTRICTERRAIN, GLARE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Tyrunt" number="696">
+        <STATS>
+            <EVOLUTIONMODE>Level:39:day</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Dino</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>26</MASSKG>
+            <EVOLVESTO>697</EVOLVESTO>
+            <EXPYIELD>72</EXPYIELD>
+            <COMMONDROP>1:bone</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="89" def="77" hp="58" spatk="45" spd="48" spdef="45"/>
+            <EVYIELD atk="1" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Rock" type2="Dragon"/>
+            <ABILITY hidden="Sturdy" normal="Strong Jaw"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TAILWHIP, TACKLE" lvl_10="STOMP" lvl_12="BIDE"
+                lvl_15="STEALTHROCK" lvl_17="BITE" lvl_20="CHARM"
+                lvl_26="ANCIENTPOWER" lvl_30="DRAGONTAIL"
+                lvl_34="CRUNCH" lvl_37="DRAGONCLAW" lvl_40="THRASH"
+                lvl_44="EARTHQUAKE" lvl_49="HORNDRILL" lvl_6="ROAR"/>
+            <MISC moves="HONECLAWS, DRAGONCLAW, ROAR, TOXIC, HIDDENPOWER, SUNNYDAY, PROTECT, FRUSTRATION, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, SANDSTORM, ROCKTOMB, AERIALACE, FACADE, REST, ATTRACT, ROUND, ROCKPOLISH, STONEEDGE, BULLDOZE, ROCKSLIDE, DRAGONTAIL, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, DARKPULSE, CONFIDE, STRENGTH, CURSE, DRAGONDANCE, FIREFANG, ICEFANG, POISONFANG, THUNDERFANG, DRACOMETEOR"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Tyrantrum" number="697">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Dino</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>270</MASSKG>
+            <EXPYIELD>182</EXPYIELD>
+            <COMMONDROP>2:bone</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="121" def="119" hp="82" spatk="69" spd="71" spdef="59"/>
+            <EVYIELD atk="2" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Rock" type2="Dragon"/>
+            <ABILITY hidden="Rock Head" normal="Strong Jaw"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="HEADSMASH, TAILWHIP, TACKLE" lvl_10="STOMP"
+                lvl_12="BIDE" lvl_15="STEALTHROCK" lvl_17="BITE"
+                lvl_20="CHARM" lvl_26="ANCIENTPOWER" lvl_30="DRAGONTAIL"
+                lvl_34="CRUNCH" lvl_37="DRAGONCLAW" lvl_42="THRASH"
+                lvl_47="EARTHQUAKE" lvl_53="HORNDRILL"
+                lvl_58="HEADSMASH" lvl_6="ROAR" lvl_68="ROCKSLIDE" lvl_75="GIGAIMPACT"/>
+            <MISC moves="HONECLAWS, DRAGONCLAW, ROAR, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, PROTECT, FRUSTRATION, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, SANDSTORM, ROCKTOMB, AERIALACE, FACADE, REST, ATTRACT, ROUND, GIGAIMPACT, ROCKPOLISH, STONEEDGE, BULLDOZE, ROCKSLIDE, DRAGONTAIL, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, DARKPULSE, CONFIDE, STRENGTH, CURSE, DRAGONDANCE, FIREFANG, ICEFANG, POISONFANG, THUNDERFANG, DRACOMETEOR"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Amaura" number="698">
+        <STATS>
+            <EVOLUTIONMODE>Level:39:night</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Dino</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>25.2</MASSKG>
+            <EVOLVESTO>699</EVOLVESTO>
+            <EXPYIELD>72</EXPYIELD>
+            <COMMONDROP>1:bone</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="59" def="50" hp="77" spatk="67" spd="46" spdef="63"/>
+            <EVYIELD atk="0" def="0" hp="1" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Rock" type2="Ice"/>
+            <ABILITY hidden="Snow Warning" normal="Refrigerate"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="GROWL, POWDERSNOW" lvl_10="ROCKTHROW"
+                lvl_13="ICYWIND" lvl_15="TAKEDOWN" lvl_18="MIST"
+                lvl_20="AURORABEAM" lvl_26="ANCIENTPOWER" lvl_30="ROUND"
+                lvl_34="AVALANCHE" lvl_38="HAIL" lvl_41="NATUREPOWER"
+                lvl_44="ENCORE" lvl_47="LIGHTSCREEN" lvl_5="THUNDERWAVE"
+                lvl_50="ICEBEAM" lvl_57="HYPERBEAM" lvl_65="BLIZZARD"/>
+            <MISC moves="CALMMIND, ROAR, TOXIC, HAIL, HIDDENPOWER, ICEBEAM, BLIZZARD, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, THUNDERBOLT, RETURN, DOUBLETEAM, REFLECT, SANDSTORM, ROCKTOMB, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, CHARGEBEAM, ROCKPOLISH, FLASH, STONEEDGE, THUNDERWAVE, PSYCHUP, BULLDOZE, FROSTBREATH, ROCKSLIDE, DRAGONTAIL, DREAMEATER, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, ROCKSMASH, NATUREPOWER, DARKPULSE, CONFIDE, BARRIER, DISCHARGE, HAZE, MAGNETRISE, MIRRORCOAT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Aurorus" number="699">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Dino</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>225</MASSKG>
+            <EXPYIELD>104</EXPYIELD>
+            <COMMONDROP>2:bone</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="77" def="72" hp="123" spatk="99" spd="58" spdef="92"/>
+            <EVYIELD atk="0" def="0" hp="2" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Rock" type2="Ice"/>
+            <ABILITY hidden="Snow Warning" normal="Refrigerate"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="FREEZEDRY, GROWL, POWDERSNOW"
+                lvl_10="ROCKTHROW" lvl_13="ICYWIND" lvl_15="TAKEDOWN"
+                lvl_18="MIST" lvl_20="AURORABEAM" lvl_26="ANCIENTPOWER"
+                lvl_30="ROUND" lvl_34="AVALANCHE" lvl_38="HAIL"
+                lvl_43="NATUREPOWER" lvl_46="ENCORE" lvl_5="THUNDERWAVE"
+                lvl_50="LIGHTSCREEN" lvl_56="ICEBEAM" lvl_63="HYPERBEAM"
+                lvl_74="BLIZZARD" lvl_77="FREEZEDRY"/>
+            <MISC moves="CALMMIND, ROAR, TOXIC, HAIL, HIDDENPOWER, ICEBEAM, BLIZZARD, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, THUNDERBOLT, THUNDER, EARTHQUAKE, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, SANDSTORM, ROCKTOMB, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, CHARGEBEAM, GIGAIMPACT, ROCKPOLISH, FLASH, STONEEDGE, THUNDERWAVE, PSYCHUP, BULLDOZE, FROSTBREATH, ROCKSLIDE, DRAGONTAIL, DREAMEATER, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, ROCKSMASH, NATUREPOWER, DARKPULSE, CONFIDE, BARRIER, DISCHARGE, HAZE, MAGNETRISE, MIRRORCOAT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Sylveon" number="700">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>45</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Fox</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>23.5</MASSKG>
+            <EXPYIELD>184</EXPYIELD>
+            <FOODDROP>2:rabbit</FOODDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>31</GENDERRATIO>
+            <BASESTATS atk="65" def="65" hp="95" spatk="110" spd="60" spdef="130"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="0" spdef="2"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fairy"/>
+            <ABILITY hidden="Pixilate" normal="Cute Charm"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="DISARMINGVOICE, TAILWHIP, TACKLE, HELPINGHAND"
+                lvl_13="QUICKATTACK" lvl_17="SWIFT"
+                lvl_20="DRAININGKISS" lvl_25="SKILLSWAP"
+                lvl_29="MISTYTERRAIN" lvl_33="LIGHTSCREEN"
+                lvl_37="MOONBLAST" lvl_41="LASTRESORT" lvl_45="PSYCHUP"
+                lvl_5="SANDATTACK" lvl_9="FAIRYWIND"/>
+            <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, RETURN, DIG, SHADOWBALL, DOUBLETEAM, REFLECT, FACADE, REST, ATTRACT, ROUND, ECHOEDVOICE, RETALIATE, GIGAIMPACT, FLASH, PSYCHUP, SWAGGER, SLEEPTALK, SUBSTITUTE, DAZZLINGGLEAM, CONFIDE, CUT, CAPTIVATE, CHARM, COVET, CURSE, DETECT, ENDURE, FAKETEARS, FLAIL, NATURALGIFT, STOREDPOWER, SYNCHRONOISE, TICKLE, WISH, YAWN"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Hawlucha" number="701">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>128</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Bird Fighter</SPECIES>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <MASSKG>21.5</MASSKG>
+            <EXPYIELD>175</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="92" def="75" hp="78" spatk="74" spd="118" spdef="63"/>
+            <EVYIELD atk="2" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Fighting" type2="Flying"/>
+            <ABILITY hidden="Mold Breaker" normal="Limber, Unburden"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="DETECT, TACKLE, HONECLAWS" lvl_12="ROOST"
+                lvl_16="AERIALACE" lvl_20="ENCORE" lvl_24="FLING"
+                lvl_28="FLYINGPRESS" lvl_32="BOUNCE" lvl_36="ENDEAVOR"
+                lvl_4="KARATECHOP" lvl_40="FEATHERDANCE"
+                lvl_44="HIGHJUMPKICK" lvl_48="SKYATTACK"
+                lvl_55="SKYDROP" lvl_60="SWORDSDANCE" lvl_8="WINGATTACK"/>
+            <MISC moves="HONECLAWS, TOXIC, BULKUP, HIDDENPOWER, SUNNYDAY, TAUNT, PROTECT, RAINDANCE, ROOST, FRUSTRATION, RETURN, DIG, BRICKBREAK, DOUBLETEAM, ROCKTOMB, AERIALACE, TORMENT, FACADE, REST, ATTRACT, LOWSWEEP, ROUND, STEELWING, FOCUSBLAST, FALSESWIPE, FLING, SKYDROP, ACROBATICS, PAYBACK, RETALIATE, GIGAIMPACT, STONEEDGE, SWORDSDANCE, ROCKSLIDE, XSCISSOR, POISONJAB, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, ROCKSMASH, POWERUPPUNCH, CONFIDE, CUT, FLY, STRENGTH, AGILITY, ALLYSWITCH, BATONPASS, ENTRAINMENT, MEFIRST, MUDSPORT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Dedenne" number="702">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>200</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Rodent</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>2.2</MASSKG>
+            <EXPYIELD>151</EXPYIELD>
+            <FOODDROP>1:rabbit</FOODDROP>
+            <COMMONDROP>1:redstone</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="58" def="57" hp="67" spatk="81" spd="101" spdef="67"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="2" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Electric" type2="Fairy"/>
+            <ABILITY hidden="Plus" normal="Cheek Pouch, Pickup"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, TAILWHIP" lvl_11="CHARGE"
+                lvl_14="CHARM" lvl_17="PARABOLICCHARGE" lvl_20="NUZZLE"
+                lvl_23="THUNDERWAVE" lvl_26="VOLTSWITCH" lvl_30="REST"
+                lvl_31="SNORE" lvl_34="CHARGEBEAM" lvl_39="ENTRAINMENT"
+                lvl_42="PLAYROUGH" lvl_45="THUNDER" lvl_50="DISCHARGE" lvl_7="THUNDERSHOCK"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, THUNDER, RETURN, DIG, DOUBLETEAM, AERIALACE, FACADE, REST, ATTRACT, THIEF, ROUND, FLING, CHARGEBEAM, RETALIATE, GIGAIMPACT, FLASH, VOLTSWITCH, THUNDERWAVE, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, WILDCHARGE, CONFIDE, CUT, COVET, EERIEIMPULSE, NATURALGIFT, HELPINGHAND"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Carbink" number="703">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>30</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Jewel</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>5.7</MASSKG>
+            <EXPYIELD>100</EXPYIELD>
+            <COMMONDROP>1:quartz</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <RAREDROP>1:diamond:0.1</RAREDROP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <GENDERRATIO>255</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>hills mountain cave 0.1</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>cave</SPECIALCASES>
+            <BASESTATS atk="50" def="150" hp="50" spatk="50" spd="50" spdef="150"/>
+            <EVYIELD atk="0" def="1" hp="0" spatk="0" spd="0" spdef="1"/>
+            <SIZES height="0.3" length="0.3" width="0.3"/>
+            <TYPE type1="Rock" type2="Fairy"/>
+            <ABILITY hidden="Sturdy" normal="Clear Body"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, HARDEN" lvl_12="SMACKDOWN"
+                lvl_18="REFLECT" lvl_21="STEALTHROCK"
+                lvl_27="GUARDSPLIT" lvl_31="ANCIENTPOWER" lvl_35="FLAIL"
+                lvl_40="SKILLSWAP" lvl_46="POWERGEM" lvl_49="STONEEDGE"
+                lvl_5="ROCKTHROW" lvl_50="MOONBLAST"
+                lvl_60="LIGHTSCREEN" lvl_70="SAFEGUARD" lvl_8="SHARPEN"/>
+            <MISC moves="CALMMIND, TOXIC, HAIL, HIDDENPOWER, SUNNYDAY, LIGHTSCREEN, PROTECT, SAFEGUARD, FRUSTRATION, SMACKDOWN, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, SANDSTORM, ROCKTOMB, TORMENT, FACADE, REST, ROUND, EXPLOSION, ROCKPOLISH, FLASH, STONEEDGE, GYROBALL, PSYCHUP, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, NATUREPOWER, DAZZLINGGLEAM, CONFIDE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Goomy" number="704">
+        <STATS>
+            <EVOLUTIONMODE>Level:40</EVOLUTIONMODE>
+            <CAPTURERATE>20</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Amorphous</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>2.8</MASSKG>
+            <EVOLVESTO>705</EVOLVESTO>
+            <EXPYIELD>60</EXPYIELD>
+            <COMMONDROP>1:slime_ball</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <SHADOWREPLACEMENTS>slime</SHADOWREPLACEMENTS>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>swamp 0.01</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>day night</SPECIALCASES>
+            <BASESTATS atk="50" def="35" hp="45" spatk="55" spd="40" spdef="75"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="0" spdef="1"/>
+            <SIZES height="0.5" length="0.5" width="0.5"/>
+            <TYPE type1="Dragon"/>
+            <ABILITY hidden="Gooey" normal="Sap Sipper, Hydration"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, BUBBLE" lvl_13="BIDE"
+                lvl_18="DRAGONBREATH" lvl_25="RAINDANCE" lvl_28="FLAIL"
+                lvl_32="BODYSLAM" lvl_38="MUDDYWATER"
+                lvl_42="DRAGONPULSE" lvl_5="ABSORB" lvl_9="PROTECT"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, RETURN, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, FACADE, REST, ATTRACT, ROUND, ROCKSLIDE, INFESTATION, SWAGGER, SLEEPTALK, SUBSTITUTE, CONFIDE, ACIDARMOR, COUNTER, CURSE, ENDURE, IRONTAIL, POISONTAIL, DRACOMETEOR"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Sliggoo" number="705">
+        <STATS>
+            <EVOLUTIONMODE>Level:50:rain</EVOLUTIONMODE>
+            <CAPTURERATE>20</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Amorphous Dragon</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>17.5</MASSKG>
+            <EVOLVESTO>706</EVOLVESTO>
+            <EXPYIELD>158</EXPYIELD>
+            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="75" def="53" hp="68" spatk="83" spd="60" spdef="113"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="0" spdef="2"/>
+            <SIZES height="0.8" length="0.8" width="0.6"/>
+            <TYPE type1="Dragon"/>
+            <ABILITY hidden="Gooey" normal="Sap Sipper, Hydration"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, BUBBLE" lvl_13="BIDE"
+                lvl_18="DRAGONBREATH" lvl_25="RAINDANCE" lvl_28="FLAIL"
+                lvl_32="BODYSLAM" lvl_38="MUDDYWATER"
+                lvl_47="DRAGONPULSE" lvl_5="ABSORB" lvl_9="PROTECT"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, ICEBEAM, BLIZZARD, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, RETURN, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, FACADE, REST, ATTRACT, ROUND, ROCKSLIDE, INFESTATION, SWAGGER, SLEEPTALK, SUBSTITUTE, CONFIDE, ACIDARMOR, COUNTER, CURSE, ENDURE, IRONTAIL, POISONTAIL, DRACOMETEOR"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Goodra" number="706">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>20</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Dragon</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>150.5</MASSKG>
+            <EXPYIELD>270</EXPYIELD>
+            <COMMONDROP>3:slime_ball</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="100" def="70" hp="90" spatk="110" spd="80" spdef="150"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="0" spdef="3"/>
+            <SIZES height="2.0" length="1.5" width="1.0"/>
+            <TYPE type1="Dragon"/>
+            <ABILITY hidden="Gooey" normal="Sap Sipper, Hydration"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="OUTRAGE, FEINT, TACKLE, BUBBLE" lvl_13="BIDE"
+                lvl_18="DRAGONBREATH" lvl_25="RAINDANCE" lvl_28="FLAIL"
+                lvl_32="BODYSLAM" lvl_38="MUDDYWATER"
+                lvl_47="DRAGONPULSE" lvl_5="ABSORB" lvl_50="AQUATAIL"
+                lvl_55="POWERWHIP" lvl_63="OUTRAGE" lvl_9="PROTECT"/>
+            <MISC moves="TOXIC, HAIL, HIDDENPOWER, SUNNYDAY, ICEBEAM, BLIZZARD, HYPERBEAM, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, THUNDER, EARTHQUAKE, RETURN, DOUBLETEAM, SLUDGEWAVE, FLAMETHROWER, SLUDGEBOMB, FIREBLAST, FACADE, REST, ATTRACT, ROUND, FOCUSBLAST, INCINERATE, GIGAIMPACT, BULLDOZE, ROCKSLIDE, DRAGONTAIL, INFESTATION, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, CONFIDE, STRENGTH, ACIDARMOR, COUNTER, CURSE, ENDURE, IRONTAIL, POISONTAIL, DRACOMETEOR"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Klefki" number="707">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>60</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>KeyRing</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>3</MASSKG>
+            <EXPYIELD>165</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <RAREDROP>1:ender_pearl</RAREDROP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>ruin 0.1</BIOMESANYACCEPTABLE>
+            <SPECIALCASES>day night</SPECIALCASES>
+            <BASESTATS atk="80" def="91" hp="57" spatk="80" spd="75" spdef="87"/>
+            <EVYIELD atk="0" def="1" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="0.2" length="0.2" width="0.2"/>
+            <TYPE type1="Steel" type2="Fairy"/>
+            <ABILITY hidden="Magician" normal="Prankster"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="FAIRYLOCK, TACKLE" lvl_12="METALSOUND"
+                lvl_15="SPIKES" lvl_18="DRAININGKISS"
+                lvl_23="CRAFTYSHIELD" lvl_27="FOULPLAY" lvl_32="TORMENT"
+                lvl_34="MIRRORSHOT" lvl_36="IMPRISON" lvl_40="RECYCLE"
+                lvl_43="PLAYROUGH" lvl_44="MAGICROOM" lvl_5="FAIRYWIND"
+                lvl_50="HEALBLOCK" lvl_8="ASTONISH"/>
+            <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, GIGAIMPACT, THUNDERWAVE, PSYCHUP, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, DAZZLINGGLEAM, CONFIDE, IRONDEFENSE, LOCKON, SWITCHEROO"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Phantump" number="708">
+        <STATS>
+            <EVOLUTIONMODE>Trade:</EVOLUTIONMODE>
+            <CAPTURERATE>150</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Plant</SPECIES>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <MASSKG>7</MASSKG>
+            <EVOLVESTO>709</EVOLVESTO>
+            <EXPYIELD>62</EXPYIELD>
+            <FOODMATERIAL>light</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESALLNEEDED>forest spooky 0.2</BIOMESALLNEEDED>
+            <SPECIALCASES>night</SPECIALCASES>
+            <BASESTATS atk="70" def="48" hp="43" spatk="50" spd="38" spdef="60"/>
+            <EVYIELD atk="1" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="0.5" length="0.5" width="0.5"/>
+            <TYPE type1="Ghost" type2="Grass"/>
+            <ABILITY hidden="Harvest" normal="Natural Cure, Frisk"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, CONFUSERAY" lvl_13="INGRAIN"
+                lvl_19="FEINTATTACK" lvl_23="LEECHSEED" lvl_28="CURSE"
+                lvl_31="WILLOWISP" lvl_35="FORESTSCURSE"
+                lvl_39="DESTINYBOND" lvl_45="PHANTOMFORCE"
+                lvl_49="WOODHAMMER" lvl_5="ASTONISH" lvl_54="HORNLEECH" lvl_8="GROWTH"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, PROTECT, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, DIG, PSYCHIC, SHADOWBALL, DOUBLETEAM, REFLECT, FACADE, REST, ATTRACT, THIEF, ROUND, ENERGYBALL, WILLOWISP, SHADOWCLAW, BULLDOZE, ROCKSLIDE, POISONJAB, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, ROCKSMASH, NATUREPOWER, DARKPULSE, CONFIDE, CUT, STRENGTH, BESTOW, GRUDGE, IMPRISON, VENOMDRENCH"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Trevenant" number="709">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>150</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Plant</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>71</MASSKG>
+            <EXPYIELD>166</EXPYIELD>
+            <FOODMATERIAL>light</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="110" def="76" hp="85" spatk="65" spd="56" spdef="82"/>
+            <EVYIELD atk="2" def="0" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.5" length="1.0" width="1.0"/>
+            <TYPE type1="Ghost" type2="Grass"/>
+            <ABILITY hidden="Harvest" normal="Natural Cure, Frisk"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="HORNLEECH, TACKLE, CONFUSERAY"
+                lvl_13="INGRAIN" lvl_19="FEINTATTACK" lvl_23="LEECHSEED"
+                lvl_28="CURSE" lvl_31="WILLOWISP" lvl_35="FORESTSCURSE"
+                lvl_39="DESTINYBOND" lvl_45="PHANTOMFORCE"
+                lvl_49="WOODHAMMER" lvl_5="ASTONISH" lvl_55="SHADOWCLAW"
+                lvl_62="HORNLEECH" lvl_8="GROWTH"/>
+            <MISC moves="HONECLAWS, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, PROTECT, SAFEGUARD, FRUSTRATION, SOLARBEAM, EARTHQUAKE, RETURN, DIG, PSYCHIC, SHADOWBALL, DOUBLETEAM, REFLECT, FACADE, REST, ATTRACT, THIEF, ROUND, FOCUSBLAST, ENERGYBALL, WILLOWISP, SHADOWCLAW, GIGAIMPACT, BULLDOZE, ROCKSLIDE, XSCISSOR, POISONJAB, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, ROCKSMASH, NATUREPOWER, DARKPULSE, POWERUPPUNCH, CONFIDE, CUT, STRENGTH, BESTOW, GRUDGE, IMPRISON"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Pumpkaboo Average" number="710">
+        <STATS>
+            <EVOLUTIONMODE>Trade:</EVOLUTIONMODE>
+            <CAPTURERATE>190</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Plant</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>5</MASSKG>
+            <EVOLVESTO>712</EVOLVESTO>
+            <EXPYIELD>67</EXPYIELD>
+            <FOODMATERIAL>light</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="66" def="70" hp="49" spatk="44" spd="51" spdef="55"/>
+            <EVYIELD atk="0" def="1" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Ghost" type2="Grass"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TRICK, ASTONISH, CONFUSERAY"
+                lvl_11="WORRYSEED" lvl_16="RAZORLEAF" lvl_20="LEECHSEED"
+                lvl_23="TRICKORTREAT" lvl_26="BULLETSEED"
+                lvl_30="SHADOWSNEAK" lvl_36="SHADOWBALL"
+                lvl_4="SCARYFACE" lvl_40="TRICKORTREAT"
+                lvl_42="PAINSPLIT" lvl_48="SEEDBOMB" lvl_6="TRICKORTREAT"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, LIGHTSCREEN, PROTECT, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, SHADOWBALL, DOUBLETEAM, FLAMETHROWER, SLUDGEBOMB, FIREBLAST, FACADE, FLAMECHARGE, REST, ATTRACT, THIEF, ROUND, ENERGYBALL, CHARGEBEAM, INCINERATE, WILLOWISP, EXPLOSION, FLASH, GYROBALL, ROCKSLIDE, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, ROCKSMASH, NATUREPOWER, DARKPULSE, CONFIDE, BESTOW, DESTINYBOND, DISABLE"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Pumpkaboo Large" number="710">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>190</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>7.5</MASSKG>
+            <BASESTATS atk="66" def="70" hp="54" spatk="44" spd="46" spdef="55"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Ghost" type2="Grass"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Pumpkaboo Small" number="710">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>190</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>3.5</MASSKG>
+            <BASESTATS atk="66" def="70" hp="44" spatk="44" spd="56" spdef="55"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Ghost" type2="Grass"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Pumpkaboo Super" number="710">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>190</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>15</MASSKG>
+            <BASESTATS atk="66" def="70" hp="59" spatk="44" spd="41" spdef="55"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Ghost" type2="Grass"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Gourgeist Average" number="711">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>190</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Plant</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>12.5</MASSKG>
+            <EXPYIELD>173</EXPYIELD>
+            <FOODMATERIAL>light</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="90" def="122" hp="65" spatk="58" spd="84" spdef="75"/>
+            <EVYIELD atk="0" def="2" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Ghost" type2="Grass"/>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_0="EXPLOSION, PHANTOMFORCE, TRICK, ASTONISH, CONFUSERAY"
+                lvl_11="WORRYSEED" lvl_16="RAZORLEAF" lvl_20="LEECHSEED"
+                lvl_23="TRICKORTREAT" lvl_26="BULLETSEED"
+                lvl_30="SHADOWSNEAK" lvl_36="SHADOWBALL"
+                lvl_4="SCARYFACE" lvl_40="TRICKORTREAT"
+                lvl_42="PAINSPLIT" lvl_48="SEEDBOMB"
+                lvl_57="PHANTOMFORCE" lvl_6="TRICKORTREAT"
+                lvl_63="TRICKORTREAT" lvl_70="SHADOWBALL" lvl_75="EXPLOSION"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, SHADOWBALL, DOUBLETEAM, FLAMETHROWER, SLUDGEBOMB, FIREBLAST, FACADE, FLAMECHARGE, REST, ATTRACT, THIEF, ROUND, FOCUSBLAST, ENERGYBALL, CHARGEBEAM, INCINERATE, WILLOWISP, EXPLOSION, GIGAIMPACT, FLASH, GYROBALL, ROCKSLIDE, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, ROCKSMASH, NATUREPOWER, DARKPULSE, CONFIDE, BESTOW, DESTINYBOND"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Gourgeist Large" number="711">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>190</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>14</MASSKG>
+            <BASESTATS atk="95" def="122" hp="75" spatk="58" spd="69" spdef="75"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Ghost" type2="Grass"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Gourgeist Small" number="711">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>190</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>9.5</MASSKG>
+            <BASESTATS atk="85" def="122" hp="55" spatk="58" spd="99" spdef="75"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Ghost" type2="Grass"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Gourgeist Super" number="711">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>190</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>39</MASSKG>
+            <BASESTATS atk="100" def="122" hp="85" spatk="58" spd="54" spdef="75"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Ghost" type2="Grass"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Bergmite" number="712">
+        <STATS>
+            <EVOLUTIONMODE>Level:37</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Ice</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>99.5</MASSKG>
+            <EVOLVESTO>713</EVOLVESTO>
+            <EXPYIELD>61</EXPYIELD>
+            <COMMONDROP>1:ice</COMMONDROP>
+            <FOODMATERIAL>none</FOODMATERIAL>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <RAREDROP>1:packed_ice</RAREDROP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BIOMESALLNEEDED>mountain snowy 0.3; mountain cold 0.3</BIOMESALLNEEDED>
+            <SPECIALCASES>day night</SPECIALCASES>
+            <BASESTATS atk="69" def="85" hp="55" spatk="32" spd="28" spdef="35"/>
+            <EVYIELD atk="0" def="1" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Ice"/>
+            <ABILITY hidden="Sturdy" normal="Own Tempo, Ice Body"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="TACKLE, BITE, HARDEN" lvl_10="ICYWIND"
+                lvl_15="TAKEDOWN" lvl_20="SHARPEN" lvl_22="CURSE"
+                lvl_26="ICEFANG" lvl_30="ICEBALL" lvl_35="RAPIDSPIN"
+                lvl_39="AVALANCHE" lvl_43="BLIZZARD" lvl_47="RECOVER"
+                lvl_49="DOUBLEEDGE" lvl_5="POWDERSNOW"/>
+            <MISC moves="TOXIC, HAIL, HIDDENPOWER, ICEBEAM, BLIZZARD, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, RETURN, DOUBLETEAM, ROCKTOMB, FACADE, REST, ATTRACT, ROUND, ROCKPOLISH, FLASH, STONEEDGE, GYROBALL, FROSTBREATH, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, ROCKSMASH, CONFIDE, SURF, STRENGTH, BARRIER, MIRRORCOAT, MIST, RECOVER"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Avalugg" number="713">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>255</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <RIDDENOFFSET>0.8</RIDDENOFFSET>
+            <SPECIES>Ice</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>505</MASSKG>
+            <EXPYIELD>180</EXPYIELD>
+            <COMMONDROP>2:ice</COMMONDROP>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <RAREDROP>2:packed_ice</RAREDROP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="117" def="184" hp="95" spatk="44" spd="28" spdef="46"/>
+            <EVYIELD atk="0" def="2" hp="0" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="2.0" length="2.0" width="2.0"/>
+            <TYPE type1="Ice"/>
+            <ABILITY hidden="Sturdy" normal="Own Tempo, Ice Body"/>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_0="IRONDEFENSE, CRUNCH, SKULLBASH, TACKLE, BITE, HARDEN"
+                lvl_10="ICYWIND" lvl_15="TAKEDOWN" lvl_20="SHARPEN"
+                lvl_22="CURSE" lvl_26="ICEFANG" lvl_30="ICEBALL"
+                lvl_35="RAPIDSPIN" lvl_42="AVALANCHE" lvl_46="BLIZZARD"
+                lvl_5="POWDERSNOW" lvl_51="RECOVER" lvl_56="DOUBLEEDGE"
+                lvl_60="SKULLBASH" lvl_65="CRUNCH"/>
+            <MISC moves="ROAR, TOXIC, HAIL, HIDDENPOWER, ICEBEAM, BLIZZARD, HYPERBEAM, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, EARTHQUAKE, RETURN, DOUBLETEAM, ROCKTOMB, FACADE, REST, ATTRACT, ROUND, GIGAIMPACT, ROCKPOLISH, FLASH, STONEEDGE, GYROBALL, BULLDOZE, FROSTBREATH, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, ROCKSMASH, CONFIDE, SURF, STRENGTH, BARRIER, MIRRORCOAT, MIST, RECOVER"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Noibat" number="714">
+        <STATS>
+            <EVOLUTIONMODE>Level:48</EVOLUTIONMODE>
+            <CAPTURERATE>200</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Bat</SPECIES>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <MASSKG>8</MASSKG>
+            <EVOLVESTO>715</EVOLVESTO>
+            <EXPYIELD>49</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="TRUE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="30" def="35" hp="40" spatk="45" spd="55" spdef="40"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="1" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Flying" type2="Dragon"/>
+            <ABILITY hidden="Telepathy" normal="Frisk, Infiltrator"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="SCREECH, SUPERSONIC, TACKLE" lvl_11="GUST"
+                lvl_13="BITE" lvl_16="WINGATTACK" lvl_18="AGILITY"
+                lvl_23="AIRCUTTER" lvl_27="ROOST" lvl_31="RAZORWIND"
+                lvl_35="TAILWIND" lvl_40="WHIRLWIND" lvl_43="SUPERFANG"
+                lvl_48="AIRSLASH" lvl_5="LEECHLIFE" lvl_58="HURRICANE"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, PROTECT, ROOST, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, SHADOWBALL, BRICKBREAK, DOUBLETEAM, AERIALACE, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, ECHOEDVOICE, STEELWING, ACROBATICS, SHADOWCLAW, XSCISSOR, DREAMEATER, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, WILDCHARGE, DARKPULSE, CONFIDE, CUT, FLY, OUTRAGE, SNATCH, SWITCHEROO, TAILWIND, DRACOMETEOR"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Noivern" number="715">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>200</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Bat</SPECIES>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <MASSKG>85</MASSKG>
+            <EXPYIELD>187</EXPYIELD>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
+            <GENDERRATIO>127</GENDERRATIO>
+            <BASESTATS atk="70" def="80" hp="85" spatk="97" spd="123" spdef="80"/>
+            <EVYIELD atk="0" def="0" hp="0" spatk="0" spd="2" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Flying" type2="Dragon"/>
+            <ABILITY hidden="Telepathy" normal="Frisk, Infiltrator"/>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_0="MOONLIGHT, BOOMBURST, DRAGONPULSE, HURRICANE, SCREECH, SUPERSONIC, TACKLE"
+                lvl_11="GUST" lvl_13="BITE" lvl_16="WINGATTACK"
+                lvl_18="AGILITY" lvl_23="AIRCUTTER" lvl_27="ROOST"
+                lvl_31="RAZORWIND" lvl_35="TAILWIND" lvl_40="WHIRLWIND"
+                lvl_43="SUPERFANG" lvl_5="LEECHLIFE" lvl_53="AIRSLASH"
+                lvl_62="HURRICANE" lvl_70="DRAGONPULSE" lvl_75="BOOMBURST"/>
+            <MISC moves="HONECLAWS, DRAGONCLAW, TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, HYPERBEAM, PROTECT, ROOST, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, SHADOWBALL, BRICKBREAK, DOUBLETEAM, FLAMETHROWER, AERIALACE, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, ECHOEDVOICE, STEELWING, FOCUSBLAST, ACROBATICS, SHADOWCLAW, GIGAIMPACT, XSCISSOR, DREAMEATER, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, WILDCHARGE, DARKPULSE, CONFIDE, CUT, FLY, OUTRAGE, SNATCH, SWITCHEROO, TAILWIND"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Xerneas" number="716">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>70</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Life</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>215</MASSKG>
+            <EXPYIELD>306</EXPYIELD>
+            <COMMONDROP>1:nether_star</COMMONDROP>
+            <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <GENDERRATIO>255</GENDERRATIO>
+            <SPECIALCASES>forest 0.001:1:1</SPECIALCASES>
+            <BASESTATS atk="131" def="95" hp="126" spatk="131" spd="99" spdef="98"/>
+            <EVYIELD atk="0" def="0" hp="3" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="3.0" length="3.0" width="1.0"/>
+            <TYPE type1="Fairy"/>
+            <ABILITY normal="Fairy Aura"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="HEALPULSE, AROMATHERAPY, INGRAIN, TAKEDOWN"
+                lvl_10="AURORABEAM" lvl_18="GRAVITY" lvl_26="GEOMANCY"
+                lvl_35="MOONBLAST" lvl_44="MEGAHORN" lvl_5="LIGHTSCREEN"
+                lvl_51="NIGHTSLASH" lvl_55="HORNLEECH" lvl_59="PSYCHUP"
+                lvl_63="MISTYTERRAIN" lvl_72="NATUREPOWER"
+                lvl_80="CLOSECOMBAT" lvl_88="GIGAIMPACT" lvl_93="OUTRAGE"/>
+            <MISC moves="PSYSHOCK, CALMMIND, ROAR, TOXIC, HAIL, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, FRUSTRATION, THUNDERBOLT, THUNDER, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, FACADE, REST, ROUND, ECHOEDVOICE, FOCUSBLAST, GIGAIMPACT, FLASH, THUNDERWAVE, PSYCHUP, ROCKSLIDE, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, NATUREPOWER, DAZZLINGGLEAM, CONFIDE, CUT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Yveltal" number="717">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>70</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Destruction</SPECIES>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <MASSKG>203</MASSKG>
+            <EXPYIELD>306</EXPYIELD>
+            <COMMONDROP>1:nether_star</COMMONDROP>
+            <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <GENDERRATIO>255</GENDERRATIO>
+            <SPECIALCASES>forest 0.001:1:1</SPECIALCASES>
+            <BASESTATS atk="131" def="95" hp="126" spatk="131" spd="99" spdef="98"/>
+            <EVYIELD atk="0" def="0" hp="3" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="5.0" length="3.0" width="5.0"/>
+            <TYPE type1="Dark" type2="Flying"/>
+            <ABILITY normal="Dark Aura"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="HURRICANE, RAZORWIND, TAUNT, ROOST"
+                lvl_10="AIRSLASH" lvl_18="SNARL" lvl_26="OBLIVIONWING"
+                lvl_35="DISABLE" lvl_44="DARKPULSE" lvl_5="DOUBLETEAM"
+                lvl_51="FOULPLAY" lvl_55="PHANTOMFORCE" lvl_59="PSYCHIC"
+                lvl_63="DRAGONRUSH" lvl_72="FOCUSBLAST"
+                lvl_80="SUCKERPUNCH" lvl_88="HYPERBEAM" lvl_93="SKYATTACK"/>
+            <MISC moves="HONECLAWS, DRAGONCLAW, TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, HYPERBEAM, PROTECT, RAINDANCE, ROOST, FRUSTRATION, RETURN, PSYCHIC, SHADOWBALL, DOUBLETEAM, AERIALACE, TORMENT, FACADE, REST, THIEF, ROUND, STEELWING, FOCUSBLAST, SKYDROP, ACROBATICS, EMBARGO, SHADOWCLAW, GIGAIMPACT, ROCKSLIDE, DREAMEATER, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, SNARL, DARKPULSE, CONFIDE, CUT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Zygarde" number="718">
+        <STATS>
+            <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>
+            <CAPTURERATE>3</CAPTURERATE>
+            <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
+            <SPECIES>Order</SPECIES>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MASSKG>305</MASSKG>
+            <EXPYIELD>270</EXPYIELD>
+            <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
+            <LOGIC shoulder="FALSE"/>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <GENDERRATIO>255</GENDERRATIO>
+            <BASESTATS atk="100" def="121" hp="108" spatk="81" spd="95" spdef="95"/>
+            <EVYIELD atk="0" def="0" hp="3" spatk="0" spd="0" spdef="0"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <TYPE type1="Dragon" type2="Ground"/>
+            <ABILITY normal="Aura Break"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_0="GLARE, BULLDOZE, DRAGONBREATH, BITE"
+                lvl_10="DIG" lvl_18="BIND" lvl_26="LANDSWRATH"
+                lvl_35="SANDSTORM" lvl_44="HAZE" lvl_5="SAFEGUARD"
+                lvl_51="CRUNCH" lvl_55="EARTHQUAKE" lvl_59="CAMOUFLAGE"
+                lvl_63="DRAGONPULSE" lvl_72="DRAGONDANCE" lvl_80="COIL"
+                lvl_88="EXTREMESPEED" lvl_93="OUTRAGE"/>
+            <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, PROTECT, SAFEGUARD, FRUSTRATION, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, SLUDGEWAVE, SANDSTORM, FACADE, REST, ROUND, FOCUSBLAST, GIGAIMPACT, STONEEDGE, BULLDOZE, ROCKSLIDE, DRAGONTAIL, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, CONFIDE, STRENGTH"/>
+        </MOVES>
+    </Pokemon>
+</Document>

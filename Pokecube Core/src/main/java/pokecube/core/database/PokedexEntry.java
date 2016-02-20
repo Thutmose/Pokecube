@@ -41,7 +41,8 @@ import thut.api.terrain.BiomeType;
 /** @author Manchou */
 public class PokedexEntry
 {
-    //TODO write a way to load this from a single file, so I can have 1 file per entry.
+    // TODO write a way to load this from a single file, so I can have 1 file
+    // per entry.
     Random                     rand               = new Random();
     protected int              pokedexNb;
     protected String           name;
@@ -52,10 +53,10 @@ public class PokedexEntry
     protected int              evolutionMode      = 1;
     /** base xp given from defeating */
     protected int              baseXP;
-    protected int              catchRate          = 3;
+    protected int              catchRate          = -1;
     protected int              sexeRatio          = -1;
     protected String           sound;
-    private int[]              stats;
+    protected int[]            stats;
     protected byte[]           evs;
     /** Used to determine egg group */
     public String[]            species;
@@ -71,7 +72,7 @@ public class PokedexEntry
     /** Mod which owns the pokemob, used for texture location. */
     private String             modId;
     /** Movement type for this mob */
-    public PokecubeMod.Type    mobType            = PokecubeMod.Type.NORMAL;
+    public PokecubeMod.Type    mobType            = null;
     /** If the above is floating, how high does it try to float */
     public double              preferedHeight     = 1.5;
     /** Offset between top of hitbox and where player sits */
@@ -92,7 +93,7 @@ public class PokedexEntry
     public boolean             shouldFly          = false;
     public boolean             shouldDive         = false;
     /** Mass of the pokemon in kg. */
-    public double              mass               = 1000;
+    public double              mass               = -1;
     /** Will it protect others. */
     public boolean             isSocial           = true;
     /** light,<br>
@@ -134,8 +135,8 @@ public class PokedexEntry
     private List<PokedexEntry>       prey             = new ArrayList<PokedexEntry>();
 
     public float height = -1;
-    public float width;
-    public float length;
+    public float width  = -1;
+    public float length = -1;
 
     private int childNb = 0;
 
@@ -191,38 +192,53 @@ public class PokedexEntry
         this.stats = new int[] { HP, ATT, DEF, ATTSPE, DEFSPE, VIT };
     }
 
+    protected void setBaseStats(int[] stats, PokeType pokeType, PokeType pokeType2, int catchRate)
+    {
+        this.hasStats = true;
+        this.catchRate = catchRate;
+        this.type1 = pokeType;
+        this.type2 = pokeType2;
+        this.stats = stats;
+    }
+
+    protected void addEVXP(byte[] evs, int baseXP, int evolutionMode, int sexRatio)
+    {
+        this.evs = evs;
+        this.baseXP = baseXP;
+        this.evolutionMode = evolutionMode;
+        this.sexeRatio = sexRatio;
+    }
+
     public void copyToForm(PokedexEntry e)
     {
         if (e.baseForme != null && e.baseForme != this)
             throw new IllegalArgumentException("Cannot add a second base form");
         e.pokedexNb = pokedexNb;
-        e.possibleMoves = possibleMoves;
-        e.lvlUpMoves = lvlUpMoves;
-        if (hasStats) e.setBaseStats(getStatHP(), getStatATT(), getStatDEF(), getStatATTSPE(), getStatDEFSPE(),
-                getStatVIT(), catchRate, type1, type2);
-        if (hasEVXP) e.setEVXP(evs[0], evs[1], evs[2], evs[3], evs[4], evs[5], baseXP, evolutionMode, sexeRatio);
+
+        if (e.possibleMoves == null) e.possibleMoves = possibleMoves;
+        if (e.lvlUpMoves == null) e.lvlUpMoves = lvlUpMoves;
+        if (e.stats == null) e.stats = stats.clone();
+        if (evs == null)
+        {
+            System.out.println(this + " " + this.baseForme);
+            Thread.dumpStack();
+        }
+        if (e.evs == null) e.evs = evs.clone();
+        if (e.height == -1) e.height = height;
+        if (e.width == -1) e.width = width;
+        if (e.length == -1) e.length = length;
+        if (e.childNumbers.isEmpty()) e.childNumbers = childNumbers;
+        if (e.species == null) e.species = species;
+        if (e.mobType == null) e.mobType = mobType;
+        if (e.catchRate == -1) e.catchRate = catchRate;
+        if (e.mass == -1) e.mass = mass;
+        if (e.foodDrop == null) e.foodDrop = foodDrop;
+        if (e.commonDrops.isEmpty()) e.commonDrops = commonDrops;
+        if (e.rareDrops.isEmpty()) e.rareDrops = rareDrops;
 
         e.baseForme = this;
-        if (e.height == -1)
-        {
-            e.height = e.baseForme.height;
-            e.width = e.baseForme.width;
-            e.length = e.baseForme.length;
-            e.childNumbers = e.baseForme.childNumbers;
-            e.species = e.baseForme.species;
-            e.setModId(e.baseForme.getModId());
-            e.mobType = e.baseForme.mobType;
-            e.catchRate = e.baseForme.catchRate;
-            e.mass = e.baseForme.mass;
-            e.foodDrop = e.baseForme.foodDrop;
-            e.commonDrops = e.baseForme.commonDrops;
-            e.rareDrops = e.baseForme.rareDrops;
-        }
-        if (e.species == null)
-        {
-            e.childNumbers = e.baseForme.childNumbers;
-            e.species = e.baseForme.species;
-        }
+        e.setModId(getModId());
+        this.addForm(e);
     }
 
     public void addStats(String name, int HP, int ATT, int DEF, int ATTSPE, int DEFSPE, int VIT, int catchRate,
@@ -484,6 +500,7 @@ public class PokedexEntry
 
         if (possibleMoves == null)
         {
+            System.out.println(this);
             possibleMoves = baseForme.possibleMoves;
         }
         if (lvlUpMoves == null)
@@ -604,7 +621,7 @@ public class PokedexEntry
     public int getGen()
     {
         if (pokedexNb < 152) return 1;
-        if (pokedexNb < 252) return 3;
+        if (pokedexNb < 252) return 2;
         if (pokedexNb < 387) return 3;
         if (pokedexNb < 494) return 4;
         if (pokedexNb < 650) return 5;
@@ -695,6 +712,8 @@ public class PokedexEntry
         addRelation(this);
         for (EvolutionData d : this.evolutions)
         {
+            d.postInit();
+
             PokedexEntry temp = Pokedex.getInstance().getEntry(d.evolutionNb);
 
             if (temp == null)
@@ -820,6 +839,7 @@ public class PokedexEntry
     {
         for (EvolutionData d : a.evolutions)
         {
+            d.postInit();
             PokedexEntry c = Pokedex.getInstance().getEntry(d.evolutionNb);
             if (c == null)
             {
@@ -1021,11 +1041,19 @@ public class PokedexEntry
             this.evolutionNb = number;
         }
 
+        private String data;
+
+        protected void postInit()
+        {
+            if (data != null) parse(data);
+            data = null;
+        }
+
         public EvolutionData(int number, String data, String FX)
         {
             this(number);
             this.FX = FX;
-            parse(data);
+            this.data = data;
         }
 
         private void parse(String data)

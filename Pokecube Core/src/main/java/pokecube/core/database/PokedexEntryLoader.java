@@ -54,12 +54,19 @@ public class PokedexEntryLoader
             if (list.getLength() == 1)
             {
                 Element stats = (Element) list.item(0);
-                if (create) initStats(entry, stats);
-                else
+                try
                 {
-                    postIniStats(entry, stats);
-                    parseSpawns(entry, stats);
-                    parseEvols(entry, stats);
+                    if (create) initStats(entry, stats);
+                    else
+                    {
+                        postIniStats(entry, stats);
+                        parseSpawns(entry, stats);
+                        parseEvols(entry, stats);
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.out.println(entry + ": " + e);
                 }
             }
             else if (list.getLength() != 0)
@@ -77,7 +84,14 @@ public class PokedexEntryLoader
             {
                 System.err.println(new IllegalArgumentException("Wrong number of MOVES nodes for " + entry));
             }
-            checkBaseForme(entry);
+            try
+            {
+                checkBaseForme(entry);
+            }
+            catch (Exception e)
+            {
+                System.out.println(entry + ": " + e);
+            }
         }
     }
 
@@ -277,12 +291,12 @@ public class PokedexEntryLoader
         if (list.getLength() == 1)
         {
             node = (Element) list.item(0);
-            evs[0] = (byte) Integer.parseInt(node.getAttribute("hp"));
-            evs[1] = (byte) Integer.parseInt(node.getAttribute("atk"));
-            evs[2] = (byte) Integer.parseInt(node.getAttribute("def"));
-            evs[3] = (byte) Integer.parseInt(node.getAttribute("spatk"));
-            evs[4] = (byte) Integer.parseInt(node.getAttribute("spdef"));
-            evs[5] = (byte) Integer.parseInt(node.getAttribute("spd"));
+            if (node.hasAttribute("hp")) evs[0] = (byte) Integer.parseInt(node.getAttribute("hp"));
+            if (node.hasAttribute("atk")) evs[1] = (byte) Integer.parseInt(node.getAttribute("atk"));
+            if (node.hasAttribute("def")) evs[2] = (byte) Integer.parseInt(node.getAttribute("def"));
+            if (node.hasAttribute("spatk")) evs[3] = (byte) Integer.parseInt(node.getAttribute("spatk"));
+            if (node.hasAttribute("spdef")) evs[4] = (byte) Integer.parseInt(node.getAttribute("spdef"));
+            if (node.hasAttribute("spd")) evs[5] = (byte) Integer.parseInt(node.getAttribute("spd"));
             ev = true;
         }
         if (stat)
@@ -318,6 +332,10 @@ public class PokedexEntryLoader
             {
                 entry.length = Float.parseFloat(node.getAttribute("length"));
                 entry.width = Float.parseFloat(node.getAttribute("width"));
+            }
+            else
+            {
+                entry.length = entry.width = entry.height;
             }
         }
         list = statsNode.getElementsByTagName("ABILITY");

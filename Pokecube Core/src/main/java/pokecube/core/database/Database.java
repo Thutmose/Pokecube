@@ -50,8 +50,7 @@ public class Database implements IMoveConstants
     private static String DBLOCATION = "/assets/pokecube/database/";
     public static String  CONFIGLOC  = "";
 
-    private static HashSet<String> defaultDatabases = Sets.newHashSet("gen1.xml", "gen2.xml", "gen3.xml", "gen4.xml",
-            "gen5.xml", "gen6.xml");
+    private static HashSet<String> defaultDatabases = Sets.newHashSet("pokemobs.xml");
 
     private static HashSet<String>         extraDatabases  = Sets.newHashSet();
     private static HashSet<String>         spawnDatabases  = Sets.newHashSet();
@@ -956,12 +955,8 @@ public class Database implements IMoveConstants
 
             copyDatabaseFile("moves.csv");
 
-            copyDatabaseFile("gen1.xml");
-            copyDatabaseFile("gen2.xml");
-            copyDatabaseFile("gen3.xml");
-            copyDatabaseFile("gen4.xml");
-            copyDatabaseFile("gen5.xml");
-            copyDatabaseFile("gen6.xml");
+            for (String s : defaultDatabases)
+                copyDatabaseFile(s);
 
             DBLOCATION = CONFIGLOC;
 

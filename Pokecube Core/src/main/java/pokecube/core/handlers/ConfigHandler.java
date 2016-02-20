@@ -63,7 +63,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                 loginmessage = config.get(Configuration.CATEGORY_GENERAL, "loginmessage", false).getBoolean(false);
         }
 
-        String[] defaultDatabases = { "gen1, gen2, gen3, gen4, gen5, gen6", "moves" };
+        String[] defaultDatabases = { "pokemobs", "moves" };
 
         (prop = config.get(CATEGORY_DATABASE, "databases", defaultDatabases,
                 "Databases for pokemob information Add additional databases by appending , <newfile>."

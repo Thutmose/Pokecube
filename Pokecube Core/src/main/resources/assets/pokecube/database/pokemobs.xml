@@ -2595,7 +2595,7 @@
             <HELDITEM>1:kingsrock:0:10</HELDITEM>
             <BIOMESALLNEEDED>beach cave 0.25; river cave 0.25; lake cave 0.25</BIOMESALLNEEDED>
             <BIOMESANYACCEPTABLE>beach river lake 0.3</BIOMESANYACCEPTABLE>
-            <SPECIALCASES>day nigh</SPECIALCASES>
+            <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="65" def="65" hp="90" spatk="40" spd="15" spdef="40"/>
             <EVYIELD hp="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>

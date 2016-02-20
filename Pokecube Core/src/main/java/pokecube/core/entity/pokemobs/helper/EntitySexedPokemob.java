@@ -419,7 +419,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         {
             if (evt.phase == Phase.START)
             {
-                pokemob.mate(male);
+                if (pokemob != null && male != null) pokemob.mate(male);
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }

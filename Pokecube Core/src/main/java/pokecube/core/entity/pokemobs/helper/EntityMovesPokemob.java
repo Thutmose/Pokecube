@@ -386,9 +386,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
         this.updateStatusEffect();
         this.updateOngoingMoves();
-        if (moveInfo.ability != null)
+        if (getAbility() != null)
         {
-            moveInfo.ability.onUpdate(this);
+            getAbility().onUpdate(this);
         }
         if (!this.isDead && getHeldItem() != null && getHeldItem().getItem() instanceof ItemPokemobUseable)
         {
@@ -765,9 +765,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             moveInfo.substituteHP = getMaxHealth() / 4;
         }
 
-        if (moveInfo.ability != null)
+        if (getAbility() != null)
         {
-            moveInfo.ability.onMoveUse(this, move);
+            getAbility().onMoveUse(this, move);
         }
 
         if (attack.getName().equals(MOVE_FALSESWIPE))
@@ -997,8 +997,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void writeSpawnData(ByteBuf data)
     {
-        int abilityNumber = getMoveStats().ability == null ? -1
-                : AbilityManager.getIdForAbility(getMoveStats().ability);
+        int abilityNumber = getAbility() == null ? -1 : AbilityManager.getIdForAbility(getAbility());
+        System.out.println("Writing "+abilityNumber+" for "+getAbility()+" "+ability+" "+getPokemonAIState(MEGAFORME));
         data.writeInt(abilityNumber);
         super.writeSpawnData(data);
     }
@@ -1008,7 +1008,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public void readSpawnData(ByteBuf data)
     {
         int abilityNumber = data.readInt();
-        moveInfo.ability = AbilityManager.getAbility(abilityNumber, this);
+        setAbility(AbilityManager.getAbility(abilityNumber, this));
         super.readSpawnData(data);
     }
 

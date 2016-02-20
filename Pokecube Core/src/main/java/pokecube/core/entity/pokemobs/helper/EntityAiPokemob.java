@@ -536,9 +536,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             dataWatcher.updateObject(ATTACKTARGETIDDW, Integer.valueOf(-1));
         }
-        if (entity != getAttackTarget() && getMoveStats().ability != null)
+        if (entity != getAttackTarget() && getAbility() != null)
         {
-            getMoveStats().ability.onAgress(this, entity);
+            getAbility().onAgress(this, entity);
         }
         super.setAttackTarget(entity);
     }
@@ -912,9 +912,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         PokecubeSerializer.getInstance().removePokemob(this);
         PokemobAIThread.removeEntity(this);
-        if (getMoveStats().ability != null)
+        if (getAbility() != null)
         {
-            getMoveStats().ability.destroy();
+            getAbility().destroy();
         }
         if (currentTerrain != null)
         {

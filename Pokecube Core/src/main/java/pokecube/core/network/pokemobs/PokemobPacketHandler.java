@@ -329,6 +329,7 @@ public class PokemobPacketHandler
                             }
                             else
                             {
+                                pokemob.setPokemonAIState(IPokemob.MEGAFORME, true);
                                 pokemob.megaEvolve(forme);
                                 String mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.success", old,
                                         megaEntry.getTranslatedName());

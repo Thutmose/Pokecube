@@ -37,7 +37,7 @@ public class Trace extends Ability
         if (traced != null) traced.onAgress(mob, target);
         else if (target instanceof IPokemob)
         {
-            Ability ability = ((IPokemob) target).getMoveStats().ability;
+            Ability ability = ((IPokemob) target).getAbility();
             if (ability != null)
             {
                 traced = AbilityManager.makeAbility(ability.getClass(), mob);

@@ -154,5 +154,7 @@ public interface IMoveConstants extends IMoveNames
     static final int EVOLVING       = 1 << 25;
     /** is the pokemob sheared */
     static final int SHEARED        = 1 << 26;
+    /** is the pokemob megaevolved */
+    static final int MEGAFORME      = 1 << 27;
 
 }

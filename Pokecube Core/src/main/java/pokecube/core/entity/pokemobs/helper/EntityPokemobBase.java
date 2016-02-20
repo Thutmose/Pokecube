@@ -102,8 +102,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             if (abilityNumber != 0) abilityNumber = 0;
             else abilityNumber = 1;
         }
-        getMoveStats().ability = getPokedexEntry().getAbility(abilityNumber);
-        if (getMoveStats().ability != null) getMoveStats().ability.init(this);
+        setAbility(getPokedexEntry().getAbility(abilityNumber));
+        if (getAbility() != null) getAbility().init(this);
 
         this.scale = 1 + scaleFactor * (float) (random).nextGaussian();
         setSize(scale);

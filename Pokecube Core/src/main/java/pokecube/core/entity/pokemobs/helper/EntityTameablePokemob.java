@@ -595,6 +595,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
             if (getHealth() > 0 && evtrec.isCanceled()) { return; }
 
             Entity owner = getPokemonOwner();
+            this.setPokemonAIState(MEGAFORME, false);
 
             if (getPokedexEntry().getName().toLowerCase().contains(" mega"))
             {

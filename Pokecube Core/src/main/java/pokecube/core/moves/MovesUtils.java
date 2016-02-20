@@ -564,9 +564,9 @@ public class MovesUtils implements IMoveConstants
         if (attacked instanceof IPokemob)
         {
             IPokemob mob = (IPokemob) attacked;
-            if (mob.getMoveStats().ability != null)
+            if (mob.getAbility() != null)
             {
-                finalAttackStrength = mob.getMoveStats().ability.beforeDamage(mob, packet, finalAttackStrength);
+                finalAttackStrength = mob.getAbility().beforeDamage(mob, packet, finalAttackStrength);
             }
         }
 

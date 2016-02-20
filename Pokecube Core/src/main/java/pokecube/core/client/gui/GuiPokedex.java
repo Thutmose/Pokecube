@@ -1028,7 +1028,7 @@ public class GuiPokedex extends GuiScreen
         }
         if (pokemob != null)
         {
-            Ability ability = pokemob.getMoveStats().ability;
+            Ability ability = pokemob.getAbility();
             if (ability != null)
             {
                 drawString(fontRendererObj, ability.getName(), xOffset + 14, yOffset + 99, 0xFFFFFF);

@@ -80,7 +80,7 @@ public class AbilityManager
 
     public static boolean hasAbility(String abilityName, IPokemob pokemob)
     {
-        Ability ability = pokemob.getMoveStats().ability;
+        Ability ability = pokemob.getAbility();
         if (ability == null) { return false; }
         return ability.toString().equalsIgnoreCase(abilityName.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""));
     }

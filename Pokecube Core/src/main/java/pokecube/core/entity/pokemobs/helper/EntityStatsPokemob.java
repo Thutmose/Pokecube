@@ -27,6 +27,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.KillEvent;
@@ -45,7 +46,7 @@ import pokecube.core.utils.Tools;
 /** @author Manchou */
 public abstract class EntityStatsPokemob extends EntityTameablePokemob implements IEntityAdditionalSpawnData
 {
-    /** @param par1World */
+    protected Ability ability;
 
     double moveSpeed;
 
@@ -93,7 +94,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             setIVs(new byte[] { 31, 31, 31, 31, 31, 31 });
         }
-        if (nb == 132 && worldObj!=null && !worldObj.isRemote)
+        if (nb == 132 && worldObj != null && !worldObj.isRemote)
         {
             boolean glitch = Math.random() > 0.95;
             getEntityData().setBoolean("dittotag", glitch);
@@ -147,7 +148,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         nbttagcompound.setBoolean("shiny", shiny);
         nbttagcompound.setByte("nature", (byte) nature.ordinal());
         nbttagcompound.setInteger("happiness", bonusHappiness);
-        if (getMoveStats().ability != null) nbttagcompound.setString("ability", getMoveStats().ability.toString());
+        if (ability != null) nbttagcompound.setString("ability", ability.toString());
         nbttagcompound.setBoolean("isAncient", isAncient);
         nbttagcompound.setBoolean("wasShadow", wasShadow);
         nbttagcompound.setString("forme", forme);
@@ -205,13 +206,13 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
         shiny = nbttagcompound.getBoolean("shiny");
         addHappiness(nbttagcompound.getInteger("happiness"));
-        if (getMoveStats().ability != null) getMoveStats().ability.destroy();
+        if (getAbility() != null) getAbility().destroy();
         if (nbttagcompound.hasKey("ability", 8))
-            getMoveStats().ability = AbilityManager.getAbility(nbttagcompound.getString("ability"));
+            setAbility(AbilityManager.getAbility(nbttagcompound.getString("ability")));
         else if (nbttagcompound.hasKey("ability", 3))
-            getMoveStats().ability = getPokedexEntry().getAbility(nbttagcompound.getInteger("ability"));
+            setAbility(getPokedexEntry().getAbility(nbttagcompound.getInteger("ability")));
 
-        if (getMoveStats().ability == null)
+        if (ability == null)
         {
             Random random = new Random();
             int abilityNumber = random.nextInt(100) % 2;
@@ -220,9 +221,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 if (abilityNumber != 0) abilityNumber = 0;
                 else abilityNumber = 1;
             }
-            getMoveStats().ability = getPokedexEntry().getAbility(abilityNumber);
+            setAbility(getPokedexEntry().getAbility(abilityNumber));
         }
-        if (getMoveStats().ability != null) getMoveStats().ability.init(this);
+        if (ability != null) ability.init(this);
 
         nature = Nature.values()[nbttagcompound.getByte("nature")];
         forme = nbttagcompound.getString("forme");
@@ -376,7 +377,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void setRGBA(int... colours)
     {
-        for(int i = 0; i<colours.length && i < rgba.length; i++)
+        for (int i = 0; i < colours.length && i < rgba.length; i++)
         {
             rgba[i] = colours[i];
         }
@@ -509,11 +510,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             return "Ancient " + Database.getEntry(getPokedexEntry().getBaseName()).getTranslatedName();
         else if (getPokemonNickname() == null || getPokemonNickname().isEmpty())
         {
-            // if(!getPokedexEntry().getBaseName().equals(getPokedexEntry().getName()))
-            // {
-            // return
-            // Database.getEntry(getPokedexEntry().getBaseName()).getTranslatedName();
-            // }
             return getPokedexEntry().getTranslatedName();
         }
         else
@@ -994,5 +990,18 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         }
 
         return super.isEntityInvulnerable(source);
+    }
+
+    @Override
+    public Ability getAbility()
+    {
+        if (getPokemonAIState(MEGAFORME)) return getPokedexEntry().getAbility(0);
+        return ability;
+    }
+
+    @Override
+    public void setAbility(Ability ability)
+    {
+        this.ability = ability;
     }
 }

@@ -100,9 +100,9 @@ public class TileEntityAFA extends TileEntityOwnable
             ability = null;
         }
         pokemob = PokecubeManager.itemToPokemob(inventory[0], getWorld());
-        if (pokemob != null && pokemob.getMoveStats().ability != null)
+        if (pokemob != null && pokemob.getAbility() != null)
         {
-            ability = pokemob.getMoveStats().ability;
+            ability = pokemob.getAbility();
             ability.destroy();
             ((Entity) pokemob).setPosition(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
             ability.init(pokemob, distance);
@@ -356,7 +356,7 @@ public class TileEntityAFA extends TileEntityOwnable
         if (!ability.isEmpty())
         {
             Ability abil = AbilityManager.getAbility(ability);
-            pokemob.getMoveStats().ability = abil;
+            pokemob.setAbility(abil);
         }
         byte[] rgbaBytes = new byte[4];
         // TODO remove the legacy colour support eventually.

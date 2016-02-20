@@ -203,6 +203,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             ((IPokemob) evolution).changeForme(forme);
             worldObj.spawnEntityInWorld(evolution);
             ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
+            if(getPokemonAIState(MEGAFORME))
+                ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
             this.setDead();
             this.setPokemonOwner(null);
         }

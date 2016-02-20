@@ -563,6 +563,10 @@ public interface IPokemob extends IMoveConstants
      * 
      * @return */
     void setSpecialInfo(int info);
+    
+    Ability getAbility();
+    
+    void setAbility(Ability ability);
 
     public static enum HappinessType
     {
@@ -718,8 +722,6 @@ public interface IPokemob extends IMoveConstants
         public boolean biding = false;
 
         public float substituteHP = 0;
-
-        public Ability                        ability;
         /** Moves which have on-going effects, like leech seed, firespin, bind,
          * etc */
         public HashMap<Move_Ongoing, Integer> ongoingEffects = new HashMap<Move_Ongoing, Integer>();

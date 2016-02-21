@@ -132,7 +132,7 @@ public class JEICompat implements IModPlugin
     public static List<Rectangle> getPCModuleAreas(GuiPC gui)
     {
         List<Rectangle> retList = Lists.newArrayList();
-        retList.add(new Rectangle(gui.guiLeft, gui.guiTop, gui.xSize + 40, 53));
+        retList.add(new Rectangle(gui.guiLeft, gui.guiTop, gui.xSize + 50, 50));
         return retList;
     }
 

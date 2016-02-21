@@ -998,7 +998,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public void writeSpawnData(ByteBuf data)
     {
         int abilityNumber = getAbility() == null ? -1 : AbilityManager.getIdForAbility(getAbility());
-        System.out.println("Writing "+abilityNumber+" for "+getAbility()+" "+ability+" "+getPokemonAIState(MEGAFORME));
         data.writeInt(abilityNumber);
         super.writeSpawnData(data);
     }

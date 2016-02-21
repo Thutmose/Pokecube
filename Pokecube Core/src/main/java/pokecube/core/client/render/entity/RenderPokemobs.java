@@ -3,16 +3,21 @@ package pokecube.core.client.render.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.vecmath.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import thut.api.maths.Vector3;
 
 @SuppressWarnings("rawtypes")
 public class RenderPokemobs extends RenderPokemob
@@ -43,7 +48,6 @@ public class RenderPokemobs extends RenderPokemob
         {
             IPokemob mob = (IPokemob) entity;
             int nb = mob.getPokedexNb();
-
             if (!PokecubeMod.registered.get(nb))
             {
                 System.err.println("attempting to render an un-registed pokemon " + entity);
@@ -53,10 +57,25 @@ public class RenderPokemobs extends RenderPokemob
             {
                 mob = (IPokemob) mob.getTransformedTo();
             }
+
+            GlStateManager.pushMatrix();
+            // Handle these two via the RenderHeldPokemobs
             if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IPokemob.SHOULDER)
                     && ((Entity) mob).ridingEntity != null)
             {
+//                entity.rotationYaw = player.rotationYaw;
+////                GlStateManager.rotate(-player.rotationYaw/2, 0, 1, 0);
+//                GlStateManager.translate(0, player.height - 0.2, 0);
+//                Vector3f vec = new Vector3f();
+                GlStateManager.popMatrix();
+                return;
             }
+             if(mob.getPokemonAIState(IPokemob.HELD))
+             {
+
+                 GlStateManager.popMatrix();
+                 return;
+             }
 
             PokedexEntry entry = mob.getPokedexEntry();
             this.scale = (entry.height * mob.getSize());
@@ -68,13 +87,18 @@ public class RenderPokemobs extends RenderPokemob
             {
                 String nbm = entry.getName() + entry.getModId();
                 setModel(nbm);
-                if (this.mainModel == null) { return; }
+                if (this.mainModel == null)
+                {
+                    GlStateManager.popMatrix();
+                    return;
+                }
                 super.doRender(entity, x, y, z, par8, par9);
             }
             else
             {
                 render.doRender(entity, x, y, z, par8, par9);
             }
+            GlStateManager.popMatrix();
         }
     }
 
@@ -107,8 +131,7 @@ public class RenderPokemobs extends RenderPokemob
             if (num == 132)
             {
                 if (((EntityLiving) mob).getEntityData()
-                        .getBoolean("dittotag")) 
-                { return super.getPokemobTexture(mob); }
+                        .getBoolean("dittotag")) { return super.getPokemobTexture(mob); }
             }
             mob = (IPokemob) mob.getTransformedTo();
         }

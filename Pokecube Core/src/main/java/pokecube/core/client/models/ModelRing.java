@@ -1,4 +1,4 @@
-package pokecube.adventures.client.models.items;
+package pokecube.core.client.models;
 
 import org.lwjgl.opengl.GL11;
 

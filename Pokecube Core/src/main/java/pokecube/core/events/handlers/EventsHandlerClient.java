@@ -2,9 +2,12 @@ package pokecube.core.events.handlers;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Sets;
 
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
@@ -14,6 +17,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,18 +31,19 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiTeleport;
+import pokecube.core.client.render.entity.RenderHeldPokemobs;
+import pokecube.core.client.render.entity.RingRenderer;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -57,22 +62,19 @@ import thut.api.terrain.TerrainSegment;
 @SideOnly(Side.CLIENT)
 public class EventsHandlerClient
 {
-    /** Rain X coords */
-    float[] rainXCoords;
-    /** Rain Y coords */
-    float[] rainYCoords;
+    private Set<RenderPlayer> addedLayers = Sets.newHashSet();
 
     public EventsHandlerClient()
     {
     }
 
-    @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void ClientTick(ClientTickEvent evt)
+    public void onPlayerRender(RenderPlayerEvent.Post event)
     {
-        if (evt.phase == Phase.END)
-        {
-        }
+        if (addedLayers.contains(event.renderer)) { return; }
+        event.renderer.addLayer(new RingRenderer(event.renderer));
+        event.renderer.addLayer(new RenderHeldPokemobs(event.renderer));
+        addedLayers.add(event.renderer);
     }
 
     @SideOnly(Side.CLIENT)
@@ -244,13 +246,6 @@ public class EventsHandlerClient
                 GuiContainer gui = (GuiContainer) event.gui;
                 if (gui.mc.thePlayer == null || !GuiScreen.isAltKeyDown()) { return; }
 
-                if (rainXCoords == null)
-                {
-                    rainXCoords = new float[] { 0 };
-                }
-
-                if (rainXCoords[0] == event.renderPartialTicks) return;
-                rainXCoords[0] = event.renderPartialTicks;
                 List<Slot> slots = gui.inventorySlots.inventorySlots;
                 int w = gui.width;
                 int h = gui.height;

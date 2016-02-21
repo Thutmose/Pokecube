@@ -33,7 +33,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.client.ClientProxy;
 import pokecube.adventures.client.render.item.BagRenderer;
-import pokecube.adventures.client.render.item.RingRenderer;
 import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.bags.ItemBag;
@@ -65,7 +64,6 @@ public class RenderHandler
     public void onPlayerRender(RenderPlayerEvent.Post event)
     {
         if (addedLayers.contains(event.renderer)) { return; }
-        event.renderer.addLayer(new RingRenderer(event.renderer));
         event.renderer.addLayer(new BagRenderer(event.renderer));
         addedLayers.add(event.renderer);
     }

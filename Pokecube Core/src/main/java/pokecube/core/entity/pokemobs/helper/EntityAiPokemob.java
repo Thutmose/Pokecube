@@ -246,13 +246,29 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         PokedexEntry entry = getPokedexEntry();
 
-        if (getAIState(HELD, state) && ridingEntity == null)
+        if (getAIState(HELD, state))
         {
-            setPokemonAIState(HELD, false);
+            if (ridingEntity == null
+                    || (ridingEntity instanceof EntityPlayer && ((EntityPlayer) ridingEntity).getHeldItem() != null))
+            {
+                setPokemonAIState(HELD, false);
+                if (ridingEntity != null)
+                {
+                    Entity entity = ridingEntity;
+                    this.mountEntity(null);
+                    this.dismountEntity(entity);
+                }
+            }
         }
-        if (getAIState(SHOULDER, state) && ridingEntity == null)
+        if (getAIState(SHOULDER, state) && (ridingEntity == null || !getAIState(SITTING, state)))
         {
             setPokemonAIState(SHOULDER, false);
+            if (ridingEntity != null)
+            {
+                Entity entity = ridingEntity;
+                this.mountEntity(null);
+                this.dismountEntity(entity);
+            }
         }
         if (getAIState(GUARDING, state) && getAIState(SITTING, state))
         {

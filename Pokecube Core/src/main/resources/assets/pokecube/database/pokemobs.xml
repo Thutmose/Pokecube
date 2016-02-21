@@ -106,6 +106,7 @@
             <BASESTATS atk="100" def="123" hp="80" spatk="122" spd="80" spdef="120"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Grass" type2="Poison"/>
+            <ABILITY normal="Thick Fat"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Charmander" number="4">
@@ -333,6 +334,7 @@
             <BASESTATS atk="103" def="120" hp="79" spatk="135" spd="78" spdef="115"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Water"/>
+            <ABILITY normal="Mega Launcher"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Caterpie" number="10">
@@ -511,7 +513,7 @@
             <BASESTATS atk="150" def="40" hp="65" spatk="15" spd="80" spdef="145"/>
             <SIZES height="1.4" length="1.4" width="1.4"/>
             <MASSKG>40.5</MASSKG>
-            <ABILITY normal="AdaptABILITY"/>
+            <ABILITY normal="Adapatability"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Pidgey" number="16">
@@ -2143,6 +2145,7 @@
             <BASESTATS atk="50" def="65" hp="55" spatk="175" spd="150" spdef="95"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Psychic"/>
+            <ABILITY normal="Trace"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Machop" number="66">
@@ -3124,6 +3127,7 @@
             <BASESTATS atk="65" def="80" hp="60" spatk="170" spd="130" spdef="95"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Ghost" type2="Poison"/>
+            <ABILITY normal="Shadow Tag"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Onix" number="95">
@@ -3823,6 +3827,7 @@
             <BASESTATS atk="125" def="100" hp="105" spatk="60" spd="100" spdef="100"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Normal"/>
+            <ABILITY normal="Parental Bond"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Horsea" number="116">
@@ -4223,6 +4228,7 @@
             <BASESTATS atk="155" def="120" hp="65" spatk="65" spd="105" spdef="90"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Bug" type2="Flying"/>
+            <ABILITY normal="Aerilate"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Tauros" number="128">
@@ -4326,6 +4332,7 @@
             <BASESTATS atk="155" def="109" hp="95" spatk="70" spd="81" spdef="130"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Water" type2="Dark"/>
+            <ABILITY normal="Mold Breaker"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Lapras" number="131">
@@ -4708,6 +4715,7 @@
             <BASESTATS atk="135" def="85" hp="80" spatk="70" spd="150" spdef="95"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Rock" type2="Flying"/>
+            <ABILITY normal="Tough Claws"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Snorlax" number="143">
@@ -5983,6 +5991,7 @@
             <BASESTATS atk="95" def="105" hp="90" spatk="165" spd="45" spdef="110"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Electric" type2="Dragon"/>
+            <ABILITY normal="Mold Breaker"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Bellossom" number="182">
@@ -6985,6 +6994,7 @@
             <BASESTATS atk="150" def="140" hp="70" spatk="65" spd="75" spdef="100"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Bug" type2="Steel"/>
+            <ABILITY normal="Technician"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Shuckle" number="213">
@@ -7065,6 +7075,7 @@
             <BASESTATS atk="185" def="115" hp="80" spatk="40" spd="75" spdef="105"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Bug" type2="Fighting"/>
+            <ABILITY normal="Skill Link"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Sneasel" number="215">
@@ -7558,6 +7569,7 @@
             <BASESTATS atk="90" def="90" hp="75" spatk="140" spd="115" spdef="90"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Dark" type2="Fire"/>
+            <ABILITY normal="Solar Power"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Kingdra" number="230">
@@ -8151,6 +8163,7 @@
             <BASESTATS atk="164" def="150" hp="100" spatk="95" spd="71" spdef="120"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Rock" type2="Dark"/>
+            <ABILITY normal="Sand Stream"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Lugia" number="249">
@@ -8359,6 +8372,7 @@
             <BASESTATS atk="85" def="65" hp="70" spatk="105" spd="120" spdef="85"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Grass"/>
+            <ABILITY normal="Lightning Rod"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Torchic" number="255">
@@ -8464,6 +8478,7 @@
             <BASESTATS atk="160" def="80" hp="80" spatk="130" spd="100" spdef="80"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Fire" type2="Fighting"/>
+            <ABILITY normal="Speed Boost"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Mudkip" number="258">
@@ -8564,6 +8579,7 @@
             <BASESTATS atk="110" def="90" hp="100" spatk="85" spd="60" spdef="90"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Water" type2="Ground"/>
+            <ABILITY normal="Swift Swim"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Poochyena" number="261">
@@ -9866,6 +9882,7 @@
             <BASESTATS atk="75" def="75" hp="50" spatk="65" spd="50" spdef="65"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Dark" type2="Ghost"/>
+            <ABILITY normal="Magic Bounce"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Mawile" number="303">
@@ -9908,6 +9925,7 @@
             <BASESTATS atk="105" def="125" hp="50" spatk="55" spd="50" spdef="95"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Steel" type2="Fairy"/>
+            <ABILITY normal="Huge Power"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Aron" number="304">
@@ -10022,6 +10040,7 @@
             <BASESTATS atk="140" def="230" hp="70" spatk="60" spd="50" spdef="80"/>
             <SIZES height="2.3" length="1.6" width="1.6"/>
             <TYPE type1="Steel"/>
+            <ABILITY normal="Filter"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Meditite" number="307">
@@ -10095,6 +10114,7 @@
             <BASESTATS atk="100" def="85" hp="60" spatk="80" spd="100" spdef="85"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Fighting" type2="Psychic"/>
+            <ABILITY normal="Pure Power"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Electrike" number="309">
@@ -10170,6 +10190,7 @@
             <BASESTATS atk="75" def="80" hp="70" spatk="135" spd="135" spdef="80"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Electric"/>
+            <ABILITY normal="Intimidate"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Plusle" number="311">
@@ -10981,6 +11002,7 @@
             <BASESTATS atk="70" def="90" hp="75" spatk="70" spd="80" spdef="105"/>
             <SIZES length="1.2" width="1.2"/>
             <TYPE type1="Dragon" type2="Flying"/>
+            <ABILITY normal="Pixilate"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Zangoose" number="335">
@@ -11613,6 +11635,7 @@
             <BASESTATS atk="165" def="75" hp="64" spatk="93" spd="75" spdef="83"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Ghost"/>
+            <ABILITY normal="Prankster"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Duskull" number="355">
@@ -11787,6 +11810,7 @@
             <BASESTATS atk="150" def="60" hp="65" spatk="115" spd="115" spdef="60"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Dark"/>
+            <ABILITY normal="Magic  Bounce"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Wynaut" number="360">
@@ -12222,6 +12246,7 @@
             <BASESTATS atk="145" def="130" hp="95" spatk="120" spd="120" spdef="90"/>
             <SIZES height="1.8" length="2.0" width="1.8"/>
             <TYPE type1="Dragon" type2="Flying"/>
+            <ABILITY normal="Aerilate"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Beldum" number="374">
@@ -12333,6 +12358,7 @@
             <BASESTATS atk="135" def="130" hp="80" spatk="95" spd="70" spdef="90"/>
             <SIZES length="2.0" width="2.0"/>
             <TYPE type1="Steel" type2="Psychic"/>
+            <ABILITY normal="Tough Claws"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Regirock" number="377">
@@ -12548,6 +12574,7 @@
             <BASESTATS atk="100" def="90" hp="100" spatk="150" spd="90" spdef="140"/>
             <SIZES height="2.0" length="3.9" width="3.9"/>
             <TYPE type1="Water"/>
+            <ABILITY normal="Primordial Sea"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Groudon" number="383">
@@ -12594,6 +12621,7 @@
             <BASESTATS atk="150" def="140" hp="100" spatk="100" spd="90" spdef="90"/>
             <SIZES height="3.7" length="2.2" width="2.2"/>
             <TYPE type1="Ground"/>
+            <ABILITY normal="Desolate Land"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Rayquaza" number="384">
@@ -14044,6 +14072,7 @@
             <BASESTATS atk="76" def="84" hp="65" spatk="54" spd="105" spdef="96"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Normal"/>
+            <ABILITY normal="Scrappy"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Mismagius" number="429">
@@ -14563,6 +14592,7 @@
             <BASESTATS atk="170" def="115" hp="108" spatk="120" spd="92" spdef="95"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Dragon" type2="Ground"/>
+            <ABILITY normal="Sand Force"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Munchlax" number="446">
@@ -14665,6 +14695,7 @@
             <BASESTATS atk="145" def="88" hp="70" spatk="140" spd="112" spdef="70"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Fighting" type2="Steel"/>
+            <ABILITY normal="Adaptability"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Hippopotas" number="449">
@@ -15054,6 +15085,7 @@
             <BASESTATS atk="132" def="105" hp="90" spatk="132" spd="30" spdef="105"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Grass" type2="Ice"/>
+            <ABILITY normal="Snow Warning"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Weavile" number="461">
@@ -15519,6 +15551,7 @@
             <BASESTATS atk="165" def="95" hp="68" spatk="65" spd="110" spdef="115"/>
             <SIZES length="0.6" width="0.6"/>
             <TYPE type1="Psychic" type2="Fighting"/>
+            <ABILITY normal="Inner Focus"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Probopass" number="476">
@@ -17342,6 +17375,7 @@
             <BASESTATS atk="60" def="86" hp="103" spatk="60" spd="50" spdef="86"/>
             <SIZES length="1.0" width="1.0"/>
             <TYPE type1="Normal"/>
+            <ABILITY normal="Healer"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Timburr" number="532">
@@ -23346,6 +23380,83 @@
             <TYPE type1="Rock" type2="Fairy"/>
             <COMMONDROP>diamond</COMMONDROP>
             <FOODDROP>nether_star</FOODDROP>
+            <HELDITEM>2:diamond</HELDITEM>
+            <BIOMESANYACCEPTABLE>cave 0.0001:1:1</BIOMESANYACCEPTABLE>
         </STATS>
+    </Pokemon>
+    <Pokemon name="Diancie Mega" number="719">
+        <STATS>
+            <ABILITY normal="Magic Bounce"/>
+            <BASESTATS atk="160" def="110" hp="50" spatk="160" spd="110" spdef="110"/>
+            <MASSKG>27.8</MASSKG>
+            <SIZES height="1.1"/>
+            <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
+            <CAPTURERATE>3</CAPTURERATE>
+            <GENDERRATIO>255</GENDERRATIO>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Hoopa Confined" number="720">
+        <STATS>
+            <MASSKG>9</MASSKG>
+            <SIZES height="0.5"/>
+            <EXPYIELD>270</EXPYIELD>
+            <TYPE type1="Psychic" type2="Ghost"/>
+            <ABILITY normal="Magician"/>
+            <BASESTATS atk="110" def="60" hp="80" spatk="150" spd="70" spdef="130"/>
+            <EVYIELD spatk="3"/>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <GENDERRATIO>255</GENDERRATIO>
+            <CAPTURERATE>3</CAPTURERATE>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_1="HYPERSPACEHOLE, TRICK, DESTINYBOND, ALLYSWITCH, CONFUSION"
+                lvl_10="MAGICCOAT" lvl_15="LIGHTSCREEN" lvl_19="PSYBEAM"
+                lvl_25="SKILLSWAP" lvl_29="POWERSPLIT, GUARDSPLIT"
+                lvl_35="PHANTOMFORCE" lvl_46="ZENHEADBUTT"
+                lvl_50="WONDERROOM, TRICKROOM" lvl_55="SHADOWBALL"
+                lvl_6="ASTONISH" lvl_68="NASTYPLOT" lvl_75="PSYCHIC" lvl_85="HYPERSPACEHOLE"/>
+            <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, THUNDERBOLT, RETURN, PSYCHIC, SHADOWBALL, BRICKBREAK, DOUBLETEAM, REFLECT, SANDSTORM, TORMENT, FACADE, REST, THIEF, ROUND, FOCUSBLAST, ENERGYBALL, FLING, CHARGEBEAM, QUASH, EMBARGO, GIGAIMPACT, FLASH, THUNDERWAVE, PSYCHUP, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, SECRETPOWER, POWERUPPUNCH, CONFIDE, BLOCK, COVET, DRAINPUNCH, DUALCHOP, FIREPUNCH, FOCUSPUNCH, FOULPLAY, GUNKSHOT, ICEPUNCH, KNOCKOFF, LASTRESORT, MAGICCOAT, MAGICROOM, RECYCLE, ROLEPLAY, SHOCKWAVE, SIGNALBEAM, SKILLSWAP, SNATCH, SNORE, THUNDERPUNCH, TRICK, UPROAR, WONDERROOM, ZENHEADBUTT"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Hoopa Unbound" number="720">
+        <STATS>
+            <TYPE type1="Psychic" type2="Dark"/>
+            <BASESTATS atk="160" def="60" hp="80" spatk="170" spd="80" spdef="130"/>
+            <MASSKG>490</MASSKG>
+            <GENDERRATIO>255</GENDERRATIO>
+            <CAPTURERATE>3</CAPTURERATE>
+        </STATS>
+        <MOVES>
+            <LVLUP
+                lvl_1="HYPERSPACEFURY, TRICK, DESTINYBOND, ALLYSWITCH, CONFUSION"
+                lvl_10="MAGICCOAT" lvl_15="LIGHTSCREEN" lvl_19="PSYBEAM"
+                lvl_25="SKILLSWAP" lvl_29="POWERSPLIT, GUARDSPLIT"
+                lvl_46="KNOCKOFF" lvl_50="WONDERROOM, TRICKROOM"
+                lvl_55="DARKPULSE" lvl_6="ASTONISH" lvl_75="PSYCHIC" lvl_85="HYPERSPACEFURY"/>
+        </MOVES>
+    </Pokemon>
+    <Pokemon name="Volcanion" number="721">
+        <STATS>
+            <TYPE type1="Fire" type2="Water"/>
+            <SIZES height="1.7"/>
+            <MASSKG>195</MASSKG>
+            <GENDERRATIO>255</GENDERRATIO>
+            <CAPTURERATE>3</CAPTURERATE>
+            <ABILITY normal="Water Absorb"/>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <EXPYIELD>255</EXPYIELD>
+            <BASEFRIENDSHIP>100</BASEFRIENDSHIP>
+            <EVYIELD spatk="3"/>
+            <BASESTATS atk="110" def="120" hp="80" spatk="130" spd="70" spdef="90"/>
+        </STATS>
+        <MOVES>
+            <LVLUP lvl_1="STEAMERUPTION, FLAREBLITZ, TAKEDOWN"
+                lvl_11="HAZE" lvl_15="FLAMECHARGE" lvl_21="WATERPULSE"
+                lvl_28="STOMP" lvl_32="SCALD" lvl_40="WEATHERBALL"
+                lvl_46="BODYSLAM" lvl_50="HYDROPUMP" lvl_58="FLAREBLITZ"
+                lvl_65="OVERHEAT" lvl_76="EXPLOSION" lvl_8="MIST" lvl_85="STEAMERUPTION"/>
+            <MISC moves="ROAR, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, PROTECT, FRUSTRATION, SOLARBEAM, SMACKDOWN, EARTHQUAKE, RETURN, BRICKBREAK, DOUBLETEAM, SLUDGEWAVE, FLAMETHROWER, SLUDGEBOMB, SANDSTORM, FIREBLAST, FACADE, FLAMECHARGE, REST, ROUND, OVERHEAT, FOCUSBLAST, SCALD, FLING, INCINERATE, WILLOWISP, EXPLOSION, GIGAIMPACT, STONEEDGE, GYROBALL, BULLDOZE, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, FLASHCANNON, ROCKSMASH, SECRETPOWER, CONFIDE, CUT, STRENGTH, EARTHPOWER, HEATWAVE, SNORE, SUPERPOWER, WATERPULSE"/>
+        </MOVES>
     </Pokemon>
 </Document>

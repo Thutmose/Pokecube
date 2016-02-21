@@ -22046,7 +22046,7 @@
             <EVYIELD spd="2"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Psychic"/>
-            <ABILITY normal="Keen Eye, Infiltrator"/>
+            <ABILITY hidden="Prankster, Competitive" normal="Keen Eye, Infiltrator"/>
         </STATS>
         <MOVES>
             <LVLUP lvl_0="SCRATCH, LEER" lvl_13="LIGHTSCREEN"

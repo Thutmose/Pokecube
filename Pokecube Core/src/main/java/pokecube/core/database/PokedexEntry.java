@@ -43,59 +43,61 @@ public class PokedexEntry
 {
     // TODO write a way to load this from a single file, so I can have 1 file
     // per entry.
-    Random                     rand               = new Random();
-    protected int              pokedexNb;
-    protected String           name;
-    protected String           baseName;
-    protected PokeType         type1;
-    protected PokeType         type2;
+    Random                      rand               = new Random();
+    protected int               pokedexNb;
+    protected String            name;
+    protected String            baseName;
+    protected PokeType          type1;
+    protected PokeType          type2;
     /** The relation between xp and level */
-    protected int              evolutionMode      = 1;
+    protected int               evolutionMode      = 1;
     /** base xp given from defeating */
-    protected int              baseXP;
-    protected int              catchRate          = -1;
-    protected int              sexeRatio          = -1;
-    protected String           sound;
-    protected int[]            stats;
-    protected byte[]           evs;
+    protected int               baseXP;
+    protected int               catchRate          = -1;
+    protected int               sexeRatio          = -1;
+    protected String            sound;
+    protected int[]             stats;
+    protected byte[]            evs;
     /** Used to determine egg group */
-    public String[]            species;
+    public String[]             species;
     /** Inital list of species which are prey */
-    protected String[]         food;
+    protected String[]          food;
     /** Array used for animated or gender based textures. Index 0 is the male
      * textures, index 1 is the females */
-    public String[][]          textureDetails     = { { "" }, null };
+    public String[][]           textureDetails     = { { "" }, null };
     /** The abilities available to the pokedex entry. */
-    protected String[]         abilities          = { null, null, null };
+    protected ArrayList<String> abilities          = Lists.newArrayList();
+    /** The abilities available to the pokedex entry. */
+    protected ArrayList<String> abilitiesHidden    = Lists.newArrayList();
     /** Initial Happiness of the pokemob */
-    protected int              baseHappiness;
+    protected int               baseHappiness;
     /** Mod which owns the pokemob, used for texture location. */
-    private String             modId;
+    private String              modId;
     /** Movement type for this mob */
-    public PokecubeMod.Type    mobType            = null;
+    public PokecubeMod.Type     mobType            = null;
     /** If the above is floating, how high does it try to float */
-    public double              preferedHeight     = 1.5;
+    public double               preferedHeight     = 1.5;
     /** Offset between top of hitbox and where player sits */
-    public double              mountedOffset      = 1;
+    public double               mountedOffset      = 1;
     /** indicatees of the specified special texture exists. Index 4 is used for
      * if the mob can be dyed */
-    public boolean[]           hasSpecialTextures = { false, false, false, false, false };
+    public boolean[]            hasSpecialTextures = { false, false, false, false, false };
     /** Default value of specialInfo, used to determine default colour of
      * recolourable parts */
-    public int                 defaultSpecial     = 0;
+    public int                  defaultSpecial     = 0;
     /** Can it megaevolve */
-    public boolean             hasMegaForm        = false;
+    public boolean              hasMegaForm        = false;
     /** Materials which will hurt or make it despawn. */
-    public String[]            hatedMaterial;
+    public String[]             hatedMaterial;
     /** Particle Effects. */
-    public String[]            particleData;
-    public boolean             canSitShoulder     = false;
-    public boolean             shouldFly          = false;
-    public boolean             shouldDive         = false;
+    public String[]             particleData;
+    public boolean              canSitShoulder     = false;
+    public boolean              shouldFly          = false;
+    public boolean              shouldDive         = false;
     /** Mass of the pokemon in kg. */
-    public double              mass               = -1;
+    public double               mass               = -1;
     /** Will it protect others. */
-    public boolean             isSocial           = true;
+    public boolean              isSocial           = true;
     /** light,<br>
      * rock,<br>
      * power (near redstone blocks),<br>
@@ -103,9 +105,9 @@ public class PokedexEntry
      * never hungry,<br>
      * berries,<br>
      * water (filter feeds from water) */
-    public boolean[]           foods              = { false, false, false, false, false, true, false };
+    public boolean[]            foods              = { false, false, false, false, false, true, false };
     /** Times not included here the pokemob will go to sleep when idle. */
-    protected List<TimePeriod> activeTimes        = new ArrayList<TimePeriod>();
+    protected List<TimePeriod>  activeTimes        = new ArrayList<TimePeriod>();
 
     public boolean isStationary = false;
 
@@ -1012,8 +1014,18 @@ public class PokedexEntry
 
     public Ability getAbility(int number)
     {
-        if (number < 3) { return AbilityManager.getAbility(abilities[number]); }
+        if (number < 3) { return AbilityManager.getAbility(abilities.get(number)); }
         return null;
+    }
+
+    public Ability getHiddenAbility(IPokemob pokemob)
+    {
+        if (abilitiesHidden.isEmpty()) return null;
+        else if (abilitiesHidden.size() == 1) return AbilityManager.getAbility(abilitiesHidden.get(0));
+        else if (abilitiesHidden.size() == 1) return pokemob.getSexe() == IPokemob.MALE
+                ? AbilityManager.getAbility(abilitiesHidden.get(1)) : AbilityManager.getAbility(abilitiesHidden.get(1));
+        return null;
+
     }
 
     public static class EvolutionData

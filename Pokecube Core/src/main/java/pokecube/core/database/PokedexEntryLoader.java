@@ -348,14 +348,18 @@ public class PokedexEntryLoader
             node = (Element) list.item(0);
             if (node.hasAttribute("hidden"))
             {
-                entry.abilities[2] = node.getAttribute("hidden");
+                String[] vars = node.getAttribute("hidden").split(",");
+                for (int i = 0; i < vars.length; i++)
+                {
+                    entry.abilitiesHidden.add(vars[i].trim());
+                }
             }
             if (node.hasAttribute("normal"))
             {
                 String[] vars = node.getAttribute("normal").split(",");
-                for (int i = 0; i < Math.min(entry.abilities.length - 1, vars.length); i++)
+                for (int i = 0; i < vars.length; i++)
                 {
-                    entry.abilities[i] = vars[i].trim();
+                    entry.abilities.add(vars[i].trim());
                 }
             }
         }

@@ -2655,6 +2655,7 @@
             <MASSKG>120</MASSKG>
             <SIZES height="2.6" length="2.0" width="2.0"/>
             <TYPE type1="Water" type2="Psychic"/>
+            <ABILITY normal="Shell Armor"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Magnemite" number="81">
@@ -4417,7 +4418,7 @@
             <EVYIELD spdef="1"/>
             <SIZES height="0.8" length="0.8" width="0.8"/>
             <TYPE type1="Normal"/>
-            <ABILITY hidden="Anticipation" normal="Run Away, AdaptABILITY"/>
+            <ABILITY hidden="Anticipation" normal="Run Away, Adaptability"/>
         </STATS>
         <MOVES>
             <LVLUP lvl_0="HELPINGHAND, GROWL, TACKLE, TAILWHIP"
@@ -15498,7 +15499,7 @@
             <EVYIELD spatk="3"/>
             <SIZES height="0.9" length="0.9" width="0.9"/>
             <TYPE type1="Normal"/>
-            <ABILITY hidden="Analytic" normal="AdaptABILITY, Download"/>
+            <ABILITY hidden="Analytic" normal="Adaptability, Download"/>
         </STATS>
         <MOVES>
             <LVLUP
@@ -15959,7 +15960,7 @@
             <EVYIELD hp="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Ghost" type2="Dragon"/>
-            <ABILITY normal="Levitate"/>
+            <ABILITY hidden="Telepathy" normal="Pressure"/>
         </STATS>
         <MOVES>
             <LVLUP lvl_0="DRAGONBREATH, SCARYFACE" lvl_10="ANCIENTPOWER"
@@ -15980,6 +15981,7 @@
             <BASESTATS atk="120" def="100" hp="150" spatk="120" spd="90" spdef="100"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Ghost" type2="Dragon"/>
+            <ABILITY hidden="Telepathy" normal="Levitate"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Cresselia" number="488">
@@ -16121,6 +16123,7 @@
             <EVYIELD hp="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Grass"/>
+            <ABILITY normal="Natural Cure"/>
         </STATS>
         <MOVES>
             <LVLUP lvl_0="GROWTH" lvl_10="MAGICALLEAF"
@@ -16147,6 +16150,7 @@
             <EVYIELD spd="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Grass" type2="Flying"/>
+            <ABILITY normal="Serene Grace"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Arceus" number="493">
@@ -18135,6 +18139,7 @@
             <EVYIELD spatk="2"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Fire" type2="Psychic"/>
+            <ABILITY hidden="Zen Mode" normal="Sheer Force"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Maractus" number="556">
@@ -20801,6 +20806,7 @@
             <EVYIELD atk="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Flying"/>
+            <ABILITY hidden="Defiant" normal="Prankster"/>
         </STATS>
         <MOVES>
             <LVLUP
@@ -20827,6 +20833,7 @@
             <EVYIELD spd="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Flying"/>
+            <ABILITY hidden="Defiant" normal="Regenerator"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Thundurus Incarnate" number="642">
@@ -20846,6 +20853,7 @@
             <EVYIELD atk="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Electric" type2="Flying"/>
+            <ABILITY hidden="Defiant" normal="Prankster"/>
         </STATS>
         <MOVES>
             <LVLUP
@@ -20872,6 +20880,7 @@
             <EVYIELD spatk="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Electric" type2="Flying"/>
+            <ABILITY hidden="Defiant" normal="Volt Absorb"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Reshiram" number="643">
@@ -20951,6 +20960,7 @@
             <EVYIELD spatk="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Ground" type2="Flying"/>
+            <ABILITY normal="Sand Force"/>
         </STATS>
         <MOVES>
             <LVLUP
@@ -20977,6 +20987,7 @@
             <EVYIELD atk="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Ground" type2="Flying"/>
+            <ABILITY normal="Intimidate"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Kyurem" number="646">
@@ -20997,7 +21008,7 @@
             <EVYIELD atk="1" hp="1" spatk="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Dragon" type2="Ice"/>
-            <ABILITY normal="Turboblaze"/>
+            <ABILITY normal="Pressure"/>
         </STATS>
         <MOVES>
             <LVLUP lvl_0="ICYWIND, DRAGONRAGE" lvl_15="ANCIENTPOWER"
@@ -21022,6 +21033,7 @@
             <EVYIELD atk="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Dragon" type2="Ice"/>
+            <ABILITY normal="Teravolt"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Kyurem White" number="646">
@@ -21038,6 +21050,7 @@
             <EVYIELD spatk="3"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Dragon" type2="Ice"/>
+            <ABILITY normal="Turboblaze"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Keldeo" number="647">
@@ -21088,6 +21101,7 @@
             <EVYIELD spatk="1" spd="1" spdef="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Normal" type2="Psychic"/>
+            <ABILITY normal="Serene Grace"/>
         </STATS>
         <MOVES>
             <LVLUP lvl_0="ROUND" lvl_11="CONFUSION" lvl_16="SING"
@@ -21113,6 +21127,7 @@
             <EVYIELD atk="1" def="1" spd="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Normal" type2="Fighting"/>
+            <ABILITY normal="Serene Grace"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Genesect" number="649">
@@ -22031,6 +22046,7 @@
             <EVYIELD spd="2"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Psychic"/>
+            <ABILITY normal="Keen Eye, Infiltrator"/>
         </STATS>
         <MOVES>
             <LVLUP lvl_0="SCRATCH, LEER" lvl_13="LIGHTSCREEN"
@@ -22120,6 +22136,7 @@
             <EVYIELD def="2" spdef="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Steel" type2="Ghost"/>
+            <ABILITY normal="Stance Change"/>
         </STATS>
         <MOVES>
             <LVLUP lvl_0="FURYCUTTER, PURSUIT, AUTOTOMIZE, SHADOWSNEAK, SLASH, IRONDEFENSE, NIGHTSLASH, POWERTRICK, IRONHEAD, HEADSMASH, SWORDSDANCE, AERIALACE, KINGSSHIELD, SACREDSWORD"/>
@@ -22136,6 +22153,7 @@
             <BASESTATS atk="50" def="150" hp="60" spatk="50" spd="60" spdef="150"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Steel" type2="Ghost"/>
+            <ABILITY normal="Stance Change"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Spritzee" number="682">
@@ -23022,6 +23040,7 @@
             <EVYIELD def="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Ghost" type2="Grass"/>
+            <ABILITY hidden="Insomnia" normal="Pickup, Frisk"/>
         </STATS>
         <MOVES>
             <LVLUP lvl_0="TRICK, ASTONISH, CONFUSERAY"
@@ -23087,6 +23106,7 @@
             <EVYIELD def="2"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Ghost" type2="Grass"/>
+            <ABILITY hidden="Insomnia" normal="Pickup, Frisk"/>
         </STATS>
         <MOVES>
             <LVLUP
@@ -23426,6 +23446,7 @@
             <MASSKG>490</MASSKG>
             <GENDERRATIO>255</GENDERRATIO>
             <CAPTURERATE>3</CAPTURERATE>
+            <ABILITY normal="Magician"/>
         </STATS>
         <MOVES>
             <LVLUP

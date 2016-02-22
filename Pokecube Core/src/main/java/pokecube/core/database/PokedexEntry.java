@@ -1014,7 +1014,7 @@ public class PokedexEntry
 
     public Ability getAbility(int number)
     {
-        if (number < 3) { return AbilityManager.getAbility(abilities.get(number)); }
+        if (number < abilities.size()) { return AbilityManager.getAbility(abilities.get(number)); }
         return null;
     }
 

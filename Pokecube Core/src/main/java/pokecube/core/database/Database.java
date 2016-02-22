@@ -720,83 +720,13 @@ public class Database implements IMoveConstants
             move.statusChange = effect;
             move.statusChance = chance;
 
-            byte amount = 0;
-            int[] amounts = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-            String[] statEffects = s.get(10).trim().toLowerCase().split(";");
-            if (statEffects.length == 3)
-            {
-                String stat = statEffects[0];
-                effect = stat.equals("atk") ? ATTACK
-                        : stat.equals("def") ? DEFENSE
-                                : stat.equals("spd") ? VIT
-                                        : stat.equals("spatk") ? SPATACK
-                                                : stat.equals("spdef") ? SPDEFENSE
-                                                        : stat.equals("acc") ? ACCURACY
-                                                                : stat.equals("eva") ? EVASION : STATUS_NON;
-                if (stat.equalsIgnoreCase("all"))
-                {
-                    effect = ATTACK + DEFENSE + VIT + SPATACK + SPDEFENSE + ACCURACY + EVASION;
-                }
+            int[][] statmods = getModifiers(s.get(10).trim().toLowerCase(),
+                    (move.attackCategory & CATEGORY_SELF) > 0 || (move.attackCategory & CATEGORY_SELF_EFFECT) > 0);
 
-                amount = Byte.parseByte(statEffects[1]);
-                chance = Integer.parseInt(statEffects[2]);
-            }
-            else
-            {
-                effect = 0;
-                chance = 100;
-                for (int i = 0; i < statEffects.length; i++)
-                {
-                    String stat = statEffects[i];
-                    byte effec = stat.equals("atk") ? ATTACK
-                            : stat.equals("def") ? DEFENSE
-                                    : stat.equals("spd") ? VIT
-                                            : stat.equals("spatk") ? SPATACK
-                                                    : stat.equals("spdef") ? SPDEFENSE
-                                                            : stat.equals("acc") ? ACCURACY
-                                                                    : stat.equals("eva") ? EVASION : STATUS_NON;
-                    effect += effec;
-                    int j = (int) Math.round(Math.log(effec) / Math.log(2)) + 1;
-
-                    amounts[j] = Byte.parseByte(statEffects[i + 1]);
-
-                    i++;
-                }
-
-            }
-            if (amount != 0)
-            {
-                for (int i = 0; i < amounts.length; i++)
-                {
-                    amounts[i] = amount;
-                }
-            }
-            int[] modifiers = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-            int[] old = modifiers.clone();
-            modifiers[1] = (byte) Math.max(-6, Math.min(6, modifiers[1] + amounts[1] * (effect & 1)));
-            modifiers[2] = (byte) Math.max(-6, Math.min(6, modifiers[2] + amounts[2] * ((effect & 2) / 2)));
-            modifiers[3] = (byte) Math.max(-6, Math.min(6, modifiers[3] + amounts[3] * ((effect & 4) / 4)));
-            modifiers[4] = (byte) Math.max(-6, Math.min(6, modifiers[4] + amounts[4] * ((effect & 8) / 8)));
-            modifiers[5] = (byte) Math.max(-6, Math.min(6, modifiers[5] + amounts[5] * ((effect & 16) / 16)));
-            modifiers[6] = (byte) Math.max(-6, Math.min(6, modifiers[6] + amounts[6] * ((effect & 32) / 32)));
-            modifiers[7] = (byte) Math.max(-6, Math.min(6, modifiers[7] + amounts[7] * ((effect & 64) / 64)));
-            for (int i = 0; i < old.length; i++)
-            {
-                if (old[i] != modifiers[i])
-                {
-                    break;
-                }
-            }
-            if ((move.attackCategory & CATEGORY_SELF) > 0 || (move.attackCategory & CATEGORY_SELF_EFFECT) > 0)
-            {
-                move.attackerStatModification = modifiers.clone();
-                move.attackerStatModProb = chance;
-            }
-            else
-            {
-                move.attackedStatModification = modifiers.clone();
-                move.attackedStatModProb = chance;
-            }
+            move.attackerStatModification = statmods[2];
+            move.attackerStatModProb = statmods[3][0];
+            move.attackedStatModification = statmods[0];
+            move.attackedStatModProb = statmods[1][0];
 
             String[] changes = s.get(11).split(";");
             if (!changes[0].equals("none"))
@@ -828,11 +758,170 @@ public class Database implements IMoveConstants
                 move.selfDamageType = cond.contains("miss") ? MoveEntry.MISS
                         : cond.contains("hp") ? MoveEntry.RELATIVEHP : MoveEntry.DAMAGEDEALT;
             }
-
             String anim = s.get(20);
             move.animDefault = anim;
+        }
+    }
+
+    /** Index 1 = attacked modifiers, index 2 = attacked modifier chance.<br>
+     * Index 3 = attacker modifiers, index 4 = attacker modifier chance.<br>
+     * 
+     * @param input
+     * @return */
+    private static int[][] getModifiers(String input, boolean selfMove)
+    {
+        int[][] ret = new int[4][];
+
+        byte effect = 0;
+        byte amount = 0;
+        int chance = 100;
+        int[] amounts = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+        String[] stats = input.split("`");
+
+        String[] statEffects = stats[0].split(";");
+        if (statEffects.length == 3)
+        {
+            String stat = statEffects[0];
+            effect = stat.equals("atk") ? ATTACK
+                    : stat.equals("def") ? DEFENSE
+                            : stat.equals("spd") ? VIT
+                                    : stat.equals("spatk") ? SPATACK
+                                            : stat.equals("spdef") ? SPDEFENSE
+                                                    : stat.equals("acc") ? ACCURACY
+                                                            : stat.equals("eva") ? EVASION : STATUS_NON;
+            if (stat.equalsIgnoreCase("all"))
+            {
+                effect = ATTACK + DEFENSE + VIT + SPATACK + SPDEFENSE + ACCURACY + EVASION;
+            }
+
+            amount = Byte.parseByte(statEffects[1]);
+            chance = Integer.parseInt(statEffects[2]);
+        }
+        else
+        {
+            effect = 0;
+            chance = 100;
+            for (int i = 0; i < statEffects.length; i++)
+            {
+                String stat = statEffects[i];
+                byte effec = stat.equals("atk") ? ATTACK
+                        : stat.equals("def") ? DEFENSE
+                                : stat.equals("spd") ? VIT
+                                        : stat.equals("spatk") ? SPATACK
+                                                : stat.equals("spdef") ? SPDEFENSE
+                                                        : stat.equals("acc") ? ACCURACY
+                                                                : stat.equals("eva") ? EVASION : STATUS_NON;
+                effect += effec;
+                int j = (int) Math.round(Math.log(effec) / Math.log(2)) + 1;
+
+                amounts[j] = Byte.parseByte(statEffects[i + 1]);
+
+                i++;
+            }
 
         }
+        if (amount != 0)
+        {
+            for (int i = 0; i < amounts.length; i++)
+            {
+                amounts[i] = amount;
+            }
+        }
+
+        int[] modifiers = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+        modifiers[1] = (byte) Math.max(-6, Math.min(6, modifiers[1] + amounts[1] * (effect & 1)));
+        modifiers[2] = (byte) Math.max(-6, Math.min(6, modifiers[2] + amounts[2] * ((effect & 2) / 2)));
+        modifiers[3] = (byte) Math.max(-6, Math.min(6, modifiers[3] + amounts[3] * ((effect & 4) / 4)));
+        modifiers[4] = (byte) Math.max(-6, Math.min(6, modifiers[4] + amounts[4] * ((effect & 8) / 8)));
+        modifiers[5] = (byte) Math.max(-6, Math.min(6, modifiers[5] + amounts[5] * ((effect & 16) / 16)));
+        modifiers[6] = (byte) Math.max(-6, Math.min(6, modifiers[6] + amounts[6] * ((effect & 32) / 32)));
+        modifiers[7] = (byte) Math.max(-6, Math.min(6, modifiers[7] + amounts[7] * ((effect & 64) / 64)));
+
+        if (selfMove)
+        {
+            ret[0] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            ret[1] = new int[] { 0 };
+            ret[2] = modifiers.clone();
+            ret[3] = new int[] { chance };
+            return ret;
+        }
+        else if (stats.length == 1)
+        {
+            ret[2] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            ret[3] = new int[] { 0 };
+            ret[0] = modifiers.clone();
+            ret[1] = new int[] { chance };
+            return ret;
+        }
+        ret[0] = modifiers.clone();
+        ret[1] = new int[] { chance };
+
+        effect = 0;
+        chance = 100;
+
+        statEffects = stats[1].split(";");
+        if (statEffects.length == 3)
+        {
+            String stat = statEffects[0];
+            effect = stat.equals("atk") ? ATTACK
+                    : stat.equals("def") ? DEFENSE
+                            : stat.equals("spd") ? VIT
+                                    : stat.equals("spatk") ? SPATACK
+                                            : stat.equals("spdef") ? SPDEFENSE
+                                                    : stat.equals("acc") ? ACCURACY
+                                                            : stat.equals("eva") ? EVASION : STATUS_NON;
+            if (stat.equalsIgnoreCase("all"))
+            {
+                effect = ATTACK + DEFENSE + VIT + SPATACK + SPDEFENSE + ACCURACY + EVASION;
+            }
+
+            amount = Byte.parseByte(statEffects[1]);
+            chance = Integer.parseInt(statEffects[2]);
+        }
+        else
+        {
+            effect = 0;
+            chance = 100;
+            for (int i = 0; i < statEffects.length; i++)
+            {
+                String stat = statEffects[i];
+                byte effec = stat.equals("atk") ? ATTACK
+                        : stat.equals("def") ? DEFENSE
+                                : stat.equals("spd") ? VIT
+                                        : stat.equals("spatk") ? SPATACK
+                                                : stat.equals("spdef") ? SPDEFENSE
+                                                        : stat.equals("acc") ? ACCURACY
+                                                                : stat.equals("eva") ? EVASION : STATUS_NON;
+                effect += effec;
+                int j = (int) Math.round(Math.log(effec) / Math.log(2)) + 1;
+
+                amounts[j] = Byte.parseByte(statEffects[i + 1]);
+
+                i++;
+            }
+
+        }
+        if (amount != 0)
+        {
+            for (int i = 0; i < amounts.length; i++)
+            {
+                amounts[i] = amount;
+            }
+        }
+
+        modifiers[1] = (byte) Math.max(-6, Math.min(6, modifiers[1] + amounts[1] * (effect & 1)));
+        modifiers[2] = (byte) Math.max(-6, Math.min(6, modifiers[2] + amounts[2] * ((effect & 2) / 2)));
+        modifiers[3] = (byte) Math.max(-6, Math.min(6, modifiers[3] + amounts[3] * ((effect & 4) / 4)));
+        modifiers[4] = (byte) Math.max(-6, Math.min(6, modifiers[4] + amounts[4] * ((effect & 8) / 8)));
+        modifiers[5] = (byte) Math.max(-6, Math.min(6, modifiers[5] + amounts[5] * ((effect & 16) / 16)));
+        modifiers[6] = (byte) Math.max(-6, Math.min(6, modifiers[6] + amounts[6] * ((effect & 32) / 32)));
+        modifiers[7] = (byte) Math.max(-6, Math.min(6, modifiers[7] + amounts[7] * ((effect & 64) / 64)));
+
+        ret[2] = modifiers.clone();
+        ret[3] = new int[] { chance };
+
+        return ret;
     }
 
     private static ArrayList<ArrayList<String>> getRows(String file)

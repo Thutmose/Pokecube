@@ -274,7 +274,7 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 273,Wish ,Normal ,Self,Cute ,10,_,_,III ,none;0,none;0,none;0,0;50%,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 274,Assist ,Normal ,Status ,Cute ,20,_,_,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 275,Ingrain ,Grass ,Status ,Smart ,20,_,_,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-276,Superpower ,Fighting ,Physical ,Tough ,5,120,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+276,Superpower ,Fighting ,Physical ,Tough ,5,120,100.00%,III ,none;0,none;0`atk;-1;def;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 277,Magic Coat ,Psychic ,Status ,Beauty ,15,_,_,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 278,Recycle ,Normal ,Status ,Smart ,10,_,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 279,Revenge ,Fighting ,Physical ,Tough ,10,60,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
@@ -313,7 +313,7 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 312,Aromatherapy ,Grass ,Status ,Smart ,5,_,_,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 313,Fake Tears ,Dark ,Status ,Smart ,20,_,100.00%,III ,none;0,Spatk;-2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 314,Air Cutter ,Flying ,Special ,Cool ,25,60,95.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-315,Overheat ,Fire ,Special ,Beauty ,5,130,90.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+315,Overheat ,Fire ,Special ,Beauty ,5,130,90.00%,III ,none;0,none;0`spatk;-2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 316,Odor Sleuth ,Normal ,Status ,Smart ,40,_,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 317,Rock Tomb ,Rock ,Physical_Distance,Smart ,15,60,95.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
 318,Silver Wind ,Bug ,Special ,Beauty ,5,60,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
@@ -352,12 +352,12 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 351,Shock Wave ,Electric ,Special ,Cool ,20,60,_,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 352,Water Pulse ,Water ,Special ,Beauty ,20,60,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 353,Doom Desire ,Steel ,Special ,Cool ,5,140,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-354,Psycho Boost ,Psychic ,Special ,Smart ,5,140,90.00%,III ,none;0,none;0,none;0,0;0,FALSE;TRUE,TRUE,FALSE,FALSE,FALSE,1,0,none
+354,Psycho Boost ,Psychic ,Special ,Smart ,5,140,90.00%,III ,none;0,none;0`spatk;-2,none;0,0;0,FALSE;TRUE,TRUE,FALSE,FALSE,FALSE,1,0,none
 355,Roost ,Flying ,Self,Cool ,10,_,_,IV ,none;0,none;0,none;0,0;50%,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 356,Gravity ,Psychic ,Status ,Beauty ,5,_,_,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 357,Miracle Eye ,Psychic ,Status ,Cute ,40,_,_,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 358,Wake-Up Slap ,Fighting ,Physical ,Smart ,10,70,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-359,Hammer Arm ,Fighting ,Physical ,Cool ,10,100,90.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+359,Hammer Arm ,Fighting ,Physical ,Cool ,10,100,90.00%,IV ,none;0,none;0`spd;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 360,Gyro Ball ,Steel ,Physical ,Beauty ,5,_,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 361,Healing Wish ,Psychic ,Status ,Cute ,10,_,_,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 362,Brine ,Water ,Special ,Smart ,10,65,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
@@ -368,7 +368,7 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 367,Acupressure ,Normal ,Self,Cool ,30,_,_,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 368,Metal Burst ,Steel ,Physical_Distance,Beauty ,10,_,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
 369,U-turn ,Bug ,Physical ,Cute ,20,70,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-370,Close Combat ,Fighting ,Physical ,Smart ,5,120,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+370,Close Combat ,Fighting ,Physical ,Smart ,5,120,100.00%,IV ,none;0,none;0`spdef;-1;def;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 371,Payback ,Dark ,Physical ,Cool ,10,50,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 372,Assurance ,Dark ,Physical ,Beauty ,10,60,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 373,Embargo ,Dark ,Status ,Cute ,15,_,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
@@ -432,10 +432,10 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 431,Rock Climb ,Normal ,Physical ,Cool ,20,90,85.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 432,Defog ,Flying ,Status ,Beauty ,15,_,_,IV ,none;0,Eva;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 433,Trick Room ,Psychic ,Status ,Cute ,5,_,_,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-434,Draco Meteor ,Dragon ,Special ,Smart ,5,130,90.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
+434,Draco Meteor ,Dragon ,Special ,Smart ,5,130,90.00%,IV ,none;0,none;0`spatk;-2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
 435,Discharge ,Electric ,Special ,Cool ,15,80,100.00%,IV ,Par;30,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
 436,Lava Plume ,Fire ,Special ,Tough ,15,80,100.00%,IV ,Brn;30,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
-437,Leaf Storm ,Grass ,Special ,Cute ,5,130,90.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
+437,Leaf Storm ,Grass ,Special ,Cute ,5,130,90.00%,IV ,none;0,none;0`spatk;-2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
 438,Power Whip ,Grass ,Physical ,Beauty ,10,120,85.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 439,Rock Wrecker ,Rock ,Physical_Distance,Tough ,5,150,90.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
 440,Cross Poison ,Poison ,Physical ,Cool ,20,70,100.00%,IV ,Psn;10,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
@@ -466,153 +466,157 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 465,Seed Flare ,Grass ,Special ,Cool ,5,120,85.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
 466,Ominous Wind ,Ghost ,Special ,Smart ,5,60,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
 467,Shadow Force ,Ghost ,Physical ,Smart ,5,120,100.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-468,Hone Claws ,Dark ,Self,??? ,15,_,_,V ,none;0,Atk;1;acc;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-469,Wide Guard ,Rock ,Status ,??? ,10,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-470,Guard Split ,Psychic ,Status ,??? ,10,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-471,Power Split ,Psychic ,Status ,??? ,10,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-472,Wonder Room ,Psychic ,Status ,??? ,10,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-473,Psyshock ,Psychic ,Special ,??? ,10,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;TRUE,TRUE,FALSE,FALSE,FALSE,1,0,pont
-474,Venoshock ,Poison ,Special ,??? ,10,65,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,pont
-475,Autotomize ,Steel ,Self,??? ,15,_,_,V ,none;0,Spd;2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-476,Rage Powder ,Bug ,Status ,??? ,20,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-477,Telekinesis ,Psychic ,Status ,??? ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-478,Magic Room ,Psychic ,Status ,??? ,10,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-479,Smack Down ,Rock ,Physical_Distance,??? ,15,50,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-480,Storm Throw ,Fighting ,Physical ,??? ,10,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-481,Flame Burst ,Fire ,Special ,??? ,15,70,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,pont
-482,Sludge Wave ,Poison ,Special ,??? ,10,95,100.00%,V ,Psn;10,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
-483,Quiver Dance ,Bug ,Self,??? ,20,_,_,V ,none;0,Spd;1;spatk;1;spdef;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-484,Heavy Slam ,Steel ,Physical ,??? ,10,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-485,Synchronoise ,Psychic ,Special ,??? ,15,120,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;TRUE,TRUE,FALSE,FALSE,FALSE,1,0,none
-486,Electro Ball ,Electric ,Special ,??? ,10,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
-487,Soak ,Water ,Status ,??? ,20,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-488,Flame Charge ,Fire ,Physical ,??? ,20,50,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-489,Coil ,Poison ,Self,??? ,20,_,_,V ,none;0,Atk;1;def;1;acc;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-490,Low Sweep ,Fighting ,Physical ,??? ,20,65,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-491,Acid Spray ,Poison ,Special ,??? ,20,40,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
-492,Foul Play ,Dark ,Physical ,??? ,15,95,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-493,Simple Beam ,Normal ,Status ,??? ,15,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
-494,Entrainment ,Normal ,Status ,??? ,15,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-495,After You ,Normal ,Status ,??? ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-496,Round ,Normal ,Special ,??? ,15,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-497,Echoed Voice ,Normal ,Special ,??? ,15,40,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-498,Chip Away ,Normal ,Physical ,??? ,20,70,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-499,Clear Smog ,Poison ,Special ,??? ,15,50,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-500,Stored Power ,Psychic ,Special ,??? ,10,20,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-501,Quick Guard ,Fighting ,Status ,??? ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-502,Ally Switch ,Psychic ,Status ,??? ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-503,Scald ,Water ,Special ,??? ,15,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
-504,Shell Smash ,Normal ,Self,??? ,15,_,_,V ,none;0,Def;-1;spdef;-1;atk;2;spatk;2;spd;2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-505,Heal Pulse ,Psychic ,Status ,??? ,10,_,_,V ,none;0,none;0,none;0,0;50%,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-506,Hex ,Ghost ,Special ,??? ,10,65,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-507,Sky Drop ,Flying ,Physical ,??? ,10,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-508,Shift Gear ,Steel ,Self,??? ,10,_,_,V ,none;0,Atk;1;spd;2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-509,Circle Throw ,Fighting ,Physical ,??? ,10,60,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-510,Incinerate ,Fire ,Special ,??? ,15,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-511,Quash ,Dark ,Status ,??? ,15,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-512,Acrobatics ,Flying ,Physical ,??? ,15,55,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-513,Reflect Type ,Normal ,Status ,??? ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-514,Retaliate ,Normal ,Physical ,??? ,5,70,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-515,Final Gambit ,Fighting ,Special_Contact,??? ,5,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-516,Bestow ,Normal ,Status ,??? ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-517,Inferno ,Fire ,Special ,??? ,5,100,50.00%,V ,Brn;100,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-518,Water Pledge ,Water ,Special ,??? ,10,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-519,Fire Pledge ,Fire ,Special ,??? ,10,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-520,Grass Pledge ,Grass ,Special ,??? ,10,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-521,Volt Switch ,Electric ,Special ,??? ,20,70,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-522,Struggle Bug ,Bug ,Special ,??? ,20,50,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-523,Bulldoze ,Ground ,Physical_Distance,??? ,20,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-524,Frost Breath ,Ice ,Special ,??? ,10,60,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-525,Dragon Tail ,Dragon ,Physical ,??? ,10,60,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-526,Work Up ,Normal ,Self,??? ,30,_,_,V ,none;0,Atk;1;spatk;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-527,Electroweb ,Electric ,Special ,??? ,15,55,95.00%,V ,none;0,spd;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-528,Wild Charge ,Electric ,Physical ,??? ,15,90,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-529,Drill Run ,Ground ,Physical ,??? ,10,80,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-530,Dual Chop ,Dragon ,Physical ,??? ,15,40,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-531,Heart Stamp ,Psychic ,Physical ,??? ,25,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-532,Horn Leech ,Grass ,Physical ,??? ,10,75,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-533,Sacred Sword ,Fighting ,Physical ,??? ,15,90,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-534,Razor Shell ,Water ,Physical ,??? ,10,75,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-535,Heat Crash ,Fire ,Physical ,??? ,10,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-536,Leaf Tornado ,Grass ,Special ,??? ,10,65,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-537,Steamroller ,Bug ,Physical ,??? ,20,65,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-538,Cotton Guard ,Grass ,Self,??? ,10,_,_,V ,none;0,Def;3,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-539,Night Daze ,Dark ,Special ,??? ,10,85,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-540,Psystrike ,Psychic ,Special ,??? ,10,100,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-541,Tail Slap ,Normal ,Physical ,??? ,10,25,85.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-542,Hurricane ,Flying ,Special ,??? ,10,110,70.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-543,Head Charge ,Normal ,Physical ,??? ,15,120,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-544,Gear Grind ,Steel ,Physical_Distance,??? ,15,50,85.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-545,Searing Shot ,Fire ,Special ,??? ,5,100,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-546,Techno Blast ,Normal ,Special ,??? ,5,120,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-547,Relic Song ,Normal ,Special ,??? ,10,75,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-548,Secret Sword ,Fighting ,Special ,??? ,10,85,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-549,Glaciate ,Ice ,Special ,??? ,10,65,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-550,Bolt Strike ,Electric ,Physical ,??? ,5,130,85.00%,V ,Par;20,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-551,Blue Flare ,Fire ,Special ,??? ,5,130,85.00%,V ,Brn;20,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-552,Fiery Dance ,Fire ,Special ,??? ,10,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-553,Freeze Shock ,Ice ,Physical_Distance,??? ,5,140,90.00%,V ,Par;30,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-554,Ice Burn ,Ice ,Special ,??? ,5,140,90.00%,V ,Brn;30,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
-555,Snarl ,Dark ,Special ,??? ,15,55,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-556,Icicle Crash ,Ice ,Physical_Distance,??? ,10,85,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
-557,V-create ,Fire ,Physical ,??? ,5,180,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-558,Fusion Flare ,Fire ,Special ,??? ,5,100,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
-559,Fusion Bolt ,Electric ,Physical_Distance,??? ,5,100,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-560,Flying Press ,Fighting ,Physical ,??? ,10,80,95.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-561,Mat Block ,Fighting ,Status ,??? ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-562,Belch ,Poison ,Special ,??? ,10,120,90.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
-563,Rototiller ,Ground ,Status ,??? ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-564,Sticky Web ,Bug ,Status ,??? ,20,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-565,Fell Stinger ,Bug ,Physical ,??? ,25,30,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-566,Phantom Force ,Ghost ,Physical ,??? ,10,90,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-567,Trick-or-Treat ,Ghost ,Status ,??? ,20,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-568,Noble Roar ,Normal ,Status ,??? ,30,_,100.00%,VI ,none;0,Atk;-1;spatk;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-569,Ion Deluge ,Electric ,Status ,??? ,25,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-570,Parabolic Charge ,Electric ,Special ,??? ,20,50,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
-571,Forest's Curse ,Grass ,Status ,??? ,20,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-572,Petal Blizzard ,Grass ,Physical ,??? ,15,90,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-573,Freeze-Dry ,Ice ,Special ,??? ,20,70,100.00%,VI ,Frz;10,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
-574,Disarming Voice ,Fairy ,Special ,??? ,15,40,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-575,Parting Shot ,Dark ,Status ,??? ,20,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-576,Topsy-Turvy ,Dark ,Status ,??? ,20,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-577,Draining Kiss ,Fairy ,Special_Contact,??? ,10,50,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-578,Crafty Shield ,Fairy ,Status ,??? ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-579,Flower Shield ,Fairy ,Status ,??? ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-580,Grassy Terrain ,Grass ,Status ,??? ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-581,Misty Terrain ,Fairy ,Status ,??? ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-582,Electrify ,Electric ,Status ,??? ,20,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-583,Play Rough ,Fairy ,Physical ,??? ,10,90,90.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-584,Fairy Wind ,Fairy ,Special ,??? ,30,40,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-585,Moonblast ,Fairy ,Special ,??? ,15,95,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-586,Boomburst ,Normal ,Special ,??? ,10,140,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-587,Fairy Lock ,Fairy ,Status ,??? ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-588,King's Shield ,Steel ,Status ,??? ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-589,Play Nice ,Normal ,Status ,??? ,20,_,_,VI ,none;0,Atk;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-590,Confide ,Normal ,Status ,??? ,20,_,_,VI ,none;0,Spatk;-2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-591,Diamond Storm ,Rock ,Physical ,??? ,5,100,95.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-592,Steam Eruption ,Water ,Special ,??? ,5,110,95.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-593,Hyperspace Hole ,Psychic ,Special ,??? ,5,80,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-594,Water Shuriken ,Water ,Physical_Distance,??? ,20,15,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
-595,Mystical Fire ,Fire ,Special ,??? ,10,65,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-596,Spiky Shield ,Grass ,Status ,??? ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-597,Aromatic Mist ,Fairy ,Status ,??? ,20,_,_,VI ,none;0,Spdef;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-598,Eerie Impulse ,Electric ,Status ,??? ,15,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-599,Venom Drench ,Poison ,Status ,??? ,20,_,100.00%,VI ,none;0,Spatk;-1;spd;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-600,Powder ,Bug ,Status ,??? ,20,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-601,Geomancy ,Fairy ,Self,??? ,10,_,_,VI ,none;0,Spatk;2;spdef;2;spd;2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-602,Magnetic Flux ,Electric ,Status ,??? ,20,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-603,Happy Hour ,Normal ,Status ,??? ,30,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-604,Electric Terrain ,Electric ,Status ,??? ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-605,Dazzling Gleam ,Fairy ,Special ,??? ,10,80,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
-606,Celebrate ,Normal ,Status ,??? ,40,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-607,Hold Hands ,Normal ,Status ,??? ,40,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-608,Baby-Doll Eyes ,Fairy ,Status ,??? ,30,_,100.00%,VI ,none;0,Atk;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-609,Nuzzle ,Electric ,Physical ,??? ,20,20,100.00%,VI ,Par;100,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-610,Hold Back ,Normal ,Physical ,??? ,40,40,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-611,Infestation ,Bug ,Special_Contact,??? ,20,20,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-612,Power-Up Punch ,Fighting ,Physical ,??? ,20,40,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-613,Oblivion Wing ,Flying ,Special ,??? ,10,80,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
-614,Thousand Arrows ,Ground ,Physical ,??? ,10,90,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-615,Thousand Waves ,Ground ,Physical ,??? ,10,90,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-616,Land's Wrath ,Ground ,Physical ,??? ,10,90,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-617,Light of Ruin ,Fairy ,Special ,??? ,5,140,90.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
+468,Hone Claws ,Dark ,Self,Cute ,15,_,_,V ,none;0,Atk;1;acc;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+469,Wide Guard ,Rock ,Status ,Tough ,10,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+470,Guard Split ,Psychic ,Status ,Clever ,10,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+471,Power Split ,Psychic ,Status ,Clever ,10,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+472,Wonder Room ,Psychic ,Status ,Clever ,10,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+473,Psyshock ,Psychic ,Special ,Beautiful ,10,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;TRUE,TRUE,FALSE,FALSE,FALSE,1,0,pont
+474,Venoshock ,Poison ,Special ,Beautiful ,10,65,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,pont
+475,Autotomize ,Steel ,Self,Beautiful ,15,_,_,V ,none;0,Spd;2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+476,Rage Powder ,Bug ,Status ,Clever ,20,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+477,Telekinesis ,Psychic ,Status ,Clever ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+478,Magic Room ,Psychic ,Status ,Clever ,10,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+479,Smack Down ,Rock ,Physical_Distance,Tough ,15,50,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+480,Storm Throw ,Fighting ,Physical ,Cool ,10,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+481,Flame Burst ,Fire ,Special ,Beautiful ,15,70,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,pont
+482,Sludge Wave ,Poison ,Special ,Tough ,10,95,100.00%,V ,Psn;10,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
+483,Quiver Dance ,Bug ,Self,Beautiful ,20,_,_,V ,none;0,Spd;1;spatk;1;spdef;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+484,Heavy Slam ,Steel ,Physical ,Tough ,10,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+485,Synchronoise ,Psychic ,Special ,Clever ,15,120,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;TRUE,TRUE,FALSE,FALSE,FALSE,1,0,none
+486,Electro Ball ,Electric ,Special ,Cool ,10,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
+487,Soak ,Water ,Status ,Cute ,20,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+488,Flame Charge ,Fire ,Physical ,Cool ,20,50,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+489,Coil ,Poison ,Self,Tough ,20,_,_,V ,none;0,Atk;1;def;1;acc;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+490,Low Sweep ,Fighting ,Physical ,Clever ,20,65,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+491,Acid Spray ,Poison ,Special ,Beautiful ,20,40,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
+492,Foul Play ,Dark ,Physical ,Clever ,15,95,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+493,Simple Beam ,Normal ,Status ,Cute ,15,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
+494,Entrainment ,Normal ,Status ,Cute ,15,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+495,After You ,Normal ,Status ,Cute ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+496,Round ,Normal ,Special ,Beautiful ,15,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+497,Echoed Voice ,Normal ,Special ,Beautiful ,15,40,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+498,Chip Away ,Normal ,Physical ,Tough ,20,70,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+499,Clear Smog ,Poison ,Special ,Beautiful ,15,50,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+500,Stored Power ,Psychic ,Special ,Clever ,10,20,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+501,Quick Guard ,Fighting ,Status ,Cool ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+502,Ally Switch ,Psychic ,Status ,Clever ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+503,Scald ,Water ,Special ,Tough ,15,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
+504,Shell Smash ,Normal ,Self,Tough ,15,_,_,V ,none;0,Def;-1;spdef;-1;atk;2;spatk;2;spd;2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+505,Heal Pulse ,Psychic ,Status ,Beautiful ,10,_,_,V ,none;0,none;0,none;0,0;50%,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+506,Hex ,Ghost ,Special ,Clever ,10,65,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+507,Sky Drop ,Flying ,Physical ,Tough ,10,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+508,Shift Gear ,Steel ,Self,Clever ,10,_,_,V ,none;0,Atk;1;spd;2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+509,Circle Throw ,Fighting ,Physical ,Cool ,10,60,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+510,Incinerate ,Fire ,Special ,Tough ,15,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+511,Quash ,Dark ,Status ,Clever ,15,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+512,Acrobatics ,Flying ,Physical ,Cool ,15,55,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+513,Reflect Type ,Normal ,Status ,Clever ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+514,Retaliate ,Normal ,Physical ,Cool ,5,70,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+515,Final Gambit ,Fighting ,Special_Contact,Tough ,5,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+516,Bestow ,Normal ,Status ,Cute ,15,_,_,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+517,Inferno ,Fire ,Special ,Beautiful ,5,100,50.00%,V ,Brn;100,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+518,Water Pledge ,Water ,Special ,Beautiful ,10,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+519,Fire Pledge ,Fire ,Special ,Beautiful ,10,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+520,Grass Pledge ,Grass ,Special ,Beautiful ,10,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+521,Volt Switch ,Electric ,Special ,Cool ,20,70,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+522,Struggle Bug ,Bug ,Special ,Cute ,20,50,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+523,Bulldoze ,Ground ,Physical_Distance,Tough ,20,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+524,Frost Breath ,Ice ,Special ,Beautiful ,10,60,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+525,Dragon Tail ,Dragon ,Physical ,Tough ,10,60,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+526,Work Up ,Normal ,Self,Tough ,30,_,_,V ,none;0,Atk;1;spatk;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+527,Electroweb ,Electric ,Special ,Beautiful ,15,55,95.00%,V ,none;0,spd;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+528,Wild Charge ,Electric ,Physical ,Tough ,15,90,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+529,Drill Run ,Ground ,Physical ,Tough ,10,80,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+530,Dual Chop ,Dragon ,Physical ,Tough ,15,40,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+531,Heart Stamp ,Psychic ,Physical ,Cute ,25,60,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+532,Horn Leech ,Grass ,Physical ,Tough ,10,75,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+533,Sacred Sword ,Fighting ,Physical ,Cool ,15,90,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+534,Razor Shell ,Water ,Physical ,Cool ,10,75,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+535,Heat Crash ,Fire ,Physical ,Tough ,10,_,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+536,Leaf Tornado ,Grass ,Special ,Cool ,10,65,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+537,Steamroller ,Bug ,Physical ,Tough ,20,65,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+538,Cotton Guard ,Grass ,Self,Cute ,10,_,_,V ,none;0,Def;3,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+539,Night Daze ,Dark ,Special ,Cool ,10,85,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+540,Psystrike ,Psychic ,Special ,Cool ,10,100,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+541,Tail Slap ,Normal ,Physical ,Cute ,10,25,85.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+542,Hurricane ,Flying ,Special ,Tough ,10,110,70.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+543,Head Charge ,Normal ,Physical ,Tough ,15,120,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+544,Gear Grind ,Steel ,Physical_Distance,Clever ,15,50,85.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+545,Searing Shot ,Fire ,Special ,Cool ,5,100,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+546,Techno Blast ,Normal ,Special ,Cool ,5,120,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+547,Relic Song ,Normal ,Special ,Beautiful ,10,75,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+548,Secret Sword ,Fighting ,Special ,Beautiful ,10,85,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+549,Glaciate ,Ice ,Special ,Beautiful ,10,65,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+550,Bolt Strike ,Electric ,Physical ,Beautiful ,5,130,85.00%,V ,Par;20,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+551,Blue Flare ,Fire ,Special ,Beautiful ,5,130,85.00%,V ,Brn;20,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+552,Fiery Dance ,Fire ,Special ,Beautiful ,10,80,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+553,Freeze Shock ,Ice ,Physical_Distance,Beautiful ,5,140,90.00%,V ,Par;30,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+554,Ice Burn ,Ice ,Special ,Beautiful ,5,140,90.00%,V ,Brn;30,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
+555,Snarl ,Dark ,Special ,Tough ,15,55,95.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+556,Icicle Crash ,Ice ,Physical_Distance,Beautiful ,10,85,90.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
+557,V-create ,Fire ,Physical ,Cool ,5,180,95.00%,V ,none;0,none;0`def;-1;spdef;-1;spd;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+558,Fusion Flare ,Fire ,Special ,Beautiful ,5,100,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
+559,Fusion Bolt ,Electric ,Physical_Distance,Cool ,5,100,100.00%,V ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+560,Flying Press ,Fighting ,Physical ,Tough ,10,80,95.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+561,Mat Block ,Fighting ,Status ,Cool ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+562,Belch ,Poison ,Special ,Tough ,10,120,90.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
+563,Rototiller ,Ground ,Status ,Tough ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+564,Sticky Web ,Bug ,Status ,Tough ,20,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+565,Fell Stinger ,Bug ,Physical ,Cool ,25,30,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+566,Phantom Force ,Ghost ,Physical ,Cool ,10,90,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+567,Trick-or-Treat ,Ghost ,Status ,Cute ,20,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+568,Noble Roar ,Normal ,Status ,Tough ,30,_,100.00%,VI ,none;0,Atk;-1;spatk;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+569,Ion Deluge ,Electric ,Status ,Beautiful ,25,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+570,Parabolic Charge ,Electric ,Special ,Clever ,20,50,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
+571,Forest's Curse ,Grass ,Status ,Clever ,20,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+572,Petal Blizzard ,Grass ,Physical ,Beautiful ,15,90,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+573,Freeze-Dry ,Ice ,Special ,Beautiful ,20,70,100.00%,VI ,Frz;10,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
+574,Disarming Voice ,Fairy ,Special ,Cute ,15,40,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+575,Parting Shot ,Dark ,Status ,Cool ,20,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+576,Topsy-Turvy ,Dark ,Status ,Clever ,20,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+577,Draining Kiss ,Fairy ,Special_Contact,Cute ,10,50,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+578,Crafty Shield ,Fairy ,Status ,Clever ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+579,Flower Shield ,Fairy ,Status ,Beautiful ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+580,Grassy Terrain ,Grass ,Status ,Beautiful ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+581,Misty Terrain ,Fairy ,Status ,Beautiful ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+582,Electrify ,Electric ,Status ,Clever ,20,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+583,Play Rough ,Fairy ,Physical ,Cute ,10,90,90.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+584,Fairy Wind ,Fairy ,Special ,Beautiful ,30,40,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+585,Moonblast ,Fairy ,Special ,Beautiful ,15,95,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+586,Boomburst ,Normal ,Special ,Tough ,10,140,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+587,Fairy Lock ,Fairy ,Status ,Clever ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+588,King's Shield ,Steel ,Status ,Cool ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+589,Play Nice ,Normal ,Status ,Cute ,20,_,_,VI ,none;0,Atk;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+590,Confide ,Normal ,Status ,Cute ,20,_,_,VI ,none;0,spatk;-2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+591,Diamond Storm ,Rock ,Physical ,Beautiful ,5,100,95.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+592,Steam Eruption ,Water ,Special ,Beautiful ,5,110,95.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+593,Hyperspace Hole ,Psychic ,Special ,Clever ,5,80,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+594,Water Shuriken ,Water ,Physical_Distance,Cool ,20,15,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
+595,Mystical Fire ,Fire ,Special ,Beautiful ,10,65,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+596,Spiky Shield ,Grass ,Status ,Tough ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+597,Aromatic Mist ,Fairy ,Status ,Beautiful ,20,_,_,VI ,none;0,Spdef;1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+598,Eerie Impulse ,Electric ,Status ,Clever ,15,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+599,Venom Drench ,Poison ,Status ,Clever ,20,_,100.00%,VI ,none;0,spatk;-1;spd;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+600,Powder ,Bug ,Status ,Clever ,20,_,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+601,Geomancy ,Fairy ,Self,Beautiful ,10,_,_,VI ,none;0,spatk;2;spdef;2;spd;2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+602,Magnetic Flux ,Electric ,Status ,Clever ,20,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+603,Happy Hour ,Normal ,Status ,Cute ,30,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+604,Electric Terrain ,Electric ,Status ,Clever ,10,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+605,Dazzling Gleam ,Fairy ,Special ,Beautiful ,10,80,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
+606,Celebrate ,Normal ,Status ,Cute ,40,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+607,Hold Hands ,Normal ,Status ,Cute ,40,_,_,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+608,Baby-Doll Eyes ,Fairy ,Status ,Cute ,30,_,100.00%,VI ,none;0,Atk;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+609,Nuzzle ,Electric ,Physical ,Cute ,20,20,100.00%,VI ,Par;100,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+610,Hold Back ,Normal ,Physical ,Cool ,40,40,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+611,Infestation ,Bug ,Special_Contact,Cute ,20,20,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+612,Power-Up Punch ,Fighting ,Physical ,Tough ,20,40,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+613,Oblivion Wing ,Flying ,Special ,Cool ,10,80,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
+614,Thousand Arrows ,Ground ,Physical ,Beautiful ,10,90,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+615,Thousand Waves ,Ground ,Physical ,Tough ,10,90,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+616,Land's Wrath ,Ground ,Physical ,Beautiful ,10,90,100.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+617,Light of Ruin ,Fairy ,Special ,Beautiful ,5,140,90.00%,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,beam
+618,Origin Pulse ,Water ,Special ,Beautiful ,10,110,85.00%,VI ,none;0,none;0,none;0,0;0,TRUE;FALSE,TRUE,FALSE,FALSE,TRUE,1,0,none
+619,Precipice Blades ,Ground ,Physical_Distance,Cool ,10,120,85.00%,VI ,none;0,none;0,none;0,0;0,TRUE;FALSE,TRUE,FALSE,FALSE,TRUE,1,0,none
+620,Dragon Ascent ,Flying ,Physical ,Beautiful ,5,120,100.00%,VI ,none;0,none;0`spdef;-1;def;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,TRUE,1,0,none
+621,Hyperspace Fury ,Dark ,Physical,Tough ,5,100,— ,VI ,none;0,none;0,none;0,0;0,FALSE;FALSE,FALSE,FALSE,FALSE,TRUE,1,0,none

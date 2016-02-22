@@ -1,4 +1,4 @@
-﻿#Pokecube translation
+﻿#Pokécube translation
 
 type.normal=normal
 type.fighting=fighting
@@ -33,12 +33,12 @@ pokemob.stance.stand=STAND
 
 pokemob.agress=A wild %1$s has appeared
 
-pokemob.hungry.slow=Your pokemob is too hungry to move quickly
+pokemob.hungry.slow=Your pokémob is too hungry to move quickly
 
 pokemob.command.attack=You tell %1$s to attack %2$s
 
 pokemob.action.sendout=%1$s was sent out
-pokemob.action.return=%1$s has returned to the Pokecube
+pokemob.action.return=%1$s has returned to the Pokécube
 pokemob.action.usemove=You tell %1$s to use %2$s
 pokemob.action.faint=%1$s has fainted
 
@@ -246,14 +246,14 @@ ability.zenmode.name=Zen Mode
 achievement.catch=Catch a %1$s
 achievement.get1stPokemob=Get 1st Pokemob
 achievement.get1stPokemob.desc=Get your starter
-gui.pokemob.choose1st=Choose your first Pokemob.
+gui.pokemob.choose1st=Choose your first Pokémob.
 gui.pokemob.select=Select
 gui.pokedex.village=Nearest Village
 
 pokecube.caught=%1$s has been caught!
-pokecube.missed=You missed the Pokemob!
+pokecube.missed=You missed the Pokémob!
 pokecube.denied=The Pokemob refuses to enter the cube!
-pokecube.noroom=There is not enough room for the pokemon here.
+pokecube.noroom=There is not enough room for the Pokémob here.
 
 pokemobEgg.name=Egg of %1$s
 
@@ -344,19 +344,19 @@ item.badgedragon.name=Dragon badge
 item.badgedark.name=Dark badge
 item.badgefairy.name=Fairy badge
 
-item.pokedex.name=Pokedex
-tile.pokecenter.name=Pokecenter
+item.pokedex.name=Pokédex
+tile.pokecenter.name=Pokécenter
 tile.pokecenter.heal=Heal
 tile.pokemobNest.name=Nest
 
 tile.repel.name=Repel
-tile.pokemobSpawner.name=Pokemob spawner stone
-tile.pokemobSpawnerGrass.name=Pokemob spawner grass
-tile.pokecube_table.name=Pokecube Table
+tile.pokemobSpawner.name=Pokémob spawner stone
+tile.pokemobSpawnerGrass.name=Pokémob spawner grass
+tile.pokecube_table.name=Pokécube Table
 tile.pc.next=Next
 tile.pc.previous=Previous
 
-item.pokecube.name=Pokecube
+item.pokecube.name=Pokécube
 item.greatcube.name=Greatcube
 item.ultracube.name=Ultracube
 item.mastercube.name=Mastercube
@@ -404,5 +404,5 @@ item.silkyhair.name=Silky Hair
 
 item.modelreloader.name=Model Reloader
 
-igwtab.entry.Pokecubes=Pokecubes
+igwtab.entry.Pokecubes=Pokécubes
 igwtab.entry.Controls=Key Controls

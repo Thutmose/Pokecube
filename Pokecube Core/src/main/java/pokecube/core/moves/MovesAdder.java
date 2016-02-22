@@ -351,12 +351,12 @@ public class MovesAdder implements IMoveConstants
                 Random r = new Random(attacked.worldObj.rand.nextLong());
 
                 int rand = r.nextInt(7);
+                ((IPokemob) attacker).getMoveStats().SELFRAISECOUNTER = 80;
                 for (int i = 0; i < 8; i++)
                 {
                     int stat = (rand);
                     if (MovesUtils.handleStats2(attacker, attacked, 1 << stat, SHARP))
                     {
-                        // notifyClient((Entity) attacker, attacked);
                         return;
                     }
                     rand = (rand + 1) % 7;
@@ -371,7 +371,7 @@ public class MovesAdder implements IMoveConstants
             @Override
             public void doSelfAttack(IPokemob mob, float f)
             {
-                if (doAttack(mob, (Entity) mob, f))
+                if (mob.getMoveStats().SELFRAISECOUNTER == 0)
                 {
                     if (sound != null)
                     {

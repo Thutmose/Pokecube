@@ -117,7 +117,7 @@ public class MovesUtils implements IMoveConstants
             {
                 String missed = StatCollector.translateToLocalFormatted("pokemob.move.missed",
                         ((IPokemob) attacked).getPokemonDisplayName());
-                attacker.displayMessageToOwner("\u00a7a" + missed);
+                if (attacked != attacker) attacker.displayMessageToOwner("\u00a7a" + missed);
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + missed);
                 return;
             }
@@ -128,7 +128,7 @@ public class MovesUtils implements IMoveConstants
             {
                 String missed = StatCollector.translateToLocalFormatted("pokemob.move.failed",
                         ((IPokemob) attacked).getPokemonDisplayName());
-                attacker.displayMessageToOwner("\u00a7a" + missed);
+                if (attacked != attacker) attacker.displayMessageToOwner("\u00a7a" + missed);
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + missed);
                 return;
             }
@@ -644,8 +644,8 @@ public class MovesUtils implements IMoveConstants
         }
         if (attacked instanceof IPokemob && atk.hasStatModTarget && efficiency > 0)
         {
-            if ((!handleStats((IPokemob) attacked, (Entity) attacker, packet, true)))
-                if (message) displayStatsMessage((IPokemob) attacked, (Entity) attacker, -2, (byte) 0, (byte) 0);
+            if ((!handleStats((IPokemob) attacked, (Entity) attacker, packet, true))) if (message && (move.power == 0))
+                displayStatsMessage((IPokemob) attacked, (Entity) attacker, -2, (byte) 0, (byte) 0);
             ((IPokemob) attacker).getMoveStats().TARGETLOWERCOUNTER = 80;
         }
         if (atk.hasStatModSelf)
@@ -656,7 +656,6 @@ public class MovesUtils implements IMoveConstants
 
             if ((!handleStats(attacker, attacked, packet, false)))
                 if (message && goodEffect) displayStatsMessage(attacker, (Entity) attacker, -2, (byte) 0, (byte) 0);
-
             ((IPokemob) attacker).getMoveStats().SELFRAISECOUNTER = 80;
         }
 

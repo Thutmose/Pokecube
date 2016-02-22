@@ -216,14 +216,14 @@ public class Database implements IMoveConstants
             if (e.mobType == null)
             {
                 e.mobType = PokecubeMod.Type.NORMAL;
-                System.out.println(e);
+                System.out.println(e+" Has no Mob Type");
                 Thread.dumpStack();
             }
             if (e.species == null && e.baseForme != null)
             {
                 e.childNumbers = e.baseForme.childNumbers;
                 e.species = e.baseForme.species;
-                System.out.println(e);
+                System.out.println(e+" Has no Species");
                 Thread.dumpStack();
             }
             if (e.type2 == null) e.type2 = PokeType.unknown;

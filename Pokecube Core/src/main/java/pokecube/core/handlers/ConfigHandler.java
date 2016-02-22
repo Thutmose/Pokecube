@@ -382,7 +382,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                 String info = obj.get("info").getAsString();
                 defaults.add(name + ":" + info);
             }
-
+            System.out.println(defaults);
             defaultStarts = defaults.toArray(new String[0]);
         }
         catch (Exception e)

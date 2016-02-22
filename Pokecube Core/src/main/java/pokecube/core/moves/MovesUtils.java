@@ -3,6 +3,7 @@ package pokecube.core.moves;
 import static pokecube.core.utils.PokeType.getAttackEfficiency;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -201,7 +202,6 @@ public class MovesUtils implements IMoveConstants
             }
 
             String statName = "pokemob.move.stat" + stat;
-
             if (attacked instanceof IPokemob && attacker != null)
             {
                 String missed = StatCollector.translateToLocalFormatted(message,
@@ -225,6 +225,15 @@ public class MovesUtils implements IMoveConstants
                         ((IPokemob) attacked).getPokemonDisplayName(),
                         StatCollector.translateToLocalFormatted(statName));
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + missed);
+            }
+            else if (attacker instanceof IPokemob)
+            {
+                String missed = StatCollector.translateToLocalFormatted(message,
+                        ((IPokemob) attacker).getPokemonDisplayName(),
+                        StatCollector.translateToLocalFormatted(statName));
+
+                String colour = fell ? "\u00a7c" : "\u00a7a";
+                attacker.displayMessageToOwner(colour + missed);
             }
         }
     }
@@ -633,17 +642,20 @@ public class MovesUtils implements IMoveConstants
             ((EntityLiving) attacker).setHealth(
                     Math.min(((EntityLiving) attacker).getMaxHealth(), ((EntityLiving) attacker).getHealth() + toHeal));
         }
-
         if (attacked instanceof IPokemob && atk.hasStatModTarget && efficiency > 0)
         {
             if ((!handleStats((IPokemob) attacked, (Entity) attacker, packet, true)))
                 if (message) displayStatsMessage((IPokemob) attacked, (Entity) attacker, -2, (byte) 0, (byte) 0);
             ((IPokemob) attacker).getMoveStats().TARGETLOWERCOUNTER = 80;
         }
-        else if (atk.hasStatModSelf)
+        if (atk.hasStatModSelf)
         {
+            boolean goodEffect = false;
+            for (int i = 0; i < atk.move.attackerStatModification.length; i++)
+                if (atk.move.attackerStatModification[i] > 0) goodEffect = true;
+
             if ((!handleStats(attacker, attacked, packet, false)))
-                if (message) displayStatsMessage(attacker, (Entity) attacker, -2, (byte) 0, (byte) 0);
+                if (message && goodEffect) displayStatsMessage(attacker, (Entity) attacker, -2, (byte) 0, (byte) 0);
 
             ((IPokemob) attacker).getMoveStats().SELFRAISECOUNTER = 80;
         }
@@ -836,11 +848,10 @@ public class MovesUtils implements IMoveConstants
         {
             if (diff[i] != 0)
             {
-                if (diff[i] != 0)
-                {
-                    if (!attacked) displayStatsMessage(mob, target, 0, i, diff[i]);
-                    else displayStatsMessage((IPokemob) target, (Entity) mob, 0, i, diff[i]);
-                }
+                System.out.println(Arrays.toString(old) + "" + Arrays.toString(modifiers) + "" + Arrays.toString(diff)
+                        + " " + ret);
+                if (!attacked) displayStatsMessage(mob, target, 0, i, (byte) diff[i]);
+                else displayStatsMessage((IPokemob) target, (Entity) mob, 0, i, (byte) diff[i]);
             }
         }
         return ret;

@@ -131,7 +131,7 @@ public class ModPokecubeML
             }
             else
             {
-                System.err.println("No Resource Pack " + pack);
+//                System.err.println("No Resource Pack " + pack);
             }
         }
 

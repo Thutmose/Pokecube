@@ -29,8 +29,6 @@ public class WorldGenFossils implements IWorldGenerator
             if (bgb == BiomeGenBase.desertHills || bgb == BiomeGenBase.desert || bgb == BiomeGenBase.jungle
                     || bgb == BiomeGenBase.jungleHills || bgb == BiomeGenBase.ocean)
             {
-                System.out.println("test " + new BlockPos(randPosX, randPosY, randPosZ));
-                System.out.println(new BlockPos(randPosX, randPosY, randPosZ));
                 (new WorldGenMinable(PokecubeItems.getBlock("fossilstone").getDefaultState(), random.nextInt(3) + 3))
                         .generate(world, random, new BlockPos(randPosX, randPosY, randPosZ));
             }

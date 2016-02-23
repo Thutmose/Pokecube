@@ -484,15 +484,9 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
     }
 
     @Override
-    public HashMap<String, Animation> getAnimations()
-    {
-        return animations;
-    }
-
-    @Override
     public boolean hasPhase(String phase)
     {
-        return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || getAnimations().containsKey(phase);
+        return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || animations.containsKey(phase);
     }
 
     public static class Vector5

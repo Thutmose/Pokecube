@@ -1,11 +1,8 @@
 package pokecube.modelloader.client.custom.model;
 
-import java.util.HashMap;
-
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.modelloader.client.tabula.components.Animation;
 
 public interface IModelRenderer<T extends EntityLiving>
 {
@@ -19,8 +16,6 @@ public interface IModelRenderer<T extends EntityLiving>
     void setPhase(String phase);
 
     IPartTexturer getTexturer();
-
-    HashMap<String, Animation> getAnimations();
 
     boolean hasPhase(String phase);
 }

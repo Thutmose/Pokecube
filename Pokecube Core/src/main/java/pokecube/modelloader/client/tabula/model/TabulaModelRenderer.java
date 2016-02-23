@@ -1,7 +1,5 @@
 package pokecube.modelloader.client.tabula.model;
 
-import java.util.HashMap;
-
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -21,7 +19,6 @@ import pokecube.modelloader.client.custom.model.IModelRenderer;
 import pokecube.modelloader.client.custom.model.IPartTexturer;
 import pokecube.modelloader.client.tabula.TabulaPackLoader;
 import pokecube.modelloader.client.tabula.TabulaPackLoader.TabulaModelSet;
-import pokecube.modelloader.client.tabula.components.Animation;
 import pokecube.modelloader.client.tabula.components.ModelJson;
 import pokecube.modelloader.client.tabula.model.tabula.TabulaModel;
 import pokecube.modelloader.client.tabula.model.tabula.TabulaModelParser;
@@ -184,12 +181,6 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
     public IPartTexturer getTexturer()
     {
         return set.texturer;
-    }
-
-    @Override
-    public HashMap<String, Animation> getAnimations()
-    {
-        return set.loadedAnimations;
     }
 
     @Override

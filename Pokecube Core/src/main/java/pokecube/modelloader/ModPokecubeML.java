@@ -34,7 +34,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.modelloader.client.custom.animation.AnimationLoader;
+import pokecube.modelloader.client.render.animation.AnimationLoader;
 import pokecube.modelloader.items.ItemModelReloader;
 
 @Mod(modid = ModPokecubeML.ID, name = "Pokecube Model Loader", version = "0.1.0", acceptedMinecraftVersions = PokecubeMod.MCVERSIONS)

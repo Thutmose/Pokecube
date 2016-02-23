@@ -3,16 +3,114 @@ package pokecube.modelloader.client.render.smd;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import pokecube.modelloader.client.render.model.Vector6f;
+import org.lwjgl.util.vector.Matrix4f;
+
+import pokecube.modelloader.client.render.model.VectorMath;
+import pokecube.modelloader.client.render.smd.Skeleton.Bone;
 
 public class SkeletonAnimation
 {
-    ArrayList<SkeletonFrame> frames;
+    public final Skeleton    skeleton;
+    public int               currentIndex = 0;
+    public int               lastIndex;
+    public int               frameCount;
+    public String            animationName;
+    ArrayList<SkeletonFrame> frames       = new ArrayList<>();
+
+    public SkeletonAnimation(Skeleton skeleton)
+    {
+        this.skeleton = skeleton;
+    }
+
+    public void reform()
+    {
+        int rootID = 0;
+        for (int i = 0; i < this.frames.size(); i++)
+        {
+            SkeletonFrame frame = (SkeletonFrame) this.frames.get(i);
+            frame.setAngles(rootID, 0.0F);
+            frame.reform();
+        }
+    }
+
+    public void nextFrame()
+    {
+        if (this.currentIndex == this.frameCount - 1)
+        {
+            this.currentIndex = 0;
+        }
+        else
+        {
+            this.currentIndex += 1;
+        }
+    }
+
+    public int getNumFrames()
+    {
+        return this.frames.size();
+    }
+
+    public void setCurrentFrame(int i)
+    {
+        if (this.lastIndex != i)
+        {
+            this.currentIndex = i;
+            this.lastIndex = i;
+        }
+    }
 
     static public class SkeletonFrame
     {
-        int                        time;
+        public final SkeletonAnimation animation;
+        final int                      time;
         /** Map of Bone Id -> Position + Rotation. */
-        HashMap<Integer, Vector6f> positions;
+        HashMap<Integer, Matrix4f>     positions        = new HashMap<>();
+        HashMap<Integer, Matrix4f>     inversePositions = new HashMap<>();
+
+        public SkeletonFrame(int time, SkeletonAnimation animation)
+        {
+            this.time = time;
+            this.animation = animation;
+        }
+
+        public void addFromLine(String line)
+        {
+            line = line.replaceAll("\\s+", " ");
+            String[] args = line.split(" ");
+            int id = Integer.parseInt(args[0]);
+            Matrix4f matrix = VectorMath.fromVector6f(Float.parseFloat(args[1]), Float.parseFloat(args[2]),
+                    Float.parseFloat(args[3]), Float.parseFloat(args[4]), Float.parseFloat(args[5]),
+                    Float.parseFloat(args[6]));
+            positions.put(id, matrix);
+            inversePositions.put(id, Matrix4f.invert(matrix, null));
+        }
+
+        public String toString()
+        {
+            return time + "=" + positions;
+        }
+
+        public void setAngles(int id, float degrees)
+        {
+            float radians = (float) Math.toRadians(degrees);
+            Matrix4f rotator = VectorMath.fromVector6f(0.0F, 0.0F, 0.0F, radians, 0.0F, 0.0F);
+            Matrix4f.mul(rotator, this.positions.get(id), this.positions.get(id));
+            Matrix4f.mul(Matrix4f.invert(rotator, null), this.inversePositions.get(id), this.inversePositions.get(id));
+        }
+
+        public void reform()
+        {
+            for (Integer i : positions.keySet())
+            {
+                Bone bone = this.animation.skeleton.getBone(i);
+                if (bone.parent != null)
+                {
+                    Matrix4f temp = Matrix4f.mul((Matrix4f) this.positions.get(bone.parent.id),
+                            (Matrix4f) this.positions.get(i), null);
+                    this.positions.put(i, temp);
+                    this.inversePositions.put(i, Matrix4f.invert(temp, null));
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.custom.x3d;
+package pokecube.modelloader.client.custom.model;
 
 public class Vertex
 {

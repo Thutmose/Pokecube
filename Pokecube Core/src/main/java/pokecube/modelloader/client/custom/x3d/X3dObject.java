@@ -11,6 +11,7 @@ import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.custom.model.IExtendedModelPart;
 import pokecube.modelloader.client.custom.model.IPartTexturer;
 import pokecube.modelloader.client.custom.model.IRetexturableModel;
+import pokecube.modelloader.client.custom.model.Vertex;
 import thut.api.maths.Vector3;
 
 public class X3dObject implements IExtendedModelPart, IRetexturableModel

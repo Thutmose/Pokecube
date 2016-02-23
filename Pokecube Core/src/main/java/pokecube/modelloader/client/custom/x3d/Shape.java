@@ -9,6 +9,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import pokecube.modelloader.client.custom.model.IPartTexturer;
+import pokecube.modelloader.client.custom.model.TextureCoordinate;
+import pokecube.modelloader.client.custom.model.Vertex;
 
 public class Shape
 {

@@ -20,7 +20,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class X3dXMLParser
 {
-
     HashMap<String, HashMap<String, String>> partTranslations;
     HashMap<String, HashMap<String, String>> partPoints;
     HashMap<String, ArrayList<String>>       partChildren;

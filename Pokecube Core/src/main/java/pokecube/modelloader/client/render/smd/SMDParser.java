@@ -14,42 +14,28 @@ import pokecube.modelloader.client.render.smd.Triangles.Triangle;
 public class SMDParser
 {
     // private ResourceLocation resource;
-    private SMDModel model;
+    public SMDModel model;
 
-    public static void main(String[] args)
-    {
-        new SMDParser(new File("./Cube.smd"));
-    }
-
-    // public SMDParser(ResourceLocation model)
     public SMDParser(File model)
     {
-        // this.resource = model;
         InputStream stream = null;
         try
         {
             stream = new FileInputStream(model);
-            // IResource res =
-            // Minecraft.getMinecraft().getResourceManager().getResource(resource);
-            // stream = res.getInputStream();
-            parse(stream);
+            parseModel(stream);
             stream.close();
         }
         catch (IOException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        finally
-        {
         }
     }
 
-    public void parse(InputStream stream) throws IOException
+    public SMDModel parseModel(InputStream stream) throws IOException
     {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-
         // Read first line, it is always "version 1" anyway.
+        model = new SMDModel();
         String line = reader.readLine();
         Skeleton skelly = null;
         SkeletonFrame currentFrame = null;
@@ -77,20 +63,20 @@ public class SMDParser
                         skelly = new Skeleton();
                         triangles = new Triangles(skelly);
                     }
-                    Bone bone = new Bone(line);
+                    Bone bone = new Bone(line, skelly);
                     skelly.addBone(bone);
                 }
                 else if (section.equals("skeleton"))
                 {
-                    if (skelly.defaultPose == null)
+                    if (skelly.pose == null)
                     {
-                        skelly.defaultPose = new SkeletonAnimation(skelly);
+                        skelly.pose = new SkeletonAnimation(skelly);
+                        model.poses.put("default", skelly.pose);
                     }
                     if (line.contains("time"))
                     {
-                        currentFrame = new SkeletonFrame(Integer.parseInt(line.split(" ")[1].trim()),
-                                skelly.defaultPose);
-                        skelly.defaultPose.frames.add(currentFrame);
+                        currentFrame = new SkeletonFrame(Integer.parseInt(line.split(" ")[1].trim()), skelly.pose);
+                        skelly.pose.frames.add(currentFrame);
                     }
                     else
                     {
@@ -119,9 +105,49 @@ public class SMDParser
                 }
             }
         }
-        skelly.initChildren();
-        System.out.println(skelly.boneMap);
-        System.out.println(skelly.defaultPose.frames);
-        System.out.println(triangles.triangles.size());
+        model.skeleton = skelly;
+        model.triangles = triangles;
+        skelly.init();
+        return model;
+    }
+
+    public void parseAnimation(InputStream stream, String name) throws IOException
+    {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        // Read first line, it is always "version 1" anyway.
+        String line = reader.readLine();
+        Skeleton skelly = model.skeleton;
+        SkeletonAnimation anim = new SkeletonAnimation(skelly);
+        SkeletonFrame currentFrame = null;
+        String section = "";
+        boolean end = true;
+        while ((line = reader.readLine()) != null)
+        {
+            if (end)
+            {
+                section = line;
+                end = false;
+            }
+            else if (line.equals("end"))
+            {
+                end = true;
+            }
+            else
+            {
+                if (section.equals("skeleton"))
+                {
+                    if (line.contains("time"))
+                    {
+                        currentFrame = new SkeletonFrame(Integer.parseInt(line.split(" ")[1].trim()), anim);
+                        anim.frames.add(currentFrame);
+                    }
+                    else
+                    {
+                        currentFrame.addFromLine(line);
+                    }
+                }
+            }
+        }
+        model.poses.put(name, anim);
     }
 }

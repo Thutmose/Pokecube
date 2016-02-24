@@ -13,7 +13,7 @@ public class Triangles
 {
     ArrayList<Triangle> triangles = new ArrayList<>();
     final Skeleton      skeleton;
-    
+
     public Triangles(Skeleton skeleton)
     {
         this.skeleton = skeleton;
@@ -22,7 +22,7 @@ public class Triangles
     public void render()
     {
         GL11.glPushMatrix();
-        GL11.glBegin(4);
+        GL11.glBegin(GL11.GL_TRIANGLES);
         boolean smooth = true;
         for (Triangle t : triangles)
         {
@@ -45,7 +45,7 @@ public class Triangles
         BoneVertex[]        vertices      = new BoneVertex[3];
         Vector3f            faceNormal;
         TextureCoordinate[] uvs           = new TextureCoordinate[3];
-        int[]               links         = new int[3];
+        float[]             links         = new float[3];
         int[]               boneIds       = new int[3];
         float[]             weights       = new float[3];
         int                 toAdd         = 0;
@@ -72,13 +72,25 @@ public class Triangles
             String[] args = line.split(" ");
             int boneId = Integer.parseInt(args[0]);
             parentBoneIds[toAdd] = boneId;
-            uvs[toAdd] = new TextureCoordinate(Float.parseFloat(args[6]), Float.parseFloat(args[7]), 0);
-            links[toAdd] = Integer.parseInt(args[8]);
-            boneIds[toAdd] = boneId = Integer.parseInt(args[9]);
-            weights[toAdd] = Float.parseFloat(args[10]);
-            vertices[toAdd] = new BoneVertex(Float.parseFloat(args[1]), Float.parseFloat(args[2]),
+            uvs[toAdd] = new TextureCoordinate(Float.parseFloat(args[7]), Float.parseFloat(args[8]), 0);
+            links[toAdd] = Float.parseFloat(args[9]);
+            boneIds[toAdd] = boneId = Integer.parseInt(args[10]);
+            float weight = weights[toAdd] = Float.parseFloat(args[11]);
+
+            BoneVertex vertex = new BoneVertex(Float.parseFloat(args[1]), Float.parseFloat(args[2]),
                     Float.parseFloat(args[3]), Float.parseFloat(args[4]), Float.parseFloat(args[5]),
                     Float.parseFloat(args[6]), boneId);
+
+            triangles.skeleton.getBone(boneId).vertices.put(vertex, weight);
+
+            if (args.length > 12)
+            {
+                boneId = Integer.parseInt(args[12]);
+                weight = weights[toAdd] = Float.parseFloat(args[13]);
+                triangles.skeleton.getBone(boneId).vertices.put(vertex, weight);
+            }
+
+            vertices[toAdd] = vertex;
             toAdd++;
         }
 

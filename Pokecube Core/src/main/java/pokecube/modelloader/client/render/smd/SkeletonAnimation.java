@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.lwjgl.util.vector.Matrix4f;
 
+import pokecube.modelloader.client.render.model.Vector6f;
 import pokecube.modelloader.client.render.model.VectorMath;
 import pokecube.modelloader.client.render.smd.Skeleton.Bone;
 
@@ -24,24 +25,23 @@ public class SkeletonAnimation
 
     public void reform()
     {
-        int rootID = 0;
         for (int i = 0; i < this.frames.size(); i++)
         {
             SkeletonFrame frame = (SkeletonFrame) this.frames.get(i);
-            frame.setAngles(rootID, 0.0F);
+            frame.setAngles(0, 0.0F);
             frame.reform();
         }
     }
 
     public void nextFrame()
     {
-        if (this.currentIndex == this.frameCount - 1)
+        if (this.currentIndex >= this.frames.size() - 1)
         {
             this.currentIndex = 0;
         }
         else
         {
-            this.currentIndex += 1;
+            this.currentIndex++;
         }
     }
 
@@ -54,8 +54,29 @@ public class SkeletonAnimation
     {
         if (this.lastIndex != i)
         {
+            this.lastIndex = currentIndex;
             this.currentIndex = i;
-            this.lastIndex = i;
+        }
+        if (currentIndex >= getNumFrames())
+        {
+            currentIndex = 0;
+            lastIndex = getNumFrames() - 1;
+            skeleton.reset();
+        }
+    }
+
+    public void precalculateAnimation()
+    {
+        skeleton.reset();
+        for (int i = 0; i < this.frames.size(); i++)
+        {
+            SkeletonFrame frame = this.frames.get(i);
+            for (Integer j : skeleton.boneMap.keySet())
+            {
+                Bone bone = skeleton.boneMap.get(j);
+                Matrix4f animated = frame.positions.get(j);
+                bone.preloadAnimation(frame, animated);
+            }
         }
     }
 
@@ -66,6 +87,7 @@ public class SkeletonAnimation
         /** Map of Bone Id -> Position + Rotation. */
         HashMap<Integer, Matrix4f>     positions        = new HashMap<>();
         HashMap<Integer, Matrix4f>     inversePositions = new HashMap<>();
+        HashMap<Integer, Vector6f>     transforms       = new HashMap<>();
 
         public SkeletonFrame(int time, SkeletonAnimation animation)
         {
@@ -78,9 +100,15 @@ public class SkeletonAnimation
             line = line.replaceAll("\\s+", " ");
             String[] args = line.split(" ");
             int id = Integer.parseInt(args[0]);
-            Matrix4f matrix = VectorMath.fromVector6f(Float.parseFloat(args[1]), Float.parseFloat(args[2]),
-                    Float.parseFloat(args[3]), Float.parseFloat(args[4]), Float.parseFloat(args[5]),
-                    Float.parseFloat(args[6]));
+            Vector6f vec6 = new Vector6f(
+
+            Float.parseFloat(args[1]), Float.parseFloat(args[3]), Float.parseFloat(args[2]),
+
+            Float.parseFloat(args[4]), Float.parseFloat(args[6]), Float.parseFloat(args[5]));
+
+            vec6.clean();
+            Matrix4f matrix = VectorMath.fromVector6f(vec6);
+            transforms.put(id, vec6);
             positions.put(id, matrix);
             inversePositions.put(id, Matrix4f.invert(matrix, null));
         }

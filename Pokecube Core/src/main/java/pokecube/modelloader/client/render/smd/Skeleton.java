@@ -1,18 +1,21 @@
 package pokecube.modelloader.client.render.smd;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
+import pokecube.modelloader.client.render.model.Vector6f;
+import pokecube.modelloader.client.render.model.VectorMath;
 import pokecube.modelloader.client.render.model.Vertex;
+import pokecube.modelloader.client.render.smd.SkeletonAnimation.SkeletonFrame;
 
 public class Skeleton
 {
-    HashMap<Integer, Bone> boneMap = new HashMap<>();
-    SkeletonAnimation      defaultPose;
+    public HashMap<Integer, Bone> boneMap = new HashMap<>();
+    public SkeletonAnimation      pose;
 
     public void addBone(Bone bone)
     {
@@ -30,14 +33,43 @@ public class Skeleton
         for (Bone b : boneMap.values())
         {
             b.reset();
-            for (BoneVertex v : b.vertices)
+            for (BoneVertex v : b.vertices.keySet())
             {
                 v.reset();
             }
         }
     }
 
-    public void initChildren()
+    public void setPose(SkeletonAnimation pose)
+    {
+        this.pose = pose;
+    }
+
+    public void applyPose()
+    {
+        for (Bone b : boneMap.values())
+        {
+            if (b.parent == null) b.deform();
+        }
+        for (Bone b : boneMap.values())
+        {
+            b.applyDeform();
+        }
+    }
+
+    public void applyChange()
+    {
+        for (Bone b : boneMap.values())
+        {
+            b.reformChildren();
+            for (BoneVertex v : b.vertices.keySet())
+            {
+                v.applyDeformation();
+            }
+        }
+    }
+
+    public void init()
     {
         for (Bone bone : boneMap.values())
         {
@@ -47,56 +79,149 @@ public class Skeleton
                 bone.parent = parent;
                 parent.children.add(bone);
             }
+            SkeletonFrame frame = pose.frames.get(0);
+            for(Integer i: frame.transforms.keySet())
+            {
+                Vector6f trans = frame.transforms.get(i);
+                bone.setRest(VectorMath.fromVector6f(trans));
+                bone.invertRestMatrix();
+            }
         }
     }
 
     public static class Bone
     {
-        final int                 id;
-        final int                 parentId;
-        final String              name;
-        final HashSet<Bone>       children = new HashSet<>();
-        final HashSet<BoneVertex> vertices = new HashSet<>();
-        public Matrix4f           deform   = new Matrix4f();
-        Bone                      parent;
+        public final int                            id;
+        public final int                            parentId;
+        final String                                name;
+        public final HashSet<Bone>                  children           = new HashSet<>();
+        public final HashMap<BoneVertex, Float>     vertices           = new HashMap<>();
+        public Matrix4f                             rest               = new Matrix4f();
+        public Matrix4f                             restInverse        = new Matrix4f();
+        public Matrix4f                             deform             = new Matrix4f();
+        public Matrix4f                             deformInverse      = new Matrix4f();
+        public HashMap<String, ArrayList<Matrix4f>> animatedTransforms = new HashMap<>();
+        public Bone                                 parent;
+        final Skeleton                              skeleton;
 
-        public Bone(int id, int parentId, String name)
+        public Bone(int id, int parentId, String name, Skeleton skeleton)
         {
+            this.skeleton = skeleton;
             this.id = id;
             this.parentId = parentId;
             this.name = name;
         }
 
-        public Bone(String line)
+        public Bone(String line, Skeleton skeleton)
         {
+            this.skeleton = skeleton;
             String[] args = parse(line);
             id = Integer.parseInt(args[0]);
             name = args[1];
             parentId = Integer.parseInt(args[2]);
         }
 
-        String[] parse(String line)
+        public void reformChildren()
         {
-            String[] ret = new String[3];
+            for (Bone child : this.children)
+            {
+                child.reform(this.rest);
+            }
+        }
 
-            int indexQuoteStart = line.indexOf("\"");
-            int indexQuoteEnd = line.lastIndexOf("\"");
+        private void reform(Matrix4f parentMatrix)
+        {
+            this.rest = Matrix4f.mul(parentMatrix, this.rest, null);
+            reformChildren();
+        }
 
-            ret[0] = line.substring(0, indexQuoteStart - 1);
-            ret[1] = line.substring(indexQuoteStart + 1, indexQuoteEnd);
-            ret[2] = line.substring(indexQuoteEnd + 2);
-            System.out.println(Arrays.toString(ret));
-            return ret;
+        public void invertRestMatrix()
+        {
+            this.restInverse = Matrix4f.invert(this.rest, null);
         }
 
         public void reset()
         {
+            deform.setIdentity();
+        }
 
+        public void setRest(Matrix4f resting)
+        {
+            this.rest = resting;
+        }
+
+        String[] parse(String line)
+        {
+            String[] ret = new String[3];
+            int indexQuoteStart = line.indexOf("\"");
+            int indexQuoteEnd = line.lastIndexOf("\"");
+            ret[0] = line.substring(0, indexQuoteStart - 1);
+            ret[1] = line.substring(indexQuoteStart + 1, indexQuoteEnd);
+            ret[2] = line.substring(indexQuoteEnd + 2);
+            return ret;
         }
 
         public String toString()
         {
             return id + " " + name + " " + parentId;
+        }
+
+        public void deform()
+        {
+            SkeletonAnimation frame = skeleton.pose;
+            if (frame != null && parent != null)
+            {
+                ArrayList<Matrix4f> precalc = this.animatedTransforms.get(frame.animationName);
+                Matrix4f animated = precalc.get(frame.currentIndex);
+                Matrix4f dAnimated = Matrix4f.mul(animated, this.restInverse, null);
+                deform = Matrix4f.mul(deform, dAnimated, deform);
+                deformInverse = Matrix4f.invert(deform, deformInverse);
+            }
+            else
+            {
+                reset();
+            }
+            deformChildren();
+        }
+
+        private void deformChildren()
+        {
+            for (Bone b : children)
+            {
+                b.deform();
+            }
+        }
+
+        public void applyDeform()
+        {
+            for (BoneVertex v : vertices.keySet())
+            {
+                v.applyTransform(deform, vertices.get(v));
+            }
+        }
+
+        public void preloadAnimation(SkeletonFrame key, Matrix4f animated)
+        {
+            ArrayList<Matrix4f> transforms;
+            if (this.animatedTransforms.containsKey(key.animation.animationName))
+            {
+                transforms = this.animatedTransforms.get(key.animation.animationName);
+            }
+            else
+            {
+                transforms = new ArrayList<>();
+            }
+            ensureIndex(transforms, key.time);
+            transforms.set(key.time, animated);
+            this.animatedTransforms.put(key.animation.animationName, transforms);
+        }
+    }
+
+    public static void ensureIndex(ArrayList<?> a, int i)
+    {
+        while (a.size() <= i)
+        {
+            a.add(null);
         }
     }
 
@@ -106,7 +231,6 @@ public class Skeleton
         public Vector4f        positionDeform = new Vector4f();
         private final Vector4f originalNormal;
         public Vector4f        normalDeform   = new Vector4f();
-        public final int       id;
         public float           xn;
         public float           yn;
         public float           zn;
@@ -119,7 +243,6 @@ public class Skeleton
             this.zn = zn;
             this.originalPos = new Vector4f(x, y, z, 1.0F);
             this.originalNormal = new Vector4f(xn, yn, zn, 0.0F);
-            this.id = id;
         }
 
         public BoneVertex(BoneVertex vertex)
@@ -130,7 +253,6 @@ public class Skeleton
             this.zn = vertex.zn;
             this.originalPos = new Vector4f(vertex.originalPos);
             this.originalNormal = new Vector4f(vertex.originalNormal);
-            this.id = vertex.id;
             this.positionDeform = vertex.positionDeform;
             this.normalDeform = vertex.normalDeform;
         }
@@ -141,17 +263,16 @@ public class Skeleton
             this.normalDeform.set(originalNormal);
         }
 
-        public void applyModified(Bone bone, float weight)
+        public void applyTransform(Matrix4f transform, float weight)
         {
-            Matrix4f modified = bone.deform;
-            if (modified != null)
+            if (transform != null)
             {
-                Vector4f locTemp = Matrix4f.transform(modified, this.originalPos, null);
-                Vector4f normalTemp = Matrix4f.transform(modified, this.originalNormal, null);
-                locTemp.scale(weight);
-                normalTemp.scale(weight);
-                Vector4f.add(locTemp, this.positionDeform, this.positionDeform);
-                Vector4f.add(normalTemp, this.normalDeform, this.normalDeform);
+                Vector4f loc = Matrix4f.transform(transform, this.originalPos, null);
+                Vector4f normal = Matrix4f.transform(transform, this.originalNormal, null);
+                loc.scale(weight);
+                normal.scale(weight);
+                Vector4f.add(loc, this.positionDeform, this.positionDeform);
+                Vector4f.add(normal, this.normalDeform, this.normalDeform);
             }
         }
 
@@ -181,6 +302,11 @@ public class Skeleton
                 this.yn = this.normalDeform.y;
                 this.zn = this.normalDeform.z;
             }
+        }
+
+        public String toString()
+        {
+            return x + "," + y + "," + z;
         }
     }
 }

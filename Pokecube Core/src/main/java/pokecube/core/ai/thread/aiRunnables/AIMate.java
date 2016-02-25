@@ -41,7 +41,7 @@ public class AIMate extends AIBase
         if (world == null) return false;
 
         if (breedingMob.getLover() != null)
-            if (this.spawnBabyDelay < 60 && breedingMob.tryToBreed() && !breedingMob.getLover().isDead) return true;
+            if (this.spawnBabyDelay <= 60 && breedingMob.tryToBreed() && !breedingMob.getLover().isDead) return true;
 
         boolean isMating = pokemob.getPokemonAIState(IPokemob.MATING);
         if ((breedingMob.getLover() != null && breedingMob.getLover() instanceof IBreedingMob
@@ -52,6 +52,7 @@ public class AIMate extends AIBase
         if (breedingMob.getLover() != null)
         {
             pokemob.setPokemonAIState(IPokemob.MATING, true);
+            startTask();
             return true;
         }
         findLover();
@@ -74,14 +75,12 @@ public class AIMate extends AIBase
             return false;
         }
         pokemob.setPokemonAIState(IPokemob.MATING, true);
+        startTask();
         return true;
     }
-
-    @Override
-    public void run()
+    
+    public void startTask()
     {
-        boolean rePath = true;
-
         if (pokemob.getSexe() == IPokemob.MALE && breedingMob.getLover() != null)
         {
             Entity targetMate = breedingMob.getLover();
@@ -137,26 +136,35 @@ public class AIMate extends AIBase
         {
             IBreedingMob lover = breedingMob.getMalesForBreeding().get(0);
             breedingMob.setLover((Entity) lover);
+            
             lover.setLover(entity);
         }
+    }
+
+    @Override
+    public void run()
+    {
+        boolean rePath = true;
 
         if (breedingMob.getLover() == null) return;
 
+        double dist = entity.width * entity.width + breedingMob.getLover().width * breedingMob.getLover().width + 2;
         if (entity.getNavigator().getPath() != null)
         {
             Vector3 temp = Vector3.getNewVector();
             Vector3 temp1 = Vector3.getNewVector().set(breedingMob.getLover());
             temp.set(entity.getNavigator().getPath().getFinalPathPoint());
-            if (temp.distToSq(temp1) < 4) rePath = false;
+            if (temp.distToSq(temp1) < dist) rePath = false;
         }
         if (rePath) this.entity.getNavigator().tryMoveToEntityLiving(breedingMob.getLover(), entity.getAIMoveSpeed());
 
         this.spawnBabyDelay++;
-
-        if (this.spawnBabyDelay >= 60 && this.entity.getDistanceSqToEntity(breedingMob.getLover()) < 2.0D)
+        if (this.spawnBabyDelay >= 60 && this.entity.getDistanceSqToEntity(breedingMob.getLover()) < dist)
         {
+            System.out.println(dist+" Mate");
             breedingMob.mateWith((IBreedingMob) breedingMob.getLover());
             this.spawnBabyDelay = 0;
+            breedingMob.resetLoveStatus();
         }
         if (this.spawnBabyDelay > 200)
         {

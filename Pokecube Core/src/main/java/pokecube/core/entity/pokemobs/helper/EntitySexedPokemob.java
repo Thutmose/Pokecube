@@ -17,9 +17,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
@@ -404,24 +402,17 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
     public static class MateTask
     {
-        final EntitySexedPokemob pokemob;
-        final IBreedingMob       male;
-
-        public MateTask(EntitySexedPokemob pokemob, IBreedingMob male)
+        public MateTask(final EntitySexedPokemob pokemob, final IBreedingMob male)
         {
-            MinecraftForge.EVENT_BUS.register(this);
-            this.pokemob = pokemob;
-            this.male = male;
-        }
-
-        @SubscribeEvent
-        public void tick(WorldTickEvent evt)
-        {
-            if (evt.phase == Phase.START)
+            Runnable run = new Runnable()
             {
-                if (pokemob != null && male != null) pokemob.mate(male);
-                MinecraftForge.EVENT_BUS.unregister(this);
-            }
+                public void run()
+                {
+                    pokemob.mate(male);
+                    System.out.println(Thread.currentThread());
+                }
+            };
+            FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(run);
         }
     }
 }

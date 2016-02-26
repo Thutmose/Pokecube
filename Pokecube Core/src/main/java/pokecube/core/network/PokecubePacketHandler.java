@@ -737,159 +737,173 @@ public class PokecubePacketHandler
         public static class PokecubeMessageHandlerClient
                 implements IMessageHandler<PokecubeClientPacket, PokecubeServerPacket>
         {
-
-            public void handleClientSide(EntityPlayer player, PacketBuffer buffer)
-            {
-                byte channel = buffer.readByte();
-                byte[] message = new byte[buffer.array().length - 1];
-                for (int i = 0; i < message.length; i++)
-                {
-                    message[i] = buffer.array()[i + 1];
-                }
-                if (channel == CHOOSE1ST)
-                {
-                    handlePacketGuiChooseFirstPokemobClient(message, player);
-                }
-                else if (channel == MOVEANIMATION)
-                {
-                    handlePokemobMoveClientAnimation(message);
-                }
-                else if (channel == TERRAIN)
-                {
-                    try
-                    {
-                        NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-                        TerrainSegment t = TerrainSegment.readFromNBT(nbt);
-                        TerrainManager.getInstance().getTerrain(player.worldObj).addTerrain(t);
-
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-                else if (channel == STATS)
-                {
-                    handleStatsPacketClient(buffer, player);
-                }
-                else if (channel == TERRAINEFFECTS)
-                {
-                    TerrainSegment t = TerrainManager.getInstance().getTerrain(player.worldObj)
-                            .getTerrain(buffer.readInt(), buffer.readInt(), buffer.readInt());
-
-                    PokemobTerrainEffects effect = (PokemobTerrainEffects) t.geTerrainEffect("pokemobEffects");
-                    if (effect == null)
-                    {
-                        t.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
-                    }
-                    for (int i = 0; i < 16; i++)
-                    {
-                        effect.effects[i] = buffer.readLong();
-                    }
-                }
-                else if (channel == TELEPORTLIST)
-                {
-                    try
-                    {
-                        NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-                        PokecubeSerializer.getInstance().readPlayerTeleports(nbt);
-                        GuiTeleport.instance().refresh();
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-                else if (channel == MOVEMESSAGE)
-                {
-                    try
-                    {
-                        NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-                        int id = nbt.getInteger("id");
-                        String mess = nbt.getString("message");
-                        Entity e = player.worldObj.getEntityByID(id);
-                        if (e != null && e instanceof IPokemob)
-                        {
-                            ((IPokemob) e).displayMessageToOwner(mess);
-                        }
-                        else if (e instanceof EntityPlayer)
-                        {
-                            pokecube.core.client.gui.GuiInfoMessages.addMessage(mess);
-                        }
-
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-                else if (channel == KILLENTITY)
-                {
-                    try
-                    {
-                        NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-                        int id = nbt.getInteger("id");
-                        if (player.worldObj.getEntityByID(id) != null) player.worldObj.getEntityByID(id).setDead();
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-                else if (channel == MOVEENTITY)
-                {
-                    int id = buffer.readInt();
-                    Entity e = player.worldObj.getEntityByID(id);
-                    Vector3 v = Vector3.readFromBuff(buffer);
-
-                    if (e != null)
-                    {
-                        v.moveEntity(e);
-                    }
-                }
-                else if (channel == TELEPORTINDEX)
-                {
-                    PokecubeServerPacket packet = new PokecubeServerPacket(
-                            new byte[] { PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
-                    PokecubePacketHandler.sendToServer(packet);
-                }
-                else if (channel == CHANGEFORME)
-                {
-                    try
-                    {
-                        NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-                        int id = nbt.getInteger("id");
-                        String forme = nbt.getString("forme");
-                        if (player.worldObj.getEntityByID(id) != null)
-                        {
-                            PokedexEntry entry = ((IPokemob) player.worldObj.getEntityByID(id)).getPokedexEntry()
-                                    .getForm(forme);
-                            ((IPokemob) player.worldObj.getEntityByID(id)).setPokedexEntry(entry);
-                        }
-
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-                else if (channel == WIKIWRITE)
-                {
-                    int number = buffer.readInt();
-                    System.out.println(number);
-                    // WikiWriter.setCaptureTarget(number);
-                    // WikiWriter.beginGifCapture();//TODO re-instate this
-
-                }
-            }
-
             @Override
             public PokecubeServerPacket onMessage(PokecubeClientPacket message, MessageContext ctx)
             {
                 EntityPlayer player = PokecubeCore.getPlayer(null);
-                handleClientSide(player, message.buffer);
+                new PacketHandler(player, message.buffer);
 
                 return null;
+            }
+
+            static class PacketHandler
+            {
+                final EntityPlayer player;
+                final PacketBuffer buffer;
+
+                public PacketHandler(EntityPlayer p, PacketBuffer b)
+                {
+                    this.player = p;
+                    this.buffer = b;
+                    Runnable toRun = new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            byte channel = buffer.readByte();
+                            byte[] message = new byte[buffer.array().length - 1];
+                            for (int i = 0; i < message.length; i++)
+                            {
+                                message[i] = buffer.array()[i + 1];
+                            }
+                            if (channel == CHOOSE1ST)
+                            {
+                                handlePacketGuiChooseFirstPokemobClient(message, player);
+                            }
+                            else if (channel == MOVEANIMATION)
+                            {
+                                handlePokemobMoveClientAnimation(message);
+                            }
+                            else if (channel == TERRAIN)
+                            {
+                                try
+                                {
+                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
+                                    TerrainSegment t = TerrainSegment.readFromNBT(nbt);
+                                    TerrainManager.getInstance().getTerrain(player.worldObj).addTerrain(t);
+
+                                }
+                                catch (IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else if (channel == STATS)
+                            {
+                                handleStatsPacketClient(buffer, player);
+                            }
+                            else if (channel == TERRAINEFFECTS)
+                            {
+                                TerrainSegment t = TerrainManager.getInstance().getTerrain(player.worldObj)
+                                        .getTerrain(buffer.readInt(), buffer.readInt(), buffer.readInt());
+
+                                PokemobTerrainEffects effect = (PokemobTerrainEffects) t
+                                        .geTerrainEffect("pokemobEffects");
+                                if (effect == null)
+                                {
+                                    t.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
+                                }
+                                for (int i = 0; i < 16; i++)
+                                {
+                                    effect.effects[i] = buffer.readLong();
+                                }
+                            }
+                            else if (channel == TELEPORTLIST)
+                            {
+                                try
+                                {
+                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
+                                    PokecubeSerializer.getInstance().readPlayerTeleports(nbt);
+                                    GuiTeleport.instance().refresh();
+                                }
+                                catch (IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else if (channel == MOVEMESSAGE)
+                            {
+                                try
+                                {
+                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
+                                    int id = nbt.getInteger("id");
+                                    String mess = nbt.getString("message");
+                                    Entity e = player.worldObj.getEntityByID(id);
+                                    if (e != null && e instanceof IPokemob)
+                                    {
+                                        ((IPokemob) e).displayMessageToOwner(mess);
+                                    }
+                                    else if (e instanceof EntityPlayer)
+                                    {
+                                        pokecube.core.client.gui.GuiInfoMessages.addMessage(mess);
+                                    }
+
+                                }
+                                catch (IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else if (channel == KILLENTITY)
+                            {
+                                try
+                                {
+                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
+                                    int id = nbt.getInteger("id");
+                                    if (player.worldObj.getEntityByID(id) != null)
+                                        player.worldObj.getEntityByID(id).setDead();
+                                }
+                                catch (IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else if (channel == MOVEENTITY)
+                            {
+                                int id = buffer.readInt();
+                                Entity e = player.worldObj.getEntityByID(id);
+                                Vector3 v = Vector3.readFromBuff(buffer);
+
+                                if (e != null)
+                                {
+                                    v.moveEntity(e);
+                                }
+                            }
+                            else if (channel == TELEPORTINDEX)
+                            {
+                                PokecubeServerPacket packet = new PokecubeServerPacket(new byte[] {
+                                        PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
+                                PokecubePacketHandler.sendToServer(packet);
+                            }
+                            else if (channel == CHANGEFORME)
+                            {
+                                try
+                                {
+                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
+                                    int id = nbt.getInteger("id");
+                                    String forme = nbt.getString("forme");
+                                    if (player.worldObj.getEntityByID(id) != null)
+                                    {
+                                        PokedexEntry entry = ((IPokemob) player.worldObj.getEntityByID(id))
+                                                .getPokedexEntry().getForm(forme);
+                                        ((IPokemob) player.worldObj.getEntityByID(id)).setPokedexEntry(entry);
+                                    }
+
+                                }
+                                catch (IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else if (channel == WIKIWRITE)
+                            {
+                                int number = buffer.readInt();
+                                System.out.println(number);
+                            }
+                        }
+                    };
+                    PokecubeCore.proxy.getMainThreadListener().addScheduledTask(toRun);
+                }
             }
         }
     }
@@ -950,160 +964,178 @@ public class PokecubePacketHandler
 
         public static class PokecubeMessageHandlerServer implements IMessageHandler<PokecubeServerPacket, IMessage>
         {
-
-            public void handleServerSide(EntityPlayer player, PacketBuffer buffer)
-            {
-                byte channel = buffer.readByte();
-                byte[] message = new byte[buffer.array().length - 1];
-
-                for (int i = 0; i < message.length; i++)
-                {
-                    message[i] = buffer.array()[i + 1];
-                }
-                if (channel == CHOOSE1ST)
-                {
-                    handlePacketGuiChooseFirstPokemobServer(message, player);
-                }
-                else if (channel == 1)
-                {
-                    new Exception().printStackTrace();
-                    // handlePokemobMoveClientAnimation(message);
-                }
-                else if (channel == POKECENTER)
-                {
-                    handlePokecenterPacket(message, (EntityPlayerMP) player);
-                }
-                else if (channel == POKEMOBSPAWNER)
-                {
-                    handlePokemobSpawnerPacket(message, (EntityPlayerMP) player);
-                }
-                else if (channel == POKEDEX)
-                {
-                    byte index = buffer.readByte();
-                    if (player.getHeldItem() != null && player.getHeldItem().getItem() == PokecubeItems.pokedex
-                            && index >= 0)
-                    {
-                        player.getHeldItem().setItemDamage(index);
-                    }
-                    else
-                    {
-                        int w = buffer.readInt();
-                        float x = buffer.readFloat();
-                        float y = buffer.readFloat();
-                        float z = buffer.readFloat();
-
-                        if (index == -1)
-                        {
-                            String name = buffer.readStringFromBuffer(20);
-                            Vector4 vec = null;
-                            vec = new Vector4(x, y, z, w);
-                            if (vec != null)
-                            {
-                                PokecubeSerializer.getInstance().setTeleport(vec, player.getUniqueID().toString(),
-                                        name);
-                                player.addChatMessage(
-                                        new ChatComponentText("Set The location " + vec.toIntString() + " as " + name));
-                                PokecubeSerializer.getInstance().save();
-
-                                NBTTagCompound teletag = new NBTTagCompound();
-                                PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(), teletag);
-
-                                PokecubeClientPacket packet = new PokecubeClientPacket(
-                                        PokecubeClientPacket.TELEPORTLIST, teletag);
-                                PokecubePacketHandler.sendToClient(packet, player);
-                            }
-                        }
-                        else if (index == -2)
-                        {
-                            Vector4 vec = null;
-                            vec = new Vector4(x, y, z, w);
-                            if (vec != null)
-                            {
-                                player.addChatMessage(
-                                        new ChatComponentText("Removed The location " + vec.toIntString()));
-                                PokecubeSerializer.getInstance().unsetTeleport(vec, player.getUniqueID().toString());
-                                PokecubeSerializer.getInstance().save();
-
-                                NBTTagCompound teletag = new NBTTagCompound();
-                                PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(), teletag);
-
-                                PokecubeClientPacket packet = new PokecubeClientPacket((byte) 8, teletag);
-                                PokecubePacketHandler.sendToClient(packet, player);
-                            }
-                        }
-                    }
-                }
-                else if (channel == STATS)
-                {
-                    handleStatsPacketServer(message, player);
-                }
-                else if (channel == POKECUBEUSE)
-                {
-                    if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IPokecube)
-                    {
-                        Vector3 targetLocation = null;
-                        Entity target = null;
-                        long time = player.getEntityData().getLong("lastThrow");
-                        if (time == player.worldObj.getTotalWorldTime()) return;
-                        player.getEntityData().setLong("lastThrow", player.worldObj.getTotalWorldTime());
-
-                        if (buffer.readableBytes() == 4)
-                        {
-                            int id = buffer.readInt();
-                            target = player.worldObj.getEntityByID(id);
-                            targetLocation = Vector3.getNewVector();
-                        }
-                        else if (buffer.readableBytes() == 24)
-                        {
-                            targetLocation = Vector3.readFromBuff(buffer);
-                        }
-
-                        if (target != null && target instanceof IPokemob) targetLocation.set(target);
-
-                        boolean used = ((IPokecube) player.getHeldItem().getItem()).throwPokecube(player.worldObj,
-                                player, player.getHeldItem(), targetLocation, target);
-                        if (player.getHeldItem() != null && !(!PokecubeManager.isFilled(player.getHeldItem())
-                                && player.capabilities.isCreativeMode) && used)
-                        {
-                            player.getHeldItem().stackSize--;
-                            if (player.getHeldItem().stackSize == 0)
-                            {
-                                int current = player.inventory.currentItem;
-                                player.inventory.mainInventory[current] = null;
-                                player.inventory.markDirty();
-                            }
-                        }
-                    }
-                }
-                else if (channel == TELEPORT)
-                {
-                    int index = message[0];
-                    PokecubeSerializer.getInstance().setTeleIndex(player.getUniqueID().toString(), index);
-                    TeleDest d = PokecubeSerializer.getInstance().getTeleport(player.getUniqueID().toString());
-                    if (d == null) return;
-
-                    Vector3 loc = d.getLoc();
-                    int dim = d.getDim();
-
-                    World dest = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
-
-                    TelDestination link = new TelDestination(dest, loc.getAABB(), loc.x, loc.y, loc.z, loc.intX(),
-                            loc.intY(), loc.intZ());
-                    Transporter.teleportEntity(player, link);
-                    Transporter.teleportEntity(player, loc, dim, false);
-                }
-
-            }
-
             @Override
             public PokecubeServerPacket onMessage(PokecubeServerPacket message, MessageContext ctx)
             {
                 EntityPlayer player = ctx.getServerHandler().playerEntity;
-                handleServerSide(player, message.buffer);
-
+                new PacketHandler(player, message.buffer);
                 return null;
+            }
+
+            static class PacketHandler
+            {
+                final EntityPlayer player;
+                final PacketBuffer buffer;
+
+                public PacketHandler(EntityPlayer p, PacketBuffer b)
+                {
+                    this.player = p;
+                    this.buffer = b;
+                    Runnable toRun = new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            byte channel = buffer.readByte();
+                            byte[] message = new byte[buffer.array().length - 1];
+
+                            for (int i = 0; i < message.length; i++)
+                            {
+                                message[i] = buffer.array()[i + 1];
+                            }
+                            if (channel == CHOOSE1ST)
+                            {
+                                handlePacketGuiChooseFirstPokemobServer(message, player);
+                            }
+                            else if (channel == 1)
+                            {
+                                new Exception().printStackTrace();
+                            }
+                            else if (channel == POKECENTER)
+                            {
+                                handlePokecenterPacket(message, (EntityPlayerMP) player);
+                            }
+                            else if (channel == POKEMOBSPAWNER)
+                            {
+                                handlePokemobSpawnerPacket(message, (EntityPlayerMP) player);
+                            }
+                            else if (channel == POKEDEX)
+                            {
+                                byte index = buffer.readByte();
+                                if (player.getHeldItem() != null
+                                        && player.getHeldItem().getItem() == PokecubeItems.pokedex && index >= 0)
+                                {
+                                    player.getHeldItem().setItemDamage(index);
+                                }
+                                else
+                                {
+                                    int w = buffer.readInt();
+                                    float x = buffer.readFloat();
+                                    float y = buffer.readFloat();
+                                    float z = buffer.readFloat();
+
+                                    if (index == -1)
+                                    {
+                                        String name = buffer.readStringFromBuffer(20);
+                                        Vector4 vec = null;
+                                        vec = new Vector4(x, y, z, w);
+                                        if (vec != null)
+                                        {
+                                            PokecubeSerializer.getInstance().setTeleport(vec,
+                                                    player.getUniqueID().toString(), name);
+                                            player.addChatMessage(new ChatComponentText(
+                                                    "Set The location " + vec.toIntString() + " as " + name));
+                                            PokecubeSerializer.getInstance().save();
+
+                                            NBTTagCompound teletag = new NBTTagCompound();
+                                            PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(),
+                                                    teletag);
+
+                                            PokecubeClientPacket packet = new PokecubeClientPacket(
+                                                    PokecubeClientPacket.TELEPORTLIST, teletag);
+                                            PokecubePacketHandler.sendToClient(packet, player);
+                                        }
+                                    }
+                                    else if (index == -2)
+                                    {
+                                        Vector4 vec = null;
+                                        vec = new Vector4(x, y, z, w);
+                                        if (vec != null)
+                                        {
+                                            player.addChatMessage(
+                                                    new ChatComponentText("Removed The location " + vec.toIntString()));
+                                            PokecubeSerializer.getInstance().unsetTeleport(vec,
+                                                    player.getUniqueID().toString());
+                                            PokecubeSerializer.getInstance().save();
+
+                                            NBTTagCompound teletag = new NBTTagCompound();
+                                            PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(),
+                                                    teletag);
+
+                                            PokecubeClientPacket packet = new PokecubeClientPacket((byte) 8, teletag);
+                                            PokecubePacketHandler.sendToClient(packet, player);
+                                        }
+                                    }
+                                }
+                            }
+                            else if (channel == STATS)
+                            {
+                                handleStatsPacketServer(message, player);
+                            }
+                            else if (channel == POKECUBEUSE)
+                            {
+                                if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IPokecube)
+                                {
+                                    Vector3 targetLocation = null;
+                                    Entity target = null;
+                                    long time = player.getEntityData().getLong("lastThrow");
+                                    if (time == player.worldObj.getTotalWorldTime()) return;
+                                    player.getEntityData().setLong("lastThrow", player.worldObj.getTotalWorldTime());
+
+                                    if (buffer.readableBytes() == 4)
+                                    {
+                                        int id = buffer.readInt();
+                                        target = player.worldObj.getEntityByID(id);
+                                        targetLocation = Vector3.getNewVector();
+                                    }
+                                    else if (buffer.readableBytes() == 24)
+                                    {
+                                        targetLocation = Vector3.readFromBuff(buffer);
+                                    }
+
+                                    if (target != null && target instanceof IPokemob) targetLocation.set(target);
+
+                                    boolean used = ((IPokecube) player.getHeldItem().getItem()).throwPokecube(
+                                            player.worldObj, player, player.getHeldItem(), targetLocation, target);
+                                    if (player.getHeldItem() != null
+                                            && !(!PokecubeManager.isFilled(player.getHeldItem())
+                                                    && player.capabilities.isCreativeMode)
+                                            && used)
+                                    {
+                                        player.getHeldItem().stackSize--;
+                                        if (player.getHeldItem().stackSize == 0)
+                                        {
+                                            int current = player.inventory.currentItem;
+                                            player.inventory.mainInventory[current] = null;
+                                            player.inventory.markDirty();
+                                        }
+                                    }
+                                }
+                            }
+                            else if (channel == TELEPORT)
+                            {
+                                int index = message[0];
+                                PokecubeSerializer.getInstance().setTeleIndex(player.getUniqueID().toString(), index);
+                                TeleDest d = PokecubeSerializer.getInstance()
+                                        .getTeleport(player.getUniqueID().toString());
+                                if (d == null) return;
+
+                                Vector3 loc = d.getLoc();
+                                int dim = d.getDim();
+
+                                World dest = FMLCommonHandler.instance().getMinecraftServerInstance()
+                                        .worldServerForDimension(dim);
+
+                                TelDestination link = new TelDestination(dest, loc.getAABB(), loc.x, loc.y, loc.z,
+                                        loc.intX(), loc.intY(), loc.intZ());
+                                Transporter.teleportEntity(player, link);
+                                Transporter.teleportEntity(player, loc, dim, false);
+                            }
+                        }
+                    };
+                    PokecubeCore.proxy.getMainThreadListener().addScheduledTask(toRun);
+                }
             }
         }
     }
-
 }

@@ -3,8 +3,6 @@ package pokecube.core.client.render.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.vecmath.Vector3f;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,11 +11,9 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import thut.api.maths.Vector3;
 
 @SuppressWarnings("rawtypes")
 public class RenderPokemobs extends RenderPokemob
@@ -63,19 +59,14 @@ public class RenderPokemobs extends RenderPokemob
             if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IPokemob.SHOULDER)
                     && ((Entity) mob).ridingEntity != null)
             {
-//                entity.rotationYaw = player.rotationYaw;
-////                GlStateManager.rotate(-player.rotationYaw/2, 0, 1, 0);
-//                GlStateManager.translate(0, player.height - 0.2, 0);
-//                Vector3f vec = new Vector3f();
                 GlStateManager.popMatrix();
                 return;
             }
-             if(mob.getPokemonAIState(IPokemob.HELD))
-             {
-
-                 GlStateManager.popMatrix();
-                 return;
-             }
+            if (mob.getPokemonAIState(IPokemob.HELD) && ((Entity) mob).ridingEntity != null)
+            {
+                GlStateManager.popMatrix();
+                return;
+            }
 
             PokedexEntry entry = mob.getPokedexEntry();
             this.scale = (entry.height * mob.getSize());

@@ -7,7 +7,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -192,6 +194,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         List<?> pokemobs = minecraft.theWorld.getLoadedEntityList();
 
         List<IPokemob> ret = new ArrayList<IPokemob>();
+        Set<Integer> added = new HashSet<>();
         for (Object object : pokemobs)
         {
             if (!(object instanceof IPokemob)) continue;
@@ -203,11 +206,13 @@ public class GuiDisplayPokecubeInfo extends Gui
             {
                 owner = player.getEntityId() == pokemob.getPokemonOwner().getEntityId();
             }
+            int id = pokemob.getPokemonUID();
 
             if (owner && !pokemob.getPokemonAIState(IPokemob.SITTING) && !pokemob.getPokemonAIState(IPokemob.GUARDING)
-                    && !pokemob.getPokemonAIState(IPokemob.STAYING))
+                    && !pokemob.getPokemonAIState(IPokemob.STAYING) && !added.contains(id))
             {
                 ret.add(pokemob);
+                added.add(id);
             }
 
         }

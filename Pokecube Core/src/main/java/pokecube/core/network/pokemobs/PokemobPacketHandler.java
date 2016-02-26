@@ -6,7 +6,6 @@ import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,8 +28,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.ItemMegastone;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
@@ -43,15 +40,6 @@ public class PokemobPacketHandler
 {
     public static class MessageClient implements IMessage
     {
-
-        public static final byte MOVEUSE     = 2;
-        public static final byte MOVEMESSAGE = 3;
-        public static final byte MOVESWAP    = 4;
-        public static final byte MOVEINDEX   = 5;
-
-        public static final byte CHANGEFORM = 6;
-        public static final byte ALIVECHECK = 7;
-
         PacketBuffer buffer;
 
         public MessageClient()
@@ -99,29 +87,6 @@ public class PokemobPacketHandler
         {
             public void handleClientSide(EntityPlayer player, PacketBuffer buffer)
             {
-                byte channel = buffer.readByte();
-
-                if (player == null)
-                {
-                    System.err.println(Minecraft.getMinecraft().thePlayer + " " + channel);
-                    return;
-                }
-
-                if (channel == ALIVECHECK)
-                {
-                    int id = buffer.readInt();
-                    boolean alive = buffer.readBoolean();
-                    Entity e;
-                    if (!alive && (e = (Entity) PokecubeSerializer.getInstance().getPokemob(id)) != null)
-                    {
-                        e.setDead();
-                    }
-                    else if ((e = (Entity) PokecubeSerializer.getInstance().getPokemob(id)) != null)
-                    {
-                        Vector3 v = Vector3.readFromBuff(buffer);
-                        v.moveEntity(e);
-                    }
-                }
             }
 
             @Override
@@ -202,55 +167,43 @@ public class PokemobPacketHandler
             {
                 byte channel = buffer.readByte();
                 int id = buffer.readInt();
-                IPokemob pokemob = null;
+                final IPokemob pokemob;
 
-                if (channel != CHANGEFORM)
-                {
-                    WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
-                            .worldServerForDimension(player.dimension);
-                    pokemob = (IPokemob) world.getEntityByID(id);
-                }
-                else
-                {
-                    pokemob = PokecubeSerializer.getInstance().getPokemob(id);
-                }
+                WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
+                        .worldServerForDimension(player.dimension);
+                pokemob = (IPokemob) world.getEntityByID(id);
+                System.out.println(pokemob+" "+id);
                 if (pokemob == null) { return; }
 
-                if (channel == ALIVECHECK)
+                if (channel == RETURN)
                 {
-                    Vector3 v = Vector3.getNewVector();
-                    Entity e = (Entity) pokemob;
-                    if (e.isDead)
+                    final Entity mob = (Entity) pokemob;
+                    FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable()
                     {
-                        PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
-                        ret.writeByte(ALIVECHECK);
-                        ret.writeInt(id);
-                        ret.writeBoolean(false);
-                        MessageClient message = new MessageClient(ret);
-                        PokecubePacketHandler.sendToClient(message, player);
-                    }
-                    else
-                    {
-                        PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
-                        ret.writeByte(ALIVECHECK);
-                        ret.writeInt(id);
-                        ret.writeBoolean(true);
-                        v.set(e).writeToBuff(ret);
-                        MessageClient message = new MessageClient(ret);
-                        PokecubePacketHandler.sendToClient(message, player);
-                    }
-                }
-                else if (channel == RETURN)
-                {
-                    Entity mob = (Entity) pokemob;
-                    if (!mob.isDead)
-                    {
-                        ((IPokemob) mob).returnToPokecube();
-                    }
+                        @Override
+                        public void run()
+                        {
+                            if (!mob.isDead)
+                            {
+                                ((IPokemob) mob).returnToPokecube();
+                            }
+                        }
+                    });
                 }
                 else if (channel == JUMP)
                 {
-                    ((EntityLiving) pokemob).getJumpHelper().setJumping();
+                    final EntityLiving mob = (EntityLiving) pokemob;
+                    FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            if (!mob.isDead)
+                            {
+                                mob.getJumpHelper().setJumping();
+                            }
+                        }
+                    });
                 }
                 else if (channel == MOVEINDEX)
                 {
@@ -321,7 +274,15 @@ public class PokemobPacketHandler
                             String old = pokemob.getPokemonDisplayName();
                             if (pokemob.getPokedexEntry() == megaEntry)
                             {
-                                pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
+                                FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
+                                    }
+                                });
+
                                 megaEntry = pokemob.getPokedexEntry().baseForme;
                                 String mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.revert", old,
                                         megaEntry.getTranslatedName());
@@ -330,7 +291,15 @@ public class PokemobPacketHandler
                             else
                             {
                                 pokemob.setPokemonAIState(IPokemob.MEGAFORME, true);
-                                pokemob.megaEvolve(forme);
+                                final String form = forme;
+                                FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        pokemob.megaEvolve(form);
+                                    }
+                                });
                                 String mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.success", old,
                                         megaEntry.getTranslatedName());
                                 player.addChatMessage(new ChatComponentText(mess));

@@ -664,6 +664,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
         fallDistance = 0;
         this.extinguish();
         this.setFlag(0, false);
+        this.setPokemonAIState(EVOLVING, false);
     }
 
     @Override

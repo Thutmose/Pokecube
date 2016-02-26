@@ -837,7 +837,6 @@ public class PokecubePacketHandler
                                     {
                                         pokecube.core.client.gui.GuiInfoMessages.addMessage(mess);
                                     }
-
                                 }
                                 catch (IOException e)
                                 {

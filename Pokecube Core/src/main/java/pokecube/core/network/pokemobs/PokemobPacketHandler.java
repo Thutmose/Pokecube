@@ -85,14 +85,9 @@ public class PokemobPacketHandler
 
         public static class MessageHandlerClient implements IMessageHandler<MessageClient, MessageServer>
         {
-            public void handleClientSide(EntityPlayer player, PacketBuffer buffer)
-            {
-            }
-
             @Override
             public MessageServer onMessage(MessageClient message, MessageContext ctx)
             {
-                handleClientSide(PokecubeCore.getPlayer(null), message.buffer);
                 return null;
             }
         }
@@ -163,276 +158,257 @@ public class PokemobPacketHandler
 
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
         {
-            public void handleServerSide(EntityPlayer player, PacketBuffer buffer)
-            {
-                byte channel = buffer.readByte();
-                int id = buffer.readInt();
-                final IPokemob pokemob;
-
-                WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
-                        .worldServerForDimension(player.dimension);
-                pokemob = (IPokemob) world.getEntityByID(id);
-                System.out.println(pokemob+" "+id);
-                if (pokemob == null) { return; }
-
-                if (channel == RETURN)
-                {
-                    final Entity mob = (Entity) pokemob;
-                    FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            if (!mob.isDead)
-                            {
-                                ((IPokemob) mob).returnToPokecube();
-                            }
-                        }
-                    });
-                }
-                else if (channel == JUMP)
-                {
-                    final EntityLiving mob = (EntityLiving) pokemob;
-                    FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            if (!mob.isDead)
-                            {
-                                mob.getJumpHelper().setJumping();
-                            }
-                        }
-                    });
-                }
-                else if (channel == MOVEINDEX)
-                {
-                    byte moveIndex = buffer.readByte();
-                    pokemob.setMoveIndex(moveIndex);
-                }
-                else if (channel == CHANGEFORM)
-                {
-                    if (pokemob.getPokemonAIState(IMoveConstants.EVOLVING)) return;
-
-                    int happiness = pokemob.getHappiness();
-                    ItemStack held = ((EntityLiving) pokemob).getHeldItem();
-                    if (held == null || !(held.getItem() instanceof ItemMegastone)
-                            || (happiness < 255 && !player.capabilities.isCreativeMode))
-                    {
-                        String mess = "";
-                        if (held == null || !(held.getItem() instanceof ItemMegastone))
-                            mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.nostone",
-                                    pokemob.getPokemonDisplayName());
-                        else StatCollector.translateToLocalFormatted("pokemob.megaevolve.nothappy",
-                                pokemob.getPokemonDisplayName());
-                        player.addChatMessage(new ChatComponentText(mess));
-                        return;
-                    }
-                    NBTTagCompound tag = held.getTagCompound();
-                    if (tag == null)
-                    {
-                        held.setTagCompound(tag = new NBTTagCompound());
-                    }
-                    String stackname = tag.getString("pokemon");
-
-                    String forme = null;
-
-                    if (!(stackname == null || stackname.isEmpty()))
-                    {
-                        forme = stackname;
-                    }
-                    if (forme == null)
-                    {
-                        List<String> keys = new ArrayList<String>(pokemob.getPokedexEntry().forms.keySet());
-                        Collections.shuffle(keys);
-                        for (String s : keys)
-                        {
-                            String name = pokemob.getPokedexEntry().forms.get(s).getName();
-                            String[] args = name.split(" ");
-                            if (args.length > 1)
-                            {
-                                String mega = args[1];
-                                if (mega.toLowerCase().contains("mega"))
-                                {
-                                    forme = s;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (forme != null)
-                    {
-                        if (stackname == null || stackname.isEmpty())
-                        {
-                            tag.setString("pokemon", forme);
-                            held.setTagCompound(tag);
-                        }
-
-                        PokedexEntry megaEntry = Database.getEntry(forme);
-                        if (megaEntry.getBaseName().equals(pokemob.getPokedexEntry().getBaseName()))
-                        {
-                            String old = pokemob.getPokemonDisplayName();
-                            if (pokemob.getPokedexEntry() == megaEntry)
-                            {
-                                FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable()
-                                {
-                                    @Override
-                                    public void run()
-                                    {
-                                        pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
-                                    }
-                                });
-
-                                megaEntry = pokemob.getPokedexEntry().baseForme;
-                                String mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.revert", old,
-                                        megaEntry.getTranslatedName());
-                                player.addChatMessage(new ChatComponentText(mess));
-                            }
-                            else
-                            {
-                                pokemob.setPokemonAIState(IPokemob.MEGAFORME, true);
-                                final String form = forme;
-                                FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable()
-                                {
-                                    @Override
-                                    public void run()
-                                    {
-                                        pokemob.megaEvolve(form);
-                                    }
-                                });
-                                String mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.success", old,
-                                        megaEntry.getTranslatedName());
-                                player.addChatMessage(new ChatComponentText(mess));
-                            }
-                        }
-                        else
-                        {
-                            String mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.wrongstone",
-                                    pokemob.getPokemonDisplayName());
-                            player.addChatMessage(new ChatComponentText(mess));
-                        }
-                    }
-                    else
-                    {
-                        String mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.nomega",
-                                pokemob.getPokemonDisplayName());
-                        player.addChatMessage(new ChatComponentText(mess));
-                    }
-
-                }
-                else if (channel == MOVESWAP)
-                {
-                    byte moveIndex0 = buffer.readByte();
-                    byte moveIndex1 = buffer.readByte();
-                    int num = buffer.readInt();
-                    pokemob.setLeaningMoveIndex(num);
-                    pokemob.exchangeMoves(moveIndex0, moveIndex1);
-                }
-                else if (channel == NICKNAME)
-                {
-
-                    boolean OT = pokemob.getPokemonOwnerName() == null
-                            || (PokecubeMod.fakeUUID.equals(pokemob.getOriginalOwnerUUID()))
-                            || (pokemob.getPokemonOwnerName().equals(pokemob.getOriginalOwnerUUID().toString()));
-
-                    if (!OT && pokemob.getPokemonOwner() != null)
-                    {
-                        OT = pokemob.getPokemonOwner().getUniqueID().equals(pokemob.getOriginalOwnerUUID());
-                    }
-                    if (!OT)
-                    {
-                        if (pokemob.getPokemonOwner() != null)
-                        {
-                            pokemob.getPokemonOwner()
-                                    .addChatMessage(new ChatComponentText("Cannot rename a traded pokemob"));
-                        }
-                    }
-                    else
-                    {
-                        byte[] string = new byte[buffer.readByte() + 1];
-                        for (int i = 0; i < string.length; i++)
-                        {
-                            string[i] = buffer.readByte();
-                        }
-                        String name = ChatAllowedCharacters.filterAllowedCharacters(new String(string));
-                        pokemob.setPokemonNickname(name);
-                    }
-                }
-                else if (channel == STANCE)
-                {
-                    byte dir = buffer.readByte();
-                    byte type = 0;
-                    if (dir > 0)
-                    {
-                        if (pokemob.getPokemonAIState(IPokemob.STAYING))
-                        {
-                            type = 3;
-                        }
-                        else if (pokemob.getPokemonAIState(IPokemob.GUARDING))
-                        {
-                            type = 2;
-                        }
-                        else
-                        {
-                            type = 1;
-                        }
-                    }
-                    else
-                    {
-                        if (pokemob.getPokemonAIState(IPokemob.STAYING))
-                        {
-                            type = 1;
-                        }
-                        else if (pokemob.getPokemonAIState(IPokemob.GUARDING))
-                        {
-                            type = 3;
-                        }
-                        else
-                        {
-                            type = 2;
-                        }
-                    }
-                    if (dir == 4) type = 4;
-                    if (type == 1)
-                    {
-                        pokemob.setPokemonAIState(IPokemob.GUARDING, true);
-                        TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity((Entity) pokemob);
-                        Vector3 mid = terrain.getCentre();
-                        pokemob.setHome(mid.intX(), mid.intY(), mid.intZ(), 16);
-                        pokemob.setPokemonAIState(IPokemob.STAYING, false);
-                        if (pokemob.getGuardAI() != null)
-                        {
-                            ((GuardAI) pokemob.getGuardAI()).setTimePeriod(TimePeriod.fullDay);
-                            ((GuardAI) pokemob.getGuardAI()).setPos(mid.getPos());
-                        }
-                    }
-                    else if (type == 2)
-                    {
-                        pokemob.setPokemonAIState(IPokemob.GUARDING, false);
-                        if (pokemob.getGuardAI() != null)
-                            ((GuardAI) pokemob.getGuardAI()).setTimePeriod(TimePeriod.fullDay);
-                        pokemob.setPokemonAIState(IPokemob.STAYING, true);
-                    }
-                    else if (type == 3)
-                    {
-                        pokemob.setPokemonAIState(IPokemob.STAYING, false);
-                        if (pokemob.getGuardAI() != null)
-                            ((GuardAI) pokemob.getGuardAI()).setTimePeriod(new TimePeriod(0, 0));
-                        pokemob.setPokemonAIState(IPokemob.GUARDING, false);
-                    }
-                    else if (dir == 4)
-                    {
-                        pokemob.setPokemonAIState(IPokemob.SITTING, !pokemob.getPokemonAIState(IPokemob.SITTING));
-                    }
-                }
-            }
-
             @Override
             public IMessage onMessage(MessageServer message, MessageContext ctx)
             {
                 EntityPlayer player = ctx.getServerHandler().playerEntity;
-                handleServerSide(player, message.buffer);
+                new PacketHandler(player, message.buffer);
                 return null;
+            }
+
+            static class PacketHandler
+            {
+                final EntityPlayer player;
+                final PacketBuffer buffer;
+
+                public PacketHandler(EntityPlayer p, PacketBuffer b)
+                {
+                    this.player = p;
+                    this.buffer = b;
+                    Runnable toRun = new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            byte channel = buffer.readByte();
+                            int id = buffer.readInt();
+                            IPokemob pokemob;
+                            WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
+                                    .worldServerForDimension(player.dimension);
+                            pokemob = (IPokemob) world.getEntityByID(id);
+                            if (pokemob == null) { return; }
+
+                            if (channel == RETURN)
+                            {
+                                Entity mob = (Entity) pokemob;
+                                ((IPokemob) mob).returnToPokecube();
+                            }
+                            else if (channel == JUMP)
+                            {
+                                EntityLiving mob = (EntityLiving) pokemob;
+                                mob.getJumpHelper().setJumping();
+                            }
+                            else if (channel == MOVEINDEX)
+                            {
+                                byte moveIndex = buffer.readByte();
+                                pokemob.setMoveIndex(moveIndex);
+                            }
+                            else if (channel == CHANGEFORM)
+                            {
+                                if (pokemob.getPokemonAIState(IMoveConstants.EVOLVING)) return;
+
+                                int happiness = pokemob.getHappiness();
+                                ItemStack held = ((EntityLiving) pokemob).getHeldItem();
+                                if (held == null || !(held.getItem() instanceof ItemMegastone)
+                                        || (happiness < 255 && !player.capabilities.isCreativeMode))
+                                {
+                                    String mess = "";
+                                    if (held == null || !(held.getItem() instanceof ItemMegastone))
+                                        mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.nostone",
+                                                pokemob.getPokemonDisplayName());
+                                    else StatCollector.translateToLocalFormatted("pokemob.megaevolve.nothappy",
+                                            pokemob.getPokemonDisplayName());
+                                    player.addChatMessage(new ChatComponentText(mess));
+                                    return;
+                                }
+                                NBTTagCompound tag = held.getTagCompound();
+                                if (tag == null)
+                                {
+                                    held.setTagCompound(tag = new NBTTagCompound());
+                                }
+                                String stackname = tag.getString("pokemon");
+
+                                String forme = null;
+
+                                if (!(stackname == null || stackname.isEmpty()))
+                                {
+                                    forme = stackname;
+                                }
+                                if (forme == null)
+                                {
+                                    List<String> keys = new ArrayList<String>(pokemob.getPokedexEntry().forms.keySet());
+                                    Collections.shuffle(keys);
+                                    for (String s : keys)
+                                    {
+                                        String name = pokemob.getPokedexEntry().forms.get(s).getName();
+                                        String[] args = name.split(" ");
+                                        if (args.length > 1)
+                                        {
+                                            String mega = args[1];
+                                            if (mega.toLowerCase().contains("mega"))
+                                            {
+                                                forme = s;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (forme != null)
+                                {
+                                    if (stackname == null || stackname.isEmpty())
+                                    {
+                                        tag.setString("pokemon", forme);
+                                        held.setTagCompound(tag);
+                                    }
+
+                                    PokedexEntry megaEntry = Database.getEntry(forme);
+                                    if (megaEntry.getBaseName().equals(pokemob.getPokedexEntry().getBaseName()))
+                                    {
+                                        String old = pokemob.getPokemonDisplayName();
+                                        if (pokemob.getPokedexEntry() == megaEntry)
+                                        {
+                                            pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
+                                            megaEntry = pokemob.getPokedexEntry().baseForme;
+                                            String mess = StatCollector.translateToLocalFormatted(
+                                                    "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());
+                                            player.addChatMessage(new ChatComponentText(mess));
+                                        }
+                                        else
+                                        {
+                                            pokemob.setPokemonAIState(IPokemob.MEGAFORME, true);
+                                            pokemob.megaEvolve(forme);
+                                            String mess = StatCollector.translateToLocalFormatted(
+                                                    "pokemob.megaevolve.success", old, megaEntry.getTranslatedName());
+                                            player.addChatMessage(new ChatComponentText(mess));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        String mess = StatCollector.translateToLocalFormatted(
+                                                "pokemob.megaevolve.wrongstone", pokemob.getPokemonDisplayName());
+                                        player.addChatMessage(new ChatComponentText(mess));
+                                    }
+                                }
+                                else
+                                {
+                                    String mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.nomega",
+                                            pokemob.getPokemonDisplayName());
+                                    player.addChatMessage(new ChatComponentText(mess));
+                                }
+
+                            }
+                            else if (channel == MOVESWAP)
+                            {
+                                byte moveIndex0 = buffer.readByte();
+                                byte moveIndex1 = buffer.readByte();
+                                int num = buffer.readInt();
+                                pokemob.setLeaningMoveIndex(num);
+                                pokemob.exchangeMoves(moveIndex0, moveIndex1);
+                            }
+                            else if (channel == NICKNAME)
+                            {
+
+                                boolean OT = pokemob.getPokemonOwnerName() == null
+                                        || (PokecubeMod.fakeUUID.equals(pokemob.getOriginalOwnerUUID()))
+                                        || (pokemob.getPokemonOwnerName()
+                                                .equals(pokemob.getOriginalOwnerUUID().toString()));
+
+                                if (!OT && pokemob.getPokemonOwner() != null)
+                                {
+                                    OT = pokemob.getPokemonOwner().getUniqueID().equals(pokemob.getOriginalOwnerUUID());
+                                }
+                                if (!OT)
+                                {
+                                    if (pokemob.getPokemonOwner() != null)
+                                    {
+                                        pokemob.getPokemonOwner().addChatMessage(
+                                                new ChatComponentText("Cannot rename a traded pokemob"));
+                                    }
+                                }
+                                else
+                                {
+                                    byte[] string = new byte[buffer.readByte() + 1];
+                                    for (int i = 0; i < string.length; i++)
+                                    {
+                                        string[i] = buffer.readByte();
+                                    }
+                                    String name = ChatAllowedCharacters.filterAllowedCharacters(new String(string));
+                                    pokemob.setPokemonNickname(name);
+                                }
+                            }
+                            else if (channel == STANCE)
+                            {
+                                byte dir = buffer.readByte();
+                                byte type = 0;
+                                if (dir > 0)
+                                {
+                                    if (pokemob.getPokemonAIState(IPokemob.STAYING))
+                                    {
+                                        type = 3;
+                                    }
+                                    else if (pokemob.getPokemonAIState(IPokemob.GUARDING))
+                                    {
+                                        type = 2;
+                                    }
+                                    else
+                                    {
+                                        type = 1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (pokemob.getPokemonAIState(IPokemob.STAYING))
+                                    {
+                                        type = 1;
+                                    }
+                                    else if (pokemob.getPokemonAIState(IPokemob.GUARDING))
+                                    {
+                                        type = 3;
+                                    }
+                                    else
+                                    {
+                                        type = 2;
+                                    }
+                                }
+                                if (dir == 4) type = 4;
+                                if (type == 1)
+                                {
+                                    pokemob.setPokemonAIState(IPokemob.GUARDING, true);
+                                    TerrainSegment terrain = TerrainManager.getInstance()
+                                            .getTerrainForEntity((Entity) pokemob);
+                                    Vector3 mid = terrain.getCentre();
+                                    pokemob.setHome(mid.intX(), mid.intY(), mid.intZ(), 16);
+                                    pokemob.setPokemonAIState(IPokemob.STAYING, false);
+                                    if (pokemob.getGuardAI() != null)
+                                    {
+                                        ((GuardAI) pokemob.getGuardAI()).setTimePeriod(TimePeriod.fullDay);
+                                        ((GuardAI) pokemob.getGuardAI()).setPos(mid.getPos());
+                                    }
+                                }
+                                else if (type == 2)
+                                {
+                                    pokemob.setPokemonAIState(IPokemob.GUARDING, false);
+                                    if (pokemob.getGuardAI() != null)
+                                        ((GuardAI) pokemob.getGuardAI()).setTimePeriod(TimePeriod.fullDay);
+                                    pokemob.setPokemonAIState(IPokemob.STAYING, true);
+                                }
+                                else if (type == 3)
+                                {
+                                    pokemob.setPokemonAIState(IPokemob.STAYING, false);
+                                    if (pokemob.getGuardAI() != null)
+                                        ((GuardAI) pokemob.getGuardAI()).setTimePeriod(new TimePeriod(0, 0));
+                                    pokemob.setPokemonAIState(IPokemob.GUARDING, false);
+                                }
+                                else if (dir == 4)
+                                {
+                                    pokemob.setPokemonAIState(IPokemob.SITTING,
+                                            !pokemob.getPokemonAIState(IPokemob.SITTING));
+                                }
+                            }
+                        }
+                    };
+                    PokecubeCore.proxy.getMainThreadListener().addScheduledTask(toRun);
+                }
             }
         }
     }

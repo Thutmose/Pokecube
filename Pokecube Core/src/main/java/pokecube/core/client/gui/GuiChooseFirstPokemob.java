@@ -40,6 +40,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokeType;
+import pokecube.core.utils.PokecubeSerializer;
 
 @SuppressWarnings("deprecation")
 public class GuiChooseFirstPokemob extends GuiScreen
@@ -285,6 +286,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
                 PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
                         bos.toByteArray());
                 PokecubePacketHandler.sendToServer(packet);
+                PokecubeSerializer.instance.setHasStarter(entityPlayer);
             }
             catch (Exception ex)
             {
@@ -315,6 +317,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
                 PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
                         bos.toByteArray());
                 PokecubePacketHandler.sendToServer(packet);
+                PokecubeSerializer.instance.setHasStarter(entityPlayer);
             }
             catch (Exception ex)
             {

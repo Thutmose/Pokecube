@@ -1,7 +1,9 @@
 package pokecube.core.database.abilities;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -116,13 +118,13 @@ public class AbilityManager
 
         private static final String BAD_PACKAGE_ERROR = "Unable to get resources from path '%s'. Are you sure the package '%s' exists?";
 
-        public static List<Class<?>> find(String scannedPackage)
+        public static List<Class<?>> find(String scannedPackage) throws UnsupportedEncodingException
         {
             String scannedPath = scannedPackage.replace(DOT, SLASH);
             URL scannedUrl = Thread.currentThread().getContextClassLoader().getResource(scannedPath);
             if (scannedUrl == null) { throw new IllegalArgumentException(
                     String.format(BAD_PACKAGE_ERROR, scannedPath, scannedPackage)); }
-            File scannedDir = new File(scannedUrl.getFile().replace("%20", " "));
+            File scannedDir = new File(java.net.URLDecoder.decode(scannedUrl.getFile(), Charset.defaultCharset().name()));
 
             List<Class<?>> classes = new ArrayList<Class<?>>();
             if (scannedDir.exists()) for (File file : scannedDir.listFiles())

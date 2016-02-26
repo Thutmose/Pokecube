@@ -203,8 +203,22 @@ public class PokecubePacketHandler
             {
                 starters.add(i);
             }
+
+            boolean special = starters.isEmpty();
+            if (special)
+            {
+                StarterInfo[] starter = specialStarters.get(username);
+                for (StarterInfo info : starter)
+                {
+                    if (info == null)
+                    {
+                        special = false;
+                        break;
+                    }
+                }
+            }
             pokecube.core.client.gui.GuiChooseFirstPokemob.starters = starters.toArray(new Integer[0]);
-            new GuiOpener(player);
+            new GuiOpener(player, !special);
             return;
         }
 
@@ -213,7 +227,7 @@ public class PokecubePacketHandler
         boolean special = specialStarters.containsKey(username);
         if (!special || (evt.isCanceled() && evt.getResult() != Result.DENY))
         {
-            new GuiOpener(player);
+            new GuiOpener(player, true);
         }
         else
         {
@@ -222,26 +236,30 @@ public class PokecubePacketHandler
             {
                 if (i == null)
                 {
-                    new GuiOpener(player);
+                    new GuiOpener(player, true);
                     return;
                 }
             }
+            new GuiOpener(player, false);
         }
     }
 
     private static class GuiOpener
     {
         final EntityPlayer player;
+        final boolean      starter;
 
-        public GuiOpener(EntityPlayer player)
+        public GuiOpener(EntityPlayer player, boolean starter)
         {
             this.player = player;
+            this.starter = starter;
             MinecraftForge.EVENT_BUS.register(this);
         }
 
         @SubscribeEvent
         public void tick(ClientTickEvent event)
         {
+            pokecube.core.client.gui.GuiChooseFirstPokemob.options = starter;
             player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 0,
                     0);
             MinecraftForge.EVENT_BUS.unregister(this);

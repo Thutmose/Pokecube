@@ -56,6 +56,8 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
     public final static float POKEDEX_RENDER = 1.5f;
 
+    public static boolean options = true;
+
     protected EntityPlayer entityPlayer = null;
 
     protected PokedexEntry  pokedexEntry = null;
@@ -104,9 +106,15 @@ public class GuiChooseFirstPokemob extends GuiScreen
             }
         }
         GuiChooseFirstPokemob.starters = starts.toArray(new Integer[0]);
-        System.out.println(entityPlayer);
         entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
     }
+
+    GuiButton next;
+    GuiButton prev;
+    GuiButton choose;
+
+    GuiButton accept;
+    GuiButton deny;
 
     @Override
     public void initGui()
@@ -118,13 +126,30 @@ public class GuiChooseFirstPokemob extends GuiScreen
         if (starters.length > 1)
         {
             String next = StatCollector.translateToLocal("tile.pc.next");
-            buttonList.add(new GuiButton(1, width / 2 - xOffset + 65, height / 2 - yOffset, 50, 20, next));
+            buttonList.add(this.next = new GuiButton(1, width / 2 - xOffset + 65, height / 2 - yOffset, 50, 20, next));
             String prev = StatCollector.translateToLocal("tile.pc.previous");
-            buttonList.add(new GuiButton(2, width / 2 - xOffset - 115, height / 2 - yOffset, 50, 20, prev));
+            buttonList.add(this.prev = new GuiButton(2, width / 2 - xOffset - 115, height / 2 - yOffset, 50, 20, prev));
         }
 
         String choose = StatCollector.translateToLocal("gui.pokemob.select");
-        buttonList.add(new GuiButton(3, width / 2 - xOffset - 25, height / 2 - yOffset + 160, 50, 20, choose));
+        buttonList.add(
+                this.choose = new GuiButton(3, width / 2 - xOffset - 25, height / 2 - yOffset + 160, 50, 20, choose));
+
+        buttonList
+                .add(this.accept = new GuiButton(4, width / 2 - xOffset + 64, height / 2 - yOffset + 30, 50, 20, "Accept"));
+        buttonList.add(this.deny = new GuiButton(5, width / 2 - xOffset - 115, height / 2 - yOffset + 30, 50, 20, "Deny"));
+
+        if (options)
+        {
+            accept.visible = false;
+            deny.visible = false;
+        }
+        else
+        {
+            next.visible = false;
+            prev.visible = false;
+            this.choose.visible = false;
+        }
 
     }
 
@@ -140,6 +165,15 @@ public class GuiChooseFirstPokemob extends GuiScreen
             e.printStackTrace();
         }
         super.drawScreen(i, j, f);
+        
+        if(!options)
+        {
+            drawCenteredString(fontRendererObj, "Start with Override Starter?", (width / 2), 17,
+                    0xffffff);
+            return;
+        }
+        
+        
 
         GL11.glPushMatrix();
         int i1 = 15728880;
@@ -238,6 +272,36 @@ public class GuiChooseFirstPokemob extends GuiScreen
         {
             if (index > 0) index--;
             else index = starters.length - 1;
+        }
+        if(n==4)
+        {
+            int pokedexNb = 0;
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+            DataOutputStream outputStream = new DataOutputStream(bos);
+            try
+            {
+                outputStream.writeInt(pokedexNb);
+                outputStream.writeBoolean(fixed);
+                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
+                        bos.toByteArray());
+                PokecubePacketHandler.sendToServer(packet);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+            mc.thePlayer.closeScreen();
+            options = true;
+        }
+        if(n==5)
+        {
+            next.visible = true;
+            prev.visible = true;
+            choose.visible = true;
+            accept.visible = false;
+            deny.visible = false;
+            options = true;
+            fixed = true;
         }
         if (n == 3)
         {

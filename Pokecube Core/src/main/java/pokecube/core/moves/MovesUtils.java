@@ -3,7 +3,6 @@ package pokecube.core.moves;
 import static pokecube.core.utils.PokeType.getAttackEfficiency;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -847,8 +846,6 @@ public class MovesUtils implements IMoveConstants
         {
             if (diff[i] != 0)
             {
-                System.out.println(Arrays.toString(old) + "" + Arrays.toString(modifiers) + "" + Arrays.toString(diff)
-                        + " " + ret);
                 if (!attacked) displayStatsMessage(mob, target, 0, i, (byte) diff[i]);
                 else displayStatsMessage((IPokemob) target, (Entity) mob, 0, i, (byte) diff[i]);
             }

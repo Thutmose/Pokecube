@@ -60,7 +60,6 @@ public class GuardAI extends EntityAIBase
     @Override
     public void startExecuting()
     {
-        System.out.println(entity);
         capability.setState(GuardState.RUNNING);
         entity.getEntityAttribute(SharedMonsterAttributes.followRange).removeModifier(goingHome);
         entity.getEntityAttribute(SharedMonsterAttributes.followRange).applyModifier(goingHome);

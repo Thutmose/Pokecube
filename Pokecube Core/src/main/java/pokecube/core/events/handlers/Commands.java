@@ -1,7 +1,6 @@
 package pokecube.core.events.handlers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -132,10 +131,6 @@ public class Commands implements ICommand
         doReset(cSender, args, isOp, targets);
         doTM(cSender, args, isOp, targets);
         doMeteor(cSender, args, isOp, targets);
-
-        // TODO Add a doMeteor command, arguments should be size and optional
-        // direction.
-        // cSender.addChatMessage(new ChatComponentText("Invalid Command"));
     }
 
     @Override
@@ -159,7 +154,6 @@ public class Commands implements ICommand
     @Override
     public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
         return true;
     }
 
@@ -650,7 +644,6 @@ public class Commands implements ICommand
 
                         }
 
-                        System.out.println(entry + " " + name + " " + Database.getEntry(name));
                         mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(),
                                 cSender.getEntityWorld());
 
@@ -710,15 +703,15 @@ public class Commands implements ICommand
                                 }
                                 else if (arg.equalsIgnoreCase("r"))
                                 {
-                                    red = Byte.parseByte(val);
+                                    red = Integer.parseInt(val);
                                 }
                                 else if (arg.equalsIgnoreCase("g"))
                                 {
-                                    green = Byte.parseByte(val);
+                                    green = Integer.parseInt(val);
                                 }
                                 else if (arg.equalsIgnoreCase("b"))
                                 {
-                                    blue = Byte.parseByte(val);
+                                    blue = Integer.parseInt(val);
                                 }
                                 else if (arg.equalsIgnoreCase("o"))
                                 {
@@ -762,7 +755,7 @@ public class Commands implements ICommand
                         if (shadow) mob.setShadow(shadow);
                         if (ancient) mob.setAncient(ancient);
                         mob.setExp(exp, true, true);
-                        System.out.println(Arrays.toString(moves));
+
                         for (int i1 = 0; i1 < 4; i1++)
                         {
                             if (moves[i1] != null)
@@ -1110,7 +1103,6 @@ public class Commands implements ICommand
     @Override
     public int compareTo(ICommand arg0)
     {
-        // TODO Auto-generated method stub
         return 0;
     }
 }

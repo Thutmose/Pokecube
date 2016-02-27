@@ -20,7 +20,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
@@ -90,7 +89,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     @Override
     public byte getSexe()
     {
-        return sexe;// dataWatcher.getWatchableObjectByte(21);
+        return sexe;
     }
 
     @Override
@@ -98,7 +97,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     {
         if (sexe == NOSEXE || sexe == FEMALE || sexe == MALE || sexe == SEXLEGENDARY)
         {
-            this.sexe = sexe;// dataWatcher.updateObject(21, sexe);
+            this.sexe = sexe;
         }
         else
         {
@@ -110,7 +109,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     @Override
     public void mateWith(IBreedingMob male)
     {
-        new MateTask(this, male);
+        mate(male);
     }
 
     protected void mate(IBreedingMob male)
@@ -353,7 +352,9 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
         if (!isServerWorld()) return;
 
-        setLoveTimer(getLoveTimer() + 1 * ConfigHandler.mateMultiplier);
+        int diff = 1 * ConfigHandler.mateMultiplier;
+        if (inLove > 0) diff = 1;
+        setLoveTimer(getLoveTimer() + diff);
         if (isInLove() && lover == null)
         {
             findLover();
@@ -509,21 +510,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             IBreedingMob lover = getMalesForBreeding().get(0);
             setLover((Entity) lover);
             lover.setLover(this);
-        }
-    }
-
-    public static class MateTask
-    {
-        public MateTask(final EntitySexedPokemob pokemob, final IBreedingMob male)
-        {
-            Runnable run = new Runnable()
-            {
-                public void run()
-                {
-                    pokemob.mate(male);
-                }
-            };
-            PokecubeCore.proxy.getMainThreadListener().addScheduledTask(run);
         }
     }
 }

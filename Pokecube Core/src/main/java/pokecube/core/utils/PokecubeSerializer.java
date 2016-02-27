@@ -280,7 +280,7 @@ public class PokecubeSerializer
         catch (Exception e)
         {
             System.err.println("UUID null");
-            Thread.dumpStack();
+//            Thread.dumpStack();
         }
         saveData();
     }

@@ -14628,7 +14628,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BASESTATS atk="90" def="65" hp="68" spatk="50" spd="82" spdef="55"/>
             <EVYIELD atk="2"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="1.4" length="1.0" width="1.0"/>
             <TYPE type1="Dragon" type2="Ground"/>
             <ABILITY hidden="Rough Skin" normal="Sand Veil"/>
         </STATS>
@@ -14655,7 +14655,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BASESTATS atk="130" def="95" hp="108" spatk="80" spd="102" spdef="85"/>
             <EVYIELD atk="3"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="1.9" length="1.0" width="1.0"/>
             <TYPE type1="Dragon" type2="Ground"/>
             <ABILITY hidden="Rough Skin" normal="Sand Veil"/>
         </STATS>

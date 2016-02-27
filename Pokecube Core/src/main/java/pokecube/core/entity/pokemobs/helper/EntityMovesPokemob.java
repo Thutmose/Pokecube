@@ -983,10 +983,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
     public void setTransformedTo(Entity to)
     {
-        if(isServerWorld())
+        if (isServerWorld())
         {
             MovesUtils.getMoveFromName(MOVE_TRANSFORM).notifyClient(this, here, to);
-            System.out.println("Transformed to "+to+" "+getLover());
         }
         transformedTo = to;
     }

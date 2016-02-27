@@ -404,5 +404,7 @@ item.silkyhair.name=Silky Hair
 
 item.modelreloader.name=Model Reloader
 
+entity.pokecube.pokecube:pokemobEgg.name=Pokemob Egg
+
 igwtab.entry.Pokecubes=Pokécubes
 igwtab.entry.Controls=Key Controls

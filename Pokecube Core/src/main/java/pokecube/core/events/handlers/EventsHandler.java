@@ -31,7 +31,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
@@ -67,8 +66,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.PokecubeItems;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.thread.PokemobAIThread;
@@ -280,13 +279,9 @@ public class EventsHandler
 
                 if (block != null && !loop)
                 {
-                    Vec3 hitVec = FMLClientHandler.instance().getClient().objectMouseOver.hitVec;
-                    float f = (float) hitVec.xCoord - evt.pos.getX();
-                    float f1 = (float) hitVec.yCoord - evt.pos.getY();
-                    float f2 = (float) hitVec.zCoord - evt.pos.getZ();
                     IBlockState state = evt.world.getBlockState(evt.pos);
-                    boolean b = block.onBlockActivated(evt.world, evt.pos, state, evt.entityPlayer, evt.face, f, f1,
-                            f2);
+                    boolean b = block.onBlockActivated(evt.world, evt.pos, state, evt.entityPlayer, evt.face,
+                            (float) evt.localPos.xCoord, (float) evt.localPos.yCoord, (float) evt.localPos.zCoord);
                     if (!b && !evt.entityPlayer.isSneaking())
                     {
                         PokecubePacketHandler.sendToServer(packet);

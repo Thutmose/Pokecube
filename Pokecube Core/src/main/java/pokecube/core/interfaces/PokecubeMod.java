@@ -37,7 +37,7 @@ public abstract class PokecubeMod
     public final static String ID              = "pokecube";
     public final static String VERSION         = "@VERSION@";
     public final static String MCVERSIONS      = "@MCVERSION@";
-    public final static String MINFORGEVERSION = "[11.15.0.1650,)";
+    public final static String MINFORGEVERSION = "[11.15.1.1763,)";
     public final static String DEPSTRING       = ";required-after:thutcore@[2.3.0,);required-after:Baubles";
 
     public final static String UPDATEURL  = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Core/versions.json";

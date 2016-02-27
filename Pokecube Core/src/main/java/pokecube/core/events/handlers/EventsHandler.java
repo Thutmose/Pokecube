@@ -665,14 +665,14 @@ public class EventsHandler
                     String mess = "Current Listed Release Version of Pokecube Core is " + result.target
                             + ", but you have " + PokecubeMod.VERSION + ".";
                     mess += "\nIf you find bugs, please update and check if they still occur before reporting them.";
-                    mess += "\nPlease update from either Minecraftforum.net or Curseforge, those are the only offical locations to download Pokecube, and any other location may contain malware.";
+                    mess += "\nPlease update from either Minecraftforum.net or Curseforge, those are the Offical locations to download Pokecube.";
                     (event.player).addChatMessage(new ChatComponentText(mess));
                 }
                 else if (ConfigHandler.loginmessage)
                 {
                     String mess = "Pokecube Core is currently running latest/recommended version of "
                             + PokecubeMod.VERSION + ".";
-                    mess += "\nPlease note that Curseforge, is the only offical location to download Pokecube, and any other location may contain malware.";
+                    mess += "\nPlease note that Curseforge, is the Offical location to download Pokecube.";
                     (event.player).addChatMessage(new ChatComponentText(mess));
                     ConfigHandler.seenMessage();
                 }

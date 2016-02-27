@@ -39,10 +39,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.compat.ai.AIElectricalInterferance;
-import pokecube.compat.ai.AIThermalInteferance;
 import pokecube.compat.blocks.rf.BlockSiphon;
 import pokecube.compat.blocks.rf.TileEntitySiphon;
 import pokecube.compat.galacticraft.GCCompat;
+import pokecube.compat.pneumaticcraft.AIThermalInteferance;
 import pokecube.compat.thaumcraft.ThaumcraftCompat;
 import pokecube.compat.thaumcraft.ThaumiumPokecube;
 import pokecube.core.PokecubeItems;
@@ -212,8 +212,17 @@ public class Compat
         if (evt.entity instanceof IPokemob && evt.entity instanceof EntityLiving)
         {
             EntityLiving living = (EntityLiving) evt.entity;
-
             living.tasks.addTask(1, new AIElectricalInterferance((IPokemob) living));
+        }
+    }
+
+    @Optional.Method(modid = "PneumaticCraft")
+    @SubscribeEvent
+    public void addPneumaticcraftHeating(EntityJoinWorldEvent evt)
+    {
+        if (evt.entity instanceof IPokemob && evt.entity instanceof EntityLiving)
+        {
+            EntityLiving living = (EntityLiving) evt.entity;
             living.tasks.addTask(1, new AIThermalInteferance((IPokemob) living));
         }
     }

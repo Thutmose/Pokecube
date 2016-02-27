@@ -503,11 +503,9 @@ public class PokecubeCore extends PokecubeMod
         MinecraftForge.EVENT_BUS.register(evts);
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new LoadingCallback()
         {
-
             @Override
             public void ticketsLoaded(List<Ticket> tickets, World world)
             {
-
                 PokecubeSerializer.getInstance().loadData();
                 PokecubeSerializer.getInstance().reloadChunk(tickets, world);
             }
@@ -585,8 +583,6 @@ public class PokecubeCore extends PokecubeMod
         MinecraftForge.EVENT_BUS.register(save);
         PCEventsHandler events = new PCEventsHandler();
         MinecraftForge.EVENT_BUS.register(events);
-        // proxy.registerRenderInformation();//TODO move back to here for 1.9
-
     }
 
     @EventHandler

@@ -148,10 +148,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         }
         if (worldObj.isRemote) return;
-        AIMate mate;
+
         PokemobAIThread.addAI(this, new AIAttack(this).setPriority(200));
-        PokemobAIThread.addAI(this, (mate = new AIMate(this)).setPriority(300));
-        males = mate.males;
+        PokemobAIThread.addAI(this, new AIMate(this).setPriority(300));
         PokemobAIThread.addAI(this, new AIHungry(this, new EntityItem(worldObj), 16).setPriority(300));
         PokemobAIThread.addAI(this, new AIGatherStuff(this, 32).setPriority(400));
         PokemobAIThread.addAI(this, new AIIdle(this).setPriority(500));
@@ -239,7 +238,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             setPokemonAIState(TAMED, false);
         }
 
-        if (inLove > 600)
+        if (inLove > 6000)
         {
             resetLoveStatus();
         }

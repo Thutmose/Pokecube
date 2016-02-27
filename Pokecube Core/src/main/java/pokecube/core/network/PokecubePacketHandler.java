@@ -415,11 +415,6 @@ public class PokecubePacketHandler
         }
     }
 
-    public static void handlePokemobSpawnerPacket(byte[] packet, EntityPlayerMP sender)
-    {
-
-    }
-
     public static void handlePokemobMoveClientAnimation(byte[] packet)
     {
         try
@@ -1003,10 +998,6 @@ public class PokecubePacketHandler
                             else if (channel == POKECENTER)
                             {
                                 handlePokecenterPacket(message, (EntityPlayerMP) player);
-                            }
-                            else if (channel == POKEMOBSPAWNER)
-                            {
-                                handlePokemobSpawnerPacket(message, (EntityPlayerMP) player);
                             }
                             else if (channel == POKEDEX)
                             {

@@ -63,7 +63,7 @@ public class PokecubeSerializer
     public static final byte[] noEVs = new byte[] { Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE,
             Byte.MIN_VALUE, Byte.MIN_VALUE };
 
-    public static int MeteorDistance = 5000 * 5000;
+    public static int MeteorDistance = 3000 * 3000;
 
     public static Long byteArrayAsLong(byte[] stats)
     {
@@ -280,6 +280,7 @@ public class PokecubeSerializer
         catch (Exception e)
         {
             System.err.println("UUID null");
+            Thread.dumpStack();
         }
         saveData();
     }

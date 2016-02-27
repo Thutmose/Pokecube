@@ -370,18 +370,17 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             learn(MOVE_TACKLE);
         }
 
-        if (transformedTo != null && getAttackTarget() == null && !getPokemonAIState(MATING))
+        if (isServerWorld() && transformedTo != null && getAttackTarget() == null
+                && !(getPokemonAIState(MATING) || isInLove() || getLover() != null))
         {
-            transformedTo = null;
+            setTransformedTo(null);
         }
 
         if (transformedTo == null && getLover() != null && hasMove(MOVE_TRANSFORM))
         {
-            transformedTo = getLover();
-            // System.out.println(lover);
+            setTransformedTo(getLover());
             Move_Base trans = MovesUtils.getMoveFromName(MOVE_TRANSFORM);
             trans.notifyClient(this, here, getLover());
-            ;
         }
 
         this.updateStatusEffect();
@@ -567,7 +566,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void setMoveIndex(int moveIndex)
     {
-
         if (getMove(moveIndex) == null)
         {
             setMoveIndex(5);
@@ -985,6 +983,11 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
     public void setTransformedTo(Entity to)
     {
+        if(isServerWorld())
+        {
+            MovesUtils.getMoveFromName(MOVE_TRANSFORM).notifyClient(this, here, to);
+            System.out.println("Transformed to "+to+" "+getLover());
+        }
         transformedTo = to;
     }
 

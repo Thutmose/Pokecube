@@ -52,6 +52,7 @@ public class ClientProxy extends CommonProxy
         super.preInit();
         OBJLoader.instance.addDomain(ModPokecubeML.ID);
         B3DLoader.instance.addDomain(ModPokecubeML.ID);
+        modelProviders.put(ModPokecubeML.ID, ModPokecubeML.instance);
     }
 
     @Override
@@ -63,7 +64,6 @@ public class ClientProxy extends CommonProxy
     @Override
     public void registerRenderInformation()
     {
-        modelProviders.put(ModPokecubeML.ID, ModPokecubeML.instance);
         populateModels();
         for (String modid : modelProviders.keySet())
         {

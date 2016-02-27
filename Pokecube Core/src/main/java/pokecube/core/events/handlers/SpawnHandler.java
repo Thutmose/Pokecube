@@ -684,13 +684,20 @@ public final class SpawnHandler
                 {
                     Entity player = (Entity) players.get(0);
                     Random rand = new Random();
-                    int dx = rand.nextInt(100) + 30;
-                    int dz = rand.nextInt(100) + 30;
-                    Vector3 v = this.v.set(player).add(dx, 255 - player.posY, dz);
+                    int dx = rand.nextInt(200) - 100;
+                    int dz = rand.nextInt(200) - 100;
+
+                    Vector3 v = this.v.set(player).add(dx, 0, dz);
+
+                    if (world.getClosestPlayer(v.x, v.y, v.z, 64) != null) return;
+
+                    v.add(0, 255 - player.posY, 0);
+
                     if (PokecubeSerializer.getInstance().canMeteorLand(v))
                     {
                         Vector3 direction = v1.set(rand.nextGaussian() / 2, -1, rand.nextGaussian() / 2);
                         Vector3 location = Vector3.getNextSurfacePoint(world, v, direction, 255);
+
                         if (location != null)
                         {
                             float energy = (float) Math.abs((rand.nextGaussian() + 1) * 50);

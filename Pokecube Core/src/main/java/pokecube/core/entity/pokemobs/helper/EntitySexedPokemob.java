@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
+import com.google.common.base.Predicate;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -389,17 +391,30 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         {
             float searchingLoveDist = 5F;
             AxisAlignedBB bb = here.getAABB().expand(searchingLoveDist, searchingLoveDist, searchingLoveDist);
-            List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(this, bb);
-
-            if (list.size() >= 30)
+            List<Entity> list = worldObj.getEntitiesInAABBexcluding(this, bb, new Predicate<Entity>()
+            {
+                @Override
+                public boolean apply(Entity input)
+                {
+                    return input instanceof IPokemob;
+                }
+            });
+            bb = here.getAABB().expand(5*searchingLoveDist, 2*searchingLoveDist, 5*searchingLoveDist);
+            List<Entity> list2 = worldObj.getEntitiesInAABBexcluding(this, bb, new Predicate<Entity>()
+            {
+                @Override
+                public boolean apply(Entity input)
+                {
+                    return input instanceof IPokemob;
+                }
+            });
+            if (list2.size() >= 30)
             {
                 resetLoveStatus();
                 return null;
             }
             for (int i = 0; i < list.size(); i++)
             {
-                if (!(list.get(i) instanceof IPokemob)) continue;
-
                 IPokemob entityanimal = (IPokemob) list.get(i);
                 EntityAnimal animal = (EntityAnimal) list.get(i);
                 if (entityanimal == this || entityanimal.getPokemonAIState(TAMED) != getPokemonAIState(TAMED)) continue;

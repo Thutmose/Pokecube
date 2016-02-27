@@ -253,11 +253,11 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         }
 
         Vector3 location = Vector3.getNewVector().set(mob);
-        EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 8);
+        EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 2);
         if (player == null)
         {
             IPokemob pokemob = (IPokemob) ((Entity) mob).worldObj.findNearestEntityWithinAABB(EntityPokemob.class,
-                    location.getAABB().expand(8, 8, 8), (Entity) mob);
+                    location.getAABB().expand(4, 4, 4), (Entity) mob);
             if (pokemob != null && pokemob.getPokemonOwner() instanceof EntityPlayer)
                 player = (EntityPlayer) pokemob.getPokemonOwner();
         }

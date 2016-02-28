@@ -29,13 +29,13 @@ import pokecube.modelloader.client.render.model.IModelRenderer;
 
 public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLiving<T>
 {
-    static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
-    static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
+    static final ResourceLocation FRZ          = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
+    static final ResourceLocation PAR          = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
 
-    public IModelRenderer<T> model;
-    final String             modelName;
-    public boolean           overrideAnim = false;
-    public String            anim         = "";
+    public IModelRenderer<T>      model;
+    final String                  modelName;
+    public boolean                overrideAnim = false;
+    public String                 anim         = "";
 
     public RenderAdvancedPokemobModel(String name, float par2)
     {
@@ -83,6 +83,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
         GL11.glPopMatrix();
         renderHp(entity, d0, d1, d2, yaw, partialTick);
+        this.postRenderCallback();
         GL11.glPopMatrix();
     }
 
@@ -232,12 +233,28 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         }
     }
 
+    boolean blend;
+    boolean normalize;
+    int     src;
+    int     dst;
+
     @Override
     protected void preRenderCallback(T entity, float f)
     {
-        GL11.glEnable(GL11.GL_NORMALIZE);
-        GL11.glEnable(GL11.GL_BLEND);
+        blend = GL11.glGetBoolean(GL11.GL_BLEND);
+        normalize = GL11.glGetBoolean(GL11.GL_NORMALIZE);
+        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
+        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
+        if (!normalize) GL11.glEnable(GL11.GL_NORMALIZE);
+        if (!blend) GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    protected void postRenderCallback()
+    {
+        if (!normalize) GL11.glDisable(GL11.GL_NORMALIZE);
+        if (!blend) GL11.glDisable(GL11.GL_BLEND);
+        GL11.glBlendFunc(src, dst);
     }
 
     private String getPhase(EntityLiving entity, float partialTick)

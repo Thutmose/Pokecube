@@ -23,10 +23,11 @@ import pokecube.modelloader.client.render.tabula.components.ModelJson;
 import pokecube.modelloader.client.render.tabula.model.tabula.TabulaModel;
 import pokecube.modelloader.client.render.tabula.model.tabula.TabulaModelParser;
 
-public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T>implements IModelRenderer<T>
+public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T> implements IModelRenderer<T>
 {
-    private String        phase = "";
+    private String        phase        = "";
     public TabulaModelSet set;
+    private boolean       statusRender = false;
 
     public TabulaModelRenderer(TabulaModelSet set)
     {
@@ -70,7 +71,6 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
         }
 
         f4 = this.handleRotationFloat(entity, partialTick);
-        this.preRenderCallback(entity, partialTick);
 
         if (set == null)
         {
@@ -87,7 +87,8 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
         GlStateManager.disableCull();
         TabulaModelParser pars = ((TabulaModelParser) parser);
         ModelJson modelj = pars.modelMap.get(model);
-        modelj.texturer = set.texturer;
+        if (!statusRender) modelj.texturer = set.texturer;
+        else modelj.texturer = null;
         if (set.animator != null)
         {
             phase = set.animator.modifyAnimation(entity, partialTick, phase);
@@ -160,21 +161,45 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
         GL11.glTranslatef(var5, var6, 0.0F);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
-        GL11.glEnable(GL11.GL_BLEND);
         float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
         GL11.glColor4f(var7, var7, var7, 0.5F);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
         var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
         GL11.glScalef(var7, var7, var7);
 
+        preRenderStatus();
         doRender(entity, d0, d1, d2, f, partialTick);
+        postRenderStatus();
 
         GL11.glMatrixMode(GL11.GL_TEXTURE);
         GL11.glLoadIdentity();
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
         GL11.glPopMatrix();
+    }
+
+    boolean blend;
+    boolean light;
+    int     src;
+    int     dst;
+
+    private void preRenderStatus()
+    {
+        blend = GL11.glGetBoolean(GL11.GL_BLEND);
+        light = GL11.glGetBoolean(GL11.GL_LIGHTING);
+        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
+        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        statusRender = true;
+    }
+
+    private void postRenderStatus()
+    {
+        if (light) GL11.glEnable(GL11.GL_LIGHTING);
+        if (!blend) GL11.glDisable(GL11.GL_BLEND);
+        GL11.glBlendFunc(src, dst);
+        statusRender = false;
     }
 
     @Override

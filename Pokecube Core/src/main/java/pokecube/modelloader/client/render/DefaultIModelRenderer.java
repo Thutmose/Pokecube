@@ -36,38 +36,39 @@ import pokecube.modelloader.client.render.tabula.components.Animation;
 import pokecube.modelloader.client.render.x3d.X3dModel;
 import thut.api.maths.Vector3;
 
-public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T>implements IModelRenderer<T>
+public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T> implements IModelRenderer<T>
 {
-    public static final String          DEFAULTPHASE = "idle";
+    public static final String          DEFAULTPHASE   = "idle";
     public String                       name;
-    public String                       currentPhase = "idle";
+    public String                       currentPhase   = "idle";
     HashMap<String, PartInfo>           parts;
     HashMap<String, ArrayList<Vector5>> global;
-    public HashMap<String, Animation>   animations   = new HashMap<String, Animation>();
-    public Set<String>                  headParts    = Sets.newHashSet();
+    public HashMap<String, Animation>   animations     = new HashMap<String, Animation>();
+    public Set<String>                  headParts      = Sets.newHashSet();
     public TextureHelper                texturer;
     public IAnimationChanger            animator;
 
-    public Vector3 offset    = Vector3.getNewVector();;
-    public Vector3 scale     = Vector3.getNewVector();;
-    public Vector5 rotations = new Vector5();
+    public Vector3                      offset         = Vector3.getNewVector();;
+    public Vector3                      scale          = Vector3.getNewVector();;
+    public Vector5                      rotations      = new Vector5();
 
-    public IModel model;
+    public IModel                       model;
 
-    public int         headDir        = 2;
-    public int         headAxis       = 2;
-    public int         headAxis2      = 0;
+    public int                          headDir        = 2;
+    public int                          headAxis       = 2;
+    public int                          headAxis2      = 0;
     /** A set of names of shearable parts. */
-    public Set<String> shearableParts = Sets.newHashSet();
+    public Set<String>                  shearableParts = Sets.newHashSet();
     /** A set of namess of dyeable parts. */
-    public Set<String> dyeableParts   = Sets.newHashSet();
+    public Set<String>                  dyeableParts   = Sets.newHashSet();
 
-    public float[] headCaps  = { -180, 180 };
-    public float[] headCaps1 = { -20, 40 };
+    public float[]                      headCaps       = { -180, 180 };
+    public float[]                      headCaps1      = { -20, 40 };
 
-    public float     rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
-    public float     rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
-    ResourceLocation texture;
+    public float                        rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
+    public float                        rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
+    ResourceLocation                    texture;
+    private boolean                     statusRender   = false;
 
     public DefaultIModelRenderer(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global,
             Model model)
@@ -180,7 +181,8 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
                 if (texturer != null && part instanceof IRetexturableModel)
                 {
                     texturer.bindObject(entity);
-                    ((IRetexturableModel) part).setTexturer(texturer);
+                    if (!statusRender) ((IRetexturableModel) part).setTexturer(texturer);
+                    else((IRetexturableModel) part).setTexturer(null);
                 }
                 if (part.getParent() == null)
                 {
@@ -416,14 +418,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
     }
 
     @Override
-    protected void preRenderCallback(T entity, float f)
-    {
-        GL11.glEnable(GL11.GL_NORMALIZE);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    @Override
     public void setPhase(String phase)
     {
         currentPhase = phase;
@@ -460,21 +454,43 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
         GL11.glTranslatef(var5, var6, 0.0F);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
-        GL11.glEnable(GL11.GL_BLEND);
         float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
         GL11.glColor4f(var7, var7, var7, 0.5F);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
         var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
         GL11.glScalef(var7, var7, var7);
-
+        preRenderStatus();
         doRender(entity, d, d1, d2, f, partialTick);
-
+        postRenderStatus();
         GL11.glMatrixMode(GL11.GL_TEXTURE);
         GL11.glLoadIdentity();
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
         GL11.glPopMatrix();
+    }
+
+    boolean blend;
+    boolean light;
+    int     src;
+    int     dst;
+
+    private void preRenderStatus()
+    {
+        blend = GL11.glGetBoolean(GL11.GL_BLEND);
+        light = GL11.glGetBoolean(GL11.GL_LIGHTING);
+        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
+        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        statusRender = true;
+    }
+
+    private void postRenderStatus()
+    {
+        if (light) GL11.glEnable(GL11.GL_LIGHTING);
+        if (!blend) GL11.glDisable(GL11.GL_BLEND);
+        GL11.glBlendFunc(src, dst);
+        statusRender = false;
     }
 
     @Override

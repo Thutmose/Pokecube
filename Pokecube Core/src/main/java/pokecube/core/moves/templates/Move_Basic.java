@@ -151,8 +151,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             {
                 if (sound != null)
                 {
-                    ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
-                            0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
+                    ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.25F,
+                            1f);
                 }
                 List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker),
                         v.set(attacked).addTo(0, attacked.height / 3, 0));

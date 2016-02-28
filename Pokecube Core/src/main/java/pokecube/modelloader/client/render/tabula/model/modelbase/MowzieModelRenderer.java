@@ -27,21 +27,21 @@ import pokecube.modelloader.client.render.tabula.TabulaPackLoader.TabulaModelSet
 @SideOnly(Side.CLIENT)
 public class MowzieModelRenderer extends ModelRenderer implements IRetexturableModel
 {
-    public float initRotateAngleX;
-    public float initRotateAngleY;
-    public float initRotateAngleZ;
+    public float          initRotateAngleX;
+    public float          initRotateAngleY;
+    public float          initRotateAngleZ;
 
-    public float initOffsetX;
-    public float initOffsetY;
-    public float initOffsetZ;
+    public float          initOffsetX;
+    public float          initOffsetY;
+    public float          initOffsetZ;
 
-    public float initRotationPointX;
-    public float initRotationPointY;
-    public float initRotationPointZ;
+    public float          initRotationPointX;
+    public float          initRotationPointY;
+    public float          initRotationPointZ;
 
-    public float initScaleX = 1f;
-    public float initScaleY = 1f;
-    public float initScaleZ = 1f;
+    public float          initScaleX = 1f;
+    public float          initScaleY = 1f;
+    public float          initScaleZ = 1f;
 
     public float          scaleX     = 1f;
     public float          scaleY     = 1f;
@@ -360,6 +360,7 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
                     if (rotationPointX == 0f && rotationPointY == 0f && rotationPointZ == 0f)
                     {
 
+                        boolean animateTex = false;
                         GL11.glPushMatrix();
                         // Apply Colour
                         GL11.glColor4f(red, green, blue, alpha);
@@ -368,15 +369,22 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
                         {
                             texturer.applyTexture(name);
                             texturer.shiftUVs(name, texOffsets);
-                            GL11.glMatrixMode(GL11.GL_TEXTURE);
-                            GL11.glLoadIdentity();
-                            GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
-                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                            if (texOffsets[0] != 0 || texOffsets[1] != 0) animateTex = true;
+                            if (animateTex)
+                            {
+                                GL11.glMatrixMode(GL11.GL_TEXTURE);
+                                GL11.glLoadIdentity();
+                                GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
+                                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                            }
                         }
                         GL11.glCallList(displayList);
-                        GL11.glMatrixMode(GL11.GL_TEXTURE);
-                        GL11.glLoadIdentity();
-                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        if (animateTex)
+                        {
+                            GL11.glMatrixMode(GL11.GL_TEXTURE);
+                            GL11.glLoadIdentity();
+                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        }
                         GL11.glColor4f(1, 1, 1, 1);
                         GL11.glPopMatrix();
                         if (childModels != null)
@@ -394,20 +402,28 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
                         GL11.glPushMatrix();
                         // Apply Colour
                         GL11.glColor4f(red, green, blue, alpha);
+                        boolean animateTex = false;
                         // Apply Texture
                         if (texturer != null)
                         {
                             texturer.applyTexture(name);
                             texturer.shiftUVs(name, texOffsets);
-                            GL11.glMatrixMode(GL11.GL_TEXTURE);
-                            GL11.glLoadIdentity();
-                            GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
-                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                            if (texOffsets[0] != 0 || texOffsets[1] != 0) animateTex = true;
+                            if (animateTex)
+                            {
+                                GL11.glMatrixMode(GL11.GL_TEXTURE);
+                                GL11.glLoadIdentity();
+                                GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
+                                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                            }
                         }
                         GL11.glCallList(displayList);
-                        GL11.glMatrixMode(GL11.GL_TEXTURE);
-                        GL11.glLoadIdentity();
-                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        if (animateTex)
+                        {
+                            GL11.glMatrixMode(GL11.GL_TEXTURE);
+                            GL11.glLoadIdentity();
+                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        }
                         GL11.glColor4f(1, 1, 1, 1);
                         GL11.glPopMatrix();
 
@@ -445,20 +461,28 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
                     GL11.glPushMatrix();
                     // Apply Colour
                     GL11.glColor4f(red, green, blue, alpha);
+                    boolean animateTex = false;
                     // Apply Texture
                     if (texturer != null)
                     {
                         texturer.applyTexture(name);
                         texturer.shiftUVs(name, texOffsets);
-                        GL11.glMatrixMode(GL11.GL_TEXTURE);
-                        GL11.glLoadIdentity();
-                        GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
-                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        if (texOffsets[0] != 0 || texOffsets[1] != 0) animateTex = true;
+                        if (animateTex)
+                        {
+                            GL11.glMatrixMode(GL11.GL_TEXTURE);
+                            GL11.glLoadIdentity();
+                            GL11.glTranslated(texOffsets[0], texOffsets[1], 0.0F);
+                            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                        }
                     }
                     GL11.glCallList(displayList);
-                    GL11.glMatrixMode(GL11.GL_TEXTURE);
-                    GL11.glLoadIdentity();
-                    GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                    if (animateTex)
+                    {
+                        GL11.glMatrixMode(GL11.GL_TEXTURE);
+                        GL11.glLoadIdentity();
+                        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                    }
 
                     GL11.glColor4f(1, 1, 1, 1);
                     GL11.glPopMatrix();

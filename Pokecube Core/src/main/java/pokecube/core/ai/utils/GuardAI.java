@@ -29,7 +29,7 @@ import pokecube.core.utils.TimePeriod;
 */
 public class GuardAI extends EntityAIBase
 {
-    private AttributeModifier goingHome = null;
+    private AttributeModifier       goingHome = null;
 
     public final IGuardAICapability capability;
     private final EntityLiving      entity;
@@ -46,13 +46,15 @@ public class GuardAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (null == entity || entity.isDead || capability.getActiveTime() == null || capability.getPos() == null) { return false; }
+        if (null == entity || entity.isDead || capability.getActiveTime() == null
+                || capability.getPos() == null) { return false; }
         if (capability.getActiveTime() != TimePeriod.fullDay
                 && !capability.getActiveTime().contains((int) (entity.worldObj.getWorldTime() % 24000L)))
         {
-            // Not outside of the guard time
             return false;
         }
+        BlockPos pos = capability.getPos();
+        if (pos.getX() == 0 && pos.getY() == 0 && pos.getZ() == 0) return false;
         double distanceToGuardPointSq = entity.getDistanceSq(capability.getPos());
         return (distanceToGuardPointSq > capability.getRoamDistance() * capability.getRoamDistance());
     }
@@ -116,7 +118,7 @@ public class GuardAI extends EntityAIBase
     {
         capability.setActiveTime(time);
     }
-    
+
     public void setPos(BlockPos pos)
     {
         capability.setPos(pos);

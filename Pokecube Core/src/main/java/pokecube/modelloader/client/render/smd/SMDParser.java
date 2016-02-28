@@ -60,8 +60,9 @@ public class SMDParser
                 {
                     if (skelly == null)
                     {
-                        skelly = new Skeleton();
-                        triangles = new Triangles(skelly);
+                        skelly = new Skeleton(model);
+                        model.skeleton = skelly;
+                        triangles = new Triangles(model);
                     }
                     Bone bone = new Bone(line, skelly);
                     skelly.addBone(bone);
@@ -105,7 +106,6 @@ public class SMDParser
                 }
             }
         }
-        model.skeleton = skelly;
         model.triangles = triangles;
         skelly.init();
         return model;

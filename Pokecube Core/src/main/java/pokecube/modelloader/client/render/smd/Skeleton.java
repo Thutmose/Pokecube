@@ -15,7 +15,13 @@ import pokecube.modelloader.client.render.smd.SkeletonAnimation.SkeletonFrame;
 public class Skeleton
 {
     public HashMap<Integer, Bone> boneMap = new HashMap<>();
+    public final SMDModel         model;
     public SkeletonAnimation      pose;
+
+    public Skeleton(SMDModel model)
+    {
+        this.model = model;
+    }
 
     public void addBone(Bone bone)
     {
@@ -61,7 +67,6 @@ public class Skeleton
     {
         for (Bone b : boneMap.values())
         {
-            b.reformChildren();
             for (BoneVertex v : b.vertices.keySet())
             {
                 v.applyDeformation();
@@ -79,13 +84,19 @@ public class Skeleton
                 bone.parent = parent;
                 parent.children.add(bone);
             }
-            SkeletonFrame frame = pose.frames.get(0);
-            for(Integer i: frame.transforms.keySet())
-            {
-                Vector6f trans = frame.transforms.get(i);
-                bone.setRest(VectorMath.fromVector6f(trans));
-                bone.invertRestMatrix();
-            }
+        }
+
+        SkeletonFrame frame = pose.frames.get(0);
+        for (Integer i : frame.transforms.keySet())
+        {
+            Vector6f trans = frame.transforms.get(i);
+            Bone bone = boneMap.get(i);
+            bone.setRest(VectorMath.fromVector6f(trans));
+            bone.invertRestMatrix();
+        }
+        for (Bone b : boneMap.values())
+        {
+            b.reformChildren();
         }
     }
 
@@ -174,6 +185,7 @@ public class Skeleton
                 ArrayList<Matrix4f> precalc = this.animatedTransforms.get(frame.animationName);
                 Matrix4f animated = precalc.get(frame.currentIndex);
                 Matrix4f dAnimated = Matrix4f.mul(animated, this.restInverse, null);
+                animated = rest;
                 deform = Matrix4f.mul(deform, dAnimated, deform);
                 deformInverse = Matrix4f.invert(deform, deformInverse);
             }
@@ -197,6 +209,9 @@ public class Skeleton
             for (BoneVertex v : vertices.keySet())
             {
                 v.applyTransform(deform, vertices.get(v));
+                deform.invert();
+                v.applyTransform(deform, vertices.get(v));
+                deform.invert();
             }
         }
 
@@ -231,6 +246,7 @@ public class Skeleton
         public Vector4f        positionDeform = new Vector4f();
         private final Vector4f originalNormal;
         public Vector4f        normalDeform   = new Vector4f();
+        public final int       id;
         public float           xn;
         public float           yn;
         public float           zn;
@@ -241,26 +257,15 @@ public class Skeleton
             this.xn = xn;
             this.yn = yn;
             this.zn = zn;
+            this.id = id;
             this.originalPos = new Vector4f(x, y, z, 1.0F);
             this.originalNormal = new Vector4f(xn, yn, zn, 0.0F);
         }
 
-        public BoneVertex(BoneVertex vertex)
-        {
-            super(vertex.x, vertex.y, vertex.z);
-            this.xn = vertex.xn;
-            this.yn = vertex.yn;
-            this.zn = vertex.zn;
-            this.originalPos = new Vector4f(vertex.originalPos);
-            this.originalNormal = new Vector4f(vertex.originalNormal);
-            this.positionDeform = vertex.positionDeform;
-            this.normalDeform = vertex.normalDeform;
-        }
-
         public void reset()
         {
-            this.positionDeform.set(originalPos);
-            this.normalDeform.set(originalNormal);
+            this.positionDeform.set(0, 0, 0, 0);
+            this.normalDeform.set(0, 0, 0, 0);
         }
 
         public void applyTransform(Matrix4f transform, float weight)
@@ -273,6 +278,9 @@ public class Skeleton
                 normal.scale(weight);
                 Vector4f.add(loc, this.positionDeform, this.positionDeform);
                 Vector4f.add(normal, this.normalDeform, this.normalDeform);
+                
+              Matrix4f.transform(transform, this.originalPos, this.positionDeform);
+              Matrix4f.transform(transform, this.originalNormal, this.normalDeform);
             }
         }
 
@@ -306,7 +314,7 @@ public class Skeleton
 
         public String toString()
         {
-            return x + "," + y + "," + z;
+            return id + ":" + x + "," + y + "," + z;
         }
     }
 }

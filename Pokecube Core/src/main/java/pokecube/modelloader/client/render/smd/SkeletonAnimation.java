@@ -11,12 +11,12 @@ import pokecube.modelloader.client.render.smd.Skeleton.Bone;
 
 public class SkeletonAnimation
 {
-    public final Skeleton    skeleton;
-    public int               currentIndex = 0;
-    public int               lastIndex;
-    public int               frameCount;
-    public String            animationName;
-    ArrayList<SkeletonFrame> frames       = new ArrayList<>();
+    public final Skeleton           skeleton;
+    public int                      currentIndex = 0;
+    public int                      lastIndex;
+    public int                      frameCount;
+    public String                   animationName;
+    public ArrayList<SkeletonFrame> frames       = new ArrayList<>();
 
     public SkeletonAnimation(Skeleton skeleton)
     {
@@ -101,10 +101,11 @@ public class SkeletonAnimation
             String[] args = line.split(" ");
             int id = Integer.parseInt(args[0]);
             Vector6f vec6 = new Vector6f(
+0,0,0,
+//            Float.parseFloat(args[1]), Float.parseFloat(args[3]), Float.parseFloat(args[2]),
 
-            Float.parseFloat(args[1]), Float.parseFloat(args[3]), Float.parseFloat(args[2]),
-
-            Float.parseFloat(args[4]), Float.parseFloat(args[6]), Float.parseFloat(args[5]));
+//            Float.parseFloat(args[4]), Float.parseFloat(args[6]), Float.parseFloat(args[5]));
+            Float.parseFloat(args[6]), Float.parseFloat(args[4]), Float.parseFloat(args[5]));
 
             vec6.clean();
             Matrix4f matrix = VectorMath.fromVector6f(vec6);

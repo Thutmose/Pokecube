@@ -1,6 +1,7 @@
 package pokecube.modelloader.client.render.smd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.vecmath.Vector3f;
 
@@ -12,11 +13,11 @@ import pokecube.modelloader.client.render.smd.Skeleton.BoneVertex;
 public class Triangles
 {
     ArrayList<Triangle> triangles = new ArrayList<>();
-    final Skeleton      skeleton;
+    final SMDModel      model;
 
-    public Triangles(Skeleton skeleton)
+    public Triangles(SMDModel model)
     {
-        this.skeleton = skeleton;
+        this.model = model;
     }
 
     public void render()
@@ -45,9 +46,6 @@ public class Triangles
         BoneVertex[]        vertices      = new BoneVertex[3];
         Vector3f            faceNormal;
         TextureCoordinate[] uvs           = new TextureCoordinate[3];
-        float[]             links         = new float[3];
-        int[]               boneIds       = new int[3];
-        float[]             weights       = new float[3];
         int                 toAdd         = 0;
 
         public Triangle(String material, Triangles triangles)
@@ -73,21 +71,20 @@ public class Triangles
             int boneId = Integer.parseInt(args[0]);
             parentBoneIds[toAdd] = boneId;
             uvs[toAdd] = new TextureCoordinate(Float.parseFloat(args[7]), Float.parseFloat(args[8]), 0);
-            links[toAdd] = Float.parseFloat(args[9]);
-            boneIds[toAdd] = boneId = Integer.parseInt(args[10]);
-            float weight = weights[toAdd] = Float.parseFloat(args[11]);
+            Float.parseFloat(args[9]);// TODO figure out what to do with links
+            boneId = Integer.parseInt(args[10]);
+            float weight = Float.parseFloat(args[11]);
 
             BoneVertex vertex = new BoneVertex(Float.parseFloat(args[1]), Float.parseFloat(args[2]),
                     Float.parseFloat(args[3]), Float.parseFloat(args[4]), Float.parseFloat(args[5]),
-                    Float.parseFloat(args[6]), boneId);
-
-            triangles.skeleton.getBone(boneId).vertices.put(vertex, weight);
+                    Float.parseFloat(args[6]), triangles.model.getNextVertexID());
+            triangles.model.skeleton.getBone(boneId).vertices.put(vertex, weight);
 
             if (args.length > 12)
             {
                 boneId = Integer.parseInt(args[12]);
-                weight = weights[toAdd] = Float.parseFloat(args[13]);
-                triangles.skeleton.getBone(boneId).vertices.put(vertex, weight);
+                weight = Float.parseFloat(args[13]);
+                triangles.model.skeleton.getBone(boneId).vertices.put(vertex, weight);
             }
 
             vertices[toAdd] = vertex;
@@ -109,8 +106,7 @@ public class Triangles
                 }
                 else
                 {
-                    Vector3f normal = new Vector3f(vertices[i].xn, vertices[i].yn, vertices[i].zn);
-                    GL11.glNormal3f((float) normal.x, (float) normal.y, (float) normal.z);
+                    GL11.glNormal3f(vertices[i].xn, vertices[i].yn, vertices[i].zn);
                 }
                 GL11.glVertex3d(vertices[i].x, vertices[i].y, vertices[i].z);
             }
@@ -130,6 +126,12 @@ public class Triangles
             c.cross(a, b);
             c.normalize();
             faceNormal = c;
+        }
+
+        public String toString()
+        {
+            if (faceNormal == null) calculateFaceNormal();
+            return Arrays.toString(vertices) + " " + faceNormal;
         }
     }
 }

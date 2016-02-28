@@ -11,6 +11,13 @@ public class SMDModel
     public Triangles                          triangles;
     public HashMap<String, SkeletonAnimation> poses = new HashMap<>();
 
+    private int vertexID = 0;
+
+    public int getNextVertexID()
+    {
+        return vertexID++;
+    }
+
     public void setAnimation(String animation)
     {
         if (poses.containsKey(animation))

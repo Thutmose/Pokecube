@@ -109,7 +109,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
         guiOffset = config.get(CATEGORY_ADVANCED, "guiOffset", new int[] { 0, 0 }, "offset of pokemon moves gui.")
                 .getIntList();
-        guiDown = config.get(CATEGORY_ADVANCED, "guiDown", true, "Are the moves shown below the nametag.").getBoolean();
+        guiDown = config.get(CATEGORY_ADVANCED, "guiDown", guiDown, "Are the moves shown below the nametag.").getBoolean();
 
         maxAIThreads = config
                 .get(CATEGORY_ADVANCED, "aiThreads", 2,

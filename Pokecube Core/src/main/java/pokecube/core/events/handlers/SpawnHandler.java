@@ -43,7 +43,6 @@ import pokecube.core.utils.Tools;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Cruncher;
 import thut.api.maths.ExplosionCustom;
-import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
@@ -71,10 +70,10 @@ public final class SpawnHandler
     public static final HashMap<Integer, ArrayList<PokedexEntry>> spawnLists = new HashMap<Integer, ArrayList<PokedexEntry>>();
     public static int                                             number     = 0;
 
-    private static Vector3 vec  = Vector3.getNewVector();
-    private static Vector3 vec1 = Vector3.getNewVector();
-    private static Vector3 vec2 = Vector3.getNewVector();
-    private static Vector3 temp = Vector3.getNewVector();
+    private static Vector3                                        vec        = Vector3.getNewVector();
+    private static Vector3                                        vec1       = Vector3.getNewVector();
+    private static Vector3                                        vec2       = Vector3.getNewVector();
+    private static Vector3                                        temp       = Vector3.getNewVector();
 
     public SpawnHandler()
     {
@@ -296,8 +295,6 @@ public final class SpawnHandler
         {
             if (o instanceof IPokemob) num++;
         }
-
-        Matrix3.freeAABB(box);
 
         if (num > MAX_DENSITY * MAXNUM) return ret;
 

@@ -265,7 +265,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
             try
             {
-                // message, id, move0, move1, movenum
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
                 buffer.writeByte(MessageServer.MOVESWAP);
                 buffer.writeInt(getEntityId());
@@ -679,13 +678,12 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             }
         }
 
+        String attack;
         if (this.getPokemonAIState(IPokemob.TAMED))
         {
             // A tamed pokemon should not attack a player
             // but it must keep it as a target.
-
-            String attack = getMove(getMoveIndex());
-
+            attack = getMove(getMoveIndex());
             if (attack == null)
             {
                 new Exception().getStackTrace();
@@ -704,12 +702,10 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
                 }
             }
-
-            MovesUtils.doAttack(attack, this, target, f);
         }
         else
         {
-            if (moveIndexCounter++ > rand.nextInt(30))
+            if (moveIndexCounter++ > rand.nextInt(3))
             {
                 int nb = rand.nextInt(5);
                 String move = getMove(nb);
@@ -721,8 +717,11 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                 moveIndexCounter = 0;
                 setMoveIndex(nb);
             }
-            MovesUtils.doAttack(getMove(getMoveIndex()), this, target, f);
+            attack = getMove(getMoveIndex());
         }
+        Move_Base move = MovesUtils.getMoveFromName(attack);
+        if (!move.move.notIntercepable) MovesUtils.doAttack(attack, this, targetLocation, f);
+        else MovesUtils.doAttack(attack, this, target, f);
     }
 
     @Override

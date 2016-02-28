@@ -1056,6 +1056,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         ItemStack itemstack = player.inventory.getCurrentItem();
         ItemStack key = new ItemStack(Items.shears);
+        
+        System.out.println(this+"\n"+here);
+        
+        
         // Check shearable interaction.
         if (getPokedexEntry().interact(key) && player.getHeldItem() != null
                 && player.getHeldItem().isItemEqual(key)) { return false; }
@@ -1078,7 +1082,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
                 return true;
             }
-            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(0.1);
+            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(5);
+            look.y = 0.2;
             this.motionX += look.x;
             this.motionY += look.y;
             this.motionZ += look.z;

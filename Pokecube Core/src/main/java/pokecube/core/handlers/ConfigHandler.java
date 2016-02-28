@@ -109,6 +109,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
         guiOffset = config.get(CATEGORY_ADVANCED, "guiOffset", new int[] { 0, 0 }, "offset of pokemon moves gui.")
                 .getIntList();
+        guiDown = config.get(CATEGORY_ADVANCED, "guiDown", true, "Are the moves shown below the nametag.").getBoolean();
 
         maxAIThreads = config
                 .get(CATEGORY_ADVANCED, "aiThreads", 2,
@@ -173,11 +174,6 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                             "any block listed here will have decreased drop rates from dig with high level pokemon, use same format as for the other lists.")
                     .getString();
 
-            // TODO possibly re-implement this.
-            // Mod_Pokecube_Helper.industrial = config.get(CATEGORY_ADVANCED,
-            // "Industrial Area Blocks", "",
-            // "Blocks here count towards an industrial area.").getString();
-
             defaultMobs = config
                     .get(CATEGORY_ADVANCED, "Default Mod", "",
                             "if you put a modid here, Mobs from this mod will be considered as the default mobs.")
@@ -223,7 +219,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                     .get(CATEGORY_ADVANCED, "functions", new String[] { "0:(10^6)*(sin(x*10^-3)^8 + sin(y*10^-3)^8)",
                             "1:10+r/130;r", "2:(10^6)*(sin(x*0.5*10^-3)^8 + sin(y*0.5*10^-3)^8)" },
 
-            "to recieve legacy lvl functions, replace the first entry with the second, and set the leading 1 to 0")
+                            "to recieve legacy lvl functions, replace the first entry with the second, and set the leading 1 to 0")
                     .getStringList();
             SpawnHandler.loadFunctionsFromStrings(strings);
 

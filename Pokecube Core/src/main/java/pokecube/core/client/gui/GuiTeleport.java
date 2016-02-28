@@ -17,15 +17,16 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 
 public class GuiTeleport extends Gui
 {
-    protected FontRenderer            fontRenderer;
-    protected Minecraft               minecraft;
-    protected static int              lightGrey = 0xDDDDDD;
+    protected FontRenderer     fontRenderer;
+    protected Minecraft        minecraft;
+    protected static int       lightGrey = 0xDDDDDD;
     private static GuiTeleport instance;
 
     /**
@@ -74,8 +75,10 @@ public class GuiTeleport extends Gui
 
     private void draw(RenderGameOverlayEvent.Post event)
     {
-        int h = Mod_Pokecube_Helper.guiOffset[0];
-        int w = Mod_Pokecube_Helper.guiOffset[1];
+        int w = Mod_Pokecube_Helper.guiOffset[0];
+        int h = Mod_Pokecube_Helper.guiOffset[1];
+        w = Math.min(event.resolution.getScaledWidth() - 105, w);
+        h = Math.min(event.resolution.getScaledHeight() - 13, h);
         GlStateManager.pushMatrix();
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glEnable(GL11.GL_BLEND);
@@ -90,12 +93,25 @@ public class GuiTeleport extends Gui
         int i = 0;
         int xOffset = 0;
         int yOffset = 60;
+        int dir = 1;
+
+        if (!Mod_Pokecube_Helper.guiDown)
+        {
+            IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
+            int moveCount = 0;
+            dir = -1;
+            for (moveCount = 0; moveCount < 4; moveCount++)
+            {
+                if (pokemob.getMove(moveCount) == null) break;
+            }
+            yOffset = -(25 + 12 * (moveCount - 1));
+        }
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         // bind texture
         minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
-        this.drawTexturedModalRect(90 * xOffset + h, yOffset + w, 0, 0, 100, 13);
-        fontRenderer.drawString("Teleports", 2 + 90 * xOffset + h, 2 + yOffset + w, lightGrey);
+        this.drawTexturedModalRect(90 * xOffset + w, yOffset + h, 0, 0, 100, 13);
+        fontRenderer.drawString("Teleports", 2 + 90 * xOffset + w, 2 + yOffset + h, lightGrey);
         // ArrayList<Vector4> list = new ArrayList(locations.keySet());
 
         for (int k = 0; k < 1; k++)
@@ -109,12 +125,17 @@ public class GuiTeleport extends Gui
                 else GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
                 String name = location.getName();
+                int shift = 13 + 12 * i + yOffset + h;
 
+                if (dir == -1)
+                {
+                    shift -= 25;
+                }
                 // bind texture
                 minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
-                this.drawTexturedModalRect(90 * xOffset + h, 13 + 12 * i + yOffset + w, 0, 13, 100, 12);
+                this.drawTexturedModalRect(90 * xOffset + w, shift, 0, 13, 100, 12);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                fontRenderer.drawString(name, 5 + xOffset * 90 + h, i * 12 + 14 + yOffset + w, PokeType.fire.colour);
+                fontRenderer.drawString(name, 5 + xOffset * 90 + w, shift + 2, PokeType.fire.colour);
             }
             i++;
         }

@@ -142,7 +142,7 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 141,Leech Life ,Bug ,Physical ,Smart ,15,20,100.00%,I ,none;0,none;0,none;0,50%;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,pont
 142,Lovely Kiss ,Normal ,Status ,Beauty ,10,_,75.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 143,Sky Attack ,Flying ,Physical_Distance,Cool ,5,140,90.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-144,Transform ,Normal ,Status ,Smart ,10,_,_,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+144,Transform ,Normal ,Status ,Smart ,10,_,_,I ,none;0,none;0,none;0,0;0,FALSE;TRUE,TRUE,FALSE,FALSE,FALSE,1,0,none
 145,Bubble ,Water ,Special ,Cute ,30,40,100.00%,I ,none;0,Spd;-1;10,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
 146,Dizzy Punch ,Normal ,Physical ,Cool ,10,70,100.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 147,Spore ,Grass ,Status ,Beauty ,15,_,100.00%,I ,Slp;100,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,powder

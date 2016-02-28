@@ -8,6 +8,8 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -95,13 +97,27 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     {
         int finalAttackStrength = 0;
         List<Entity> targets = new ArrayList<Entity>();
+        
+        Entity entity = (Entity) attacker;
+        
+        if(!move.notIntercepable)
+        {
+            Vec3 loc1 = new Vec3(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+            Vec3 loc2 = new Vec3(location.x, location.y, location.z);
+            MovingObjectPosition pos = entity.worldObj.rayTraceBlocks(loc1, loc2, false);
+            if(pos!=null)
+            {
+                location.set(pos.hitVec);
+            }
+            
+        }
         if (move.multiTarget)
         {
             targets.addAll(MovesUtils.targetsHit(((Entity) attacker), location));
         }
         else if (!move.notIntercepable)
         {
-            targets.add(MovesUtils.targetHit(((Entity) attacker), location));
+            targets.add(MovesUtils.targetHit(entity, location));
         }
         else
         {
@@ -124,8 +140,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             }
             else
             {
-                ((IPokemob) attacker).displayMessageToOwner("missed");
-                System.out.println("missed");
+                MovesUtils.displayMoveMessages(attacker, null, this.name);
+                MovesUtils.displayEfficiencyMessages(attacker, null, -1, 0);
             }
 
         }

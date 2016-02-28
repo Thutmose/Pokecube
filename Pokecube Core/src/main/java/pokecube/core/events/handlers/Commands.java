@@ -205,7 +205,7 @@ public class Commands implements ICommand
                 String text = args[1];
                 for (PokedexEntry entry : Database.allFormes)
                 {
-                    if (entry.getName().contains(text))
+                    if (entry.getName().toLowerCase().contains(text.toLowerCase()))
                     {
                         String name = entry.getName();
                         if (name.contains(" "))
@@ -654,13 +654,6 @@ public class Commands implements ICommand
                         }
                         mob.changeForme(name);
                         Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
-                        Vector3 temp = Vector3.getNewVector();
-                        if (player != null)
-                        {
-                            offset = offset.add(temp.set(player.getLookVec()));
-                        }
-                        temp.set(cSender.getPosition()).addTo(offset);
-                        temp.moveEntity((Entity) mob);
 
                         String owner = "";
                         boolean shiny = false;
@@ -722,8 +715,23 @@ public class Commands implements ICommand
                                     moves[mindex] = val;
                                     mindex++;
                                 }
+                                else if(arg.equalsIgnoreCase("v"))
+                                {
+                                    String[] vec = val.split(",");
+                                    offset.x = Double.parseDouble(vec[0].trim());
+                                    offset.y = Double.parseDouble(vec[1].trim());
+                                    offset.z = Double.parseDouble(vec[2].trim());
+                                }
                             }
                         }
+                        
+                        Vector3 temp = Vector3.getNewVector();
+                        if (player != null)
+                        {
+                            offset = offset.add(temp.set(player.getLookVec()));
+                        }
+                        temp.set(cSender.getPosition()).addTo(offset);
+                        temp.moveEntity((Entity) mob);
 
                         if (targets != null)
                         {

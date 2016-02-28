@@ -86,7 +86,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
@@ -211,7 +210,6 @@ public class EventsHandler
                 && evt.entityPlayer.getHeldItem().getItem() == Items.stick)
         {
             TileEntity te = evt.world.getTileEntity(evt.pos);
-
             if (te instanceof TileEntityOwnable)
             {
                 IBlockState state = evt.world.getBlockState(evt.pos);
@@ -219,7 +217,6 @@ public class EventsHandler
                 if (tile.canEdit(evt.entity))
                 {
                     Block b = state.getBlock();
-
                     b.dropBlockAsItem(evt.world, evt.pos, state, 0);
                     evt.world.setBlockToAir(evt.pos);
                 }
@@ -235,13 +232,7 @@ public class EventsHandler
                 block = evt.world.getBlockState(evt.pos).getBlock();
             }
 
-            Vector3 look = Vector3.getNewVector().set(evt.entityPlayer.getLook(1));
-            Vector3 temp = Vector3.getNewVector().set(evt.entityPlayer).addTo(0, evt.entityPlayer.getEyeHeight(), 0);
-
-            Entity target = MovesUtils.targetHit(temp, look, 32, evt.world, evt.entityPlayer, true,
-                    EntityPokecube.class);// temp.firstEntityExcluding(32, look,
-                                          // evt.entityPlayer.worldObj, false,
-                                          // evt.entityPlayer);
+            Entity target = Tools.getPointedEntity(evt.entityPlayer, 32);
 
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(5));
             buffer.writeByte(PokecubeServerPacket.POKECUBEUSE);
@@ -251,6 +242,7 @@ public class EventsHandler
             }
             else
             {
+                Vector3 temp = Vector3.getNewVector(), look = Vector3.getNewVector();
                 temp.set(evt.entityPlayer).addTo(0, evt.entityPlayer.getEyeHeight(), 0);
                 look.set(evt.entityPlayer.getLook(1));
                 Vector3 hit = Vector3.getNextSurfacePoint(evt.world, temp, look, 32);

@@ -49,20 +49,20 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     public Vector3          targetLocation = Vector3.getNewVector();
     public UUID             shooter;
 
-    private Vector3 v0    = Vector3.getNewVector();
-    private Vector3 v1    = Vector3.getNewVector();
-    public double   speed = 2;
+    private Vector3         v0             = Vector3.getNewVector();
+    private Vector3         v1             = Vector3.getNewVector();
+    public double           speed          = 2;
 
-    private BlockPos tilePos;
-    private Block    tile;
-    private int      inData;
-    private boolean  inGround;
+    private BlockPos        tilePos;
+    private Block           tile;
+    private int             inData;
+    private boolean         inGround;
     /** 1 if the player can pick up the arrow */
-    public int       canBePickedUp;
+    public int              canBePickedUp;
     /** Seems to be some sort of timer for animating an arrow. */
-    public int       arrowShake;
+    public int              arrowShake;
     /** The owner of this arrow. */
-    private int      ticksInGround;
+    private int             ticksInGround;
 
     public EntityPokecube(World world)
     {
@@ -335,7 +335,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                         if (entityHit instanceof IPokemob)
                         {
                             ((IPokemob) entityHit).setPokemonAIState(IPokemob.ANGRY, true);
-                            ;
                         }
                     }
                 }
@@ -358,6 +357,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             Vector3 dv = v1.set(motionX, motionY, motionZ);
             v = Vector3.getNextSurfacePoint(worldObj, v, dv, Math.max(2, dv.mag()));
             if (v == null) v = v0.set(this);
+            v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
             Block b = v.getBlock(worldObj);
             if (b.getMaterial().isSolid()) v.y = Math.ceil(v.y);
             v.moveEntity(((Entity) entity1));

@@ -3,10 +3,18 @@ package pokecube.core.utils;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntry;
@@ -438,5 +446,64 @@ public class Tools
             }
         }
         return ret;
+    }
+
+    public static Entity getPointedEntity(Entity entity, double distance)
+    {
+        Vec3 vec3 = new Vec3(entity.posX, entity.posY + (double) entity.getEyeHeight(), entity.posZ);
+        double d0 = distance;
+        Vec3 vec31 = entity.getLook(0);
+        Vec3 vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
+        Entity pointedEntity = null;
+        float f = 1.0F;
+        List<Entity> list = entity.worldObj.getEntitiesInAABBexcluding(entity,
+                entity.getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0)
+                        .expand((double) f, (double) f, (double) f),
+                Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
+                {
+                    public boolean apply(Entity p_apply_1_)
+                    {
+                        return p_apply_1_.canBeCollidedWith();
+                    }
+                }));
+        double d2 = distance;
+
+        for (int j = 0; j < list.size(); ++j)
+        {
+            Entity entity1 = (Entity) list.get(j);
+            float f1 = entity1.getCollisionBorderSize();
+            AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double) f1, (double) f1, (double) f1);
+            MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
+
+            if (axisalignedbb.isVecInside(vec3))
+            {
+                if (d2 >= 0.0D)
+                {
+                    pointedEntity = entity1;
+                    d2 = 0.0D;
+                }
+            }
+            else if (movingobjectposition != null)
+            {
+                double d3 = vec3.distanceTo(movingobjectposition.hitVec);
+
+                if (d3 < d2 || d2 == 0.0D)
+                {
+                    if (entity1 == entity.ridingEntity && !entity.canRiderInteract())
+                    {
+                        if (d2 == 0.0D)
+                        {
+                            pointedEntity = entity1;
+                        }
+                    }
+                    else
+                    {
+                        pointedEntity = entity1;
+                        d2 = d3;
+                    }
+                }
+            }
+        }
+        return pointedEntity;
     }
 }

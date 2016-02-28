@@ -29,15 +29,15 @@ public class AIAttack extends AIBase implements IAICombat
     Matrix3            targetBox   = new Matrix3();
     Matrix3            attackerBox = new Matrix3();
 
-    Vector3 v  = Vector3.getNewVector();
-    Vector3 v1 = Vector3.getNewVector();
-    Vector3 v2 = Vector3.getNewVector();
-    double  movementSpeed;
+    Vector3            v           = Vector3.getNewVector();
+    Vector3            v1          = Vector3.getNewVector();
+    Vector3            v2          = Vector3.getNewVector();
+    double             movementSpeed;
 
-    private int chaseTime;
-    private int delayTime = -1;
+    private int        chaseTime;
+    private int        delayTime   = -1;
 
-    boolean running = false;
+    boolean            running     = false;
 
     public AIAttack(EntityLiving par1EntityLiving)
     {
@@ -94,8 +94,7 @@ public class AIAttack extends AIBase implements IAICombat
             targetLoc.set(entityTarget);
             this.chaseTime = 0;
             running = true;
-            if (Mod_Pokecube_Helper.pokemobagresswarning && delayTime == -1 
-                    && entityTarget instanceof EntityPlayer
+            if (Mod_Pokecube_Helper.pokemobagresswarning && delayTime == -1 && entityTarget instanceof EntityPlayer
                     && !((IPokemob) attacker).getPokemonAIState(IPokemob.TAMED)
                     && ((EntityPlayer) entityTarget).getLastAttacker() != attacker
                     && ((EntityPlayer) entityTarget).getAITarget() != attacker)
@@ -240,8 +239,7 @@ public class AIAttack extends AIBase implements IAICombat
         if (attacker.riddenByEntity == null && !targetLoc.isEmpty() && !self)
         {
             path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
-            if (path != null)
-                addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
+            if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
 
         }
         if (delayTime < -20)
@@ -251,8 +249,7 @@ public class AIAttack extends AIBase implements IAICombat
             ((IPokemob) attacker).setPokemonAIState(IPokemob.ANGRY, true);
             targetLoc.set(entityTarget);
             path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
-            if (path != null)
-                addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
+            if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
 
         }
         boolean delay = false;
@@ -265,8 +262,7 @@ public class AIAttack extends AIBase implements IAICombat
                     applyDelay(distanced);
                     delay = true;
                 }
-                if (distanced || self)
-                    addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
+                if (distanced || self) addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
                 setPokemobAIState((IPokemob) attacker, IPokemob.EXECUTINGMOVE, true);
             }
         }
@@ -295,8 +291,8 @@ public class AIAttack extends AIBase implements IAICombat
                 this.attacker.swingItem();
             }
             float f = (float) targetLoc.distToEntity(attacker);
-            addMoveInfo(attacker.getEntityId(), entityTarget.getEntityId(), attacker.dimension,
-                    targetLoc, f);
+            Vector3 loc = targetLoc.copy();
+            addMoveInfo(attacker.getEntityId(), entityTarget.getEntityId(), attacker.dimension, loc, f);
             addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
             setPokemobAIState((IPokemob) attacker, IPokemob.EXECUTINGMOVE, false);
             targetLoc.clear();

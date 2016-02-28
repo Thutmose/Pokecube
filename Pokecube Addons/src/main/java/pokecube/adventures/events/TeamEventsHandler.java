@@ -21,7 +21,7 @@ import thut.api.maths.Vector3;
 
 public class TeamEventsHandler
 {
-    Vector3 v = Vector3.getNewVector(), v1 = Vector3.getNewVector();
+    Vector3               v                  = Vector3.getNewVector(), v1 = Vector3.getNewVector();
 
     public static boolean shouldRenderVolume = false;
 
@@ -94,9 +94,10 @@ public class TeamEventsHandler
     public void BreakBlock(BreakEvent evt)
     {
         EntityPlayer player = evt.getPlayer();
-        if (player != null && player.getTeam() != null) // TODO interface with
-                                                        // forge permissions API
-                                                        // here as well
+        // TODO interface with
+        // forge permissions API
+        // here as well
+        if (player != null && player.getTeam() != null)
         {
             ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.pos, player.dimension);
             if (!TeamManager.getInstance().isOwned(c)) return;

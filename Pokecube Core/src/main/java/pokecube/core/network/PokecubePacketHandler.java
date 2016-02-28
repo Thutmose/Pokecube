@@ -79,8 +79,8 @@ public class PokecubePacketHandler
     public final static byte CHANNEL_ID_PokemobSpawner     = 4;
     public final static byte CHANNEL_ID_STATS              = 6;
 
-    public static boolean giveHealer    = true;
-    public static boolean serverOffline = false;
+    public static boolean    giveHealer                    = true;
+    public static boolean    serverOffline                 = false;
 
     private static void handlePacketGuiChooseFirstPokemobServer(byte[] packet, EntityPlayer player)
     {
@@ -269,12 +269,12 @@ public class PokecubePacketHandler
 
     public static class StarterInfo
     {
-        public final String name;
-        public final String data;
-        public int          red   = 255;
-        public int          green = 255;
-        public int          blue  = 255;
-        public boolean      shiny = false;
+        public final String  name;
+        public final String  data;
+        public int           red   = 255;
+        public int           green = 255;
+        public int           blue  = 255;
+        public boolean       shiny = false;
 
         private List<String> moves = Lists.newArrayList();
 
@@ -683,9 +683,9 @@ public class PokecubePacketHandler
         public static final byte TELEPORTINDEX  = 13;
         public static final byte CHANGEFORME    = 14;
 
-        public static final byte WIKIWRITE = 15;
+        public static final byte WIKIWRITE      = 15;
 
-        PacketBuffer buffer;
+        PacketBuffer             buffer;
 
         public PokecubeClientPacket()
         {
@@ -913,7 +913,7 @@ public class PokecubePacketHandler
         public static final byte POKECUBEUSE    = 7;
         public static final byte TELEPORT       = 9;
 
-        PacketBuffer buffer;
+        PacketBuffer             buffer;
 
         public PokecubeServerPacket()
         {

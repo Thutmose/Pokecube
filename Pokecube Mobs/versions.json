@@ -3,10 +3,11 @@
   "promos": {
     "1.8.8-latest": "1.0.2",
     "1.8.8-recommended": "1.0.2",
-    "1.8.9-latest": "1.1.5",
-    "1.8.9-recommended": "1.1.5"
+    "1.8.9-latest": "1.1.6",
+    "1.8.9-recommended": "1.1.6"
   },
   "1.8.9": {
+    "1.1.6": "Fixes some issues with some models/textures",
     "1.1.5": "Added Seel Line",
     "1.1.0": "initial 1.8.9 port"
   },

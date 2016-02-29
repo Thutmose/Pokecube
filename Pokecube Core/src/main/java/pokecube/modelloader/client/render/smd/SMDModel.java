@@ -22,7 +22,7 @@ public class SMDModel
     {
         if (poses.containsKey(animation))
         {
-            skeleton.pose = poses.get(animation);
+            skeleton.setPose(poses.get(animation));
         }
     }
 

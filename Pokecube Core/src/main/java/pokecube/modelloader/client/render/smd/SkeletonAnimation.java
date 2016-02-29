@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.lwjgl.util.vector.Matrix4f;
 
-import pokecube.modelloader.client.render.model.Vector6f;
 import pokecube.modelloader.client.render.model.VectorMath;
 import pokecube.modelloader.client.render.smd.Skeleton.Bone;
 
@@ -21,6 +20,12 @@ public class SkeletonAnimation
     public SkeletonAnimation(Skeleton skeleton)
     {
         this.skeleton = skeleton;
+    }
+
+    public void reset()
+    {
+        for (SkeletonFrame frame : frames)
+            frame.reset();
     }
 
     public void reform()
@@ -61,7 +66,6 @@ public class SkeletonAnimation
         {
             currentIndex = 0;
             lastIndex = getNumFrames() - 1;
-            skeleton.reset();
         }
     }
 
@@ -85,8 +89,10 @@ public class SkeletonAnimation
         public final SkeletonAnimation animation;
         final int                      time;
         /** Map of Bone Id -> Position + Rotation. */
-        HashMap<Integer, Matrix4f>     positions        = new HashMap<>();
-        HashMap<Integer, Matrix4f>     inversePositions = new HashMap<>();
+        HashMap<Integer, Matrix4f>     positions                = new HashMap<>();
+        HashMap<Integer, Matrix4f>     inversePositions         = new HashMap<>();
+        HashMap<Integer, Matrix4f>     positionsOriginal        = new HashMap<>();
+        HashMap<Integer, Matrix4f>     positionsOriginalInverse = new HashMap<>();
 
         public SkeletonFrame(int time, SkeletonAnimation animation)
         {
@@ -99,13 +105,24 @@ public class SkeletonAnimation
             line = line.replaceAll("\\s+", " ");
             String[] args = line.split(" ");
             int id = Integer.parseInt(args[0]);
-            Vector6f vec6 = new Vector6f(//
+            Matrix4f matrix;
+            matrix = VectorMath.fromVector6f(//
                     Float.parseFloat(args[1]), Float.parseFloat(args[3]), Float.parseFloat(args[2]),
                     Float.parseFloat(args[4]), Float.parseFloat(args[5]), Float.parseFloat(args[6]));
-            vec6.clean();
-            Matrix4f matrix = VectorMath.fromVector6f(vec6);
+
             positions.put(id, matrix);
             inversePositions.put(id, Matrix4f.invert(matrix, null));
+            positionsOriginal.put(id, new Matrix4f(matrix));
+            positionsOriginalInverse.put(id, Matrix4f.invert(matrix, null));
+        }
+
+        public void reset()
+        {
+            for (Integer i : positions.keySet())
+            {
+                Matrix4f.load(positionsOriginal.get(i), positions.get(i));
+                Matrix4f.load(positionsOriginalInverse.get(i), inversePositions.get(i));
+            }
         }
 
         public String toString()

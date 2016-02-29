@@ -47,7 +47,9 @@ public class Skeleton
 
     public void setPose(SkeletonAnimation pose)
     {
+        if (this.pose == pose) return;
         this.pose = pose;
+        initPose();
     }
 
     public void applyPose()
@@ -69,6 +71,25 @@ public class Skeleton
         }
     }
 
+    private void initPose()
+    {
+        System.out.println(pose.animationName);
+        SkeletonFrame frame = pose.frames.get(0);
+        pose.reset();
+        for (Integer i : frame.positions.keySet())
+        {
+            Matrix4f trans = frame.positions.get(i);
+            Bone bone = boneMap.get(i);
+            bone.setRest(trans);
+        }
+        root.reformChildren();
+        for (Bone b : boneMap.values())
+        {
+            b.invertRestMatrix();
+        }
+        pose.reform();
+    }
+
     public void init()
     {
         for (Bone bone : boneMap.values())
@@ -80,24 +101,12 @@ public class Skeleton
                 parent.children.add(bone);
             }
         }
-        SkeletonFrame frame = pose.frames.get(0);
-        for (Integer i : frame.positions.keySet())
-        {
-            Matrix4f trans = frame.positions.get(i);
-            Bone bone = boneMap.get(i);
-            bone.setRest(trans);
-        }
         for (Bone b : boneMap.values())
         {
             if (b.parent == null && !b.children.isEmpty())
             {
                 root = b;
-                b.reformChildren();
             }
-        }
-        for (Bone b : boneMap.values())
-        {
-            b.invertRestMatrix();
         }
     }
 
@@ -155,6 +164,17 @@ public class Skeleton
         public void reset()
         {
             deform.setIdentity();
+            deformInverse.setIdentity();
+        }
+
+        public void clear()
+        {
+            reset();
+            restInverse.setIdentity();
+            rest.setIdentity();
+            animatedTransforms.clear();
+            for (Bone b : children)
+                b.clear();
         }
 
         public void setRest(Matrix4f resting)
@@ -190,7 +210,6 @@ public class Skeleton
                 deformInverse = Matrix4f.invert(deform, deformInverse);
             }
             applyDeform();
-            reset();
         }
 
         public void applyDeform()
@@ -199,6 +218,7 @@ public class Skeleton
             {
                 v.applyTransform(deform, vertices.get(v));
             }
+            reset();
         }
 
         public void preloadAnimation(SkeletonFrame key, Matrix4f animated)

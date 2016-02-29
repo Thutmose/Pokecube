@@ -18,6 +18,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -194,8 +195,7 @@ public final class SpawnHandler
                 int j = (i + rand) % num;
                 int x = j % (distance) - distance / 2;
                 int z = (j / distance) % (distance) - distance / 2;
-                int y = ret.intY() - 10 + world.rand.nextInt(20);
-                y = (k + rand) % 20;
+                int y = 10 - world.rand.nextInt(20);
                 temp.set(ret).addTo(x, y, z);
                 if (temp.isClearOfBlocks(world)) { return temp; }
             }
@@ -287,16 +287,17 @@ public final class SpawnHandler
         if (!v.doChunksExist(world, 10)) return ret;
         AxisAlignedBB box = v.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, Math.min(40, Mod_Pokecube_Helper.mobDespawnRadius / 2),
-                        Mod_Pokecube_Helper.mobDespawnRadius));
+                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, 20, Mod_Pokecube_Helper.mobDespawnRadius));
 
         int num = 0;
+        boolean player = false;
         for (Object o : list)
         {
             if (o instanceof IPokemob) num++;
+            if (o instanceof EntityPlayer) player = true;
         }
 
-        if (num > MAX_DENSITY * MAXNUM) return ret;
+        if (num > MAX_DENSITY * MAXNUM || !player) return ret;
 
         if (v.y < 0 || !checkNoSpawnerInArea(world, v.intX(), v.intY(), v.intZ())) return ret;
 
@@ -352,7 +353,6 @@ public final class SpawnHandler
             }
             else
             {
-
                 long time = System.nanoTime();
 
                 ret += num = doSpawnForType(world, v, dbe, parser, t);

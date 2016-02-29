@@ -28,7 +28,7 @@ public class SkeletonAnimation
         for (int i = 0; i < this.frames.size(); i++)
         {
             SkeletonFrame frame = (SkeletonFrame) this.frames.get(i);
-            frame.setAngles(0, 0.0F);
+            frame.setAngles(skeleton.root.id, 0.0F);
             frame.reform();
         }
     }
@@ -87,7 +87,6 @@ public class SkeletonAnimation
         /** Map of Bone Id -> Position + Rotation. */
         HashMap<Integer, Matrix4f>     positions        = new HashMap<>();
         HashMap<Integer, Matrix4f>     inversePositions = new HashMap<>();
-        HashMap<Integer, Vector6f>     transforms       = new HashMap<>();
 
         public SkeletonFrame(int time, SkeletonAnimation animation)
         {
@@ -100,16 +99,11 @@ public class SkeletonAnimation
             line = line.replaceAll("\\s+", " ");
             String[] args = line.split(" ");
             int id = Integer.parseInt(args[0]);
-            Vector6f vec6 = new Vector6f(
-0,0,0,
-//            Float.parseFloat(args[1]), Float.parseFloat(args[3]), Float.parseFloat(args[2]),
-
-//            Float.parseFloat(args[4]), Float.parseFloat(args[6]), Float.parseFloat(args[5]));
-            Float.parseFloat(args[6]), Float.parseFloat(args[4]), Float.parseFloat(args[5]));
-
+            Vector6f vec6 = new Vector6f(//
+                    Float.parseFloat(args[1]), Float.parseFloat(args[3]), Float.parseFloat(args[2]),
+                    Float.parseFloat(args[4]), Float.parseFloat(args[5]), Float.parseFloat(args[6]));
             vec6.clean();
             Matrix4f matrix = VectorMath.fromVector6f(vec6);
-            transforms.put(id, vec6);
             positions.put(id, matrix);
             inversePositions.put(id, Matrix4f.invert(matrix, null));
         }

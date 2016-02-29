@@ -108,6 +108,7 @@ public class SMDParser
         }
         model.triangles = triangles;
         skelly.init();
+        skelly.pose.reform();
         return model;
     }
 
@@ -148,6 +149,7 @@ public class SMDParser
                 }
             }
         }
+        anim.reform();
         model.poses.put(name, anim);
     }
 }

@@ -7,8 +7,6 @@ import java.util.HashSet;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
-import pokecube.modelloader.client.render.model.Vector6f;
-import pokecube.modelloader.client.render.model.VectorMath;
 import pokecube.modelloader.client.render.model.Vertex;
 import pokecube.modelloader.client.render.smd.SkeletonAnimation.SkeletonFrame;
 
@@ -17,6 +15,7 @@ public class Skeleton
     public HashMap<Integer, Bone> boneMap = new HashMap<>();
     public final SMDModel         model;
     public SkeletonAnimation      pose;
+    public Bone                   root;
 
     public Skeleton(SMDModel model)
     {
@@ -55,11 +54,7 @@ public class Skeleton
     {
         for (Bone b : boneMap.values())
         {
-            if (b.parent == null) b.deform();
-        }
-        for (Bone b : boneMap.values())
-        {
-            b.applyDeform();
+            b.deform();
         }
     }
 
@@ -85,18 +80,24 @@ public class Skeleton
                 parent.children.add(bone);
             }
         }
-
         SkeletonFrame frame = pose.frames.get(0);
-        for (Integer i : frame.transforms.keySet())
+        for (Integer i : frame.positions.keySet())
         {
-            Vector6f trans = frame.transforms.get(i);
+            Matrix4f trans = frame.positions.get(i);
             Bone bone = boneMap.get(i);
-            bone.setRest(VectorMath.fromVector6f(trans));
-            bone.invertRestMatrix();
+            bone.setRest(trans);
         }
         for (Bone b : boneMap.values())
         {
-            b.reformChildren();
+            if (b.parent == null && !b.children.isEmpty())
+            {
+                root = b;
+                b.reformChildren();
+            }
+        }
+        for (Bone b : boneMap.values())
+        {
+            b.invertRestMatrix();
         }
     }
 
@@ -185,23 +186,11 @@ public class Skeleton
                 ArrayList<Matrix4f> precalc = this.animatedTransforms.get(frame.animationName);
                 Matrix4f animated = precalc.get(frame.currentIndex);
                 Matrix4f dAnimated = Matrix4f.mul(animated, this.restInverse, null);
-                animated = rest;
                 deform = Matrix4f.mul(deform, dAnimated, deform);
                 deformInverse = Matrix4f.invert(deform, deformInverse);
             }
-            else
-            {
-                reset();
-            }
-            deformChildren();
-        }
-
-        private void deformChildren()
-        {
-            for (Bone b : children)
-            {
-                b.deform();
-            }
+            applyDeform();
+            reset();
         }
 
         public void applyDeform()
@@ -209,9 +198,6 @@ public class Skeleton
             for (BoneVertex v : vertices.keySet())
             {
                 v.applyTransform(deform, vertices.get(v));
-                deform.invert();
-                v.applyTransform(deform, vertices.get(v));
-                deform.invert();
             }
         }
 
@@ -264,23 +250,25 @@ public class Skeleton
 
         public void reset()
         {
-            this.positionDeform.set(0, 0, 0, 0);
-            this.normalDeform.set(0, 0, 0, 0);
+            this.positionDeform = null;
+            this.normalDeform = null;
         }
 
         public void applyTransform(Matrix4f transform, float weight)
         {
             if (transform != null)
             {
+                this.positionDeform = new Vector4f();
+                this.normalDeform = new Vector4f();
                 Vector4f loc = Matrix4f.transform(transform, this.originalPos, null);
                 Vector4f normal = Matrix4f.transform(transform, this.originalNormal, null);
                 loc.scale(weight);
                 normal.scale(weight);
                 Vector4f.add(loc, this.positionDeform, this.positionDeform);
                 Vector4f.add(normal, this.normalDeform, this.normalDeform);
-                
-              Matrix4f.transform(transform, this.originalPos, this.positionDeform);
-              Matrix4f.transform(transform, this.originalNormal, this.normalDeform);
+
+                Matrix4f.transform(transform, this.originalPos, this.positionDeform);
+                Matrix4f.transform(transform, this.originalNormal, this.normalDeform);
             }
         }
 

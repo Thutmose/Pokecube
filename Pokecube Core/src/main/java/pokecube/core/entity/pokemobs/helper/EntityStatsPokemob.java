@@ -456,7 +456,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public int getPokedexNb()
+    public Integer getPokedexNb()
     {
         if (pokedexNb == 0)
         {

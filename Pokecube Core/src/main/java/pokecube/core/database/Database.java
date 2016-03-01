@@ -259,7 +259,7 @@ public class Database implements IMoveConstants
         data.put(entry.getPokedexNb(), entry);
     }
 
-    public static PokedexEntry getEntry(int nb)
+    public static PokedexEntry getEntry(Integer nb)
     {
         return data.get(nb);
     }

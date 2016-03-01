@@ -22,16 +22,12 @@ import pokecube.core.client.render.entity.RenderPokemobInfos;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import pokecube.modelloader.client.render.animation.AnimationLoader;
 import pokecube.modelloader.client.render.model.IModelRenderer;
 
 public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLiving<T>
 {
-    static final ResourceLocation FRZ          = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
-    static final ResourceLocation PAR          = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
-
     public IModelRenderer<T>      model;
     final String                  modelName;
     public boolean                overrideAnim = false;
@@ -74,9 +70,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
         float f8 = this.handleRotationFloat(entity, partialTick);
         if (entity.getHealth() <= 0) this.rotateCorpse(entity, f8, yaw, partialTick);
-        // Lighting
-        func_177105_a(entity, partialTick);
-
         model.setPhase(getPhase(entity, partialTick));
         model.doRender(toRender, d0, d1, d2, yaw, partialTick);
         model.renderStatus(toRender, d0, d1, d2, yaw, partialTick);
@@ -193,10 +186,10 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
             FontRenderer fontrenderer = getFontRendererFromRenderManager();
 
-            if (((IPokemob) entityliving).getPokemonAIState(IPokemob.TAMED)) // &&
-                                                                             // ))
+            if (((IPokemob) entityliving).getPokemonAIState(IPokemob.TAMED))
             {
-                String n;// = ((IPokemob) entityliving).getDisplayName();
+                String n;
+                //Your pokemob has white name, other's has gray name.
                 int colour = renderManager.livingPlayer.equals(((IPokemob) entityliving).getPokemonOwner()) ? 0xFFFFFF
                         : 0xAAAAAA;
                 if ((entityliving.hasCustomName()))
@@ -252,6 +245,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     protected void postRenderCallback()
     {
+        //Reset to original state. This fixes changes to guis when rendered in them.
         if (!normalize) GL11.glDisable(GL11.GL_NORMALIZE);
         if (!blend) GL11.glDisable(GL11.GL_BLEND);
         GL11.glBlendFunc(src, dst);

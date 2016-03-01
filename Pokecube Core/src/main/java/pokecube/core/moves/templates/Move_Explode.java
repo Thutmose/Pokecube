@@ -53,10 +53,7 @@ public class Move_Explode extends Move_Ongoing
                     voltorb.worldObj.playSoundAtEntity(voltorb, "game.tnt.primed", 1.0F, 0.5F);
                 }
                 pokemob.setExplosionState(1);
-                if(attacked==null)
-                {
-                    ((IPokemob) attacker).addOngoingEffect(this);
-                }
+                ((IPokemob) attacker).addOngoingEffect(this);
             }
             else
             {
@@ -88,20 +85,19 @@ public class Move_Explode extends Move_Ongoing
             Explosion boom = MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);
             ExplosionEvent.Start evt = new ExplosionEvent.Start(mob.worldObj, boom);
             MinecraftForge.EVENT_BUS.post(evt);
-            if(!evt.isCanceled())
+            if (!evt.isCanceled())
             {
-                ((ExplosionCustom)boom).doExplosion();
+                ((ExplosionCustom) boom).doExplosion();
                 mob.setHealth(0);
                 mob.onDeath(DamageSource.generic);
-                if (attacked instanceof IPokemob
-                        && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
+                if (attacked instanceof IPokemob && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
                 {
                     if (!(((IPokemob) attacked).getPokemonAIState(IPokemob.TAMED) && !Mod_Pokecube_Helper.pvpExp))
                     {
-                        // voltorb's enemy wins XP and EVs even if it didn't attack
-                        ((IPokemob) attacked).setExp(
-                                ((IPokemob) attacked).getExp() + Tools.getExp(1, pokemob.getBaseXP(), pokemob.getLevel()),
-                                true, false);
+                        // voltorb's enemy wins XP and EVs even if it didn't
+                        // attack
+                        ((IPokemob) attacked).setExp(((IPokemob) attacked).getExp()
+                                + Tools.getExp(1, pokemob.getBaseXP(), pokemob.getLevel()), true, false);
                         byte[] evsToAdd = Pokedex.getInstance().getEntry(pokemob.getPokedexNb()).getEVs();
                         ((IPokemob) attacked).addEVs(evsToAdd);
                     }
@@ -114,7 +110,7 @@ public class Move_Explode extends Move_Ongoing
                 pokemob.getMoveStats().timeSinceIgnited = 0;
             }
         }
-        else if(pokemob.getMoveStats().timeSinceIgnited<0 && pokemob.getExplosionState()>0)
+        else if (pokemob.getMoveStats().timeSinceIgnited < 0 && pokemob.getExplosionState() > 0)
         {
             pokemob.setExplosionState(-1);
 

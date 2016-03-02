@@ -54,10 +54,8 @@ public class Skeleton
 
     public void applyPose()
     {
-        for (Bone b : boneMap.values())
-        {
-            b.deform();
-        }
+        root.deform();
+        root.applyDeform();
     }
 
     public void applyChange()
@@ -73,7 +71,7 @@ public class Skeleton
 
     private void initPose()
     {
-        System.out.println(pose.animationName);
+        System.out.println(pose.animationName + " " + pose.frames.size());
         SkeletonFrame frame = pose.frames.get(0);
         pose.reset();
         for (Integer i : frame.positions.keySet())
@@ -198,18 +196,20 @@ public class Skeleton
             return id + " " + name + " " + parentId;
         }
 
+        //TODO get this properly applying parent deforms.
         public void deform()
         {
             SkeletonAnimation frame = skeleton.pose;
-            if (frame != null && parent != null)
+            if (frame != null)
             {
                 ArrayList<Matrix4f> precalc = this.animatedTransforms.get(frame.animationName);
                 Matrix4f animated = precalc.get(frame.currentIndex);
                 Matrix4f dAnimated = Matrix4f.mul(animated, this.restInverse, null);
-                deform = Matrix4f.mul(deform, dAnimated, deform);
-                deformInverse = Matrix4f.invert(deform, deformInverse);
+                Matrix4f.mul(deform, dAnimated, deform);
+                Matrix4f.invert(deform, deformInverse);
             }
-            applyDeform();
+            for (Bone b : children)
+                b.deform();
         }
 
         public void applyDeform()
@@ -218,7 +218,8 @@ public class Skeleton
             {
                 v.applyTransform(deform, vertices.get(v));
             }
-            reset();
+            for (Bone b : children)
+                b.applyDeform();
         }
 
         public void preloadAnimation(SkeletonFrame key, Matrix4f animated)

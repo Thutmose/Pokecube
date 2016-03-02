@@ -326,7 +326,6 @@ public class GuiChooseFirstPokemob extends GuiScreen
             }
             mc.thePlayer.closeScreen();
         }
-
     }
 
     private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();

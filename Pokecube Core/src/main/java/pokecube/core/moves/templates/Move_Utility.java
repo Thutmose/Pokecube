@@ -84,7 +84,8 @@ public class Move_Utility extends Move_Basic
         }
     }
 
-    public void doUtilityAction(IPokemob user, Vector3 location)
+    @Override
+    public void doWorldAction(IPokemob user, Vector3 location)
     {
         if (!(PokecubeMod.semiHardMode || PokecubeMod.debug)) return;
 

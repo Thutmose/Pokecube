@@ -38,6 +38,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
@@ -359,11 +360,10 @@ public class GuiDisplayPokecubeInfo extends Gui
     /** Identifies target of attack, and sends the packet with info to server */
     public void pokemobAttack()
     {
-        byte[] message = { (byte) 21, (byte) indexPokemob };
-
         EntityPlayer player = minecraft.thePlayer;
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
-        buffer.writeBytes(message);
+        buffer.writeByte(MessageServer.MOVEUSE);
+        buffer.writeInt(((Entity) getCurrentPokemob()).getEntityId());
 
         Entity target = Tools.getPointedEntity(player, 32);
 
@@ -379,6 +379,9 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (pokemob != null)
         {
             if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
+            Vector3 look = Vector3.getNewVector().set(player.getLookVec());
+            Vector3 pos = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
+            Vector3 v = pos.findNextSolidBlock(player.worldObj, look, 32);
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
@@ -387,7 +390,6 @@ public class GuiDisplayPokecubeInfo extends Gui
                 pokemob.displayMessageToOwner(mess);
                 attack = true;
             }
-            buffer.writeInt(((Entity) pokemob).getEntityId());
             if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
             {
                 if (!GuiTeleport.instance().getState())
@@ -416,7 +418,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             else if (!attack)
             {
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
-                if (move != null)
+                if (move != null && (target != null || v != null))
                 {
                     String mess = StatCollector.translateToLocalFormatted("pokemob.action.usemove",
                             pokemob.getPokemonDisplayName(), MovesUtils.getTranslatedMove(move.getName()));
@@ -424,9 +426,13 @@ public class GuiDisplayPokecubeInfo extends Gui
                 }
             }
             buffer.writeBoolean(false);
+
+            if (v != null)
+            {
+                v.writeToBuff(buffer);
+            }
         }
-        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS,
-                buffer.array());
+        MessageServer packet = new MessageServer(buffer);
         PokecubePacketHandler.sendToServer(packet);
     }
 

@@ -6,18 +6,25 @@ package pokecube.core.moves.templates;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockStaticLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -97,19 +104,19 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     {
         int finalAttackStrength = 0;
         List<Entity> targets = new ArrayList<Entity>();
-        
+
         Entity entity = (Entity) attacker;
-        
-        if(!move.notIntercepable)
+
+        if (!move.notIntercepable)
         {
             Vec3 loc1 = new Vec3(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
             Vec3 loc2 = new Vec3(location.x, location.y, location.z);
             MovingObjectPosition pos = entity.worldObj.rayTraceBlocks(loc1, loc2, false);
-            if(pos!=null)
+            if (pos != null)
             {
                 location.set(pos.hitVec);
             }
-            
+
         }
         if (move.multiTarget)
         {
@@ -149,6 +156,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             doSelfAttack(attacker, f);
         }
+        doWorldAction(attacker, location);
     }
 
     @Override
@@ -167,8 +175,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             {
                 if (sound != null)
                 {
-                    ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.25F,
-                            1f);
+                    ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.25F, 1f);
                 }
                 List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker),
                         v.set(attacked).addTo(0, attacked.height / 3, 0));
@@ -320,5 +327,29 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     public int getAttackDelay(IPokemob attacker)
     {
         return 0;
+    }
+
+    @Override
+    public void doWorldAction(IPokemob attacker, Vector3 location)
+    {
+        if (!PokecubeMod.semiHardMode) return;
+        World world = ((Entity) attacker).worldObj;
+        IBlockState state = location.getBlockState(world);
+        Block block = state.getBlock();
+        if (getType() == PokeType.ice && (move.attackCategory & CATEGORY_DISTANCE) > 0 && move.power > 0)
+        {
+            if (block.isAir(world, location.getPos()))
+            {
+                location.setBlock(world, Blocks.snow_layer.getDefaultState());
+            }
+            else if (block == Blocks.water && state.getValue(BlockStaticLiquid.LEVEL) == 0)
+            {
+                location.setBlock(world, Blocks.ice.getDefaultState());
+            }
+            else if (block.isReplaceable(world, location.getPos()))
+            {
+                location.setBlock(world, Blocks.snow_layer.getDefaultState());
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,8 +27,15 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.ItemMegastone;
+import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.templates.Move_Explode;
+import pokecube.core.moves.templates.Move_Utility;
+import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
@@ -197,6 +205,10 @@ public class PokemobPacketHandler
                             {
                                 EntityLiving mob = (EntityLiving) pokemob;
                                 mob.getJumpHelper().setJumping();
+                            }
+                            else if(channel == MOVEUSE)
+                            {
+                                handleMoveUse(pokemob, id);
                             }
                             else if (channel == MOVEINDEX)
                             {
@@ -408,6 +420,82 @@ public class PokemobPacketHandler
                         }
                     };
                     PokecubeCore.proxy.getMainThreadListener().addScheduledTask(toRun);
+                }
+                
+                private void handleMoveUse(IPokemob pokemob, int id1)
+                {
+                    PacketBuffer dat = buffer;
+                    int id = dat.readInt();
+                    Vector3 v = Vector3.getNewVector();
+
+                    if (pokemob != null)
+                    {
+                        int currentMove = pokemob.getMoveIndex();
+
+                        if (currentMove == 5) { return; }
+
+                        if (player.isSneaking())
+                        {
+                            ((EntityLiving) pokemob).getNavigator().tryMoveToEntityLiving(player, 0.4);
+                            ((EntityLiving) pokemob).setAttackTarget(null);
+                            return;
+                        }
+
+                        Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
+                        boolean teleport = dat.readBoolean();
+
+                        if (teleport)
+                        {
+                            NBTTagCompound teletag = new NBTTagCompound();
+                            PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(), teletag);
+
+                            PokecubeClientPacket packe = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST, teletag);
+                            PokecubePacketHandler.sendToClient(packe, player);
+                        }
+
+                        if (move instanceof Move_Explode && (id1 == id || id == 0))
+                        {
+                            pokemob.executeMove(null, v.set(pokemob), 0);
+                        }
+                        else if (Move_Utility.isUtilityMove(move.name) && (id1 == id || id == 0))
+                        {
+                            pokemob.setPokemonAIState(IPokemob.NEWEXECUTEMOVE, true);
+                        }
+                        else
+                        {
+                            Entity owner = pokemob.getPokemonOwner();
+                            if (owner != null)
+                            {
+                                Entity closest = owner.worldObj.getEntityByID(id);
+                                if (closest instanceof IPokemob)
+                                {
+                                    IPokemob target = (IPokemob) closest;
+                                    if (target.getPokemonOwnerName().equals(pokemob.getPokemonOwnerName())) { return; }
+                                }
+
+                                if (closest != null)
+                                {
+                                    if (closest instanceof EntityLivingBase)
+                                    {
+                                        ((EntityLiving) pokemob).setAttackTarget((EntityLivingBase) closest);
+                                        if (closest instanceof EntityLiving)
+                                        {
+                                            ((EntityLiving) closest).setAttackTarget((EntityLivingBase) pokemob);
+                                        }
+                                    }
+                                    else pokemob.executeMove(closest, v.set(closest),
+                                            closest.getDistanceToEntity((Entity) pokemob));
+                                }
+                                else if(buffer.isReadable(24))
+                                {
+                                    v = Vector3.readFromBuff(buffer);
+//                                    pokemob.executeMove(null, v,
+//                                            (float) v.distToEntity((Entity) pokemob));
+                                    pokemob.setPokemonAIState(IPokemob.NEWEXECUTEMOVE, true);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

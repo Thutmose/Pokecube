@@ -78,8 +78,8 @@ public class SkeletonAnimation
             for (Integer j : skeleton.boneMap.keySet())
             {
                 Bone bone = skeleton.boneMap.get(j);
-                Matrix4f animated = frame.positions.get(j);
-                bone.preloadAnimation(frame, animated);
+                Matrix4f transform = frame.positions.get(j);
+                bone.preloadAnimation(frame, transform);
             }
         }
     }
@@ -138,19 +138,23 @@ public class SkeletonAnimation
             Matrix4f.mul(Matrix4f.invert(rotator, null), this.inversePositions.get(id), this.inversePositions.get(id));
         }
 
+        private void reformChildren(Bone bone)
+        {
+            if (bone.parent != null)
+            {
+                Matrix4f temp = this.positions.get(bone.id);
+                Matrix4f.mul(this.positions.get(bone.parent.id), temp, temp);
+                Matrix4f.invert(temp, this.inversePositions.get(bone.id));
+            }
+            for (Bone b : bone.children)
+            {
+                reformChildren(b);
+            }
+        }
+
         public void reform()
         {
-            for (Integer i : positions.keySet())
-            {
-                Bone bone = this.animation.skeleton.getBone(i);
-                if (bone.parent != null)
-                {
-                    Matrix4f temp = Matrix4f.mul((Matrix4f) this.positions.get(bone.parent.id),
-                            (Matrix4f) this.positions.get(i), null);
-                    this.positions.put(i, temp);
-                    this.inversePositions.put(i, Matrix4f.invert(temp, null));
-                }
-            }
+            reformChildren(animation.skeleton.root);
         }
     }
 }

@@ -290,7 +290,6 @@ public class EventsHandler
                 evt.entityPlayer.inventory.mainInventory[current] = null;
                 evt.entityPlayer.inventory.markDirty();
             }
-
         }
         if (evt.entityPlayer.worldObj.isRemote || evt.entityPlayer.worldObj.rand.nextInt(10) != 0) return;
 
@@ -547,11 +546,11 @@ public class EventsHandler
                         IPokemob poke = (IPokemob) mob;
                         if (((EntityLiving) poke).getHeldItem() != null)
                             if (((EntityLiving) poke).getHeldItem().isItemEqual(PokecubeItems.getStack("exp_share")))
-                        {
+                            {
                             int exp = poke.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
 
                             poke.setExp(exp, true, false);
-                        }
+                            }
                     }
                 }
             }

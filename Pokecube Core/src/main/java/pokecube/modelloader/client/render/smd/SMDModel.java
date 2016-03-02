@@ -47,7 +47,7 @@ public class SMDModel
         if (skeleton.pose == null) return;
 
         skeleton.pose.precalculateAnimation();
-        skeleton.pose.nextFrame();
+//        skeleton.pose.nextFrame();
         skeleton.applyPose();
 
         applyVertChange();

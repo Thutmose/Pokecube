@@ -12,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -340,7 +341,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             if (block.isAir(world, location.getPos()))
             {
-                location.setBlock(world, Blocks.snow_layer.getDefaultState());
+                if (location.getBlock(world, EnumFacing.DOWN).isNormalCube())
+                    location.setBlock(world, Blocks.snow_layer.getDefaultState());
             }
             else if (block == Blocks.water && state.getValue(BlockStaticLiquid.LEVEL) == 0)
             {
@@ -348,7 +350,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             }
             else if (block.isReplaceable(world, location.getPos()))
             {
-                location.setBlock(world, Blocks.snow_layer.getDefaultState());
+                if (location.getBlock(world, EnumFacing.DOWN).isNormalCube())
+                    location.setBlock(world, Blocks.snow_layer.getDefaultState());
             }
         }
     }

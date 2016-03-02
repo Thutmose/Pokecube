@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import io.netty.buffer.Unpooled;
@@ -13,9 +14,11 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -76,6 +79,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
@@ -90,6 +94,7 @@ import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.ExplosionCustom;
@@ -373,6 +378,21 @@ public class EventsHandler
             ((EntityLiving) shadow).setHealth(((EntityLiving) shadow).getMaxHealth());
             evt.world.spawnEntityInWorld(shadow);
             evt.setCanceled(true);
+        }
+        else if (evt.entity instanceof EntityCreeper)
+        {
+            EntityAIAvoidEntity<EntityPokemobBase> avoidAI;
+            EntityCreeper creeper = (EntityCreeper) evt.entity;
+            avoidAI = new EntityAIAvoidEntity<EntityPokemobBase>(creeper,
+                    EntityPokemobBase.class, new Predicate<EntityPokemobBase>()
+                    {
+                        @Override
+                        public boolean apply(EntityPokemobBase input)
+                        {
+                            return input.isType(PokeType.psychic);
+                        }
+                    }, 6.0F, 1.0D, 1.2D);
+            creeper.tasks.addTask(3, avoidAI);
         }
     }
 

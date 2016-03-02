@@ -109,7 +109,8 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
         guiOffset = config.get(CATEGORY_ADVANCED, "guiOffset", new int[] { 0, 0 }, "offset of pokemon moves gui.")
                 .getIntList();
-        guiDown = config.get(CATEGORY_ADVANCED, "guiDown", guiDown, "Are the moves shown below the nametag.").getBoolean();
+        guiDown = config.get(CATEGORY_ADVANCED, "guiDown", guiDown, "Are the moves shown below the nametag.")
+                .getBoolean();
 
         maxAIThreads = config
                 .get(CATEGORY_ADVANCED, "aiThreads", 2,
@@ -334,6 +335,8 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         config.get(CATEGORY_ADVANCED, "semiHMode", semiHardMode).set(semiHardMode);
         config.get(CATEGORY_ADVANCED, "loginGui", guiOnLogin).set(guiOnLogin);
         config.get(CATEGORY_ADVANCED, "advancedOptions", false).set(true);
+        config.get(CATEGORY_SPAWNING, "pokemonSpawn", pokemonSpawn, "Do pokemon spawn via the pokecube spawning code.")
+                .set(pokemonSpawn);
 
         config.get(CATEGORY_SPAWNING, "mobNumber", SpawnHandler.MAXNUM).set(SpawnHandler.MAXNUM);
         config.get(CATEGORY_SPAWNING, "despawnRadius", mobDespawnRadius).set(mobDespawnRadius);

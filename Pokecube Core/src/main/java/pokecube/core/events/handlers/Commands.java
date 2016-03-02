@@ -449,6 +449,7 @@ public class Commands implements ICommand
                     boolean off = temp.equalsIgnoreCase("false") || temp.equalsIgnoreCase("off");
                     if (on || off) SpawnHandler.doSpawns = on;
                     cSender.addChatMessage(new ChatComponentText("Pokemobs Spawning " + SpawnHandler.doSpawns));
+                    ConfigHandler.saveConfig();
                     return true;
                 }
             }

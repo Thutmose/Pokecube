@@ -28,6 +28,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
@@ -46,25 +47,25 @@ import pokecube.core.utils.PokecubeSerializer;
 public class GuiChooseFirstPokemob extends GuiScreen
 {
 
-    int xSize = 150;
-    int ySize = 150;
+    int                       xSize            = 150;
+    int                       ySize            = 150;
 
-    private float yRenderAngle = 10;
-    private float xRenderAngle = 0;
+    private float             yRenderAngle     = 10;
+    private float             xRenderAngle     = 0;
 
-    private float yHeadRenderAngle = 10;
-    private float xHeadRenderAngle = 0;
+    private float             yHeadRenderAngle = 10;
+    private float             xHeadRenderAngle = 0;
 
-    public final static float POKEDEX_RENDER = 1.5f;
+    public final static float POKEDEX_RENDER   = 1.5f;
 
-    public static boolean options = true;
+    public static boolean     options          = true;
 
-    protected EntityPlayer entityPlayer = null;
+    protected EntityPlayer    entityPlayer     = null;
 
-    protected PokedexEntry  pokedexEntry = null;
-    public static Integer[] starters;
-    int                     index        = 0;
-    boolean                 fixed        = false;
+    protected PokedexEntry    pokedexEntry     = null;
+    public static Integer[]   starters;
+    int                       index            = 0;
+    boolean                   fixed            = false;
 
     public GuiChooseFirstPokemob(Integer[] _starters, boolean fixed)
     {
@@ -136,9 +137,10 @@ public class GuiChooseFirstPokemob extends GuiScreen
         buttonList.add(
                 this.choose = new GuiButton(3, width / 2 - xOffset - 25, height / 2 - yOffset + 160, 50, 20, choose));
 
-        buttonList
-                .add(this.accept = new GuiButton(4, width / 2 - xOffset + 64, height / 2 - yOffset + 30, 50, 20, "Accept"));
-        buttonList.add(this.deny = new GuiButton(5, width / 2 - xOffset - 115, height / 2 - yOffset + 30, 50, 20, "Deny"));
+        buttonList.add(
+                this.accept = new GuiButton(4, width / 2 - xOffset + 64, height / 2 - yOffset + 30, 50, 20, "Accept"));
+        buttonList.add(
+                this.deny = new GuiButton(5, width / 2 - xOffset - 115, height / 2 - yOffset + 30, 50, 20, "Deny"));
 
         if (options)
         {
@@ -166,15 +168,12 @@ public class GuiChooseFirstPokemob extends GuiScreen
             e.printStackTrace();
         }
         super.drawScreen(i, j, f);
-        
-        if(!options)
+
+        if (!options)
         {
-            drawCenteredString(fontRendererObj, "Start with Override Starter?", (width / 2), 17,
-                    0xffffff);
+            drawCenteredString(fontRendererObj, "Start with Override Starter?", (width / 2), 17, 0xffffff);
             return;
         }
-        
-        
 
         GL11.glPushMatrix();
         int i1 = 15728880;
@@ -274,7 +273,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
             if (index > 0) index--;
             else index = starters.length - 1;
         }
-        if(n==4)
+        if (n == 4)
         {
             int pokedexNb = 0;
             ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
@@ -286,7 +285,8 @@ public class GuiChooseFirstPokemob extends GuiScreen
                 PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
                         bos.toByteArray());
                 PokecubePacketHandler.sendToServer(packet);
-                PokecubeSerializer.instance.setHasStarter(entityPlayer);
+                if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
+                    PokecubeSerializer.instance.setHasStarter(entityPlayer);
             }
             catch (Exception ex)
             {
@@ -295,7 +295,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
             mc.thePlayer.closeScreen();
             options = true;
         }
-        if(n==5)
+        if (n == 5)
         {
             next.visible = true;
             prev.visible = true;
@@ -317,7 +317,8 @@ public class GuiChooseFirstPokemob extends GuiScreen
                 PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
                         bos.toByteArray());
                 PokecubePacketHandler.sendToServer(packet);
-                PokecubeSerializer.instance.setHasStarter(entityPlayer);
+                if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
+                    PokecubeSerializer.instance.setHasStarter(entityPlayer);
             }
             catch (Exception ex)
             {

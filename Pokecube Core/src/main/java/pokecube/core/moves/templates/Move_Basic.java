@@ -11,6 +11,8 @@ import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
@@ -23,6 +25,7 @@ import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.animations.Thunder;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokeType;
@@ -163,6 +166,19 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     @Override
     protected void finalAttack(IPokemob attacker, Entity attacked, float f)
     {
+        if (animation instanceof Thunder && attacked != null)
+        {
+            EntityLightningBolt lightning = new EntityLightningBolt(attacked.worldObj, 0, 0, 0);
+            attacked.onStruckByLightning(lightning);
+        }
+        if (f > 0 && attacked instanceof EntityCreeper)
+        {
+            EntityCreeper creeper = (EntityCreeper) attacked;
+            if (move.type == PokeType.psychic && creeper.getHealth() > 0)
+            {
+                creeper.explode();
+            }
+        }
         finalAttack(attacker, attacked, f, true);
     }
 

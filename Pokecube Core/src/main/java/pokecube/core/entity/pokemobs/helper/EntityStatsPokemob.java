@@ -468,7 +468,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 if (entry != null && entry.getPokedexNb() > 0)
                 {
                     pokedexNb = entry.getPokedexNb();
-                    // new Exception().printStackTrace();
                     init(entry.getPokedexNb());
                     return pokedexNb;
                 }

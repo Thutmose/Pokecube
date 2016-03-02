@@ -13,12 +13,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
+import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
@@ -370,5 +375,85 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                     location.setBlock(world, Blocks.snow_layer.getDefaultState());
             }
         }
+        int strong = 100;
+        if (getType() == PokeType.water && getPWR() >= strong)
+        {
+            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                    .addTo(location);
+            IBlockState nextState = nextBlock.getBlockState(world);
+            if (block == Blocks.lava)
+            {
+                location.setBlock(world, Blocks.obsidian);
+            }
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.lava)
+            {
+                nextBlock.setBlock(world, Blocks.obsidian);
+            }
+        }
+        if (getType() == PokeType.electric && getPWR() >= strong)
+        {
+            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                    .addTo(location);
+            IBlockState nextState = nextBlock.getBlockState(world);
+            if (block == Blocks.sand)
+            {
+                location.setBlock(world, Blocks.glass);
+            }
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.sand)
+            {
+                nextBlock.setBlock(world, Blocks.glass);
+            }
+        }
+        if (getType() == PokeType.fire && getPWR() >= strong)
+        {
+            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                    .addTo(location);
+            IBlockState nextState = nextBlock.getBlockState(world);
+            if (block == Blocks.obsidian)
+            {
+                location.setBlock(world, Blocks.lava);
+            }
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.obsidian)
+            {
+                nextBlock.setBlock(world, Blocks.lava);
+            }
+        }
+    }
+
+    protected static boolean shouldSilk(IPokemob pokemob)
+    {
+        if (pokemob.getAbility() == null) return false;
+        Ability ability = pokemob.getAbility();
+        return pokemob.getLevel() > 90 && ability.toString().equalsIgnoreCase("hypercutter");
+    }
+
+    protected static void silkHarvest(IBlockState state, BlockPos pos, World worldIn, EntityPlayer player)
+    {
+        java.util.ArrayList<ItemStack> items = new java.util.ArrayList<ItemStack>();
+        ItemStack itemstack = createStackedBlock(state);
+
+        if (itemstack != null)
+        {
+            items.add(itemstack);
+        }
+
+        net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(items, worldIn, pos, worldIn.getBlockState(pos),
+                0, 1.0f, true, player);
+        for (ItemStack stack : items)
+        {
+            Block.spawnAsEntity(worldIn, pos, stack);
+        }
+    }
+
+    protected static ItemStack createStackedBlock(IBlockState state)
+    {
+        int i = 0;
+        Item item = Item.getItemFromBlock(state.getBlock());
+
+        if (item != null && item.getHasSubtypes())
+        {
+            i = state.getBlock().getMetaFromState(state);
+        }
+        return new ItemStack(item, 1, i);
     }
 }

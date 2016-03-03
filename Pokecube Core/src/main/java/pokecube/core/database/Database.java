@@ -278,6 +278,7 @@ public class Database implements IMoveConstants
     public static PokedexEntry getEntry(String name)
     {
         PokedexEntry ret = null;
+        if (name == null) return null;
         if (name.trim().isEmpty()) return null;
         if (data2.containsKey(name)) return data2.get(name);
         for (PokedexEntry e : allFormes)

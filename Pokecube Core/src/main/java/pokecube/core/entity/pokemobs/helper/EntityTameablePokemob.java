@@ -391,12 +391,11 @@ public abstract class EntityTameablePokemob extends EntityTameable
     }
 
     @Override
-    public void setPokemonOwner(EntityLivingBase e)// func_152115_b(String
-                                                   // p_152115_1_) = set owner
+    public void setPokemonOwner(EntityLivingBase e)
     {
         if (e == null)
         {
-            super.setOwnerId("");// .func_152115_b("");
+            super.setOwnerId("");
             owner = null;
             ownerName = "";
             this.setPokemonAIState(IPokemob.TAMED, false);
@@ -459,7 +458,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
                 if (o instanceof EntityLivingBase)
                 {
                     EntityLivingBase e = (EntityLivingBase) o;
-                    String owneruuid = super.getOwnerId();// super.getOwnerName();
+                    String owneruuid = super.getOwnerId();
 
                     if (e.getUniqueID().toString().equals(owneruuid))
                     {
@@ -626,7 +625,8 @@ public abstract class EntityTameablePokemob extends EntityTameable
                 {
                     ((EntityPlayerMP) owner).sendContainerToPlayer(((EntityPlayerMP) owner).inventoryContainer);
                 }
-
+                if (!owner.isSneaking() && !isDead)
+                    ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
                 String mess = StatCollector.translateToLocalFormatted("pokemob.action.return", getPokemonDisplayName());
                 displayMessageToOwner(mess);
             }

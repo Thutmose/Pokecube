@@ -385,7 +385,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                 JsonObject obj = element1.getAsJsonObject();
                 String name = obj.get("username").getAsString();
                 String info = obj.get("info").getAsString();
-                defaults.add(name + ":" + info);
+                if (info != null && !info.isEmpty()) defaults.add(name + ":" + info);
             }
             defaultStarts = defaults.toArray(new String[0]);
         }

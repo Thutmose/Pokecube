@@ -32,7 +32,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.ForgeVersion;
@@ -227,7 +229,6 @@ public class EventsHandler
                 }
             }
         }
-
         if (evt.entityPlayer.worldObj.isRemote && evt.entityPlayer.getHeldItem() != null
                 && evt.entityPlayer.getHeldItem().getItem() instanceof IPokecube)
         {
@@ -383,8 +384,8 @@ public class EventsHandler
         {
             EntityAIAvoidEntity<EntityPokemobBase> avoidAI;
             EntityCreeper creeper = (EntityCreeper) evt.entity;
-            avoidAI = new EntityAIAvoidEntity<EntityPokemobBase>(creeper,
-                    EntityPokemobBase.class, new Predicate<EntityPokemobBase>()
+            avoidAI = new EntityAIAvoidEntity<EntityPokemobBase>(creeper, EntityPokemobBase.class,
+                    new Predicate<EntityPokemobBase>()
                     {
                         @Override
                         public boolean apply(EntityPokemobBase input)
@@ -673,22 +674,44 @@ public class EventsHandler
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
                 if (result.status == Status.OUTDATED)
                 {
-                    String mess = "Current Listed Release Version of Pokecube Core is " + result.target
-                            + ", but you have " + PokecubeMod.VERSION + ".";
-                    mess += "\nIf you find bugs, please update and check if they still occur before reporting them.";
-                    mess += "\nPlease update from either Minecraftforum.net or Curseforge, those are the Offical locations to download Pokecube.";
-                    (event.player).addChatMessage(new ChatComponentText(mess));
+                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Core ");
+                    (event.player).addChatMessage(mess);
                 }
-                else if (ConfigHandler.loginmessage)
+                 else if (ConfigHandler.loginmessage)
                 {
-                    String mess = "Pokecube Core is currently running latest/recommended version of "
-                            + PokecubeMod.VERSION + ".";
-                    mess += "\nPlease note that Curseforge, is the Offical location to download Pokecube.";
-                    (event.player).addChatMessage(new ChatComponentText(mess));
-                    ConfigHandler.seenMessage();
+                    IChatComponent mess = getInfoMessage(result, "Pokecube Core ");
+                    (event.player).addChatMessage(mess);
                 }
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
+        }
+
+        @Deprecated //Use one from ThutCore whenever that is updated for a bit.
+        private IChatComponent getOutdatedMessage(CheckResult result, String name)
+        {
+            String linkName = "[" + EnumChatFormatting.GREEN + name + result.target
+                    + EnumChatFormatting.WHITE;
+            String link = "" + result.url;
+            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
+                    + link + "\"}}";
+
+            String info = "\"" + EnumChatFormatting.RED
+                    + "New Pokecube Core version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
+                    + "\"";
+            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
+            return IChatComponent.Serializer.jsonToComponent(mess);
+        }
+
+        private IChatComponent getInfoMessage(CheckResult result, String name)
+        {
+            String linkName = "[" + EnumChatFormatting.GREEN + name + result.target + EnumChatFormatting.WHITE;
+            String link = "" + result.url;
+            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
+                    + link + "\"}}";
+
+            String info = "\"" + EnumChatFormatting.GOLD + "Currently Running " + "\"";
+            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
+            return IChatComponent.Serializer.jsonToComponent(mess);
         }
     }
 

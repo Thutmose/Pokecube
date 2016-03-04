@@ -28,5 +28,11 @@
         "username":"Legnak",
         "type":"modeller",
         "info":"beldum;R:null"
+    },
+    {
+        "username":"",
+        "type":"donator",
+        "amount":"",
+        "info":""
     }
 ]}

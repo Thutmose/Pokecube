@@ -77,14 +77,17 @@ public class X3dXMLParser
                         tex = appearence.getChildNodes().item(l);
                     }
                 }
-                if (mat != null && tex != null && mat.hasAttributes())
+                if (mat != null && mat.hasAttributes())
                 {
-                    if (mat.getAttributes().getNamedItem("DEF") != null
-                            && tex.getAttributes().getNamedItem("DEF") != null)
+                    if (mat.getAttributes().getNamedItem("DEF") != null)
                     {
+                        String texName = null;
+                        if (tex != null && tex.getAttributes().getNamedItem("DEF") != null)
+                        {
+                            texName = tex.getAttributes().getNamedItem("DEF").getNodeValue().substring(3);
+                            texName = texName.substring(0, texName.lastIndexOf("_png"));
+                        }
                         String matName = mat.getAttributes().getNamedItem("DEF").getNodeValue().substring(3);
-                        String texName = tex.getAttributes().getNamedItem("DEF").getNodeValue().substring(3);
-                        texName = texName.substring(0, texName.lastIndexOf("_png"));
 
                         Material material = new Material(matName, texName, getVector(mat, "diffuseColor"),
                                 getVector(mat, "specularColor"), getVector(mat, "emissiveColor"),

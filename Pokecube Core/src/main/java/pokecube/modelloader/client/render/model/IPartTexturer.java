@@ -34,6 +34,13 @@ public interface IPartTexturer
      *            - The name of the texture. */
     void addMapping(String part, String tex);
 
+    /** Is there a mapping already for this part - used for material specific
+     * textures.
+     * 
+     * @param part
+     * @return */
+    boolean hasMapping(String part);
+
     /** Adds mapping for a custom state's texture
      * 
      * @param part

@@ -299,7 +299,6 @@ public class AnimationLoader
             System.err.println("No Animation found for " + model.name + " " + model.model);
             e.printStackTrace();
         }
-
     }
 
     public static IModelRenderer<?> getModel(String name)

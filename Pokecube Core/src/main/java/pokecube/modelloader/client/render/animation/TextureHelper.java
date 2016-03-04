@@ -83,6 +83,10 @@ public class TextureHelper implements IPartTexturer
     {
         if (bindPerState(part)) return;
         String tex = texNames.containsKey(part) ? texNames.get(part) : default_tex;
+        TexState state;
+        String texMod;
+        if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
+            tex = tex + texMod;
         bindTex(tex);
     }
 
@@ -134,6 +138,11 @@ public class TextureHelper implements IPartTexturer
                     tex = partNames.get(key);
                     texNames.put(texKey, tex);
                 }
+                TexState state;
+                String texMod;
+                if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
+                    tex = tex + texMod;
+
                 bindTex(tex);
                 return true;
             }
@@ -227,7 +236,7 @@ public class TextureHelper implements IPartTexturer
             {
                 randomStates.add(new RandomState(trigger, arr));
             }
-            else if (trigger.equals("sequence"))
+            else if (trigger.equals("sequence") || trigger.equals("time"))
             {
                 sequence = new SequenceState(arr);
             }
@@ -296,7 +305,7 @@ public class TextureHelper implements IPartTexturer
                     return true;
                 }
             }
-            if (sequence != null)
+            if (sequence != null && sequence.shift)
             {
                 int tick = ((Entity) pokemob).ticksExisted % (sequence.arr.length / 2);
                 dx = sequence.arr[tick * 2];
@@ -306,6 +315,17 @@ public class TextureHelper implements IPartTexturer
                 return true;
             }
             return false;
+        }
+
+        String modifyTexture(IPokemob pokemob)
+        {
+            if (sequence != null && !sequence.shift)
+            {
+                int tick = ((Entity) pokemob).ticksExisted % (sequence.arr.length / 2);
+                int dx = (int) sequence.arr[tick * 2];
+                return "" + dx;
+            }
+            return null;
         }
     }
 
@@ -333,10 +353,13 @@ public class TextureHelper implements IPartTexturer
     private static class SequenceState
     {
         double[] arr;
+        boolean  shift = true;
 
         SequenceState(double[] arr)
         {
             this.arr = arr;
+            for (double d : arr)
+                if (d >= 1) shift = false;
         }
     }
 
@@ -351,6 +374,12 @@ public class TextureHelper implements IPartTexturer
     public void addMapping(String part, String tex)
     {
         texNames.put(part, tex);
+    }
+
+    @Override
+    public boolean hasMapping(String part)
+    {
+        return texNames.containsKey(part);
     }
 
     @Override

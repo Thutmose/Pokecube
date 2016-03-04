@@ -56,10 +56,10 @@ public class PokecubeMobs
             }
         }
 
-        @Deprecated //Use one from ThutCore whenever that is updated for a bit.
+        @Deprecated // Use one from ThutCore whenever that is updated for a bit.
         private IChatComponent getOutdatedMessage(CheckResult result, String name)
         {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + result.target + EnumChatFormatting.WHITE;
+            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
             String link = "" + result.url;
             String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
                     + link + "\"}}";

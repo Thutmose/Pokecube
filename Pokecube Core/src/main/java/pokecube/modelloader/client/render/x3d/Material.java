@@ -7,6 +7,8 @@ import javax.vecmath.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.renderer.OpenGlHelper;
+
 public class Material
 {
     public final String   name;
@@ -34,6 +36,7 @@ public class Material
     boolean depth;
     boolean colour_mat;
     boolean light;
+    float[] oldLight = { -1, -1 };
 
     public void preRender()
     {
@@ -50,7 +53,20 @@ public class Material
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_EMISSION, makeBuffer(emissiveColor));
 
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-        GL11.glEnable(GL11.GL_LIGHTING);
+        if (emissiveColor.lengthSquared() < 1)
+        {
+            GL11.glEnable(GL11.GL_LIGHTING);
+        }
+        else
+        {
+            int i = 15728880;
+            GL11.glDisable(GL11.GL_LIGHTING);
+            int j = i % 65536;
+            int k = i / 65536;
+            oldLight[0] = OpenGlHelper.lastBrightnessX;
+            oldLight[1] = OpenGlHelper.lastBrightnessY;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
+        }
     }
 
     public void postRender()
@@ -59,6 +75,10 @@ public class Material
         if (!colour_mat) GL11.glDisable(GL11.GL_COLOR_MATERIAL);
         if (!light) GL11.glDisable(GL11.GL_LIGHTING);
         else GL11.glEnable(GL11.GL_LIGHTING);
+        if (emissiveColor.lengthSquared() >= 1 && oldLight[0] != -1 && oldLight[0] != -1)
+        {
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, oldLight[0], oldLight[1]);
+        }
     }
 
     private FloatBuffer makeBuffer(Vector3f vector)

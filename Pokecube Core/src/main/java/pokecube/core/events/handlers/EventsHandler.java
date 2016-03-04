@@ -118,7 +118,7 @@ public class EventsHandler
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         PokemobAIThread aiTicker = new PokemobAIThread();
         MinecraftForge.EVENT_BUS.register(aiTicker);
-        new UpdateNotifier();
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new UpdateNotifier();
     }
 
     static double max        = 0;
@@ -213,6 +213,7 @@ public class EventsHandler
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent evt)
     {
+        new UpdateNotifier();
         if (evt.action == Action.LEFT_CLICK_BLOCK && evt.entityPlayer.getHeldItem() != null
                 && evt.entityPlayer.getHeldItem().getItem() == Items.stick)
         {
@@ -670,6 +671,7 @@ public class EventsHandler
         {
             if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
             {
+                MinecraftForge.EVENT_BUS.unregister(this);
                 Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
                 if (result.status == Status.OUTDATED)
@@ -682,7 +684,6 @@ public class EventsHandler
                     IChatComponent mess = getInfoMessage(result, "Pokecube Core");
                     (event.player).addChatMessage(mess);
                 }
-                MinecraftForge.EVENT_BUS.unregister(this);
             }
         }
 

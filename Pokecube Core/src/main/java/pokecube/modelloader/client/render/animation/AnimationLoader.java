@@ -33,16 +33,16 @@ import thut.api.maths.Vector3;
 
 public class AnimationLoader
 {
-    public static final String MODELPATH = "models/pokemobs/";
-    public static boolean      loaded    = false;
+    public static final String                    MODELPATH   = "models/pokemobs/";
+    public static boolean                         loaded      = false;
 
     /** texture folder */
-    public final static String TEXTUREPATH = "textures/entities/";
+    public final static String                    TEXTUREPATH = "textures/entities/";
 
-    static String                                 file      = "";
+    static String                                 file        = "";
     @SuppressWarnings("rawtypes")
-    public static HashMap<String, IModelRenderer> modelMaps = new HashMap<String, IModelRenderer>();
-    public static HashMap<String, Model>          models    = new HashMap<String, Model>();
+    public static HashMap<String, IModelRenderer> modelMaps   = new HashMap<String, IModelRenderer>();
+    public static HashMap<String, Model>          models      = new HashMap<String, Model>();
 
     public static void clear()
     {
@@ -273,6 +273,7 @@ public class AnimationLoader
                 loaded.headCaps = headCaps;
                 loaded.headCaps1 = headCaps1;
 
+                loaded.model.preProcessAnimations(loaded.animations.values());
                 models.put(modelName, model);
                 modelMaps.put(modelName, loaded);
             }

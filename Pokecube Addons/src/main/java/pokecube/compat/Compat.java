@@ -94,8 +94,8 @@ public class Compat
     @EventHandler
     public void load(FMLInitializationEvent evt)
     {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new WikiInfoNotifier();
         new IGWSupportNotifier();
-        new WikiInfoNotifier();
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) if (Loader.isModLoaded("IGWMod"))
         {
@@ -296,11 +296,10 @@ public class Compat
         {
             if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
             {
+                MinecraftForge.EVENT_BUS.unregister(this);
                 String message = "msg.pokedexbuttonforwiki.text";
                 message = StatCollector.translateToLocal(message);
                 if (Loader.isModLoaded("IGWMod")) event.player.addChatMessage(new ChatComponentText(message));
-                MinecraftForge.EVENT_BUS.unregister(this);
-
                 Object o = Loader.instance().getIndexedModList().get(PokecubeAdv.ID);
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
                 if (result.status == Status.OUTDATED)

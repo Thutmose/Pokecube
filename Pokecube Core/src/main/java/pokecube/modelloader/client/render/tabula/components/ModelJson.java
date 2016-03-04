@@ -27,29 +27,29 @@ import pokecube.modelloader.client.render.tabula.model.modelbase.MowzieModelRend
 @SideOnly(Side.CLIENT)
 public class ModelJson extends MowzieModelBase
 {
-    private JsonTabulaModel tabulaModel;
+    private JsonTabulaModel                      tabulaModel;
 
-    public Map<String, MowzieModelRenderer> nameMap       = Maps.newHashMap();
-    public Map<String, MowzieModelRenderer> identifierMap = Maps.newHashMap();
+    public Map<String, MowzieModelRenderer>      nameMap       = Maps.newHashMap();
+    public Map<String, MowzieModelRenderer>      identifierMap = Maps.newHashMap();
 
     /** This is an ordered list of CubeGroup Identifiers. It is used to ensure
      * that translucent parts render in the correct order. */
-    ArrayList<String>                            groupIdents = Lists.newArrayList();
+    ArrayList<String>                            groupIdents   = Lists.newArrayList();
     /** Map of CubeGroup Identifiers to Sets of Root parts on the group. Uses
      * the above list to get keys */
-    public Map<String, Set<MowzieModelRenderer>> groupMap    = Maps.newHashMap();
+    public Map<String, Set<MowzieModelRenderer>> groupMap      = Maps.newHashMap();
 
-    public ArrayList<Animation>       animations   = Lists.newArrayList();
+    public ArrayList<Animation>                  animations    = Lists.newArrayList();
     /** Map of names to animations, used to get animations for rendering more
      * easily */
-    public HashMap<String, Animation> animationMap = Maps.newHashMap();
+    public HashMap<String, Animation>            animationMap  = Maps.newHashMap();
 
-    public Set<Animation> playing = Sets.newHashSet();
+    public Set<Animation>                        playing       = Sets.newHashSet();
 
-    public IPartTexturer texturer;
-    public Animation     playingAnimation;
-    private float        animationTimer;
-    private int          animationLength;
+    public IPartTexturer                         texturer;
+    public Animation                             playingAnimation;
+    private float                                animationTimer;
+    private int                                  animationLength;
 
     public ModelJson(JsonTabulaModel model)
     {
@@ -340,10 +340,16 @@ public class ModelJson extends MowzieModelBase
         cube.rotateAngleX = (float) Math.toRadians((float) cubeInfo.rotation[0]);
         cube.rotateAngleY = (float) Math.toRadians((float) cubeInfo.rotation[1]);
         cube.rotateAngleZ = (float) Math.toRadians((float) cubeInfo.rotation[2]);
+
+        if (Math.abs(cube.rotateAngleX) < 1e-6) cube.rotateAngleX = 0;
+        if (Math.abs(cube.rotateAngleY) < 1e-6) cube.rotateAngleY = 0;
+        if (Math.abs(cube.rotateAngleZ) < 1e-6) cube.rotateAngleZ = 0;
+
         // Allows scaling the cube with the cubeinfo scale.
         cube.scaleX = (float) cubeInfo.scale[0];
         cube.scaleY = (float) cubeInfo.scale[1];
         cube.scaleZ = (float) cubeInfo.scale[2];
+
         // Allows mirrored textures
         cube.mirror = cubeInfo.txMirror;
         // Allows hidden textures

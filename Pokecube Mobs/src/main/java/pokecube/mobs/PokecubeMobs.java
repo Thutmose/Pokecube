@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.modelloader.ModPokecubeML;
 
 @Mod(modid = PokecubeMobs.MODID, name = "Pokecube Mobs", version = PokecubeMobs.VERSION, dependencies = "required-after:pokecube", updateJSON = PokecubeMobs.UPDATEURL, acceptableRemoteVersions = "*", acceptedMinecraftVersions = PokecubeMobs.MCVERSIONS)
@@ -27,7 +28,7 @@ public class PokecubeMobs
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        new UpdateNotifier();
+        if (event.getSide() == Side.CLIENT) new UpdateNotifier();
         ModPokecubeML.proxy.registerModelProvider(MODID, this);
     }
 
@@ -44,15 +45,13 @@ public class PokecubeMobs
             if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
-
                 Object o = Loader.instance().getIndexedModList().get(PokecubeMobs.MODID);
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
                 if (result.status == Status.OUTDATED)
                 {
-                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Mobs ");
+                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Mobs");
                     (event.player).addChatMessage(mess);
                 }
-
             }
         }
 

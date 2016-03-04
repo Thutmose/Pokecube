@@ -45,6 +45,8 @@ public class GuiAnimate extends GuiScreen
 
     GuiButton groundButton;
     boolean   ground = true;
+    
+    static String mob = "";
 
     List<String> components;
 
@@ -61,6 +63,7 @@ public class GuiAnimate extends GuiScreen
         anim.setText("idle");
         state = new GuiTextField(0, fontRendererObj, width - 101, yOffset + 43 - yOffset / 2, 100, 10);
         forme = new GuiTextField(0, fontRendererObj, width - 101, yOffset + 73 - yOffset / 2, 100, 10);
+        forme.setText(mob);
         info = new GuiTextField(0, fontRendererObj, width - 21, yOffset + 28 - yOffset / 2, 20, 10);
         yOffset += 0;
         buttonList.add(new GuiButton(2, width / 2 - xOffset, yOffset, 40, 20, "next"));
@@ -132,7 +135,7 @@ public class GuiAnimate extends GuiScreen
             }
         }
         entry = pokemob.getPokedexEntry();
-
+        mob = entry.getName();
         fontRendererObj.drawString(pokemob.getPokemonDisplayName(), xOffset, 10, 0xFFFFFF);
         float zLevel = 800;
         GL11.glPushMatrix();

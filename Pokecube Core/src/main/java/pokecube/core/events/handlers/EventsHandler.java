@@ -213,7 +213,6 @@ public class EventsHandler
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent evt)
     {
-        new UpdateNotifier();
         if (evt.action == Action.LEFT_CLICK_BLOCK && evt.entityPlayer.getHeldItem() != null
                 && evt.entityPlayer.getHeldItem().getItem() == Items.stick)
         {
@@ -704,7 +703,7 @@ public class EventsHandler
 
         private IChatComponent getInfoMessage(CheckResult result, String name)
         {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
+            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + PokecubeMod.VERSION + EnumChatFormatting.WHITE;
             String link = "" + result.url;
             String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
                     + link + "\"}}";

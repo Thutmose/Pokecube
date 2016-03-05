@@ -16267,7 +16267,7 @@
             <BASESTATS atk="120" def="120" hp="120" spatk="120"
                 spd="120" spdef="120"/>
             <EVYIELD hp="3"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="3.2" length="3.2" width="2"/>
             <TYPE type1="Normal"/>
             <ABILITY normal="Multitype"/>
         </STATS>

@@ -16281,6 +16281,108 @@
                 lvl_80="HYPERBEAM" lvl_90="PERISHSONG"/>
         </MOVES>
     </Pokemon>
+    <Pokemon name="Arceus Fighting" number="493">
+        <STATS>
+            <TYPE type1="Fighting"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Flying" number="493">
+        <STATS>
+            <TYPE type1="Flying"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Poison" number="493">
+        <STATS>
+            <TYPE type1="Poison"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Ground" number="493">
+        <STATS>
+            <TYPE type1="Gound"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Rock" number="493">
+        <STATS>
+            <TYPE type1="Rock"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Bug" number="493">
+        <STATS>
+            <TYPE type1="Bug"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Ghost" number="493">
+        <STATS>
+            <TYPE type1="Ghost"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Steel" number="493">
+        <STATS>
+            <TYPE type1="Steel"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Fire" number="493">
+        <STATS>
+            <TYPE type1="Fire"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Water" number="493">
+        <STATS>
+            <TYPE type1="Water"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Grass" number="493">
+        <STATS>
+            <TYPE type1="Grass"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Electric" number="493">
+        <STATS>
+            <TYPE type1="Electric"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Psychic" number="493">
+        <STATS>
+            <TYPE type1="Psychic"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Ice" number="493">
+        <STATS>
+            <TYPE type1="Ice"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Dragon" number="493">
+        <STATS>
+            <TYPE type1="Dragon"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Dark" number="493">
+        <STATS>
+            <TYPE type1="Dark"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Arceus Fairy" number="493">
+        <STATS>
+            <TYPE type1="Fairy"/>
+            <ABILITY normal="Multitype"/>
+        </STATS>
+    </Pokemon>
     <Pokemon name="Victini" number="494">
         <STATS>
             <EVOLUTIONMODE>Level:-1</EVOLUTIONMODE>

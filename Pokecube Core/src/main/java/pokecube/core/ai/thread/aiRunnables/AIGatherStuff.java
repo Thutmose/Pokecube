@@ -46,7 +46,7 @@ public class AIGatherStuff extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        if (world == null || pokemob.isAncient() || tameCheck()) return false;
+        if (world == null || pokemob.isAncient() || tameCheck() || Math.random() > 0.05) return false;
 
         int rate = pokemob.getPokemonAIState(IPokemob.TAMED) ? 10 : 100;
         if (pokemob.getHome() == null || entity.ticksExisted % rate != 0) return false;

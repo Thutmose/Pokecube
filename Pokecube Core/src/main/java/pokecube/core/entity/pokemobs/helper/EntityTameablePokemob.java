@@ -56,7 +56,7 @@ import thut.api.pathing.IPathingMob;
 public abstract class EntityTameablePokemob extends EntityTameable
         implements IPokemob, IMob, IInvBasic, IHungrymob, IPathingMob, IShearable, IBreedingMob, IMobColourable
 {
-    public static int EXITCUBEDURATION = 40;
+    public static int          EXITCUBEDURATION = 40;
 
     protected boolean          looksWithInterest;
     protected float            field_25048_b;
@@ -65,19 +65,19 @@ public abstract class EntityTameablePokemob extends EntityTameable
     protected boolean          field_25052_g;
     protected float            timePokemonIsShaking;
     protected float            prevTimePokemonIsShaking;
-    protected int              pokedexNb = 0;
-    public float               length    = 1;
+    protected Integer          pokedexNb        = 0;
+    public float               length           = 1;
     // protected int hungerTime;
     protected EntityLivingBase owner;
 
-    private String ownerName = "";
-    private UUID   original  = new UUID(1234, 4321);
+    private String             ownerName        = "";
+    private UUID               original         = new UUID(1234, 4321);
 
-    protected Vector3 here = Vector3.getNewVector();
-    protected Vector3 vec  = Vector3.getNewVector();
-    protected Vector3 v1   = Vector3.getNewVector();
-    protected Vector3 v2   = Vector3.getNewVector();
-    protected Vector3 vBak = Vector3.getNewVector();
+    protected Vector3          here             = Vector3.getNewVector();
+    protected Vector3          vec              = Vector3.getNewVector();
+    protected Vector3          v1               = Vector3.getNewVector();
+    protected Vector3          v2               = Vector3.getNewVector();
+    protected Vector3          vBak             = Vector3.getNewVector();
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -86,12 +86,12 @@ public abstract class EntityTameablePokemob extends EntityTameable
         initInventory();
     }
 
-    static final int AIACTIONSTATESDW = 5;
+    static final int AIACTIONSTATESDW  = 5;
 
-    static final int DIRECTIONPITCHDW = 10;
-    static final int STATSDW          = 11;
+    static final int DIRECTIONPITCHDW  = 10;
+    static final int STATSDW           = 11;
 
-    static final int ATTACKTARGETIDDW = 13;
+    static final int ATTACKTARGETIDDW  = 13;
 
     static final int STATMODDW         = 18;
     static final int BOOMSTATEDW       = 19;
@@ -102,12 +102,12 @@ public abstract class EntityTameablePokemob extends EntityTameable
     static final int EVS1DW            = 24;
     static final int EVS2DV            = 25;
 
-    static final int SPECIALINFO = 26;
+    static final int SPECIALINFO       = 26;
 
-    static final int EVOLNBDW   = 27;
-    static final int EVOLTICKDW = 28;
-    static final int HAPPYDW    = 29;
-    static final int MOVESDW    = 30;
+    static final int EVOLNBDW          = 27;
+    static final int EVOLTICKDW        = 28;
+    static final int HAPPYDW           = 29;
+    static final int MOVESDW           = 30;
 
     /** Moved all of these into Tameable, to keep them together */
     @Override
@@ -391,12 +391,11 @@ public abstract class EntityTameablePokemob extends EntityTameable
     }
 
     @Override
-    public void setPokemonOwner(EntityLivingBase e)// func_152115_b(String
-                                                   // p_152115_1_) = set owner
+    public void setPokemonOwner(EntityLivingBase e)
     {
         if (e == null)
         {
-            super.setOwnerId("");// .func_152115_b("");
+            super.setOwnerId("");
             owner = null;
             ownerName = "";
             this.setPokemonAIState(IPokemob.TAMED, false);
@@ -459,7 +458,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
                 if (o instanceof EntityLivingBase)
                 {
                     EntityLivingBase e = (EntityLivingBase) o;
-                    String owneruuid = super.getOwnerId();// super.getOwnerName();
+                    String owneruuid = super.getOwnerId();
 
                     if (e.getUniqueID().toString().equals(owneruuid))
                     {
@@ -626,7 +625,8 @@ public abstract class EntityTameablePokemob extends EntityTameable
                 {
                     ((EntityPlayerMP) owner).sendContainerToPlayer(((EntityPlayerMP) owner).inventoryContainer);
                 }
-
+                if (!owner.isSneaking() && !isDead)
+                    ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
                 String mess = StatCollector.translateToLocalFormatted("pokemob.action.return", getPokemonDisplayName());
                 displayMessageToOwner(mess);
             }
@@ -664,6 +664,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
         fallDistance = 0;
         this.extinguish();
         this.setFlag(0, false);
+        this.setPokemonAIState(EVOLVING, false);
     }
 
     @Override

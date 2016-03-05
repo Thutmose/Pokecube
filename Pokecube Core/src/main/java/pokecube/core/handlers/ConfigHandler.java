@@ -32,20 +32,20 @@ import pokecube.core.utils.PokecubeSerializer;
 
 public class ConfigHandler extends Mod_Pokecube_Helper
 {
-    public static final String CATEGORY_SPAWNING = "mobspawning";
-    public static final String CATEGORY_DATABASE = "databases";
-    public static String[]     defaultStarts     = {};
-    public static boolean      loginmessage      = true;
-    public static int          mateMultiplier    = 1;
-    public static int          BREEDINGDELAY     = 4000;
-    public static int          EGGHATCHTIME      = 10000;
+    public static final String CATEGORY_SPAWNING   = "mobspawning";
+    public static final String CATEGORY_DATABASE   = "databases";
+    public static String[]     defaultStarts       = {};
+    public static boolean      contributorStarters = true;
+    public static boolean      loginmessage        = true;
+    public static int          mateMultiplier      = 1;
+    public static int          BREEDINGDELAY       = 4000;
+    public static int          EGGHATCHTIME        = 10000;
 
     public static void loadConfig(Mod_Pokecube_Helper helper, Configuration config)
     {
         Property prop;
         configFile = config.getConfigFile();
         Mod_Pokecube_Helper.config = config;
-        initDefaultStarts();
         loadSpawnConfigs();
         pvpExp = config
                 .get(Configuration.CATEGORY_GENERAL, "pvpExp", pvpExp, "do tame pokemon give experience when defeated.")
@@ -109,6 +109,12 @@ public class ConfigHandler extends Mod_Pokecube_Helper
 
         guiOffset = config.get(CATEGORY_ADVANCED, "guiOffset", new int[] { 0, 0 }, "offset of pokemon moves gui.")
                 .getIntList();
+        guiDown = config.get(CATEGORY_ADVANCED, "guiDown", guiDown, "Are the moves shown below the nametag.")
+                .getBoolean();
+        contributorStarters = config
+                .get(CATEGORY_ADVANCED, "contribStarters", contributorStarters,
+                        "Do custom contributor starters apply.  If this is true, you can also add customized ones too.")
+                .getBoolean();
 
         maxAIThreads = config
                 .get(CATEGORY_ADVANCED, "aiThreads", 2,
@@ -173,11 +179,6 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                             "any block listed here will have decreased drop rates from dig with high level pokemon, use same format as for the other lists.")
                     .getString();
 
-            // TODO possibly re-implement this.
-            // Mod_Pokecube_Helper.industrial = config.get(CATEGORY_ADVANCED,
-            // "Industrial Area Blocks", "",
-            // "Blocks here count towards an industrial area.").getString();
-
             defaultMobs = config
                     .get(CATEGORY_ADVANCED, "Default Mod", "",
                             "if you put a modid here, Mobs from this mod will be considered as the default mobs.")
@@ -209,6 +210,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             {
                 String[] defaults = config.get(CATEGORY_ADVANCED, "starteroverrides", defaultStarts).getStringList();
                 ArrayList<String> def = new ArrayList<String>();
+                defaultStarts = new String[0];
                 for (String s : defaults)
                 {
                     def.add(s);
@@ -223,7 +225,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                     .get(CATEGORY_ADVANCED, "functions", new String[] { "0:(10^6)*(sin(x*10^-3)^8 + sin(y*10^-3)^8)",
                             "1:10+r/130;r", "2:(10^6)*(sin(x*0.5*10^-3)^8 + sin(y*0.5*10^-3)^8)" },
 
-            "to recieve legacy lvl functions, replace the first entry with the second, and set the leading 1 to 0")
+                            "to recieve legacy lvl functions, replace the first entry with the second, and set the leading 1 to 0")
                     .getStringList();
             SpawnHandler.loadFunctionsFromStrings(strings);
 
@@ -242,6 +244,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                 .get(Configuration.CATEGORY_GENERAL, "pokemartseller", true, "Do pokemart sellers spawn in pokemarts.")
                 .getBoolean(true);
 
+        initDefaultStarts();
         config.save();
         // Gui
         GUICHOOSEFIRSTPOKEMOB_ID = 11;
@@ -338,6 +341,8 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         config.get(CATEGORY_ADVANCED, "semiHMode", semiHardMode).set(semiHardMode);
         config.get(CATEGORY_ADVANCED, "loginGui", guiOnLogin).set(guiOnLogin);
         config.get(CATEGORY_ADVANCED, "advancedOptions", false).set(true);
+        config.get(CATEGORY_SPAWNING, "pokemonSpawn", pokemonSpawn, "Do pokemon spawn via the pokecube spawning code.")
+                .set(pokemonSpawn);
 
         config.get(CATEGORY_SPAWNING, "mobNumber", SpawnHandler.MAXNUM).set(SpawnHandler.MAXNUM);
         config.get(CATEGORY_SPAWNING, "despawnRadius", mobDespawnRadius).set(mobDespawnRadius);
@@ -373,16 +378,15 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             JsonElement element = parser.parse(new InputStreamReader(in));
             JsonElement element1 = element.getAsJsonObject().get("contributors");
             JsonArray contribArray = element1.getAsJsonArray();
-            List<String> defaults = Lists.newArrayList();
+            List<String> defaults = Lists.newArrayList(defaultStarts);
             for (int i = 0; i < contribArray.size(); i++)
             {
                 element1 = contribArray.get(i);
                 JsonObject obj = element1.getAsJsonObject();
                 String name = obj.get("username").getAsString();
                 String info = obj.get("info").getAsString();
-                defaults.add(name + ":" + info);
+                if (info != null && !info.isEmpty()) defaults.add(name + ":" + info);
             }
-            System.out.println(defaults);
             defaultStarts = defaults.toArray(new String[0]);
         }
         catch (Exception e)

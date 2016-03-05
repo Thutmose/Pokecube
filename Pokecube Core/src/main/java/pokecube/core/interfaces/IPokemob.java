@@ -233,7 +233,7 @@ public interface IPokemob extends IMoveConstants
     void levelUp(int level);
 
     /** @return the int pokedex number */
-    int getPokedexNb();
+    Integer getPokedexNb();
 
     /** @return all the experience */
     int getExp();

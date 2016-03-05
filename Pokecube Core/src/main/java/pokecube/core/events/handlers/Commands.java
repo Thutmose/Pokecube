@@ -1,7 +1,6 @@
 package pokecube.core.events.handlers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -29,6 +28,7 @@ import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
@@ -102,8 +102,7 @@ public class Commands implements ICommand
             if (s.contains("@"))
             {
                 ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(
-                        PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));// .matchPlayers(cSender,
-                // s);
+                        PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));
                 targets = (EntityPlayerMP[]) targs.toArray(new EntityPlayerMP[0]);
             }
         }
@@ -132,10 +131,6 @@ public class Commands implements ICommand
         doReset(cSender, args, isOp, targets);
         doTM(cSender, args, isOp, targets);
         doMeteor(cSender, args, isOp, targets);
-
-        // TODO Add a doMeteor command, arguments should be size and optional
-        // direction.
-        // cSender.addChatMessage(new ChatComponentText("Invalid Command"));
     }
 
     @Override
@@ -159,7 +154,6 @@ public class Commands implements ICommand
     @Override
     public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
-        // TODO Auto-generated method stub
         return true;
     }
 
@@ -211,7 +205,7 @@ public class Commands implements ICommand
                 String text = args[1];
                 for (PokedexEntry entry : Database.allFormes)
                 {
-                    if (entry.getName().contains(text))
+                    if (entry.getName().toLowerCase().contains(text.toLowerCase()))
                     {
                         String name = entry.getName();
                         if (name.contains(" "))
@@ -455,6 +449,7 @@ public class Commands implements ICommand
                     boolean off = temp.equalsIgnoreCase("false") || temp.equalsIgnoreCase("off");
                     if (on || off) SpawnHandler.doSpawns = on;
                     cSender.addChatMessage(new ChatComponentText("Pokemobs Spawning " + SpawnHandler.doSpawns));
+                    ConfigHandler.saveConfig();
                     return true;
                 }
             }
@@ -650,7 +645,6 @@ public class Commands implements ICommand
 
                         }
 
-                        System.out.println(entry + " " + name + " " + Database.getEntry(name));
                         mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(),
                                 cSender.getEntityWorld());
 
@@ -661,13 +655,6 @@ public class Commands implements ICommand
                         }
                         mob.changeForme(name);
                         Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
-                        Vector3 temp = Vector3.getNewVector();
-                        if (player != null)
-                        {
-                            offset = offset.add(temp.set(player.getLookVec()));
-                        }
-                        temp.set(cSender.getPosition()).addTo(offset);
-                        temp.moveEntity((Entity) mob);
 
                         String owner = "";
                         boolean shiny = false;
@@ -676,6 +663,7 @@ public class Commands implements ICommand
                         byte gender = -3;
                         red = green = blue = 255;
                         boolean ancient = false;
+                        String ability = null;
 
                         int exp = 10;
                         int level = -1;
@@ -710,27 +698,46 @@ public class Commands implements ICommand
                                 }
                                 else if (arg.equalsIgnoreCase("r"))
                                 {
-                                    red = Byte.parseByte(val);
+                                    red = Integer.parseInt(val);
                                 }
                                 else if (arg.equalsIgnoreCase("g"))
                                 {
-                                    green = Byte.parseByte(val);
+                                    green = Integer.parseInt(val);
                                 }
                                 else if (arg.equalsIgnoreCase("b"))
                                 {
-                                    blue = Byte.parseByte(val);
+                                    blue = Integer.parseInt(val);
                                 }
                                 else if (arg.equalsIgnoreCase("o"))
                                 {
                                     owner = val;
+                                }
+                                else if (arg.equalsIgnoreCase("a"))
+                                {
+                                    ability = val;
                                 }
                                 else if (arg.equalsIgnoreCase("m") && mindex < 4)
                                 {
                                     moves[mindex] = val;
                                     mindex++;
                                 }
+                                else if (arg.equalsIgnoreCase("v"))
+                                {
+                                    String[] vec = val.split(",");
+                                    offset.x = Double.parseDouble(vec[0].trim());
+                                    offset.y = Double.parseDouble(vec[1].trim());
+                                    offset.z = Double.parseDouble(vec[2].trim());
+                                }
                             }
                         }
+
+                        Vector3 temp = Vector3.getNewVector();
+                        if (player != null)
+                        {
+                            offset = offset.add(temp.set(player.getLookVec()));
+                        }
+                        temp.set(cSender.getPosition()).addTo(offset);
+                        temp.moveEntity((Entity) mob);
 
                         if (targets != null)
                         {
@@ -762,7 +769,8 @@ public class Commands implements ICommand
                         if (shadow) mob.setShadow(shadow);
                         if (ancient) mob.setAncient(ancient);
                         mob.setExp(exp, true, true);
-                        System.out.println(Arrays.toString(moves));
+                        if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));
+
                         for (int i1 = 0; i1 < 4; i1++)
                         {
                             if (moves[i1] != null)
@@ -975,6 +983,7 @@ public class Commands implements ICommand
 
                     int exp = 10;
                     int level = -1;
+                    String ability = null;
                     String[] moves = new String[4];
                     int index = 0;
                     for (int i = 1; i < gift.length; i++)
@@ -1013,6 +1022,10 @@ public class Commands implements ICommand
                         {
                             blue = Byte.parseByte(val);
                         }
+                        else if (arg.equalsIgnoreCase("a"))
+                        {
+                            ability = val;
+                        }
                         else if (arg.equalsIgnoreCase("m") && index < 4)
                         {
                             moves[index] = val;
@@ -1030,6 +1043,7 @@ public class Commands implements ICommand
                     if (gender != -3) mob.setSexe(gender);
                     if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
                     if (shadow) mob.setShadow(shadow);
+                    if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));
                     for (int i = 0; i < 4; i++)
                     {
                         if (moves[i] != null)
@@ -1110,7 +1124,6 @@ public class Commands implements ICommand
     @Override
     public int compareTo(ICommand arg0)
     {
-        // TODO Auto-generated method stub
         return 0;
     }
 }

@@ -36,86 +36,87 @@ public class Mod_Pokecube_Helper
 {
 
     /** Do monsters not spawn. */
-    public static boolean deactivateMonsters   = false;
+    public static boolean       deactivateMonsters   = false;
     /** do Pokemobs spawn */
-    public static boolean pokemonSpawn         = true;
+    public static boolean       pokemonSpawn         = true;
     /** do monster spawns get swapped with shadow pokemobs */
-    public static boolean disableMonsters      = false;
+    public static boolean       disableMonsters      = false;
     /** do animals not spawn */
-    public static boolean deactivateAnimals    = false;
+    public static boolean       deactivateAnimals    = false;
     /** are not-real pokemobs allowed. */
-    public static boolean allowFakeMons        = true;
+    public static boolean       allowFakeMons        = true;
     /** is there a choose first gui on login */
-    public static boolean guiOnLogin           = true;
+    public static boolean       guiOnLogin           = true;
     /** do meteors fall. */
-    public static boolean meteors              = true;
+    public static boolean       meteors              = true;
     /** does defeating a tame pokemob give exp */
-    public static boolean pvpExp               = false;
+    public static boolean       pvpExp               = false;
     /** do wild pokemobs which leave despawnRadius despawn immediately */
-    public static boolean cull                 = false;
+    public static boolean       cull                 = false;
     /** Will lithovores eat gravel */
-    public static boolean pokemobsEatGravel    = false;
+    public static boolean       pokemobsEatGravel    = false;
     /** Is there a warning before a wild pokemob attacks the player. */
-    public static boolean pokemobagresswarning = false;
+    public static boolean       pokemobagresswarning = false;
 
-    public static boolean       POKEMARTSELLER = true;
-    public static boolean       SPAWNBUILDING  = true;
+    public static boolean       POKEMARTSELLER       = true;
+    public static boolean       SPAWNBUILDING        = true;
     public static int[]         guiOffset;
+    public static boolean       guiDown              = true;
     public static File          configFile;
     public static Configuration config;
-    public static boolean       mysterygift    = true;
+    public static boolean       mysterygift          = true;
 
-    public static String defaultMobs = "";
+    public static String        defaultMobs          = "";
 
     /** This is also the radius which mobs spawn in. Is only despawn radius if
      * cull is true */
-    public static int     mobDespawnRadius   = 32;
+    public static int           mobDespawnRadius     = 32;
     /** closest distance to a player the pokemob can spawn. */
-    public static int     mobSpawnRadius     = 16;
+    public static int           mobSpawnRadius       = 16;
     /** Distance to player needed to agress the player */
-    public static int     mobAggroRadius     = 3;
+    public static int           mobAggroRadius       = 3;
     /** Approximate umber of ticks before pokemob starts taking hunger damage */
-    public static int     pokemobLifeSpan    = 8000;
+    public static int           pokemobLifeSpan      = 8000;
     /** Capped damage to players by pokemobs */
-    public static int     maxPlayerDamage    = 10;
+    public static int           maxPlayerDamage      = 10;
     /** Warning time before a wild pokemob attacks a player */
-    public static int     pokemobagressticks = 100;
+    public static int           pokemobagressticks   = 100;
     /** Number of threads allowed for AI. */
-    public static int     maxAIThreads       = 1;
+    public static int           maxAIThreads         = 1;
     /** Do explosions occur and cause damage */
-    public static boolean explosions         = true;
+    public static boolean       explosions           = true;
     /** Will nests spawn */
-    public static boolean nests              = false;
+    public static boolean       nests                = false;
     /** number of nests per chunk */
-    public static int     nestsPerChunk      = 1;
+    public static int           nestsPerChunk        = 1;
     /** To be used for nest retrogen. */
-    public static boolean refreshNests       = false;
+    public static boolean       refreshNests         = false;
     /** Minimum level legendaries can spawn at. */
-    public static int     minLegendLevel     = 1;
+    public static int           minLegendLevel       = 1;
 
-    public static int GUICHOOSEFIRSTPOKEMOB_ID;
-    public static int GUIDISPLAYPOKECUBEINFO_ID;
-    public static int GUIDISPLAYTELEPORTINFO_ID;
-    public static int GUIPOKECENTER_ID;
-    public static int GUIPOKEDEX_ID;
-    public static int GUIPOKEMOBSPAWNER_ID;
-    public static int GUIPC_ID;
-    public static int GUIPOKEMOB_ID;
-    public static int GUITRADINGTABLE_ID;
+    public static int           GUICHOOSEFIRSTPOKEMOB_ID;
+    public static int           GUIDISPLAYPOKECUBEINFO_ID;
+    public static int           GUIDISPLAYTELEPORTINFO_ID;
+    public static int           GUIPOKECENTER_ID;
+    public static int           GUIPOKEDEX_ID;
+    public static int           GUIPOKEMOBSPAWNER_ID;
+    public static int           GUIPC_ID;
+    public static int           GUIPOKEMOB_ID;
+    public static int           GUITRADINGTABLE_ID;
 
     /** Does the healing table have a recipe */
-    protected static boolean tableRecipe = true;
+    protected static boolean    tableRecipe          = true;
 
-    protected static String cave;
-    protected static String surface;
-    protected static String rock;
-    protected static String trees;
-    protected static String plants;
-    protected static String terrains;
-    protected static String industrial;
+    protected static String     cave;
+    protected static String     surface;
+    protected static String     rock;
+    protected static String     trees;
+    protected static String     plants;
+    protected static String     terrains;
+    protected static String     industrial;
 
     /** List of blocks to be considered for the floor of a cave. */
-    private static List<Block> caveBlocks = new ArrayList<Block>();
+    private static List<Block>  caveBlocks           = new ArrayList<Block>();
 
     static
     {
@@ -199,7 +200,7 @@ public class Mod_Pokecube_Helper
     {
         ConfigHandler.loadConfig(this, config);
     }
-    
+
     @SubscribeEvent
     public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
     {

@@ -130,8 +130,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         if (inventory[1] != null)
         {
             if (PokecubeManager.isFilled(inventory[1])
-                    && (PokecubeManager.getOwner(inventory[1]).equals(player.getUniqueID().toString())
-            ))
+                    && (PokecubeManager.getOwner(inventory[1]).equals(player.getUniqueID().toString())))
             {
                 if (player2 == null) player2 = player;
                 else
@@ -181,10 +180,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             return;
         }
 
-        if (!(PokecubeManager.isFilled(poke1) && PokecubeManager.isFilled(poke2)))
-        {
-            return;
-        }
+        if (!(PokecubeManager.isFilled(poke1) && PokecubeManager.isFilled(poke2))) { return; }
 
         IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, worldObj);
         IPokemob mon2 = PokecubeManager.itemToPokemob(poke2, worldObj);
@@ -745,6 +741,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                 MinecraftForge.EVENT_BUS.unregister(this);
                 return;
             }
+
+            if (!event.world.isAreaLoaded(toConvert.getPos(), 5)) return;
 
             if (event.phase == Phase.END)
             {

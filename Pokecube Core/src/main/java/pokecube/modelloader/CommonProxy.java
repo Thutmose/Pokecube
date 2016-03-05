@@ -4,7 +4,9 @@
 package pokecube.modelloader;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -94,12 +96,19 @@ public class CommonProxy implements IGuiHandler
     {
         ResourceLocation[] tex;
         boolean[] ret = new boolean[entry.length];
-        tex = toLocations(modid, ".x3d", entry);
-        filesExist(mod, ret, tex);
-        tex = toLocations(modid, ".xml", entry);
-        filesExist(mod, ret, tex);
-        tex = toLocations(modid, ".tbl", entry);
-        filesExist(mod, ret, tex);
+        try
+        {
+            tex = toLocations(modid, ".x3d", entry);
+            filesExist(mod, ret, tex);
+            tex = toLocations(modid, ".xml", entry);
+            filesExist(mod, ret, tex);
+            tex = toLocations(modid, ".tbl", entry);
+            filesExist(mod, ret, tex);
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
         return ret;
     }
 
@@ -113,7 +122,7 @@ public class CommonProxy implements IGuiHandler
         return ret;
     }
 
-    private void filesExist(Object mod, boolean[] ret, ResourceLocation[] file)
+    private void filesExist(Object mod, boolean[] ret, ResourceLocation[] file) throws UnsupportedEncodingException
     {
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
         // Check Resource Packs
@@ -124,7 +133,7 @@ public class CommonProxy implements IGuiHandler
         String scannedPath = scannedPackage.replace(DOT, SLASH);
         URL scannedUrl = Thread.currentThread().getContextClassLoader().getResource(scannedPath);
         if (scannedUrl == null) return;
-        resourceDir = new File(scannedUrl.getFile().replace("%20", " "));
+        resourceDir = new File(java.net.URLDecoder.decode(scannedUrl.getFile(), Charset.defaultCharset().name()));
         if (resourceDir.toString().contains("file:") && resourceDir.toString().contains(".jar"))
         {
             String name = resourceDir.toString();

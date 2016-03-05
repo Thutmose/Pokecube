@@ -203,8 +203,12 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             ((IPokemob) evolution).changeForme(forme);
             worldObj.spawnEntityInWorld(evolution);
             ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
-            if(getPokemonAIState(MEGAFORME))
+            if (getPokemonAIState(MEGAFORME))
+            {
                 ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
+                ((IPokemob) evolution).setEvolutionTicks(10);
+                
+            }
             this.setDead();
             this.setPokemonOwner(null);
         }
@@ -218,7 +222,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     {
         if (this.ticksExisted > 100) forceSpawn = false;
 
-        if (getEvolutionTicks() > 0)
+        int num = getEvolutionTicks();
+        if (num > 0)
         {
             if (!evolving || forceSpawn)
             {
@@ -232,7 +237,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         {
             evolving = false;
         }
-        if (ticksExisted > 100 && ticksExisted < 200 && this.getPokemonAIState(EVOLVING))
+        if (num <= 0 && this.getPokemonAIState(EVOLVING))
         {
             this.setPokemonAIState(EVOLVING, false);
         }

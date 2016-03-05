@@ -3,10 +3,15 @@
   "promos": {
     "1.8.8-latest": "2.1.4",
     "1.8.8-recommended": "2.1.4",
-    "1.8.9-latest": "2.1.19",
-    "1.8.9-recommended": "2.1.19"
+    "1.8.9-latest": "2.2.9",
+    "1.8.9-recommended": "2.2.9"
   },
   "1.8.9": {
+    "2.2.9": "Fixes crash from using attack hotkey with no pokemob out.",
+    "2.2.7": "Fixes singple player starter selection issue.",
+    "2.2.5": "Fixes the lots and lots of zubats.",
+    "2.2.4": "Misc fixed and tweaks, see MCF thread changelog for full list.",
+    "2.2.3": "Hopefully fixes some CMEs, also updates pt_BR translations",
     "2.1.19": "Fixes a rendering issue with some x3d models.",
     "2.1.15": "Fixes a crash from breeding.",
     "2.1.11": "Misc fixes.",

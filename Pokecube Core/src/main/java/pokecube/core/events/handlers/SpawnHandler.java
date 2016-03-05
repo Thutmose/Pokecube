@@ -18,6 +18,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -43,7 +44,6 @@ import pokecube.core.utils.Tools;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Cruncher;
 import thut.api.maths.ExplosionCustom;
-import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
@@ -71,10 +71,10 @@ public final class SpawnHandler
     public static final HashMap<Integer, ArrayList<PokedexEntry>> spawnLists = new HashMap<Integer, ArrayList<PokedexEntry>>();
     public static int                                             number     = 0;
 
-    private static Vector3 vec  = Vector3.getNewVector();
-    private static Vector3 vec1 = Vector3.getNewVector();
-    private static Vector3 vec2 = Vector3.getNewVector();
-    private static Vector3 temp = Vector3.getNewVector();
+    private static Vector3                                        vec        = Vector3.getNewVector();
+    private static Vector3                                        vec1       = Vector3.getNewVector();
+    private static Vector3                                        vec2       = Vector3.getNewVector();
+    private static Vector3                                        temp       = Vector3.getNewVector();
 
     public SpawnHandler()
     {
@@ -195,8 +195,7 @@ public final class SpawnHandler
                 int j = (i + rand) % num;
                 int x = j % (distance) - distance / 2;
                 int z = (j / distance) % (distance) - distance / 2;
-                int y = ret.intY() - 10 + world.rand.nextInt(20);
-                y = (k + rand) % 20;
+                int y = 10 - world.rand.nextInt(20);
                 temp.set(ret).addTo(x, y, z);
                 if (temp.isClearOfBlocks(world)) { return temp; }
             }
@@ -288,18 +287,21 @@ public final class SpawnHandler
         if (!v.doChunksExist(world, 10)) return ret;
         AxisAlignedBB box = v.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, Math.min(40, Mod_Pokecube_Helper.mobDespawnRadius / 2),
+                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, Mod_Pokecube_Helper.mobDespawnRadius,
                         Mod_Pokecube_Helper.mobDespawnRadius));
-
         int num = 0;
+        boolean player = false;
         for (Object o : list)
         {
             if (o instanceof IPokemob) num++;
+            if (o instanceof EntityPlayer)
+            {
+                EntityPlayer playerEntity = (EntityPlayer) o;
+                //Stops pokemobs building up at bottom of sea floor.
+                if (playerEntity.posY > v.y - 10 && playerEntity.posY < v.y + 10) player = true;
+            }
         }
-
-        Matrix3.freeAABB(box);
-
-        if (num > MAX_DENSITY * MAXNUM) return ret;
+        if (num > MAX_DENSITY * MAXNUM || !player) return ret;
 
         if (v.y < 0 || !checkNoSpawnerInArea(world, v.intX(), v.intY(), v.intZ())) return ret;
 
@@ -355,7 +357,6 @@ public final class SpawnHandler
             }
             else
             {
-
                 long time = System.nanoTime();
 
                 ret += num = doSpawnForType(world, v, dbe, parser, t);
@@ -684,13 +685,20 @@ public final class SpawnHandler
                 {
                     Entity player = (Entity) players.get(0);
                     Random rand = new Random();
-                    int dx = rand.nextInt(100) + 30;
-                    int dz = rand.nextInt(100) + 30;
-                    Vector3 v = this.v.set(player).add(dx, 255 - player.posY, dz);
+                    int dx = rand.nextInt(200) - 100;
+                    int dz = rand.nextInt(200) - 100;
+
+                    Vector3 v = this.v.set(player).add(dx, 0, dz);
+
+                    if (world.getClosestPlayer(v.x, v.y, v.z, 64) != null) return;
+
+                    v.add(0, 255 - player.posY, 0);
+
                     if (PokecubeSerializer.getInstance().canMeteorLand(v))
                     {
                         Vector3 direction = v1.set(rand.nextGaussian() / 2, -1, rand.nextGaussian() / 2);
                         Vector3 location = Vector3.getNextSurfacePoint(world, v, direction, 255);
+
                         if (location != null)
                         {
                             float energy = (float) Math.abs((rand.nextGaussian() + 1) * 50);

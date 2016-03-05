@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -137,10 +138,12 @@ public class EventsHandlerClient
                 }
             }
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
+            if (current != null)
+                System.out.println(current + " " + ring + " " + current.getPokemonAIState(IMoveConstants.EVOLVING));
             if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING))
             {
-                current.setPokemonAIState(IMoveConstants.EVOLVING, true);
-                MessageServer message = new MessageServer(MessageServer.CHANGEFORM, current.getPokemonUID());
+                System.out.println(current);
+                MessageServer message = new MessageServer(MessageServer.CHANGEFORM, ((Entity) current).getEntityId());
                 PokecubePacketHandler.sendToServer(message);
             }
         }

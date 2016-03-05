@@ -43,7 +43,7 @@ public class JERCompat
 
     private void registerPlants()
     {
-        for(Integer i: BerryManager.berryCrops.keySet())
+        for (Integer i : BerryManager.berryCrops.keySet())
         {
             Block crop = BerryManager.berryCrops.get(i);
             ItemStack berry = BerryManager.getBerryItem(BerryManager.berryNames.get(i));

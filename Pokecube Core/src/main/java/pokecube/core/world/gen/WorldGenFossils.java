@@ -22,15 +22,15 @@ public class WorldGenFossils implements IWorldGenerator
         int fossilchance = random.nextInt(5) + 2;
         for (int i = fossilchance; i > 0; i--)
         {
-            int randPosX = chunkX + random.nextInt(16);
+            int randPosX = chunkX * 16 + random.nextInt(16);
             int randPosY = random.nextInt(40) + 5;
-            int randPosZ = chunkZ + random.nextInt(16);
+            int randPosZ = chunkZ * 16 + random.nextInt(16);
             BiomeGenBase bgb = world.getBiomeGenForCoords(new BlockPos(randPosX, 0, randPosZ));
             if (bgb == BiomeGenBase.desertHills || bgb == BiomeGenBase.desert || bgb == BiomeGenBase.jungle
                     || bgb == BiomeGenBase.jungleHills || bgb == BiomeGenBase.ocean)
             {
-                (new WorldGenMinable(PokecubeItems.getBlock("fossilstone").getDefaultState(), random.nextInt(3) + 3)).generate(world,
-                        random, new BlockPos(randPosX, randPosY, randPosZ));
+                (new WorldGenMinable(PokecubeItems.getBlock("fossilstone").getDefaultState(), random.nextInt(3) + 3))
+                        .generate(world, random, new BlockPos(randPosX, randPosY, randPosZ));
             }
         }
     }

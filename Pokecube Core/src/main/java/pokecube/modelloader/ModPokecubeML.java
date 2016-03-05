@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.client.event.sound.SoundLoadEvent;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -34,7 +34,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.modelloader.client.custom.animation.AnimationLoader;
+import pokecube.modelloader.client.render.animation.AnimationLoader;
 import pokecube.modelloader.items.ItemModelReloader;
 
 @Mod(modid = ModPokecubeML.ID, name = "Pokecube Model Loader", version = "0.1.0", acceptedMinecraftVersions = PokecubeMod.MCVERSIONS)
@@ -131,7 +131,7 @@ public class ModPokecubeML
             }
             else
             {
-//                System.err.println("No Resource Pack " + pack);
+                // System.err.println("No Resource Pack " + pack);
             }
         }
 
@@ -175,12 +175,17 @@ public class ModPokecubeML
     private void postInit(FMLPostInitializationEvent evt)
     {
         proxy.postInit();
+        postInit = true;
     }
+
+    boolean postInit = false;
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void SoundLoad(SoundLoadEvent e)
+    public void loadModels(ModelBakeEvent e)
     {
+        if (!postInit) return;
+        System.out.println("Loading Pokemob Models");
         AnimationLoader.load();
     }
 }

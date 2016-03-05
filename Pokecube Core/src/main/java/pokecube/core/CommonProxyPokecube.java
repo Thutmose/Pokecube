@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.profiler.IPlayerUsage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -107,6 +108,11 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     }
 
     public IPlayerUsage getMinecraftInstance()
+    {
+        return FMLCommonHandler.instance().getMinecraftServerInstance();
+    }
+    
+    public IThreadListener getMainThreadListener()
     {
         return FMLCommonHandler.instance().getMinecraftServerInstance();
     }

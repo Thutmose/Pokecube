@@ -7,9 +7,13 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.PokecubeItems;
@@ -120,6 +124,29 @@ public class ThaumcraftCompat
         addPage();
         addResearch();
         addLoot();
+    }
+
+    @SubscribeEvent
+    public void onToolTip(ItemTooltipEvent evt)
+    {
+        EntityPlayer player = evt.entityPlayer;
+        ItemStack stack = evt.itemStack;
+        if (player == null || player.openContainer == null || stack == null) return;
+        if (PokecubeItems.getCubeId(stack) == 98 && stack.hasTagCompound() && stack.getTagCompound().hasKey("Aspects")
+                && Loader.isModLoaded("Thaumcraft"))
+        {
+            NBTTagList tlist = stack.getTagCompound().getTagList("Aspects", (byte) 10);
+            for (int j = 0; j < tlist.tagCount(); j++)
+            {
+                NBTTagCompound rs = (NBTTagCompound) tlist.getCompoundTagAt(j);
+                if (rs.hasKey("key"))
+                {
+                    thaumcraft.api.aspects.Aspect a = thaumcraft.api.aspects.Aspect.getAspect(rs.getString("key"));
+                    int num = rs.getInteger("amount");
+                    evt.toolTip.add(a.getName() + " x" + num);
+                }
+            }
+        }
     }
 
     public void registerTrainersThaumcraft()

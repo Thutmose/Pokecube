@@ -40,27 +40,27 @@ import thut.api.terrain.BiomeType;
 public class Database implements IMoveConstants
 {
 
-    public static boolean                                  FORCECOPY       = true;
-    public static HashMap<Integer, PokedexEntry>           data            = new HashMap<Integer, PokedexEntry>();
-    public static HashMap<String, PokedexEntry>            data2           = new HashMap<String, PokedexEntry>();
-    public static HashSet<PokedexEntry>                    allFormes       = new HashSet<PokedexEntry>();
-    public static HashMap<String, ArrayList<PokedexEntry>> mobReplacements = new HashMap<String, ArrayList<PokedexEntry>>();
-    public static List<PokedexEntry>                       spawnables      = new ArrayList<PokedexEntry>();
+    public static boolean                                  FORCECOPY        = true;
+    public static HashMap<Integer, PokedexEntry>           data             = new HashMap<Integer, PokedexEntry>();
+    public static HashMap<String, PokedexEntry>            data2            = new HashMap<String, PokedexEntry>();
+    public static HashSet<PokedexEntry>                    allFormes        = new HashSet<PokedexEntry>();
+    public static HashMap<String, ArrayList<PokedexEntry>> mobReplacements  = new HashMap<String, ArrayList<PokedexEntry>>();
+    public static List<PokedexEntry>                       spawnables       = new ArrayList<PokedexEntry>();
 
-    private static String DBLOCATION = "/assets/pokecube/database/";
-    public static String  CONFIGLOC  = "";
+    private static String                                  DBLOCATION       = "/assets/pokecube/database/";
+    public static String                                   CONFIGLOC        = "";
 
-    private static HashSet<String> defaultDatabases = Sets.newHashSet("pokemobs.xml");
+    private static HashSet<String>                         defaultDatabases = Sets.newHashSet("pokemobs.xml");
 
-    private static HashSet<String>         extraDatabases  = Sets.newHashSet();
-    private static HashSet<String>         spawnDatabases  = Sets.newHashSet();
+    private static HashSet<String>                         extraDatabases   = Sets.newHashSet();
+    private static HashSet<String>                         spawnDatabases   = Sets.newHashSet();
     /** These are used for config added databasea <br>
      * Index 0 = pokemon<br>
      * Index 1 = moves<br>
     */
     @SuppressWarnings("unchecked")
-    private static List<ArrayList<String>> configDatabases = Lists.newArrayList(new ArrayList<String>(),
-            new ArrayList<String>());
+    private static List<ArrayList<String>>                 configDatabases  = Lists
+            .newArrayList(new ArrayList<String>(), new ArrayList<String>());
 
     public static void addDatabase(String file, EnumDatabase database)
     {
@@ -216,14 +216,14 @@ public class Database implements IMoveConstants
             if (e.mobType == null)
             {
                 e.mobType = PokecubeMod.Type.NORMAL;
-                System.out.println(e+" Has no Mob Type");
+                System.out.println(e + " Has no Mob Type");
                 Thread.dumpStack();
             }
             if (e.species == null && e.baseForme != null)
             {
                 e.childNumbers = e.baseForme.childNumbers;
                 e.species = e.baseForme.species;
-                System.out.println(e+" Has no Species");
+                System.out.println(e + " Has no Species");
                 Thread.dumpStack();
             }
             if (e.type2 == null) e.type2 = PokeType.unknown;
@@ -259,7 +259,7 @@ public class Database implements IMoveConstants
         data.put(entry.getPokedexNb(), entry);
     }
 
-    public static PokedexEntry getEntry(int nb)
+    public static PokedexEntry getEntry(Integer nb)
     {
         return data.get(nb);
     }
@@ -278,6 +278,7 @@ public class Database implements IMoveConstants
     public static PokedexEntry getEntry(String name)
     {
         PokedexEntry ret = null;
+        if (name == null) return null;
         if (name.trim().isEmpty()) return null;
         if (data2.containsKey(name)) return data2.get(name);
         for (PokedexEntry e : allFormes)

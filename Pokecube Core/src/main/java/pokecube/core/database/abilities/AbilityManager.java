@@ -1,7 +1,9 @@
 package pokecube.core.database.abilities;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -26,7 +28,7 @@ public class AbilityManager
     {
         Class<? extends Ability> abil = null;
         if (val instanceof String) abil = nameMap.get(val);
-        else if(val instanceof Class) abil = (Class<? extends Ability>) val;
+        else if (val instanceof Class) abil = (Class<? extends Ability>) val;
         else abil = idMap2.get(val);
         if (abil == null) return null;
         Ability ret = null;
@@ -82,7 +84,15 @@ public class AbilityManager
     {
         Ability ability = pokemob.getAbility();
         if (ability == null) { return false; }
-        return ability.toString().equalsIgnoreCase(abilityName.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""));
+        return ability.toString()
+                .equalsIgnoreCase(abilityName.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""));
+    }
+
+    public static boolean abilityExists(String name)
+    {
+        if (name == null) return false;
+        name = name.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
+        return nameMap.containsKey(name);
     }
 
     static
@@ -108,21 +118,22 @@ public class AbilityManager
     public static class ClassFinder
     {
 
-        private static final char DOT = '.';
+        private static final char   DOT               = '.';
 
-        private static final char SLASH = '/';
+        private static final char   SLASH             = '/';
 
-        private static final String CLASS_SUFFIX = ".class";
+        private static final String CLASS_SUFFIX      = ".class";
 
         private static final String BAD_PACKAGE_ERROR = "Unable to get resources from path '%s'. Are you sure the package '%s' exists?";
 
-        public static List<Class<?>> find(String scannedPackage)
+        public static List<Class<?>> find(String scannedPackage) throws UnsupportedEncodingException
         {
             String scannedPath = scannedPackage.replace(DOT, SLASH);
             URL scannedUrl = Thread.currentThread().getContextClassLoader().getResource(scannedPath);
             if (scannedUrl == null) { throw new IllegalArgumentException(
                     String.format(BAD_PACKAGE_ERROR, scannedPath, scannedPackage)); }
-            File scannedDir = new File(scannedUrl.getFile().replace("%20", " "));
+            File scannedDir = new File(
+                    java.net.URLDecoder.decode(scannedUrl.getFile(), Charset.defaultCharset().name()));
 
             List<Class<?>> classes = new ArrayList<Class<?>>();
             if (scannedDir.exists()) for (File file : scannedDir.listFiles())
@@ -132,7 +143,7 @@ public class AbilityManager
             else if (scannedDir.toString().contains("file:") && scannedDir.toString().contains(".jar"))
             {
                 String name = scannedDir.toString();
-                String pack = name.split("!")[1].replace(File.separatorChar, SLASH).substring(1)+SLASH;
+                String pack = name.split("!")[1].replace(File.separatorChar, SLASH).substring(1) + SLASH;
                 name = name.replace("file:", "");
                 name = name.replaceAll("(.jar)(.*)", ".jar");
                 scannedDir = new File(name);

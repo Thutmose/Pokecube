@@ -41,9 +41,9 @@ public class Pokedex
         getEntries().add(entry.pokedexNb);
     }
 
-    public PokedexEntry getEntry(int pokedexNb)
+    public PokedexEntry getEntry(Integer pokedexNb)
     {
-        return Database.getEntry(pokedexNb);//map.get(Integer.valueOf(pokedexNb));
+        return Database.getEntry(pokedexNb);
     }
 
     public PokedexEntry getNext(PokedexEntry pokedexEntry, int i)

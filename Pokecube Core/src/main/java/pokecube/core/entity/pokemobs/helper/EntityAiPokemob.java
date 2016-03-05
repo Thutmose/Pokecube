@@ -75,18 +75,18 @@ import thut.api.terrain.TerrainSegment;
 public abstract class EntityAiPokemob extends EntityMountablePokemob
 {
 
-    public GuardAI guardAI;
+    public GuardAI            guardAI;
 
-    private int lastHadTargetTime = 0;
+    private int               lastHadTargetTime = 0;
 
     private PokeNavigator     navi;
     private PokemobMoveHelper mover;
-    boolean                   initAI  = true;
-    boolean                   popped  = false;
+    boolean                   initAI            = true;
+    boolean                   popped            = false;
     private PokemobAI         aiObject;
-    boolean                   isAFish = false;
+    boolean                   isAFish           = false;
 
-    public TerrainSegment currentTerrain = null;
+    public TerrainSegment     currentTerrain    = null;
 
     public EntityAiPokemob(World world)
     {
@@ -98,8 +98,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void init(int nb)
     {
         super.init(nb);
-        // if(isAIEnabled())
-        // initAI(getPokedexEntry());
     }
 
     ///////////////////////////////////////// Init
@@ -148,10 +146,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         }
         if (worldObj.isRemote) return;
-        AIMate mate;
+
         PokemobAIThread.addAI(this, new AIAttack(this).setPriority(200));
-        PokemobAIThread.addAI(this, (mate = new AIMate(this)).setPriority(300));
-        males = mate.males;
+        PokemobAIThread.addAI(this, new AIMate(this).setPriority(300));
         PokemobAIThread.addAI(this, new AIHungry(this, new EntityItem(worldObj), 16).setPriority(300));
         PokemobAIThread.addAI(this, new AIGatherStuff(this, 32).setPriority(400));
         PokemobAIThread.addAI(this, new AIIdle(this).setPriority(500));
@@ -292,11 +289,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (down != null) here.set(down);
 
             Block b;
-            if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) // &&
-                                                                                      // getAttackTarget()
-                                                                                      // ==
-                                                                                      // null
-                    && !getAIState(SLEEPING, state) || b.getMaterial().isLiquid())
+            if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) && !getAIState(SLEEPING, state)
+                    || b.getMaterial().isLiquid())
             {
                 motionY += 0.01;
             }
@@ -305,6 +299,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 motionY -= 0.02;
             }
+            here.set(this);
         }
         canFloat = entry.mobType == Type.FLYING;
         if (canFloat && here.getBlock(worldObj, EnumFacing.DOWN).getMaterial().isLiquid())
@@ -1057,6 +1052,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         ItemStack itemstack = player.inventory.getCurrentItem();
         ItemStack key = new ItemStack(Items.shears);
+
+        System.out.println(this + "\n" + here);
+
         // Check shearable interaction.
         if (getPokedexEntry().interact(key) && player.getHeldItem() != null
                 && player.getHeldItem().isItemEqual(key)) { return false; }
@@ -1079,7 +1077,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
                 return true;
             }
-            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(0.1);
+            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(5);
+            look.y = 0.2;
             this.motionX += look.x;
             this.motionY += look.y;
             this.motionZ += look.z;
@@ -1244,7 +1243,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
-                    this.inLove = 600;
+                    this.inLove = 10;
                     this.setAttackTarget(null);
                     this.worldObj.setEntityState(this, (byte) 18);
                     return true;

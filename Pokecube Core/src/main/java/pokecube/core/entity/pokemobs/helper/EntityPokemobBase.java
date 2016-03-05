@@ -33,7 +33,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.PokecubeMod;
@@ -47,33 +46,33 @@ import thut.api.maths.Vector3;
 public abstract class EntityPokemobBase extends EntityHungryPokemob implements IMultibox, IBossDisplayData
 {
 
-    static String[] unowns = { "Unown_A", "Unown_B", "Unown_C", "Unown_D", "Unown_E", "Unown_F", "Unown_G", "Unown_H",
-            "Unown_I", "Unown_J", "Unown_K", "Unown_L", "Unown_M", "Unown_N", "Unown_O", "Unown_P", "Unown_Q",
-            "Unown_Qu", "Unown_R", "Unown_S", "Unown_T", "Unown_U", "Unown_V", "Unown_W", "Unown_X", "Unown_Y",
-            "Unown_Z", "Unown_Ex" };
+    static String[]                 unowns            = { "Unown_A", "Unown_B", "Unown_C", "Unown_D", "Unown_E",
+            "Unown_F", "Unown_G", "Unown_H", "Unown_I", "Unown_J", "Unown_K", "Unown_L", "Unown_M", "Unown_N",
+            "Unown_O", "Unown_P", "Unown_Q", "Unown_Qu", "Unown_R", "Unown_S", "Unown_T", "Unown_U", "Unown_V",
+            "Unown_W", "Unown_X", "Unown_Y", "Unown_Z", "Unown_Ex" };
 
-    public static float   scaleFactor = 0.075f;
-    public static boolean multibox    = true;
+    public static float             scaleFactor       = 0.075f;
+    public static boolean           multibox          = true;
 
-    private int   uid          = -1;
-    protected int pokecubeId   = 0;
-    private int   despawntimer = 0;
+    private int                     uid               = -1;
+    protected int                   pokecubeId        = 0;
+    private int                     despawntimer      = 0;
 
-    protected int    particleIntensity = 0;
-    protected int    particleCounter   = 0;
-    protected String particle;
+    protected int                   particleIntensity = 0;
+    protected int                   particleCounter   = 0;
+    protected String                particle;
 
-    private int[] flavourAmounts = new int[5];
+    private int[]                   flavourAmounts    = new int[5];
 
-    protected String texture;
+    protected String                texture;
 
     public Matrix3                  mainBox;
-    private Vector3                 offset  = Vector3.getNewVector();
-    public HashMap<String, Matrix3> boxes   = new HashMap<String, Matrix3>();
-    public HashMap<String, Vector3> offsets = new HashMap<String, Vector3>();
+    private Vector3                 offset            = Vector3.getNewVector();
+    public HashMap<String, Matrix3> boxes             = new HashMap<String, Matrix3>();
+    public HashMap<String, Vector3> offsets           = new HashMap<String, Vector3>();
 
-    int           corruptedSum = -123586;
-    private float nextStepDistance;
+    int                             corruptedSum      = -123586;
+    private float                   nextStepDistance;
 
     public EntityPokemobBase(World world)
     {
@@ -302,7 +301,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         boolean canDespawn = getHungerTime() > Mod_Pokecube_Helper.pokemobLifeSpan;
         boolean checks = getPokemonAIState(TAMED) || this.getPokemonOwner() != null || getPokemonAIState(ANGRY)
-                || getAttackTarget() != null || this.hasCustomName() || isAncient();
+                || getAttackTarget() != null || this.hasCustomName() || isAncient() || isNoDespawnRequired();
         despawntimer--;
         if (checks) return false;
 
@@ -751,21 +750,27 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             double x0 = x, y0 = y, z0 = z;
             setBoxes();
             setOffsets();
-            IBlockAccess world = worldObj;// ((PokeNavigator)
-                                          // getNavigator()).pathfinder.chunks;
-            if (world == null)
-            {
-                ((PokeNavigator) getNavigator()).refreshCache();
-                world = ((PokeNavigator) getNavigator()).pathfinder.chunks;
-                if (world == null) return;
-            }
+            IBlockAccess world = worldObj;
 
             Vector3 diffs = Vector3.getNewVector();
             diffs.set(x, y, z);
 
+            double dist;
+            if (y < 0) diffs.y = 0;
+
+            if ((dist = diffs.mag()) >= 0.15)
+            {
+                Vector3 v = Vector3.getNextSurfacePoint(worldObj, here.add(0, height/2, 0), diffs, diffs.mag());
+                if (v != null)
+                {
+                    diffs.scalarMultBy(v.distanceTo(here) / dist);
+                }
+            }
+            if (y <= 0) diffs.y = y;
+
             for (String s : getBoxes().keySet())
             {
-                diffs.set(x, y, z);
+                // diffs.set(x, y, z);
                 Matrix3 box = getBoxes().get(s);
                 Vector3 offset = getOffsets().get(s);
                 if (offset == null) offset = Vector3.empty;
@@ -775,28 +780,24 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 y = diffs.y;
                 z = diffs.z;
             }
+            this.posX = here.x;
+            this.posY = here.y;
+            this.posZ = here.z;
 
             x = diffs.x;
             y = diffs.y;
             z = diffs.z;
 
             double dy = 0;
-            if (this.riddenByEntity != null && worldObj.isRemote)
-            {
-                // dy = riddenByEntity.height + riddenByEntity.yOffset;
-            }
             double yOff = this.yOffset;
-            double newY = y + (double) yOff + dy;// - (double)this.ySize
+            double newY = y + (double) yOff + dy;
 
             this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
 
-            this.posX += x;// (this.boundingBox.minX + this.boundingBox.maxX) /
-                           // 2.0D;
+            this.posX += x;
             this.posY += newY;
-            this.posZ += z;// (this.boundingBox.minZ + this.boundingBox.maxZ) /
-                           // 2.0D;
+            this.posZ += z;
 
-            // this.resetPositionToBB();//TODO see waht this does
             this.isCollidedHorizontally = x0 != x || z0 != z;
             this.isCollidedVertically = y0 != y;
             this.onGround = y0 != y && y0 <= 0.0D;
@@ -846,8 +847,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                         this.playSound(this.getSwimSound(), f,
                                 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
                     }
-
-                    // this.playStepSound(blockpos, block1);
                 }
             }
 

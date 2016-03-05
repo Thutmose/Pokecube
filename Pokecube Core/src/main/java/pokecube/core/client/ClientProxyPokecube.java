@@ -40,6 +40,7 @@ import net.minecraft.item.Item;
 import net.minecraft.profiler.IPlayerUsage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -533,6 +534,18 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         else
         {
             return super.getMinecraftInstance();
+        }
+    }
+    
+    public IThreadListener getMainThreadListener()
+    {
+        if (isOnClientSide())
+        {
+            return Minecraft.getMinecraft();
+        }
+        else
+        {
+            return super.getMainThreadListener();
         }
     }
 

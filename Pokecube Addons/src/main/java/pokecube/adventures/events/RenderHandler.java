@@ -18,14 +18,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -38,7 +35,6 @@ import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.bags.ItemBag;
 import pokecube.adventures.network.PacketPokeAdv;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
-import pokecube.core.PokecubeItems;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -96,8 +92,8 @@ public class RenderHandler
         if (entity != null && Keyboard.getEventKey() == ClientProxyPokecube.mobAttack.getKeyCode())
         {
             Vector3 here = Vector3.getNewVector().set(player, false);
-            Entity hit = here.firstEntityExcluding(16, Vector3.getNewVector().set(player.getLookVec()),
-                    player.worldObj, false, player);
+            Entity hit = here.firstEntityExcluding(16, Vector3.getNewVector().set(player.getLookVec()), player.worldObj,
+                    false, player);
             if (hit != null)
             {
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
@@ -121,21 +117,6 @@ public class RenderHandler
             {
                 evt.toolTip.add("" + stack.getTagCompound().getLong("ivs") + ":"
                         + stack.getTagCompound().getFloat("size") + ":" + stack.getTagCompound().getByte("nature"));
-            }
-        }
-        else if (PokecubeItems.getCubeId(stack) == 98 && stack.hasTagCompound()
-                && stack.getTagCompound().hasKey("Aspects") && Loader.isModLoaded("Thaumcraft"))
-        {
-            NBTTagList tlist = stack.getTagCompound().getTagList("Aspects", (byte) 10);
-            for (int j = 0; j < tlist.tagCount(); j++)
-            {
-                NBTTagCompound rs = (NBTTagCompound) tlist.getCompoundTagAt(j);
-                if (rs.hasKey("key"))
-                {
-                    thaumcraft.api.aspects.Aspect a = thaumcraft.api.aspects.Aspect.getAspect(rs.getString("key"));
-                    int num = rs.getInteger("amount");
-                    evt.toolTip.add(a.getName() + " x" + num);
-                }
             }
         }
     }

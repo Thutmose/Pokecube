@@ -14628,7 +14628,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BASESTATS atk="90" def="65" hp="68" spatk="50" spd="82" spdef="55"/>
             <EVYIELD atk="2"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="1.4" length="1.0" width="1.0"/>
             <TYPE type1="Dragon" type2="Ground"/>
             <ABILITY hidden="Rough Skin" normal="Sand Veil"/>
         </STATS>
@@ -14655,7 +14655,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BASESTATS atk="130" def="95" hp="108" spatk="80" spd="102" spdef="85"/>
             <EVYIELD atk="3"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="1.9" length="1.0" width="1.0"/>
             <TYPE type1="Dragon" type2="Ground"/>
             <ABILITY hidden="Rough Skin" normal="Sand Veil"/>
         </STATS>
@@ -15930,7 +15930,7 @@
             <SPECIALCASES>legendary day night</SPECIALCASES>
             <BASESTATS atk="120" def="120" hp="100" spatk="150" spd="90" spdef="100"/>
             <EVYIELD spatk="3"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="5.4" length="5.4" width="5.4"/>
             <TYPE type1="Steel" type2="Dragon"/>
             <ABILITY hidden="Telepathy" normal="Pressure"/>
         </STATS>
@@ -15959,7 +15959,7 @@
             <SPECIALCASES>legendary day night</SPECIALCASES>
             <BASESTATS atk="120" def="100" hp="90" spatk="150" spd="100" spdef="120"/>
             <EVYIELD spatk="3"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="4.2" length="4.2" width="4.2"/>
             <TYPE type1="Water" type2="Dragon"/>
             <ABILITY hidden="Telepathy" normal="Pressure"/>
         </STATS>

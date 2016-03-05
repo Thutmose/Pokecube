@@ -586,7 +586,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                     {
                         buffer.writeInt(mob.getPokedexNb());
                         buffer.writeInt(mob.getLevel());
-                        // mob.setDead();
                     }
                 }
             }

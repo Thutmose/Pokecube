@@ -1,18 +1,11 @@
 package pokecube.core.client.render.entity;
 
-import javax.vecmath.Vector3f;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
 
 public class RenderHeldPokemobs implements LayerRenderer<EntityPlayer>
@@ -24,6 +17,7 @@ public class RenderHeldPokemobs implements LayerRenderer<EntityPlayer>
         this.livingEntityRenderer = livingEntityRendererIn;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void doRenderLayer(EntityPlayer player, float f, float f1, float partialTicks, float f3, float f4, float f5,
             float scale)

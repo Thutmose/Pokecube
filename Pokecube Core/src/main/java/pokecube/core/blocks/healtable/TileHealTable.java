@@ -17,42 +17,31 @@ import net.minecraft.util.IChatComponent;
 public class TileHealTable extends TileEntity implements IInventory, ITickable
 {
     private ItemStack[] inventory;
-    Vector3 here = Vector3.getNewVector();
+    Vector3             here = Vector3.getNewVector();
 
     public TileHealTable()
     {
         this.inventory = new ItemStack[9];
     }
 
-    int ticks = 0;
-    int tick1 = -20;
-    boolean stopped = false;
+    int                   ticks   = 0;
+    boolean               stopped = false;
     public static boolean noSound = false;
+
     @Override
     public void update()
     {
         int power = worldObj.getStrongPower(pos);
         if (power == 0)
         {
-            ticks = 0;
-            tick1 = -20;
-            worldObj.playRecord(pos, null);
+            if (worldObj.isRemote && PokecubeMod.getProxy().isSoundPlaying(here)) worldObj.playRecord(pos, null);
             return;
         }
         here.set(this);
         if (!noSound && worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
         {
-            if(stopped)
-            {
-                worldObj.playRecord(pos, "pokecube:pokecenterloop");
-                stopped = false;
-                tick1 = ticks;
-            }
-            else
-            {
-                worldObj.playRecord(pos, null);
-                stopped = true;
-            }
+            worldObj.playRecord(pos, null);
+            worldObj.playRecord(pos, "pokecube:pokecenterloop");
         }
         ticks++;
     }
@@ -69,9 +58,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         return this.inventory[slotIndex];
     }
 
-    /**
-     * invalidates a tile entity
-     */
+    /** invalidates a tile entity */
     public void invalidate()
     {
         super.invalidate();
@@ -80,8 +67,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
             worldObj.playRecord(pos, null);
         }
     }
-    
-    
+
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack)
     {

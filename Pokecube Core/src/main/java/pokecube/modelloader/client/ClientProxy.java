@@ -26,10 +26,10 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.CommonProxy;
 import pokecube.modelloader.ModPokecubeML;
-import pokecube.modelloader.client.custom.RenderAdvancedPokemobModel;
-import pokecube.modelloader.client.custom.animation.AnimationLoader;
 import pokecube.modelloader.client.gui.GuiAnimate;
-import pokecube.modelloader.client.tabula.TabulaPackLoader;
+import pokecube.modelloader.client.render.RenderAdvancedPokemobModel;
+import pokecube.modelloader.client.render.animation.AnimationLoader;
+import pokecube.modelloader.client.render.tabula.TabulaPackLoader;
 import pokecube.modelloader.items.ItemModelReloader;
 
 /** @author Manchou */
@@ -52,6 +52,7 @@ public class ClientProxy extends CommonProxy
         super.preInit();
         OBJLoader.instance.addDomain(ModPokecubeML.ID);
         B3DLoader.instance.addDomain(ModPokecubeML.ID);
+        modelProviders.put(ModPokecubeML.ID, ModPokecubeML.instance);
     }
 
     @Override
@@ -63,7 +64,6 @@ public class ClientProxy extends CommonProxy
     @Override
     public void registerRenderInformation()
     {
-        modelProviders.put(ModPokecubeML.ID, ModPokecubeML.instance);
         populateModels();
         for (String modid : modelProviders.keySet())
         {

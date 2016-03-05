@@ -3,7 +3,6 @@ package pokecube.core.moves;
 import static pokecube.core.utils.PokeType.getAttackEfficiency;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -41,7 +40,7 @@ import thut.api.terrain.TerrainSegment;
 
 public class MovesUtils implements IMoveConstants
 {
-    public static Random rand = new Random();
+    public static Random                     rand = new Random();
 
     public static HashMap<String, Move_Base> moves;
 
@@ -120,6 +119,22 @@ public class MovesUtils implements IMoveConstants
                 if (attacked != attacker) attacker.displayMessageToOwner("\u00a7a" + missed);
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + missed);
                 return;
+            }
+            else if (attacked == null)
+            {
+                String missed;
+                if(((EntityLiving)attacker).getAttackTarget()!=null)
+                {
+                    attacked = ((EntityLiving)attacker).getAttackTarget();
+                    String name = attacked.getName();
+                    missed = StatCollector.translateToLocalFormatted("pokemob.move.missed",name);
+                }
+                else
+                {
+                    missed = StatCollector.translateToLocalFormatted("pokemob.move.missed","");
+                    missed.replace(" !", "");
+                }
+                attacker.displayMessageToOwner("\u00a7c" + missed);
             }
         }
         if (efficiency == -2)
@@ -732,11 +747,8 @@ public class MovesUtils implements IMoveConstants
     public static List<EntityLivingBase> targetsHit(Entity attacker, Vector3 dest)
     {
         Vector3 source = Vector3.getNewVector().set(attacker, true);
-        // Vector3 dest = Vector3.getVector().set(target, true);
 
         source.y += attacker.height / 4;
-        // dest.y += target.height/4;
-
         List<Entity> targets = source.allEntityLocationExcluding(16, 0.1, dest.subtract(source), source,
                 attacker.worldObj, attacker);
         List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
@@ -747,14 +759,12 @@ public class MovesUtils implements IMoveConstants
                 ret.add((EntityLivingBase) e);
             }
         }
-
         return ret;
     }
 
     public static List<EntityLivingBase> targetsHit(Entity attacker, Vector3 dest, int range, double area)
     {
         Vector3 source = Vector3.getNewVector().set(attacker);
-        // Vector3 dest = Vector3.getVector().set(target);
 
         List<Entity> targets = source.allEntityLocationExcluding(range, area, dest.subtract(source), source,
                 attacker.worldObj, attacker);
@@ -847,8 +857,6 @@ public class MovesUtils implements IMoveConstants
         {
             if (diff[i] != 0)
             {
-                System.out.println(Arrays.toString(old) + "" + Arrays.toString(modifiers) + "" + Arrays.toString(diff)
-                        + " " + ret);
                 if (!attacked) displayStatsMessage(mob, target, 0, i, (byte) diff[i]);
                 else displayStatsMessage((IPokemob) target, (Entity) mob, 0, i, (byte) diff[i]);
             }
@@ -958,6 +966,23 @@ public class MovesUtils implements IMoveConstants
     public static void doAttack(String attackName, IPokemob attacker, Entity attacked, float f)
     {
         Move_Base move = moves.get(attackName);
+        if (move != null)
+        {
+            move.attack(attacker, attacked, f);
+        }
+        else
+        {
+            if (attackName != null)
+            {
+                System.err.println("The Move \"" + attackName + "\" does not exist.");
+            }
+            doAttack(DEFAULT_MOVE, attacker, attacked, f);
+        }
+    }
+
+    public static void doAttack(String attackName, IPokemob attacker, Vector3 attacked, float f)
+    {
+        Move_Base move = moves.get(attackName);
 
         if (move != null)
         {
@@ -969,7 +994,6 @@ public class MovesUtils implements IMoveConstants
             {
                 System.err.println("The Move \"" + attackName + "\" does not exist.");
             }
-
             doAttack(DEFAULT_MOVE, attacker, attacked, f);
         }
     }

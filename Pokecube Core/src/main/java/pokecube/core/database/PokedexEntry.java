@@ -955,6 +955,7 @@ public class PokedexEntry
 
     public ItemStack getRandomCommonDrop(int looting)
     {
+        if (commonDrops.isEmpty()) return null;
         ItemStack ret = null;
         ArrayList<ItemStack> items = new ArrayList<ItemStack>();
         items.addAll(commonDrops.keySet());
@@ -975,8 +976,10 @@ public class PokedexEntry
 
     public ItemStack getRandomRareDrop(int looting)
     {
+        if (rareDrops.isEmpty()) return null;
         ItemStack ret = null;
         ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+
         items.addAll(rareDrops.keySet());
         int index = rand.nextInt(items.size());
         ret = items.get(index);

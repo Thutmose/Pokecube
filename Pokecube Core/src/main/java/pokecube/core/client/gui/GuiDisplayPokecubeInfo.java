@@ -7,7 +7,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -16,6 +18,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -35,8 +38,10 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public class GuiDisplayPokecubeInfo extends Gui
@@ -80,8 +85,10 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     private void draw(RenderGameOverlayEvent.Post event)
     {
-        int h = Mod_Pokecube_Helper.guiOffset[0];
-        int w = Mod_Pokecube_Helper.guiOffset[1];
+        int w = Mod_Pokecube_Helper.guiOffset[0];
+        int h = Mod_Pokecube_Helper.guiOffset[1];
+        w = Math.min(event.resolution.getScaledWidth() - 105, w);
+        h = Math.min(event.resolution.getScaledHeight() - 13, h);
 
         if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
         GL11.glPushMatrix();
@@ -130,42 +137,59 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
             // bind texture
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
-            this.drawTexturedModalRect(0 + h, 0 + w, 0, 0, 91, 13);
+            this.drawTexturedModalRect(0 + w, 0 + h, 0, 0, 91, 13);
             String displayName = pokemob.getPokemonDisplayName();
             if (fontRenderer.getStringWidth(displayName) > 70)
             {
 
             }
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            fontRenderer.drawString(displayName, 2 + h, 2 + w, lightGrey);
+            fontRenderer.drawString(displayName, 2 + w, 2 + h, lightGrey);
             int moveIndex = 0;
             // Draw number of pokemon
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
             int num = fontRenderer.getStringWidth("" + n);
-            this.drawTexturedModalRect(90 + h, 0 + w, 0, 0, num, 13);
-            this.drawTexturedModalRect(90 + num + h, 0 + w, 81, 0, 10, 13);
-            fontRenderer.drawString("" + n, 95 + h, 3 + w, lightGrey);
+            this.drawTexturedModalRect(90 + w, 0 + h, 0, 0, num, 13);
+            this.drawTexturedModalRect(90 + num + w, 0 + h, 81, 0, 10, 13);
+            fontRenderer.drawString("" + n, 95 + w, 3 + h, lightGrey);
 
+            int moveCount = 0;
+
+            for (moveCount = 0; moveCount < 4; moveCount++)
+            {
+                if (pokemob.getMove(moveCount) == null) break;
+            }
+
+            int dir = Mod_Pokecube_Helper.guiDown ? 1 : -1;
+            int h1 = 1;
+            if (dir == -1)
+            {
+                h -= 25 + 12 * (moveCount - 1);
+                // h1 = 0;
+            }
             pokemob.setMoveIndex(pokemob.getMoveIndex());
 
             for (moveIndex = 0; moveIndex < 4; moveIndex++)
             {
-                Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(moveIndex));
+                int index = moveIndex;
+                // if(dir==-1) index = 3-index;
+
+                Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(index));
 
                 if (move != null)
                 {
-                    if (pokemob.getMoveIndex() == moveIndex) GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
+                    if (pokemob.getMoveIndex() == index) GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
                     else GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     // bind texture
 
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
-                    this.drawTexturedModalRect(0 + h, 13 + 12 * moveIndex + w, 0, 13, 91, 12);
+                    this.drawTexturedModalRect(0 + w, 13 + 12 * index + h, 0, 13 + h1, 91, 12);
                     GL11.glPushMatrix();// TODO find out why both needed
                     Color moveColor = new Color(move.getType().colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);
-                    fontRenderer.drawString(MovesUtils.getTranslatedMove(move.getName()), 5 + 0 + h,
-                            moveIndex * 12 + 14 + w, // white.getRGB());
+                    fontRenderer.drawString(MovesUtils.getTranslatedMove(move.getName()), 5 + 0 + w,
+                            index * 12 + 14 + h, // white.getRGB());
                             move.getType().colour);
                     GL11.glPopMatrix();
                 }
@@ -192,6 +216,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         List<?> pokemobs = minecraft.theWorld.getLoadedEntityList();
 
         List<IPokemob> ret = new ArrayList<IPokemob>();
+        Set<Integer> added = new HashSet<>();
         for (Object object : pokemobs)
         {
             if (!(object instanceof IPokemob)) continue;
@@ -203,11 +228,13 @@ public class GuiDisplayPokecubeInfo extends Gui
             {
                 owner = player.getEntityId() == pokemob.getPokemonOwner().getEntityId();
             }
+            int id = pokemob.getPokemonUID();
 
             if (owner && !pokemob.getPokemonAIState(IPokemob.SITTING) && !pokemob.getPokemonAIState(IPokemob.GUARDING)
-                    && !pokemob.getPokemonAIState(IPokemob.STAYING))
+                    && !pokemob.getPokemonAIState(IPokemob.STAYING) && !added.contains(id))
             {
                 ret.add(pokemob);
+                added.add(id);
             }
 
         }
@@ -333,15 +360,14 @@ public class GuiDisplayPokecubeInfo extends Gui
     /** Identifies target of attack, and sends the packet with info to server */
     public void pokemobAttack()
     {
-        byte[] message = { (byte) 21, (byte) indexPokemob };
+        if (getCurrentPokemob() == null) return;
 
         EntityPlayer player = minecraft.thePlayer;
-        Vector3 look = Vector3.getNewVector().set(player.getLook(1));
-        Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
-        buffer.writeBytes(message);
+        buffer.writeByte(MessageServer.MOVEUSE);
+        buffer.writeInt(((Entity) getCurrentPokemob()).getEntityId());
 
-        Entity target = temp.firstEntityExcluding(32, look, player.worldObj, player.isSneaking(), player);
+        Entity target = Tools.getPointedEntity(player, 32);
 
         buffer.writeInt(target != null ? target.getEntityId() : 0);
         boolean sameOwner = false;
@@ -355,6 +381,9 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (pokemob != null)
         {
             if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
+            Vector3 look = Vector3.getNewVector().set(player.getLookVec());
+            Vector3 pos = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
+            Vector3 v = pos.findNextSolidBlock(player.worldObj, look, 32);
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
@@ -363,7 +392,6 @@ public class GuiDisplayPokecubeInfo extends Gui
                 pokemob.displayMessageToOwner(mess);
                 attack = true;
             }
-            buffer.writeInt(((Entity) pokemob).getEntityId());
             if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
             {
                 if (!GuiTeleport.instance().getState())
@@ -392,7 +420,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             else if (!attack)
             {
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
-                if (move != null)
+                if (move != null && (target != null || v != null))
                 {
                     String mess = StatCollector.translateToLocalFormatted("pokemob.action.usemove",
                             pokemob.getPokemonDisplayName(), MovesUtils.getTranslatedMove(move.getName()));
@@ -400,9 +428,13 @@ public class GuiDisplayPokecubeInfo extends Gui
                 }
             }
             buffer.writeBoolean(false);
+
+            if (v != null)
+            {
+                v.writeToBuff(buffer);
+            }
         }
-        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS,
-                buffer.array());
+        MessageServer packet = new MessageServer(buffer);
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -432,6 +464,13 @@ public class GuiDisplayPokecubeInfo extends Gui
      * @param y */
     public void moveGui(int x, int y)
     {
+        if (GuiScreen.isCtrlKeyDown())
+        {
+            Mod_Pokecube_Helper.guiDown = !Mod_Pokecube_Helper.guiDown;
+            saveConfig();
+            return;
+        }
+
         Mod_Pokecube_Helper.guiOffset[0] += x;
         Mod_Pokecube_Helper.guiOffset[1] += y;
         if (Mod_Pokecube_Helper.guiOffset[0] < 0) Mod_Pokecube_Helper.guiOffset[0] = 0;
@@ -446,6 +485,8 @@ public class GuiDisplayPokecubeInfo extends Gui
 
         config.get(Mod_Pokecube_Helper.CATEGORY_ADVANCED, "guiOffset", Mod_Pokecube_Helper.guiOffset,
                 "offset of pokemon moves gui.").set(Mod_Pokecube_Helper.guiOffset);
+        config.get(Mod_Pokecube_Helper.CATEGORY_ADVANCED, "guiDown", Mod_Pokecube_Helper.guiDown,
+                "Are the moves shown below the nametag.").set(Mod_Pokecube_Helper.guiDown);
 
         config.save();
     }

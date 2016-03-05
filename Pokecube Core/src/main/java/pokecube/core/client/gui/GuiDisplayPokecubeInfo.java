@@ -360,6 +360,8 @@ public class GuiDisplayPokecubeInfo extends Gui
     /** Identifies target of attack, and sends the packet with info to server */
     public void pokemobAttack()
     {
+        if (getCurrentPokemob() == null) return;
+
         EntityPlayer player = minecraft.thePlayer;
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
         buffer.writeByte(MessageServer.MOVEUSE);

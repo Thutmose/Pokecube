@@ -228,10 +228,29 @@ public class GuiAnimate extends GuiScreen
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
         super.keyTyped(typedChar, keyCode);
-        anim.textboxKeyTyped(typedChar, keyCode);
-        state.textboxKeyTyped(typedChar, keyCode);
-        forme.textboxKeyTyped(typedChar, keyCode);
-        info.textboxKeyTyped(typedChar, keyCode);
+        boolean hit = anim.textboxKeyTyped(typedChar, keyCode);
+        hit = hit || state.textboxKeyTyped(typedChar, keyCode);
+        hit = hit || forme.textboxKeyTyped(typedChar, keyCode);
+        hit = hit || info.textboxKeyTyped(typedChar, keyCode);
+        if(!hit && keyCode==205)
+        {
+            PokedexEntry entry = null;
+            if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
+            int num = (entry = Pokedex.getInstance().getNext(entry, 1)).getPokedexNb();
+            if (num != pokedexNb) pokedexNb = num;
+            if (entry != null)
+            {
+                IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
+                if (pokemob == null)
+                {
+                    EventsHandlerClient.renderMobs.put(entry, pokemob = (IPokemob) PokecubeMod.core
+                            .createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+                    pokemob.specificSpawnInit();
+                }
+                forme.setText(pokemob.getPokedexEntry().getName());
+                info.setText("" + pokemob.getSpecialInfo());
+            }
+        }
     }
 
     @Override

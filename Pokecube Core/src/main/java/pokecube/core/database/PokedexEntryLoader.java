@@ -285,8 +285,6 @@ public class PokedexEntryLoader
         if (xmlStats.abilities != null)
         {
             Map<QName, String> values = xmlStats.abilities.values;
-            entry.length = -1;
-            entry.width = -1;
             for (QName key : values.keySet())
             {
                 String keyString = key.toString();

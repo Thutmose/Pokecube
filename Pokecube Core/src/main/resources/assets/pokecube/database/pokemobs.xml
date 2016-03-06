@@ -15975,7 +15975,7 @@
             <CAPTURERATE>3</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Renegade</SPECIES>
-            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>750.0</MASSKG>
             <EXPYIELD>306</EXPYIELD>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
@@ -15985,7 +15985,7 @@
             <SPECIALCASES>legendary day night</SPECIALCASES>
             <BASESTATS atk="100" def="120" hp="150" spatk="100" spd="90" spdef="120"/>
             <EVYIELD hp="3"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="4.5" length="4.5" width="4.5"/>
             <TYPE type1="Ghost" type2="Dragon"/>
             <ABILITY hidden="Telepathy" normal="Pressure"/>
         </STATS>
@@ -16003,10 +16003,10 @@
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
-            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>650</MASSKG>
             <BASESTATS atk="120" def="100" hp="150" spatk="120" spd="90" spdef="100"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="3" length="7" width="3"/>
             <TYPE type1="Ghost" type2="Dragon"/>
             <ABILITY hidden="Telepathy" normal="Levitate"/>
         </STATS>

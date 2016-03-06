@@ -171,7 +171,7 @@ public class PokedexEntry
         this.possibleMoves = moves;
     }
 
-    protected PokedexEntry(int nb, String name)
+    public PokedexEntry(int nb, String name)
     {
         this.name = name;
         this.pokedexNb = nb;
@@ -789,6 +789,7 @@ public class PokedexEntry
 
     protected void addItems(String toParse, Map<ItemStack, Integer> toAddTo)
     {
+        if (toParse == null) return;
         String[] items = toParse.split(" ");
         for (String s : items)
         {
@@ -807,6 +808,7 @@ public class PokedexEntry
 
     protected ItemStack parseStack(String toParse)
     {
+        if (toParse == null) return null;
         String[] drop = toParse.split(":");
         if (drop.length < 2) return null;
         int count = Integer.parseInt(drop[0]);
@@ -1606,6 +1608,11 @@ public class PokedexEntry
 
         protected static void initForEntry(PokedexEntry entry, String fromDatabase)
         {
+            if (fromDatabase == null)
+            {
+                initForEntry(entry);
+                return;
+            }
             String[] entries = fromDatabase.trim().split(" ");
             for (String s : entries)
             {

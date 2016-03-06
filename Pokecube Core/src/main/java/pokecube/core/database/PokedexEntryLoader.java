@@ -1,21 +1,23 @@
 package pokecube.core.database;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAnyAttribute;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.namespace.QName;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.BiomeDictionary.Type;
 import pokecube.core.database.PokedexEntry.EvolutionData;
@@ -29,143 +31,83 @@ import thut.api.terrain.BiomeType;
 
 public class PokedexEntryLoader
 {
-    public static void makeEntries(File file, boolean create)
-            throws ParserConfigurationException, SAXException, IOException
+    static XMLDatabase database;
+
+    public static void makeEntries(File file, boolean create) throws Exception
     {
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-        Document doc = docBuilder.parse(file);
-        NodeList entries = doc.getElementsByTagName("Pokemon");
-
-        for (int i = 0; i < entries.getLength(); i++)
+        if (database == null) database = loadDatabase(file);
+        else if (create)
         {
-            Element pokemonNode = (Element) entries.item(i);
-            int number = Integer.parseInt(pokemonNode.getAttribute("number"));
-            String name = pokemonNode.getAttribute("name");
-            PokedexEntry entry = create ? new PokedexEntry(number, name) : Database.getEntry(name);
-            if (entry == null)
-            {
-                System.err.println(new NullPointerException("No Entry for " + name));
-                continue;
-            }
-
-            NodeList list = pokemonNode.getElementsByTagName("STATS");
-            if (list.getLength() == 1)
-            {
-                Element stats = (Element) list.item(0);
-                try
-                {
-                    if (create) initStats(entry, stats);
-                    else
-                    {
-                        postIniStats(entry, stats);
-                        parseSpawns(entry, stats);
-                        parseEvols(entry, stats);
-                    }
-                }
-                catch (Exception e)
-                {
-                    System.out.println(entry + ": " + e);
-                }
-            }
-            else if (list.getLength() != 0)
-            {
-                System.err.println(new IllegalArgumentException("Wrong number of STATS nodes for " + entry));
-            }
-
-            list = pokemonNode.getElementsByTagName("MOVES");
-            if (list.getLength() == 1)
-            {
-                Element moves = (Element) list.item(0);
-                initMoves(entry, moves);
-            }
-            else if (list.getLength() != 0)
-            {
-                System.err.println(new IllegalArgumentException("Wrong number of MOVES nodes for " + entry));
-            }
-            try
-            {
-                checkBaseForme(entry);
-            }
-            catch (Exception e)
-            {
-                System.out.println(entry + ": " + e);
-            }
+            XMLDatabase toAdd = loadDatabase(file);
+            if (toAdd != null) database.pokemon.addAll(toAdd.pokemon);
+            else throw new NullPointerException(file + " Contains no database");
+        }
+        for (XMLPokedexEntry xmlEntry : database.pokemon)
+        {
+            String name = xmlEntry.name;
+            int number = xmlEntry.number;
+            if (create) new PokedexEntry(number, name);
+            updateEntry(xmlEntry, create);
         }
     }
 
-    private static void postIniStats(PokedexEntry entry, Element statsNode)
+    public static void updateEntry(XMLPokedexEntry xmlEntry, boolean init)
     {
-        NodeList list;
-        Element node;
+        String name = xmlEntry.name;
+        PokedexEntry entry = Database.getEntry(name);
+        StatsNode stats = xmlEntry.stats;
+        Moves moves = xmlEntry.moves;
+        if (stats != null) try
+        {
+            if (init) initStats(entry, stats);
+            else
+            {
+                postIniStats(entry, stats);
+                parseSpawns(entry, stats);
+                parseEvols(entry, stats);
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println(xmlEntry + ", " + entry + ": " + e + " " + init);
+        }
+        if (moves != null) initMoves(entry, moves);
+        checkBaseForme(entry);
+    }
+
+    private static void postIniStats(PokedexEntry entry, StatsNode xmlStats)
+    {
 
         // Items
-        list = statsNode.getElementsByTagName("COMMONDROP");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            entry.addItems(node.getFirstChild().getNodeValue(), entry.commonDrops);
-        }
-        list = statsNode.getElementsByTagName("FOODDROP");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            entry.foodDrop = entry.parseStack(node.getFirstChild().getNodeValue());
-        }
-        list = statsNode.getElementsByTagName("RAREDROP");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            entry.addItems(node.getFirstChild().getNodeValue(), entry.rareDrops);
-        }
-        list = statsNode.getElementsByTagName("HELDITEM");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            entry.addItems(node.getFirstChild().getNodeValue(), entry.heldItems);
-        }
+        entry.addItems(xmlStats.commonDrop, entry.commonDrops);
+        entry.addItems(xmlStats.rareDrop, entry.rareDrops);
+        entry.addItems(xmlStats.heldItems, entry.heldItems);
+        entry.foodDrop = entry.parseStack(xmlStats.foodDrop);
         entry.shouldFly = entry.isType(PokeType.flying);
 
         // Logics
-        list = statsNode.getElementsByTagName("LOGIC");
-        if (list.getLength() == 1)
+        if (xmlStats.logics != null)
         {
-            node = (Element) list.item(0);
-            if (node.hasAttribute("shoulder"))
+            Map<QName, String> values = xmlStats.logics.values;
+            for (QName key : values.keySet())
             {
-                entry.canSitShoulder = Boolean.parseBoolean(node.getAttribute("shoulder"));
-            }
-            if (node.hasAttribute("fly"))
-            {
-                entry.canSitShoulder = Boolean.parseBoolean(node.getAttribute("fly"));
-            }
-            if (node.hasAttribute("dive"))
-            {
-                entry.canSitShoulder = Boolean.parseBoolean(node.getAttribute("dive"));
-            }
-            if (node.hasAttribute("stationary"))
-            {
-                entry.canSitShoulder = Boolean.parseBoolean(node.getAttribute("stationary"));
-            }
-            if (node.hasAttribute("dye"))
-            {
-                entry.hasSpecialTextures[4] = Boolean.parseBoolean(node.getAttribute("dye").split("#")[0]);
-                entry.defaultSpecial = Integer.parseInt(node.getAttribute("dye").split("#")[1]);
+                String keyString = key.toString();
+                String value = values.get(key);
+                if (keyString.equals("shoulder")) entry.canSitShoulder = Boolean.parseBoolean(value);
+                if (keyString.equals("fly")) entry.canSitShoulder = Boolean.parseBoolean(value);
+                if (keyString.equals("dive")) entry.canSitShoulder = Boolean.parseBoolean(value);
+                if (keyString.equals("stationary")) entry.canSitShoulder = Boolean.parseBoolean(value);
+                if (keyString.equals("dye"))
+                {
+                    entry.hasSpecialTextures[4] = Boolean.parseBoolean(value.split("#")[0]);
+                    entry.defaultSpecial = Integer.parseInt(value.split("#")[1]);
+                }
             }
         }
-        list = statsNode.getElementsByTagName("EXPERIENCEMODE");
-        if (list.getLength() == 1)
+        if (xmlStats.expMode != null) entry.evolutionMode = Tools.getType(xmlStats.expMode);
+        if (xmlStats.shadowReplacements != null)
         {
-            node = (Element) list.item(0);
-            entry.evolutionMode = Tools.getType(node.getFirstChild().getNodeValue());
-        }
-
-        list = statsNode.getElementsByTagName("SHADOWREPLACEMENTS");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            String[] replaces = node.getFirstChild().getNodeValue().split(":");
+            String[] replaces = xmlStats.shadowReplacements.split(":");
             for (String s1 : replaces)
             {
                 s1 = s1.toLowerCase().trim().replace(" ", "");
@@ -182,11 +124,9 @@ public class PokedexEntryLoader
                 }
             }
         }
-        list = statsNode.getElementsByTagName("FOODMATERIAL");
-        if (list.getLength() == 1)
+        if (xmlStats.foodMat != null)
         {
-            node = (Element) list.item(0);
-            String[] foods = node.getFirstChild().getNodeValue().split(" ");
+            String[] foods = xmlStats.foodMat.split(" ");
             for (String s1 : foods)
             {
                 if (s1.equalsIgnoreCase("light"))
@@ -218,11 +158,9 @@ public class PokedexEntryLoader
         }
         if (entry.isType(PokeType.ghost)) entry.foods[4] = true;
 
-        list = statsNode.getElementsByTagName("ACTIVETIMES");
-        if (list.getLength() == 1)
+        if (xmlStats.activeTimes != null)
         {
-            node = (Element) list.item(0);
-            String[] times = node.getFirstChild().getNodeValue().split(" ");
+            String[] times = xmlStats.activeTimes.split(" ");
             for (String s1 : times)
             {
                 if (s1.equalsIgnoreCase("day"))
@@ -243,60 +181,49 @@ public class PokedexEntryLoader
                 }
             }
         }
-        list = statsNode.getElementsByTagName("INTERACTIONLOGIC");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            InteractionLogic.initForEntry(entry, node.getFirstChild().getNodeValue());
-        }
-        else
-        {
-            InteractionLogic.initForEntry(entry);
-        }
+        InteractionLogic.initForEntry(entry, xmlStats.interactions);
 
-        list = statsNode.getElementsByTagName("PARTICLEEFFECTS");
-        if (list.getLength() == 1)
+        if (xmlStats.hatedMaterials != null)
         {
-            node = (Element) list.item(0);
-            entry.particleData = node.getFirstChild().getNodeValue().split(":");
-        }
-
-        list = statsNode.getElementsByTagName("HATEDMATERIALRULES");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            entry.hatedMaterial = node.getFirstChild().getNodeValue().split(":");
+            entry.hatedMaterial = xmlStats.hatedMaterials.split(":");
         }
     }
 
-    private static void initStats(PokedexEntry entry, Element statsNode)
+    private static void initStats(PokedexEntry entry, StatsNode xmlStats)
     {
         int[] stats = new int[6];
         byte[] evs = new byte[6];
-        Element node;
-        NodeList list = statsNode.getElementsByTagName("BASESTATS");
         boolean stat = false, ev = false;
-        if (list.getLength() == 1)
+        if (xmlStats.stats != null)
         {
-            node = (Element) list.item(0);
-            stats[0] = Integer.parseInt(node.getAttribute("hp"));
-            stats[1] = Integer.parseInt(node.getAttribute("atk"));
-            stats[2] = Integer.parseInt(node.getAttribute("def"));
-            stats[3] = Integer.parseInt(node.getAttribute("spatk"));
-            stats[4] = Integer.parseInt(node.getAttribute("spdef"));
-            stats[5] = Integer.parseInt(node.getAttribute("spd"));
+            Map<QName, String> values = xmlStats.stats.values;
+            for (QName key : values.keySet())
+            {
+                String keyString = key.toString();
+                String value = values.get(key);
+                if (keyString.equals("hp")) stats[0] = Integer.parseInt(value);
+                if (keyString.equals("atk")) stats[1] = Integer.parseInt(value);
+                if (keyString.equals("def")) stats[2] = Integer.parseInt(value);
+                if (keyString.equals("spatk")) stats[3] = Integer.parseInt(value);
+                if (keyString.equals("spdef")) stats[4] = Integer.parseInt(value);
+                if (keyString.equals("spd")) stats[5] = Integer.parseInt(value);
+            }
             stat = true;
         }
-        list = statsNode.getElementsByTagName("EVYIELD");
-        if (list.getLength() == 1)
+        if (xmlStats.evs != null)
         {
-            node = (Element) list.item(0);
-            if (node.hasAttribute("hp")) evs[0] = (byte) Integer.parseInt(node.getAttribute("hp"));
-            if (node.hasAttribute("atk")) evs[1] = (byte) Integer.parseInt(node.getAttribute("atk"));
-            if (node.hasAttribute("def")) evs[2] = (byte) Integer.parseInt(node.getAttribute("def"));
-            if (node.hasAttribute("spatk")) evs[3] = (byte) Integer.parseInt(node.getAttribute("spatk"));
-            if (node.hasAttribute("spdef")) evs[4] = (byte) Integer.parseInt(node.getAttribute("spdef"));
-            if (node.hasAttribute("spd")) evs[5] = (byte) Integer.parseInt(node.getAttribute("spd"));
+            Map<QName, String> values = xmlStats.evs.values;
+            for (QName key : values.keySet())
+            {
+                String keyString = key.toString();
+                String value = values.get(key);
+                if (keyString.equals("hp")) evs[0] = (byte) Integer.parseInt(value);
+                if (keyString.equals("atk")) evs[1] = (byte) Integer.parseInt(value);
+                if (keyString.equals("def")) evs[2] = (byte) Integer.parseInt(value);
+                if (keyString.equals("spatk")) evs[3] = (byte) Integer.parseInt(value);
+                if (keyString.equals("spdef")) evs[4] = (byte) Integer.parseInt(value);
+                if (keyString.equals("spd")) evs[5] = (byte) Integer.parseInt(value);
+            }
             ev = true;
         }
         if (stat)
@@ -307,91 +234,90 @@ public class PokedexEntryLoader
         {
             entry.evs = evs;
         }
-        list = statsNode.getElementsByTagName("TYPE");
-        if (list.getLength() == 1)
+        if (xmlStats.types != null)
         {
-            node = (Element) list.item(0);
-            if (node.hasAttribute("type1"))
+            Map<QName, String> values = xmlStats.types.values;
+            for (QName key : values.keySet())
             {
-                entry.type1 = PokeType.getType(node.getAttribute("type1"));
-            }
-            if (node.hasAttribute("type2"))
-            {
-                entry.type2 = PokeType.getType(node.getAttribute("type2"));
-            }
-        }
-        list = statsNode.getElementsByTagName("SIZES");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            if (node.hasAttribute("height"))
-            {
-                entry.height = Float.parseFloat(node.getAttribute("height"));
-            }
-            if (node.hasAttribute("length"))
-            {
-                entry.length = Float.parseFloat(node.getAttribute("length"));
-                entry.width = Float.parseFloat(node.getAttribute("width"));
-            }
-            else if (node.hasAttribute("width"))
-            {
-                entry.length = entry.width = Float.parseFloat(node.getAttribute("width"));
-            }
-            else
-            {
-                entry.length = entry.width = entry.height;
-            }
-        }
-        list = statsNode.getElementsByTagName("ABILITY");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            if (node.hasAttribute("hidden"))
-            {
-                String[] vars = node.getAttribute("hidden").split(",");
-                for (int i = 0; i < vars.length; i++)
+                String keyString = key.toString();
+                String value = values.get(key);
+                if (keyString.equals("type1"))
                 {
-                    entry.abilitiesHidden.add(vars[i].trim());
+                    entry.type1 = PokeType.getType(value);
                 }
-            }
-            if (node.hasAttribute("normal"))
-            {
-                String[] vars = node.getAttribute("normal").split(",");
-                for (int i = 0; i < vars.length; i++)
+                if (keyString.equals("type2"))
                 {
-                    entry.abilities.add(vars[i].trim());
+                    entry.type2 = PokeType.getType(value);
                 }
             }
         }
-        list = statsNode.getElementsByTagName("CAPTURERATE");
-        if (list.getLength() == 1)
+        if (xmlStats.sizes != null)
         {
-            node = (Element) list.item(0);
-            entry.catchRate = Integer.parseInt(node.getFirstChild().getNodeValue());
+            Map<QName, String> values = xmlStats.sizes.values;
+            entry.length = -1;
+            entry.width = -1;
+            for (QName key : values.keySet())
+            {
+                String keyString = key.toString();
+                String value = values.get(key);
+                if (keyString.equals("height"))
+                {
+                    entry.height = Float.parseFloat(value);
+                }
+                if (keyString.equals("length"))
+                {
+                    entry.length = Float.parseFloat(value);
+                }
+                if (keyString.equals("width"))
+                {
+                    entry.width = Float.parseFloat(value);
+                }
+            }
+            if (entry.width == -1)
+            {
+                entry.width = entry.height;
+            }
+            if (entry.length == -1)
+            {
+                entry.length = entry.width;
+            }
         }
-        list = statsNode.getElementsByTagName("EXPYIELD");
-        if (list.getLength() == 1)
+        if (xmlStats.abilities != null)
         {
-            node = (Element) list.item(0);
-            entry.baseXP = Integer.parseInt(node.getFirstChild().getNodeValue());
+            Map<QName, String> values = xmlStats.abilities.values;
+            entry.length = -1;
+            entry.width = -1;
+            for (QName key : values.keySet())
+            {
+                String keyString = key.toString();
+                String value = values.get(key);
+                if (keyString.equals("hidden"))
+                {
+                    String[] vars = value.split(",");
+                    for (int i = 0; i < vars.length; i++)
+                    {
+                        entry.abilitiesHidden.add(vars[i].trim());
+                    }
+                }
+                if (keyString.equals("normal"))
+                {
+                    String[] vars = value.split(",");
+                    for (int i = 0; i < vars.length; i++)
+                    {
+                        entry.abilities.add(vars[i].trim());
+                    }
+                }
+            }
         }
-        list = statsNode.getElementsByTagName("GENDERRATIO");
-        if (list.getLength() == 1)
+        entry.catchRate = xmlStats.captureRate;
+        entry.baseXP = xmlStats.baseExp;
+        entry.baseHappiness = xmlStats.baseFriendship;
+        entry.sexeRatio = xmlStats.genderRatio;
+        entry.mass = xmlStats.mass;
+
+        if (xmlStats.specialEggRules != null)
         {
-            node = (Element) list.item(0);
-            entry.sexeRatio = Integer.parseInt(node.getFirstChild().getNodeValue());
-        }
-        list = statsNode.getElementsByTagName("RIDDENOFFSET");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            entry.mountedOffset = Double.parseDouble(node.getFirstChild().getNodeValue());
-        }
-        list = statsNode.getElementsByTagName("SPECIALEGGSPECIESRULES");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            String[] matedata = node.getFirstChild().getNodeValue().split(";");
+            String[] matedata = xmlStats.specialEggRules.split(";");
             for (String s1 : matedata)
             {
                 String[] args = s1.split(":");
@@ -405,69 +331,38 @@ public class PokedexEntryLoader
                 entry.childNumbers.put(fatherNb, childNbs);
             }
         }
-        list = statsNode.getElementsByTagName("MOVEMENTTYPE");
-        if (list.getLength() == 1)
+        if (xmlStats.movementType != null)
         {
-            node = (Element) list.item(0);
-            String[] strings = node.getFirstChild().getNodeValue().trim().split(":");
+            String[] strings = xmlStats.movementType.trim().split(":");
             entry.mobType = PokecubeMod.Type.getType(strings[0]);
             if (strings.length > 1)
             {
                 entry.preferedHeight = Double.parseDouble(strings[1]);
             }
         }
-        list = statsNode.getElementsByTagName("BASEFRIENDSHIP");
-        if (list.getLength() == 1)
+        if (xmlStats.species != null)
         {
-            node = (Element) list.item(0);
-            entry.baseHappiness = Integer.parseInt(node.getFirstChild().getNodeValue());
+            entry.species = xmlStats.species.trim().split(" ");
         }
-        list = statsNode.getElementsByTagName("MASSKG");
-        if (list.getLength() == 1)
+        if (xmlStats.prey != null)
         {
-            node = (Element) list.item(0);
-            entry.mass = Float.parseFloat(node.getFirstChild().getNodeValue());
-        }
-        list = statsNode.getElementsByTagName("SPECIES");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            entry.species = node.getFirstChild().getNodeValue().trim().toLowerCase().split(" ");
-        }
-        list = statsNode.getElementsByTagName("PREY");
-        if (list.getLength() == 1)
-        {
-            node = (Element) list.item(0);
-            entry.food = node.getFirstChild().getNodeValue().trim().toLowerCase().split(" ");
+            entry.food = xmlStats.prey.trim().split(" ");
         }
     }
 
-    private static void parseSpawns(PokedexEntry entry, Element node)
+    private static void parseSpawns(PokedexEntry entry, StatsNode xmlStats)
     {
-        NodeList listAll = node.getElementsByTagName("BIOMESALLNEEDED");
-        NodeList listAny = node.getElementsByTagName("BIOMESANYACCEPTABLE");
-        NodeList listExclude = node.getElementsByTagName("EXCLUDEDBIOMES");
-        NodeList listCases = node.getElementsByTagName("SPECIALCASES");
-        if (listCases.getLength() == 0) return;
-
-        if (listAll.getLength() == 1 || listAny.getLength() == 1)
+        if (xmlStats.spawnCases == null) return;
+        String anyString = xmlStats.biomesNeedAny;
+        String allString = xmlStats.biomesNeedAll;
+        String excludeString = xmlStats.biomesBlacklist;
+        if (anyString != null || allString != null)
         {
-            String anyString = "";
-            String allString = "";
-            String excludeString = "";
-            String casesString = ((Element) listCases.item(0)).getFirstChild().getNodeValue();
-            if (listAll.getLength() == 1)
-            {
-                allString = ((Element) listAll.item(0)).getFirstChild().getNodeValue();
-            }
-            if (listAny.getLength() == 1)
-            {
-                anyString = ((Element) listAny.item(0)).getFirstChild().getNodeValue();
-            }
-            if (listExclude.getLength() == 1)
-            {
-                excludeString = ((Element) listExclude.item(0)).getFirstChild().getNodeValue();
-            }
+            if (anyString == null) anyString = "";
+            if (allString == null) allString = "";
+            if (excludeString == null) excludeString = "";
+
+            String casesString = xmlStats.spawnCases;
             /** Column 0: Name Column 1: cases
              * (day/night/fossil/starter/legend/water+/water) Column 2 any
              * biomes Column 3 all biomes Column 4 no biomes */
@@ -643,22 +538,13 @@ public class PokedexEntryLoader
         }
     }
 
-    private static void parseEvols(PokedexEntry entry, Element node)
+    private static void parseEvols(PokedexEntry entry, StatsNode xmlStats)
     {
-        NodeList listNBs = node.getElementsByTagName("EVOLVESTO");
-        NodeList listData = node.getElementsByTagName("EVOLUTIONMODE");
-        NodeList listFX = node.getElementsByTagName("EVOLUTIONANIMATION");
-
-        if (listNBs.getLength() != 1 || listData.getLength() != 1) return;
-
-        String numberString = ((Element) listNBs.item(0)).getFirstChild().getNodeValue();
-        String dataString = ((Element) listData.item(0)).getFirstChild().getNodeValue();
-        String fxString = "";
-        if (listFX.getLength() == 1)
-        {
-            fxString = ((Element) listFX.item(0)).getFirstChild().getNodeValue();
-        }
-
+        String numberString = xmlStats.evoTo;
+        String dataString = xmlStats.evoModes;
+        String fxString = xmlStats.evolAnims;
+        if (numberString == null || dataString == null) return;
+        if (fxString == null) fxString = "";
         String evolutionNbs = numberString;
         if (evolutionNbs != null && !evolutionNbs.isEmpty())
         {
@@ -688,57 +574,51 @@ public class PokedexEntryLoader
         }
     }
 
-    private static void initMoves(PokedexEntry entry, Element node)
+    private static void initMoves(PokedexEntry entry, Moves xmlMoves)
     {
         Map<Integer, ArrayList<String>> lvlUpMoves = new HashMap<Integer, ArrayList<String>>();
         ArrayList<String> allMoves = new ArrayList<String>();
 
-        NodeList listMisc = node.getElementsByTagName("MISC");
-        NodeList listLvlUp = node.getElementsByTagName("LVLUP");
-
-        if (listMisc.getLength() == 1 || listLvlUp.getLength() == 1)
+        if (xmlMoves.misc != null)
         {
-            if (listMisc.getLength() == 1)
+            String[] misc = xmlMoves.misc.moves.split(",");
+            for (String s : misc)
             {
-                Element miscNode = (Element) listMisc.item(0);
-                String[] misc = miscNode.getAttribute("moves").split(",");
-                for (String s : misc)
+                allMoves.add(Database.convertMoveName(s));
+            }
+        }
+        if (xmlMoves.lvlupMoves != null)
+        {
+            for (QName key : xmlMoves.lvlupMoves.values.keySet())
+            {
+                String keyName = key.toString();
+                String[] values = xmlMoves.lvlupMoves.values.get(key).split(",");
+                ArrayList<String> moves;
+                lvlUpMoves.put(Integer.parseInt(keyName.replace("lvl_", "")), moves = new ArrayList<String>());
+                moves:
+                for (String s : values)
                 {
+                    s = Database.convertMoveName(s);
+                    moves.add(s);
+                    for (String s1 : allMoves)
+                    {
+                        if (s1.equalsIgnoreCase(s)) continue moves;
+                    }
                     allMoves.add(Database.convertMoveName(s));
                 }
             }
-            if (listLvlUp.getLength() == 1)
-            {
-                Element lvlNode = (Element) listLvlUp.item(0);
-                for (int i = 0; i < lvlNode.getAttributes().getLength(); i++)
-                {
-                    String key = lvlNode.getAttributes().item(i).getNodeName().replace("lvl_", "");
-                    String[] values = lvlNode.getAttributes().item(i).getNodeValue().split(",");
-                    ArrayList<String> moves;
-                    lvlUpMoves.put(Integer.parseInt(key), moves = new ArrayList<String>());
-                    moves:
-                    for (String s : values)
-                    {
-                        s = Database.convertMoveName(s);
-                        moves.add(s);
-                        for (String s1 : allMoves)
-                        {
-                            if (s1.equalsIgnoreCase(s)) continue moves;
-                        }
-                        allMoves.add(Database.convertMoveName(s));
-                    }
-                }
-            }
-            if (allMoves.isEmpty())
-            {
-                allMoves = null;
-            }
-            if (lvlUpMoves.isEmpty())
-            {
-                lvlUpMoves = null;
-            }
-            entry.addMoves(allMoves, lvlUpMoves);
         }
+
+        if (allMoves.isEmpty())
+        {
+            allMoves = null;
+        }
+        if (lvlUpMoves.isEmpty())
+        {
+            lvlUpMoves = null;
+        }
+        entry.addMoves(allMoves, lvlUpMoves);
+
     }
 
     private static void checkBaseForme(PokedexEntry entry)
@@ -796,4 +676,147 @@ public class PokedexEntryLoader
     }
 
     private static HashMap<Integer, PokedexEntry> baseFormes = new HashMap<>();
+
+    public static XMLDatabase loadDatabase(File file) throws Exception
+    {
+        JAXBContext jaxbContext = JAXBContext.newInstance(XMLDatabase.class);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(new FileReader(file));
+        return database;
+    }
+
+    @XmlRootElement(name = "Document")
+    public static class XMLDatabase
+    {
+        @XmlElement(name = "Pokemon")
+        private List<XMLPokedexEntry> pokemon = Lists.newArrayList();
+    }
+
+    @XmlRootElement(name = "Pokemon")
+    public static class XMLPokedexEntry
+    {
+        @XmlAttribute
+        public String name;
+        @XmlAttribute
+        public int    number;
+        @XmlElement(name = "STATS")
+        StatsNode     stats;
+        @XmlElement(name = "MOVES")
+        Moves         moves;
+
+        public String toString()
+        {
+            return name + " " + number + " " + stats + " " + moves;
+        }
+    }
+
+    @XmlRootElement(name = "STATS")
+    public static class StatsNode
+    {
+        // Evolution stuff
+        @XmlElement(name = "EVOLUTIONMODE")
+        String evoModes;
+        @XmlElement(name = "EVOLUTIONANIMATION")
+        String evolAnims;
+        @XmlElement(name = "EVOLVESTO")
+        String evoTo;
+
+        // Species and food
+        @XmlElement(name = "SPECIES")
+        String species;
+        @XmlElement(name = "PREY")
+        String prey;
+        @XmlElement(name = "FOODMATERIAL")
+        String foodMat;
+        @XmlElement(name = "SPECIALEGGSPECIESRULES")
+        String specialEggRules;
+
+        // Drops and items
+        @XmlElement(name = "FOODDROP")
+        String foodDrop;
+        @XmlElement(name = "COMMONDROP")
+        String commonDrop;
+        @XmlElement(name = "RAREDROP")
+        String rareDrop;
+        @XmlElement(name = "HELDITEM")
+        String heldItems;
+
+        // Spawn Rules
+        @XmlElement(name = "BIOMESALLNEEDED")
+        String biomesNeedAll;
+        @XmlElement(name = "BIOMESANYACCEPTABLE")
+        String biomesNeedAny;
+        @XmlElement(name = "EXCLUDEDBIOMES")
+        String biomesBlacklist;
+        @XmlElement(name = "SPECIALCASES")
+        String spawnCases;
+
+        // STATS
+        @XmlElement(name = "BASESTATS")
+        Stats  stats;
+        @XmlElement(name = "EVYIELD")
+        Stats  evs;
+        @XmlElement(name = "SIZES")
+        Stats  sizes;
+        @XmlElement(name = "TYPE")
+        Stats  types;
+        @XmlElement(name = "ABILITY")
+        Stats  abilities;
+        @XmlElement(name = "MASSKG")
+        float  mass;
+        @XmlElement(name = "CAPTURERATE")
+        int    captureRate;
+        @XmlElement(name = "EXPYIELD")
+        int    baseExp;
+        @XmlElement(name = "BASEFRIENDSHIP")
+        int    baseFriendship;
+        @XmlElement(name = "EXPERIENCEMODE")
+        String expMode;
+        @XmlElement(name = "GENDERRATIO")
+        int    genderRatio;
+
+        // MISC
+        @XmlElement(name = "LOGIC")
+        Stats  logics;
+        @XmlElement(name = "MOVEMENTTYPE")
+        String movementType;
+        @XmlElement(name = "INTERACTIONLOGIC")
+        String interactions;
+        @XmlElement(name = "SHADOWREPLACEMENTS")
+        String shadowReplacements;
+        @XmlElement(name = "HATEDMATERIALRULES")
+        String hatedMaterials;
+        @XmlElement(name = "ACTIVETIMES")
+        String activeTimes;
+
+        public static class Stats
+        {
+            @XmlAnyAttribute
+            Map<QName, String> values;
+        }
+
+    }
+
+    @XmlRootElement(name = "MOVES")
+    public static class Moves
+    {
+        @XmlElement(name = "LVLUP")
+        LvlUp lvlupMoves;
+        @XmlElement(name = "Misc")
+        Misc  misc;
+
+        @XmlRootElement(name = "LVLUP")
+        public static class LvlUp
+        {
+            @XmlAnyAttribute
+            Map<QName, String> values;
+        }
+
+        @XmlRootElement(name = "MISC")
+        public static class Misc
+        {
+            @XmlAttribute(name = "moves")
+            String moves;
+        }
+    }
 }

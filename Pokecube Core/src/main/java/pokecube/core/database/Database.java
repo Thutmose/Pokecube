@@ -16,10 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -87,7 +83,7 @@ public class Database implements IMoveConstants
             {
                 PokedexEntryLoader.makeEntries(new File(DBLOCATION + s), true);
             }
-            catch (ParserConfigurationException | SAXException | IOException e)
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
@@ -99,7 +95,7 @@ public class Database implements IMoveConstants
             {
                 PokedexEntryLoader.makeEntries(new File(s), true);
             }
-            catch (ParserConfigurationException | SAXException | IOException e)
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
@@ -117,7 +113,7 @@ public class Database implements IMoveConstants
             {
                 PokedexEntryLoader.makeEntries(new File(DBLOCATION + s), false);
             }
-            catch (ParserConfigurationException | SAXException | IOException e)
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
@@ -129,7 +125,7 @@ public class Database implements IMoveConstants
             {
                 PokedexEntryLoader.makeEntries(new File(s), false);
             }
-            catch (ParserConfigurationException | SAXException | IOException e)
+            catch (Exception e)
             {
                 e.printStackTrace();
             }

@@ -13,6 +13,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.render.model.IPartTexturer;
@@ -30,6 +31,7 @@ public class TextureHelper implements IPartTexturer
     /** Map of part/material name -> resource location */
     Map<String, ResourceLocation>            texMap       = Maps.newHashMap();
     Map<String, TexState>                    texStates    = Maps.newHashMap();
+    Map<String, String>                      formeMap     = Maps.newHashMap();
     public final static Map<String, Integer> mappedStates = Maps.newHashMap();
 
     public TextureHelper(Node node)
@@ -74,6 +76,13 @@ public class TextureHelper implements IPartTexturer
                 String state = part.getAttributes().getNamedItem("state").getNodeValue();
                 String partTex = part.getAttributes().getNamedItem("tex").getNodeValue();
                 addCustomMapping(partName, state, partTex);
+            }
+            else if (part.getNodeName().equals("forme"))
+            {
+                String name = part.getAttributes().getNamedItem("name").getNodeValue();
+                String tex = part.getAttributes().getNamedItem("tex").getNodeValue();
+                formeMap.put(name.toLowerCase().replace(" ", ""), tex);
+                System.out.println(formeMap);
             }
         }
     }
@@ -123,7 +132,25 @@ public class TextureHelper implements IPartTexturer
     private boolean bindPerState(String part)
     {
         Map<String, String> partNames = texNames2.get(part);
-        if (partNames == null) return false;
+        if (partNames == null)
+        {
+            PokedexEntry forme = pokemob.getPokedexEntry();
+            if (forme.baseForme != null && forme != forme.baseForme)
+            {
+                String name = forme.getName().toLowerCase().replace(" ", "");
+                String tex = formeMap.get(name);
+                if (tex != null)
+                {
+                    TexState state;
+                    String texMod;
+                    if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
+                        tex = tex + texMod;
+                    bindTex(tex);
+                    return true;
+                }
+            }
+            return false;
+        }
         for (String key : partNames.keySet())
         {
             if (isState(key))

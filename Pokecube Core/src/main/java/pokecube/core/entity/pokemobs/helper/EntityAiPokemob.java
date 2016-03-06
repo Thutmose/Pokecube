@@ -49,6 +49,7 @@ import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
 import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
+import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
 import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
@@ -150,7 +151,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         PokemobAIThread.addAI(this, new AIAttack(this).setPriority(200));
         PokemobAIThread.addAI(this, new AIMate(this).setPriority(300));
         PokemobAIThread.addAI(this, new AIHungry(this, new EntityItem(worldObj), 16).setPriority(300));
-        PokemobAIThread.addAI(this, new AIGatherStuff(this, 32).setPriority(400));
+        AIStoreStuff ai = new AIStoreStuff(this);
+        PokemobAIThread.addAI(this, ai.setPriority(350));
+        PokemobAIThread.addAI(this, new AIGatherStuff(this, 32, ai).setPriority(400));
         PokemobAIThread.addAI(this, new AIIdle(this).setPriority(500));
         PokemobAIThread.addAI(this, new AIFindTarget(this).setPriority(400));
 

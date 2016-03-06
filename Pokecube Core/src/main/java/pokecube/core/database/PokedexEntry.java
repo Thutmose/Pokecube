@@ -101,6 +101,8 @@ public class PokedexEntry
     public double                           mass               = -1;
     /** Will it protect others. */
     public boolean                          isSocial           = true;
+    /** Will the pokemob try to build colonies with others of it's kind */
+    public boolean                          colonyBuilder      = false;
     /** light,<br>
      * rock,<br>
      * power (near redstone blocks),<br>

@@ -86,14 +86,14 @@ public class RecipeHandler {
                     "CCC", 'C', Blocks.wool, 'O', getStack("pctop").getItem()
                 });
 
-        //Mega Stone Linker
-        if(getStack("legendaryorb")!=null)
-	        GameRegistry.addRecipe(getStack("megastone"), new Object[]
-	                {
-	                    " D ", 
-	                    "DOD", 
-	                    " D ", 'O', getStack("legendaryorb"), 'D', Items.diamond
-	                });
+        //Mega Stone
+//        if(getStack("legendaryorb")!=null)
+//	        GameRegistry.addRecipe(getStack("megastone"), new Object[]
+//	                {
+//	                    " D ", 
+//	                    "DOD", 
+//	                    " D ", 'O', getStack("legendaryorb"), 'D', Items.diamond
+//	                });
         
         ItemStack shards18 = getStack("emerald_shard");
         ItemStack shards1 = getStack("emerald_shard");

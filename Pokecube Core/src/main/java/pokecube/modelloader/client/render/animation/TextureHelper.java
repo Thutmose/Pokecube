@@ -82,7 +82,6 @@ public class TextureHelper implements IPartTexturer
                 String name = part.getAttributes().getNamedItem("name").getNodeValue();
                 String tex = part.getAttributes().getNamedItem("tex").getNodeValue();
                 formeMap.put(name.toLowerCase().replace(" ", ""), tex);
-                System.out.println(formeMap);
             }
         }
     }

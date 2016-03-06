@@ -134,16 +134,16 @@ public class TabulaPackLoader extends AnimationLoader
     public static class TabulaModelSet implements IPartRenamer
     {
         /** The pokemon associated with this model. */
-        final PokedexEntry             entry;
-        public final TabulaModel       model;
-        public final TabulaModelParser parser;
-        public IPartTexturer           texturer = null;
-        public AnimationRandomizer     animator = null;
+        final PokedexEntry                entry;
+        public final TabulaModel          model;
+        public final TabulaModelParser    parser;
+        public IPartTexturer              texturer         = null;
+        public AnimationRandomizer        animator         = null;
 
         /** Animations to merge together, animation key is merged into animation
          * value. so key of idle and value of walk will merge the idle animation
          * into the walk animation. */
-        private HashMap<String, String> mergedAnimations = Maps.newHashMap();
+        private HashMap<String, String>   mergedAnimations = Maps.newHashMap();
 
         /** The root part of the head. */
         private Set<String>               headRoots        = Sets.newHashSet();
@@ -323,7 +323,6 @@ public class TabulaPackLoader extends AnimationLoader
                 anims.addAll(loadedAnimations.values());
                 animator.init(anims);
             }
-            if (toRemove.size() > 0) System.out.println("Merged " + toRemove.size() + " Animations for " + entry);
         }
 
         private void addAnimation(Animation animation)

@@ -26,29 +26,30 @@ import pokecube.modelloader.client.render.animation.TextureHelper;
 
 public class GuiAnimate extends GuiScreen
 {
-    int pokedexNb = 0;
+    int                    pokedexNb        = 0;
 
     protected GuiTextField anim;
     protected GuiTextField state;
     protected GuiTextField forme;
     protected GuiTextField info;
 
-    private float xRenderAngle     = 0;
-    private float yRenderAngle     = 0;
-    private float yHeadRenderAngle = 0;
-    private float xHeadRenderAngle = 0;
-    private int   mouseRotateControl;
-    int           prevX            = 0;
-    int           prevY            = 0;
-    float         scale            = 1;
-    int[]         shift            = { 0, 0 };
+    private float          xRenderAngle     = 0;
+    private float          yRenderAngle     = 0;
+    private float          yHeadRenderAngle = 0;
+    private float          xHeadRenderAngle = 0;
+    private int            mouseRotateControl;
+    int                    prevX            = 0;
+    int                    prevY            = 0;
+    float                  scale            = 1;
+    int[]                  shift            = { 0, 0 };
 
-    GuiButton groundButton;
-    boolean   ground = true;
-    
-    static String mob = "";
+    GuiButton              groundButton;
+    boolean                ground           = true;
+    boolean                shiny            = false;
 
-    List<String> components;
+    static String          mob              = "";
+
+    List<String>           components;
 
     @Override
     /** Adds the buttons (and other controls) to the screen in question. Called
@@ -77,6 +78,7 @@ public class GuiAnimate extends GuiScreen
         buttonList.add(new GuiButton(9, width / 2 - xOffset, yOffset - 80, 20, 20, "\u25c0"));
         buttonList.add(new GuiButton(10, width / 2 - xOffset + 20, yOffset - 100, 20, 20, "\u25bc"));
         buttonList.add(new GuiButton(11, width / 2 - xOffset, yOffset - 100, 20, 20, "\u25b2"));
+        buttonList.add(new GuiButton(12, width / 2 - xOffset, yOffset + 40, 40, 20, "normal"));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -106,6 +108,7 @@ public class GuiAnimate extends GuiScreen
         if (pokemob != null)
         {
             pokemob.specificSpawnInit();
+            pokemob.setShiny(shiny);
         }
         else
         {
@@ -317,6 +320,11 @@ public class GuiAnimate extends GuiScreen
         else if (button.id == 11)
         {
             shift[1] -= isShiftKeyDown() ? 10 : 1;
+        }
+        else if (button.id == 12)
+        {
+            shiny = !shiny;
+            button.displayString = shiny ? "shiny" : "normal";
         }
         if (entry != null)
         {

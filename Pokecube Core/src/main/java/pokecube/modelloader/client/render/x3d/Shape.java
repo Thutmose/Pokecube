@@ -46,7 +46,7 @@ public class Shape
 
     public void renderShape(IPartTexturer texturer)
     {
-        // Compiles the list of the meshId is invalid.
+        // Compiles the list if the meshId is invalid.
         compileList(texturer);
 
         boolean textureShift = false;

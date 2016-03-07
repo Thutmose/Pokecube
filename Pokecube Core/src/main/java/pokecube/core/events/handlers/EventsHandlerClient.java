@@ -138,8 +138,6 @@ public class EventsHandlerClient
                 }
             }
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
-            if (current != null)
-                System.out.println(current + " " + ring + " " + current.getPokemonAIState(IMoveConstants.EVOLVING));
             if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING))
             {
                 System.out.println(current);

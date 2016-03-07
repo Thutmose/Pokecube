@@ -1100,6 +1100,17 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 this.setHungerTime(this.getHungerTime() + 1000);
             }
         }
+        // Use shiny charm to make shiny
+        if (player == getPokemonOwner() && itemstack != null
+                && itemstack.getIsItemStackEqual(PokecubeItems.getStack("shiny_charm")))
+        {
+            if (player.isSneaking())
+            {
+                this.setShiny(!this.isShiny());
+                player.getHeldItem().splitStack(1);
+            }
+            return true;
+        }
 
         // is Dyeable
         if (player.getHeldItem() != null && getPokedexEntry().hasSpecialTextures[4])

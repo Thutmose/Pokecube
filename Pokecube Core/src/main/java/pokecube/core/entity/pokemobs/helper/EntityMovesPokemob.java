@@ -31,6 +31,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.MoveEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
+import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -761,7 +762,12 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         {
             moveInfo.substituteHP = getMaxHealth() / 4;
         }
-
+        
+        if(getHeldItem()!=null)
+        {
+            HeldItemHandler.processHeldItemUse(move, this, getHeldItem());
+        }
+        
         if (getAbility() != null)
         {
             getAbility().onMoveUse(this, move);

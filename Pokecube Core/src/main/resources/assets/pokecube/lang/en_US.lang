@@ -400,6 +400,9 @@ item.megaring.name=Mega Ring
 item.megastone.name=Mega Stone
 item.revive.name=Revive
 
+item.shiny_charm.name=Shiny Charm
+item.gardevoirmega.name=Gardevoirite
+
 item.silkyhair.name=Silky Hair
 
 item.modelreloader.name=Model Reloader

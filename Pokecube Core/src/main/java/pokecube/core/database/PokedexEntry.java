@@ -1078,7 +1078,7 @@ public class PokedexEntry
                 System.out.println(this);
                 e.printStackTrace();
             }
-            // data = null;
+             data = null;
         }
 
         public EvolutionData(int number, String data, String FX)
@@ -1190,7 +1190,6 @@ public class PokedexEntry
 
         public boolean shouldEvolve(IPokemob mob, ItemStack mobs)
         {
-            if (mob.getPokemonOwner() != null) System.out.println(level + " " + data);
             if (this.level < 0) return false;
             boolean ret = mob.traded() == this.traded || !this.traded;
             if (rainOnly)
@@ -1263,7 +1262,6 @@ public class PokedexEntry
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity((Entity) mob);
                 Vector3 v = Vector3.getNewVector().set(mob);
                 World world = ((EntityLiving) mob).worldObj;
-                System.out.println(type + " " + biome);
                 ret = ret && (t.getBiome(v) == type || v.getBiome(world).biomeID == type);
             }
             return ret;

@@ -84,6 +84,9 @@ public class PokecubeItems extends Items
     public static Item                        pokedex;
     public static Item                        berryJuice;
     public static Item                        berries;
+    public static Item                        megastone;
+    public static Item                        megaring;
+    public static Item                        revive;
 
     public static Block                       pokecenter;
     public static Block                       repelBlock;

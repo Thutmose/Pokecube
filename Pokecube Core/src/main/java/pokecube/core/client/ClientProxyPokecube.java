@@ -453,6 +453,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             registerItemTexture(Item.getItemFromBlock(crop), 0, new ModelResourceLocation(ident, "inventory"));
             ModelLoader.setCustomStateMapper(crop, map);
         }
+        
+        ItemTextureHandler.registerMegaStoneItemModels();
 
     }
 

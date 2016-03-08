@@ -21,7 +21,7 @@ public class HeldItemHandler
         String name = held.getItem().getRegistryName().split(":")[1];
         String typename = name.replace("badge", "");
         PokeType type = PokeType.getType(typename);
-        if (type == move) return 1.1;
+        if (type == move) return 1.2;
         return ret;
     }
 }

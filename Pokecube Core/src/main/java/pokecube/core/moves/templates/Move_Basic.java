@@ -354,7 +354,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     @Override
     public void doWorldAction(IPokemob attacker, Vector3 location)
     {
-        if (!PokecubeMod.semiHardMode) return;
+        if (!PokecubeMod.pokemobsDamageBlocks) return;
         World world = ((Entity) attacker).worldObj;
         IBlockState state = location.getBlockState(world);
         Block block = state.getBlock();

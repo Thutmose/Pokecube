@@ -57,10 +57,11 @@ public abstract class PokecubeMod
     public static SimpleNetworkWrapper packetPipeline;
 
     // Manchou mobs are default mobs
-    public static String defaultMod = "pokecube_origin";
+    public static String defaultMod = "pokecube_ml";
 
-    public static boolean hardMode     = false;
-    public static boolean semiHardMode = false;
+    public static boolean friendlyFire     = false;
+    public static boolean pokemobsDamagePlayers     = true;
+    public static boolean pokemobsDamageBlocks = false;
     public static double  MAX_DENSITY  = 1;
 
     public static Map<String, String> gifts         = new HashMap<String, String>();

@@ -46,7 +46,7 @@ public class Move_Utility extends Move_Basic
             super.attack(attacker, attacked, f);
             return;
         }
-        if ((attacker instanceof IPokemob && (PokecubeMod.semiHardMode || PokecubeMod.debug)
+        if ((attacker instanceof IPokemob && (PokecubeMod.pokemobsDamageBlocks || PokecubeMod.debug)
                 && attacker.getPokemonAIState(IPokemob.TAMED)))
         {
             IPokemob a = ((IPokemob) attacker);
@@ -89,7 +89,7 @@ public class Move_Utility extends Move_Basic
     @Override
     public void doWorldAction(IPokemob user, Vector3 location)
     {
-        if (!(PokecubeMod.semiHardMode || PokecubeMod.debug)) return;
+        if (!(PokecubeMod.pokemobsDamageBlocks || PokecubeMod.debug)) return;
 
         boolean used = false;
         boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).worldObj, location.intX(), location.intY(),

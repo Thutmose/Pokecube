@@ -138,7 +138,7 @@ public class AIHungry extends AIBase
             }
             else
             {
-                if (PokecubeMod.semiHardMode && Math.random() > 0.0075)
+                if (PokecubeMod.pokemobsDamageBlocks && Math.random() > 0.0075)
                 {
                     v.set(hungrymob).offsetBy(EnumFacing.DOWN);
                     if (b == Blocks.cobblestone)
@@ -403,7 +403,7 @@ public class AIHungry extends AIBase
         diff = Math.max(diff, entity.width);
         if (dist < diff)
         {
-            if (PokecubeMod.semiHardMode && Math.random() > 0.0075)
+            if (PokecubeMod.pokemobsDamageBlocks && Math.random() > 0.0075)
             {
                 if (rock == Blocks.cobblestone)
                 {

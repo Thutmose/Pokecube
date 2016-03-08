@@ -43,7 +43,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                          if (mob.getPokemobTeam() != pokemob
                                                                  .getPokemobTeam()) { return true; }
                                                      }
-                                                     else if (PokecubeMod.hardMode && input instanceof EntityLivingBase)
+                                                     else if (PokecubeMod.friendlyFire && input instanceof EntityLivingBase)
                                                      {
                                                          EntityLivingBase mob = (EntityLivingBase) input;
 

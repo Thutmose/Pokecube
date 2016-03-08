@@ -491,7 +491,7 @@ public class Commands implements ICommand
         {
             if (args.length == 1)
             {
-                cSender.addChatMessage(new ChatComponentText("SemiHardMode is set to " + PokecubeMod.semiHardMode));
+                cSender.addChatMessage(new ChatComponentText("SemiHardMode is set to " + PokecubeMod.pokemobsDamageBlocks));
                 return true;
             }
             if (args.length == 2)
@@ -503,9 +503,9 @@ public class Commands implements ICommand
                 {
                     if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
                     {
-                        PokecubeMod.semiHardMode = on;
+                        PokecubeMod.pokemobsDamageBlocks = on;
                         cSender.addChatMessage(
-                                new ChatComponentText("SemiHardMode is set to " + PokecubeMod.semiHardMode));
+                                new ChatComponentText("SemiHardMode is set to " + PokecubeMod.pokemobsDamageBlocks));
                         ConfigHandler.saveConfig();
                         return true;
                     }
@@ -522,7 +522,7 @@ public class Commands implements ICommand
         {
             if (args.length == 1)
             {
-                cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.hardMode));
+                cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.friendlyFire));
                 return true;
             }
             if (args.length == 2)
@@ -535,9 +535,9 @@ public class Commands implements ICommand
 
                     if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
                     {
-                        PokecubeMod.hardMode = on;
-                        if (PokecubeMod.hardMode) PokecubeMod.semiHardMode = true;
-                        cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.hardMode));
+                        PokecubeMod.friendlyFire = on;
+                        if (PokecubeMod.friendlyFire) PokecubeMod.pokemobsDamageBlocks = true;
+                        cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.friendlyFire));
                         ConfigHandler.saveConfig();
                         return true;
                     }

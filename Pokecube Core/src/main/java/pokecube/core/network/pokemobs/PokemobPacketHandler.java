@@ -304,7 +304,7 @@ public class PokemobPacketHandler
                                     else
                                     {
                                         String mess = StatCollector.translateToLocalFormatted(
-                                                "pokemob.megaevolve.wrongstone", pokemob.getPokemonDisplayName());
+                                                "pokemob.megaevolve.failed", pokemob.getPokemonDisplayName());
                                         player.addChatMessage(new ChatComponentText(mess));
                                     }
                                 }
@@ -334,8 +334,10 @@ public class PokemobPacketHandler
                                 {
                                     if (pokemob.getPokemonOwner() != null)
                                     {
+                                        String mess = StatCollector.translateToLocal(
+                                                "pokemob.rename.deny");
                                         pokemob.getPokemonOwner().addChatMessage(
-                                                new ChatComponentText("Cannot rename a traded pokemob"));
+                                                new ChatComponentText(mess));
                                     }
                                 }
                                 else

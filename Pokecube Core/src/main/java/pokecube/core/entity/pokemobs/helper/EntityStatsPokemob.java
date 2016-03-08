@@ -624,7 +624,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             Entity targetOwner = ((IPokemob) attacked).getPokemonOwner();
 
             if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner
-                    && !PokecubeMod.hardMode)
+                    && !PokecubeMod.friendlyFire)
             {
                 ((EntityCreature) attacker).setAttackTarget((EntityLivingBase) targetOwner);
             }

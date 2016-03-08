@@ -13,11 +13,13 @@ import pokecube.core.PokecubeItems;
 public class ItemTextureHandler
 {
     public static ArrayList<String> megaVariants = new ArrayList<>();
-    
+
     static
     {
         megaVariants.add("megastone");
         megaVariants.add("shiny_charm");
+        megaVariants.add("omegaorb");
+        megaVariants.add("alphaorb");
         megaVariants.add("gardevoirmega");
         megaVariants.add("charizardmega-y");
         megaVariants.add("scizormega");
@@ -27,19 +29,19 @@ public class ItemTextureHandler
         megaVariants.add("absolmega");
         megaVariants.add("blastoisemega");
     }
-    
+
     public static void registerMegaStoneItemModels()
     {
         ModelLoader.setCustomMeshDefinition(PokecubeItems.megastone, new MegaStone());
-        for(String s: megaVariants)
+        for (String s : megaVariants)
         {
             registerItemVariant("type=" + s);
+            ItemStack stack = new ItemStack(PokecubeItems.megastone);
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setString("pokemon", s);
+            PokecubeItems.addSpecificItemStack(s, stack);
         }
 
-        ItemStack stack = new ItemStack(PokecubeItems.megastone);
-        stack.setTagCompound(new NBTTagCompound());
-        stack.getTagCompound().setString("pokemon", "shiny_charm");
-        PokecubeItems.addSpecificItemStack("shiny_charm", stack);
     }
 
     private static void registerItemVariant(String variant)

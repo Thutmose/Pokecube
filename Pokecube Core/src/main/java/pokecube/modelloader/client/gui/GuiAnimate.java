@@ -20,7 +20,7 @@ import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.modelloader.client.ClientProxy;
+import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.render.RenderAdvancedPokemobModel;
 import pokecube.modelloader.client.render.animation.TextureHelper;
 
@@ -232,7 +232,7 @@ public class GuiAnimate extends GuiScreen
         hit = hit || state.textboxKeyTyped(typedChar, keyCode);
         hit = hit || forme.textboxKeyTyped(typedChar, keyCode);
         hit = hit || info.textboxKeyTyped(typedChar, keyCode);
-        if(!hit && keyCode==205)
+        if (!hit && keyCode == 205)
         {
             PokedexEntry entry = null;
             if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
@@ -304,7 +304,7 @@ public class GuiAnimate extends GuiScreen
         }
         else if (button.id == 4)
         {
-            ClientProxy.populateModels();
+            ModPokecubeML.proxy.populateModels();
         }
         else if (button.id == 5)
         {

@@ -125,7 +125,7 @@ public class ContainerAFA extends Container
         @Override
         public boolean isItemValid(ItemStack itemstack)
         {
-            return PokecubeManager.isFilled(itemstack) || PokecubeItems.getStack("shiny_charm").getIsItemStackEqual(itemstack);
+            return PokecubeManager.isFilled(itemstack) || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), itemstack);
         }
     }
 }

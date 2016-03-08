@@ -167,7 +167,7 @@ public class ModPokecubeML
                 }
             }
         }
-        proxy.registerRenderInformation();
+//        proxy.registerRenderInformation();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }
 

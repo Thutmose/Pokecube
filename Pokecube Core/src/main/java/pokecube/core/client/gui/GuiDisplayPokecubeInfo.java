@@ -337,6 +337,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     public void pokemobBack()
     {
         IPokemob pokemob = getCurrentPokemob();
+        //System.out.println(pokemob+":");
         if (pokemob != null) pokemob.returnToPokecube();
         else
         {

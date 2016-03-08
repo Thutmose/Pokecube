@@ -132,7 +132,7 @@ public class TileEntityAFA extends TileEntityOwnable
     public void spawnEvent(SpawnEvent.Post evt)
     {
         if (shiny_charm == null) shiny_charm = PokecubeItems.getStack("shiny_charm");
-        shiny = inventory[0] != null && inventory[0].getIsItemStackEqual(shiny_charm);
+        shiny = inventory[0] != null && ItemStack.areItemStackTagsEqual(inventory[0], shiny_charm);
         if (shiny)
         {
             if (evt.location.distanceTo(Vector3.getNewVector().set(this)) <= distance)
@@ -328,7 +328,8 @@ public class TileEntityAFA extends TileEntityOwnable
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        return PokecubeManager.isFilled(stack) || PokecubeItems.getStack("shiny_charm").getIsItemStackEqual(stack);
+        return PokecubeManager.isFilled(stack)
+                || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), stack);
     }
 
     @Override

@@ -12578,6 +12578,7 @@
             <SIZES height="2.0" length="3.9" width="3.9"/>
             <TYPE type1="Water"/>
             <ABILITY normal="Drizzle"/>
+            <FORMEITEMS forme="'Kyogre Primal':AlphaOrb" />
         </STATS>
         <MOVES>
             <MISC moves="CALMMIND, ROAR, TOXIC, HAIL, HIDDENPOWER, ICEBEAM, BLIZZARD, HYPERBEAM, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, THUNDERBOLT, THUNDER, EARTHQUAKE, RETURN, BRICKBREAK, DOUBLETEAM, ROCKTOMB, FACADE, REST, ROUND, SCALD, GIGAIMPACT, THUNDERWAVE, PSYCHUP, BULLDOZE, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, SECRETPOWER, CONFIDE, SURF, STRENGTH, WATERFALL, DIVE"/>
@@ -12597,7 +12598,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>430</MASSKG>
             <BASESTATS atk="100" def="90" hp="100" spatk="150" spd="90" spdef="140"/>
-            <SIZES height="2.0" length="3.9" width="3.9"/>
+            <SIZES height="4.0" length="9" width="8"/>
             <TYPE type1="Water"/>
             <ABILITY normal="Primordial Sea"/>
         </STATS>
@@ -12624,6 +12625,7 @@
             <SIZES height="3.7" length="2.2" width="2.2"/>
             <TYPE type1="Ground"/>
             <ABILITY normal="Drought"/>
+            <FORMEITEMS forme="'Groudon Primal':OmegaOrb" />
         </STATS>
         <MOVES>
             <MISC moves="HONECLAWS, DRAGONCLAW, ROAR, TOXIC, BULKUP, HIDDENPOWER, SUNNYDAY, HYPERBEAM, PROTECT, SAFEGUARD, FRUSTRATION, SOLARBEAM, SMACKDOWN, THUNDERBOLT, THUNDER, EARTHQUAKE, RETURN, DIG, BRICKBREAK, DOUBLETEAM, FLAMETHROWER, SANDSTORM, FIREBLAST, ROCKTOMB, AERIALACE, FACADE, REST, ROUND, OVERHEAT, FOCUSBLAST, FLING, INCINERATE, SHADOWCLAW, GIGAIMPACT, ROCKPOLISH, STONEEDGE, THUNDERWAVE, SWORDSDANCE, PSYCHUP, BULLDOZE, ROCKSLIDE, DRAGONTAIL, SWAGGER, SLEEPTALK, SUBSTITUTE, ROCKSMASH, SECRETPOWER, POWERUPPUNCH, CONFIDE, CUT, STRENGTH"/>
@@ -12643,7 +12645,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>999.7</MASSKG>
             <BASESTATS atk="150" def="140" hp="100" spatk="100" spd="90" spdef="90"/>
-            <SIZES height="3.7" length="2.2" width="2.2"/>
+            <SIZES height="5" length="3" width="3"/>
             <TYPE type1="Ground"/>
             <ABILITY normal="Desolate Land"/>
         </STATS>
@@ -12723,7 +12725,7 @@
             <COMMONDROP>1:nether_star</COMMONDROP>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
-            <EXPERIENCEMODE>Slow 0 Normal</EXPERIENCEMODE>
+            <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
             <BIOMESANYACCEPTABLE>meteor 0.0001:1:1</BIOMESANYACCEPTABLE>
             <SPECIALCASES>legendary day night</SPECIALCASES>

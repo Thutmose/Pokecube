@@ -1058,7 +1058,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Check shearable interaction.
         if (getPokedexEntry().interact(key) && player.getHeldItem() != null
                 && player.getHeldItem().isItemEqual(key)) { return false; }
-
         // Check Pokedex Entry defined Interaction for player.
         if (getPokedexEntry().interact(player, this, true)) return true;
         Item torch = Item.getItemFromBlock(Blocks.torch);
@@ -1102,7 +1101,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         // Use shiny charm to make shiny
         if (player == getPokemonOwner() && itemstack != null
-                && itemstack.getIsItemStackEqual(PokecubeItems.getStack("shiny_charm")))
+                && ItemStack.areItemStackTagsEqual(itemstack, PokecubeItems.getStack("shiny_charm")))
         {
             if (player.isSneaking())
             {
@@ -1280,7 +1279,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         dropItem();
                     }
 
-                    setHeldItem(new ItemStack(itemstack.getItem(), 1, itemstack.getItemDamage()));
+                    setHeldItem(itemstack.copy());
                     itemstack.stackSize--;
 
                     if (itemstack.stackSize <= 0)

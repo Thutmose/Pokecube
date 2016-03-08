@@ -19,7 +19,9 @@ import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.BiomeDictionary.Type;
+import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
@@ -186,6 +188,30 @@ public class PokedexEntryLoader
         if (xmlStats.hatedMaterials != null)
         {
             entry.hatedMaterial = xmlStats.hatedMaterials.split(":");
+        }
+
+        if (xmlStats.formeItems != null)
+        {
+            Map<QName, String> values = xmlStats.formeItems.values;
+            for (QName key : values.keySet())
+            {
+                String keyString = key.toString();
+                String value = values.get(key);
+                if (keyString.equals("forme"))
+                {
+                    String[] args = value.split(":");
+                    PokedexEntry forme = Database.getEntry(args[0]);
+                    ItemStack stack = PokecubeItems.getStack(args[1]);
+
+                    if (stack == null || forme == null) System.err.println(
+                            "No stack " + args[1] + " for " + entry + " for forme " + forme + " (" + args[1] + ")");
+                    else
+                    {
+                        entry.formeItems.put(stack, forme);
+                        System.out.println(entry + " " + value + " " + forme);
+                    }
+                }
+            }
         }
     }
 
@@ -776,6 +802,8 @@ public class PokedexEntryLoader
         // MISC
         @XmlElement(name = "LOGIC")
         Stats  logics;
+        @XmlElement(name = "FORMEITEMS")
+        Stats  formeItems;
         @XmlElement(name = "MOVEMENTTYPE")
         String movementType;
         @XmlElement(name = "INTERACTIONLOGIC")
@@ -792,7 +820,6 @@ public class PokedexEntryLoader
             @XmlAnyAttribute
             Map<QName, String> values;
         }
-
     }
 
     @XmlRootElement(name = "MOVES")

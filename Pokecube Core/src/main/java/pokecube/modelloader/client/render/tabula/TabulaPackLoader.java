@@ -86,9 +86,24 @@ public class TabulaPackLoader extends AnimationLoader
         }
         catch (IOException e)
         {
-
+            if (entry != null && entry.baseForme != null)
+            {
+                TabulaModelSet set;
+                if ((set = modelMap.get(entry.baseForme)) == null)
+                {
+                    toReload.add(path);
+                }
+                else
+                {
+                    System.out.println(name + " copy from base");
+                    set = new TabulaModelSet(set, extraData, entry);
+                    modelMap.put(entry, set);
+                    if (!modelMaps.containsKey(entry.getName())
+                            || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
+                        AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
+                }
+            }
         }
-
         return false;
     }
 
@@ -203,6 +218,11 @@ public class TabulaPackLoader extends AnimationLoader
             }
         }
 
+        public TabulaModelSet(TabulaModelSet from, ResourceLocation extraData, PokedexEntry entry)
+        {
+            this(from.model, from.parser, extraData, entry);
+        }
+
         private void processMetadata()
         {
             for (CubeInfo cube : model.getCubes())
@@ -257,6 +277,9 @@ public class TabulaPackLoader extends AnimationLoader
         private void postInitAnimations()
         {
             HashSet<String> toRemove = Sets.newHashSet();
+            
+            if(entry.getName().contains("Primal")) System.out.println(loadedAnimations);
+            
             for (Animation anim : model.getAnimations())
             {
                 for (String s : loadedAnimations.keySet())

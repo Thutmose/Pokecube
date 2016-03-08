@@ -1,5 +1,6 @@
 package pokecube.core.network.pokemobs;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -48,11 +50,20 @@ public class PokemobPacketHandler
 {
     public static class MessageClient implements IMessage
     {
-        PacketBuffer buffer;
+        public PacketBuffer      buffer;
+
+        public static final byte CHANGEFORME = 0;
 
         public MessageClient()
         {
         };
+
+        public MessageClient(byte messageid, int entityId)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer(9));
+            buffer.writeByte(messageid);
+            buffer.writeInt(entityId);
+        }
 
         public MessageClient(byte[] data)
         {
@@ -96,7 +107,49 @@ public class PokemobPacketHandler
             @Override
             public MessageServer onMessage(MessageClient message, MessageContext ctx)
             {
+                new PacketHandler(PokecubeCore.getPlayer(null), message.buffer);
                 return null;
+            }
+
+            static class PacketHandler
+            {
+                final EntityPlayer player;
+                final PacketBuffer buffer;
+
+                public PacketHandler(EntityPlayer p, PacketBuffer b)
+                {
+                    this.player = p;
+                    this.buffer = b;
+                    Runnable toRun = new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            byte channel = buffer.readByte();
+                            int id = buffer.readInt();
+                            IPokemob pokemob;
+                            World world = player.getEntityWorld();
+                            pokemob = (IPokemob) world.getEntityByID(id);
+                            if (pokemob == null) { return; }
+
+                            if (channel == CHANGEFORME)
+                            {
+                                try
+                                {
+                                    NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
+                                    String forme = tag.getString("f");
+                                    pokemob.changeForme(forme);
+                                }
+                                catch (IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+                    };
+                    PokecubeCore.proxy.getMainThreadListener().addScheduledTask(toRun);
+                }
             }
         }
     }

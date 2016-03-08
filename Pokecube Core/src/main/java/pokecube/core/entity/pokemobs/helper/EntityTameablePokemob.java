@@ -483,7 +483,9 @@ public abstract class EntityTameablePokemob extends EntityTameable
     {
         try
         {
+            ItemStack oldStack = getHeldItem();
             pokeChest.setInventorySlotContents(1, itemStack);
+            getPokedexEntry().onHeldItemChange(oldStack, itemStack, this);
         }
         catch (Exception e)
         {
@@ -594,11 +596,12 @@ public abstract class EntityTameablePokemob extends EntityTameable
             if (getHealth() > 0 && evtrec.isCanceled()) { return; }
 
             Entity owner = getPokemonOwner();
-            this.setPokemonAIState(MEGAFORME, false);
-
-            if (getPokedexEntry().getName().toLowerCase().contains(" mega"))
+            if (getPokemonAIState(MEGAFORME))
             {
-                megaEvolve(getPokedexEntry().getBaseName()).returnToPokecube();
+                this.setPokemonAIState(MEGAFORME, false);
+                IPokemob base = megaEvolve(getPokedexEntry().getBaseName());
+                if (base == this) returning = false;
+                base.returnToPokecube();
                 return;
             }
 

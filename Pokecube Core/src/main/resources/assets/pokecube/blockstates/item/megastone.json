@@ -55,6 +55,16 @@
         "textures": {
           "layer0": "pokecube:items/shiny_charm"
         }
+      },
+      "alphaorb": {
+        "textures": {
+          "layer0": "pokecube:items/AlphaOrb"
+        }
+      },
+      "omegaorb": {
+        "textures": {
+          "layer0": "pokecube:items/OmegaOrb"
+        }
       }
     }
   }

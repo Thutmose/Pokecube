@@ -276,6 +276,8 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
     {
         GL11.glPushMatrix();
         if (set == null) set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry());
+        if (set == null) set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry().baseForme);
+        if (set == null) return;
         // Allows specific part hiding based on entity state. should probably be
         // somehow moved over to this class somewhere
         isHidden = isHidden(identifier, set, (IPokemob) entity, isHidden);

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -46,63 +47,63 @@ public class PokedexEntry
 {
     // TODO write a way to load this from a single file, so I can have 1 file
     // per entry.
-    Random                                  rand               = new Random();
-    protected int                           pokedexNb;
-    protected String                        name;
-    protected String                        baseName;
-    protected PokeType                      type1;
-    protected PokeType                      type2;
+    Random                                     rand               = new Random();
+    protected int                              pokedexNb;
+    protected String                           name;
+    protected String                           baseName;
+    protected PokeType                         type1;
+    protected PokeType                         type2;
     /** The relation between xp and level */
-    protected int                           evolutionMode      = 1;
+    protected int                              evolutionMode      = 1;
     /** base xp given from defeating */
-    protected int                           baseXP;
-    protected int                           catchRate          = -1;
-    protected int                           sexeRatio          = -1;
-    protected String                        sound;
-    protected int[]                         stats;
-    protected byte[]                        evs;
+    protected int                              baseXP;
+    protected int                              catchRate          = -1;
+    protected int                              sexeRatio          = -1;
+    protected String                           sound;
+    protected int[]                            stats;
+    protected byte[]                           evs;
     /** Used to determine egg group */
-    public String[]                         species;
+    public String[]                            species;
     /** Inital list of species which are prey */
-    protected String[]                      food;
+    protected String[]                         food;
     /** Array used for animated or gender based textures. Index 0 is the male
      * textures, index 1 is the females */
-    public String[][]                       textureDetails     = { { "" }, null };
+    public String[][]                          textureDetails     = { { "" }, null };
     /** The abilities available to the pokedex entry. */
-    protected ArrayList<String>             abilities          = Lists.newArrayList();
+    protected ArrayList<String>                abilities          = Lists.newArrayList();
     /** The abilities available to the pokedex entry. */
-    protected ArrayList<String>             abilitiesHidden    = Lists.newArrayList();
+    protected ArrayList<String>                abilitiesHidden    = Lists.newArrayList();
     /** Initial Happiness of the pokemob */
-    protected int                           baseHappiness;
+    protected int                              baseHappiness;
     /** Mod which owns the pokemob, used for texture location. */
-    private String                          modId;
+    private String                             modId;
     /** Movement type for this mob */
-    public PokecubeMod.Type                 mobType            = null;
+    public PokecubeMod.Type                    mobType            = null;
     /** If the above is floating, how high does it try to float */
-    public double                           preferedHeight     = 1.5;
+    public double                              preferedHeight     = 1.5;
     /** Offset between top of hitbox and where player sits */
-    public double                           mountedOffset      = 1;
+    public double                              mountedOffset      = 1;
     /** indicatees of the specified special texture exists. Index 4 is used for
      * if the mob can be dyed */
-    public boolean[]                        hasSpecialTextures = { false, false, false, false, false };
+    public boolean[]                           hasSpecialTextures = { false, false, false, false, false };
     /** Default value of specialInfo, used to determine default colour of
      * recolourable parts */
-    public int                              defaultSpecial     = 0;
+    public int                                 defaultSpecial     = 0;
     /** Can it megaevolve */
-    public boolean                          hasMegaForm        = false;
+    public boolean                             hasMegaForm        = false;
     /** Materials which will hurt or make it despawn. */
-    public String[]                         hatedMaterial;
+    public String[]                            hatedMaterial;
     /** Particle Effects. */
-    public String[]                         particleData;
-    public boolean                          canSitShoulder     = false;
-    public boolean                          shouldFly          = false;
-    public boolean                          shouldDive         = false;
+    public String[]                            particleData;
+    public boolean                             canSitShoulder     = false;
+    public boolean                             shouldFly          = false;
+    public boolean                             shouldDive         = false;
     /** Mass of the pokemon in kg. */
-    public double                           mass               = -1;
+    public double                              mass               = -1;
     /** Will it protect others. */
-    public boolean                          isSocial           = true;
+    public boolean                             isSocial           = true;
     /** Will the pokemob try to build colonies with others of it's kind */
-    public boolean                          colonyBuilder      = false;
+    public boolean                             colonyBuilder      = false;
     /** light,<br>
      * rock,<br>
      * power (near redstone blocks),<br>
@@ -110,61 +111,63 @@ public class PokedexEntry
      * never hungry,<br>
      * berries,<br>
      * water (filter feeds from water) */
-    public boolean[]                        foods              = { false, false, false, false, false, true, false };
+    public boolean[]                           foods              = { false, false, false, false, false, true, false };
     /** Times not included here the pokemob will go to sleep when idle. */
-    protected List<TimePeriod>              activeTimes        = new ArrayList<TimePeriod>();
+    protected List<TimePeriod>                 activeTimes        = new ArrayList<TimePeriod>();
 
-    public boolean                          isStationary       = false;
+    public boolean                             isStationary       = false;
 
-    public static TimePeriod                night              = new TimePeriod(0.6, 0.9);
-    public static TimePeriod                day                = new TimePeriod(0.0, 0.5);
-    public static TimePeriod                dusk               = new TimePeriod(0.5, 0.6);
-    public static TimePeriod                dawn               = new TimePeriod(0.9, 0.0);
+    public static TimePeriod                   night              = new TimePeriod(0.6, 0.9);
+    public static TimePeriod                   day                = new TimePeriod(0.0, 0.5);
+    public static TimePeriod                   dusk               = new TimePeriod(0.5, 0.6);
+    public static TimePeriod                   dawn               = new TimePeriod(0.9, 0.0);
 
-    protected ItemStack                     foodDrop;
+    protected ItemStack                        foodDrop;
 
     /** the key is the itemstack, the value is the chance, out of 100, if it is
      * picked. */
 
-    public Map<ItemStack, Integer>          rareDrops          = new HashMap<ItemStack, Integer>();
+    public Map<ItemStack, Integer>             rareDrops          = new HashMap<ItemStack, Integer>();
 
-    public Map<ItemStack, Integer>          commonDrops        = new HashMap<ItemStack, Integer>();
+    public Map<ItemStack, Integer>             commonDrops        = new HashMap<ItemStack, Integer>();
 
-    public Map<ItemStack, Integer>          heldItems          = new HashMap<ItemStack, Integer>();
+    public Map<ItemStack, Integer>             heldItems          = new HashMap<ItemStack, Integer>();
 
     /** Map of forms assosciated with this one. */
-    public Map<String, PokedexEntry>        forms              = new HashMap<String, PokedexEntry>();
+    public Map<String, PokedexEntry>           forms              = new HashMap<String, PokedexEntry>();
     /** A map of father pokedexnb : child pokedexNbs */
-    protected Map<Integer, int[]>           childNumbers       = new HashMap<Integer, int[]>();
+    protected Map<Integer, int[]>              childNumbers       = new HashMap<Integer, int[]>();
     /** Interactions with items from when player right clicks. */
-    private InteractionLogic                interactionLogic   = new InteractionLogic();
+    private InteractionLogic                   interactionLogic   = new InteractionLogic();
     /** Pokemobs with these entries will be hunted. */
-    private List<PokedexEntry>              prey               = new ArrayList<PokedexEntry>();
+    private List<PokedexEntry>                 prey               = new ArrayList<PokedexEntry>();
 
-    public float                            height             = -1;
-    public float                            width              = -1;
-    public float                            length             = -1;
+    public float                               height             = -1;
+    public float                               width              = -1;
+    public float                               length             = -1;
 
-    private int                             childNb            = 0;
+    private int                                childNb            = 0;
 
-    protected boolean                       hasStats           = false;
-    protected boolean                       hasEVXP            = false;
+    protected boolean                          hasStats           = false;
+    protected boolean                          hasEVXP            = false;
 
     /** All possible moves */
-    private List<String>                    possibleMoves;
+    private List<String>                       possibleMoves;
     /** Map of Level to Moves learned. */
-    private Map<Integer, ArrayList<String>> lvlUpMoves;
-    private SpawnData                       spawns;
+    private Map<Integer, ArrayList<String>>    lvlUpMoves;
+    private SpawnData                          spawns;
     /** The list of pokemon this can evolve into */
-    public List<EvolutionData>              evolutions         = new ArrayList<PokedexEntry.EvolutionData>();
+    public List<EvolutionData>                 evolutions         = new ArrayList<PokedexEntry.EvolutionData>();
     /** This list will contain all pokemon that are somehow related to this one
      * via evolution chains */
-    public List<PokedexEntry>               related            = new ArrayList<PokedexEntry>();
+    public List<PokedexEntry>                  related            = new ArrayList<PokedexEntry>();
     /** Who this pokemon evolves from. */
-    public PokedexEntry                     evolvesFrom        = null;
-    public EvolutionData                    evolvesBy          = null;
+    public PokedexEntry                        evolvesFrom        = null;
+    public EvolutionData                       evolvesBy          = null;
 
-    public PokedexEntry                     baseForme          = null;
+    public PokedexEntry                        baseForme          = null;
+
+    protected HashMap<ItemStack, PokedexEntry> formeItems         = Maps.newHashMap();
 
     private PokedexEntry(int nb, String name, List<String> moves, Map<Integer, ArrayList<String>> lvlUpMoves2)
     {
@@ -1038,6 +1041,59 @@ public class PokedexEntry
 
     }
 
+    /** to be called after the new stack is applied as held item.
+     * 
+     * @param oldStack
+     * @param newStack
+     * @param pokemob */
+    public void onHeldItemChange(ItemStack oldStack, ItemStack newStack, IPokemob pokemob)
+    {
+        if (newStack == null && oldStack == null) return;
+        PokedexEntry newForme = null;
+        if (newStack != null)
+        {
+            for (ItemStack stack : formeItems.keySet())
+                if (isSameStack(stack, newStack))
+                {
+                    newForme = formeItems.get(stack);
+                    break;
+                }
+            if (newForme == null && baseForme != null)
+            {
+                for (ItemStack stack : baseForme.formeItems.keySet())
+                    if (isSameStack(stack, newStack))
+                    {
+                        newForme = baseForme.formeItems.get(stack);
+                        break;
+                    }
+            }
+        }
+        else if (oldStack != null && baseForme != null)
+        {
+            for (ItemStack stack : baseForme.formeItems.keySet())
+                if (isSameStack(stack, newStack))
+                {
+                    newForme = baseForme.formeItems.get(stack);
+                    break;
+                }
+        }
+        if (newForme != null)
+        {
+//            pokemob.megaEvolve(newForme.getName());
+            pokemob.changeForme(newForme.getName());
+        }
+        else if (baseForme != null)
+        {
+//            pokemob.megaEvolve(baseForme.getName());
+            pokemob.changeForme(baseForme.getName());
+        }
+    }
+
+    public static boolean isSameStack(ItemStack a, ItemStack b)
+    {
+        return ItemStack.areItemsEqual(a, b) && ItemStack.areItemStackTagsEqual(a, b);
+    }
+
     public static class EvolutionData
     {
         public final int evolutionNb;
@@ -1078,7 +1134,7 @@ public class PokedexEntry
                 System.out.println(this);
                 e.printStackTrace();
             }
-             data = null;
+            data = null;
         }
 
         public EvolutionData(int number, String data, String FX)

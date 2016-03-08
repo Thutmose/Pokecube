@@ -59,7 +59,6 @@ public class ClientProxy extends CommonProxy
     @Override
     public void registerRenderInformation()
     {
-        populateModels();
         for (String modid : modelProviders.keySet())
         {
             Object mod = modelProviders.get(modid);
@@ -100,7 +99,8 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation("pokecube_ml:modelreloader", "inventory"));
     }
 
-    public static void populateModels()
+    @Override
+    public void populateModels()
     {
         TabulaPackLoader.clear();
 
@@ -190,6 +190,7 @@ public class ClientProxy extends CommonProxy
             }
         }
         TabulaPackLoader.postProcess();
+        registerRenderInformation();
     }
 
     @Override

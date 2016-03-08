@@ -17,8 +17,8 @@ public class AIReturnHome extends AIBase
     final PokedexEntry         entry;
     private double             speed;
 
-    Vector3 v  = Vector3.getNewVector();
-    Vector3 v1 = Vector3.getNewVector();
+    Vector3                    v  = Vector3.getNewVector();
+    Vector3                    v1 = Vector3.getNewVector();
 
     public AIReturnHome(EntityLiving entity)
     {
@@ -33,7 +33,8 @@ public class AIReturnHome extends AIBase
     public boolean shouldRun()
     {
         BlockPos home = mob.getHome();
-        if (mob.getHomeDistance() * mob.getHomeDistance() < home.distanceSq(entity.getPosition())) { return false; }
+        if (entity.getAttackTarget() != null || mob.getHomeDistance() * mob.getHomeDistance() < home
+                .distanceSq(entity.getPosition())) { return false; }
 
         PokedexEntry entry = mob.getPokedexEntry();
         boolean activeTime = false;

@@ -17,8 +17,15 @@ public class ItemTextureHandler
     static
     {
         megaVariants.add("megastone");
-        megaVariants.add("gardevoirmega");
         megaVariants.add("shiny_charm");
+        megaVariants.add("gardevoirmega");
+        megaVariants.add("charizardmega-y");
+        megaVariants.add("scizormega");
+        megaVariants.add("sceptilemega");
+        megaVariants.add("salamencemega");
+        megaVariants.add("gallademega");
+        megaVariants.add("absolmega");
+        megaVariants.add("blastoisemega");
     }
     
     public static void registerMegaStoneItemModels()

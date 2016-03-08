@@ -40,7 +40,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        return pokemon.getPokemonAIState(IPokemob.NEWEXECUTEMOVE);
+        return pokemon.getPokemonAIState(IPokemob.NEWEXECUTEMOVE) && entity.getAttackTarget() == null;
     }
 
     /** Returns whether an in-progress EntityAIBase should continue executing */
@@ -120,8 +120,8 @@ public class PokemobAIUtilityMove extends EntityAIBase
         }
         if (dist < var1)
         {
-//            move.doWorldAction(pokemon, destination);
-            move.attack(pokemon, destination, (float)destination.distToEntity(entity));
+            // move.doWorldAction(pokemon, destination);
+            move.attack(pokemon, destination, (float) destination.distToEntity(entity));
             entity.getNavigator().clearPathEntity();
             pokemon.setPokemonAIState(IPokemob.EXECUTINGMOVE, false);
             destination = null;

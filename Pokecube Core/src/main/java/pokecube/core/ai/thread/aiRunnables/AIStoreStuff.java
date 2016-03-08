@@ -41,7 +41,7 @@ public class AIStoreStuff extends AIBase
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
-        if (world == null || entity.ticksExisted % 10 > 0 || tameCheck() || cooldowns[0] > 0 || cooldowns[1] > 0)
+        if (world == null || entity.getAttackTarget()!=null || entity.ticksExisted % 10 > 0 || tameCheck() || cooldowns[0] > 0 || cooldowns[1] > 0)
             return false;
         IPokemob pokemob = (IPokemob) entity;
 

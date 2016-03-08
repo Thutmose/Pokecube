@@ -1,9 +1,6 @@
 package pokecube.core.network.pokemobs;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -11,7 +8,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatAllowedCharacters;
@@ -25,13 +21,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.GuardAI;
-import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.megastuff.ItemMegastone;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Utility;
@@ -271,82 +265,41 @@ public class PokemobPacketHandler
                             else if (channel == CHANGEFORM)
                             {
                                 if (pokemob.getPokemonAIState(IMoveConstants.EVOLVING)) return;
+                                PokedexEntry megaEntry = pokemob.getPokedexEntry().getEvo(pokemob);
 
-                                int happiness = pokemob.getHappiness();
-                                ItemStack held = ((EntityLiving) pokemob).getHeldItem();
-                                if (held == null || !(held.getItem() instanceof ItemMegastone)
-                                        || (happiness < 255 && !player.capabilities.isCreativeMode))
-                                {
-                                    String mess = "";
-                                    if (held == null || !(held.getItem() instanceof ItemMegastone))
-                                        mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.nostone",
-                                                pokemob.getPokemonDisplayName());
-                                    else StatCollector.translateToLocalFormatted("pokemob.megaevolve.nothappy",
-                                            pokemob.getPokemonDisplayName());
-                                    player.addChatMessage(new ChatComponentText(mess));
-                                    return;
-                                }
-                                NBTTagCompound tag = held.getTagCompound();
-                                if (tag == null)
-                                {
-                                    held.setTagCompound(tag = new NBTTagCompound());
-                                }
-                                String stackname = tag.getString("pokemon");
+                                System.out.println(megaEntry);
 
-                                String forme = null;
-
-                                if (!(stackname == null || stackname.isEmpty()))
+                                if (megaEntry != null
+                                        && megaEntry.getBaseName().equals(pokemob.getPokedexEntry().getBaseName()))
                                 {
-                                    forme = stackname;
-                                }
-                                if (forme == null)
-                                {
-                                    List<String> keys = new ArrayList<String>(pokemob.getPokedexEntry().forms.keySet());
-                                    Collections.shuffle(keys);
-                                    for (String s : keys)
+                                    String old = pokemob.getPokemonDisplayName();
+                                    if (pokemob.getPokedexEntry() == megaEntry)
                                     {
-                                        String name = pokemob.getPokedexEntry().forms.get(s).getName();
-                                        String[] args = name.split(" ");
-                                        if (args.length > 1)
-                                        {
-                                            String mega = args[1];
-                                            if (mega.toLowerCase().contains("mega"))
-                                            {
-                                                forme = s;
-                                                break;
-                                            }
-                                        }
+                                        pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
+                                        megaEntry = pokemob.getPokedexEntry().baseForme;
+                                        String mess = StatCollector.translateToLocalFormatted(
+                                                "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());
+                                        player.addChatMessage(new ChatComponentText(mess));
+                                    }
+                                    else
+                                    {
+                                        pokemob.setPokemonAIState(IPokemob.MEGAFORME, true);
+                                        pokemob.megaEvolve(megaEntry.getName());
+                                        String mess = StatCollector.translateToLocalFormatted(
+                                                "pokemob.megaevolve.success", old, megaEntry.getTranslatedName());
+                                        player.addChatMessage(new ChatComponentText(mess));
                                     }
                                 }
-                                if (forme != null)
+                                else
                                 {
-                                    if (stackname == null || stackname.isEmpty())
-                                    {
-                                        tag.setString("pokemon", forme);
-                                        held.setTagCompound(tag);
-                                    }
-
-                                    PokedexEntry megaEntry = Database.getEntry(forme);
-                                    if (megaEntry != null
-                                            && megaEntry.getBaseName().equals(pokemob.getPokedexEntry().getBaseName()))
+                                    if (pokemob.getPokemonAIState(IPokemob.MEGAFORME))
                                     {
                                         String old = pokemob.getPokemonDisplayName();
-                                        if (pokemob.getPokedexEntry() == megaEntry)
-                                        {
-                                            pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
-                                            megaEntry = pokemob.getPokedexEntry().baseForme;
-                                            String mess = StatCollector.translateToLocalFormatted(
-                                                    "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());
-                                            player.addChatMessage(new ChatComponentText(mess));
-                                        }
-                                        else
-                                        {
-                                            pokemob.setPokemonAIState(IPokemob.MEGAFORME, true);
-                                            pokemob.megaEvolve(forme);
-                                            String mess = StatCollector.translateToLocalFormatted(
-                                                    "pokemob.megaevolve.success", old, megaEntry.getTranslatedName());
-                                            player.addChatMessage(new ChatComponentText(mess));
-                                        }
+                                        pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
+                                        megaEntry = pokemob.getPokedexEntry().baseForme;
+                                        String mess = StatCollector.translateToLocalFormatted(
+                                                "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());
+                                        player.addChatMessage(new ChatComponentText(mess));
                                     }
                                     else
                                     {
@@ -354,12 +307,6 @@ public class PokemobPacketHandler
                                                 "pokemob.megaevolve.wrongstone", pokemob.getPokemonDisplayName());
                                         player.addChatMessage(new ChatComponentText(mess));
                                     }
-                                }
-                                else
-                                {
-                                    String mess = StatCollector.translateToLocalFormatted("pokemob.megaevolve.nomega",
-                                            pokemob.getPokemonDisplayName());
-                                    player.addChatMessage(new ChatComponentText(mess));
                                 }
 
                             }

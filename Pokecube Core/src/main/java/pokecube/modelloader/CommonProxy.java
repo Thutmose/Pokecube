@@ -59,6 +59,8 @@ public class CommonProxy implements IGuiHandler
 
     public void postInit()
     {
+        ExtraDatabase.apply();
+        ExtraDatabase.cleanup();
     }
 
     public void init()
@@ -111,8 +113,6 @@ public class CommonProxy implements IGuiHandler
                 }
             }
         }
-        ExtraDatabase.apply();
-        ExtraDatabase.cleanup();
     }
 
     private boolean[] providesModels(String modid, Object mod, PokedexEntry... entry)

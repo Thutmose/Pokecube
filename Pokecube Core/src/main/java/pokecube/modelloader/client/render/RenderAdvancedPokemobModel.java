@@ -89,7 +89,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             GL11.glPushMatrix();
             EntityLivingBase player = Minecraft.getMinecraft().thePlayer;
             float dist = entityliving.getDistanceToEntity(player);
-            if (dist < 2) GlStateManager.disableDepth();
+            if (dist < 5) GlStateManager.disableDepth();
 
             GL11.glTranslatef((float) d + 0.0F, (float) d1 + entityliving.height - 0.35f, (float) d2);
             GL11.glNormal3f(0.0F, 1.0F, 0.0F);

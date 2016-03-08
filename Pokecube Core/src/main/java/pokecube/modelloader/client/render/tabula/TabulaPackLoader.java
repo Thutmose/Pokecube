@@ -95,7 +95,6 @@ public class TabulaPackLoader extends AnimationLoader
                 }
                 else
                 {
-                    System.out.println(name + " copy from base");
                     set = new TabulaModelSet(set, extraData, entry);
                     modelMap.put(entry, set);
                     if (!modelMaps.containsKey(entry.getName())
@@ -277,9 +276,9 @@ public class TabulaPackLoader extends AnimationLoader
         private void postInitAnimations()
         {
             HashSet<String> toRemove = Sets.newHashSet();
-            
-            if(entry.getName().contains("Primal")) System.out.println(loadedAnimations);
-            
+
+            if (entry.getName().contains("Primal")) System.out.println(loadedAnimations);
+
             for (Animation anim : model.getAnimations())
             {
                 for (String s : loadedAnimations.keySet())

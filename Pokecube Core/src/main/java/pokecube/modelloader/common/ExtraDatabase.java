@@ -41,16 +41,17 @@ public class ExtraDatabase
                 JAXBContext jaxbContext = JAXBContext.newInstance(XMLFile.class);
                 Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
                 XMLFile file = (XMLFile) unmarshaller.unmarshal(new StringReader(xmls.get(s)));
-
                 if (entry == null && file.entry != null)
                 {
                     String name = file.entry.name;
                     int number = file.entry.number;
                     entry = new PokedexEntry(number, name);
+                    System.out.println("Updating Entry stage 1 for " + entry);
                     PokedexEntryLoader.updateEntry(file.entry, true);
                 }
                 if (file.entry != null)
                 {
+                    System.out.println("Updating Entry stage 2 for " + entry);
                     PokedexEntryLoader.updateEntry(file.entry, false);
                 }
 

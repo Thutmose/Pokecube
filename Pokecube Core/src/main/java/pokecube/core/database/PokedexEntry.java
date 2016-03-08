@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
@@ -35,6 +36,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Cruncher;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
@@ -168,6 +170,7 @@ public class PokedexEntry
     public PokedexEntry                        baseForme          = null;
 
     protected HashMap<ItemStack, PokedexEntry> formeItems         = Maps.newHashMap();
+    protected HashMap<PokedexEntry, MegaRule>  megaRules          = Maps.newHashMap();
 
     private PokedexEntry(int nb, String name, List<String> moves, Map<Integer, ArrayList<String>> lvlUpMoves2)
     {
@@ -1053,7 +1056,7 @@ public class PokedexEntry
         if (newStack != null)
         {
             for (ItemStack stack : formeItems.keySet())
-                if (isSameStack(stack, newStack))
+                if (Tools.isSameStack(stack, newStack))
                 {
                     newForme = formeItems.get(stack);
                     break;
@@ -1061,7 +1064,7 @@ public class PokedexEntry
             if (newForme == null && baseForme != null)
             {
                 for (ItemStack stack : baseForme.formeItems.keySet())
-                    if (isSameStack(stack, newStack))
+                    if (Tools.isSameStack(stack, newStack))
                     {
                         newForme = baseForme.formeItems.get(stack);
                         break;
@@ -1071,7 +1074,7 @@ public class PokedexEntry
         else if (oldStack != null && baseForme != null)
         {
             for (ItemStack stack : baseForme.formeItems.keySet())
-                if (isSameStack(stack, newStack))
+                if (Tools.isSameStack(stack, newStack))
                 {
                     newForme = baseForme.formeItems.get(stack);
                     break;
@@ -1079,19 +1082,25 @@ public class PokedexEntry
         }
         if (newForme != null)
         {
-//            pokemob.megaEvolve(newForme.getName());
+            // pokemob.megaEvolve(newForme.getName());
             pokemob.changeForme(newForme.getName());
         }
         else if (baseForme != null)
         {
-//            pokemob.megaEvolve(baseForme.getName());
+            // pokemob.megaEvolve(baseForme.getName());
             pokemob.changeForme(baseForme.getName());
         }
     }
 
-    public static boolean isSameStack(ItemStack a, ItemStack b)
+    public PokedexEntry getEvo(IPokemob pokemob)
     {
-        return ItemStack.areItemsEqual(a, b) && ItemStack.areItemStackTagsEqual(a, b);
+        for (Entry<PokedexEntry, MegaRule> e : megaRules.entrySet())
+        {
+            MegaRule rule = e.getValue();
+            PokedexEntry entry = e.getKey();
+            if (rule.shouldMegaEvolve(pokemob)) return entry;
+        }
+        return null;
     }
 
     public static class EvolutionData
@@ -1750,5 +1759,10 @@ public class PokedexEntry
             else new NullPointerException("Errored Item for " + info);
             return ret;
         }
+    }
+
+    public static interface MegaRule
+    {
+        boolean shouldMegaEvolve(IPokemob mobIn);
     }
 }

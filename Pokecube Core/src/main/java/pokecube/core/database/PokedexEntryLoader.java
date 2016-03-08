@@ -19,13 +19,16 @@ import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
+import pokecube.core.database.PokedexEntry.MegaRule;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.TypeEntry;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
@@ -81,15 +84,15 @@ public class PokedexEntryLoader
     {
 
         // Items
-        entry.addItems(xmlStats.commonDrop, entry.commonDrops);
-        entry.addItems(xmlStats.rareDrop, entry.rareDrops);
-        entry.addItems(xmlStats.heldItems, entry.heldItems);
-        entry.foodDrop = entry.parseStack(xmlStats.foodDrop);
-        entry.shouldFly = entry.isType(PokeType.flying);
+        if (xmlStats.commonDrop != null) entry.addItems(xmlStats.commonDrop, entry.commonDrops);
+        if (xmlStats.rareDrop != null) entry.addItems(xmlStats.rareDrop, entry.rareDrops);
+        if (xmlStats.heldItems != null) entry.addItems(xmlStats.heldItems, entry.heldItems);
+        if (xmlStats.foodDrop != null) entry.foodDrop = entry.parseStack(xmlStats.foodDrop);
 
         // Logics
         if (xmlStats.logics != null)
         {
+            entry.shouldFly = entry.isType(PokeType.flying);
             Map<QName, String> values = xmlStats.logics.values;
             for (QName key : values.keySet())
             {
@@ -197,18 +200,67 @@ public class PokedexEntryLoader
             {
                 String keyString = key.toString();
                 String value = values.get(key);
+
                 if (keyString.equals("forme"))
                 {
-                    String[] args = value.split(":");
-                    PokedexEntry forme = Database.getEntry(args[0]);
-                    ItemStack stack = PokecubeItems.getStack(args[1]);
-
-                    if (stack == null || forme == null) System.err.println(
-                            "No stack " + args[1] + " for " + entry + " for forme " + forme + " (" + args[1] + ")");
-                    else
+                    String[] vals = value.split(",");
+                    for (String val : vals)
                     {
-                        entry.formeItems.put(stack, forme);
-                        System.out.println(entry + " " + value + " " + forme);
+                        String[] args = val.split(":");
+                        PokedexEntry forme = Database.getEntry(args[0]);
+                        ItemStack stack = PokecubeItems.getStack(args[1]);
+                        if (stack == null || forme == null) System.err.println(
+                                "No stack " + args[1] + " for " + entry + " for forme " + forme + " (" + args[1] + ")");
+                        else
+                        {
+                            entry.formeItems.put(stack, forme);
+                        }
+                    }
+
+                }
+            }
+        }
+        if (xmlStats.megaRules != null)
+        {
+            Map<QName, String> values = xmlStats.megaRules.values;
+            for (QName key : values.keySet())
+            {
+                String keyString = key.toString();
+                String value = values.get(key);
+                if (keyString.equals("forme"))
+                {
+                    String[] args = value.split(",");
+                    for (String s : args)
+                    {
+                        String forme = "";
+                        String item = "";
+                        String move = "";
+                        String[] args2 = s.split(":");
+                        for (String s1 : args2)
+                        {
+                            String arg1 = s1.substring(0, 1);
+                            String arg2 = s1.substring(1);
+                            if (arg1.equals("N"))
+                            {
+                                forme = arg2;
+                            }
+                            else if (arg1.equals("I"))
+                            {
+                                item = arg2;
+                            }
+                            else if (arg1.equals("M"))
+                            {
+                                move = arg2;
+                            }
+                        }
+                        PokedexEntry formeEntry = Database.getEntry(forme);
+                        if (!forme.isEmpty() && formeEntry != null)
+                        {
+                            ItemStack stack = PokecubeItems.getStack(item);
+                            String moveName = move;
+                            MegaRule rule = new MegaEvoRule(stack, moveName, entry);
+                            entry.megaRules.put(formeEntry, rule);
+                        }
                     }
                 }
             }
@@ -804,6 +856,8 @@ public class PokedexEntryLoader
         Stats  logics;
         @XmlElement(name = "FORMEITEMS")
         Stats  formeItems;
+        @XmlElement(name = "MEGARULES")
+        Stats  megaRules;
         @XmlElement(name = "MOVEMENTTYPE")
         String movementType;
         @XmlElement(name = "INTERACTIONLOGIC")
@@ -842,6 +896,39 @@ public class PokedexEntryLoader
         {
             @XmlAttribute(name = "moves")
             String moves;
+        }
+    }
+
+    public static class MegaEvoRule implements MegaRule
+    {
+        final ItemStack    stack;
+        final String       moveName;
+        final PokedexEntry baseForme;
+
+        public MegaEvoRule(ItemStack stack, String moveName, PokedexEntry baseForme)
+        {
+            this.stack = stack;
+            this.moveName = moveName;
+            this.baseForme = baseForme;
+        }
+
+        @Override
+        public boolean shouldMegaEvolve(IPokemob mobIn)
+        {
+            boolean rightStack = true;
+            boolean hasMove = true;
+            boolean rule = false;
+            if (stack != null)
+            {
+                rightStack = Tools.isSameStack(stack, ((EntityLivingBase) mobIn).getHeldItem());
+                rule = true;
+            }
+            if (moveName != null && !moveName.isEmpty())
+            {
+                hasMove = Tools.hasMove(moveName, mobIn);
+                rule = true;
+            }
+            return rule && hasMove && rightStack;
         }
     }
 }

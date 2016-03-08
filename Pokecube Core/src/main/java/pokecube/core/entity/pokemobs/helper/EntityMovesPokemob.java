@@ -33,7 +33,6 @@ import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Move_Base;
@@ -326,7 +325,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         for (String s : getMoves())
         {
-            if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) return true;
+            if (s != null && s.equalsIgnoreCase(move)) return true;
         }
         return false;
     }

@@ -206,7 +206,7 @@
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
-            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>110.5</MASSKG>
             <BASESTATS atk="130" def="111" hp="78" spatk="130" spd="100" spdef="85"/>
             <SIZES length="1.0" width="1.0"/>
@@ -218,7 +218,7 @@
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
-            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>100.5</MASSKG>
             <BASESTATS atk="104" def="78" hp="78" spatk="159" spd="100" spdef="115"/>
             <SIZES length="1.0" width="1.0"/>

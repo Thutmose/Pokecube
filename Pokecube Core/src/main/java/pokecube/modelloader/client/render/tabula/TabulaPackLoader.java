@@ -276,9 +276,6 @@ public class TabulaPackLoader extends AnimationLoader
         private void postInitAnimations()
         {
             HashSet<String> toRemove = Sets.newHashSet();
-
-            if (entry.getName().contains("Primal")) System.out.println(loadedAnimations);
-
             for (Animation anim : model.getAnimations())
             {
                 for (String s : loadedAnimations.keySet())

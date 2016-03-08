@@ -222,6 +222,11 @@ public class Database implements IMoveConstants
                 System.out.println(e + " Has no Species");
                 Thread.dumpStack();
             }
+            if (e.type1 == null && e.baseForme != null)
+            {
+                e.type1 = e.baseForme.type1;
+                e.type2 = e.baseForme.type2;
+            }
             if (e.type2 == null) e.type2 = PokeType.unknown;
             if (!Pokedex.getInstance().getEntries().contains(e.getPokedexNb()))
             {

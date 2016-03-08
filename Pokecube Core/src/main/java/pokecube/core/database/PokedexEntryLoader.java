@@ -256,7 +256,7 @@ public class PokedexEntryLoader
                         PokedexEntry formeEntry = Database.getEntry(forme);
                         if (!forme.isEmpty() && formeEntry != null)
                         {
-                            ItemStack stack = PokecubeItems.getStack(item);
+                            ItemStack stack = item.isEmpty() ? null : PokecubeItems.getStack(item);
                             String moveName = move;
                             MegaRule rule = new MegaEvoRule(stack, moveName, entry);
                             entry.megaRules.put(formeEntry, rule);

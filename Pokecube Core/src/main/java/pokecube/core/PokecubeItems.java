@@ -273,7 +273,7 @@ public class PokecubeItems extends Items
         return items.get(name.toLowerCase().trim());
     }
 
-    public static ItemStack getStack(String name)
+    public static ItemStack getStack(String name, boolean stacktrace)
     {
         name = name.toLowerCase().trim();
         if (itemstacks.get(name) != null) return itemstacks.get(name).copy();
@@ -304,9 +304,17 @@ public class PokecubeItems extends Items
         else
         {
             System.err.println(name + " Not found in list of items.");
-            Thread.dumpStack();
+            if (stacktrace)
+            {
+                Thread.dumpStack();
+            }
         }
         return null;
+    }
+
+    public static ItemStack getStack(String name)
+    {
+        return getStack(name, true);
     }
 
     public static boolean contains(String name)

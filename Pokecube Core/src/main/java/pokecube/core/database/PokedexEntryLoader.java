@@ -238,8 +238,8 @@ public class PokedexEntryLoader
                         String[] args2 = s.split(":");
                         for (String s1 : args2)
                         {
-                            String arg1 = s1.substring(0, 1);
-                            String arg2 = s1.substring(1);
+                            String arg1 = s1.trim().substring(0, 1);
+                            String arg2 = s1.trim().substring(1);
                             if (arg1.equals("N"))
                             {
                                 forme = arg2;
@@ -253,11 +253,22 @@ public class PokedexEntryLoader
                                 move = arg2;
                             }
                         }
+                        if (forme.contains("___"))
+                        {
+                            forme = forme.replace("___", entry.getName() + " Mega");
+                        }
+                        if (item.equals("___"))
+                        {
+                            item = forme.replace(" ", "").toLowerCase();
+                        }
+
                         PokedexEntry formeEntry = Database.getEntry(forme);
                         if (!forme.isEmpty() && formeEntry != null)
                         {
-                            ItemStack stack = item.isEmpty() ? null : PokecubeItems.getStack(item);
+                            ItemStack stack = item.isEmpty() ? null : PokecubeItems.getStack(item, false);
                             String moveName = move;
+                            if (move.isEmpty() && stack == null) continue;
+                            System.out.println(formeEntry + " " + entry + " " + stack);
                             MegaRule rule = new MegaEvoRule(stack, moveName, entry);
                             entry.megaRules.put(formeEntry, rule);
                         }

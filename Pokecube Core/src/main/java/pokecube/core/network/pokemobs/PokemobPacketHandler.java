@@ -267,8 +267,6 @@ public class PokemobPacketHandler
                                 if (pokemob.getPokemonAIState(IMoveConstants.EVOLVING)) return;
                                 PokedexEntry megaEntry = pokemob.getPokedexEntry().getEvo(pokemob);
 
-                                System.out.println(megaEntry);
-
                                 if (megaEntry != null
                                         && megaEntry.getBaseName().equals(pokemob.getPokedexEntry().getBaseName()))
                                 {
@@ -296,6 +294,7 @@ public class PokemobPacketHandler
                                     {
                                         String old = pokemob.getPokemonDisplayName();
                                         pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
+                                        pokemob.setPokemonAIState(IPokemob.MEGAFORME, false);
                                         megaEntry = pokemob.getPokedexEntry().baseForme;
                                         String mess = StatCollector.translateToLocalFormatted(
                                                 "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());

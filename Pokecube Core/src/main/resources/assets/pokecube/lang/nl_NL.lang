@@ -44,10 +44,9 @@ pokemob.action.faint=%1$s is flauw gevallen
 
 pokemob.megaevolve.success=%1$s is gemega-evolueerd tot %2$s
 pokemob.megaevolve.revert=%1$s is teruggekeerd naar %2$s
-pokemob.megaevolve.wrongstone=%1$s heeft de verkeerde megasteen
-pokemob.megaevolve.nomega=%1$s kan niet mega-evolueren
-pokemob.megaevolve.nostone=%1$s heeft geen megasteen
-pokemob.megaevolve.nothappy=%1$s houdt nog niet genoeg van je om te mega-evolueren
+pokemob.megaevolve.failed=%1$s is er niet in geslaagd te mega-evolueren.
+
+pokemob.rename.deny=Je kunt een verhandelde pokémob niet hernoemen
 
 ability.adaptability.name=Aanpassingsvermogen
 ability.aerilate.name=Vervluchtig
@@ -399,6 +398,9 @@ tile.fossilstone.name=Fossielsteen
 item.megaring.name=Megaring
 item.megastone.name=Megasteen
 item.revive.name=Opwekken
+
+item.shiny_charm.name=Glimmend Amulet
+item.gardevoirmega.name=Gardevoiriet
 
 item.silkyhair.name=Zijdeachtig Haar
 

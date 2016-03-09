@@ -701,7 +701,6 @@ public class PokedexEntryLoader
     {
         Map<Integer, ArrayList<String>> lvlUpMoves = new HashMap<Integer, ArrayList<String>>();
         ArrayList<String> allMoves = new ArrayList<String>();
-
         if (xmlMoves.misc != null)
         {
             String[] misc = xmlMoves.misc.moves.split(",");
@@ -935,7 +934,7 @@ public class PokedexEntryLoader
     {
         @XmlElement(name = "LVLUP")
         LvlUp lvlupMoves;
-        @XmlElement(name = "Misc")
+        @XmlElement(name = "MISC")
         Misc  misc;
 
         @XmlRootElement(name = "LVLUP")
@@ -950,6 +949,11 @@ public class PokedexEntryLoader
         {
             @XmlAttribute(name = "moves")
             String moves;
+
+            public String toString()
+            {
+                return moves;
+            }
         }
     }
 

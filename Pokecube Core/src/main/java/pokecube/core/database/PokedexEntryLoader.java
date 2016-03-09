@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -36,7 +38,8 @@ import thut.api.terrain.BiomeType;
 
 public class PokedexEntryLoader
 {
-    static XMLDatabase database;
+    static XMLDatabase              database;
+    static HashSet<XMLPokedexEntry> overrides = Sets.newHashSet();
 
     public static void makeEntries(File file, boolean create) throws Exception
     {
@@ -78,6 +81,39 @@ public class PokedexEntryLoader
         }
         if (moves != null) initMoves(entry, moves);
         checkBaseForme(entry);
+    }
+
+    public static void postInit()
+    {
+        System.out.println("Processing default Database Entries");
+        for (String s : Database.defaultDatabases)
+        {
+            try
+            {
+                PokedexEntryLoader.makeEntries(new File(Database.DBLOCATION + s), false);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Processing config Database Entries");
+        for (String s : Database.extraDatabases)
+        {
+            try
+            {
+                PokedexEntryLoader.makeEntries(new File(s), false);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Processing other Database Entries");
+        for (XMLPokedexEntry entry : overrides)
+        {
+            updateEntry(entry, false);
+        }
     }
 
     private static void postIniStats(PokedexEntry entry, StatsNode xmlStats)
@@ -770,6 +806,11 @@ public class PokedexEntryLoader
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(new FileReader(file));
         return database;
+    }
+
+    public static void addOverrideEntry(XMLPokedexEntry entry)
+    {
+        overrides.add(entry);
     }
 
     @XmlRootElement(name = "Document")

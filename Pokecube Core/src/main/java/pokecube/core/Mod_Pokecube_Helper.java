@@ -267,6 +267,11 @@ public class Mod_Pokecube_Helper
         }
 
         removeFromHoldables("tm");
+        initLoots();
+    }
+
+    public static void initLoots()
+    {
         ItemStack cut = new ItemStack(getItem("tm"));
         ItemTM.addMoveToStack(IMoveConstants.MOVE_CUT, cut);
         HMs.add(cut);
@@ -292,6 +297,7 @@ public class Mod_Pokecube_Helper
         WeightedRandomChestContent smashContent = new WeightedRandomChestContent(rockSmash, 1, 1, 20);
         ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, smashContent);
 
+        // TODO do this for each stone, instead of just one.
         ItemStack stone = new ItemStack(getItem("megastone"));
         WeightedRandomChestContent stoneContent = new WeightedRandomChestContent(stone, 1, 1, 20);
         ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, stoneContent);

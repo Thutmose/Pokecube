@@ -44,9 +44,9 @@ pokemob.action.faint=%1$s has fainted
 
 pokemob.megaevolve.success=%1$s Mega-evolved into %2$s
 pokemob.megaevolve.revert=%1$s Reverted to %2$s
-pokemob.megaevolve.failed=%1$s Failed to Mega Evolve.
+pokemob.megaevolve.failed=%1$s failed to Mega Evolve.
 
-pokemob.rename.deny=You cannot rename a traded pokemob.
+pokemob.rename.deny=You cannot rename a traded pokémob.
 
 ability.adaptability.name=Adaptability
 ability.aerilate.name=Aerilate

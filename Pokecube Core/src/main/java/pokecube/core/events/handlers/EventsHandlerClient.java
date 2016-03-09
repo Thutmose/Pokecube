@@ -138,11 +138,10 @@ public class EventsHandlerClient
                 }
             }
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
-            if (current != null)
-                System.out.println(current + " " + ring + " " + current.getPokemonAIState(IMoveConstants.EVOLVING));
-            if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING))
+            if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING)
+                    && System.currentTimeMillis() > counter + 500)
             {
-                System.out.println(current);
+                counter = System.currentTimeMillis();
                 MessageServer message = new MessageServer(MessageServer.CHANGEFORM, ((Entity) current).getEntityId());
                 PokecubePacketHandler.sendToServer(message);
             }

@@ -6,18 +6,34 @@ package pokecube.core.moves.templates;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockStaticLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
+import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.animations.Thunder;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -97,19 +113,19 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     {
         int finalAttackStrength = 0;
         List<Entity> targets = new ArrayList<Entity>();
-        
+
         Entity entity = (Entity) attacker;
-        
-        if(!move.notIntercepable)
+
+        if (!move.notIntercepable)
         {
             Vec3 loc1 = new Vec3(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
             Vec3 loc2 = new Vec3(location.x, location.y, location.z);
             MovingObjectPosition pos = entity.worldObj.rayTraceBlocks(loc1, loc2, false);
-            if(pos!=null)
+            if (pos != null)
             {
                 location.set(pos.hitVec);
             }
-            
+
         }
         if (move.multiTarget)
         {
@@ -149,11 +165,25 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             doSelfAttack(attacker, f);
         }
+        doWorldAction(attacker, location);
     }
 
     @Override
     protected void finalAttack(IPokemob attacker, Entity attacked, float f)
     {
+        if (animation instanceof Thunder && attacked != null)
+        {
+            EntityLightningBolt lightning = new EntityLightningBolt(attacked.worldObj, 0, 0, 0);
+            attacked.onStruckByLightning(lightning);
+        }
+        if (f > 0 && attacked instanceof EntityCreeper)
+        {
+            EntityCreeper creeper = (EntityCreeper) attacked;
+            if (move.type == PokeType.psychic && creeper.getHealth() > 0)
+            {
+                creeper.explode();
+            }
+        }
         finalAttack(attacker, attacked, f, true);
     }
 
@@ -167,8 +197,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             {
                 if (sound != null)
                 {
-                    ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.25F,
-                            1f);
+                    ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.25F, 1f);
                 }
                 List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker),
                         v.set(attacked).addTo(0, attacked.height / 3, 0));
@@ -320,5 +349,111 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     public int getAttackDelay(IPokemob attacker)
     {
         return 0;
+    }
+
+    @Override
+    public void doWorldAction(IPokemob attacker, Vector3 location)
+    {
+        if (!PokecubeMod.pokemobsDamageBlocks) return;
+        World world = ((Entity) attacker).worldObj;
+        IBlockState state = location.getBlockState(world);
+        Block block = state.getBlock();
+        if (getType() == PokeType.ice && (move.attackCategory & CATEGORY_DISTANCE) > 0 && move.power > 0)
+        {
+            if (block.isAir(world, location.getPos()))
+            {
+                if (location.getBlock(world, EnumFacing.DOWN).isNormalCube())
+                    location.setBlock(world, Blocks.snow_layer.getDefaultState());
+            }
+            else if (block == Blocks.water && state.getValue(BlockStaticLiquid.LEVEL) == 0)
+            {
+                location.setBlock(world, Blocks.ice.getDefaultState());
+            }
+            else if (block.isReplaceable(world, location.getPos()))
+            {
+                if (location.getBlock(world, EnumFacing.DOWN).isNormalCube())
+                    location.setBlock(world, Blocks.snow_layer.getDefaultState());
+            }
+        }
+        int strong = 100;
+        if (getType() == PokeType.water && getPWR() >= strong)
+        {
+            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                    .addTo(location);
+            IBlockState nextState = nextBlock.getBlockState(world);
+            if (block == Blocks.lava)
+            {
+                location.setBlock(world, Blocks.obsidian);
+            }
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.lava)
+            {
+                nextBlock.setBlock(world, Blocks.obsidian);
+            }
+        }
+        if (getType() == PokeType.electric && getPWR() >= strong)
+        {
+            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                    .addTo(location);
+            IBlockState nextState = nextBlock.getBlockState(world);
+            if (block == Blocks.sand)
+            {
+                location.setBlock(world, Blocks.glass);
+            }
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.sand)
+            {
+                nextBlock.setBlock(world, Blocks.glass);
+            }
+        }
+        if (getType() == PokeType.fire && getPWR() >= strong)
+        {
+            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                    .addTo(location);
+            IBlockState nextState = nextBlock.getBlockState(world);
+            if (block == Blocks.obsidian)
+            {
+                location.setBlock(world, Blocks.lava);
+            }
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.obsidian)
+            {
+                nextBlock.setBlock(world, Blocks.lava);
+            }
+        }
+    }
+
+    protected static boolean shouldSilk(IPokemob pokemob)
+    {
+        if (pokemob.getAbility() == null) return false;
+        Ability ability = pokemob.getAbility();
+        return pokemob.getLevel() > 90 && ability.toString().equalsIgnoreCase("hypercutter");
+    }
+
+    protected static void silkHarvest(IBlockState state, BlockPos pos, World worldIn, EntityPlayer player)
+    {
+        java.util.ArrayList<ItemStack> items = new java.util.ArrayList<ItemStack>();
+        ItemStack itemstack = createStackedBlock(state);
+
+        if (itemstack != null)
+        {
+            items.add(itemstack);
+        }
+
+        net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(items, worldIn, pos, worldIn.getBlockState(pos),
+                0, 1.0f, true, player);
+        for (ItemStack stack : items)
+        {
+            Block.spawnAsEntity(worldIn, pos, stack);
+        }
+    }
+
+    protected static ItemStack createStackedBlock(IBlockState state)
+    {
+        int i = 0;
+        Item item = Item.getItemFromBlock(state.getBlock());
+
+        if (item != null && item.getHasSubtypes())
+        {
+            i = state.getBlock().getMetaFromState(state);
+        }
+        return new ItemStack(item, 1, i);
     }
 }

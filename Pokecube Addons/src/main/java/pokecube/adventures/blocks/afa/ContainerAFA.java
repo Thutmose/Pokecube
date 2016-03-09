@@ -8,6 +8,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeItems;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
 public class ContainerAFA extends Container
@@ -124,7 +125,7 @@ public class ContainerAFA extends Container
         @Override
         public boolean isItemValid(ItemStack itemstack)
         {
-            return PokecubeManager.isFilled(itemstack);
+            return PokecubeManager.isFilled(itemstack) || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), itemstack);
         }
     }
 }

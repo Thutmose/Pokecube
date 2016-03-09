@@ -41,30 +41,31 @@ import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 
-@Mod(modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = "required-after:pokecube"+PokecubeAdv.MINVERSION, guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
+@Mod(modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = "required-after:pokecube"
+        + PokecubeAdv.MINVERSION, guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
 public class PokecubeAdv
 {
-    public static final String ID         = "pokecube_adventures";
-    public static final String version    = "@VERSION@";
-    public final static String MCVERSIONS = "[1.8.9]";
-    public final static String MINVERSION = "";//"@[2.2,)";//
+    public static final String ID                 = "pokecube_adventures";
+    public static final String version            = "@VERSION@";
+    public final static String MCVERSIONS         = "[1.8.9]";
+    public final static String MINVERSION         = "";//"@[2.2.11,)";//
 
     public final static String UPDATEURL          = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Addons/versions.json";
     public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
 
-    public static String CUSTOMTRAINERFILE;
+    public static String       CUSTOMTRAINERFILE;
 
-    public static int GUITRAINER_ID     = 2;
-    public static int GUIBAG_ID         = 3;
-    public static int GUICLONER_ID      = 4;
-    public static int GUIBIOMESETTER_ID = 5;
-    public static int GUIAFA_ID         = 6;
+    public static int          GUITRAINER_ID      = 2;
+    public static int          GUIBAG_ID          = 3;
+    public static int          GUICLONER_ID       = 4;
+    public static int          GUIBIOMESETTER_ID  = 5;
+    public static int          GUIAFA_ID          = 6;
 
     @SidedProxy(clientSide = "pokecube.adventures.client.ClientProxy", serverSide = "pokecube.adventures.CommonProxy")
-    public static CommonProxy proxy;
+    public static CommonProxy  proxy;
 
     @Instance(ID)
-    public static PokecubeAdv instance;
+    public static PokecubeAdv  instance;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent e)
@@ -106,7 +107,6 @@ public class PokecubeAdv
         MinecraftForge.EVENT_BUS.register(teams);
         MinecraftForge.EVENT_BUS.register(events);
         new TrainerSpawnHandler();
-        RecipeHandler.register();
     }
 
     @EventHandler
@@ -118,6 +118,8 @@ public class PokecubeAdv
     @SubscribeEvent
     public void postPostInit(PostPostInit e)
     {
+        ItemHandler.initBadges();
+        RecipeHandler.register();
         DBLoader.load();
         ConfigHandler.parseBiomes();
         LegendaryConditions.registerSpecialConditions();

@@ -106,7 +106,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         this.scale = 1 + scaleFactor * (float) (random).nextGaussian();
         setSize(scale);
-        this.setSize(1, 1);
         this.initRidable();
         shiny = random.nextInt(8196) == 0;
 
@@ -573,8 +572,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             c = entry.length * scale;
         }
 
-        this.setSize((a), (b));
-
         this.width = a;
         this.height = b;
         this.length = c;
@@ -583,6 +580,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             this.ignoreFrustumCheck = true;
         }
+        this.setSize(width, height);
+        this.setEntityBoundingBox(new AxisAlignedBB(this.getEntityBoundingBox().minX, this.getEntityBoundingBox().minY,
+                this.getEntityBoundingBox().minZ, this.getEntityBoundingBox().minX + (double) this.width,
+                this.getEntityBoundingBox().minY + (double) this.height,
+                this.getEntityBoundingBox().minZ + (double) this.width));
 
         mainBox = new Matrix3(a, b, c);
         offset.set(-a / 2, 0, -c / 2);
@@ -760,7 +762,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
             if ((dist = diffs.mag()) >= 0.15)
             {
-                Vector3 v = Vector3.getNextSurfacePoint(worldObj, here.add(0, height/2, 0), diffs, diffs.mag());
+                Vector3 v = Vector3.getNextSurfacePoint(worldObj, here.add(0, height / 2, 0), diffs, diffs.mag());
                 if (v != null)
                 {
                     diffs.scalarMultBy(v.distanceTo(here) / dist);

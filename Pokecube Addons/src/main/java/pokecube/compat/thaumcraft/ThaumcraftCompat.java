@@ -16,7 +16,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.entity.trainers.EntityTrainer;
-import pokecube.adventures.events.thaumcraft;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;

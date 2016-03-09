@@ -46,33 +46,33 @@ import pokecube.core.utils.Tools;
 /** @author Manchou */
 public abstract class EntityStatsPokemob extends EntityTameablePokemob implements IEntityAdditionalSpawnData
 {
-    protected Ability ability;
+    protected Ability   ability;
 
-    double moveSpeed;
+    double              moveSpeed;
 
-    byte[]           ivs      = new byte[] { 0, 0, 0, 0, 0, 0 };
-    protected Nature nature   = Nature.HARDY;
-    public int       oldLevel = 0;
-    PokedexEntry     entry;
-    String           forme    = "";
+    byte[]              ivs              = new byte[] { 0, 0, 0, 0, 0, 0 };
+    protected Nature    nature           = Nature.HARDY;
+    public int          oldLevel         = 0;
+    public PokedexEntry entry;
+    String              forme            = "";
 
-    protected Entity transformedTo;
+    protected Entity    transformedTo;
 
     /** The happiness value of the pokemob */
-    private int bonusHappiness = 0;
+    private int         bonusHappiness   = 0;
 
-    boolean wasShadow = false;
+    boolean             wasShadow        = false;
 
-    boolean        isAncient        = false;
+    boolean             isAncient        = false;
     /** The higher this value, the more likely for mobs to range in colour. It
      * is very sensitive to the size of this number. */
-    private double colourDiffFactor = 0.25;
+    private double      colourDiffFactor = 0.25;
 
     /** Used for the random colour differences */
-    int[] rgba = { 255, 255, 255, 255 };
+    int[]               rgba             = { 255, 255, 255, 255 };
 
     /** Used for if there is a special texture */
-    public boolean shiny = false;
+    public boolean      shiny            = false;
 
     public EntityStatsPokemob(World world)
     {
@@ -456,11 +456,10 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public int getPokedexNb()
+    public Integer getPokedexNb()
     {
         if (pokedexNb == 0)
         {
-
             if (getClass().getName().contains("GenericPokemob"))
             {
                 String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
@@ -468,14 +467,12 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 if (entry != null && entry.getPokedexNb() > 0)
                 {
                     pokedexNb = entry.getPokedexNb();
-                    // new Exception().printStackTrace();
                     init(entry.getPokedexNb());
                     return pokedexNb;
                 }
             }
-
             System.out.println(this.getClass());
-            new Exception().printStackTrace();
+            Thread.dumpStack();
             this.setDead();
             return 0;
         }
@@ -489,18 +486,16 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             entry = Pokedex.getInstance().getEntry(getPokedexNb());
         }
-        if (entry.getName().equalsIgnoreCase(Pokedex.getInstance().getEntry(getPokedexNb()).getName()))
-            return Pokedex.getInstance().getEntry(getPokedexNb());
         return entry;
     }
 
     @Override
     public void setPokedexEntry(PokedexEntry newEntry)
     {
-        if (entry == newEntry) return;
         entry = newEntry;
         this.pokedexNb = entry.getPokedexNb();
-        this.setStats(getPokedexEntry().getStats());
+        this.setStats(entry.getStats());
+        if(worldObj!=null) this.setSize(this.getSize());
     }
 
     @Override
@@ -629,7 +624,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             Entity targetOwner = ((IPokemob) attacked).getPokemonOwner();
 
             if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner
-                    && !PokecubeMod.hardMode)
+                    && !PokecubeMod.friendlyFire)
             {
                 ((EntityCreature) attacker).setAttackTarget((EntityLivingBase) targetOwner);
             }

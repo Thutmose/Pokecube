@@ -7,6 +7,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemob;
 
@@ -34,6 +36,32 @@ public class ContainerPokemob extends Container
 		});
 		this.addSlotToContainer(new Slot(pokeInv, 1, 8, 36)
 		{
+            
+            /**
+             * Helper method to put a stack in the slot.
+             */
+            @Override
+            public void putStack(ItemStack stack)
+            {
+                ItemStack old = getStack();
+                super.putStack(stack);
+                if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+                {
+                    e.getPokedexEntry().onHeldItemChange(old, stack, e);
+                }
+            }
+
+            @Override
+            public void onPickupFromSlot(EntityPlayer playerIn, ItemStack stack)
+            {
+                ItemStack old = getStack();
+                super.onPickupFromSlot(playerIn, stack);
+                if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+                {
+                    e.getPokedexEntry().onHeldItemChange(stack, old, e);
+                }
+            }
+		    
 			/** Check if the stack is a valid item for this slot. Always true
 			 * beside for the armor slots. */
 			@Override

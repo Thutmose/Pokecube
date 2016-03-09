@@ -49,6 +49,7 @@ import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
 import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
+import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
 import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
@@ -75,18 +76,18 @@ import thut.api.terrain.TerrainSegment;
 public abstract class EntityAiPokemob extends EntityMountablePokemob
 {
 
-    public GuardAI guardAI;
+    public GuardAI            guardAI;
 
-    private int lastHadTargetTime = 0;
+    private int               lastHadTargetTime = 0;
 
     private PokeNavigator     navi;
     private PokemobMoveHelper mover;
-    boolean                   initAI  = true;
-    boolean                   popped  = false;
+    boolean                   initAI            = true;
+    boolean                   popped            = false;
     private PokemobAI         aiObject;
-    boolean                   isAFish = false;
+    boolean                   isAFish           = false;
 
-    public TerrainSegment currentTerrain = null;
+    public TerrainSegment     currentTerrain    = null;
 
     public EntityAiPokemob(World world)
     {
@@ -98,8 +99,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void init(int nb)
     {
         super.init(nb);
-        // if(isAIEnabled())
-        // initAI(getPokedexEntry());
     }
 
     ///////////////////////////////////////// Init
@@ -152,7 +151,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         PokemobAIThread.addAI(this, new AIAttack(this).setPriority(200));
         PokemobAIThread.addAI(this, new AIMate(this).setPriority(300));
         PokemobAIThread.addAI(this, new AIHungry(this, new EntityItem(worldObj), 16).setPriority(300));
-        PokemobAIThread.addAI(this, new AIGatherStuff(this, 32).setPriority(400));
+        AIStoreStuff ai = new AIStoreStuff(this);
+        PokemobAIThread.addAI(this, ai.setPriority(350));
+        PokemobAIThread.addAI(this, new AIGatherStuff(this, 32, ai).setPriority(400));
         PokemobAIThread.addAI(this, new AIIdle(this).setPriority(500));
         PokemobAIThread.addAI(this, new AIFindTarget(this).setPriority(400));
 
@@ -291,11 +292,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (down != null) here.set(down);
 
             Block b;
-            if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) // &&
-                                                                                      // getAttackTarget()
-                                                                                      // ==
-                                                                                      // null
-                    && !getAIState(SLEEPING, state) || b.getMaterial().isLiquid())
+            if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) && !getAIState(SLEEPING, state)
+                    || b.getMaterial().isLiquid())
             {
                 motionY += 0.01;
             }
@@ -304,6 +302,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 motionY -= 0.02;
             }
+            here.set(this);
         }
         canFloat = entry.mobType == Type.FLYING;
         if (canFloat && here.getBlock(worldObj, EnumFacing.DOWN).getMaterial().isLiquid())
@@ -1056,14 +1055,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         ItemStack itemstack = player.inventory.getCurrentItem();
         ItemStack key = new ItemStack(Items.shears);
-        
-        System.out.println(this+"\n"+here);
-        
-        
         // Check shearable interaction.
         if (getPokedexEntry().interact(key) && player.getHeldItem() != null
                 && player.getHeldItem().isItemEqual(key)) { return false; }
-
         // Check Pokedex Entry defined Interaction for player.
         if (getPokedexEntry().interact(player, this, true)) return true;
         Item torch = Item.getItemFromBlock(Blocks.torch);
@@ -1104,6 +1098,17 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 this.setHungerTime(this.getHungerTime() + 1000);
             }
+        }
+        // Use shiny charm to make shiny
+        if (player == getPokemonOwner() && itemstack != null
+                && ItemStack.areItemStackTagsEqual(itemstack, PokecubeItems.getStack("shiny_charm")))
+        {
+            if (player.isSneaking())
+            {
+                this.setShiny(!this.isShiny());
+                player.getHeldItem().splitStack(1);
+            }
+            return true;
         }
 
         // is Dyeable
@@ -1274,7 +1279,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         dropItem();
                     }
 
-                    setHeldItem(new ItemStack(itemstack.getItem(), 1, itemstack.getItemDamage()));
+                    setHeldItem(itemstack.copy());
                     itemstack.stackSize--;
 
                     if (itemstack.stackSize <= 0)

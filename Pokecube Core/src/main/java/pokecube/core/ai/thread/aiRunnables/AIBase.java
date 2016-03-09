@@ -120,7 +120,7 @@ public abstract class AIBase implements IAIRunnable
     {
         toRun.add(new PathInfo(id, dim, path, speed));
     }
-    
+
     protected void addEntityPath(Entity entity, PathEntity path, double speed)
     {
         toRun.add(new PathInfo(entity.getEntityId(), entity.dimension, path, speed));
@@ -144,6 +144,32 @@ public abstract class AIBase implements IAIRunnable
                 if (correctClass)
                 {
                     if (source.getDistanceSqToEntity((Entity) o) < dsq)
+                    {
+                        list.add(o);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    List<Object> getEntitiesWithinDistance(Vector3 source, int dimension, float distance, Class<?>... targetClass)
+    {
+        Vector<?> entities = ExplosionCustom.worldEntities.get(dimension);
+        List<Object> list = new ArrayList<Object>();
+        if (entities != null)
+        {
+            List<?> temp = new ArrayList<Object>(entities);
+            for (Object o : temp)
+            {
+                boolean correctClass = true;
+                for (Class<?> claz : targetClass)
+                {
+                    correctClass = correctClass && claz.isInstance(o);
+                }
+                if (correctClass)
+                {
+                    if (source.distToEntity(((Entity) o)) < distance)
                     {
                         list.add(o);
                     }
@@ -261,29 +287,33 @@ public abstract class AIBase implements IAIRunnable
     public static class MoveInfo implements IRunnable
     {
         public static final Comparator<MoveInfo> compare = new Comparator<MoveInfo>()
-        {
-            @Override
-            public int compare(MoveInfo o1, MoveInfo o2)
-            {
-                if (o1.dim != o2.dim) return 0;
-                if (FMLCommonHandler.instance().getSide() == Side.SERVER)
-                {
-                    WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
-                            .worldServerForDimension(o1.dim);
-                    Entity e1 = world.getEntityByID(o1.attacker);
-                    Entity e2 = world.getEntityByID(o2.attacker);
-                    if (e1 instanceof IPokemob && e2 instanceof IPokemob) { return PokemobAIThread.pokemobComparator
-                            .compare((IPokemob) e1, (IPokemob) e2); }
-                }
-                return 0;
-            }
-        };
+                                                         {
+                                                             @Override
+                                                             public int compare(MoveInfo o1, MoveInfo o2)
+                                                             {
+                                                                 if (o1.dim != o2.dim) return 0;
+                                                                 if (FMLCommonHandler.instance()
+                                                                         .getSide() == Side.SERVER)
+                                                                 {
+                                                                     WorldServer world = FMLCommonHandler.instance()
+                                                                             .getMinecraftServerInstance()
+                                                                             .worldServerForDimension(o1.dim);
+                                                                     Entity e1 = world.getEntityByID(o1.attacker);
+                                                                     Entity e2 = world.getEntityByID(o2.attacker);
+                                                                     if (e1 instanceof IPokemob
+                                                                             && e2 instanceof IPokemob) { return PokemobAIThread.pokemobComparator
+                                                                                     .compare((IPokemob) e1,
+                                                                                             (IPokemob) e2); }
+                                                                 }
+                                                                 return 0;
+                                                             }
+                                                         };
 
-        public final int     attacker;
-        public final int     targetEnt;
-        public final int     dim;
-        public final Vector3 target;
-        public final float   distance;
+        public final int                         attacker;
+        public final int                         targetEnt;
+        public final int                         dim;
+        public final Vector3                     target;
+        public final float                       distance;
 
         public MoveInfo(int _attacker, int _targetEnt, int dimension, Vector3 _target, float _distance)
         {

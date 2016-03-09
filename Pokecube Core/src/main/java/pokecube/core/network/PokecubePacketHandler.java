@@ -45,6 +45,7 @@ import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.interfaces.IMobColourable;
@@ -108,14 +109,15 @@ public class PokecubePacketHandler
 
             username = username.toLowerCase();
 
+            boolean starterGiven = false;
             if (!specialStarters.containsKey(username) || fixed)
             {
                 ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(pokedexNb, player);
                 items.add(pokemobItemstack);
+                starterGiven = true;
             }
             else
             {
-                boolean starterGiven = false;
                 StarterInfo[] starter = specialStarters.get(username);
 
                 player.addStat(PokecubeMod.get1stPokemob, 1);
@@ -151,6 +153,7 @@ public class PokecubePacketHandler
                 itemArr = evt.starterPack.clone();
             }
             player.addStat(PokecubeMod.get1stPokemob, 1);
+            if (starterGiven) player.addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
             for (ItemStack e : itemArr)
             {
                 if (e == null) continue;
@@ -210,7 +213,7 @@ public class PokecubePacketHandler
                 StarterInfo[] starter = specialStarters.get(username);
                 for (StarterInfo info : starter)
                 {
-                    if (info == null)
+                    if (info == null || Database.getEntry(info.name) == null)
                     {
                         special = false;
                         break;
@@ -271,12 +274,13 @@ public class PokecubePacketHandler
     {
         public final String  name;
         public final String  data;
-        public int           red   = 255;
-        public int           green = 255;
-        public int           blue  = 255;
-        public boolean       shiny = false;
+        public int           red     = 255;
+        public int           green   = 255;
+        public int           blue    = 255;
+        public boolean       shiny   = false;
+        public String        ability = null;
 
-        private List<String> moves = Lists.newArrayList();
+        private List<String> moves   = Lists.newArrayList();
 
         public StarterInfo(String name, String data)
         {
@@ -310,6 +314,10 @@ public class PokecubePacketHandler
                 {
                     moves.add(arg2);
                 }
+                if (arg1.equals("A"))
+                {
+                    ability = arg2;
+                }
             }
         }
 
@@ -340,7 +348,10 @@ public class PokecubePacketHandler
                     entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), false, false);
                     if (shiny) entity.setShiny(true);
                     ((IMobColourable) entity).setRGBA(red, green, blue);
-
+                    if (ability != null && AbilityManager.abilityExists(ability))
+                    {
+                        entity.setAbility(AbilityManager.getAbility(ability));
+                    }
                     if (moves.size() > 4)
                     {
                         Collections.shuffle(moves);

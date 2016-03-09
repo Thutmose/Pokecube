@@ -13,6 +13,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
@@ -92,8 +94,8 @@ public class Compat
     @EventHandler
     public void load(FMLInitializationEvent evt)
     {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new WikiInfoNotifier();
         new IGWSupportNotifier();
-        new WikiInfoNotifier();
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) if (Loader.isModLoaded("IGWMod"))
         {
@@ -251,9 +253,9 @@ public class Compat
     private static PrintWriter out;
     private static FileWriter  fwriter;
 
-    static String header   = "Name,Special Cases,Biomes - any acceptable,Biomes - all needed,Excluded biomes,Replace";
-    static String example1 = "Rattata,day night ,mound 0.6:10:5,,,false";
-    static String example2 = "Spearow,day night ,plains 0.3;hills 0.3,,,true";
+    static String              header   = "Name,Special Cases,Biomes - any acceptable,Biomes - all needed,Excluded biomes,Replace";
+    static String              example1 = "Rattata,day night ,mound 0.6:10:5,,,false";
+    static String              example2 = "Spearow,day night ,plains 0.3;hills 0.3,,,true";
 
     private static void writeDefaultConfig()
     {
@@ -294,22 +296,33 @@ public class Compat
         {
             if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
             {
+                MinecraftForge.EVENT_BUS.unregister(this);
                 String message = "msg.pokedexbuttonforwiki.text";
                 message = StatCollector.translateToLocal(message);
                 if (Loader.isModLoaded("IGWMod")) event.player.addChatMessage(new ChatComponentText(message));
-                MinecraftForge.EVENT_BUS.unregister(this);
-
                 Object o = Loader.instance().getIndexedModList().get(PokecubeAdv.ID);
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
                 if (result.status == Status.OUTDATED)
                 {
-                    String mess = "Current Listed Release Version of Pokecube Revival is " + result.target
-                            + ", but you have " + PokecubeAdv.version + ".";
-                    mess += "\nIf you find bugs, please update and check if they still occur before reporting them.";
-                    (event.player).addChatMessage(new ChatComponentText(mess));
+                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Revival");
+                    (event.player).addChatMessage(mess);
                 }
-
             }
+        }
+
+        @Deprecated // Use one from ThutCore whenever that is updated for a bit.
+        private IChatComponent getOutdatedMessage(CheckResult result, String name)
+        {
+            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
+            String link = "" + result.url;
+            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
+                    + link + "\"}}";
+
+            String info = "\"" + EnumChatFormatting.RED + "New " + name
+                    + " version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
+                    + "\"";
+            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
+            return IChatComponent.Serializer.jsonToComponent(mess);
         }
     }
 }

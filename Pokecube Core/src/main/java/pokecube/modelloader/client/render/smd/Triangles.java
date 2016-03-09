@@ -68,25 +68,24 @@ public class Triangles
         {
             line = line.replaceAll("\\s+", " ");
             String[] args = line.split(" ");
-            int boneId = Integer.parseInt(args[0]);
-            parentBoneIds[toAdd] = boneId;
-            uvs[toAdd] = new TextureCoordinate(Float.parseFloat(args[7]), Float.parseFloat(args[8]), 0);
-            Float.parseFloat(args[9]);// TODO figure out what to do with links
-            boneId = Integer.parseInt(args[10]);
-            float weight = Float.parseFloat(args[11]);
-
             BoneVertex vertex = new BoneVertex(Float.parseFloat(args[1]), Float.parseFloat(args[2]),
                     Float.parseFloat(args[3]), Float.parseFloat(args[4]), Float.parseFloat(args[5]),
                     Float.parseFloat(args[6]), triangles.model.getNextVertexID());
-            triangles.model.skeleton.getBone(boneId).vertices.put(vertex, weight);
-
-            if (args.length > 12)
+            int links = Integer.parseInt(args[9]);
+            float[] weights = new float[links];
+            float sum = 0.0F;
+            for (int i = 0; i < links; i++)
             {
-                boneId = Integer.parseInt(args[12]);
-                weight = Float.parseFloat(args[13]);
-                triangles.model.skeleton.getBone(boneId).vertices.put(vertex, weight);
+                weights[i] = Float.parseFloat(args[(i * 2 + 11)]);
+                sum += weights[i];
             }
-
+            for (int i = 0; i < links; i++)
+            {
+                int boneID = Integer.parseInt(args[(i * 2 + 10)]);
+                float weight = weights[i] / sum;
+                triangles.model.skeleton.getBone(boneID).vertices.put(vertex, weight);
+            }
+            uvs[toAdd] = new TextureCoordinate(Float.parseFloat(args[7]), Float.parseFloat(args[8]), 0);
             vertices[toAdd] = vertex;
             toAdd++;
         }

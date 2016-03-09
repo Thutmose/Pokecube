@@ -6,7 +6,6 @@ package pokecube.modelloader.client;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -36,9 +35,6 @@ import pokecube.modelloader.items.ItemModelReloader;
 public class ClientProxy extends CommonProxy
 {
 
-    public static HashMap<String, Object>            modelProviders = new HashMap<String, Object>();
-    public static HashMap<String, ArrayList<String>> modModels      = new HashMap<String, ArrayList<String>>();
-
     @Override
     public void registerModelProvider(String modid, Object mod)
     {
@@ -52,19 +48,18 @@ public class ClientProxy extends CommonProxy
         super.preInit();
         OBJLoader.instance.addDomain(ModPokecubeML.ID);
         B3DLoader.instance.addDomain(ModPokecubeML.ID);
-        modelProviders.put(ModPokecubeML.ID, ModPokecubeML.instance);
     }
 
     @Override
     public void postInit()
     {
+        super.postInit();
         AnimationLoader.loaded = true;
     }
 
     @Override
     public void registerRenderInformation()
     {
-        populateModels();
         for (String modid : modelProviders.keySet())
         {
             Object mod = modelProviders.get(modid);
@@ -105,7 +100,8 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation("pokecube_ml:modelreloader", "inventory"));
     }
 
-    public static void populateModels()
+    @Override
+    public void populateModels()
     {
         TabulaPackLoader.clear();
 
@@ -195,6 +191,7 @@ public class ClientProxy extends CommonProxy
             }
         }
         TabulaPackLoader.postProcess();
+        registerRenderInformation();
     }
 
     @Override

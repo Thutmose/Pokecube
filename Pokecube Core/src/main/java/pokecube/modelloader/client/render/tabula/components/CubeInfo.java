@@ -28,9 +28,9 @@ public class CubeInfo {
     public boolean hidden = false;
     public ArrayList<String> metadata = Lists.newArrayList();
     public ArrayList<CubeInfo> children = Lists.newArrayList();
-    public String parentIdentifier;
+    public String parentIdentifier = "";
 
-    public String identifier;
+    public String identifier = "";
     
     @Override
     public String toString()

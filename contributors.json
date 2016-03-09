@@ -7,17 +7,17 @@
     {
         "username":"Manchou",
         "type":"dev",
-        "info":"mew:S:null"
+        "info":"mew;S:null"
     },
     {
         "username":"Oracion",
         "type":"dev",
-        "info":"mew:S:null"
+        "info":"mew;S:null"
     },
     {
         "username":"cflame13",
         "type":"dev",
-        "info":"mew:S:null"
+        "info":"mew;S:null"
     },
     {
         "username":"Kaividian",
@@ -28,5 +28,16 @@
         "username":"Legnak",
         "type":"modeller",
         "info":"beldum;R:null"
+    },
+    {
+        "username":"MannyInTheMix",
+        "type":"donator",
+        "amount":"",
+        "info":"xerneas"
+    },
+    {
+        "username":"eleneu",
+        "type":"modeller",
+        "info":"riolu"
     }
 ]}

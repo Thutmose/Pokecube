@@ -1,0 +1,71 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "transform": "forge:default-tool"
+  },
+  "variants": {
+    "type": {
+      "megastone": {
+        "textures": {
+          "layer0": "pokecube:items/megastone"
+        }
+      },
+      "gardevoirmega": {
+        "textures": {
+          "layer0": "pokecube:items/Gardevoirite"
+        }
+      },
+      "charizardmega-y": {
+        "textures": {
+          "layer0": "pokecube:items/Charizardite_Y"
+        }
+      },
+      "scizormega": {
+        "textures": {
+          "layer0": "pokecube:items/Scizorite"
+        }
+      },
+      "sceptilemega": {
+        "textures": {
+          "layer0": "pokecube:items/Sceptilite"
+        }
+      },
+      "salamencemega": {
+        "textures": {
+          "layer0": "pokecube:items/Salamencite"
+        }
+      },
+      "gallademega": {
+        "textures": {
+          "layer0": "pokecube:items/Galladite"
+        }
+      },
+      "absolmega": {
+        "textures": {
+          "layer0": "pokecube:items/Absolite"
+        }
+      },
+      "blastoisemega": {
+        "textures": {
+          "layer0": "pokecube:items/Blastoisinite"
+        }
+      },
+      "shiny_charm": {
+        "textures": {
+          "layer0": "pokecube:items/shiny_charm"
+        }
+      },
+      "alphaorb": {
+        "textures": {
+          "layer0": "pokecube:items/AlphaOrb"
+        }
+      },
+      "omegaorb": {
+        "textures": {
+          "layer0": "pokecube:items/OmegaOrb"
+        }
+      }
+    }
+  }
+}

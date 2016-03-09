@@ -123,15 +123,15 @@ public class MovesUtils implements IMoveConstants
             else if (attacked == null)
             {
                 String missed;
-                if(((EntityLiving)attacker).getAttackTarget()!=null)
+                if (((EntityLiving) attacker).getAttackTarget() != null)
                 {
-                    attacked = ((EntityLiving)attacker).getAttackTarget();
+                    attacked = ((EntityLiving) attacker).getAttackTarget();
                     String name = attacked.getName();
-                    missed = StatCollector.translateToLocalFormatted("pokemob.move.missed",name);
+                    missed = StatCollector.translateToLocalFormatted("pokemob.move.missed", name);
                 }
                 else
                 {
-                    missed = StatCollector.translateToLocalFormatted("pokemob.move.missed","");
+                    missed = StatCollector.translateToLocalFormatted("pokemob.move.missed", "");
                     missed.replace(" !", "");
                 }
                 attacker.displayMessageToOwner("\u00a7c" + missed);
@@ -717,7 +717,8 @@ public class MovesUtils implements IMoveConstants
         if (targets != null) for (Entity e : targets)
         {
             if (e instanceof EntityLivingBase && attacker.getDistanceToEntity(e) < closest
-                    && (PokecubeMod.hardMode || !(e instanceof EntityPlayer)) && e != attacker.ridingEntity)
+                    && (PokecubeMod.pokemobsDamagePlayers || !(e instanceof EntityPlayer))
+                    && e != attacker.ridingEntity)
             {
                 if (ignoreAllies && e instanceof IPokemob)
                 {
@@ -725,11 +726,16 @@ public class MovesUtils implements IMoveConstants
                     {
                         if (((IPokemob) attacker).getPokemonOwner() == ((IPokemob) e).getPokemonOwner()) continue;
                     }
-                    else if (attacker instanceof EntityPlayer)
+                    else if (e instanceof EntityPlayer)
                     {
-                        if (((IPokemob) e).getPokemonOwner() == attacker) continue;
+                        if (((IPokemob) attacker).getPokemonOwner() == e) continue;
                     }
                 }
+                if (!PokecubeMod.friendlyFire && ((IPokemob) attacker).getPokemonOwner() == e)
+                {
+                    continue;
+                }
+
                 for (Class c : ignored)
                 {
                     if (c.isInstance(e)) continue;
@@ -754,8 +760,9 @@ public class MovesUtils implements IMoveConstants
         List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
         if (targets != null) for (Entity e : targets)
         {
-            if (e instanceof EntityLivingBase && (PokecubeMod.hardMode || !(e instanceof EntityPlayer)))
+            if (e instanceof EntityLivingBase && (PokecubeMod.pokemobsDamagePlayers || !(e instanceof EntityPlayer)))
             {
+                if (((IPokemob) attacker).getPokemonOwner() == e && !PokecubeMod.friendlyFire) continue;
                 ret.add((EntityLivingBase) e);
             }
         }

@@ -1,7 +1,6 @@
 package pokecube.core.handlers;
 
-import static pokecube.core.interfaces.PokecubeMod.hardMode;
-import static pokecube.core.interfaces.PokecubeMod.semiHardMode;
+import static pokecube.core.interfaces.PokecubeMod.*;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,20 +31,20 @@ import pokecube.core.utils.PokecubeSerializer;
 
 public class ConfigHandler extends Mod_Pokecube_Helper
 {
-    public static final String CATEGORY_SPAWNING = "mobspawning";
-    public static final String CATEGORY_DATABASE = "databases";
-    public static String[]     defaultStarts     = {};
-    public static boolean      loginmessage      = true;
-    public static int          mateMultiplier    = 1;
-    public static int          BREEDINGDELAY     = 4000;
-    public static int          EGGHATCHTIME      = 10000;
+    public static final String CATEGORY_SPAWNING   = "mobspawning";
+    public static final String CATEGORY_DATABASE   = "databases";
+    public static String[]     defaultStarts       = {};
+    public static boolean      contributorStarters = true;
+    public static boolean      loginmessage        = true;
+    public static int          mateMultiplier      = 1;
+    public static int          BREEDINGDELAY       = 4000;
+    public static int          EGGHATCHTIME        = 10000;
 
     public static void loadConfig(Mod_Pokecube_Helper helper, Configuration config)
     {
         Property prop;
         configFile = config.getConfigFile();
         Mod_Pokecube_Helper.config = config;
-        initDefaultStarts();
         loadSpawnConfigs();
         pvpExp = config
                 .get(Configuration.CATEGORY_GENERAL, "pvpExp", pvpExp, "do tame pokemon give experience when defeated.")
@@ -90,26 +89,37 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                 .get(CATEGORY_ADVANCED, "advancedOptions", false,
                         "set this to true, run the game, and some more advanced config options will be enabled in this file.")
                 .getBoolean(false);
-        hardMode = config
-                .get(CATEGORY_ADVANCED, "hardMode", hardMode,
-                        "can tame pokemobs attack players, and do moves have additional effects outside of battle (if true, enables HM like behaviour in certain moves).")
+        friendlyFire = config
+                .get(CATEGORY_ADVANCED, "hardMode", friendlyFire,
+                        "can tame pokemobs attack players, and do moves have additional effects outside of battle, This setting will enable attackPlayers"
+                        + " (if true, enables HM like behaviour in certain moves).")
+                .getBoolean(false);
+        pokemobsDamagePlayers = config
+                .get(CATEGORY_ADVANCED, "attackPlayers", pokemobsDamagePlayers,
+                        "can pokemob attacks affect players, this setting can be used to make attacks only attack other players, not the owner.")
                 .getBoolean(false);
         Database.FORCECOPY = config
                 .get(CATEGORY_ADVANCED, "forceDatabase", Database.FORCECOPY,
                         "Will Pokecube overwrite the copy of the database with config with the one in the jar, set to false if you plan on changing the database.")
                 .getBoolean(true);
-        semiHardMode = config
-                .get(CATEGORY_ADVANCED, "semiHMode", PokecubeMod.semiHardMode,
+        pokemobsDamageBlocks = config
+                .get(CATEGORY_ADVANCED, "semiHMode", PokecubeMod.pokemobsDamageBlocks,
                         "do moves have additional effects outside of battle (if true, enables HM like behaviour in certain moves which damage blocks).")
                 .getBoolean(false);
         guiOnLogin = config
                 .get(CATEGORY_ADVANCED, "loginGui", guiOnLogin, "does the choose first pokemob gui appear on login")
                 .getBoolean(false);
-        if (hardMode) semiHardMode = true;
+        if (friendlyFire) pokemobsDamageBlocks = true;
+        if (friendlyFire) pokemobsDamagePlayers = true;
 
         guiOffset = config.get(CATEGORY_ADVANCED, "guiOffset", new int[] { 0, 0 }, "offset of pokemon moves gui.")
                 .getIntList();
-        guiDown = config.get(CATEGORY_ADVANCED, "guiDown", true, "Are the moves shown below the nametag.").getBoolean();
+        guiDown = config.get(CATEGORY_ADVANCED, "guiDown", guiDown, "Are the moves shown below the nametag.")
+                .getBoolean();
+        contributorStarters = config
+                .get(CATEGORY_ADVANCED, "contribStarters", contributorStarters,
+                        "Do custom contributor starters apply.  If this is true, you can also add customized ones too.")
+                .getBoolean();
 
         maxAIThreads = config
                 .get(CATEGORY_ADVANCED, "aiThreads", 2,
@@ -205,6 +215,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             {
                 String[] defaults = config.get(CATEGORY_ADVANCED, "starteroverrides", defaultStarts).getStringList();
                 ArrayList<String> def = new ArrayList<String>();
+                defaultStarts = new String[0];
                 for (String s : defaults)
                 {
                     def.add(s);
@@ -238,6 +249,7 @@ public class ConfigHandler extends Mod_Pokecube_Helper
                 .get(Configuration.CATEGORY_GENERAL, "pokemartseller", true, "Do pokemart sellers spawn in pokemarts.")
                 .getBoolean(true);
 
+        initDefaultStarts();
         config.save();
         // Gui
         GUICHOOSEFIRSTPOKEMOB_ID = 11;
@@ -330,10 +342,13 @@ public class ConfigHandler extends Mod_Pokecube_Helper
         Configuration config = new Configuration(configFile);
         config.load();
 
-        config.get(CATEGORY_ADVANCED, "hardMode", hardMode).set(hardMode);
-        config.get(CATEGORY_ADVANCED, "semiHMode", semiHardMode).set(semiHardMode);
+        config.get(CATEGORY_ADVANCED, "hardMode", friendlyFire).set(friendlyFire);
+        config.get(CATEGORY_ADVANCED, "attackPlayers", pokemobsDamagePlayers).set(pokemobsDamagePlayers);
+        config.get(CATEGORY_ADVANCED, "semiHMode", pokemobsDamageBlocks).set(pokemobsDamageBlocks);
         config.get(CATEGORY_ADVANCED, "loginGui", guiOnLogin).set(guiOnLogin);
         config.get(CATEGORY_ADVANCED, "advancedOptions", false).set(true);
+        config.get(CATEGORY_SPAWNING, "pokemonSpawn", pokemonSpawn, "Do pokemon spawn via the pokecube spawning code.")
+                .set(pokemonSpawn);
 
         config.get(CATEGORY_SPAWNING, "mobNumber", SpawnHandler.MAXNUM).set(SpawnHandler.MAXNUM);
         config.get(CATEGORY_SPAWNING, "despawnRadius", mobDespawnRadius).set(mobDespawnRadius);
@@ -369,16 +384,15 @@ public class ConfigHandler extends Mod_Pokecube_Helper
             JsonElement element = parser.parse(new InputStreamReader(in));
             JsonElement element1 = element.getAsJsonObject().get("contributors");
             JsonArray contribArray = element1.getAsJsonArray();
-            List<String> defaults = Lists.newArrayList();
+            List<String> defaults = Lists.newArrayList(defaultStarts);
             for (int i = 0; i < contribArray.size(); i++)
             {
                 element1 = contribArray.get(i);
                 JsonObject obj = element1.getAsJsonObject();
                 String name = obj.get("username").getAsString();
                 String info = obj.get("info").getAsString();
-                defaults.add(name + ":" + info);
+                if (info != null && !info.isEmpty()) defaults.add(name + ":" + info);
             }
-            System.out.println(defaults);
             defaultStarts = defaults.toArray(new String[0]);
         }
         catch (Exception e)

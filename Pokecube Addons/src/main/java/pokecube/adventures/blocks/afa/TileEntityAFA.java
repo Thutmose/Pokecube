@@ -1,5 +1,7 @@
 package pokecube.adventures.blocks.afa;
 
+import java.util.Random;
+
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import li.cil.oc.api.machine.Arguments;
@@ -21,31 +23,38 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
+import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokecubeSerializer;
+import thut.api.maths.Vector3;
 
 @Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
         @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityAFA extends TileEntityOwnable
         implements IInventory, IEnergyReceiver, ITickable, SimpleComponent, SidedComponent
 {
-    public IPokemob         pokemob   = null;
-    private ItemStack[]     inventory = new ItemStack[1];
-    public int[]            shift     = { 0, 0, 0 };
-    public int              scale     = 1000;
-    public Ability          ability   = null;
-    int                     energy    = 0;
-    int                     distance  = 4;
-    boolean                 noEnergy  = false;
+    public static ItemStack shiny_charm = null;
+    public IPokemob         pokemob     = null;
+    boolean                 shiny       = false;
+    private ItemStack[]     inventory   = new ItemStack[1];
+    public int[]            shift       = { 0, 0, 0 };
+    public int              scale       = 1000;
+    public Ability          ability     = null;
+    int                     energy      = 0;
+    int                     distance    = 4;
+    boolean                 noEnergy    = false;
     protected EnergyStorage storage;
 
     public TileEntityAFA()
@@ -67,20 +76,30 @@ public class TileEntityAFA extends TileEntityOwnable
         {
             refreshAbility();
         }
+
+        boolean shouldUseEnergy = pokemob != null && ability != null;
+        int levelFactor = 0;
+
         if (pokemob != null && ability != null)
         {
+            shiny = false;
             // Tick increase incase ability tracks this for update.
             // Renderer can also then render it animated.
             ((Entity) pokemob).ticksExisted++;
+            levelFactor = pokemob.getLevel();
+            // Do not call ability update on client.
+            if (!worldObj.isRemote) ability.onUpdate(pokemob);
+        }
+        shouldUseEnergy = shouldUseEnergy || shiny;
+
+        if (shouldUseEnergy)
+        {
             if (!noEnergy && !worldObj.isRemote)
             {
-                int level = pokemob.getLevel();
-                int needed = (int) Math.ceil(distance * distance * distance / ((double) 50 + 5 * level));
+                int needed = (int) Math.ceil(distance * distance * distance / ((double) 50 + 5 * levelFactor));
                 int energy = storage.extractEnergy(needed, false);
                 if (energy < needed) return;
             }
-            // Do not call ability update on client.
-            if (!worldObj.isRemote) ability.onUpdate(pokemob);
         }
     }
 
@@ -106,6 +125,21 @@ public class TileEntityAFA extends TileEntityOwnable
             ability.destroy();
             ((Entity) pokemob).setPosition(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
             ability.init(pokemob, distance);
+        }
+    }
+
+    @SubscribeEvent
+    public void spawnEvent(SpawnEvent.Post evt)
+    {
+        if (shiny_charm == null) shiny_charm = PokecubeItems.getStack("shiny_charm");
+        shiny = inventory[0] != null && ItemStack.areItemStackTagsEqual(inventory[0], shiny_charm);
+        if (shiny)
+        {
+            if (evt.location.distanceTo(Vector3.getNewVector().set(this)) <= distance)
+            {
+                Random rand = new Random();
+                if (rand.nextInt(4096) == 0) evt.pokemob.setShiny(true);
+            }
         }
     }
 
@@ -294,7 +328,8 @@ public class TileEntityAFA extends TileEntityOwnable
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        return PokecubeManager.isFilled(stack);
+        return PokecubeManager.isFilled(stack)
+                || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), stack);
     }
 
     @Override
@@ -414,15 +449,17 @@ public class TileEntityAFA extends TileEntityOwnable
     }
 
     @Override
-    public void onChunkUnload()
+    public void validate()
     {
-        super.onChunkUnload();
+        super.validate();
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
     public void invalidate()
     {
         super.invalidate();
+        MinecraftForge.EVENT_BUS.unregister(this);
     }
 
     @Callback

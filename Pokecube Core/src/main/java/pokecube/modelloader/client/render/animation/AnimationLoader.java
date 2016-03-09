@@ -33,16 +33,16 @@ import thut.api.maths.Vector3;
 
 public class AnimationLoader
 {
-    public static final String MODELPATH = "models/pokemobs/";
-    public static boolean      loaded    = false;
+    public static final String                    MODELPATH   = "models/pokemobs/";
+    public static boolean                         loaded      = false;
 
     /** texture folder */
-    public final static String TEXTUREPATH = "textures/entities/";
+    public final static String                    TEXTUREPATH = "textures/entities/";
 
-    static String                                 file      = "";
+    static String                                 file        = "";
     @SuppressWarnings("rawtypes")
-    public static HashMap<String, IModelRenderer> modelMaps = new HashMap<String, IModelRenderer>();
-    public static HashMap<String, Model>          models    = new HashMap<String, Model>();
+    public static HashMap<String, IModelRenderer> modelMaps   = new HashMap<String, IModelRenderer>();
+    public static HashMap<String, Model>          models      = new HashMap<String, Model>();
 
     public static void clear()
     {
@@ -69,7 +69,7 @@ public class AnimationLoader
 
     public static void load()
     {
-        ModPokecubeML.proxy.registerRenderInformation();
+        ModPokecubeML.proxy.populateModels();
         for (Model m : models.values())
         {
             parse(m);
@@ -273,6 +273,7 @@ public class AnimationLoader
                 loaded.headCaps = headCaps;
                 loaded.headCaps1 = headCaps1;
 
+                loaded.model.preProcessAnimations(loaded.animations.values());
                 models.put(modelName, model);
                 modelMaps.put(modelName, loaded);
             }
@@ -298,7 +299,6 @@ public class AnimationLoader
             System.err.println("No Animation found for " + model.name + " " + model.model);
             e.printStackTrace();
         }
-
     }
 
     public static IModelRenderer<?> getModel(String name)
@@ -473,6 +473,11 @@ public class AnimationLoader
         ResourceLocation model = null;
         String anim = s + ".xml";
 
+        String[] args = s.split(":");
+        String[] args2 = args[1].split("/");
+        String name = args2[args2.length > 1 ? args2.length - 1 : 0];
+        PokedexEntry entry = Database.getEntry(name);
+
         ResourceLocation texture = new ResourceLocation(s.replace(MODELPATH, TEXTUREPATH) + ".png");
         try
         {
@@ -486,27 +491,22 @@ public class AnimationLoader
         }
         try
         {
+            ResourceLocation animation = null;
+            try
+            {
+                animation = new ResourceLocation(anim);
+                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(animation);
+                res.getInputStream().close();
+            }
+            catch (IOException e3)
+            {
+                animation = new ResourceLocation(anim.replace(entry.getName(), entry.getBaseName()));
+            }
             if (model != null)
             {
-                String[] args = s.split(":");
-                String[] args2 = args[1].split("/");
-                String name = args2[args2.length > 1 ? args2.length - 1 : 0];
-                if (Database.getEntry(name) != null)
+                if (entry != null)
                 {
-                    PokedexEntry entry = Database.getEntry(name);
-
-                    ResourceLocation animation = null;
-                    try
-                    {
-                        animation = new ResourceLocation(anim);
-                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
-                        res.getInputStream().close();
-                    }
-                    catch (IOException e3)
-                    {
-                        animation = new ResourceLocation(anim.replace(entry.getName(), entry.getBaseName()));
-                    }
-                    models.put(name, new Model(model, texture, animation, Database.getEntry(name).getName()));
+                    models.put(name, new Model(model, texture, animation, entry.getName()));
                     if (loaded && ModPokecubeML.preload)
                     {
                         getModel(name);
@@ -515,6 +515,25 @@ public class AnimationLoader
                 else
                 {
                     System.err.println("Attmpted to register a model for un-registered pokemob " + name);
+                }
+            }
+            else
+            {
+                if (entry != null && entry.baseForme != null)
+                {
+                    Model existing = models.get(entry.baseForme.getName());
+                    if (existing == null)
+                    {
+                        toReload.add(s);
+                    }
+                    else
+                    {
+                        models.put(name, new Model(existing.model, texture, animation, entry.getName()));
+                        if (loaded && ModPokecubeML.preload)
+                        {
+                            getModel(name);
+                        }
+                    }
                 }
             }
         }

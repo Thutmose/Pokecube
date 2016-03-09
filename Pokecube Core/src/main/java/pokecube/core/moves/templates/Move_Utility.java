@@ -3,6 +3,7 @@ package pokecube.core.moves.templates;
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +14,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.Mod_Pokecube_Helper;
+import pokecube.core.database.abilities.Ability;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -44,7 +46,7 @@ public class Move_Utility extends Move_Basic
             super.attack(attacker, attacked, f);
             return;
         }
-        if ((attacker instanceof IPokemob && (PokecubeMod.semiHardMode || PokecubeMod.debug)
+        if ((attacker instanceof IPokemob && (PokecubeMod.pokemobsDamageBlocks || PokecubeMod.debug)
                 && attacker.getPokemonAIState(IPokemob.TAMED)))
         {
             IPokemob a = ((IPokemob) attacker);
@@ -84,9 +86,10 @@ public class Move_Utility extends Move_Basic
         }
     }
 
-    public void doUtilityAction(IPokemob user, Vector3 location)
+    @Override
+    public void doWorldAction(IPokemob user, Vector3 location)
     {
-        if (!(PokecubeMod.semiHardMode || PokecubeMod.debug)) return;
+        if (!(PokecubeMod.pokemobsDamageBlocks || PokecubeMod.debug)) return;
 
         boolean used = false;
         boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).worldObj, location.intX(), location.intY(),
@@ -168,10 +171,10 @@ public class Move_Utility extends Move_Basic
         int ret = 0;
 
         EntityLivingBase owner = digger.getPokemonOwner();
-
+        EntityPlayer player = null;
         if (owner instanceof EntityPlayer)
         {
-            EntityPlayer player = (EntityPlayer) owner;
+            player = (EntityPlayer) owner;
 
             BreakEvent evt = new BreakEvent(player.worldObj, v.getPos(), v.getBlockState(player.worldObj), player);
 
@@ -179,6 +182,8 @@ public class Move_Utility extends Move_Basic
             if (evt.isCanceled()) return 0;
         }
 
+        boolean silky = shouldSilk(digger) && player != null;
+        boolean dropAll = shouldDropAll(digger);
         double uselessDrop = Math.pow((100 - digger.getLevel()) / 100d, 3);
 
         ArrayList<Block> list = new ArrayList<Block>();
@@ -193,18 +198,42 @@ public class Move_Utility extends Move_Basic
                 for (int k = -1; k <= 1; k++)
                 {
                     temp.set(v);
-                    Block block = temp.addTo(i, j, k).getBlock(((Entity) digger).worldObj);
+                    IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).worldObj);
+                    Block block = state.getBlock();
                     if (list.contains(block))
                     {
                         boolean drop = true;
-                        if (Mod_Pokecube_Helper.getTerrain().contains(block) && uselessDrop < Math.random())
+                        if (Mod_Pokecube_Helper.getTerrain().contains(block) && !dropAll && !silky
+                                && uselessDrop < Math.random())
                             drop = false;
 
-                        if (!count) temp.breakBlock(((Entity) digger).worldObj, drop);
+                        if (!count)
+                        {
+                            if (!silky) temp.breakBlock(((Entity) digger).worldObj, drop);
+                            else
+                            {
+                                if (block.canSilkHarvest(player.worldObj, temp.getPos(), state, player))
+                                {
+                                    silkHarvest(state, temp.getPos(), player.worldObj, player);
+                                    temp.breakBlock(((Entity) digger).worldObj, drop);
+                                }
+                                else
+                                {
+                                    temp.breakBlock(((Entity) digger).worldObj, drop);
+                                }
+                            }
+                        }
                         ret++;
                     }
                 }
         return ret;
+    }
+
+    private boolean shouldDropAll(IPokemob pokemob)
+    {
+        if (pokemob.getAbility() == null) return false;
+        Ability ability = pokemob.getAbility();
+        return ability.toString().equalsIgnoreCase("arenatrap");
     }
 
     private int smashRock(IPokemob digger, Vector3 v, boolean count)
@@ -212,10 +241,10 @@ public class Move_Utility extends Move_Basic
         int ret = 0;
 
         EntityLivingBase owner = digger.getPokemonOwner();
+        EntityPlayer player = null;
         if (owner instanceof EntityPlayer)
         {
-            EntityPlayer player = (EntityPlayer) owner;
-
+            player = (EntityPlayer) owner;
             BreakEvent evt = new BreakEvent(player.worldObj, v.getPos(), v.getBlockState(player.worldObj), player);
 
             MinecraftForge.EVENT_BUS.post(evt);
@@ -227,6 +256,8 @@ public class Move_Utility extends Move_Basic
         for (Block l : Mod_Pokecube_Helper.getRocks())
             list.add(l);
 
+        boolean silky = shouldSilk(digger) && player != null;
+
         Vector3 temp = Vector3.getNewVector();
         temp.set(v);
         for (int i = -1; i <= 1; i++)
@@ -234,10 +265,26 @@ public class Move_Utility extends Move_Basic
                 for (int k = -1; k <= 1; k++)
                 {
                     temp.set(v);
-                    Block block = temp.addTo(i, j, k).getBlock(((Entity) digger).worldObj);
+                    IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).worldObj);
+                    Block block = state.getBlock();
                     if (list.contains(block))
                     {
-                        if (!count) temp.breakBlock(((Entity) digger).worldObj, fortune, true);
+                        if (!count)
+                        {
+                            if (!silky) temp.breakBlock(((Entity) digger).worldObj, fortune, true);
+                            else
+                            {
+                                if (block.canSilkHarvest(player.worldObj, temp.getPos(), state, player))
+                                {
+                                    silkHarvest(state, temp.getPos(), player.worldObj, player);
+                                    temp.breakBlock(((Entity) digger).worldObj, false);
+                                }
+                                else
+                                {
+                                    temp.breakBlock(((Entity) digger).worldObj, fortune, true);
+                                }
+                            }
+                        }
                         ret++;
                     }
                 }

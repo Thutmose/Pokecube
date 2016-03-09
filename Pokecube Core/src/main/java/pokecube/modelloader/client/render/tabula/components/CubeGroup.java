@@ -12,13 +12,13 @@ public class CubeGroup {
     public ArrayList<CubeInfo> cubes = Lists.newArrayList();
     public ArrayList<CubeGroup> cubeGroups = Lists.newArrayList();
 
-    public String name;
+    public String name = "";
 
     public boolean txMirror = false;
 
     public boolean hidden = false;
 
-    public String identifier;
+    public String identifier = "";
     
     @Override
     public String toString()

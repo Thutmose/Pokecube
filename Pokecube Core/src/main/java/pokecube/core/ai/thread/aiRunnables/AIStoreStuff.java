@@ -1,5 +1,9 @@
 package pokecube.core.ai.thread.aiRunnables;
 
+import java.util.function.Predicate;
+
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.EntityLiving;
@@ -22,6 +26,7 @@ public class AIStoreStuff extends AIBase
     public static int  COOLDOWN  = 500;
     final EntityLiving entity;
     final boolean[]    states    = { false, false };
+    final boolean[]    run       = { true };
     final int[]        cooldowns = { 0, 0 };
     Vector3            seeking   = Vector3.getNewVector();
 
@@ -36,7 +41,8 @@ public class AIStoreStuff extends AIBase
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
-        if (world == null || entity.ticksExisted % 10 > 0 || tameCheck()) return false;
+        if (world == null || entity.getAttackTarget()!=null || entity.ticksExisted % 10 > 0 || tameCheck() || cooldowns[0] > 0 || cooldowns[1] > 0)
+            return false;
         IPokemob pokemob = (IPokemob) entity;
 
         if (pokemob.getHome() == null) return false;
@@ -45,13 +51,13 @@ public class AIStoreStuff extends AIBase
         ItemStack stack;
         states[0] = (stack = inventory.getStackInSlot(2)) != null && stack.getItem() instanceof ItemBerry;
 
-        if (!states[0] && cooldowns[0] < 0) return true;
+        if (!states[0] && cooldowns[0] <= 0) return true;
 
         for (int i = 3; i < inventory.getSizeInventory() && !states[1]; i++)
         {
             states[1] = (stack = inventory.getStackInSlot(i)) == null;
         }
-        return !states[1] && cooldowns[1] < 0;
+        return !states[1] && cooldowns[1] <= 0;
     }
 
     /** Only tame pokemobs set to "stay" should run this AI.
@@ -66,19 +72,10 @@ public class AIStoreStuff extends AIBase
     @Override
     public void run()
     {
-        IPokemob pokemob = (IPokemob) entity;
-        Vector3 temp = Vector3.getNewVector();
-        temp.set(pokemob.getHome()).offsetBy(EnumFacing.UP);
-
-        temp.set(temp.findClosestVisibleObject(world, true, 10, IInventory.class));
-        seeking.set(temp);
-        boolean empty = temp.intX() == 0 && temp.intZ() == 0 && (temp.intY() == 0 || temp.intY() == 1);
-        // If too far away, path to the nest for items.
-        if (!empty && temp.distToEntity(entity) > 3)
+        synchronized (seeking)
         {
-            PathEntity path = this.entity.getNavigator().getPathToPos(temp.getPos());
-            addEntityPath(entity.getEntityId(), entity.dimension, path, entity.getAIMoveSpeed());
-            return;
+            seeking.clear();
+            run[0] = true;
         }
     }
 
@@ -92,17 +89,54 @@ public class AIStoreStuff extends AIBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
+        world = entity.worldObj;
         IPokemob pokemob = (IPokemob) entity;
         IInventory inventory = pokemob.getPokemobInventory();
-        Vector3 temp = seeking;
+        if (run[0])
+        {
+            run[0] = false;
+            Vector3 temp = Vector3.getNewVector();
+            temp.set(pokemob.getHome()).offsetBy(EnumFacing.UP);
+
+            Predicate<Object> matcher = new Predicate<Object>()
+            {
+                @Override
+                public boolean test(Object t)
+                {
+                    if (!(t instanceof IBlockState)) return false;
+                    IBlockState state = (IBlockState) t;
+                    if (state.getBlock() instanceof ITileEntityProvider)
+                    {
+                        TileEntity tile = ((ITileEntityProvider) state.getBlock()).createNewTileEntity(null,
+                                state.getBlock().getMetaFromState(state));
+                        return tile instanceof IInventory;
+                    }
+                    return false;
+                }
+            };
+            temp = temp.findClosestVisibleObject(world, true, 5, matcher);
+            if (temp != null) seeking.set(temp);
+            else seeking.clear();
+            boolean empty = seeking.intX() == 0 && seeking.intZ() == 0 && (seeking.intY() == 0 || seeking.intY() == 1);
+            // If too far away, path to the nest for items.
+            if (!empty && seeking.distToEntity(entity) > 3)
+            {
+                PathEntity path = this.entity.getNavigator().getPathToPos(seeking.getPos());
+                addEntityPath(entity.getEntityId(), entity.dimension, path, entity.getAIMoveSpeed());
+                return;
+            }
+        }
+
+        if (seeking.isEmpty()) return;
+
         cooldowns[0]--;
         cooldowns[1]--;
 
+        TileEntity tile = seeking.getTileEntity(world);
         // If too far away, path to the nest for items, that is done on other
         // thread. here is just returns if too far, or on cooldown
-        if (cooldowns[0] > 0 || cooldowns[1] > 0 || temp.distToEntity(entity) > 3) { return; }
+        if (cooldowns[0] > 0 || cooldowns[1] > 0 || seeking.distToEntity(entity) > 3) { return; }
 
-        TileEntity tile = temp.getTileEntity(world);
         if (tile != null)
         {
             ItemStack stack;
@@ -206,14 +240,6 @@ public class AIStoreStuff extends AIBase
                 crashreportcategory.addCrashSection("Item ID",
                         Integer.valueOf(Item.getIdFromItem(itemStackIn.getItem())));
                 crashreportcategory.addCrashSection("Item data", Integer.valueOf(itemStackIn.getMetadata()));
-                // crashreportcategory.addCrashSectionCallable("Item name", new
-                // Callable<String>()
-                // {
-                // public String call() throws Exception
-                // {
-                // return itemStackIn.getDisplayName();
-                // }
-                // });
                 throw new ReportedException(crashreport);
             }
         }
@@ -304,14 +330,5 @@ public class AIStoreStuff extends AIBase
         }
 
         return -1;
-    }
-
-    public static AIStoreStuff createFromNBT(EntityLiving living, NBTTagCompound data)
-    {
-        AIStoreStuff ai = new AIStoreStuff(living);
-        int priority = 400;
-
-        ai.setPriority(priority);
-        return ai;
     }
 }

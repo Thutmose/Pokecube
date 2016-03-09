@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import com.google.common.base.Predicate;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
@@ -18,16 +20,41 @@ import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.TickHandler;
 import thut.api.maths.Vector3;
 
 public class AIFindTarget extends AIBase implements IAICombat
 {
-    final IPokemob     pokemob;
-    final IHungrymob   hungryMob;
-    final EntityLiving entity;
-    Vector3            v  = Vector3.getNewVector();
-    Vector3            v1 = Vector3.getNewVector();
+    final IPokemob          pokemob;
+    final IHungrymob        hungryMob;
+    final EntityLiving      entity;
+    Vector3                 v                = Vector3.getNewVector();
+    Vector3                 v1               = Vector3.getNewVector();
+
+    final Predicate<Object> validGuardTarget = new Predicate<Object>()
+                                             {
+                                                 @Override
+                                                 public boolean apply(Object input)
+                                                 {
+                                                     if (input instanceof IPokemob && input != pokemob)
+                                                     {
+                                                         IPokemob mob = (IPokemob) input;
+                                                         if (mob.getPokemobTeam() != pokemob
+                                                                 .getPokemobTeam()) { return true; }
+                                                     }
+                                                     else if (PokecubeMod.friendlyFire && input instanceof EntityLivingBase)
+                                                     {
+                                                         EntityLivingBase mob = (EntityLivingBase) input;
+
+                                                         if (mob instanceof EntityVillager) return false;
+                                                         if (mob instanceof EntityPokemobEgg) return false;
+
+                                                         if (mob.getTeam() != pokemob.getPokemobTeam()) { return true; }
+                                                     }
+                                                     return false;
+                                                 }
+                                             };
 
     public AIFindTarget(EntityLivingBase mob)
     {
@@ -119,29 +146,12 @@ public class AIFindTarget extends AIBase implements IAICombat
         {
             List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
             List<Object> pokemobs = new ArrayList<Object>();
-            pokemobs = getEntitiesWithinDistance(entity, 32, EntityLivingBase.class);
+            pokemobs = getEntitiesWithinDistance(Vector3.getNewVector().set(pokemob.getHome()), entity.dimension, 16,
+                    EntityLivingBase.class);
 
             for (Object o : pokemobs)
             {
-                if (o instanceof IPokemob && o != pokemob)
-                {
-                    IPokemob mob = (IPokemob) o;
-                    if (mob.getPokemobTeam() != pokemob.getPokemobTeam())
-                    {
-                        ret.add((EntityLivingBase) mob);
-                    }
-                }
-                else if (PokecubeMod.hardMode && o instanceof EntityLivingBase)
-                {
-                    EntityLivingBase mob = (EntityLivingBase) o;
-
-                    if (mob instanceof EntityVillager) continue;
-
-                    if (mob.getTeam() != pokemob.getPokemobTeam())
-                    {
-                        ret.add(mob);
-                    }
-                }
+                if (validGuardTarget.apply(o)) ret.add((EntityLivingBase) o);
             }
             EntityLivingBase newtarget = null;
             double closest = 1000;

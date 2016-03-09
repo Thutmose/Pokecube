@@ -259,4 +259,6 @@ public abstract class Move_Base {
     public abstract Move_Base getMove(String name);
 
 	public abstract boolean isMoveImplemented(String s);
+	
+	public abstract void doWorldAction(IPokemob attacker, Vector3 location);
 }

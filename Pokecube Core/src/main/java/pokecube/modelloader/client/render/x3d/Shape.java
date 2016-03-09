@@ -46,7 +46,7 @@ public class Shape
 
     public void renderShape(IPartTexturer texturer)
     {
-        // Compiles the list of the meshId is invalid.
+        // Compiles the list if the meshId is invalid.
         compileList(texturer);
 
         boolean textureShift = false;
@@ -78,7 +78,7 @@ public class Shape
     {
         if (!GL11.glIsList(meshId))
         {
-            if (material != null && texturer != null) texturer.addMapping(material.name, material.texture);
+            if (material != null && texturer != null && !texturer.hasMapping(material.name) && material.texture!=null) texturer.addMapping(material.name, material.texture);
             meshId = GL11.glGenLists(1);
             GL11.glNewList(meshId, GL11.GL_COMPILE);
             addTris(texturer);
@@ -150,6 +150,11 @@ public class Shape
             GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
         }
         GL11.glEnd();
+        
+        if (material != null)
+        {
+            material.postRender();
+        }
     }
 
     private ArrayList<Vertex> parseVertices(String line) throws ModelFormatException

@@ -39,6 +39,7 @@ public class SMDParser
         String line = reader.readLine();
         Skeleton skelly = null;
         SkeletonFrame currentFrame = null;
+        SkeletonAnimation pose = null;
         String section = "";
         Triangle currentTriangle = null;
         Triangles triangles = null;
@@ -69,15 +70,16 @@ public class SMDParser
                 }
                 else if (section.equals("skeleton"))
                 {
-                    if (skelly.pose == null)
+                    if (pose == null)
                     {
-                        skelly.pose = new SkeletonAnimation(skelly);
-                        model.poses.put("default", skelly.pose);
+                        pose = new SkeletonAnimation(skelly);
+                        pose.animationName = "default";
+                        model.poses.put("default", pose);
                     }
                     if (line.contains("time"))
                     {
-                        currentFrame = new SkeletonFrame(Integer.parseInt(line.split(" ")[1].trim()), skelly.pose);
-                        skelly.pose.frames.add(currentFrame);
+                        currentFrame = new SkeletonFrame(Integer.parseInt(line.split(" ")[1].trim()), pose);
+                        pose.frames.add(currentFrame);
                     }
                     else
                     {
@@ -108,6 +110,7 @@ public class SMDParser
         }
         model.triangles = triangles;
         skelly.init();
+        skelly.setPose(pose);
         return model;
     }
 
@@ -118,6 +121,7 @@ public class SMDParser
         String line = reader.readLine();
         Skeleton skelly = model.skeleton;
         SkeletonAnimation anim = new SkeletonAnimation(skelly);
+        anim.animationName = name;
         SkeletonFrame currentFrame = null;
         String section = "";
         boolean end = true;

@@ -197,7 +197,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
             }
         }
         GL11.glPopMatrix();
-
     }
 
     private void transformGlobal(String currentPhase, Entity entity, double x, double y, double z, float partialTick,

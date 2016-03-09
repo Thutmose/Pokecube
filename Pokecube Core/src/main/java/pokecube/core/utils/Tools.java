@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.MathHelper;
@@ -505,5 +506,19 @@ public class Tools
             }
         }
         return pointedEntity;
+    }
+
+    public static boolean hasMove(String move, IPokemob mob)
+    {
+        for (String s : mob.getMoves())
+        {
+            if (s != null && s.equalsIgnoreCase(move)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isSameStack(ItemStack a, ItemStack b)
+    {
+        return ItemStack.areItemsEqual(a, b) && ItemStack.areItemStackTagsEqual(a, b);
     }
 }

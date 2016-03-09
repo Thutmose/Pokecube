@@ -28,6 +28,7 @@ import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
@@ -101,8 +102,7 @@ public class Commands implements ICommand
             if (s.contains("@"))
             {
                 ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(
-                        PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));// .matchPlayers(cSender,
-                // s);
+                        PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));
                 targets = (EntityPlayerMP[]) targs.toArray(new EntityPlayerMP[0]);
             }
         }
@@ -449,6 +449,7 @@ public class Commands implements ICommand
                     boolean off = temp.equalsIgnoreCase("false") || temp.equalsIgnoreCase("off");
                     if (on || off) SpawnHandler.doSpawns = on;
                     cSender.addChatMessage(new ChatComponentText("Pokemobs Spawning " + SpawnHandler.doSpawns));
+                    ConfigHandler.saveConfig();
                     return true;
                 }
             }
@@ -490,7 +491,7 @@ public class Commands implements ICommand
         {
             if (args.length == 1)
             {
-                cSender.addChatMessage(new ChatComponentText("SemiHardMode is set to " + PokecubeMod.semiHardMode));
+                cSender.addChatMessage(new ChatComponentText("SemiHardMode is set to " + PokecubeMod.pokemobsDamageBlocks));
                 return true;
             }
             if (args.length == 2)
@@ -502,9 +503,9 @@ public class Commands implements ICommand
                 {
                     if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
                     {
-                        PokecubeMod.semiHardMode = on;
+                        PokecubeMod.pokemobsDamageBlocks = on;
                         cSender.addChatMessage(
-                                new ChatComponentText("SemiHardMode is set to " + PokecubeMod.semiHardMode));
+                                new ChatComponentText("SemiHardMode is set to " + PokecubeMod.pokemobsDamageBlocks));
                         ConfigHandler.saveConfig();
                         return true;
                     }
@@ -521,7 +522,7 @@ public class Commands implements ICommand
         {
             if (args.length == 1)
             {
-                cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.hardMode));
+                cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.friendlyFire));
                 return true;
             }
             if (args.length == 2)
@@ -534,9 +535,9 @@ public class Commands implements ICommand
 
                     if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
                     {
-                        PokecubeMod.hardMode = on;
-                        if (PokecubeMod.hardMode) PokecubeMod.semiHardMode = true;
-                        cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.hardMode));
+                        PokecubeMod.friendlyFire = on;
+                        if (PokecubeMod.friendlyFire) PokecubeMod.pokemobsDamageBlocks = true;
+                        cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.friendlyFire));
                         ConfigHandler.saveConfig();
                         return true;
                     }
@@ -662,6 +663,7 @@ public class Commands implements ICommand
                         byte gender = -3;
                         red = green = blue = 255;
                         boolean ancient = false;
+                        String ability = null;
 
                         int exp = 10;
                         int level = -1;
@@ -710,12 +712,16 @@ public class Commands implements ICommand
                                 {
                                     owner = val;
                                 }
+                                else if (arg.equalsIgnoreCase("a"))
+                                {
+                                    ability = val;
+                                }
                                 else if (arg.equalsIgnoreCase("m") && mindex < 4)
                                 {
                                     moves[mindex] = val;
                                     mindex++;
                                 }
-                                else if(arg.equalsIgnoreCase("v"))
+                                else if (arg.equalsIgnoreCase("v"))
                                 {
                                     String[] vec = val.split(",");
                                     offset.x = Double.parseDouble(vec[0].trim());
@@ -724,7 +730,7 @@ public class Commands implements ICommand
                                 }
                             }
                         }
-                        
+
                         Vector3 temp = Vector3.getNewVector();
                         if (player != null)
                         {
@@ -763,6 +769,7 @@ public class Commands implements ICommand
                         if (shadow) mob.setShadow(shadow);
                         if (ancient) mob.setAncient(ancient);
                         mob.setExp(exp, true, true);
+                        if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));
 
                         for (int i1 = 0; i1 < 4; i1++)
                         {
@@ -976,6 +983,7 @@ public class Commands implements ICommand
 
                     int exp = 10;
                     int level = -1;
+                    String ability = null;
                     String[] moves = new String[4];
                     int index = 0;
                     for (int i = 1; i < gift.length; i++)
@@ -1014,6 +1022,10 @@ public class Commands implements ICommand
                         {
                             blue = Byte.parseByte(val);
                         }
+                        else if (arg.equalsIgnoreCase("a"))
+                        {
+                            ability = val;
+                        }
                         else if (arg.equalsIgnoreCase("m") && index < 4)
                         {
                             moves[index] = val;
@@ -1031,6 +1043,7 @@ public class Commands implements ICommand
                     if (gender != -3) mob.setSexe(gender);
                     if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
                     if (shadow) mob.setShadow(shadow);
+                    if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));
                     for (int i = 0; i < 4; i++)
                     {
                         if (moves[i] != null)

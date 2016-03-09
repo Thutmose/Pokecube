@@ -11,9 +11,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -34,70 +36,76 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Cruncher;
+import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
+import thut.api.terrain.TerrainManager;
+import thut.api.terrain.TerrainSegment;
 
 /** @author Manchou */
 public class PokedexEntry
 {
     // TODO write a way to load this from a single file, so I can have 1 file
     // per entry.
-    Random                      rand               = new Random();
-    protected int               pokedexNb;
-    protected String            name;
-    protected String            baseName;
-    protected PokeType          type1;
-    protected PokeType          type2;
+    Random                                     rand               = new Random();
+    protected int                              pokedexNb;
+    protected String                           name;
+    protected String                           baseName;
+    protected PokeType                         type1;
+    protected PokeType                         type2;
     /** The relation between xp and level */
-    protected int               evolutionMode      = 1;
+    protected int                              evolutionMode      = 1;
     /** base xp given from defeating */
-    protected int               baseXP;
-    protected int               catchRate          = -1;
-    protected int               sexeRatio          = -1;
-    protected String            sound;
-    protected int[]             stats;
-    protected byte[]            evs;
+    protected int                              baseXP;
+    protected int                              catchRate          = -1;
+    protected int                              sexeRatio          = -1;
+    protected String                           sound;
+    protected int[]                            stats;
+    protected byte[]                           evs;
     /** Used to determine egg group */
-    public String[]             species;
+    public String[]                            species;
     /** Inital list of species which are prey */
-    protected String[]          food;
+    protected String[]                         food;
     /** Array used for animated or gender based textures. Index 0 is the male
      * textures, index 1 is the females */
-    public String[][]           textureDetails     = { { "" }, null };
+    public String[][]                          textureDetails     = { { "" }, null };
     /** The abilities available to the pokedex entry. */
-    protected ArrayList<String> abilities          = Lists.newArrayList();
+    protected ArrayList<String>                abilities          = Lists.newArrayList();
     /** The abilities available to the pokedex entry. */
-    protected ArrayList<String> abilitiesHidden    = Lists.newArrayList();
+    protected ArrayList<String>                abilitiesHidden    = Lists.newArrayList();
     /** Initial Happiness of the pokemob */
-    protected int               baseHappiness;
+    protected int                              baseHappiness;
     /** Mod which owns the pokemob, used for texture location. */
-    private String              modId;
+    private String                             modId;
     /** Movement type for this mob */
-    public PokecubeMod.Type     mobType            = null;
+    public PokecubeMod.Type                    mobType            = null;
     /** If the above is floating, how high does it try to float */
-    public double               preferedHeight     = 1.5;
+    public double                              preferedHeight     = 1.5;
     /** Offset between top of hitbox and where player sits */
-    public double               mountedOffset      = 1;
+    public double                              mountedOffset      = 1;
     /** indicatees of the specified special texture exists. Index 4 is used for
      * if the mob can be dyed */
-    public boolean[]            hasSpecialTextures = { false, false, false, false, false };
+    public boolean[]                           hasSpecialTextures = { false, false, false, false, false };
     /** Default value of specialInfo, used to determine default colour of
      * recolourable parts */
-    public int                  defaultSpecial     = 0;
+    public int                                 defaultSpecial     = 0;
     /** Can it megaevolve */
-    public boolean              hasMegaForm        = false;
+    public boolean                             hasMegaForm        = false;
     /** Materials which will hurt or make it despawn. */
-    public String[]             hatedMaterial;
+    public String[]                            hatedMaterial;
     /** Particle Effects. */
-    public String[]             particleData;
-    public boolean              canSitShoulder     = false;
-    public boolean              shouldFly          = false;
-    public boolean              shouldDive         = false;
+    public String[]                            particleData;
+    public boolean                             canSitShoulder     = false;
+    public boolean                             shouldFly          = false;
+    public boolean                             shouldDive         = false;
     /** Mass of the pokemon in kg. */
-    public double               mass               = -1;
+    public double                              mass               = -1;
     /** Will it protect others. */
-    public boolean              isSocial           = true;
+    public boolean                             isSocial           = true;
+    /** Will the pokemob try to build colonies with others of it's kind */
+    public boolean                             colonyBuilder      = false;
     /** light,<br>
      * rock,<br>
      * power (near redstone blocks),<br>
@@ -105,61 +113,64 @@ public class PokedexEntry
      * never hungry,<br>
      * berries,<br>
      * water (filter feeds from water) */
-    public boolean[]            foods              = { false, false, false, false, false, true, false };
+    public boolean[]                           foods              = { false, false, false, false, false, true, false };
     /** Times not included here the pokemob will go to sleep when idle. */
-    protected List<TimePeriod>  activeTimes        = new ArrayList<TimePeriod>();
+    protected List<TimePeriod>                 activeTimes        = new ArrayList<TimePeriod>();
 
-    public boolean isStationary = false;
+    public boolean                             isStationary       = false;
 
-    public static TimePeriod night = new TimePeriod(0.6, 0.9);
-    public static TimePeriod day   = new TimePeriod(0.0, 0.5);
-    public static TimePeriod dusk  = new TimePeriod(0.5, 0.6);
-    public static TimePeriod dawn  = new TimePeriod(0.9, 0.0);
+    public static TimePeriod                   night              = new TimePeriod(0.6, 0.9);
+    public static TimePeriod                   day                = new TimePeriod(0.0, 0.5);
+    public static TimePeriod                   dusk               = new TimePeriod(0.5, 0.6);
+    public static TimePeriod                   dawn               = new TimePeriod(0.9, 0.0);
 
-    protected ItemStack foodDrop;
+    protected ItemStack                        foodDrop;
 
     /** the key is the itemstack, the value is the chance, out of 100, if it is
      * picked. */
 
-    public Map<ItemStack, Integer> rareDrops = new HashMap<ItemStack, Integer>();
+    public Map<ItemStack, Integer>             rareDrops          = new HashMap<ItemStack, Integer>();
 
-    public Map<ItemStack, Integer> commonDrops = new HashMap<ItemStack, Integer>();
+    public Map<ItemStack, Integer>             commonDrops        = new HashMap<ItemStack, Integer>();
 
-    public Map<ItemStack, Integer> heldItems = new HashMap<ItemStack, Integer>();
+    public Map<ItemStack, Integer>             heldItems          = new HashMap<ItemStack, Integer>();
 
     /** Map of forms assosciated with this one. */
-    public Map<String, PokedexEntry> forms            = new HashMap<String, PokedexEntry>();
+    public Map<String, PokedexEntry>           forms              = new HashMap<String, PokedexEntry>();
     /** A map of father pokedexnb : child pokedexNbs */
-    protected Map<Integer, int[]>    childNumbers     = new HashMap<Integer, int[]>();
+    protected Map<Integer, int[]>              childNumbers       = new HashMap<Integer, int[]>();
     /** Interactions with items from when player right clicks. */
-    private InteractionLogic         interactionLogic = new InteractionLogic();
+    private InteractionLogic                   interactionLogic   = new InteractionLogic();
     /** Pokemobs with these entries will be hunted. */
-    private List<PokedexEntry>       prey             = new ArrayList<PokedexEntry>();
+    private List<PokedexEntry>                 prey               = new ArrayList<PokedexEntry>();
 
-    public float height = -1;
-    public float width  = -1;
-    public float length = -1;
+    public float                               height             = -1;
+    public float                               width              = -1;
+    public float                               length             = -1;
 
-    private int childNb = 0;
+    private int                                childNb            = 0;
 
-    protected boolean hasStats = false;
-    protected boolean hasEVXP  = false;
+    protected boolean                          hasStats           = false;
+    protected boolean                          hasEVXP            = false;
 
     /** All possible moves */
-    private List<String>                    possibleMoves;
+    private List<String>                       possibleMoves;
     /** Map of Level to Moves learned. */
-    private Map<Integer, ArrayList<String>> lvlUpMoves;
-    private SpawnData                       spawns;
+    private Map<Integer, ArrayList<String>>    lvlUpMoves;
+    private SpawnData                          spawns;
     /** The list of pokemon this can evolve into */
-    public List<EvolutionData>              evolutions  = new ArrayList<PokedexEntry.EvolutionData>();
+    public List<EvolutionData>                 evolutions         = new ArrayList<PokedexEntry.EvolutionData>();
     /** This list will contain all pokemon that are somehow related to this one
      * via evolution chains */
-    public List<PokedexEntry>               related     = new ArrayList<PokedexEntry>();
+    public List<PokedexEntry>                  related            = new ArrayList<PokedexEntry>();
     /** Who this pokemon evolves from. */
-    public PokedexEntry                     evolvesFrom = null;
-    public EvolutionData                    evolvesBy   = null;
+    public PokedexEntry                        evolvesFrom        = null;
+    public EvolutionData                       evolvesBy          = null;
 
-    public PokedexEntry baseForme = null;
+    public PokedexEntry                        baseForme          = null;
+
+    protected HashMap<ItemStack, PokedexEntry> formeItems         = Maps.newHashMap();
+    protected HashMap<PokedexEntry, MegaRule>  megaRules          = Maps.newHashMap();
 
     private PokedexEntry(int nb, String name, List<String> moves, Map<Integer, ArrayList<String>> lvlUpMoves2)
     {
@@ -168,7 +179,7 @@ public class PokedexEntry
         this.possibleMoves = moves;
     }
 
-    protected PokedexEntry(int nb, String name)
+    public PokedexEntry(int nb, String name)
     {
         this.name = name;
         this.pokedexNb = nb;
@@ -786,6 +797,7 @@ public class PokedexEntry
 
     protected void addItems(String toParse, Map<ItemStack, Integer> toAddTo)
     {
+        if (toParse == null) return;
         String[] items = toParse.split(" ");
         for (String s : items)
         {
@@ -804,6 +816,7 @@ public class PokedexEntry
 
     protected ItemStack parseStack(String toParse)
     {
+        if (toParse == null) return null;
         String[] drop = toParse.split(":");
         if (drop.length < 2) return null;
         int count = Integer.parseInt(drop[0]);
@@ -1031,6 +1044,65 @@ public class PokedexEntry
 
     }
 
+    /** to be called after the new stack is applied as held item.
+     * 
+     * @param oldStack
+     * @param newStack
+     * @param pokemob */
+    public void onHeldItemChange(ItemStack oldStack, ItemStack newStack, IPokemob pokemob)
+    {
+        if (newStack == null && oldStack == null) return;
+        PokedexEntry newForme = null;
+        if (newStack != null)
+        {
+            for (ItemStack stack : formeItems.keySet())
+                if (Tools.isSameStack(stack, newStack))
+                {
+                    newForme = formeItems.get(stack);
+                    break;
+                }
+            if (newForme == null && baseForme != null)
+            {
+                for (ItemStack stack : baseForme.formeItems.keySet())
+                    if (Tools.isSameStack(stack, newStack))
+                    {
+                        newForme = baseForme.formeItems.get(stack);
+                        break;
+                    }
+            }
+        }
+        else if (oldStack != null && baseForme != null)
+        {
+            for (ItemStack stack : baseForme.formeItems.keySet())
+                if (Tools.isSameStack(stack, newStack))
+                {
+                    newForme = baseForme.formeItems.get(stack);
+                    break;
+                }
+        }
+        if (newForme != null)
+        {
+            // pokemob.megaEvolve(newForme.getName());
+            pokemob.changeForme(newForme.getName());
+        }
+        else if (baseForme != null)
+        {
+            // pokemob.megaEvolve(baseForme.getName());
+            pokemob.changeForme(baseForme.getName());
+        }
+    }
+
+    public PokedexEntry getEvo(IPokemob pokemob)
+    {
+        for (Entry<PokedexEntry, MegaRule> e : megaRules.entrySet())
+        {
+            MegaRule rule = e.getValue();
+            PokedexEntry entry = e.getKey();
+            if (rule.shouldMegaEvolve(pokemob)) return entry;
+        }
+        return null;
+    }
+
     public static class EvolutionData
     {
         public final int evolutionNb;
@@ -1045,11 +1117,13 @@ public class PokedexEntry
         public boolean   nightOnly = false;
         public boolean   traded    = false;
         public boolean   happy     = false;
+        public boolean   rainOnly  = false;
+        public String    biome     = "";
         public String    move      = "";
         // 1 for male, 2 for female, 0 for either;
         public byte      gender    = 0;
 
-        public String FX = "";
+        public String    FX        = "";
 
         private EvolutionData(int number)
         {
@@ -1060,7 +1134,15 @@ public class PokedexEntry
 
         protected void postInit()
         {
-            if (data != null) parse(data);
+            try
+            {
+                if (data != null) parse(data);
+            }
+            catch (Exception e)
+            {
+                System.out.println(this);
+                e.printStackTrace();
+            }
             data = null;
         }
 
@@ -1074,128 +1156,89 @@ public class PokedexEntry
         private void parse(String data)
         {
             String[] parts = data.split(":");
-            String itemname = "";
-            if (parts[0].equalsIgnoreCase("trade")) traded = true;
-            if (traded && parts.length >= 2)
-            {
-                this.item = PokecubeItems.getStack(parts[1]);
-                if (parts.length > 2)
-                {
-                    String temp = parts[2];
-                    if (temp.equalsIgnoreCase("male")) gender = 1;
-                    if (temp.equalsIgnoreCase("female")) gender = 2;
-                    if (temp.equalsIgnoreCase("day")) dayOnly = true;
-                    if (temp.equalsIgnoreCase("night")) nightOnly = true;
-                }
-            }
+            String itemName = "";
 
-            if (parts.length >= 2 && parts[0].equalsIgnoreCase("level"))
+            for (String s : parts)
             {
-
-                try
+                String arg1 = s.substring(0, 1);
+                String arg2 = "";
+                if (s.length() > 1)
                 {
-                    this.level = Integer.parseInt(parts[1]);
+                    arg2 = s.substring(1);
                 }
-                catch (NumberFormatException e)
+                if (arg1.equals("L"))
                 {
-                    this.item = PokecubeItems.getStack(parts[1]);
-                    itemname = parts[1];
-                    this.level = 0;
+                    try
+                    {
+                        level = Integer.parseInt(arg2);
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        if (level == -1) this.level = 0;
+                        itemName = arg2;
+                    }
                 }
-                this.item = PokecubeItems.getStack(parts[1]);
-                if (this.item == null)
+                else if (arg1.equals("I"))
                 {
-                    String temp = parts[1];
-                    if (temp.equalsIgnoreCase("male")) gender = 1;
-                    if (temp.equalsIgnoreCase("female")) gender = 2;
-                    if (temp.equalsIgnoreCase("day")) dayOnly = true;
-                    if (temp.equalsIgnoreCase("night")) nightOnly = true;
+                    itemName = arg2;
+                    if (level == -1) this.level = 0;
+                }
+                else if (arg1.equals("T"))
+                {
+                    if (arg2.equalsIgnoreCase("day")) dayOnly = true;
+                    if (arg2.equalsIgnoreCase("night")) nightOnly = true;
+                }
+                else if (arg1.equals("H"))
+                {
+                    happy = true;
+                    if (level == -1) this.level = 0;
+                }
+                else if (arg1.equals("X"))
+                {
+                    traded = true;
+                    if (level == -1) this.level = 0;
+                }
+                else if (arg1.equals("G"))
+                {
+                    if (arg2.equalsIgnoreCase("male")) gender = 1;
+                    if (arg2.equalsIgnoreCase("female")) gender = 2;
+                }
+                else if (arg1.equals("R"))
+                {
+                    itemLevel = true;
+                    if (level == -1) this.level = 0;
+                }
+                else if (arg1.equals("M"))
+                {
+                    move = arg2;
+                    if (level == -1) this.level = 0;
+                }
+                else if (arg1.equals("B"))
+                {
+                    biome = arg2;
+                    if (level == -1) this.level = 0;
+                }
+                else if ((arg1 + arg2).equals("rain"))
+                {
+                    rainOnly = true;
+                    if (level == -1) this.level = 0;
                 }
                 else
                 {
-                    itemname = parts[1];
-                }
-                if (parts.length > 2)
-                {
-                    String temp = parts[2];
-                    if (temp.equalsIgnoreCase("male")) gender = 1;
-                    if (temp.equalsIgnoreCase("female")) gender = 2;
-                    if (temp.equalsIgnoreCase("day")) dayOnly = true;
-                    if (temp.equalsIgnoreCase("night")) nightOnly = true;
-                }
-            }
-            if (parts.length >= 2 && parts[0].equalsIgnoreCase("stone"))
-            {
-                String stoneName = parts[1] + "stone";
-                item = PokecubeItems.getStack(stoneName);
-                itemname = stoneName;
-                if (item == null)
-                {
-                    item = PokecubeItems.getStack(parts[1]);
-                    itemname = parts[1];
-                }
-                level = 0;
-                // System.out.println("Stone added for "+evolutionNb+" "+item+"
-                // "+stoneName);
-                if (parts.length > 2)
-                {
-                    String temp = parts[2];
-                    if (temp.equalsIgnoreCase("male")) gender = 1;
-                    if (temp.equalsIgnoreCase("female")) gender = 2;
-                    if (temp.equalsIgnoreCase("day")) dayOnly = true;
-                    if (temp.equalsIgnoreCase("night")) nightOnly = true;
-                }
-            }
-            if (parts.length >= 2 && parts[0].equalsIgnoreCase("move"))
-            {
-                move = parts[1];
-                level = 0;
-                if (parts.length > 2)
-                {
-                    String temp = parts[2];
-                    if (temp.equalsIgnoreCase("male")) gender = 1;
-                    if (temp.equalsIgnoreCase("female")) gender = 2;
-                    if (temp.equalsIgnoreCase("day")) dayOnly = true;
-                    if (temp.equalsIgnoreCase("night")) nightOnly = true;
-                }
-            }
-            if (parts[0].equalsIgnoreCase("happiness")) happy = true;
-            if (happy && parts.length >= 2)
-            {
-                this.item = PokecubeItems.getStack(parts[1]);
-                level = 0;
-                if (this.item == null)
-                {
-                    String temp = parts[1];
-                    if (temp.equalsIgnoreCase("male")) gender = 1;
-                    if (temp.equalsIgnoreCase("female")) gender = 2;
-                    if (temp.equalsIgnoreCase("day")) dayOnly = true;
-                    if (temp.equalsIgnoreCase("night")) nightOnly = true;
-                    // System.out.println(dayOnly+" "+nightOnly+"
-                    // "+evolutionNb);
-                }
-                else
-                {
-                    itemname = parts[1];
-                }
-                if (parts.length > 2)
-                {
-                    String temp = parts[2];
-                    if (temp.equalsIgnoreCase("male")) gender = 1;
-                    if (temp.equalsIgnoreCase("female")) gender = 2;
-                    if (temp.equalsIgnoreCase("day")) dayOnly = true;
-                    if (temp.equalsIgnoreCase("night")) nightOnly = true;
-                    // System.out.println(dayOnly+" "+nightOnly+"
-                    // "+evolutionNb);
+                    System.out.println(data);
+                    Thread.dumpStack();
                 }
             }
 
+            if (!itemName.isEmpty())
+            {
+                item = PokecubeItems.getStack(itemName);
+            }
             if (item != null)
             {
-                PokecubeItems.addToHoldables(itemname);
+                PokecubeItems.addToHoldables(itemName);
+                PokecubeItems.addToEvos(itemName);
             }
-
-            if (traded || happy) this.level = 0;
         }
 
         public Entity getEvolution(World world)
@@ -1207,70 +1250,19 @@ public class PokedexEntry
 
         public boolean shouldEvolve(IPokemob mob)
         {
-            boolean ret = mob.traded() == this.traded || !this.traded;
-            // System.out.println("Should EvolveTest");
-            if (this.level < 0) return false;
-
-            boolean correctItem = item == null;
-            // System.out.println(item);
-            if (item != null && mob instanceof EntityLiving)
-            {
-                ItemStack mobs = ((EntityLiving) mob).getHeldItem();
-                if (mobs != null)
-                {
-                    correctItem = mobs.isItemEqual(item);
-                }
-            }
-            if (mob instanceof EntityLiving && ((EntityLiving) mob).getHeldItem() != null
-                    && ((EntityLiving) mob).getHeldItem().isItemEqual(PokecubeItems.getStack("everstone")))
-            {
-                // System.out.println("Everstone");
-                return false;
-            }
-            ret = ret && correctItem;
-            boolean correctLevel = mob.getLevel() >= level;
-            ret = ret && correctLevel;
-            boolean rightGender = gender == 0;
-            if (!rightGender)
-            {
-                rightGender = mob.getSexe() == gender;
-            }
-            ret = ret && rightGender;
-            boolean rightMove = move.equals("");
-            if (!rightMove)
-            {
-                String[] moves = mob.getMoves();
-                for (String s : moves)
-                {
-                    if (s != null) if (s.equalsIgnoreCase(move))
-                    {
-                        rightMove = true;
-                        break;
-                    }
-                }
-            }
-            ret = ret && rightMove;
-            boolean rightTime = dayOnly == nightOnly;
-            if (!rightTime && mob instanceof Entity)
-            {
-                Entity poke = (Entity) mob;
-                rightTime = dayOnly ? poke.worldObj.isDaytime() : !poke.worldObj.isDaytime();
-                // System.out.println("Is it Day?"+poke.worldObj.isDaytime());
-            }
-
-            ret = ret && rightTime;
-            if (happy)
-            {
-                ret = ret && mob.getHappiness() >= 220;
-            }
-            return ret;
+            return shouldEvolve(mob, ((EntityLiving) mob).getHeldItem());
         }
 
         public boolean shouldEvolve(IPokemob mob, ItemStack mobs)
         {
-            boolean ret = mob.traded() == this.traded || !this.traded;
             if (this.level < 0) return false;
-
+            boolean ret = mob.traded() == this.traded || !this.traded;
+            if (rainOnly)
+            {
+                World world = ((EntityLiving) mob).worldObj;
+                // TODO also iclude check for terrain segement based rain
+                if (!world.isRaining()) return false;
+            }
             boolean correctItem = item == null;
             if (item != null && mob instanceof EntityLiving)
             {
@@ -1317,27 +1309,47 @@ public class PokedexEntry
             {
                 ret = ret && mob.getHappiness() >= 220;
             }
+            if (ret && !biome.isEmpty())
+            {
+                int type = -1;
+
+                for (BiomeType b : BiomeType.values())
+                {
+                    if (b.name.equalsIgnoreCase(biome)) type = b.ordinal() + 256;
+                }
+                if (type == -1)
+                {
+                    for (BiomeGenBase b : BiomeGenBase.getBiomeGenArray())
+                    {
+                        if (b != null) if (b.biomeName.equalsIgnoreCase(biome)) type = b.biomeID;
+                    }
+                }
+                TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity((Entity) mob);
+                Vector3 v = Vector3.getNewVector().set(mob);
+                World world = ((EntityLiving) mob).worldObj;
+                ret = ret && (t.getBiome(v) == type || v.getBiome(world).biomeID == type);
+            }
             return ret;
         }
     }
 
     public static class SpawnData
     {
-        public static final int DAY   = 0;
-        public static final int NIGHT = 1;
+        public static final int     DAY        = 0;
+        public static final int     NIGHT      = 1;
 
-        public static final int CAVE = 2;
+        public static final int     CAVE       = 2;
 
-        public static final int WATER     = 3;
-        public static final int WATERPLUS = 4;
+        public static final int     WATER      = 3;
+        public static final int     WATERPLUS  = 4;
 
-        public static final int INDUSTRIAL = 5;
-        public static final int VILLAGE    = 6;
+        public static final int     INDUSTRIAL = 5;
+        public static final int     VILLAGE    = 6;
 
-        public static final int FOSSIL  = 7;
-        public static final int STARTER = 8;
+        public static final int     FOSSIL     = 7;
+        public static final int     STARTER    = 8;
 
-        public static final int LEGENDARY = 9;
+        public static final int     LEGENDARY  = 9;
 
         public final boolean[]      types      = new boolean[] { false, false, false, false, false, false, false, false,
                 false, false, false, false, false, false, };
@@ -1661,6 +1673,11 @@ public class PokedexEntry
 
         protected static void initForEntry(PokedexEntry entry, String fromDatabase)
         {
+            if (fromDatabase == null)
+            {
+                initForEntry(entry);
+                return;
+            }
             String[] entries = fromDatabase.trim().split(" ");
             for (String s : entries)
             {
@@ -1742,5 +1759,10 @@ public class PokedexEntry
             else new NullPointerException("Errored Item for " + info);
             return ret;
         }
+    }
+
+    public static interface MegaRule
+    {
+        boolean shouldMegaEvolve(IPokemob mobIn);
     }
 }

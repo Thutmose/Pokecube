@@ -38,6 +38,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
@@ -152,28 +153,27 @@ public class GuiDisplayPokecubeInfo extends Gui
             this.drawTexturedModalRect(90 + num + w, 0 + h, 81, 0, 10, 13);
             fontRenderer.drawString("" + n, 95 + w, 3 + h, lightGrey);
 
-            
             int moveCount = 0;
-            
-            for(moveCount = 0; moveCount<4; moveCount++)
+
+            for (moveCount = 0; moveCount < 4; moveCount++)
             {
-                if(pokemob.getMove(moveCount) == null) break;
+                if (pokemob.getMove(moveCount) == null) break;
             }
-            
-            int dir = Mod_Pokecube_Helper.guiDown?1:-1;
+
+            int dir = Mod_Pokecube_Helper.guiDown ? 1 : -1;
             int h1 = 1;
-            if(dir == -1)
+            if (dir == -1)
             {
-                h -= 25 + 12*(moveCount-1);
-//                h1 = 0;
+                h -= 25 + 12 * (moveCount - 1);
+                // h1 = 0;
             }
             pokemob.setMoveIndex(pokemob.getMoveIndex());
-            
+
             for (moveIndex = 0; moveIndex < 4; moveIndex++)
             {
                 int index = moveIndex;
-//                if(dir==-1) index = 3-index;
-                
+                // if(dir==-1) index = 3-index;
+
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(index));
 
                 if (move != null)
@@ -183,13 +183,13 @@ public class GuiDisplayPokecubeInfo extends Gui
                     // bind texture
 
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
-                    this.drawTexturedModalRect(0 + w, 13 +  12 * index + h, 0, 13 + h1, 91, 12);
+                    this.drawTexturedModalRect(0 + w, 13 + 12 * index + h, 0, 13 + h1, 91, 12);
                     GL11.glPushMatrix();// TODO find out why both needed
                     Color moveColor = new Color(move.getType().colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);
                     fontRenderer.drawString(MovesUtils.getTranslatedMove(move.getName()), 5 + 0 + w,
-                             index * 12 + 14 + h, // white.getRGB());
+                            index * 12 + 14 + h, // white.getRGB());
                             move.getType().colour);
                     GL11.glPopMatrix();
                 }
@@ -337,6 +337,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     public void pokemobBack()
     {
         IPokemob pokemob = getCurrentPokemob();
+        //System.out.println(pokemob+":");
         if (pokemob != null) pokemob.returnToPokecube();
         else
         {
@@ -360,11 +361,12 @@ public class GuiDisplayPokecubeInfo extends Gui
     /** Identifies target of attack, and sends the packet with info to server */
     public void pokemobAttack()
     {
-        byte[] message = { (byte) 21, (byte) indexPokemob };
+        if (getCurrentPokemob() == null) return;
 
         EntityPlayer player = minecraft.thePlayer;
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
-        buffer.writeBytes(message);
+        buffer.writeByte(MessageServer.MOVEUSE);
+        buffer.writeInt(((Entity) getCurrentPokemob()).getEntityId());
 
         Entity target = Tools.getPointedEntity(player, 32);
 
@@ -380,6 +382,9 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (pokemob != null)
         {
             if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
+            Vector3 look = Vector3.getNewVector().set(player.getLookVec());
+            Vector3 pos = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
+            Vector3 v = pos.findNextSolidBlock(player.worldObj, look, 32);
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
@@ -388,7 +393,6 @@ public class GuiDisplayPokecubeInfo extends Gui
                 pokemob.displayMessageToOwner(mess);
                 attack = true;
             }
-            buffer.writeInt(((Entity) pokemob).getEntityId());
             if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
             {
                 if (!GuiTeleport.instance().getState())
@@ -417,7 +421,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             else if (!attack)
             {
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
-                if (move != null)
+                if (move != null && (target != null || v != null))
                 {
                     String mess = StatCollector.translateToLocalFormatted("pokemob.action.usemove",
                             pokemob.getPokemonDisplayName(), MovesUtils.getTranslatedMove(move.getName()));
@@ -425,9 +429,13 @@ public class GuiDisplayPokecubeInfo extends Gui
                 }
             }
             buffer.writeBoolean(false);
+
+            if (v != null)
+            {
+                v.writeToBuff(buffer);
+            }
         }
-        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS,
-                buffer.array());
+        MessageServer packet = new MessageServer(buffer);
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -457,13 +465,13 @@ public class GuiDisplayPokecubeInfo extends Gui
      * @param y */
     public void moveGui(int x, int y)
     {
-        if(GuiScreen.isCtrlKeyDown())
+        if (GuiScreen.isCtrlKeyDown())
         {
             Mod_Pokecube_Helper.guiDown = !Mod_Pokecube_Helper.guiDown;
             saveConfig();
             return;
         }
-        
+
         Mod_Pokecube_Helper.guiOffset[0] += x;
         Mod_Pokecube_Helper.guiOffset[1] += y;
         if (Mod_Pokecube_Helper.guiOffset[0] < 0) Mod_Pokecube_Helper.guiOffset[0] = 0;
@@ -478,6 +486,8 @@ public class GuiDisplayPokecubeInfo extends Gui
 
         config.get(Mod_Pokecube_Helper.CATEGORY_ADVANCED, "guiOffset", Mod_Pokecube_Helper.guiOffset,
                 "offset of pokemon moves gui.").set(Mod_Pokecube_Helper.guiOffset);
+        config.get(Mod_Pokecube_Helper.CATEGORY_ADVANCED, "guiDown", Mod_Pokecube_Helper.guiDown,
+                "Are the moves shown below the nametag.").set(Mod_Pokecube_Helper.guiDown);
 
         config.save();
     }

@@ -38,7 +38,7 @@ public abstract class PokecubeMod
     public final static String VERSION         = "@VERSION@";
     public final static String MCVERSIONS      = "@MCVERSION@";
     public final static String MINFORGEVERSION = "[11.15.1.1763,)";
-    public final static String DEPSTRING       = "";//";required-after:thutcore@[2.3.0,);required-after:Baubles";
+    public final static String DEPSTRING       = "";//";required-after:thutcore@[2.3.4,);required-after:Baubles@[1.1.3,)";//"";//
 
     public final static String UPDATEURL  = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Core/versions.json";
     public final static String CONTRIBURL = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/contributors.json";
@@ -57,10 +57,11 @@ public abstract class PokecubeMod
     public static SimpleNetworkWrapper packetPipeline;
 
     // Manchou mobs are default mobs
-    public static String defaultMod = "pokecube_origin";
+    public static String defaultMod = "pokecube_ml";
 
-    public static boolean hardMode     = false;
-    public static boolean semiHardMode = false;
+    public static boolean friendlyFire     = false;
+    public static boolean pokemobsDamagePlayers     = true;
+    public static boolean pokemobsDamageBlocks = false;
     public static double  MAX_DENSITY  = 1;
 
     public static Map<String, String> gifts         = new HashMap<String, String>();

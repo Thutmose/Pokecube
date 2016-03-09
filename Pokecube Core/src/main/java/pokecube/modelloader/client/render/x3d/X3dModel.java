@@ -3,6 +3,7 @@ package pokecube.modelloader.client.render.x3d;
 import static java.lang.Math.toDegrees;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import net.minecraft.util.ResourceLocation;
@@ -12,6 +13,8 @@ import pokecube.modelloader.client.render.model.IModelCustom;
 import pokecube.modelloader.client.render.model.IPartTexturer;
 import pokecube.modelloader.client.render.model.IRetexturableModel;
 import pokecube.modelloader.client.render.model.Vertex;
+import pokecube.modelloader.client.render.tabula.components.Animation;
+import pokecube.modelloader.client.render.tabula.components.AnimationComponent;
 import thut.api.maths.Vector3;
 
 public class X3dModel implements IModelCustom, IModel, IRetexturableModel
@@ -136,6 +139,27 @@ public class X3dModel implements IModelCustom, IModel, IRetexturableModel
         for (IExtendedModelPart part : parts.values())
         {
             if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setTexturer(texturer);
+        }
+    }
+
+    @Override
+    public void preProcessAnimations(Collection<Animation> animations)
+    {
+        for (Animation animation : animations)
+        {
+            for(String s: animation.sets.keySet())
+            {
+                ArrayList<AnimationComponent> components = animation.sets.get(s);
+                for(AnimationComponent comp: components)
+                {
+                    comp.posOffset[0]/=-16;
+                    comp.posOffset[1]/=-16;
+                    comp.posOffset[2]/=-16;
+                    comp.posChange[0]/=-16;
+                    comp.posChange[1]/=-16;
+                    comp.posChange[2]/=-16;
+                }
+            }
         }
     }
 }

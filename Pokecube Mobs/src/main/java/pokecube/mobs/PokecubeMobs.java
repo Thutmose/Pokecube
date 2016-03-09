@@ -1,6 +1,7 @@
 package pokecube.mobs;
 
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
 import net.minecraftforge.common.ForgeVersion.Status;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.modelloader.ModPokecubeML;
 
 @Mod(modid = PokecubeMobs.MODID, name = "Pokecube Mobs", version = PokecubeMobs.VERSION, dependencies = "required-after:pokecube", updateJSON = PokecubeMobs.UPDATEURL, acceptableRemoteVersions = "*", acceptedMinecraftVersions = PokecubeMobs.MCVERSIONS)
@@ -26,7 +28,7 @@ public class PokecubeMobs
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        new UpdateNotifier();
+        if (event.getSide() == Side.CLIENT) new UpdateNotifier();
         ModPokecubeML.proxy.registerModelProvider(MODID, this);
     }
 
@@ -43,18 +45,29 @@ public class PokecubeMobs
             if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
-
                 Object o = Loader.instance().getIndexedModList().get(PokecubeMobs.MODID);
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
                 if (result.status == Status.OUTDATED)
                 {
-                    String mess = "Current Listed Release Version of Pokecube Mobs is " + result.target
-                            + ", but you have " + PokecubeMobs.VERSION + ".";
-                    mess += "\nIf you find bugs, please update and check if they still occur before reporting them.";
-                    (event.player).addChatMessage(new ChatComponentText(mess));
+                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Mobs");
+                    (event.player).addChatMessage(mess);
                 }
-
             }
+        }
+
+        @Deprecated // Use one from ThutCore whenever that is updated for a bit.
+        private IChatComponent getOutdatedMessage(CheckResult result, String name)
+        {
+            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
+            String link = "" + result.url;
+            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
+                    + link + "\"}}";
+
+            String info = "\"" + EnumChatFormatting.RED + "New " + name
+                    + " version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
+                    + "\"";
+            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
+            return IChatComponent.Serializer.jsonToComponent(mess);
         }
     }
 }

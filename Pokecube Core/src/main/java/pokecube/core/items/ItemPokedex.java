@@ -5,6 +5,7 @@ package pokecube.core.items;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
@@ -27,7 +28,7 @@ import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 
 /** @author Manchou */
-public class ItemPokedex extends ItemTranslated
+public class ItemPokedex extends Item
 {
     public ItemPokedex()
     {

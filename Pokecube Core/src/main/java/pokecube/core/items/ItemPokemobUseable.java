@@ -3,11 +3,12 @@ package pokecube.core.items;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
 
-public class ItemPokemobUseable extends ItemTranslated implements IPokemobUseable {
+public class ItemPokemobUseable extends Item implements IPokemobUseable {
 	
 	public ItemPokemobUseable() {
 		super();

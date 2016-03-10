@@ -495,7 +495,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         entry = newEntry;
         this.pokedexNb = entry.getPokedexNb();
         this.setStats(entry.getStats());
-        if(worldObj!=null) this.setSize(this.getSize());
+        if (worldObj != null) this.setSize(this.getSize());
     }
 
     @Override
@@ -630,9 +630,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             }
             else
             {
-                ((EntityCreature) attacker).setAttackTarget((EntityLivingBase) null);
+                ((EntityCreature) attacker).setAttackTarget(null);
             }
-
             if (this.getPokedexEntry().isFood(((IPokemob) attacked).getPokedexEntry())
                     && this.getPokemonAIState(HUNTING))
             {
@@ -641,7 +640,10 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 this.setPokemonAIState(HUNTING, false);
                 getNavigator().clearPathEntity();
             }
-
+        }
+        else
+        {
+            ((EntityCreature) attacker).setAttackTarget(null);
         }
     }
 

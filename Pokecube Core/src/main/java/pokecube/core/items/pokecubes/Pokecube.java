@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
@@ -20,11 +21,10 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.ItemTranslated;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
-public class Pokecube extends ItemTranslated implements IPokecube
+public class Pokecube extends Item implements IPokecube
 {
 
     public Pokecube()

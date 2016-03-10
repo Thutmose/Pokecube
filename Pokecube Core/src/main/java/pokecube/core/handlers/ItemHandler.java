@@ -38,6 +38,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -69,12 +70,10 @@ import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.ItemBlockTranslated;
 import pokecube.core.items.ItemLuckyEgg;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.ItemPokemobUseableFood;
 import pokecube.core.items.ItemTM;
-import pokecube.core.items.ItemTranslated;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.megastuff.ItemMegaring;
@@ -109,7 +108,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         repelBlock = new BlockRepel();
         repelBlock.setUnlocalizedName("repel");
         repelBlock.setCreativeTab(creativeTabPokecubeBerries);
-        register(repelBlock, ItemBlockTranslated.class, "repel");
+        register(repelBlock, ItemBlock.class, "repel");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(Item.getItemFromBlock(repelBlock), 0,
                     new ModelResourceLocation("pokecube:repel", "inventory"));
@@ -118,7 +117,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         tableBlock = new BlockPokecubeTable();
         tableBlock.setUnlocalizedName("pokecube_table");
         tableBlock.setCreativeTab(creativeTabPokecubeBlocks);
-        register(tableBlock, ItemBlockTranslated.class, "pokecube_table");
+        register(tableBlock, ItemBlock.class, "pokecube_table");
 
         luckyEgg = new ItemLuckyEgg().setUnlocalizedName("luckyEgg").setCreativeTab(creativeTabPokecube);
         register(luckyEgg, "luckyEgg");
@@ -129,7 +128,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         BlockHealTable pokecenter = (BlockHealTable) (new BlockHealTable()).setUnlocalizedName("pokecenter");
         pokecenter.setCreativeTab(creativeTabPokecubeBlocks);
 
-        register(pokecenter, ItemBlockTranslated.class, "pokecenter");
+        register(pokecenter, ItemBlock.class, "pokecenter");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             registerItemTexture(Item.getItemFromBlock(pokecenter), 0,
@@ -140,7 +139,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         Block nest = new BlockNest().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
                 .setUnlocalizedName("pokemobNest");
-        PokecubeItems.register(nest, ItemBlockTranslated.class, "pokemobNest");
+        PokecubeItems.register(nest, ItemBlock.class, "pokemobNest");
         GameRegistry.registerTileEntity(TileEntityNest.class, "pokemobNest");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
@@ -576,74 +575,74 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addStones()
     {
-        waterstone = (new ItemTranslated()).setUnlocalizedName("waterstone");
+        waterstone = (new Item()).setUnlocalizedName("waterstone");
         waterstone.setCreativeTab(creativeTabPokecube);
         register(waterstone, "waterstone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(waterstone, 0, new ModelResourceLocation("pokecube:waterstone", "inventory"));
 
-        firestone = (new ItemTranslated()).setUnlocalizedName("firestone");
+        firestone = (new Item()).setUnlocalizedName("firestone");
         firestone.setCreativeTab(creativeTabPokecube);
         register(firestone, "firestone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(firestone, 0, new ModelResourceLocation("pokecube:firestone", "inventory"));
 
-        leafstone = (new ItemTranslated()).setUnlocalizedName("leafstone");
+        leafstone = (new Item()).setUnlocalizedName("leafstone");
         leafstone.setCreativeTab(creativeTabPokecube);
         register(leafstone, "leafstone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(leafstone, 0, new ModelResourceLocation("pokecube:leafstone", "inventory"));
 
-        thunderstone = (new ItemTranslated());
+        thunderstone = (new Item());
         thunderstone.setUnlocalizedName("thunderstone");
         register(thunderstone, "thunderstone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(thunderstone, 0, new ModelResourceLocation("pokecube:thunderstone", "inventory"));
 
         thunderstone.setCreativeTab(creativeTabPokecube);
-        moonstone = (new ItemTranslated()).setUnlocalizedName("moonstone");
+        moonstone = (new Item()).setUnlocalizedName("moonstone");
         moonstone.setCreativeTab(creativeTabPokecube);
         register(moonstone, "moonstone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(moonstone, 0, new ModelResourceLocation("pokecube:moonstone", "inventory"));
 
-        sunstone = (new ItemTranslated()).setUnlocalizedName("sunstone");
+        sunstone = (new Item()).setUnlocalizedName("sunstone");
         sunstone.setCreativeTab(creativeTabPokecube);
         register(sunstone, "sunstone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(sunstone, 0, new ModelResourceLocation("pokecube:sunstone", "inventory"));
 
-        shinystone = (new ItemTranslated()).setUnlocalizedName("shinystone");
+        shinystone = (new Item()).setUnlocalizedName("shinystone");
         shinystone.setCreativeTab(creativeTabPokecube);
         register(shinystone, "shinystone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(shinystone, 0, new ModelResourceLocation("pokecube:shinystone", "inventory"));
 
-        ovalstone = (new ItemTranslated()).setUnlocalizedName("ovalstone");
+        ovalstone = (new Item()).setUnlocalizedName("ovalstone");
         ovalstone.setCreativeTab(creativeTabPokecube);
         register(ovalstone, "ovalstone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(ovalstone, 0, new ModelResourceLocation("pokecube:ovalstone", "inventory"));
 
-        everstone = (new ItemTranslated()).setUnlocalizedName("everstone");
+        everstone = (new Item()).setUnlocalizedName("everstone");
         everstone.setCreativeTab(creativeTabPokecube);
         register(everstone, "everstone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(everstone, 0, new ModelResourceLocation("pokecube:everstone", "inventory"));
 
-        duskstone = (new ItemTranslated()).setUnlocalizedName("duskstone");
+        duskstone = (new Item()).setUnlocalizedName("duskstone");
         duskstone.setCreativeTab(creativeTabPokecube);
         register(duskstone, "duskstone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(duskstone, 0, new ModelResourceLocation("pokecube:duskstone", "inventory"));
 
-        dawnstone = (new ItemTranslated()).setUnlocalizedName("dawnstone");
+        dawnstone = (new Item()).setUnlocalizedName("dawnstone");
         dawnstone.setCreativeTab(creativeTabPokecube);
         register(dawnstone, "dawnstone");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(dawnstone, 0, new ModelResourceLocation("pokecube:dawnstone", "inventory"));
 
-        kingsrock = (new ItemTranslated()).setUnlocalizedName("kingsrock");
+        kingsrock = (new Item()).setUnlocalizedName("kingsrock");
         kingsrock.setCreativeTab(creativeTabPokecube);
         register(kingsrock, "kingsrock");
         addToHoldables("kingsrock");

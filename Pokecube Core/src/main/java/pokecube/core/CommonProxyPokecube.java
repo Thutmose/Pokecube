@@ -26,6 +26,7 @@ import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.CommonProxy;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
@@ -51,20 +52,20 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     @Override
     public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (id == Mod_Pokecube_Helper.GUIPOKECENTER_ID)
+        if (id == Config.GUIPOKECENTER_ID)
         {
             TileEntity tile_entity = world.getTileEntity(new BlockPos(x, y, z));
 
             if (tile_entity instanceof TileHealTable) { return new ContainerHealTable((TileHealTable) tile_entity,
                     player.inventory); }
         }
-        if (id == Mod_Pokecube_Helper.GUIPOKEMOB_ID)
+        if (id == Config.GUIPOKEMOB_ID)
         {
             IPokemob e = (IPokemob) world.getEntityByID(x);
             return new ContainerPokemob(player.inventory, e.getPokemobInventory(), e);
         }
         BlockPos pos = new BlockPos(x, y, z);
-        if (id == Mod_Pokecube_Helper.GUITRADINGTABLE_ID)
+        if (id == Config.GUITRADINGTABLE_ID)
         {
             TileEntity tile_entity = world.getTileEntity(pos);
             IBlockState state = world.getBlockState(pos);
@@ -76,7 +77,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
                 else return new ContainerTMCreator((TileEntityTradingTable) tile_entity, player.inventory);
             }
         }
-        if (id == Mod_Pokecube_Helper.GUIPC_ID)
+        if (id == Config.GUIPC_ID)
         {
             TileEntity te = world.getTileEntity(pos);
             if (te instanceof TileEntityPC)
@@ -111,7 +112,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     {
         return FMLCommonHandler.instance().getMinecraftServerInstance();
     }
-    
+
     public IThreadListener getMainThreadListener()
     {
         return FMLCommonHandler.instance().getMinecraftServerInstance();
@@ -147,7 +148,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
 
     public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
     {
-        //TODO send a packet to spawn it on client if sent from here
+        // TODO send a packet to spawn it on client if sent from here
     }
 
     @Override

@@ -31,14 +31,14 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.PokecubeItems;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.database.Database;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.RecallEvent;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IMobColourable;
@@ -521,7 +521,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
                 && this.getPokemonAIState(IPokemob.TAMED))
         {
             this.pokeChest.setCustomName(this.getName());
-            player.openGui(PokecubeMod.core, Mod_Pokecube_Helper.GUIPOKEMOB_ID, worldObj, getEntityId(), 0, 0);
+            player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, worldObj, getEntityId(), 0, 0);
         }
     }
 

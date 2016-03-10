@@ -778,7 +778,7 @@ public class MovesAdder implements IMoveConstants
                     {
                         if (!(e.onGround || e.fallDistance < 0.5)) continue;
                         if (e instanceof IPokemob && ((IPokemob) e).isType(flying)
-                                || (e instanceof EntityPlayer && !PokecubeMod.friendlyFire))
+                                || (e instanceof EntityPlayer && !PokecubeMod.pokemobsDamageOwner))
                             continue;
                         attacked = e;
                         int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
@@ -820,7 +820,7 @@ public class MovesAdder implements IMoveConstants
                     {
                         if (!(e.onGround || e.fallDistance < 0.5)) continue;
                         if (e instanceof IPokemob && ((IPokemob) e).isType(flying)
-                                || (e instanceof EntityPlayer && !PokecubeMod.friendlyFire))
+                                || (e instanceof EntityPlayer && !PokecubeMod.pokemobsDamageOwner))
                             continue;
                         attacked = e;
                         int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
@@ -1153,7 +1153,7 @@ public class MovesAdder implements IMoveConstants
                     List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker), v, 2, 8);
                     for (Entity e : hit)
                     {
-                        if ((!PokecubeMod.friendlyFire) && e instanceof EntityPlayer) continue;
+                        if ((!PokecubeMod.pokemobsDamageOwner) && e instanceof EntityPlayer) continue;
                         attacked = e;
                         byte statusChange = STATUS_NON;
                         byte changeAddition = CHANGE_NONE;

@@ -19,10 +19,10 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.PokecubeMod.Type;
 import pokecube.core.utils.PokeType;
 
@@ -148,7 +148,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
                 && !((EntityPlayer) this.riddenByEntity).capabilities.isCreativeMode)
         {
             int hunger = getHungerTime();
-            if (hunger < 0.85 * Mod_Pokecube_Helper.pokemobLifeSpan)
+            if (hunger < 0.85 * PokecubeMod.core.getConfig().pokemobLifeSpan)
             {
                 hungerFactor = 1;
                 return true;
@@ -344,7 +344,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
         if (Math.random() < 0.1 / (this.getLevel()))
         {
-            this.setHungerTime(this.getHungerTime() + Mod_Pokecube_Helper.pokemobLifeSpan / 5);
+            this.setHungerTime(this.getHungerTime() + PokecubeMod.core.getConfig().pokemobLifeSpan / 5);
         }
         checkHunger();
 

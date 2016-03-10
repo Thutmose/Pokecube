@@ -17,13 +17,13 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.events.EggEvent;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.api.maths.Vector3;
@@ -35,10 +35,10 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
     private ItemStack[] inventory = new ItemStack[27];
 
-    int pokedexNb = 0;
+    int                 pokedexNb = 0;
 
-    HashSet<IPokemob> residents = new HashSet<IPokemob>();
-    int               time      = 0;
+    HashSet<IPokemob>   residents = new HashSet<IPokemob>();
+    int                 time      = 0;
 
     @Override
     public void update()
@@ -51,7 +51,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         if (worldObj.isRemote || (worldObj.getDifficulty() == EnumDifficulty.PEACEFUL && power == 0)) return;
 
         if (worldObj.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(),
-                Mod_Pokecube_Helper.mobDespawnRadius) == null)
+                PokecubeMod.core.getConfig().maxSpawnRadius) == null)
             return;
 
         if (pokedexNb == 0 && time >= 200)

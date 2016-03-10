@@ -33,7 +33,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.PokecubeMod;
@@ -298,18 +297,18 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     protected boolean canDespawn()
     {
-        boolean canDespawn = getHungerTime() > Mod_Pokecube_Helper.pokemobLifeSpan;
+        boolean canDespawn = getHungerTime() > PokecubeMod.core.getConfig().pokemobLifeSpan;
         boolean checks = getPokemonAIState(TAMED) || this.getPokemonOwner() != null || getPokemonAIState(ANGRY)
                 || getAttackTarget() != null || this.hasCustomName() || isAncient() || isNoDespawnRequired();
         despawntimer--;
         if (checks) return false;
 
-        boolean cull = Mod_Pokecube_Helper.cull
-                && worldObj.getClosestPlayerToEntity(this, Mod_Pokecube_Helper.mobDespawnRadius) == null;
+        boolean cull = PokecubeMod.core.getConfig().cull
+                && worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius) == null;
 
-        if (!cull && !Mod_Pokecube_Helper.cull)
+        if (!cull && !PokecubeMod.core.getConfig().cull)
         {
-            cull = worldObj.getClosestPlayerToEntity(this, Mod_Pokecube_Helper.mobDespawnRadius * 3) == null;
+            cull = worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius * 3) == null;
             if (cull && despawntimer < 0)
             {
                 despawntimer = 80;

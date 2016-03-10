@@ -5,16 +5,12 @@ import java.util.Random;
 
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureVillagePieces.PieceWeight;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Start;
-import pokecube.core.ai.utils.GuardAI;
-import pokecube.core.handlers.ConfigHandler;
-import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
 public class ComponentPokeMart extends ComponentVillageBase
@@ -143,7 +139,7 @@ public class ComponentPokeMart extends ComponentVillageBase
             }
         }
 
-        if (ConfigHandler.POKEMARTSELLER)
+//        if (ConfigHandler.POKEMARTSELLER)//TODO villager config
         {
 
             EntityVillager villager = this.spawnVillager(world, structureboundingbox, 4, 4, 7);

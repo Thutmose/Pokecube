@@ -8,11 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.TickHandler;
@@ -94,12 +94,12 @@ public class AIAttack extends AIBase implements IAICombat
             targetLoc.set(entityTarget);
             this.chaseTime = 0;
             running = true;
-            if (Mod_Pokecube_Helper.pokemobagresswarning && delayTime == -1 && entityTarget instanceof EntityPlayer
+            if (PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1 && entityTarget instanceof EntityPlayer
                     && !((IPokemob) attacker).getPokemonAIState(IPokemob.TAMED)
                     && ((EntityPlayer) entityTarget).getLastAttacker() != attacker
                     && ((EntityPlayer) entityTarget).getAITarget() != attacker)
             {
-                delayTime = Mod_Pokecube_Helper.pokemobagressticks;
+                delayTime = PokecubeMod.core.getConfig().pokemobagressticks;
                 String missed = StatCollector.translateToLocalFormatted("pokemob.agress",
                         ((IPokemob) attacker).getPokemonDisplayName());
                 entityTarget.addChatMessage(new ChatComponentText("\u00a7c" + missed));

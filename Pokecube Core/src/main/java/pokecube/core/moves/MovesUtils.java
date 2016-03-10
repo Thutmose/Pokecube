@@ -21,7 +21,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.database.MoveEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -580,9 +579,9 @@ public class MovesUtils implements IMoveConstants
             finalAttackStrength = Math.min(finalAttackStrength, beforeHealth - 1);
         }
 
-        if (Mod_Pokecube_Helper.maxPlayerDamage > 0 && attacked instanceof EntityPlayer)
+        if (PokecubeMod.core.getConfig().maxPlayerDamage > 0 && attacked instanceof EntityPlayer)
         {
-            finalAttackStrength = (int) Math.min(Mod_Pokecube_Helper.maxPlayerDamage, finalAttackStrength);
+            finalAttackStrength = (int) Math.min(PokecubeMod.core.getConfig().maxPlayerDamage, finalAttackStrength);
         }
 
         if (attacked instanceof IPokemob)
@@ -731,7 +730,7 @@ public class MovesUtils implements IMoveConstants
                         if (((IPokemob) attacker).getPokemonOwner() == e) continue;
                     }
                 }
-                if (!PokecubeMod.friendlyFire && ((IPokemob) attacker).getPokemonOwner() == e)
+                if (!PokecubeMod.pokemobsDamageOwner && ((IPokemob) attacker).getPokemonOwner() == e)
                 {
                     continue;
                 }
@@ -762,7 +761,7 @@ public class MovesUtils implements IMoveConstants
         {
             if (e instanceof EntityLivingBase && (PokecubeMod.pokemobsDamagePlayers || !(e instanceof EntityPlayer)))
             {
-                if (((IPokemob) attacker).getPokemonOwner() == e && !PokecubeMod.friendlyFire) continue;
+                if (((IPokemob) attacker).getPokemonOwner() == e && !PokecubeMod.pokemobsDamageOwner) continue;
                 ret.add((EntityLivingBase) e);
             }
         }

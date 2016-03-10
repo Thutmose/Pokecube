@@ -3,13 +3,20 @@
  */
 package pokecube.core;
 
+import static pokecube.core.PokecubeCore.getWorld;
 import static pokecube.core.PokecubeItems.getItem;
 import static pokecube.core.PokecubeItems.removeFromHoldables;
+import static pokecube.core.handlers.Config.GUICHOOSEFIRSTPOKEMOB_ID;
+import static pokecube.core.handlers.Config.GUIDISPLAYPOKECUBEINFO_ID;
+import static pokecube.core.handlers.Config.GUIDISPLAYTELEPORTINFO_ID;
+import static pokecube.core.handlers.Config.GUIPC_ID;
+import static pokecube.core.handlers.Config.GUIPOKECENTER_ID;
+import static pokecube.core.handlers.Config.GUIPOKEDEX_ID;
+import static pokecube.core.handlers.Config.GUIPOKEMOBSPAWNER_ID;
+import static pokecube.core.handlers.Config.GUIPOKEMOB_ID;
+import static pokecube.core.handlers.Config.GUITRADINGTABLE_ID;
 import static pokecube.core.interfaces.PokecubeMod.HMs;
-import static pokecube.core.PokecubeCore.getWorld;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -20,10 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.handlers.RecipeHandler;
 import pokecube.core.interfaces.IMoveConstants;
@@ -35,90 +38,7 @@ import pokecube.core.moves.TreeRemover;
 public class Mod_Pokecube_Helper
 {
 
-    /** Do monsters not spawn. */
-    public static boolean       deactivateMonsters   = false;
-    /** do Pokemobs spawn */
-    public static boolean       pokemonSpawn         = true;
-    /** do monster spawns get swapped with shadow pokemobs */
-    public static boolean       disableMonsters      = false;
-    /** do animals not spawn */
-    public static boolean       deactivateAnimals    = false;
-    /** are not-real pokemobs allowed. */
-    public static boolean       allowFakeMons        = true;
-    /** is there a choose first gui on login */
-    public static boolean       guiOnLogin           = true;
-    /** do meteors fall. */
-    public static boolean       meteors              = true;
-    /** does defeating a tame pokemob give exp */
-    public static boolean       pvpExp               = false;
-    /** do wild pokemobs which leave despawnRadius despawn immediately */
-    public static boolean       cull                 = false;
-    /** Will lithovores eat gravel */
-    public static boolean       pokemobsEatGravel    = false;
-    /** Is there a warning before a wild pokemob attacks the player. */
-    public static boolean       pokemobagresswarning = false;
-
-    public static boolean       POKEMARTSELLER       = true;
-    public static boolean       SPAWNBUILDING        = true;
-    public static int[]         guiOffset;
-    public static boolean       guiDown              = true;
-    public static File          configFile;
-    public static Configuration config;
-    public static boolean       mysterygift          = true;
-
-    public static String        defaultMobs          = "";
-
-    /** This is also the radius which mobs spawn in. Is only despawn radius if
-     * cull is true */
-    public static int           mobDespawnRadius     = 32;
-    /** closest distance to a player the pokemob can spawn. */
-    public static int           mobSpawnRadius       = 16;
-    /** Distance to player needed to agress the player */
-    public static int           mobAggroRadius       = 3;
-    /** Approximate umber of ticks before pokemob starts taking hunger damage */
-    public static int           pokemobLifeSpan      = 8000;
-    /** Capped damage to players by pokemobs */
-    public static int           maxPlayerDamage      = 10;
-    /** Warning time before a wild pokemob attacks a player */
-    public static int           pokemobagressticks   = 100;
-    /** Number of threads allowed for AI. */
-    public static int           maxAIThreads         = 1;
-    /** Do explosions occur and cause damage */
-    public static boolean       explosions           = true;
-    /** Will nests spawn */
-    public static boolean       nests                = false;
-    /** number of nests per chunk */
-    public static int           nestsPerChunk        = 1;
-    /** To be used for nest retrogen. */
-    public static boolean       refreshNests         = false;
-    /** Minimum level legendaries can spawn at. */
-    public static int           minLegendLevel       = 1;
-
-    public static int           GUICHOOSEFIRSTPOKEMOB_ID;
-    public static int           GUIDISPLAYPOKECUBEINFO_ID;
-    public static int           GUIDISPLAYTELEPORTINFO_ID;
-    public static int           GUIPOKECENTER_ID;
-    public static int           GUIPOKEDEX_ID;
-    public static int           GUIPOKEMOBSPAWNER_ID;
-    public static int           GUIPC_ID;
-    public static int           GUIPOKEMOB_ID;
-    public static int           GUITRADINGTABLE_ID;
-
-    /** Does the healing table have a recipe */
-    protected static boolean    tableRecipe          = true;
-
-    protected static String     cave;
-    protected static String     surface;
-    protected static String     rock;
-    protected static String     trees;
-    protected static String     plants;
-    protected static String     terrains;
-    protected static String     industrial;
-
-    /** List of blocks to be considered for the floor of a cave. */
-    private static List<Block>  caveBlocks           = new ArrayList<Block>();
-
-    static
+    static void initLists()
     {
         getCaveBlocks().add(Blocks.stone);
         getCaveBlocks().add(Blocks.dirt);
@@ -131,31 +51,7 @@ public class Mod_Pokecube_Helper
         getCaveBlocks().add(Blocks.gravel);
         getCaveBlocks().add(Blocks.netherrack);
         getCaveBlocks().add(Blocks.nether_brick);
-    }
 
-    /** List of blocks to be considered for the surface. */
-    private static List<Block> surfaceBlocks = new ArrayList<Block>();
-
-    static
-    {
-        getSurfaceBlocks().add(Blocks.stone);
-        getSurfaceBlocks().add(Blocks.sand);
-        getSurfaceBlocks().add(Blocks.dirt);
-        getSurfaceBlocks().add(Blocks.gravel);
-        getSurfaceBlocks().add(Blocks.netherrack);
-        getSurfaceBlocks().add(Blocks.grass);
-        getSurfaceBlocks().add(Blocks.leaves);
-        getSurfaceBlocks().add(Blocks.hardened_clay);
-        getSurfaceBlocks().add(Blocks.stained_hardened_clay);
-        getSurfaceBlocks().add(Blocks.mycelium);
-    };
-
-    /** List of blocks to be considered to be rocks for the purpose of rocksmash
-     * and lithovore eating */
-    private static List<Block> rocks = new ArrayList<Block>();
-
-    static
-    {
         getRocks().add(Blocks.stone);
         getRocks().add(Blocks.iron_ore);
         getRocks().add(Blocks.coal_ore);
@@ -168,50 +64,52 @@ public class Mod_Pokecube_Helper
         getRocks().add(Blocks.mossy_cobblestone);
         getRocks().add(Blocks.cobblestone);
         getRocks().add(Blocks.netherrack);
-    }
 
-    /** List of blocks to be considered to be generic terrain, for dig to reduce
-     * drop rates for */
-    private static List<Block> terrain = new ArrayList<Block>();
+        getSurfaceBlocks().add(Blocks.stone);
+        getSurfaceBlocks().add(Blocks.sand);
+        getSurfaceBlocks().add(Blocks.dirt);
+        getSurfaceBlocks().add(Blocks.gravel);
+        getSurfaceBlocks().add(Blocks.netherrack);
+        getSurfaceBlocks().add(Blocks.grass);
+        getSurfaceBlocks().add(Blocks.leaves);
+        getSurfaceBlocks().add(Blocks.hardened_clay);
+        getSurfaceBlocks().add(Blocks.stained_hardened_clay);
+        getSurfaceBlocks().add(Blocks.mycelium);
 
-    static
-    {
-        terrain.add(Blocks.dirt);
-        terrain.add(Blocks.grass);
-        terrain.add(Blocks.stone);
-        terrain.add(Blocks.sand);
-        terrain.add(Blocks.gravel);
-        terrain.add(Blocks.netherrack);
+        getTerrain().add(Blocks.dirt);
+        getTerrain().add(Blocks.grass);
+        getTerrain().add(Blocks.stone);
+        getTerrain().add(Blocks.sand);
+        getTerrain().add(Blocks.gravel);
+        getTerrain().add(Blocks.netherrack);
     }
 
     public static final String   CATEGORY_ADVANCED = "advanced";
     public static HashSet<Block> allBlocks         = new HashSet<Block>();
 
-    public static void initAllBlocks()
+    public void initAllBlocks()
     {
         allBlocks.clear();
+        initLists();
         for (int i = 0; i < 4096; i++)
         {
             if (Block.getBlockById(i) != null) allBlocks.add(Block.getBlockById(i));
         }
     }
 
-    public void loadConfig(Configuration config)
+    public void postInit()
     {
-        ConfigHandler.loadConfig(this, config);
-    }
+        // Gui
+        GUICHOOSEFIRSTPOKEMOB_ID = 11;
+        GUIDISPLAYPOKECUBEINFO_ID = 12;
+        GUIPOKECENTER_ID = 13;
+        GUIPOKEDEX_ID = 14;
+        GUIPOKEMOBSPAWNER_ID = 15;
+        GUITRADINGTABLE_ID = 16;
+        GUIPC_ID = 17;
+        GUIDISPLAYTELEPORTINFO_ID = 18;
+        GUIPOKEMOB_ID = 19;
 
-    @SubscribeEvent
-    public void onConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
-    {
-        if (event.modID.equalsIgnoreCase(PokecubeMod.ID))
-        {
-            loadConfig(Mod_Pokecube_Helper.config);
-        }
-    }
-
-    public static void postInit()
-    {
         for (Block b : allBlocks)
         {
             try
@@ -240,12 +138,12 @@ public class Mod_Pokecube_Helper
 
         RecipeHandler.initRecipes();
 
-        addToList(getCaveBlocks(), cave);
-        addToList(getSurfaceBlocks(), surface);
-        addToList(getRocks(), rock);
-        addToList(TreeRemover.woodTypes, trees);
-        addToList(TreeRemover.plantTypes, plants);
-        addToList(Mod_Pokecube_Helper.terrain, terrains);
+        addToList(PokecubeMod.core.getConfig().getCaveBlocks(), PokecubeMod.core.getConfig().cave);
+        addToList(PokecubeMod.core.getConfig().getSurfaceBlocks(), PokecubeMod.core.getConfig().surface);
+        addToList(PokecubeMod.core.getConfig().getRocks(), PokecubeMod.core.getConfig().rock);
+        addToList(TreeRemover.woodTypes, PokecubeMod.core.getConfig().trees);
+        addToList(TreeRemover.plantTypes, PokecubeMod.core.getConfig().plants);
+        addToList(PokecubeMod.core.getConfig().getTerrain(), PokecubeMod.core.getConfig().terrains);
 
         for (int i = 0; i < 4096; i++)
         {
@@ -314,7 +212,7 @@ public class Mod_Pokecube_Helper
         ItemHandler.addItems(this);
     }
 
-    public static void addVillagerTrades()
+    public void addVillagerTrades()
     {
         // TODO 1.8 villager trades
         // FARMER
@@ -429,7 +327,7 @@ public class Mod_Pokecube_Helper
         // });
     }
 
-    public static void registerStarterTrades()
+    public void registerStarterTrades()
     {// TODO 1.8 villager trades
      // LIBRARIAN
      // VillagerRegistry.instance().registerVillageTradeHandler(1, new
@@ -489,21 +387,21 @@ public class Mod_Pokecube_Helper
 
     public static List<Block> getSurfaceBlocks()
     {
-        return surfaceBlocks;
+        return PokecubeMod.core.getConfig().getSurfaceBlocks();
     }
 
     public static List<Block> getCaveBlocks()
     {
-        return caveBlocks;
+        return PokecubeMod.core.getConfig().getCaveBlocks();
     }
 
     public static List<Block> getRocks()
     {
-        return rocks;
+        return PokecubeMod.core.getConfig().getRocks();
     }
 
     public static List<Block> getTerrain()
     {
-        return terrain;
+        return PokecubeMod.core.getConfig().getTerrain();
     }
 }

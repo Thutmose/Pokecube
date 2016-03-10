@@ -25,16 +25,15 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
@@ -85,8 +84,8 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     private void draw(RenderGameOverlayEvent.Post event)
     {
-        int w = Mod_Pokecube_Helper.guiOffset[0];
-        int h = Mod_Pokecube_Helper.guiOffset[1];
+        int w = PokecubeMod.core.getConfig().guiOffset[0];
+        int h = PokecubeMod.core.getConfig().guiOffset[1];
         w = Math.min(event.resolution.getScaledWidth() - 105, w);
         h = Math.min(event.resolution.getScaledHeight() - 13, h);
 
@@ -160,7 +159,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                 if (pokemob.getMove(moveCount) == null) break;
             }
 
-            int dir = Mod_Pokecube_Helper.guiDown ? 1 : -1;
+            int dir = PokecubeMod.core.getConfig().guiDown ? 1 : -1;
             int h1 = 1;
             if (dir == -1)
             {
@@ -337,7 +336,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     public void pokemobBack()
     {
         IPokemob pokemob = getCurrentPokemob();
-        //System.out.println(pokemob+":");
+        // System.out.println(pokemob+":");
         if (pokemob != null) pokemob.returnToPokecube();
         else
         {
@@ -467,28 +466,20 @@ public class GuiDisplayPokecubeInfo extends Gui
     {
         if (GuiScreen.isCtrlKeyDown())
         {
-            Mod_Pokecube_Helper.guiDown = !Mod_Pokecube_Helper.guiDown;
+            PokecubeMod.core.getConfig().guiDown = !PokecubeMod.core.getConfig().guiDown;
             saveConfig();
             return;
         }
 
-        Mod_Pokecube_Helper.guiOffset[0] += x;
-        Mod_Pokecube_Helper.guiOffset[1] += y;
-        if (Mod_Pokecube_Helper.guiOffset[0] < 0) Mod_Pokecube_Helper.guiOffset[0] = 0;
-        if (Mod_Pokecube_Helper.guiOffset[1] < 0) Mod_Pokecube_Helper.guiOffset[1] = 0;
+        PokecubeMod.core.getConfig().guiOffset[0] += x;
+        PokecubeMod.core.getConfig().guiOffset[1] += y;
+        if (PokecubeMod.core.getConfig().guiOffset[0] < 0) PokecubeMod.core.getConfig().guiOffset[0] = 0;
+        if (PokecubeMod.core.getConfig().guiOffset[1] < 0) PokecubeMod.core.getConfig().guiOffset[1] = 0;
         saveConfig();
     }
 
     private void saveConfig()
     {
-        Configuration config = Mod_Pokecube_Helper.config;
-        config.load();
-
-        config.get(Mod_Pokecube_Helper.CATEGORY_ADVANCED, "guiOffset", Mod_Pokecube_Helper.guiOffset,
-                "offset of pokemon moves gui.").set(Mod_Pokecube_Helper.guiOffset);
-        config.get(Mod_Pokecube_Helper.CATEGORY_ADVANCED, "guiDown", Mod_Pokecube_Helper.guiDown,
-                "Are the moves shown below the nametag.").set(Mod_Pokecube_Helper.guiDown);
-
-        config.save();
+        PokecubeMod.core.getConfig().setSettings();
     }
 }

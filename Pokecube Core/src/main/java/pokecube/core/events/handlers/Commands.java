@@ -24,12 +24,10 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
-import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -361,7 +359,7 @@ public class Commands implements ICommand
                         {
                             if (((Entity) e).getDistance(cSender.getPositionVector().xCoord,
                                     cSender.getPositionVector().yCoord,
-                                    cSender.getPositionVector().zCoord) > Mod_Pokecube_Helper.mobDespawnRadius)
+                                    cSender.getPositionVector().zCoord) > PokecubeMod.core.getConfig().maxSpawnRadius)
                                 count2++;
                             else count1++;
                         }
@@ -398,7 +396,7 @@ public class Commands implements ICommand
                         if (!all || e.getPokedexEntry() == Database.getEntry(name))
                         {
                             if (((Entity) e).worldObj.getClosestPlayerToEntity((Entity) e,
-                                    Mod_Pokecube_Helper.mobDespawnRadius) == null
+                                    PokecubeMod.core.getConfig().maxSpawnRadius) == null
                                     && !e.getPokemonAIState(IPokemob.TAMED))
                             {
                                 ((Entity) e).setDead();
@@ -449,7 +447,7 @@ public class Commands implements ICommand
                     boolean off = temp.equalsIgnoreCase("false") || temp.equalsIgnoreCase("off");
                     if (on || off) SpawnHandler.doSpawns = on;
                     cSender.addChatMessage(new ChatComponentText("Pokemobs Spawning " + SpawnHandler.doSpawns));
-                    ConfigHandler.saveConfig();
+                    PokecubeMod.core.getConfig().setSettings();
                     return true;
                 }
             }
@@ -464,19 +462,19 @@ public class Commands implements ICommand
         {
             if (args.length == 1)
             {
-                cSender.addChatMessage(new ChatComponentText(
-                        "Pokemob Spawn Info n:" + SpawnHandler.MAXNUM + ":d:" + Mod_Pokecube_Helper.mobDespawnRadius));
+                cSender.addChatMessage(new ChatComponentText("Pokemob Spawn Info n:" + SpawnHandler.MAXNUM + ":d:"
+                        + PokecubeMod.core.getConfig().maxSpawnRadius));
                 return true;
             }
             if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             {
                 if (args.length == 3)
                 {
-                    SpawnHandler.MAXNUM = Integer.parseInt(args[1]);
-                    Mod_Pokecube_Helper.mobDespawnRadius = Integer.parseInt(args[2]);
+                    PokecubeMod.core.getConfig().mobSpawnNumber = Integer.parseInt(args[1]);
+                    PokecubeMod.core.getConfig().maxSpawnRadius = Integer.parseInt(args[2]);
+                    PokecubeMod.core.getConfig().setSettings();
                     cSender.addChatMessage(new ChatComponentText("Pokemob Spawn Info n:" + SpawnHandler.MAXNUM + ":d:"
-                            + Mod_Pokecube_Helper.mobDespawnRadius));
-                    ConfigHandler.saveConfig();
+                            + PokecubeMod.core.getConfig().maxSpawnRadius));
                     return true;
                 }
             }
@@ -491,7 +489,8 @@ public class Commands implements ICommand
         {
             if (args.length == 1)
             {
-                cSender.addChatMessage(new ChatComponentText("SemiHardMode is set to " + PokecubeMod.pokemobsDamageBlocks));
+                cSender.addChatMessage(
+                        new ChatComponentText("SemiHardMode is set to " + PokecubeMod.pokemobsDamageBlocks));
                 return true;
             }
             if (args.length == 2)
@@ -506,7 +505,7 @@ public class Commands implements ICommand
                         PokecubeMod.pokemobsDamageBlocks = on;
                         cSender.addChatMessage(
                                 new ChatComponentText("SemiHardMode is set to " + PokecubeMod.pokemobsDamageBlocks));
-                        ConfigHandler.saveConfig();
+                        PokecubeMod.core.getConfig().setSettings();
                         return true;
                     }
                     else
@@ -522,7 +521,7 @@ public class Commands implements ICommand
         {
             if (args.length == 1)
             {
-                cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.friendlyFire));
+                cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.pokemobsDamageOwner));
                 return true;
             }
             if (args.length == 2)
@@ -535,10 +534,11 @@ public class Commands implements ICommand
 
                     if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
                     {
-                        PokecubeMod.friendlyFire = on;
-                        if (PokecubeMod.friendlyFire) PokecubeMod.pokemobsDamageBlocks = true;
-                        cSender.addChatMessage(new ChatComponentText("HardMode is set to " + PokecubeMod.friendlyFire));
-                        ConfigHandler.saveConfig();
+                        PokecubeMod.pokemobsDamageOwner = on;
+                        if (PokecubeMod.pokemobsDamageOwner) PokecubeMod.pokemobsDamageBlocks = true;
+                        cSender.addChatMessage(
+                                new ChatComponentText("HardMode is set to " + PokecubeMod.pokemobsDamageOwner));
+                        PokecubeMod.core.getConfig().setSettings();
                         return true;
                     }
                     else
@@ -555,7 +555,8 @@ public class Commands implements ICommand
         {
             if (args.length == 1)
             {
-                cSender.addChatMessage(new ChatComponentText("Explosion Damage is " + Mod_Pokecube_Helper.explosions));
+                cSender.addChatMessage(
+                        new ChatComponentText("Explosion Damage is " + PokecubeMod.core.getConfig().explosions));
                 return true;
             }
             if (args.length == 2)
@@ -567,10 +568,10 @@ public class Commands implements ICommand
                 {
                     if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
                     {
-                        Mod_Pokecube_Helper.explosions = on;
-                        cSender.addChatMessage(
-                                new ChatComponentText("Explosion Damage is " + Mod_Pokecube_Helper.explosions));
-                        ConfigHandler.saveConfig();
+                        PokecubeMod.core.getConfig().explosions = on;
+                        cSender.addChatMessage(new ChatComponentText(
+                                "Explosion Damage is " + PokecubeMod.core.getConfig().explosions));
+                        PokecubeMod.core.getConfig().setSettings();
                         return true;
                     }
                     else
@@ -586,15 +587,7 @@ public class Commands implements ICommand
 
     private boolean doMake(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
     {
-        boolean deobfuscated = false;
-        try
-        {
-            World.class.getDeclaredField("provider");
-            deobfuscated = true;
-        }
-        catch (Exception e1)
-        {
-        }
+        boolean deobfuscated = PokecubeMod.isDeobfuscated();
         boolean commandBlock = !(cSender instanceof EntityPlayer);
 
         if ((deobfuscated || commandBlock) && args[0].equalsIgnoreCase("make"))
@@ -950,7 +943,7 @@ public class Commands implements ICommand
     {
         if (args[0].equalsIgnoreCase("gift") && cSender instanceof EntityPlayer)
         {
-            if (!Mod_Pokecube_Helper.mysterygift)
+            if (!PokecubeMod.core.getConfig().mysterygift)
             {
                 cSender.addChatMessage(new ChatComponentText("Mysterygift is not enabled on this world"));
                 return false;

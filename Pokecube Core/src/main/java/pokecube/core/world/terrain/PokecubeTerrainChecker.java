@@ -7,7 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import pokecube.core.Mod_Pokecube_Helper;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainSegment;
@@ -51,12 +51,12 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
     public boolean isCaveFloor(Vector3 v, World world)
     {
         Block b = v.getBlock(world);
-        if (!b.getMaterial().isSolid()) { return Mod_Pokecube_Helper.getCaveBlocks().contains(b); }
+        if (!b.getMaterial().isSolid()) { return PokecubeMod.core.getConfig().getCaveBlocks().contains(b); }
 
         Vector3 top = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
         if (top == null) return false;
         b = top.getBlock(world);
-        return Mod_Pokecube_Helper.getCaveBlocks().contains(b);
+        return PokecubeMod.core.getConfig().getCaveBlocks().contains(b);
     }
 
 }

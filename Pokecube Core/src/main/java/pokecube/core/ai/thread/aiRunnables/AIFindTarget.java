@@ -12,7 +12,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.ai.thread.PokemobAIThread;
@@ -43,7 +42,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                          if (mob.getPokemobTeam() != pokemob
                                                                  .getPokemobTeam()) { return true; }
                                                      }
-                                                     else if (PokecubeMod.friendlyFire && input instanceof EntityLivingBase)
+                                                     else if (PokecubeMod.pokemobsDamageOwner && input instanceof EntityLivingBase)
                                                      {
                                                          EntityLivingBase mob = (EntityLivingBase) input;
 
@@ -82,7 +81,7 @@ public class AIFindTarget extends AIBase implements IAICombat
 
         if (ret && !pokemob.getPokemonAIState(IPokemob.TAMED) && entity.getRNG().nextInt(200) == 0)
         {
-            EntityPlayer player = getClosestVulnerablePlayerToEntity(entity, Mod_Pokecube_Helper.mobAggroRadius);
+            EntityPlayer player = getClosestVulnerablePlayerToEntity(entity, PokecubeMod.core.getConfig().mobAggroRadius);
 
             if (player != null)
             {

@@ -57,9 +57,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.CommonProxyPokecube;
-import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.PokecubeItems;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BerryPlantManager;
 import pokecube.core.blocks.berries.BlockBerryCrop;
 import pokecube.core.blocks.berries.BlockBerryLeaves;
@@ -96,6 +95,7 @@ import pokecube.core.database.Database;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.handlers.EventsHandlerClient;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
@@ -453,7 +453,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             registerItemTexture(Item.getItemFromBlock(crop), 0, new ModelResourceLocation(ident, "inventory"));
             ModelLoader.setCustomStateMapper(crop, map);
         }
-        
+
         ItemTextureHandler.registerMegaStoneItemModels();
 
     }
@@ -473,45 +473,71 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             }
         }
         BlockPos pos = new BlockPos(x, y, z);
-        if (guiID == Mod_Pokecube_Helper.GUIPOKECENTER_ID)
+
+        if (guiID == Config.GUIPOKECENTER_ID)
         {
             TileEntity tile_entity = world.getTileEntity(pos);
 
             if (tile_entity instanceof TileHealTable) { return new GuiHealTable(player.inventory,
                     (TileHealTable) tile_entity); }
         }
-        else if (guiID == Mod_Pokecube_Helper.GUIDISPLAYPOKECUBEINFO_ID)
+        else
         {
-            return null;
+
+            if (guiID == Config.GUIDISPLAYPOKECUBEINFO_ID)
+            {
+                return null;
+            }
+            else
+            {
+
+                if (guiID == Config.GUIDISPLAYTELEPORTINFO_ID)
+                {
+                    return null;
+                }
+                else
+                {
+
+                    if (guiID == Config.GUIPOKEDEX_ID)
+                    {
+                        if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, player);
+                        else return new GuiPokedex(null, player);
+                    }
+                    else
+                    {
+
+                        if (guiID == Config.GUIPOKEMOB_ID)
+                        {
+                            EntityPokemob e = (EntityPokemob) world.getEntityByID(x);
+                            return new GuiPokemob(player.inventory, e);
+                        }
+                        else
+                        {
+
+                            if (guiID == Config.GUITRADINGTABLE_ID)
+                            {
+                                TileEntityTradingTable tile = (TileEntityTradingTable) world.getTileEntity(pos);
+                                boolean tmc = (Boolean) world.getBlockState(pos).getValue(BlockTradingTable.TMC);
+                                if (!tmc) return new GuiTradingTable(player.inventory, tile);
+                                else return new GuiTMCreator(new ContainerTMCreator(tile, player.inventory));
+                            }
+                            else
+                            {
+
+                                if (guiID == Config.GUIPC_ID)
+                                {
+                                    TileEntityPC tile = (TileEntityPC) world.getTileEntity(pos);
+                                    ContainerPC pc = new ContainerPC(player.inventory, tile);
+                                    return new GuiPC(pc);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        else if (guiID == Mod_Pokecube_Helper.GUIDISPLAYTELEPORTINFO_ID)
-        {
-            return null;
-        }
-        else if (guiID == Mod_Pokecube_Helper.GUIPOKEDEX_ID)
-        {
-            if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, player);
-            else return new GuiPokedex(null, player);
-        }
-        else if (guiID == Mod_Pokecube_Helper.GUIPOKEMOB_ID)
-        {
-            EntityPokemob e = (EntityPokemob) world.getEntityByID(x);
-            return new GuiPokemob(player.inventory, e);
-        }
-        else if (guiID == Mod_Pokecube_Helper.GUITRADINGTABLE_ID)
-        {
-            TileEntityTradingTable tile = (TileEntityTradingTable) world.getTileEntity(pos);
-            boolean tmc = (Boolean) world.getBlockState(pos).getValue(BlockTradingTable.TMC);
-            if (!tmc) return new GuiTradingTable(player.inventory, tile);
-            else return new GuiTMCreator(new ContainerTMCreator(tile, player.inventory));
-        }
-        else if (guiID == Mod_Pokecube_Helper.GUIPC_ID)
-        {
-            TileEntityPC tile = (TileEntityPC) world.getTileEntity(pos);
-            ContainerPC pc = new ContainerPC(player.inventory, tile);
-            return new GuiPC(pc);
-        }
-        if (guiID == Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID)
+
+        if (guiID == Config.GUICHOOSEFIRSTPOKEMOB_ID)
         {
             boolean fixed = false;
             return new GuiChooseFirstPokemob(null, fixed);

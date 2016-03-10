@@ -22,8 +22,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
+import pokecube.core.handlers.Config;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 
@@ -56,8 +56,7 @@ public class BlockHealTable extends Block implements ITileEntityProvider
             }
             return false;
         }
-        player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUIPOKECENTER_ID, world, pos.getX(), pos.getY(),
-                pos.getZ());
+        player.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, world, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 

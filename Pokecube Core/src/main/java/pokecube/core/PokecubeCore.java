@@ -87,7 +87,7 @@ import pokecube.core.events.handlers.Commands;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
-import pokecube.core.handlers.ConfigHandler;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
@@ -127,12 +127,12 @@ public class PokecubeCore extends PokecubeMod
     public static CommonProxyPokecube proxy;
 
     @Instance(ID)
-    public static PokecubeCore instance;
+    public static PokecubeCore        instance;
 
-    public SpawnHandler spawner;
+    public SpawnHandler               spawner;
 
-    static boolean server  = false;
-    static boolean checked = false;
+    static boolean                    server  = false;
+    static boolean                    checked = false;
 
     @SuppressWarnings({ "rawtypes", "unused" })
     public static boolean isOnClientSide()
@@ -244,10 +244,6 @@ public class PokecubeCore extends PokecubeMod
         if (pokedexEntry.getModId() == null)
         {
             pokedexEntry.setModId(modId);
-        }
-        if (!Mod_Pokecube_Helper.allowFakeMons)
-        {
-            if (pokedexNb > 721) return;
         }
 
         String name = pokedexEntry.getName();
@@ -469,22 +465,26 @@ public class PokecubeCore extends PokecubeMod
     public String              newVersion;
     public String              newAlphaVersion;
     public Mod_Pokecube_Helper helper;
+    private Config             config;
+
+    @Override
+    public Config getConfig()
+    {
+        return config;
+    }
 
     @EventHandler
     private void preInit(FMLPreInitializationEvent evt)
     {
-        // proxy.initClient();
-        // This method is executed before init (of all mods)
-        getPokecubeConfig(evt);
         PokecubeTerrainChecker.init();
-
+        config = new Config(getPokecubeConfig(evt).getConfigFile());
         // It initializes elements needed by plugins.
-        Configuration config = getPokecubeConfig(evt);
-        config.load();
+        // Configuration config = getPokecubeConfig(evt);
+        // config.load();
 
         helper = new Mod_Pokecube_Helper();
-        MinecraftForge.EVENT_BUS.register(helper);
-        helper.loadConfig(config);
+        // MinecraftForge.EVENT_BUS.register(helper);
+        // helper.loadConfig(config);
         // used to register the moves from the spreadsheets
         Database.init(evt);
 
@@ -492,10 +492,10 @@ public class PokecubeCore extends PokecubeMod
         MovesAdder.registerMoves();
 
         spawner = new SpawnHandler();
-        if (!Mod_Pokecube_Helper.defaultMobs.equals(""))
+        if (!config.defaultMobs.equals(""))
         {
-            System.out.println("Changing Default Mobs to " + Mod_Pokecube_Helper.defaultMobs);
-            defaultMod = Mod_Pokecube_Helper.defaultMobs;
+            System.out.println("Changing Default Mobs to " + config.defaultMobs);
+            defaultMod = config.defaultMobs;
         }
 
         config.save();
@@ -626,10 +626,10 @@ public class PokecubeCore extends PokecubeMod
         GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
-        Mod_Pokecube_Helper.initAllBlocks();
+        helper.initAllBlocks();
         proxy.registerKeyBindings();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-        Mod_Pokecube_Helper.postInit();
+        helper.postInit();
     }
 
     @EventHandler
@@ -638,10 +638,10 @@ public class PokecubeCore extends PokecubeMod
         removeAllMobs();
         PokecubeItems.init();
         Database.postInit();
-        StarterInfo.processStarterInfo(ConfigHandler.defaultStarts);
+        StarterInfo.processStarterInfo(config.defaultStarts);
         postInitPokemobs();
-        Mod_Pokecube_Helper.addVillagerTrades();
-        Mod_Pokecube_Helper.registerStarterTrades();
+        helper.addVillagerTrades();
+        helper.registerStarterTrades();
         SpecialCaseRegister.register();
         MoveAnimationHelper.Instance();
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
@@ -730,8 +730,8 @@ public class PokecubeCore extends PokecubeMod
             // Refreshes the forme's modIds
             p.setModId(p.getModId());
         }
-        System.out.println(
-                "Loaded " + n + " Pokemob sounds, " + Pokedex.getInstance().getEntries().size() + " Pokemon and "+Database.allFormes.size()+" Formes");
+        System.out.println("Loaded " + n + " Pokemob sounds, " + Pokedex.getInstance().getEntries().size()
+                + " Pokemon and " + Database.allFormes.size() + " Formes");
     }
 
     private void removeAllMobs()
@@ -742,7 +742,7 @@ public class PokecubeCore extends PokecubeMod
             if (b != null) biomelist.add(b);
         biomes = biomelist.toArray(new BiomeGenBase[0]);
 
-        if (Mod_Pokecube_Helper.deactivateAnimals)
+        if (config.deactivateAnimals)
         {
             EntityRegistry.removeSpawn(EntityRabbit.class, EnumCreatureType.CREATURE, biomes);
             EntityRegistry.removeSpawn(EntityChicken.class, EnumCreatureType.CREATURE, biomes);
@@ -757,7 +757,7 @@ public class PokecubeCore extends PokecubeMod
             EntityRegistry.removeSpawn(EntityHorse.class, EnumCreatureType.CREATURE, biomes);
             EntityRegistry.removeSpawn(EntityMooshroom.class, EnumCreatureType.CREATURE, biomes);
         }
-        if (Mod_Pokecube_Helper.deactivateMonsters)
+        if (config.deactivateMonsters)
         {
             EntityRegistry.removeSpawn(EntityBlaze.class, EnumCreatureType.MONSTER, biomes);
             EntityRegistry.removeSpawn(EntityCreeper.class, EnumCreatureType.MONSTER, biomes);

@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.PokedexEntry;
@@ -415,13 +416,13 @@ public interface IPokemob extends IMoveConstants
      * 
      * @return */
     @SideOnly(Side.CLIENT)
-    String getTexture();
+    ResourceLocation getTexture();
 
     /** Returns modified texture to account for shininess, animation, etc.
      * 
      * @return */
     @SideOnly(Side.CLIENT)
-    String modifyTexture(String texture);
+    ResourceLocation modifyTexture(ResourceLocation texture);
 
     /** Has pokemob been traded
      * 

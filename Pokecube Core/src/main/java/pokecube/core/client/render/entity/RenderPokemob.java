@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
@@ -396,32 +394,31 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             RenderHelper.enableStandardItemLighting();
         }
     }
-
-    HashMap<String, ResourceLocation> mobTextures = new HashMap<String, ResourceLocation>();
+//
+//    HashSet<ResourceLocation> mobTextures = new HashSet<ResourceLocation>();
 
     protected ResourceLocation getPokemobTexture(IPokemob entity)
     {
         if (entity == null) return null;
-        String texture = entity.getTexture();
-        if (!mobTextures.containsKey(texture))
-        {
-            String modId = entity.getPokedexEntry().getModId();
+        ResourceLocation texture = entity.getTexture();
+//        if (!mobTextures.contains(texture))
+//        {
+//            ResourceLocation test = texture;
+//            try
+//            {
+//                Minecraft.getMinecraft().getResourceManager().getResource(test);
+//            }
+//            catch (IOException e)
+//            {
+//                String tex = "textures/FRZ.png";
+//                test = new ResourceLocation("pokecube", tex);
+//                texture = test;
+//                System.err.println("a Texture for " + entity + " Is missing:" + texture);
+//            }
+//            mobTextures.add(texture);
+//        }
 
-            ResourceLocation test = new ResourceLocation(modId, texture);
-            try
-            {
-                Minecraft.getMinecraft().getResourceManager().getResource(test);
-            }
-            catch (IOException e)
-            {
-                String tex = "textures/FRZ.png";
-                test = new ResourceLocation("pokecube", tex);
-                System.err.println("a Texture for " + entity + " Is missing:" + texture);
-            }
-            mobTextures.put(texture, test);
-        }
-
-        return mobTextures.get(texture);
+        return texture;
     }
 
     @Override

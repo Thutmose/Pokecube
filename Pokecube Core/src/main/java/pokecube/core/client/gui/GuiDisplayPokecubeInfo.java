@@ -336,6 +336,14 @@ public class GuiDisplayPokecubeInfo extends Gui
     public void pokemobBack()
     {
         IPokemob pokemob = getCurrentPokemob();
+
+        if (GuiScreen.isShiftKeyDown() && pokemob != null)
+        {
+            MessageServer message = new MessageServer(MessageServer.COME, ((Entity) pokemob).getEntityId());
+            PokecubeMod.packetPipeline.sendToServer(message);
+            return;
+        }
+
         // System.out.println(pokemob+":");
         if (pokemob != null) pokemob.returnToPokecube();
         else

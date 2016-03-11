@@ -160,6 +160,7 @@ public class PokemobPacketHandler
         public static final byte ALIVECHECK  = 7;
         public static final byte JUMP        = 8;
         public static final byte STANCE      = 9;
+        public static final byte COME        = 10;
         PacketBuffer             buffer;
 
         public MessageServer()
@@ -262,6 +263,12 @@ public class PokemobPacketHandler
                                 byte moveIndex = buffer.readByte();
                                 pokemob.setMoveIndex(moveIndex);
                             }
+                            else if (channel == COME)
+                            {
+                                ((EntityLiving) pokemob).getNavigator().tryMoveToEntityLiving(player, 0.4);
+                                ((EntityLiving) pokemob).setAttackTarget(null);
+                                return;
+                            }
                             else if (channel == CHANGEFORM)
                             {
                                 if (pokemob.getPokemonAIState(IMoveConstants.EVOLVING)) return;
@@ -333,10 +340,8 @@ public class PokemobPacketHandler
                                 {
                                     if (pokemob.getPokemonOwner() != null)
                                     {
-                                        String mess = StatCollector.translateToLocal(
-                                                "pokemob.rename.deny");
-                                        pokemob.getPokemonOwner().addChatMessage(
-                                                new ChatComponentText(mess));
+                                        String mess = StatCollector.translateToLocal("pokemob.rename.deny");
+                                        pokemob.getPokemonOwner().addChatMessage(new ChatComponentText(mess));
                                     }
                                 }
                                 else
@@ -435,13 +440,6 @@ public class PokemobPacketHandler
                         int currentMove = pokemob.getMoveIndex();
 
                         if (currentMove == 5) { return; }
-
-                        if (player.isSneaking())
-                        {
-                            ((EntityLiving) pokemob).getNavigator().tryMoveToEntityLiving(player, 0.4);
-                            ((EntityLiving) pokemob).setAttackTarget(null);
-                            return;
-                        }
 
                         Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
                         boolean teleport = dat.readBoolean();

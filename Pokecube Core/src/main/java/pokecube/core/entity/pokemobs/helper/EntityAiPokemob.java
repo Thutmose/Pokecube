@@ -32,9 +32,8 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.PokecubeItems;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import pokecube.core.ai.pokemob.PokemobAIDodge;
 import pokecube.core.ai.pokemob.PokemobAIFollowOwner;
 import pokecube.core.ai.pokemob.PokemobAIHurt;
@@ -60,6 +59,7 @@ import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.EggEvent;
 import pokecube.core.events.handlers.EventsHandler;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod.Type;
@@ -1176,7 +1176,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             if (PokecubeCore.isOnClientSide() && !player.isSneaking())
             {
-                player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, worldObj, (int) posX,
+                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, worldObj, (int) posX,
                         (int) posY, (int) posZ);
             }
             return true;

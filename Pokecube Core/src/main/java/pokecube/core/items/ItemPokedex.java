@@ -5,19 +5,20 @@ package pokecube.core.items;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.handlers.Config;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokecubeSerializer;
@@ -27,7 +28,7 @@ import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 
 /** @author Manchou */
-public class ItemPokedex extends ItemTranslated
+public class ItemPokedex extends Item
 {
     public ItemPokedex()
     {
@@ -38,7 +39,7 @@ public class ItemPokedex extends ItemTranslated
     {
         if (PokecubeCore.isOnClientSide())
         {
-            player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
+            player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
         }
         else
         {

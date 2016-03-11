@@ -14,10 +14,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
@@ -75,8 +75,8 @@ public class GuiTeleport extends Gui
 
     private void draw(RenderGameOverlayEvent.Post event)
     {
-        int w = Mod_Pokecube_Helper.guiOffset[0];
-        int h = Mod_Pokecube_Helper.guiOffset[1];
+        int w = PokecubeMod.core.getConfig().guiOffset[0];
+        int h = PokecubeMod.core.getConfig().guiOffset[1];
         w = Math.min(event.resolution.getScaledWidth() - 105, w);
         h = Math.min(event.resolution.getScaledHeight() - 13, h);
         GlStateManager.pushMatrix();
@@ -95,7 +95,7 @@ public class GuiTeleport extends Gui
         int yOffset = 60;
         int dir = 1;
 
-        if (!Mod_Pokecube_Helper.guiDown)
+        if (!PokecubeMod.core.getConfig().guiDown)
         {
             IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             int moveCount = 0;

@@ -14,8 +14,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.events.EggEvent;
-import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -34,7 +34,7 @@ public class EntityPokemobEgg extends EntityLiving
     {
         super(world);
         this.setSize(0.35f, 0.35f);
-        hatch = 1000 + worldObj.rand.nextInt(ConfigHandler.EGGHATCHTIME);
+        hatch = 1000 + worldObj.rand.nextInt(PokecubeMod.core.getConfig().eggHatchTime);
     }
 
     /** @param world

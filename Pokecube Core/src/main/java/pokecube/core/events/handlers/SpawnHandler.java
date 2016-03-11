@@ -30,7 +30,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -78,7 +77,7 @@ public final class SpawnHandler
 
     public SpawnHandler()
     {
-        if (Mod_Pokecube_Helper.pokemonSpawn) MinecraftForge.EVENT_BUS.register(this);
+        if (PokecubeMod.core.getConfig().pokemonSpawn) MinecraftForge.EVENT_BUS.register(this);
     }
 
     public static double MAX_DENSITY = 1;
@@ -273,7 +272,7 @@ public final class SpawnHandler
         for (int i = 0; i < players.size(); i++)
         {
             Vector3 v = getRandomSpawningPointNearEntity(world, (Entity) players.get(0),
-                    Mod_Pokecube_Helper.mobDespawnRadius);
+                    PokecubeMod.core.getConfig().maxSpawnRadius);
             if (v != null)
             {
                 doSpawnForLocation(world, v);
@@ -287,8 +286,8 @@ public final class SpawnHandler
         if (!v.doChunksExist(world, 10)) return ret;
         AxisAlignedBB box = v.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(Mod_Pokecube_Helper.mobDespawnRadius, Mod_Pokecube_Helper.mobDespawnRadius,
-                        Mod_Pokecube_Helper.mobDespawnRadius));
+                box.expand(PokecubeMod.core.getConfig().maxSpawnRadius, PokecubeMod.core.getConfig().maxSpawnRadius,
+                        PokecubeMod.core.getConfig().maxSpawnRadius));
         int num = 0;
         boolean player = false;
         for (Object o : list)
@@ -345,7 +344,7 @@ public final class SpawnHandler
             {
                 int exp = getSpawnXp(world, v, dbe);
                 int level = Tools.xpToLevel(dbe.getEvolutionMode(), exp);
-                if (level < Mod_Pokecube_Helper.minLegendLevel) { return ret; }
+                if (level < PokecubeMod.core.getConfig().minLegendLevel) { return ret; }
             }
 
             if (!isPointValidForSpawn(world, v, dbe)) return ret;
@@ -407,7 +406,7 @@ public final class SpawnHandler
             float y = (float) point.y;
             float z = (float) point.z + 0.5F;
 
-            boolean playerNearCheck = world.getClosestPlayer(x, y, z, Mod_Pokecube_Helper.mobSpawnRadius) == null;
+            boolean playerNearCheck = world.getClosestPlayer(x, y, z, PokecubeMod.core.getConfig().minSpawnRadius) == null;
             if (!playerNearCheck) continue;
 
             float var28 = x - world.getSpawnPoint().getX();
@@ -672,7 +671,7 @@ public final class SpawnHandler
         try
         {
             spawn(world);
-            if (Mod_Pokecube_Helper.meteors)
+            if (PokecubeMod.core.getConfig().meteors)
             {
                 if (!world.provider.isSurfaceWorld()) return;
                 if (world.provider.getHasNoSky()) return;

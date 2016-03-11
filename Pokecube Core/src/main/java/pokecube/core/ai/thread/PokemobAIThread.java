@@ -15,8 +15,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import thut.api.TickHandler;
 
@@ -393,7 +393,7 @@ public class PokemobAIThread
 
         public static void createThreads()
         {
-            threadCount = Math.max(1, Mod_Pokecube_Helper.maxAIThreads);
+            threadCount = Math.max(1, PokecubeMod.core.getConfig().maxAIThreads);
             threadCount = Math.min(threadCount, Runtime.getRuntime().availableProcessors());
             aiStuffLists = new Vector[threadCount];
             System.out.println("Creating and starting Pokemob AI Threads.");

@@ -36,7 +36,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.AISaveHandler;
@@ -48,6 +47,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.StarterEvent;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -263,7 +263,7 @@ public class PokecubePacketHandler
         public void tick(ClientTickEvent event)
         {
             pokecube.core.client.gui.GuiChooseFirstPokemob.options = starter;
-            player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 0,
+            player.openGui(PokecubeCore.instance, Config.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 0,
                     0);
             MinecraftForge.EVENT_BUS.unregister(this);
         }
@@ -491,7 +491,7 @@ public class PokecubePacketHandler
                 Vector3 temp = Vector3.readFromNBT(tag, "village");
                 if (temp != null) pokecube.core.client.gui.GuiPokedex.closestVillage.set(temp);
                 else pokecube.core.client.gui.GuiPokedex.closestVillage.clear();
-                player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
+                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
             }
             else if (nbt.getBoolean("toLoadTerrain"))
             {

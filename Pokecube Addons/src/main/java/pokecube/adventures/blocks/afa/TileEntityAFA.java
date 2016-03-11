@@ -138,6 +138,7 @@ public class TileEntityAFA extends TileEntityOwnable
             if (evt.location.distanceTo(Vector3.getNewVector().set(this)) <= distance)
             {
                 Random rand = new Random();
+                //TODO play a sound/particles when this happens.
                 if (rand.nextInt(4096) == 0) evt.pokemob.setShiny(true);
             }
         }

@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.PokecubeItems;
-import pokecube.core.handlers.ConfigHandler;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class WorldGenStartBuilding implements IWorldGenerator
@@ -24,7 +24,7 @@ public class WorldGenStartBuilding implements IWorldGenerator
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator,
             IChunkProvider chunkProvider)
     {
-        if (building || !ConfigHandler.SPAWNBUILDING) return;
+        if (building || !PokecubeMod.core.getConfig().doSpawnBuilding) return;
 
         if (world.provider.getDimensionId() != 0) return;
 

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -36,7 +38,8 @@ import thut.api.terrain.BiomeType;
 
 public class PokedexEntryLoader
 {
-    static XMLDatabase database;
+    static XMLDatabase              database;
+    static HashSet<XMLPokedexEntry> overrides = Sets.newHashSet();
 
     public static void makeEntries(File file, boolean create) throws Exception
     {
@@ -78,6 +81,39 @@ public class PokedexEntryLoader
         }
         if (moves != null) initMoves(entry, moves);
         checkBaseForme(entry);
+    }
+
+    public static void postInit()
+    {
+        System.out.println("Processing default Database Entries");
+        for (String s : Database.defaultDatabases)
+        {
+            try
+            {
+                PokedexEntryLoader.makeEntries(new File(Database.DBLOCATION + s), false);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Processing config Database Entries");
+        for (String s : Database.extraDatabases)
+        {
+            try
+            {
+                PokedexEntryLoader.makeEntries(new File(s), false);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Processing other Database Entries");
+        for (XMLPokedexEntry entry : overrides)
+        {
+            updateEntry(entry, false);
+        }
     }
 
     private static void postIniStats(PokedexEntry entry, StatsNode xmlStats)
@@ -268,7 +304,6 @@ public class PokedexEntryLoader
                             ItemStack stack = item.isEmpty() ? null : PokecubeItems.getStack(item, false);
                             String moveName = move;
                             if (move.isEmpty() && stack == null) continue;
-                            System.out.println(formeEntry + " " + entry + " " + stack);
                             MegaRule rule = new MegaEvoRule(stack, moveName, entry);
                             entry.megaRules.put(formeEntry, rule);
                         }
@@ -443,6 +478,7 @@ public class PokedexEntryLoader
         String anyString = xmlStats.biomesNeedAny;
         String allString = xmlStats.biomesNeedAll;
         String excludeString = xmlStats.biomesBlacklist;
+        boolean overwrite = xmlStats.spawns == null ? false : Boolean.parseBoolean(xmlStats.spawns);
         if (anyString != null || allString != null)
         {
             if (anyString == null) anyString = "";
@@ -458,7 +494,7 @@ public class PokedexEntryLoader
             String all[] = null;
             String no[] = null;
             SpawnData spawnData = entry.getSpawnData();
-            if (spawnData == null)
+            if (spawnData == null || overwrite)
             {
                 spawnData = new SpawnData();
             }
@@ -665,7 +701,6 @@ public class PokedexEntryLoader
     {
         Map<Integer, ArrayList<String>> lvlUpMoves = new HashMap<Integer, ArrayList<String>>();
         ArrayList<String> allMoves = new ArrayList<String>();
-
         if (xmlMoves.misc != null)
         {
             String[] misc = xmlMoves.misc.moves.split(",");
@@ -772,6 +807,11 @@ public class PokedexEntryLoader
         return database;
     }
 
+    public static void addOverrideEntry(XMLPokedexEntry entry)
+    {
+        overrides.add(entry);
+    }
+
     @XmlRootElement(name = "Document")
     public static class XMLDatabase
     {
@@ -800,85 +840,87 @@ public class PokedexEntryLoader
     @XmlRootElement(name = "STATS")
     public static class StatsNode
     {
+        @XmlAttribute
+        public String spawns;
         // Evolution stuff
         @XmlElement(name = "EVOLUTIONMODE")
-        String evoModes;
+        String        evoModes;
         @XmlElement(name = "EVOLUTIONANIMATION")
-        String evolAnims;
+        String        evolAnims;
         @XmlElement(name = "EVOLVESTO")
-        String evoTo;
+        String        evoTo;
 
         // Species and food
         @XmlElement(name = "SPECIES")
-        String species;
+        String        species;
         @XmlElement(name = "PREY")
-        String prey;
+        String        prey;
         @XmlElement(name = "FOODMATERIAL")
-        String foodMat;
+        String        foodMat;
         @XmlElement(name = "SPECIALEGGSPECIESRULES")
-        String specialEggRules;
+        String        specialEggRules;
 
         // Drops and items
         @XmlElement(name = "FOODDROP")
-        String foodDrop;
+        String        foodDrop;
         @XmlElement(name = "COMMONDROP")
-        String commonDrop;
+        String        commonDrop;
         @XmlElement(name = "RAREDROP")
-        String rareDrop;
+        String        rareDrop;
         @XmlElement(name = "HELDITEM")
-        String heldItems;
+        String        heldItems;
 
         // Spawn Rules
         @XmlElement(name = "BIOMESALLNEEDED")
-        String biomesNeedAll;
+        String        biomesNeedAll;
         @XmlElement(name = "BIOMESANYACCEPTABLE")
-        String biomesNeedAny;
+        String        biomesNeedAny;
         @XmlElement(name = "EXCLUDEDBIOMES")
-        String biomesBlacklist;
+        String        biomesBlacklist;
         @XmlElement(name = "SPECIALCASES")
-        String spawnCases;
+        String        spawnCases;
 
         // STATS
         @XmlElement(name = "BASESTATS")
-        Stats  stats;
+        Stats         stats;
         @XmlElement(name = "EVYIELD")
-        Stats  evs;
+        Stats         evs;
         @XmlElement(name = "SIZES")
-        Stats  sizes;
+        Stats         sizes;
         @XmlElement(name = "TYPE")
-        Stats  types;
+        Stats         types;
         @XmlElement(name = "ABILITY")
-        Stats  abilities;
+        Stats         abilities;
         @XmlElement(name = "MASSKG")
-        float  mass;
+        float         mass;
         @XmlElement(name = "CAPTURERATE")
-        int    captureRate;
+        int           captureRate;
         @XmlElement(name = "EXPYIELD")
-        int    baseExp;
+        int           baseExp;
         @XmlElement(name = "BASEFRIENDSHIP")
-        int    baseFriendship;
+        int           baseFriendship;
         @XmlElement(name = "EXPERIENCEMODE")
-        String expMode;
+        String        expMode;
         @XmlElement(name = "GENDERRATIO")
-        int    genderRatio;
+        int           genderRatio;
 
         // MISC
         @XmlElement(name = "LOGIC")
-        Stats  logics;
+        Stats         logics;
         @XmlElement(name = "FORMEITEMS")
-        Stats  formeItems;
+        Stats         formeItems;
         @XmlElement(name = "MEGARULES")
-        Stats  megaRules;
+        Stats         megaRules;
         @XmlElement(name = "MOVEMENTTYPE")
-        String movementType;
+        String        movementType;
         @XmlElement(name = "INTERACTIONLOGIC")
-        String interactions;
+        String        interactions;
         @XmlElement(name = "SHADOWREPLACEMENTS")
-        String shadowReplacements;
+        String        shadowReplacements;
         @XmlElement(name = "HATEDMATERIALRULES")
-        String hatedMaterials;
+        String        hatedMaterials;
         @XmlElement(name = "ACTIVETIMES")
-        String activeTimes;
+        String        activeTimes;
 
         public static class Stats
         {
@@ -892,7 +934,7 @@ public class PokedexEntryLoader
     {
         @XmlElement(name = "LVLUP")
         LvlUp lvlupMoves;
-        @XmlElement(name = "Misc")
+        @XmlElement(name = "MISC")
         Misc  misc;
 
         @XmlRootElement(name = "LVLUP")
@@ -907,6 +949,11 @@ public class PokedexEntryLoader
         {
             @XmlAttribute(name = "moves")
             String moves;
+
+            public String toString()
+            {
+                return moves;
+            }
         }
     }
 

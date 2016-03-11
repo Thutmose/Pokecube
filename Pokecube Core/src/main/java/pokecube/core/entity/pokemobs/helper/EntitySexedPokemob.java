@@ -25,7 +25,6 @@ import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
-import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -302,7 +301,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
     public int getBreedingDelay(IPokemob mate)
     {
-        return ConfigHandler.BREEDINGDELAY;
+        return PokecubeMod.core.getConfig().breedingDelay;
     }
 
     @Override
@@ -354,7 +353,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
         if (!isServerWorld()) return;
 
-        int diff = 1 * ConfigHandler.mateMultiplier;
+        int diff = 1 * PokecubeMod.core.getConfig().mateMultiplier;
         if (inLove > 0) diff = 1;
         setLoveTimer(getLoveTimer() + diff);
         if (isInLove() && lover == null)

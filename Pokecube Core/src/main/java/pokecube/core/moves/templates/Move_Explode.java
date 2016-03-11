@@ -10,9 +10,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.Explosion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.database.Pokedex;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.maths.ExplosionCustom;
@@ -92,7 +92,7 @@ public class Move_Explode extends Move_Ongoing
                 mob.onDeath(DamageSource.generic);
                 if (attacked instanceof IPokemob && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
                 {
-                    if (!(((IPokemob) attacked).getPokemonAIState(IPokemob.TAMED) && !Mod_Pokecube_Helper.pvpExp))
+                    if (!(((IPokemob) attacked).getPokemonAIState(IPokemob.TAMED) && !PokecubeMod.core.getConfig().pvpExp))
                     {
                         // voltorb's enemy wins XP and EVs even if it didn't
                         // attack

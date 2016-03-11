@@ -13,7 +13,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
@@ -187,9 +186,9 @@ public class Move_Utility extends Move_Basic
         double uselessDrop = Math.pow((100 - digger.getLevel()) / 100d, 3);
 
         ArrayList<Block> list = new ArrayList<Block>();
-        for (Block l : Mod_Pokecube_Helper.getCaveBlocks())
+        for (Block l : PokecubeMod.core.getConfig().getCaveBlocks())
             list.add(l);
-        for (Block l : Mod_Pokecube_Helper.getSurfaceBlocks())
+        for (Block l : PokecubeMod.core.getConfig().getSurfaceBlocks())
             list.add(l);
         Vector3 temp = Vector3.getNewVector();
         temp.set(v);
@@ -203,7 +202,7 @@ public class Move_Utility extends Move_Basic
                     if (list.contains(block))
                     {
                         boolean drop = true;
-                        if (Mod_Pokecube_Helper.getTerrain().contains(block) && !dropAll && !silky
+                        if (PokecubeMod.core.getConfig().getTerrain().contains(block) && !dropAll && !silky
                                 && uselessDrop < Math.random())
                             drop = false;
 
@@ -253,7 +252,7 @@ public class Move_Utility extends Move_Basic
         int fortune = digger.getLevel() / 30;
 
         ArrayList<Block> list = new ArrayList<Block>();
-        for (Block l : Mod_Pokecube_Helper.getRocks())
+        for (Block l : PokecubeMod.core.getConfig().getRocks())
             list.add(l);
 
         boolean silky = shouldSilk(digger) && player != null;

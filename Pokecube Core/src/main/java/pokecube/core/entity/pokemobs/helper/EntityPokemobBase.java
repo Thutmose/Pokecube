@@ -27,12 +27,12 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ReportedException;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.PokecubeMod;
@@ -63,8 +63,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     protected String                particle;
 
     private int[]                   flavourAmounts    = new int[5];
-
-    protected String                texture;
 
     public Matrix3                  mainBox;
     private Vector3                 offset            = Vector3.getNewVector();
@@ -171,45 +169,46 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
     @Override
     @SideOnly(Side.CLIENT)
-    public String modifyTexture(String texture)
+    public ResourceLocation modifyTexture(ResourceLocation texture)
     {
-        texture = this.getPokedexEntry().getTexture(texture, this.getSexe(), this.ticksExisted);
+        String domain = texture == null ? getPokedexEntry().getModId() : texture.getResourceDomain();
+        String texName = texture == null ? null : texture.getResourcePath();
+        texName = this.getPokedexEntry().getTexture(texName, this.getSexe(), this.ticksExisted);
         int red = rgba[0];
         int green = rgba[1];
         int blue = rgba[2];
         if (this.getPokedexEntry().hasSpecialTextures[0] && red == 0 && green != 0 && blue != 0)
         {
-            String args = texture.substring(0, texture.length() - 4);
-            return args + "Ra.png";
+            String args = texName.substring(0, texName.length() - 4);
+            return new ResourceLocation(domain, args + "Ra.png");
         }
         else if (this.getPokedexEntry().hasSpecialTextures[1] && blue == 0 && green != 0 && red != 0)
         {
-            String args = texture.substring(0, texture.length() - 4);
-            return args + "Ga.png";
+            String args = texName.substring(0, texName.length() - 4);
+            return new ResourceLocation(domain, args + "Ga.png");
         }
         else if (this.getPokedexEntry().hasSpecialTextures[2] && blue != 0 && green == 0 && red != 0)
         {
-            String args = texture.substring(0, texture.length() - 4);
-            return args + "Ba.png";
+            String args = texName.substring(0, texName.length() - 4);
+            return new ResourceLocation(domain, args + "Ba.png");
         }
         if (wasShadow && this.getPokedexEntry().hasSpecialTextures[3])
         {
-            String args = texture.substring(0, texture.length() - 4);
-            return args + "Sh.png";
+            String args = texName.substring(0, texName.length() - 4);
+            return new ResourceLocation(domain, args + "Sh.png");
         }
-
+        texture = new ResourceLocation(domain, texName);
         if (!shiny) // || !getPokedexEntry().hasSpecialTextures[3])
             return texture;
-
-        String args = texture.substring(0, texture.length() - 4);
-        return args + "S.png";
+        String args = texName.substring(0, texName.length() - 4);
+        return new ResourceLocation(domain, args + "S.png");
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public String getTexture()
+    public ResourceLocation getTexture()
     {
-        return modifyTexture(texture);
+        return modifyTexture(null);
     }
 
     @Override
@@ -298,18 +297,18 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     protected boolean canDespawn()
     {
-        boolean canDespawn = getHungerTime() > Mod_Pokecube_Helper.pokemobLifeSpan;
+        boolean canDespawn = getHungerTime() > PokecubeMod.core.getConfig().pokemobLifeSpan;
         boolean checks = getPokemonAIState(TAMED) || this.getPokemonOwner() != null || getPokemonAIState(ANGRY)
                 || getAttackTarget() != null || this.hasCustomName() || isAncient() || isNoDespawnRequired();
         despawntimer--;
         if (checks) return false;
 
-        boolean cull = Mod_Pokecube_Helper.cull
-                && worldObj.getClosestPlayerToEntity(this, Mod_Pokecube_Helper.mobDespawnRadius) == null;
+        boolean cull = PokecubeMod.core.getConfig().cull
+                && worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius) == null;
 
-        if (!cull && !Mod_Pokecube_Helper.cull)
+        if (!cull && !PokecubeMod.core.getConfig().cull)
         {
-            cull = worldObj.getClosestPlayerToEntity(this, Mod_Pokecube_Helper.mobDespawnRadius * 3) == null;
+            cull = worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius * 3) == null;
             if (cull && despawntimer < 0)
             {
                 despawntimer = 80;

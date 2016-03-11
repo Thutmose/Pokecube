@@ -15,10 +15,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.ChunkCoordinate;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
@@ -75,7 +75,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         }
         boolean ownedSleepCheck = getPokemonAIState(IPokemob.TAMED)
                 && !(getPokemonAIState((byte) (STAYING)) || getPokemonAIState((byte) (SITTING)));
-        if (sleepy && hungerTime < 0.85 * Mod_Pokecube_Helper.pokemobLifeSpan)
+        if (sleepy && hungerTime < 0.85 * PokecubeMod.core.getConfig().pokemobLifeSpan)
         {
             if (!isGoodSleepingSpot(c))
             {

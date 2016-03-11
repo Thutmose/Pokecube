@@ -36,7 +36,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.blocks.pc.InventoryPC;
@@ -44,6 +43,7 @@ import pokecube.core.blocks.pc.TileEntityPC;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.TradeEvent;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -454,7 +454,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
     public void openGUI(EntityPlayer player)
     {
-        player.openGui(PokecubeMod.core, Mod_Pokecube_Helper.GUITRADINGTABLE_ID, worldObj, getPos().getX(),
+        player.openGui(PokecubeMod.core, Config.GUITRADINGTABLE_ID, worldObj, getPos().getX(),
                 getPos().getY(), getPos().getZ());
     }
 

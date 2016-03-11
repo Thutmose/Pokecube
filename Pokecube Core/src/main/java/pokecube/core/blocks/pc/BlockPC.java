@@ -26,8 +26,8 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.blocks.TileEntityOwnable;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
 
 public class BlockPC extends Block implements ITileEntityProvider
@@ -87,7 +87,7 @@ public class BlockPC extends Block implements ITileEntityProvider
             }
             else
             {
-                player.openGui(PokecubeMod.core, Mod_Pokecube_Helper.GUIPC_ID, world, pos.getX(), pos.getY(),
+                player.openGui(PokecubeMod.core, Config.GUIPC_ID, world, pos.getX(), pos.getY(),
                         pos.getZ());
                 return true;
             }

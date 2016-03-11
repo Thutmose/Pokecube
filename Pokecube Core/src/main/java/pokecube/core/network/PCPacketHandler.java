@@ -14,7 +14,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
@@ -22,6 +21,7 @@ import pokecube.core.blocks.pc.SlotPC;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
+import pokecube.core.handlers.Config;
 import pokecube.core.utils.PCSaveHandler;
 import thut.api.maths.Vector3;
 
@@ -379,7 +379,7 @@ public class PCPacketHandler
         }
         if (message == 10)
         {
-            player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUIPC_ID, PokecubeCore.getWorld(), 0, 0, 0);
+            player.openGui(PokecubeCore.instance, Config.GUIPC_ID, PokecubeCore.getWorld(), 0, 0, 0);
             return;
         }
         if (message == 11)

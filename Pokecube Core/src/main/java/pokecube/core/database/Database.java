@@ -43,12 +43,12 @@ public class Database implements IMoveConstants
     public static HashMap<String, ArrayList<PokedexEntry>> mobReplacements  = new HashMap<String, ArrayList<PokedexEntry>>();
     public static List<PokedexEntry>                       spawnables       = new ArrayList<PokedexEntry>();
 
-    private static String                                  DBLOCATION       = "/assets/pokecube/database/";
+    static String                                          DBLOCATION       = "/assets/pokecube/database/";
     public static String                                   CONFIGLOC        = "";
 
-    private static HashSet<String>                         defaultDatabases = Sets.newHashSet("pokemobs.xml");
+    static HashSet<String>                                 defaultDatabases = Sets.newHashSet("pokemobs.xml");
 
-    private static HashSet<String>                         extraDatabases   = Sets.newHashSet();
+    static HashSet<String>                                 extraDatabases   = Sets.newHashSet();
     private static HashSet<String>                         spawnDatabases   = Sets.newHashSet();
     /** These are used for config added databasea <br>
      * Index 0 = pokemon<br>
@@ -107,29 +107,7 @@ public class Database implements IMoveConstants
 
     public static void postInit()
     {
-        for (String s : defaultDatabases)
-        {
-            try
-            {
-                PokedexEntryLoader.makeEntries(new File(DBLOCATION + s), false);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        for (String s : extraDatabases)
-        {
-            try
-            {
-                PokedexEntryLoader.makeEntries(new File(s), false);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
+        PokedexEntryLoader.postInit();
         loadSpawns();
         List<PokedexEntry> toRemove = new ArrayList<PokedexEntry>();
         for (PokedexEntry p : data.values())

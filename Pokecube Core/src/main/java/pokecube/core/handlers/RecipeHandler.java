@@ -25,6 +25,7 @@ import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.RecipeBrewBerries;
 import pokecube.core.items.pokecubes.RecipePokeseals;
@@ -53,9 +54,9 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         GameRegistry.addRecipe(new ItemStack(Items.cake, 1), new Object[] { "AAA", "BEB", "CCC", 'A', Items.milk_bucket,
                 'B', Items.sugar, 'C', Items.wheat, 'E', luckyEgg });
 
-        if (tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SMS", 'R',
+        if (PokecubeMod.core.getConfig().tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SMS", 'R',
                 Items.redstone, 'S', Blocks.stone, 'M', Items.milk_bucket, 'I', Items.iron_ingot });
-        if (tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SES", 'R',
+        if (PokecubeMod.core.getConfig().tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SES", 'R',
                 Items.redstone, 'S', Blocks.stone, 'E', luckyEgg, 'I', Items.iron_ingot });
         GameRegistry.addRecipe(new ItemStack(pokedex),
                 new Object[] { "PRR", "RBR", "RRR", 'P', pokecube, 'R', Items.redstone, 'B', Items.book });

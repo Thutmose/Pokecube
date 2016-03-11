@@ -18,7 +18,8 @@ import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
 
 public class ExtraDatabase
 {
-    static HashMap<String, String> xmls;
+    static HashMap<String, String>          xmls;
+    static HashMap<String, XMLPokedexEntry> entries = Maps.newHashMap();
 
     public static void addXML(String name, ArrayList<String> xml)
     {
@@ -31,10 +32,22 @@ public class ExtraDatabase
         xmls.put(name, val);
     }
 
+    public static XMLPokedexEntry getEntry(String name)
+    {
+        return entries.get(name);
+    }
+
     public static void apply()
+    {
+        apply(null);
+    }
+
+    public static void apply(String toApply)
     {
         if (xmls != null) for (String s : xmls.keySet())
         {
+            if (toApply != null && !toApply.equalsIgnoreCase(s)) continue;
+
             PokedexEntry entry = Database.getEntry(s);
             try
             {
@@ -46,14 +59,9 @@ public class ExtraDatabase
                     String name = file.entry.name;
                     int number = file.entry.number;
                     entry = new PokedexEntry(number, name);
-                    System.out.println("Updating Entry stage 1 for " + entry);
                     PokedexEntryLoader.updateEntry(file.entry, true);
                 }
-                if (file.entry != null)
-                {
-                    System.out.println("Updating Entry stage 2 for " + entry);
-                    PokedexEntryLoader.updateEntry(file.entry, false);
-                }
+                if (file.entry != null) PokedexEntryLoader.addOverrideEntry(file.entry);
 
                 if (entry != null && file.details != null)
                 {
@@ -71,6 +79,7 @@ public class ExtraDatabase
     public static void cleanup()
     {
         xmls = null;
+        entries = null;
     }
 
     @XmlRootElement(name = "ModelAnimator")

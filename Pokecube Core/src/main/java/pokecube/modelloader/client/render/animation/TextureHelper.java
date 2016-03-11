@@ -21,11 +21,13 @@ import pokecube.modelloader.client.render.model.IPartTexturer;
 public class TextureHelper implements IPartTexturer
 {
     IPokemob                                 pokemob;
+    PokedexEntry                             entry;
     /** Map of part/material name -> texture name */
     Map<String, String>                      texNames     = Maps.newHashMap();
     /** Map of part/material name -> map of custom state -> texture name */
     Map<String, Map<String, String>>         texNames2    = Maps.newHashMap();
-    String                                   default_tex;
+    ResourceLocation                         default_tex;
+    String                                   default_path;
     Map<String, Boolean>                     smoothing    = Maps.newHashMap();
     boolean                                  default_flat = true;
     /** Map of part/material name -> resource location */
@@ -38,7 +40,7 @@ public class TextureHelper implements IPartTexturer
     {
         if (node.getAttributes().getNamedItem("default") != null)
         {
-            default_tex = node.getAttributes().getNamedItem("default").getNodeValue();
+            default_path = node.getAttributes().getNamedItem("default").getNodeValue();
         }
         if (node.getAttributes().getNamedItem("smoothing") != null)
         {
@@ -90,11 +92,12 @@ public class TextureHelper implements IPartTexturer
     public void applyTexture(String part)
     {
         if (bindPerState(part)) return;
-        String tex = texNames.containsKey(part) ? texNames.get(part) : default_tex;
+        String texName = texNames.containsKey(part) ? texNames.get(part) : default_path;
+        ResourceLocation tex = getResource(texName);
         TexState state;
         String texMod;
         if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
-            tex = tex + texMod;
+            tex = getResource(tex.getResourcePath() + texMod);
         bindTex(tex);
     }
 
@@ -102,6 +105,8 @@ public class TextureHelper implements IPartTexturer
     public void bindObject(Object thing)
     {
         pokemob = (IPokemob) thing;
+        entry = pokemob.getPokedexEntry();
+        default_tex = getResource(default_path);
     }
 
     @Override
@@ -112,19 +117,25 @@ public class TextureHelper implements IPartTexturer
         return false;
     }
 
-    private void bindTex(String tex)
+    private void bindTex(ResourceLocation tex)
     {
         tex = pokemob.modifyTexture(tex);
-        ResourceLocation loc;
-        if ((loc = texMap.get(tex)) != null)
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(tex);
+    }
+
+    private ResourceLocation getResource(String tex)
+    {
+        if (tex == null)
         {
-            FMLClientHandler.instance().getClient().renderEngine.bindTexture(loc);
+            return new ResourceLocation(entry.getModId(), entry.getName());
+        }
+        else if (tex.contains(":"))
+        {
+            return new ResourceLocation(tex);
         }
         else
         {
-            loc = new ResourceLocation(pokemob.getPokedexEntry().getModId(), tex);
-            texMap.put(tex, loc);
-            FMLClientHandler.instance().getClient().renderEngine.bindTexture(loc);
+            return new ResourceLocation(entry.getModId(), tex);
         }
     }
 
@@ -133,7 +144,7 @@ public class TextureHelper implements IPartTexturer
         Map<String, String> partNames = texNames2.get(part);
         if (partNames == null)
         {
-            PokedexEntry forme = pokemob.getPokedexEntry();
+            PokedexEntry forme = entry;
             if (forme.baseForme != null && forme != forme.baseForme)
             {
                 String name = forme.getName().toLowerCase().replace(" ", "");
@@ -144,7 +155,7 @@ public class TextureHelper implements IPartTexturer
                     String texMod;
                     if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
                         tex = tex + texMod;
-                    bindTex(tex);
+                    bindTex(getResource(tex));
                     return true;
                 }
             }
@@ -169,7 +180,7 @@ public class TextureHelper implements IPartTexturer
                 if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
                     tex = tex + texMod;
 
-                bindTex(tex);
+                bindTex(getResource(tex));
                 return true;
             }
         }

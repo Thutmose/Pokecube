@@ -59,7 +59,6 @@ public class CommonProxy implements IGuiHandler
 
     public void postInit()
     {
-        ExtraDatabase.apply();
         ExtraDatabase.cleanup();
     }
 
@@ -113,6 +112,7 @@ public class CommonProxy implements IGuiHandler
                 }
             }
         }
+        ExtraDatabase.apply();
     }
 
     private boolean[] providesModels(String modid, Object mod, PokedexEntry... entry)
@@ -169,7 +169,7 @@ public class CommonProxy implements IGuiHandler
         checkInFolder(resourceDir, ret, file);
     }
 
-    private void fileAsList(Object mod, ResourceLocation file, ArrayList<String> toFill) throws Exception
+    void fileAsList(Object mod, ResourceLocation file, ArrayList<String> toFill) throws Exception
     {
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
         // Check Resource Packs

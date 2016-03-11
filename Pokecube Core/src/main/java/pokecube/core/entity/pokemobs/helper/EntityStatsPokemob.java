@@ -22,7 +22,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -495,7 +494,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         entry = newEntry;
         this.pokedexNb = entry.getPokedexNb();
         this.setStats(entry.getStats());
-        if(worldObj!=null) this.setSize(this.getSize());
+        if (worldObj != null) this.setSize(this.getSize());
     }
 
     @Override
@@ -612,7 +611,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             {
 
             }
-            else if (!(((IPokemob) attacked).getPokemonAIState(TAMED) && !Mod_Pokecube_Helper.pvpExp))
+            else if (!(((IPokemob) attacked).getPokemonAIState(TAMED) && !PokecubeMod.core.getConfig().pvpExp))
             {
                 attacker.setExp(
                         attacker.getExp()
@@ -624,15 +623,14 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             Entity targetOwner = ((IPokemob) attacked).getPokemonOwner();
 
             if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner
-                    && !PokecubeMod.friendlyFire)
+                    && !PokecubeMod.pokemobsDamageOwner)
             {
                 ((EntityCreature) attacker).setAttackTarget((EntityLivingBase) targetOwner);
             }
             else
             {
-                ((EntityCreature) attacker).setAttackTarget((EntityLivingBase) null);
+                ((EntityCreature) attacker).setAttackTarget(null);
             }
-
             if (this.getPokedexEntry().isFood(((IPokemob) attacked).getPokedexEntry())
                     && this.getPokemonAIState(HUNTING))
             {
@@ -641,7 +639,10 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 this.setPokemonAIState(HUNTING, false);
                 getNavigator().clearPathEntity();
             }
-
+        }
+        else
+        {
+            ((EntityCreature) attacker).setAttackTarget(null);
         }
     }
 

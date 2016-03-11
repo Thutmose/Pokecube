@@ -10,7 +10,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.util.EnumFacing;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IBreedingMob;
@@ -93,7 +92,7 @@ public class AIHungry extends AIBase
                 {
                     eatPlant(b, d);
                 }
-                else if ((Mod_Pokecube_Helper.getRocks().contains(b) || b == Blocks.gravel) && hungrymob.isLithotroph())
+                else if ((PokecubeMod.core.getConfig().getRocks().contains(b) || b == Blocks.gravel) && hungrymob.isLithotroph())
                 {
                     eatRocks(b, d);
                 }
@@ -126,9 +125,9 @@ public class AIHungry extends AIBase
         if (hungrymob.isLithotroph())
         {
             Block b = v.getBlock(world, EnumFacing.DOWN);
-            if (!Mod_Pokecube_Helper.getRocks().contains(b) || b == Blocks.gravel)
+            if (!PokecubeMod.core.getConfig().getRocks().contains(b) || b == Blocks.gravel)
             {
-                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, Mod_Pokecube_Helper.getRocks());
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeMod.core.getConfig().getRocks());
                 if (temp != null)
                 {
                     block = true;
@@ -145,7 +144,7 @@ public class AIHungry extends AIBase
                     {
                         TickHandler.addBlockChange(v, entity.dimension, Blocks.gravel);
                     }
-                    else if (b == Blocks.gravel && Mod_Pokecube_Helper.pokemobsEatGravel)
+                    else if (b == Blocks.gravel && PokecubeMod.core.getConfig().pokemobsEatGravel)
                     {
                         TickHandler.addBlockChange(v, entity.dimension, Blocks.air);
                     }
@@ -409,7 +408,7 @@ public class AIHungry extends AIBase
                 {
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.gravel);
                 }
-                else if (rock == Blocks.gravel && Mod_Pokecube_Helper.pokemobsEatGravel)
+                else if (rock == Blocks.gravel && PokecubeMod.core.getConfig().pokemobsEatGravel)
                 {
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.air);
                 }
@@ -431,7 +430,7 @@ public class AIHungry extends AIBase
             block = false;
             v.set(hungrymob).add(0, entity.height, 0);
 
-            Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, Mod_Pokecube_Helper.getRocks());
+            Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeMod.core.getConfig().getRocks());
             if (temp != null)
             {
                 block = true;

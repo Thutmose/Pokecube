@@ -70,7 +70,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.properties.GuardAICapability;
@@ -82,7 +81,6 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
-import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IOwnableTE;
@@ -137,7 +135,7 @@ public class EventsHandler
     @SubscribeEvent
     public void clearNetherBridge(InitMapGenEvent evt)
     {
-        if (Mod_Pokecube_Helper.deactivateMonsters && evt.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
+        if (PokecubeMod.core.getConfig().deactivateMonsters && evt.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
         {
             ((MapGenNetherBridge) evt.newGen).getSpawnList().clear();
         }
@@ -341,7 +339,7 @@ public class EventsHandler
 
         if (!evt.player.worldObj.isRemote && evt.player instanceof EntityPlayer)
         {
-            if (Mod_Pokecube_Helper.guiOnLogin && !PokecubeSerializer.getInstance().hasStarter(entityPlayer))
+            if (PokecubeMod.core.getConfig().guiOnLogin && !PokecubeSerializer.getInstance().hasStarter(entityPlayer))
             {
                 new ChooseFirst(evt.player);
             }
@@ -353,7 +351,7 @@ public class EventsHandler
     @SubscribeEvent
     public void EntityJoinWorld(EntityJoinWorldEvent evt)
     {
-        if (Mod_Pokecube_Helper.disableMonsters && !(evt.entity instanceof IPokemob) && evt.entity instanceof IMob
+        if (PokecubeMod.core.getConfig().disableMonsters && !(evt.entity instanceof IPokemob) && evt.entity instanceof IMob
                 && !(evt.entity instanceof EntityDragon || evt.entity instanceof EntityDragonPart))
         {
             evt.entity.setDead();
@@ -678,7 +676,7 @@ public class EventsHandler
                     IChatComponent mess = getOutdatedMessage(result, "Pokecube Core");
                     (event.player).addChatMessage(mess);
                 }
-                else if (ConfigHandler.loginmessage)
+                else if (PokecubeMod.core.getConfig().loginmessage)
                 {
                     IChatComponent mess = getInfoMessage(result, "Pokecube Core");
                     (event.player).addChatMessage(mess);

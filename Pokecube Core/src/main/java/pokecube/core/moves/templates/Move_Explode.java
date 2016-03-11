@@ -33,7 +33,8 @@ public class Move_Explode extends Move_Ongoing
     @Override
     public void attack(IPokemob attacker, Vector3 attacked, float f)
     {
-        attack(attacker, (Entity) attacker, f);
+        if (PokecubeMod.core.getConfig().explosions) attack(attacker, (Entity) attacker, f);
+        else super.attack(attacker, attacked, f);
     }
 
     @Override
@@ -41,9 +42,7 @@ public class Move_Explode extends Move_Ongoing
     {
         if (attacker instanceof EntityLiving)
         {
-            EntityLiving voltorb = (EntityLiving) attacker; // typically Voltorb
-                                                            // or Electrode but
-                                                            // can be other
+            EntityLiving voltorb = (EntityLiving) attacker;
             IPokemob pokemob = attacker;
             int i = pokemob.getExplosionState();
             if (i <= 0 && f < 3F || i > 0 && f < 7F)
@@ -53,7 +52,11 @@ public class Move_Explode extends Move_Ongoing
                     voltorb.worldObj.playSoundAtEntity(voltorb, "game.tnt.primed", 1.0F, 0.5F);
                 }
                 pokemob.setExplosionState(1);
-                ((IPokemob) attacker).addOngoingEffect(this);
+                if (PokecubeMod.core.getConfig().explosions) ((IPokemob) attacker).addOngoingEffect(this);
+                else
+                {
+                    super.attack(attacker, attacked, f);
+                }
             }
             else
             {
@@ -80,19 +83,20 @@ public class Move_Explode extends Move_Ongoing
             float f1 = getPWR() * Tools.getStats(pokemob)[1] / 1000f;
 
             if (pokemob.isType(normal)) f1 *= 1.5f;
-            ExplosionCustom.MAX_RADIUS = 250;
 
             Explosion boom = MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);
             ExplosionEvent.Start evt = new ExplosionEvent.Start(mob.worldObj, boom);
             MinecraftForge.EVENT_BUS.post(evt);
             if (!evt.isCanceled())
             {
-                ((ExplosionCustom) boom).doExplosion();
+                if (PokecubeMod.core.getConfig().explosions) ((ExplosionCustom) boom).doExplosion();
+
                 mob.setHealth(0);
                 mob.onDeath(DamageSource.generic);
                 if (attacked instanceof IPokemob && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
                 {
-                    if (!(((IPokemob) attacked).getPokemonAIState(IPokemob.TAMED) && !PokecubeMod.core.getConfig().pvpExp))
+                    if (!(((IPokemob) attacked).getPokemonAIState(IPokemob.TAMED)
+                            && !PokecubeMod.core.getConfig().pvpExp))
                     {
                         // voltorb's enemy wins XP and EVs even if it didn't
                         // attack

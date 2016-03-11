@@ -153,9 +153,9 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void explosionEvents(ExplosionEvent evt)
+    public void explosionEvents(ExplosionEvent.Detonate evt)
     {
-        if (evt.explosion instanceof ExplosionCustom && evt instanceof ExplosionEvent.Detonate)
+        if (evt.explosion instanceof ExplosionCustom)
         {
             ExplosionCustom boom = (ExplosionCustom) evt.explosion;
             if (!boom.meteor) return;
@@ -351,7 +351,8 @@ public class EventsHandler
     @SubscribeEvent
     public void EntityJoinWorld(EntityJoinWorldEvent evt)
     {
-        if (PokecubeMod.core.getConfig().disableMonsters && !(evt.entity instanceof IPokemob) && evt.entity instanceof IMob
+        if (PokecubeMod.core.getConfig().disableMonsters && !(evt.entity instanceof IPokemob)
+                && evt.entity instanceof IMob
                 && !(evt.entity instanceof EntityDragon || evt.entity instanceof EntityDragonPart))
         {
             evt.entity.setDead();
@@ -701,7 +702,8 @@ public class EventsHandler
 
         private IChatComponent getInfoMessage(CheckResult result, String name)
         {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + PokecubeMod.VERSION + EnumChatFormatting.WHITE;
+            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + PokecubeMod.VERSION
+                    + EnumChatFormatting.WHITE;
             String link = "" + result.url;
             String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
                     + link + "\"}}";

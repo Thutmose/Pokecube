@@ -446,9 +446,12 @@ public class Config extends Configuration
         SpawnHandler.MAX_DENSITY = mobDensityMultiplier;
         SpawnHandler.MAXNUM = mobSpawnNumber;
         if (breedingDelay < 600) breedingDelay = 1000;
+
+        SpawnHandler.doSpawns = pokemonSpawn;
         SpawnHandler.lvlCap = shouldCap;
         SpawnHandler.capLevel = levelCap;
         SpawnHandler.loadFunctionsFromStrings(spawnFunctions);
+
         PokecubeSerializer.MeteorDistance = meteorDistance * meteorDistance;
 
         for (String loc : mystLocs)

@@ -38,6 +38,7 @@ import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 @Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
@@ -132,14 +133,30 @@ public class TileEntityAFA extends TileEntityOwnable
     public void spawnEvent(SpawnEvent.Post evt)
     {
         if (shiny_charm == null) shiny_charm = PokecubeItems.getStack("shiny_charm");
-        shiny = inventory[0] != null && ItemStack.areItemStackTagsEqual(inventory[0], shiny_charm);
+        shiny = inventory[0] != null && Tools.isSameStack(inventory[0], shiny_charm);
         if (shiny)
         {
             if (evt.location.distanceTo(Vector3.getNewVector().set(this)) <= distance)
             {
                 Random rand = new Random();
-                //TODO play a sound/particles when this happens.
-                if (rand.nextInt(4096) == 0) evt.pokemob.setShiny(true);
+                if (rand.nextInt(4096) == 0)
+                {
+                    if (!noEnergy && !worldObj.isRemote)
+                    {
+                        int needed = (int) Math.ceil(distance * distance * distance / ((double) 50));
+                        int energy = storage.extractEnergy(needed, false);
+                        if (energy < needed)
+                        {
+                            worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "node.bd", 1.0F,
+                                    1.0F);
+                            return;
+                        }
+                    }
+                    evt.pokemob.setShiny(true);
+                    worldObj.playSoundAtEntity(evt.entity, "mob.endermen.portal", 1, 1);
+                    worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "mob.endermen.portal",
+                            1.0F, 1.0F);
+                }
             }
         }
     }

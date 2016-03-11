@@ -410,3 +410,76 @@ entity.pokecube.pokecube:pokemobEgg.name=Pokémobei
 
 igwtab.entry.Pokecubes=Pokécubes
 igwtab.entry.Controls=Toetsenbordbediening
+
+#Config Options
+
+#Misc
+pokecube.config.misc=Diverse Opties
+pokecube.config.contributorStarters.tooltip=Hebben Contributeurs de optie om hun speciale starter te krijgen
+pokecube.config.loginmessage.tooltip=Wordt de huidige versie getoond als men voorhet eerst inlogt?
+pokecube.config.guiOnLogin.tooltip=Verschijnt het "kies-eerstmenu" op het moment dat men inlogt?
+pokecube.config.pvpExp.tooltip=Geeft het verslaan van getemde pokémobs ervaring?
+pokecube.config.mysterygift.tooltip=Kunnen spelers het "/pokecube gift" commando gebruiken?
+pokecube.config.defaultMobs.tooltip=Het Mod ID van de mod om als basis te gebruiken voor de (Pokémob-) modellen.
+pokecube.config.tableRecipe.tooltip=Heeft de genezingstafel vervaardigingsrecepten?
+
+#AI
+pokecube.config.ai=Pokémob Kunstmatige Intelligentie Opties
+pokecube.config.mateMultiplier.tooltip=the number of ticks to increment for breeding at a time, increasing this number speeds up mating
+pokecube.config.breedingDelay.tooltip=Approximate number of ticks between breeding
+pokecube.config.eggHatchTime.tooltip=Twice the Average time to hatch eggs in ticks, actual hatch time is 100 + random.nextInt(eggHatchTime)
+pokecube.config.cull.tooltip=Do pokemobs which leave maxSpawnRadius automatically despawn. does not affect tame or angry mobs
+pokecube.config.pokemobsEatGravel.tooltip=Can lithovore pokémobs eat gravel
+pokecube.config.pokemobagresswarning.tooltip=Is there a warning before a pokémob attacks the player
+pokecube.config.mobAggroRadius.tooltip=Player must get closer to this to the pokémob for it to become agressive
+pokecube.config.pokemobLifeSpan.tooltip=Approximate number of ticks before pokémob starts taking hunger damage
+pokecube.config.maxPlayerDamage.tooltip=Maximum amount of damage a pokemob attack can deal to a player
+pokecube.config.pokemobagressticks.tooltip=Duration in ticks between the warning message and the pokemob attacking
+pokecube.config.maxAIThreads.tooltip=Maximum number of threads for AI
+pokecube.config.pokemobsDamageOwner.tooltip=Can your own pokémob hurt you if you get in the way of an attack
+pokecube.config.pokemobsDamagePlayers.tooltip=Can pokémob attacks harm players
+pokecube.config.pokemobsDamageBlocks.tooltip=Can pokémob attacks affect blocks
+pokecube.config.explosions.tooltip=Can pokémobs explode
+
+#World
+pokecube.config.generation=World Generation and Interaction
+pokecube.config.meteors.tooltip=Do meteors land naturally
+pokecube.config.meteorDistance.tooltip=Minimum distance between two natural meteors
+pokecube.config.doSpawnBuilding.tooltip=Should a spawn pokecenter be generated
+pokecube.config.cave.tooltip=Blocks found on cave floors, delimited by ";"
+pokecube.config.surface.tooltip=Blocks found on the surface of the ground
+pokecube.config.rock.tooltip=Blocks to be defined as "rocks" for rocksmash and lithovores
+pokecube.config.trees.tooltip=Blocks defined to be logs for cut
+pokecube.config.plants.tooltip=Blocks defined as plants for cut
+pokecube.config.terrains.tooltip=Blocks defined as useless terrian blocks for dig
+pokecube.config.industrial.tooltip=Blocks to be defined as industrial blocks for industrial biomes (currently disabled, only redstone blocks work)
+
+#Spawning
+pokecube.config.spawning=Spawning Options
+pokecube.config.deactivateMonsters.tooltip=Do vanilla monsters not spawn
+pokecube.config.disableMonster.tooltip=Do vanilla monsters get replaced with shadow pokémobs
+pokecube.config.deactivateAnimals.tooltip=Do vanilla Animals not spawn
+pokecube.config.pokemonSpawn.tooltip=Do pokémobs spawn naturally
+pokecube.config.maxSpawnRadius.tooltip=Maximum distance from the player a pokémob can spawn\nWild, not angry pokémobs will despawn if they get more than 3x this distance from a player
+pokecube.config.minSpawnRaduis.tooltip=Minimum distance to a player a pokémob can spawn
+pokecube.config.mobSpawnNumber.tooltip=Maximum number of pokémobs within maxSpawnRadius of a player for spawning code to be run
+pokecube.config.mobDensityMultiplier.tooltip=mobSpawnNumber is multiplied by this value before being checked
+pokecube.config.levelCap.tooltip=Maximum level for wild pokémobs
+pokecube.config.shouldCap.tooltip=Is the levelCap respected
+pokecube.config.spawnFunctions.tooltip=Functions for exp of wild pokémobs based on coordinates, format is <world generator id>:<function>
+
+#Client
+pokecube.config.client=Client Only Options
+pokecube.config.guiOffset.tooltip=Offset of the GUI on the screen
+pokecube.config.guiDown.tooltip=Direction of the GUI, true shows moves below the name, false shows them above
+
+#Advanced
+pokecube.config.advanced=Advanced Options
+pokecube.config.mystLocs.tooltip=Additional URLs to check for mystergifts, used for servers
+pokecube.config.resetTags.tooltip=Resets some additional tags used for time sensitive items.
+pokecube.config.extraValues.tooltip=Some internal values used for pokémob items
+
+#Database
+pokecube.config.database=Database Options
+pokecube.config.forceDatabase.tooltip=Will Pokecube overwrite the copy of the database with config with the one in the jar, set to false if you plan on changing the database
+pokecube.config.configDatabases.tooltip=Databases for pokemob information Add additional databases by appending , <newfile>.  If you remove any of the strings here, things will break

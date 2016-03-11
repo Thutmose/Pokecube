@@ -500,6 +500,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     @Override
     public boolean interact(EntityPlayer entityplayer)
     {
+        setTarget(entityplayer);
         if (entityplayer.capabilities.isCreativeMode)
         {
             if (getType() != null && !worldObj.isRemote && entityplayer.isSneaking()
@@ -665,14 +666,12 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         if (defeater != null)
         {
-            String text = StatCollector.translateToLocalFormatted("pokecube.trainer.defeat", "");
+            String text = StatCollector.translateToLocal("pokecube.trainer.defeat");
             IChatComponent message;
-            System.out.println(text);
+            IChatComponent name = getDisplayName();
+            name.getChatStyle().setColor(EnumChatFormatting.RED);
             text = EnumChatFormatting.RED + text;
-
-            message = getDisplayName().appendSibling(IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]"));
-
-            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+            message = name.appendSibling(IChatComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
             target.addChatMessage(message);
         }
     }
@@ -730,15 +729,16 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     public void setTarget(EntityLivingBase target)
     {
+        Thread.dumpStack();
         if (target != null && target != this.target)
         {
             cooldown = 100;
-            String text = StatCollector.translateToLocalFormatted("pokecube.trainer.agress", "");
+            String text = StatCollector.translateToLocal("pokecube.trainer.agress");
             IChatComponent message;
-            System.out.println(text);
+            IChatComponent name = getDisplayName();
+            name.getChatStyle().setColor(EnumChatFormatting.RED);
             text = EnumChatFormatting.RED + text;
-            message = getDisplayName().appendSibling(IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]"));
-            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+            message = name.appendSibling(IChatComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
             target.addChatMessage(message);
         }
         this.target = target;

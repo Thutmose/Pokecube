@@ -39,10 +39,10 @@ public class EntityAITrainer extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (!trainer.isEntityAlive()) return false;
-        if (trainer.getTarget() != null) return true;
-
         trainer.lowerCooldowns();
+        if (!trainer.isEntityAlive()) return false;
+        if (trainer.getTarget() != null || trainer.cooldown > 0) return true;
+
         Vector3 here = loc.set(trainer);
         EntityLivingBase target = null;
         List<? extends EntityLivingBase> targets = world.getEntitiesWithinAABB(targetClass,
@@ -51,7 +51,7 @@ public class EntityAITrainer extends EntityAIBase
         {
             EntityLivingBase e = (EntityLivingBase) o;
             if (Vector3.isVisibleEntityFromEntity(trainer, e))
-            {   
+            {
                 target = e;
                 break;
             }
@@ -80,10 +80,8 @@ public class EntityAITrainer extends EntityAIBase
                 if (((EntityLeader) trainer).hasDefeated(target)) target = null;
             }
         }
-        trainer.setTarget(target);
+        if (target != trainer.getTarget()) trainer.setTarget(target);
         if (trainer.getTarget() == null) return false;
-        System.out.println(trainer.cooldown + " " + trainer.globalCooldown + " " + trainer.friendlyCooldown + " "
-                + trainer.getTarget());
         return trainer.getTarget() != null;
     }
 
@@ -107,7 +105,7 @@ public class EntityAITrainer extends EntityAIBase
     {
         double distance = trainer.getDistanceSqToEntity(trainer.getTarget());
         trainer.faceEntity(trainer.getTarget(), trainer.rotationPitch, trainer.rotationYaw);
-        if (distance > 100)
+        if (distance > 100 || trainer.cooldown > 0)
         {
 
         }
@@ -153,7 +151,8 @@ public class EntityAITrainer extends EntityAIBase
         }
         if (angry && trainer.outID == null && !trainer.getAIState(EntityTrainer.THROWING))
         {
-            trainer.setTarget(null);
+            System.out.println(trainer.globalCooldown + " " + trainer.cooldown);
+            // trainer.setTarget(null);
         }
     }
 

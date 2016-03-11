@@ -120,7 +120,7 @@ public class EventsHandlerClient
             MessageServer packet = new MessageServer(MessageServer.JUMP, player.ridingEntity.getEntityId());
             PokecubePacketHandler.sendToServer(packet);
         }
-        if (key == ClientProxyPokecube.mobMegavolve.getKeyCode())
+        if (GameSettings.isKeyDown(ClientProxyPokecube.mobMegavolve))
         {
             InventoryBaubles inv = PlayerHandler.getPlayerBaubles(player);
             boolean ring = false;

@@ -958,7 +958,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     protected void onDeathUpdate()
     {
-        if (!PokecubeCore.isOnClientSide() && getPokemonAIState(TAMED))
+        if (!PokecubeCore.isOnClientSide())// && getPokemonAIState(TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
             String mess = StatCollector.translateToLocalFormatted("pokemob.action.faint", getPokemonDisplayName());
@@ -976,7 +976,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void onDeath(DamageSource damageSource)
     {
-
         if (ForgeHooks.onLivingDeath(this, damageSource)) return;
         Entity entity = damageSource.getEntity();
         EntityLivingBase entitylivingbase = this.func_94060_bK();

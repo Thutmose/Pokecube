@@ -32,6 +32,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Pre;
+import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
@@ -386,6 +387,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             motionX = motionY = motionZ = 0;
             time = 10;
             setReleasing(true);
+            SendOut evt = new SendOut(entity1.getPokedexEntry(), v, worldObj, entity1);
+            MinecraftForge.EVENT_BUS.post(evt);
         }
         else
         {

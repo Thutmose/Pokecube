@@ -47,8 +47,8 @@ public class SpawnEvent extends Event
         }
     }
 
-    /** Called right before the pokemob is spawned into the world. Cancelling this does
-     * nothing.<br>
+    /** Called right before the pokemob is spawned into the world. Cancelling
+     * this does nothing.<br>
      * pokemob is the pokemob entity which is about to spawn.
      * 
      * @author Thutmose */
@@ -58,6 +58,21 @@ public class SpawnEvent extends Event
         public final EntityLiving entity;
 
         public Post(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
+        {
+            super(entry, location, worldObj);
+            this.pokemob = pokemob;
+            entity = (EntityLiving) pokemob;
+        }
+    }
+
+    /** Called when a pokemob is sent out from the cube.<br>
+     * Cancelling this event does nothing. */
+    public static class SendOut extends SpawnEvent
+    {
+        public final IPokemob     pokemob;
+        public final EntityLiving entity;
+
+        public SendOut(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
         {
             super(entry, location, worldObj);
             this.pokemob = pokemob;

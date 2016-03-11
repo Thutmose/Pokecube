@@ -173,7 +173,7 @@ public class CommonProxy implements IGuiHandler
     {
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
         // Check Resource Packs
-        if (fillFromFolder(mod, resourceDir, file, toFill)) return;
+        if (ModPokecubeML.checkResourcesForModels && fillFromFolder(mod, resourceDir, file, toFill)) return;
         // Check jars.
         String scannedPackage = mod.getClass().getPackage().getName();
         String scannedPath = scannedPackage.replace(DOT, SLASH);

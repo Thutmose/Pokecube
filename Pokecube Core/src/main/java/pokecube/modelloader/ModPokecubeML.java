@@ -17,6 +17,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -42,16 +43,18 @@ import pokecube.modelloader.items.ItemModelReloader;
 public class ModPokecubeML
 {
     /** The id of your mod */
-    public final static String              ID               = "pokecube_ml";
+    public final static String              ID                      = "pokecube_ml";
 
     @Instance(ID)
     public static ModPokecubeML             instance;
 
-    public static ArrayList<String>         addedPokemon;
-    public static Map<PokedexEntry, String> textureProviders = Maps.newHashMap();
+    public static boolean                   checkResourcesForModels = true;
 
-    public static boolean                   info             = false;
-    public static boolean                   preload          = true;
+    public static ArrayList<String>         addedPokemon;
+    public static Map<PokedexEntry, String> textureProviders        = Maps.newHashMap();
+
+    public static boolean                   info                    = false;
+    public static boolean                   preload                 = true;
 
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
     public static CommonProxy               proxy;
@@ -73,7 +76,14 @@ public class ModPokecubeML
         proxy.preInit();
         doMetastuff();
         configDir = evt.getModConfigurationDirectory();
-        processResources();
+
+        Configuration config = PokecubeMod.core.getPokecubeConfig(evt);
+        config.load();
+        checkResourcesForModels = config.getBoolean("checkForResourcepacks", "General", true,
+                "Disabling this will prevent Pokecube from checking resource packs for models, it might speed up loading times.");
+        config.save();
+
+        if (checkResourcesForModels) processResources();
 
         GameRegistry.registerItem(
                 new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),
@@ -97,7 +107,6 @@ public class ModPokecubeML
         {
             registerMob(s);
         }
-        // proxy.registerRenderInformation();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }
 
@@ -157,7 +166,7 @@ public class ModPokecubeML
             }
             else
             {
-                System.err.println("Failed to register "+mob);
+                System.err.println("Failed to register " + mob);
             }
         }
     }

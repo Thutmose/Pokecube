@@ -410,3 +410,76 @@ entity.pokecube.pokecube:pokemobEgg.name=Pokémobei
 
 igwtab.entry.Pokecubes=Pokécubes
 igwtab.entry.Controls=Toetsenbordbediening
+
+#Config Options
+
+#Misc
+pokecube.config.misc=Diverse Opties
+pokecube.config.contributorStarters.tooltip=Hebben Contributeurs de optie om hun speciale starter te krijgen
+pokecube.config.loginmessage.tooltip=Wordt de huidige versie getoond als men voorhet eerst inlogt?
+pokecube.config.guiOnLogin.tooltip=Verschijnt het "kies-eerstmenu" op het moment dat men inlogt?
+pokecube.config.pvpExp.tooltip=Geeft het verslaan van getemde pokémobs ervaring?
+pokecube.config.mysterygift.tooltip=Kunnen spelers het "/pokecube gift" commando gebruiken?
+pokecube.config.defaultMobs.tooltip=Het Mod ID van de mod om als basis te gebruiken voor de (Pokémob-) modellen.
+pokecube.config.tableRecipe.tooltip=Heeft de genezingstafel vervaardigingsrecepten?
+
+#AI
+pokecube.config.ai=Pokémob Kunstmatige Intelligentie Opties
+pokecube.config.mateMultiplier.tooltip=Het aantal ticks om toe te nemen voor voortplanten per keer. Door dit nummer te verhogen gaat paren sneller.
+pokecube.config.breedingDelay.tooltip=Het afgeronde aantal ticks tussen het voortplanten.
+pokecube.config.eggHatchTime.tooltip=Twee maal de gemiddelde tijd om eieren uit te  laten komen in ticks. De werkelijke broedtijd is 100 + een willekeurig getal lager dan dit.
+pokecube.config.cull.tooltip=Ontspawnen Pokémobs die de maxSpawnRadius verlaten automatisch? Dit heeft geen invloed op tamme of boze mobs.
+pokecube.config.pokemobsEatGravel.tooltip=Kunnen mineraal-etende Pokémobs (Sableye etc.) grind eten?
+pokecube.config.pokemobagresswarning.tooltip=Is er een waarschuwing voordat een Pokémob een speler aanvalt?
+pokecube.config.mobAggroRadius.tooltip=Een Speler moet dichter dan dit bij een Pokémob komen om deze agressief te maken.
+pokecube.config.pokemobLifeSpan.tooltip=Het afgeronde aantal ticks voordat een Pokémob schade krijgt van de honger.
+pokecube.config.maxPlayerDamage.tooltip=Maximale hoeveelheid schade die een Pokémob aanval aan een speler kan toedienen.
+pokecube.config.pokemobagressticks.tooltip=De tijd in ticks tussen de waarschuwingsboodschap en het aanvallen van de Pokémob.
+pokecube.config.maxAIThreads.tooltip=Het maximale aantal threads voor Kunstmatige Intelligentie.
+pokecube.config.pokemobsDamageOwner.tooltip=Kan je eigen Pokémob je pijn doen als je in de baan van zijn aanval staat?
+pokecube.config.pokemobsDamagePlayers.tooltip=Kunnen Pokémob aanvallen spelers pijn doen?
+pokecube.config.pokemobsDamageBlocks.tooltip=Kunnen Pokémob aanvallen blokken beïnvloeden?
+pokecube.config.explosions.tooltip=Kunnen Pokémobs exploderen?
+
+#World
+pokecube.config.generation=Wereld Generatie en Interactie
+pokecube.config.meteors.tooltip=Landen meteoren uit zichzelf?
+pokecube.config.meteorDistance.tooltip=De minimale afstand tussen twee natuurlijke meteoren.
+pokecube.config.doSpawnBuilding.tooltip=Moet een spawn Pokécenter gegenereerd worden?
+pokecube.config.cave.tooltip=Blockken die men kan vinden op de vloeren van grotten, gescheiden door ";".
+pokecube.config.surface.tooltip=Blokken die men kan vinden aan de oppervlakte.
+pokecube.config.rock.tooltip=Blokken om te herdefiniëren als "rots" voor Rotsslag en mineraaleters.
+pokecube.config.trees.tooltip=Blokken gedefiniëerd om boomstammen te zijn voor Snij.
+pokecube.config.plants.tooltip=Blokken gedefiniëerd als planten voor Snij.
+pokecube.config.terrains.tooltip=Blokken gedefiniëerd als waardeloze aardachtige blokken voor Graaf.
+pokecube.config.industrial.tooltip=Blokken om gedefiniëerd te worden als industriële blokken voor industriële klimaten (momenteel uitgeschakeld, alleen redstone blokken werken)
+
+#Spawning
+pokecube.config.spawning=Spawning Opties
+pokecube.config.deactivateMonsters.tooltip=Spawnen vanilla monsters niet?
+pokecube.config.disableMonster.tooltip=Worden vanilla monsters vervangen door schaduw Pokémobs?
+pokecube.config.deactivateAnimals.tooltip=Spawnen vanilla dieren niet?
+pokecube.config.pokemonSpawn.tooltip=Spawnen Pokémobs uit zichzelf?
+pokecube.config.maxSpawnRadius.tooltip=De maximale afstand van de speler waar een Pokémob can spawnen.\nWilde, not boze Pokémobs despawnen als ze meet dan 3x deze afstand van een speler zijn.
+pokecube.config.minSpawnRaduis.tooltip=De minimale afstand van de speler waar een Pokémob can spawnen.
+pokecube.config.mobSpawnNumber.tooltip=Het maximale aantal Pokémobs dat er binnen de maxSpawnRadius vanaf een speler kan spawnen.
+pokecube.config.mobDensityMultiplier.tooltip=Hey mobSpawnNumber wordt vermenigvuldigd met deze waarde voordat hij gecontroleerd wordt.
+pokecube.config.levelCap.tooltip=Het maximale level voor wilde Pokémobs.
+pokecube.config.shouldCap.tooltip=Wordt levelCap gebruikt?
+pokecube.config.spawnFunctions.tooltip=Functies voor ervaring van wilde Pokémobs gebaseerd op coördinaten. Het format is: <wereld generator id>:<functie>
+
+#Client
+pokecube.config.client=Opties die Alleen voor de Client Gelden
+pokecube.config.guiOffset.tooltip=De afstand tussen de GUI en de rand van het scherm.
+pokecube.config.guiDown.tooltip=De richting van de GUI. true laat de moves onder de naam zien, false laat ze daarboven zien.
+
+#Advanced
+pokecube.config.advanced=Geavanceerde Opties
+pokecube.config.mystLocs.tooltip=Extra URLs on te checken voor mysterygifts, gebruikt voor servers.
+pokecube.config.resetTags.tooltip=Dit reset sommige extra tags die voor gevoeligevoorwerpen gebruikt worden.
+pokecube.config.extraValues.tooltip=Een aantal interne waarden die voor Pokémob voorwerpen gebruikt worden.
+
+#Database
+pokecube.config.database=Database Opties
+pokecube.config.forceDatabase.tooltip=Overschrijft Pokécube de kopie van de database met config door die in de jar? Stel in als false als je van plan bent om de database te veranderen.
+pokecube.config.configDatabases.tooltip=Databases voor Pokémob informatie. Voeg extra databases toe door <newfile> aan te vullen. Als je  een "string" van hier verwijderd, gaat alles kapot.

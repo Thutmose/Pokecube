@@ -440,6 +440,85 @@ public class Config extends Configuration
         }
     }
 
+    public void updateField(Field field, String update) throws Exception
+    {
+        load();
+        Property p = null;
+        Configure c = (Configure) field.getAnnotation(Configure.class);
+        if ((field.getType() == Long.TYPE) || (field.getType() == Long.class))
+        {
+            long defaultValue = field.getLong(defaults);
+            field.set(this, Long.parseLong(update));
+            p = get(c.category(), field.getName(), (int) defaultValue);
+            defaultValue = field.getLong(this);
+            p.set(defaultValue);
+        }
+        else if (field.getType() == String.class)
+        {
+            String defaultValue = (String) field.get(defaults);
+            field.set(this, update);
+            p = get(c.category(), field.getName(), defaultValue);
+            defaultValue = (String) field.get(this);
+            p.set(defaultValue);
+        }
+        else if ((field.getType() == Integer.TYPE) || (field.getType() == Integer.class))
+        {
+            int defaultValue = field.getInt(defaults);
+            field.set(this, Integer.parseInt(update));
+            p = get(c.category(), field.getName(), defaultValue);
+            defaultValue = field.getInt(this);
+            p.set(defaultValue);
+        }
+        else if ((field.getType() == Float.TYPE) || (field.getType() == Float.class))
+        {
+            float defaultValue = field.getFloat(defaults);
+            field.set(this, Float.parseFloat(update));
+            p = get(c.category(), field.getName(), defaultValue);
+            defaultValue = field.getFloat(this);
+            p.set(defaultValue);
+        }
+        else if ((field.getType() == Double.TYPE) || (field.getType() == Double.class))
+        {
+            double defaultValue = field.getDouble(defaults);
+            field.set(this, Double.parseDouble(update));
+            p = get(c.category(), field.getName(), defaultValue);
+            defaultValue = field.getDouble(this);
+            p.set(defaultValue);
+        }
+        else if ((field.getType() == Boolean.TYPE) || (field.getType() == Boolean.class))
+        {
+            boolean defaultValue = field.getBoolean(defaults);
+            field.set(this, Boolean.parseBoolean(update));
+            p = get(c.category(), field.getName(), defaultValue);
+            defaultValue = field.getBoolean(this);
+            p.set(defaultValue);
+        }
+        else
+        {
+            // TODO handle these properly.
+            Object o = field.get(defaults);
+            if (o instanceof String[])
+            {
+                String[] defaultValue = (String[]) o;
+                p = get(c.category(), field.getName(), defaultValue);
+                o = field.get(this);
+                defaultValue = (String[]) o;
+                p.set(defaultValue);
+            }
+            else if (o instanceof int[])
+            {
+                int[] defaultValue = (int[]) o;
+                p = get(c.category(), field.getName(), defaultValue);
+                o = field.get(this);
+                defaultValue = (int[]) o;
+                p.set(defaultValue);
+            }
+            else System.err.println("Unknown Type " + field.getType() + " " + field.getName() + " " + o.getClass());
+        }
+        applySettings();
+        save();
+    }
+
     private void applySettings()
     {
         initDefaultStarts();

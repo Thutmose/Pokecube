@@ -75,6 +75,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.pc.InventoryPC;
+import pokecube.core.commands.Commands;
+import pokecube.core.commands.GiftCommand;
+import pokecube.core.commands.MakeCommand;
+import pokecube.core.commands.SettingsCommand;
+import pokecube.core.commands.TMCommand;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -83,7 +88,6 @@ import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.pokemobs.GenericPokemob;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.PostPostInit;
-import pokecube.core.events.handlers.Commands;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
@@ -652,6 +656,10 @@ public class PokecubeCore extends PokecubeMod
     public void serverLoad(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new Commands());
+        event.registerServerCommand(new SettingsCommand());
+        event.registerServerCommand(new MakeCommand());
+        event.registerServerCommand(new GiftCommand());
+        event.registerServerCommand(new TMCommand());
     }
 
     @EventHandler

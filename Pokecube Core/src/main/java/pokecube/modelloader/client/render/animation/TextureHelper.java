@@ -2,6 +2,7 @@ package pokecube.modelloader.client.render.animation;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import org.w3c.dom.Node;
@@ -290,7 +291,7 @@ public class TextureHelper implements IPartTexturer
             toFill[0] = dx;
             toFill[1] = dy;
             int info = pokemob.getSpecialInfo();
-
+            Random random = new Random(((Entity)pokemob).ticksExisted);
             if (infoStates.containsKey(info))
             {
                 double[] arr = infoStates.get(info);
@@ -331,7 +332,7 @@ public class TextureHelper implements IPartTexturer
             else for (RandomState state : randomStates)
             {
                 double[] arr = state.arr;
-                if (Math.random() < state.chance)
+                if (random.nextDouble() < state.chance)
                 {
                     dx = arr[0];
                     dy = arr[1];

@@ -37,10 +37,10 @@ import thut.api.maths.Vector3;
 public abstract class PokecubeMod
 {
     public final static String                  ID                    = "pokecube";
-    public final static String                  VERSION               = "@VERSION@";
-    public final static String                  MCVERSIONS            = "@MCVERSION@";
-    public final static String                  MINFORGEVERSION       = "[11.15.1.1763,)";
-    public final static String                  DEPSTRING             = "";                                                                                        // ";required-after:thutcore@[2.3.4,);required-after:Baubles@[1.1.3,)";//"";//
+    public final static String                  VERSION               = "@VERSION";
+    public final static String                  MCVERSIONS            = "@MCVERSION";
+    public final static String                  MINFORGEVERSION       = "@FORGEVERSION";
+    public final static String                  DEPSTRING             = ";required-after:thutcore@@THUTCORE;required-after:Baubles@@BAUBLES";
 
     public final static String                  UPDATEURL             = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Core/versions.json";
     public final static String                  CONTRIBURL            = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/contributors.json";

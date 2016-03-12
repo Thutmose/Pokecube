@@ -308,7 +308,6 @@ public class AIAttack extends AIBase implements IAICombat
         if (entityTarget instanceof EntityPlayer) def *= distanced ? 3 : 2;
         double accuracyMod = Tools.modifierToRatio(mods[6], true);
         delayTime = (int) (def / accuracyMod);
-
     }
 
     public boolean continueExecuting()

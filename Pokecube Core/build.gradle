@@ -64,11 +64,17 @@ minecraft {
     
     useDepAts = true
     
-    replace "@VERSION@", project.version
+    replace "@VERSION", project.version
     replaceIn "PokecubeMod.java"
-    replace "@VERSION@", project.version
+    replace "@VERSION", project.version
     replaceIn "mcmod.info"
-    replace "@MCVERSION@", "${version_mcsupport}"
+    replace "@MCVERSION", "${version_mcsupport}"
+    replaceIn "PokecubeMod.java"
+    replace "@FORGEVERSION", "[${version_forge},)"
+    replaceIn "PokecubeMod.java"
+    replace "@THUTCORE", "[${version_thutcore},)"
+    replaceIn "PokecubeMod.java"
+    replace "@BAUBLES", "[${version_baubles},)"
     replaceIn "PokecubeMod.java"
     
     makeObfSourceJar = false

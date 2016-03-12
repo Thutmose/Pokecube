@@ -45,7 +45,7 @@ import pokecube.core.network.PokecubePacketHandler;
     modid = PokecubeAdv.ID, 
     name = "Pokecube Adventures", 
     version = PokecubeAdv.version, 
-    dependencies = "required-after:pokecube"+ PokecubeAdv.MINVERSION, 
+    dependencies = PokecubeAdv.DEPSTRING, 
     guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", 
     updateJSON = PokecubeAdv.UPDATEURL, 
     acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS
@@ -53,9 +53,9 @@ import pokecube.core.network.PokecubePacketHandler;
 public class PokecubeAdv
 {
     public static final String ID                 = "pokecube_adventures";
-    public static final String version            = "@VERSION@";
-    public final static String MCVERSIONS         = "[1.8.9]";
-    public final static String MINVERSION         = "";//"@[2.2.13,)";//
+    public static final String version            = "@VERSION";
+    public final static String MCVERSIONS         = "@MCVERSION";
+    public final static String DEPSTRING    = "required-after:pokecube@@POKECUBEVERSION";
 
     public final static String UPDATEURL          = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Addons/versions.json";
     public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";

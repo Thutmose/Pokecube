@@ -152,6 +152,7 @@ public class EntityAITrainer extends EntityAIBase
 
     private void considerSwapMove()
     {
+        // TODO choose between damaging/stats/status moves
         setMostDamagingMove();
     }
 
@@ -186,6 +187,8 @@ public class EntityAITrainer extends EntityAIBase
 
     private boolean considerSwapPokemob()
     {
+        // TODO check if the target pokemob is bad matchup, consider swapping to
+        // better choice.
         return false;
     }
 

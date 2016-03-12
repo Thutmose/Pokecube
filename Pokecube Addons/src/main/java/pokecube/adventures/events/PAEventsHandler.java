@@ -12,13 +12,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.entity.trainers.EntityTrainer;
-import pokecube.adventures.handlers.ConfigHandler;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.pc.InventoryPC;
-import pokecube.core.events.StarterEvent;
 import pokecube.core.events.SpawnEvent.SendOut;
+import pokecube.core.events.StarterEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
@@ -64,7 +63,7 @@ public class PAEventsHandler
             return;
         }
 
-        if (!ConfigHandler.overrides.contains(playerName))
+        if (!PokecubePacketHandler.specialStarters.containsKey(playerName))
         {
             ItemStack[] temp = evt.starterPack.clone();
             evt.starterPack = new ItemStack[temp.length + 1];

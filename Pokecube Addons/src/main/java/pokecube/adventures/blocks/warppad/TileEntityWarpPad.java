@@ -17,8 +17,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
-import pokecube.adventures.handlers.ConfigHandler;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
+import pokecube.compat.Config;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
@@ -29,15 +29,15 @@ import thut.api.maths.Vector3;
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityWarpPad extends TileEntityOwnable implements SimpleComponent, IEnergyReceiver
 {
-    public Vector4       link;
-    private Vector3      linkPos;
-    public Vector3       here;
-    protected long       lastStepped = Long.MIN_VALUE;
-    boolean              noEnergy    = false;
-    public static double MAXRANGE    = 64;
-    public static int    COOLDOWN    = 1000;
+    public Vector4          link;
+    private Vector3         linkPos;
+    public Vector3          here;
+    protected long          lastStepped = Long.MIN_VALUE;
+    boolean                 noEnergy    = false;
+    public static double    MAXRANGE    = 64;
+    public static int       COOLDOWN    = 1000;
 
-    protected EnergyStorage storage = new EnergyStorage(32000);
+    protected EnergyStorage storage     = new EnergyStorage(32000);
 
     public TileEntityWarpPad()
     {
@@ -58,7 +58,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         boolean tele = link != null && !link.isEmpty() && lastStepped + COOLDOWN <= time
                 && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);
 
-        if (tele && ConfigHandler.ENERGY && !noEnergy)
+        if (tele && Config.instance.warpPadEnergy && !noEnergy)
         {
             int energy = (int) (distSq);
             tele = storage.extractEnergy(energy, false) == energy;

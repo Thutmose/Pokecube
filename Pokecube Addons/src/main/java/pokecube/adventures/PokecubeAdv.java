@@ -3,7 +3,6 @@ package pokecube.adventures;
 import java.io.File;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -23,7 +22,6 @@ import pokecube.adventures.entity.villager.EntityTrader;
 import pokecube.adventures.events.PAEventsHandler;
 import pokecube.adventures.events.TeamEventsHandler;
 import pokecube.adventures.handlers.BlockHandler;
-import pokecube.adventures.handlers.ConfigHandler;
 import pokecube.adventures.handlers.GeneralCommands;
 import pokecube.adventures.handlers.ItemHandler;
 import pokecube.adventures.handlers.RecipeHandler;
@@ -36,19 +34,28 @@ import pokecube.adventures.network.PacketPokeAdv.MessageClient.MessageHandlerCli
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer.MessageHandlerServer;
 import pokecube.adventures.utils.DBLoader;
+import pokecube.compat.Config;
 import pokecube.core.PokecubeCore;
 import pokecube.core.events.PostPostInit;
+import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 
-@Mod(modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = "required-after:pokecube"
-        + PokecubeAdv.MINVERSION, guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
+@Mod( // @formatter:off
+    modid = PokecubeAdv.ID, 
+    name = "Pokecube Adventures", 
+    version = PokecubeAdv.version, 
+    dependencies = "required-after:pokecube"+ PokecubeAdv.MINVERSION, 
+    guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", 
+    updateJSON = PokecubeAdv.UPDATEURL, 
+    acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS
+    )// @formatter:on
 public class PokecubeAdv
 {
     public static final String ID                 = "pokecube_adventures";
     public static final String version            = "@VERSION@";
     public final static String MCVERSIONS         = "[1.8.9]";
-    public final static String MINVERSION         = "";//"@[2.2.11,)";//
+    public final static String MINVERSION         = "";                                                                                          // "@[2.2.11,)";//
 
     public final static String UPDATEURL          = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Addons/versions.json";
     public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
@@ -67,14 +74,14 @@ public class PokecubeAdv
     @Instance(ID)
     public static PokecubeAdv  instance;
 
+    public static Config       conf;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {
+        conf = new Config(PokecubeMod.core.getPokecubeConfig(e).getConfigFile());
         BlockHandler.registerBlocks();
         ItemHandler.registerItems();
-
-        Configuration config = PokecubeMod.core.getPokecubeConfig(e);
-        ConfigHandler.load(config);
         setTrainerConfig(e);
         MinecraftForge.EVENT_BUS.register(this);
         proxy.preinit();
@@ -118,10 +125,10 @@ public class PokecubeAdv
     @SubscribeEvent
     public void postPostInit(PostPostInit e)
     {
+        conf.postInit();
         ItemHandler.initBadges();
         RecipeHandler.register();
         DBLoader.load();
-        ConfigHandler.parseBiomes();
         LegendaryConditions.registerSpecialConditions();
     }
 
@@ -137,6 +144,20 @@ public class PokecubeAdv
     {
         TrainerSpawnHandler.trainers.clear();
         TeamManager.clearInstance();
+    }
+
+    @SubscribeEvent
+    public void pokemobSpawnCheck(SpawnEvent.Pre evt)
+    {
+        int id = evt.world.provider.getDimensionId();
+        for (int i : conf.dimensionBlackList)
+        {
+            if (i == id)
+            {
+                evt.setCanceled(true);
+                return;
+            }
+        }
     }
 
     public static void setTrainerConfig(FMLPreInitializationEvent evt)

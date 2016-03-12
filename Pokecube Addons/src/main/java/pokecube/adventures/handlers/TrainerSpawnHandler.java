@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
+import pokecube.compat.Config;
 import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.database.Database;
 import pokecube.core.events.handlers.EventsHandler;
@@ -139,7 +140,7 @@ public class TrainerSpawnHandler
 	@SubscribeEvent
 	public void tickEvent(WorldTickEvent evt)
 	{
-		if(ConfigHandler.trainerSpawn && evt.phase == Phase.END && evt.type != Type.CLIENT && evt.side != Side.CLIENT && Math.random()>0.999)
+		if(Config.instance.trainerSpawn && evt.phase == Phase.END && evt.type != Type.CLIENT && evt.side != Side.CLIENT && Math.random()>0.999)
 		{
 			long time = System.nanoTime();
 			tick(evt.world);

@@ -95,7 +95,6 @@ public class EntityAITrainer extends EntityAIBase
     @Override
     public void resetTask()
     {
-        // trainer.globalCooldown = 0;
         PCEventsHandler.recallAllPokemobs(trainer);
     }
 
@@ -148,11 +147,6 @@ public class EntityAITrainer extends EntityAIBase
         if (angry && !trainer.worldObj.isRemote && trainer.outMob == null)
         {
             trainer.throwCubeAt(trainer.getTarget());
-        }
-        if (angry && trainer.outID == null && !trainer.getAIState(EntityTrainer.THROWING))
-        {
-            System.out.println(trainer.globalCooldown + " " + trainer.cooldown);
-            // trainer.setTarget(null);
         }
     }
 

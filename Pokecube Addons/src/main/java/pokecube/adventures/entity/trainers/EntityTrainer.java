@@ -33,11 +33,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.ai.trainers.EntityAITrainer;
-import pokecube.adventures.handlers.ConfigHandler;
 import pokecube.adventures.handlers.GeneralCommands;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
+import pokecube.compat.Config;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.blocks.pc.InventoryPC;
@@ -59,6 +59,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public static final int  THROWING         = 4;
 
     public static int        ATTACKCOOLDOWN   = 10000;
+    private int              battleCooldown   = ATTACKCOOLDOWN;
+
     private boolean          randomize        = false;
     public ItemStack[]       pokecubes        = new ItemStack[6];
     public int[]             pokenumbers      = new int[6];
@@ -104,7 +106,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         if (location != null)
         {
             location.moveEntity(this);
-
             if (stationary) setStationary(location);
         }
     }
@@ -247,6 +248,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             }
         }
         nbt.setBoolean("gender", male);
+        nbt.setInteger("battleCD", battleCooldown);
         nbt.setBoolean("randomTeam", randomize);
         nbt.setString("name", name);
         nbt.setString("type", type.name);
@@ -280,6 +282,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         {
             outID = UUID.fromString(nbt.getString("outPokemob"));
         }
+        if (nbt.hasKey("battleCD")) battleCooldown = nbt.getInteger("battleCD");
         setAIState(STATIONARY, nbt.getBoolean("stationary"));
         globalCooldown = nbt.getInteger("cooldown");
         attackCooldown = nbt.getIntArray("cooldowns");
@@ -364,7 +367,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 entity.targetLocation.set(t);
                 setAIState(THROWING, true);
                 worldObj.spawnEntityInWorld(entity);
-                attackCooldown[j] = ATTACKCOOLDOWN;
+                attackCooldown[j] = battleCooldown;
                 globalCooldown = 1000;
                 pokecubes[j] = null;
                 for (int k = j + 1; k < 6; k++)
@@ -391,7 +394,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             setTrainerTarget(source.getEntity());
         }
 
-        if (ConfigHandler.trainersInvul) return false;
+        if (Config.instance.trainersInvul) return false;
 
         if (friendlyCooldown > 0) return false;
 
@@ -438,15 +441,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         {
             this.faceEntity(target, 10, 10);
             getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
-            // for (IPokemob i : currentPokemobs)
-            // {
-            // if (i.getPokemonAIState(IPokemob.ANGRY)) continue;
-            // i.setPokemonAIState(IPokemob.ANGRY, true);
-            // ((EntityLiving) i).setAttackTarget(target);
-            // int k = new Random().nextInt(4);
-            // if (i.getMove(k) != null && !i.getMove(k).isEmpty())
-            // i.setMoveIndex(k);
-            // }
         }
 
         if (this.countPokemon() == 0 && !getAIState(STATIONARY))
@@ -461,19 +455,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         timercounter = 0;
 
         friendlyCooldown--;
-
-        if (true) return;
-        // if (outID == null && !getAIState(THROWING) && target != null)
-        // {
-        // setAttackTarget(null);
-        // target = null;
-        // }
-        // boolean safe = target == null;
-        // if (safe && cooldown <= 0 && outID != null && !getAIState(THROWING))
-        // {
-        // globalCooldown = 0;
-        // PCEventsHandler.recallAllPokemobs(this);
-        // }
     }
 
     int timercounter = 0;
@@ -516,7 +497,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                     ItemStack item = getEquipmentInSlot(i);
                     if (item != null) message += item.getDisplayName() + " ";
                 }
-                System.out.println(outID + " " + outMob);
                 entityplayer.addChatMessage(new ChatComponentText(message));
             }
             else if (!worldObj.isRemote && entityplayer.isSneaking()
@@ -729,7 +709,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     public void setTarget(EntityLivingBase target)
     {
-        Thread.dumpStack();
         if (target != null && target != this.target)
         {
             cooldown = 100;

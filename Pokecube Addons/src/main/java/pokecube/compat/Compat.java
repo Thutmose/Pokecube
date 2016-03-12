@@ -50,7 +50,6 @@ import pokecube.compat.thaumcraft.ThaumiumPokecube;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.events.PostPostInit;
-import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 
@@ -58,7 +57,6 @@ import pokecube.core.interfaces.PokecubeMod;
 public class Compat
 {
     GCCompat             gccompat;
-    Config               conf;
     public static String CUSTOMSPAWNSFILE;
 
     @Instance("pokecube_compat")
@@ -88,7 +86,6 @@ public class Compat
         }
 
         Database.addSpawnData(CUSTOMSPAWNSFILE);
-        conf = new Config(evt);
     }
 
     @EventHandler
@@ -119,8 +116,6 @@ public class Compat
     @EventHandler
     public void postInit(FMLPostInitializationEvent evt)
     {
-        conf.postInit();
-
         GameRegistry.addRecipe(new ShapedOreRecipe(PokecubeItems.getBlock("pokesiphon"), new Object[] { "RrR", "rCr",
                 "RrR", 'R', Blocks.redstone_block, 'C', PokecubeItems.getBlock("afa"), 'r', Items.redstone }));
     }
@@ -192,20 +187,6 @@ public class Compat
     public void JERInit(PostPostInit evt)
     {
         new pokecube.compat.jer.JERCompat().register();
-    }
-
-    @SubscribeEvent
-    public void pokemobSpawnCheck(SpawnEvent.Pre evt)
-    {
-        int id = evt.world.provider.getDimensionId();
-        for (int i : Config.dimensionBlackList)
-        {
-            if (i == id)
-            {
-                evt.setCanceled(true);
-                return;
-            }
-        }
     }
 
     @SubscribeEvent

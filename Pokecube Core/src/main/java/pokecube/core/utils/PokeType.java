@@ -25,7 +25,7 @@ public enum PokeType
     dark		( 	0x6F5747, "dark"),
     fairy		( 	0xE6A5E6, "fairy");
     // @formatter:on
-    public final int colour;
+    public final int    colour;
     public final String name;
 
     private PokeType(int colour, String name)
@@ -39,10 +39,13 @@ public enum PokeType
     // rock, bug, ghost, steel, fire, water, grass,
     // electric, psychic, ice, dragon, dark, fairy };
 
-    private static float o = 0; // ineffective
-    private static float n = 1F; // normal
-    private static float v = 2F; // very effective
-    private static float x = 0.5F; // not very effective
+    private static float     o         = 0;                                                                                                                       // ineffective
+    private static float     n         = 1F;                                                                                                                      // normal
+    private static float     v         = 2F;                                                                                                                      // very
+                                                                                                                                                                  // effective
+    private static float     x         = 0.5F;                                                                                                                    // not
+                                                                                                                                                                  // very
+                                                                                                                                                                  // effective
  // @formatter:off
     private static float[][] typeTable =
     {

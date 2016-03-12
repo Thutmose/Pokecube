@@ -20,6 +20,49 @@ import thut.api.maths.Vector3;
 
 public class ELNInterfacer
 {
+    static class CablePacket
+    {
+        Object  resistor;
+        Object  voltageSource;
+        Object  loadA;
+        Object  loadB;
+        Object  cable;
+        Object  cableLoad;
+        Vector3 location;
+
+        public CablePacket(Vector3 cableLoc, Object resist, Object source, Object a, Object b, Object cab,
+                Object cabLoad)
+        {
+            resistor = resist;
+            voltageSource = source;
+            loadA = a;
+            loadB = b;
+            cable = cab;
+            cableLoad = cabLoad;
+            location = cableLoc;
+        }
+
+        public double getDistance(EntityLiving entity)
+        {
+            return location.distToEntity(entity);
+        }
+
+        public void resetCable() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+        {
+            disconnect(cable);
+            breakConnection(resistor);
+            breakConnection(voltageSource);
+            getCableComponents(cable).clear();
+            List<Object> toRemove = new ArrayList<Object>();
+            List<Object> cableLoads = getCableLoads(cable);
+            for (Object cableload : cableLoads)
+            {
+                if (cableload != cableLoad) toRemove.add(cableload);
+            }
+            cableLoads.removeAll(toRemove);
+            connect(cable);
+        }
+    }
     static Class<?> coordonate;
     static Class<?> line;
     static Class<?> state;
@@ -40,105 +83,26 @@ public class ELNInterfacer
     static Method   sourceSetU;
     static Method   getSubSystem;
     static Class<?> subsystem;
-    static Method   getRoot;
 
+    static Method   getRoot;
     static Class<?> sixNode;
     static Class<?> sixNodeElement;
-    static Field    sixNodeSEL;
 
+    static Field    sixNodeSEL;
     static Class<?> cable;
     static Field    cableCompList;
     static Field    cableLoadList;
     static Field    cableLoad;
     static Method   reconnect;
     static Method   disconnect;
-    static Method   connect;
 
+    static Method   connect;
     static Class<?> bipole;
     static Method   breakConnection;
+
     static Method   connectTo;
 
     static HashMap<EntityLiving, ArrayList<CablePacket>> mobEffects = new HashMap<EntityLiving, ArrayList<CablePacket>>();
-
-    public ELNInterfacer()
-    {
-        try
-        {
-            coordonate = Class.forName("mods.eln.misc.Coordonate");
-            state = Class.forName("mods.eln.sim.mna.state.State");
-            line = Class.forName("mods.eln.sim.mna.component.Line");
-            resistor = Class.forName("mods.eln.sim.mna.component.Resistor");
-            voltageSource = Class.forName("mods.eln.sim.mna.component.VoltageSource");
-            nodeManager = Class.forName("mods.eln.node.NodeManager");
-            rootSystem = Class.forName("mods.eln.sim.mna.RootSystem");
-            resistorSetR = resistor.getMethod("setR", double.class);
-            nodeManagerInstance = nodeManager.getDeclaredField("instance");
-            nodeManagerGetNodeFromCoordonate = nodeManager.getDeclaredMethod("getNodeFromCoordonate", coordonate);
-            directions = Class.forName("mods.eln.misc.Direction");
-            dirValues = directions.getMethod("values");
-            lrdu = Class.forName("mods.eln.misc.LRDU");
-            getElectricalLoad = Class.forName("mods.eln.node.NodeBase").getMethod("getElectricalLoad", directions,
-                    lrdu);
-            electricalLoad = Class.forName("mods.eln.sim.ElectricalLoad");
-            nbtElectricalLoad = Class.forName("mods.eln.sim.nbt.NbtElectricalLoad");
-            loadSetRs = electricalLoad.getMethod("setRs", double.class);
-            sourceSetU = voltageSource.getMethod("setU", double.class);
-            getSubSystem = electricalLoad.getMethod("getSubSystem");
-            subsystem = Class.forName("mods.eln.sim.mna.SubSystem");
-            getRoot = subsystem.getMethod("getRoot");
-            sixNode = Class.forName("mods.eln.node.six.SixNode");
-            sixNodeSEL = sixNode.getDeclaredField("sideElementList");
-            sixNodeElement = Class.forName("mods.eln.node.six.SixNodeElement");
-            cable = Class.forName("mods.eln.sixnode.electricalcable.ElectricalCableElement");
-            cableLoad = cable.getDeclaredField("electricalLoad");
-            cableCompList = sixNodeElement.getDeclaredField("electricalComponentList");
-            cableLoadList = sixNodeElement.getDeclaredField("electricalLoadList");
-
-            reconnect = sixNodeElement.getDeclaredMethod("reconnect");
-            disconnect = sixNodeElement.getDeclaredMethod("disconnectJob");
-            connect = sixNodeElement.getDeclaredMethod("connectJob");
-
-            bipole = Class.forName("mods.eln.sim.mna.component.Bipole");
-            breakConnection = bipole.getMethod("breakConnection");
-            connectTo = bipole.getMethod("connectTo", state, state);
-
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-        catch (Exception e)
-        {
-            // e.printStackTrace();
-        }
-    }
-
-    @SubscribeEvent
-    public void EntityLivingUpdate(LivingUpdateEvent evt)
-    {
-        if (evt.entityLiving instanceof IPokemob && evt.entityLiving instanceof EntityLiving)
-        {
-            refreshCableEffects((EntityLiving) evt.entityLiving);
-        }
-    }
-
-    @SubscribeEvent
-    public void EntityLivingDeath(LivingDeathEvent evt)
-    {
-        if (evt.entityLiving instanceof IPokemob && evt.entityLiving instanceof EntityLiving)
-        {
-            resetCableEffects((EntityLiving) evt.entityLiving);
-        }
-    }
-
-    @SubscribeEvent
-    public void PokemobRecall(RecallEvent evt)
-    {
-        resetCableEffects((EntityLiving) evt.recalled);
-    }
-
-    @SubscribeEvent
-    public void PokemobDespawn(SpawnEvent.Despawn evt)
-    {
-        resetCableEffects((EntityLiving) evt.pokemob);
-    }
 
     static void addCableEffect(EntityLiving entity, CablePacket cable)
     {
@@ -167,52 +131,27 @@ public class ELNInterfacer
         effects.add(cable);
     }
 
-    static void resetCableEffects(EntityLiving entity)
+    static void breakConnection(Object component)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
-        ArrayList<CablePacket> effects = mobEffects.get(entity);
-        if (effects != null)
-        {
-            for (CablePacket p : effects)
-            {
-                try
-                {
-                    p.resetCable();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-
+        breakConnection.invoke(component);
     }
 
-    static void refreshCableEffects(EntityLiving entity)
+    static void connect(Object cable) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
-        ArrayList<CablePacket> effects = mobEffects.get(entity);
-        if (effects != null)
-        {
-            ArrayList<CablePacket> toRemove = new ArrayList<ELNInterfacer.CablePacket>();
-            for (CablePacket p : effects)
-            {
-                if (p.getDistance(entity) > 8)
-                {
-                    toRemove.add(p);
-                }
-            }
-            for (CablePacket p : toRemove)
-            {
-                try
-                {
-                    p.resetCable();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                effects.remove(p);
-            }
-        }
+        connect.invoke(cable);
+    }
+
+    static void connectResistorToLoadAndSource(Object resistor, Object sourcePinA, Object load)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+        connectTo.invoke(resistor, sourcePinA, load);
+    }
+
+    static void disconnect(Object cable)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+        disconnect.invoke(cable);
     }
 
     public static void doELNInterference(EntityLiving entity, int currentRadius, int statFactor, TileEntity tile)
@@ -291,31 +230,6 @@ public class ELNInterfacer
         }
     }
 
-    static Object makeLoad(String name) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException
-    {
-        Object load = nbtElectricalLoad.getConstructor(String.class).newInstance(name);
-        loadSetRs.invoke(load, 1e-9);
-        return load;
-    }
-
-    static Object makeSource(double voltage, Object loadA) throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
-    {
-        Object source = voltageSource.getConstructor(String.class, state, state).newInstance("", loadA, null);
-        sourceSetU.invoke(source, voltage);
-        return source;
-    }
-
-    static Object makeResistor(double resistance, Object loadA, Object loadB)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException
-    {
-        Object res = resistor.getConstructor(state, state).newInstance(loadA, loadB);
-        resistorSetR.invoke(res, resistance);
-        return res;
-    }
-
     static Object getCable(Object snode) throws IllegalArgumentException, IllegalAccessException
     {
         Object[] object = (Object[]) sixNodeSEL.get(snode);
@@ -331,27 +245,40 @@ public class ELNInterfacer
         return (List<Object>) cableCompList.get(cable);
     }
 
+    static Object getCableLoad(Object cable) throws IllegalArgumentException, IllegalAccessException
+    {
+        return cableLoad.get(cable);
+    }
+
     @SuppressWarnings("unchecked")
     static List<Object> getCableLoads(Object cable) throws IllegalArgumentException, IllegalAccessException
     {
         return (List<Object>) cableLoadList.get(cable);
     }
 
-    static Object getCableLoad(Object cable) throws IllegalArgumentException, IllegalAccessException
+    static Object makeLoad(String name) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException, NoSuchMethodException, SecurityException
     {
-        return cableLoad.get(cable);
+        Object load = nbtElectricalLoad.getConstructor(String.class).newInstance(name);
+        loadSetRs.invoke(load, 1e-9);
+        return load;
     }
 
-    static void connectResistorToLoadAndSource(Object resistor, Object sourcePinA, Object load)
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    static Object makeResistor(double resistance, Object loadA, Object loadB)
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+            NoSuchMethodException, SecurityException
     {
-        connectTo.invoke(resistor, sourcePinA, load);
+        Object res = resistor.getConstructor(state, state).newInstance(loadA, loadB);
+        resistorSetR.invoke(res, resistance);
+        return res;
     }
 
-    static void breakConnection(Object component)
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    static Object makeSource(double voltage, Object loadA) throws InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
     {
-        breakConnection.invoke(component);
+        Object source = voltageSource.getConstructor(String.class, state, state).newInstance("", loadA, null);
+        sourceSetU.invoke(source, voltage);
+        return source;
     }
 
     static void reconnect(Object cable)
@@ -360,58 +287,131 @@ public class ELNInterfacer
         reconnect.invoke(cable);
     }
 
-    static void disconnect(Object cable)
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    static void refreshCableEffects(EntityLiving entity)
     {
-        disconnect.invoke(cable);
-    }
-
-    static void connect(Object cable) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
-    {
-        connect.invoke(cable);
-    }
-
-    static class CablePacket
-    {
-        Object  resistor;
-        Object  voltageSource;
-        Object  loadA;
-        Object  loadB;
-        Object  cable;
-        Object  cableLoad;
-        Vector3 location;
-
-        public CablePacket(Vector3 cableLoc, Object resist, Object source, Object a, Object b, Object cab,
-                Object cabLoad)
+        ArrayList<CablePacket> effects = mobEffects.get(entity);
+        if (effects != null)
         {
-            resistor = resist;
-            voltageSource = source;
-            loadA = a;
-            loadB = b;
-            cable = cab;
-            cableLoad = cabLoad;
-            location = cableLoc;
-        }
-
-        public void resetCable() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
-        {
-            disconnect(cable);
-            breakConnection(resistor);
-            breakConnection(voltageSource);
-            getCableComponents(cable).clear();
-            List<Object> toRemove = new ArrayList<Object>();
-            List<Object> cableLoads = getCableLoads(cable);
-            for (Object cableload : cableLoads)
+            ArrayList<CablePacket> toRemove = new ArrayList<ELNInterfacer.CablePacket>();
+            for (CablePacket p : effects)
             {
-                if (cableload != cableLoad) toRemove.add(cableload);
+                if (p.getDistance(entity) > 8)
+                {
+                    toRemove.add(p);
+                }
             }
-            cableLoads.removeAll(toRemove);
-            connect(cable);
+            for (CablePacket p : toRemove)
+            {
+                try
+                {
+                    p.resetCable();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                effects.remove(p);
+            }
+        }
+    }
+
+    static void resetCableEffects(EntityLiving entity)
+    {
+        ArrayList<CablePacket> effects = mobEffects.get(entity);
+        if (effects != null)
+        {
+            for (CablePacket p : effects)
+            {
+                try
+                {
+                    p.resetCable();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        public double getDistance(EntityLiving entity)
+    }
+
+    public ELNInterfacer()
+    {
+        try
         {
-            return location.distToEntity(entity);
+            coordonate = Class.forName("mods.eln.misc.Coordonate");
+            state = Class.forName("mods.eln.sim.mna.state.State");
+            line = Class.forName("mods.eln.sim.mna.component.Line");
+            resistor = Class.forName("mods.eln.sim.mna.component.Resistor");
+            voltageSource = Class.forName("mods.eln.sim.mna.component.VoltageSource");
+            nodeManager = Class.forName("mods.eln.node.NodeManager");
+            rootSystem = Class.forName("mods.eln.sim.mna.RootSystem");
+            resistorSetR = resistor.getMethod("setR", double.class);
+            nodeManagerInstance = nodeManager.getDeclaredField("instance");
+            nodeManagerGetNodeFromCoordonate = nodeManager.getDeclaredMethod("getNodeFromCoordonate", coordonate);
+            directions = Class.forName("mods.eln.misc.Direction");
+            dirValues = directions.getMethod("values");
+            lrdu = Class.forName("mods.eln.misc.LRDU");
+            getElectricalLoad = Class.forName("mods.eln.node.NodeBase").getMethod("getElectricalLoad", directions,
+                    lrdu);
+            electricalLoad = Class.forName("mods.eln.sim.ElectricalLoad");
+            nbtElectricalLoad = Class.forName("mods.eln.sim.nbt.NbtElectricalLoad");
+            loadSetRs = electricalLoad.getMethod("setRs", double.class);
+            sourceSetU = voltageSource.getMethod("setU", double.class);
+            getSubSystem = electricalLoad.getMethod("getSubSystem");
+            subsystem = Class.forName("mods.eln.sim.mna.SubSystem");
+            getRoot = subsystem.getMethod("getRoot");
+            sixNode = Class.forName("mods.eln.node.six.SixNode");
+            sixNodeSEL = sixNode.getDeclaredField("sideElementList");
+            sixNodeElement = Class.forName("mods.eln.node.six.SixNodeElement");
+            cable = Class.forName("mods.eln.sixnode.electricalcable.ElectricalCableElement");
+            cableLoad = cable.getDeclaredField("electricalLoad");
+            cableCompList = sixNodeElement.getDeclaredField("electricalComponentList");
+            cableLoadList = sixNodeElement.getDeclaredField("electricalLoadList");
+
+            reconnect = sixNodeElement.getDeclaredMethod("reconnect");
+            disconnect = sixNodeElement.getDeclaredMethod("disconnectJob");
+            connect = sixNodeElement.getDeclaredMethod("connectJob");
+
+            bipole = Class.forName("mods.eln.sim.mna.component.Bipole");
+            breakConnection = bipole.getMethod("breakConnection");
+            connectTo = bipole.getMethod("connectTo", state, state);
+
+            MinecraftForge.EVENT_BUS.register(this);
         }
+        catch (Exception e)
+        {
+            // e.printStackTrace();
+        }
+    }
+
+    @SubscribeEvent
+    public void EntityLivingDeath(LivingDeathEvent evt)
+    {
+        if (evt.entityLiving instanceof IPokemob && evt.entityLiving instanceof EntityLiving)
+        {
+            resetCableEffects((EntityLiving) evt.entityLiving);
+        }
+    }
+
+    @SubscribeEvent
+    public void EntityLivingUpdate(LivingUpdateEvent evt)
+    {
+        if (evt.entityLiving instanceof IPokemob && evt.entityLiving instanceof EntityLiving)
+        {
+            refreshCableEffects((EntityLiving) evt.entityLiving);
+        }
+    }
+
+    @SubscribeEvent
+    public void PokemobDespawn(SpawnEvent.Despawn evt)
+    {
+        resetCableEffects((EntityLiving) evt.pokemob);
+    }
+
+    @SubscribeEvent
+    public void PokemobRecall(RecallEvent evt)
+    {
+        resetCableEffects((EntityLiving) evt.recalled);
     }
 }

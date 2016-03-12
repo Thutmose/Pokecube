@@ -24,14 +24,83 @@ public class DBLoader
 {
 	private final static String DBLOCATION = "/assets/pokecube_adventures/database/";
 	
-	public static void load()
+	private static PrintWriter out;
+	
+	private static FileWriter fwriter;
+	
+	static String header = "Trainer Type,Trainer Pokemon,,,Trainer Gender (Male, Female, Both)";
+	
+    static String example = "Red,omanyte pidgey lapras nidoranm venonat zapdos,,,Male";
+    private static ArrayList<ArrayList<String>> getRows(String file)
+	{
+		InputStream res = (net.minecraft.util.StringTranslate.class).getResourceAsStream(file);
+		ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+
+		try {
+
+			br = new BufferedReader(
+					new InputStreamReader(res));
+			int n = 0;
+			while ((line = br.readLine()) != null) {
+
+				String[] row = line.split(cvsSplitBy);
+				rows.add(new ArrayList<String>());
+				for (int i = 0; i < row.length; i++) {
+					rows.get(n).add(row[i]);
+				}
+				n++;
+			}
+
+		} catch (FileNotFoundException e) {
+		} catch (NullPointerException e) {
+
+			try {
+				FileReader temp = new FileReader(new File(file));
+				br = new BufferedReader(temp);
+				int n = 0;
+				while ((line = br.readLine()) != null) {
+
+					String[] row = line.split(cvsSplitBy);
+					rows.add(new ArrayList<String>());
+					for (int i = 0; i < row.length; i++) {
+						rows.get(n).add(row[i]);
+					}
+					n++;
+				}
+				temp.close();
+			} catch (FileNotFoundException e1) {
+				System.err.println("Missing a Database file " + file);
+				writeDefaultConfig(file);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			//e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return rows;
+	}
+    
+    public static void load()
 	{
 		loadInfo(DBLOCATION+"trainerInfo.csv");
 		loadInfo(PokecubeAdv.CUSTOMTRAINERFILE);
 		TypeTrainer.postInitTrainers();
 	}
-	
-	public static void loadInfo(String s2)
+    public static void loadInfo(String s2)
 	{
 		ArrayList<ArrayList<String>> rows = getRows(s2);
 		
@@ -148,75 +217,6 @@ public class DBLoader
 		
 		
 	}
-	
-	private static ArrayList<ArrayList<String>> getRows(String file)
-	{
-		InputStream res = (net.minecraft.util.StringTranslate.class).getResourceAsStream(file);
-		ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
-		BufferedReader br = null;
-		String line = "";
-		String cvsSplitBy = ",";
-
-		try {
-
-			br = new BufferedReader(
-					new InputStreamReader(res));
-			int n = 0;
-			while ((line = br.readLine()) != null) {
-
-				String[] row = line.split(cvsSplitBy);
-				rows.add(new ArrayList<String>());
-				for (int i = 0; i < row.length; i++) {
-					rows.get(n).add(row[i]);
-				}
-				n++;
-			}
-
-		} catch (FileNotFoundException e) {
-		} catch (NullPointerException e) {
-
-			try {
-				FileReader temp = new FileReader(new File(file));
-				br = new BufferedReader(temp);
-				int n = 0;
-				while ((line = br.readLine()) != null) {
-
-					String[] row = line.split(cvsSplitBy);
-					rows.add(new ArrayList<String>());
-					for (int i = 0; i < row.length; i++) {
-						rows.get(n).add(row[i]);
-					}
-					n++;
-				}
-				temp.close();
-			} catch (FileNotFoundException e1) {
-				System.err.println("Missing a Database file " + file);
-				writeDefaultConfig(file);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			
-			//e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		return rows;
-	}
-	
-    private static PrintWriter out;
-    private static FileWriter fwriter;
-    
-    static String header = "Trainer Type,Trainer Pokemon,,,Trainer Gender (Male, Female, Both)";
-    static String example = "Red,omanyte pidgey lapras nidoranm venonat zapdos,,,Male";
     
 	private static void writeDefaultConfig(String file)
 	{

@@ -25,11 +25,53 @@ public class SettingsCommand extends CommandBase
 {
     private List<String> aliases;
 
+    ArrayList<String>      fields   = Lists.newArrayList();
+
+    HashMap<String, Field> fieldMap = Maps.newHashMap();
+
     public SettingsCommand()
     {
         this.aliases = new ArrayList<String>();
         this.aliases.add("pokesettings");
         populateFields();
+    }
+
+    @Override
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    {
+        List<String> ret = new ArrayList<String>();
+        if (args.length == 1)
+        {
+            String text = args[0];
+            for (String name : fields)
+            {
+                if (name.contains(text))
+                {
+                    ret.add(name);
+                }
+            }
+            Collections.sort(ret, new Comparator<String>()
+            {
+                @Override
+                public int compare(String o1, String o2)
+                {
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+        }
+        return ret;
+    }
+
+    @Override
+    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    {
+        return true;
+    }
+
+    @Override
+    public List<String> getCommandAliases()
+    {
+        return this.aliases;
     }
 
     @Override
@@ -45,22 +87,25 @@ public class SettingsCommand extends CommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
-    {
-        return this.aliases;
-    }
-
-    @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
-    {
-        return true;
-    }
-
-    @Override
     /** Return the required permission level for this command. */
     public int getRequiredPermissionLevel()
     {
         return 4;
+    }
+    private void populateFields()
+    {
+        Class<Config> me = Config.class;
+        Configure c;
+        for (Field f : me.getDeclaredFields())
+        {
+            c = f.getAnnotation(Configure.class);
+            if (c != null)
+            {
+                f.setAccessible(true);
+                fields.add(f.getName());
+                fieldMap.put(f.getName(), f);
+            }
+        }
     }
 
     @Override
@@ -143,51 +188,6 @@ public class SettingsCommand extends CommandBase
             message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
             sender.addChatMessage(message);
             return;
-        }
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
-    {
-        List<String> ret = new ArrayList<String>();
-        if (args.length == 1)
-        {
-            String text = args[0];
-            for (String name : fields)
-            {
-                if (name.contains(text))
-                {
-                    ret.add(name);
-                }
-            }
-            Collections.sort(ret, new Comparator<String>()
-            {
-                @Override
-                public int compare(String o1, String o2)
-                {
-                    return o1.compareToIgnoreCase(o2);
-                }
-            });
-        }
-        return ret;
-    }
-
-    ArrayList<String>      fields   = Lists.newArrayList();
-    HashMap<String, Field> fieldMap = Maps.newHashMap();
-
-    private void populateFields()
-    {
-        Class<Config> me = Config.class;
-        Configure c;
-        for (Field f : me.getDeclaredFields())
-        {
-            c = (Configure) f.getAnnotation(Configure.class);
-            if (c != null)
-            {
-                f.setAccessible(true);
-                fields.add(f.getName());
-                fieldMap.put(f.getName(), f);
-            }
         }
     }
 }

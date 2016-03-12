@@ -8,75 +8,34 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IChatComponent;
 
 public class TileHealTable extends TileEntity implements IInventory, ITickable
 {
+    public static boolean noSound = false;
     private ItemStack[] inventory;
+
     Vector3             here = Vector3.getNewVector();
 
+    int                   ticks   = 0;
+    boolean               stopped = false;
     public TileHealTable()
     {
         this.inventory = new ItemStack[9];
     }
 
-    int                   ticks   = 0;
-    boolean               stopped = false;
-    public static boolean noSound = false;
-
     @Override
-    public void update()
+    public void clear()
     {
-        int power = worldObj.getStrongPower(pos);
-        if (power == 0)
-        {
-            if (worldObj.isRemote && PokecubeMod.getProxy().isSoundPlaying(here)) worldObj.playRecord(pos, null);
-            return;
-        }
-        here.set(this);
-        if (!noSound && worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
-        {
-            worldObj.playRecord(pos, null);
-            worldObj.playRecord(pos, "pokecube:pokecenterloop");
-        }
-        ticks++;
     }
 
     @Override
-    public int getSizeInventory()
+    public void closeInventory(EntityPlayer player)
     {
-        return this.inventory.length;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int slotIndex)
-    {
-        return this.inventory[slotIndex];
-    }
-
-    /** invalidates a tile entity */
-    public void invalidate()
-    {
-        super.invalidate();
-        if (worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
-        {
-            worldObj.playRecord(pos, null);
-        }
-    }
-
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack stack)
-    {
-        this.inventory[slot] = stack;
-
-        if (stack != null && stack.stackSize > getInventoryStackLimit())
-        {
-            stack.stackSize = getInventoryStackLimit();
-        }
     }
 
     @Override
@@ -104,6 +63,130 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         return stack;
     }
 
+    /** Overriden in a sign to provide the text. */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public Packet getDescriptionPacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(pos, 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        return new S35PacketUpdateTileEntity(pos, 3, nbttagcompound);
+    }
+
+    @Override
+    public IChatComponent getDisplayName()
+    {
+        return null;
+    }
+
+    @Override
+    public int getField(int id)
+    {
+        return 0;
+    }
+
+    @Override
+    public int getFieldCount()
+    {
+        return 0;
+    }
+
+    @Override
+    public int getInventoryStackLimit()
+    {
+        return 64;
+    }
+
+    @Override
+    public String getName()
+    {
+        return "TileEntityHealTable";
+    }
+
+    @Override
+    public int getSizeInventory()
+    {
+        return this.inventory.length;
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int slotIndex)
+    {
+        return this.inventory[slotIndex];
+    }
+
+    @Override
+    public boolean hasCustomName()
+    {
+        return true;
+    }
+
+    /** invalidates a tile entity */
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        if (worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
+        {
+            worldObj.playRecord(pos, null);
+        }
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    {
+        return ContainerHealTable.isItemValid(itemstack);
+    }
+
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer player)
+    {
+        return worldObj.getTileEntity(pos) == this && player.getDistanceSq(pos) < 64;
+    }
+
+    /** Called when you receive a TileEntityData packet for the location this
+     * TileEntity is currently in. On the client, the NetworkManager will always
+     * be the remote server. On the server, it will be whomever is responsible
+     * for sending the packet.
+     *
+     * @param net
+     *            The NetworkManager the packet originated from
+     * @param pkt
+     *            The data packet */
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    {
+        if (worldObj.isRemote)
+        {
+            NBTTagCompound nbt = pkt.getNbtCompound();
+            readFromNBT(nbt);
+        }
+    }
+
+    @Override
+    public void openInventory(EntityPlayer player)
+    {
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tagCompound)
+    {
+        super.readFromNBT(tagCompound);
+        NBTTagList tagList = (NBTTagList) tagCompound.getTag("Inventory");
+        // ticks = tagCompound.getInteger("time");
+        for (int i = 0; i < tagList.tagCount(); i++)
+        {
+            NBTTagCompound tag = tagList.getCompoundTagAt(i);
+            byte slot = tag.getByte("Slot");
+
+            if (slot >= 0 && slot < inventory.length)
+            {
+                inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+            }
+        }
+    }
+
     @Override
     public ItemStack removeStackFromSlot(int slotIndex)
     {
@@ -118,33 +201,37 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     @Override
-    public int getInventoryStackLimit()
+    public void setField(int id, int value)
     {
-        return 64;
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public void setInventorySlotContents(int slot, ItemStack stack)
     {
-        return worldObj.getTileEntity(pos) == this && player.getDistanceSq(pos) < 64;
-    }
+        this.inventory[slot] = stack;
 
-    @Override
-    public void readFromNBT(NBTTagCompound tagCompound)
-    {
-        super.readFromNBT(tagCompound);
-        NBTTagList tagList = (NBTTagList) tagCompound.getTag("Inventory");
-        // ticks = tagCompound.getInteger("time");
-        for (int i = 0; i < tagList.tagCount(); i++)
+        if (stack != null && stack.stackSize > getInventoryStackLimit())
         {
-            NBTTagCompound tag = (NBTTagCompound) tagList.getCompoundTagAt(i);
-            byte slot = tag.getByte("Slot");
-
-            if (slot >= 0 && slot < inventory.length)
-            {
-                inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-            }
+            stack.stackSize = getInventoryStackLimit();
         }
+    }
+
+    @Override
+    public void update()
+    {
+        int power = worldObj.getStrongPower(pos);
+        if (power == 0)
+        {
+            if (worldObj.isRemote && PokecubeMod.getProxy().isSoundPlaying(here)) worldObj.playRecord(pos, null);
+            return;
+        }
+        here.set(this);
+        if (!noSound && worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
+        {
+            worldObj.playRecord(pos, null);
+            worldObj.playRecord(pos, "pokecube:pokecenterloop");
+        }
+        ticks++;
     }
 
     @Override
@@ -167,89 +254,5 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         }
 
         tagCompound.setTag("Inventory", itemList);
-    }
-
-    /** Overriden in a sign to provide the text. */
-    @SuppressWarnings("rawtypes")
-    public Packet getDescriptionPacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(pos, 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(pos, 3, nbttagcompound);
-    }
-
-    /** Called when you receive a TileEntityData packet for the location this
-     * TileEntity is currently in. On the client, the NetworkManager will always
-     * be the remote server. On the server, it will be whomever is responsible
-     * for sending the packet.
-     *
-     * @param net
-     *            The NetworkManager the packet originated from
-     * @param pkt
-     *            The data packet */
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-    {
-        if (worldObj.isRemote)
-        {
-            NBTTagCompound nbt = pkt.getNbtCompound();
-            readFromNBT(nbt);
-        }
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack)
-    {
-        return ContainerHealTable.isItemValid(itemstack);
-    }
-
-    @Override
-    public String getName()
-    {
-        return "TileEntityHealTable";
-    }
-
-    @Override
-    public boolean hasCustomName()
-    {
-        return true;
-    }
-
-    @Override
-    public void openInventory(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public IChatComponent getDisplayName()
-    {
-        return null;
-    }
-
-    @Override
-    public int getField(int id)
-    {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value)
-    {
-    }
-
-    @Override
-    public int getFieldCount()
-    {
-        return 0;
-    }
-
-    @Override
-    public void clear()
-    {
     }
 }

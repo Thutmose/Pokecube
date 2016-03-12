@@ -7,14 +7,6 @@ import pokecube.core.utils.PokeType;
 
 public class HeldItemHandler
 {
-    public static void processHeldItemUse(MovePacket moveUse, IPokemob mob, ItemStack held)
-    {
-        if (moveUse.attacker == mob && moveUse.pre)
-        {
-            moveUse.PWR = (int) (moveUse.PWR * getMoveMultiplier(held, moveUse.attackType));
-        }
-    }
-
     private static double getMoveMultiplier(ItemStack held, PokeType move)
     {
         double ret = 1;
@@ -23,5 +15,13 @@ public class HeldItemHandler
         PokeType type = PokeType.getType(typename);
         if (type == move) return 1.2;
         return ret;
+    }
+
+    public static void processHeldItemUse(MovePacket moveUse, IPokemob mob, ItemStack held)
+    {
+        if (moveUse.attacker == mob && moveUse.pre)
+        {
+            moveUse.PWR = (int) (moveUse.PWR * getMoveMultiplier(held, moveUse.attackType));
+        }
     }
 }

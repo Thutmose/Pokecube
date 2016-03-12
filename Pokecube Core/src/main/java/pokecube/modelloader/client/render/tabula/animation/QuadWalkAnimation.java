@@ -20,6 +20,54 @@ public class QuadWalkAnimation extends Animation
         name = "walking";
     }
 
+    @Override
+    public Animation init(NamedNodeMap map, IPartRenamer renamer)
+    {
+        HashSet<String> hl = new HashSet<String>();
+        HashSet<String> hr = new HashSet<String>();
+        HashSet<String> fl = new HashSet<String>();
+        HashSet<String> fr = new HashSet<String>();
+        int quadwalkdur = 0;
+        float walkAngle1 = 20;
+        float walkAngle2 = 20;
+        String[] lh = map.getNamedItem("leftHind").getNodeValue().split(":");
+        String[] rh = map.getNamedItem("rightHind").getNodeValue().split(":");
+        String[] lf = map.getNamedItem("leftFront").getNodeValue().split(":");
+        String[] rf = map.getNamedItem("rightFront").getNodeValue().split(":");
+
+        if (renamer != null)
+        {
+            renamer.convertToIdents(lh);
+            renamer.convertToIdents(rh);
+            renamer.convertToIdents(lf);
+            renamer.convertToIdents(rf);
+        }
+        for (String s : lh)
+            if (s != null) hl.add(s);
+        for (String s : rh)
+            if (s != null) hr.add(s);
+        for (String s : rf)
+            if (s != null) fr.add(s);
+        for (String s : lf)
+            if (s != null) fl.add(s);
+        if (map.getNamedItem("angle") != null)
+        {
+            walkAngle1 = Float.parseFloat(map.getNamedItem("angle").getNodeValue());
+        }
+        if (map.getNamedItem("frontAngle") != null)
+        {
+            walkAngle2 = Float.parseFloat(map.getNamedItem("frontAngle").getNodeValue());
+        }
+        else
+        {
+            walkAngle2 = walkAngle1;
+        }
+        quadwalkdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
+
+        init(hl, hr, fl, fr, quadwalkdur, walkAngle1, walkAngle2);
+        return this;
+    }
+
     /** Swings legs and arms in opposite directions. Only the parts directly
      * childed to the body need to be added to these sets, any parts childed to
      * them will also be swung by the parent/child system.
@@ -167,54 +215,6 @@ public class QuadWalkAnimation extends Animation
             sets.put(s, set);
         }
 
-        return this;
-    }
-
-    @Override
-    public Animation init(NamedNodeMap map, IPartRenamer renamer)
-    {
-        HashSet<String> hl = new HashSet<String>();
-        HashSet<String> hr = new HashSet<String>();
-        HashSet<String> fl = new HashSet<String>();
-        HashSet<String> fr = new HashSet<String>();
-        int quadwalkdur = 0;
-        float walkAngle1 = 20;
-        float walkAngle2 = 20;
-        String[] lh = map.getNamedItem("leftHind").getNodeValue().split(":");
-        String[] rh = map.getNamedItem("rightHind").getNodeValue().split(":");
-        String[] lf = map.getNamedItem("leftFront").getNodeValue().split(":");
-        String[] rf = map.getNamedItem("rightFront").getNodeValue().split(":");
-
-        if (renamer != null)
-        {
-            renamer.convertToIdents(lh);
-            renamer.convertToIdents(rh);
-            renamer.convertToIdents(lf);
-            renamer.convertToIdents(rf);
-        }
-        for (String s : lh)
-            if (s != null) hl.add(s);
-        for (String s : rh)
-            if (s != null) hr.add(s);
-        for (String s : rf)
-            if (s != null) fr.add(s);
-        for (String s : lf)
-            if (s != null) fl.add(s);
-        if (map.getNamedItem("angle") != null)
-        {
-            walkAngle1 = Float.parseFloat(map.getNamedItem("angle").getNodeValue());
-        }
-        if (map.getNamedItem("frontAngle") != null)
-        {
-            walkAngle2 = Float.parseFloat(map.getNamedItem("frontAngle").getNodeValue());
-        }
-        else
-        {
-            walkAngle2 = walkAngle1;
-        }
-        quadwalkdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
-
-        init(hl, hr, fl, fr, quadwalkdur, walkAngle1, walkAngle2);
         return this;
     }
 }

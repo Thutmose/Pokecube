@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.PokecubeMod.Type;
 import pokecube.core.utils.PokeType;
@@ -44,44 +44,29 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     public boolean canSurf      = false;
     public boolean canDive      = false;
 
+    protected double yOffset;
+
+    public int counterMount = 0;
+
+    protected boolean pokemobJumping;
+
+    protected float   jumpPower;
+
     public EntityMountablePokemob(World world)
     {
         super(world);
     }
 
-    public void initRidable()
-    {
-        if (isType(PokeType.water) || getPokedexEntry().mobType == Type.WATER)
-        {
-            this.setCanSurf(true);
-        }
-        if (canUseSurf() && getPokedexEntry().shouldDive)
-        {
-            this.setCanDive(true);
-        }
-        if ((isType(PokeType.flying) && getPokedexEntry().shouldFly) || (getPokedexEntry().mobType == Type.FLYING)
-                || getPokedexEntry().shouldFly)
-        {
-            this.setCanFly(true);
-        }
-    }
-
-    public boolean isRidable(Entity rider)
-    {
-        PokedexEntry entry = this.getPokedexEntry();
-        if (entry == null)
-        {
-            System.err.println("Null Entry for " + this);
-            return false;
-        }
-        return (entry.height * scale + entry.width * scale) > rider.width
-                && Math.max(entry.width, entry.length) * scale > rider.width * 1.8;
-    }
-
     @Override
-    public boolean canUseSurf()
+    public boolean attackEntityFrom(DamageSource source, float i)
     {
-        return canSurf;
+        if (isRiding())
+        {
+            mountEntity(null);
+            setPokemonAIState(SHOULDER, false);
+            counterMount = 0;
+        }
+        return super.attackEntityFrom(source, i);
     }
 
     @Override
@@ -96,50 +81,10 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         return canFly;
     }
 
-    /** Sets both can use saddle and can use surf, also sets waterspeed factor
-     * to 2 if bool is true.
-     * 
-     * @param bool
-     * @return */
-    public EntityMountablePokemob setCanSurf(boolean bool)
+    @Override
+    public boolean canUseSurf()
     {
-        this.canSurf = bool;
-        this.waterSpeedFactor = bool ? 2 : waterSpeedFactor;
-        return this;
-    }
-
-    /** Sets can use saddle and can use fly, and sets airspeed factor to 3 if
-     * bool is true;
-     * 
-     * @param bool
-     * @return */
-    public EntityMountablePokemob setCanFly(boolean bool)
-    {
-        this.canFly = bool;
-        this.airbornSpeedFactor = bool ? 3 : airbornSpeedFactor;
-        return this;
-    }
-
-    public EntityMountablePokemob setCanDive(boolean bool)
-    {
-        this.canDive = bool;
-        this.setCanSurf(bool);
-        return this;
-    }
-
-    @Deprecated
-    public EntityMountablePokemob setCanUseSaddle(boolean bool)
-    {
-        this.canUseSaddle = bool;
-        return this;
-    }
-
-    public EntityMountablePokemob setSpeedFactors(double land, double air, double water)
-    {
-        landSpeedFactor = (float) land;
-        waterSpeedFactor = (float) water;
-        airbornSpeedFactor = (float) air;
-        return this;
+        return canSurf;
     }
 
     public boolean checkHunger()
@@ -169,6 +114,41 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         return false;
     }
 
+    /** Returns the Y offset from the entity's position for any entity riding
+     * this one. */
+    @Override
+    public double getMountedYOffset()
+    {
+        return this.height * this.getPokedexEntry().mountedOffset;
+    }
+
+    @Override
+    public boolean getOnGround()
+    {
+        return onGround;
+    }
+
+    @Override
+    public double getYOffset()
+    {
+        double ret = yOffset;
+
+        if (getPokemonAIState(HELD))
+        {
+
+        }
+
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
+                && ridingEntity == PokecubeCore.getProxy().getPlayer(null))
+        {
+            ret = -ridingEntity.height + 0.25;
+            this.onGround = true;
+            return ret;
+        }
+
+        return ret;// - 1.6F;
+    }
+
     /** Called when a player interacts with its pokemob with an item such as HM
      * or saddle.
      * 
@@ -186,6 +166,56 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             return true;
         }
         return false;
+    }
+
+    public void initRidable()
+    {
+        if (isType(PokeType.water) || getPokedexEntry().mobType == Type.WATER)
+        {
+            this.setCanSurf(true);
+        }
+        if (canUseSurf() && getPokedexEntry().shouldDive)
+        {
+            this.setCanDive(true);
+        }
+        if ((isType(PokeType.flying) && getPokedexEntry().shouldFly) || (getPokedexEntry().mobType == Type.FLYING)
+                || getPokedexEntry().shouldFly)
+        {
+            this.setCanFly(true);
+        }
+    }
+
+    @Override
+    public boolean interact(EntityPlayer entityplayer)
+    {
+        if (entityplayer == ridingEntity && getPokemonAIState(SHOULDER)) { return false; }
+
+        return super.interact(entityplayer);
+    }
+
+    public boolean isPokemobJumping()
+    {
+        return this.pokemobJumping;
+    }
+
+    public boolean isRidable(Entity rider)
+    {
+        PokedexEntry entry = this.getPokedexEntry();
+        if (entry == null)
+        {
+            System.err.println("Null Entry for " + this);
+            return false;
+        }
+        return (entry.height * scale + entry.width * scale) > rider.width
+                && Math.max(entry.width, entry.length) * scale > rider.width * 1.8;
+    }
+
+    /** Returns true if the entity is riding another entity, used by render to
+     * rotate the legs to be in 'sit' position for players. */
+    @Override
+    public boolean isRiding()
+    {
+        return ridingEntity != null || getFlag(2);
     }
 
     /** Moves the entity based on the specified heading. Args: strafe,
@@ -506,47 +536,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         this.limbSwing += this.limbSwingAmount;
     }
 
-    /** If the rider should be dismounted from the entity when the entity goes
-     * under water
-     *
-     * @param rider
-     *            The entity that is riding
-     * @return if the entity should be dismounted when under water */
-    @Override
-    public boolean shouldDismountInWater(Entity rider)
-    {
-        return !this.canDive;
-    }
-
-    @Override
-    public boolean getOnGround()
-    {
-        return onGround;
-    }
-
-    protected double yOffset;
-
-    @Override
-    public double getYOffset()
-    {
-        double ret = yOffset;
-
-        if (getPokemonAIState(HELD))
-        {
-
-        }
-
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
-                && ridingEntity == PokecubeCore.getProxy().getPlayer(null))
-        {
-            ret = -ridingEntity.height + 0.25;
-            this.onGround = true;
-            return ret;
-        }
-
-        return ret;// - 1.6F;
-    }
-
     @Override
     public void onUpdate()
     {
@@ -564,6 +553,69 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         }
     }
 
+    public EntityMountablePokemob setCanDive(boolean bool)
+    {
+        this.canDive = bool;
+        this.setCanSurf(bool);
+        return this;
+    }
+
+    /** Sets can use saddle and can use fly, and sets airspeed factor to 3 if
+     * bool is true;
+     * 
+     * @param bool
+     * @return */
+    public EntityMountablePokemob setCanFly(boolean bool)
+    {
+        this.canFly = bool;
+        this.airbornSpeedFactor = bool ? 3 : airbornSpeedFactor;
+        return this;
+    }
+
+    /** Sets both can use saddle and can use surf, also sets waterspeed factor
+     * to 2 if bool is true.
+     * 
+     * @param bool
+     * @return */
+    public EntityMountablePokemob setCanSurf(boolean bool)
+    {
+        this.canSurf = bool;
+        this.waterSpeedFactor = bool ? 2 : waterSpeedFactor;
+        return this;
+    }
+
+    @Deprecated
+    public EntityMountablePokemob setCanUseSaddle(boolean bool)
+    {
+        this.canUseSaddle = bool;
+        return this;
+    }
+
+    public void setPokemobJumping(boolean par1)
+    {
+        // this.isJumping = par1;
+        this.pokemobJumping = par1;
+    }
+
+    public EntityMountablePokemob setSpeedFactors(double land, double air, double water)
+    {
+        landSpeedFactor = (float) land;
+        waterSpeedFactor = (float) water;
+        airbornSpeedFactor = (float) air;
+        return this;
+    }
+
+    /** If the rider should be dismounted from the entity when the entity goes
+     * under water
+     *
+     * @param rider
+     *            The entity that is riding
+     * @return if the entity should be dismounted when under water */
+    @Override
+    public boolean shouldDismountInWater(Entity rider)
+    {
+        return !this.canDive;
+    }
     /** main AI tick function, replaces updateEntityActionState */// TODO move
                                                                   // this over
                                                                   // to an AI
@@ -572,7 +624,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     protected void updateAITick()
     {
         super.updateAITick();
-        if (!getPokedexEntry().canSitShoulder || !getPokemonAIState(IPokemob.TAMED)) return;
+        if (!getPokedexEntry().canSitShoulder || !getPokemonAIState(IMoveConstants.TAMED)) return;
 
         if (counterMount++ > 50000)
         {
@@ -591,56 +643,4 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         }
 
     }
-
-    /** Returns true if the entity is riding another entity, used by render to
-     * rotate the legs to be in 'sit' position for players. */
-    @Override
-    public boolean isRiding()
-    {
-        return ridingEntity != null || getFlag(2);
-    }
-
-    @Override
-    public boolean attackEntityFrom(DamageSource source, float i)
-    {
-        if (isRiding())
-        {
-            mountEntity(null);
-            setPokemonAIState(SHOULDER, false);
-            counterMount = 0;
-        }
-        return super.attackEntityFrom(source, i);
-    }
-
-    @Override
-    public boolean interact(EntityPlayer entityplayer)
-    {
-        if (entityplayer == ridingEntity && getPokemonAIState(SHOULDER)) { return false; }
-
-        return super.interact(entityplayer);
-    }
-
-    public int counterMount = 0;
-
-    /** Returns the Y offset from the entity's position for any entity riding
-     * this one. */
-    @Override
-    public double getMountedYOffset()
-    {
-        return this.height * this.getPokedexEntry().mountedOffset;
-    }
-
-    public boolean isPokemobJumping()
-    {
-        return this.pokemobJumping;
-    }
-
-    public void setPokemobJumping(boolean par1)
-    {
-        // this.isJumping = par1;
-        this.pokemobJumping = par1;
-    }
-
-    protected boolean pokemobJumping;
-    protected float   jumpPower;
 }

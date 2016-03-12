@@ -17,6 +17,36 @@ public class RecipePokeseals implements IRecipe {
  //   private static final String __OBFID = "CL_00000083";
 
     /**
+     * Returns an Item that is the result of this recipe
+     */
+    @Override
+	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_)
+    {
+        return this.toCraft;
+    }
+
+    @Override
+	public ItemStack getRecipeOutput()
+    {
+        return this.toCraft;
+    }
+
+    /**
+     * Returns the size of the recipe area
+     */
+    @Override
+	public int getRecipeSize()
+    {
+        return 10;
+    }
+
+    @Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+		ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
+		return ret;
+	}
+
+	/**
      * Used to check if a recipe matches current crafting inventory
      */
     @SuppressWarnings({ "unused", "rawtypes" })
@@ -149,34 +179,4 @@ public class RecipePokeseals implements IRecipe {
                 return false;
             }
          }
-
-    /**
-     * Returns an Item that is the result of this recipe
-     */
-    @Override
-	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_)
-    {
-        return this.toCraft;
-    }
-
-    /**
-     * Returns the size of the recipe area
-     */
-    @Override
-	public int getRecipeSize()
-    {
-        return 10;
-    }
-
-    @Override
-	public ItemStack getRecipeOutput()
-    {
-        return this.toCraft;
-    }
-
-	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-		ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
-		return ret;
-	}
 }

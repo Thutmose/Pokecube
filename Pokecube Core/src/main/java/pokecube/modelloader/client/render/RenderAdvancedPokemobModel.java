@@ -28,17 +28,27 @@ import pokecube.modelloader.client.render.model.IModelRenderer;
 
 public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLiving<T>
 {
+    public static IModelRenderer<?> getRenderer(String name, EntityLiving entity)
+    {
+        return AnimationLoader.getModel(name);
+    }
     public IModelRenderer<T>      model;
     final String                  modelName;
     public boolean                overrideAnim = false;
+
     public String                 anim         = "";
 
+    boolean blend;
+
+    boolean normalize;
+
+    int     src;
+    int     dst;
     public RenderAdvancedPokemobModel(String name, float par2)
     {
         super(Minecraft.getMinecraft().getRenderManager(), null, par2);
         modelName = name;
     }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void doRender(T entity, double d0, double d1, double d2, float yaw, float partialTick)
@@ -51,7 +61,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         }
         model = (IModelRenderer<T>) getRenderer(modelName, entity);
 
-        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre((EntityLivingBase) entity, this, d0, d1, d2)))
+        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(entity, this, d0, d1, d2)))
             return;
 
         GL11.glPushMatrix();
@@ -73,11 +83,93 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         model.setPhase(getPhase(entity, partialTick));
         model.doRender(toRender, d0, d1, d2, yaw, partialTick);
         model.renderStatus(toRender, d0, d1, d2, yaw, partialTick);
-        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post((EntityLivingBase) entity, this, d0, d1, d2));
+        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post(entity, this, d0, d1, d2));
         GL11.glPopMatrix();
         renderHp(entity, d0, d1, d2, yaw, partialTick);
         this.postRenderCallback();
         GL11.glPopMatrix();
+    }
+
+    @Override
+    protected ResourceLocation getEntityTexture(T entity)
+    {
+        return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
+    }
+
+    private String getPhase(EntityLiving entity, float partialTick)
+    {
+        String phase = "idle";
+        if (overrideAnim) { return anim; }
+
+        IPokemob pokemob = (IPokemob) entity;
+        float walkspeed = entity.prevLimbSwingAmount
+                + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
+
+        boolean asleep = pokemob.getStatus() == IMoveConstants.STATUS_SLP
+                || pokemob.getPokemonAIState(IMoveConstants.SLEEPING);
+
+        if (asleep && model.hasPhase("sleeping"))
+        {
+            phase = "sleeping";
+            return phase;
+        }
+        if (asleep && model.hasPhase("asleep"))
+        {
+            phase = "asleep";
+            return phase;
+        }
+        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && model.hasPhase("sitting"))
+        {
+            phase = "sitting";
+            return phase;
+        }
+        if (!entity.onGround && model.hasPhase("flight"))
+        {
+            phase = "flight";
+            return phase;
+        }
+        if (!entity.onGround && model.hasPhase("flying"))
+        {
+            phase = "flying";
+            return phase;
+        }
+        if (entity.isInWater() && model.hasPhase("swimming"))
+        {
+            phase = "swimming";
+            return phase;
+        }
+        if (entity.onGround && walkspeed > 0.1 && model.hasPhase("walking"))
+        {
+            phase = "walking";
+            return phase;
+        }
+        if (entity.onGround && walkspeed > 0.1 && model.hasPhase("walk"))
+        {
+            phase = "walk";
+            return phase;
+        }
+
+        return phase;
+    }
+
+    protected void postRenderCallback()
+    {
+        //Reset to original state. This fixes changes to guis when rendered in them.
+        if (!normalize) GL11.glDisable(GL11.GL_NORMALIZE);
+        if (!blend) GL11.glDisable(GL11.GL_BLEND);
+        GL11.glBlendFunc(src, dst);
+    }
+
+    @Override
+    protected void preRenderCallback(T entity, float f)
+    {
+        blend = GL11.glGetBoolean(GL11.GL_BLEND);
+        normalize = GL11.glGetBoolean(GL11.GL_NORMALIZE);
+        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
+        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
+        if (!normalize) GL11.glEnable(GL11.GL_NORMALIZE);
+        if (!blend) GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     protected void renderHp(T entityliving, double d, double d1, double d2, float f, float f1)
@@ -160,7 +252,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
             if (((IPokemob) entityliving).getLevel() == 100) maxExp = exp = 1;
 
-            if (exp < 0 || !((IPokemob) entityliving).getPokemonAIState(IPokemob.TAMED))
+            if (exp < 0 || !((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED))
             {
                 exp = 0;
             }
@@ -186,7 +278,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
             FontRenderer fontrenderer = getFontRendererFromRenderManager();
 
-            if (((IPokemob) entityliving).getPokemonAIState(IPokemob.TAMED))
+            if (((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED))
             {
                 String n;
                 //Your pokemob has white name, other's has gray name.
@@ -224,97 +316,5 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             GlStateManager.enableLighting();
             GL11.glPopMatrix();
         }
-    }
-
-    boolean blend;
-    boolean normalize;
-    int     src;
-    int     dst;
-
-    @Override
-    protected void preRenderCallback(T entity, float f)
-    {
-        blend = GL11.glGetBoolean(GL11.GL_BLEND);
-        normalize = GL11.glGetBoolean(GL11.GL_NORMALIZE);
-        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
-        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
-        if (!normalize) GL11.glEnable(GL11.GL_NORMALIZE);
-        if (!blend) GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    protected void postRenderCallback()
-    {
-        //Reset to original state. This fixes changes to guis when rendered in them.
-        if (!normalize) GL11.glDisable(GL11.GL_NORMALIZE);
-        if (!blend) GL11.glDisable(GL11.GL_BLEND);
-        GL11.glBlendFunc(src, dst);
-    }
-
-    private String getPhase(EntityLiving entity, float partialTick)
-    {
-        String phase = "idle";
-        if (overrideAnim) { return anim; }
-
-        IPokemob pokemob = (IPokemob) entity;
-        float walkspeed = entity.prevLimbSwingAmount
-                + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
-
-        boolean asleep = pokemob.getStatus() == IMoveConstants.STATUS_SLP
-                || pokemob.getPokemonAIState(IMoveConstants.SLEEPING);
-
-        if (asleep && model.hasPhase("sleeping"))
-        {
-            phase = "sleeping";
-            return phase;
-        }
-        if (asleep && model.hasPhase("asleep"))
-        {
-            phase = "asleep";
-            return phase;
-        }
-        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && model.hasPhase("sitting"))
-        {
-            phase = "sitting";
-            return phase;
-        }
-        if (!entity.onGround && model.hasPhase("flight"))
-        {
-            phase = "flight";
-            return phase;
-        }
-        if (!entity.onGround && model.hasPhase("flying"))
-        {
-            phase = "flying";
-            return phase;
-        }
-        if (entity.isInWater() && model.hasPhase("swimming"))
-        {
-            phase = "swimming";
-            return phase;
-        }
-        if (entity.onGround && walkspeed > 0.1 && model.hasPhase("walking"))
-        {
-            phase = "walking";
-            return phase;
-        }
-        if (entity.onGround && walkspeed > 0.1 && model.hasPhase("walk"))
-        {
-            phase = "walk";
-            return phase;
-        }
-
-        return phase;
-    }
-
-    @Override
-    protected ResourceLocation getEntityTexture(T entity)
-    {
-        return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
-    }
-
-    public static IModelRenderer<?> getRenderer(String name, EntityLiving entity)
-    {
-        return AnimationLoader.getModel(name);
     }
 }

@@ -16,19 +16,6 @@ public class Node<T> {
 		this((T)null);
 	}
 	
-	public Node(T obj){
-		children = new ArrayList<>();
-		this.obj = obj;
-	}
-	
-	public boolean shouldDrawChildren(){
-		return drawChildren;
-	}
-	
-	public void setDrawChildren(boolean draw){
-		drawChildren = draw;
-	}
-	
 	public Node(Node<T> parent){
 		this(parent,null);
 	}
@@ -39,36 +26,50 @@ public class Node<T> {
 		this.obj = obj;
 	}
 	
-	public void addChild(Node<T> n){
-		children.add(n);
+	public Node(T obj){
+		children = new ArrayList<>();
+		this.obj = obj;
 	}
 	
-	public boolean removeChild(Node<T> n){
-		return children.remove(n);
+	public void addChild(Node<T> n){
+		children.add(n);
 	}
 	
 	public List<Node<T>> getChildren(){
 		return children;
 	}
 	
-	public Node<T> getParent(){
-		return parent;
-	}
-	
 	public T getObject(){
 		return obj;
 	}
 	
-	public String toString(){
-		return "" + obj;
+	public Node<T> getParent(){
+		return parent;
 	}
-
+	
 	public boolean hasChildren() {
 		return children.size() > 0;
 	}
 	
 	public boolean hasParent(){
 		return parent != null;
+	}
+	
+	public boolean removeChild(Node<T> n){
+		return children.remove(n);
+	}
+	
+	public void setDrawChildren(boolean draw){
+		drawChildren = draw;
+	}
+
+	public boolean shouldDrawChildren(){
+		return drawChildren;
+	}
+	
+	@Override
+    public String toString(){
+		return "" + obj;
 	}
 
 	

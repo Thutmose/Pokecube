@@ -23,17 +23,6 @@ public class ParticleOrientable extends ParticleBase
         billboard = false;
     }
 
-    public ParticleOrientable setOrientation(Vector4 orientation)
-    {
-        this.orientation = orientation;
-        return this;
-    }
-
-    public void setVelocity(Vector3 v)
-    {
-        velocity = v;
-    }
-
     @Override
     public void render(double renderPartialTicks)
     {
@@ -95,6 +84,18 @@ public class ParticleOrientable extends ParticleBase
         tez.vertex(0.0, 0.0 - size, 0.0).tex(u2, v2).color(red, green, blue, alpha).endVertex();
         tez.end();
         GL11.glPopMatrix();
+    }
+
+    public ParticleOrientable setOrientation(Vector4 orientation)
+    {
+        this.orientation = orientation;
+        return this;
+    }
+
+    @Override
+    public void setVelocity(Vector3 v)
+    {
+        velocity = v;
     }
 
 }

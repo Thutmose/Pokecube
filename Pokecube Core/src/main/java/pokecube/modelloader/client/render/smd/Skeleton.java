@@ -12,108 +12,6 @@ import pokecube.modelloader.client.render.smd.SkeletonAnimation.SkeletonFrame;
 
 public class Skeleton
 {
-    public HashMap<Integer, Bone> boneMap = new HashMap<>();
-    public final SMDModel         model;
-    public SkeletonAnimation      pose;
-    public Bone                   root;
-
-    public Skeleton(SMDModel model)
-    {
-        this.model = model;
-    }
-
-    public void addBone(Bone bone)
-    {
-        if (boneMap.containsKey(bone.id)) throw new IllegalArgumentException("Already has bone of id " + bone.id);
-        boneMap.put(bone.id, bone);
-    }
-
-    public Bone getBone(int id)
-    {
-        return boneMap.get(id);
-    }
-
-    public void reset()
-    {
-        for (Bone b : boneMap.values())
-        {
-            b.reset();
-            for (BoneVertex v : b.vertices.keySet())
-            {
-                v.reset();
-            }
-        }
-    }
-
-    public void setPose(SkeletonAnimation pose)
-    {
-        if (this.pose == pose) return;
-        this.pose = pose;
-        initPose();
-    }
-
-    public void applyPose()
-    {
-        if (pose.lastPoseChange == pose.currentIndex) return;
-        pose.lastPoseChange = pose.currentIndex;
-        reset();
-        root.deform();
-        root.applyDeform();
-        applyChange();
-    }
-
-    public void applyChange()
-    {
-        for (Bone b : boneMap.values())
-        {
-            for (BoneVertex v : b.vertices.keySet())
-            {
-                v.applyDeformation();
-            }
-        }
-    }
-
-    private void initPose()
-    {
-        System.out.println(pose.animationName + " " + pose.frames.size());
-
-        SkeletonFrame frame = pose.frames.get(0);
-        pose.reset();
-        pose.precalculateAnimation();
-        for (Integer i : frame.positions.keySet())
-        {
-            Matrix4f trans = frame.positions.get(i);
-            Bone bone = boneMap.get(i);
-            bone.setRest(trans);
-        }
-        root.reformChildren();
-        for (Bone b : boneMap.values())
-        {
-            b.invertRestMatrix();
-        }
-        pose.reform();
-    }
-
-    public void init()
-    {
-        for (Bone bone : boneMap.values())
-        {
-            if (bone.parentId != -1)
-            {
-                Bone parent = boneMap.get(bone.parentId);
-                bone.parent = parent;
-                parent.children.add(bone);
-            }
-        }
-        for (Bone b : boneMap.values())
-        {
-            if (b.parent == null && !b.children.isEmpty())
-            {
-                root = b;
-            }
-        }
-    }
-
     public static class Bone
     {
         public final int                            id;
@@ -146,29 +44,14 @@ public class Skeleton
             parentId = Integer.parseInt(args[2]);
         }
 
-        public void reformChildren()
+        public void applyDeform()
         {
-            for (Bone child : this.children)
+            for (BoneVertex v : vertices.keySet())
             {
-                child.reform(this.rest);
+                v.applyTransform(deform, vertices.get(v));
             }
-        }
-
-        private void reform(Matrix4f parentMatrix)
-        {
-            this.rest = Matrix4f.mul(parentMatrix, this.rest, null);
-            reformChildren();
-        }
-
-        public void invertRestMatrix()
-        {
-            this.restInverse = Matrix4f.invert(this.rest, null);
-        }
-
-        public void reset()
-        {
-            deform.setIdentity();
-            deformInverse.setIdentity();
+            for (Bone b : children)
+                b.applyDeform();
         }
 
         public void clear()
@@ -179,27 +62,6 @@ public class Skeleton
             animatedTransforms.clear();
             for (Bone b : children)
                 b.clear();
-        }
-
-        public void setRest(Matrix4f resting)
-        {
-            this.rest = resting;
-        }
-
-        String[] parse(String line)
-        {
-            String[] ret = new String[3];
-            int indexQuoteStart = line.indexOf("\"");
-            int indexQuoteEnd = line.lastIndexOf("\"");
-            ret[0] = line.substring(0, indexQuoteStart - 1);
-            ret[1] = line.substring(indexQuoteStart + 1, indexQuoteEnd);
-            ret[2] = line.substring(indexQuoteEnd + 2);
-            return ret;
-        }
-
-        public String toString()
-        {
-            return id + " " + name + " " + parentId;
         }
 
         // TODO get this properly applying parent deforms.
@@ -218,14 +80,20 @@ public class Skeleton
                 b.deform();
         }
 
-        public void applyDeform()
+        public void invertRestMatrix()
         {
-            for (BoneVertex v : vertices.keySet())
-            {
-                v.applyTransform(deform, vertices.get(v));
-            }
-            for (Bone b : children)
-                b.applyDeform();
+            this.restInverse = Matrix4f.invert(this.rest, null);
+        }
+
+        String[] parse(String line)
+        {
+            String[] ret = new String[3];
+            int indexQuoteStart = line.indexOf("\"");
+            int indexQuoteEnd = line.lastIndexOf("\"");
+            ret[0] = line.substring(0, indexQuoteStart - 1);
+            ret[1] = line.substring(indexQuoteStart + 1, indexQuoteEnd);
+            ret[2] = line.substring(indexQuoteEnd + 2);
+            return ret;
         }
 
         public void preloadAnimation(SkeletonFrame key, Matrix4f animated)
@@ -243,16 +111,38 @@ public class Skeleton
             transforms.set(key.time, animated);
             this.animatedTransforms.put(key.animation.animationName, transforms);
         }
-    }
 
-    public static void ensureIndex(ArrayList<?> a, int i)
-    {
-        while (a.size() <= i)
+        private void reform(Matrix4f parentMatrix)
         {
-            a.add(null);
+            this.rest = Matrix4f.mul(parentMatrix, this.rest, null);
+            reformChildren();
+        }
+
+        public void reformChildren()
+        {
+            for (Bone child : this.children)
+            {
+                child.reform(this.rest);
+            }
+        }
+
+        public void reset()
+        {
+            deform.setIdentity();
+            deformInverse.setIdentity();
+        }
+
+        public void setRest(Matrix4f resting)
+        {
+            this.rest = resting;
+        }
+
+        @Override
+        public String toString()
+        {
+            return id + " " + name + " " + parentId;
         }
     }
-
     public static class BoneVertex extends Vertex
     {
         private final Vector4f originalPos;
@@ -273,30 +163,6 @@ public class Skeleton
             this.id = id;
             this.originalPos = new Vector4f(x, y, z, 1.0F);
             this.originalNormal = new Vector4f(xn, yn, zn, 0.0F);
-        }
-
-        public void reset()
-        {
-            this.positionDeform = null;
-            this.normalDeform = null;
-        }
-
-        public void applyTransform(Matrix4f transform, float weight)
-        {
-            if (transform != null)
-            {
-                this.positionDeform = new Vector4f();
-                this.normalDeform = new Vector4f();
-                Vector4f loc = Matrix4f.transform(transform, this.originalPos, null);
-                Vector4f normal = Matrix4f.transform(transform, this.originalNormal, null);
-                loc.scale(weight);
-                normal.scale(weight);
-                Vector4f.add(loc, this.positionDeform, this.positionDeform);
-                Vector4f.add(normal, this.normalDeform, this.normalDeform);
-
-                Matrix4f.transform(transform, this.originalPos, this.positionDeform);
-                Matrix4f.transform(transform, this.originalNormal, this.normalDeform);
-            }
         }
 
         public void applyDeformation()
@@ -327,9 +193,145 @@ public class Skeleton
             }
         }
 
+        public void applyTransform(Matrix4f transform, float weight)
+        {
+            if (transform != null)
+            {
+                this.positionDeform = new Vector4f();
+                this.normalDeform = new Vector4f();
+                Vector4f loc = Matrix4f.transform(transform, this.originalPos, null);
+                Vector4f normal = Matrix4f.transform(transform, this.originalNormal, null);
+                loc.scale(weight);
+                normal.scale(weight);
+                Vector4f.add(loc, this.positionDeform, this.positionDeform);
+                Vector4f.add(normal, this.normalDeform, this.normalDeform);
+
+                Matrix4f.transform(transform, this.originalPos, this.positionDeform);
+                Matrix4f.transform(transform, this.originalNormal, this.normalDeform);
+            }
+        }
+
+        public void reset()
+        {
+            this.positionDeform = null;
+            this.normalDeform = null;
+        }
+
+        @Override
         public String toString()
         {
             return id + ":" + x + "," + y + "," + z;
         }
+    }
+    public static void ensureIndex(ArrayList<?> a, int i)
+    {
+        while (a.size() <= i)
+        {
+            a.add(null);
+        }
+    }
+    public HashMap<Integer, Bone> boneMap = new HashMap<>();
+
+    public final SMDModel         model;
+
+    public SkeletonAnimation      pose;
+
+    public Bone                   root;
+
+    public Skeleton(SMDModel model)
+    {
+        this.model = model;
+    }
+
+    public void addBone(Bone bone)
+    {
+        if (boneMap.containsKey(bone.id)) throw new IllegalArgumentException("Already has bone of id " + bone.id);
+        boneMap.put(bone.id, bone);
+    }
+
+    public void applyChange()
+    {
+        for (Bone b : boneMap.values())
+        {
+            for (BoneVertex v : b.vertices.keySet())
+            {
+                v.applyDeformation();
+            }
+        }
+    }
+
+    public void applyPose()
+    {
+        if (pose.lastPoseChange == pose.currentIndex) return;
+        pose.lastPoseChange = pose.currentIndex;
+        reset();
+        root.deform();
+        root.applyDeform();
+        applyChange();
+    }
+
+    public Bone getBone(int id)
+    {
+        return boneMap.get(id);
+    }
+
+    public void init()
+    {
+        for (Bone bone : boneMap.values())
+        {
+            if (bone.parentId != -1)
+            {
+                Bone parent = boneMap.get(bone.parentId);
+                bone.parent = parent;
+                parent.children.add(bone);
+            }
+        }
+        for (Bone b : boneMap.values())
+        {
+            if (b.parent == null && !b.children.isEmpty())
+            {
+                root = b;
+            }
+        }
+    }
+
+    private void initPose()
+    {
+        System.out.println(pose.animationName + " " + pose.frames.size());
+
+        SkeletonFrame frame = pose.frames.get(0);
+        pose.reset();
+        pose.precalculateAnimation();
+        for (Integer i : frame.positions.keySet())
+        {
+            Matrix4f trans = frame.positions.get(i);
+            Bone bone = boneMap.get(i);
+            bone.setRest(trans);
+        }
+        root.reformChildren();
+        for (Bone b : boneMap.values())
+        {
+            b.invertRestMatrix();
+        }
+        pose.reform();
+    }
+
+    public void reset()
+    {
+        for (Bone b : boneMap.values())
+        {
+            b.reset();
+            for (BoneVertex v : b.vertices.keySet())
+            {
+                v.reset();
+            }
+        }
+    }
+
+    public void setPose(SkeletonAnimation pose)
+    {
+        if (this.pose == pose) return;
+        this.pose = pose;
+        initPose();
     }
 }

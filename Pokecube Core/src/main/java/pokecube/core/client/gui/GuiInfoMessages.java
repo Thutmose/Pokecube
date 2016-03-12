@@ -18,16 +18,16 @@ public class GuiInfoMessages
 {
 	private static GuiInfoMessages instance;
 
-	private ArrayList<String> messages = new ArrayList<String>();
-	private ArrayList<String> recent = new ArrayList<String>();
-	int time = 0;
-	int offset = 0;
-	public GuiInfoMessages()
-	{
-		MinecraftForge.EVENT_BUS.register(this);
-		instance = this;
-	}
-	
+	public static void addMessage(String message)
+    {
+    	instance.messages.add(message);
+    	instance.time = 100;
+    	instance.recent.add(message);
+    	if(instance.messages.size()>100)
+    	{
+    		instance.messages.remove(0);
+    	}
+    }
 	public static void clear()
 	{
 		if(instance!=null)
@@ -36,14 +36,17 @@ public class GuiInfoMessages
 			instance.recent.clear();
 		}
 	}
+	private ArrayList<String> messages = new ArrayList<String>();
+	private ArrayList<String> recent = new ArrayList<String>();
+	int time = 0;
 	
-    @SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onRenderWorldLast(RenderWorldLastEvent event) 
-    {
-		draw(event);
-		time--;
-    }
+	int offset = 0;
+	
+    public GuiInfoMessages()
+	{
+		MinecraftForge.EVENT_BUS.register(this);
+		instance = this;
+	}
     
     @SideOnly(Side.CLIENT)
     public void draw(RenderWorldLastEvent event)
@@ -134,14 +137,11 @@ public class GuiInfoMessages
      	GL11.glPopMatrix();
     }
     
-    public static void addMessage(String message)
+    @SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void onRenderWorldLast(RenderWorldLastEvent event) 
     {
-    	instance.messages.add(message);
-    	instance.time = 100;
-    	instance.recent.add(message);
-    	if(instance.messages.size()>100)
-    	{
-    		instance.messages.remove(0);
-    	}
+		draw(event);
+		time--;
     }
 }

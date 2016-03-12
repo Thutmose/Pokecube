@@ -17,14 +17,21 @@ public class ItemMegaring extends Item implements IBauble
     }
 
     @Override
-    public BaubleType getBaubleType(ItemStack itemstack)
+    public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
     {
-        return BaubleType.RING;
+        return true;
     }
 
     @Override
-    public void onWornTick(ItemStack itemstack, EntityLivingBase player)
+    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player)
     {
+        return true;
+    }
+
+    @Override
+    public BaubleType getBaubleType(ItemStack itemstack)
+    {
+        return BaubleType.RING;
     }
 
     @Override
@@ -38,15 +45,8 @@ public class ItemMegaring extends Item implements IBauble
     }
 
     @Override
-    public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player)
     {
-        return true;
-    }
-
-    @Override
-    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player)
-    {
-        return true;
     }
 
 }

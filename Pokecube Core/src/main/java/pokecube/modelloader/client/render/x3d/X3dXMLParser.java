@@ -34,6 +34,32 @@ public class X3dXMLParser
         this.model = model;
     }
 
+    private void addShape(String name, Shape shape)
+    {
+        ArrayList<Shape> list;
+        if (shapeMap.containsKey(name))
+        {
+            list = shapeMap.get(name);
+        }
+        else
+        {
+            list = Lists.newArrayList();
+            shapeMap.put(name, list);
+        }
+        list.add(shape);
+    }
+
+    private float getFloat(Node node, String key)
+    {
+        return Float.parseFloat(node.getAttributes().getNamedItem(key).getNodeValue());
+    }
+
+    private Vector3f getVector(Node node, String key)
+    {
+        String[] var = node.getAttributes().getNamedItem(key).getNodeValue().split(" ");
+        return new Vector3f(Float.parseFloat(var[0]), Float.parseFloat(var[1]), Float.parseFloat(var[2]));
+    }
+
     public void parse()
     {
         try
@@ -246,31 +272,5 @@ public class X3dXMLParser
             }
         }
 
-    }
-
-    private void addShape(String name, Shape shape)
-    {
-        ArrayList<Shape> list;
-        if (shapeMap.containsKey(name))
-        {
-            list = shapeMap.get(name);
-        }
-        else
-        {
-            list = Lists.newArrayList();
-            shapeMap.put(name, list);
-        }
-        list.add(shape);
-    }
-
-    private Vector3f getVector(Node node, String key)
-    {
-        String[] var = node.getAttributes().getNamedItem(key).getNodeValue().split(" ");
-        return new Vector3f(Float.parseFloat(var[0]), Float.parseFloat(var[1]), Float.parseFloat(var[2]));
-    }
-
-    private float getFloat(Node node, String key)
-    {
-        return Float.parseFloat(node.getAttributes().getNamedItem(key).getNodeValue());
     }
 }

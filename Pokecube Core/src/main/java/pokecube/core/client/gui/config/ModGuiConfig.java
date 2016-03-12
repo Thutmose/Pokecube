@@ -13,12 +13,6 @@ import pokecube.core.interfaces.PokecubeMod;
 
 public class ModGuiConfig extends GuiConfig
 {
-    public ModGuiConfig(GuiScreen guiScreen)
-    {
-        super(guiScreen, getConfigElements(), PokecubeMod.ID, false, false,
-                GuiConfig.getAbridgedConfigPath(Config.instance.getConfigFile().getAbsolutePath()));
-    }
-
     private static List<IConfigElement> getConfigElements()
     {
         List<IConfigElement> list = new ArrayList<>();
@@ -34,5 +28,11 @@ public class ModGuiConfig extends GuiConfig
             }
         }
         return list;
+    }
+
+    public ModGuiConfig(GuiScreen guiScreen)
+    {
+        super(guiScreen, getConfigElements(), PokecubeMod.ID, false, false,
+                GuiConfig.getAbridgedConfigPath(Config.instance.getConfigFile().getAbsolutePath()));
     }
 }

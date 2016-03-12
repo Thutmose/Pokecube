@@ -15,6 +15,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.ItemBerry;
@@ -26,15 +27,60 @@ public class Move_Utility extends Move_Basic
 
     public static ArrayList<String> moves = new ArrayList<String>();
 
-    public Move_Utility(String name)
+    public static void consumeBerries(IPokemob mob, int number)
     {
-        super(name);
-        moves.add(name);
+        for (int n = 2; n < 7; n++)
+        {
+            ItemStack i = mob.getPokemobInventory().getStackInSlot(n);
+
+            if (i != null && i.getItem() instanceof ItemBerry)
+            {
+                if (i.stackSize >= number)
+                {
+                    i.splitStack(number);
+                    if (i.stackSize <= 0)
+                    {
+                        i = null;
+                        mob.getPokemobInventory().setInventorySlotContents(n, null);
+                    }
+                    return;
+                }
+                else
+                {
+                    number -= i.stackSize;
+                    i = null;
+                }
+            }
+            if (number <= 0) return;
+        }
+    }
+
+    public static int countBerries(IPokemob mob, EntityPlayer player)
+    {
+        int ret = 0;
+
+        if (player.capabilities.isCreativeMode) return Integer.MAX_VALUE;
+
+        for (int i = 2; i < 7; i++)
+        {
+            ItemStack item = mob.getPokemobInventory().getStackInSlot(i);
+            if (item != null && item.getItem() instanceof ItemBerry)
+            {
+                ret += item.stackSize;
+            }
+        }
+        return ret;
     }
 
     public static boolean isUtilityMove(String move)
     {
         return moves.contains(move);
+    }
+
+    public Move_Utility(String name)
+    {
+        super(name);
+        moves.add(name);
     }
 
     @Override
@@ -46,9 +92,9 @@ public class Move_Utility extends Move_Basic
             return;
         }
         if ((attacker instanceof IPokemob && (PokecubeMod.pokemobsDamageBlocks || PokecubeMod.debug)
-                && attacker.getPokemonAIState(IPokemob.TAMED)))
+                && attacker.getPokemonAIState(IMoveConstants.TAMED)))
         {
-            IPokemob a = ((IPokemob) attacker);
+            IPokemob a = (attacker);
 
             boolean used = false;
 
@@ -83,6 +129,69 @@ public class Move_Utility extends Move_Basic
                         .addChatMessage(new ChatComponentText("Your pokemon needs to eat more Berries to do that"));
             }
         }
+    }
+
+    private int digHole(IPokemob digger, Vector3 v, boolean count)
+    {
+        int ret = 0;
+
+        EntityLivingBase owner = digger.getPokemonOwner();
+        EntityPlayer player = null;
+        if (owner instanceof EntityPlayer)
+        {
+            player = (EntityPlayer) owner;
+
+            BreakEvent evt = new BreakEvent(player.worldObj, v.getPos(), v.getBlockState(player.worldObj), player);
+
+            MinecraftForge.EVENT_BUS.post(evt);
+            if (evt.isCanceled()) return 0;
+        }
+
+        boolean silky = shouldSilk(digger) && player != null;
+        boolean dropAll = shouldDropAll(digger);
+        double uselessDrop = Math.pow((100 - digger.getLevel()) / 100d, 3);
+
+        ArrayList<Block> list = new ArrayList<Block>();
+        for (Block l : PokecubeMod.core.getConfig().getCaveBlocks())
+            list.add(l);
+        for (Block l : PokecubeMod.core.getConfig().getSurfaceBlocks())
+            list.add(l);
+        Vector3 temp = Vector3.getNewVector();
+        temp.set(v);
+        for (int i = -1; i <= 1; i++)
+            for (int j = -1; j <= 1; j++)
+                for (int k = -1; k <= 1; k++)
+                {
+                    temp.set(v);
+                    IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).worldObj);
+                    Block block = state.getBlock();
+                    if (list.contains(block))
+                    {
+                        boolean drop = true;
+                        if (PokecubeMod.core.getConfig().getTerrain().contains(block) && !dropAll && !silky
+                                && uselessDrop < Math.random())
+                            drop = false;
+
+                        if (!count)
+                        {
+                            if (!silky) temp.breakBlock(((Entity) digger).worldObj, drop);
+                            else
+                            {
+                                if (block.canSilkHarvest(player.worldObj, temp.getPos(), state, player))
+                                {
+                                    silkHarvest(state, temp.getPos(), player.worldObj, player);
+                                    temp.breakBlock(((Entity) digger).worldObj, drop);
+                                }
+                                else
+                                {
+                                    temp.breakBlock(((Entity) digger).worldObj, drop);
+                                }
+                            }
+                        }
+                        ret++;
+                    }
+                }
+        return ret;
     }
 
     @Override
@@ -165,69 +274,6 @@ public class Move_Utility extends Move_Basic
         }
     }
 
-    private int digHole(IPokemob digger, Vector3 v, boolean count)
-    {
-        int ret = 0;
-
-        EntityLivingBase owner = digger.getPokemonOwner();
-        EntityPlayer player = null;
-        if (owner instanceof EntityPlayer)
-        {
-            player = (EntityPlayer) owner;
-
-            BreakEvent evt = new BreakEvent(player.worldObj, v.getPos(), v.getBlockState(player.worldObj), player);
-
-            MinecraftForge.EVENT_BUS.post(evt);
-            if (evt.isCanceled()) return 0;
-        }
-
-        boolean silky = shouldSilk(digger) && player != null;
-        boolean dropAll = shouldDropAll(digger);
-        double uselessDrop = Math.pow((100 - digger.getLevel()) / 100d, 3);
-
-        ArrayList<Block> list = new ArrayList<Block>();
-        for (Block l : PokecubeMod.core.getConfig().getCaveBlocks())
-            list.add(l);
-        for (Block l : PokecubeMod.core.getConfig().getSurfaceBlocks())
-            list.add(l);
-        Vector3 temp = Vector3.getNewVector();
-        temp.set(v);
-        for (int i = -1; i <= 1; i++)
-            for (int j = -1; j <= 1; j++)
-                for (int k = -1; k <= 1; k++)
-                {
-                    temp.set(v);
-                    IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).worldObj);
-                    Block block = state.getBlock();
-                    if (list.contains(block))
-                    {
-                        boolean drop = true;
-                        if (PokecubeMod.core.getConfig().getTerrain().contains(block) && !dropAll && !silky
-                                && uselessDrop < Math.random())
-                            drop = false;
-
-                        if (!count)
-                        {
-                            if (!silky) temp.breakBlock(((Entity) digger).worldObj, drop);
-                            else
-                            {
-                                if (block.canSilkHarvest(player.worldObj, temp.getPos(), state, player))
-                                {
-                                    silkHarvest(state, temp.getPos(), player.worldObj, player);
-                                    temp.breakBlock(((Entity) digger).worldObj, drop);
-                                }
-                                else
-                                {
-                                    temp.breakBlock(((Entity) digger).worldObj, drop);
-                                }
-                            }
-                        }
-                        ret++;
-                    }
-                }
-        return ret;
-    }
-
     private boolean shouldDropAll(IPokemob pokemob)
     {
         if (pokemob.getAbility() == null) return false;
@@ -288,50 +334,5 @@ public class Move_Utility extends Move_Basic
                     }
                 }
         return ret;
-    }
-
-    public static int countBerries(IPokemob mob, EntityPlayer player)
-    {
-        int ret = 0;
-
-        if (player.capabilities.isCreativeMode) return Integer.MAX_VALUE;
-
-        for (int i = 2; i < 7; i++)
-        {
-            ItemStack item = mob.getPokemobInventory().getStackInSlot(i);
-            if (item != null && item.getItem() instanceof ItemBerry)
-            {
-                ret += item.stackSize;
-            }
-        }
-        return ret;
-    }
-
-    public static void consumeBerries(IPokemob mob, int number)
-    {
-        for (int n = 2; n < 7; n++)
-        {
-            ItemStack i = mob.getPokemobInventory().getStackInSlot(n);
-
-            if (i != null && i.getItem() instanceof ItemBerry)
-            {
-                if (i.stackSize >= number)
-                {
-                    i.splitStack(number);
-                    if (i.stackSize <= 0)
-                    {
-                        i = null;
-                        mob.getPokemobInventory().setInventorySlotContents(n, null);
-                    }
-                    return;
-                }
-                else
-                {
-                    number -= i.stackSize;
-                    i = null;
-                }
-            }
-            if (number <= 0) return;
-        }
     }
 }

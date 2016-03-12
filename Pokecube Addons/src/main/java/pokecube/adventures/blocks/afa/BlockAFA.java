@@ -29,24 +29,16 @@ public final class BlockAFA extends Block implements ITileEntityProvider
     }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta)
-    {
-        return new TileEntityAFA();
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
-            float hitX, float hitY, float hitZ)
-    {
-        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIAFA_ID, world, pos.getX(), pos.getY(), pos.getZ());
-        return true;
-    }
-
-    @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
         dropItems(world, pos);
         super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta)
+    {
+        return new TileEntityAFA();
     }
 
     private void dropItems(World world, BlockPos pos)
@@ -91,13 +83,13 @@ public final class BlockAFA extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public boolean isFullCube()
     {
         return false;
     }
 
     @Override
-    public boolean isFullCube()
+    public boolean isOpaqueCube()
     {
         return false;
     }
@@ -106,6 +98,14 @@ public final class BlockAFA extends Block implements ITileEntityProvider
     public boolean isVisuallyOpaque()
     {
         return false;
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
+            float hitX, float hitY, float hitZ)
+    {
+        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIAFA_ID, world, pos.getX(), pos.getY(), pos.getZ());
+        return true;
     }
 
 }

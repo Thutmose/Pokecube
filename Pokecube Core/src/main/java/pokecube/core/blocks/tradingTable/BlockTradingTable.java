@@ -32,7 +32,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class BlockTradingTable extends Block implements ITileEntityProvider
 {
@@ -45,7 +45,7 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     {
         super(Material.cloth);
         this.setBlockBounds(0, 0, 0, 1, 0.75f, 1);
-        this.setCreativeTab(PokecubeCore.creativeTabPokecube);
+        this.setCreativeTab(PokecubeMod.creativeTabPokecube);
         this.setDefaultState(
                 this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TMC, false));
         this.setHardness(100);
@@ -53,19 +53,32 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
         this.setLightOpacity(0);
     }
 
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
-            float hitX, float hitY, float hitZ)
-    {
-        TileEntityTradingTable table = (TileEntityTradingTable) world.getTileEntity(pos);
-        table.openGUI(player);
-        return true;
-    }
-
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
     {
         dropItems(worldIn, pos);
         super.breakBlock(worldIn, pos, state);
+    }
+
+    @Override
+    /** Queries if this block should render in a given layer. ISmartBlockModel
+     * can use MinecraftForgeClient.getRenderLayer to alter their model based on
+     * layer */
+    public boolean canRenderInLayer(EnumWorldBlockLayer layer)
+    {
+        return true;
+    }
+
+    @Override
+    protected BlockState createBlockState()
+    {
+        return new BlockState(this, new IProperty[] { FACING, TMC });
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World var1, int var2)
+    {
+        return new TileEntityTradingTable();
     }
 
     private void dropItems(World world, BlockPos pos)
@@ -108,39 +121,27 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     }
 
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
-            int meta, EntityLivingBase placer)
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
-        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+        List<String> visible = Lists.newArrayList();
+        // TODO better model that changes if next to PC to show it makes TMs
+
+        visible.add(OBJModel.Group.ALL);
+        EnumFacing facing = state.getValue(FACING);
+        facing = facing.rotateYCCW();
+
+        TRSRTransformation transform = new TRSRTransformation(facing);
+        OBJModel.OBJState retState = new OBJModel.OBJState(visible, true, transform);
+        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
     }
 
     @Override
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
+    /** Convert the BlockState into the correct metadata value */
+    public int getMetaFromState(IBlockState state)
     {
-    }
-
-    @Override
-    public boolean isOpaqueCube()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isVisuallyOpaque()
-    {
-        return false;
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World var1, int var2)
-    {
-        return new TileEntityTradingTable();
+        int ret = state.getValue(FACING).getIndex();
+        if ((state.getValue(TMC))) ret += 8;
+        return ret;
     }
 
     @SideOnly(Side.CLIENT)
@@ -148,15 +149,6 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     public int getRenderType()
     {
         return super.getRenderType();
-    }
-
-    @Override
-    /** Queries if this block should render in a given layer. ISmartBlockModel
-     * can use MinecraftForgeClient.getRenderLayer to alter their model based on
-     * layer */
-    public boolean canRenderInLayer(EnumWorldBlockLayer layer)
-    {
-        return true;
     }
 
     @Override
@@ -174,32 +166,41 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     }
 
     @Override
-    /** Convert the BlockState into the correct metadata value */
-    public int getMetaFromState(IBlockState state)
+    public boolean isFullCube()
     {
-        int ret = ((EnumFacing) state.getValue(FACING)).getIndex();
-        if (((Boolean) state.getValue(TMC))) ret += 8;
-        return ret;
+        return false;
     }
 
     @Override
-    protected BlockState createBlockState()
+    public boolean isOpaqueCube()
     {
-        return new BlockState(this, new IProperty[] { FACING, TMC });
+        return false;
     }
 
     @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
+    public boolean isVisuallyOpaque()
     {
-        List<String> visible = Lists.newArrayList();
-        // TODO better model that changes if next to PC to show it makes TMs
+        return false;
+    }
 
-        visible.add(OBJModel.Group.ALL);
-        EnumFacing facing = (EnumFacing) state.getValue(FACING);
-        facing = facing.rotateYCCW();
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
+            float hitX, float hitY, float hitZ)
+    {
+        TileEntityTradingTable table = (TileEntityTradingTable) world.getTileEntity(pos);
+        table.openGUI(player);
+        return true;
+    }
 
-        TRSRTransformation transform = new TRSRTransformation(facing);
-        OBJModel.OBJState retState = new OBJModel.OBJState(visible, true, transform);
-        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
+    @Override
+    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
+    {
+    }
+
+    @Override
+    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+            int meta, EntityLivingBase placer)
+    {
+        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 }

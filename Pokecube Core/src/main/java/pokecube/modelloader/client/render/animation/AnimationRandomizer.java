@@ -20,8 +20,49 @@ import pokecube.modelloader.client.render.tabula.components.AnimationComponent;
 
 public class AnimationRandomizer implements IAnimationChanger
 {
+    private static class AnimationSet
+    {
+        final RandomAnimation anim;
+        int                   set;
+
+        public AnimationSet(RandomAnimation anim)
+        {
+            this.anim = anim;
+        }
+
+    }
+    private static class LoadedAnimSet
+    {
+        String name;
+        double chance;
+    }
+
+    private static class RandomAnimation
+    {
+        final String name;
+        double       chance   = 0.005;
+        int          duration = 0;
+
+        public RandomAnimation(Animation animation, double chance)
+        {
+            this.chance = chance;
+            this.name = animation.name;
+            for (Entry<String, ArrayList<AnimationComponent>> entry : animation.sets.entrySet())
+            {
+                for (AnimationComponent component : entry.getValue())
+                {
+                    if (component.startKey + component.length > duration)
+                    {
+                        duration = component.startKey + component.length;
+                    }
+                }
+            }
+        }
+    }
+
     // TODO way to clean this up.
     Map<Integer, AnimationSet>         running = Maps.newHashMap();
+
     Map<String, List<RandomAnimation>> sets    = Maps.newHashMap();
 
     Map<String, Set<LoadedAnimSet>> loadedSets = Maps.newHashMap();
@@ -43,6 +84,13 @@ public class AnimationRandomizer implements IAnimationChanger
             if (sets == null) loadedSets.put(parent, sets = Sets.newHashSet());
             sets.add(set);
         }
+    }
+
+    private void addAnimationSet(Animation animation, double chance, String parent)
+    {
+        List<RandomAnimation> anims = sets.get(parent);
+        if (anims == null) sets.put(parent, anims = Lists.newArrayList());
+        anims.add(new RandomAnimation(animation, chance));
     }
 
     public void init(Set<Animation> existingAnimations)
@@ -67,13 +115,6 @@ public class AnimationRandomizer implements IAnimationChanger
                 }
             }
         }
-    }
-
-    private void addAnimationSet(Animation animation, double chance, String parent)
-    {
-        List<RandomAnimation> anims = sets.get(parent);
-        if (anims == null) sets.put(parent, anims = Lists.newArrayList());
-        anims.add(new RandomAnimation(animation, chance));
     }
 
     @Override
@@ -103,46 +144,5 @@ public class AnimationRandomizer implements IAnimationChanger
             }
         }
         return phase;
-    }
-
-    private static class RandomAnimation
-    {
-        final String name;
-        double       chance   = 0.005;
-        int          duration = 0;
-
-        public RandomAnimation(Animation animation, double chance)
-        {
-            this.chance = chance;
-            this.name = animation.name;
-            for (Entry<String, ArrayList<AnimationComponent>> entry : animation.sets.entrySet())
-            {
-                for (AnimationComponent component : entry.getValue())
-                {
-                    if (component.startKey + component.length > duration)
-                    {
-                        duration = component.startKey + component.length;
-                    }
-                }
-            }
-        }
-    }
-
-    private static class AnimationSet
-    {
-        final RandomAnimation anim;
-        int                   set;
-
-        public AnimationSet(RandomAnimation anim)
-        {
-            this.anim = anim;
-        }
-
-    }
-
-    private static class LoadedAnimSet
-    {
-        String name;
-        double chance;
     }
 }

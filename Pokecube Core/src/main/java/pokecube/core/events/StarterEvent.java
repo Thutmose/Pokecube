@@ -7,16 +7,6 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class StarterEvent extends Event {
 
-	public final EntityPlayer player;
-	public ItemStack[] starterPack;
-	public final int pick;
-	
-	public StarterEvent(EntityPlayer player, ItemStack[] pack, int numberPicked) {
-		this.player = player;
-		starterPack = pack;
-		pick = numberPicked;
-	}
-
 	@Cancelable
 	@HasResult
 	public static class Pre extends StarterEvent
@@ -25,6 +15,16 @@ public class StarterEvent extends Event {
 		{
 			super(player, null, 0);
 		}
+	}
+	public final EntityPlayer player;
+	public ItemStack[] starterPack;
+	
+	public final int pick;
+
+	public StarterEvent(EntityPlayer player, ItemStack[] pack, int numberPicked) {
+		this.player = player;
+		starterPack = pack;
+		pick = numberPicked;
 	}
 	
 }

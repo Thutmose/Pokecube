@@ -25,11 +25,31 @@ public class TabulaModelParser implements IModelParser<TabulaModel>
     @SideOnly(Side.CLIENT)
     public Map<TabulaModel, ModelJson> modelMap;
     
+    @Override
+    public TabulaModel decode(ByteBuf buf)
+    {
+        return null; // todo
+    }
+
+    @Override
+    public void encode(ByteBuf buf, TabulaModel model)
+    {
+        // todo
+    }
+
+    @Override
     public String getExtension()
     {
         return "tbl";
     }
 
+    @Override
+    public Class<TabulaModel> getModelClass()
+    {
+        return TabulaModel.class;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public TabulaModel parse(String json) throws IOException
     {
@@ -54,24 +74,10 @@ public class TabulaModelParser implements IModelParser<TabulaModel>
         return null;
     }
 
-    public void encode(ByteBuf buf, TabulaModel model)
-    {
-        // todo
-    }
-
-    public TabulaModel decode(ByteBuf buf)
-    {
-        return null; // todo
-    }
-
+    @Override
     @SideOnly(Side.CLIENT)
     public void render(TabulaModel model, Entity entity)
     {
         modelMap.get(model).render(entity, 0f, 0f, 0f, 0f, 0f, 0.0625f);
-    }
-
-    public Class<TabulaModel> getModelClass()
-    {
-        return TabulaModel.class;
     }
 }

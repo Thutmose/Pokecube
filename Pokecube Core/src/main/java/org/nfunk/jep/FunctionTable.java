@@ -18,12 +18,24 @@ public class FunctionTable extends Hashtable
 		
 	}
 	
-	/** adds the PostfixMathCommandI for the function with name s. 
+	/** overrides the standard hashtable method.
+	 * If the argument is of the wrong type (i.e. not a String) 
+	 * then throws ClassCastException
 	 * RJM addition Oct 03
 	 */
-	public Object put(String s,PostfixMathCommandI pfmc)
+	
+	@Override
+	public Object get(Object o)
 	{
-		return super.put(s,pfmc);
+		return get((String) o);
+	}
+	
+	/** returns the PostfixMathCommandI for function with name s. 
+	 * RJM addition Oct 03
+	 */
+	public PostfixMathCommandI get(String s)
+	{
+		return (PostfixMathCommandI) super.get(s);
 	}
 	
 	/** overrides the standard hashtable method.
@@ -38,23 +50,11 @@ public class FunctionTable extends Hashtable
 		return put((String) o,(PostfixMathCommandI) p); 
 	}
 	
-	/** returns the PostfixMathCommandI for function with name s. 
+	/** adds the PostfixMathCommandI for the function with name s. 
 	 * RJM addition Oct 03
 	 */
-	public PostfixMathCommandI get(String s)
+	public Object put(String s,PostfixMathCommandI pfmc)
 	{
-		return (PostfixMathCommandI) super.get(s);
-	}
-	
-	/** overrides the standard hashtable method.
-	 * If the argument is of the wrong type (i.e. not a String) 
-	 * then throws ClassCastException
-	 * RJM addition Oct 03
-	 */
-	
-	@Override
-	public Object get(Object o)
-	{
-		return get((String) o);
+		return super.put(s,pfmc);
 	}
 }

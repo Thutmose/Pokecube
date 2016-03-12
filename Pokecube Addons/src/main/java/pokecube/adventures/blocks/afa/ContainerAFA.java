@@ -13,8 +13,22 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 
 public class ContainerAFA extends Container
 {
+    private static class AFASlot extends Slot
+    {
+
+        public AFASlot(IInventory inventoryIn, int index, int xPosition, int yPosition)
+        {
+            super(inventoryIn, index, xPosition, yPosition);
+        }
+        @Override
+        public boolean isItemValid(ItemStack itemstack)
+        {
+            return PokecubeManager.isFilled(itemstack) || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), itemstack);
+        }
+    }
     public TileEntityAFA   tile;
     public World    worldObj;
+
     public BlockPos pos;
 
     public ContainerAFA(TileEntityAFA tile, InventoryPlayer playerInv)
@@ -24,11 +38,6 @@ public class ContainerAFA extends Container
         this.worldObj = tile.getWorld();
         this.pos = tile.getPos();
         bindInventories(playerInv);
-    }
-
-    protected void clearSlots()
-    {
-        this.inventorySlots.clear();
     }
 
     public void bindInventories(InventoryPlayer playerInv)
@@ -56,6 +65,11 @@ public class ContainerAFA extends Container
         return playerIn.getUniqueID().equals(tile.placer);
     }
 
+    protected void clearSlots()
+    {
+        this.inventorySlots.clear();
+    }
+
     @Override
     public ItemStack slotClick(int i, int j, int flag, EntityPlayer entityplayer)
     {
@@ -63,7 +77,7 @@ public class ContainerAFA extends Container
         if (flag != 0 && flag != 5)
         {
             ItemStack itemstack = null;
-            Slot slot = (Slot) inventorySlots.get(i);
+            Slot slot = inventorySlots.get(i);
 
             if (slot != null && slot.getHasStack())
             {
@@ -112,20 +126,6 @@ public class ContainerAFA extends Container
         else
         {
             return super.slotClick(i, j, flag, entityplayer);
-        }
-    }
-
-    private static class AFASlot extends Slot
-    {
-
-        public AFASlot(IInventory inventoryIn, int index, int xPosition, int yPosition)
-        {
-            super(inventoryIn, index, xPosition, yPosition);
-        }
-        @Override
-        public boolean isItemValid(ItemStack itemstack)
-        {
-            return PokecubeManager.isFilled(itemstack) || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), itemstack);
         }
     }
 }

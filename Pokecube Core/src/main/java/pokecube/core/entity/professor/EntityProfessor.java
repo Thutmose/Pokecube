@@ -62,23 +62,27 @@ public class EntityProfessor extends EntityAgeable
         }
 	}
     
-    public void setStationary(Vector3 location)
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float i)
     {
-    	stationary = true;
+    	Entity e = source.getSourceOfDamage();
+    	if(e instanceof EntityPlayer && ((EntityPlayer)e).capabilities.isCreativeMode)
+    	{
+    		this.setDead();
+    	}
+    	return false;
     }
     
-    public void setStationary(boolean stationary)
+    @Override
+    protected boolean canDespawn()
     {
-    	if(stationary&&!this.stationary)
-    		setStationary(Vector3.getNewVector().set(this));
-    	else if(!stationary && this.stationary)
-    	{
-    		for(Object o: this.tasks.taskEntries)
-    			if(o instanceof GuardAI)
-    				this.tasks.removeTask((EntityAIBase) o);
-    		this.stationary = stationary;
-    	}
+    	return false;
     }
+    
+    @Override
+	public EntityAgeable createChild(EntityAgeable p_90011_1_) {
+		return null;
+	}
     
     @Override
     protected void entityInit()
@@ -87,28 +91,37 @@ public class EntityProfessor extends EntityAgeable
     }
     
     @Override
-	public void writeEntityToNBT(NBTTagCompound nbt)
+	public boolean interact(EntityPlayer player)
     {
-        super.writeEntityToNBT(nbt);
-        int n = 0;
-        for(ItemStack i: pokecubes)
+        if (!worldObj.isRemote)
         {
-        	if(i!=null)
+        	if(!PokecubeSerializer.getInstance().hasStarter(player))
         	{
-        		NBTTagCompound tag = new NBTTagCompound();
-        		i.writeToNBT(tag);
-        		nbt.setTag("slot"+n, tag);
-        		n++;
+	        	PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] {PokecubeClientPacket.CHOOSE1ST});
+	        	PokecubePacketHandler.sendToClient(packet, player);
+        	}
+        	else
+        	{
+        		player.addChatMessage(new ChatComponentText("Professor: You have already recieved a pokemon"));
         	}
         }
-        nbt.setBoolean("gender", male);
-        nbt.setString("name", name);
-        nbt.setInteger("pokemob out", out);
-        nbt.setBoolean("stationary", stationary);
-        nbt.setInteger("cooldown", cooldown);
-        nbt.setIntArray("cooldowns", attackCooldown);
+    	
+    	return false;//super.interact(entityplayer);
     }
     
+    
+    @Override
+    public void onLivingUpdate()
+    {
+        super.onLivingUpdate();
+    }
+
+    @Override
+    public void onUpdate()
+    {
+        super.onUpdate();
+    }
+  
     @Override
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
@@ -133,58 +146,45 @@ public class EntityProfessor extends EntityAgeable
         
     }
     
-    
-    @Override
-    public boolean attackEntityFrom(DamageSource source, float i)
+    public void setStationary(boolean stationary)
     {
-    	Entity e = source.getSourceOfDamage();
-    	if(e instanceof EntityPlayer && ((EntityPlayer)e).capabilities.isCreativeMode)
+    	if(stationary&&!this.stationary)
+    		setStationary(Vector3.getNewVector().set(this));
+    	else if(!stationary && this.stationary)
     	{
-    		this.setDead();
+    		for(Object o: this.tasks.taskEntries)
+    			if(o instanceof GuardAI)
+    				this.tasks.removeTask((EntityAIBase) o);
+    		this.stationary = stationary;
     	}
-    	return false;
-    }
-
-    @Override
-    public void onLivingUpdate()
-    {
-        super.onLivingUpdate();
-    }
-  
-    @Override
-	public boolean interact(EntityPlayer player)
-    {
-        if (!worldObj.isRemote)
-        {
-        	if(!PokecubeSerializer.getInstance().hasStarter(player))
-        	{
-	        	PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] {PokecubeClientPacket.CHOOSE1ST});
-	        	PokecubePacketHandler.sendToClient(packet, player);
-        	}
-        	else
-        	{
-        		player.addChatMessage(new ChatComponentText("Professor: You have already recieved a pokemon"));
-        	}
-        }
-    	
-    	return false;//super.interact(entityplayer);
     }
     
-    @Override
-    public void onUpdate()
+    public void setStationary(Vector3 location)
     {
-        super.onUpdate();
-    }
-    
-    @Override
-    protected boolean canDespawn()
-    {
-    	return false;
+    	stationary = true;
     }
 
 	@Override
-	public EntityAgeable createChild(EntityAgeable p_90011_1_) {
-		return null;
-	}
+	public void writeEntityToNBT(NBTTagCompound nbt)
+    {
+        super.writeEntityToNBT(nbt);
+        int n = 0;
+        for(ItemStack i: pokecubes)
+        {
+        	if(i!=null)
+        	{
+        		NBTTagCompound tag = new NBTTagCompound();
+        		i.writeToNBT(tag);
+        		nbt.setTag("slot"+n, tag);
+        		n++;
+        	}
+        }
+        nbt.setBoolean("gender", male);
+        nbt.setString("name", name);
+        nbt.setInteger("pokemob out", out);
+        nbt.setBoolean("stationary", stationary);
+        nbt.setInteger("cooldown", cooldown);
+        nbt.setIntArray("cooldowns", attackCooldown);
+    }
 	
 }

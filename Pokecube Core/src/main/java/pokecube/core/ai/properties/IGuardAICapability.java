@@ -9,24 +9,33 @@ import pokecube.core.utils.TimePeriod;
 
 public interface IGuardAICapability
 {
-    BlockPos getPos();
-
-    void setPos(BlockPos pos);
-
-    float getRoamDistance();
-
-    void setRoamDistance(float roam);
-
-    TimePeriod getActiveTime();
-
-    void setActiveTime(TimePeriod active);
-
-    GuardState getState();
-
-    void setState(GuardState state);
+    public static enum GuardState
+    {
+        IDLE, RUNNING, COOLDOWN
+    }
 
     public static class Storage implements Capability.IStorage<IGuardAICapability>
     {
+        private BlockPos readFromTag(NBTTagCompound tag)
+        {
+            return new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
+        }
+
+        @Override
+        public void readNBT(Capability<IGuardAICapability> capability, IGuardAICapability instance, EnumFacing side,
+                NBTBase nbt)
+        {
+            if (nbt instanceof NBTTagCompound)
+            {
+                NBTTagCompound data = (NBTTagCompound) nbt;
+                instance.setPos(readFromTag(data.getCompoundTag("pos")));
+                instance.setRoamDistance(data.getFloat("roamDistance"));
+                instance.setState(GuardState.values()[data.getInteger("state")]);
+                NBTTagCompound tag = data.getCompoundTag("activeTime");
+                instance.setActiveTime(new TimePeriod(tag.getInteger("start"), tag.getInteger("end")));
+            }
+        }
+
         @Override
         public NBTBase writeNBT(Capability<IGuardAICapability> capability, IGuardAICapability instance, EnumFacing side)
         {
@@ -46,21 +55,6 @@ public interface IGuardAICapability
             return ret;
         }
 
-        @Override
-        public void readNBT(Capability<IGuardAICapability> capability, IGuardAICapability instance, EnumFacing side,
-                NBTBase nbt)
-        {
-            if (nbt instanceof NBTTagCompound)
-            {
-                NBTTagCompound data = (NBTTagCompound) nbt;
-                instance.setPos(readFromTag(data.getCompoundTag("pos")));
-                instance.setRoamDistance(data.getFloat("roamDistance"));
-                instance.setState(GuardState.values()[data.getInteger("state")]);
-                NBTTagCompound tag = data.getCompoundTag("activeTime");
-                instance.setActiveTime(new TimePeriod(tag.getInteger("start"), tag.getInteger("end")));
-            }
-        }
-
         private void writeToTag(NBTTagCompound tag, BlockPos pos)
         {
             if (pos == null) return;
@@ -69,15 +63,21 @@ public interface IGuardAICapability
             tag.setInteger("z", pos.getZ());
         }
 
-        private BlockPos readFromTag(NBTTagCompound tag)
-        {
-            return new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
-        }
-
     }
 
-    public static enum GuardState
-    {
-        IDLE, RUNNING, COOLDOWN
-    }
+    TimePeriod getActiveTime();
+
+    BlockPos getPos();
+
+    float getRoamDistance();
+
+    GuardState getState();
+
+    void setActiveTime(TimePeriod active);
+
+    void setPos(BlockPos pos);
+
+    void setRoamDistance(float roam);
+
+    void setState(GuardState state);
 }

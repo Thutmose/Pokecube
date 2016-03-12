@@ -32,15 +32,37 @@ public class TMCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
-        return aliases.get(0);
+        Collection<String> moves = MovesUtils.moves.keySet();
+        List<String> ret = new ArrayList<String>();
+        if (args.length == 1)
+        {
+            String text = args[0];
+            for (String name : moves)
+            {
+                if (name.startsWith(text.toLowerCase()))
+                {
+                    ret.add(name);
+                }
+            }
+            Collections.sort(ret, new Comparator<String>()
+            {
+                @Override
+                public int compare(String o1, String o2)
+                {
+
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+        }
+        return ret;
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
-        return "/" + aliases.get(0) + "<move name>";
+        return true;
     }
 
     @Override
@@ -50,9 +72,15 @@ public class TMCommand extends CommandBase
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    public String getCommandName()
     {
-        return true;
+        return aliases.get(0);
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/" + aliases.get(0) + "<move name>";
     }
 
     @Override
@@ -75,7 +103,7 @@ public class TMCommand extends CommandBase
             {
                 ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(
                         PlayerSelector.matchEntities(sender, s, EntityPlayer.class));
-                targets = (EntityPlayerMP[]) targs.toArray(new EntityPlayerMP[0]);
+                targets = targs.toArray(new EntityPlayerMP[0]);
             }
         }
         if (args.length == 0)
@@ -126,34 +154,6 @@ public class TMCommand extends CommandBase
             sender.addChatMessage(message);
             return;
         }
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
-    {
-        Collection<String> moves = MovesUtils.moves.keySet();
-        List<String> ret = new ArrayList<String>();
-        if (args.length == 1)
-        {
-            String text = args[0];
-            for (String name : moves)
-            {
-                if (name.startsWith(text.toLowerCase()))
-                {
-                    ret.add(name);
-                }
-            }
-            Collections.sort(ret, new Comparator<String>()
-            {
-                @Override
-                public int compare(String o1, String o2)
-                {
-
-                    return o1.compareToIgnoreCase(o2);
-                }
-            });
-        }
-        return ret;
     }
 
 }

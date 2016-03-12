@@ -41,20 +41,6 @@ public class ClonerRecipeWrapper extends VanillaRecipeWrapper implements ICrafti
         }
     }
 
-    @Nonnull
-    @Override
-    public List<?> getInputs()
-    {
-        return recipe.recipeItems;
-    }
-
-    @Nonnull
-    @Override
-    public List<ItemStack> getOutputs()
-    {
-        return Collections.singletonList(recipe.getRecipeOutput());
-    }
-
     @Override
     public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight)
     {
@@ -82,6 +68,25 @@ public class ClonerRecipeWrapper extends VanillaRecipeWrapper implements ICrafti
 
     }
 
+    @Nonnull
+    @Override
+    public List<?> getInputs()
+    {
+        return recipe.recipeItems;
+    }
+
+    @Nonnull
+    @Override
+    public List<ItemStack> getOutputs()
+    {
+        return Collections.singletonList(recipe.getRecipeOutput());
+    }
+
+    public IPokemob getPokemob()
+    {
+        return recipe.getPokemob();
+    }
+
     @Nullable
     @Override
     public List<String> getTooltipStrings(int mouseX, int mouseY)
@@ -93,10 +98,5 @@ public class ClonerRecipeWrapper extends VanillaRecipeWrapper implements ICrafti
     public boolean isVanilla()
     {
         return recipe.vanilla;
-    }
-
-    public IPokemob getPokemob()
-    {
-        return recipe.getPokemob();
     }
 }

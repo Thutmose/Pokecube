@@ -28,6 +28,15 @@ public class ASTVarNode extends SimpleNode {
 	}
 	
 	/**
+	 * Returns the name of the variable.
+	 */
+	public String getName()
+	{
+		return var.getName();
+	}
+
+	public Variable getVar() { return var; }
+	/**
 	 * Accept the visitor.
 	 */
 	@Override
@@ -35,7 +44,7 @@ public class ASTVarNode extends SimpleNode {
 	{
 		return visitor.visit(this, data);
 	}
-
+	
 	/**
 	 * Sets the name of the variable.
 	 */
@@ -44,15 +53,6 @@ public class ASTVarNode extends SimpleNode {
 	//	var = varName_in;
 	//}
 	public void setVar(Variable variable) {	var = variable;	}
-	public Variable getVar() { return var; }
-	
-	/**
-	 * Returns the name of the variable.
-	 */
-	public String getName()
-	{
-		return var.getName();
-	}
 
 	/**
 	* Creates a string containing the variable's name and value

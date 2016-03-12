@@ -27,16 +27,6 @@ public class ItemBlockLegend extends ItemBlock
         return damageValue;
     }
 
-    /** Returns the unlocalized name of this item. This version accepts an
-     * ItemStack so different stacks can have different names based on their
-     * damage or NBT. */
-    @Override
-    public String getUnlocalizedName(ItemStack par1ItemStack)
-    {
-        int i = par1ItemStack.getItemDamage();
-        return "tile." + block.types.get(i);
-    }
-
     @Override
     @SideOnly(Side.CLIENT)
     /** returns a list of items with the same ID, but different meta (eg: dye
@@ -45,5 +35,15 @@ public class ItemBlockLegend extends ItemBlock
     {
         for (int i = 0; i < block.types.size(); i++)
             par3List.add(new ItemStack(par1, 1, i));
+    }
+
+    /** Returns the unlocalized name of this item. This version accepts an
+     * ItemStack so different stacks can have different names based on their
+     * damage or NBT. */
+    @Override
+    public String getUnlocalizedName(ItemStack par1ItemStack)
+    {
+        int i = par1ItemStack.getItemDamage();
+        return "tile." + block.types.get(i);
     }
 }

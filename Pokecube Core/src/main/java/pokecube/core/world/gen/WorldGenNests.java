@@ -40,6 +40,10 @@ public class WorldGenNests implements IWorldGenerator {
 		}
 	}
 
+	public void generateEnd() {
+		// we're not going to generate in the end yet
+	}
+
 	public void generateNether(World world, Random rand, int chunkX, int chunkZ) {
 		int rX = rand.nextInt(20);
 		int rZ = rand.nextInt(20);
@@ -99,9 +103,5 @@ public class WorldGenNests implements IWorldGenerator {
 			}
 		}
 
-	}
-
-	public void generateEnd() {
-		// we're not going to generate in the end yet
 	}
 }

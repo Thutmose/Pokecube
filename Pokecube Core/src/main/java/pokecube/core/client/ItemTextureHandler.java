@@ -3,6 +3,7 @@ package pokecube.core.client;
 import java.util.ArrayList;
 
 import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,6 +13,22 @@ import pokecube.core.PokecubeItems;
 
 public class ItemTextureHandler
 {
+    public static class MegaStone implements ItemMeshDefinition
+    {
+        @Override
+        public ModelResourceLocation getModelLocation(ItemStack stack)
+        {
+            NBTTagCompound tag = stack.getTagCompound();
+            String variant = "megastone";
+            if (tag != null)
+            {
+                String stackname = tag.getString("pokemon");
+                variant = stackname.toLowerCase();
+            }
+            return getLocation(variant);
+        }
+    }
+
     public static ArrayList<String> megaVariants = new ArrayList<>();
 
     static
@@ -30,6 +47,18 @@ public class ItemTextureHandler
         megaVariants.add("blastoisemega");
     }
 
+    public static ModelResourceLocation getLocation(String name)
+    {
+        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"),
+                "type=" + name.toLowerCase());
+    }
+
+    private static void registerItemVariant(String variant)
+    {
+        ModelBakery.registerItemVariants(PokecubeItems.megastone,
+                new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"), variant));
+    }
+
     public static void registerMegaStoneItemModels()
     {
         ModelLoader.setCustomMeshDefinition(PokecubeItems.megastone, new MegaStone());
@@ -42,33 +71,5 @@ public class ItemTextureHandler
             PokecubeItems.addSpecificItemStack(s, stack);
         }
 
-    }
-
-    private static void registerItemVariant(String variant)
-    {
-        ModelLoader.registerItemVariants(PokecubeItems.megastone,
-                new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"), variant));
-    }
-
-    public static ModelResourceLocation getLocation(String name)
-    {
-        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"),
-                "type=" + name.toLowerCase());
-    }
-
-    public static class MegaStone implements ItemMeshDefinition
-    {
-        @Override
-        public ModelResourceLocation getModelLocation(ItemStack stack)
-        {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "megastone";
-            if (tag != null)
-            {
-                String stackname = tag.getString("pokemon");
-                variant = stackname.toLowerCase();
-            }
-            return getLocation(variant);
-        }
     }
 }

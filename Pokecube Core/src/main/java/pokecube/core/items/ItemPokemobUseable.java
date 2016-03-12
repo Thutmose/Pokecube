@@ -15,6 +15,26 @@ public class ItemPokemobUseable extends Item implements IPokemobUseable {
 	}
 	
 	@Override
+	public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
+	{
+		if(stack.getItem() == PokecubeItems.berryJuice)
+		{
+			float health = mob.getHealth();
+			float maxHealth = mob.getMaxHealth();
+
+			if(health==maxHealth) return false;
+			
+			if(health + 20< maxHealth)
+				mob.setHealth(health + 20);
+			else
+				mob.setHealth(maxHealth);
+			stack.splitStack(1);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public boolean itemUse(ItemStack stack, Entity user, EntityPlayer player)
 	{
 		if(user instanceof EntityLivingBase)
@@ -34,7 +54,7 @@ public class ItemPokemobUseable extends Item implements IPokemobUseable {
 	{
 		return applyEffect(mob, stack);
 	}
-	
+
 	@Override
 	public boolean useByPokemob(EntityLivingBase mob, ItemStack stack)
 	{
@@ -54,26 +74,6 @@ public class ItemPokemobUseable extends Item implements IPokemobUseable {
 			}
 		}
 		
-		return false;
-	}
-
-	@Override
-	public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
-	{
-		if(stack.getItem() == PokecubeItems.berryJuice)
-		{
-			float health = mob.getHealth();
-			float maxHealth = mob.getMaxHealth();
-
-			if(health==maxHealth) return false;
-			
-			if(health + 20< maxHealth)
-				mob.setHealth(health + 20);
-			else
-				mob.setHealth(maxHealth);
-			stack.splitStack(1);
-			return true;
-		}
 		return false;
 	}
 }

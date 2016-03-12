@@ -9,7 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
-import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IMoveConstants;
 
 /** @author sebastien */
 public abstract class EntityDropPokemob extends EntityMovesPokemob
@@ -24,9 +24,18 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     }
 
     @Override
+    /** Drop the equipment for this entity. */
+    protected void dropEquipment(boolean p_82160_1_, int p_82160_2_)
+    {
+        if (this.getPokemonAIState(IMoveConstants.TAMED)) return;
+
+        super.dropEquipment(p_82160_1_, p_82160_2_);
+    }
+
+    @Override
     protected void dropFewItems(boolean flag, int nb)
     {
-        if (!getPokemonAIState(IPokemob.TAMED))
+        if (!getPokemonAIState(IMoveConstants.TAMED))
         {
             for (int i = 2; i < pokeChest.getSizeInventory(); i++)
             {
@@ -42,7 +51,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         int j = 0;
         if (food != null) j = food.stackSize;
 
-        if (!getPokemonAIState(IPokemob.TAMED) && food != null)
+        if (!getPokemonAIState(IMoveConstants.TAMED) && food != null)
         {
             if (isBurning())
             {
@@ -59,7 +68,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
             }
         }
 
-        if (getPokemonAIState(IPokemob.TAMED)) return;
+        if (getPokemonAIState(IMoveConstants.TAMED)) return;
 
         food = getPokedexEntry().getRandomCommonDrop(nb);
         if (food == null && this.getDropItem() != null) food = new ItemStack(this.getDropItem());
@@ -92,23 +101,14 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     }
 
     @Override
-    /** Drop the equipment for this entity. */
-    protected void dropEquipment(boolean p_82160_1_, int p_82160_2_)
+    protected Item getDropItem()
     {
-        if (this.getPokemonAIState(IPokemob.TAMED)) return;
-
-        super.dropEquipment(p_82160_1_, p_82160_2_);
+        return null;// Item.getItemById(itemIdCommonDrop);
     }
 
     @Override
     public ItemStack wildHeldItem()
     {
         return this.getPokedexEntry().getRandomHeldItem();
-    }
-
-    @Override
-    protected Item getDropItem()
-    {
-        return null;// Item.getItemById(itemIdCommonDrop);
     }
 }

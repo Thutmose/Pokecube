@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.events.handlers.PCEventsHandler;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.MovesUtils;
@@ -34,6 +35,96 @@ public class EntityAITrainer extends EntityAIBase
         this.world = trainer.worldObj;
         this.setMutexBits(3);
         this.targetClass = targetClass;
+    }
+
+    private boolean checkPokemobTarget()
+    {
+        if (trainer.getTarget() != null)
+        {
+            if (!trainer.outMob.getPokemonAIState(IMoveConstants.ANGRY)
+                    || ((EntityLiving) trainer.outMob).getAttackTarget() == null)
+            {
+                ((EntityLiving) trainer.outMob).setAttackTarget(trainer.getTarget());
+            }
+        }
+        return ((EntityLiving) trainer.outMob).getAttackTarget() instanceof IPokemob;
+    }
+
+    private void considerSwapMove()
+    {
+        // TODO choose between damaging/stats/status moves
+        setMostDamagingMove();
+    }
+
+    private boolean considerSwapPokemob()
+    {
+        // TODO check if the target pokemob is bad matchup, consider swapping to
+        // better choice.
+        return false;
+    }
+
+    void doAggression()
+    {
+        boolean angry = trainer.getTarget() != null;
+
+        if (angry)
+        {
+            angry = trainer.getTarget() != null;
+            if (!Vector3.isVisibleEntityFromEntity(trainer, trainer.getTarget()))
+            {
+                angry = false;
+                trainer.setTarget(null);
+            }
+        }
+
+        if (trainer instanceof EntityLeader)
+        {
+            if (((EntityLeader) trainer).hasDefeated(trainer.getTarget()))
+            {
+                trainer.setTarget(null);
+                return;
+            }
+        }
+        if (angry && !trainer.worldObj.isRemote && trainer.outMob == null)
+        {
+            trainer.throwCubeAt(trainer.getTarget());
+        }
+    }
+
+    private int getPower(String move, IPokemob user, Entity target)
+    {
+        Move_Base attack = MovesUtils.getMoveFromName(move);
+        return attack.getPWR(user, target);
+    }
+
+    /** Resets the task */
+    @Override
+    public void resetTask()
+    {
+        PCEventsHandler.recallAllPokemobs(trainer);
+    }
+
+    private void setMostDamagingMove()
+    {
+        IPokemob outMob = trainer.outMob;
+        int index = outMob.getMoveIndex();
+        int max = 0;
+        Entity target = ((EntityLiving) outMob).getAttackTarget();
+        String[] moves = outMob.getMoves();
+        for (int i = 0; i < 4; i++)
+        {
+            String s = moves[i];
+            if (s != null)
+            {
+                int temp = getPower(s, outMob, target);
+                if (temp > max)
+                {
+                    index = i;
+                    max = temp;
+                }
+            }
+        }
+        outMob.setMoveIndex(index);
     }
 
     @Override
@@ -91,13 +182,6 @@ public class EntityAITrainer extends EntityAIBase
     {
     }
 
-    /** Resets the task */
-    @Override
-    public void resetTask()
-    {
-        PCEventsHandler.recallAllPokemobs(trainer);
-    }
-
     /** Updates the task */
     @Override
     public void updateTask()
@@ -120,88 +204,5 @@ public class EntityAITrainer extends EntityAIBase
         {
             doAggression();
         }
-    }
-
-    void doAggression()
-    {
-        boolean angry = trainer.getTarget() != null;
-
-        if (angry)
-        {
-            angry = trainer.getTarget() != null;
-            if (!Vector3.isVisibleEntityFromEntity(trainer, trainer.getTarget()))
-            {
-                angry = false;
-                trainer.setTarget(null);
-            }
-        }
-
-        if (trainer instanceof EntityLeader)
-        {
-            if (((EntityLeader) trainer).hasDefeated(trainer.getTarget()))
-            {
-                trainer.setTarget(null);
-                return;
-            }
-        }
-        if (angry && !trainer.worldObj.isRemote && trainer.outMob == null)
-        {
-            trainer.throwCubeAt(trainer.getTarget());
-        }
-    }
-
-    private void considerSwapMove()
-    {
-        // TODO choose between damaging/stats/status moves
-        setMostDamagingMove();
-    }
-
-    private void setMostDamagingMove()
-    {
-        IPokemob outMob = trainer.outMob;
-        int index = outMob.getMoveIndex();
-        int max = 0;
-        Entity target = ((EntityLiving) outMob).getAttackTarget();
-        String[] moves = outMob.getMoves();
-        for (int i = 0; i < 4; i++)
-        {
-            String s = moves[i];
-            if (s != null)
-            {
-                int temp = getPower(s, outMob, target);
-                if (temp > max)
-                {
-                    index = i;
-                    max = temp;
-                }
-            }
-        }
-        outMob.setMoveIndex(index);
-    }
-
-    private int getPower(String move, IPokemob user, Entity target)
-    {
-        Move_Base attack = MovesUtils.getMoveFromName(move);
-        return attack.getPWR(user, target);
-    }
-
-    private boolean considerSwapPokemob()
-    {
-        // TODO check if the target pokemob is bad matchup, consider swapping to
-        // better choice.
-        return false;
-    }
-
-    private boolean checkPokemobTarget()
-    {
-        if (trainer.getTarget() != null)
-        {
-            if (!trainer.outMob.getPokemonAIState(IPokemob.ANGRY)
-                    || ((EntityLiving) trainer.outMob).getAttackTarget() == null)
-            {
-                ((EntityLiving) trainer.outMob).setAttackTarget(trainer.getTarget());
-            }
-        }
-        return ((EntityLiving) trainer.outMob).getAttackTarget() instanceof IPokemob;
     }
 }

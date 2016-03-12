@@ -12,17 +12,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @Beta
 public interface IModelParser<T extends IModel> {
 
+    T decode(ByteBuf buf);
+
+    void encode(ByteBuf buf, T model);
+
     String getExtension();
+
+    Class<T> getModelClass();
 
     @SideOnly(Side.CLIENT)
     T parse(String json) throws IOException;
 
-    void encode(ByteBuf buf, T model);
-
-    T decode(ByteBuf buf);
-
     @SideOnly(Side.CLIENT)
     void render(T model, Entity entity);
-
-    Class<T> getModelClass();
 }

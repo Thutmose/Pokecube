@@ -10,8 +10,8 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeItems;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PCPacketHandler.MessageServer;
 import pokecube.core.network.PokecubePacketHandler;
@@ -20,12 +20,29 @@ import pokecube.core.utils.PCSaveHandler;
 
 public class ContainerPC extends Container{
 
-	public final InventoryPC inv;
-	public final InventoryPlayer invPlayer;
-	public final TileEntityPC pcTile;
 	public static int STACKLIMIT = 64;
 	public static int yOffset;
 	public static int xOffset;
+	/**
+     * Returns true if the item is a filled pokecube.
+     *
+     * @param itemstack the itemstack to test
+     * @return true if the id is a filled pokecube one, false otherwise
+     */
+    public static boolean isItemValid(ItemStack itemstack)
+    {
+    //	System.out.println(ConfigHandler.ONLYPOKECUBES);
+    	if(itemstack==null)
+    		return false;
+    	
+    	boolean eggorCube = PokecubeManager.isFilled(itemstack) || itemstack.getItem() == PokecubeItems.pokemobEgg;
+    	
+        return eggorCube;
+    }
+	public final InventoryPC inv;
+	public final InventoryPlayer invPlayer;
+	public final TileEntityPC pcTile;
+	
 	public boolean release = false;
 	//private GuiPC gpc;
 	
@@ -47,7 +64,19 @@ public class ContainerPC extends Container{
 		bindInventories();
 	}
 	
-	protected void bindInventories()
+	/**
+     * 
+     */
+    @Override
+	protected Slot addSlotToContainer(Slot par1Slot)
+    {
+        par1Slot.slotNumber = this.inventorySlots.size();
+        this.inventorySlots.add(par1Slot);
+        this.inventoryItemStacks.add(inv.getStackInSlot(par1Slot.getSlotIndex()));
+        return par1Slot;
+    }
+	
+	 protected void bindInventories()
 	{
 	//	System.out.println("bind");
 		clearSlots();
@@ -55,7 +84,7 @@ public class ContainerPC extends Container{
 		bindPCInventory();
 	}
 	
-	protected void bindPCInventory()
+    protected void bindPCInventory()
 	{
 		int n = 0;
 		n = inv.getPage()*54;
@@ -75,8 +104,8 @@ public class ContainerPC extends Container{
 			}
 		}
 	}
-	
-	 protected void bindPlayerInventory() 
+    
+    protected void bindPlayerInventory() 
 	 {
 		 int offset = 64 + yOffset;
 
@@ -94,43 +123,9 @@ public class ContainerPC extends Container{
          }
 	 }
 	
-    /**
-     * 
-     */
-    @Override
-	protected Slot addSlotToContainer(Slot par1Slot)
-    {
-        par1Slot.slotNumber = this.inventorySlots.size();
-        this.inventorySlots.add(par1Slot);
-        this.inventoryItemStacks.add(inv.getStackInSlot(par1Slot.getSlotIndex()));
-        return par1Slot;
-    }
-    
-    protected void clearSlots()
-    {
-    	this.inventorySlots.clear();
-    }
-	
 	@Override
-	 public void onContainerClosed(EntityPlayer player)
-	 {
-		PCSaveHandler.getInstance().savePC(player.getUniqueID().toString());
-		 super.onContainerClosed(player);
-	 }
-	
-	public void updateInventoryPages(int dir, InventoryPlayer invent)
-	{
-		inv.setPage((inv.getPage()==0)&&(dir==-1)?InventoryPC.PAGECOUNT-1:(inv.getPage()+dir)%InventoryPC.PAGECOUNT);
-		bindInventories();
-	}
-	
-	public void gotoInventoryPage(int page)
-	{
-		if(page - 1 == inv.getPage()) return;
-		
-		inv.setPage(page-1);
-
-		bindInventories();
+	public boolean canInteractWith(EntityPlayer entityplayer) {
+		return true;
 	}
 	
 	public void changeName(String name)
@@ -153,16 +148,109 @@ public class ContainerPC extends Container{
 			return;
 		}
 	}
+	
+	protected void clearSlots()
+    {
+    	this.inventorySlots.clear();
+    }
+	
+	public ItemStack clientSlotClick(int i, int j, int flag,
+            EntityPlayer player)
+    {
+    	ItemStack itemstack = invPlayer.getItemStack();
+        Slot slot = inventorySlots.get(i);
+        ItemStack inSlot = slot.getStack();
+    	if(flag == 0 || flag == 5)
+    	{
+	    	invPlayer.setItemStack(inSlot!=null?inSlot.copy():null);
+	    	inSlot = itemstack;
+	    	return inSlot;
+    	}
+        
+    	return  inSlot;
+    }
 	 
-	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer) {
-		return true;
-	}
+	@SideOnly(Side.CLIENT)
+    public String getPage()
+    {
+    	return inv.boxes[inv.getPage()];
+    }
 
+    @SideOnly(Side.CLIENT)
+    public String getPageNb()
+    {
+    	return Integer.toString(inv.getPage()+1);
+    }
+    
+    public boolean getRelease(){
+    	return release;
+    }
+	
+    
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slot) {
-            ItemStack stack = null;
-            return stack;
+	public Slot getSlot(int par1)
+    {
+    	return this.inventorySlots.get(par1);
+    }
+    
+    public void gotoInventoryPage(int page)
+	{
+		if(page - 1 == inv.getPage()) return;
+		
+		inv.setPage(page-1);
+
+		bindInventories();
+	}
+    
+    @Override
+	 public void onContainerClosed(EntityPlayer player)
+	 {
+		PCSaveHandler.getInstance().savePC(player.getUniqueID().toString());
+		 super.onContainerClosed(player);
+	 }
+    
+    /**
+     * args: slotID, itemStack to put in slot
+     */
+    @Override
+	public void putStackInSlot(int par1, ItemStack par2ItemStack)
+    {
+    	this.getSlot(par1).putStack(par2ItemStack);
+    }
+    
+    @Override
+	@SideOnly(Side.CLIENT)
+
+    /**
+     * places itemstacks in first x slots, x being aitemstack.lenght
+     */
+    public void putStacksInSlots(ItemStack[] par1ArrayOfItemStack)
+    {
+        for (int i = 0; i < par1ArrayOfItemStack.length; ++i)
+        {
+        	if(this.getSlot(i)!=null)
+            this.getSlot(i).putStack(par1ArrayOfItemStack[i]);
+        }
+    }
+    
+    public void setRelease(boolean bool)
+    {
+    	if(release && !bool)
+    	{
+    		NBTTagCompound nbt = new NBTTagCompound();
+    		nbt.setInteger("page", inv.getPage());
+    		
+    		for(int i = 0; i<54; i++)
+    		{
+    			if(toRelease[i])
+    			{
+    				nbt.setBoolean("val"+i, true);
+    			}
+    		}
+    		MessageServer mess = new MessageServer(MessageServer.PCRELEASE, nbt);
+    		PokecubePacketHandler.sendToServer(mess);
+    	}
+    	release = bool;
     }
     
     @Override
@@ -190,7 +278,7 @@ public class ContainerPC extends Container{
         if (flag != 0 && flag != 5)
         {
             ItemStack itemstack = null;
-            Slot slot = (Slot) inventorySlots.get(i);
+            Slot slot = inventorySlots.get(i);
 
             if (slot != null && slot.getHasStack())
             {
@@ -248,103 +336,15 @@ public class ContainerPC extends Container{
             return super.slotClick(i, j, flag, entityplayer);
         }
     }
-	
-    
-    public ItemStack clientSlotClick(int i, int j, int flag,
-            EntityPlayer player)
-    {
-    	ItemStack itemstack = invPlayer.getItemStack();
-        Slot slot = (Slot) inventorySlots.get(i);
-        ItemStack inSlot = slot.getStack();
-    	if(flag == 0 || flag == 5)
-    	{
-	    	invPlayer.setItemStack(inSlot!=null?inSlot.copy():null);
-	    	inSlot = itemstack;
-	    	return inSlot;
-    	}
-        
-    	return  inSlot;
-    }
-    
-    /**
-     * Returns true if the item is a filled pokecube.
-     *
-     * @param itemstack the itemstack to test
-     * @return true if the id is a filled pokecube one, false otherwise
-     */
-    public static boolean isItemValid(ItemStack itemstack)
-    {
-    //	System.out.println(ConfigHandler.ONLYPOKECUBES);
-    	if(itemstack==null)
-    		return false;
-    	
-    	boolean eggorCube = PokecubeManager.isFilled(itemstack) || itemstack.getItem() == PokecubeItems.pokemobEgg;
-    	
-        return eggorCube;
-    }
     
     @Override
-	public Slot getSlot(int par1)
-    {
-    	return (Slot)this.inventorySlots.get(par1);
+    public ItemStack transferStackInSlot(EntityPlayer player, int slot) {
+            ItemStack stack = null;
+            return stack;
     }
-    
-    /**
-     * args: slotID, itemStack to put in slot
-     */
-    @Override
-	public void putStackInSlot(int par1, ItemStack par2ItemStack)
-    {
-    	this.getSlot(par1).putStack(par2ItemStack);
-    }
-    
-    @Override
-	@SideOnly(Side.CLIENT)
-
-    /**
-     * places itemstacks in first x slots, x being aitemstack.lenght
-     */
-    public void putStacksInSlots(ItemStack[] par1ArrayOfItemStack)
-    {
-        for (int i = 0; i < par1ArrayOfItemStack.length; ++i)
-        {
-        	if(this.getSlot(i)!=null)
-            this.getSlot(i).putStack(par1ArrayOfItemStack[i]);
-        }
-    }
-    
-    @SideOnly(Side.CLIENT)
-    public String getPage()
-    {
-    	return inv.boxes[inv.getPage()];
-    }
-    
-    @SideOnly(Side.CLIENT)
-    public String getPageNb()
-    {
-    	return Integer.toString(inv.getPage()+1);
-    }
-    
-    public boolean getRelease(){
-    	return release;
-    }
-    public void setRelease(boolean bool)
-    {
-    	if(release && !bool)
-    	{
-    		NBTTagCompound nbt = new NBTTagCompound();
-    		nbt.setInteger("page", inv.getPage());
-    		
-    		for(int i = 0; i<54; i++)
-    		{
-    			if(toRelease[i])
-    			{
-    				nbt.setBoolean("val"+i, true);
-    			}
-    		}
-    		MessageServer mess = new MessageServer(MessageServer.PCRELEASE, nbt);
-    		PokecubePacketHandler.sendToServer(mess);
-    	}
-    	release = bool;
-    }
+    public void updateInventoryPages(int dir, InventoryPlayer invent)
+	{
+		inv.setPage((inv.getPage()==0)&&(dir==-1)?InventoryPC.PAGECOUNT-1:(inv.getPage()+dir)%InventoryPC.PAGECOUNT);
+		bindInventories();
+	}
 }

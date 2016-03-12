@@ -9,7 +9,7 @@ public class Contrary extends Ability
 {
 
     @Override
-    public void onUpdate(IPokemob mob)
+    public void onAgress(IPokemob mob, EntityLivingBase target)
     {
     }
 
@@ -27,7 +27,7 @@ public class Contrary extends Ability
     }
 
     @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
+    public void onUpdate(IPokemob mob)
     {
     }
 

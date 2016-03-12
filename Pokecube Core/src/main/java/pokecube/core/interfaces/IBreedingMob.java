@@ -10,35 +10,7 @@ import net.minecraft.entity.passive.EntityAnimal;
  * @author Thutmose */
 public interface IBreedingMob
 {
-    /** @return the byte sexe */
-    byte getSexe();
-
-    /** @param sexe
-     *            the byte sexe */
-    void setSexe(byte sexe);
-
-    /** Which entity is this pokemob trying to breed with
-     * 
-     * @return */
-    Entity getLover();
-
-    /** Sets the entity to try to breed with
-     * 
-     * @param lover */
-    void setLover(Entity lover);
-
-    /** resets the status of being in love */
-    void resetLoveStatus();
-
-    /** @return the timer indcating delay between looking for a mate. */
-    int getLoveTimer();
-
-    /** Sets the timer for the delay between looking for a mate.
-     * 
-     * @param value */
-    void setLoveTimer(int value);
-
-    boolean tryToBreed();
+    boolean canMate(EntityAnimal entityAnimal);
 
     /** Will be called by the mother before she lays to know what baby to put in
      * the egg.
@@ -48,9 +20,37 @@ public interface IBreedingMob
      * @return the pokedex number of the child */
     Object getChild(IBreedingMob male);
 
+    /** Which entity is this pokemob trying to breed with
+     * 
+     * @return */
+    Entity getLover();
+
+    /** @return the timer indcating delay between looking for a mate. */
+    int getLoveTimer();
+
     Vector<IBreedingMob> getMalesForBreeding();
 
-    boolean canMate(EntityAnimal entityAnimal);
+    /** @return the byte sexe */
+    byte getSexe();
 
     void mateWith(IBreedingMob male);
+
+    /** resets the status of being in love */
+    void resetLoveStatus();
+
+    /** Sets the entity to try to breed with
+     * 
+     * @param lover */
+    void setLover(Entity lover);
+
+    /** Sets the timer for the delay between looking for a mate.
+     * 
+     * @param value */
+    void setLoveTimer(int value);
+
+    /** @param sexe
+     *            the byte sexe */
+    void setSexe(byte sexe);
+
+    boolean tryToBreed();
 }

@@ -9,6 +9,24 @@ import pokecube.core.utils.PokeType;
 
 public class KillStats {
 
+	public static int getNumberUniqueKilled()
+	{
+		int count = 0;
+
+		for(HashMap<PokedexEntry, Integer> map: playerKills.values())
+		{
+			count += map.size();
+		}
+		return count;
+	}
+	public static int getNumberUniqueKilledBy(String playerName)
+	{
+		int count = 0;
+		HashMap<PokedexEntry, Integer> map = playerKills.get(playerName);
+		if(map==null) return 0;
+		count += map.size();
+		return count;
+	}
 	public static int getTotalNumberKilled()
 	{
 		int count = 0;
@@ -17,18 +35,6 @@ public class KillStats {
 			for(Integer i: map.values())
 			{
 				count += i;
-			}
-		}
-		return count;
-	}
-	public static int getTotalOfPokemobKilled(PokedexEntry type)
-	{
-		int count = 0;
-		for(HashMap<PokedexEntry, Integer> map: playerKills.values())
-		{
-			if(map.containsKey(type))
-			{
-				count += map.get(type);
 			}
 		}
 		return count;
@@ -53,22 +59,16 @@ public class KillStats {
 			count += map.get(type);
 		return count;
 	}
-	public static int getNumberUniqueKilled()
+	public static int getTotalOfPokemobKilled(PokedexEntry type)
 	{
 		int count = 0;
-
 		for(HashMap<PokedexEntry, Integer> map: playerKills.values())
 		{
-			count += map.size();
+			if(map.containsKey(type))
+			{
+				count += map.get(type);
+			}
 		}
-		return count;
-	}
-	public static int getNumberUniqueKilledBy(String playerName)
-	{
-		int count = 0;
-		HashMap<PokedexEntry, Integer> map = playerKills.get(playerName);
-		if(map==null) return 0;
-		count += map.size();
 		return count;
 	}
 	public static int getTotalOfTypeKilled(PokeType type)

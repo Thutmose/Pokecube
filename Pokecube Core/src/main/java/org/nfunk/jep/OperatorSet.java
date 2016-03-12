@@ -69,6 +69,26 @@ public class OperatorSet {
 	{
 	}
 	
+	public Operator getAdd() {return OP_ADD;	}
+
+	public Operator getAnd() {	return OP_AND;	}
+
+	public Operator getAssign() {return OP_ASSIGN;	}
+	public Operator getCross() {return OP_CROSS;	}
+	public Operator getDivide() {return OP_DIVIDE;	}
+	public Operator getDot() {return OP_DOT;	}
+	public Operator getEQ() {return OP_EQ;	}
+	public Operator getGE() {return OP_GE;	}
+	public Operator getGT() {return OP_GT;	}
+
+	public Operator getLE() {return OP_LE;	}
+	public Operator getList() {return OP_LIST;	}
+	public Operator getLT() {return OP_LT;	}
+	public Operator getMod() {return OP_MOD;	}
+	public Operator getMultiply() {return OP_MULTIPLY;	}
+	public Operator getNE() {return OP_NE;	}
+
+	public Operator getNot() {return OP_NOT;	}
 	/** Gets the list of operators. Note subclasses should override this method. */	
 	public Operator[] getOperators() {
 		Operator ops[] = new Operator[]{
@@ -78,35 +98,15 @@ public class OperatorSet {
 		OP_ASSIGN,OP_DOT,OP_CROSS,OP_LIST};
 		return ops;
 	}
-
+	public Operator getOr() {return OP_OR;	}
+	public Operator getPower() {return OP_POWER;	}
+	public Operator getSubtract() {return OP_SUBTRACT;	}
+	public Operator getUMinus() {return OP_UMINUS;	}
 	public void printOperators()
 	{
 		Operator ops[] = getOperators();
 		for(int i=0;i<ops.length;++i)
 			System.out.println(ops[i].toString());
 	}
-
-	public Operator getAdd() {return OP_ADD;	}
-	public Operator getSubtract() {return OP_SUBTRACT;	}
-	public Operator getUMinus() {return OP_UMINUS;	}
-	public Operator getMultiply() {return OP_MULTIPLY;	}
-	public Operator getDivide() {return OP_DIVIDE;	}
-	public Operator getMod() {return OP_MOD;	}
-	public Operator getPower() {return OP_POWER;	}
-
-	public Operator getEQ() {return OP_EQ;	}
-	public Operator getNE() {return OP_NE;	}
-	public Operator getGE() {return OP_GE;	}
-	public Operator getGT() {return OP_GT;	}
-	public Operator getLE() {return OP_LE;	}
-	public Operator getLT() {return OP_LT;	}
-
-	public Operator getAnd() {	return OP_AND;	}
-	public Operator getOr() {return OP_OR;	}
-	public Operator getNot() {return OP_NOT;	}
-	public Operator getAssign() {return OP_ASSIGN;	}
-	public Operator getDot() {return OP_DOT;	}
-	public Operator getCross() {return OP_CROSS;	}
-	public Operator getList() {return OP_LIST;	}
 
 }

@@ -79,6 +79,405 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
+    public void addEVs(byte[] evsToAdd)
+    {
+        byte[] evs = getEVs();
+        for (int i = 0; i < 6; i++)
+        {
+            if (evs[i] + 128 + evsToAdd[i] <= 255 && evs[i] + 128 + evsToAdd[i] >= 0)
+            {
+                evs[i] = (byte) (evs[i] + evsToAdd[i]);
+            }
+            else
+            {
+                evs[i] = (byte) 127;
+            }
+        }
+
+        int sum = 0;
+
+        for (byte ev : evs)
+        {
+            sum += ev + 128;
+        }
+
+        if (sum < 510)
+        {
+            setEVs(evs);
+        }
+    }
+
+    @Override
+    public void addHappiness(int toAdd)
+    {
+        this.bonusHappiness += toAdd;
+        this.dataWatcher.updateObject(HAPPYDW, Integer.valueOf(bonusHappiness));
+    }
+
+    @Override
+    protected void applyEntityAttributes()
+    {
+        super.applyEntityAttributes();
+        // Max Health - default 20.0D - min 0.0D - max Double.MAX_VALUE
+        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);// .setAttribute(20);
+        // Follow Range - default 32.0D - min 0.0D - max 2048.0D
+        this.getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(32);// .setAttribute(32.0D);
+        // Knockback Resistance - default 0.0D - min 0.0D - max 1.0D
+        this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(10);// .setAttribute(0.0D);
+        // Movement Speed - default 0.699D - min 0.0D - max Double.MAX_VALUE
+        moveSpeed = 0.6f;
+        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(moveSpeed);// .setAttribute(moveSpeed);
+        // Attack Damage - default 2.0D - min 0.0D - max Doubt.MAX_VALUE
+        // getEntityAttribute(SharedMonsterAttributes.attackDamage).setAttribute(2.0D);
+    }
+
+    @Override
+    /** Called when the entity is attacked. */
+    public boolean attackEntityFrom(DamageSource source, float amount)
+    {
+        if (!net.minecraftforge.common.ForgeHooks.onLivingAttack(this, source, amount)) return false;
+        if (this.isEntityInvulnerable(source))
+        {
+            return false;
+        }
+        else if (this.worldObj.isRemote)
+        {
+            return false;
+        }
+        else
+        {
+            this.entityAge = 0;
+
+            if (this.getHealth() <= 0.0F)
+            {
+                return false;
+            }
+            else if (source.isFireDamage() && this.isPotionActive(Potion.fireResistance))
+            {
+                return false;
+            }
+            else
+            {
+                if ((source == DamageSource.anvil || source == DamageSource.fallingBlock)
+                        && this.getEquipmentInSlot(4) != null)
+                {
+                    this.getEquipmentInSlot(4).damageItem((int) (amount * 4.0F + this.rand.nextFloat() * amount * 2.0F),
+                            this);
+                    amount *= 0.75F;
+                }
+
+                this.limbSwingAmount = 1.5F;
+                boolean flag = true;
+
+                if (this.hurtResistantTime > this.maxHurtResistantTime / 2.0F)
+                {
+                    if (amount <= this.lastDamage) { return false; }
+
+                    this.damageEntity(source, amount - this.lastDamage);
+                    this.lastDamage = amount;
+                    flag = false;
+                }
+                else
+                {
+                    this.lastDamage = amount;
+                    this.hurtResistantTime = this.maxHurtResistantTime;
+                    this.damageEntity(source, amount);
+                    this.hurtTime = this.maxHurtTime = 10;
+                }
+
+                this.attackedAtYaw = 0.0F;
+                Entity entity = source.getEntity();
+
+                if (entity != null)
+                {
+                    if (entity instanceof EntityLivingBase)
+                    {
+                        this.setRevengeTarget((EntityLivingBase) entity);
+                    }
+
+                    if (entity instanceof EntityPlayer)
+                    {
+                        this.recentlyHit = 100;
+                        this.attackingPlayer = (EntityPlayer) entity;
+                    }
+                    else if (entity instanceof IEntityOwnable)
+                    {
+                        IEntityOwnable entitywolf = (IEntityOwnable) entity;
+
+                        if (entitywolf.getOwner() != null)
+                        {
+                            this.recentlyHit = 100;
+                            this.attackingPlayer = null;
+                        }
+                    }
+                }
+
+                if (flag)
+                {
+                    this.worldObj.setEntityState(this, (byte) 2);
+
+                    if (source != DamageSource.drown)
+                    {
+                        this.setBeenAttacked();
+                    }
+
+                    if (entity != null)
+                    {
+                        double d1 = entity.posX - this.posX;
+                        double d0;
+
+                        for (d0 = entity.posZ - this.posZ; d1 * d1
+                                + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D)
+                        {
+                            d1 = (Math.random() - Math.random()) * 0.01D;
+                        }
+
+                        this.attackedAtYaw = (float) (MathHelper.atan2(d0, d1) * 180.0D / Math.PI
+                                - this.rotationYaw);
+                        // Reduces knockback from distanced moves
+                        if (source instanceof PokemobDamageSource)
+                        {
+                            if (!source.isProjectile())
+                            {
+                                this.knockBack(entity, amount, d1, d0);
+                            }
+                        }
+                        else
+                        {
+                            this.knockBack(entity, amount, d1, d0);
+                        }
+                    }
+                    else
+                    {
+                        this.attackedAtYaw = (int) (Math.random() * 2.0D) * 180;
+                    }
+                }
+
+                if (this.getHealth() <= 0.0F)
+                {
+                    String s = this.getDeathSound();
+
+                    if (flag && s != null)
+                    {
+                        this.playSound(s, this.getSoundVolume(), this.getSoundPitch());
+                    }
+
+                    this.onDeath(source);
+                }
+                else
+                {
+                    String s1 = this.getHurtSound();
+
+                    if (flag && s1 != null)
+                    {
+                        this.playSound(s1, this.getSoundVolume(), this.getSoundPitch());
+                    }
+                }
+
+                return true;
+            }
+        }
+    }
+
+    @Override
+    public Ability getAbility()
+    {
+        if (getPokemonAIState(MEGAFORME)) return getPokedexEntry().getAbility(0);
+        return ability;
+    }
+
+    @Override
+    public int[] getActualStats()
+    {
+        int[] stats = getBaseStats();
+        int level = getLevel();
+        byte[] evs = getEVs();
+        byte[] mods = getModifiers();
+        stats[0] = Tools.getHP(stats[0], ivs[0], evs[0], level);
+        for (int i = 1; i < stats.length; i++)
+        {
+            stats[i] = Tools.getStat(stats[i], ivs[i], evs[i], level, mods[i], getNature().getStatsMod()[i]);
+        }
+        return stats;
+    }
+
+    @Override
+    public float getAttackStrength()
+    {
+        int ATT = getPokedexEntry().getStatATT();
+        int ATTSPE = getPokedexEntry().getStatATTSPE();
+        float mult = getPokemonAIState(SHADOW) ? 2 : 1;
+
+        return mult * (Tools.getStat((ATT + ATTSPE) / 2, 0, 0, getLevel(), (getModifiers()[1] + getModifiers()[3]) / 2,
+                (nature.getStatsMod()[1] + nature.getStatsMod()[3]) / 2) / 3);
+    }
+
+    @Override
+    public int[] getBaseStats()
+    {
+        int[] stats = new int[6];
+        String[] sta = dataWatcher.getWatchableObjectString(STATSDW).split(",");
+        for (int i = 0; i < 6; i++)
+        {
+            stats[i] = Integer.parseInt(sta[i].trim());
+        }
+
+        if (stats[0] == 0)
+        {
+            setStats(getPokedexEntry().getStats());
+        }
+        return stats;
+    }
+
+    @Override
+    public int getBaseXP()
+    {
+        return getPokedexEntry().getBaseXP();
+    }
+
+    @Override
+    public int getCatchRate()
+    {
+        return getPokemonAIState(SHADOW) ? 0 : isAncient() ? 0 : getPokedexEntry().getCatchRate();
+    }
+
+    @Override
+    public byte[] getEVs()
+    {
+        int[] ints = new int[] { dataWatcher.getWatchableObjectInt(EVS1DW), dataWatcher.getWatchableObjectInt(EVS2DV) };
+        byte[] evs = PokecubeSerializer.intArrayAsByteArray(ints);
+        return evs;
+    }
+
+    @Override
+    public int getExp()
+    {
+        return dataWatcher.getWatchableObjectInt(EXPDW);
+    }
+
+    @Override
+    public int getExperienceMode()
+    {
+        return getPokedexEntry().getEvolutionMode();
+    }
+
+    @Override
+    public int getHappiness()
+    {
+        bonusHappiness = dataWatcher.getWatchableObjectInt(HAPPYDW);
+        bonusHappiness = Math.max(bonusHappiness, -getPokedexEntry().getHappiness());
+        bonusHappiness = Math.min(bonusHappiness, 255 - getPokedexEntry().getHappiness());
+        return bonusHappiness + getPokedexEntry().getHappiness();
+    }
+
+    @Override
+    public byte[] getIVs()
+    {
+        return this.ivs;
+    }
+
+    @Override
+    public int getLevel()
+    {
+        return Tools.xpToLevel(getExperienceMode(), getExp());
+    }
+
+    @Override
+    public byte[] getModifiers()
+    {
+        return PokecubeSerializer.intAsModifierArray(dataWatcher.getWatchableObjectInt(STATMODDW));
+    }
+
+    @Override
+    public Nature getNature()
+    {
+        return nature;
+    }
+
+    @Override
+    public PokedexEntry getPokedexEntry()
+    {
+        if (entry == null)
+        {
+            entry = Pokedex.getInstance().getEntry(getPokedexNb());
+        }
+        return entry;
+    }
+
+    @Override
+    public Integer getPokedexNb()
+    {
+        if (pokedexNb == 0)
+        {
+            if (getClass().getName().contains("GenericPokemob"))
+            {
+                String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
+                PokedexEntry entry = Database.getEntry(Integer.parseInt(num));
+                if (entry != null && entry.getPokedexNb() > 0)
+                {
+                    pokedexNb = entry.getPokedexNb();
+                    init(entry.getPokedexNb());
+                    return pokedexNb;
+                }
+            }
+            System.out.println(this.getClass());
+            Thread.dumpStack();
+            this.setDead();
+            return 0;
+        }
+        return pokedexNb;
+    }
+
+    @Override
+    public String getPokemonDisplayName()
+    {
+        if (this.isAncient())
+            return "Ancient " + Database.getEntry(getPokedexEntry().getBaseName()).getTranslatedName();
+        else if (getPokemonNickname() == null || getPokemonNickname().isEmpty())
+        {
+            return getPokedexEntry().getTranslatedName();
+        }
+        else
+        {
+            return getPokemonNickname();
+        }
+    }
+
+    @Override
+    public String getPokemonNickname()
+    {
+        return dataWatcher.getWatchableObjectString(NICKNAMEDW);
+    }
+
+    @Override
+    public int[] getRGBA()
+    {
+        return rgba;
+    }
+
+    @Override
+    public PokeType getType1()
+    {
+        if (transformedTo instanceof IPokemob)
+        {
+            IPokemob to = (IPokemob) transformedTo;
+            return to.getType1();
+        }
+        return getPokedexEntry().getType1();
+    }
+
+    @Override
+    public PokeType getType2()
+    {
+        if (transformedTo instanceof IPokemob)
+        {
+            IPokemob to = (IPokemob) transformedTo;
+            return to.getType2();
+        }
+        return getPokedexEntry().getType2();
+    }
+
+    @Override
     public void init(int nb)
     {
         super.init(nb);
@@ -106,20 +505,94 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    protected void applyEntityAttributes()
+    public boolean isAncient()
     {
-        super.applyEntityAttributes();
-        // Max Health - default 20.0D - min 0.0D - max Double.MAX_VALUE
-        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);// .setAttribute(20);
-        // Follow Range - default 32.0D - min 0.0D - max 2048.0D
-        this.getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(32);// .setAttribute(32.0D);
-        // Knockback Resistance - default 0.0D - min 0.0D - max 1.0D
-        this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(10);// .setAttribute(0.0D);
-        // Movement Speed - default 0.699D - min 0.0D - max Double.MAX_VALUE
-        moveSpeed = 0.6f;
-        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(moveSpeed);// .setAttribute(moveSpeed);
-        // Attack Damage - default 2.0D - min 0.0D - max Doubt.MAX_VALUE
-        // getEntityAttribute(SharedMonsterAttributes.attackDamage).setAttribute(2.0D);
+        return isAncient;
+    }
+
+    @Override
+    public boolean isEntityInvulnerable(DamageSource source)
+    {
+        if (source instanceof PokemobDamageSource)
+        {
+            Move_Base move = ((PokemobDamageSource) source).move;
+            return PokeType.getAttackEfficiency(move.getType(), getType1(), getType2()) <= 0;
+        }
+
+        return super.isEntityInvulnerable(source);
+    }
+
+    @Override
+    public boolean isShadow()
+    {
+        boolean isShadow = getPokemonAIState(SHADOW);
+        if (isShadow && !wasShadow)
+        {
+            wasShadow = true;
+        }
+        return isShadow;
+    }
+
+    @Override
+    public boolean isShiny()
+    {
+        return shiny;
+    }
+
+    @Override
+    public boolean isType(PokeType steel)
+    {
+        return this.getType1() == steel || getType2() == steel;
+    }
+
+    /** This method gets called when the entity kills another one. */
+    @Override
+    public void onKillEntity(EntityLivingBase attacked)
+    {
+        IPokemob attacker = this;
+
+        if (attacked instanceof IPokemob && attacked.getHealth() <= 0)
+        {
+            KillEvent event = new KillEvent(attacker, (IPokemob) attacked);
+
+            MinecraftForge.EVENT_BUS.post(event);
+            if (event.isCanceled() || ((IPokemob) attacked).isShadow())
+            {
+
+            }
+            else if (!(((IPokemob) attacked).getPokemonAIState(TAMED) && !PokecubeMod.core.getConfig().pvpExp))
+            {
+                attacker.setExp(
+                        attacker.getExp()
+                                + Tools.getExp(1, ((IPokemob) attacked).getBaseXP(), ((IPokemob) attacked).getLevel()),
+                        true, false);
+                byte[] evsToAdd = Pokedex.getInstance().getEntry(((IPokemob) attacked).getPokedexNb()).getEVs();
+                attacker.addEVs(evsToAdd);
+            }
+            Entity targetOwner = ((IPokemob) attacked).getPokemonOwner();
+
+            if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner
+                    && !PokecubeMod.pokemobsDamagePlayers)
+            {
+                ((EntityCreature) attacker).setAttackTarget((EntityLivingBase) targetOwner);
+            }
+            else
+            {
+                ((EntityCreature) attacker).setAttackTarget(null);
+            }
+            if (this.getPokedexEntry().isFood(((IPokemob) attacked).getPokedexEntry())
+                    && this.getPokemonAIState(HUNTING))
+            {
+                ((EntityHungryPokemob) this).eat(getAttackTarget());
+                ((EntityPokemob) attacked).wasEaten = true;
+                this.setPokemonAIState(HUNTING, false);
+                getNavigator().clearPathEntity();
+            }
+        }
+        else
+        {
+            ((EntityCreature) attacker).setAttackTarget(null);
+        }
     }
 
     @Override
@@ -131,27 +604,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             HappinessType.applyHappiness(this, HappinessType.TIME);
         }
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
-    {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setInteger(PokecubeSerializer.EXP, getExp());
-        nbttagcompound.setString(PokecubeSerializer.NICKNAME, getPokemonNickname());
-        nbttagcompound.setLong(PokecubeSerializer.EVS, PokecubeSerializer.byteArrayAsLong(getEVs()));
-        nbttagcompound.setLong(PokecubeSerializer.IVS, PokecubeSerializer.byteArrayAsLong(getIVs()));
-        byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),
-                (byte) (rgba[3] - 128) };
-        nbttagcompound.setByteArray("colours", rgbaBytes);
-        nbttagcompound.setBoolean("shiny", shiny);
-        nbttagcompound.setByte("nature", (byte) nature.ordinal());
-        nbttagcompound.setInteger("happiness", bonusHappiness);
-        if (ability != null) nbttagcompound.setString("ability", ability.toString());
-        nbttagcompound.setBoolean("isAncient", isAncient);
-        nbttagcompound.setBoolean("wasShadow", wasShadow);
-        nbttagcompound.setString("forme", forme);
-        if (pokedexNb == 132) nbttagcompound.setBoolean("dittotag", getEntityData().getBoolean("dittotag"));
     }
 
     @Override
@@ -246,109 +698,54 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         }
     }
 
+    /** Use this for anything that does not change or need to be updated. */
     @Override
-    public PokeType getType1()
+    public void readSpawnData(ByteBuf data)
     {
-        if (transformedTo instanceof IPokemob)
+        int num = data.readInt();
+        byte[] arr = new byte[num];
+        for (int i = 0; i < num; i++)
+            arr[i] = data.readByte();
+        forme = new String(arr);
+        shiny = data.readBoolean();
+        wasShadow = data.readBoolean();
+        isAncient = data.readBoolean();
+        nature = Nature.values()[data.readByte()];
+        this.changeForme(forme);
+        for (int i = 0; i < ivs.length; i++)
         {
-            IPokemob to = (IPokemob) transformedTo;
-            return to.getType1();
-        }
-        return getPokedexEntry().getType1();
-    }
-
-    @Override
-    public PokeType getType2()
-    {
-        if (transformedTo instanceof IPokemob)
-        {
-            IPokemob to = (IPokemob) transformedTo;
-            return to.getType2();
-        }
-        return getPokedexEntry().getType2();
-    }
-
-    @Override
-    public boolean isType(PokeType steel)
-    {
-        return this.getType1() == steel || getType2() == steel;
-    }
-
-    @Override
-    public float getAttackStrength()
-    {
-        int ATT = getPokedexEntry().getStatATT();
-        int ATTSPE = getPokedexEntry().getStatATTSPE();
-        float mult = getPokemonAIState(SHADOW) ? 2 : 1;
-
-        return mult * (Tools.getStat((ATT + ATTSPE) / 2, 0, 0, getLevel(), (getModifiers()[1] + getModifiers()[3]) / 2,
-                (nature.getStatsMod()[1] + nature.getStatsMod()[3]) / 2) / 3);
-    }
-
-    private void setMaxHealth(float maxHealth)
-    {
-        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth);// .setAttribute(maxHealth);
-        // dataWatcher.updateObject(28, maxHealth);
-    }
-
-    @Override
-    public int getHappiness()
-    {
-        bonusHappiness = dataWatcher.getWatchableObjectInt(HAPPYDW);
-        bonusHappiness = Math.max(bonusHappiness, -getPokedexEntry().getHappiness());
-        bonusHappiness = Math.min(bonusHappiness, 255 - getPokedexEntry().getHappiness());
-        return bonusHappiness + getPokedexEntry().getHappiness();
-    }
-
-    @Override
-    public void addHappiness(int toAdd)
-    {
-        this.bonusHappiness += toAdd;
-        this.dataWatcher.updateObject(HAPPYDW, Integer.valueOf(bonusHappiness));
-    }
-
-    @Override
-    public int[] getBaseStats()
-    {
-        int[] stats = new int[6];
-        String[] sta = dataWatcher.getWatchableObjectString(STATSDW).split(",");
-        for (int i = 0; i < 6; i++)
-        {
-            stats[i] = Integer.parseInt(sta[i].trim());
+            ivs[i] = data.readByte();
         }
 
-        if (stats[0] == 0)
+        boolean tags = data.readBoolean();
+        if (tags)
         {
-            setStats(getPokedexEntry().getStats());
+            PacketBuffer buffer = new PacketBuffer(data);
+            try
+            {
+                NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
+                for (Object o : tag.getKeySet())// .func_150296_c())
+                {
+                    getEntityData().setTag((String) o, tag.getTag((String) o));
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
-        return stats;
     }
 
     @Override
-    public int[] getActualStats()
+    public void setAbility(Ability ability)
     {
-        int[] stats = getBaseStats();
-        int level = getLevel();
-        byte[] evs = getEVs();
-        byte[] mods = getModifiers();
-        stats[0] = Tools.getHP(stats[0], ivs[0], evs[0], level);
-        for (int i = 1; i < stats.length; i++)
-        {
-            stats[i] = Tools.getStat(stats[i], ivs[i], evs[i], level, mods[i], getNature().getStatsMod()[i]);
-        }
-        return stats;
+        this.ability = ability;
     }
 
     @Override
-    public byte[] getModifiers()
+    public void setAncient(boolean ancient)
     {
-        return PokecubeSerializer.intAsModifierArray(dataWatcher.getWatchableObjectInt(STATMODDW));
-    }
-
-    @Override
-    public void setModifiers(byte[] modifiers)
-    {
-        dataWatcher.updateObject(STATMODDW, PokecubeSerializer.modifierArrayAsInt(modifiers));
+        isAncient = ancient;
     }
 
     @Override
@@ -357,205 +754,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         int[] ints = PokecubeSerializer.byteArrayAsIntArray(evs);
         dataWatcher.updateObject(EVS1DW, ints[0]);
         dataWatcher.updateObject(EVS2DV, ints[1]);
-    }
-
-    @Override
-    public byte[] getEVs()
-    {
-        int[] ints = new int[] { dataWatcher.getWatchableObjectInt(EVS1DW), dataWatcher.getWatchableObjectInt(EVS2DV) };
-        byte[] evs = PokecubeSerializer.intArrayAsByteArray(ints);
-        return evs;
-    }
-
-    @Override
-    public int[] getRGBA()
-    {
-        return rgba;
-    }
-
-    @Override
-    public void setRGBA(int... colours)
-    {
-        for (int i = 0; i < colours.length && i < rgba.length; i++)
-        {
-            rgba[i] = colours[i];
-        }
-    }
-
-    @Override
-    public void addEVs(byte[] evsToAdd)
-    {
-        byte[] evs = getEVs();
-        for (int i = 0; i < 6; i++)
-        {
-            if (evs[i] + 128 + evsToAdd[i] <= 255 && evs[i] + 128 + evsToAdd[i] >= 0)
-            {
-                evs[i] = (byte) (evs[i] + evsToAdd[i]);
-            }
-            else
-            {
-                evs[i] = (byte) 127;
-            }
-        }
-
-        int sum = 0;
-
-        for (byte ev : evs)
-        {
-            sum += ev + 128;
-        }
-
-        if (sum < 510)
-        {
-            setEVs(evs);
-        }
-    }
-
-    @Override
-    public void setIVs(byte[] ivs)
-    {
-        this.ivs = ivs;
-    }
-
-    @Override
-    public byte[] getIVs()
-    {
-        return this.ivs;
-    }
-
-    /** Handles health update.
-     * 
-     * @param level */
-    private void setLevel(int level)
-    {
-        float old = getMaxHealth();
-        float maxHealth = Tools.getHP(getPokedexEntry().getStatHP(), getIVs()[0], getEVs()[0], level);
-        float health = getHealth();
-
-        // actually we don't really set the level.
-        if (maxHealth > old)
-        {
-            float damage = old - health;
-            health = maxHealth - damage;
-
-            if (health > maxHealth)
-            {
-                health = maxHealth;
-            }
-        }
-
-        setMaxHealth(maxHealth);
-        setHealth(health);
-    }
-
-    @Override
-    public int getLevel()
-    {
-        return Tools.xpToLevel(getExperienceMode(), getExp());
-    }
-
-    @Override
-    public Integer getPokedexNb()
-    {
-        if (pokedexNb == 0)
-        {
-            if (getClass().getName().contains("GenericPokemob"))
-            {
-                String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
-                PokedexEntry entry = Database.getEntry(Integer.parseInt(num));
-                if (entry != null && entry.getPokedexNb() > 0)
-                {
-                    pokedexNb = entry.getPokedexNb();
-                    init(entry.getPokedexNb());
-                    return pokedexNb;
-                }
-            }
-            System.out.println(this.getClass());
-            Thread.dumpStack();
-            this.setDead();
-            return 0;
-        }
-        return pokedexNb;
-    }
-
-    @Override
-    public PokedexEntry getPokedexEntry()
-    {
-        if (entry == null)
-        {
-            entry = Pokedex.getInstance().getEntry(getPokedexNb());
-        }
-        return entry;
-    }
-
-    @Override
-    public void setPokedexEntry(PokedexEntry newEntry)
-    {
-        entry = newEntry;
-        this.pokedexNb = entry.getPokedexNb();
-        this.setStats(entry.getStats());
-        if (worldObj != null) this.setSize(this.getSize());
-    }
-
-    @Override
-    public String getPokemonDisplayName()
-    {
-        if (this.isAncient())
-            return "Ancient " + Database.getEntry(getPokedexEntry().getBaseName()).getTranslatedName();
-        else if (getPokemonNickname() == null || getPokemonNickname().isEmpty())
-        {
-            return getPokedexEntry().getTranslatedName();
-        }
-        else
-        {
-            return getPokemonNickname();
-        }
-    }
-
-    @Override
-    public void setPokemonNickname(String nickname)
-    {
-        if (PokecubeCore.isOnClientSide() && nickname != getPokemonNickname())
-        {
-            try
-            {
-                byte[] string = nickname.getBytes();
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6 + string.length));
-                buffer.writeByte(MessageServer.NICKNAME);
-                buffer.writeInt(getEntityId());
-                buffer.writeByte(string.length);
-                buffer.writeByteArray(string);
-                MessageServer packet = new MessageServer(buffer);
-                PokecubePacketHandler.sendToServer(packet);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        }
-        else
-        {
-            if (getPokedexEntry().getTranslatedName().equals(nickname))
-            {
-                dataWatcher.updateObject(NICKNAMEDW, "");
-            }
-            else
-            {
-                dataWatcher.updateObject(NICKNAMEDW, nickname);
-            }
-        }
-    }
-
-    @Override
-    public String getPokemonNickname()
-    {
-        return dataWatcher.getWatchableObjectString(NICKNAMEDW);
-    }
-
-    @Override
-    public int getExp()
-    {
-        return dataWatcher.getWatchableObjectInt(EXPDW);
     }
 
     @Override
@@ -596,167 +794,96 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         }
     }
 
-    /** This method gets called when the entity kills another one. */
     @Override
-    public void onKillEntity(EntityLivingBase attacked)
+    public void setIVs(byte[] ivs)
     {
-        IPokemob attacker = this;
+        this.ivs = ivs;
+    }
 
-        if (attacked instanceof IPokemob && attacked.getHealth() <= 0)
+    /** Handles health update.
+     * 
+     * @param level */
+    private void setLevel(int level)
+    {
+        float old = getMaxHealth();
+        float maxHealth = Tools.getHP(getPokedexEntry().getStatHP(), getIVs()[0], getEVs()[0], level);
+        float health = getHealth();
+
+        // actually we don't really set the level.
+        if (maxHealth > old)
         {
-            KillEvent event = new KillEvent(attacker, (IPokemob) attacked);
+            float damage = old - health;
+            health = maxHealth - damage;
 
-            MinecraftForge.EVENT_BUS.post(event);
-            if (event.isCanceled() || ((IPokemob) attacked).isShadow())
+            if (health > maxHealth)
             {
+                health = maxHealth;
+            }
+        }
 
-            }
-            else if (!(((IPokemob) attacked).getPokemonAIState(TAMED) && !PokecubeMod.core.getConfig().pvpExp))
-            {
-                attacker.setExp(
-                        attacker.getExp()
-                                + Tools.getExp(1, ((IPokemob) attacked).getBaseXP(), ((IPokemob) attacked).getLevel()),
-                        true, false);
-                byte[] evsToAdd = Pokedex.getInstance().getEntry(((IPokemob) attacked).getPokedexNb()).getEVs();
-                attacker.addEVs(evsToAdd);
-            }
-            Entity targetOwner = ((IPokemob) attacked).getPokemonOwner();
+        setMaxHealth(maxHealth);
+        setHealth(health);
+    }
 
-            if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner
-                    && !PokecubeMod.pokemobsDamagePlayers)
+    private void setMaxHealth(float maxHealth)
+    {
+        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth);// .setAttribute(maxHealth);
+        // dataWatcher.updateObject(28, maxHealth);
+    }
+
+    @Override
+    public void setModifiers(byte[] modifiers)
+    {
+        dataWatcher.updateObject(STATMODDW, PokecubeSerializer.modifierArrayAsInt(modifiers));
+    }
+
+    @Override
+    public void setNature(Nature nature)
+    {
+        this.nature = nature;
+    }
+
+    @Override
+    public void setPokedexEntry(PokedexEntry newEntry)
+    {
+        entry = newEntry;
+        this.pokedexNb = entry.getPokedexNb();
+        this.setStats(entry.getStats());
+        if (worldObj != null) this.setSize(this.getSize());
+    }
+
+    @Override
+    public void setPokemonNickname(String nickname)
+    {
+        if (PokecubeCore.isOnClientSide() && nickname != getPokemonNickname())
+        {
+            try
             {
-                ((EntityCreature) attacker).setAttackTarget((EntityLivingBase) targetOwner);
+                byte[] string = nickname.getBytes();
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6 + string.length));
+                buffer.writeByte(MessageServer.NICKNAME);
+                buffer.writeInt(getEntityId());
+                buffer.writeByte(string.length);
+                buffer.writeByteArray(string);
+                MessageServer packet = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(packet);
             }
-            else
+            catch (Exception ex)
             {
-                ((EntityCreature) attacker).setAttackTarget(null);
-            }
-            if (this.getPokedexEntry().isFood(((IPokemob) attacked).getPokedexEntry())
-                    && this.getPokemonAIState(HUNTING))
-            {
-                ((EntityHungryPokemob) this).eat(getAttackTarget());
-                ((EntityPokemob) attacked).wasEaten = true;
-                this.setPokemonAIState(HUNTING, false);
-                getNavigator().clearPathEntity();
+                ex.printStackTrace();
             }
         }
         else
         {
-            ((EntityCreature) attacker).setAttackTarget(null);
-        }
-    }
-
-    @Override
-    public void setStats(int[] stats)
-    {
-        String sta = stats[0] + "," + stats[1] + "," + stats[2] + "," + stats[3] + "," + stats[4] + "," + stats[5];
-        dataWatcher.updateObject(STATSDW, sta);
-    }
-
-    @Override
-    public int getBaseXP()
-    {
-        return getPokedexEntry().getBaseXP();
-    }
-
-    @Override
-    public int getExperienceMode()
-    {
-        return getPokedexEntry().getEvolutionMode();
-    }
-
-    @Override
-    public int getCatchRate()
-    {
-        return getPokemonAIState(SHADOW) ? 0 : isAncient() ? 0 : getPokedexEntry().getCatchRate();
-    }
-
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void writeSpawnData(ByteBuf data)
-    {
-        data.writeInt(forme.getBytes().length);
-        data.writeBytes(forme.getBytes());
-        data.writeBoolean(shiny);
-        data.writeBoolean(wasShadow);
-        data.writeBoolean(isAncient);
-        data.writeByte((byte) nature.ordinal());
-        data.writeBytes(ivs);
-        boolean noTags = getEntityData().hasNoTags();
-        data.writeBoolean(!noTags);
-        PacketBuffer buffer = new PacketBuffer(data);
-        buffer.writeNBTTagCompoundToBuffer(getEntityData());
-    }
-
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void readSpawnData(ByteBuf data)
-    {
-        int num = data.readInt();
-        byte[] arr = new byte[num];
-        for (int i = 0; i < num; i++)
-            arr[i] = data.readByte();
-        forme = new String(arr);
-        shiny = data.readBoolean();
-        wasShadow = data.readBoolean();
-        isAncient = data.readBoolean();
-        nature = Nature.values()[data.readByte()];
-        this.changeForme(forme);
-        for (int i = 0; i < ivs.length; i++)
-        {
-            ivs[i] = data.readByte();
-        }
-
-        boolean tags = data.readBoolean();
-        if (tags)
-        {
-            PacketBuffer buffer = new PacketBuffer(data);
-            try
+            if (getPokedexEntry().getTranslatedName().equals(nickname))
             {
-                NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
-                for (Object o : tag.getKeySet())// .func_150296_c())
-                {
-                    getEntityData().setTag((String) o, tag.getTag((String) o));
-                }
+                dataWatcher.updateObject(NICKNAMEDW, "");
             }
-            catch (IOException e)
+            else
             {
-                e.printStackTrace();
+                dataWatcher.updateObject(NICKNAMEDW, nickname);
             }
         }
-    }
-
-    @Override
-    public boolean isShadow()
-    {
-        boolean isShadow = getPokemonAIState(SHADOW);
-        if (isShadow && !wasShadow)
-        {
-            wasShadow = true;
-        }
-        return isShadow;
-    }
-
-    @Override
-    public void setShadow(boolean shadow)
-    {
-        setPokemonAIState(SHADOW, shadow);
-        if (shadow && !wasShadow)
-        {
-            wasShadow = true;
-        }
-    }
-
-    @Override
-    public boolean isAncient()
-    {
-        return isAncient;
-    }
-
-    @Override
-    public void setAncient(boolean ancient)
-    {
-        isAncient = ancient;
     }
 
     void setRandomColour()
@@ -805,199 +932,72 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
+    public void setRGBA(int... colours)
+    {
+        for (int i = 0; i < colours.length && i < rgba.length; i++)
+        {
+            rgba[i] = colours[i];
+        }
+    }
+
+    @Override
+    public void setShadow(boolean shadow)
+    {
+        setPokemonAIState(SHADOW, shadow);
+        if (shadow && !wasShadow)
+        {
+            wasShadow = true;
+        }
+    }
+
+    @Override
     public void setShiny(boolean shiny)
     {
         this.shiny = shiny;
     }
 
     @Override
-    public boolean isShiny()
+    public void setStats(int[] stats)
     {
-        return shiny;
+        String sta = stats[0] + "," + stats[1] + "," + stats[2] + "," + stats[3] + "," + stats[4] + "," + stats[5];
+        dataWatcher.updateObject(STATSDW, sta);
     }
 
     @Override
-    public Nature getNature()
+    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
-        return nature;
+        super.writeEntityToNBT(nbttagcompound);
+        nbttagcompound.setInteger(PokecubeSerializer.EXP, getExp());
+        nbttagcompound.setString(PokecubeSerializer.NICKNAME, getPokemonNickname());
+        nbttagcompound.setLong(PokecubeSerializer.EVS, PokecubeSerializer.byteArrayAsLong(getEVs()));
+        nbttagcompound.setLong(PokecubeSerializer.IVS, PokecubeSerializer.byteArrayAsLong(getIVs()));
+        byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),
+                (byte) (rgba[3] - 128) };
+        nbttagcompound.setByteArray("colours", rgbaBytes);
+        nbttagcompound.setBoolean("shiny", shiny);
+        nbttagcompound.setByte("nature", (byte) nature.ordinal());
+        nbttagcompound.setInteger("happiness", bonusHappiness);
+        if (ability != null) nbttagcompound.setString("ability", ability.toString());
+        nbttagcompound.setBoolean("isAncient", isAncient);
+        nbttagcompound.setBoolean("wasShadow", wasShadow);
+        nbttagcompound.setString("forme", forme);
+        if (pokedexNb == 132) nbttagcompound.setBoolean("dittotag", getEntityData().getBoolean("dittotag"));
     }
 
+    /** Use this for anything that does not change or need to be updated. */
     @Override
-    public void setNature(Nature nature)
+    public void writeSpawnData(ByteBuf data)
     {
-        this.nature = nature;
-    }
-
-    @Override
-    /** Called when the entity is attacked. */
-    public boolean attackEntityFrom(DamageSource source, float amount)
-    {
-        if (!net.minecraftforge.common.ForgeHooks.onLivingAttack(this, source, amount)) return false;
-        if (this.isEntityInvulnerable(source))
-        {
-            return false;
-        }
-        else if (this.worldObj.isRemote)
-        {
-            return false;
-        }
-        else
-        {
-            this.entityAge = 0;
-
-            if (this.getHealth() <= 0.0F)
-            {
-                return false;
-            }
-            else if (source.isFireDamage() && this.isPotionActive(Potion.fireResistance))
-            {
-                return false;
-            }
-            else
-            {
-                if ((source == DamageSource.anvil || source == DamageSource.fallingBlock)
-                        && this.getEquipmentInSlot(4) != null)
-                {
-                    this.getEquipmentInSlot(4).damageItem((int) (amount * 4.0F + this.rand.nextFloat() * amount * 2.0F),
-                            this);
-                    amount *= 0.75F;
-                }
-
-                this.limbSwingAmount = 1.5F;
-                boolean flag = true;
-
-                if ((float) this.hurtResistantTime > (float) this.maxHurtResistantTime / 2.0F)
-                {
-                    if (amount <= this.lastDamage) { return false; }
-
-                    this.damageEntity(source, amount - this.lastDamage);
-                    this.lastDamage = amount;
-                    flag = false;
-                }
-                else
-                {
-                    this.lastDamage = amount;
-                    this.hurtResistantTime = this.maxHurtResistantTime;
-                    this.damageEntity(source, amount);
-                    this.hurtTime = this.maxHurtTime = 10;
-                }
-
-                this.attackedAtYaw = 0.0F;
-                Entity entity = source.getEntity();
-
-                if (entity != null)
-                {
-                    if (entity instanceof EntityLivingBase)
-                    {
-                        this.setRevengeTarget((EntityLivingBase) entity);
-                    }
-
-                    if (entity instanceof EntityPlayer)
-                    {
-                        this.recentlyHit = 100;
-                        this.attackingPlayer = (EntityPlayer) entity;
-                    }
-                    else if (entity instanceof IEntityOwnable)
-                    {
-                        IEntityOwnable entitywolf = (IEntityOwnable) entity;
-
-                        if (entitywolf.getOwner() != null)
-                        {
-                            this.recentlyHit = 100;
-                            this.attackingPlayer = null;
-                        }
-                    }
-                }
-
-                if (flag)
-                {
-                    this.worldObj.setEntityState(this, (byte) 2);
-
-                    if (source != DamageSource.drown)
-                    {
-                        this.setBeenAttacked();
-                    }
-
-                    if (entity != null)
-                    {
-                        double d1 = entity.posX - this.posX;
-                        double d0;
-
-                        for (d0 = entity.posZ - this.posZ; d1 * d1
-                                + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D)
-                        {
-                            d1 = (Math.random() - Math.random()) * 0.01D;
-                        }
-
-                        this.attackedAtYaw = (float) (MathHelper.atan2(d0, d1) * 180.0D / Math.PI
-                                - (double) this.rotationYaw);
-                        // Reduces knockback from distanced moves
-                        if (source instanceof PokemobDamageSource)
-                        {
-                            if (!source.isProjectile())
-                            {
-                                this.knockBack(entity, amount, d1, d0);
-                            }
-                        }
-                        else
-                        {
-                            this.knockBack(entity, amount, d1, d0);
-                        }
-                    }
-                    else
-                    {
-                        this.attackedAtYaw = (float) ((int) (Math.random() * 2.0D) * 180);
-                    }
-                }
-
-                if (this.getHealth() <= 0.0F)
-                {
-                    String s = this.getDeathSound();
-
-                    if (flag && s != null)
-                    {
-                        this.playSound(s, this.getSoundVolume(), this.getSoundPitch());
-                    }
-
-                    this.onDeath(source);
-                }
-                else
-                {
-                    String s1 = this.getHurtSound();
-
-                    if (flag && s1 != null)
-                    {
-                        this.playSound(s1, this.getSoundVolume(), this.getSoundPitch());
-                    }
-                }
-
-                return true;
-            }
-        }
-    }
-
-    @Override
-    public boolean isEntityInvulnerable(DamageSource source)
-    {
-        if (source instanceof PokemobDamageSource)
-        {
-            Move_Base move = ((PokemobDamageSource) source).move;
-            return PokeType.getAttackEfficiency(move.getType(), getType1(), getType2()) <= 0;
-        }
-
-        return super.isEntityInvulnerable(source);
-    }
-
-    @Override
-    public Ability getAbility()
-    {
-        if (getPokemonAIState(MEGAFORME)) return getPokedexEntry().getAbility(0);
-        return ability;
-    }
-
-    @Override
-    public void setAbility(Ability ability)
-    {
-        this.ability = ability;
+        data.writeInt(forme.getBytes().length);
+        data.writeBytes(forme.getBytes());
+        data.writeBoolean(shiny);
+        data.writeBoolean(wasShadow);
+        data.writeBoolean(isAncient);
+        data.writeByte((byte) nature.ordinal());
+        data.writeBytes(ivs);
+        boolean noTags = getEntityData().hasNoTags();
+        data.writeBoolean(!noTags);
+        PacketBuffer buffer = new PacketBuffer(data);
+        buffer.writeNBTTagCompoundToBuffer(getEntityData());
     }
 }

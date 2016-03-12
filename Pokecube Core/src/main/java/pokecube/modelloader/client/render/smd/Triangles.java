@@ -12,32 +12,6 @@ import pokecube.modelloader.client.render.smd.Skeleton.BoneVertex;
 
 public class Triangles
 {
-    ArrayList<Triangle> triangles = new ArrayList<>();
-    final SMDModel      model;
-
-    public Triangles(SMDModel model)
-    {
-        this.model = model;
-    }
-
-    public void render()
-    {
-        GL11.glPushMatrix();
-        GL11.glBegin(GL11.GL_TRIANGLES);
-        boolean smooth = true;
-        for (Triangle t : triangles)
-        {
-            if (t != null)
-            {
-                t.preRender();
-                t.addForRender(smooth);
-                t.postRender();
-            }
-        }
-        GL11.glEnd();
-        GL11.glPopMatrix();
-    }
-
     public static class Triangle
     {
         final String        material;
@@ -54,14 +28,25 @@ public class Triangles
             this.material = material;
         }
 
-        public void preRender()
+        public void addForRender(boolean smoothShading)
         {
-
-        }
-
-        public void postRender()
-        {
-
+            if ((!smoothShading) && (this.faceNormal == null))
+            {
+                calculateFaceNormal();
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                GL11.glTexCoord2f(this.uvs[i].u, this.uvs[i].v);
+                if (!smoothShading)
+                {
+                    GL11.glNormal3f(this.faceNormal.x, this.faceNormal.y, this.faceNormal.z);
+                }
+                else
+                {
+                    GL11.glNormal3f(vertices[i].xn, vertices[i].yn, vertices[i].zn);
+                }
+                GL11.glVertex3d(vertices[i].x, vertices[i].y, vertices[i].z);
+            }
         }
 
         public void addVertex(String line)
@@ -90,27 +75,6 @@ public class Triangles
             toAdd++;
         }
 
-        public void addForRender(boolean smoothShading)
-        {
-            if ((!smoothShading) && (this.faceNormal == null))
-            {
-                calculateFaceNormal();
-            }
-            for (int i = 0; i < 3; i++)
-            {
-                GL11.glTexCoord2f(this.uvs[i].u, this.uvs[i].v);
-                if (!smoothShading)
-                {
-                    GL11.glNormal3f(this.faceNormal.x, this.faceNormal.y, this.faceNormal.z);
-                }
-                else
-                {
-                    GL11.glNormal3f(vertices[i].xn, vertices[i].yn, vertices[i].zn);
-                }
-                GL11.glVertex3d(vertices[i].x, vertices[i].y, vertices[i].z);
-            }
-        }
-
         public void calculateFaceNormal()
         {
             Vector3f v1, v2, v3;
@@ -127,10 +91,47 @@ public class Triangles
             faceNormal = c;
         }
 
+        public void postRender()
+        {
+
+        }
+
+        public void preRender()
+        {
+
+        }
+
+        @Override
         public String toString()
         {
             if (faceNormal == null) calculateFaceNormal();
             return Arrays.toString(vertices) + " " + faceNormal;
         }
+    }
+    ArrayList<Triangle> triangles = new ArrayList<>();
+
+    final SMDModel      model;
+
+    public Triangles(SMDModel model)
+    {
+        this.model = model;
+    }
+
+    public void render()
+    {
+        GL11.glPushMatrix();
+        GL11.glBegin(GL11.GL_TRIANGLES);
+        boolean smooth = true;
+        for (Triangle t : triangles)
+        {
+            if (t != null)
+            {
+                t.preRender();
+                t.addForRender(smooth);
+                t.postRender();
+            }
+        }
+        GL11.glEnd();
+        GL11.glPopMatrix();
     }
 }

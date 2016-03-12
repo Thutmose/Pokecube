@@ -78,10 +78,28 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public IPokemob          outMob;
     public boolean           male             = true;
 
+    boolean added = false;
+
+    int timercounter = 0;
+
     public EntityTrainer(World par1World)
     {
         this(par1World, null);
         this.equipmentDropChances = new float[] { 1, 1, 1, 1, 1 };
+    }
+
+    public EntityTrainer(World world, TypeTrainer type, int level)
+    {
+        this(world);
+        setId(PASaveHandler.getInstance().getNewId());
+        initTrainer(type, level);
+    }
+
+    public EntityTrainer(World world, TypeTrainer type, int level, Vector3 location, boolean stationary)
+    {
+        this(world, location, true);
+        setId(PASaveHandler.getInstance().getNewId());
+        initTrainer(type, level);
     }
 
     public EntityTrainer(World world, Vector3 location)
@@ -110,39 +128,82 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
     }
 
-    public void setStationary(Vector3 location)
+    public void addPokemob(ItemStack mob)
     {
-        if (location == null)
+        for (int i = 0; i < 6; i++)
         {
-            setAIState(STATIONARY, false);
-            for (Object o : this.tasks.taskEntries)
-                if (o instanceof GuardAI) this.tasks.removeTask((EntityAIBase) o);
-            return;
-        }
-        IGuardAICapability capability = getCapability(EventsHandler.GUARDAI_CAP, null);
-        if (capability != null)
-        {
-            capability.setActiveTime(TimePeriod.fullDay);
-            capability.setPos(getPosition());
-            tasks.addTask(2, new GuardAI(this, capability));
-        }
-        setAIState(STATIONARY, true);
-    }
-
-    public void setStationary(boolean stationary)
-    {
-        if (stationary && !getAIState(STATIONARY)) setStationary(Vector3.getNewVector().set(this));
-        else if (!stationary && getAIState(STATIONARY))
-        {
-            for (Object o : this.tasks.taskEntries)
-                if (o instanceof GuardAI) this.tasks.removeTask((EntityAIBase) o);
-            setAIState(STATIONARY, false);
+            if (pokecubes[i] == null)
+            {
+                InventoryPC.heal(mob);
+                pokecubes[i] = mob.copy();
+                return;
+            }
         }
     }
 
-    public boolean getShouldRandomize()
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float i)
     {
-        return randomize;
+        if (source.getEntity() != null && (source.getEntity() instanceof EntityLivingBase)
+                && !(source.getEntity() instanceof EntityPlayer))
+        {
+            setTrainerTarget(source.getEntity());
+        }
+
+        if (Config.instance.trainersInvul) return false;
+
+        if (friendlyCooldown > 0) return false;
+
+        return super.attackEntityFrom(source, i);
+    }
+
+    @Override
+    protected boolean canDespawn()
+    {
+        return false;
+    }
+
+    public int countPokemon()
+    {
+        if (outID != null && outMob == null)
+        {
+            for (int i = 0; i < worldObj.getLoadedEntityList().size(); ++i)
+            {
+                Entity entity = worldObj.getLoadedEntityList().get(i);
+                if (entity instanceof IPokemob && outID.equals(entity.getUniqueID()))
+                {
+                    outMob = (IPokemob) entity;
+                    break;
+                }
+            }
+        }
+        if (outMob != null && ((Entity) outMob).isDead)
+        {
+            outID = null;
+            outMob = null;
+        }
+        int ret = outMob == null ? 0 : 1;
+
+        if (ret == 0 && getAIState(THROWING)) ret++;
+
+        for (ItemStack i : pokecubes)
+        {
+            if (i != null && PokecubeManager.getPokedexNb(i) != 0) ret++;
+        }
+        return ret;
+    }
+
+    @Override
+    public EntityAgeable createChild(EntityAgeable p_90011_1_)
+    {
+        return null;
+    }
+
+    /** Drop the equipment for this entity. */
+    @Override
+    protected void dropEquipment(boolean drop, int looting)
+    {
+        if (looting > 4) super.dropEquipment(drop, looting);
     }
 
     @Override
@@ -158,32 +219,30 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         return (dataWatcher.getWatchableObjectInt(5) & state) != 0;
     }
 
-    public void setAIState(int state, boolean flag)
+    @Override
+    public EntityLivingBase getAITarget()
     {
-        int byte0 = dataWatcher.getWatchableObjectInt(5);
-
-        if (flag)
-        {
-            dataWatcher.updateObject(5, Integer.valueOf((byte0 | state)));
-        }
-        else
-        {
-            dataWatcher.updateObject(5, Integer.valueOf((byte0 & -state - 1)));
-        }
+        return this.getTarget();
     }
 
-    public EntityTrainer(World world, TypeTrainer type, int level)
+    public int getId()
     {
-        this(world);
-        setId(PASaveHandler.getInstance().getNewId());
-        initTrainer(type, level);
+        return id;
     }
 
-    public EntityTrainer(World world, TypeTrainer type, int level, Vector3 location, boolean stationary)
+    public boolean getShouldRandomize()
     {
-        this(world, location, true);
-        setId(PASaveHandler.getInstance().getNewId());
-        initTrainer(type, level);
+        return randomize;
+    }
+
+    public EntityLivingBase getTarget()
+    {
+        return target;
+    }
+
+    public TypeTrainer getType()
+    {
+        return type;
     }
 
     public void initTrainer(TypeTrainer type, int level)
@@ -222,113 +281,63 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         setTypes();
     }
 
-    public void setTypes()
-    {
-        if (name.isEmpty())
-        {
-            int index = getId() % (male ? TypeTrainer.maleNames.size() : TypeTrainer.femaleNames.size());
-            name = (male ? TypeTrainer.maleNames.get(index) : TypeTrainer.femaleNames.get(index));
-        }
-        this.setCustomNameTag(type.name + " " + name);
-    }
-
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbt)
+    public boolean interact(EntityPlayer entityplayer)
     {
-        super.writeEntityToNBT(nbt);
-        int n = 0;
-        for (ItemStack i : pokecubes)
+        setTarget(entityplayer);
+        if (entityplayer.capabilities.isCreativeMode)
         {
-            if (i != null)
+            if (getType() != null && !worldObj.isRemote && entityplayer.isSneaking()
+                    && entityplayer.getHeldItem() == null)
             {
-                NBTTagCompound tag = new NBTTagCompound();
-                i.writeToNBT(tag);
-                nbt.setTag("slot" + n, tag);
-                n++;
-            }
-        }
-        nbt.setBoolean("gender", male);
-        nbt.setInteger("battleCD", battleCooldown);
-        nbt.setBoolean("randomTeam", randomize);
-        nbt.setString("name", name);
-        nbt.setString("type", type.name);
-        nbt.setInteger("uniqueid", getId());
-        if (outID != null) nbt.setString("outPokemob", outID.toString());
-        nbt.setInteger("aiState", dataWatcher.getWatchableObjectInt(5));
-        nbt.setInteger("cooldown", globalCooldown);
-        nbt.setIntArray("cooldowns", attackCooldown);
-        nbt.setInteger("friendly", friendlyCooldown);
-    }
-
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbt)
-    {
-        super.readEntityFromNBT(nbt);
-        for (int n = 0; n < 6; n++)
-        {
-            NBTBase temp = nbt.getTag("slot" + n);
-            if (temp instanceof NBTTagCompound)
-            {
-                NBTTagCompound tag = (NBTTagCompound) temp;
-                pokecubes[n] = ItemStack.loadItemStackFromNBT(tag);
-                if (PokecubeManager.getPokedexNb(pokecubes[n]) == 0) pokecubes[n] = null;
-            }
-        }
-        dataWatcher.updateObject(5, nbt.getInteger("aiState"));
-        randomize = nbt.getBoolean("randomTeam");
-        type = TypeTrainer.getTrainer(nbt.getString("type"));
-        setId(nbt.getInteger("uniqueid"));
-        if (nbt.hasKey("outPokemob"))
-        {
-            outID = UUID.fromString(nbt.getString("outPokemob"));
-        }
-        if (nbt.hasKey("battleCD")) battleCooldown = nbt.getInteger("battleCD");
-        setAIState(STATIONARY, nbt.getBoolean("stationary"));
-        globalCooldown = nbt.getInteger("cooldown");
-        attackCooldown = nbt.getIntArray("cooldowns");
-        male = nbt.getBoolean("gender");
-        name = nbt.getString("name");
-        if (attackCooldown.length != 6) attackCooldown = new int[6];
-
-        friendlyCooldown = nbt.getInteger("friendly");
-
-        setTypes();
-    }
-
-    protected void setId(int id)
-    {
-        this.id = id;
-        PASaveHandler.getInstance().trainers.put(id, this);
-    }
-
-    public int countPokemon()
-    {
-        if (outID != null && outMob == null)
-        {
-            for (int i = 0; i < worldObj.getLoadedEntityList().size(); ++i)
-            {
-                Entity entity = (Entity) worldObj.getLoadedEntityList().get(i);
-                if (entity instanceof IPokemob && outID.equals(entity.getUniqueID()))
+                String message = this.getName() + " " + getAIState(STATIONARY) + " " + countPokemon() + " ";
+                for (ItemStack i : pokecubes)
                 {
-                    outMob = (IPokemob) entity;
-                    break;
+                    if (i != null) message += i.getDisplayName() + " ";
+                }
+                for (int i = 0; i < 5; i++)
+                {
+                    ItemStack item = getEquipmentInSlot(i);
+                    if (item != null) message += item.getDisplayName() + " ";
+                }
+                entityplayer.addChatMessage(new ChatComponentText(message));
+            }
+            else if (!worldObj.isRemote && entityplayer.isSneaking()
+                    && entityplayer.getHeldItem().getItem() == Items.stick)
+            {
+                throwCubeAt(entityplayer);
+            }
+
+            if (entityplayer.getHeldItem() != null && entityplayer.getHeldItem().getItem() instanceof ItemTrainer)
+            {
+                entityplayer.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getId(), 0, 0);
+            }
+        }
+        else
+        {
+            if (entityplayer.getHeldItem() != null)
+            {
+                if (entityplayer.getHeldItem()
+                        .getItem() == Item.itemRegistry.getObject(new ResourceLocation("minecraft:emerald")))
+                {
+                    entityplayer.inventory.consumeInventoryItem(
+                            Item.itemRegistry.getObject(new ResourceLocation("minecraft:emerald")));
+                    setTrainerTarget(null);
+                    for (IPokemob pokemob : currentPokemobs)
+                    {
+                        pokemob.returnToPokecube();
+                    }
+
+                    friendlyCooldown = 2400;
                 }
             }
+            else
+            {
+                // System.out.println("HeldItem is null");
+            }
         }
-        if (outMob != null && ((Entity) outMob).isDead)
-        {
-            outID = null;
-            outMob = null;
-        }
-        int ret = outMob == null ? 0 : 1;
 
-        if (ret == 0 && getAIState(THROWING)) ret++;
-
-        for (ItemStack i : pokecubes)
-        {
-            if (i != null && PokecubeManager.getPokedexNb(i) != 0) ret++;
-        }
-        return ret;
+        return false;// super.interact(entityplayer);
     }
 
     public void lowerCooldowns()
@@ -351,57 +360,24 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
     }
 
-    public void throwCubeAt(Entity target)
+    public void onDefeated(Entity defeater)
     {
-        if (target == null) return;
-        for (int j = 0; j < 6; j++)
+        for (int i = 1; i < 5; i++)
         {
-            ItemStack i = pokecubes[j];
-            if (i != null && attackCooldown[j] < 0)
-            {
-                EntityPokecube entity = new EntityPokecube(worldObj, this, i.copy());
-
-                Vector3 here = Vector3.getNewVector().set(this);
-                Vector3 t = Vector3.getNewVector().set(target);
-                t.set(t.subtractFrom(here).scalarMultBy(0.5).addTo(here));
-                entity.targetLocation.set(t);
-                setAIState(THROWING, true);
-                worldObj.spawnEntityInWorld(entity);
-                attackCooldown[j] = battleCooldown;
-                globalCooldown = 1000;
-                pokecubes[j] = null;
-                for (int k = j + 1; k < 6; k++)
-                {
-                    attackCooldown[k] = 20;
-                }
-                return;
-            }
-            if (i != null && attackCooldown[j] < 30) { return; }
+            ItemStack stack = getEquipmentInSlot(i);
+            if (stack != null) this.entityDropItem(stack.copy(), 0.5f);
         }
-        if (globalCooldown > 0 && outID == null)
+        if (defeater != null)
         {
-            globalCooldown = 0;
-            onDefeated(target);
+            String text = StatCollector.translateToLocal("pokecube.trainer.defeat");
+            IChatComponent message;
+            IChatComponent name = getDisplayName();
+            name.getChatStyle().setColor(EnumChatFormatting.RED);
+            text = EnumChatFormatting.RED + text;
+            message = name.appendSibling(IChatComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
+            target.addChatMessage(message);
         }
     }
-
-    @Override
-    public boolean attackEntityFrom(DamageSource source, float i)
-    {
-        if (source.getEntity() != null && (source.getEntity() instanceof EntityLivingBase)
-                && !(source.getEntity() instanceof EntityPlayer))
-        {
-            setTrainerTarget(source.getEntity());
-        }
-
-        if (Config.instance.trainersInvul) return false;
-
-        if (friendlyCooldown > 0) return false;
-
-        return super.attackEntityFrom(source, i);
-    }
-
-    boolean added = false;
 
     @Override
     public void onLivingUpdate()
@@ -457,86 +433,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         friendlyCooldown--;
     }
 
-    int timercounter = 0;
-
-    public void setTrainerTarget(Entity e)
-    {
-        setTarget((EntityLivingBase) e);
-    }
-
-    /** Will get destroyed next tick. */
-    @Override
-    public void setDead()
-    {
-        PCEventsHandler.recallAllPokemobs(this);
-        super.setDead();
-    }
-
-    @Override
-    public EntityLivingBase getAITarget()
-    {
-        return this.getTarget();
-    }
-
-    @Override
-    public boolean interact(EntityPlayer entityplayer)
-    {
-        setTarget(entityplayer);
-        if (entityplayer.capabilities.isCreativeMode)
-        {
-            if (getType() != null && !worldObj.isRemote && entityplayer.isSneaking()
-                    && entityplayer.getHeldItem() == null)
-            {
-                String message = this.getName() + " " + getAIState(STATIONARY) + " " + countPokemon() + " ";
-                for (ItemStack i : pokecubes)
-                {
-                    if (i != null) message += i.getDisplayName() + " ";
-                }
-                for (int i = 0; i < 5; i++)
-                {
-                    ItemStack item = getEquipmentInSlot(i);
-                    if (item != null) message += item.getDisplayName() + " ";
-                }
-                entityplayer.addChatMessage(new ChatComponentText(message));
-            }
-            else if (!worldObj.isRemote && entityplayer.isSneaking()
-                    && entityplayer.getHeldItem().getItem() == Items.stick)
-            {
-                throwCubeAt(entityplayer);
-            }
-
-            if (entityplayer.getHeldItem() != null && entityplayer.getHeldItem().getItem() instanceof ItemTrainer)
-            {
-                entityplayer.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getId(), 0, 0);
-            }
-        }
-        else
-        {
-            if (entityplayer.getHeldItem() != null)
-            {
-                if (entityplayer.getHeldItem()
-                        .getItem() == (Item) Item.itemRegistry.getObject(new ResourceLocation("minecraft:emerald")))
-                {
-                    entityplayer.inventory.consumeInventoryItem(
-                            (Item) Item.itemRegistry.getObject(new ResourceLocation("minecraft:emerald")));
-                    setTrainerTarget(null);
-                    for (IPokemob pokemob : currentPokemobs)
-                    {
-                        pokemob.returnToPokecube();
-                    }
-
-                    friendlyCooldown = 2400;
-                }
-            }
-            else
-            {
-                // System.out.println("HeldItem is null");
-            }
-        }
-
-        return false;// super.interact(entityplayer);
-    }
-
     @Override
     public void onUpdate()
     {
@@ -544,58 +440,38 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     }
 
     @Override
-    protected boolean canDespawn()
+    public void readEntityFromNBT(NBTTagCompound nbt)
     {
-        return false;
-    }
-
-    public TypeTrainer getType()
-    {
-        return type;
-    }
-
-    @Override
-    public void writeSpawnData(ByteBuf buffer)
-    {
-
-        buffer.writeInt(type.name.length());
-        buffer.writeBytes(type.name.getBytes());
-        buffer.writeInt(name.length());
-        buffer.writeBytes(name.getBytes());
-        buffer.writeBoolean(male);
-        buffer.writeInt(getId());
-        for (int i = 0; i < 6; i++)
+        super.readEntityFromNBT(nbt);
+        for (int n = 0; n < 6; n++)
         {
-            if (pokecubes[i] != null)
+            NBTBase temp = nbt.getTag("slot" + n);
+            if (temp instanceof NBTTagCompound)
             {
-
-                if (PokecubeManager.getPokedexNb(pokecubes[i]) == 0)
-                {
-                    buffer.writeInt(0);
-                    buffer.writeInt(0);
-                    pokecubes[i] = null;
-                }
-                else
-                {
-                    IPokemob mob = (IPokemob) PokecubeManager.itemToPokemob(pokecubes[i], worldObj);
-                    if (mob == null)
-                    {
-                        buffer.writeInt(0);
-                        buffer.writeInt(0);
-                    }
-                    else
-                    {
-                        buffer.writeInt(mob.getPokedexNb());
-                        buffer.writeInt(mob.getLevel());
-                    }
-                }
-            }
-            else
-            {
-                buffer.writeInt(0);
-                buffer.writeInt(0);
+                NBTTagCompound tag = (NBTTagCompound) temp;
+                pokecubes[n] = ItemStack.loadItemStackFromNBT(tag);
+                if (PokecubeManager.getPokedexNb(pokecubes[n]) == 0) pokecubes[n] = null;
             }
         }
+        dataWatcher.updateObject(5, nbt.getInteger("aiState"));
+        randomize = nbt.getBoolean("randomTeam");
+        type = TypeTrainer.getTrainer(nbt.getString("type"));
+        setId(nbt.getInteger("uniqueid"));
+        if (nbt.hasKey("outPokemob"))
+        {
+            outID = UUID.fromString(nbt.getString("outPokemob"));
+        }
+        if (nbt.hasKey("battleCD")) battleCooldown = nbt.getInteger("battleCD");
+        setAIState(STATIONARY, nbt.getBoolean("stationary"));
+        globalCooldown = nbt.getInteger("cooldown");
+        attackCooldown = nbt.getIntArray("cooldowns");
+        male = nbt.getBoolean("gender");
+        name = nbt.getString("name");
+        if (attackCooldown.length != 6) attackCooldown = new int[6];
+
+        friendlyCooldown = nbt.getInteger("friendly");
+
+        setTypes();
     }
 
     @Override
@@ -624,43 +500,32 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
     }
 
-    public void addPokemob(ItemStack mob)
+    public void setAIState(int state, boolean flag)
     {
-        for (int i = 0; i < 6; i++)
+        int byte0 = dataWatcher.getWatchableObjectInt(5);
+
+        if (flag)
         {
-            if (pokecubes[i] == null)
-            {
-                InventoryPC.heal(mob);
-                pokecubes[i] = mob.copy();
-                return;
-            }
+            dataWatcher.updateObject(5, Integer.valueOf((byte0 | state)));
+        }
+        else
+        {
+            dataWatcher.updateObject(5, Integer.valueOf((byte0 & -state - 1)));
         }
     }
 
-    public void onDefeated(Entity defeater)
-    {
-        for (int i = 1; i < 5; i++)
-        {
-            ItemStack stack = getEquipmentInSlot(i);
-            if (stack != null) this.entityDropItem(stack.copy(), 0.5f);
-        }
-        if (defeater != null)
-        {
-            String text = StatCollector.translateToLocal("pokecube.trainer.defeat");
-            IChatComponent message;
-            IChatComponent name = getDisplayName();
-            name.getChatStyle().setColor(EnumChatFormatting.RED);
-            text = EnumChatFormatting.RED + text;
-            message = name.appendSibling(IChatComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
-            target.addChatMessage(message);
-        }
-    }
-
-    /** Drop the equipment for this entity. */
+    /** Will get destroyed next tick. */
     @Override
-    protected void dropEquipment(boolean drop, int looting)
+    public void setDead()
     {
-        if (looting > 4) super.dropEquipment(drop, looting);
+        PCEventsHandler.recallAllPokemobs(this);
+        super.setDead();
+    }
+
+    protected void setId(int id)
+    {
+        this.id = id;
+        PASaveHandler.getInstance().trainers.put(id, this);
     }
 
     public void setPokemob(int number, int level, int index)
@@ -691,20 +556,34 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         attackCooldown[index] = 0;
     }
 
-    public int getId()
+    public void setStationary(boolean stationary)
     {
-        return id;
+        if (stationary && !getAIState(STATIONARY)) setStationary(Vector3.getNewVector().set(this));
+        else if (!stationary && getAIState(STATIONARY))
+        {
+            for (Object o : this.tasks.taskEntries)
+                if (o instanceof GuardAI) this.tasks.removeTask((EntityAIBase) o);
+            setAIState(STATIONARY, false);
+        }
     }
 
-    @Override
-    public EntityAgeable createChild(EntityAgeable p_90011_1_)
+    public void setStationary(Vector3 location)
     {
-        return null;
-    }
-
-    public EntityLivingBase getTarget()
-    {
-        return target;
+        if (location == null)
+        {
+            setAIState(STATIONARY, false);
+            for (Object o : this.tasks.taskEntries)
+                if (o instanceof GuardAI) this.tasks.removeTask((EntityAIBase) o);
+            return;
+        }
+        IGuardAICapability capability = getCapability(EventsHandler.GUARDAI_CAP, null);
+        if (capability != null)
+        {
+            capability.setActiveTime(TimePeriod.fullDay);
+            capability.setPos(getPosition());
+            tasks.addTask(2, new GuardAI(this, capability));
+        }
+        setAIState(STATIONARY, true);
     }
 
     public void setTarget(EntityLivingBase target)
@@ -721,6 +600,127 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             target.addChatMessage(message);
         }
         this.target = target;
+    }
+
+    public void setTrainerTarget(Entity e)
+    {
+        setTarget((EntityLivingBase) e);
+    }
+
+    public void setTypes()
+    {
+        if (name.isEmpty())
+        {
+            int index = getId() % (male ? TypeTrainer.maleNames.size() : TypeTrainer.femaleNames.size());
+            name = (male ? TypeTrainer.maleNames.get(index) : TypeTrainer.femaleNames.get(index));
+        }
+        this.setCustomNameTag(type.name + " " + name);
+    }
+
+    public void throwCubeAt(Entity target)
+    {
+        if (target == null) return;
+        for (int j = 0; j < 6; j++)
+        {
+            ItemStack i = pokecubes[j];
+            if (i != null && attackCooldown[j] < 0)
+            {
+                EntityPokecube entity = new EntityPokecube(worldObj, this, i.copy());
+
+                Vector3 here = Vector3.getNewVector().set(this);
+                Vector3 t = Vector3.getNewVector().set(target);
+                t.set(t.subtractFrom(here).scalarMultBy(0.5).addTo(here));
+                entity.targetLocation.set(t);
+                setAIState(THROWING, true);
+                worldObj.spawnEntityInWorld(entity);
+                attackCooldown[j] = battleCooldown;
+                globalCooldown = 1000;
+                pokecubes[j] = null;
+                for (int k = j + 1; k < 6; k++)
+                {
+                    attackCooldown[k] = 20;
+                }
+                return;
+            }
+            if (i != null && attackCooldown[j] < 30) { return; }
+        }
+        if (globalCooldown > 0 && outID == null)
+        {
+            globalCooldown = 0;
+            onDefeated(target);
+        }
+    }
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound nbt)
+    {
+        super.writeEntityToNBT(nbt);
+        int n = 0;
+        for (ItemStack i : pokecubes)
+        {
+            if (i != null)
+            {
+                NBTTagCompound tag = new NBTTagCompound();
+                i.writeToNBT(tag);
+                nbt.setTag("slot" + n, tag);
+                n++;
+            }
+        }
+        nbt.setBoolean("gender", male);
+        nbt.setInteger("battleCD", battleCooldown);
+        nbt.setBoolean("randomTeam", randomize);
+        nbt.setString("name", name);
+        nbt.setString("type", type.name);
+        nbt.setInteger("uniqueid", getId());
+        if (outID != null) nbt.setString("outPokemob", outID.toString());
+        nbt.setInteger("aiState", dataWatcher.getWatchableObjectInt(5));
+        nbt.setInteger("cooldown", globalCooldown);
+        nbt.setIntArray("cooldowns", attackCooldown);
+        nbt.setInteger("friendly", friendlyCooldown);
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer)
+    {
+
+        buffer.writeInt(type.name.length());
+        buffer.writeBytes(type.name.getBytes());
+        buffer.writeInt(name.length());
+        buffer.writeBytes(name.getBytes());
+        buffer.writeBoolean(male);
+        buffer.writeInt(getId());
+        for (int i = 0; i < 6; i++)
+        {
+            if (pokecubes[i] != null)
+            {
+
+                if (PokecubeManager.getPokedexNb(pokecubes[i]) == 0)
+                {
+                    buffer.writeInt(0);
+                    buffer.writeInt(0);
+                    pokecubes[i] = null;
+                }
+                else
+                {
+                    IPokemob mob = PokecubeManager.itemToPokemob(pokecubes[i], worldObj);
+                    if (mob == null)
+                    {
+                        buffer.writeInt(0);
+                        buffer.writeInt(0);
+                    }
+                    else
+                    {
+                        buffer.writeInt(mob.getPokedexNb());
+                        buffer.writeInt(mob.getLevel());
+                    }
+                }
+            }
+            else
+            {
+                buffer.writeInt(0);
+                buffer.writeInt(0);
+            }
+        }
     }
 
 }

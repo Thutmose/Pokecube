@@ -18,25 +18,21 @@ public class Damp extends Ability
     IPokemob mob;
     int      range = 16;
 
-    @Override
-    public void onUpdate(IPokemob mob)
+    @SubscribeEvent
+    public void denyBoom(ExplosionEvent.Start boom)
     {
-        this.mob = mob;
-    }
-
-    @Override
-    public void onMoveUse(IPokemob mob, MovePacket move)
-    {
-        if (move.getMove() instanceof Move_Explode)
+        Vector3 boomLoc = Vector3.getNewVector().set(boom.explosion.getPosition());
+        if (boomLoc.distToEntity((Entity) mob) < range)
         {
-            move.failed = true;
-            move.canceled = true;
+            boom.setCanceled(true);
         }
     }
 
     @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
+    public void destroy()
     {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
+        MinecraftForge.EVENT_BUS.unregister(this);
     }
 
     @Override
@@ -60,20 +56,24 @@ public class Damp extends Ability
     }
 
     @Override
-    public void destroy()
+    public void onAgress(IPokemob mob, EntityLivingBase target)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-        MinecraftForge.EVENT_BUS.unregister(this);
     }
 
-    @SubscribeEvent
-    public void denyBoom(ExplosionEvent.Start boom)
+    @Override
+    public void onMoveUse(IPokemob mob, MovePacket move)
     {
-        Vector3 boomLoc = Vector3.getNewVector().set(boom.explosion.getPosition());
-        if (boomLoc.distToEntity((Entity) mob) < range)
+        if (move.getMove() instanceof Move_Explode)
         {
-            boom.setCanceled(true);
+            move.failed = true;
+            move.canceled = true;
         }
+    }
+
+    @Override
+    public void onUpdate(IPokemob mob)
+    {
+        this.mob = mob;
     }
 
 }

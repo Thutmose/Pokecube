@@ -20,6 +20,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
@@ -36,91 +37,6 @@ public class Commands implements ICommand
     {
         this.aliases = new ArrayList<String>();
         this.aliases.add("pokecube");
-    }
-
-    @Override
-    public String getCommandName()
-    {
-        return "pokecube";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender icommandsender)
-    {
-        return "pokecube <text>";
-    }
-
-    @Override
-    public List<String> getCommandAliases()
-    {
-        return this.aliases;
-    }
-
-    @Override
-    public void processCommand(ICommandSender cSender, String[] args)
-    {
-        if (args.length == 0)
-        {
-            cSender.addChatMessage(new ChatComponentText("Invalid arguments"));
-            return;
-        }
-        EntityPlayerMP[] targets = null;
-        for (int i = 1; i < args.length; i++)
-        {
-            String s = args[i];
-            if (s.contains("@"))
-            {
-                ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(
-                        PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));
-                targets = (EntityPlayerMP[]) targs.toArray(new EntityPlayerMP[0]);
-            }
-        }
-        boolean isOp = CommandTools.isOp(cSender);
-
-        if (args[0].equalsIgnoreCase("gif") && args.length > 1 && cSender instanceof EntityPlayer)
-        {
-            String name = args[1];
-            PokedexEntry entry = Database.getEntry(name);
-            if (entry != null)
-            {
-                ByteBuf buffer = Unpooled.buffer(5);
-                buffer.writeByte(PokecubeClientPacket.WIKIWRITE);
-                buffer.writeInt(entry.getPokedexNb());
-                PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
-                PokecubePacketHandler.sendToClient(packet, (EntityPlayer) cSender);
-            }
-
-            return;
-        }
-        doRecall(cSender, args, isOp, targets);
-        doDebug(cSender, args, isOp, targets);
-        doSettings(cSender, args, isOp, targets);
-        doReset(cSender, args, isOp, targets);
-        doMeteor(cSender, args, isOp, targets);
-    }
-
-    @Override
-    public boolean isUsernameIndex(String[] astring, int i)
-    {
-        String arg = astring[0];
-        if (arg.equalsIgnoreCase("make"))
-        {
-            int j = astring.length - 1;
-            return i == j;
-        }
-        if (arg.equalsIgnoreCase("tm") || arg.equalsIgnoreCase("reset"))
-        {
-            if (arg.equalsIgnoreCase("reset")) return i == 1;
-            return i == 2;
-
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
-    {
-        return true;
     }
 
     @Override
@@ -165,52 +81,16 @@ public class Commands implements ICommand
         return null;
     }
 
-    private boolean doRecall(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
+    @Override
+    public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
-        if (args[0].equalsIgnoreCase("recall"))
-        {
-            String sender = cSender.getName();
-            boolean all = args.length > 1 && args[1].equalsIgnoreCase("all");
-            boolean allall = args.length > 2 && args[2].equalsIgnoreCase("all");
-            boolean guard = args.length > 1 && args[1].equalsIgnoreCase("guard");
-            boolean stay = args.length > 1 && args[1].equalsIgnoreCase("stay");
+        return true;
+    }
 
-            boolean named = !all && !guard && !stay && args.length > 1;
-            String specificName = named ? args[1] : "";
-
-            WorldServer world = (WorldServer) cSender.getEntityWorld();
-
-            EntityPlayer player = cSender.getEntityWorld().getPlayerEntityByName(sender);
-            if (allall && cSender.getEntityWorld().getPlayerEntityByName(sender) != null)
-            {
-                allall = isOp;
-                if (!allall)
-                {
-                    allall = false;
-                    cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
-                    return false;
-                }
-
-            }
-            ArrayList<?> list = new ArrayList<Object>(world.loadedEntityList);
-            for (Object o : list)
-            {
-                if (o instanceof IPokemob)
-                {
-                    IPokemob mob = (IPokemob) o;
-
-                    boolean isStaying = mob.getPokemonAIState(IPokemob.STAYING);
-                    boolean isGuarding = mob.getPokemonAIState(IPokemob.GUARDING);
-
-                    if (mob.getPokemonAIState(IPokemob.TAMED) && (mob.getPokemonOwner() == player || allall)
-                            && (named || all || (stay == isStaying && guard == isGuarding))
-                            && (named == specificName.equalsIgnoreCase(mob.getPokemonDisplayName())))
-                        mob.returnToPokecube();
-                }
-            }
-            return true;
-        }
-        return false;
+    @Override
+    public int compareTo(ICommand arg0)
+    {
+        return 0;
     }
 
     private boolean doDebug(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
@@ -243,7 +123,7 @@ public class Commands implements ICommand
                     if (o instanceof IPokemob)
                     {
                         IPokemob e = (IPokemob) o;
-                        if (id == -1 && !e.getPokemonAIState(IPokemob.TAMED) || all)
+                        if (id == -1 && !e.getPokemonAIState(IMoveConstants.TAMED) || all)
                         {
                             ((Entity) e).setDead();
                             count++;
@@ -326,7 +206,7 @@ public class Commands implements ICommand
                         {
                             if (((Entity) e).worldObj.getClosestPlayerToEntity((Entity) e,
                                     PokecubeMod.core.getConfig().maxSpawnRadius) == null
-                                    && !e.getPokemonAIState(IPokemob.TAMED))
+                                    && !e.getPokemonAIState(IMoveConstants.TAMED))
                             {
                                 ((Entity) e).setDead();
                                 n++;
@@ -358,9 +238,92 @@ public class Commands implements ICommand
         return false;
     }
 
-    private boolean doSettings(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
+    private boolean doMeteor(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
     {
-        //TODO make this check Config.
+
+        if (args[0].equalsIgnoreCase("meteor"))
+        {
+            if (isOp)
+            {
+                Random rand = new Random();
+                float energy = (float) Math.abs((rand.nextGaussian() + 1) * 50);
+                if (args.length > 1)
+                {
+                    try
+                    {
+                        energy = Float.parseFloat(args[1]);
+                    }
+                    catch (NumberFormatException e)
+                    {
+
+                    }
+                }
+                Vector3 v = Vector3.getNewVector().set(cSender).add(0, 255 - cSender.getPosition().getY(), 0);
+                if (energy > 0)
+                {
+                    Vector3 location = Vector3.getNextSurfacePoint(cSender.getEntityWorld(), v, Vector3.secondAxisNeg,
+                            255);
+                    ExplosionCustom boom = new ExplosionCustom(cSender.getEntityWorld(),
+                            PokecubeMod.getFakePlayer(cSender.getEntityWorld()), location, energy).setMeteor(true);
+                    boom.doExplosion();
+                }
+                PokecubeSerializer.getInstance().addMeteorLocation(v);
+                return true;
+            }
+            else
+            {
+                cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private boolean doRecall(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
+    {
+        if (args[0].equalsIgnoreCase("recall"))
+        {
+            String sender = cSender.getName();
+            boolean all = args.length > 1 && args[1].equalsIgnoreCase("all");
+            boolean allall = args.length > 2 && args[2].equalsIgnoreCase("all");
+            boolean guard = args.length > 1 && args[1].equalsIgnoreCase("guard");
+            boolean stay = args.length > 1 && args[1].equalsIgnoreCase("stay");
+
+            boolean named = !all && !guard && !stay && args.length > 1;
+            String specificName = named ? args[1] : "";
+
+            WorldServer world = (WorldServer) cSender.getEntityWorld();
+
+            EntityPlayer player = cSender.getEntityWorld().getPlayerEntityByName(sender);
+            if (allall && cSender.getEntityWorld().getPlayerEntityByName(sender) != null)
+            {
+                allall = isOp;
+                if (!allall)
+                {
+                    allall = false;
+                    cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
+                    return false;
+                }
+
+            }
+            ArrayList<?> list = new ArrayList<Object>(world.loadedEntityList);
+            for (Object o : list)
+            {
+                if (o instanceof IPokemob)
+                {
+                    IPokemob mob = (IPokemob) o;
+
+                    boolean isStaying = mob.getPokemonAIState(IMoveConstants.STAYING);
+                    boolean isGuarding = mob.getPokemonAIState(IMoveConstants.GUARDING);
+
+                    if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == player || allall)
+                            && (named || all || (stay == isStaying && guard == isGuarding))
+                            && (named == specificName.equalsIgnoreCase(mob.getPokemonDisplayName())))
+                        mob.returnToPokecube();
+                }
+            }
+            return true;
+        }
         return false;
     }
 
@@ -443,50 +406,88 @@ public class Commands implements ICommand
         return false;
     }
 
-    private boolean doMeteor(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
+    private boolean doSettings(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
     {
+        //TODO make this check Config.
+        return false;
+    }
 
-        if (args[0].equalsIgnoreCase("meteor"))
+    @Override
+    public List<String> getCommandAliases()
+    {
+        return this.aliases;
+    }
+
+    @Override
+    public String getCommandName()
+    {
+        return "pokecube";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender icommandsender)
+    {
+        return "pokecube <text>";
+    }
+
+    @Override
+    public boolean isUsernameIndex(String[] astring, int i)
+    {
+        String arg = astring[0];
+        if (arg.equalsIgnoreCase("make"))
         {
-            if (isOp)
-            {
-                Random rand = new Random();
-                float energy = (float) Math.abs((rand.nextGaussian() + 1) * 50);
-                if (args.length > 1)
-                {
-                    try
-                    {
-                        energy = Float.parseFloat(args[1]);
-                    }
-                    catch (NumberFormatException e)
-                    {
+            int j = astring.length - 1;
+            return i == j;
+        }
+        if (arg.equalsIgnoreCase("tm") || arg.equalsIgnoreCase("reset"))
+        {
+            if (arg.equalsIgnoreCase("reset")) return i == 1;
+            return i == 2;
 
-                    }
-                }
-                Vector3 v = Vector3.getNewVector().set(cSender).add(0, 255 - cSender.getPosition().getY(), 0);
-                if (energy > 0)
-                {
-                    Vector3 location = Vector3.getNextSurfacePoint(cSender.getEntityWorld(), v, Vector3.secondAxisNeg,
-                            255);
-                    ExplosionCustom boom = new ExplosionCustom(cSender.getEntityWorld(),
-                            PokecubeMod.getFakePlayer(cSender.getEntityWorld()), location, energy).setMeteor(true);
-                    boom.doExplosion();
-                }
-                PokecubeSerializer.getInstance().addMeteorLocation(v);
-                return true;
-            }
-            else
-            {
-                cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
-                return false;
-            }
         }
         return false;
     }
 
     @Override
-    public int compareTo(ICommand arg0)
+    public void processCommand(ICommandSender cSender, String[] args)
     {
-        return 0;
+        if (args.length == 0)
+        {
+            cSender.addChatMessage(new ChatComponentText("Invalid arguments"));
+            return;
+        }
+        EntityPlayerMP[] targets = null;
+        for (int i = 1; i < args.length; i++)
+        {
+            String s = args[i];
+            if (s.contains("@"))
+            {
+                ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(
+                        PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));
+                targets = targs.toArray(new EntityPlayerMP[0]);
+            }
+        }
+        boolean isOp = CommandTools.isOp(cSender);
+
+        if (args[0].equalsIgnoreCase("gif") && args.length > 1 && cSender instanceof EntityPlayer)
+        {
+            String name = args[1];
+            PokedexEntry entry = Database.getEntry(name);
+            if (entry != null)
+            {
+                ByteBuf buffer = Unpooled.buffer(5);
+                buffer.writeByte(PokecubeClientPacket.WIKIWRITE);
+                buffer.writeInt(entry.getPokedexNb());
+                PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
+                PokecubePacketHandler.sendToClient(packet, (EntityPlayer) cSender);
+            }
+
+            return;
+        }
+        doRecall(cSender, args, isOp, targets);
+        doDebug(cSender, args, isOp, targets);
+        doSettings(cSender, args, isOp, targets);
+        doReset(cSender, args, isOp, targets);
+        doMeteor(cSender, args, isOp, targets);
     }
 }

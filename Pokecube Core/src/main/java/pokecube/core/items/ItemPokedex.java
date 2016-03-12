@@ -35,28 +35,6 @@ public class ItemPokedex extends Item
         super();
     }
 
-    private void showGui(EntityPlayer player)
-    {
-        if (PokecubeCore.isOnClientSide())
-        {
-            player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
-        }
-        else
-        {
-            NBTTagCompound nbt = new NBTTagCompound();
-            StatsCollector.writeToNBT(nbt);
-
-            NBTTagCompound tag = new NBTTagCompound();
-            TerrainManager.getInstance().getTerrainForEntity(player).saveToNBT(tag);
-
-            nbt.setBoolean("hasTerrain", true);
-            nbt.setTag("terrain", tag);
-
-            PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
-            PokecubePacketHandler.sendToClient(packet, player);
-        }
-    }
-
     @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
@@ -108,6 +86,28 @@ public class ItemPokedex extends Item
 
         if (!playerIn.isSneaking()) showGui(playerIn);
         return super.onItemUse(stack, playerIn, worldIn, pos, side, hitX, hitY, hitZ);
+    }
+
+    private void showGui(EntityPlayer player)
+    {
+        if (PokecubeCore.isOnClientSide())
+        {
+            player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
+        }
+        else
+        {
+            NBTTagCompound nbt = new NBTTagCompound();
+            StatsCollector.writeToNBT(nbt);
+
+            NBTTagCompound tag = new NBTTagCompound();
+            TerrainManager.getInstance().getTerrainForEntity(player).saveToNBT(tag);
+
+            nbt.setBoolean("hasTerrain", true);
+            nbt.setTag("terrain", tag);
+
+            PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
+            PokecubePacketHandler.sendToClient(packet, player);
+        }
     }
 
 }

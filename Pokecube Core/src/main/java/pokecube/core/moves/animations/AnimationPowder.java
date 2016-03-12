@@ -106,28 +106,6 @@ public class AnimationPowder extends MoveAnimationBase
         GlStateManager.popMatrix();
     }
 
-    @Override
-    public void initColour(long time, float partialTicks, Move_Base move)
-    {
-        if (particle.equals("airbubble"))
-        {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
-        }
-        else if (particle.equals("aurora"))
-        {
-            int rand = ItemDye.dyeColors[new Random(time / 10).nextInt(ItemDye.dyeColors.length)];
-            rgba = 0x61000000 + rand;
-        }
-        else if (particle.equals("iceshard"))
-        {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
-        }
-        else if (!customColour)
-        {
-            rgba = getColourFromMove(move, 255);
-        }
-    }
-
     private void compileList()
     {
         if (!GL11.glIsList(meshId))
@@ -153,6 +131,28 @@ public class AnimationPowder extends MoveAnimationBase
             }
             GlStateManager.enableTexture2D();
             GL11.glEndList();
+        }
+    }
+
+    @Override
+    public void initColour(long time, float partialTicks, Move_Base move)
+    {
+        if (particle.equals("airbubble"))
+        {
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+        }
+        else if (particle.equals("aurora"))
+        {
+            int rand = ItemDye.dyeColors[new Random(time / 10).nextInt(ItemDye.dyeColors.length)];
+            rgba = 0x61000000 + rand;
+        }
+        else if (particle.equals("iceshard"))
+        {
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+        }
+        else if (!customColour)
+        {
+            rgba = getColourFromMove(move, 255);
         }
     }
 

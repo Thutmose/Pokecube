@@ -15,21 +15,6 @@ import thut.api.maths.Vector3;
 
 public class ComponentPokeCentre extends ComponentVillageBase {
 
-    private int averageGroundLevel = -1;
-    public boolean spawn = false;
-    public int centre = 0;
-    
-    public ComponentPokeCentre()
-    {
-    	
-    }
-    
-	public ComponentPokeCentre(Start par1ComponentVillageStartPiece, int par2, Random par3Random, StructureBoundingBox par4StructureBoundingBox, EnumFacing par5) {
-		super(par1ComponentVillageStartPiece, par2, par3Random, par4StructureBoundingBox, par5);
-        this.coordBaseMode = par5;
-        this.boundingBox = par4StructureBoundingBox;
-	}
-	
     public static ComponentPokeCentre buildComponent(PieceWeight villagePiece, Start startPiece,
 			List<StructureComponent> pieces, Random random, int p1, int p2, int p3,
 			EnumFacing facing, int p5)
@@ -38,6 +23,21 @@ public class ComponentPokeCentre extends ComponentVillageBase {
     	StructureBoundingBox structureboundingbox = StructureBoundingBox.getComponentToAddBoundingBox(p1, p2, p3, 0, 0, 0, 9, 8, 9, facing);
         return canVillageGoDeeper(structureboundingbox) && StructureComponent.findIntersecting(pieces, structureboundingbox) == null ? new ComponentPokeCentre(startPiece, p5, random, structureboundingbox, facing) : null;
     }
+    private int averageGroundLevel = -1;
+    public boolean spawn = false;
+    
+    public int centre = 0;
+    
+	public ComponentPokeCentre()
+    {
+    	
+    }
+	
+    public ComponentPokeCentre(Start par1ComponentVillageStartPiece, int par2, Random par3Random, StructureBoundingBox par4StructureBoundingBox, EnumFacing par5) {
+		super(par1ComponentVillageStartPiece, par2, par3Random, par4StructureBoundingBox, par5);
+        this.coordBaseMode = par5;
+        this.boundingBox = par4StructureBoundingBox;
+	}
 
 	@Override
 	public boolean addComponentParts(World world, Random random, StructureBoundingBox structureboundingbox) {

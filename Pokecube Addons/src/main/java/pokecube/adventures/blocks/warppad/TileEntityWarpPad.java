@@ -29,18 +29,80 @@ import thut.api.maths.Vector3;
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityWarpPad extends TileEntityOwnable implements SimpleComponent, IEnergyReceiver
 {
+    public static double    MAXRANGE    = 64;
+    public static int       COOLDOWN    = 1000;
     public Vector4          link;
     private Vector3         linkPos;
     public Vector3          here;
     protected long          lastStepped = Long.MIN_VALUE;
     boolean                 noEnergy    = false;
-    public static double    MAXRANGE    = 64;
-    public static int       COOLDOWN    = 1000;
 
     protected EnergyStorage storage     = new EnergyStorage(32000);
 
     public TileEntityWarpPad()
     {
+    }
+
+    @Override
+    public boolean canConnectEnergy(EnumFacing facing)
+    {
+        return facing == EnumFacing.DOWN;
+    }
+
+    @Override
+    public String getComponentName()
+    {
+        return "warppad";
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+    }
+
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getDestination(Context context, Arguments args) throws Exception
+    {
+        if (link != null) { return new Object[] { link.x, link.y, link.z, link.w }; }
+        throw new Exception("no link");
+    }
+
+    @Override
+    public int getEnergyStored(EnumFacing facing)
+    {
+        return storage.getEnergyStored();
+    }
+
+    @Override
+    public int getMaxEnergyStored(EnumFacing facing)
+    {
+        return storage.getMaxEnergyStored();
+    }
+
+    /** Called when you receive a TileEntityData packet for the location this
+     * TileEntity is currently in. On the client, the NetworkManager will always
+     * be the remote server. On the server, it will be whomever is responsible
+     * for sending the packet.
+     *
+     * @param net
+     *            The NetworkManager the packet originated from
+     * @param pkt
+     *            The data packet */
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    {
+        if (worldObj.isRemote)
+        {
+            NBTTagCompound nbt = pkt.getNbtCompound();
+            readFromNBT(nbt);
+        }
     }
 
     public void onStepped(Entity stepper)
@@ -116,47 +178,9 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound)
+    public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
-        super.writeToNBT(tagCompound);
-        if (link != null)
-        {
-            NBTTagCompound linkTag = new NBTTagCompound();
-            link.writeToNBT(linkTag);
-            tagCompound.setTag("link", linkTag);
-        }
-        tagCompound.setBoolean("noEnergy", noEnergy);
-        storage.writeToNBT(tagCompound);
-    }
-
-    /** Overriden in a sign to provide the text. */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
-    /** Called when you receive a TileEntityData packet for the location this
-     * TileEntity is currently in. On the client, the NetworkManager will always
-     * be the remote server. On the server, it will be whomever is responsible
-     * for sending the packet.
-     *
-     * @param net
-     *            The NetworkManager the packet originated from
-     * @param pkt
-     *            The data packet */
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-    {
-        if (worldObj.isRemote)
-        {
-            NBTTagCompound nbt = pkt.getNbtCompound();
-            readFromNBT(nbt);
-        }
+        return storage.receiveEnergy(maxReceive, simulate);
     }
 
     @Callback
@@ -171,7 +195,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
             float w = (float) args.checkDouble(3);
             if (link == null)
             {
-                link = new Vector4(x, y, z, (float) w);
+                link = new Vector4(x, y, z, w);
             }
             else
             {
@@ -182,41 +206,17 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         throw new Exception("invalid arguments, expected number,number,number,number");
     }
 
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getDestination(Context context, Arguments args) throws Exception
-    {
-        if (link != null) { return new Object[] { link.x, link.y, link.z, link.w }; }
-        throw new Exception("no link");
-    }
-
     @Override
-    public boolean canConnectEnergy(EnumFacing facing)
+    public void writeToNBT(NBTTagCompound tagCompound)
     {
-        return facing == EnumFacing.DOWN;
-    }
-
-    @Override
-    public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
-    {
-        return storage.receiveEnergy(maxReceive, simulate);
-    }
-
-    @Override
-    public int getEnergyStored(EnumFacing facing)
-    {
-        return storage.getEnergyStored();
-    }
-
-    @Override
-    public int getMaxEnergyStored(EnumFacing facing)
-    {
-        return storage.getMaxEnergyStored();
-    }
-
-    @Override
-    public String getComponentName()
-    {
-        return "warppad";
+        super.writeToNBT(tagCompound);
+        if (link != null)
+        {
+            NBTTagCompound linkTag = new NBTTagCompound();
+            link.writeToNBT(linkTag);
+            tagCompound.setTag("link", linkTag);
+        }
+        tagCompound.setBoolean("noEnergy", noEnergy);
+        storage.writeToNBT(tagCompound);
     }
 }

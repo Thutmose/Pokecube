@@ -56,166 +56,61 @@ import pokecube.core.interfaces.PokecubeMod;
 @Mod(modid = "pokecube_compat", name = "Pokecube Compat", version = "1.0", acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
 public class Compat
 {
-    GCCompat             gccompat;
+    public static class WikiInfoNotifier
+    {
+        public WikiInfoNotifier()
+        {
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @Deprecated // Use one from ThutCore whenever that is updated for a bit.
+        private IChatComponent getOutdatedMessage(CheckResult result, String name)
+        {
+            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
+            String link = "" + result.url;
+            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
+                    + link + "\"}}";
+
+            String info = "\"" + EnumChatFormatting.RED + "New " + name
+                    + " version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
+                    + "\"";
+            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
+            return IChatComponent.Serializer.jsonToComponent(mess);
+        }
+
+        @SubscribeEvent
+        public void onPlayerJoin(TickEvent.PlayerTickEvent event)
+        {
+            if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
+            {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                String message = "msg.pokedexbuttonforwiki.text";
+                message = StatCollector.translateToLocal(message);
+                if (Loader.isModLoaded("IGWMod")) event.player.addChatMessage(new ChatComponentText(message));
+                Object o = Loader.instance().getIndexedModList().get(PokecubeAdv.ID);
+                CheckResult result = ForgeVersion.getResult(((ModContainer) o));
+                if (result.status == Status.OUTDATED)
+                {
+                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Revival");
+                    (event.player).addChatMessage(mess);
+                }
+            }
+        }
+    }
     public static String CUSTOMSPAWNSFILE;
 
     @Instance("pokecube_compat")
     public static Compat instance;
 
-    public Compat()
-    {
-        gccompat = new GCCompat();
-        MinecraftForge.EVENT_BUS.register(gccompat);
-    }
+    private static PrintWriter out;
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent evt)
-    {
-        doMetastuff();
-        MinecraftForge.EVENT_BUS.register(this);
-        setSpawnsFile(evt);
+    private static FileWriter  fwriter;
 
-        Block b = new BlockSiphon().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
-                .setUnlocalizedName("pokesiphon");
-        PokecubeItems.register(b, "pokesiphon");
-        GameRegistry.registerTileEntity(TileEntitySiphon.class, "pokesiphon");
-        if (evt.getSide() == Side.CLIENT)
-        {
-            PokecubeItems.registerItemTexture(Item.getItemFromBlock(b), 0,
-                    new ModelResourceLocation("pokecube_compat:pokesiphon", "inventory"));
-        }
+    static String              header   = "Name,Special Cases,Biomes - any acceptable,Biomes - all needed,Excluded biomes,Replace";
 
-        Database.addSpawnData(CUSTOMSPAWNSFILE);
-    }
+    static String              example1 = "Rattata,day night ,mound 0.6:10:5,,,false";
 
-    @EventHandler
-    public void load(FMLInitializationEvent evt)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new WikiInfoNotifier();
-        new IGWSupportNotifier();
-
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) if (Loader.isModLoaded("IGWMod"))
-        {
-            try
-            {
-                Class<?> registry = Class.forName("igwmod.api.WikiRegistry");
-                Class<?> tabClass = Class.forName("igwmod.gui.tabs.IWikiTab");
-                if (registry != null)
-                {
-                    Method registerTab = registry.getMethod("registerWikiTab", tabClass);
-                    registerTab.invoke(registry, new PokecubeWikiTab());
-                }
-            }
-            catch (Throwable e)
-            {
-                // e.printStackTrace();
-            }
-        }
-    }
-
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent evt)
-    {
-        GameRegistry.addRecipe(new ShapedOreRecipe(PokecubeItems.getBlock("pokesiphon"), new Object[] { "RrR", "rCr",
-                "RrR", 'R', Blocks.redstone_block, 'C', PokecubeItems.getBlock("afa"), 'r', Items.redstone }));
-    }
-
-    @Optional.Method(modid = "AS_Ruins")
-    @EventHandler
-    public void AS_RuinsCompat(FMLPostInitializationEvent evt)
-    {
-        System.out.println("AS_Ruins Compat");
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
-    }
-
-    @Optional.Method(modid = "reccomplex")
-    @EventHandler
-    public void RecComplex_Compat(FMLPostInitializationEvent evt)
-    {
-        System.out.println("Recurrent Complex Compat");
-        pokecube.compat.reccomplex.ReComplexCompat.register();
-    }
-
-    @Optional.Method(modid = "DynamicLights")
-    @EventHandler
-    public void AS_DLCompat(FMLPostInitializationEvent evt)
-    {
-        System.out.println("DynamicLights Compat");
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.DynamicLightsCompat());
-    }
-
-    @Optional.Method(modid = "Thaumcraft")
-    @EventHandler
-    public void Thaumcraft_Compat(FMLPreInitializationEvent evt)
-    {
-        System.out.println("Thaumcraft Compat");
-
-        ThaumcraftCompat tccompat;
-        ThaumiumPokecube thaumiumpokecube;
-        thaumiumpokecube = new ThaumiumPokecube();
-        thaumiumpokecube.addThaumiumPokecube();
-
-        tccompat = new ThaumcraftCompat();
-        MinecraftForge.EVENT_BUS.register(tccompat);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Optional.Method(modid = "Waila")
-    @EventHandler
-    public void WAILA_Compat(FMLPostInitializationEvent evt)
-    {
-        System.out.println("Waila Compat");
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.waila.WailaCompat());
-    }
-
-    @SubscribeEvent
-    public void postPostInit(PostPostInit evt)
-    {
-        gccompat.register();
-
-        boolean wikiWrite = false;
-
-        if (wikiWrite)
-        {
-            WikiWriter.writeWiki();
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Optional.Method(modid = "jeresources")
-    @SubscribeEvent
-    public void JERInit(PostPostInit evt)
-    {
-        new pokecube.compat.jer.JERCompat().register();
-    }
-
-    @SubscribeEvent
-    public void entityConstruct(EntityJoinWorldEvent evt)
-    {
-        if (evt.entity instanceof IPokemob && evt.entity instanceof EntityLiving)
-        {
-            EntityLiving living = (EntityLiving) evt.entity;
-            living.tasks.addTask(1, new AIElectricalInterferance((IPokemob) living));
-        }
-    }
-
-    @Optional.Method(modid = "PneumaticCraft")
-    @SubscribeEvent
-    public void addPneumaticcraftHeating(EntityJoinWorldEvent evt)
-    {
-        if (evt.entity instanceof IPokemob && evt.entity instanceof EntityLiving)
-        {
-            EntityLiving living = (EntityLiving) evt.entity;
-            living.tasks.addTask(1, new AIThermalInteferance((IPokemob) living));
-        }
-    }
-
-    private void doMetastuff()
-    {
-        ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
-
-        meta.parent = PokecubeMod.ID;
-    }
+    static String              example2 = "Spearow,day night ,plains 0.3;hills 0.3,,,true";
 
     public static void setSpawnsFile(FMLPreInitializationEvent evt)
     {
@@ -230,13 +125,6 @@ public class Compat
         writeDefaultConfig();
         return;
     }
-
-    private static PrintWriter out;
-    private static FileWriter  fwriter;
-
-    static String              header   = "Name,Special Cases,Biomes - any acceptable,Biomes - all needed,Excluded biomes,Replace";
-    static String              example1 = "Rattata,day night ,mound 0.6:10:5,,,false";
-    static String              example2 = "Spearow,day night ,plains 0.3;hills 0.3,,,true";
 
     private static void writeDefaultConfig()
     {
@@ -265,45 +153,157 @@ public class Compat
         }
     }
 
-    public static class WikiInfoNotifier
-    {
-        public WikiInfoNotifier()
-        {
-            MinecraftForge.EVENT_BUS.register(this);
-        }
+    GCCompat             gccompat;
 
-        @SubscribeEvent
-        public void onPlayerJoin(TickEvent.PlayerTickEvent event)
+    public Compat()
+    {
+        gccompat = new GCCompat();
+        MinecraftForge.EVENT_BUS.register(gccompat);
+    }
+
+    @Optional.Method(modid = "PneumaticCraft")
+    @SubscribeEvent
+    public void addPneumaticcraftHeating(EntityJoinWorldEvent evt)
+    {
+        if (evt.entity instanceof IPokemob && evt.entity instanceof EntityLiving)
         {
-            if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
+            EntityLiving living = (EntityLiving) evt.entity;
+            living.tasks.addTask(1, new AIThermalInteferance((IPokemob) living));
+        }
+    }
+
+    @Optional.Method(modid = "DynamicLights")
+    @EventHandler
+    public void AS_DLCompat(FMLPostInitializationEvent evt)
+    {
+        System.out.println("DynamicLights Compat");
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.DynamicLightsCompat());
+    }
+
+    @Optional.Method(modid = "AS_Ruins")
+    @EventHandler
+    public void AS_RuinsCompat(FMLPostInitializationEvent evt)
+    {
+        System.out.println("AS_Ruins Compat");
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
+    }
+
+    private void doMetastuff()
+    {
+        ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
+
+        meta.parent = PokecubeMod.ID;
+    }
+
+    @SubscribeEvent
+    public void entityConstruct(EntityJoinWorldEvent evt)
+    {
+        if (evt.entity instanceof IPokemob && evt.entity instanceof EntityLiving)
+        {
+            EntityLiving living = (EntityLiving) evt.entity;
+            living.tasks.addTask(1, new AIElectricalInterferance((IPokemob) living));
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Optional.Method(modid = "jeresources")
+    @SubscribeEvent
+    public void JERInit(PostPostInit evt)
+    {
+        new pokecube.compat.jer.JERCompat().register();
+    }
+
+    @EventHandler
+    public void load(FMLInitializationEvent evt)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new WikiInfoNotifier();
+        new IGWSupportNotifier();
+
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) if (Loader.isModLoaded("IGWMod"))
+        {
+            try
             {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                String message = "msg.pokedexbuttonforwiki.text";
-                message = StatCollector.translateToLocal(message);
-                if (Loader.isModLoaded("IGWMod")) event.player.addChatMessage(new ChatComponentText(message));
-                Object o = Loader.instance().getIndexedModList().get(PokecubeAdv.ID);
-                CheckResult result = ForgeVersion.getResult(((ModContainer) o));
-                if (result.status == Status.OUTDATED)
+                Class<?> registry = Class.forName("igwmod.api.WikiRegistry");
+                Class<?> tabClass = Class.forName("igwmod.gui.tabs.IWikiTab");
+                if (registry != null)
                 {
-                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Revival");
-                    (event.player).addChatMessage(mess);
+                    Method registerTab = registry.getMethod("registerWikiTab", tabClass);
+                    registerTab.invoke(registry, new PokecubeWikiTab());
                 }
             }
+            catch (Throwable e)
+            {
+                // e.printStackTrace();
+            }
         }
+    }
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent evt)
+    {
+        GameRegistry.addRecipe(new ShapedOreRecipe(PokecubeItems.getBlock("pokesiphon"), new Object[] { "RrR", "rCr",
+                "RrR", 'R', Blocks.redstone_block, 'C', PokecubeItems.getBlock("afa"), 'r', Items.redstone }));
+    }
 
-        @Deprecated // Use one from ThutCore whenever that is updated for a bit.
-        private IChatComponent getOutdatedMessage(CheckResult result, String name)
+    @SubscribeEvent
+    public void postPostInit(PostPostInit evt)
+    {
+        gccompat.register();
+
+        boolean wikiWrite = false;
+
+        if (wikiWrite)
         {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
-            String link = "" + result.url;
-            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
-                    + link + "\"}}";
-
-            String info = "\"" + EnumChatFormatting.RED + "New " + name
-                    + " version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
-                    + "\"";
-            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return IChatComponent.Serializer.jsonToComponent(mess);
+            WikiWriter.writeWiki();
         }
+    }
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent evt)
+    {
+        doMetastuff();
+        MinecraftForge.EVENT_BUS.register(this);
+        setSpawnsFile(evt);
+
+        Block b = new BlockSiphon().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
+                .setUnlocalizedName("pokesiphon");
+        PokecubeItems.register(b, "pokesiphon");
+        GameRegistry.registerTileEntity(TileEntitySiphon.class, "pokesiphon");
+        if (evt.getSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(Item.getItemFromBlock(b), 0,
+                    new ModelResourceLocation("pokecube_compat:pokesiphon", "inventory"));
+        }
+
+        Database.addSpawnData(CUSTOMSPAWNSFILE);
+    }
+    @Optional.Method(modid = "reccomplex")
+    @EventHandler
+    public void RecComplex_Compat(FMLPostInitializationEvent evt)
+    {
+        System.out.println("Recurrent Complex Compat");
+        pokecube.compat.reccomplex.ReComplexCompat.register();
+    }
+
+    @Optional.Method(modid = "Thaumcraft")
+    @EventHandler
+    public void Thaumcraft_Compat(FMLPreInitializationEvent evt)
+    {
+        System.out.println("Thaumcraft Compat");
+
+        ThaumcraftCompat tccompat;
+        ThaumiumPokecube thaumiumpokecube;
+        thaumiumpokecube = new ThaumiumPokecube();
+        thaumiumpokecube.addThaumiumPokecube();
+
+        tccompat = new ThaumcraftCompat();
+        MinecraftForge.EVENT_BUS.register(tccompat);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Optional.Method(modid = "Waila")
+    @EventHandler
+    public void WAILA_Compat(FMLPostInitializationEvent evt)
+    {
+        System.out.println("Waila Compat");
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.waila.WailaCompat());
     }
 }

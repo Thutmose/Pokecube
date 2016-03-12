@@ -56,12 +56,48 @@ public class RenderHandler
     {
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void onPlayerRender(RenderPlayerEvent.Post event)
+    public void ClientRenderTick(RenderFogEvent evt)
     {
-        if (addedLayers.contains(event.renderer)) { return; }
-        event.renderer.addLayer(new BagRenderer(event.renderer));
-        addedLayers.add(event.renderer);
+        if (TeamEventsHandler.shouldRenderVolume)
+        {
+            GL11.glPushMatrix();
+            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(player);
+            Vector3 v = Vector3.getNewVector();// .set(evt.entity);
+            Vector3 source = Vector3.getNewVector().set(player);
+            Vector3 target = t.getCentre();
+            source.set(target.subtract(source));
+            Vector3 diff = Vector3.getNewVector();
+            diff.x = player.prevPosX - player.posX;
+            diff.y = player.prevPosY - player.posY;
+            diff.z = player.prevPosZ - player.posZ;
+            diff.scalarMultBy(evt.renderPartialTicks);
+            source.addTo(diff);
+            GL11.glTranslated(source.x, source.y, source.z);
+            int rgba = 0xFFFFFFFF;
+            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(t.getCentre().getPos(), player.dimension);
+            if (TeamManager.getInstance().isOwned(c))
+            {
+                if (!TeamManager.getInstance().isTeamLand(c, player.getTeam().getRegisteredName()))
+                {
+                    rgba = 0xFFFF0000;
+                }
+                else
+                {
+                    rgba = 0xFF00FF00;
+                }
+            }
+            renderDebugBoundingBox(v.getAABB().expand(8, 4, 8), rgba);
+            renderDebugBoundingBox(v.getAABB().expand(8, 8, 8), rgba);
+            renderDebugBoundingBox(v.getAABB().expand(4, 8, 8), rgba);
+            renderDebugBoundingBox(v.getAABB().expand(8, 8, 4), rgba);
+            renderDebugBoundingBox(v.getAABB().expand(8, 8, 0), rgba);
+            renderDebugBoundingBox(v.getAABB().expand(0, 8, 8), rgba);
+            renderDebugBoundingBox(v.getAABB().expand(8, 0, 8), rgba);
+            GL11.glPopMatrix();
+        }
     }
 
     @SubscribeEvent
@@ -106,6 +142,14 @@ public class RenderHandler
     }
 
     @SubscribeEvent
+    public void onPlayerRender(RenderPlayerEvent.Post event)
+    {
+        if (addedLayers.contains(event.renderer)) { return; }
+        event.renderer.addLayer(new BagRenderer(event.renderer));
+        addedLayers.add(event.renderer);
+    }
+
+    @SubscribeEvent
     public void onToolTip(ItemTooltipEvent evt)
     {
         EntityPlayer player = evt.entityPlayer;
@@ -118,50 +162,6 @@ public class RenderHandler
                 evt.toolTip.add("" + stack.getTagCompound().getLong("ivs") + ":"
                         + stack.getTagCompound().getFloat("size") + ":" + stack.getTagCompound().getByte("nature"));
             }
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void ClientRenderTick(RenderFogEvent evt)
-    {
-        if (TeamEventsHandler.shouldRenderVolume)
-        {
-            GL11.glPushMatrix();
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-            TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(player);
-            Vector3 v = Vector3.getNewVector();// .set(evt.entity);
-            Vector3 source = Vector3.getNewVector().set(player);
-            Vector3 target = t.getCentre();
-            source.set(target.subtract(source));
-            Vector3 diff = Vector3.getNewVector();
-            diff.x = player.prevPosX - player.posX;
-            diff.y = player.prevPosY - player.posY;
-            diff.z = player.prevPosZ - player.posZ;
-            diff.scalarMultBy(evt.renderPartialTicks);
-            source.addTo(diff);
-            GL11.glTranslated(source.x, source.y, source.z);
-            int rgba = 0xFFFFFFFF;
-            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(t.getCentre().getPos(), player.dimension);
-            if (TeamManager.getInstance().isOwned(c))
-            {
-                if (!TeamManager.getInstance().isTeamLand(c, player.getTeam().getRegisteredName()))
-                {
-                    rgba = 0xFFFF0000;
-                }
-                else
-                {
-                    rgba = 0xFF00FF00;
-                }
-            }
-            renderDebugBoundingBox(v.getAABB().expand(8, 4, 8), rgba);
-            renderDebugBoundingBox(v.getAABB().expand(8, 8, 8), rgba);
-            renderDebugBoundingBox(v.getAABB().expand(4, 8, 8), rgba);
-            renderDebugBoundingBox(v.getAABB().expand(8, 8, 4), rgba);
-            renderDebugBoundingBox(v.getAABB().expand(8, 8, 0), rgba);
-            renderDebugBoundingBox(v.getAABB().expand(0, 8, 8), rgba);
-            renderDebugBoundingBox(v.getAABB().expand(8, 0, 8), rgba);
-            GL11.glPopMatrix();
         }
     }
 

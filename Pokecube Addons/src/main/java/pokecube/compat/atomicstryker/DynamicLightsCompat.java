@@ -12,56 +12,6 @@ import pokecube.core.utils.PokeType;
 
 public class DynamicLightsCompat
 {
-    Method addLightSource;
-    Method removeLightSource;
-    
-    public DynamicLightsCompat()
-    {
-        try
-        {
-            Class<?> inter = Class.forName("atomicstryker.dynamiclights.client.DynamicLights");
-            addLightSource = inter.getMethod("addLightSource", IDynamicLightSource.class);
-            removeLightSource = inter.getMethod("removeLightSource", IDynamicLightSource.class);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-    
-    @SubscribeEvent
-    public void JoinWorldEvent(EntityJoinWorldEvent evt)
-    {
-        if(evt.entity instanceof IPokemob && ((IPokemob)evt.entity).isType(PokeType.fire))
-        {
-            try
-            {
-                addLightSource.invoke(null, new PokemobLightSource((IPokemob) evt.entity));
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void DeathEvent(LivingDeathEvent evt)
-    {
-        if(evt.entity instanceof IPokemob && ((IPokemob)evt.entity).isType(PokeType.fire))
-        {
-            try
-            {
-                removeLightSource.invoke(null, new PokemobLightSource((IPokemob) evt.entity));
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    
     public static class PokemobLightSource implements atomicstryker.dynamiclights.client.IDynamicLightSource
     {
         final IPokemob pokemob;
@@ -91,6 +41,56 @@ public class DynamicLightsCompat
         public int getLightLevel()
         {
             return 15;
+        }
+    }
+    Method addLightSource;
+    
+    Method removeLightSource;
+    
+    public DynamicLightsCompat()
+    {
+        try
+        {
+            Class<?> inter = Class.forName("atomicstryker.dynamiclights.client.DynamicLights");
+            addLightSource = inter.getMethod("addLightSource", IDynamicLightSource.class);
+            removeLightSource = inter.getMethod("removeLightSource", IDynamicLightSource.class);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @SubscribeEvent
+    public void DeathEvent(LivingDeathEvent evt)
+    {
+        if(evt.entity instanceof IPokemob && ((IPokemob)evt.entity).isType(PokeType.fire))
+        {
+            try
+            {
+                removeLightSource.invoke(null, new PokemobLightSource((IPokemob) evt.entity));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    
+    @SubscribeEvent
+    public void JoinWorldEvent(EntityJoinWorldEvent evt)
+    {
+        if(evt.entity instanceof IPokemob && ((IPokemob)evt.entity).isType(PokeType.fire))
+        {
+            try
+            {
+                addLightSource.invoke(null, new PokemobLightSource((IPokemob) evt.entity));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 }

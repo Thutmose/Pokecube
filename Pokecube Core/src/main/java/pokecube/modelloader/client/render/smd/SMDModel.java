@@ -10,17 +10,16 @@ public class SMDModel
 
     private int vertexID = 0;
 
+    public void animate()
+    {
+        if (skeleton.pose == null) return;
+//        skeleton.pose.nextFrame();
+        skeleton.applyPose();
+    }
+
     public int getNextVertexID()
     {
         return vertexID++;
-    }
-
-    public void setAnimation(String animation)
-    {
-        if (poses.containsKey(animation))
-        {
-            skeleton.setPose(poses.get(animation));
-        }
     }
 
     public void render()
@@ -29,11 +28,12 @@ public class SMDModel
         triangles.render();
     }
 
-    public void animate()
+    public void setAnimation(String animation)
     {
-        if (skeleton.pose == null) return;
-//        skeleton.pose.nextFrame();
-        skeleton.applyPose();
+        if (poses.containsKey(animation))
+        {
+            skeleton.setPose(poses.get(animation));
+        }
     }
 
 }

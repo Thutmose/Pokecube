@@ -24,6 +24,20 @@ public class Vector4
         this.w = w;
     }
 
+    public Vector4(Entity e)
+    {
+        this(e.posX, e.posY, e.posZ, e.dimension);
+    }
+
+    public Vector4(NBTTagCompound nbt)
+    {
+        this();
+        x = nbt.getFloat("x");
+        y = nbt.getFloat("y");
+        z = nbt.getFloat("z");
+        w = nbt.getFloat("w");
+    }
+
     public Vector4(String toParse)
     {
         String[] vals = toParse.split(" ");
@@ -36,13 +50,16 @@ public class Vector4
         }
     }
 
-    public Vector4 set(float x, float y, float z, float w)
+    public Vector4 add(Vector4 b)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
-        return this;
+        Vector4 quat = new Vector4();
+
+        quat.w = w + b.w;
+        quat.x = x + b.x;
+        quat.y = y + b.y;
+        quat.z = z + b.z;
+
+        return quat;
     }
 
     public Vector4 addAngles(Vector4 toAdd)
@@ -65,42 +82,21 @@ public class Vector4
         return ret.toAxisAngle();
     }
 
-    public final void mul(Vector4 q1, Vector4 q2)
-    {
-        x = q1.x * q2.w + q1.y * q2.z - q1.z * q2.y + q1.w * q2.x;
-        y = -q1.x * q2.z + q1.y * q2.w + q1.z * q2.x + q1.w * q2.y;
-        z = q1.x * q2.y - q1.y * q2.x + q1.z * q2.w + q1.w * q2.z;
-        w = -q1.x * q2.x - q1.y * q2.y - q1.z * q2.z + q1.w * q2.w;
-    }
-
-    public Vector4 add(Vector4 b)
-    {
-        Vector4 quat = new Vector4();
-
-        quat.w = w + b.w;
-        quat.x = x + b.x;
-        quat.y = y + b.y;
-        quat.z = z + b.z;
-
-        return quat;
-    }
-
-    public Vector4 subtractAngles(Vector4 toAdd)
-    {
-        Vector4 temp = new Vector4(toAdd.x, toAdd.y, toAdd.z, -toAdd.w);
-        return addAngles(temp);
-    }
-
-    public Vector4 scalarMult(float scalar)
-    {
-        Vector4 ret = new Vector4(x, y, z, w);
-        ret.w = w * scalar;
-        return ret;
-    }
-
     public Vector4 copy()
     {
         return new Vector4(x, y, z, w);
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof Vector4)
+        {
+            Vector4 v = (Vector4) o;
+            return v.x == x && v.y == y && v.z == z && v.w == w;
+        }
+
+        return super.equals(o);
     }
 
     public void glRotate()
@@ -113,19 +109,17 @@ public class Vector4
         GL11.glRotatef(-w, x, y, z);
     }
 
-    public Vector4 toQuaternion()
+    public boolean isEmpty()
     {
-        double a = Math.toRadians(w);
-        float ax = x;
-        float ay = y;
-        float az = z;
+        return x == 0 && z == 0 && y == 0;
+    }
 
-        this.w = (float) Math.cos(a / 2);
-        this.x = (float) (ax * Math.sin(a / 2));
-        this.y = (float) (ay * Math.sin(a / 2));
-        this.z = (float) (az * Math.sin(a / 2));
-
-        return this.normalize();
+    public final void mul(Vector4 q1, Vector4 q2)
+    {
+        x = q1.x * q2.w + q1.y * q2.z - q1.z * q2.y + q1.w * q2.x;
+        y = -q1.x * q2.z + q1.y * q2.w + q1.z * q2.x + q1.w * q2.y;
+        z = q1.x * q2.y - q1.y * q2.x + q1.z * q2.w + q1.w * q2.z;
+        w = -q1.x * q2.x - q1.y * q2.y - q1.z * q2.z + q1.w * q2.w;
     }
 
     public Vector4 normalize()
@@ -138,6 +132,28 @@ public class Vector4
         w /= s;
 
         return this;
+    }
+
+    public Vector4 scalarMult(float scalar)
+    {
+        Vector4 ret = new Vector4(x, y, z, w);
+        ret.w = w * scalar;
+        return ret;
+    }
+
+    public Vector4 set(float x, float y, float z, float w)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
+        return this;
+    }
+
+    public Vector4 subtractAngles(Vector4 toAdd)
+    {
+        Vector4 temp = new Vector4(toAdd.x, toAdd.y, toAdd.z, -toAdd.w);
+        return addAngles(temp);
     }
 
     /** The default is axis angle for use with openGL
@@ -176,33 +192,38 @@ public class Vector4
         }
         float rad = (float) Math.sqrt(x * x + y * y + z * z);
 
-        x = (float) (x / rad);
-        y = (float) (y / rad);
-        z = (float) (z / rad);
+        x = x / rad;
+        y = y / rad;
+        z = z / rad;
 
         return this;
     }
 
-    public void writeToNBT(NBTTagCompound nbt)
+    public String toIntString()
     {
-        nbt.setFloat("x", x);
-        nbt.setFloat("y", y);
-        nbt.setFloat("z", z);
-        nbt.setFloat("w", w);
+        return "x:" + MathHelper.floor_double(x) + " y:" + MathHelper.floor_double(y) + " z:"
+                + MathHelper.floor_double(z) + " w:" + MathHelper.floor_double(w);
     }
 
-    public Vector4(Entity e)
+    public Vector4 toQuaternion()
     {
-        this(e.posX, e.posY, e.posZ, e.dimension);
+        double a = Math.toRadians(w);
+        float ax = x;
+        float ay = y;
+        float az = z;
+
+        this.w = (float) Math.cos(a / 2);
+        this.x = (float) (ax * Math.sin(a / 2));
+        this.y = (float) (ay * Math.sin(a / 2));
+        this.z = (float) (az * Math.sin(a / 2));
+
+        return this.normalize();
     }
 
-    public Vector4(NBTTagCompound nbt)
+    @Override
+    public String toString()
     {
-        this();
-        x = nbt.getFloat("x");
-        y = nbt.getFloat("y");
-        z = nbt.getFloat("z");
-        w = nbt.getFloat("w");
+        return "x:" + x + " y:" + y + " z:" + z + " w:" + w;
     }
 
     public boolean withinDistance(float distance, Vector4 toCheck)
@@ -214,32 +235,11 @@ public class Vector4
         return false;
     }
 
-    @Override
-    public boolean equals(Object o)
+    public void writeToNBT(NBTTagCompound nbt)
     {
-        if (o instanceof Vector4)
-        {
-            Vector4 v = (Vector4) o;
-            return v.x == x && v.y == y && v.z == z && v.w == w;
-        }
-
-        return super.equals(o);
-    }
-
-    public boolean isEmpty()
-    {
-        return x == 0 && z == 0 && y == 0;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "x:" + x + " y:" + y + " z:" + z + " w:" + w;
-    }
-
-    public String toIntString()
-    {
-        return "x:" + MathHelper.floor_double(x) + " y:" + MathHelper.floor_double(y) + " z:"
-                + MathHelper.floor_double(z) + " w:" + MathHelper.floor_double(w);
+        nbt.setFloat("x", x);
+        nbt.setFloat("y", y);
+        nbt.setFloat("z", z);
+        nbt.setFloat("w", w);
     }
 }

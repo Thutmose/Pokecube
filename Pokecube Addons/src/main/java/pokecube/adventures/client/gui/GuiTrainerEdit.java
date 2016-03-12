@@ -33,6 +33,14 @@ import pokecube.core.network.PokecubePacketHandler;
 @SuppressWarnings("deprecation")
 public class GuiTrainerEdit extends GuiScreen
 {
+    public static int x;
+    public static int y;
+
+    static float              lastTime       = 0;
+    /** to pass as last parameter when rendering the mob so that the render
+     * knows the rendering is asked by the pokedex gui */
+    public final static float POKEDEX_RENDER = 1.5f;
+
     GuiTextField textfieldPokedexNb0;
     GuiTextField textfieldLevel0;
 
@@ -49,80 +57,21 @@ public class GuiTrainerEdit extends GuiScreen
     GuiTextField textfieldLevel4;
 
     GuiTextField textfieldPokedexNb5;
-    GuiTextField textfieldLevel5;
 
+    GuiTextField textfieldLevel5;
     GuiTextField textFieldName;
+
     GuiTextField textFieldType;
 
     private final EntityTrainer trainer;
 
     String F = "false";
+
     String T = "true";
 
     public GuiTrainerEdit(EntityTrainer trainer)
     {
         this.trainer = trainer;
-    }
-
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-        buttonList.clear();
-
-        int yOffset = -20;
-        int xOffset = +20;
-
-        textFieldName = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 20 + yOffset, 100, 10);
-        textFieldType = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 40 + yOffset, 100, 10);
-
-        String next = trainer.getAIState(EntityTrainer.STATIONARY) ? T : F;
-        ;
-        buttonList.add(new GuiButton(1, width / 2 - xOffset + 80, height / 2 - yOffset, 50, 20, next));
-        buttonList.add(new GuiButton(2, width / 2 - xOffset + 80, height / 2 - yOffset + 20, 50, 20, "Save"));
-
-        textfieldPokedexNb0 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 60 + yOffset,
-                30, 10);
-        textfieldLevel0 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 60 + yOffset, 30,
-                10);
-        textfieldPokedexNb1 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 80 + yOffset,
-                30, 10);
-        textfieldLevel1 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 80 + yOffset, 30,
-                10);
-        textfieldPokedexNb2 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 100 + yOffset,
-                30, 10);
-        textfieldLevel2 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 100 + yOffset, 30,
-                10);
-        textfieldPokedexNb3 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 120 + yOffset,
-                30, 10);
-        textfieldLevel3 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 120 + yOffset, 30,
-                10);
-        textfieldPokedexNb4 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 140 + yOffset,
-                30, 10);
-        textfieldLevel4 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 140 + yOffset, 30,
-                10);
-        textfieldPokedexNb5 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 160 + yOffset,
-                30, 10);
-        textfieldLevel5 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 160 + yOffset, 30,
-                10);
-
-        int[] numbers = trainer.pokenumbers;
-        int[] levels = trainer.pokelevels;
-
-        textfieldPokedexNb0.setText(numbers[0] + "");
-        textfieldLevel0.setText(levels[0] + "");
-        textfieldPokedexNb1.setText(numbers[1] + "");
-        textfieldLevel1.setText(levels[1] + "");
-        textfieldPokedexNb2.setText(numbers[2] + "");
-        textfieldLevel2.setText(levels[2] + "");
-        textfieldPokedexNb3.setText(numbers[3] + "");
-        textfieldLevel3.setText(levels[3] + "");
-        textfieldPokedexNb4.setText(numbers[4] + "");
-        textfieldLevel4.setText(levels[4] + "");
-        textfieldPokedexNb5.setText(numbers[5] + "");
-        textfieldLevel5.setText(levels[5] + "");
-        textFieldName.setText(trainer.name);
-        textFieldType.setText(trainer.type.name);
     }
 
     @Override
@@ -243,30 +192,64 @@ public class GuiTrainerEdit extends GuiScreen
     }
 
     @Override
-    protected void mouseClicked(int par1, int par2, int par3) throws IOException
+    public void initGui()
     {
-        super.mouseClicked(par1, par2, par3);
+        super.initGui();
+        buttonList.clear();
 
-        textfieldPokedexNb0.mouseClicked(par1, par2, par3);
-        textfieldLevel0.mouseClicked(par1, par2, par3);
+        int yOffset = -20;
+        int xOffset = +20;
 
-        textfieldPokedexNb1.mouseClicked(par1, par2, par3);
-        textfieldLevel1.mouseClicked(par1, par2, par3);
+        textFieldName = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 20 + yOffset, 100, 10);
+        textFieldType = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 40 + yOffset, 100, 10);
 
-        textfieldPokedexNb2.mouseClicked(par1, par2, par3);
-        textfieldLevel2.mouseClicked(par1, par2, par3);
+        String next = trainer.getAIState(EntityTrainer.STATIONARY) ? T : F;
+        ;
+        buttonList.add(new GuiButton(1, width / 2 - xOffset + 80, height / 2 - yOffset, 50, 20, next));
+        buttonList.add(new GuiButton(2, width / 2 - xOffset + 80, height / 2 - yOffset + 20, 50, 20, "Save"));
 
-        textfieldPokedexNb3.mouseClicked(par1, par2, par3);
-        textfieldLevel3.mouseClicked(par1, par2, par3);
+        textfieldPokedexNb0 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 60 + yOffset,
+                30, 10);
+        textfieldLevel0 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 60 + yOffset, 30,
+                10);
+        textfieldPokedexNb1 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 80 + yOffset,
+                30, 10);
+        textfieldLevel1 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 80 + yOffset, 30,
+                10);
+        textfieldPokedexNb2 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 100 + yOffset,
+                30, 10);
+        textfieldLevel2 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 100 + yOffset, 30,
+                10);
+        textfieldPokedexNb3 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 120 + yOffset,
+                30, 10);
+        textfieldLevel3 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 120 + yOffset, 30,
+                10);
+        textfieldPokedexNb4 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 140 + yOffset,
+                30, 10);
+        textfieldLevel4 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 140 + yOffset, 30,
+                10);
+        textfieldPokedexNb5 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 160 + yOffset,
+                30, 10);
+        textfieldLevel5 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 160 + yOffset, 30,
+                10);
 
-        textfieldPokedexNb4.mouseClicked(par1, par2, par3);
-        textfieldLevel4.mouseClicked(par1, par2, par3);
+        int[] numbers = trainer.pokenumbers;
+        int[] levels = trainer.pokelevels;
 
-        textfieldPokedexNb5.mouseClicked(par1, par2, par3);
-        textfieldLevel5.mouseClicked(par1, par2, par3);
-
-        textFieldName.mouseClicked(par1, par2, par3);
-        textFieldType.mouseClicked(par1, par2, par3);
+        textfieldPokedexNb0.setText(numbers[0] + "");
+        textfieldLevel0.setText(levels[0] + "");
+        textfieldPokedexNb1.setText(numbers[1] + "");
+        textfieldLevel1.setText(levels[1] + "");
+        textfieldPokedexNb2.setText(numbers[2] + "");
+        textfieldLevel2.setText(levels[2] + "");
+        textfieldPokedexNb3.setText(numbers[3] + "");
+        textfieldLevel3.setText(levels[3] + "");
+        textfieldPokedexNb4.setText(numbers[4] + "");
+        textfieldLevel4.setText(levels[4] + "");
+        textfieldPokedexNb5.setText(numbers[5] + "");
+        textfieldLevel5.setText(levels[5] + "");
+        textFieldName.setText(trainer.name);
+        textFieldType.setText(trainer.type.name);
     }
 
     @Override
@@ -400,6 +383,32 @@ public class GuiTrainerEdit extends GuiScreen
 
         }
     }
+    @Override
+    protected void mouseClicked(int par1, int par2, int par3) throws IOException
+    {
+        super.mouseClicked(par1, par2, par3);
+
+        textfieldPokedexNb0.mouseClicked(par1, par2, par3);
+        textfieldLevel0.mouseClicked(par1, par2, par3);
+
+        textfieldPokedexNb1.mouseClicked(par1, par2, par3);
+        textfieldLevel1.mouseClicked(par1, par2, par3);
+
+        textfieldPokedexNb2.mouseClicked(par1, par2, par3);
+        textfieldLevel2.mouseClicked(par1, par2, par3);
+
+        textfieldPokedexNb3.mouseClicked(par1, par2, par3);
+        textfieldLevel3.mouseClicked(par1, par2, par3);
+
+        textfieldPokedexNb4.mouseClicked(par1, par2, par3);
+        textfieldLevel4.mouseClicked(par1, par2, par3);
+
+        textfieldPokedexNb5.mouseClicked(par1, par2, par3);
+        textfieldLevel5.mouseClicked(par1, par2, par3);
+
+        textFieldName.mouseClicked(par1, par2, par3);
+        textFieldType.mouseClicked(par1, par2, par3);
+    }
 
     @Override
     public void onGuiClosed()
@@ -408,40 +417,6 @@ public class GuiTrainerEdit extends GuiScreen
 
         super.onGuiClosed();
     }
-
-    private void sendChooseToServer()
-    {
-        PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
-        buff.writeByte(1);
-        try
-        {
-            buff.writeInt(Integer.parseInt(textfieldPokedexNb0.getText()));
-            buff.writeInt(Integer.parseInt(textfieldLevel0.getText()));
-            buff.writeInt(Integer.parseInt(textfieldPokedexNb1.getText()));
-            buff.writeInt(Integer.parseInt(textfieldLevel1.getText()));
-            buff.writeInt(Integer.parseInt(textfieldPokedexNb2.getText()));
-            buff.writeInt(Integer.parseInt(textfieldLevel2.getText()));
-            buff.writeInt(Integer.parseInt(textfieldPokedexNb3.getText()));
-            buff.writeInt(Integer.parseInt(textfieldLevel3.getText()));
-            buff.writeInt(Integer.parseInt(textfieldPokedexNb4.getText()));
-            buff.writeInt(Integer.parseInt(textfieldLevel4.getText()));
-            buff.writeInt(Integer.parseInt(textfieldPokedexNb5.getText()));
-            buff.writeInt(Integer.parseInt(textfieldLevel5.getText()));
-            buff.writeInt(textFieldName.getText().length());
-            buff.writeBytes(textFieldName.getText().getBytes());
-            buff.writeInt(textFieldType.getText().length());
-            buff.writeBytes(textFieldType.getText().getBytes());
-            buff.writeInt(trainer.getId());
-        }
-        catch (NumberFormatException e)
-        {
-        }
-        MessageServer packet = new MessageServer(buff);
-        PokecubePacketHandler.sendToServer(packet);
-    }
-
-    public static int x;
-    public static int y;
 
     private void renderMob(PokedexEntry mob)
     {
@@ -512,9 +487,34 @@ public class GuiTrainerEdit extends GuiScreen
             e.printStackTrace();
         }
     }
-
-    static float              lastTime       = 0;
-    /** to pass as last parameter when rendering the mob so that the render
-     * knows the rendering is asked by the pokedex gui */
-    public final static float POKEDEX_RENDER = 1.5f;
+    private void sendChooseToServer()
+    {
+        PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
+        buff.writeByte(1);
+        try
+        {
+            buff.writeInt(Integer.parseInt(textfieldPokedexNb0.getText()));
+            buff.writeInt(Integer.parseInt(textfieldLevel0.getText()));
+            buff.writeInt(Integer.parseInt(textfieldPokedexNb1.getText()));
+            buff.writeInt(Integer.parseInt(textfieldLevel1.getText()));
+            buff.writeInt(Integer.parseInt(textfieldPokedexNb2.getText()));
+            buff.writeInt(Integer.parseInt(textfieldLevel2.getText()));
+            buff.writeInt(Integer.parseInt(textfieldPokedexNb3.getText()));
+            buff.writeInt(Integer.parseInt(textfieldLevel3.getText()));
+            buff.writeInt(Integer.parseInt(textfieldPokedexNb4.getText()));
+            buff.writeInt(Integer.parseInt(textfieldLevel4.getText()));
+            buff.writeInt(Integer.parseInt(textfieldPokedexNb5.getText()));
+            buff.writeInt(Integer.parseInt(textfieldLevel5.getText()));
+            buff.writeInt(textFieldName.getText().length());
+            buff.writeBytes(textFieldName.getText().getBytes());
+            buff.writeInt(textFieldType.getText().length());
+            buff.writeBytes(textFieldType.getText().getBytes());
+            buff.writeInt(trainer.getId());
+        }
+        catch (NumberFormatException e)
+        {
+        }
+        MessageServer packet = new MessageServer(buff);
+        PokecubePacketHandler.sendToServer(packet);
+    }
 }

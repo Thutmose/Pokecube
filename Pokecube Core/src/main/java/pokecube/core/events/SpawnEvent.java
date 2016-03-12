@@ -11,17 +11,6 @@ import thut.api.maths.Vector3;
 @Cancelable
 public class SpawnEvent extends Event
 {
-    public final PokedexEntry entry;
-    public final Vector3      location;
-    public final World        world;
-
-    public SpawnEvent(PokedexEntry entry_, Vector3 location_, World worldObj_)
-    {
-        entry = entry_;
-        location = location_;
-        world = worldObj_;
-    }
-
     public static class Despawn extends SpawnEvent
     {
         public final IPokemob pokemob;
@@ -33,20 +22,6 @@ public class SpawnEvent extends Event
         }
 
     }
-
-    /** Called before the pokemob is spawned into the world, during the checks
-     * for a valid location. <br>
-     * Cancelling this will prevent the spawn.
-     * 
-     * @author Thutmose */
-    public static class Pre extends SpawnEvent
-    {
-        public Pre(PokedexEntry entry, Vector3 location, World worldObj)
-        {
-            super(entry, location, worldObj);
-        }
-    }
-
     /** Called right before the pokemob is spawned into the world. Cancelling
      * this does nothing.<br>
      * pokemob is the pokemob entity which is about to spawn.
@@ -64,6 +39,18 @@ public class SpawnEvent extends Event
             entity = (EntityLiving) pokemob;
         }
     }
+    /** Called before the pokemob is spawned into the world, during the checks
+     * for a valid location. <br>
+     * Cancelling this will prevent the spawn.
+     * 
+     * @author Thutmose */
+    public static class Pre extends SpawnEvent
+    {
+        public Pre(PokedexEntry entry, Vector3 location, World worldObj)
+        {
+            super(entry, location, worldObj);
+        }
+    }
 
     /** Called when a pokemob is sent out from the cube.<br>
      * Cancelling this event does nothing. */
@@ -78,5 +65,18 @@ public class SpawnEvent extends Event
             this.pokemob = pokemob;
             entity = (EntityLiving) pokemob;
         }
+    }
+
+    public final PokedexEntry entry;
+
+    public final Vector3      location;
+
+    public final World        world;
+
+    public SpawnEvent(PokedexEntry entry_, Vector3 location_, World worldObj_)
+    {
+        entry = entry_;
+        location = location_;
+        world = worldObj_;
     }
 }

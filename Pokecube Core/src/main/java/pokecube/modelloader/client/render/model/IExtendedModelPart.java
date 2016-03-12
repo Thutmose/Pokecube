@@ -7,13 +7,25 @@ import thut.api.maths.Vector3;
 
 public interface IExtendedModelPart extends IModelCustom
 {
+    void addChild(IExtendedModelPart child);
+
+    Vector4 getDefaultRotations();
+
+    Vector3 getDefaultTranslations();
+
+    String getName();
+
+    IExtendedModelPart getParent();
+
     int[] getRGBAB();
 
-    void setRGBAB(int[] arrays);
+    HashMap<String, IExtendedModelPart> getSubParts();
 
-    void setPreRotations(Vector4 rotations);
+    String getType();
 
-    void setPreTranslations(Vector3 translations);
+    void resetToInit();
+
+    void setParent(IExtendedModelPart parent);
 
     void setPostRotations(Vector4 rotations);
 
@@ -21,21 +33,9 @@ public interface IExtendedModelPart extends IModelCustom
 
     void setPostTranslations(Vector3 translations);
 
-    void resetToInit();
+    void setPreRotations(Vector4 rotations);
 
-    Vector3 getDefaultTranslations();
+    void setPreTranslations(Vector3 translations);
 
-    Vector4 getDefaultRotations();
-
-    String getName();
-
-    IExtendedModelPart getParent();
-
-    HashMap<String, IExtendedModelPart> getSubParts();
-
-    void addChild(IExtendedModelPart child);
-
-    void setParent(IExtendedModelPart parent);
-
-    String getType();
+    void setRGBAB(int[] arrays);
 }

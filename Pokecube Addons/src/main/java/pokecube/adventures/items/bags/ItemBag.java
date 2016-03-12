@@ -20,13 +20,6 @@ public class ItemBag extends Item implements IBauble//, IBaubleRender
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
-    {
-        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, 0, 0, 0);
-        return itemstack;
-    }
-
-    @Override
     public boolean canEquip(ItemStack arg0, EntityLivingBase arg1)
     {
         return true;
@@ -48,6 +41,13 @@ public class ItemBag extends Item implements IBauble//, IBaubleRender
     public void onEquipped(ItemStack arg0, EntityLivingBase arg1)
     {
 
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
+    {
+        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, 0, 0, 0);
+        return itemstack;
     }
 
     @Override

@@ -68,82 +68,49 @@ public abstract class Move_Base {
     		instance = this;
     }
     
-    /**
-     * Sets if the move can not be intercepted.  this should be used for
-     * moves like psychic, which should not be intercepted.
-     * @param bool
-     * @return
-     */
-    public Move_Base setNotInterceptable()
-    {
-    	move.notIntercepable = true;
-    	return this;
-    }
+    public abstract void attack(IPokemob attacker, Entity attacked, float f);
     
-    /**
-     * Sets if the move can not be intercepted.  this should be used for
-     * moves like psychic, which should not be intercepted.
-     * @param bool
-     * @return
-     */
-    public Move_Base setSelf()
-    {
-    	hasStatModSelf = true;
-    	return this;
-    }
+    public abstract void attack(IPokemob attacker, Vector3 location, float f);
     
-    /**
-     * Sets if the attack hits all targets in the area, this area is default 4x4 around the mob, but should
-     * be specified via Overriding the doFinalAttack method, see Earthquake for an example.
-     * @return
-     */
-    public Move_Base setAOE()
-    {
-    	aoe = true;
-    	return this;
-    }
+    public abstract boolean doAttack(IPokemob attacker, Entity attacked, float f);
 
     
     /**
-     * Sets if the attack hits all targets in the direction it is fired, example being
-     * flamethrower, that should hit all things in front.
-     * @return
+     * Do anything special for self attacks, usually raising/lowering of stats.
+     * @param mob
      */
-    public Move_Base setMultiTarget()
-    {
-    	move.multiTarget = true;
-    	return this;
-    }
+    public abstract void doSelfAttack(IPokemob mob, float f);
 
     
-    /**
-     * Sets if the attack hits all targets in the direction it is fired, example being
-     * flamethrower, that should hit all things in front.
-     * @return
-     */
-    public Move_Base setFixedDamage()
-    {
-    	fixedDamage = true;
-    	return this;
-    }
+    public abstract void doWorldAction(IPokemob attacker, Vector3 location);
     
+    protected abstract void finalAttack(IPokemob attacker, Entity attacked, float f);
+    
+    protected abstract void finalAttack(IPokemob attacker, Entity attacked, float f, boolean message);
+
     /**
-     * Specify the sound this move should play when executed.
+     * Attack category getter.
+     * Can be {@link IMoveConstants#CATEGORY_CONTACT} or {@link IMoveConstants#CATEGORY_DISTANCE}.
+     * Set by the constructor.
      * 
-     * @param sound the string id of the sound to play
-     * @return the move
+     * @return the attack category
      */
-    public Move_Base setSound(String sound){
-        this.sound = sound;
-        
-    	return this;
-    }
-    
-    public Move_Base setAnimation(IMoveAnimation anim)
-    {
-    	this.animation = anim;
-    	return this;
-    }
+    public byte getAttackCategory() {
+		return (byte) move.attackCategory;
+	}
+
+    public abstract int getAttackDelay(IPokemob attacker);
+
+    /**
+     * Index getter. 
+     * 
+     * @return a int ID for this move
+     */
+    public int getIndex() {
+		return index;
+	}
+
+    public abstract Move_Base getMove(String name);
 
     /**
      * Name getter
@@ -154,7 +121,25 @@ public abstract class Move_Base {
     {
         return name;
     }
-
+    
+    /**
+     * PP getter
+     * 
+     * @return the number of Power points of this move
+     */
+    public int getPP() {
+    	return move.pp;
+    }
+    
+    /**
+     * PRE getter
+     * 
+     * @return the precision of this move
+     */
+    public int getPRE() {
+    	return move.accuracy;
+    }
+    
     /**
      * PWR getter
      * 
@@ -172,24 +157,6 @@ public abstract class Move_Base {
     public int getPWR(IPokemob user, Entity target) {
     	return move.power;
     }
-
-    /**
-     * PRE getter
-     * 
-     * @return the precision of this move
-     */
-    public int getPRE() {
-    	return move.accuracy;
-    }
-
-    /**
-     * PP getter
-     * 
-     * @return the number of Power points of this move
-     */
-    public int getPP() {
-    	return move.pp;
-    }
     
     /**
      * Type getter
@@ -200,40 +167,16 @@ public abstract class Move_Base {
     	return move.type;
     }
     
-    /**
-     * Index getter. 
-     * 
-     * @return a int ID for this move
-     */
-    public int getIndex() {
-		return index;
-	}
-    
-    /**
-     * Attack category getter.
-     * Can be {@link IMoveConstants#CATEGORY_CONTACT} or {@link IMoveConstants#CATEGORY_DISTANCE}.
-     * Set by the constructor.
-     * 
-     * @return the attack category
-     */
-    public byte getAttackCategory() {
-		return (byte) move.attackCategory;
-	}
+    public abstract boolean isMoveImplemented(String s);
 
-    public abstract void attack(IPokemob attacker, Entity attacked, float f);
-    
-    protected abstract void finalAttack(IPokemob attacker, Entity attacked, float f);
-    
-    protected abstract void finalAttack(IPokemob attacker, Entity attacked, float f, boolean message);
-
-    public abstract void attack(IPokemob attacker, Vector3 location, float f);
-    
     /**
-     * Do anything special for self attacks, usually raising/lowering of stats.
-     * @param mob
+     * Sends a message to clients to display specific animation on the client side.
+     *
+     * @param attacker
+     * @param attacked
      */
-    public abstract void doSelfAttack(IPokemob mob, float f);
-
+    public abstract void notifyClient(Entity attacker, Vector3 target, Entity attacked);
+    
     /**
      * Called after the attack for special post attack treatment.
      * 
@@ -244,21 +187,78 @@ public abstract class Move_Base {
      */
     public abstract void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength);
 
-	/**
-     * Sends a message to clients to display specific animation on the client side.
-     *
-     * @param attacker
-     * @param attacked
-     */
-    public abstract void notifyClient(Entity attacker, Vector3 target, Entity attacked);
-    
-    public abstract boolean doAttack(IPokemob attacker, Entity attacked, float f);
-    
-    public abstract int getAttackDelay(IPokemob attacker);
-    
-    public abstract Move_Base getMove(String name);
+    public Move_Base setAnimation(IMoveAnimation anim)
+    {
+    	this.animation = anim;
+    	return this;
+    }
 
-	public abstract boolean isMoveImplemented(String s);
+	/**
+     * Sets if the attack hits all targets in the area, this area is default 4x4 around the mob, but should
+     * be specified via Overriding the doFinalAttack method, see Earthquake for an example.
+     * @return
+     */
+    public Move_Base setAOE()
+    {
+    	aoe = true;
+    	return this;
+    }
+    
+    /**
+     * Sets if the attack hits all targets in the direction it is fired, example being
+     * flamethrower, that should hit all things in front.
+     * @return
+     */
+    public Move_Base setFixedDamage()
+    {
+    	fixedDamage = true;
+    	return this;
+    }
+    
+    /**
+     * Sets if the attack hits all targets in the direction it is fired, example being
+     * flamethrower, that should hit all things in front.
+     * @return
+     */
+    public Move_Base setMultiTarget()
+    {
+    	move.multiTarget = true;
+    	return this;
+    }
+    
+    /**
+     * Sets if the move can not be intercepted.  this should be used for
+     * moves like psychic, which should not be intercepted.
+     * @param bool
+     * @return
+     */
+    public Move_Base setNotInterceptable()
+    {
+    	move.notIntercepable = true;
+    	return this;
+    }
+
+	/**
+     * Sets if the move can not be intercepted.  this should be used for
+     * moves like psychic, which should not be intercepted.
+     * @param bool
+     * @return
+     */
+    public Move_Base setSelf()
+    {
+    	hasStatModSelf = true;
+    	return this;
+    }
 	
-	public abstract void doWorldAction(IPokemob attacker, Vector3 location);
+	/**
+     * Specify the sound this move should play when executed.
+     * 
+     * @param sound the string id of the sound to play
+     * @return the move
+     */
+    public Move_Base setSound(String sound){
+        this.sound = sound;
+        
+    	return this;
+    }
 }

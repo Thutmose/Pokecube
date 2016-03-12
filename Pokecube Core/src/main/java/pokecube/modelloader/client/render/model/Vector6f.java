@@ -42,6 +42,7 @@ public class Vector6f
         }
     }
 
+    @Override
     public String toString()
     {
         return vector1 + " " + vector2;

@@ -4,9 +4,9 @@ package org.nfunk.jep;
 
 public interface ParserVisitor
 {
-  public Object visit(SimpleNode node, Object data) throws ParseException;
-  public Object visit(ASTStart node, Object data) throws ParseException;
-  public Object visit(ASTFunNode node, Object data) throws ParseException;
-  public Object visit(ASTVarNode node, Object data) throws ParseException;
   public Object visit(ASTConstant node, Object data) throws ParseException;
+  public Object visit(ASTFunNode node, Object data) throws ParseException;
+  public Object visit(ASTStart node, Object data) throws ParseException;
+  public Object visit(ASTVarNode node, Object data) throws ParseException;
+  public Object visit(SimpleNode node, Object data) throws ParseException;
 }

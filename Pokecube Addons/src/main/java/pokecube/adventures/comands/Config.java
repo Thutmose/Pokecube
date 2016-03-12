@@ -157,6 +157,66 @@ public class Config extends ConfigBase
         RecipeHandler.tmRecipe = tmRecipe;
     }
 
+    protected FluidStack getFluid(String toParse)
+    {
+        return FluidRegistry.getFluidStack(toParse, FluidContainerRegistry.BUCKET_VOLUME);
+    }
+
+    private void parseBiomes()
+    {
+        for (String s : biomeLevels)
+        {
+            String[] args = s.split(":");
+            String biome = args[0];
+            String[] levels = args[1].split("-");
+
+            try
+            {
+                SpawnHandler.subBiomeLevels.put(Integer.parseInt(biome),
+                        new Integer[] { Integer.parseInt(levels[0]), Integer.parseInt(levels[1]) });
+            }
+            catch (NumberFormatException e)
+            {
+                BiomeType b = BiomeType.getBiome(biome);
+                SpawnHandler.subBiomeLevels.put(b.getType(),
+                        new Integer[] { Integer.parseInt(levels[0]), Integer.parseInt(levels[1]) });
+            }
+
+        }
+    }
+
+    protected ItemStack parseItemStack(String toParse)
+    {
+        String[] drop = toParse.split(",");
+        int count = 1;
+        String name = drop[0];
+        int meta = 0;
+        try
+        {
+            if (drop.length > 1) count = Integer.parseInt(drop[1]);
+            if (drop.length > 2) meta = Integer.parseInt(drop[2]);
+        }
+        catch (NumberFormatException e)
+        {
+
+        }
+
+        Item item = PokecubeItems.getItem(name);
+        ItemStack stack = PokecubeItems.getStack(name);
+        ItemStack toAdd;
+        if (item == null && stack == null) { return null; }
+        if (item != null)
+        {
+            toAdd = new ItemStack(item, count, meta);
+        }
+        else
+        {
+            toAdd = stack;
+            toAdd.stackSize = count;
+        }
+        return toAdd;
+    }
+
     public void postInit()
     {
         processRanchables(ranchables);
@@ -192,66 +252,6 @@ public class Config extends ConfigBase
         // }
         // }
         // }
-    }
-
-    protected FluidStack getFluid(String toParse)
-    {
-        return FluidRegistry.getFluidStack(toParse, FluidContainerRegistry.BUCKET_VOLUME);
-    }
-
-    protected ItemStack parseItemStack(String toParse)
-    {
-        String[] drop = toParse.split(",");
-        int count = 1;
-        String name = drop[0];
-        int meta = 0;
-        try
-        {
-            if (drop.length > 1) count = Integer.parseInt(drop[1]);
-            if (drop.length > 2) meta = Integer.parseInt(drop[2]);
-        }
-        catch (NumberFormatException e)
-        {
-
-        }
-
-        Item item = PokecubeItems.getItem(name);
-        ItemStack stack = PokecubeItems.getStack(name);
-        ItemStack toAdd;
-        if (item == null && stack == null) { return null; }
-        if (item != null)
-        {
-            toAdd = new ItemStack(item, count, meta);
-        }
-        else
-        {
-            toAdd = stack;
-            toAdd.stackSize = count;
-        }
-        return toAdd;
-    }
-
-    private void parseBiomes()
-    {
-        for (String s : biomeLevels)
-        {
-            String[] args = s.split(":");
-            String biome = args[0];
-            String[] levels = args[1].split("-");
-
-            try
-            {
-                SpawnHandler.subBiomeLevels.put(Integer.parseInt(biome),
-                        new Integer[] { Integer.parseInt(levels[0]), Integer.parseInt(levels[1]) });
-            }
-            catch (NumberFormatException e)
-            {
-                BiomeType b = BiomeType.getBiome(biome);
-                SpawnHandler.subBiomeLevels.put(b.getType(),
-                        new Integer[] { Integer.parseInt(levels[0]), Integer.parseInt(levels[1]) });
-            }
-
-        }
     }
 
 }

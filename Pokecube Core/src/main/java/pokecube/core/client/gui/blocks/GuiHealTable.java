@@ -6,10 +6,10 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
-import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.client.Resources;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 
@@ -32,17 +32,8 @@ public class GuiHealTable extends GuiContainer
         	PokecubePacketHandler.sendToServer(packet);
         	
             ((ContainerHealTable) inventorySlots).heal();// client side
-            mc.thePlayer.playSound(PokecubeCore.ID+":pokecenter", 3, 1);
+            mc.thePlayer.playSound(PokecubeMod.ID+":pokecenter", 3, 1);
         }
-    }
-
-    @Override
-    public void initGui()
-    {
-        buttonList.clear();
-        String heal = StatCollector.translateToLocal("tile.pokecenter.heal");
-        buttonList.add(new GuiButton(1, width / 2 + 20, height / 2 - 50, 60, 20, heal));
-        super.initGui();
     }
 
     @Override
@@ -54,5 +45,14 @@ public class GuiHealTable extends GuiContainer
         int j2 = (width - xSize) / 2;
         int k2 = (height - ySize) / 2;
         drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);
+    }
+
+    @Override
+    public void initGui()
+    {
+        buttonList.clear();
+        String heal = StatCollector.translateToLocal("tile.pokecenter.heal");
+        buttonList.add(new GuiButton(1, width / 2 + 20, height / 2 - 50, 60, 20, heal));
+        super.initGui();
     }
 }

@@ -20,14 +20,14 @@ import pokecube.core.items.berries.ItemBerry;
  */
 public class BlockRepel extends Block implements ITileEntityProvider
 {
-    public BlockRepel(Material material)
-    {
-        super(material);
-    }
-
     public BlockRepel()
     {
         this(Material.cloth);
+    }
+
+    public BlockRepel(Material material)
+    {
+        super(material);
     }
     
 	@Override
@@ -37,15 +37,6 @@ public class BlockRepel extends Block implements ITileEntityProvider
 	}
 	
     /**
-     * Returns the quantity of items to drop on block destruction.
-     */
-    @Override
-    public int quantityDropped(Random par1Random)
-    {
-        return 1;
-    }
-
-    /**
      * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
      * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
      */
@@ -54,6 +45,7 @@ public class BlockRepel extends Block implements ITileEntityProvider
     {
         return true;
     }
+
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state,
             EntityPlayer player, EnumFacing side, float f, float g, float t)
@@ -74,5 +66,13 @@ public class BlockRepel extends Block implements ITileEntityProvider
     	}
     	
     	return true;
+    }
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    @Override
+    public int quantityDropped(Random par1Random)
+    {
+        return 1;
     }
 }

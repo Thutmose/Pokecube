@@ -27,16 +27,12 @@ public class JsonTabulaModel {
 
     private int cubeCount;
 
-    public int getTextureWidth() {
-        return textureWidth;
+    public ArrayList<Animation> getAnimations() {
+        return anims;
     }
 
-    public int getTextureHeight() {
-        return textureHeight;
-    }
-
-    public double[] getScale() {
-        return scale;
+    public int getCubeCount() {
+        return cubeCount;
     }
 
     public ArrayList<CubeGroup> getCubeGroups() {
@@ -47,11 +43,15 @@ public class JsonTabulaModel {
         return cubes;
     }
 
-    public ArrayList<Animation> getAnimations() {
-        return anims;
+    public double[] getScale() {
+        return scale;
     }
 
-    public int getCubeCount() {
-        return cubeCount;
+    public int getTextureHeight() {
+        return textureHeight;
+    }
+
+    public int getTextureWidth() {
+        return textureWidth;
     }
 }

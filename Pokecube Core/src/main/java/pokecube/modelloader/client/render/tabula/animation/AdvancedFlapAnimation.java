@@ -22,6 +22,52 @@ public class AdvancedFlapAnimation extends Animation
         name = "flying";
     }
 
+    @Override
+    public Animation init(NamedNodeMap map, @Nullable IPartRenamer renamer)
+    {
+        int flapdur = 0;
+        float walkAngle2 = 20;
+        
+        flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
+        // Can have up to 255 wing segments, more than this would be silly.
+        for (int i = 1; i <= 255; i++)
+        {
+            if (map.getNamedItem("leftWing" + i) == null) break;
+
+            int flapaxis = 2;
+            float[] walkAngle1 = { 20, 20 };
+            HashSet<String> hl = new HashSet<String>();
+            HashSet<String> hr = new HashSet<String>();
+            String[] lh = map.getNamedItem("leftWing" + i).getNodeValue().split(":");
+            String[] rh = map.getNamedItem("rightWing" + i).getNodeValue().split(":");
+            if (renamer != null)
+            {
+                renamer.convertToIdents(lh);
+                renamer.convertToIdents(rh);
+            }
+            for (String s : lh)
+                if (s != null) hl.add(s);
+            for (String s : rh)
+                if (s != null) hr.add(s);
+            if (map.getNamedItem("angle" + i) != null)
+            {
+                String[] args = map.getNamedItem("angle" + i).getNodeValue().split(",");
+                walkAngle1[0] = Float.parseFloat(args[0]);
+                walkAngle1[1] = Float.parseFloat(args[1]);
+            }
+            if (map.getNamedItem("start" + i) != null)
+            {
+                walkAngle2 = Float.parseFloat(map.getNamedItem("start" + i).getNodeValue());
+            }
+            if (map.getNamedItem("axis" + i) != null)
+            {
+                flapaxis = Integer.parseInt(map.getNamedItem("axis" + i).getNodeValue());
+            }
+            init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis, i > 1);
+        }
+        return this;
+    }
+
     /** Moves the wings to angle of start, then flaps up to angle, down to
      * -angle and back to start. Only the parts directly childed to the body
      * need to be added to these sets, any parts childed to them will also be
@@ -117,52 +163,6 @@ public class AdvancedFlapAnimation extends Animation
             set.add(component2);
             set.add(component3);
             sets.put(s, set);
-        }
-        return this;
-    }
-
-    @Override
-    public Animation init(NamedNodeMap map, @Nullable IPartRenamer renamer)
-    {
-        int flapdur = 0;
-        float walkAngle2 = 20;
-        
-        flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
-        // Can have up to 255 wing segments, more than this would be silly.
-        for (int i = 1; i <= 255; i++)
-        {
-            if (map.getNamedItem("leftWing" + i) == null) break;
-
-            int flapaxis = 2;
-            float[] walkAngle1 = { 20, 20 };
-            HashSet<String> hl = new HashSet<String>();
-            HashSet<String> hr = new HashSet<String>();
-            String[] lh = map.getNamedItem("leftWing" + i).getNodeValue().split(":");
-            String[] rh = map.getNamedItem("rightWing" + i).getNodeValue().split(":");
-            if (renamer != null)
-            {
-                renamer.convertToIdents(lh);
-                renamer.convertToIdents(rh);
-            }
-            for (String s : lh)
-                if (s != null) hl.add(s);
-            for (String s : rh)
-                if (s != null) hr.add(s);
-            if (map.getNamedItem("angle" + i) != null)
-            {
-                String[] args = map.getNamedItem("angle" + i).getNodeValue().split(",");
-                walkAngle1[0] = Float.parseFloat(args[0]);
-                walkAngle1[1] = Float.parseFloat(args[1]);
-            }
-            if (map.getNamedItem("start" + i) != null)
-            {
-                walkAngle2 = Float.parseFloat(map.getNamedItem("start" + i).getNodeValue());
-            }
-            if (map.getNamedItem("axis" + i) != null)
-            {
-                flapaxis = Integer.parseInt(map.getNamedItem("axis" + i).getNodeValue());
-            }
-            init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis, i > 1);
         }
         return this;
     }

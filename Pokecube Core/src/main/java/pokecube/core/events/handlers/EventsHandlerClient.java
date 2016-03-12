@@ -63,19 +63,92 @@ import thut.api.terrain.TerrainSegment;
 @SideOnly(Side.CLIENT)
 public class EventsHandlerClient
 {
+    static long eventTime = 0;
+
+    static long counter   = 0;
+
+    public static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
+
+    public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
+    {
+        if (!itemStack.hasTagCompound()) return null;
+
+        int num = PokecubeManager.getPokedexNb(itemStack);
+        if (num != 0)
+        {
+            PokedexEntry entry = Database.getEntry(num);
+            IPokemob pokemob = renderMobs.get(entry);
+            if (pokemob == null)
+            {
+                pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(num, world);
+                if (pokemob == null) return null;
+                renderMobs.put(entry, pokemob);
+            }
+            NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
+            EventsHandler.setFromNBT(pokemob, pokeTag);
+            pokemob.popFromPokecube();
+            pokemob.setPokecubeId(PokecubeItems.getCubeId(itemStack));
+            ((EntityLivingBase) pokemob).setHealth(
+                    Tools.getHealth((int) ((EntityLivingBase) pokemob).getMaxHealth(), itemStack.getItemDamage()));
+            pokemob.setStatus(PokecubeManager.getStatus(itemStack));
+            ((EntityLivingBase) pokemob).extinguish();
+            return pokemob;
+        }
+
+        return null;
+    }
+
+    public static void renderMob(IPokemob pokemob, float tick)
+    {
+        renderMob(pokemob, tick, true);
+    }
+
+    public static void renderMob(IPokemob pokemob, float tick, boolean rotates)
+    {
+        if (pokemob == null) return;
+
+        EntityLiving entity = (EntityLiving) pokemob;
+
+        float size = 0;
+
+        float mobScale = pokemob.getSize();
+        size = Math.max(pokemob.getPokedexEntry().width * mobScale,
+                Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
+
+        GL11.glPushMatrix();
+        float zoom = (float) (10f / Math.sqrt(size));
+        GL11.glScalef(-zoom, zoom, zoom);
+        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+        Minecraft.getMinecraft();
+        long time = Minecraft.getSystemTime();
+        if (rotates) GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
+        RenderHelper.enableStandardItemLighting();
+
+        GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
+
+        int i = 15728880;
+        int j1 = i % 65536;
+        int k1 = i / 65536;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
+        Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, -0.123456, 0, 0, 1.5F);
+        RenderHelper.disableStandardItemLighting();
+        GL11.glPopMatrix();
+
+    }
     private Set<RenderPlayer> addedLayers = Sets.newHashSet();
+
+    boolean debug = false;
 
     public EventsHandlerClient()
     {
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void onPlayerRender(RenderPlayerEvent.Post event)
+    public void ClientRenderTick(RenderWorldLastEvent evt)
     {
-        if (addedLayers.contains(event.renderer)) { return; }
-        event.renderer.addLayer(new RingRenderer(event.renderer));
-        event.renderer.addLayer(new RenderHeldPokemobs(event.renderer));
-        addedLayers.add(event.renderer);
+        // TODO fix the terrain effects, I don't think this event is good for it
+        // anymore
     }
 
     @SideOnly(Side.CLIENT)
@@ -93,17 +166,6 @@ public class EventsHandlerClient
             }
         }
     }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void ClientRenderTick(RenderWorldLastEvent evt)
-    {
-        // TODO fix the terrain effects, I don't think this event is good for it
-        // anymore
-    }
-
-    static long eventTime = 0;
-    static long counter   = 0;
 
     @SubscribeEvent
     public void keyInput(KeyInputEvent evt)
@@ -241,6 +303,15 @@ public class EventsHandlerClient
         }
     }
 
+    @SubscribeEvent
+    public void onPlayerRender(RenderPlayerEvent.Post event)
+    {
+        if (addedLayers.contains(event.renderer)) { return; }
+        event.renderer.addLayer(new RingRenderer(event.renderer));
+        event.renderer.addLayer(new RenderHeldPokemobs(event.renderer));
+        addedLayers.add(event.renderer);
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onRenderGUIScreenPre(GuiScreenEvent.DrawScreenEvent.Pre event)
@@ -346,8 +417,6 @@ public class EventsHandlerClient
 
     }
 
-    boolean debug = false;
-
     @SubscribeEvent
     public void textOverlay(RenderGameOverlayEvent.Text event)
     {
@@ -364,74 +433,5 @@ public class EventsHandlerClient
         debug = false;
         event.left.add("");
         event.left.add(msg);
-    }
-
-    public static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
-
-    public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
-    {
-        if (!itemStack.hasTagCompound()) return null;
-
-        int num = PokecubeManager.getPokedexNb(itemStack);
-        if (num != 0)
-        {
-            PokedexEntry entry = Database.getEntry(num);
-            IPokemob pokemob = renderMobs.get(entry);
-            if (pokemob == null)
-            {
-                pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(num, world);
-                if (pokemob == null) return null;
-                renderMobs.put(entry, pokemob);
-            }
-            NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
-            EventsHandler.setFromNBT(pokemob, pokeTag);
-            pokemob.popFromPokecube();
-            pokemob.setPokecubeId(PokecubeItems.getCubeId(itemStack));
-            ((EntityLivingBase) pokemob).setHealth(
-                    Tools.getHealth((int) ((EntityLivingBase) pokemob).getMaxHealth(), itemStack.getItemDamage()));
-            pokemob.setStatus(PokecubeManager.getStatus(itemStack));
-            ((EntityLivingBase) pokemob).extinguish();
-            return pokemob;
-        }
-
-        return null;
-    }
-
-    public static void renderMob(IPokemob pokemob, float tick)
-    {
-        renderMob(pokemob, tick, true);
-    }
-
-    public static void renderMob(IPokemob pokemob, float tick, boolean rotates)
-    {
-        if (pokemob == null) return;
-
-        EntityLiving entity = (EntityLiving) pokemob;
-
-        float size = 0;
-
-        float mobScale = pokemob.getSize();
-        size = Math.max(pokemob.getPokedexEntry().width * mobScale,
-                Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
-
-        GL11.glPushMatrix();
-        float zoom = (float) (10f / Math.sqrt(size));
-        GL11.glScalef(-zoom, zoom, zoom);
-        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-        Minecraft.getMinecraft();
-        long time = Minecraft.getSystemTime();
-        if (rotates) GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
-        RenderHelper.enableStandardItemLighting();
-
-        GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-
-        int i = 15728880;
-        int j1 = i % 65536;
-        int k1 = i / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
-        Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, -0.123456, 0, 0, 1.5F);
-        RenderHelper.disableStandardItemLighting();
-        GL11.glPopMatrix();
-
     }
 }

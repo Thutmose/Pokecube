@@ -22,6 +22,19 @@ public class CreativeTabPokecubeBerries extends CreativeTabs
 
     @Override
     @SideOnly(Side.CLIENT)
+    public ItemStack getIconItemStack()
+    {
+        return BerryManager.getBerryItem("cheri");
+    }
+
+    @Override
+    public Item getTabIconItem()
+    {
+        return null;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
     public String getTabLabel()
     {
         return "Berries";
@@ -32,18 +45,5 @@ public class CreativeTabPokecubeBerries extends CreativeTabs
     public String getTranslatedTabLabel()
     {
         return getTabLabel();
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public ItemStack getIconItemStack()
-    {
-        return BerryManager.getBerryItem("cheri");
-    }
-
-    @Override
-    public Item getTabIconItem()
-    {
-        return null;
     }
 }

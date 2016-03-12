@@ -22,6 +22,47 @@ public class BasicFlapAnimation extends Animation
         name = "flying";
     }
 
+    @Override
+    public Animation init(NamedNodeMap map, @Nullable IPartRenamer renamer)
+    {
+        HashSet<String> hl = new HashSet<String>();
+        HashSet<String> hr = new HashSet<String>();
+        int flapdur = 0;
+        int flapaxis = 2;
+        float walkAngle1 = 20;
+        float walkAngle2 = 20;
+
+        String[] lh = map.getNamedItem("leftWing").getNodeValue().split(":");
+        String[] rh = map.getNamedItem("rightWing").getNodeValue().split(":");
+
+        if (renamer != null)
+        {
+            renamer.convertToIdents(lh);
+            renamer.convertToIdents(rh);
+        }
+        for (String s : lh)
+            if (s != null) hl.add(s);
+        for (String s : rh)
+            if (s != null) hr.add(s);
+
+        if (map.getNamedItem("angle") != null)
+        {
+            walkAngle1 = Float.parseFloat(map.getNamedItem("angle").getNodeValue());
+        }
+        if (map.getNamedItem("start") != null)
+        {
+            walkAngle2 = Float.parseFloat(map.getNamedItem("start").getNodeValue());
+        }
+        if (map.getNamedItem("axis") != null)
+        {
+            flapaxis = Integer.parseInt(map.getNamedItem("axis").getNodeValue());
+        }
+        flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
+
+        init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis);
+        return this;
+    }
+
     /** Moves the wings to angle of start, then flaps up to angle, down to
      * -angle and back to start. Only the parts directly childed to the body
      * need to be added to these sets, any parts childed to them will also be
@@ -112,47 +153,6 @@ public class BasicFlapAnimation extends Animation
             set.add(component3);
             sets.put(s, set);
         }
-        return this;
-    }
-
-    @Override
-    public Animation init(NamedNodeMap map, @Nullable IPartRenamer renamer)
-    {
-        HashSet<String> hl = new HashSet<String>();
-        HashSet<String> hr = new HashSet<String>();
-        int flapdur = 0;
-        int flapaxis = 2;
-        float walkAngle1 = 20;
-        float walkAngle2 = 20;
-
-        String[] lh = map.getNamedItem("leftWing").getNodeValue().split(":");
-        String[] rh = map.getNamedItem("rightWing").getNodeValue().split(":");
-
-        if (renamer != null)
-        {
-            renamer.convertToIdents(lh);
-            renamer.convertToIdents(rh);
-        }
-        for (String s : lh)
-            if (s != null) hl.add(s);
-        for (String s : rh)
-            if (s != null) hr.add(s);
-
-        if (map.getNamedItem("angle") != null)
-        {
-            walkAngle1 = Float.parseFloat(map.getNamedItem("angle").getNodeValue());
-        }
-        if (map.getNamedItem("start") != null)
-        {
-            walkAngle2 = Float.parseFloat(map.getNamedItem("start").getNodeValue());
-        }
-        if (map.getNamedItem("axis") != null)
-        {
-            flapaxis = Integer.parseInt(map.getNamedItem("axis").getNodeValue());
-        }
-        flapdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
-
-        init(hl, hr, flapdur, walkAngle1, walkAngle2, flapaxis);
         return this;
     }
 }

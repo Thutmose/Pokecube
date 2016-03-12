@@ -62,132 +62,6 @@ public class AIFindTarget extends AIBase implements IAICombat
         this.hungryMob = (IHungrymob) pokemob;
     }
 
-    @Override
-    public boolean shouldRun()
-    {
-
-        world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        if (world == null) return false;
-
-        boolean ret = entity.getAITarget() == null && entity.getAttackTarget() == null
-                && !pokemob.getPokemonAIState(IPokemob.SITTING);
-
-        if (entity.getAttackTarget() != null && entity.getAttackTarget().isDead)
-        {
-            setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
-            addTargetInfo(entity, null);
-            return false;
-        }
-
-        if (ret && !pokemob.getPokemonAIState(IPokemob.TAMED) && entity.getRNG().nextInt(200) == 0)
-        {
-            EntityPlayer player = getClosestVulnerablePlayerToEntity(entity, PokecubeMod.core.getConfig().mobAggroRadius);
-
-            if (player != null)
-            {
-                setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
-                addTargetInfo(entity, player);
-                return false;
-            }
-        }
-
-        return ret;
-    }
-
-    @Override
-    public void run()
-    {
-        if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IPokemob.STAYING)
-                && pokemob.getPokemonAIState(IPokemob.TAMED) && !PokecubeCore.isOnClientSide())
-        {
-            List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
-            if (!list.isEmpty() && pokemob.getPokemonOwner() != null)
-            {
-                for (int j = 0; j < list.size(); j++)
-                {
-                    Entity entity = (Entity) list.get(j);
-
-                    if (entity instanceof EntityCreature && ((EntityCreature) entity).getAttackTarget() != null
-                            && ((EntityCreature) entity).getAttackTarget().equals(pokemob.getPokemonOwner())
-                            && Vector3.isVisibleEntityFromEntity(entity, entity))
-                    {
-                        addTargetInfo(entity, (EntityLivingBase) entity);
-                        setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
-                        return;
-                    }
-                }
-            }
-        }
-
-        if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IPokemob.SITTING) && hungryMob.isCarnivore()
-                && pokemob.getPokemonAIState(IPokemob.HUNTING))
-        {
-            List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
-            if (!list.isEmpty())
-            {
-                for (int j = 0; j < list.size(); j++)
-                {
-                    Entity entity = (Entity) list.get(j);
-
-                    if (entity instanceof IPokemob
-                            && pokemob.getPokedexEntry().isFood(((IPokemob) entity).getPokedexEntry())
-                            && pokemob.getLevel() > ((IPokemob) entity).getLevel()
-                            && Vector3.isVisibleEntityFromEntity(entity, entity))
-                    {
-                        addTargetInfo(entity, (EntityLivingBase) entity);
-                        setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
-                        return;
-                    }
-                }
-            }
-        }
-        if (pokemob.getPokemonAIState(IPokemob.GUARDING))
-        {
-            List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
-            List<Object> pokemobs = new ArrayList<Object>();
-            pokemobs = getEntitiesWithinDistance(Vector3.getNewVector().set(pokemob.getHome()), entity.dimension, 16,
-                    EntityLivingBase.class);
-
-            for (Object o : pokemobs)
-            {
-                if (validGuardTarget.apply(o)) ret.add((EntityLivingBase) o);
-            }
-            EntityLivingBase newtarget = null;
-            double closest = 1000;
-            Vector3 here = v1.set(pokemob);
-            for (EntityLivingBase e : ret)
-            {
-                double dist = e.getDistanceSqToEntity(entity);
-                v.set(e);
-                if (dist < closest && here.isVisible(world, v))
-                {
-                    closest = dist;
-                    newtarget = e;
-                }
-            }
-            if (newtarget != null && Vector3.isVisibleEntityFromEntity(entity, newtarget))
-            {
-                addTargetInfo(entity, newtarget);
-                setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
-                setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
-                return;
-            }
-        }
-    }
-
-    @Override
-    public void reset()
-    {
-
-    }
-
-    /** Returns the closest vulnerable player to this entity within the given
-     * radius, or null if none is found */
-    EntityPlayer getClosestVulnerablePlayerToEntity(Entity entity, double distance)
-    {
-        return this.getClosestVulnerablePlayer(entity.posX, entity.posY, entity.posZ, distance, entity.dimension);
-    }
-
     /** Returns the closest vulnerable player within the given radius, or null
      * if none is found. */
     EntityPlayer getClosestVulnerablePlayer(double x, double y, double z, double distance, int dimension)
@@ -224,7 +98,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                         f = 0.1F;
                     }
 
-                    d6 *= (double) (0.7F * f);
+                    d6 *= 0.7F * f;
                 }
 
                 if ((distance < 0.0D || d5 < d6 * d6) && (d4 == -1.0D || d5 < d4))
@@ -236,6 +110,132 @@ public class AIFindTarget extends AIBase implements IAICombat
         }
 
         return entityplayer;
+    }
+
+    /** Returns the closest vulnerable player to this entity within the given
+     * radius, or null if none is found */
+    EntityPlayer getClosestVulnerablePlayerToEntity(Entity entity, double distance)
+    {
+        return this.getClosestVulnerablePlayer(entity.posX, entity.posY, entity.posZ, distance, entity.dimension);
+    }
+
+    @Override
+    public void reset()
+    {
+
+    }
+
+    @Override
+    public void run()
+    {
+        if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.STAYING)
+                && pokemob.getPokemonAIState(IMoveConstants.TAMED) && !PokecubeCore.isOnClientSide())
+        {
+            List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
+            if (!list.isEmpty() && pokemob.getPokemonOwner() != null)
+            {
+                for (int j = 0; j < list.size(); j++)
+                {
+                    Entity entity = (Entity) list.get(j);
+
+                    if (entity instanceof EntityCreature && ((EntityCreature) entity).getAttackTarget() != null
+                            && ((EntityCreature) entity).getAttackTarget().equals(pokemob.getPokemonOwner())
+                            && Vector3.isVisibleEntityFromEntity(entity, entity))
+                    {
+                        addTargetInfo(entity, entity);
+                        setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
+                        return;
+                    }
+                }
+            }
+        }
+
+        if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING) && hungryMob.isCarnivore()
+                && pokemob.getPokemonAIState(IMoveConstants.HUNTING))
+        {
+            List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
+            if (!list.isEmpty())
+            {
+                for (int j = 0; j < list.size(); j++)
+                {
+                    Entity entity = (Entity) list.get(j);
+
+                    if (entity instanceof IPokemob
+                            && pokemob.getPokedexEntry().isFood(((IPokemob) entity).getPokedexEntry())
+                            && pokemob.getLevel() > ((IPokemob) entity).getLevel()
+                            && Vector3.isVisibleEntityFromEntity(entity, entity))
+                    {
+                        addTargetInfo(entity, entity);
+                        setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
+                        return;
+                    }
+                }
+            }
+        }
+        if (pokemob.getPokemonAIState(IMoveConstants.GUARDING))
+        {
+            List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
+            List<Object> pokemobs = new ArrayList<Object>();
+            pokemobs = getEntitiesWithinDistance(Vector3.getNewVector().set(pokemob.getHome()), entity.dimension, 16,
+                    EntityLivingBase.class);
+
+            for (Object o : pokemobs)
+            {
+                if (validGuardTarget.apply(o)) ret.add((EntityLivingBase) o);
+            }
+            EntityLivingBase newtarget = null;
+            double closest = 1000;
+            Vector3 here = v1.set(pokemob);
+            for (EntityLivingBase e : ret)
+            {
+                double dist = e.getDistanceSqToEntity(entity);
+                v.set(e);
+                if (dist < closest && here.isVisible(world, v))
+                {
+                    closest = dist;
+                    newtarget = e;
+                }
+            }
+            if (newtarget != null && Vector3.isVisibleEntityFromEntity(entity, newtarget))
+            {
+                addTargetInfo(entity, newtarget);
+                setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
+                setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
+                return;
+            }
+        }
+    }
+
+    @Override
+    public boolean shouldRun()
+    {
+
+        world = TickHandler.getInstance().getWorldCache(entity.dimension);
+        if (world == null) return false;
+
+        boolean ret = entity.getAITarget() == null && entity.getAttackTarget() == null
+                && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
+
+        if (entity.getAttackTarget() != null && entity.getAttackTarget().isDead)
+        {
+            setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
+            addTargetInfo(entity, null);
+            return false;
+        }
+
+        if (ret && !pokemob.getPokemonAIState(IMoveConstants.TAMED) && entity.getRNG().nextInt(200) == 0)
+        {
+            EntityPlayer player = getClosestVulnerablePlayerToEntity(entity, PokecubeMod.core.getConfig().mobAggroRadius);
+
+            if (player != null)
+            {
+                setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
+                addTargetInfo(entity, player);
+                return false;
+            }
+        }
+
+        return ret;
     }
 
 }

@@ -46,6 +46,46 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
         this.setLightLevel(1f);
     }
 
+    @Override
+    public TileEntity createNewTileEntity(World var1, int var2)
+    {
+        return new TileEntityPokecubeTable();
+    }
+
+    @Override
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
+    {
+        TileEntityPokecubeTable tileEntity = (TileEntityPokecubeTable) world.getTileEntity(pos);
+        OBJModel.OBJState retState = new OBJModel.OBJState(
+                tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) : tileEntity.visible, true);
+        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public int getRenderType()
+    {
+        return super.getRenderType();// RenderPokecubeTable.ID;
+    }
+
+    @Override
+    public boolean isFullCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isVisuallyOpaque()
+    {
+        return false;
+    }
+
     /** Called upon block activation (right click on the block.) */
     /** Called upon block activation (right click on the block.) */
     @Override
@@ -89,45 +129,5 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
             }
         }
         return true;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public int getRenderType()
-    {
-        return super.getRenderType();// RenderPokecubeTable.ID;
-    }
-
-    @Override
-    public boolean isOpaqueCube()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isVisuallyOpaque()
-    {
-        return false;
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World var1, int var2)
-    {
-        return new TileEntityPokecubeTable();
-    }
-
-    @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
-    {
-        TileEntityPokecubeTable tileEntity = (TileEntityPokecubeTable) world.getTileEntity(pos);
-        OBJModel.OBJState retState = new OBJModel.OBJState(
-                tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) : tileEntity.visible, true);
-        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
     }
 }

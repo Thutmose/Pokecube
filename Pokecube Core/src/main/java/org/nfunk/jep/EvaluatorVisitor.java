@@ -33,6 +33,9 @@ import org.nfunk.jep.function.SpecialEvaluationI;
  */
 @SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 public class EvaluatorVisitor implements ParserVisitor {
+	/** Debug flag */
+	private static final boolean debug = false;
+
 	/** Stack used for evaluating the expression */
 	protected Stack stack;
 
@@ -44,9 +47,6 @@ public class EvaluatorVisitor implements ParserVisitor {
 
 	/** Flag for errors during evaluation */
 	protected boolean errorFlag;
-
-	/** Debug flag */
-	private static final boolean debug = false;
 
 	/** Constructor. Initialize the stack member */
 	public EvaluatorVisitor() {
@@ -118,22 +118,13 @@ public class EvaluatorVisitor implements ParserVisitor {
 	}
 
 	/**
-	 * This method should never be called when evaluation a normal
-	 * expression.
+	 * Visit a constant node. The value of the constant is pushed onto the
+	 * stack.
 	 */
 	@Override
-	public Object visit(SimpleNode node, Object data) throws ParseException {
-		throw new ParseException(
-			"No visit method for " + node.getClass().toString());
-	}
-
-	/**
-	 * This method should never be called when evaluating a normal
-	 * expression.
-	 */
-	@Override
-	public Object visit(ASTStart node, Object data) throws ParseException {
-		throw new ParseException("Start node encountered during evaluation");
+	public Object visit(ASTConstant node, Object data) {
+		stack.push(node.getValue());
+		return data;
 	}
 
 	/**
@@ -198,6 +189,15 @@ public class EvaluatorVisitor implements ParserVisitor {
 	}
 
 	/**
+	 * This method should never be called when evaluating a normal
+	 * expression.
+	 */
+	@Override
+	public Object visit(ASTStart node, Object data) throws ParseException {
+		throw new ParseException("Start node encountered during evaluation");
+	}
+
+	/**
 	 * Visit a variable node. The value of the variable is obtained from the
 	 * symbol table (symTab) and pushed onto the stack.
 	 */
@@ -234,12 +234,12 @@ public class EvaluatorVisitor implements ParserVisitor {
 	}
 
 	/**
-	 * Visit a constant node. The value of the constant is pushed onto the
-	 * stack.
+	 * This method should never be called when evaluation a normal
+	 * expression.
 	 */
 	@Override
-	public Object visit(ASTConstant node, Object data) {
-		stack.push(node.getValue());
-		return data;
+	public Object visit(SimpleNode node, Object data) throws ParseException {
+		throw new ParseException(
+			"No visit method for " + node.getClass().toString());
 	}
 }

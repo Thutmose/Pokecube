@@ -50,11 +50,6 @@ public class StatsHandler
     }
     
     @SubscribeEvent
-    public void WorldUnloadEvent(Unload evt)
-    {
-    }
-    
-    @SubscribeEvent
     public void recordCapture(CaptureEvent.Post evt)
     {
     	StatsCollector.addCapture(evt.caught);
@@ -99,6 +94,29 @@ public class StatsHandler
     }
     
     @SubscribeEvent
+    public void recordHatch(EggEvent.Hatch evt)
+    {
+    	StatsCollector.addHatched(evt.egg);
+    	Entity owner = evt.placer;
+    	EntityPlayer player = null;
+    	if(owner instanceof EntityPlayer)
+    		player =  (EntityPlayer) owner;
+    	
+    	if(player!=null&&!player.worldObj.isRemote)
+    	{
+    		player.addStat(PokecubeMod.get1stPokemob, 0);
+    		player.addStat(PokecubeMod.pokemobAchievements.get(evt.egg.getPokemob().getPokedexNb()), 1);
+    	}
+    }
+    
+    @SubscribeEvent
+    public void recordKill(KillEvent evt)
+    {
+    	if(!evt.killed.isShadow())
+    		StatsCollector.addKill(evt.killed, evt.killer);
+    }
+    
+    @SubscribeEvent
     public void recordTrade(TradeEvent evt)
     {
     	
@@ -118,26 +136,8 @@ public class StatsHandler
     }
     
     @SubscribeEvent
-    public void recordKill(KillEvent evt)
+    public void WorldUnloadEvent(Unload evt)
     {
-    	if(!evt.killed.isShadow())
-    		StatsCollector.addKill(evt.killed, evt.killer);
-    }
-    
-    @SubscribeEvent
-    public void recordHatch(EggEvent.Hatch evt)
-    {
-    	StatsCollector.addHatched(evt.egg);
-    	Entity owner = evt.placer;
-    	EntityPlayer player = null;
-    	if(owner instanceof EntityPlayer)
-    		player =  (EntityPlayer) owner;
-    	
-    	if(player!=null&&!player.worldObj.isRemote)
-    	{
-    		player.addStat(PokecubeMod.get1stPokemob, 0);
-    		player.addStat(PokecubeMod.pokemobAchievements.get(evt.egg.getPokemob().getPokedexNb()), 1);
-    	}
     }
     
     

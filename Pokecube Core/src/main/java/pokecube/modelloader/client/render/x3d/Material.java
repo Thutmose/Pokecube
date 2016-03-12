@@ -21,6 +21,11 @@ public class Material
     public final float    shininess;
     public final float    transparency;
 
+    boolean depth;
+
+    boolean colour_mat;
+    boolean light;
+    float[] oldLight = { -1, -1 };
     public Material(String name, String texture, Vector3f diffuse, Vector3f specular, Vector3f emissive, float ambient,
             float shiny, float transparent)
     {
@@ -35,10 +40,31 @@ public class Material
         this.emissiveMagnitude = Math.min(1, (float) (emissiveColor.length() / Math.sqrt(3)) / 0.8f);
     }
 
-    boolean depth;
-    boolean colour_mat;
-    boolean light;
-    float[] oldLight = { -1, -1 };
+    private FloatBuffer makeBuffer(float value)
+    {
+        FloatBuffer ret = BufferUtils.createFloatBuffer(1 + 4);
+        ret.put(new float[] { value });
+        return ret;
+    }
+
+    private FloatBuffer makeBuffer(Vector3f vector)
+    {
+        FloatBuffer ret = BufferUtils.createFloatBuffer(3 + 4);
+        ret.put(new float[] { vector.x, vector.y, vector.z });
+        return ret;
+    }
+
+    public void postRender()
+    {
+        if (!depth) GL11.glDisable(GL11.GL_DEPTH_TEST);
+        if (!colour_mat) GL11.glDisable(GL11.GL_COLOR_MATERIAL);
+        if (!light) GL11.glDisable(GL11.GL_LIGHTING);
+        else GL11.glEnable(GL11.GL_LIGHTING);
+        if (emissiveMagnitude != 0 && oldLight[0] != -1 && oldLight[1] != -1)
+        {
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, oldLight[0], oldLight[1]);
+        }
+    }
 
     public void preRender()
     {
@@ -67,31 +93,5 @@ public class Material
         {
             GL11.glEnable(GL11.GL_LIGHTING);
         }
-    }
-
-    public void postRender()
-    {
-        if (!depth) GL11.glDisable(GL11.GL_DEPTH_TEST);
-        if (!colour_mat) GL11.glDisable(GL11.GL_COLOR_MATERIAL);
-        if (!light) GL11.glDisable(GL11.GL_LIGHTING);
-        else GL11.glEnable(GL11.GL_LIGHTING);
-        if (emissiveMagnitude != 0 && oldLight[0] != -1 && oldLight[1] != -1)
-        {
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, oldLight[0], oldLight[1]);
-        }
-    }
-
-    private FloatBuffer makeBuffer(Vector3f vector)
-    {
-        FloatBuffer ret = BufferUtils.createFloatBuffer(3 + 4);
-        ret.put(new float[] { vector.x, vector.y, vector.z });
-        return ret;
-    }
-
-    private FloatBuffer makeBuffer(float value)
-    {
-        FloatBuffer ret = BufferUtils.createFloatBuffer(1 + 4);
-        ret.put(new float[] { value });
-        return ret;
     }
 }

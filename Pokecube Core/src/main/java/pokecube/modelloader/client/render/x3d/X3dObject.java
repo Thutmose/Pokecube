@@ -35,13 +35,13 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     public Vector4 rotations = new Vector4();
     public Vertex  scale     = new Vertex(1, 1, 1);
 
+    public int red        = 255, green = 255, blue = 255, alpha = 255;
+
+    public int brightness = 15728640;
     public X3dObject(String name)
     {
         this.name = name;
     }
-
-    public int red        = 255, green = 255, blue = 255, alpha = 255;
-    public int brightness = 15728640;
 
     @Override
     public void addChild(IExtendedModelPart subPart)
@@ -50,34 +50,57 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         subPart.setParent(this);
     }
 
-    @Override
-    public void setParent(IExtendedModelPart parent)
+    public void addForRender()
     {
-        this.parent = parent;
+        // Set colours.
+        GL11.glColor4f(red / 255f, green / 255f, blue / 255f, alpha / 255f);
+        // Render each Shape
+        for (Shape s : shapes)
+        {
+            s.renderShape(texturer);
+        }
     }
 
     @Override
-    public void setPreTranslations(Vector3 point)
+    public Vector4 getDefaultRotations()
     {
-        preTrans.set(point);
+        return rotations;
     }
 
     @Override
-    public void setPostRotations(Vector4 angles)
+    public Vector3 getDefaultTranslations()
     {
-        postRot = angles;
+        return offset;
     }
 
     @Override
-    public void setPostTranslations(Vector3 point)
+    public String getName()
     {
-        postTrans.set(point);
+        return name;
     }
 
     @Override
-    public void setPreRotations(Vector4 angles)
+    public IExtendedModelPart getParent()
     {
-        preRot = angles;
+        return parent;
+    }
+
+    @Override
+    public int[] getRGBAB()
+    {
+        return new int[] { red, green, blue, alpha, brightness };
+    }
+
+    @Override
+    public HashMap<String, IExtendedModelPart> getSubParts()
+    {
+        return childParts;
+    }
+
+    @Override
+    public String getType()
+    {
+        return "x3d";
     }
 
     public void render()
@@ -118,23 +141,6 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         GL11.glPopMatrix();
     }
 
-    public void addForRender()
-    {
-        // Set colours.
-        GL11.glColor4f(red / 255f, green / 255f, blue / 255f, alpha / 255f);
-        // Render each Shape
-        for (Shape s : shapes)
-        {
-            s.renderShape(texturer);
-        }
-    }
-
-    @Override
-    public String getType()
-    {
-        return "x3d";
-    }
-
     @Override
     public void renderAll()
     {
@@ -146,6 +152,21 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
             o.renderAll();
             GL11.glPopMatrix();
         }
+    }
+
+    @Override
+    public void renderAllExcept(String... excludedGroupNames)
+    {
+        for (String s : childParts.keySet())
+        {
+            for (String s1 : excludedGroupNames)
+                if (!s.equalsIgnoreCase(s1))
+                {
+                    childParts.get(s).renderAllExcept(excludedGroupNames);
+                }
+        }
+        for (String s1 : excludedGroupNames)
+            if (s1.equalsIgnoreCase(name)) render();
     }
 
     @Override
@@ -175,70 +196,13 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     }
 
     @Override
-    public void renderAllExcept(String... excludedGroupNames)
+    public void resetToInit()
     {
-        for (String s : childParts.keySet())
-        {
-            for (String s1 : excludedGroupNames)
-                if (!s.equalsIgnoreCase(s1))
-                {
-                    childParts.get(s).renderAllExcept(excludedGroupNames);
-                }
-        }
-        for (String s1 : excludedGroupNames)
-            if (s1.equalsIgnoreCase(name)) render();
-    }
-
-    @Override
-    public int[] getRGBAB()
-    {
-        return new int[] { red, green, blue, alpha, brightness };
-    }
-
-    @Override
-    public void setRGBAB(int[] array)
-    {
-        red = array[0];
-        blue = array[1];
-        green = array[2];
-        alpha = array[3];
-        brightness = array[4];
-    }
-
-    @Override
-    public HashMap<String, IExtendedModelPart> getSubParts()
-    {
-        return childParts;
-    }
-
-    @Override
-    public String getName()
-    {
-        return name;
-    }
-
-    @Override
-    public Vector3 getDefaultTranslations()
-    {
-        return offset;
-    }
-
-    @Override
-    public Vector4 getDefaultRotations()
-    {
-        return rotations;
-    }
-
-    @Override
-    public IExtendedModelPart getParent()
-    {
-        return parent;
-    }
-
-    @Override
-    public void setPostRotations2(Vector4 rotations)
-    {
-        postRot1 = rotations;
+        preRot.set(0, 1, 0, 0);
+        postRot.set(0, 1, 0, 0);
+        postRot1.set(0, 1, 0, 0);
+        preTrans.clear();
+        postTrans.clear();
     }
 
     private void rotateToParent()
@@ -255,13 +219,49 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
     }
 
     @Override
-    public void resetToInit()
+    public void setParent(IExtendedModelPart parent)
     {
-        preRot.set(0, 1, 0, 0);
-        postRot.set(0, 1, 0, 0);
-        postRot1.set(0, 1, 0, 0);
-        preTrans.clear();
-        postTrans.clear();
+        this.parent = parent;
+    }
+
+    @Override
+    public void setPostRotations(Vector4 angles)
+    {
+        postRot = angles;
+    }
+
+    @Override
+    public void setPostRotations2(Vector4 rotations)
+    {
+        postRot1 = rotations;
+    }
+
+    @Override
+    public void setPostTranslations(Vector3 point)
+    {
+        postTrans.set(point);
+    }
+
+    @Override
+    public void setPreRotations(Vector4 angles)
+    {
+        preRot = angles;
+    }
+
+    @Override
+    public void setPreTranslations(Vector3 point)
+    {
+        preTrans.set(point);
+    }
+
+    @Override
+    public void setRGBAB(int[] array)
+    {
+        red = array[0];
+        blue = array[1];
+        green = array[2];
+        alpha = array[3];
+        brightness = array[4];
     }
 
     @Override

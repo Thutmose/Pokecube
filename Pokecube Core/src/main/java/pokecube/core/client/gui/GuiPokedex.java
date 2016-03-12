@@ -33,8 +33,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
-import pokecube.core.PokecubeItems;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.Resources;
 import pokecube.core.database.Pokedex;
@@ -66,32 +66,42 @@ import thut.api.terrain.TerrainSegment;
 
 public class GuiPokedex extends GuiScreen
 {
-    protected IPokemob     pokemob      = null;
-    protected EntityPlayer entityPlayer = null;
-
     public static PokedexEntry pokedexEntry = null;
-
-    protected GuiTextField nicknameTextField;
-
-    /** The X size of the inventory window in pixels. */
-    protected int xSize = 253;
-
-    /** The Y size of the inventory window in pixels. */
-    protected int ySize            = 180; // old:166
-    private float xRenderAngle     = 0;
-    private float yHeadRenderAngle = 10;
-    private float xHeadRenderAngle = 0;
-    private int   mouseRotateControl;
-
-    private int page   = 0;
-    private int index  = 0;
-    private int index2 = 0;
-
     public static Vector3 closestVillage = Vector3.getNewVector();
 
     private static final int PAGECOUNT = 5;
 
+    private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
+
+    /** to pass as last parameter when rendering the mob so that the render
+     * knows the rendering is asked by the pokedex gui */
+    public final static float POKEDEX_RENDER = 1.5f;
+
+    protected IPokemob     pokemob      = null;
+    protected EntityPlayer entityPlayer = null;
+    protected GuiTextField nicknameTextField;
+    /** The X size of the inventory window in pixels. */
+    protected int xSize = 253;
+    /** The Y size of the inventory window in pixels. */
+    protected int ySize            = 180; // old:166
+
+    private float xRenderAngle     = 0;
+    private float yHeadRenderAngle = 10;
+    private float xHeadRenderAngle = 0;
+
+    private int   mouseRotateControl;
+
+    private int page   = 0;
+
+    private int index  = 0;
+
+    private int index2 = 0;
+
     List<Integer> biomes = new ArrayList<Integer>();
+
+    int prevX = 0;
+
+    int prevY = 0;
 
     /**
      *
@@ -128,625 +138,23 @@ public class GuiPokedex extends GuiScreen
         }
     }
 
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-
-        buttonList.clear();
-        int yOffset = height / 2 - 80;
-        int xOffset = width / 2;
-        nicknameTextField = new GuiTextField(0, fontRendererObj, xOffset + 11, yOffset + 23, 100, 10);
-        nicknameTextField.setMaxStringLength(20);
-        nicknameTextField.setFocused(false);
-        nicknameTextField.setEnabled(false);
-
-        if (canEditPokemob() && page == 0)
-        {
-            nicknameTextField.setText(pokemob.getPokemonDisplayName());
-            nicknameTextField.setEnabled(true);
-        }
-
-        if (page == 1)
-        {
-            TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-            // t.refresh(entityPlayer.worldObj);
-            Vector3 location = Vector3.getNewVector().set(entityPlayer);
-            int type = t.getBiome(location);
-            for (int i = 0; i < biomes.size(); i++)
-            {
-                if (biomes.get(i) == (type))
-                {
-                    index2 = i;// type - 1;
-                }
-            }
-            nicknameTextField.setText("");
-            nicknameTextField.setEnabled(false);
-        }
-        if (page == 4)
-        {
-            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-            List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
-
-            if (locations.size() > 0)
-            {
-                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-                nicknameTextField.setText(location.getName());
-            }
-            nicknameTextField.setEnabled(true);
-        }
-    }
-
     private boolean canEditPokemob()
     {
         return pokemob != null && pokedexEntry.getPokedexNb() == pokemob.getPokedexNb()
-                && ((pokemob.getPokemonAIState(IPokemob.TAMED) && entityPlayer == pokemob.getPokemonOwner())
+                && ((pokemob.getPokemonAIState(IMoveConstants.TAMED) && entityPlayer == pokemob.getPokemonOwner())
                         || entityPlayer.capabilities.isCreativeMode);
     }
-
     @Override
-    protected void keyTyped(char par1, int par2) throws IOException
+    public boolean doesGuiPauseGame()
     {
-        if (isAltKeyDown()) return;
-        if (page == 4)
-        {
-            nicknameTextField.setEnabled(true);
-            nicknameTextField.setFocused(true);
-
-            if (page == 4 && (par2 == ClientProxyPokecube.nextMove.getKeyCode()
-                    || par2 == ClientProxyPokecube.previousMove.getKeyCode()))
-            {
-                GuiTeleport.instance().nextMove();
-
-                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-                List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getUniqueID().toString());
-
-                if (locations.size() > 0)
-                {
-                    TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-                    nicknameTextField.setText(location.getName());
-                }
-                nicknameTextField.setEnabled(true);
-
-            }
-            else if (page == 4 && par2 == 28 && index == 0 || index == 4)
-            {
-
-                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-                List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getUniqueID().toString());
-
-                if (locations.size() > 0)
-                {
-                    PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-                    Vector4 location = locations.get((GuiTeleport.instance().indexLocation) % locations.size()).loc;
-                    if (index == 0) buffer.writeByte(-1);
-                    else if (index == 4) buffer.writeByte(-2);
-                    buffer.writeInt((int) location.w);
-                    buffer.writeFloat(location.x);
-                    buffer.writeFloat(location.y);
-                    buffer.writeFloat(location.z);
-
-                    buffer.writeString(nicknameTextField.getText());
-
-                    PokecubeSerializer.getInstance().unsetTeleport(location,
-                            minecraft.thePlayer.getUniqueID().toString());
-                    PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
-                            buffer.array());
-                    PokecubePacketHandler.sendToServer(packet);
-                }
-
-            }
-
-        }
-        // else
-        {
-            boolean b = nicknameTextField.textboxKeyTyped(par1, par2);
-
-            if (par2 == Keyboard.KEY_LEFT)
-            {
-                handleGuiButton(2);
-            }
-            else if (par2 == Keyboard.KEY_RIGHT)
-            {
-                handleGuiButton(1);
-            }
-            else if (par2 == Keyboard.KEY_UP)
-            {
-                handleGuiButton(3);
-            }
-            else if (par2 == Keyboard.KEY_DOWN)
-            {
-                handleGuiButton(4);
-            }
-            else if (par2 == Keyboard.KEY_PRIOR)
-            {
-                handleGuiButton(11);
-            }
-            else if (par2 == Keyboard.KEY_NEXT)
-            {
-                handleGuiButton(12);
-            }
-            else if (!b && par2 != 54 && par2 != 58 && par2 != 42 && page != 4)
-            {
-                mc.displayGuiScreen(null);
-                mc.setIngameFocus();
-
-                if (canEditPokemob() && page == 0 && !pokemob.getPokemonNickname().equals(nicknameTextField.getText()))
-                {
-                    String nickname = nicknameTextField.getText();
-                    pokemob.setPokemonNickname(nickname);
-                }
-            }
-
-            super.keyTyped(par1, par2);
-        }
-    }
-
-    private int getButtonId(int x, int y)
-    {
-        int xConv = x - ((width - xSize) / 2) - 74;
-        int yConv = y - ((height - ySize) / 2) - 107;
-        int button = 0;
-
-        if (xConv >= 35 && xConv <= 42 && yConv >= 52 && yConv <= 58)
-        {
-            button = 1;// Next
-        }
-        else if (xConv >= 20 && xConv <= 27 && yConv >= 52 && yConv <= 58)
-        {
-            button = 2;// Previous
-        }
-        else if (xConv >= 28 && xConv <= 34 && yConv >= 43 && yConv <= 51)
-        {
-            button = 3;// Next 10
-        }
-        else if (xConv >= 28 && xConv <= 34 && yConv >= 59 && yConv <= 65)
-        {
-            button = 4;// Previous 10
-        }
-        else if (xConv >= -67 && xConv <= -57 && yConv >= 56 && yConv <= 65)
-        {
-            button = 5;// Sound
-        }
-        else if (xConv >= 56 && xConv <= 60 && yConv >= 7 && yConv <= 16)
-        {
-            button = 6;// exchange Move 01
-        }
-        else if (xConv >= 56 && xConv <= 60 && yConv >= 21 && yConv <= 30)
-        {
-            button = 7;// exchange Move 12
-        }
-        else if (xConv >= 56 && xConv <= 60 && yConv >= 35 && yConv <= 45)
-        {
-            button = 8;// exchange Move 23
-        }
-        else if (xConv >= 56 && xConv <= 60 && yConv >= 49 && yConv <= 59)
-        {
-            button = 9;// exchange Move 34
-        }
-        else if (xConv >= 56 && xConv <= 60 && yConv >= 63 && yConv <= 67)
-        {
-            button = 13;// exchange Move 45
-        }
-        else if ((xConv >= -67 && xConv <= 41 && yConv >= -39 && yConv <= 26)
-                || (xConv >= -67 && xConv <= 15 && yConv >= 26 && yConv <= 38)
-                || (xConv >= -53 && xConv <= 15 && yConv >= 38 && yConv <= 52))
-        {
-            button = 10;// Rotate Mouse control
-        }
-        else if (xConv >= 167 && xConv <= 172 && yConv <= -40 && yConv >= -52)
-        {
-            button = 11;// swap page
-        }
-        else if (xConv >= 167 && xConv <= 172 && yConv <= -22 && yConv >= -34)
-        {
-            button = 12;// swap page
-        }
-        else if (xConv >= -63 && xConv <= -53 && yConv <= -88 && yConv >= -99)
-        {
-            button = 14;// open igw if it is installed
-        }
-        return button;
-    }
-
-    int prevX = 0;
-    int prevY = 0;
-
-    @Override
-    public void handleMouseInput() throws IOException
-    {
-        int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
-        int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-
-        this.handleMouseMove(x, y, Mouse.getEventButton());
-        super.handleMouseInput();
-    }
-
-    private void handleMouseMove(int x, int y, int mouseButton)
-    {
-        // System.out.println("handleMouseMove("+x+", "+y+",
-        // "+mouseButton+")");
-        if (mouseButton != -1)
-        {
-            mouseRotateControl = -1;
-        }
-
-        if (mouseRotateControl == 0)
-        {
-            prevX = x;
-            xRenderAngle += y - prevY;
-            prevY = y;
-
-            if (xRenderAngle > 20)
-            {
-                xRenderAngle = 20;
-            }
-
-            if (xRenderAngle < -30)
-            {
-                xRenderAngle = -30;
-            }
-        }
-
-        if (mouseRotateControl == 1)
-        {
-            yHeadRenderAngle += (prevX - x) * 2;
-            prevX = x;
-            xHeadRenderAngle += y - prevY;
-            prevY = y;
-
-            if (xHeadRenderAngle > 20)
-            {
-                xHeadRenderAngle = 20;
-            }
-
-            if (xHeadRenderAngle < -30)
-            {
-                xHeadRenderAngle = -30;
-            }
-
-            if (yHeadRenderAngle > 40)
-            {
-                yHeadRenderAngle = 40;
-            }
-
-            if (yHeadRenderAngle < -40)
-            {
-                yHeadRenderAngle = -40;
-            }
-        }
-    }
-
-    /** Called when the mouse is clicked. */
-    @Override
-    protected void mouseClicked(int x, int y, int mouseButton)
-    {
-        nicknameTextField.mouseClicked(x, y, mouseButton);
-        // System.out.println(mouseButton);
-        int button = getButtonId(x, y);
-
-        if (button == 10)
-        {
-            mouseRotateControl = mouseButton;
-            prevX = x;
-            prevY = y;
-        }
-        else
-        {
-            handleGuiButton(button);
-        }
-
-        if (page == 0)
-        {
-            if (canEditPokemob())
-            {
-                nicknameTextField.setText(pokemob.getPokemonDisplayName());
-                nicknameTextField.setEnabled(true);
-            }
-            else
-            {
-                nicknameTextField.setText("");
-                nicknameTextField.setEnabled(false);
-            }
-        }
-    }
-
-    public void handleGuiButton(int button)
-    {
-
-        if (button == 14)
-        {
-            if (Loader.isModLoaded("IGWMod"))
-            {
-                try
-                {
-                    Class<?> wikiGui = Class.forName("igwmod.gui.GuiWiki");
-                    FMLCommonHandler.instance().showGuiScreen(wikiGui.newInstance());
-                }
-                catch (Throwable t)
-                {
-
-                }
-            }
-            return;
-        }
-
-        if (page != 1 && button == 1)
-        {
-            pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 1);
-        }
-        else if (page != 1 && button == 2)
-        {
-            pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 1);
-        }
-        else if (page == 0 && button == 3)
-        {
-            pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 10);
-        }
-        else if (page == 0 && button == 4)
-        {
-            pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 10);
-        }
-        else if (page == 4 && button == 3)
-        {
-            nicknameTextField.setEnabled(true);
-            nicknameTextField.setFocused(true);
-            GuiTeleport.instance().nextMove();
-            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-            List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
-
-            if (locations.size() > 0)
-            {
-                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-                nicknameTextField.setText(location.getName());
-            }
-            nicknameTextField.setEnabled(true);
-        }
-        else if (page == 4 && button == 4)
-        {
-            nicknameTextField.setEnabled(true);
-            nicknameTextField.setFocused(true);
-            GuiTeleport.instance().previousMove();
-            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-            List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
-
-            if (locations.size() > 0)
-            {
-                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-                nicknameTextField.setText(location.getName());
-            }
-            nicknameTextField.setEnabled(true);
-        }
-
-        if (page == 0 && button >= 1 && button <= 5 || button == 5)
-        {
-            float volume = 0.2F;
-
-            if (button == 5)
-            {
-                volume = 1F;
-            }
-            // mod_Pokecube.getWorld().playSoundAtEntity(entityPlayer,
-            // pokedexEntry.getSound(), volume, 1.0F);
-            mc.theWorld.playSoundAtEntity(mc.thePlayer, pokedexEntry.getSound(), volume, 1.0F);// .playSoundFX(pokedexEntry.getSound(),
-                                                                                               // volume,
-                                                                                               // 1.0F);
-            mc.thePlayer.playSound(pokedexEntry.getSound(), volume, 1.0F);
-
-            nicknameTextField.setVisible(true);
-            if (canEditPokemob())
-            {
-                nicknameTextField.setText(pokemob.getPokemonDisplayName());
-            }
-            nicknameTextField.setEnabled(true);
-        }
-        else if (canEditPokemob())
-        {
-            if (button == 6)
-            {
-                pokemob.exchangeMoves(0, 1);
-            }
-            else if (button == 7)
-            {
-                pokemob.exchangeMoves(1, 2);
-            }
-            else if (button == 8)
-            {
-                pokemob.exchangeMoves(2, 3);
-            }
-            else if (button == 9)
-            {
-                pokemob.exchangeMoves(3, 4);
-            }
-            else if (button == 13)
-            {
-                pokemob.exchangeMoves(4, 5);
-            }
-        }
-        else if (page == 4)
-        {
-            if (index > 4) index = 0;
-            if (button == 6 && (index == 0 || index == 1))
-            {
-                index = index == 1 ? 0 : 1;
-            }
-            else if (button == 7 && (index == 1 || index == 2))
-            {
-                index = index == 1 ? 2 : 1;
-            }
-            else if (button == 8 && (index == 2 || index == 3))
-            {
-                index = index == 2 ? 3 : 2;
-            }
-            else if (button == 9 && (index == 4 || index == 3))
-            {
-                index = index == 3 ? 4 : 3;
-            }
-        }
-        if (button == 11)
-        {
-            page = (page + 1) % PAGECOUNT;
-
-            if (entityPlayer.getHeldItem() != null && entityPlayer.getHeldItem().getItem() == PokecubeItems.pokedex)
-            {
-                // entityPlayer.getHeldItem().setItemDamage(page);
-                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
-                        new byte[] { (byte) page });
-                PokecubePacketHandler.sendToServer(packet);
-
-                if (page == 1)
-                {
-                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-                    Vector3 location = Vector3.getNewVector().set(entityPlayer);
-                    int type = t.getBiome(location.intX(), location.intY(), location.intZ());
-                    for (int i = 0; i < biomes.size(); i++)
-                    {
-                        if (biomes.get(i) == (type))
-                        {
-                            index2 = i - 1;// type - 1;
-                        }
-                    }
-                }
-            }
-
-        }
-        if (button == 12)
-        {
-            page = (page - 1) % PAGECOUNT;
-            if (page < 0) page = PAGECOUNT - 1;
-
-            if (entityPlayer.getHeldItem() != null && entityPlayer.getHeldItem().getItem() == PokecubeItems.pokedex)
-            {
-                // entityPlayer.getHeldItem().setItemDamage(page);
-                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 5,
-                        new byte[] { (byte) page });
-                PokecubePacketHandler.sendToServer(packet);
-
-                if (page == 1)
-                {
-                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-                    Vector3 location = Vector3.getNewVector().set(entityPlayer);
-                    int type = t.getBiome(location.intX(), location.intY(), location.intZ());
-                    for (int i = 0; i < biomes.size(); i++)
-                    {
-                        if (biomes.get(i) == (type))
-                        {
-                            index2 = i - 1;// type - 1;
-                        }
-                    }
-                }
-            }
-
-        }
-
-        if (page != 0)
-        {
-
-            if (page == 1)
-            {
-
-            }
-            if (page != 4)
-            {
-                nicknameTextField.setText("");
-                nicknameTextField.setEnabled(false);
-                if (button == 1)
-                {
-                    index2++;
-                }
-                if (button == 2)
-                {
-                    index2--;
-                }
-                if (button == 3)
-                {
-                    index--;
-                }
-                if (button == 4)
-                {
-                    index++;
-                }
-            }
-        }
+        return false;
     }
 
     @Override
-    public void drawScreen(int i, int j, float f)
+    /** Draws the background (i is always 0 as of 1.2.2) */
+    public void drawBackground(int tint)
     {
-        super.drawScreen(i, j, f);
-
-        Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-
-        minecraft.renderEngine.bindTexture(Resources.GUI_POKEDEX);
-        int j2 = (width - xSize) / 2;
-        int k2 = (height - ySize) / 2;
-        drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);
-
-        GL11.glPushMatrix();
-
-        int yOffset = height / 2 - 80;
-        int xOffset = width / 2;
-
-        GL11.glPushMatrix();
-        renderMob();// TODO find out why rendering player messes up shaders
-        GL11.glPopMatrix();
-        nicknameTextField.drawTextBox();
-        if (page == 0)
-        {
-            drawPage0(xOffset, yOffset);
-        }
-        else if (page == 1)
-        {
-            drawPage1(xOffset, yOffset);
-        }
-        else if (page == 2)
-        {
-            drawPage2(xOffset, yOffset);
-        }
-        else if (page == 3)
-        {
-            drawPage3(xOffset, yOffset);
-        }
-        else if (page == 4)
-        {
-            drawPage4(xOffset, yOffset);
-        }
-
-        if (pokedexEntry != null)
-        {
-            drawCenteredString(fontRendererObj, pokedexEntry.getTranslatedName(), xOffset - 65, yOffset + 30, 0xffffff);
-            drawCenteredString(fontRendererObj, "#" + pokedexEntry.getPokedexNb(), xOffset - 25, yOffset + 15,
-                    0xffffff);
-
-            if (mc.thePlayer.getStatFileWriter()
-                    .hasAchievementUnlocked(PokecubeMod.pokemobAchievements.get(pokedexEntry.getPokedexNb())))
-            {
-                fontRendererObj.drawString(".", xOffset - 52, yOffset + 11, 0x22DD22);
-                fontRendererObj.drawString(".", xOffset - 53, yOffset + 12, 0x22DD22);
-                fontRendererObj.drawString(".", xOffset - 52, yOffset + 12, 0x22DD22);
-                fontRendererObj.drawString(".", xOffset - 51, yOffset + 12, 0x22DD22);
-                fontRendererObj.drawString(".", xOffset - 52, yOffset + 13, 0x22DD22);
-            }
-
-            try
-            {
-                drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType1()), xOffset - 92,
-                        yOffset + 44, pokedexEntry.getType1().colour);
-                drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType2()), xOffset - 38,
-                        yOffset + 44, pokedexEntry.getType2().colour);
-            }
-            catch (Exception e)
-            {
-                // System.out.println(pokedexEntry);
-                // e.printStackTrace();
-            }
-        }
-        GL11.glPopMatrix();
+        super.drawBackground(tint);
     }
 
     /** Draws the first page of the pokedex, this is the page with the pokemob's
@@ -1054,6 +462,80 @@ public class GuiPokedex extends GuiScreen
                 yOffset + 99 + 14 * index, PokeType.fire.colour);
     }
 
+    @Override
+    public void drawScreen(int i, int j, float f)
+    {
+        super.drawScreen(i, j, f);
+
+        Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+
+        minecraft.renderEngine.bindTexture(Resources.GUI_POKEDEX);
+        int j2 = (width - xSize) / 2;
+        int k2 = (height - ySize) / 2;
+        drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);
+
+        GL11.glPushMatrix();
+
+        int yOffset = height / 2 - 80;
+        int xOffset = width / 2;
+
+        GL11.glPushMatrix();
+        renderMob();// TODO find out why rendering player messes up shaders
+        GL11.glPopMatrix();
+        nicknameTextField.drawTextBox();
+        if (page == 0)
+        {
+            drawPage0(xOffset, yOffset);
+        }
+        else if (page == 1)
+        {
+            drawPage1(xOffset, yOffset);
+        }
+        else if (page == 2)
+        {
+            drawPage2(xOffset, yOffset);
+        }
+        else if (page == 3)
+        {
+            drawPage3(xOffset, yOffset);
+        }
+        else if (page == 4)
+        {
+            drawPage4(xOffset, yOffset);
+        }
+
+        if (pokedexEntry != null)
+        {
+            drawCenteredString(fontRendererObj, pokedexEntry.getTranslatedName(), xOffset - 65, yOffset + 30, 0xffffff);
+            drawCenteredString(fontRendererObj, "#" + pokedexEntry.getPokedexNb(), xOffset - 25, yOffset + 15,
+                    0xffffff);
+
+            if (mc.thePlayer.getStatFileWriter()
+                    .hasAchievementUnlocked(PokecubeMod.pokemobAchievements.get(pokedexEntry.getPokedexNb())))
+            {
+                fontRendererObj.drawString(".", xOffset - 52, yOffset + 11, 0x22DD22);
+                fontRendererObj.drawString(".", xOffset - 53, yOffset + 12, 0x22DD22);
+                fontRendererObj.drawString(".", xOffset - 52, yOffset + 12, 0x22DD22);
+                fontRendererObj.drawString(".", xOffset - 51, yOffset + 12, 0x22DD22);
+                fontRendererObj.drawString(".", xOffset - 52, yOffset + 13, 0x22DD22);
+            }
+
+            try
+            {
+                drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType1()), xOffset - 92,
+                        yOffset + 44, pokedexEntry.getType1().colour);
+                drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType2()), xOffset - 38,
+                        yOffset + 44, pokedexEntry.getType2().colour);
+            }
+            catch (Exception e)
+            {
+                // System.out.println(pokedexEntry);
+                // e.printStackTrace();
+            }
+        }
+        GL11.glPopMatrix();
+    }
+
     /** Used to draw in the list of moves that the pokemob has in the bottom
      * section of some pages
      * 
@@ -1152,25 +634,77 @@ public class GuiPokedex extends GuiScreen
     }
 
     @Override
-    public boolean doesGuiPauseGame()
-    {
-        return false;
-    }
-
-    @Override
     public void drawWorldBackground(int tint)
     {
         super.drawWorldBackground(tint);
     }
 
-    @Override
-    /** Draws the background (i is always 0 as of 1.2.2) */
-    public void drawBackground(int tint)
+    private int getButtonId(int x, int y)
     {
-        super.drawBackground(tint);
-    }
+        int xConv = x - ((width - xSize) / 2) - 74;
+        int yConv = y - ((height - ySize) / 2) - 107;
+        int button = 0;
 
-    private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
+        if (xConv >= 35 && xConv <= 42 && yConv >= 52 && yConv <= 58)
+        {
+            button = 1;// Next
+        }
+        else if (xConv >= 20 && xConv <= 27 && yConv >= 52 && yConv <= 58)
+        {
+            button = 2;// Previous
+        }
+        else if (xConv >= 28 && xConv <= 34 && yConv >= 43 && yConv <= 51)
+        {
+            button = 3;// Next 10
+        }
+        else if (xConv >= 28 && xConv <= 34 && yConv >= 59 && yConv <= 65)
+        {
+            button = 4;// Previous 10
+        }
+        else if (xConv >= -67 && xConv <= -57 && yConv >= 56 && yConv <= 65)
+        {
+            button = 5;// Sound
+        }
+        else if (xConv >= 56 && xConv <= 60 && yConv >= 7 && yConv <= 16)
+        {
+            button = 6;// exchange Move 01
+        }
+        else if (xConv >= 56 && xConv <= 60 && yConv >= 21 && yConv <= 30)
+        {
+            button = 7;// exchange Move 12
+        }
+        else if (xConv >= 56 && xConv <= 60 && yConv >= 35 && yConv <= 45)
+        {
+            button = 8;// exchange Move 23
+        }
+        else if (xConv >= 56 && xConv <= 60 && yConv >= 49 && yConv <= 59)
+        {
+            button = 9;// exchange Move 34
+        }
+        else if (xConv >= 56 && xConv <= 60 && yConv >= 63 && yConv <= 67)
+        {
+            button = 13;// exchange Move 45
+        }
+        else if ((xConv >= -67 && xConv <= 41 && yConv >= -39 && yConv <= 26)
+                || (xConv >= -67 && xConv <= 15 && yConv >= 26 && yConv <= 38)
+                || (xConv >= -53 && xConv <= 15 && yConv >= 38 && yConv <= 52))
+        {
+            button = 10;// Rotate Mouse control
+        }
+        else if (xConv >= 167 && xConv <= 172 && yConv <= -40 && yConv >= -52)
+        {
+            button = 11;// swap page
+        }
+        else if (xConv >= 167 && xConv <= 172 && yConv <= -22 && yConv >= -34)
+        {
+            button = 12;// swap page
+        }
+        else if (xConv >= -63 && xConv <= -53 && yConv <= -88 && yConv >= -99)
+        {
+            button = 14;// open igw if it is installed
+        }
+        return button;
+    }
 
     private EntityLiving getEntityToDisplay()
     {
@@ -1191,6 +725,476 @@ public class GuiPokedex extends GuiScreen
         }
 
         return pokemob;
+    }
+
+    public void handleGuiButton(int button)
+    {
+
+        if (button == 14)
+        {
+            if (Loader.isModLoaded("IGWMod"))
+            {
+                try
+                {
+                    Class<?> wikiGui = Class.forName("igwmod.gui.GuiWiki");
+                    FMLCommonHandler.instance().showGuiScreen(wikiGui.newInstance());
+                }
+                catch (Throwable t)
+                {
+
+                }
+            }
+            return;
+        }
+
+        if (page != 1 && button == 1)
+        {
+            pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 1);
+        }
+        else if (page != 1 && button == 2)
+        {
+            pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 1);
+        }
+        else if (page == 0 && button == 3)
+        {
+            pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 10);
+        }
+        else if (page == 0 && button == 4)
+        {
+            pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 10);
+        }
+        else if (page == 4 && button == 3)
+        {
+            nicknameTextField.setEnabled(true);
+            nicknameTextField.setFocused(true);
+            GuiTeleport.instance().nextMove();
+            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+            List<TeleDest> locations = PokecubeSerializer.getInstance()
+                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+
+            if (locations.size() > 0)
+            {
+                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
+                nicknameTextField.setText(location.getName());
+            }
+            nicknameTextField.setEnabled(true);
+        }
+        else if (page == 4 && button == 4)
+        {
+            nicknameTextField.setEnabled(true);
+            nicknameTextField.setFocused(true);
+            GuiTeleport.instance().previousMove();
+            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+            List<TeleDest> locations = PokecubeSerializer.getInstance()
+                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+
+            if (locations.size() > 0)
+            {
+                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
+                nicknameTextField.setText(location.getName());
+            }
+            nicknameTextField.setEnabled(true);
+        }
+
+        if (page == 0 && button >= 1 && button <= 5 || button == 5)
+        {
+            float volume = 0.2F;
+
+            if (button == 5)
+            {
+                volume = 1F;
+            }
+            // mod_Pokecube.getWorld().playSoundAtEntity(entityPlayer,
+            // pokedexEntry.getSound(), volume, 1.0F);
+            mc.theWorld.playSoundAtEntity(mc.thePlayer, pokedexEntry.getSound(), volume, 1.0F);// .playSoundFX(pokedexEntry.getSound(),
+                                                                                               // volume,
+                                                                                               // 1.0F);
+            mc.thePlayer.playSound(pokedexEntry.getSound(), volume, 1.0F);
+
+            nicknameTextField.setVisible(true);
+            if (canEditPokemob())
+            {
+                nicknameTextField.setText(pokemob.getPokemonDisplayName());
+            }
+            nicknameTextField.setEnabled(true);
+        }
+        else if (canEditPokemob())
+        {
+            if (button == 6)
+            {
+                pokemob.exchangeMoves(0, 1);
+            }
+            else if (button == 7)
+            {
+                pokemob.exchangeMoves(1, 2);
+            }
+            else if (button == 8)
+            {
+                pokemob.exchangeMoves(2, 3);
+            }
+            else if (button == 9)
+            {
+                pokemob.exchangeMoves(3, 4);
+            }
+            else if (button == 13)
+            {
+                pokemob.exchangeMoves(4, 5);
+            }
+        }
+        else if (page == 4)
+        {
+            if (index > 4) index = 0;
+            if (button == 6 && (index == 0 || index == 1))
+            {
+                index = index == 1 ? 0 : 1;
+            }
+            else if (button == 7 && (index == 1 || index == 2))
+            {
+                index = index == 1 ? 2 : 1;
+            }
+            else if (button == 8 && (index == 2 || index == 3))
+            {
+                index = index == 2 ? 3 : 2;
+            }
+            else if (button == 9 && (index == 4 || index == 3))
+            {
+                index = index == 3 ? 4 : 3;
+            }
+        }
+        if (button == 11)
+        {
+            page = (page + 1) % PAGECOUNT;
+
+            if (entityPlayer.getHeldItem() != null && entityPlayer.getHeldItem().getItem() == PokecubeItems.pokedex)
+            {
+                // entityPlayer.getHeldItem().setItemDamage(page);
+                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
+                        new byte[] { (byte) page });
+                PokecubePacketHandler.sendToServer(packet);
+
+                if (page == 1)
+                {
+                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
+                    Vector3 location = Vector3.getNewVector().set(entityPlayer);
+                    int type = t.getBiome(location.intX(), location.intY(), location.intZ());
+                    for (int i = 0; i < biomes.size(); i++)
+                    {
+                        if (biomes.get(i) == (type))
+                        {
+                            index2 = i - 1;// type - 1;
+                        }
+                    }
+                }
+            }
+
+        }
+        if (button == 12)
+        {
+            page = (page - 1) % PAGECOUNT;
+            if (page < 0) page = PAGECOUNT - 1;
+
+            if (entityPlayer.getHeldItem() != null && entityPlayer.getHeldItem().getItem() == PokecubeItems.pokedex)
+            {
+                // entityPlayer.getHeldItem().setItemDamage(page);
+                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 5,
+                        new byte[] { (byte) page });
+                PokecubePacketHandler.sendToServer(packet);
+
+                if (page == 1)
+                {
+                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
+                    Vector3 location = Vector3.getNewVector().set(entityPlayer);
+                    int type = t.getBiome(location.intX(), location.intY(), location.intZ());
+                    for (int i = 0; i < biomes.size(); i++)
+                    {
+                        if (biomes.get(i) == (type))
+                        {
+                            index2 = i - 1;// type - 1;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        if (page != 0)
+        {
+
+            if (page == 1)
+            {
+
+            }
+            if (page != 4)
+            {
+                nicknameTextField.setText("");
+                nicknameTextField.setEnabled(false);
+                if (button == 1)
+                {
+                    index2++;
+                }
+                if (button == 2)
+                {
+                    index2--;
+                }
+                if (button == 3)
+                {
+                    index--;
+                }
+                if (button == 4)
+                {
+                    index++;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException
+    {
+        int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+
+        this.handleMouseMove(x, y, Mouse.getEventButton());
+        super.handleMouseInput();
+    }
+
+    private void handleMouseMove(int x, int y, int mouseButton)
+    {
+        // System.out.println("handleMouseMove("+x+", "+y+",
+        // "+mouseButton+")");
+        if (mouseButton != -1)
+        {
+            mouseRotateControl = -1;
+        }
+
+        if (mouseRotateControl == 0)
+        {
+            prevX = x;
+            xRenderAngle += y - prevY;
+            prevY = y;
+
+            if (xRenderAngle > 20)
+            {
+                xRenderAngle = 20;
+            }
+
+            if (xRenderAngle < -30)
+            {
+                xRenderAngle = -30;
+            }
+        }
+
+        if (mouseRotateControl == 1)
+        {
+            yHeadRenderAngle += (prevX - x) * 2;
+            prevX = x;
+            xHeadRenderAngle += y - prevY;
+            prevY = y;
+
+            if (xHeadRenderAngle > 20)
+            {
+                xHeadRenderAngle = 20;
+            }
+
+            if (xHeadRenderAngle < -30)
+            {
+                xHeadRenderAngle = -30;
+            }
+
+            if (yHeadRenderAngle > 40)
+            {
+                yHeadRenderAngle = 40;
+            }
+
+            if (yHeadRenderAngle < -40)
+            {
+                yHeadRenderAngle = -40;
+            }
+        }
+    }
+
+    @Override
+    public void initGui()
+    {
+        super.initGui();
+
+        buttonList.clear();
+        int yOffset = height / 2 - 80;
+        int xOffset = width / 2;
+        nicknameTextField = new GuiTextField(0, fontRendererObj, xOffset + 11, yOffset + 23, 100, 10);
+        nicknameTextField.setMaxStringLength(20);
+        nicknameTextField.setFocused(false);
+        nicknameTextField.setEnabled(false);
+
+        if (canEditPokemob() && page == 0)
+        {
+            nicknameTextField.setText(pokemob.getPokemonDisplayName());
+            nicknameTextField.setEnabled(true);
+        }
+
+        if (page == 1)
+        {
+            TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
+            // t.refresh(entityPlayer.worldObj);
+            Vector3 location = Vector3.getNewVector().set(entityPlayer);
+            int type = t.getBiome(location);
+            for (int i = 0; i < biomes.size(); i++)
+            {
+                if (biomes.get(i) == (type))
+                {
+                    index2 = i;// type - 1;
+                }
+            }
+            nicknameTextField.setText("");
+            nicknameTextField.setEnabled(false);
+        }
+        if (page == 4)
+        {
+            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+            List<TeleDest> locations = PokecubeSerializer.getInstance()
+                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+
+            if (locations.size() > 0)
+            {
+                TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
+                nicknameTextField.setText(location.getName());
+            }
+            nicknameTextField.setEnabled(true);
+        }
+    }
+
+    @Override
+    protected void keyTyped(char par1, int par2) throws IOException
+    {
+        if (isAltKeyDown()) return;
+        if (page == 4)
+        {
+            nicknameTextField.setEnabled(true);
+            nicknameTextField.setFocused(true);
+
+            if (page == 4 && (par2 == ClientProxyPokecube.nextMove.getKeyCode()
+                    || par2 == ClientProxyPokecube.previousMove.getKeyCode()))
+            {
+                GuiTeleport.instance().nextMove();
+
+                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+                List<TeleDest> locations = PokecubeSerializer.getInstance()
+                        .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+
+                if (locations.size() > 0)
+                {
+                    TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
+                    nicknameTextField.setText(location.getName());
+                }
+                nicknameTextField.setEnabled(true);
+
+            }
+            else if (page == 4 && par2 == 28 && index == 0 || index == 4)
+            {
+
+                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+                List<TeleDest> locations = PokecubeSerializer.getInstance()
+                        .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+
+                if (locations.size() > 0)
+                {
+                    PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+                    Vector4 location = locations.get((GuiTeleport.instance().indexLocation) % locations.size()).loc;
+                    if (index == 0) buffer.writeByte(-1);
+                    else if (index == 4) buffer.writeByte(-2);
+                    buffer.writeInt((int) location.w);
+                    buffer.writeFloat(location.x);
+                    buffer.writeFloat(location.y);
+                    buffer.writeFloat(location.z);
+
+                    buffer.writeString(nicknameTextField.getText());
+
+                    PokecubeSerializer.getInstance().unsetTeleport(location,
+                            minecraft.thePlayer.getUniqueID().toString());
+                    PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
+                            buffer.array());
+                    PokecubePacketHandler.sendToServer(packet);
+                }
+
+            }
+
+        }
+        // else
+        {
+            boolean b = nicknameTextField.textboxKeyTyped(par1, par2);
+
+            if (par2 == Keyboard.KEY_LEFT)
+            {
+                handleGuiButton(2);
+            }
+            else if (par2 == Keyboard.KEY_RIGHT)
+            {
+                handleGuiButton(1);
+            }
+            else if (par2 == Keyboard.KEY_UP)
+            {
+                handleGuiButton(3);
+            }
+            else if (par2 == Keyboard.KEY_DOWN)
+            {
+                handleGuiButton(4);
+            }
+            else if (par2 == Keyboard.KEY_PRIOR)
+            {
+                handleGuiButton(11);
+            }
+            else if (par2 == Keyboard.KEY_NEXT)
+            {
+                handleGuiButton(12);
+            }
+            else if (!b && par2 != 54 && par2 != 58 && par2 != 42 && page != 4)
+            {
+                mc.displayGuiScreen(null);
+                mc.setIngameFocus();
+
+                if (canEditPokemob() && page == 0 && !pokemob.getPokemonNickname().equals(nicknameTextField.getText()))
+                {
+                    String nickname = nicknameTextField.getText();
+                    pokemob.setPokemonNickname(nickname);
+                }
+            }
+
+            super.keyTyped(par1, par2);
+        }
+    }
+
+    /** Called when the mouse is clicked. */
+    @Override
+    protected void mouseClicked(int x, int y, int mouseButton)
+    {
+        nicknameTextField.mouseClicked(x, y, mouseButton);
+        // System.out.println(mouseButton);
+        int button = getButtonId(x, y);
+
+        if (button == 10)
+        {
+            mouseRotateControl = mouseButton;
+            prevX = x;
+            prevY = y;
+        }
+        else
+        {
+            handleGuiButton(button);
+        }
+
+        if (page == 0)
+        {
+            if (canEditPokemob())
+            {
+                nicknameTextField.setText(pokemob.getPokemonDisplayName());
+                nicknameTextField.setEnabled(true);
+            }
+            else
+            {
+                nicknameTextField.setText("");
+                nicknameTextField.setEnabled(false);
+            }
+        }
     }
 
     private void renderMob()
@@ -1309,8 +1313,4 @@ public class GuiPokedex extends GuiScreen
             e.printStackTrace();
         }
     }
-
-    /** to pass as last parameter when rendering the mob so that the render
-     * knows the rendering is asked by the pokedex gui */
-    public final static float POKEDEX_RENDER = 1.5f;
 }

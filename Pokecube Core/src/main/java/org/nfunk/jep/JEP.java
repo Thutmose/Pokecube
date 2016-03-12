@@ -182,21 +182,57 @@ public class JEP {
 	}
 
 	/**
-	 * Creates a new SymbolTable object as symTab.
+	 * Call this function if you want to parse expressions which involve
+	 * complex numbers. This method specifies "i" as the imaginary unit
+	 * (0,1). Two functions re() and im() are also added for extracting the
+	 * real or imaginary components of a complex number respectively.
+	 *<p>
+	 * @since 2.3.0 alpha The functions cmod and arg are added to get the modulus and argument. 
+	 * @since 2.3.0 beta 1 The functions complex and polar to convert x,y and r,theta to Complex. 
 	 */
-	public void initSymTab() {
-		//Init SymbolTable
-		symTab = new SymbolTable(new VariableFactory());
+	public void addComplex() {
+		//add constants to Symbol Table
+		symTab.addConstant("i", new Complex(0,1));
+		funTab.put("re", new Real());
+		funTab.put("im", new Imaginary());
+		funTab.put("arg", new Arg());
+		funTab.put("cmod", new Abs());
+		funTab.put("complex", new ComplexPFMC());
+		funTab.put("polar", new Polar());
+	}
+
+	/** Adds a constant.
+	 * This is a variable whos value cannot be changed.
+	 * @since 2.3.0 beta 1
+	 */
+	public void addConstant(String name,Object value) {
+		symTab.addConstant(name, value);
 	}
 
 	/**
-	 * Creates a new FunctionTable object as funTab.
+	 * Adds a new function to the parser. This must be done before parsing
+	 * an expression so the parser is aware that the new function may be
+	 * contained in the expression.
+	 * @param functionName The name of the function
+	 * @param function The function object that is used for evaluating the
+	 * function
 	 */
-	public void initFunTab() {
-		//Init FunctionTable
-		funTab = new FunctionTable();
+	public void addFunction(String functionName,
+							PostfixMathCommandI function) {
+		funTab.put(functionName, function);
 	}
 
+	/**
+	 * Adds the constants pi and e to the parser. As addStandardFunctions(),
+	 * this method should be called immediatly after the JEP object is
+	 * created.
+	 */
+	public void addStandardConstants() {
+		//add constants to Symbol Table
+		symTab.addConstant("pi", new Double(Math.PI));
+		symTab.addConstant("e", new Double(Math.E));
+	}
+	
 	/**
 	 * Adds the standard functions to the parser. If this function is not called
 	 * before parsing an expression, functions such as sin() or cos() would
@@ -240,50 +276,6 @@ public class JEP {
 	}
 
 	/**
-	 * Adds the constants pi and e to the parser. As addStandardFunctions(),
-	 * this method should be called immediatly after the JEP object is
-	 * created.
-	 */
-	public void addStandardConstants() {
-		//add constants to Symbol Table
-		symTab.addConstant("pi", new Double(Math.PI));
-		symTab.addConstant("e", new Double(Math.E));
-	}
-	
-	/**
-	 * Call this function if you want to parse expressions which involve
-	 * complex numbers. This method specifies "i" as the imaginary unit
-	 * (0,1). Two functions re() and im() are also added for extracting the
-	 * real or imaginary components of a complex number respectively.
-	 *<p>
-	 * @since 2.3.0 alpha The functions cmod and arg are added to get the modulus and argument. 
-	 * @since 2.3.0 beta 1 The functions complex and polar to convert x,y and r,theta to Complex. 
-	 */
-	public void addComplex() {
-		//add constants to Symbol Table
-		symTab.addConstant("i", new Complex(0,1));
-		funTab.put("re", new Real());
-		funTab.put("im", new Imaginary());
-		funTab.put("arg", new Arg());
-		funTab.put("cmod", new Abs());
-		funTab.put("complex", new ComplexPFMC());
-		funTab.put("polar", new Polar());
-	}
-
-	/**
-	 * Adds a new function to the parser. This must be done before parsing
-	 * an expression so the parser is aware that the new function may be
-	 * contained in the expression.
-	 * @param functionName The name of the function
-	 * @param function The function object that is used for evaluating the
-	 * function
-	 */
-	public void addFunction(String functionName,
-							PostfixMathCommandI function) {
-		funTab.put(functionName, function);
-	}
-
-	/**
 	 * Adds a new variable to the parser, or updates the value of an
 	 * existing variable. This must be done before parsing
 	 * an expression so the parser is aware that the new variable may be
@@ -298,13 +290,6 @@ public class JEP {
 		return object;
 	}
 
-	/** Adds a constant.
-	 * This is a variable whos value cannot be changed.
-	 * @since 2.3.0 beta 1
-	 */
-	public void addConstant(String name,Object value) {
-		symTab.addConstant(name, value);
-	}
 	/**
 	 * Adds a new complex variable to the parser, or updates the value of an
 	 * existing variable. This must be done before parsing
@@ -320,7 +305,7 @@ public class JEP {
 		symTab.makeVarIfNeeded(name, object);
 		return object;
 	}
-		
+
 	/**
 	 * Adds a new variable to the parser as an object, or updates the value of an
 	 * existing variable. This must be done before parsing
@@ -332,39 +317,192 @@ public class JEP {
 	public void addVariable(String name, Object object) {
 		symTab.makeVarIfNeeded(name, object);
 	}
+	/**
+	 * Evaluate an expression. This method evaluates the argument
+	 * rather than the topNode of the JEP instance.
+	 * It should be used in conjunction with {@link #parse parse}
+	 * rather than {@link #parseExpression parseExpression}.
+	 * @param node the top node of the tree representing the expression.
+	 * @return The value of the expression
+	 * @throws Exception if for some reason the expression could not be evaluated
+	 * @since 2.3.0 alpha
+	 */
+	public Object evaluate(Node node) throws Exception
+	{
+		return ev.getValue(node, new Vector(), this.symTab);
+	}
+		
+	/**
+	 * Whether assignment equation <tt>y=x+1</tt> equations are allowed.
+	 * @since 2.3.0 alpha
+	 */
+	public boolean getAllowAssignment() { return allowAssignment; }
 	
 	/**
-	 * Removes a variable from the parser. For example after calling
-	 * addStandardConstants(), removeVariable("e") might be called to remove
-	 * the euler constant from the set of variables.
+	 * Returns the value of the allowUndeclared option.
+	 * @return True if the allowUndeclared option is enabled. False otherwise.
+	 */
+	public boolean getAllowUndeclared() { return allowUndeclared; }
+	/**
+	 * Evaluates and returns the value of the expression as a complex number.
+	 * @return The calculated value of the expression as a complex number if
+	 * no errors occur. Returns null otherwise.
+	 */
+	public Complex getComplexValue() {
+		Object value = getValueAsObject();
+		
+		if (value == null) {
+			return null;
+		} else if (value instanceof Complex) {
+			return (Complex)value;
+		} else if (value instanceof Number) {
+			return new Complex(((Number)value).doubleValue(), 0);
+		} else {
+			return null;
+		}
+	}
+	/**
+	 * Reports information on the errors that occured during the most recent
+	 * action.
+	 * @return A string containing information on the errors, each separated
+	 * by a newline character; null if no error has occured
+	 */
+	public String getErrorInfo() {
+		if (hasError()) {
+			String str = "";
+			
+			// iterate through all errors and add them to the return string
+			for (int i=0; i<errorList.size(); i++) {
+				str += errorList.elementAt(i) + "\n";
+			}
+			
+			return str;
+		} else {
+			return null;
+		}
+	}
+	/**
+	 * Returns the function table (the list of all functions that the parser
+	 * recognises).
+	 * @return The function table
+	 */
+	public FunctionTable getFunctionTable() {
+			return funTab;
+	}
+	
+	/**
+	 * Returns the value of the implicit multiplication option.
+	 * @return True if the implicit multiplication option is enabled. False otherwise.
+	 */
+	public boolean getImplicitMul() { return implicitMul; }
+
+	/**
+	 * Returns the number factory.
+	 * @return the NumberFactory used by this JEP instance.
+	 */
+	public NumberFactory getNumberFactory() {
+		return numberFactory;
+	}
+	
+	/**
+	 * Returns the operator set.
+	 * @return the OperatorSet used by this JEP instance.
+	 * @since 2.3.0 alpha
+	 */
+	public OperatorSet getOperatorSet() {
+		return opSet;
+	}
+
+	/**
+	 * Returns the parse object.
+	 * @return the Parse used by this JEP.
+	 * @since 2.3.0 beta 1
+	 */
+	public Parser getParser() {return parser;	}
+//------------------------------------------------------------------------
+// Old code
+	
+	/**
+	 * Returns the symbol table (the list of all variables that the parser
+	 * recognises).
+	 * @return The symbol table
+	 */
+	public SymbolTable getSymbolTable() {
+		return symTab;
+	}
+	
+	/**
+	 * Returns the top node of the expression tree. Because all nodes are
+	 * pointed to either directly or indirectly, the entire expression tree
+	 * can be accessed through this node. It may be used to manipulate the
+	 * expression, and subsequently evaluate it manually.
+	 * @return The top node of the expression tree
+	 */
+	public Node getTopNode() {
+		return topNode;
+	}
+
+	/**
+	 * Returns the value of the traverse option.
+	 * @return True if the traverse option is enabled. False otherwise.
+	 */
+	public boolean getTraverse() { return traverse; }
+	
+	/**
+	 * Evaluates and returns the value of the expression as a double number.
+	 * @return The calculated value of the expression as a double number.
+	 * If the type of the value does not implement the Number interface
+	 * (e.g. Complex), NaN is returned. If an error occurs during evaluation,
+	 * NaN is returned and hasError() will return true.
 	 *
-	 * @return The value of the variable if it was added earlier. If
-	 * the variable is not in the table of variables, <code>null</code> is
-	 * returned.
+	 * @see #getComplexValue()
 	 */
-	public Object removeVariable(String name) {
-		return symTab.remove(name);
+	public double getValue() {
+		Object value = getValueAsObject();
+		
+		if(value == null) return Double.NaN;
+		
+		if(value instanceof Complex)
+		{
+			Complex c = (Complex) value;
+			if( c.im() != 0.0) return Double.NaN;
+			return c.re();
+		}
+		if (value != null && value instanceof Number) {
+			return ((Number)value).doubleValue();
+		}
+		
+		return Double.NaN;
 	}
-	/** 
-	 * Returns the value of the varible with given name.
-	 * @param name name of the variable.
-	 * @return the current value of the variable.
-	 * @since 2.3.0 alpha
+
+	/**
+	 * Evaluates and returns the value of the expression as an object.
+	 * The EvaluatorVisitor member ev is used to do the evaluation procedure.
+	 * This method is useful when the type of the value is unknown, or
+	 * not important.
+	 * @return The calculated value of the expression if no errors occur.
+	 * Returns null otherwise.
 	 */
-	public Object getVarValue(String name) {
-		return symTab.getVar(name).getValue();
+	public Object getValueAsObject() {
+		Object result;
+		
+		if (topNode != null && !hasError()) {
+			// evaluate the expression
+			try {
+				result = ev.getValue(topNode,errorList,symTab);
+			} catch (Exception e) {
+				if (debug) System.out.println(e);
+				errorList.addElement("Error during evaluation");
+				return null;
+			}
+			
+			return result;
+		} else {
+			return null;
+		}
 	}
-	/** 
-	 * Sets the value of a variable.
-	 * Returns false if variable does not exist or if its value cannot be changed.
-	 * @param name name of the variable.
-	 * @param val the initial value of the variable.
-	 * @return false if  variable does not exist or if its value cannot be changed.
-	 * @since 2.3.0 alpha
-	 */
-	public boolean setVarValue(String name,Object val) {
-		return symTab.setVarValue(name,val);
-	}
+
+
 	/** 
 	 * Gets the object representing the variable with a given name. 
 	 * @param name the name of the variable to find.
@@ -374,91 +512,63 @@ public class JEP {
 	public Variable getVar(String name) {
 		return symTab.getVar(name);
 	}
-	
-	/**
-	 * Removes a function from the parser.
-	 *
-	 * @return If the function was added earlier, the function class instance
-	 * is returned. If the function was not present, <code>null</code>
-	 * is returned.
-	 */
-	public Object removeFunction(String name) {
-		return funTab.remove(name);
-	}
 
-	/**
-	 * Sets the value of the traverse option. setTraverse is useful for
-	 * debugging purposes. When traverse is set to true, the parse-tree
-	 * will be dumped to the standard ouput device.
-	 * <p>
-	 * The default value is false.
-	 * @param value The boolean traversal option.
-	 */
-	public void setTraverse(boolean value) {
-		traverse = value;
-	}
-	
-	/**
-	 * Returns the value of the traverse option.
-	 * @return True if the traverse option is enabled. False otherwise.
-	 */
-	public boolean getTraverse() { return traverse; }
-
-	/**
-	 * Sets the value of the implicit multiplication option.
-	 * If this option is set to true before parsing, implicit multiplication
-	 * will be allowed. That means that an expression such as
-	 * <pre>"1 2"</pre> is valid and is interpreted as <pre>"1*2"</pre>.
-	 * <p>
-	 * The default value is false.
-	 * @param value The boolean implicit multiplication option.
-	 */
-	public void setImplicitMul(boolean value) {
-		implicitMul = value;
-	}
-	
-	/**
-	 * Returns the value of the implicit multiplication option.
-	 * @return True if the implicit multiplication option is enabled. False otherwise.
-	 */
-	public boolean getImplicitMul() { return implicitMul; }
-	
-	/**
-	 * Sets the value for the undeclared variables option. If this option
-	 * is set to true, expressions containing variables that were not
-	 * previously added to JEP will not produce an "Unrecognized Symbol"
-	 * error. The new variables will automatically be added while parsing,
-	 * and initialized to 0.
-	 * <p>
-	 * If this option is set to false, variables that were not previously
-	 * added to JEP will produce an error while parsing.
-	 * <p>
-	 * The default value is false.
-	 * @param value The boolean option for allowing undeclared variables.
-	 */
-	public void setAllowUndeclared(boolean value) {
-		allowUndeclared = value;
-	}
-
-	/**
-	 * Returns the value of the allowUndeclared option.
-	 * @return True if the allowUndeclared option is enabled. False otherwise.
-	 */
-	public boolean getAllowUndeclared() { return allowUndeclared; }
-	
-	/** Sets wheter assignment equations like <tt>y=x+1</tt> are allowed.
-	 * @since 2.3.0 alpha
-	 */ 
-	public void setAllowAssignment(boolean value) {
-		allowAssignment = value;
-	}
-
-	/**
-	 * Whether assignment equation <tt>y=x+1</tt> equations are allowed.
+	/** 
+	 * Returns the value of the varible with given name.
+	 * @param name name of the variable.
+	 * @return the current value of the variable.
 	 * @since 2.3.0 alpha
 	 */
-	public boolean getAllowAssignment() { return allowAssignment; }
+	public Object getVarValue(String name) {
+		return symTab.getVar(name).getValue();
+	}
 
+	/**
+	 * Returns true if an error occured during the most recent
+	 * action (parsing or evaluation).
+	 * @return Returns <code>true</code> if an error occured during the most
+	 * recent action (parsing or evaluation).
+	 */
+	public boolean hasError() {
+		return !errorList.isEmpty();
+	}
+
+	/**
+	 * Creates a new FunctionTable object as funTab.
+	 */
+	public void initFunTab() {
+		//Init FunctionTable
+		funTab = new FunctionTable();
+	}
+
+
+	/**
+	 * Creates a new SymbolTable object as symTab.
+	 */
+	public void initSymTab() {
+		//Init SymbolTable
+		symTab = new SymbolTable(new VariableFactory());
+	}
+
+
+
+	/**
+	 * Parses an expression. 
+	 * Returns a object of type Node, does not catch errors.
+	 * Does not set the topNode variable of the JEP instance.
+	 * This method should generally be used with the {@link #evaluate evaluate}
+	 * method rather than getValueAsObject.
+	 * @param expression represented as a string.
+	 * @return The top node of an tree representing the parsed expression.
+	 * @throws ParseException
+	 * @since 2.3.0 alpha
+	 */
+	public Node parse(String expression) throws ParseException
+	{
+		java.io.StringReader sr = new java.io.StringReader(expression);
+		Node node = parser.parseStream(sr, this);
+		return node;
+	}
 
 	/**
 	 * Parses the expression. If there are errors in the expression,
@@ -512,200 +622,90 @@ public class JEP {
 	}
 
 	/**
-	 * Parses an expression. 
-	 * Returns a object of type Node, does not catch errors.
-	 * Does not set the topNode variable of the JEP instance.
-	 * This method should generally be used with the {@link #evaluate evaluate}
-	 * method rather than getValueAsObject.
-	 * @param expression represented as a string.
-	 * @return The top node of an tree representing the parsed expression.
-	 * @throws ParseException
-	 * @since 2.3.0 alpha
-	 */
-	public Node parse(String expression) throws ParseException
-	{
-		java.io.StringReader sr = new java.io.StringReader(expression);
-		Node node = parser.parseStream(sr, this);
-		return node;
-	}
-
-	/**
-	 * Evaluate an expression. This method evaluates the argument
-	 * rather than the topNode of the JEP instance.
-	 * It should be used in conjunction with {@link #parse parse}
-	 * rather than {@link #parseExpression parseExpression}.
-	 * @param node the top node of the tree representing the expression.
-	 * @return The value of the expression
-	 * @throws Exception if for some reason the expression could not be evaluated
-	 * @since 2.3.0 alpha
-	 */
-	public Object evaluate(Node node) throws Exception
-	{
-		return ev.getValue(node, new Vector(), this.symTab);
-	}
-
-	/**
-	 * Evaluates and returns the value of the expression as a double number.
-	 * @return The calculated value of the expression as a double number.
-	 * If the type of the value does not implement the Number interface
-	 * (e.g. Complex), NaN is returned. If an error occurs during evaluation,
-	 * NaN is returned and hasError() will return true.
+	 * Removes a function from the parser.
 	 *
-	 * @see #getComplexValue()
+	 * @return If the function was added earlier, the function class instance
+	 * is returned. If the function was not present, <code>null</code>
+	 * is returned.
 	 */
-	public double getValue() {
-		Object value = getValueAsObject();
-		
-		if(value == null) return Double.NaN;
-		
-		if(value instanceof Complex)
-		{
-			Complex c = (Complex) value;
-			if( c.im() != 0.0) return Double.NaN;
-			return c.re();
-		}
-		if (value != null && value instanceof Number) {
-			return ((Number)value).doubleValue();
-		}
-		
-		return Double.NaN;
+	public Object removeFunction(String name) {
+		return funTab.remove(name);
+	}
+
+	/**
+	 * Removes a variable from the parser. For example after calling
+	 * addStandardConstants(), removeVariable("e") might be called to remove
+	 * the euler constant from the set of variables.
+	 *
+	 * @return The value of the variable if it was added earlier. If
+	 * the variable is not in the table of variables, <code>null</code> is
+	 * returned.
+	 */
+	public Object removeVariable(String name) {
+		return symTab.remove(name);
+	}
+
+	/** Sets wheter assignment equations like <tt>y=x+1</tt> are allowed.
+	 * @since 2.3.0 alpha
+	 */ 
+	public void setAllowAssignment(boolean value) {
+		allowAssignment = value;
+	}
+
+	/**
+	 * Sets the value for the undeclared variables option. If this option
+	 * is set to true, expressions containing variables that were not
+	 * previously added to JEP will not produce an "Unrecognized Symbol"
+	 * error. The new variables will automatically be added while parsing,
+	 * and initialized to 0.
+	 * <p>
+	 * If this option is set to false, variables that were not previously
+	 * added to JEP will produce an error while parsing.
+	 * <p>
+	 * The default value is false.
+	 * @param value The boolean option for allowing undeclared variables.
+	 */
+	public void setAllowUndeclared(boolean value) {
+		allowUndeclared = value;
 	}
 
 
 	/**
-	 * Evaluates and returns the value of the expression as a complex number.
-	 * @return The calculated value of the expression as a complex number if
-	 * no errors occur. Returns null otherwise.
+	 * Sets the value of the implicit multiplication option.
+	 * If this option is set to true before parsing, implicit multiplication
+	 * will be allowed. That means that an expression such as
+	 * <pre>"1 2"</pre> is valid and is interpreted as <pre>"1*2"</pre>.
+	 * <p>
+	 * The default value is false.
+	 * @param value The boolean implicit multiplication option.
 	 */
-	public Complex getComplexValue() {
-		Object value = getValueAsObject();
-		
-		if (value == null) {
-			return null;
-		} else if (value instanceof Complex) {
-			return (Complex)value;
-		} else if (value instanceof Number) {
-			return new Complex(((Number)value).doubleValue(), 0);
-		} else {
-			return null;
-		}
-	}
-
-
-
-	/**
-	 * Evaluates and returns the value of the expression as an object.
-	 * The EvaluatorVisitor member ev is used to do the evaluation procedure.
-	 * This method is useful when the type of the value is unknown, or
-	 * not important.
-	 * @return The calculated value of the expression if no errors occur.
-	 * Returns null otherwise.
-	 */
-	public Object getValueAsObject() {
-		Object result;
-		
-		if (topNode != null && !hasError()) {
-			// evaluate the expression
-			try {
-				result = ev.getValue(topNode,errorList,symTab);
-			} catch (Exception e) {
-				if (debug) System.out.println(e);
-				errorList.addElement("Error during evaluation");
-				return null;
-			}
-			
-			return result;
-		} else {
-			return null;
-		}
+	public void setImplicitMul(boolean value) {
+		implicitMul = value;
 	}
 
 	/**
-	 * Returns true if an error occured during the most recent
-	 * action (parsing or evaluation).
-	 * @return Returns <code>true</code> if an error occured during the most
-	 * recent action (parsing or evaluation).
+	 * Sets the value of the traverse option. setTraverse is useful for
+	 * debugging purposes. When traverse is set to true, the parse-tree
+	 * will be dumped to the standard ouput device.
+	 * <p>
+	 * The default value is false.
+	 * @param value The boolean traversal option.
 	 */
-	public boolean hasError() {
-		return !errorList.isEmpty();
+	public void setTraverse(boolean value) {
+		traverse = value;
 	}
 
-	/**
-	 * Reports information on the errors that occured during the most recent
-	 * action.
-	 * @return A string containing information on the errors, each separated
-	 * by a newline character; null if no error has occured
-	 */
-	public String getErrorInfo() {
-		if (hasError()) {
-			String str = "";
-			
-			// iterate through all errors and add them to the return string
-			for (int i=0; i<errorList.size(); i++) {
-				str += errorList.elementAt(i) + "\n";
-			}
-			
-			return str;
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Returns the top node of the expression tree. Because all nodes are
-	 * pointed to either directly or indirectly, the entire expression tree
-	 * can be accessed through this node. It may be used to manipulate the
-	 * expression, and subsequently evaluate it manually.
-	 * @return The top node of the expression tree
-	 */
-	public Node getTopNode() {
-		return topNode;
-	}
-
-	/**
-	 * Returns the symbol table (the list of all variables that the parser
-	 * recognises).
-	 * @return The symbol table
-	 */
-	public SymbolTable getSymbolTable() {
-		return symTab;
-	}
-
-	/**
-	 * Returns the function table (the list of all functions that the parser
-	 * recognises).
-	 * @return The function table
-	 */
-	public FunctionTable getFunctionTable() {
-			return funTab;
-	}
-
-
-	/**
-	 * Returns the number factory.
-	 * @return the NumberFactory used by this JEP instance.
-	 */
-	public NumberFactory getNumberFactory() {
-		return numberFactory;
-	}
-
-	/**
-	 * Returns the operator set.
-	 * @return the OperatorSet used by this JEP instance.
+	/** 
+	 * Sets the value of a variable.
+	 * Returns false if variable does not exist or if its value cannot be changed.
+	 * @param name name of the variable.
+	 * @param val the initial value of the variable.
+	 * @return false if  variable does not exist or if its value cannot be changed.
 	 * @since 2.3.0 alpha
 	 */
-	public OperatorSet getOperatorSet() {
-		return opSet;
+	public boolean setVarValue(String name,Object val) {
+		return symTab.setVarValue(name,val);
 	}
-
-	/**
-	 * Returns the parse object.
-	 * @return the Parse used by this JEP.
-	 * @since 2.3.0 beta 1
-	 */
-	public Parser getParser() {return parser;	}
-//------------------------------------------------------------------------
-// Old code
 
 
 /*

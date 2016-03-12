@@ -12,6 +12,20 @@ public class Multitype extends Ability
 {
 
     @Override
+    public void onAgress(IPokemob mob, EntityLivingBase target)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onMoveUse(IPokemob mob, MovePacket move)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public void onUpdate(IPokemob mob)
     {
         PokedexEntry entry = mob.getPokedexEntry();
@@ -36,20 +50,6 @@ public class Multitype extends Ability
             mob.changeForme(entry.getBaseName());
             return;
         }
-
-    }
-
-    @Override
-    public void onMoveUse(IPokemob mob, MovePacket move)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
-    {
-        // TODO Auto-generated method stub
 
     }
 

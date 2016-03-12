@@ -17,6 +17,14 @@ public class ItemBlockMeta extends ItemBlock {
 	}
 	@Override
     /**
+     * Returns the metadata of the block which this Item (ItemBlock) can place
+     */
+    public int getMetadata(int par1)
+    {
+        return par1;
+    }
+	@Override
+    /**
      * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
      * different names based on their damage or NBT.
      */
@@ -28,14 +36,6 @@ public class ItemBlockMeta extends ItemBlock {
     	}
     	
         return this.b.getUnlocalizedName();
-    }
-	@Override
-    /**
-     * Returns the metadata of the block which this Item (ItemBlock) can place
-     */
-    public int getMetadata(int par1)
-    {
-        return par1;
     }
 	
 }

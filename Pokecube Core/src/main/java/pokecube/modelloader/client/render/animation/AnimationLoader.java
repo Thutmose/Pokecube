@@ -25,31 +25,14 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.render.DefaultIModelRenderer;
-import pokecube.modelloader.client.render.PartInfo;
 import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
+import pokecube.modelloader.client.render.PartInfo;
 import pokecube.modelloader.client.render.model.IModelRenderer;
 import pokecube.modelloader.client.render.tabula.components.Animation;
 import thut.api.maths.Vector3;
 
 public class AnimationLoader
 {
-    public static final String                    MODELPATH   = "models/pokemobs/";
-    public static boolean                         loaded      = false;
-
-    /** texture folder */
-    public final static String                    TEXTUREPATH = "textures/entities/";
-
-    static String                                 file        = "";
-    @SuppressWarnings("rawtypes")
-    public static HashMap<String, IModelRenderer> modelMaps   = new HashMap<String, IModelRenderer>();
-    public static HashMap<String, Model>          models      = new HashMap<String, Model>();
-
-    public static void clear()
-    {
-        models.clear();
-        modelMaps.clear();
-    }
-
     public static class Model
     {
         public ResourceLocation model;
@@ -65,6 +48,216 @@ public class AnimationLoader
             this.name = name;
         }
 
+    }
+    public static final String                    MODELPATH   = "models/pokemobs/";
+
+    public static boolean                         loaded      = false;
+
+    /** texture folder */
+    public final static String                    TEXTUREPATH = "textures/entities/";
+    static String                                 file        = "";
+    @SuppressWarnings("rawtypes")
+    public static HashMap<String, IModelRenderer> modelMaps   = new HashMap<String, IModelRenderer>();
+
+    public static HashMap<String, Model>          models      = new HashMap<String, Model>();
+
+    public static void addStrings(String key, Node node, Set<String> toAddTo)
+    {
+        if (node.getAttributes() == null) return;
+        if (node.getAttributes().getNamedItem(key) != null)
+        {
+            String[] names = node.getAttributes().getNamedItem(key).getNodeValue().split(":");
+            for (String s : names)
+            {
+                toAddTo.add(s);
+            }
+        }
+    }
+
+    public static void clear()
+    {
+        models.clear();
+        modelMaps.clear();
+    }
+
+    public static int getHeadAxis(Node node, int default_)
+    {
+        int ret = default_;
+        if (node.getAttributes() == null) return ret;
+        if (node.getAttributes().getNamedItem("headAxis") != null)
+        {
+            ret = Integer.parseInt(node.getAttributes().getNamedItem("headAxis").getNodeValue());
+        }
+        return ret;
+    }
+
+    public static int getHeadAxis2(Node node, int default_)
+    {
+        int ret = default_;
+        if (node.getAttributes() == null) return ret;
+        if (node.getAttributes().getNamedItem("headAxis2") != null)
+        {
+            ret = Integer.parseInt(node.getAttributes().getNamedItem("headAxis2").getNodeValue());
+        }
+        return ret;
+    }
+
+    public static int getHeadDir(Node node, int default_)
+    {
+        int ret = default_;
+        if (node.getAttributes() == null) return ret;
+        if (node.getAttributes().getNamedItem("headDir") != null)
+        {
+            ret = Integer.parseInt(node.getAttributes().getNamedItem("headDir").getNodeValue());
+        }
+        return ret;
+    }
+
+    public static IModelRenderer<?> getModel(String name)
+    {
+        IModelRenderer<?> ret = modelMaps.get(name);
+        if (ret != null) return ret;
+        Model model = models.get(name);
+        if (model == null) { return null; }
+        if ((ret = modelMaps.get(model.name)) != null) return ret;
+        parse(model);
+        if ((ret = modelMaps.get(model.name)) != null) return ret;
+        return ret;
+    }
+
+    public static Vector3 getOffset(Node node, Vector3 default_)
+    {
+        if (node.getAttributes() == null) return default_;
+        Vector3 vect = null;
+        if (node.getAttributes().getNamedItem("offset") != null)
+        {
+            vect = Vector3.getNewVector();
+            String shift;
+            String[] r;
+            shift = node.getAttributes().getNamedItem("offset").getNodeValue();
+            r = shift.split(",");
+            vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()));
+            return vect;
+        }
+        return default_;
+    }
+
+    public static Vector5 getRotation(Node node, Vector5 default_)
+    {
+        if (node.getAttributes() == null) return default_;
+        if (node.getAttributes().getNamedItem("rotation") != null)
+        {
+            String rotation;
+            String time = "0";
+            Vector4 ro = new Vector4();
+            int t = 0;
+            String[] r;
+            rotation = node.getAttributes().getNamedItem("rotation").getNodeValue();
+            if (node.getAttributes().getNamedItem("time") != null)
+                time = node.getAttributes().getNamedItem("time").getNodeValue();
+            r = rotation.split(",");
+            t = Integer.parseInt(time);
+            ro.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()),
+                    Float.parseFloat(r[3].trim()));
+            return new Vector5(ro, t);
+        }
+        return default_;
+    }
+
+    public static Vector3 getScale(Node node, Vector3 default_)
+    {
+        if (node.getAttributes() == null) return default_;
+        if (node.getAttributes().getNamedItem("scale") != null)
+        {
+            Vector3 vect = null;
+            vect = Vector3.getNewVector();
+            String shift;
+            String[] r;
+            shift = node.getAttributes().getNamedItem("scale").getNodeValue();
+            r = shift.split(",");
+
+            if (r.length == 3)
+                vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()));
+            else vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[0].trim()), Float.parseFloat(r[0].trim()));
+            return vect;
+        }
+        return default_;
+    }
+
+    public static boolean initModel(String s, HashSet<String> toReload)
+    {
+        ResourceLocation model = null;
+        String anim = s + ".xml";
+
+        String[] args = s.split(":");
+        String[] args2 = args[1].split("/");
+        String name = args2[args2.length > 1 ? args2.length - 1 : 0];
+        PokedexEntry entry = Database.getEntry(name);
+
+        ResourceLocation texture = new ResourceLocation(s.replace(MODELPATH, TEXTUREPATH) + ".png");
+        try
+        {
+            model = new ResourceLocation(s + ".x3d");
+            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+            res.getInputStream().close();
+        }
+        catch (IOException e1)
+        {
+            model = null;
+        }
+        try
+        {
+            ResourceLocation animation = null;
+            try
+            {
+                animation = new ResourceLocation(anim);
+                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(animation);
+                res.getInputStream().close();
+            }
+            catch (IOException e3)
+            {
+                animation = new ResourceLocation(anim.replace(entry.getName(), entry.getBaseName()));
+            }
+            if (model != null)
+            {
+                if (entry != null)
+                {
+                    models.put(name, new Model(model, texture, animation, entry.getName()));
+                    if (loaded && ModPokecubeML.preload)
+                    {
+                        getModel(name);
+                    }
+                }
+                else
+                {
+                    System.err.println("Attmpted to register a model for un-registered pokemob " + name);
+                }
+            }
+            else
+            {
+                if (entry != null && entry.baseForme != null)
+                {
+                    Model existing = models.get(entry.baseForme.getName());
+                    if (existing == null)
+                    {
+                        toReload.add(s);
+                    }
+                    else
+                    {
+                        models.put(name, new Model(existing.model, texture, animation, entry.getName()));
+                        if (loaded && ModPokecubeML.preload)
+                        {
+                            getModel(name);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return model != null;
     }
 
     public static void load()
@@ -301,123 +494,6 @@ public class AnimationLoader
         }
     }
 
-    public static IModelRenderer<?> getModel(String name)
-    {
-        IModelRenderer<?> ret = modelMaps.get(name);
-        if (ret != null) return ret;
-        Model model = models.get(name);
-        if (model == null) { return null; }
-        if ((ret = modelMaps.get(model.name)) != null) return ret;
-        parse(model);
-        if ((ret = modelMaps.get(model.name)) != null) return ret;
-        return ret;
-    }
-
-    public static Vector5 getRotation(Node node, Vector5 default_)
-    {
-        if (node.getAttributes() == null) return default_;
-        if (node.getAttributes().getNamedItem("rotation") != null)
-        {
-            String rotation;
-            String time = "0";
-            Vector4 ro = new Vector4();
-            int t = 0;
-            String[] r;
-            rotation = node.getAttributes().getNamedItem("rotation").getNodeValue();
-            if (node.getAttributes().getNamedItem("time") != null)
-                time = node.getAttributes().getNamedItem("time").getNodeValue();
-            r = rotation.split(",");
-            t = Integer.parseInt(time);
-            ro.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()),
-                    Float.parseFloat(r[3].trim()));
-            return new Vector5(ro, t);
-        }
-        return default_;
-    }
-
-    public static Vector3 getOffset(Node node, Vector3 default_)
-    {
-        if (node.getAttributes() == null) return default_;
-        Vector3 vect = null;
-        if (node.getAttributes().getNamedItem("offset") != null)
-        {
-            vect = Vector3.getNewVector();
-            String shift;
-            String[] r;
-            shift = node.getAttributes().getNamedItem("offset").getNodeValue();
-            r = shift.split(",");
-            vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()));
-            return vect;
-        }
-        return default_;
-    }
-
-    public static Vector3 getScale(Node node, Vector3 default_)
-    {
-        if (node.getAttributes() == null) return default_;
-        if (node.getAttributes().getNamedItem("scale") != null)
-        {
-            Vector3 vect = null;
-            vect = Vector3.getNewVector();
-            String shift;
-            String[] r;
-            shift = node.getAttributes().getNamedItem("scale").getNodeValue();
-            r = shift.split(",");
-
-            if (r.length == 3)
-                vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()));
-            else vect.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[0].trim()), Float.parseFloat(r[0].trim()));
-            return vect;
-        }
-        return default_;
-    }
-
-    public static int getHeadDir(Node node, int default_)
-    {
-        int ret = default_;
-        if (node.getAttributes() == null) return ret;
-        if (node.getAttributes().getNamedItem("headDir") != null)
-        {
-            ret = Integer.parseInt(node.getAttributes().getNamedItem("headDir").getNodeValue());
-        }
-        return ret;
-    }
-
-    public static int getHeadAxis(Node node, int default_)
-    {
-        int ret = default_;
-        if (node.getAttributes() == null) return ret;
-        if (node.getAttributes().getNamedItem("headAxis") != null)
-        {
-            ret = Integer.parseInt(node.getAttributes().getNamedItem("headAxis").getNodeValue());
-        }
-        return ret;
-    }
-
-    public static int getHeadAxis2(Node node, int default_)
-    {
-        int ret = default_;
-        if (node.getAttributes() == null) return ret;
-        if (node.getAttributes().getNamedItem("headAxis2") != null)
-        {
-            ret = Integer.parseInt(node.getAttributes().getNamedItem("headAxis2").getNodeValue());
-        }
-        return ret;
-    }
-
-    public static void addStrings(String key, Node node, Set<String> toAddTo)
-    {
-        if (node.getAttributes() == null) return;
-        if (node.getAttributes().getNamedItem(key) != null)
-        {
-            String[] names = node.getAttributes().getNamedItem(key).getNodeValue().split(":");
-            for (String s : names)
-            {
-                toAddTo.add(s);
-            }
-        }
-    }
-
     public static void setHeadCaps(Node node, float[] toFill, float[] toFill1)
     {
         if (node.getAttributes() == null) return;
@@ -466,81 +542,5 @@ public class AnimationLoader
             entry.textureDetails[0] = male;
             entry.textureDetails[1] = female;
         }
-    }
-
-    public static boolean initModel(String s, HashSet<String> toReload)
-    {
-        ResourceLocation model = null;
-        String anim = s + ".xml";
-
-        String[] args = s.split(":");
-        String[] args2 = args[1].split("/");
-        String name = args2[args2.length > 1 ? args2.length - 1 : 0];
-        PokedexEntry entry = Database.getEntry(name);
-
-        ResourceLocation texture = new ResourceLocation(s.replace(MODELPATH, TEXTUREPATH) + ".png");
-        try
-        {
-            model = new ResourceLocation(s + ".x3d");
-            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
-            res.getInputStream().close();
-        }
-        catch (IOException e1)
-        {
-            model = null;
-        }
-        try
-        {
-            ResourceLocation animation = null;
-            try
-            {
-                animation = new ResourceLocation(anim);
-                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(animation);
-                res.getInputStream().close();
-            }
-            catch (IOException e3)
-            {
-                animation = new ResourceLocation(anim.replace(entry.getName(), entry.getBaseName()));
-            }
-            if (model != null)
-            {
-                if (entry != null)
-                {
-                    models.put(name, new Model(model, texture, animation, entry.getName()));
-                    if (loaded && ModPokecubeML.preload)
-                    {
-                        getModel(name);
-                    }
-                }
-                else
-                {
-                    System.err.println("Attmpted to register a model for un-registered pokemob " + name);
-                }
-            }
-            else
-            {
-                if (entry != null && entry.baseForme != null)
-                {
-                    Model existing = models.get(entry.baseForme.getName());
-                    if (existing == null)
-                    {
-                        toReload.add(s);
-                    }
-                    else
-                    {
-                        models.put(name, new Model(existing.model, texture, animation, entry.getName()));
-                        if (loaded && ModPokecubeML.preload)
-                        {
-                            getModel(name);
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return model != null;
     }
 }

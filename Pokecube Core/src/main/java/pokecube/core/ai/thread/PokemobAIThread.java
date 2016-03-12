@@ -23,206 +23,6 @@ import thut.api.TickHandler;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class PokemobAIThread
 {
-    /** Lock used to unsure that AI tasks run at the correct time. */
-    private static final BitSet                          tickLock          = new BitSet();
-    /** Lists of the AI stuff for each thread. */
-    private static Vector<AIStuff>[]                     aiStuffLists;
-    /** Map of dimension to players, used for thread-safe player access. */
-    public static final HashMap<Integer, Vector<Object>> worldPlayers      = new HashMap<Integer, Vector<Object>>();
-    /** Used for sorting the AI runnables for run order. */
-    public static final Comparator<IAIRunnable>          aiComparator      = new Comparator<IAIRunnable>()
-    {
-        @Override
-        public int compare(IAIRunnable o1, IAIRunnable o2)
-        {
-            return o1.getPriority() - o2.getPriority();
-        }
-    };
-    /** Sorts pokemobs by move order. */
-    public static final Comparator<IPokemob>             pokemobComparator = new Comparator<IPokemob>()
-    {
-        @Override
-        public int compare(IPokemob o1, IPokemob o2)
-        {
-            int speed1 = Tools.getStat(o1.getBaseStats()[5], o1.getIVs()[5], o1.getEVs()[5], o1.getLevel(),
-                    o1.getModifiers()[5], o1.getNature().getStatsMod()[5]);
-            int speed2 = Tools.getStat(o2.getBaseStats()[5], o2.getIVs()[5], o2.getEVs()[5], o2.getLevel(),
-                    o2.getModifiers()[5], o2.getNature().getStatsMod()[5]);
-            // TODO include checks for mob's selected attack and include attack
-            // priority.
-            return speed2 - speed1;
-        }
-    };
-
-    /** Adds the AI task for the given entity.
-     * 
-     * @param entity
-     * @param task */
-    public static void addAI(EntityLiving entity, IAIRunnable task)
-    {
-        IPokemob pokemob = (IPokemob) entity;
-        int id = pokemob.getPokemonUID() % AIThread.threadCount;
-        Vector<AIStuff> list = aiStuffLists[id];
-        ArrayList<AIStuff> toCheck = new ArrayList(list);
-        AIStuff entityAI = null;
-        for (AIStuff aistuff : toCheck)
-        {
-            if (aistuff.entity == entity)
-            {
-                entityAI = aistuff;
-                break;
-            }
-        }
-        if (entityAI == null)
-        {
-            entityAI = new AIStuff(entity);
-            list.add(entityAI);
-        }
-        entityAI.addAITask(task);
-
-    }
-
-    /** Adds the custom logic runnable for the given entity
-     * 
-     * @param entity
-     * @param logic */
-    public static void addLogic(EntityLiving entity, ILogicRunnable logic)
-    {
-        IPokemob pokemob = (IPokemob) entity;
-        int id = pokemob.getPokemonUID() % AIThread.threadCount;
-        Vector list = aiStuffLists[id];
-        ArrayList toCheck = new ArrayList(list);
-        AIStuff entityAI = null;
-        for (Object o : toCheck)
-        {
-            AIStuff aistuff = (AIStuff) o;
-            if (aistuff.entity == entity)
-            {
-                entityAI = aistuff;
-                break;
-            }
-        }
-        if (entityAI == null)
-        {
-            entityAI = new AIStuff(entity);
-            list.add(entityAI);
-        }
-        entityAI.addAILogic(logic);
-    }
-
-    /** Removes the AI entry for the entity.
-     * 
-     * @param entity */
-    public static void removeEntity(EntityLiving entity)
-    {
-        int id = entity.getEntityId() % AIThread.threadCount;
-        Vector list = aiStuffLists[id];
-        ArrayList toCheck = new ArrayList(list);
-        for (Object o : toCheck)
-        {
-            AIStuff aistuff = (AIStuff) o;
-            if (aistuff.entity == entity)
-            {
-                list.remove(aistuff);
-                break;
-            }
-        }
-    }
-
-    /** Clears things for world unload */
-    public static void clear()
-    {
-        for (Vector v : aiStuffLists)
-        {
-            v.clear();
-        }
-        worldPlayers.clear();
-        TickHandler.getInstance().worldCaches.clear();
-        tickLock.clear();
-    }
-
-    /** Checks if task can run, given the tasks in tasks.
-     * 
-     * @param task
-     * @param tasks
-     * @return */
-    private static boolean canRun(IAIRunnable task, ArrayList<IAIRunnable> tasks)
-    {
-        int prior = task.getPriority();
-        int mutex = task.getMutex();
-        for (IAIRunnable ai : tasks)
-        {
-            if (ai.getPriority() < prior && (mutex & ai.getMutex()) != 0 && ai.shouldRun()) { return false; }
-        }
-        return task.shouldRun();
-    }
-
-    static
-    {
-        AIThread.createThreads();
-    }
-
-    /** AI Ticks at the end of the server tick.
-     * 
-     * @param evt */
-    @SubscribeEvent
-    public void tickEventServer(ServerTickEvent evt)
-    {
-        if (evt.phase == Phase.END)
-        {
-            synchronized (tickLock)
-            {
-                for (int i = 0; i < AIThread.threadCount; i++)
-                {
-                    tickLock.set(i);
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void tickEvent(WorldTickEvent evt)
-    {
-        // At the start, refresh the player lists.
-        if (evt.phase == Phase.START)
-        {
-            Vector players = worldPlayers.get(evt.world.provider.getDimensionId());
-            if (players == null)
-            {
-                players = new Vector();
-            }
-            players.clear();
-            players.addAll(evt.world.playerEntities);
-            worldPlayers.put(evt.world.provider.getDimensionId(), players);
-        }
-        else try// At the end, apply all of the paths, targets, moves and
-                // states.
-        {
-            ArrayList<AIStuff> todo = new ArrayList();
-
-            for (Vector<AIStuff> v : aiStuffLists)
-            {
-                todo.addAll(v);
-                for (AIStuff stuff : todo)
-                {
-                    if (stuff.entity.isDead)
-                    {
-                        v.remove(stuff);
-                    }
-                    else
-                    {
-                        stuff.runServerThreadTasks(evt.world);
-                    }
-                }
-                todo.clear();
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     /** A collecion of AITasks and AILogics for the entity to run on seperate
      * threads.
      * 
@@ -238,14 +38,14 @@ public class PokemobAIThread
             entity = entity_;
         }
 
-        public void addAITask(IAIRunnable task)
-        {
-            aiTasks.add(task);
-        }
-
         public void addAILogic(ILogicRunnable logic)
         {
             aiLogic.add(logic);
+        }
+
+        public void addAITask(IAIRunnable task)
+        {
+            aiTasks.add(task);
         }
 
         public void runServerThreadTasks(World world)
@@ -256,10 +56,24 @@ public class PokemobAIThread
             }
         }
     }
-
     public static class AIThread extends Thread
     {
         public static int threadCount = 0;
+        public static void createThreads()
+        {
+            threadCount = Math.max(1, PokecubeMod.core.getConfig().maxAIThreads);
+            threadCount = Math.min(threadCount, Runtime.getRuntime().availableProcessors());
+            aiStuffLists = new Vector[threadCount];
+            System.out.println("Creating and starting Pokemob AI Threads.");
+            for (int i = 0; i < threadCount; i++)
+            {
+                AIThread thread = new AIThread(i);
+                aiStuffLists[i] = new Vector();
+                thread.setPriority(8);
+                thread.start();
+            }
+        }
+
         final int         id;
 
         public AIThread(final int number)
@@ -391,20 +205,206 @@ public class PokemobAIThread
             this.setName("Pokemob AI Thread-" + id);
         }
 
-        public static void createThreads()
+    }
+    /** Lock used to unsure that AI tasks run at the correct time. */
+    private static final BitSet                          tickLock          = new BitSet();
+    /** Lists of the AI stuff for each thread. */
+    private static Vector<AIStuff>[]                     aiStuffLists;
+    /** Map of dimension to players, used for thread-safe player access. */
+    public static final HashMap<Integer, Vector<Object>> worldPlayers      = new HashMap<Integer, Vector<Object>>();
+
+    /** Used for sorting the AI runnables for run order. */
+    public static final Comparator<IAIRunnable>          aiComparator      = new Comparator<IAIRunnable>()
+    {
+        @Override
+        public int compare(IAIRunnable o1, IAIRunnable o2)
         {
-            threadCount = Math.max(1, PokecubeMod.core.getConfig().maxAIThreads);
-            threadCount = Math.min(threadCount, Runtime.getRuntime().availableProcessors());
-            aiStuffLists = new Vector[threadCount];
-            System.out.println("Creating and starting Pokemob AI Threads.");
-            for (int i = 0; i < threadCount; i++)
+            return o1.getPriority() - o2.getPriority();
+        }
+    };
+
+    /** Sorts pokemobs by move order. */
+    public static final Comparator<IPokemob>             pokemobComparator = new Comparator<IPokemob>()
+    {
+        @Override
+        public int compare(IPokemob o1, IPokemob o2)
+        {
+            int speed1 = Tools.getStat(o1.getBaseStats()[5], o1.getIVs()[5], o1.getEVs()[5], o1.getLevel(),
+                    o1.getModifiers()[5], o1.getNature().getStatsMod()[5]);
+            int speed2 = Tools.getStat(o2.getBaseStats()[5], o2.getIVs()[5], o2.getEVs()[5], o2.getLevel(),
+                    o2.getModifiers()[5], o2.getNature().getStatsMod()[5]);
+            // TODO include checks for mob's selected attack and include attack
+            // priority.
+            return speed2 - speed1;
+        }
+    };
+
+    static
+    {
+        AIThread.createThreads();
+    }
+
+    /** Adds the AI task for the given entity.
+     * 
+     * @param entity
+     * @param task */
+    public static void addAI(EntityLiving entity, IAIRunnable task)
+    {
+        IPokemob pokemob = (IPokemob) entity;
+        int id = pokemob.getPokemonUID() % AIThread.threadCount;
+        Vector<AIStuff> list = aiStuffLists[id];
+        ArrayList<AIStuff> toCheck = new ArrayList(list);
+        AIStuff entityAI = null;
+        for (AIStuff aistuff : toCheck)
+        {
+            if (aistuff.entity == entity)
             {
-                AIThread thread = new AIThread(i);
-                aiStuffLists[i] = new Vector();
-                thread.setPriority(8);
-                thread.start();
+                entityAI = aistuff;
+                break;
             }
         }
+        if (entityAI == null)
+        {
+            entityAI = new AIStuff(entity);
+            list.add(entityAI);
+        }
+        entityAI.addAITask(task);
 
+    }
+
+    /** Adds the custom logic runnable for the given entity
+     * 
+     * @param entity
+     * @param logic */
+    public static void addLogic(EntityLiving entity, ILogicRunnable logic)
+    {
+        IPokemob pokemob = (IPokemob) entity;
+        int id = pokemob.getPokemonUID() % AIThread.threadCount;
+        Vector list = aiStuffLists[id];
+        ArrayList toCheck = new ArrayList(list);
+        AIStuff entityAI = null;
+        for (Object o : toCheck)
+        {
+            AIStuff aistuff = (AIStuff) o;
+            if (aistuff.entity == entity)
+            {
+                entityAI = aistuff;
+                break;
+            }
+        }
+        if (entityAI == null)
+        {
+            entityAI = new AIStuff(entity);
+            list.add(entityAI);
+        }
+        entityAI.addAILogic(logic);
+    }
+
+    /** Checks if task can run, given the tasks in tasks.
+     * 
+     * @param task
+     * @param tasks
+     * @return */
+    private static boolean canRun(IAIRunnable task, ArrayList<IAIRunnable> tasks)
+    {
+        int prior = task.getPriority();
+        int mutex = task.getMutex();
+        for (IAIRunnable ai : tasks)
+        {
+            if (ai.getPriority() < prior && (mutex & ai.getMutex()) != 0 && ai.shouldRun()) { return false; }
+        }
+        return task.shouldRun();
+    }
+
+    /** Clears things for world unload */
+    public static void clear()
+    {
+        for (Vector v : aiStuffLists)
+        {
+            v.clear();
+        }
+        worldPlayers.clear();
+        TickHandler.getInstance().worldCaches.clear();
+        tickLock.clear();
+    }
+
+    /** Removes the AI entry for the entity.
+     * 
+     * @param entity */
+    public static void removeEntity(EntityLiving entity)
+    {
+        int id = entity.getEntityId() % AIThread.threadCount;
+        Vector list = aiStuffLists[id];
+        ArrayList toCheck = new ArrayList(list);
+        for (Object o : toCheck)
+        {
+            AIStuff aistuff = (AIStuff) o;
+            if (aistuff.entity == entity)
+            {
+                list.remove(aistuff);
+                break;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void tickEvent(WorldTickEvent evt)
+    {
+        // At the start, refresh the player lists.
+        if (evt.phase == Phase.START)
+        {
+            Vector players = worldPlayers.get(evt.world.provider.getDimensionId());
+            if (players == null)
+            {
+                players = new Vector();
+            }
+            players.clear();
+            players.addAll(evt.world.playerEntities);
+            worldPlayers.put(evt.world.provider.getDimensionId(), players);
+        }
+        else try// At the end, apply all of the paths, targets, moves and
+                // states.
+        {
+            ArrayList<AIStuff> todo = new ArrayList();
+
+            for (Vector<AIStuff> v : aiStuffLists)
+            {
+                todo.addAll(v);
+                for (AIStuff stuff : todo)
+                {
+                    if (stuff.entity.isDead)
+                    {
+                        v.remove(stuff);
+                    }
+                    else
+                    {
+                        stuff.runServerThreadTasks(evt.world);
+                    }
+                }
+                todo.clear();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /** AI Ticks at the end of the server tick.
+     * 
+     * @param evt */
+    @SubscribeEvent
+    public void tickEventServer(ServerTickEvent evt)
+    {
+        if (evt.phase == Phase.END)
+        {
+            synchronized (tickLock)
+            {
+                for (int i = 0; i < AIThread.threadCount; i++)
+                {
+                    tickLock.set(i);
+                }
+            }
+        }
     }
 }

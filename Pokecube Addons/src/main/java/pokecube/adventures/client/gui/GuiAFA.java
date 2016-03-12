@@ -29,80 +29,6 @@ public class GuiAFA extends GuiContainer
         super(new ContainerAFA(tile, inventory));
     }
 
-    /** Adds the buttons (and other controls) to the screen in question. Called
-     * when the GUI is displayed and when the window resizes, the buttonList is
-     * cleared beforehand. */
-    public void initGui()
-    {
-        super.initGui();
-        int xOffset = 0;
-        int yOffset = -11;
-        // Range Control
-        buttonList.add(new GuiButton(0, width / 2 - xOffset + 64, height / 2 - yOffset - 85, 20, 20, "\u25b2"));
-        buttonList.add(new GuiButton(1, width / 2 - xOffset + 64, height / 2 - yOffset - 65, 20, 20, "\u25bc"));
-        if (mc.thePlayer.capabilities.isCreativeMode)
-        {
-            ContainerAFA container = (ContainerAFA) inventorySlots;
-            int num = container.tile.getField(2);
-            // Power need toggle
-            buttonList.add(new GuiButton(2, width / 2 - xOffset + 64, height / 2 - yOffset - 45, 20, 20,
-                    num == 1 ? "O" : "X"));
-        }
-        // Scale Buttons
-        buttonList.add(new GuiButton(3, width / 2 - xOffset + 10, height / 2 - yOffset - 65, 20, 20, "+"));
-        buttonList.add(new GuiButton(4, width / 2 - xOffset + 10, height / 2 - yOffset - 45, 20, 20, "-"));
-        // Position Buttons
-        buttonList.add(new GuiButton(5, width / 2 - xOffset - 12, height / 2 - yOffset - 65, 20, 20, "\u25c0"));
-        buttonList.add(new GuiButton(6, width / 2 - xOffset - 12, height / 2 - yOffset - 45, 20, 20, "\u25b6"));
-        // Position Buttons
-        buttonList.add(new GuiButton(7, width / 2 - xOffset - 32, height / 2 - yOffset - 65, 20, 20, "\u25b2"));
-        buttonList.add(new GuiButton(8, width / 2 - xOffset - 32, height / 2 - yOffset - 45, 20, 20, "\u25bc"));
-        // Position Buttons
-        buttonList.add(new GuiButton(9, width / 2 - xOffset - 52, height / 2 - yOffset - 65, 20, 20, "\u25c0"));
-        buttonList.add(new GuiButton(10, width / 2 - xOffset - 52, height / 2 - yOffset - 45, 20, 20, "\u25b6"));
-        //Reset Button
-        buttonList.add(new GuiButton(11, width / 2 - xOffset - 72, height / 2 - yOffset - 45, 20, 20, "X"));
-    }
-
-    /** Draw the foreground layer for the GuiContainer (everything in front of
-     * the items) */
-    @Override
-    protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
-    {
-        this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
-                4210752);
-        ContainerAFA container = (ContainerAFA) inventorySlots;
-        if (container.worldObj != null)
-        {
-            TileEntity te = container.worldObj.getTileEntity(container.pos);
-
-            if (te == null) return;
-
-            TileEntityAFA cloner = (TileEntityAFA) te;
-
-            if (last != cloner.getWorld().getTotalWorldTime())
-            {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(1));
-                buffer.writeByte(MessageServer.MESSAGEGUIAFA);
-                last = cloner.getWorld().getTotalWorldTime();
-                MessageServer message;
-                message = new MessageServer(buffer);
-                PokecubePacketHandler.sendToServer(message);
-            }
-
-            String mess;
-            int energy = cloner.getField(0);
-            mess = "e:" + energy;
-            this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 66, 4210752);
-
-            int distance = cloner.getField(1);
-            mess = "r:" + distance;
-            this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 26, 4210752);
-            if (cloner.ability != null && cloner.getStackInSlot(0) != null)
-                this.fontRendererObj.drawString("" + cloner.ability.getName(), 48, 6, 4210752);
-        }
-    }
-
     @Override
     protected void actionPerformed(GuiButton button) throws IOException
     {
@@ -217,6 +143,81 @@ public class GuiAFA extends GuiContainer
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+    }
+
+    /** Draw the foreground layer for the GuiContainer (everything in front of
+     * the items) */
+    @Override
+    protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
+    {
+        this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
+                4210752);
+        ContainerAFA container = (ContainerAFA) inventorySlots;
+        if (container.worldObj != null)
+        {
+            TileEntity te = container.worldObj.getTileEntity(container.pos);
+
+            if (te == null) return;
+
+            TileEntityAFA cloner = (TileEntityAFA) te;
+
+            if (last != cloner.getWorld().getTotalWorldTime())
+            {
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(1));
+                buffer.writeByte(MessageServer.MESSAGEGUIAFA);
+                last = cloner.getWorld().getTotalWorldTime();
+                MessageServer message;
+                message = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(message);
+            }
+
+            String mess;
+            int energy = cloner.getField(0);
+            mess = "e:" + energy;
+            this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 66, 4210752);
+
+            int distance = cloner.getField(1);
+            mess = "r:" + distance;
+            this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 26, 4210752);
+            if (cloner.ability != null && cloner.getStackInSlot(0) != null)
+                this.fontRendererObj.drawString("" + cloner.ability.getName(), 48, 6, 4210752);
+        }
+    }
+
+    /** Adds the buttons (and other controls) to the screen in question. Called
+     * when the GUI is displayed and when the window resizes, the buttonList is
+     * cleared beforehand. */
+    @Override
+    public void initGui()
+    {
+        super.initGui();
+        int xOffset = 0;
+        int yOffset = -11;
+        // Range Control
+        buttonList.add(new GuiButton(0, width / 2 - xOffset + 64, height / 2 - yOffset - 85, 20, 20, "\u25b2"));
+        buttonList.add(new GuiButton(1, width / 2 - xOffset + 64, height / 2 - yOffset - 65, 20, 20, "\u25bc"));
+        if (mc.thePlayer.capabilities.isCreativeMode)
+        {
+            ContainerAFA container = (ContainerAFA) inventorySlots;
+            int num = container.tile.getField(2);
+            // Power need toggle
+            buttonList.add(new GuiButton(2, width / 2 - xOffset + 64, height / 2 - yOffset - 45, 20, 20,
+                    num == 1 ? "O" : "X"));
+        }
+        // Scale Buttons
+        buttonList.add(new GuiButton(3, width / 2 - xOffset + 10, height / 2 - yOffset - 65, 20, 20, "+"));
+        buttonList.add(new GuiButton(4, width / 2 - xOffset + 10, height / 2 - yOffset - 45, 20, 20, "-"));
+        // Position Buttons
+        buttonList.add(new GuiButton(5, width / 2 - xOffset - 12, height / 2 - yOffset - 65, 20, 20, "\u25c0"));
+        buttonList.add(new GuiButton(6, width / 2 - xOffset - 12, height / 2 - yOffset - 45, 20, 20, "\u25b6"));
+        // Position Buttons
+        buttonList.add(new GuiButton(7, width / 2 - xOffset - 32, height / 2 - yOffset - 65, 20, 20, "\u25b2"));
+        buttonList.add(new GuiButton(8, width / 2 - xOffset - 32, height / 2 - yOffset - 45, 20, 20, "\u25bc"));
+        // Position Buttons
+        buttonList.add(new GuiButton(9, width / 2 - xOffset - 52, height / 2 - yOffset - 65, 20, 20, "\u25c0"));
+        buttonList.add(new GuiButton(10, width / 2 - xOffset - 52, height / 2 - yOffset - 45, 20, 20, "\u25b6"));
+        //Reset Button
+        buttonList.add(new GuiButton(11, width / 2 - xOffset - 72, height / 2 - yOffset - 45, 20, 20, "X"));
     }
 
 }

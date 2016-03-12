@@ -30,59 +30,8 @@ import thut.api.maths.Vector3;
  * @author Thutmose */
 public class PCPacketHandler
 {
-    public static byte TYPESETPUBLIC  = 0;
-    public static byte TYPEADDLAND    = 1;
-    public static byte TYPEREMOVELAND = 2;
-
     public static class MessageClient implements IMessage
     {
-        public static final byte ALLPC      = 1;
-        public static final byte PERSONALPC = 2;
-        public static final byte TRADE      = 3;
-
-        PacketBuffer buffer;
-
-        public MessageClient()
-        {
-        };
-
-        public MessageClient(byte[] data)
-        {
-            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
-        }
-
-        public MessageClient(PacketBuffer buffer)
-        {
-            this.buffer = buffer;
-        }
-
-        public MessageClient(byte channel, NBTTagCompound nbt)
-        {
-            this.buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeByte(channel);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
-        }
-
-        @Override
-        public void fromBytes(ByteBuf buf)
-        {
-            if (buffer == null)
-            {
-                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
-            }
-            buffer.writeBytes(buf);
-        }
-
-        @Override
-        public void toBytes(ByteBuf buf)
-        {
-            if (buffer == null)
-            {
-                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
-            }
-            buf.writeBytes(buffer);
-        }
-
         public static class MessageHandlerClient implements IMessageHandler<MessageClient, MessageServer>
         {
             public void handleClientSide(EntityPlayer player, PacketBuffer buffer)
@@ -137,35 +86,32 @@ public class PCPacketHandler
             }
 
         }
+        public static final byte ALLPC      = 1;
+        public static final byte PERSONALPC = 2;
 
-    }
+        public static final byte TRADE      = 3;
 
-    public static class MessageServer implements IMessage
-    {
-        public static final byte PC        = 1;
-        public static final byte PCRELEASE = 2;
-        public static final byte TRADE     = 3;
-        PacketBuffer             buffer;
+        PacketBuffer buffer;;
 
-        public MessageServer()
+        public MessageClient()
         {
-        };
-
-        public MessageServer(byte[] data)
-        {
-            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
         }
 
-        public MessageServer(PacketBuffer buffer)
-        {
-            this.buffer = buffer;
-        }
-
-        public MessageServer(byte channel, NBTTagCompound nbt)
+        public MessageClient(byte channel, NBTTagCompound nbt)
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
             buffer.writeNBTTagCompoundToBuffer(nbt);
+        }
+
+        public MessageClient(byte[] data)
+        {
+            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
+        }
+
+        public MessageClient(PacketBuffer buffer)
+        {
+            this.buffer = buffer;
         }
 
         @Override
@@ -173,7 +119,7 @@ public class PCPacketHandler
         {
             if (buffer == null)
             {
-                buffer = new PacketBuffer(Unpooled.buffer());
+                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
             }
             buffer.writeBytes(buf);
         }
@@ -188,6 +134,9 @@ public class PCPacketHandler
             buf.writeBytes(buffer);
         }
 
+    }
+    public static class MessageServer implements IMessage
+    {
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
         {
             public void handleServerSide(EntityPlayer player, PacketBuffer buffer)
@@ -242,116 +191,59 @@ public class PCPacketHandler
             }
 
         }
+        public static final byte PC        = 1;
+        public static final byte PCRELEASE = 2;
+        public static final byte TRADE     = 3;
+
+        PacketBuffer             buffer;;
+
+        public MessageServer()
+        {
+        }
+
+        public MessageServer(byte channel, NBTTagCompound nbt)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeByte(channel);
+            buffer.writeNBTTagCompoundToBuffer(nbt);
+        }
+
+        public MessageServer(byte[] data)
+        {
+            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
+        }
+
+        public MessageServer(PacketBuffer buffer)
+        {
+            this.buffer = buffer;
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer());
+            }
+            buffer.writeBytes(buf);
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
+            }
+            buf.writeBytes(buffer);
+        }
 
     }
+    public static byte TYPESETPUBLIC  = 0;
 
-    public static void handleTradePacket(byte[] packet, EntityPlayer player)
-    {
-        String mes = new String(packet);
+    public static byte TYPEADDLAND    = 1;
 
-        String[] args = mes.split(",");
-
-        byte message = Byte.valueOf(args[0].trim());
-
-        if (message == 9 && player.worldObj.isRemote)
-        {
-
-            int x = Integer.valueOf(args[1].trim());
-            int y = Integer.valueOf(args[2].trim());
-            int z = Integer.valueOf(args[3].trim());
-
-            TileEntityTradingTable tile = (TileEntityTradingTable) player.worldObj.getTileEntity(new BlockPos(x, y, z));
-
-            int id;
-            try
-            {
-                id = Integer.valueOf(args[4].trim());
-
-                Entity player2 = player.worldObj.getEntityByID(id);
-
-                if (args.length == 6)
-                {
-                    tile.player1 = null;
-                    tile.player2 = null;
-                }
-                else if (player instanceof EntityPlayer)
-                {
-                    tile.addPlayer((EntityPlayer) player2);
-                }
-            }
-            catch (NumberFormatException e)
-            {
-                e.printStackTrace();
-            }
-            return;
-        }
-
-        if (!(player instanceof EntityPlayerMP))
-        {
-            EntityPlayer sender = (EntityPlayer) player;
-            if (Integer.valueOf(args[0]) == 3)
-            {
-                ArrayList<String> moves = new ArrayList<String>();
-                if (args.length > 2) for (int i = 2; i < args.length; i++)
-                {
-                    moves.add(args[i].trim());
-                }
-                // System.out.println(moves);
-                if (sender.openContainer instanceof ContainerTMCreator)
-                {
-                    ((ContainerTMCreator) sender.openContainer).getTile().moves.put(sender.getUniqueID().toString(),
-                            moves);
-                }
-            }
-
-        }
-        else
-        {
-            EntityPlayerMP sender = (EntityPlayerMP) player;
-            if (message == 0 && sender.openContainer instanceof ContainerTradingTable)
-            {
-                TileEntityTradingTable tradeTable = ((ContainerTradingTable) sender.openContainer).getTile();
-                tradeTable.addPlayer(sender);
-            }
-            else if (message == 5)
-            {
-                int x = Integer.valueOf(args[1].trim());
-                int y = Integer.valueOf(args[2].trim());
-                int z = Integer.valueOf(args[3].trim());
-                TileEntityTradingTable tile = (TileEntityTradingTable) sender.worldObj
-                        .getTileEntity(new BlockPos(x, y, z));
-                tile.addPlayer(null);
-
-                mes = 9 + "," + x + "," + y + "," + z + "," + player.getEntityId() + ",0";
-                Vector3 point = Vector3.getNewVector().set(player);
-                MessageClient pac = makeClientPacket(MessageClient.TRADE, mes.getBytes());
-                PokecubePacketHandler.sendToAllNear(pac, point, player.dimension, 10);
-                return;
-
-            }
-            else if (message == 1)
-            {
-                TileEntityTradingTable tradeTable = sender.openContainer instanceof ContainerTMCreator
-                        ? ((ContainerTMCreator) sender.openContainer).getTile()
-                        : sender.openContainer instanceof ContainerTradingTable
-                                ? ((ContainerTradingTable) sender.openContainer).getTile() : null;
-                if (tradeTable == null) return;
-                tradeTable.addPlayer(sender);
-                tradeTable.trade = !tradeTable.trade;
-
-                tradeTable.getWorld().markBlockForUpdate(tradeTable.getPos());
-                tradeTable.markDirty();
-                tradeTable.openGUI(sender);
-            }
-            else if (message == 2 && args.length > 1)
-            {
-                TileEntityTradingTable tradeTable = sender.openContainer instanceof ContainerTMCreator
-                        ? ((ContainerTMCreator) sender.openContainer).getTile()
-                        : ((ContainerTradingTable) sender.openContainer).getTile();
-                tradeTable.addMoveToTM(args[1]);
-            }
-        }
-    }
+    public static byte TYPEREMOVELAND = 2;
 
     public static void handlePCPacket(byte[] packet, EntityPlayer player)
     {
@@ -438,16 +330,112 @@ public class PCPacketHandler
         }
     }
 
-    public static MessageServer makeServerPacket(byte channel, byte[] data)
+    public static void handleTradePacket(byte[] packet, EntityPlayer player)
     {
-        byte[] packetData = new byte[data.length + 1];
-        packetData[0] = channel;
+        String mes = new String(packet);
 
-        for (int i = 1; i < packetData.length; i++)
+        String[] args = mes.split(",");
+
+        byte message = Byte.valueOf(args[0].trim());
+
+        if (message == 9 && player.worldObj.isRemote)
         {
-            packetData[i] = data[i - 1];
+
+            int x = Integer.valueOf(args[1].trim());
+            int y = Integer.valueOf(args[2].trim());
+            int z = Integer.valueOf(args[3].trim());
+
+            TileEntityTradingTable tile = (TileEntityTradingTable) player.worldObj.getTileEntity(new BlockPos(x, y, z));
+
+            int id;
+            try
+            {
+                id = Integer.valueOf(args[4].trim());
+
+                Entity player2 = player.worldObj.getEntityByID(id);
+
+                if (args.length == 6)
+                {
+                    tile.player1 = null;
+                    tile.player2 = null;
+                }
+                else if (player instanceof EntityPlayer)
+                {
+                    tile.addPlayer((EntityPlayer) player2);
+                }
+            }
+            catch (NumberFormatException e)
+            {
+                e.printStackTrace();
+            }
+            return;
         }
-        return new MessageServer(packetData);
+
+        if (!(player instanceof EntityPlayerMP))
+        {
+            EntityPlayer sender = player;
+            if (Integer.valueOf(args[0]) == 3)
+            {
+                ArrayList<String> moves = new ArrayList<String>();
+                if (args.length > 2) for (int i = 2; i < args.length; i++)
+                {
+                    moves.add(args[i].trim());
+                }
+                // System.out.println(moves);
+                if (sender.openContainer instanceof ContainerTMCreator)
+                {
+                    ((ContainerTMCreator) sender.openContainer).getTile().moves.put(sender.getUniqueID().toString(),
+                            moves);
+                }
+            }
+
+        }
+        else
+        {
+            EntityPlayerMP sender = (EntityPlayerMP) player;
+            if (message == 0 && sender.openContainer instanceof ContainerTradingTable)
+            {
+                TileEntityTradingTable tradeTable = ((ContainerTradingTable) sender.openContainer).getTile();
+                tradeTable.addPlayer(sender);
+            }
+            else if (message == 5)
+            {
+                int x = Integer.valueOf(args[1].trim());
+                int y = Integer.valueOf(args[2].trim());
+                int z = Integer.valueOf(args[3].trim());
+                TileEntityTradingTable tile = (TileEntityTradingTable) sender.worldObj
+                        .getTileEntity(new BlockPos(x, y, z));
+                tile.addPlayer(null);
+
+                mes = 9 + "," + x + "," + y + "," + z + "," + player.getEntityId() + ",0";
+                Vector3 point = Vector3.getNewVector().set(player);
+                MessageClient pac = makeClientPacket(MessageClient.TRADE, mes.getBytes());
+                PokecubePacketHandler.sendToAllNear(pac, point, player.dimension, 10);
+                return;
+
+            }
+            else if (message == 1)
+            {
+                TileEntityTradingTable tradeTable = sender.openContainer instanceof ContainerTMCreator
+                        ? ((ContainerTMCreator) sender.openContainer).getTile()
+                        : sender.openContainer instanceof ContainerTradingTable
+                                ? ((ContainerTradingTable) sender.openContainer).getTile() : null;
+                if (tradeTable == null) return;
+                tradeTable.addPlayer(sender);
+                tradeTable.trade = !tradeTable.trade;
+
+                tradeTable.getWorld().markBlockForUpdate(tradeTable.getPos());
+                tradeTable.markDirty();
+                tradeTable.openGUI(sender);
+            }
+            else if (message == 2 && args.length > 1)
+            {
+                TileEntityTradingTable tradeTable = sender.openContainer instanceof ContainerTMCreator
+                        ? ((ContainerTMCreator) sender.openContainer).getTile()
+                        : ((ContainerTradingTable) sender.openContainer).getTile();
+                tradeTable.addMoveToTM(args[1]);
+            }
+        }
     }
 
     public static MessageClient makeClientPacket(byte channel, byte[] data)
@@ -460,6 +448,18 @@ public class PCPacketHandler
             packetData[i] = data[i - 1];
         }
         return new MessageClient(packetData);
+    }
+
+    public static MessageServer makeServerPacket(byte channel, byte[] data)
+    {
+        byte[] packetData = new byte[data.length + 1];
+        packetData[0] = channel;
+
+        for (int i = 1; i < packetData.length; i++)
+        {
+            packetData[i] = data[i - 1];
+        }
+        return new MessageServer(packetData);
     }
 
 }

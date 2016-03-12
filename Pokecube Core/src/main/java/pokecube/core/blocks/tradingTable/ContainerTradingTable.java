@@ -14,18 +14,26 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 
 public class ContainerTradingTable extends Container
 {
+	/**
+     * Returns true if the item is a filled pokecube.
+     *
+     * @param itemstack the itemstack to test
+     * @return true if the id is a filled pokecube one, false otherwise
+     */
+    protected static boolean isItemValid(ItemStack itemstack)
+    {
+        return (!PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound() && PokecubeItems.getCubeId(itemstack) == 14)
+        		|| (itemstack.getItem()==Items.emerald&&itemstack.stackSize==64)
+        		|| (itemstack.getItem() instanceof IPokecube&&itemstack.stackSize==1);
+    }
+	
 	TileEntityTradingTable tile;
 	
-	public ContainerTradingTable(TileEntityTradingTable tile, InventoryPlayer playerInv)
+    public ContainerTradingTable(TileEntityTradingTable tile, InventoryPlayer playerInv)
 	{
 		this.tile = tile;
 		bindInventories(playerInv);
 	}
-	
-    protected void clearSlots()
-    {
-    	this.inventorySlots.clear();
-    }
     
     public void bindInventories(InventoryPlayer playerInv)
     {
@@ -37,11 +45,6 @@ public class ContainerTradingTable extends Container
 			addSlotToContainer(new SlotTrade(tile, 1, 140, 12));
 		}
     }
-	
-	public TileEntityTradingTable getTile()
-	{
-		return tile;
-	}
 	
 	private void bindPlayerInventory(InventoryPlayer playerInventory)
 	{
@@ -59,8 +62,50 @@ public class ContainerTradingTable extends Container
 	public boolean canInteractWith(EntityPlayer entityPlayer) {
 		return tile.isUseableByPlayer(entityPlayer);
 	}
+	
+	protected void clearSlots()
+    {
+    	this.inventorySlots.clear();
+    }
 
 	 @Override
+	public Slot getSlot(int par1)
+	    {
+			  if(par1<this.inventorySlots.size())
+				  return this.inventorySlots.get(par1);
+			  return null;
+	    }
+ 
+	  public TileEntityTradingTable getTile()
+	{
+		return tile;
+	}
+		    
+		    /**
+		     * args: slotID, itemStack to put in slot
+		     */
+		    @Override
+			public void putStackInSlot(int par1, ItemStack par2ItemStack)
+		    {
+		    	if(this.getSlot(par1)!=null)
+		    	this.getSlot(par1).putStack(par2ItemStack);
+		    }
+		    
+		    @Override
+			@SideOnly(Side.CLIENT)
+
+		    /**
+		     * places itemstacks in first x slots, x being aitemstack.lenght
+		     */
+		    public void putStacksInSlots(ItemStack[] par1ArrayOfItemStack)
+		    {
+		        for (int i = 0; i < par1ArrayOfItemStack.length; ++i)
+		        {
+		        	if(this.getSlot(i)!=null)
+		            this.getSlot(i).putStack(par1ArrayOfItemStack[i]);
+		        }
+		    }
+    @Override
     public ItemStack slotClick(int i, int j, int flag,
             EntityPlayer entityplayer)
     {
@@ -70,7 +115,7 @@ public class ContainerTradingTable extends Container
         if (flag != 0 && flag != 5)
         {
             ItemStack itemstack = null;
-            Slot slot = (Slot) inventorySlots.get(i);
+            Slot slot = inventorySlots.get(i);
 
             if (slot != null && slot.getHasStack())
             {
@@ -129,50 +174,5 @@ public class ContainerTradingTable extends Container
         {
             return super.slotClick(i, j, flag, entityplayer);
         }
-    }
- 
-	  @Override
-	public Slot getSlot(int par1)
-	    {
-			  if(par1<this.inventorySlots.size())
-				  return (Slot)this.inventorySlots.get(par1);
-			  return null;
-	    }
-		    
-		    /**
-		     * args: slotID, itemStack to put in slot
-		     */
-		    @Override
-			public void putStackInSlot(int par1, ItemStack par2ItemStack)
-		    {
-		    	if(this.getSlot(par1)!=null)
-		    	this.getSlot(par1).putStack(par2ItemStack);
-		    }
-		    
-		    @Override
-			@SideOnly(Side.CLIENT)
-
-		    /**
-		     * places itemstacks in first x slots, x being aitemstack.lenght
-		     */
-		    public void putStacksInSlots(ItemStack[] par1ArrayOfItemStack)
-		    {
-		        for (int i = 0; i < par1ArrayOfItemStack.length; ++i)
-		        {
-		        	if(this.getSlot(i)!=null)
-		            this.getSlot(i).putStack(par1ArrayOfItemStack[i]);
-		        }
-		    }
-    /**
-     * Returns true if the item is a filled pokecube.
-     *
-     * @param itemstack the itemstack to test
-     * @return true if the id is a filled pokecube one, false otherwise
-     */
-    protected static boolean isItemValid(ItemStack itemstack)
-    {
-        return (!PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound() && PokecubeItems.getCubeId(itemstack) == 14)
-        		|| (itemstack.getItem()==Items.emerald&&itemstack.stackSize==64)
-        		|| (itemstack.getItem() instanceof IPokecube&&itemstack.stackSize==1);
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.Explosion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import pokecube.core.database.Pokedex;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
@@ -31,13 +32,6 @@ public class Move_Explode extends Move_Ongoing
     }
 
     @Override
-    public void attack(IPokemob attacker, Vector3 attacked, float f)
-    {
-        if (PokecubeMod.core.getConfig().explosions) attack(attacker, (Entity) attacker, f);
-        else super.attack(attacker, attacked, f);
-    }
-
-    @Override
     public void attack(IPokemob attacker, Entity attacked, float f)
     {
         if (attacker instanceof EntityLiving)
@@ -52,7 +46,7 @@ public class Move_Explode extends Move_Ongoing
                     voltorb.worldObj.playSoundAtEntity(voltorb, "game.tnt.primed", 1.0F, 0.5F);
                 }
                 pokemob.setExplosionState(1);
-                if (PokecubeMod.core.getConfig().explosions) ((IPokemob) attacker).addOngoingEffect(this);
+                if (PokecubeMod.core.getConfig().explosions) attacker.addOngoingEffect(this);
                 else
                 {
                     super.attack(attacker, attacked, f);
@@ -72,6 +66,14 @@ public class Move_Explode extends Move_Ongoing
         }
     }
 
+    @Override
+    public void attack(IPokemob attacker, Vector3 attacked, float f)
+    {
+        if (PokecubeMod.core.getConfig().explosions) attack(attacker, (Entity) attacker, f);
+        else super.attack(attacker, attacked, f);
+    }
+
+    @Override
     public void doOngoingEffect(EntityLiving mob)
     {
         if (!(mob instanceof IPokemob)) return;
@@ -95,7 +97,7 @@ public class Move_Explode extends Move_Ongoing
                 mob.onDeath(DamageSource.generic);
                 if (attacked instanceof IPokemob && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
                 {
-                    if (!(((IPokemob) attacked).getPokemonAIState(IPokemob.TAMED)
+                    if (!(((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED)
                             && !PokecubeMod.core.getConfig().pvpExp))
                     {
                         // voltorb's enemy wins XP and EVs even if it didn't
@@ -132,14 +134,14 @@ public class Move_Explode extends Move_Ongoing
     }
 
     @Override
-    public boolean onTarget()
-    {
-        return false;
-    }
-
-    @Override
     public boolean onSource()
     {
         return true;
+    }
+
+    @Override
+    public boolean onTarget()
+    {
+        return false;
     }
 }

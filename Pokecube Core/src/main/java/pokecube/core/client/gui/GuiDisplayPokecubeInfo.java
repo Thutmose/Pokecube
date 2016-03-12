@@ -30,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -45,10 +46,21 @@ import thut.api.maths.Vector3;
 
 public class GuiDisplayPokecubeInfo extends Gui
 {
-    protected FontRenderer                fontRenderer;
-    protected Minecraft                   minecraft;
     protected static int                  lightGrey = 0xDDDDDD;
     private static GuiDisplayPokecubeInfo instance;
+    public static GuiDisplayPokecubeInfo instance()
+    {
+        return instance;
+    }
+    protected FontRenderer                fontRenderer;
+
+    protected Minecraft                   minecraft;
+
+    IPokemob[] arrayRet       = new IPokemob[0];
+
+    int        refreshCounter = 0;
+
+    int indexPokemob = 0;
 
     /**
      *
@@ -59,29 +71,6 @@ public class GuiDisplayPokecubeInfo extends Gui
         fontRenderer = minecraft.fontRendererObj;
         instance = this;
     }
-
-    public static GuiDisplayPokecubeInfo instance()
-    {
-        return instance;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onRenderHotbar(RenderGameOverlayEvent.Post event)
-    {
-        try
-        {
-            if (minecraft.currentScreen == null
-                    && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
-                    && event.type == ElementType.HOTBAR)
-                draw(event);
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     private void draw(RenderGameOverlayEvent.Post event)
     {
         int w = PokecubeMod.core.getConfig().guiOffset[0];
@@ -200,8 +189,16 @@ public class GuiDisplayPokecubeInfo extends Gui
         GL11.glPopMatrix();
     }
 
-    IPokemob[] arrayRet       = new IPokemob[0];
-    int        refreshCounter = 0;
+    /** @return the currently selected pokemob */
+    public IPokemob getCurrentPokemob()
+    {
+        IPokemob pokemob = null;
+        if (indexPokemob < arrayRet.length && indexPokemob >= 0 && arrayRet.length > 0)
+        {
+            pokemob = arrayRet[indexPokemob];
+        }
+        return pokemob;
+    }
 
     public IPokemob[] getPokemobsToDisplay()
     {
@@ -221,7 +218,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             if (!(object instanceof IPokemob)) continue;
             IPokemob pokemob = (IPokemob) object;
 
-            boolean owner = pokemob.getPokemonAIState(IPokemob.TAMED) && pokemob.getPokemonOwner() != null;
+            boolean owner = pokemob.getPokemonAIState(IMoveConstants.TAMED) && pokemob.getPokemonOwner() != null;
 
             if (owner)
             {
@@ -229,8 +226,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
             int id = pokemob.getPokemonUID();
 
-            if (owner && !pokemob.getPokemonAIState(IPokemob.SITTING) && !pokemob.getPokemonAIState(IPokemob.GUARDING)
-                    && !pokemob.getPokemonAIState(IPokemob.STAYING) && !added.contains(id))
+            if (owner && !pokemob.getPokemonAIState(IMoveConstants.SITTING) && !pokemob.getPokemonAIState(IMoveConstants.GUARDING)
+                    && !pokemob.getPokemonAIState(IMoveConstants.STAYING) && !added.contains(id))
             {
                 ret.add(pokemob);
                 added.add(id);
@@ -260,20 +257,24 @@ public class GuiDisplayPokecubeInfo extends Gui
         return arrayRet;
     }
 
-    int indexPokemob = 0;
-
-    /** Select next pokemob */
-    public void nextPokemob()
+    /** Shifts the gui by x and y
+     * 
+     * @param x
+     * @param y */
+    public void moveGui(int x, int y)
     {
-        indexPokemob++;
-        if (indexPokemob >= arrayRet.length) indexPokemob = 0;
-    }
+        if (GuiScreen.isCtrlKeyDown())
+        {
+            PokecubeMod.core.getConfig().guiDown = !PokecubeMod.core.getConfig().guiDown;
+            saveConfig();
+            return;
+        }
 
-    /** Select previous pokemob */
-    public void previousPokemob()
-    {
-        indexPokemob--;
-        if (indexPokemob < 0) indexPokemob = arrayRet.length - 1;
+        PokecubeMod.core.getConfig().guiOffset[0] += x;
+        PokecubeMod.core.getConfig().guiOffset[1] += y;
+        if (PokecubeMod.core.getConfig().guiOffset[0] < 0) PokecubeMod.core.getConfig().guiOffset[0] = 0;
+        if (PokecubeMod.core.getConfig().guiOffset[1] < 0) PokecubeMod.core.getConfig().guiOffset[1] = 0;
+        saveConfig();
     }
 
     /** Incremenrs pokemob move index
@@ -291,82 +292,28 @@ public class GuiDisplayPokecubeInfo extends Gui
         }
     }
 
-    /** Decrements pokemob move index
-     * 
-     * @param j */
-    public void previousMove(int j)
+    /** Select next pokemob */
+    public void nextPokemob()
     {
-        IPokemob pokemob = getCurrentPokemob();
-        if (pokemob != null)
-        {
-            int index = pokemob.getMoveIndex();
-
-            if (index == 5)
-            {
-                for (int i = 3; i > 0; i -= j)
-                {
-                    if (pokemob.getMove(i) != null)
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                index -= j;
-            }
-
-            if (index % 5 >= 0) pokemob.setMoveIndex(index % 5);
-            else pokemob.setMoveIndex(5);
-        }
+        indexPokemob++;
+        if (indexPokemob >= arrayRet.length) indexPokemob = 0;
     }
 
-    /** Sets pokemob's move index.
-     * 
-     * @param num */
-    public void setMove(int num)
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onRenderHotbar(RenderGameOverlayEvent.Post event)
     {
-        IPokemob pokemob = getCurrentPokemob();
-        if (pokemob != null)
+        try
         {
-            int index = num;
-            if (index % 4 >= 0) pokemob.setMoveIndex(index % 4);
+            if (minecraft.currentScreen == null
+                    && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
+                    && event.type == ElementType.HOTBAR)
+                draw(event);
         }
-    }
-
-    /** Recalls selected pokemob, if none selected, will try to identify a
-     * pokemob being looked at, and recalls that */
-    public void pokemobBack()
-    {
-        IPokemob pokemob = getCurrentPokemob();
-
-        if (GuiScreen.isShiftKeyDown() && pokemob != null)
+        catch (Throwable e)
         {
-            MessageServer message = new MessageServer(MessageServer.COME, ((Entity) pokemob).getEntityId());
-            PokecubeMod.packetPipeline.sendToServer(message);
-            return;
+            e.printStackTrace();
         }
-
-        // System.out.println(pokemob+":");
-        if (pokemob != null) pokemob.returnToPokecube();
-        else
-        {
-            EntityPlayer player = minecraft.thePlayer;
-            Entity target = null;
-            Vector3 look = Vector3.getNewVector().set(player.getLook(1));
-            Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
-            target = temp.firstEntityExcluding(32, look, player.worldObj, player.isSneaking(), player);
-            if (target != null && target instanceof IPokemob && ((IPokemob) target).getPokemonOwner() == player)
-            {
-                ((IPokemob) target).returnToPokecube();
-            }
-        }
-
-        if (indexPokemob >= arrayRet.length) indexPokemob--;
-
-        if (indexPokemob < 0) indexPokemob = 0;
-
     }
 
     /** Identifies target of attack, and sends the packet with info to server */
@@ -388,7 +335,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             sameOwner = ((IPokemob) target).getPokemonOwner() == player;
         }
 
-        IPokemob pokemob = (IPokemob) getCurrentPokemob();
+        IPokemob pokemob = getCurrentPokemob();
 
         if (pokemob != null)
         {
@@ -450,6 +397,40 @@ public class GuiDisplayPokecubeInfo extends Gui
         PokecubePacketHandler.sendToServer(packet);
     }
 
+    /** Recalls selected pokemob, if none selected, will try to identify a
+     * pokemob being looked at, and recalls that */
+    public void pokemobBack()
+    {
+        IPokemob pokemob = getCurrentPokemob();
+
+        if (GuiScreen.isShiftKeyDown() && pokemob != null)
+        {
+            MessageServer message = new MessageServer(MessageServer.COME, ((Entity) pokemob).getEntityId());
+            PokecubeMod.packetPipeline.sendToServer(message);
+            return;
+        }
+
+        // System.out.println(pokemob+":");
+        if (pokemob != null) pokemob.returnToPokecube();
+        else
+        {
+            EntityPlayer player = minecraft.thePlayer;
+            Entity target = null;
+            Vector3 look = Vector3.getNewVector().set(player.getLook(1));
+            Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
+            target = temp.firstEntityExcluding(32, look, player.worldObj, player.isSneaking(), player);
+            if (target != null && target instanceof IPokemob && ((IPokemob) target).getPokemonOwner() == player)
+            {
+                ((IPokemob) target).returnToPokecube();
+            }
+        }
+
+        if (indexPokemob >= arrayRet.length) indexPokemob--;
+
+        if (indexPokemob < 0) indexPokemob = 0;
+
+    }
+
     /** Sends the packet to toggle all pokemobs set to follow between sit and
      * stand */
     public void pokemobStance()
@@ -459,39 +440,59 @@ public class GuiDisplayPokecubeInfo extends Gui
         PokecubePacketHandler.sendToServer(packet);
     }
 
-    /** @return the currently selected pokemob */
-    public IPokemob getCurrentPokemob()
+    /** Decrements pokemob move index
+     * 
+     * @param j */
+    public void previousMove(int j)
     {
-        IPokemob pokemob = null;
-        if (indexPokemob < arrayRet.length && indexPokemob >= 0 && arrayRet.length > 0)
+        IPokemob pokemob = getCurrentPokemob();
+        if (pokemob != null)
         {
-            pokemob = arrayRet[indexPokemob];
+            int index = pokemob.getMoveIndex();
+
+            if (index == 5)
+            {
+                for (int i = 3; i > 0; i -= j)
+                {
+                    if (pokemob.getMove(i) != null)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                index -= j;
+            }
+
+            if (index % 5 >= 0) pokemob.setMoveIndex(index % 5);
+            else pokemob.setMoveIndex(5);
         }
-        return pokemob;
     }
 
-    /** Shifts the gui by x and y
-     * 
-     * @param x
-     * @param y */
-    public void moveGui(int x, int y)
+    /** Select previous pokemob */
+    public void previousPokemob()
     {
-        if (GuiScreen.isCtrlKeyDown())
-        {
-            PokecubeMod.core.getConfig().guiDown = !PokecubeMod.core.getConfig().guiDown;
-            saveConfig();
-            return;
-        }
-
-        PokecubeMod.core.getConfig().guiOffset[0] += x;
-        PokecubeMod.core.getConfig().guiOffset[1] += y;
-        if (PokecubeMod.core.getConfig().guiOffset[0] < 0) PokecubeMod.core.getConfig().guiOffset[0] = 0;
-        if (PokecubeMod.core.getConfig().guiOffset[1] < 0) PokecubeMod.core.getConfig().guiOffset[1] = 0;
-        saveConfig();
+        indexPokemob--;
+        if (indexPokemob < 0) indexPokemob = arrayRet.length - 1;
     }
 
     private void saveConfig()
     {
         PokecubeMod.core.getConfig().setSettings();
+    }
+
+    /** Sets pokemob's move index.
+     * 
+     * @param num */
+    public void setMove(int num)
+    {
+        IPokemob pokemob = getCurrentPokemob();
+        if (pokemob != null)
+        {
+            int index = num;
+            if (index % 4 >= 0) pokemob.setMoveIndex(index % 4);
+        }
     }
 }

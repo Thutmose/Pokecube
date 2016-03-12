@@ -27,6 +27,28 @@ import pokecube.modelloader.client.render.tabula.TabulaPackLoader.TabulaModelSet
 @SideOnly(Side.CLIENT)
 public class MowzieModelRenderer extends ModelRenderer implements IRetexturableModel
 {
+    static final float    ratio       = 180f / (float) Math.PI;
+    public static int getColour(String partIdentifier, TabulaModelSet set, IPokemob pokemob, int default_)
+    {
+        if (set != null && set.dyeableIdents.contains(partIdentifier))
+        {
+            int rgba = 0xFF000000;
+            rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;
+            return rgba;
+        }
+        return default_;
+    }
+    public static boolean isHidden(String partIdentifier, TabulaModelSet set, IPokemob pokemob, boolean default_)
+    {
+        if (set != null && set.shearableIdents.contains(partIdentifier))
+        {
+            boolean shearable = ((IShearable) pokemob).isShearable(new ItemStack(Items.shears),
+                    ((Entity) pokemob).worldObj, ((Entity) pokemob).getPosition());
+            return !shearable;
+        }
+        return default_;
+    }
+
     public float          initRotateAngleX;
     public float          initRotateAngleY;
     public float          initRotateAngleZ;
@@ -42,7 +64,6 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
     public float          initScaleX  = 1f;
     public float          initScaleY  = 1f;
     public float          initScaleZ  = 1f;
-
     public float          scaleX      = 1f;
     public float          scaleY      = 1f;
     public float          scaleZ      = 1f;
@@ -52,20 +73,21 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
     private int           displayList;
     public String         name;
     public String         identifier;
+
     public TabulaModelSet set;
     IPartTexturer         texturer;
     double[]              texOffsets  = { 0, 0 };
-
     boolean               offset      = true;
+
     boolean               rotate      = true;
+
     boolean               translate   = true;
+
     boolean               shouldScale = true;
 
-    static final float    ratio       = 180f / (float) Math.PI;
-
-    public MowzieModelRenderer(ModelBase modelBase, String name)
+    public MowzieModelRenderer(ModelBase modelBase)
     {
-        super(modelBase, name);
+        super(modelBase);
     }
 
     public MowzieModelRenderer(ModelBase modelBase, int x, int y)
@@ -79,11 +101,12 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
         }
     }
 
-    public MowzieModelRenderer(ModelBase modelBase)
+    public MowzieModelRenderer(ModelBase modelBase, String name)
     {
-        super(modelBase);
+        super(modelBase, name);
     }
 
+    @Override
     public void addChild(ModelRenderer renderer)
     {
         super.addChild(renderer);
@@ -94,134 +117,17 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
         }
     }
 
-    public void postRenderParentChain(float par1)
+    @SideOnly(Side.CLIENT)
+    private void compileDisplayList(float scale)
     {
-        if (parent instanceof MowzieModelRenderer)
+        displayList = GLAllocation.generateDisplayLists(1);
+        GL11.glNewList(displayList, GL11.GL_COMPILE);
+        for (Object object : cubeList)
         {
-            ((MowzieModelRenderer) parent).postRenderParentChain(par1);
+            ((ModelBox) object).render(Tessellator.getInstance().getWorldRenderer(), scale);
         }
-        else if (parent != null)
-        {
-            parent.postRender(par1);
-        }
-
-        postRender(par1);
-    }
-
-    /** Returns the parent of this ModelRenderer */
-    public ModelRenderer getParent()
-    {
-        return parent;
-    }
-
-    /** Sets the parent of this ModelRenderer */
-    private void setParent(ModelRenderer modelRenderer)
-    {
-        parent = modelRenderer;
-    }
-
-    /** Set the initialization pose to the current pose */
-    public void setInitValuesToCurrentPose()
-    {
-        initRotateAngleX = rotateAngleX;
-        initRotateAngleY = rotateAngleY;
-        initRotateAngleZ = rotateAngleZ;
-
-        initRotationPointX = rotationPointX;
-        initRotationPointY = rotationPointY;
-        initRotationPointZ = rotationPointZ;
-
-        initOffsetX = offsetX;
-        initOffsetY = offsetY;
-        initOffsetZ = offsetZ;
-
-        initScaleX = scaleX;
-        initScaleY = scaleY;
-        initScaleZ = scaleZ;
-
-        hasInitPose = true;
-    }
-
-    /** Resets the pose to init pose */
-    public void setCurrentPoseToInitValues()
-    {
-        if (hasInitPose)
-        {
-            rotateAngleX = initRotateAngleX;
-            rotateAngleY = initRotateAngleY;
-            rotateAngleZ = initRotateAngleZ;
-
-            rotationPointX = initRotationPointX;
-            rotationPointY = initRotationPointY;
-            rotationPointZ = initRotationPointZ;
-
-            offsetX = initOffsetX;
-            offsetY = initOffsetY;
-            offsetZ = initOffsetZ;
-
-            scaleX = initScaleX;
-            scaleY = initScaleY;
-            scaleZ = initScaleZ;
-        }
-    }
-
-    public void setRotationAngles(float x, float y, float z)
-    {
-        rotateAngleX = x;
-        rotateAngleY = y;
-        rotateAngleZ = z;
-    }
-
-    /** Resets all rotation points. */
-    public void resetAllRotationPoints()
-    {
-        rotationPointX = initRotationPointX;
-        rotationPointY = initRotationPointY;
-        rotationPointZ = initRotationPointZ;
-    }
-
-    /** Resets X rotation point. */
-    public void resetXRotationPoints()
-    {
-        rotationPointX = initRotationPointX;
-    }
-
-    /** Resets Y rotation point. */
-    public void resetYRotationPoints()
-    {
-        rotationPointY = initRotationPointY;
-    }
-
-    /** Resets Z rotation point. */
-    public void resetZRotationPoints()
-    {
-        rotationPointZ = initRotationPointZ;
-    }
-
-    /** Resets all rotations. */
-    public void resetAllRotations()
-    {
-        rotateAngleX = initRotateAngleX;
-        rotateAngleY = initRotateAngleY;
-        rotateAngleZ = initRotateAngleZ;
-    }
-
-    /** Resets X rotation. */
-    public void resetXRotations()
-    {
-        rotateAngleX = initRotateAngleX;
-    }
-
-    /** Resets Y rotation. */
-    public void resetYRotations()
-    {
-        rotateAngleY = initRotateAngleY;
-    }
-
-    /** Resets Z rotation. */
-    public void resetZRotations()
-    {
-        rotateAngleZ = initRotateAngleZ;
+        GL11.glEndList();
+        compiled = true;
     }
 
     /** Copies the rotation point coordinates. */
@@ -250,25 +156,24 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
         rotationPointZ = target.rotationPointZ;
     }
 
-    public void renderWithParents(float partialTicks)
+    /** Returns the parent of this ModelRenderer */
+    public ModelRenderer getParent()
+    {
+        return parent;
+    }
+
+    public void postRenderParentChain(float par1)
     {
         if (parent instanceof MowzieModelRenderer)
         {
-            ((MowzieModelRenderer) parent).renderWithParents(partialTicks);
+            ((MowzieModelRenderer) parent).postRenderParentChain(par1);
         }
         else if (parent != null)
         {
-            parent.render(partialTicks);
+            parent.postRender(par1);
         }
 
-        render(partialTicks);
-    }
-
-    public void setScale(float x, float y, float z)
-    {
-        scaleX = x;
-        scaleY = y;
-        scaleZ = z;
+        postRender(par1);
     }
 
     @SideOnly(Side.CLIENT)
@@ -395,6 +300,72 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
 
     }
 
+    public void renderWithParents(float partialTicks)
+    {
+        if (parent instanceof MowzieModelRenderer)
+        {
+            ((MowzieModelRenderer) parent).renderWithParents(partialTicks);
+        }
+        else if (parent != null)
+        {
+            parent.render(partialTicks);
+        }
+
+        render(partialTicks);
+    }
+
+    /** Resets all rotation points. */
+    public void resetAllRotationPoints()
+    {
+        rotationPointX = initRotationPointX;
+        rotationPointY = initRotationPointY;
+        rotationPointZ = initRotationPointZ;
+    }
+
+    /** Resets all rotations. */
+    public void resetAllRotations()
+    {
+        rotateAngleX = initRotateAngleX;
+        rotateAngleY = initRotateAngleY;
+        rotateAngleZ = initRotateAngleZ;
+    }
+
+    /** Resets X rotation point. */
+    public void resetXRotationPoints()
+    {
+        rotationPointX = initRotationPointX;
+    }
+
+    /** Resets X rotation. */
+    public void resetXRotations()
+    {
+        rotateAngleX = initRotateAngleX;
+    }
+
+    /** Resets Y rotation point. */
+    public void resetYRotationPoints()
+    {
+        rotationPointY = initRotationPointY;
+    }
+
+    /** Resets Y rotation. */
+    public void resetYRotations()
+    {
+        rotateAngleY = initRotateAngleY;
+    }
+
+    /** Resets Z rotation point. */
+    public void resetZRotationPoints()
+    {
+        rotationPointZ = initRotationPointZ;
+    }
+
+    /** Resets Z rotation. */
+    public void resetZRotations()
+    {
+        rotateAngleZ = initRotateAngleZ;
+    }
+
     private void rotateHead(Entity entity, float scale)
     {
         float ang;
@@ -452,6 +423,84 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
         }
     }
 
+    /** Resets the pose to init pose */
+    public void setCurrentPoseToInitValues()
+    {
+        if (hasInitPose)
+        {
+            rotateAngleX = initRotateAngleX;
+            rotateAngleY = initRotateAngleY;
+            rotateAngleZ = initRotateAngleZ;
+
+            rotationPointX = initRotationPointX;
+            rotationPointY = initRotationPointY;
+            rotationPointZ = initRotationPointZ;
+
+            offsetX = initOffsetX;
+            offsetY = initOffsetY;
+            offsetZ = initOffsetZ;
+
+            scaleX = initScaleX;
+            scaleY = initScaleY;
+            scaleZ = initScaleZ;
+        }
+    }
+
+    /** Set the initialization pose to the current pose */
+    public void setInitValuesToCurrentPose()
+    {
+        initRotateAngleX = rotateAngleX;
+        initRotateAngleY = rotateAngleY;
+        initRotateAngleZ = rotateAngleZ;
+
+        initRotationPointX = rotationPointX;
+        initRotationPointY = rotationPointY;
+        initRotationPointZ = rotationPointZ;
+
+        initOffsetX = offsetX;
+        initOffsetY = offsetY;
+        initOffsetZ = offsetZ;
+
+        initScaleX = scaleX;
+        initScaleY = scaleY;
+        initScaleZ = scaleZ;
+
+        hasInitPose = true;
+    }
+
+    /** Sets the parent of this ModelRenderer */
+    private void setParent(ModelRenderer modelRenderer)
+    {
+        parent = modelRenderer;
+    }
+
+    public void setRotationAngles(float x, float y, float z)
+    {
+        rotateAngleX = x;
+        rotateAngleY = y;
+        rotateAngleZ = z;
+    }
+
+    public void setScale(float x, float y, float z)
+    {
+        scaleX = x;
+        scaleY = y;
+        scaleZ = z;
+    }
+
+    @Override
+    public void setTexturer(IPartTexturer texturer)
+    {
+        this.texturer = texturer;
+        if (childModels != null)
+        {
+            for (Object part : childModels)
+            {
+                if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setTexturer(texturer);
+            }
+        }
+    }
+
     private void unRotateToParent()
     {
 
@@ -474,53 +523,5 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
                 GL11.glRotatef(parent.rotateAngleX * (180f / (float) Math.PI), 1f, 0f, 0f);
             }
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void compileDisplayList(float scale)
-    {
-        displayList = GLAllocation.generateDisplayLists(1);
-        GL11.glNewList(displayList, GL11.GL_COMPILE);
-        for (Object object : cubeList)
-        {
-            ((ModelBox) object).render(Tessellator.getInstance().getWorldRenderer(), scale);
-        }
-        GL11.glEndList();
-        compiled = true;
-    }
-
-    @Override
-    public void setTexturer(IPartTexturer texturer)
-    {
-        this.texturer = texturer;
-        if (childModels != null)
-        {
-            for (Object part : childModels)
-            {
-                if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setTexturer(texturer);
-            }
-        }
-    }
-
-    public static boolean isHidden(String partIdentifier, TabulaModelSet set, IPokemob pokemob, boolean default_)
-    {
-        if (set != null && set.shearableIdents.contains(partIdentifier))
-        {
-            boolean shearable = ((IShearable) pokemob).isShearable(new ItemStack(Items.shears),
-                    ((Entity) pokemob).worldObj, ((Entity) pokemob).getPosition());
-            return !shearable;
-        }
-        return default_;
-    }
-
-    public static int getColour(String partIdentifier, TabulaModelSet set, IPokemob pokemob, int default_)
-    {
-        if (set != null && set.dyeableIdents.contains(partIdentifier))
-        {
-            int rgba = 0xFF000000;
-            rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;
-            return rgba;
-        }
-        return default_;
     }
 }

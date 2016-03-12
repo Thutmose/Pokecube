@@ -58,28 +58,22 @@ public class PokemobTerrainEffects implements ITerrainEffect
     {
     }
 
-    @Override
-    public void doEffect(EntityLivingBase entity, boolean firstEntry)
+    public void addPokemon(IPokemob poke)
     {
-        if (firstEntry)
-        {
-            doEntryEffect(entity);
-        }
-        else
-        {
-            doEffect(entity);
-        }
+        if (!pokemon.contains(poke)) pokemon.add(poke);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt)
+    public void bindToTerrain(int x, int y, int z)
     {
+        chunkX = x;
+        chunkY = y;
+        chunkZ = z;
     }
 
-    @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public int countPokemon()
     {
-
+        return pokemon.size();
     }
 
     public void doEffect(EntityLivingBase entity)
@@ -146,6 +140,19 @@ public class PokemobTerrainEffects implements ITerrainEffect
         dropDurations(entity);
     }
 
+    @Override
+    public void doEffect(EntityLivingBase entity, boolean firstEntry)
+    {
+        if (firstEntry)
+        {
+            doEntryEffect(entity);
+        }
+        else
+        {
+            doEffect(entity);
+        }
+    }
+
     public void doEntryEffect(EntityLivingBase entity)
     {
         if (entity instanceof IPokemob)
@@ -178,6 +185,71 @@ public class PokemobTerrainEffects implements ITerrainEffect
                 MovesUtils.handleStats2(mob, null, IMoveConstants.VIT, IMoveConstants.FALL);
             }
         }
+    }
+
+    private void dropDurations(Entity e)
+    {
+        long time = e.worldObj.getTotalWorldTime();
+        boolean send = false;
+        for (int i = 0; i < effects.length; i++)
+        {
+            if (effects[i] > 0)
+            {
+                long diff = effects[i] - time;
+                if (diff > 0)
+                {
+                    effects[i] = effects[i] - 1;
+                }
+                else
+                {
+                    effects[i] = 0;
+                    send = true;
+                }
+            }
+        }
+        if (send)
+        {
+            if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+            {
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(73));
+                buffer.writeByte(PokecubeClientPacket.TERRAINEFFECTS);
+                buffer.writeInt(chunkX);
+                buffer.writeInt(chunkY);
+                buffer.writeInt(chunkZ);
+                for (int i = 0; i < 16; i++)
+                {
+                    buffer.writeLong(effects[i]);
+                }
+                PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
+                Vector3 v = Vector3.getNewVector().set(e);
+                PokecubePacketHandler.sendToAllNear(packet, v, e.worldObj.provider.getDimensionId(), 64);
+            }
+        }
+    }
+
+    public long getEffect(int effect)
+    {
+        return effects[effect];
+    }
+
+    boolean hasEffects()
+    {
+        boolean ret = false;
+        for (int i = 1; i < 16; i++)
+        {
+            if (effects[i] > 0) return true;
+        }
+        return ret;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    {
+    }
+
+    public void removePokemon(IPokemob poke)
+    {
+        pokemon.remove(poke);
     }
 
     /** Adds the effect, and removes any non-compatible effects if any
@@ -232,81 +304,9 @@ public class PokemobTerrainEffects implements ITerrainEffect
         else effects[effect] = duration;
     }
 
-    private void dropDurations(Entity e)
-    {
-        long time = e.worldObj.getTotalWorldTime();
-        boolean send = false;
-        for (int i = 0; i < effects.length; i++)
-        {
-            if (effects[i] > 0)
-            {
-                long diff = effects[i] - time;
-                if (diff > 0)
-                {
-                    effects[i] = effects[i] - 1;
-                }
-                else
-                {
-                    effects[i] = 0;
-                    send = true;
-                }
-            }
-        }
-        if (send)
-        {
-            if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-            {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(73));
-                buffer.writeByte(PokecubeClientPacket.TERRAINEFFECTS);
-                buffer.writeInt(chunkX);
-                buffer.writeInt(chunkY);
-                buffer.writeInt(chunkZ);
-                for (int i = 0; i < 16; i++)
-                {
-                    buffer.writeLong(effects[i]);
-                }
-                PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
-                Vector3 v = Vector3.getNewVector().set(e);
-                PokecubePacketHandler.sendToAllNear(packet, v, e.worldObj.provider.getDimensionId(), 64);
-            }
-        }
-    }
-
-    public void addPokemon(IPokemob poke)
-    {
-        if (!pokemon.contains(poke)) pokemon.add(poke);
-    }
-
-    public void removePokemon(IPokemob poke)
-    {
-        pokemon.remove(poke);
-    }
-
-    public int countPokemon()
-    {
-        return pokemon.size();
-    }
-
-    boolean hasEffects()
-    {
-        boolean ret = false;
-        for (int i = 1; i < 16; i++)
-        {
-            if (effects[i] > 0) return true;
-        }
-        return ret;
-    }
-
-    public long getEffect(int effect)
-    {
-        return effects[effect];
-    }
-
     @Override
-    public void bindToTerrain(int x, int y, int z)
+    public void writeToNBT(NBTTagCompound nbt)
     {
-        chunkX = x;
-        chunkY = y;
-        chunkZ = z;
+
     }
 }

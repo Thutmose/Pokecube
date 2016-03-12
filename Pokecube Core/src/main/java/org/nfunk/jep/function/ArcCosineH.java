@@ -27,16 +27,6 @@ public class ArcCosineH extends PostfixMathCommand
 		numberOfParameters = 1;
 	}
 
-	@Override
-	public void run(Stack inStack)
-		throws ParseException
-	{
-		checkStack(inStack);// check the stack
-		Object param = inStack.pop();
-		inStack.push(acosh(param));//push the result on the inStack
-		return;
-	}
-
 	public Object acosh(Object param)
 		throws ParseException
 	{
@@ -59,5 +49,15 @@ public class ArcCosineH extends PostfixMathCommand
 		}
 
 		throw new ParseException("Invalid parameter type");
+	}
+
+	@Override
+	public void run(Stack inStack)
+		throws ParseException
+	{
+		checkStack(inStack);// check the stack
+		Object param = inStack.pop();
+		inStack.push(acosh(param));//push the result on the inStack
+		return;
 	}
 }

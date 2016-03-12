@@ -20,7 +20,18 @@ public class ItemBlockPC extends ItemBlock {
 	public int getMetadata (int damageValue) {
 		return damageValue;
 	}
-	   /**
+	   @Override
+    @SideOnly(Side.CLIENT)
+    /**
+     * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
+     */
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
+    {
+    	par3List.add(new ItemStack(par1, 1, 0));
+    	par3List.add(new ItemStack(par1, 1, 8));
+    }
+	 
+	 /**
 	  * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have
 	  * different names based on their damage or NBT.
 	  */
@@ -31,15 +42,4 @@ public class ItemBlockPC extends ItemBlock {
 	     
 	     return super.getUnlocalizedName() + "." + (i==8?"top":"base");
 	 }
-	 
-	 @Override
-    @SideOnly(Side.CLIENT)
-    /**
-     * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
-     */
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
-    {
-    	par3List.add(new ItemStack(par1, 1, 0));
-    	par3List.add(new ItemStack(par1, 1, 8));
-    }
 }

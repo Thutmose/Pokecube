@@ -47,14 +47,103 @@ import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.events.RenderHandler;
 import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.items.bags.ContainerBag;
-import pokecube.core.PokecubeItems;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import thut.api.maths.Vector3;
 
 public class ClientProxy extends CommonProxy
 {
 
     public static KeyBinding bag;
+
+    @Override
+    public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        Entity entityHit = null;
+        MovingObjectPosition objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
+
+        if (objectClicked != null)
+        {
+            if (objectClicked.getBlockPos() != null)
+            {
+            }
+            entityHit = objectClicked.entityHit;
+        }
+        BlockPos pos = new BlockPos(x, y, z);
+        if (guiID == PokecubeAdv.GUITRAINER_ID)
+        {
+            return new GuiTrainerEdit((EntityTrainer) entityHit);
+        }
+        else if (guiID == PokecubeAdv.GUIBAG_ID)
+        {
+            ContainerBag cont = new ContainerBag(player.inventory);
+            return new GuiBag(cont, Vector3.getNewVector().set(x, y, z));
+        }
+        else if (guiID == PokecubeAdv.GUICLONER_ID)
+        {
+            return new GuiCloner(player.inventory, (TileEntityCloner) world.getTileEntity(pos));
+        }
+        else if (guiID == PokecubeAdv.GUIBIOMESETTER_ID)
+        {
+            return new GUIBiomeSetter(player.getHeldItem());
+        }
+        else if (guiID == PokecubeAdv.GUIAFA_ID) { return new GuiAFA(player.inventory,
+                (TileEntityAFA) world.getTileEntity(pos)); }
+        return null;
+    }
+
+    @Override
+    public EntityPlayer getPlayer()
+    {
+        return getPlayer(null);
+    }
+
+    @Override
+    public EntityPlayer getPlayer(String playerName)
+    {
+        if (isOnClientSide())
+        {
+            if (playerName != null)
+            {
+                return getWorld().getPlayerEntityByName(playerName);
+            }
+            else
+            {
+                return Minecraft.getMinecraft().thePlayer;
+            }
+        }
+        else
+        {
+            return super.getPlayer(playerName);
+        }
+    }
+
+    @Override
+    public World getWorld()
+    {
+        if (isOnClientSide())
+        {
+            return Minecraft.getMinecraft().theWorld;
+        }
+        else
+        {
+            return super.getWorld();
+        }
+    }
+
+    @Override
+    public void initClient()
+    {
+        RenderHandler h = new RenderHandler();
+        MinecraftForge.EVENT_BUS.register(h);
+        ClientRegistry.registerKeyBinding(bag = new KeyBinding("Open Bag", 23, "Pokecube"));
+    }
+
+    @Override
+    public boolean isOnClientSide()
+    {
+        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
+    }
 
     @Override
     public void preinit()
@@ -109,95 +198,6 @@ public class ClientProxy extends CommonProxy
         });
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
-    }
-
-    @Override
-    public void initClient()
-    {
-        RenderHandler h = new RenderHandler();
-        MinecraftForge.EVENT_BUS.register(h);
-        ClientRegistry.registerKeyBinding(bag = new KeyBinding("Open Bag", 23, "Pokecube"));
-    }
-
-    @Override
-    public EntityPlayer getPlayer(String playerName)
-    {
-        if (isOnClientSide())
-        {
-            if (playerName != null)
-            {
-                return getWorld().getPlayerEntityByName(playerName);
-            }
-            else
-            {
-                return Minecraft.getMinecraft().thePlayer;
-            }
-        }
-        else
-        {
-            return super.getPlayer(playerName);
-        }
-    }
-
-    @Override
-    public boolean isOnClientSide()
-    {
-        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
-    }
-
-    @Override
-    public World getWorld()
-    {
-        if (isOnClientSide())
-        {
-            return Minecraft.getMinecraft().theWorld;
-        }
-        else
-        {
-            return super.getWorld();
-        }
-    }
-
-    @Override
-    public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
-    {
-        Entity entityHit = null;
-        MovingObjectPosition objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
-
-        if (objectClicked != null)
-        {
-            if (objectClicked.getBlockPos() != null)
-            {
-            }
-            entityHit = objectClicked.entityHit;
-        }
-        BlockPos pos = new BlockPos(x, y, z);
-        if (guiID == PokecubeAdv.GUITRAINER_ID)
-        {
-            return new GuiTrainerEdit((EntityTrainer) entityHit);
-        }
-        else if (guiID == PokecubeAdv.GUIBAG_ID)
-        {
-            ContainerBag cont = new ContainerBag(player.inventory);
-            return new GuiBag(cont, Vector3.getNewVector().set(x, y, z));
-        }
-        else if (guiID == PokecubeAdv.GUICLONER_ID)
-        {
-            return new GuiCloner(player.inventory, (TileEntityCloner) world.getTileEntity(pos));
-        }
-        else if (guiID == PokecubeAdv.GUIBIOMESETTER_ID)
-        {
-            return new GUIBiomeSetter(player.getHeldItem());
-        }
-        else if (guiID == PokecubeAdv.GUIAFA_ID) { return new GuiAFA(player.inventory,
-                (TileEntityAFA) world.getTileEntity(pos)); }
-        return null;
-    }
-
-    @Override
-    public EntityPlayer getPlayer()
-    {
-        return getPlayer(null);
     }
 
 }

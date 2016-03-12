@@ -34,6 +34,28 @@ public class X3dModel implements IModelCustom, IModel, IRetexturableModel
 
     }
 
+    @Override
+    public HashMap<String, IExtendedModelPart> getParts()
+    {
+        return parts;
+    }
+
+    public void loadModel(ResourceLocation model)
+    {
+        X3dXMLParser parser = new X3dXMLParser(model);
+        parser.parse();
+
+        try
+        {
+            makeObjects(parser);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
     HashMap<String, IExtendedModelPart> makeObjects(X3dXMLParser parser) throws Exception
     {
         HashMap<String, HashMap<String, String>> partTranslations = parser.partTranslations;
@@ -69,20 +91,25 @@ public class X3dModel implements IModelCustom, IModel, IRetexturableModel
         return parts;
     }
 
-    public void loadModel(ResourceLocation model)
+    @Override
+    public void preProcessAnimations(Collection<Animation> animations)
     {
-        X3dXMLParser parser = new X3dXMLParser(model);
-        parser.parse();
-
-        try
+        for (Animation animation : animations)
         {
-            makeObjects(parser);
+            for(String s: animation.sets.keySet())
+            {
+                ArrayList<AnimationComponent> components = animation.sets.get(s);
+                for(AnimationComponent comp: components)
+                {
+                    comp.posOffset[0]/=-16;
+                    comp.posOffset[1]/=-16;
+                    comp.posOffset[2]/=-16;
+                    comp.posChange[0]/=-16;
+                    comp.posChange[1]/=-16;
+                    comp.posChange[2]/=-16;
+                }
+            }
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
@@ -92,13 +119,6 @@ public class X3dModel implements IModelCustom, IModel, IRetexturableModel
         {
             o.renderAll();
         }
-    }
-
-    @Override
-    public void renderOnly(String... groupNames)
-    {
-        for (String s : groupNames)
-            if (parts.containsKey(s)) parts.get(s).renderAll();
     }
 
     @Override
@@ -122,15 +142,16 @@ public class X3dModel implements IModelCustom, IModel, IRetexturableModel
     }
 
     @Override
-    public void renderPart(String partName)
+    public void renderOnly(String... groupNames)
     {
-        if (parts.containsKey(partName)) parts.get(partName).renderPart(partName);
+        for (String s : groupNames)
+            if (parts.containsKey(s)) parts.get(s).renderAll();
     }
 
     @Override
-    public HashMap<String, IExtendedModelPart> getParts()
+    public void renderPart(String partName)
     {
-        return parts;
+        if (parts.containsKey(partName)) parts.get(partName).renderPart(partName);
     }
 
     @Override
@@ -139,27 +160,6 @@ public class X3dModel implements IModelCustom, IModel, IRetexturableModel
         for (IExtendedModelPart part : parts.values())
         {
             if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setTexturer(texturer);
-        }
-    }
-
-    @Override
-    public void preProcessAnimations(Collection<Animation> animations)
-    {
-        for (Animation animation : animations)
-        {
-            for(String s: animation.sets.keySet())
-            {
-                ArrayList<AnimationComponent> components = animation.sets.get(s);
-                for(AnimationComponent comp: components)
-                {
-                    comp.posOffset[0]/=-16;
-                    comp.posOffset[1]/=-16;
-                    comp.posOffset[2]/=-16;
-                    comp.posChange[0]/=-16;
-                    comp.posChange[1]/=-16;
-                    comp.posChange[2]/=-16;
-                }
-            }
         }
     }
 }

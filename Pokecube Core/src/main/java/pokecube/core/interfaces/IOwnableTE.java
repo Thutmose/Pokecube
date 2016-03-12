@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 
 public interface IOwnableTE
 {
-    void setPlacer(Entity placer);
-
     boolean canEdit(Entity editor);
+
+    void setPlacer(Entity placer);
 }

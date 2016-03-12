@@ -29,30 +29,49 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.terrain.BiomeType;
 
 public class GuiGifCapture extends GuiScreen
 {
+    public static PokedexEntry pokedexEntry = null;
+    private static final ResourceLocation GUIIMG = new ResourceLocation(PokecubeMod.ID,
+            "textures/gui/" + "wikiCapture.png");
+
+    private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
+
+    public static int x;
+
+    public static int y;
+    static float              lastTime       = 0;
+    /** to pass as last parameter when rendering the mob so that the render
+     * knows the rendering is asked by the pokedex gui */
+    public final static float POKEDEX_RENDER = 1.5f;
     protected IPokemob     pokemob      = null;
     protected EntityPlayer entityPlayer = null;
-
-    public static PokedexEntry pokedexEntry = null;
-
     /** The X size of the inventory window in pixels. */
     protected int xSize = 127;
 
     /** The Y size of the inventory window in pixels. */
     protected int ySize            = 180;// old:166
     private float yRenderAngle     = 10;
+
     private float xRenderAngle     = 0;
+
     private float yHeadRenderAngle = 10;
+
     private float xHeadRenderAngle = 0;
+
     private int   mouseRotateControl;
 
     private int   page   = 0;
+
     List<Integer> biomes = new ArrayList<Integer>();
+    int prevX = 0;
+
+    int prevY = 0;
 
     /**
      *
@@ -89,32 +108,47 @@ public class GuiGifCapture extends GuiScreen
         }
     }
 
-    @Override
-    public void initGui()
-    {
-        x = this.width;
-        y = this.height;
-
-        buttonList.clear();
-
-    }
-
     private boolean canEditPokemob()
     {
         return pokemob != null && pokedexEntry.getPokedexNb() == pokemob.getPokedexNb()
-                && ((pokemob.getPokemonAIState(IPokemob.TAMED) && entityPlayer == pokemob.getPokemonOwner())
+                && ((pokemob.getPokemonAIState(IMoveConstants.TAMED) && entityPlayer == pokemob.getPokemonOwner())
                         || entityPlayer.capabilities.isCreativeMode);
     }
 
     @Override
-    protected void keyTyped(char par1, int par2)
+    public boolean doesGuiPauseGame()
     {
-        if (par2 != 54 && par2 != 58 && par2 != 42)
-        {
-            mc.displayGuiScreen(null);
-            mc.setIngameFocus();
-        }
+        return false;
+    }
 
+    @Override
+    public void drawBackground(int n)
+    {
+        super.drawBackground(n);
+    }
+
+    @Override
+    public void drawScreen(int i, int j, float f)
+    {
+        Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        int j3 = 0xF0F0F0;// 61680;
+        int k = j3 % 0x000100;
+        int l = j3 / 0xFFFFFF;
+        GL13.glMultiTexCoord2f(GL13.GL_TEXTURE1, k / 1.0F, l / 1.0F);
+        minecraft.renderEngine.bindTexture(GUIIMG);
+        int j2 = (width - xSize) / 2;
+        int k2 = (height - ySize) / 2;
+        drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);
+        GL11.glPushMatrix();
+        // GL11.glScalef(2.0F, 2.0F, 2.0F);
+
+        renderMob();
+
+        GL11.glPopMatrix();
+        GL11.glEnable(GL11.GL_LIGHTING);
+        super.drawScreen(i, j, f);
     }
 
     private int getButtonId(int x, int y)
@@ -178,8 +212,25 @@ public class GuiGifCapture extends GuiScreen
         return button;
     }
 
-    int prevX = 0;
-    int prevY = 0;
+    private EntityLiving getEntityToDisplay()
+    {
+        EntityLiving pokemob = entityToDisplayMap.get(pokedexEntry.getPokedexNb());
+
+        if (pokemob == null)
+        {
+            // int entityId =
+            // mod_Pokecube.getEntityIdFromPokedexNumber(pokedexEntry.getPokedexNb());
+            pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(),
+                    entityPlayer.worldObj);
+
+            if (pokemob != null)
+            {
+                entityToDisplayMap.put(pokedexEntry.getPokedexNb(), pokemob);
+            }
+        }
+
+        return pokemob;
+    }
 
     @Override
     public void handleMouseInput() throws IOException
@@ -245,6 +296,26 @@ public class GuiGifCapture extends GuiScreen
             }
         }
     }
+    @Override
+    public void initGui()
+    {
+        x = this.width;
+        y = this.height;
+
+        buttonList.clear();
+
+    }
+
+    @Override
+    protected void keyTyped(char par1, int par2)
+    {
+        if (par2 != 54 && par2 != 58 && par2 != 42)
+        {
+            mc.displayGuiScreen(null);
+            mc.setIngameFocus();
+        }
+
+    }
 
     /** Called when the mouse is clicked. */
     @Override
@@ -303,71 +374,6 @@ public class GuiGifCapture extends GuiScreen
             }
         }
     }
-
-    private static final ResourceLocation GUIIMG = new ResourceLocation(PokecubeMod.ID,
-            "textures/gui/" + "wikiCapture.png");
-
-    @Override
-    public void drawScreen(int i, int j, float f)
-    {
-        Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        int j3 = 0xF0F0F0;// 61680;
-        int k = j3 % 0x000100;
-        int l = j3 / 0xFFFFFF;
-        GL13.glMultiTexCoord2f(GL13.GL_TEXTURE1, k / 1.0F, l / 1.0F);
-        minecraft.renderEngine.bindTexture(GUIIMG);
-        int j2 = (width - xSize) / 2;
-        int k2 = (height - ySize) / 2;
-        drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);
-        GL11.glPushMatrix();
-        // GL11.glScalef(2.0F, 2.0F, 2.0F);
-
-        renderMob();
-
-        GL11.glPopMatrix();
-        GL11.glEnable(GL11.GL_LIGHTING);
-        super.drawScreen(i, j, f);
-    }
-
-    @Override
-    public void drawBackground(int n)
-    {
-        super.drawBackground(n);
-    }
-
-    @Override
-    public boolean doesGuiPauseGame()
-    {
-        return false;
-    }
-
-    private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
-
-    private EntityLiving getEntityToDisplay()
-    {
-        EntityLiving pokemob = entityToDisplayMap.get(pokedexEntry.getPokedexNb());
-
-        if (pokemob == null)
-        {
-            // int entityId =
-            // mod_Pokecube.getEntityIdFromPokedexNumber(pokedexEntry.getPokedexNb());
-            pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(),
-                    entityPlayer.worldObj);
-
-            if (pokemob != null)
-            {
-                entityToDisplayMap.put(pokedexEntry.getPokedexNb(), pokemob);
-            }
-        }
-
-        return pokemob;
-    }
-
-    public static int x;
-    public static int y;
-
     private void renderMob()
     {
         try
@@ -432,7 +438,7 @@ public class GuiGifCapture extends GuiScreen
 
             GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(xRenderAngle, 1.0F, 0.0F, 0.0F);
-            ((EntityPokemob) entity).setPokemonAIState(IPokemob.SITTING, false);
+            ((EntityPokemob) entity).setPokemonAIState(IMoveConstants.SITTING, false);
             entity.setPosition(entityPlayer.posX, entityPlayer.posY + 1, entityPlayer.posZ);
             // System.err.println(""+triangle);
             entity.limbSwing = 0;
@@ -461,9 +467,4 @@ public class GuiGifCapture extends GuiScreen
             e.printStackTrace();
         }
     }
-
-    static float              lastTime       = 0;
-    /** to pass as last parameter when rendering the mob so that the render
-     * knows the rendering is asked by the pokedex gui */
-    public final static float POKEDEX_RENDER = 1.5f;
 }

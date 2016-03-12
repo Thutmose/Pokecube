@@ -29,15 +29,9 @@ public class GiftCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
-        return aliases.get(0);
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/" + aliases.get(0) + "<giftCode>";
+        return true;
     }
 
     @Override
@@ -47,9 +41,15 @@ public class GiftCommand extends CommandBase
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    public String getCommandName()
     {
-        return true;
+        return aliases.get(0);
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/" + aliases.get(0) + "<giftCode>";
     }
 
     @Override

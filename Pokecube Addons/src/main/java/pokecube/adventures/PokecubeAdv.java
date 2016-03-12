@@ -76,15 +76,18 @@ public class PokecubeAdv
 
     public static Config       conf;
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent e)
+    public static void setTrainerConfig(FMLPreInitializationEvent evt)
     {
-        conf = new Config(PokecubeMod.core.getPokecubeConfig(e).getConfigFile());
-        BlockHandler.registerBlocks();
-        ItemHandler.registerItems();
-        setTrainerConfig(e);
-        MinecraftForge.EVENT_BUS.register(this);
-        proxy.preinit();
+        File file = evt.getSuggestedConfigurationFile();
+        String seperator = System.getProperty("file.separator");
+
+        String folder = file.getAbsolutePath();
+        String name = file.getName();
+        folder = folder.replace(name, "pokecube" + seperator + "trainers" + seperator + "trainers.csv");
+
+        CUSTOMTRAINERFILE = folder;
+
+        return;
     }
 
     @EventHandler
@@ -116,6 +119,20 @@ public class PokecubeAdv
         new TrainerSpawnHandler();
     }
 
+    @SubscribeEvent
+    public void pokemobSpawnCheck(SpawnEvent.Pre evt)
+    {
+        int id = evt.world.provider.getDimensionId();
+        for (int i : conf.dimensionBlackList)
+        {
+            if (i == id)
+            {
+                evt.setCanceled(true);
+                return;
+            }
+        }
+    }
+
     @EventHandler
     public void postInit(FMLPostInitializationEvent e)
     {
@@ -133,6 +150,17 @@ public class PokecubeAdv
     }
 
     @EventHandler
+    public void preInit(FMLPreInitializationEvent e)
+    {
+        conf = new Config(PokecubeMod.core.getPokecubeConfig(e).getConfigFile());
+        BlockHandler.registerBlocks();
+        ItemHandler.registerItems();
+        setTrainerConfig(e);
+        MinecraftForge.EVENT_BUS.register(this);
+        proxy.preinit();
+    }
+
+    @EventHandler
     public void serverLoad(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new GeneralCommands());
@@ -144,34 +172,6 @@ public class PokecubeAdv
     {
         TrainerSpawnHandler.trainers.clear();
         TeamManager.clearInstance();
-    }
-
-    @SubscribeEvent
-    public void pokemobSpawnCheck(SpawnEvent.Pre evt)
-    {
-        int id = evt.world.provider.getDimensionId();
-        for (int i : conf.dimensionBlackList)
-        {
-            if (i == id)
-            {
-                evt.setCanceled(true);
-                return;
-            }
-        }
-    }
-
-    public static void setTrainerConfig(FMLPreInitializationEvent evt)
-    {
-        File file = evt.getSuggestedConfigurationFile();
-        String seperator = System.getProperty("file.separator");
-
-        String folder = file.getAbsolutePath();
-        String name = file.getName();
-        folder = folder.replace(name, "pokecube" + seperator + "trainers" + seperator + "trainers.csv");
-
-        CUSTOMTRAINERFILE = folder;
-
-        return;
     }
 
 }

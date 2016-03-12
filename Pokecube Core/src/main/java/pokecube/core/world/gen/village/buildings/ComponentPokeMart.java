@@ -16,6 +16,19 @@ import thut.api.maths.Vector3;
 public class ComponentPokeMart extends ComponentVillageBase
 {
 
+    public static ComponentPokeMart buildComponent(PieceWeight villagePiece, Start startPiece,
+            List<StructureComponent> pieces, Random random, int p1, int p2, int p3, EnumFacing facing, int p5)
+    {
+        // StructureBoundingBox structureboundingbox =
+        // StructureBoundingBox.getComponentToAddBoundingBox(par3, par4, par5,
+        // 9, 8, 9, par6);
+        StructureBoundingBox structureboundingbox = StructureBoundingBox.getComponentToAddBoundingBox(p1, p2, p3, 0, 0,
+                0, 9, 8, 9, facing);
+        return canVillageGoDeeper(structureboundingbox)
+                && StructureComponent.findIntersecting(pieces, structureboundingbox) == null
+                        ? new ComponentPokeMart(startPiece, p5, random, structureboundingbox, facing) : null;
+    }
+
     private int averageGroundLevel = -1;
 
     public ComponentPokeMart()
@@ -29,19 +42,6 @@ public class ComponentPokeMart extends ComponentVillageBase
         super(par1ComponentVillageStartPiece, par2, par3Random, par4StructureBoundingBox, par5);
         this.coordBaseMode = par5;
         this.boundingBox = par4StructureBoundingBox;
-    }
-
-    public static ComponentPokeMart buildComponent(PieceWeight villagePiece, Start startPiece,
-            List<StructureComponent> pieces, Random random, int p1, int p2, int p3, EnumFacing facing, int p5)
-    {
-        // StructureBoundingBox structureboundingbox =
-        // StructureBoundingBox.getComponentToAddBoundingBox(par3, par4, par5,
-        // 9, 8, 9, par6);
-        StructureBoundingBox structureboundingbox = StructureBoundingBox.getComponentToAddBoundingBox(p1, p2, p3, 0, 0,
-                0, 9, 8, 9, facing);
-        return canVillageGoDeeper(structureboundingbox)
-                && StructureComponent.findIntersecting(pieces, structureboundingbox) == null
-                        ? new ComponentPokeMart(startPiece, p5, random, structureboundingbox, facing) : null;
     }
 
     @Override

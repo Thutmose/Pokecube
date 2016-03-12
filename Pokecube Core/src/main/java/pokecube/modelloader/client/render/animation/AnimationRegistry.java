@@ -20,8 +20,16 @@ import pokecube.modelloader.client.render.tabula.components.Animation;
  * @author Thutmose */
 public class AnimationRegistry
 {
+    /** Used to convert from part names to identifiers if needed.
+     * 
+     * @author Thutmose */
+    public static interface IPartRenamer
+    {
+        void convertToIdents(String[] names);
+    }
     /** Map of XML node name to animation to read in. */
     public static HashMap<String, Class<? extends Animation>> animations      = Maps.newHashMap();
+
     /** Map of XML name to animation phase, will overwrite animation name with
      * the value. */
     public static HashMap<String, String>                     animationPhases = Maps.newHashMap();
@@ -73,13 +81,5 @@ public class AnimationRegistry
             }
         }
         return ret;
-    }
-
-    /** Used to convert from part names to identifiers if needed.
-     * 
-     * @author Thutmose */
-    public static interface IPartRenamer
-    {
-        void convertToIdents(String[] names);
     }
 }

@@ -27,6 +27,8 @@ public abstract class ConfigBase extends Configuration
         this.defaults = defaults;
     }
 
+    protected abstract void applySettings();
+
     protected void populateSettings()
     {
         populateSettings(false);
@@ -39,7 +41,7 @@ public abstract class ConfigBase extends Configuration
         Configure c;
         for (Field f : me.getDeclaredFields())
         {
-            c = (Configure) f.getAnnotation(Configure.class);
+            c = f.getAnnotation(Configure.class);
             if (c != null)
             {
                 try
@@ -218,7 +220,7 @@ public abstract class ConfigBase extends Configuration
     {
         load();
         Property p = null;
-        Configure c = (Configure) field.getAnnotation(Configure.class);
+        Configure c = field.getAnnotation(Configure.class);
         if ((field.getType() == Long.TYPE) || (field.getType() == Long.class))
         {
             long defaultValue = field.getLong(defaults);
@@ -292,6 +294,4 @@ public abstract class ConfigBase extends Configuration
         applySettings();
         save();
     }
-
-    protected abstract void applySettings();
 }

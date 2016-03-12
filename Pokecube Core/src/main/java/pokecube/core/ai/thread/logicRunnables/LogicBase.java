@@ -18,16 +18,16 @@ public abstract class LogicBase implements ILogicRunnable, IMoveConstants
         entity = (EntityLiving) pokemob;
     }
 
+    @Override
+    public void doServerTick()
+    {
+    }
+
     protected void setPokemobAIState(int state, boolean value)
     {
         pokemob.setPokemonAIState(state, value);// Datawatcher says it is
                                                 // threadsafe, if this doesn't
                                                 // work, will use what AIBase
                                                 // uses.
-    }
-
-    @Override
-    public void doServerTick()
-    {
     }
 }

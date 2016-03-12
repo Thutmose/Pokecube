@@ -32,19 +32,19 @@ public class Move_Ongoing extends Move_Basic
         return 4 + r.nextInt(2);
     }
 
-    /** Is and ongoing move applied to the source
-     * 
-     * @return */
-    public boolean onTarget()
-    {
-        return true;
-    }
-
     /** Does this apply an ongoing move to the attacker
      * 
      * @return */
     public boolean onSource()
     {
         return false;
+    }
+
+    /** Is and ongoing move applied to the source
+     * 
+     * @return */
+    public boolean onTarget()
+    {
+        return true;
     }
 }

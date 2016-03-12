@@ -16,32 +16,11 @@ public class TileEnergyHandler extends TileEntity implements IEnergyReceiver, IE
 
 	protected EnergyStorage storage = new EnergyStorage(32000);
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-
-		super.readFromNBT(nbt);
-		storage.readFromNBT(nbt);
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-
-		super.writeToNBT(nbt);
-		storage.writeToNBT(nbt);
-	}
-
 	/* IEnergyConnection */
 	@Override
 	public boolean canConnectEnergy(EnumFacing from) {
 
 		return true;
-	}
-
-	/* IEnergyReceiver */
-	@Override
-	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-
-		return storage.receiveEnergy(maxReceive, simulate);
 	}
 
 	/* IEnergyProvider */
@@ -62,6 +41,27 @@ public class TileEnergyHandler extends TileEntity implements IEnergyReceiver, IE
 	public int getMaxEnergyStored(EnumFacing from) {
 
 		return storage.getMaxEnergyStored();
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+
+		super.readFromNBT(nbt);
+		storage.readFromNBT(nbt);
+	}
+
+	/* IEnergyReceiver */
+	@Override
+	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+
+		return storage.receiveEnergy(maxReceive, simulate);
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+
+		super.writeToNBT(nbt);
+		storage.writeToNBT(nbt);
 	}
 
 }

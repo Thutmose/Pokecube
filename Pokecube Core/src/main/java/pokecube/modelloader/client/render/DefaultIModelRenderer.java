@@ -24,8 +24,8 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Vector4;
 import pokecube.modelloader.client.render.animation.AnimationHelper;
-import pokecube.modelloader.client.render.animation.TextureHelper;
 import pokecube.modelloader.client.render.animation.AnimationLoader.Model;
+import pokecube.modelloader.client.render.animation.TextureHelper;
 import pokecube.modelloader.client.render.model.IAnimationChanger;
 import pokecube.modelloader.client.render.model.IExtendedModelPart;
 import pokecube.modelloader.client.render.model.IModel;
@@ -38,6 +38,60 @@ import thut.api.maths.Vector3;
 
 public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T> implements IModelRenderer<T>
 {
+    public static class Vector5
+    {
+        public Vector4 rotations;
+        public int     time;
+
+        public Vector5()
+        {
+            this.time = 0;
+            this.rotations = new Vector4();
+        }
+
+        public Vector5(Vector4 rotation, int time)
+        {
+            this.rotations = rotation;
+            this.time = time;
+        }
+
+        public Vector5 interpolate(Vector5 v, float time, boolean wrap)
+        {
+            if (v.time == 0) return this;
+            // wrap = true;
+
+            if (Double.isNaN(rotations.x))
+            {
+                rotations = new Vector4();
+            }
+            Vector4 rotDiff = rotations.copy();
+
+            if (rotations.x == rotations.z && rotations.z == rotations.y && rotations.y == rotations.w
+                    && rotations.w == 0)
+            {
+                rotations.x = 1;
+            }
+
+            if (!v.rotations.equals(rotations))
+            {
+                rotDiff = v.rotations.subtractAngles(rotations);
+
+                rotDiff = rotations.addAngles(rotDiff.scalarMult(time));
+            }
+            if (Double.isNaN(rotDiff.x))
+            {
+                rotDiff = new Vector4(0, 1, 0, 0);
+            }
+            Vector5 ret = new Vector5(rotDiff, v.time);
+            return ret;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "|r:" + rotations + "|t:" + time;
+        }
+    }
     public static final String          DEFAULTPHASE   = "idle";
     public String                       name;
     public String                       currentPhase   = "idle";
@@ -46,29 +100,38 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
     public HashMap<String, Animation>   animations     = new HashMap<String, Animation>();
     public Set<String>                  headParts      = Sets.newHashSet();
     public TextureHelper                texturer;
-    public IAnimationChanger            animator;
 
+    public IAnimationChanger            animator;;
     public Vector3                      offset         = Vector3.getNewVector();;
-    public Vector3                      scale          = Vector3.getNewVector();;
+    public Vector3                      scale          = Vector3.getNewVector();
+
     public Vector5                      rotations      = new Vector5();
 
     public IModel                       model;
-
     public int                          headDir        = 2;
     public int                          headAxis       = 2;
     public int                          headAxis2      = 0;
     /** A set of names of shearable parts. */
     public Set<String>                  shearableParts = Sets.newHashSet();
+
     /** A set of namess of dyeable parts. */
     public Set<String>                  dyeableParts   = Sets.newHashSet();
-
     public float[]                      headCaps       = { -180, 180 };
-    public float[]                      headCaps1      = { -20, 40 };
 
+    public float[]                      headCaps1      = { -20, 40 };
     public float                        rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
     public float                        rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
     ResourceLocation                    texture;
+
     private boolean                     statusRender   = false;
+
+    boolean blend;
+
+    boolean light;
+
+    int     src;
+
+    int     dst;
 
     public DefaultIModelRenderer(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global,
             Model model)
@@ -87,43 +150,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
             headDir = (this.model instanceof X3dModel) ? 1 : -1;
         }
         this.global = global;
-    }
-
-    public void updateModel(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global, Model model)
-    {
-        name = model.name;
-        this.parts = parts;
-        this.texture = model.texture;
-        if (model.model.getResourcePath().contains(".x3d")) this.model = new X3dModel(model.model);
-        initModelParts();
-        this.global = global;
-    }
-
-    private void initModelParts()
-    {
-        if (model == null) return;
-
-        for (String s : model.getParts().keySet())
-        {
-            if (model.getParts().get(s).getParent() == null && !parts.containsKey(s))
-            {
-                PartInfo p = getPartInfo(s);
-                parts.put(s, p);
-            }
-        }
-    }
-
-    private HashMap<String, PartInfo> getChildren(IExtendedModelPart part)
-    {
-        HashMap<String, PartInfo> partsList = new HashMap<String, PartInfo>();
-        for (String s : part.getSubParts().keySet())
-        {
-            PartInfo p = new PartInfo(s);
-            IExtendedModelPart subPart = part.getSubParts().get(s);
-            p.children = getChildren(subPart);
-            partsList.put(s, p);
-        }
-        return partsList;
     }
 
     @Override
@@ -199,6 +225,192 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
         GL11.glPopMatrix();
     }
 
+    private HashMap<String, PartInfo> getChildren(IExtendedModelPart part)
+    {
+        HashMap<String, PartInfo> partsList = new HashMap<String, PartInfo>();
+        for (String s : part.getSubParts().keySet())
+        {
+            PartInfo p = new PartInfo(s);
+            IExtendedModelPart subPart = part.getSubParts().get(s);
+            p.children = getChildren(subPart);
+            partsList.put(s, p);
+        }
+        return partsList;
+    }
+
+    @Override
+    protected ResourceLocation getEntityTexture(T var1)
+    {
+        return RenderPokemobs.getInstance().getEntityTexturePublic(var1);
+    }
+
+    private PartInfo getPartInfo(String partName)
+    {
+        PartInfo ret = null;
+        for (PartInfo part : parts.values())
+        {
+            if (part.name.equalsIgnoreCase(partName)) return part;
+            ret = getPartInfo(partName, part);
+            if (ret != null) return ret;
+        }
+        for (IExtendedModelPart part : model.getParts().values())
+        {
+            if (part.getName().equals(partName))
+            {
+                PartInfo p = new PartInfo(part.getName());
+                p.children = getChildren(part);
+                boolean toAdd = true;
+                IExtendedModelPart parent = part.getParent();
+                while (parent != null && toAdd)
+                {
+                    toAdd = !parts.containsKey(parent.getName());
+                    parent = parent.getParent();
+                }
+                if (toAdd) parts.put(partName, p);
+                return p;
+            }
+        }
+
+        return ret;
+    }
+
+    private PartInfo getPartInfo(String partName, PartInfo parent)
+    {
+        PartInfo ret = null;
+        for (PartInfo part : parent.children.values())
+        {
+            if (part.name.equalsIgnoreCase(partName)) return part;
+            ret = getPartInfo(partName, part);
+            if (ret != null) return ret;
+        }
+
+        return ret;
+    }
+
+    @Override
+    public IPartTexturer getTexturer()
+    {
+        return texturer;
+    }
+
+    @Override
+    public boolean hasPhase(String phase)
+    {
+        return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || animations.containsKey(phase);
+    }
+
+    private void initModelParts()
+    {
+        if (model == null) return;
+
+        for (String s : model.getParts().keySet())
+        {
+            if (model.getParts().get(s).getParent() == null && !parts.containsKey(s))
+            {
+                PartInfo p = getPartInfo(s);
+                parts.put(s, p);
+            }
+        }
+    }
+
+    private boolean isHead(String partName)
+    {
+        return headParts.contains(partName);
+    }
+
+    private void postRenderStatus()
+    {
+        if (light) GL11.glEnable(GL11.GL_LIGHTING);
+        if (!blend) GL11.glDisable(GL11.GL_BLEND);
+        GL11.glBlendFunc(src, dst);
+        statusRender = false;
+    }
+
+    private void preRenderStatus()
+    {
+        blend = GL11.glGetBoolean(GL11.GL_BLEND);
+        light = GL11.glGetBoolean(GL11.GL_LIGHTING);
+        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
+        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        statusRender = true;
+    }
+
+    @Override
+    public void renderStatus(T entity, double d, double d1, double d2, float f, float partialTick)
+    {
+        IPokemob pokemob = (IPokemob) entity;
+        byte status;
+        if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
+        ResourceLocation texture = null;
+        if (status == IMoveConstants.STATUS_FRZ)
+        {
+            texture = FRZ;
+        }
+        else if (status == IMoveConstants.STATUS_PAR)
+        {
+            texture = PAR;
+        }
+        if (texture == null) return;
+
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
+
+        float time = (((Entity) pokemob).ticksExisted + partialTick);
+        GL11.glPushMatrix();
+
+        float speed = status == IMoveConstants.STATUS_FRZ ? 0.001f : 0.005f;
+
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glLoadIdentity();
+        float var5 = time * speed;
+        float var6 = time * speed;
+        GL11.glTranslatef(var5, var6, 0.0F);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
+        GL11.glColor4f(var7, var7, var7, 0.5F);
+        var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
+        GL11.glScalef(var7, var7, var7);
+        preRenderStatus();
+        doRender(entity, d, d1, d2, f, partialTick);
+        postRenderStatus();
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glLoadIdentity();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        GL11.glPopMatrix();
+    }
+
+    protected void rotate()
+    {
+        GL11.glRotatef(rotateAngle, rotateAngleX, rotateAngleY, rotateAngleZ);
+    }
+
+    @Override
+    public void setPhase(String phase)
+    {
+        currentPhase = phase;
+    }
+    public void setRotationAngles(Vector4 rotations)
+    {
+        rotateAngle = rotations.w;
+        rotateAngleX = rotations.x;
+        rotateAngleY = rotations.y;
+        rotateAngleZ = rotations.z;
+    }
+    public void setRotationPoint(float par1, float par2, float par3)
+    {
+        this.rotationPointX = par1;
+        this.rotationPointY = par2;
+        this.rotationPointZ = par3;
+    }
+    public void setRotationPoint(Vector3 point)
+    {
+        setRotationPoint((float) point.x, (float) point.y, (float) point.z);
+    }
+
     private void transformGlobal(String currentPhase, Entity entity, double x, double y, double z, float partialTick,
             float rotationYaw, float rotationPitch)
     {
@@ -230,6 +442,11 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
 
     }
 
+    public void translate()
+    {
+        GL11.glTranslated(rotationPointX, rotationPointY, rotationPointZ);
+    }
+
     private void updateAnimation(Entity entity, String currentPhase, float partialTicks)
     {
         for (String partName : parts.keySet())
@@ -237,6 +454,16 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
             IExtendedModelPart part = model.getParts().get(partName);
             updateSubParts(entity, currentPhase, partialTicks, part);
         }
+    }
+
+    public void updateModel(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global, Model model)
+    {
+        name = model.name;
+        this.parts = parts;
+        this.texture = model.texture;
+        if (model.model.getResourcePath().contains(".x3d")) this.model = new X3dModel(model.model);
+        initModelParts();
+        this.global = global;
     }
 
     private void updateSubParts(Entity entity, String currentPhase, float partialTick, IExtendedModelPart parent)
@@ -329,233 +556,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
         {
             IExtendedModelPart part = parent.getSubParts().get(partName);
             updateSubParts(entity, currentPhase, partialTick, part);
-        }
-    }
-
-    private boolean isHead(String partName)
-    {
-        return headParts.contains(partName);
-    }
-
-    public void translate()
-    {
-        GL11.glTranslated(rotationPointX, rotationPointY, rotationPointZ);
-    }
-
-    protected void rotate()
-    {
-        GL11.glRotatef(rotateAngle, rotateAngleX, rotateAngleY, rotateAngleZ);
-    }
-
-    public void setRotationPoint(float par1, float par2, float par3)
-    {
-        this.rotationPointX = par1;
-        this.rotationPointY = par2;
-        this.rotationPointZ = par3;
-    }
-
-    public void setRotationPoint(Vector3 point)
-    {
-        setRotationPoint((float) point.x, (float) point.y, (float) point.z);
-    }
-
-    public void setRotationAngles(Vector4 rotations)
-    {
-        rotateAngle = rotations.w;
-        rotateAngleX = rotations.x;
-        rotateAngleY = rotations.y;
-        rotateAngleZ = rotations.z;
-    }
-
-    private PartInfo getPartInfo(String partName)
-    {
-        PartInfo ret = null;
-        for (PartInfo part : parts.values())
-        {
-            if (part.name.equalsIgnoreCase(partName)) return part;
-            ret = getPartInfo(partName, part);
-            if (ret != null) return ret;
-        }
-        for (IExtendedModelPart part : model.getParts().values())
-        {
-            if (part.getName().equals(partName))
-            {
-                PartInfo p = new PartInfo(part.getName());
-                p.children = getChildren(part);
-                boolean toAdd = true;
-                IExtendedModelPart parent = part.getParent();
-                while (parent != null && toAdd)
-                {
-                    toAdd = !parts.containsKey(parent.getName());
-                    parent = parent.getParent();
-                }
-                if (toAdd) parts.put(partName, p);
-                return p;
-            }
-        }
-
-        return ret;
-    }
-
-    private PartInfo getPartInfo(String partName, PartInfo parent)
-    {
-        PartInfo ret = null;
-        for (PartInfo part : parent.children.values())
-        {
-            if (part.name.equalsIgnoreCase(partName)) return part;
-            ret = getPartInfo(partName, part);
-            if (ret != null) return ret;
-        }
-
-        return ret;
-    }
-
-    @Override
-    protected ResourceLocation getEntityTexture(T var1)
-    {
-        return RenderPokemobs.getInstance().getEntityTexturePublic(var1);
-    }
-
-    @Override
-    public void setPhase(String phase)
-    {
-        currentPhase = phase;
-    }
-
-    @Override
-    public void renderStatus(T entity, double d, double d1, double d2, float f, float partialTick)
-    {
-        IPokemob pokemob = (IPokemob) entity;
-        byte status;
-        if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
-        ResourceLocation texture = null;
-        if (status == IMoveConstants.STATUS_FRZ)
-        {
-            texture = FRZ;
-        }
-        else if (status == IMoveConstants.STATUS_PAR)
-        {
-            texture = PAR;
-        }
-        if (texture == null) return;
-
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-
-        float time = (((Entity) pokemob).ticksExisted + partialTick);
-        GL11.glPushMatrix();
-
-        float speed = status == IMoveConstants.STATUS_FRZ ? 0.001f : 0.005f;
-
-        GL11.glMatrixMode(GL11.GL_TEXTURE);
-        GL11.glLoadIdentity();
-        float var5 = time * speed;
-        float var6 = time * speed;
-        GL11.glTranslatef(var5, var6, 0.0F);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-        float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
-        GL11.glColor4f(var7, var7, var7, 0.5F);
-        var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
-        GL11.glScalef(var7, var7, var7);
-        preRenderStatus();
-        doRender(entity, d, d1, d2, f, partialTick);
-        postRenderStatus();
-        GL11.glMatrixMode(GL11.GL_TEXTURE);
-        GL11.glLoadIdentity();
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-        GL11.glPopMatrix();
-    }
-
-    boolean blend;
-    boolean light;
-    int     src;
-    int     dst;
-
-    private void preRenderStatus()
-    {
-        blend = GL11.glGetBoolean(GL11.GL_BLEND);
-        light = GL11.glGetBoolean(GL11.GL_LIGHTING);
-        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
-        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-        statusRender = true;
-    }
-
-    private void postRenderStatus()
-    {
-        if (light) GL11.glEnable(GL11.GL_LIGHTING);
-        if (!blend) GL11.glDisable(GL11.GL_BLEND);
-        GL11.glBlendFunc(src, dst);
-        statusRender = false;
-    }
-
-    @Override
-    public IPartTexturer getTexturer()
-    {
-        return texturer;
-    }
-
-    @Override
-    public boolean hasPhase(String phase)
-    {
-        return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || animations.containsKey(phase);
-    }
-
-    public static class Vector5
-    {
-        public Vector4 rotations;
-        public int     time;
-
-        public Vector5(Vector4 rotation, int time)
-        {
-            this.rotations = rotation;
-            this.time = time;
-        }
-
-        public Vector5()
-        {
-            this.time = 0;
-            this.rotations = new Vector4();
-        }
-
-        @Override
-        public String toString()
-        {
-            return "|r:" + rotations + "|t:" + time;
-        }
-
-        public Vector5 interpolate(Vector5 v, float time, boolean wrap)
-        {
-            if (v.time == 0) return this;
-            // wrap = true;
-
-            if (Double.isNaN(rotations.x))
-            {
-                rotations = new Vector4();
-            }
-            Vector4 rotDiff = rotations.copy();
-
-            if (rotations.x == rotations.z && rotations.z == rotations.y && rotations.y == rotations.w
-                    && rotations.w == 0)
-            {
-                rotations.x = 1;
-            }
-
-            if (!v.rotations.equals(rotations))
-            {
-                rotDiff = v.rotations.subtractAngles(rotations);
-
-                rotDiff = rotations.addAngles(rotDiff.scalarMult(time));
-            }
-            if (Double.isNaN(rotDiff.x))
-            {
-                rotDiff = new Vector4(0, 1, 0, 0);
-            }
-            Vector5 ret = new Vector5(rotDiff, v.time);
-            return ret;
         }
     }
 }

@@ -21,6 +21,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IMobColourable;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
@@ -37,15 +38,44 @@ public class MakeCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
-        return aliases.get(0);
+        List<String> ret = new ArrayList<String>();
+        if (args.length == 1)
+        {
+            String text = args[0];
+            for (PokedexEntry entry : Database.allFormes)
+            {
+                String check = entry.getName().toLowerCase();
+                if (check.startsWith(text.toLowerCase()))
+                {
+                    String name = entry.getName();
+                    if (name.contains(" "))
+                    {
+                        name = "\'" + name + "\'";
+                    }
+
+                    ret.add(name);
+                }
+            }
+            Collections.sort(ret, new Comparator<String>()
+            {
+                @Override
+                public int compare(String o1, String o2)
+                {
+                    if (o1.contains("'") && !o2.contains("'")) return 1;
+                    else if (o2.contains("'") && !o1.contains("'")) return -1;
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+        }
+        return ret;
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
-        return "/" + aliases.get(0) + "<pokemob name> <arguments>";
+        return true;
     }
 
     @Override
@@ -55,9 +85,15 @@ public class MakeCommand extends CommandBase
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    public String getCommandName()
     {
-        return true;
+        return aliases.get(0);
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/" + aliases.get(0) + "<pokemob name> <arguments>";
     }
 
     @Override
@@ -80,7 +116,7 @@ public class MakeCommand extends CommandBase
             {
                 ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(
                         PlayerSelector.matchEntities(sender, s, EntityPlayer.class));
-                targets = (EntityPlayerMP[]) targs.toArray(new EntityPlayerMP[0]);
+                targets = targs.toArray(new EntityPlayerMP[0]);
             }
         }
         boolean isOp = CommandTools.isOp(sender);
@@ -255,7 +291,7 @@ public class MakeCommand extends CommandBase
                         if (!owner.equals(""))
                         {
                             mob.setPokemonOwnerByName(owner);
-                            mob.setPokemonAIState(IPokemob.TAMED, true);
+                            mob.setPokemonAIState(IMoveConstants.TAMED, true);
                         }
                         mob.setShiny(shiny);
                         if (gender != -3) mob.setSexe(gender);
@@ -305,41 +341,6 @@ public class MakeCommand extends CommandBase
         message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
         sender.addChatMessage(message);
         return;
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
-    {
-        List<String> ret = new ArrayList<String>();
-        if (args.length == 1)
-        {
-            String text = args[0];
-            for (PokedexEntry entry : Database.allFormes)
-            {
-                String check = entry.getName().toLowerCase();
-                if (check.startsWith(text.toLowerCase()))
-                {
-                    String name = entry.getName();
-                    if (name.contains(" "))
-                    {
-                        name = "\'" + name + "\'";
-                    }
-
-                    ret.add(name);
-                }
-            }
-            Collections.sort(ret, new Comparator<String>()
-            {
-                @Override
-                public int compare(String o1, String o2)
-                {
-                    if (o1.contains("'") && !o2.contains("'")) return 1;
-                    else if (o2.contains("'") && !o1.contains("'")) return -1;
-                    return o1.compareToIgnoreCase(o2);
-                }
-            });
-        }
-        return ret;
     }
 
 }

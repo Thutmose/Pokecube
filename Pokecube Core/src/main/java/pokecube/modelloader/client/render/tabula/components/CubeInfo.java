@@ -1,8 +1,8 @@
 package pokecube.modelloader.client.render.tabula.components;
 
-import com.google.common.collect.Lists;
-
 import java.util.ArrayList;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author iChun

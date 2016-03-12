@@ -16,14 +16,14 @@ import thut.api.maths.Vector3;
 
 public class ParticleBeam extends MoveAnimationBase
 {
+    Vector3 v  = Vector3.getNewVector();
+
+    Vector3 v1 = Vector3.getNewVector();
     public ParticleBeam(String particle)
     {
         this.particle = particle;
         rgba = 0xFFFFFFFF;
     }
-
-    Vector3 v  = Vector3.getNewVector();
-    Vector3 v1 = Vector3.getNewVector();
 
     @Override
     public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
@@ -84,6 +84,7 @@ public class ParticleBeam extends MoveAnimationBase
 
     }
 
+    @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
         if (particle.equals("airbubble"))

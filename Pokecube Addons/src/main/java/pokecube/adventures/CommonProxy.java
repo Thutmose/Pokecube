@@ -14,8 +14,15 @@ import pokecube.adventures.items.bags.ContainerBag;
 public class CommonProxy implements IGuiHandler
 {
 
-    public void initClient()
+    @Override
+    public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
+        return null;
+    }
+
+    public EntityPlayer getPlayer()
+    {
+        return null;
     }
 
     public EntityPlayer getPlayer(String playerName)
@@ -28,31 +35,6 @@ public class CommonProxy implements IGuiHandler
         {
             return null;
         }
-    }
-
-    public EntityPlayer getPlayer()
-    {
-        return null;
-    }
-
-    public boolean isOnClientSide()
-    {
-        return false;
-    }
-
-    public World getWorld()
-    {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
-    }
-
-    public World getWorld(int dim)
-    {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
-    }
-
-    public void registerEntities()
-    {
-
     }
 
     @Override
@@ -80,13 +62,31 @@ public class CommonProxy implements IGuiHandler
         return null;
     }
 
-    @Override
-    public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
+    public World getWorld()
     {
-        return null;
+        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
+    }
+
+    public World getWorld(int dim)
+    {
+        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
+    }
+
+    public void initClient()
+    {
+    }
+
+    public boolean isOnClientSide()
+    {
+        return false;
     }
 
     public void preinit()
+    {
+
+    }
+
+    public void registerEntities()
     {
 
     }

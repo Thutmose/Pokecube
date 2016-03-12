@@ -29,8 +29,8 @@ import pokecube.modelloader.client.render.animation.AnimationBuilder;
 import pokecube.modelloader.client.render.animation.AnimationLoader;
 import pokecube.modelloader.client.render.animation.AnimationRandomizer;
 import pokecube.modelloader.client.render.animation.AnimationRegistry;
-import pokecube.modelloader.client.render.animation.TextureHelper;
 import pokecube.modelloader.client.render.animation.AnimationRegistry.IPartRenamer;
+import pokecube.modelloader.client.render.animation.TextureHelper;
 import pokecube.modelloader.client.render.model.IPartTexturer;
 import pokecube.modelloader.client.render.tabula.components.Animation;
 import pokecube.modelloader.client.render.tabula.components.CubeGroup;
@@ -43,108 +43,6 @@ import thut.api.maths.Vector3;
 
 public class TabulaPackLoader extends AnimationLoader
 {
-    public static HashMap<PokedexEntry, TabulaModelSet> modelMap = new HashMap<PokedexEntry, TabulaModelSet>();
-
-    public static void clear()
-    {
-        AnimationLoader.clear();
-        modelMap.clear();
-    }
-
-    public static boolean loadModel(String path, HashSet<String> toReload)
-    {
-        ResourceLocation model = new ResourceLocation(path + ".tbl");
-        String anim = path + ".xml";
-        ResourceLocation extraData = new ResourceLocation(anim);
-
-        String[] args = path.split(":");
-        String[] args2 = args[1].split("/");
-        String name = args2[args2.length > 1 ? args2.length - 1 : 0];
-        PokedexEntry entry = Database.getEntry(name);
-
-        try
-        {
-            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
-
-            InputStream stream = res.getInputStream();
-            ZipInputStream zip = new ZipInputStream(stream);
-            Scanner scanner = new Scanner(zip);
-            zip.getNextEntry();
-            String json = scanner.nextLine();
-            if (entry != null)
-            {
-                TabulaModelParser parser = new TabulaModelParser();
-                TabulaModel tbl = parser.parse(json);
-                TabulaModelSet set = new TabulaModelSet(tbl, parser, extraData, entry);
-                modelMap.put(entry, set);
-                if (!modelMaps.containsKey(entry.getName())
-                        || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
-                    AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
-            }
-            scanner.close();
-            return entry != null;
-        }
-        catch (IOException e)
-        {
-            if (entry != null && entry.baseForme != null)
-            {
-                TabulaModelSet set;
-                if ((set = modelMap.get(entry.baseForme)) == null)
-                {
-                    toReload.add(path);
-                }
-                else
-                {
-                    set = new TabulaModelSet(set, extraData, entry);
-                    modelMap.put(entry, set);
-                    if (!modelMaps.containsKey(entry.getName())
-                            || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
-                        AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
-                }
-            }
-        }
-        return false;
-    }
-
-    public static void postProcess()
-    {
-        for (PokedexEntry entry : modelMap.keySet())
-        {
-            TabulaModelSet set = modelMap.get(entry);
-            if (!set.foundExtra)
-            {
-                PokedexEntry base = entry.baseForme;
-                TabulaModelSet baseSet = modelMap.get(base);
-                if (baseSet != null)
-                {
-                    set.rotation = baseSet.rotation;
-                    set.scale.set(baseSet.scale);
-                    set.shift.set(baseSet.shift);
-                    set.headCap = baseSet.headCap;
-                    set.headCap1 = baseSet.headCap1;
-                }
-                else
-                {
-                    // Not really important for tabula models, they can have
-                    // this built in.
-                }
-            }
-            set.postInitAnimations();
-            if (set.rotation == null)
-            {
-                set.rotation = new Vector5();
-            }
-            if (set.scale.isEmpty())
-            {
-                set.scale.set(1, 1, 1);
-            }
-            if (set.shift.isEmpty())
-            {
-                set.shift.set(0, -1.5, 0);
-            }
-        }
-    }
-
     public static class TabulaModelSet implements IPartRenamer
     {
         /** The pokemon associated with this model. */
@@ -222,128 +120,6 @@ public class TabulaPackLoader extends AnimationLoader
             this(from.model, from.parser, extraData, entry);
         }
 
-        private void processMetadata()
-        {
-            for (CubeInfo cube : model.getCubes())
-            {
-                processMetadataForCubeInfo(cube);
-            }
-            for (CubeGroup group : model.getCubeGroups())
-            {
-                processMetadataForCubeGroup(group);
-            }
-        }
-
-        private void processMetadataForCubeGroup(CubeGroup group)
-        {
-            for (CubeInfo cube : group.cubes)
-            {
-                processMetadataForCubeInfo(cube);
-            }
-            for (CubeGroup group1 : group.cubeGroups)
-            {
-                processMetadataForCubeGroup(group1);
-            }
-        }
-
-        private void processMetadataForCubeInfo(CubeInfo cube)
-        {
-            if (headRoot.isEmpty() && cube.name.toLowerCase().contains("head") && cube.parentIdentifier != null)
-            {
-                headRoot = cube.identifier;
-            }
-            for (String s : cube.metadata)
-            {
-                if (s.equalsIgnoreCase("shearable"))
-                {
-                    shearableIdents.add(cube.identifier);
-                }
-                if (s.equalsIgnoreCase("dyeable"))
-                {
-                    dyeableIdents.add(cube.identifier);
-                }
-                if (s.equalsIgnoreCase("head"))
-                {
-                    headRoots.add(cube.identifier);
-                }
-            }
-            for (CubeInfo cube1 : cube.children)
-            {
-                processMetadataForCubeInfo(cube1);
-            }
-        }
-
-        private void postInitAnimations()
-        {
-            HashSet<String> toRemove = Sets.newHashSet();
-            for (Animation anim : model.getAnimations())
-            {
-                for (String s : loadedAnimations.keySet())
-                {
-                    if (s.equals(anim.name))
-                    {
-                        Animation loaded = loadedAnimations.get(s);
-                        AnimationBuilder.merge(loaded, anim);
-                        toRemove.add(s);
-                    }
-                }
-            }
-            for (String s : mergedAnimations.keySet())
-            {
-                String toName = mergedAnimations.get(s);
-                Animation to = null;
-                Animation from = null;
-                for (Animation anim : model.getAnimations())
-                {
-                    if (s.equals(anim.name))
-                    {
-                        from = anim;
-                    }
-                    if (toName.equals(anim.name))
-                    {
-                        to = anim;
-                    }
-                    if (to != null && from != null) break;
-                }
-                if (to == null || from == null) for (Animation anim : loadedAnimations.values())
-                {
-                    if (from == null) if (s.equals(anim.name))
-                    {
-                        from = anim;
-                    }
-                    if (to == null) if (toName.equals(anim.name))
-                    {
-                        to = anim;
-                    }
-                    if (to != null && from != null) break;
-                }
-                if (from != null && to == null)
-                {
-                    to = new Animation();
-                    to.name = toName;
-                    to.identifier = toName;
-                    to.loops = from.loops;
-                    loadedAnimations.put(toName, to);
-                }
-
-                if (to != null && from != null)
-                {
-                    AnimationBuilder.merge(from, to);
-                }
-            }
-            for (String s : toRemove)
-            {
-                loadedAnimations.remove(s);
-            }
-            if (animator != null)
-            {
-                Set<Animation> anims = Sets.newHashSet();
-                anims.addAll(model.getAnimations());
-                anims.addAll(loadedAnimations.values());
-                animator.init(anims);
-            }
-        }
-
         private void addAnimation(Animation animation)
         {
             String key = animation.name;
@@ -354,6 +130,33 @@ public class TabulaPackLoader extends AnimationLoader
             else
             {
                 loadedAnimations.put(key, animation);
+            }
+        }
+
+        @Override
+        public void convertToIdents(String[] names)
+        {
+            for (int i = 0; i < names.length; i++)
+            {
+                boolean found = false;
+                for (ModelJson json : parser.modelMap.values())
+                {
+                    if (json.nameMap.containsKey(names[i]))
+                    {
+                        Object o = json.nameMap.get(names[i]);
+                        for (String ident : json.identifierMap.keySet())
+                        {
+                            if (json.identifierMap.get(ident) == o)
+                            {
+                                names[i] = ident;
+                                found = true;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                if (!found) names[i] = null;
             }
         }
 
@@ -514,30 +317,227 @@ public class TabulaPackLoader extends AnimationLoader
             }
         }
 
-        @Override
-        public void convertToIdents(String[] names)
+        private void postInitAnimations()
         {
-            for (int i = 0; i < names.length; i++)
+            HashSet<String> toRemove = Sets.newHashSet();
+            for (Animation anim : model.getAnimations())
             {
-                boolean found = false;
-                for (ModelJson json : parser.modelMap.values())
+                for (String s : loadedAnimations.keySet())
                 {
-                    if (json.nameMap.containsKey(names[i]))
+                    if (s.equals(anim.name))
                     {
-                        Object o = json.nameMap.get(names[i]);
-                        for (String ident : json.identifierMap.keySet())
-                        {
-                            if (json.identifierMap.get(ident) == o)
-                            {
-                                names[i] = ident;
-                                found = true;
-                                break;
-                            }
-                        }
-                        break;
+                        Animation loaded = loadedAnimations.get(s);
+                        AnimationBuilder.merge(loaded, anim);
+                        toRemove.add(s);
                     }
                 }
-                if (!found) names[i] = null;
+            }
+            for (String s : mergedAnimations.keySet())
+            {
+                String toName = mergedAnimations.get(s);
+                Animation to = null;
+                Animation from = null;
+                for (Animation anim : model.getAnimations())
+                {
+                    if (s.equals(anim.name))
+                    {
+                        from = anim;
+                    }
+                    if (toName.equals(anim.name))
+                    {
+                        to = anim;
+                    }
+                    if (to != null && from != null) break;
+                }
+                if (to == null || from == null) for (Animation anim : loadedAnimations.values())
+                {
+                    if (from == null) if (s.equals(anim.name))
+                    {
+                        from = anim;
+                    }
+                    if (to == null) if (toName.equals(anim.name))
+                    {
+                        to = anim;
+                    }
+                    if (to != null && from != null) break;
+                }
+                if (from != null && to == null)
+                {
+                    to = new Animation();
+                    to.name = toName;
+                    to.identifier = toName;
+                    to.loops = from.loops;
+                    loadedAnimations.put(toName, to);
+                }
+
+                if (to != null && from != null)
+                {
+                    AnimationBuilder.merge(from, to);
+                }
+            }
+            for (String s : toRemove)
+            {
+                loadedAnimations.remove(s);
+            }
+            if (animator != null)
+            {
+                Set<Animation> anims = Sets.newHashSet();
+                anims.addAll(model.getAnimations());
+                anims.addAll(loadedAnimations.values());
+                animator.init(anims);
+            }
+        }
+
+        private void processMetadata()
+        {
+            for (CubeInfo cube : model.getCubes())
+            {
+                processMetadataForCubeInfo(cube);
+            }
+            for (CubeGroup group : model.getCubeGroups())
+            {
+                processMetadataForCubeGroup(group);
+            }
+        }
+
+        private void processMetadataForCubeGroup(CubeGroup group)
+        {
+            for (CubeInfo cube : group.cubes)
+            {
+                processMetadataForCubeInfo(cube);
+            }
+            for (CubeGroup group1 : group.cubeGroups)
+            {
+                processMetadataForCubeGroup(group1);
+            }
+        }
+
+        private void processMetadataForCubeInfo(CubeInfo cube)
+        {
+            if (headRoot.isEmpty() && cube.name.toLowerCase().contains("head") && cube.parentIdentifier != null)
+            {
+                headRoot = cube.identifier;
+            }
+            for (String s : cube.metadata)
+            {
+                if (s.equalsIgnoreCase("shearable"))
+                {
+                    shearableIdents.add(cube.identifier);
+                }
+                if (s.equalsIgnoreCase("dyeable"))
+                {
+                    dyeableIdents.add(cube.identifier);
+                }
+                if (s.equalsIgnoreCase("head"))
+                {
+                    headRoots.add(cube.identifier);
+                }
+            }
+            for (CubeInfo cube1 : cube.children)
+            {
+                processMetadataForCubeInfo(cube1);
+            }
+        }
+    }
+
+    public static HashMap<PokedexEntry, TabulaModelSet> modelMap = new HashMap<PokedexEntry, TabulaModelSet>();
+
+    public static void clear()
+    {
+        AnimationLoader.clear();
+        modelMap.clear();
+    }
+
+    public static boolean loadModel(String path, HashSet<String> toReload)
+    {
+        ResourceLocation model = new ResourceLocation(path + ".tbl");
+        String anim = path + ".xml";
+        ResourceLocation extraData = new ResourceLocation(anim);
+
+        String[] args = path.split(":");
+        String[] args2 = args[1].split("/");
+        String name = args2[args2.length > 1 ? args2.length - 1 : 0];
+        PokedexEntry entry = Database.getEntry(name);
+
+        try
+        {
+            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+
+            InputStream stream = res.getInputStream();
+            ZipInputStream zip = new ZipInputStream(stream);
+            Scanner scanner = new Scanner(zip);
+            zip.getNextEntry();
+            String json = scanner.nextLine();
+            if (entry != null)
+            {
+                TabulaModelParser parser = new TabulaModelParser();
+                TabulaModel tbl = parser.parse(json);
+                TabulaModelSet set = new TabulaModelSet(tbl, parser, extraData, entry);
+                modelMap.put(entry, set);
+                if (!modelMaps.containsKey(entry.getName())
+                        || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
+                    AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
+            }
+            scanner.close();
+            return entry != null;
+        }
+        catch (IOException e)
+        {
+            if (entry != null && entry.baseForme != null)
+            {
+                TabulaModelSet set;
+                if ((set = modelMap.get(entry.baseForme)) == null)
+                {
+                    toReload.add(path);
+                }
+                else
+                {
+                    set = new TabulaModelSet(set, extraData, entry);
+                    modelMap.put(entry, set);
+                    if (!modelMaps.containsKey(entry.getName())
+                            || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
+                        AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
+                }
+            }
+        }
+        return false;
+    }
+
+    public static void postProcess()
+    {
+        for (PokedexEntry entry : modelMap.keySet())
+        {
+            TabulaModelSet set = modelMap.get(entry);
+            if (!set.foundExtra)
+            {
+                PokedexEntry base = entry.baseForme;
+                TabulaModelSet baseSet = modelMap.get(base);
+                if (baseSet != null)
+                {
+                    set.rotation = baseSet.rotation;
+                    set.scale.set(baseSet.scale);
+                    set.shift.set(baseSet.shift);
+                    set.headCap = baseSet.headCap;
+                    set.headCap1 = baseSet.headCap1;
+                }
+                else
+                {
+                    // Not really important for tabula models, they can have
+                    // this built in.
+                }
+            }
+            set.postInitAnimations();
+            if (set.rotation == null)
+            {
+                set.rotation = new Vector5();
+            }
+            if (set.scale.isEmpty())
+            {
+                set.scale.set(1, 1, 1);
+            }
+            if (set.shift.isEmpty())
+            {
+                set.shift.set(0, -1.5, 0);
             }
         }
     }

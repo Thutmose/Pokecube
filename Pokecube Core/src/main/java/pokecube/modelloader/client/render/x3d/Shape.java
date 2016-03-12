@@ -38,54 +38,6 @@ public class Shape
         }
     }
 
-    public void setMaterial(Material material)
-    {
-        this.material = material;
-        this.name = material.name;
-    }
-
-    public void renderShape(IPartTexturer texturer)
-    {
-        // Compiles the list if the meshId is invalid.
-        compileList(texturer);
-
-        boolean textureShift = false;
-        // Apply Texturing.
-        if (texturer != null)
-        {
-            texturer.applyTexture(name);
-            if (textureShift = texturer.shiftUVs(name, uvShift))
-            {
-                GL11.glMatrixMode(GL11.GL_TEXTURE);
-                GL11.glTranslated(uvShift[0], uvShift[1], 0.0F);
-                GL11.glMatrixMode(GL11.GL_MODELVIEW);
-            }
-        }
-        // Call the list
-        GL11.glCallList(meshId);
-        GL11.glFlush();
-
-        // Reset Texture Matrix if changed.
-        if (textureShift)
-        {
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            GL11.glLoadIdentity();
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        }
-    }
-
-    private void compileList(IPartTexturer texturer)
-    {
-        if (!GL11.glIsList(meshId))
-        {
-            if (material != null && texturer != null && !texturer.hasMapping(material.name) && material.texture!=null) texturer.addMapping(material.name, material.texture);
-            meshId = GL11.glGenLists(1);
-            GL11.glNewList(meshId, GL11.GL_COMPILE);
-            addTris(texturer);
-            GL11.glEndList();
-        }
-    }
-
     void addTris(IPartTexturer texturer)
     {
         Vertex vertex;
@@ -157,6 +109,33 @@ public class Shape
         }
     }
 
+    private void compileList(IPartTexturer texturer)
+    {
+        if (!GL11.glIsList(meshId))
+        {
+            if (material != null && texturer != null && !texturer.hasMapping(material.name) && material.texture!=null) texturer.addMapping(material.name, material.texture);
+            meshId = GL11.glGenLists(1);
+            GL11.glNewList(meshId, GL11.GL_COMPILE);
+            addTris(texturer);
+            GL11.glEndList();
+        }
+    }
+
+    private ArrayList<TextureCoordinate> parseTextures(String line) throws ModelFormatException
+    {
+        ArrayList<TextureCoordinate> ret = new ArrayList<TextureCoordinate>();
+        String[] points = line.split(" ");
+        if (points.length % 2 != 0) { throw new ModelFormatException(
+                "Invalid number of elements in the points string " + points.length); }
+        for (int i = 0; i < points.length; i += 2)
+        {
+            TextureCoordinate toAdd = new TextureCoordinate(Float.parseFloat(points[i]),
+                    1 - Float.parseFloat(points[i + 1]));
+            ret.add(toAdd);
+        }
+        return ret;
+    }
+
     private ArrayList<Vertex> parseVertices(String line) throws ModelFormatException
     {
         ArrayList<Vertex> ret = new ArrayList<Vertex>();
@@ -173,18 +152,39 @@ public class Shape
         return ret;
     }
 
-    private ArrayList<TextureCoordinate> parseTextures(String line) throws ModelFormatException
+    public void renderShape(IPartTexturer texturer)
     {
-        ArrayList<TextureCoordinate> ret = new ArrayList<TextureCoordinate>();
-        String[] points = line.split(" ");
-        if (points.length % 2 != 0) { throw new ModelFormatException(
-                "Invalid number of elements in the points string " + points.length); }
-        for (int i = 0; i < points.length; i += 2)
+        // Compiles the list if the meshId is invalid.
+        compileList(texturer);
+
+        boolean textureShift = false;
+        // Apply Texturing.
+        if (texturer != null)
         {
-            TextureCoordinate toAdd = new TextureCoordinate(Float.parseFloat(points[i]),
-                    1 - Float.parseFloat(points[i + 1]));
-            ret.add(toAdd);
+            texturer.applyTexture(name);
+            if (textureShift = texturer.shiftUVs(name, uvShift))
+            {
+                GL11.glMatrixMode(GL11.GL_TEXTURE);
+                GL11.glTranslated(uvShift[0], uvShift[1], 0.0F);
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            }
         }
-        return ret;
+        // Call the list
+        GL11.glCallList(meshId);
+        GL11.glFlush();
+
+        // Reset Texture Matrix if changed.
+        if (textureShift)
+        {
+            GL11.glMatrixMode(GL11.GL_TEXTURE);
+            GL11.glLoadIdentity();
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        }
+    }
+
+    public void setMaterial(Material material)
+    {
+        this.material = material;
+        this.name = material.name;
     }
 }

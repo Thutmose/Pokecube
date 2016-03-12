@@ -53,53 +53,7 @@ public class EntityLeader extends EntityTrainer {
         }
 	}
 	
-    @Override
-	public void writeEntityToNBT(NBTTagCompound nbt)
-    {
-        super.writeEntityToNBT(nbt);
-       NBTTagCompound names = new NBTTagCompound();
-       int n = defeaters.size();
-       for(int i = 0; i<n; i++)
-       {
-    	   names.setString(""+i, defeaters.get(i));
-       }
-       nbt.setTag("defeaters", names);
-       nbt.setString("badge", badge);
-        
-    }
-    
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbt)
-    {
-        super.readEntityFromNBT(nbt);
-
-        NBTTagCompound names = nbt.getCompoundTag("defeaters");
-        int n = defeaters.size();
-        for(int i = 0; i<n; i++)
-        {
-     	   defeaters.add(names.getString(""+i));
-        }
-        badge = nbt.getString("badge");
-        this.setCurrentItemOrArmor(1, PokecubeItems.getStack(badge));
-    }
-
-	
-	@Override
-	public void onDefeated(Entity defeater)
-	{
-		if(hasDefeated(defeater)) return;
-		
-		defeaters.add(defeater.getUniqueID().toString());
-		
-		for(int i = 1; i<5; i++)
-		{
-			ItemStack stack = getEquipmentInSlot(i);
-			if(stack!=null)
-				this.entityDropItem(stack, 0.5f);
-		}
-	}
-	
-	public boolean hasDefeated(Entity e)
+    public boolean hasDefeated(Entity e)
 	{
 		if(e==null)
 			return false;
@@ -111,8 +65,8 @@ public class EntityLeader extends EntityTrainer {
 		}
 		return false;
 	}
-	
-	@Override
+    
+    @Override
     public void initTrainer(TypeTrainer type, int level)
     {
 		int alevel = Tools.xpToLevel(level, Database.getEntry(1).getEvolutionMode());
@@ -130,8 +84,9 @@ public class EntityLeader extends EntityTrainer {
     	TypeTrainer.getRandomTeam(this, level, pokecubes, worldObj);
     	setTypes();
     }
+
 	
-    @Override
+	@Override
 	public boolean interact(EntityPlayer entityplayer)
     {
     	if(!entityplayer.capabilities.isCreativeMode)
@@ -145,5 +100,50 @@ public class EntityLeader extends EntityTrainer {
     	}
     	
     	return super.interact(entityplayer);
+    }
+	
+	@Override
+	public void onDefeated(Entity defeater)
+	{
+		if(hasDefeated(defeater)) return;
+		
+		defeaters.add(defeater.getUniqueID().toString());
+		
+		for(int i = 1; i<5; i++)
+		{
+			ItemStack stack = getEquipmentInSlot(i);
+			if(stack!=null)
+				this.entityDropItem(stack, 0.5f);
+		}
+	}
+	
+	@Override
+    public void readEntityFromNBT(NBTTagCompound nbt)
+    {
+        super.readEntityFromNBT(nbt);
+
+        NBTTagCompound names = nbt.getCompoundTag("defeaters");
+        int n = defeaters.size();
+        for(int i = 0; i<n; i++)
+        {
+     	   defeaters.add(names.getString(""+i));
+        }
+        badge = nbt.getString("badge");
+        this.setCurrentItemOrArmor(1, PokecubeItems.getStack(badge));
+    }
+	
+    @Override
+	public void writeEntityToNBT(NBTTagCompound nbt)
+    {
+        super.writeEntityToNBT(nbt);
+       NBTTagCompound names = new NBTTagCompound();
+       int n = defeaters.size();
+       for(int i = 0; i<n; i++)
+       {
+    	   names.setString(""+i, defeaters.get(i));
+       }
+       nbt.setTag("defeaters", names);
+       nbt.setString("badge", badge);
+        
     }
 }

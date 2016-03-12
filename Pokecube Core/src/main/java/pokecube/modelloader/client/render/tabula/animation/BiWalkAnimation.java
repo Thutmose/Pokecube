@@ -22,6 +22,56 @@ public class BiWalkAnimation extends Animation
         name = "walking";
     }
 
+    @Override
+    public Animation init(NamedNodeMap map, @Nullable IPartRenamer renamer)
+    {
+        HashSet<String> hl = new HashSet<String>();
+        HashSet<String> hr = new HashSet<String>();
+        HashSet<String> fl = new HashSet<String>();
+        HashSet<String> fr = new HashSet<String>();
+        int biwalkdur = 0;
+        float walkAngle1 = 20;
+        float walkAngle2 = 20;
+        String[] lh = map.getNamedItem("leftLeg").getNodeValue().split(":");
+        String[] rh = map.getNamedItem("rightLeg").getNodeValue().split(":");
+        String[] lf = map.getNamedItem("leftArm").getNodeValue().split(":");
+        String[] rf = map.getNamedItem("rightArm").getNodeValue().split(":");
+
+        if (renamer != null)
+        {
+            renamer.convertToIdents(lh);
+            renamer.convertToIdents(rh);
+            renamer.convertToIdents(lf);
+            renamer.convertToIdents(rf);
+        }
+        for (String s : lh)
+            if (s != null) hl.add(s);
+        for (String s : rh)
+            if (s != null) hr.add(s);
+        for (String s : rf)
+            if (s != null) fr.add(s);
+        for (String s : lf)
+            if (s != null) fl.add(s);
+        biwalkdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
+        try
+        {
+            if (map.getNamedItem("legAngle") != null)
+            {
+                walkAngle1 = Float.parseFloat(map.getNamedItem("legAngle").getNodeValue());
+            }
+            if (map.getNamedItem("armAngle") != null)
+            {
+                walkAngle2 = Float.parseFloat(map.getNamedItem("armAngle").getNodeValue());
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        init(hl, hr, fl, fr, biwalkdur, walkAngle1, walkAngle2);
+        return this;
+    }
+
     /** Swings legs and arms in opposite directions. Only the parts directly
      * childed to the body need to be added to these sets, any parts childed to
      * them will also be swung by the parent/child system.
@@ -169,56 +219,6 @@ public class BiWalkAnimation extends Animation
             sets.put(s, set);
         }
 
-        return this;
-    }
-
-    @Override
-    public Animation init(NamedNodeMap map, @Nullable IPartRenamer renamer)
-    {
-        HashSet<String> hl = new HashSet<String>();
-        HashSet<String> hr = new HashSet<String>();
-        HashSet<String> fl = new HashSet<String>();
-        HashSet<String> fr = new HashSet<String>();
-        int biwalkdur = 0;
-        float walkAngle1 = 20;
-        float walkAngle2 = 20;
-        String[] lh = map.getNamedItem("leftLeg").getNodeValue().split(":");
-        String[] rh = map.getNamedItem("rightLeg").getNodeValue().split(":");
-        String[] lf = map.getNamedItem("leftArm").getNodeValue().split(":");
-        String[] rf = map.getNamedItem("rightArm").getNodeValue().split(":");
-
-        if (renamer != null)
-        {
-            renamer.convertToIdents(lh);
-            renamer.convertToIdents(rh);
-            renamer.convertToIdents(lf);
-            renamer.convertToIdents(rf);
-        }
-        for (String s : lh)
-            if (s != null) hl.add(s);
-        for (String s : rh)
-            if (s != null) hr.add(s);
-        for (String s : rf)
-            if (s != null) fr.add(s);
-        for (String s : lf)
-            if (s != null) fl.add(s);
-        biwalkdur = Integer.parseInt(map.getNamedItem("duration").getNodeValue());
-        try
-        {
-            if (map.getNamedItem("legAngle") != null)
-            {
-                walkAngle1 = Float.parseFloat(map.getNamedItem("legAngle").getNodeValue());
-            }
-            if (map.getNamedItem("armAngle") != null)
-            {
-                walkAngle2 = Float.parseFloat(map.getNamedItem("armAngle").getNodeValue());
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        init(hl, hr, fl, fr, biwalkdur, walkAngle1, walkAngle2);
         return this;
     }
 }

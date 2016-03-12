@@ -29,6 +29,14 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
     public TabulaModelSet set;
     private boolean       statusRender = false;
 
+    boolean blend;
+
+    boolean light;
+
+    int     src;
+
+    int     dst;
+
     public TabulaModelRenderer(TabulaModelSet set)
     {
         super(Minecraft.getMinecraft().getRenderManager(), null, 0);
@@ -117,17 +125,42 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
         GlStateManager.enableCull();
         GlStateManager.popMatrix();
     }
-
     @Override
     protected ResourceLocation getEntityTexture(T entity)
     {
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
     }
-
     @Override
-    public void setPhase(String phase)
+    public IPartTexturer getTexturer()
     {
-        this.phase = phase;
+        return set.texturer;
+    }
+    @Override
+    public boolean hasPhase(String phase)
+    {
+        ModelJson modelj = null;
+        if (set != null) modelj = set.parser.modelMap.get(set.model);
+        return set.loadedAnimations.containsKey(phase) || (modelj != null && modelj.animationMap.containsKey(phase));
+    }
+
+    private void postRenderStatus()
+    {
+        if (light) GL11.glEnable(GL11.GL_LIGHTING);
+        if (!blend) GL11.glDisable(GL11.GL_BLEND);
+        GL11.glBlendFunc(src, dst);
+        statusRender = false;
+    }
+
+    private void preRenderStatus()
+    {
+        blend = GL11.glGetBoolean(GL11.GL_BLEND);
+        light = GL11.glGetBoolean(GL11.GL_LIGHTING);
+        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
+        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        statusRender = true;
     }
 
     @Override
@@ -177,42 +210,9 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
         GL11.glPopMatrix();
     }
 
-    boolean blend;
-    boolean light;
-    int     src;
-    int     dst;
-
-    private void preRenderStatus()
-    {
-        blend = GL11.glGetBoolean(GL11.GL_BLEND);
-        light = GL11.glGetBoolean(GL11.GL_LIGHTING);
-        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
-        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-        statusRender = true;
-    }
-
-    private void postRenderStatus()
-    {
-        if (light) GL11.glEnable(GL11.GL_LIGHTING);
-        if (!blend) GL11.glDisable(GL11.GL_BLEND);
-        GL11.glBlendFunc(src, dst);
-        statusRender = false;
-    }
-
     @Override
-    public IPartTexturer getTexturer()
+    public void setPhase(String phase)
     {
-        return set.texturer;
-    }
-
-    @Override
-    public boolean hasPhase(String phase)
-    {
-        ModelJson modelj = null;
-        if (set != null) modelj = set.parser.modelMap.get(set.model);
-        return set.loadedAnimations.containsKey(phase) || (modelj != null && modelj.animationMap.containsKey(phase));
+        this.phase = phase;
     }
 }

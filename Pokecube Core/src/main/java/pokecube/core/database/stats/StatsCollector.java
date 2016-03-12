@@ -23,37 +23,6 @@ public class StatsCollector
 	public static HashMap<String, HashMap<PokedexEntry, Integer>> playerKills = new HashMap<String, HashMap<PokedexEntry,Integer>>();
 	public static HashMap<String, HashMap<PokedexEntry, Integer>> eggsHatched = new HashMap<String, HashMap<PokedexEntry,Integer>>();
 	
-	public StatsCollector(){}
-	
-	public static void addKill(IPokemob killed, IPokemob killer)
-	{
-		
-		if(killer==null||killed==null) return;
-
-        String owner;
-        if(killer.getPokemonOwner() instanceof EntityPlayer )
-            owner = killer.getPokemonOwner().getUniqueID().toString();
-        else
-            owner = new UUID(1234, 4321).toString();
-		HashMap<PokedexEntry, Integer> map = playerKills.get(owner);
-		PokedexEntry dbe = Database.getEntry(killed);
-		int current = 1;
-		
-		assert dbe!=null;
-		
-		if(map==null)
-		{
-			map = new HashMap<PokedexEntry, Integer>();
-			playerKills.put(owner, map);
-		}
-		else if(map.containsKey(dbe))
-		{
-			current += map.get(dbe);
-		}
-
-		playerKills.get(owner).put(dbe, current);
-	}
-
 	public static void addCapture(IPokemob captured)
 	{
 		String owner;
@@ -112,92 +81,34 @@ public class StatsCollector
 		}
 		eggsHatched.get(owner).put(dbe, current);
 	}
-	
-	
-	public static void setKills(PokedexEntry dbe, String owner, int count)
+
+	public static void addKill(IPokemob killed, IPokemob killer)
 	{
-		if(owner.equals(""))
-			owner = new UUID(1234, 4321).toString();
+		
+		if(killer==null||killed==null) return;
+
+        String owner;
+        if(killer.getPokemonOwner() instanceof EntityPlayer )
+            owner = killer.getPokemonOwner().getUniqueID().toString();
+        else
+            owner = new UUID(1234, 4321).toString();
 		HashMap<PokedexEntry, Integer> map = playerKills.get(owner);
+		PokedexEntry dbe = Database.getEntry(killed);
+		int current = 1;
+		
+		assert dbe!=null;
+		
 		if(map==null)
 		{
 			map = new HashMap<PokedexEntry, Integer>();
 			playerKills.put(owner, map);
 		}
-		map.put(dbe, count);
-	}
-	
-	public static void setCaptures(PokedexEntry dbe, String owner, int count)
-	{
-		if(owner.equals(""))
-			owner = new UUID(1234, 4321).toString();
-		HashMap<PokedexEntry, Integer> map = playerCaptures.get(owner);
-		if(map==null)
+		else if(map.containsKey(dbe))
 		{
-			map = new HashMap<PokedexEntry, Integer>();
-			playerCaptures.put(owner, map);
+			current += map.get(dbe);
 		}
-		map.put(dbe, count);
-	}
-	
-	public static void setHatches(PokedexEntry dbe, String owner, int count)
-	{
-		if(owner.equals(""))
-			owner = new UUID(1234, 4321).toString();
-		HashMap<PokedexEntry, Integer> map = eggsHatched.get(owner);
-		if(map==null)
-		{
-			map = new HashMap<PokedexEntry, Integer>();
-			eggsHatched.put(owner, map);
-		}
-		map.put(dbe, count);
-	}
-	
-	public static void writeToNBT(NBTTagCompound nbt)
-	{
-		NBTTagList playerKillTag = new NBTTagList();
-		NBTTagList playerCaptureTag = new NBTTagList();
-		NBTTagList playerEggTag = new NBTTagList();
-		
-		for(String s: playerKills.keySet())
-		{
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("username", s);
-			for(PokedexEntry dbe: playerKills.get(s).keySet())
-			{
-				tag.setInteger(dbe.getName(), playerKills.get(s).get(dbe));
-			}
-			playerKillTag.appendTag(tag);
-		}
-		
-		nbt.setTag("kills", playerKillTag);
-		
-		for(String s: playerCaptures.keySet())
-		{
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("username", s);
-			for(PokedexEntry dbe: playerCaptures.get(s).keySet())
-			{
-				tag.setInteger(dbe.getName(), playerCaptures.get(s).get(dbe));
-			}
-			playerCaptureTag.appendTag(tag);
-		}
-		
-		nbt.setTag("captures", playerCaptureTag);
-		
-		for(String s: eggsHatched.keySet())
-		{
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("username", s);
-			for(PokedexEntry dbe: eggsHatched.get(s).keySet())
-			{
-				tag.setInteger(dbe.getName(), eggsHatched.get(s).get(dbe));
-			}
-			playerEggTag.appendTag(tag);
-		}
-		
-		nbt.setTag("hatches", playerEggTag);
-		
+
+		playerKills.get(owner).put(dbe, current);
 	}
 	
 	public static void readFromNBT(NBTTagCompound nbt)
@@ -260,5 +171,94 @@ public class StatsCollector
 			}
 		}
 	}
+	
+	
+	public static void setCaptures(PokedexEntry dbe, String owner, int count)
+	{
+		if(owner.equals(""))
+			owner = new UUID(1234, 4321).toString();
+		HashMap<PokedexEntry, Integer> map = playerCaptures.get(owner);
+		if(map==null)
+		{
+			map = new HashMap<PokedexEntry, Integer>();
+			playerCaptures.put(owner, map);
+		}
+		map.put(dbe, count);
+	}
+	
+	public static void setHatches(PokedexEntry dbe, String owner, int count)
+	{
+		if(owner.equals(""))
+			owner = new UUID(1234, 4321).toString();
+		HashMap<PokedexEntry, Integer> map = eggsHatched.get(owner);
+		if(map==null)
+		{
+			map = new HashMap<PokedexEntry, Integer>();
+			eggsHatched.put(owner, map);
+		}
+		map.put(dbe, count);
+	}
+	
+	public static void setKills(PokedexEntry dbe, String owner, int count)
+	{
+		if(owner.equals(""))
+			owner = new UUID(1234, 4321).toString();
+		HashMap<PokedexEntry, Integer> map = playerKills.get(owner);
+		if(map==null)
+		{
+			map = new HashMap<PokedexEntry, Integer>();
+			playerKills.put(owner, map);
+		}
+		map.put(dbe, count);
+	}
+	
+	public static void writeToNBT(NBTTagCompound nbt)
+	{
+		NBTTagList playerKillTag = new NBTTagList();
+		NBTTagList playerCaptureTag = new NBTTagList();
+		NBTTagList playerEggTag = new NBTTagList();
+		
+		for(String s: playerKills.keySet())
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("username", s);
+			for(PokedexEntry dbe: playerKills.get(s).keySet())
+			{
+				tag.setInteger(dbe.getName(), playerKills.get(s).get(dbe));
+			}
+			playerKillTag.appendTag(tag);
+		}
+		
+		nbt.setTag("kills", playerKillTag);
+		
+		for(String s: playerCaptures.keySet())
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("username", s);
+			for(PokedexEntry dbe: playerCaptures.get(s).keySet())
+			{
+				tag.setInteger(dbe.getName(), playerCaptures.get(s).get(dbe));
+			}
+			playerCaptureTag.appendTag(tag);
+		}
+		
+		nbt.setTag("captures", playerCaptureTag);
+		
+		for(String s: eggsHatched.keySet())
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("username", s);
+			for(PokedexEntry dbe: eggsHatched.get(s).keySet())
+			{
+				tag.setInteger(dbe.getName(), eggsHatched.get(s).get(dbe));
+			}
+			playerEggTag.appendTag(tag);
+		}
+		
+		nbt.setTag("hatches", playerEggTag);
+		
+	}
+	
+	public StatsCollector(){}
 	
 }

@@ -53,12 +53,12 @@ public class Variable extends Observable {
 		validValue = (value!=null);
 	}
 	public String getName() {return name;}
-	//private void setName(String string) {name = string;	}
-	public boolean isConstant() { return this.isConstant; }
-	public void setIsConstant(boolean b) { this.isConstant = b; }
 	public Object getValue() { return value; }
 	/** Is the value of this variable valid? **/
 	public boolean hasValidValue() { return validValue; }
+	//private void setName(String string) {name = string;	}
+	public boolean isConstant() { return this.isConstant; }
+	public void setIsConstant(boolean b) { this.isConstant = b; }
 	/** Sets whether the value of variable is valid. **/
 	public void setValidValue(boolean val) { validValue = val; }
 

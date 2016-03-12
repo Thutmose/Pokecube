@@ -11,8 +11,36 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 @Cancelable
 public class CaptureEvent extends Event
 {
+    @Cancelable
+    /** Post is sent after the capture is completed, canceling it will prevent
+     * the capture from being recorded, and will destroy the cube and the mob.
+     * 
+     * @author Thutmose */
+    public static class Post extends CaptureEvent
+    {
+        public Post(EntityPokecube pokecube)
+        {
+            super(pokecube);
+        }
+
+    }
+    @Cancelable
+    /** Pre is sent before the capture is completed, canceling it will prevent
+     * capture.
+     * 
+     * @author Thutmose */
+    public static class Pre extends CaptureEvent
+    {
+        public Pre(IPokemob hit, EntityPokecube pokecube)
+        {
+            super(hit, pokecube);
+        }
+
+    }
     public final ItemStack filledCube;
+
     public final Entity    pokecube;
+
     public final IPokemob  caught;
 
     protected CaptureEvent(EntityPokecube pokecube)
@@ -35,34 +63,6 @@ public class CaptureEvent extends Event
         this.pokecube = pokecube;
         caught = hit;
         filledCube = pokecube.getEntityItem();
-    }
-
-    @Cancelable
-    /** Pre is sent before the capture is completed, canceling it will prevent
-     * capture.
-     * 
-     * @author Thutmose */
-    public static class Pre extends CaptureEvent
-    {
-        public Pre(IPokemob hit, EntityPokecube pokecube)
-        {
-            super(hit, pokecube);
-        }
-
-    }
-
-    @Cancelable
-    /** Post is sent after the capture is completed, canceling it will prevent
-     * the capture from being recorded, and will destroy the cube and the mob.
-     * 
-     * @author Thutmose */
-    public static class Post extends CaptureEvent
-    {
-        public Post(EntityPokecube pokecube)
-        {
-            super(pokecube);
-        }
-
     }
 
 }

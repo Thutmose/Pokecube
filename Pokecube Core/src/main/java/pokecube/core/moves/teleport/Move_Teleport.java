@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.PokecubePacketHandler;
@@ -16,54 +17,6 @@ import thut.api.maths.Vector3;
 
 public class Move_Teleport extends Move_Utility
 {
-
-    public Move_Teleport(String name)
-    {
-        super(name);
-    }
-
-    @Override
-    public void attack(IPokemob attacker, Entity attacked, float f)
-    {
-        Entity target = ((EntityCreature) attacker).getAttackTarget();
-        boolean angry = attacker.getPokemonAIState(IPokemob.ANGRY);
-        ((EntityCreature) attacker).setAttackTarget(null);
-        attacker.setPokemonAIState(IPokemob.ANGRY, false);
-
-        if (attacked instanceof EntityLiving)
-        {
-            ((EntityLiving) attacked).setAttackTarget(null);
-        }
-        if (attacked instanceof EntityCreature)
-        {
-            ((EntityCreature) attacker).setAttackTarget(null);
-        }
-        if (attacked instanceof IPokemob)
-        {
-            ((IPokemob) attacked).setPokemonAIState(IPokemob.ANGRY, false);
-        }
-        if (attacker instanceof IPokemob && angry)
-        {
-            if (((IPokemob) attacker).getPokemonAIState(IPokemob.TAMED)) ((IPokemob) attacker).returnToPokecube();
-            else teleportRandomly((EntityLivingBase) attacker);
-        }
-
-        if (attacker instanceof IPokemob && attacker.getPokemonAIState(IPokemob.TAMED) && !angry)
-        {
-            if (target == null)
-            {
-                if (attacker.getPokemonOwner() instanceof EntityPlayer && ((EntityLivingBase) attacker).isServerWorld())
-                {
-                    EventsHandler.recallAllPokemobsExcluding((EntityPlayer) attacker.getPokemonOwner(),
-                            (IPokemob) null);
-
-                    PokecubeClientPacket packet = new PokecubeClientPacket(
-                            new byte[] { PokecubeClientPacket.TELEPORTINDEX });
-                    PokecubePacketHandler.sendToClient(packet, (EntityPlayer) attacker.getPokemonOwner());
-                }
-            }
-        }
-    }
 
     /** Teleport the entity to a random nearby position */
     public static boolean teleportRandomly(EntityLivingBase toTeleport)
@@ -106,6 +59,54 @@ public class Move_Teleport extends Move_Utility
         toTeleport.playSound("mob.endermen.portal", 1.0F, 1.0F);
         return true;
 
+    }
+
+    public Move_Teleport(String name)
+    {
+        super(name);
+    }
+
+    @Override
+    public void attack(IPokemob attacker, Entity attacked, float f)
+    {
+        Entity target = ((EntityCreature) attacker).getAttackTarget();
+        boolean angry = attacker.getPokemonAIState(IMoveConstants.ANGRY);
+        ((EntityCreature) attacker).setAttackTarget(null);
+        attacker.setPokemonAIState(IMoveConstants.ANGRY, false);
+
+        if (attacked instanceof EntityLiving)
+        {
+            ((EntityLiving) attacked).setAttackTarget(null);
+        }
+        if (attacked instanceof EntityCreature)
+        {
+            ((EntityCreature) attacker).setAttackTarget(null);
+        }
+        if (attacked instanceof IPokemob)
+        {
+            ((IPokemob) attacked).setPokemonAIState(IMoveConstants.ANGRY, false);
+        }
+        if (attacker instanceof IPokemob && angry)
+        {
+            if (attacker.getPokemonAIState(IMoveConstants.TAMED)) attacker.returnToPokecube();
+            else teleportRandomly((EntityLivingBase) attacker);
+        }
+
+        if (attacker instanceof IPokemob && attacker.getPokemonAIState(IMoveConstants.TAMED) && !angry)
+        {
+            if (target == null)
+            {
+                if (attacker.getPokemonOwner() instanceof EntityPlayer && ((EntityLivingBase) attacker).isServerWorld())
+                {
+                    EventsHandler.recallAllPokemobsExcluding((EntityPlayer) attacker.getPokemonOwner(),
+                            (IPokemob) null);
+
+                    PokecubeClientPacket packet = new PokecubeClientPacket(
+                            new byte[] { PokecubeClientPacket.TELEPORTINDEX });
+                    PokecubePacketHandler.sendToClient(packet, (EntityPlayer) attacker.getPokemonOwner());
+                }
+            }
+        }
     }
 
 }

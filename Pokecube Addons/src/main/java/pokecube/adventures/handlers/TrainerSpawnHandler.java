@@ -42,20 +42,8 @@ public class TrainerSpawnHandler
 	public static int trainerBox = 64;
 	
 	private static TrainerSpawnHandler instance;
-	Vector3 v = Vector3.getNewVector(), v1 = Vector3.getNewVector(), v2 = Vector3.getNewVector();
-	
-	public TrainerSpawnHandler()
-	{
-		MinecraftForge.EVENT_BUS.register(this);
-		instance = this;
-	}
-	
-	public static TrainerSpawnHandler getInstance()
-	{
-		return instance;
-	}
 	public static HashSet<ChunkCoordinate> trainers = new HashSet<ChunkCoordinate>();
-
+	
 	public static boolean addTrainerCoord(Entity e)
 	{
 		int x = (int) e.posX;
@@ -72,13 +60,6 @@ public class TrainerSpawnHandler
 		
 		return trainers.add(coord);
 	}
-
-	public static boolean removeTrainerCoord(int x, int y, int z,
-			int dim) {
-		ChunkCoordinate coord = new ChunkCoordinate(x, y, z, dim);
-		return trainers.remove(coord);
-	}
-	
 	public static int countTrainersInArea(World world, int chunkPosX,
 			int chunkPosY, int chunkPosZ) {
 		int tolerance = trainerBox;
@@ -98,6 +79,27 @@ public class TrainerSpawnHandler
 		}
 		return ret;
 	}
+
+	public static TrainerSpawnHandler getInstance()
+	{
+		return instance;
+	}
+	
+	public static boolean removeTrainerCoord(int x, int y, int z,
+			int dim) {
+		ChunkCoordinate coord = new ChunkCoordinate(x, y, z, dim);
+		return trainers.remove(coord);
+	}
+
+	Vector3 v = Vector3.getNewVector(), v1 = Vector3.getNewVector(), v2 = Vector3.getNewVector();
+	
+	JEP parser = new JEP();
+	
+	public TrainerSpawnHandler()
+	{
+		MinecraftForge.EVENT_BUS.register(this);
+		instance = this;
+	}
 	
 	@SubscribeEvent
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent.Entity event)
@@ -107,9 +109,9 @@ public class TrainerSpawnHandler
             class Provider extends GuardAICapability implements ICapabilitySerializable<NBTTagCompound>
             {
                 @Override
-                public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+                public void deserializeNBT(NBTTagCompound nbt)
                 {
-                    return EventsHandler.GUARDAI_CAP != null && capability == EventsHandler.GUARDAI_CAP;
+                    EventsHandler.storage.readNBT(EventsHandler.GUARDAI_CAP, this, null, nbt);
                 }
 
                 @SuppressWarnings("unchecked") // There isnt anything sane we
@@ -122,35 +124,21 @@ public class TrainerSpawnHandler
                 }
 
                 @Override
-                public NBTTagCompound serializeNBT()
+                public boolean hasCapability(Capability<?> capability, EnumFacing facing)
                 {
-                    return (NBTTagCompound) EventsHandler.storage.writeNBT(EventsHandler.GUARDAI_CAP, this, null);
+                    return EventsHandler.GUARDAI_CAP != null && capability == EventsHandler.GUARDAI_CAP;
                 }
 
                 @Override
-                public void deserializeNBT(NBTTagCompound nbt)
+                public NBTTagCompound serializeNBT()
                 {
-                    EventsHandler.storage.readNBT(EventsHandler.GUARDAI_CAP, this, null, nbt);
+                    return (NBTTagCompound) EventsHandler.storage.writeNBT(EventsHandler.GUARDAI_CAP, this, null);
                 }
             }
             event.addCapability(new ResourceLocation("pokecube_adventures:GuardAI"), new Provider());
 		}
 	}
 	
-	@SubscribeEvent
-	public void tickEvent(WorldTickEvent evt)
-	{
-		if(Config.instance.trainerSpawn && evt.phase == Phase.END && evt.type != Type.CLIENT && evt.side != Side.CLIENT && Math.random()>0.999)
-		{
-			long time = System.nanoTime();
-			tick(evt.world);
-			double dt = (System.nanoTime() - time)/1000000D;
-			if(dt>50)
-				System.err.println(FMLCommonHandler.instance().getEffectiveSide()+"Trainer Spawn Tick took "+dt+"ms");
-		}
-	}
-	
-	JEP parser = new JEP();
 	public void tick(World w)
 	{
 		if(w.isRemote)
@@ -227,6 +215,18 @@ public class TrainerSpawnHandler
 				else
 					t.setDead();
 			}
+		}
+	}
+	@SubscribeEvent
+	public void tickEvent(WorldTickEvent evt)
+	{
+		if(Config.instance.trainerSpawn && evt.phase == Phase.END && evt.type != Type.CLIENT && evt.side != Side.CLIENT && Math.random()>0.999)
+		{
+			long time = System.nanoTime();
+			tick(evt.world);
+			double dt = (System.nanoTime() - time)/1000000D;
+			if(dt>50)
+				System.err.println(FMLCommonHandler.instance().getEffectiveSide()+"Trainer Spawn Tick took "+dt+"ms");
 		}
 	}
 }

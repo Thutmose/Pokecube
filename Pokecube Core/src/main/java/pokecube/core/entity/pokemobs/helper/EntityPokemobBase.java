@@ -82,6 +82,256 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
+    public Matrix3 bounds(Vector3 target)
+    {
+        return mainBox.set(2, mainBox.rows[2].set(0, 0, -rotationYaw));
+    }
+
+    /** Returns true if other Entities should be prevented from moving through
+     * this Entity. */
+    @Override
+    public boolean canBeCollidedWith()
+    {
+        return !getPokemonAIState(SHOULDER);
+    }
+
+    /** Returns true if this entity should push and be pushed by other entities
+     * when colliding. */
+    @Override
+    public boolean canBePushed()
+    {
+        return false;
+    }
+
+    @Override
+    protected boolean canDespawn()
+    {
+        boolean canDespawn = getHungerTime() > PokecubeMod.core.getConfig().pokemobLifeSpan;
+        boolean checks = getPokemonAIState(TAMED) || this.getPokemonOwner() != null || getPokemonAIState(ANGRY)
+                || getAttackTarget() != null || this.hasCustomName() || isAncient() || isNoDespawnRequired();
+        despawntimer--;
+        if (checks) return false;
+
+        boolean cull = PokecubeMod.core.getConfig().cull
+                && worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius) == null;
+
+        if (!cull && !PokecubeMod.core.getConfig().cull)
+        {
+            cull = worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius * 3) == null;
+            if (cull && despawntimer < 0)
+            {
+                despawntimer = 80;
+                cull = false;
+            }
+            else if (cull && despawntimer > 0)
+            {
+                cull = false;
+            }
+        }
+
+        return canDespawn || cull;
+    }
+
+    @Override
+    protected boolean canTriggerWalking()
+    {
+        return true;
+    }
+
+    @Override
+    public void checkCollision()
+    {
+        // TODO see if I need anything here, of if the LogicCollision will
+        // handle it.
+    }
+
+    @Override
+    public int computeCheckSum()
+    {
+        int red = rgba[0];
+        int green = rgba[1];
+        int blue = rgba[2];
+        int checkSum = getExp() * getPokedexNb() + getPokecubeId() + ((int) getSize() * 1000)
+                + (shiny ? 1234 : 4321) * nature.ordinal() + red * green * blue;
+        String movesString = dataWatcher.getWatchableObjectString(30);
+        checkSum += movesString.hashCode();
+        int[] IVs = PokecubeSerializer.byteArrayAsIntArray(ivs);
+        int IVEV = dataWatcher.getWatchableObjectInt(24) + dataWatcher.getWatchableObjectInt(25) + IVs[0] + IVs[1];
+        checkSum += IVEV;
+        // checkSum += getSexe();
+        return checkSum;
+    }
+
+    /** Makes the entity despawn if requirements are reached */
+    @Override
+    protected void despawnEntity()
+    {
+        if (!this.canDespawn() || this.worldObj.isRemote) return;
+        SpawnEvent.Despawn evt = new SpawnEvent.Despawn(here, worldObj, this);
+        MinecraftForge.EVENT_BUS.post(evt);
+        if (evt.isCanceled()) return;
+        this.setDead();
+    }
+
+    @Override
+    protected void entityInit()
+    {
+        super.entityInit();
+    }
+
+    @Override
+    public HashMap<String, Matrix3> getBoxes()
+    {
+        if (boxes.isEmpty())
+        {
+            boxes.put("main", mainBox);
+        }
+        return boxes;
+    }
+
+    /** Checks if the entity's current position is a valid location to spawn
+     * this entity. */
+    @Override
+    public boolean getCanSpawnHere()
+    {
+        int i = MathHelper.floor_double(posX);
+        int j = MathHelper.floor_double(getEntityBoundingBox().minY);
+        int k = MathHelper.floor_double(posZ);
+        here.set(i, j, k);
+        return getBlockPathWeight(worldObj, here) >= 0.0F;
+    }
+
+    /** returns the bounding box for this entity */
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox()
+    {
+        return null;// boundingBox;
+    }
+
+    @Override
+    protected String getDeathSound()
+    {
+        return getLivingSound();
+    }
+
+    @Override
+    public float getEyeHeight()
+    {
+        return height * 0.8F;
+    }
+
+    @Override
+    public EntityAIBase getGuardAI()
+    {
+        return guardAI;
+    }
+
+    @Override
+    protected String getHurtSound()
+    {
+        return getLivingSound();
+    }
+
+    @Override
+    public String getLivingSound()
+    {
+        return getPokedexEntry().getSound();
+    }
+
+    @Override
+    public int getMaxSpawnedInChunk()
+    {
+        return 8;
+    }
+
+    /** Hopefully this will fix the mod.pokemon kill messages */
+    @Override
+    public String getName()
+    {
+        return this.getPokedexEntry().getTranslatedName();
+    }
+
+    @Override
+    public HashMap<String, Vector3> getOffsets()
+    {
+        if (offsets.isEmpty())
+        {
+            offsets.put("main", offset);
+        }
+        return offsets;
+    }
+
+    @Override
+    public int getPokecubeId()
+    {
+        return pokecubeId;
+    }
+
+    @Override
+    public Team getPokemobTeam()
+    {
+        return getTeam();
+    }
+
+    @Override
+    public int getPokemonUID()
+    {
+        if (uid == -1) this.uid = PokecubeSerializer.getInstance().getNextID();
+
+        return uid;
+    }
+
+    @Override
+    public float getSize()
+    {
+        return scale;
+    }
+
+    @Override
+    public String getSound()
+    {
+        return getLivingSound();
+    }
+
+    @Override
+    protected float getSoundVolume()
+    {
+        return 0.15F;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public ResourceLocation getTexture()
+    {
+        return modifyTexture(null);
+    }
+
+    @Override
+    public Entity getTransformedTo()
+    {
+        return transformedTo;
+    }
+
+    @Override
+    public int getVerticalFaceSpeed()
+    {
+        if (getPokemonAIState(SITTING))
+        {
+            return 20;
+        }
+        else
+        {
+            return super.getVerticalFaceSpeed();
+        }
+    }
+
+    @Override
+    public double getWeight()
+    {
+        return scale * scale * scale * getPokedexEntry().mass;
+    }
+
+    @Override
     public void init(int nb)
     {
         super.init(nb);
@@ -135,36 +385,34 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public void setPokedexEntry(PokedexEntry newEntry)
+    public boolean interact(EntityPlayer player)
     {
-        super.setPokedexEntry(newEntry);
-        setSize(scale);
+        if (corruptedSum != -123586)
+        {
+            player.addChatMessage(new ChatComponentText("Corrupt Pokemon"));
+            return false;
+        }
+        return super.interact(player);
+    }
+
+    /** Checks if this entity is inside of an opaque block */
+    @Override
+    public boolean isEntityInsideOpaqueBlock()
+    {
+        return false;
+    }
+
+    /** Whether or not the current entity is in lava */
+    @Override
+    public boolean isInLava()
+    {
+        return getPokemonAIState(INLAVA);
     }
 
     @Override
-    public void popFromPokecube()
+    public boolean isInWater()
     {
-        super.popFromPokecube();
-    }
-
-    @Override
-    protected void entityInit()
-    {
-        super.entityInit();
-    }
-
-    @Override
-    public void specificSpawnInit()
-    {
-        corruptedSum = -123586;
-        super.specificSpawnInit();
-        this.setHealth(this.getMaxHealth());
-    }
-
-    @Override
-    protected boolean canTriggerWalking()
-    {
-        return true;
+        return super.isInWater();
     }
 
     @Override
@@ -204,165 +452,176 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         return new ResourceLocation(domain, args + "S.png");
     }
 
+    /** Tries to moves the entity by the passed in displacement. Args: x, y,
+     * z */
     @Override
-    @SideOnly(Side.CLIENT)
-    public ResourceLocation getTexture()
+    public void moveEntity(double x, double y, double z)
     {
-        return modifyTexture(null);
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
-    {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setInteger("PokeballId", getPokecubeId());
-        nbttagcompound.setFloat("scale", scale);
-        nbttagcompound.setInteger("PokemobUID", uid);
-        nbttagcompound.setIntArray("flavours", flavourAmounts);
-        if (corruptedSum == -123586) nbttagcompound.setInteger("checkSum", computeCheckSum());
-        else nbttagcompound.setInteger("checkSum", corruptedSum);
-    }
-
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
-    {
-        super.readEntityFromNBT(nbttagcompound);
-        setPokecubeId(nbttagcompound.getInteger("PokeballId"));
-        scale = nbttagcompound.getFloat("scale");
-        uid = nbttagcompound.getInteger("PokemobUID");
-        if (nbttagcompound.hasKey("flavours")) flavourAmounts = nbttagcompound.getIntArray("flavours");
-
-        int checkSum = nbttagcompound.getInteger("checkSum");
-
-        if (checkSum != computeCheckSum())
+        if (!multibox)
         {
-            if (getPokemonOwner() != null && getPokemonOwner() instanceof EntityPlayer)
-            {
-                // ((EntityPlayer)getPokemonOwner()).addChatMessage(new
-                // ChatComponentText("This Pokemon is Corrupted"));
-
-            }
-            // corruptedSum = checkSum;
+            super.moveEntity(x, y, z);
+            return;
         }
         else
         {
-            corruptedSum = -123586;
+            double x0 = x, y0 = y, z0 = z;
+            setBoxes();
+            setOffsets();
+            IBlockAccess world = worldObj;
+
+            Vector3 diffs = Vector3.getNewVector();
+            diffs.set(x, y, z);
+
+            double dist;
+            if (y < 0) diffs.y = 0;
+
+            if ((dist = diffs.mag()) >= 0.15)
+            {
+                Vector3 v = Vector3.getNextSurfacePoint(worldObj, here.add(0, height / 2, 0), diffs, diffs.mag());
+                if (v != null)
+                {
+                    diffs.scalarMultBy(v.distanceTo(here) / dist);
+                }
+            }
+            if (y <= 0) diffs.y = y;
+
+            for (String s : getBoxes().keySet())
+            {
+                // diffs.set(x, y, z);
+                Matrix3 box = getBoxes().get(s);
+                Vector3 offset = getOffsets().get(s);
+                if (offset == null) offset = Vector3.empty;
+                Vector3 pos = offset.add(here);
+                diffs.set(box.doTileCollision(world, this, pos, diffs));
+                x = diffs.x;
+                y = diffs.y;
+                z = diffs.z;
+            }
+            this.posX = here.x;
+            this.posY = here.y;
+            this.posZ = here.z;
+
+            x = diffs.x;
+            y = diffs.y;
+            z = diffs.z;
+
+            double dy = 0;
+            double yOff = this.yOffset;
+            double newY = y + yOff + dy;
+
+            this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
+
+            this.posX += x;
+            this.posY += newY;
+            this.posZ += z;
+
+            this.isCollidedHorizontally = x0 != x || z0 != z;
+            this.isCollidedVertically = y0 != y;
+            this.onGround = y0 != y && y0 <= 0.0D;
+            this.isCollided = this.isCollidedHorizontally || this.isCollidedVertically;
+            BlockPos blockpos = getPosition().down();
+            Block block1 = worldObj.getBlockState(blockpos).getBlock();
+
+            this.updateFallState(y, this.onGround, block1, blockpos);
+
+            if (this.canTriggerWalking() && this.ridingEntity == null)
+            {
+                double d15 = this.posX;
+                double d16 = this.posY;
+                double d17 = this.posZ;
+
+                if (block1 != Blocks.ladder)
+                {
+                    d16 = 0.0D;
+                }
+
+                if (block1 != null && this.onGround)
+                {
+                    block1.onEntityCollidedWithBlock(this.worldObj, blockpos, this);
+                }
+
+                this.distanceWalkedModified = (float) (this.distanceWalkedModified
+                        + MathHelper.sqrt_double(d15 * d15 + d17 * d17) * 0.6D);
+                this.distanceWalkedOnStepModified = (float) (this.distanceWalkedOnStepModified
+                        + MathHelper.sqrt_double(d15 * d15 + d16 * d16 + d17 * d17) * 0.6D);
+
+                if (this.distanceWalkedOnStepModified > this.nextStepDistance
+                        && block1.getMaterial() != Material.air)
+                {
+                    this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
+
+                    if (this.isInWater() && !swims())
+                    {
+                        float f = MathHelper.sqrt_double(this.motionX * this.motionX * 0.20000000298023224D
+                                + this.motionY * this.motionY + this.motionZ * this.motionZ * 0.20000000298023224D)
+                                * 0.35F;
+
+                        if (f > 1.0F)
+                        {
+                            f = 1.0F;
+                        }
+
+                        this.playSound(this.getSwimSound(), f,
+                                1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
+                    }
+                }
+            }
+
+            try
+            {
+                this.doBlockCollisions();
+            }
+            catch (Throwable throwable)
+            {
+                CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Checking entity block collision");
+                CrashReportCategory crashreportcategory = crashreport
+                        .makeCategory("Entity being checked for collision");
+                this.addEntityCrashInfo(crashreportcategory);
+                throw new ReportedException(crashreport);
+            }
         }
 
-        setSize(scale);
-
-        this.initRidable();
     }
 
     @Override
-    public int computeCheckSum()
-    {
-        int red = rgba[0];
-        int green = rgba[1];
-        int blue = rgba[2];
-        int checkSum = getExp() * getPokedexNb() + getPokecubeId() + ((int) getSize() * 1000)
-                + (shiny ? 1234 : 4321) * nature.ordinal() + red * green * blue;
-        String movesString = dataWatcher.getWatchableObjectString(30);
-        checkSum += movesString.hashCode();
-        int[] IVs = PokecubeSerializer.byteArrayAsIntArray(ivs);
-        int IVEV = dataWatcher.getWatchableObjectInt(24) + dataWatcher.getWatchableObjectInt(25) + IVs[0] + IVs[1];
-        checkSum += IVEV;
-        // checkSum += getSexe();
-        return checkSum;
-    }
-
-    @Override
-    public boolean interact(EntityPlayer player)
+    public void onLivingUpdate()
     {
         if (corruptedSum != -123586)
         {
-            player.addChatMessage(new ChatComponentText("Corrupt Pokemon"));
-            return false;
+            // this.tasks.taskEntries.clear();
+            // this.targetTasks.taskEntries.clear();
+            // return;
         }
-        return super.interact(player);
-    }
+        super.onLivingUpdate();
 
-    /** Checks if the entity's current position is a valid location to spawn
-     * this entity. */
-    @Override
-    public boolean getCanSpawnHere()
-    {
-        int i = MathHelper.floor_double(posX);
-        int j = MathHelper.floor_double(getEntityBoundingBox().minY);
-        int k = MathHelper.floor_double(posZ);
-        here.set(i, j, k);
-        return getBlockPathWeight(worldObj, here) >= 0.0F;
-    }
+        if (uid == -1) this.uid = PokecubeSerializer.getInstance().getNextID();
 
-    @Override
-    protected boolean canDespawn()
-    {
-        boolean canDespawn = getHungerTime() > PokecubeMod.core.getConfig().pokemobLifeSpan;
-        boolean checks = getPokemonAIState(TAMED) || this.getPokemonOwner() != null || getPokemonAIState(ANGRY)
-                || getAttackTarget() != null || this.hasCustomName() || isAncient() || isNoDespawnRequired();
-        despawntimer--;
-        if (checks) return false;
-
-        boolean cull = PokecubeMod.core.getConfig().cull
-                && worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius) == null;
-
-        if (!cull && !PokecubeMod.core.getConfig().cull)
+        if (worldObj.isRemote)
         {
-            cull = worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius * 3) == null;
-            if (cull && despawntimer < 0)
+            showLivingParticleFX();
+        }
+
+        for (int i = 0; i < flavourAmounts.length; i++)
+        {
+            if (flavourAmounts[i] > 0)
             {
-                despawntimer = 80;
-                cull = false;
-            }
-            else if (cull && despawntimer > 0)
-            {
-                cull = false;
+                flavourAmounts[i]--;
             }
         }
 
-        return canDespawn || cull;
-    }
+        if (multibox) checkCollision();
 
-    /** Makes the entity despawn if requirements are reached */
-    @Override
-    protected void despawnEntity()
-    {
-        if (!this.canDespawn() || this.worldObj.isRemote) return;
-        SpawnEvent.Despawn evt = new SpawnEvent.Despawn(here, worldObj, this);
-        MinecraftForge.EVENT_BUS.post(evt);
-        if (evt.isCanceled()) return;
-        this.setDead();
+        if (isAncient())
+        {
+            BossStatus.setBossStatus(this, true);
+            BossStatus.bossName = getPokemonDisplayName();
+        }
     }
 
     @Override
-    public String getLivingSound()
+    public void onStruckByLightning(EntityLightningBolt entitylightningbolt)
     {
-        return getPokedexEntry().getSound();
-    }
-
-    @Override
-    protected String getHurtSound()
-    {
-        return getLivingSound();
-    }
-
-    @Override
-    protected String getDeathSound()
-    {
-        return getLivingSound();
-    }
-
-    @Override
-    protected float getSoundVolume()
-    {
-        return 0.15F;
-    }
-
-    /** Hopefully this will fix the mod.pokemon kill messages */
-    @Override
-    public String getName()
-    {
-        return this.getPokedexEntry().getTranslatedName();
+        // do nothing
     }
 
     @Override
@@ -413,38 +672,126 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public void onLivingUpdate()
+    public void popFromPokecube()
     {
-        if (corruptedSum != -123586)
-        {
-            // this.tasks.taskEntries.clear();
-            // this.targetTasks.taskEntries.clear();
-            // return;
-        }
-        super.onLivingUpdate();
+        super.popFromPokecube();
+    }
 
-        if (uid == -1) this.uid = PokecubeSerializer.getInstance().getNextID();
+    @Override
+    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
+    {
+        super.readEntityFromNBT(nbttagcompound);
+        setPokecubeId(nbttagcompound.getInteger("PokeballId"));
+        scale = nbttagcompound.getFloat("scale");
+        uid = nbttagcompound.getInteger("PokemobUID");
+        if (nbttagcompound.hasKey("flavours")) flavourAmounts = nbttagcompound.getIntArray("flavours");
 
-        if (worldObj.isRemote)
-        {
-            showLivingParticleFX();
-        }
+        int checkSum = nbttagcompound.getInteger("checkSum");
 
-        for (int i = 0; i < flavourAmounts.length; i++)
+        if (checkSum != computeCheckSum())
         {
-            if (flavourAmounts[i] > 0)
+            if (getPokemonOwner() != null && getPokemonOwner() instanceof EntityPlayer)
             {
-                flavourAmounts[i]--;
+                // ((EntityPlayer)getPokemonOwner()).addChatMessage(new
+                // ChatComponentText("This Pokemon is Corrupted"));
+
             }
+            // corruptedSum = checkSum;
         }
-
-        if (multibox) checkCollision();
-
-        if (isAncient())
+        else
         {
-            BossStatus.setBossStatus(this, true);
-            BossStatus.bossName = getPokemonDisplayName();
+            corruptedSum = -123586;
         }
+
+        setSize(scale);
+
+        this.initRidable();
+    }
+
+    /** Use this for anything that does not change or need to be updated. */
+    @Override
+    public void readSpawnData(ByteBuf data)
+    {
+        this.pokedexNb = data.readInt();
+        scale = data.readFloat();
+        pokecubeId = data.readInt();
+        this.uid = data.readInt();
+        this.setSize(scale);
+        this.initRidable();
+        for (int i = 0; i < 4; i++)
+            rgba[i] = data.readByte() + 128;
+        this.entityUniqueID = new UUID(data.readLong(), data.readLong());
+
+        super.readSpawnData(data);
+    }
+
+    @Override
+    public void setBoxes()
+    {
+        if (mainBox == null)
+        {
+            setSize(scale);
+        }
+        mainBox.boxMin().clear();
+        mainBox.boxMax().x = getPokedexEntry().width * scale;
+        mainBox.boxMax().z = getPokedexEntry().length * scale;
+        mainBox.boxMax().y = getPokedexEntry().height * scale;
+
+        mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
+        boxes.put("main", mainBox);
+    }
+
+    @Override
+    public void setOffsets()
+    {
+        if (offset == null) offset = Vector3.getNewVector();
+        offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
+        offsets.put("main", offset);
+    }
+
+    @Override
+    public void setPokecubeId(int pokeballId)
+    {
+        pokecubeId = pokeballId;
+    }
+
+    @Override
+    public void setPokedexEntry(PokedexEntry newEntry)
+    {
+        super.setPokedexEntry(newEntry);
+        setSize(scale);
+    }
+
+    @Override
+    public void setSize(float size)
+    {
+        scale = size;
+        float a = 1, b = 1, c = 1;
+        PokedexEntry entry = getPokedexEntry();
+        if (isAncient()) scale = 2;
+        if (entry != null)
+        {
+            a = entry.width * scale;
+            b = entry.height * scale;
+            c = entry.length * scale;
+        }
+
+        this.width = a;
+        this.height = b;
+        this.length = c;
+
+        if (a > 3 || b > 3 || c > 3)
+        {
+            this.ignoreFrustumCheck = true;
+        }
+        this.setSize(width, height);
+        this.setEntityBoundingBox(new AxisAlignedBB(this.getEntityBoundingBox().minX, this.getEntityBoundingBox().minY,
+                this.getEntityBoundingBox().minZ, this.getEntityBoundingBox().minX + this.width,
+                this.getEntityBoundingBox().minY + this.height,
+                this.getEntityBoundingBox().minZ + this.width));
+
+        mainBox = new Matrix3(a, b, c);
+        offset.set(-a / 2, 0, -c / 2);
     }
 
     // TODO Pokeblock Particle Effects
@@ -503,90 +850,23 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public float getEyeHeight()
+    public void specificSpawnInit()
     {
-        return height * 0.8F;
+        corruptedSum = -123586;
+        super.specificSpawnInit();
+        this.setHealth(this.getMaxHealth());
     }
 
     @Override
-    public int getVerticalFaceSpeed()
+    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
-        if (getPokemonAIState(SITTING))
-        {
-            return 20;
-        }
-        else
-        {
-            return super.getVerticalFaceSpeed();
-        }
-    }
-
-    @Override
-    public int getMaxSpawnedInChunk()
-    {
-        return 8;
-    }
-
-    @Override
-    public boolean isInWater()
-    {
-        return super.isInWater();
-    }
-
-    @Override
-    public void onStruckByLightning(EntityLightningBolt entitylightningbolt)
-    {
-        // do nothing
-    }
-
-    @Override
-    public void setPokecubeId(int pokeballId)
-    {
-        pokecubeId = pokeballId;
-    }
-
-    @Override
-    public int getPokecubeId()
-    {
-        return pokecubeId;
-    }
-
-    @Override
-    public float getSize()
-    {
-        return scale;
-    }
-
-    @Override
-    public void setSize(float size)
-    {
-        scale = size;
-        float a = 1, b = 1, c = 1;
-        PokedexEntry entry = getPokedexEntry();
-        if (isAncient()) scale = 2;
-        if (entry != null)
-        {
-            a = entry.width * scale;
-            b = entry.height * scale;
-            c = entry.length * scale;
-        }
-
-        this.width = a;
-        this.height = b;
-        this.length = c;
-
-        if (a > 3 || b > 3 || c > 3)
-        {
-            this.ignoreFrustumCheck = true;
-        }
-        this.setSize(width, height);
-        this.setEntityBoundingBox(new AxisAlignedBB(this.getEntityBoundingBox().minX, this.getEntityBoundingBox().minY,
-                this.getEntityBoundingBox().minZ, this.getEntityBoundingBox().minX + (double) this.width,
-                this.getEntityBoundingBox().minY + (double) this.height,
-                this.getEntityBoundingBox().minZ + (double) this.width));
-
-        mainBox = new Matrix3(a, b, c);
-        offset.set(-a / 2, 0, -c / 2);
+        super.writeEntityToNBT(nbttagcompound);
+        nbttagcompound.setInteger("PokeballId", getPokecubeId());
+        nbttagcompound.setFloat("scale", scale);
+        nbttagcompound.setInteger("PokemobUID", uid);
+        nbttagcompound.setIntArray("flavours", flavourAmounts);
+        if (corruptedSum == -123586) nbttagcompound.setInteger("checkSum", computeCheckSum());
+        else nbttagcompound.setInteger("checkSum", corruptedSum);
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -610,285 +890,5 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         super.writeSpawnData(data);
 
-    }
-
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void readSpawnData(ByteBuf data)
-    {
-        this.pokedexNb = data.readInt();
-        scale = data.readFloat();
-        pokecubeId = data.readInt();
-        this.uid = data.readInt();
-        this.setSize(scale);
-        this.initRidable();
-        for (int i = 0; i < 4; i++)
-            rgba[i] = data.readByte() + 128;
-        this.entityUniqueID = new UUID(data.readLong(), data.readLong());
-
-        super.readSpawnData(data);
-    }
-
-    @Override
-    public double getWeight()
-    {
-        return scale * scale * scale * getPokedexEntry().mass;
-    }
-
-    @Override
-    public int getPokemonUID()
-    {
-        if (uid == -1) this.uid = PokecubeSerializer.getInstance().getNextID();
-
-        return uid;
-    }
-
-    /** Returns true if other Entities should be prevented from moving through
-     * this Entity. */
-    @Override
-    public boolean canBeCollidedWith()
-    {
-        return !getPokemonAIState(SHOULDER);
-    }
-
-    /** Returns true if this entity should push and be pushed by other entities
-     * when colliding. */
-    @Override
-    public boolean canBePushed()
-    {
-        return false;
-    }
-
-    /** Whether or not the current entity is in lava */
-    @Override
-    public boolean isInLava()
-    {
-        return getPokemonAIState(INLAVA);
-    }
-
-    /** Checks if this entity is inside of an opaque block */
-    @Override
-    public boolean isEntityInsideOpaqueBlock()
-    {
-        return false;
-    }
-
-    @Override
-    public void setBoxes()
-    {
-        if (mainBox == null)
-        {
-            setSize(scale);
-        }
-        mainBox.boxMin().clear();
-        mainBox.boxMax().x = getPokedexEntry().width * scale;
-        mainBox.boxMax().z = getPokedexEntry().length * scale;
-        mainBox.boxMax().y = getPokedexEntry().height * scale;
-
-        mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
-        boxes.put("main", mainBox);
-    }
-
-    @Override
-    public void setOffsets()
-    {
-        if (offset == null) offset = Vector3.getNewVector();
-        offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
-        offsets.put("main", offset);
-    }
-
-    @Override
-    public HashMap<String, Matrix3> getBoxes()
-    {
-        if (boxes.isEmpty())
-        {
-            boxes.put("main", mainBox);
-        }
-        return boxes;
-    }
-
-    @Override
-    public HashMap<String, Vector3> getOffsets()
-    {
-        if (offsets.isEmpty())
-        {
-            offsets.put("main", offset);
-        }
-        return offsets;
-    }
-
-    @Override
-    public Matrix3 bounds(Vector3 target)
-    {
-        return mainBox.set(2, mainBox.rows[2].set(0, 0, -rotationYaw));
-    }
-
-    @Override
-    public Entity getTransformedTo()
-    {
-        return transformedTo;
-    }
-
-    @Override
-    public void checkCollision()
-    {
-        // TODO see if I need anything here, of if the LogicCollision will
-        // handle it.
-    }
-
-    /** Tries to moves the entity by the passed in displacement. Args: x, y,
-     * z */
-    @Override
-    public void moveEntity(double x, double y, double z)
-    {
-        if (!multibox)
-        {
-            super.moveEntity(x, y, z);
-            return;
-        }
-        else
-        {
-            double x0 = x, y0 = y, z0 = z;
-            setBoxes();
-            setOffsets();
-            IBlockAccess world = worldObj;
-
-            Vector3 diffs = Vector3.getNewVector();
-            diffs.set(x, y, z);
-
-            double dist;
-            if (y < 0) diffs.y = 0;
-
-            if ((dist = diffs.mag()) >= 0.15)
-            {
-                Vector3 v = Vector3.getNextSurfacePoint(worldObj, here.add(0, height / 2, 0), diffs, diffs.mag());
-                if (v != null)
-                {
-                    diffs.scalarMultBy(v.distanceTo(here) / dist);
-                }
-            }
-            if (y <= 0) diffs.y = y;
-
-            for (String s : getBoxes().keySet())
-            {
-                // diffs.set(x, y, z);
-                Matrix3 box = getBoxes().get(s);
-                Vector3 offset = getOffsets().get(s);
-                if (offset == null) offset = Vector3.empty;
-                Vector3 pos = offset.add(here);
-                diffs.set(box.doTileCollision(world, this, pos, diffs));
-                x = diffs.x;
-                y = diffs.y;
-                z = diffs.z;
-            }
-            this.posX = here.x;
-            this.posY = here.y;
-            this.posZ = here.z;
-
-            x = diffs.x;
-            y = diffs.y;
-            z = diffs.z;
-
-            double dy = 0;
-            double yOff = this.yOffset;
-            double newY = y + (double) yOff + dy;
-
-            this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
-
-            this.posX += x;
-            this.posY += newY;
-            this.posZ += z;
-
-            this.isCollidedHorizontally = x0 != x || z0 != z;
-            this.isCollidedVertically = y0 != y;
-            this.onGround = y0 != y && y0 <= 0.0D;
-            this.isCollided = this.isCollidedHorizontally || this.isCollidedVertically;
-            BlockPos blockpos = getPosition().down();
-            Block block1 = worldObj.getBlockState(blockpos).getBlock();
-
-            this.updateFallState(y, this.onGround, block1, blockpos);
-
-            if (this.canTriggerWalking() && this.ridingEntity == null)
-            {
-                double d15 = this.posX;
-                double d16 = this.posY;
-                double d17 = this.posZ;
-
-                if (block1 != Blocks.ladder)
-                {
-                    d16 = 0.0D;
-                }
-
-                if (block1 != null && this.onGround)
-                {
-                    block1.onEntityCollidedWithBlock(this.worldObj, blockpos, this);
-                }
-
-                this.distanceWalkedModified = (float) ((double) this.distanceWalkedModified
-                        + (double) MathHelper.sqrt_double(d15 * d15 + d17 * d17) * 0.6D);
-                this.distanceWalkedOnStepModified = (float) ((double) this.distanceWalkedOnStepModified
-                        + (double) MathHelper.sqrt_double(d15 * d15 + d16 * d16 + d17 * d17) * 0.6D);
-
-                if (this.distanceWalkedOnStepModified > (float) this.nextStepDistance
-                        && block1.getMaterial() != Material.air)
-                {
-                    this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
-
-                    if (this.isInWater() && !swims())
-                    {
-                        float f = MathHelper.sqrt_double(this.motionX * this.motionX * 0.20000000298023224D
-                                + this.motionY * this.motionY + this.motionZ * this.motionZ * 0.20000000298023224D)
-                                * 0.35F;
-
-                        if (f > 1.0F)
-                        {
-                            f = 1.0F;
-                        }
-
-                        this.playSound(this.getSwimSound(), f,
-                                1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
-                    }
-                }
-            }
-
-            try
-            {
-                this.doBlockCollisions();
-            }
-            catch (Throwable throwable)
-            {
-                CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Checking entity block collision");
-                CrashReportCategory crashreportcategory = crashreport
-                        .makeCategory("Entity being checked for collision");
-                this.addEntityCrashInfo(crashreportcategory);
-                throw new ReportedException(crashreport);
-            }
-        }
-
-    }
-
-    /** returns the bounding box for this entity */
-    @Override
-    public AxisAlignedBB getCollisionBoundingBox()
-    {
-        return null;// boundingBox;
-    }
-
-    @Override
-    public EntityAIBase getGuardAI()
-    {
-        return guardAI;
-    }
-
-    @Override
-    public Team getPokemobTeam()
-    {
-        return getTeam();
-    }
-
-    @Override
-    public String getSound()
-    {
-        return getLivingSound();
     }
 }

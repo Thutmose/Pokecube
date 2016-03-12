@@ -17,45 +17,14 @@ import pokecube.core.events.ClassGenEvent;
  * @author Thutmose */
 public class ByteClassLoader extends ClassLoader
 {
+    private static byte[] genericMobBytes;
+
     String resName = "GenericPokemob.class";
 
     public ByteClassLoader(ClassLoader ucl)
     {
         super(ucl);
     }
-
-    public Class<?> loadClass(String name, byte[] jarBytes, boolean resolve) throws ClassNotFoundException
-    {
-        name = name.replace("/", ".");
-        Class<?> clazz = null;
-        try
-        {
-            clazz = super.loadClass(name, false);
-        }
-        catch (Exception e1)
-        {
-
-        }
-        if (clazz == null)
-        {
-            try
-            {
-                byte[] bytes = jarBytes;
-                clazz = super.defineClass(name, bytes, 0, bytes.length);
-                if (resolve)
-                {
-                    super.resolveClass(clazz);
-                }
-            }
-            catch (Exception e)
-            {
-                clazz = super.loadClass(name, resolve);
-            }
-        }
-        return clazz;
-    }
-
-    private static byte[] genericMobBytes;
 
     public Class<?> generatePokemobClass(int pokedexNb) throws ClassNotFoundException
     {
@@ -97,6 +66,37 @@ public class ByteClassLoader extends ClassLoader
         Class<?> c = loadClass(classNode.name, genericMob, true);
         return c;
 
+    }
+
+    public Class<?> loadClass(String name, byte[] jarBytes, boolean resolve) throws ClassNotFoundException
+    {
+        name = name.replace("/", ".");
+        Class<?> clazz = null;
+        try
+        {
+            clazz = super.loadClass(name, false);
+        }
+        catch (Exception e1)
+        {
+
+        }
+        if (clazz == null)
+        {
+            try
+            {
+                byte[] bytes = jarBytes;
+                clazz = super.defineClass(name, bytes, 0, bytes.length);
+                if (resolve)
+                {
+                    super.resolveClass(clazz);
+                }
+            }
+            catch (Exception e)
+            {
+                clazz = super.loadClass(name, resolve);
+            }
+        }
+        return clazz;
     }
 
 }

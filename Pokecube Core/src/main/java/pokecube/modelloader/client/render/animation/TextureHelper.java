@@ -21,219 +21,38 @@ import pokecube.modelloader.client.render.model.IPartTexturer;
 
 public class TextureHelper implements IPartTexturer
 {
-    IPokemob                                 pokemob;
-    PokedexEntry                             entry;
-    /** Map of part/material name -> texture name */
-    Map<String, String>                      texNames     = Maps.newHashMap();
-    /** Map of part/material name -> map of custom state -> texture name */
-    Map<String, Map<String, String>>         texNames2    = Maps.newHashMap();
-    ResourceLocation                         default_tex;
-    String                                   default_path;
-    Map<String, Boolean>                     smoothing    = Maps.newHashMap();
-    boolean                                  default_flat = true;
-    /** Map of part/material name -> resource location */
-    Map<String, ResourceLocation>            texMap       = Maps.newHashMap();
-    Map<String, TexState>                    texStates    = Maps.newHashMap();
-    Map<String, String>                      formeMap     = Maps.newHashMap();
-    public final static Map<String, Integer> mappedStates = Maps.newHashMap();
-
-    public TextureHelper(Node node)
+    private static class RandomState
     {
-        if (node.getAttributes().getNamedItem("default") != null)
+        double   chance   = 0.005;
+        double[] arr;
+        int      duration = 1;
+
+        RandomState(String trigger, double[] arr)
         {
-            default_path = node.getAttributes().getNamedItem("default").getNodeValue();
-        }
-        if (node.getAttributes().getNamedItem("smoothing") != null)
-        {
-            boolean flat = !node.getAttributes().getNamedItem("smoothing").getNodeValue().equalsIgnoreCase("smooth");
-            default_flat = flat;
-        }
-        NodeList parts = node.getChildNodes();
-        for (int i = 0; i < parts.getLength(); i++)
-        {
-            Node part = parts.item(i);
-            if (part.getNodeName().equals("part"))
+            this.arr = arr;
+            String[] args = trigger.split(":");
+            if (args.length > 1)
             {
-                String partName = part.getAttributes().getNamedItem("name").getNodeValue();
-                String partTex = part.getAttributes().getNamedItem("tex").getNodeValue();
-                addMapping(partName, partTex);
-                if (part.getAttributes().getNamedItem("smoothing") != null)
-                {
-                    boolean flat = !node.getAttributes().getNamedItem("smoothing").getNodeValue()
-                            .equalsIgnoreCase("smooth");
-                    smoothing.put(partName, flat);
-                }
+                chance = Double.parseDouble(args[1]);
             }
-            else if (part.getNodeName().equals("animation"))
+            if (args.length > 2)
             {
-                String partName = part.getAttributes().getNamedItem("part").getNodeValue();
-                String trigger = part.getAttributes().getNamedItem("trigger").getNodeValue();
-                String[] diffs = part.getAttributes().getNamedItem("diffs").getNodeValue().split(",");
-                TexState states = texStates.get(partName);
-                if (states == null) texStates.put(partName, states = new TexState());
-                states.addState(trigger, diffs);
-            }
-            else if (part.getNodeName().equals("custom"))
-            {
-                String partName = part.getAttributes().getNamedItem("part").getNodeValue();
-                String state = part.getAttributes().getNamedItem("state").getNodeValue();
-                String partTex = part.getAttributes().getNamedItem("tex").getNodeValue();
-                addCustomMapping(partName, state, partTex);
-            }
-            else if (part.getNodeName().equals("forme"))
-            {
-                String name = part.getAttributes().getNamedItem("name").getNodeValue();
-                String tex = part.getAttributes().getNamedItem("tex").getNodeValue();
-                formeMap.put(name.toLowerCase().replace(" ", ""), tex);
+                duration = Integer.parseInt(args[2]);
             }
         }
     }
-
-    @Override
-    public void applyTexture(String part)
+    private static class SequenceState
     {
-        if (bindPerState(part)) return;
-        String texName = texNames.containsKey(part) ? texNames.get(part) : default_path;
-        ResourceLocation tex = getResource(texName);
-        TexState state;
-        String texMod;
-        if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
-            tex = getResource(tex.getResourcePath() + texMod);
-        bindTex(tex);
-    }
+        double[] arr;
+        boolean  shift = true;
 
-    @Override
-    public void bindObject(Object thing)
-    {
-        pokemob = (IPokemob) thing;
-        entry = pokemob.getPokedexEntry();
-        default_tex = getResource(default_path);
-    }
-
-    @Override
-    public boolean shiftUVs(String part, double[] toFill)
-    {
-        TexState state;
-        if ((state = texStates.get(part)) != null) { return state.applyState(toFill, pokemob); }
-        return false;
-    }
-
-    private void bindTex(ResourceLocation tex)
-    {
-        tex = pokemob.modifyTexture(tex);
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(tex);
-    }
-
-    private ResourceLocation getResource(String tex)
-    {
-        if (tex == null)
+        SequenceState(double[] arr)
         {
-            return new ResourceLocation(entry.getModId(), entry.getName());
-        }
-        else if (tex.contains(":"))
-        {
-            return new ResourceLocation(tex);
-        }
-        else
-        {
-            return new ResourceLocation(entry.getModId(), tex);
+            this.arr = arr;
+            for (double d : arr)
+                if (d >= 1) shift = false;
         }
     }
-
-    private boolean bindPerState(String part)
-    {
-        Map<String, String> partNames = texNames2.get(part);
-        if (partNames == null)
-        {
-            PokedexEntry forme = entry;
-            if (forme.baseForme != null && forme != forme.baseForme)
-            {
-                String name = forme.getName().toLowerCase().replace(" ", "");
-                String tex = formeMap.get(name);
-                if (tex != null)
-                {
-                    TexState state;
-                    String texMod;
-                    if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
-                        tex = tex + texMod;
-                    bindTex(getResource(tex));
-                    return true;
-                }
-            }
-            return false;
-        }
-        for (String key : partNames.keySet())
-        {
-            if (isState(key))
-            {
-                String texKey = part + key;
-                String tex;
-                if ((tex = texNames.get(texKey)) != null)
-                {
-                }
-                else
-                {
-                    tex = partNames.get(key);
-                    texNames.put(texKey, tex);
-                }
-                TexState state;
-                String texMod;
-                if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
-                    tex = tex + texMod;
-
-                bindTex(getResource(tex));
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isState(String state)
-    {
-        int info = pokemob.getSpecialInfo();
-        try
-        {
-            int i = Integer.parseInt(state);
-            return i == info;
-        }
-        catch (Exception e)
-        {
-            int i = getState(state, false);
-            if (i > 0) return pokemob.getPokemonAIState(i);
-        }
-        return false;
-    }
-
-    public static int getState(String trigger)
-    {
-        return getState(trigger, true);
-    }
-
-    static int getState(String trigger, boolean exception)
-    {
-        if (mappedStates.containsKey(trigger)) return mappedStates.get(trigger);
-        try
-        {
-            Field f;
-            int state = 0;
-            String[] args = trigger.split("\\+");
-            for (String s : args)
-            {
-                String test = s.trim().toUpperCase();
-                if ((f = IMoveConstants.class.getDeclaredField(test)) != null)
-                {
-                    state |= f.getInt(null);
-                }
-            }
-            return state;
-        }
-        catch (Exception e)
-        {
-            if (exception) e.printStackTrace();
-        }
-        return -1;
-    }
-
     private static class TexState
     {
         Map<Integer, double[]>    aiStates     = Maps.newHashMap();
@@ -366,58 +185,105 @@ public class TextureHelper implements IPartTexturer
             return null;
         }
     }
-
-    private static class RandomState
+    public final static Map<String, Integer> mappedStates = Maps.newHashMap();
+    public static int getState(String trigger)
     {
-        double   chance   = 0.005;
-        double[] arr;
-        int      duration = 1;
-
-        RandomState(String trigger, double[] arr)
+        return getState(trigger, true);
+    }
+    static int getState(String trigger, boolean exception)
+    {
+        if (mappedStates.containsKey(trigger)) return mappedStates.get(trigger);
+        try
         {
-            this.arr = arr;
-            String[] args = trigger.split(":");
-            if (args.length > 1)
+            Field f;
+            int state = 0;
+            String[] args = trigger.split("\\+");
+            for (String s : args)
             {
-                chance = Double.parseDouble(args[1]);
+                String test = s.trim().toUpperCase();
+                if ((f = IMoveConstants.class.getDeclaredField(test)) != null)
+                {
+                    state |= f.getInt(null);
+                }
             }
-            if (args.length > 2)
+            return state;
+        }
+        catch (Exception e)
+        {
+            if (exception) e.printStackTrace();
+        }
+        return -1;
+    }
+    IPokemob                                 pokemob;
+    PokedexEntry                             entry;
+    /** Map of part/material name -> texture name */
+    Map<String, String>                      texNames     = Maps.newHashMap();
+    /** Map of part/material name -> map of custom state -> texture name */
+    Map<String, Map<String, String>>         texNames2    = Maps.newHashMap();
+    ResourceLocation                         default_tex;
+    String                                   default_path;
+
+    Map<String, Boolean>                     smoothing    = Maps.newHashMap();
+
+    boolean                                  default_flat = true;
+
+    /** Map of part/material name -> resource location */
+    Map<String, ResourceLocation>            texMap       = Maps.newHashMap();
+
+    Map<String, TexState>                    texStates    = Maps.newHashMap();
+
+    Map<String, String>                      formeMap     = Maps.newHashMap();
+
+    public TextureHelper(Node node)
+    {
+        if (node.getAttributes().getNamedItem("default") != null)
+        {
+            default_path = node.getAttributes().getNamedItem("default").getNodeValue();
+        }
+        if (node.getAttributes().getNamedItem("smoothing") != null)
+        {
+            boolean flat = !node.getAttributes().getNamedItem("smoothing").getNodeValue().equalsIgnoreCase("smooth");
+            default_flat = flat;
+        }
+        NodeList parts = node.getChildNodes();
+        for (int i = 0; i < parts.getLength(); i++)
+        {
+            Node part = parts.item(i);
+            if (part.getNodeName().equals("part"))
             {
-                duration = Integer.parseInt(args[2]);
+                String partName = part.getAttributes().getNamedItem("name").getNodeValue();
+                String partTex = part.getAttributes().getNamedItem("tex").getNodeValue();
+                addMapping(partName, partTex);
+                if (part.getAttributes().getNamedItem("smoothing") != null)
+                {
+                    boolean flat = !node.getAttributes().getNamedItem("smoothing").getNodeValue()
+                            .equalsIgnoreCase("smooth");
+                    smoothing.put(partName, flat);
+                }
+            }
+            else if (part.getNodeName().equals("animation"))
+            {
+                String partName = part.getAttributes().getNamedItem("part").getNodeValue();
+                String trigger = part.getAttributes().getNamedItem("trigger").getNodeValue();
+                String[] diffs = part.getAttributes().getNamedItem("diffs").getNodeValue().split(",");
+                TexState states = texStates.get(partName);
+                if (states == null) texStates.put(partName, states = new TexState());
+                states.addState(trigger, diffs);
+            }
+            else if (part.getNodeName().equals("custom"))
+            {
+                String partName = part.getAttributes().getNamedItem("part").getNodeValue();
+                String state = part.getAttributes().getNamedItem("state").getNodeValue();
+                String partTex = part.getAttributes().getNamedItem("tex").getNodeValue();
+                addCustomMapping(partName, state, partTex);
+            }
+            else if (part.getNodeName().equals("forme"))
+            {
+                String name = part.getAttributes().getNamedItem("name").getNodeValue();
+                String tex = part.getAttributes().getNamedItem("tex").getNodeValue();
+                formeMap.put(name.toLowerCase().replace(" ", ""), tex);
             }
         }
-    }
-
-    private static class SequenceState
-    {
-        double[] arr;
-        boolean  shift = true;
-
-        SequenceState(double[] arr)
-        {
-            this.arr = arr;
-            for (double d : arr)
-                if (d >= 1) shift = false;
-        }
-    }
-
-    @Override
-    public boolean isFlat(String part)
-    {
-        if (smoothing.containsKey(part)) { return smoothing.get(part); }
-        return default_flat;
-    }
-
-    @Override
-    public void addMapping(String part, String tex)
-    {
-        texNames.put(part, tex);
-    }
-
-    @Override
-    public boolean hasMapping(String part)
-    {
-        return texNames.containsKey(part);
     }
 
     @Override
@@ -430,6 +296,140 @@ public class TextureHelper implements IPartTexturer
             texNames2.put(part, partMap);
         }
         partMap.put(state, tex);
+    }
+
+    @Override
+    public void addMapping(String part, String tex)
+    {
+        texNames.put(part, tex);
+    }
+
+    @Override
+    public void applyTexture(String part)
+    {
+        if (bindPerState(part)) return;
+        String texName = texNames.containsKey(part) ? texNames.get(part) : default_path;
+        ResourceLocation tex = getResource(texName);
+        TexState state;
+        String texMod;
+        if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
+            tex = getResource(tex.getResourcePath() + texMod);
+        bindTex(tex);
+    }
+
+    @Override
+    public void bindObject(Object thing)
+    {
+        pokemob = (IPokemob) thing;
+        entry = pokemob.getPokedexEntry();
+        default_tex = getResource(default_path);
+    }
+
+    private boolean bindPerState(String part)
+    {
+        Map<String, String> partNames = texNames2.get(part);
+        if (partNames == null)
+        {
+            PokedexEntry forme = entry;
+            if (forme.baseForme != null && forme != forme.baseForme)
+            {
+                String name = forme.getName().toLowerCase().replace(" ", "");
+                String tex = formeMap.get(name);
+                if (tex != null)
+                {
+                    TexState state;
+                    String texMod;
+                    if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
+                        tex = tex + texMod;
+                    bindTex(getResource(tex));
+                    return true;
+                }
+            }
+            return false;
+        }
+        for (String key : partNames.keySet())
+        {
+            if (isState(key))
+            {
+                String texKey = part + key;
+                String tex;
+                if ((tex = texNames.get(texKey)) != null)
+                {
+                }
+                else
+                {
+                    tex = partNames.get(key);
+                    texNames.put(texKey, tex);
+                }
+                TexState state;
+                String texMod;
+                if ((state = texStates.get(part)) != null && (texMod = state.modifyTexture(pokemob)) != null)
+                    tex = tex + texMod;
+
+                bindTex(getResource(tex));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void bindTex(ResourceLocation tex)
+    {
+        tex = pokemob.modifyTexture(tex);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(tex);
+    }
+
+    private ResourceLocation getResource(String tex)
+    {
+        if (tex == null)
+        {
+            return new ResourceLocation(entry.getModId(), entry.getName());
+        }
+        else if (tex.contains(":"))
+        {
+            return new ResourceLocation(tex);
+        }
+        else
+        {
+            return new ResourceLocation(entry.getModId(), tex);
+        }
+    }
+
+    @Override
+    public boolean hasMapping(String part)
+    {
+        return texNames.containsKey(part);
+    }
+
+    @Override
+    public boolean isFlat(String part)
+    {
+        if (smoothing.containsKey(part)) { return smoothing.get(part); }
+        return default_flat;
+    }
+
+    private boolean isState(String state)
+    {
+        int info = pokemob.getSpecialInfo();
+        try
+        {
+            int i = Integer.parseInt(state);
+            return i == info;
+        }
+        catch (Exception e)
+        {
+            int i = getState(state, false);
+            if (i > 0) return pokemob.getPokemonAIState(i);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean shiftUVs(String part, double[] toFill)
+    {
+        TexState state;
+        if ((state = texStates.get(part)) != null) { return state.applyState(toFill, pokemob); }
+        return false;
     }
 
 }

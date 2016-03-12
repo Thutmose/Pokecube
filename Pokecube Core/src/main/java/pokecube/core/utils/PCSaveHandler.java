@@ -18,16 +18,9 @@ import pokecube.core.blocks.pc.InventoryPC;
 
 public class PCSaveHandler 
 {
-    public boolean seenPCCreator = false;
-    
-    private ISaveHandler saveHandler;
     private static PCSaveHandler instance;
+    
     private static PCSaveHandler clientInstance;
-    
-    public PCSaveHandler()
-    {
-    }
-    
     public static PCSaveHandler getInstance() 
     {
         if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
@@ -40,63 +33,12 @@ public class PCSaveHandler
             clientInstance = new PCSaveHandler();
         return clientInstance;
     }
+    public boolean seenPCCreator = false;
     
-    public void savePC()
-    {
-        if(FMLCommonHandler.instance().getMinecraftServerInstance()==null)return;
-        
-        try {
-            
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            File file = saveHandler.getMapFileFromName("PCInventory");
-            if (file != null)
-            {
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                writePcToNBT(nbttagcompound);
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setTag("Data", nbttagcompound);
-                FileOutputStream fileoutputstream = new FileOutputStream(file);
-                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
-                fileoutputstream.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    private ISaveHandler saveHandler;
     
-    public void savePC(String uuid)
+    public PCSaveHandler()
     {
-        
-        if(FMLCommonHandler.instance().getMinecraftServerInstance()==null)return;
-        
-        try {
-            
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            String seperator = System.getProperty("file.separator");
-            File file = saveHandler.getMapFileFromName(uuid+seperator+"PCInventory");
-
-            File dir = new File(file.getParentFile().getAbsolutePath());
-            if(file!=null && !file.exists())
-            {
-                dir.mkdirs();
-            }
-            if (file != null)
-            {
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                writePcToNBT(nbttagcompound, uuid);
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setTag("Data", nbttagcompound);
-                FileOutputStream fileoutputstream = new FileOutputStream(file);
-                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
-                fileoutputstream.close();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
     
     public void loadPC()
@@ -172,6 +114,64 @@ public class PCSaveHandler
         {
             NBTTagList tagListPC = (NBTTagList) temp;
             InventoryPC.loadFromNBT(tagListPC);
+        }
+    }
+    
+    public void savePC()
+    {
+        if(FMLCommonHandler.instance().getMinecraftServerInstance()==null)return;
+        
+        try {
+            
+            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
+            saveHandler = world.getSaveHandler();
+            File file = saveHandler.getMapFileFromName("PCInventory");
+            if (file != null)
+            {
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                writePcToNBT(nbttagcompound);
+                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                nbttagcompound1.setTag("Data", nbttagcompound);
+                FileOutputStream fileoutputstream = new FileOutputStream(file);
+                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
+                fileoutputstream.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void savePC(String uuid)
+    {
+        
+        if(FMLCommonHandler.instance().getMinecraftServerInstance()==null)return;
+        
+        try {
+            
+            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
+            saveHandler = world.getSaveHandler();
+            String seperator = System.getProperty("file.separator");
+            File file = saveHandler.getMapFileFromName(uuid+seperator+"PCInventory");
+
+            File dir = new File(file.getParentFile().getAbsolutePath());
+            if(file!=null && !file.exists())
+            {
+                dir.mkdirs();
+            }
+            if (file != null)
+            {
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                writePcToNBT(nbttagcompound, uuid);
+                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                nbttagcompound1.setTag("Data", nbttagcompound);
+                FileOutputStream fileoutputstream = new FileOutputStream(file);
+                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
+                fileoutputstream.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     

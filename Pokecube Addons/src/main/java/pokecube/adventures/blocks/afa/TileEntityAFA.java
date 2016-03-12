@@ -47,6 +47,44 @@ public class TileEntityAFA extends TileEntityOwnable
         implements IInventory, IEnergyReceiver, ITickable, SimpleComponent, SidedComponent
 {
     public static ItemStack shiny_charm = null;
+    public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
+    {
+        float scale = tag.getFloat("scale");
+        if (scale > 0)
+        {
+            pokemob.setSize(scale);
+        }
+        pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
+        boolean shiny = tag.getBoolean("shiny");
+        pokemob.setShiny(shiny);
+        String ability = tag.getString("ability");
+        if (!ability.isEmpty())
+        {
+            Ability abil = AbilityManager.getAbility(ability);
+            pokemob.setAbility(abil);
+        }
+        byte[] rgbaBytes = new byte[4];
+        // TODO remove the legacy colour support eventually.
+        if (tag.hasKey("colours", 7))
+        {
+            rgbaBytes = tag.getByteArray("colours");
+        }
+        else
+        {
+            rgbaBytes[0] = tag.getByte("red");
+            rgbaBytes[1] = tag.getByte("green");
+            rgbaBytes[2] = tag.getByte("blue");
+            rgbaBytes[3] = 127;
+        }
+        if (pokemob instanceof IMobColourable)
+        {
+            ((IMobColourable) pokemob).setRGBA(rgbaBytes[0] + 128, rgbaBytes[1] + 128, rgbaBytes[2] + 128,
+                    rgbaBytes[2] + 128);
+        }
+        String forme = tag.getString("forme");
+        pokemob.changeForme(forme);
+        pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
+    }
     public IPokemob         pokemob     = null;
     boolean                 shiny       = false;
     private ItemStack[]     inventory   = new ItemStack[1];
@@ -56,7 +94,10 @@ public class TileEntityAFA extends TileEntityOwnable
     int                     energy      = 0;
     int                     distance    = 4;
     boolean                 noEnergy    = false;
+
     protected EnergyStorage storage;
+
+    protected boolean addedToNetwork = false;
 
     public TileEntityAFA()
     {
@@ -64,7 +105,368 @@ public class TileEntityAFA extends TileEntityOwnable
         storage = new EnergyStorage(3200);
     }
 
-    protected boolean addedToNetwork = false;
+    // Energy related things after here
+    @Override
+    public boolean canConnectEnergy(EnumFacing facing)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean canConnectNode(EnumFacing side)
+    {
+        return side == EnumFacing.DOWN;
+    }
+
+    @Override
+    public void clear()
+    {
+        inventory[0] = null;
+    }
+
+    @Override
+    public void closeInventory(EntityPlayer player)
+    {
+    }
+
+    @Override
+    public ItemStack decrStackSize(int slot, int count)
+    {
+        if (this.inventory[slot] != null)
+        {
+            ItemStack itemStack;
+
+            itemStack = inventory[slot].splitStack(count);
+
+            if (inventory[slot].stackSize <= 0)
+            {
+                inventory[slot] = null;
+                pokemob = null;
+            }
+            return itemStack;
+        }
+        return null;
+    }
+
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getAbility(Context context, Arguments args) throws Exception
+    {
+        if (ability != null)
+        {
+            String arg = ability.getName();
+            return new Object[] { arg };
+        }
+        throw new Exception("no ability");
+    }
+
+    @Override
+    public String getComponentName()
+    {
+        return "afa";
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+    }
+
+    @Override
+    public IChatComponent getDisplayName()
+    {
+        return new ChatComponentText("Ability Field Amplifier");
+    }
+
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getEnergy(Context context, Arguments args)
+    {
+        return new Object[] { storage.getEnergyStored() };
+    }
+
+    @Override
+    public int getEnergyStored(EnumFacing facing)
+    {
+
+        return storage.getEnergyStored();
+    }
+
+    @Override
+    public int getField(int id)
+    {
+        if (id == 0) return worldObj.isRemote ? energy : storage.getEnergyStored();
+        if (id == 1) return distance;
+        if (id == 2) return noEnergy ? 1 : 0;
+        if (id == 3) return scale;
+        if (id == 4) return shift[0];
+        if (id == 5) return shift[1];
+        if (id == 6) return shift[2];
+        return 0;
+    }
+
+    @Override
+    public int getFieldCount()
+    {
+        return 8;
+    }
+
+    @Override
+    public int getInventoryStackLimit()
+    {
+        return 64;
+    }
+
+    @Override
+    public int getMaxEnergyStored(EnumFacing facing)
+    {
+
+        return storage.getMaxEnergyStored();
+    }
+
+    @Override
+    public String getName()
+    {
+        return "AFA";
+    }
+
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getRange(Context context, Arguments args)
+    {
+        return new Object[] { distance };
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public net.minecraft.util.AxisAlignedBB getRenderBoundingBox()
+    {
+        net.minecraft.util.AxisAlignedBB bb = INFINITE_EXTENT_AABB;
+        return bb;
+    }
+
+    @Override
+    public int getSizeInventory()
+    {
+        return inventory.length;
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int index)
+    {
+        if (inventory[index] != null && inventory[index].stackSize <= 0) inventory[index] = null;
+
+        return inventory[index];
+    }
+
+    @Override
+    public boolean hasCustomName()
+    {
+        return false;
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        MinecraftForge.EVENT_BUS.unregister(this);
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int index, ItemStack stack)
+    {
+        return PokecubeManager.isFilled(stack)
+                || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), stack);
+    }
+
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer player)
+    {
+        return true;
+    }
+
+    /** Called when you receive a TileEntityData packet for the location this
+     * TileEntity is currently in. On the client, the NetworkManager will always
+     * be the remote server. On the server, it will be whomever is responsible
+     * for sending the packet.
+     *
+     * @param net
+     *            The NetworkManager the packet originated from
+     * @param pkt
+     *            The data packet */
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    {
+        if (worldObj.isRemote)
+        {
+            NBTTagCompound nbt = pkt.getNbtCompound();
+            readFromNBT(nbt);
+        }
+    }
+
+    @Override
+    public void openInventory(EntityPlayer player)
+    {
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    {
+        super.readFromNBT(nbt);
+        NBTBase temp = nbt.getTag("Inventory");
+        if (temp instanceof NBTTagList)
+        {
+            NBTTagList tagList = (NBTTagList) temp;
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                byte slot = tag.getByte("Slot");
+
+                if (slot >= 0 && slot < inventory.length)
+                {
+                    inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+                }
+            }
+        }
+        shift = nbt.getIntArray("shift");
+        if (nbt.hasKey("scale")) scale = nbt.getInteger("scale");
+        distance = nbt.getInteger("distance");
+        noEnergy = nbt.getBoolean("noEnergy");
+        storage.readFromNBT(nbt);
+    }
+
+    @Override
+    public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
+    {
+        int receive = storage.receiveEnergy(maxReceive, simulate);
+        if (!simulate && receive > 0)
+        {
+            this.markDirty();
+        }
+        return receive;
+    }
+
+    public void refreshAbility()
+    {
+        if (pokemob != null)
+        {
+            ((Entity) pokemob).setDead();
+            pokemob = null;
+            ability = null;
+        }
+        if (ability != null) ability.destroy();
+        if (inventory[0] == null) return;
+        if (ability != null)
+        {
+            ability.destroy();
+            ability = null;
+        }
+        pokemob = PokecubeManager.itemToPokemob(inventory[0], getWorld());
+        if (pokemob != null && pokemob.getAbility() != null)
+        {
+            ability = pokemob.getAbility();
+            ability.destroy();
+            ((Entity) pokemob).setPosition(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
+            ability.init(pokemob, distance);
+        }
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int slot)
+    {
+        if (inventory[slot] != null)
+        {
+            ItemStack stack = inventory[slot];
+            inventory[slot] = null;
+            pokemob = null;
+            return stack;
+        }
+        return null;
+    }
+
+    @Override
+    public void setField(int id, int value)
+    {
+        if (id == 0) if (worldObj.isRemote) energy = value;
+        else storage.setEnergyStored(value);
+        if (id == 1) distance = value;
+        if (id == 2) noEnergy = value != 0;
+        if (id == 3) scale = value;
+        if (id == 4) shift[0] = value;
+        if (id == 5) shift[1] = value;
+        if (id == 6) shift[2] = value;
+        if (id == 7)
+        {
+            shift[0] = shift[1] = shift[2] = 0;
+            scale = 1000;
+        }
+        distance = Math.max(0, distance);
+        refreshAbility();
+    }
+
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] setHoloState(Context context, Arguments args)
+    {
+        scale = args.checkInteger(0);
+        shift[0] = args.checkInteger(1);
+        shift[1] = args.checkInteger(2);
+        shift[2] = args.checkInteger(3);
+        return new Object[0];
+    }
+
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack)
+    {
+        if (stack == null || stack.stackSize <= 0) inventory[index] = null;
+        else inventory[index] = stack;
+        refreshAbility();
+    }
+
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] setRange(Context context, Arguments args)
+    {
+        distance = args.checkInteger(0);
+        return new Object[] { distance };
+    }
+
+    @SubscribeEvent
+    public void spawnEvent(SpawnEvent.Post evt)
+    {
+        if (shiny_charm == null) shiny_charm = PokecubeItems.getStack("shiny_charm");
+        shiny = inventory[0] != null && Tools.isSameStack(inventory[0], shiny_charm);
+        if (shiny)
+        {
+            if (evt.location.distanceTo(Vector3.getNewVector().set(this)) <= distance)
+            {
+                Random rand = new Random();
+                if (rand.nextInt(4096) == 0)
+                {
+                    if (!noEnergy && !worldObj.isRemote)
+                    {
+                        int needed = (int) Math.ceil(distance * distance * distance / ((double) 50));
+                        int energy = storage.extractEnergy(needed, false);
+                        if (energy < needed)
+                        {
+                            worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "node.bd", 1.0F,
+                                    1.0F);
+                            return;
+                        }
+                    }
+                    evt.pokemob.setShiny(true);
+                    worldObj.playSoundAtEntity(evt.entity, "mob.endermen.portal", 1, 1);
+                    worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "mob.endermen.portal",
+                            1.0F, 1.0F);
+                }
+            }
+        }
+    }
 
     @Override
     public void update()
@@ -104,61 +506,11 @@ public class TileEntityAFA extends TileEntityOwnable
         }
     }
 
-    public void refreshAbility()
+    @Override
+    public void validate()
     {
-        if (pokemob != null)
-        {
-            ((Entity) pokemob).setDead();
-            pokemob = null;
-            ability = null;
-        }
-        if (ability != null) ability.destroy();
-        if (inventory[0] == null) return;
-        if (ability != null)
-        {
-            ability.destroy();
-            ability = null;
-        }
-        pokemob = PokecubeManager.itemToPokemob(inventory[0], getWorld());
-        if (pokemob != null && pokemob.getAbility() != null)
-        {
-            ability = pokemob.getAbility();
-            ability.destroy();
-            ((Entity) pokemob).setPosition(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
-            ability.init(pokemob, distance);
-        }
-    }
-
-    @SubscribeEvent
-    public void spawnEvent(SpawnEvent.Post evt)
-    {
-        if (shiny_charm == null) shiny_charm = PokecubeItems.getStack("shiny_charm");
-        shiny = inventory[0] != null && Tools.isSameStack(inventory[0], shiny_charm);
-        if (shiny)
-        {
-            if (evt.location.distanceTo(Vector3.getNewVector().set(this)) <= distance)
-            {
-                Random rand = new Random();
-                if (rand.nextInt(4096) == 0)
-                {
-                    if (!noEnergy && !worldObj.isRemote)
-                    {
-                        int needed = (int) Math.ceil(distance * distance * distance / ((double) 50));
-                        int energy = storage.extractEnergy(needed, false);
-                        if (energy < needed)
-                        {
-                            worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "node.bd", 1.0F,
-                                    1.0F);
-                            return;
-                        }
-                    }
-                    evt.pokemob.setShiny(true);
-                    worldObj.playSoundAtEntity(evt.entity, "mob.endermen.portal", 1, 1);
-                    worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "mob.endermen.portal",
-                            1.0F, 1.0F);
-                }
-            }
-        }
+        super.validate();
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -184,356 +536,5 @@ public class TileEntityAFA extends TileEntityOwnable
         nbt.setInteger("distance", distance);
         nbt.setBoolean("noEnergy", noEnergy);
         storage.writeToNBT(nbt);
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbt)
-    {
-        super.readFromNBT(nbt);
-        NBTBase temp = nbt.getTag("Inventory");
-        if (temp instanceof NBTTagList)
-        {
-            NBTTagList tagList = (NBTTagList) temp;
-            for (int i = 0; i < tagList.tagCount(); i++)
-            {
-                NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                byte slot = tag.getByte("Slot");
-
-                if (slot >= 0 && slot < inventory.length)
-                {
-                    inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-                }
-            }
-        }
-        shift = nbt.getIntArray("shift");
-        if (nbt.hasKey("scale")) scale = nbt.getInteger("scale");
-        distance = nbt.getInteger("distance");
-        noEnergy = nbt.getBoolean("noEnergy");
-        storage.readFromNBT(nbt);
-    }
-
-    /** Overriden in a sign to provide the text. */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
-    /** Called when you receive a TileEntityData packet for the location this
-     * TileEntity is currently in. On the client, the NetworkManager will always
-     * be the remote server. On the server, it will be whomever is responsible
-     * for sending the packet.
-     *
-     * @param net
-     *            The NetworkManager the packet originated from
-     * @param pkt
-     *            The data packet */
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-    {
-        if (worldObj.isRemote)
-        {
-            NBTTagCompound nbt = pkt.getNbtCompound();
-            readFromNBT(nbt);
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public net.minecraft.util.AxisAlignedBB getRenderBoundingBox()
-    {
-        net.minecraft.util.AxisAlignedBB bb = INFINITE_EXTENT_AABB;
-        return bb;
-    }
-
-    @Override
-    public String getName()
-    {
-        return "AFA";
-    }
-
-    @Override
-    public boolean hasCustomName()
-    {
-        return false;
-    }
-
-    @Override
-    public IChatComponent getDisplayName()
-    {
-        return new ChatComponentText("Ability Field Amplifier");
-    }
-
-    @Override
-    public int getSizeInventory()
-    {
-        return inventory.length;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index)
-    {
-        if (inventory[index] != null && inventory[index].stackSize <= 0) inventory[index] = null;
-
-        return inventory[index];
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int count)
-    {
-        if (this.inventory[slot] != null)
-        {
-            ItemStack itemStack;
-
-            itemStack = inventory[slot].splitStack(count);
-
-            if (inventory[slot].stackSize <= 0)
-            {
-                inventory[slot] = null;
-                pokemob = null;
-            }
-            return itemStack;
-        }
-        return null;
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int slot)
-    {
-        if (inventory[slot] != null)
-        {
-            ItemStack stack = inventory[slot];
-            inventory[slot] = null;
-            pokemob = null;
-            return stack;
-        }
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
-    {
-        if (stack == null || stack.stackSize <= 0) inventory[index] = null;
-        else inventory[index] = stack;
-        refreshAbility();
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
-    {
-        return true;
-    }
-
-    @Override
-    public void openInventory(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
-    {
-        return PokecubeManager.isFilled(stack)
-                || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), stack);
-    }
-
-    @Override
-    public int getField(int id)
-    {
-        if (id == 0) return worldObj.isRemote ? energy : storage.getEnergyStored();
-        if (id == 1) return distance;
-        if (id == 2) return noEnergy ? 1 : 0;
-        if (id == 3) return scale;
-        if (id == 4) return shift[0];
-        if (id == 5) return shift[1];
-        if (id == 6) return shift[2];
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value)
-    {
-        if (id == 0) if (worldObj.isRemote) energy = value;
-        else storage.setEnergyStored(value);
-        if (id == 1) distance = value;
-        if (id == 2) noEnergy = value != 0;
-        if (id == 3) scale = value;
-        if (id == 4) shift[0] = value;
-        if (id == 5) shift[1] = value;
-        if (id == 6) shift[2] = value;
-        if (id == 7)
-        {
-            shift[0] = shift[1] = shift[2] = 0;
-            scale = 1000;
-        }
-        distance = Math.max(0, distance);
-        refreshAbility();
-    }
-
-    @Override
-    public int getFieldCount()
-    {
-        return 8;
-    }
-
-    @Override
-    public void clear()
-    {
-        inventory[0] = null;
-    }
-
-    public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
-    {
-        float scale = tag.getFloat("scale");
-        if (scale > 0)
-        {
-            pokemob.setSize(scale);
-        }
-        pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
-        boolean shiny = tag.getBoolean("shiny");
-        pokemob.setShiny(shiny);
-        String ability = tag.getString("ability");
-        if (!ability.isEmpty())
-        {
-            Ability abil = AbilityManager.getAbility(ability);
-            pokemob.setAbility(abil);
-        }
-        byte[] rgbaBytes = new byte[4];
-        // TODO remove the legacy colour support eventually.
-        if (tag.hasKey("colours", 7))
-        {
-            rgbaBytes = tag.getByteArray("colours");
-        }
-        else
-        {
-            rgbaBytes[0] = tag.getByte("red");
-            rgbaBytes[1] = tag.getByte("green");
-            rgbaBytes[2] = tag.getByte("blue");
-            rgbaBytes[3] = 127;
-        }
-        if (pokemob instanceof IMobColourable)
-        {
-            ((IMobColourable) pokemob).setRGBA(rgbaBytes[0] + 128, rgbaBytes[1] + 128, rgbaBytes[2] + 128,
-                    rgbaBytes[2] + 128);
-        }
-        String forme = tag.getString("forme");
-        pokemob.changeForme(forme);
-        pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
-    }
-
-    // Energy related things after here
-    @Override
-    public boolean canConnectEnergy(EnumFacing facing)
-    {
-        return true;
-    }
-
-    @Override
-    public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
-    {
-        int receive = storage.receiveEnergy(maxReceive, simulate);
-        if (!simulate && receive > 0)
-        {
-            this.markDirty();
-        }
-        return receive;
-    }
-
-    @Override
-    public int getEnergyStored(EnumFacing facing)
-    {
-
-        return storage.getEnergyStored();
-    }
-
-    @Override
-    public int getMaxEnergyStored(EnumFacing facing)
-    {
-
-        return storage.getMaxEnergyStored();
-    }
-
-    @Override
-    public void validate()
-    {
-        super.validate();
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    @Override
-    public void invalidate()
-    {
-        super.invalidate();
-        MinecraftForge.EVENT_BUS.unregister(this);
-    }
-
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getEnergy(Context context, Arguments args)
-    {
-        return new Object[] { storage.getEnergyStored() };
-    }
-
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getRange(Context context, Arguments args)
-    {
-        return new Object[] { distance };
-    }
-
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] setRange(Context context, Arguments args)
-    {
-        distance = args.checkInteger(0);
-        return new Object[] { distance };
-    }
-
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getAbility(Context context, Arguments args) throws Exception
-    {
-        if (ability != null)
-        {
-            String arg = ability.getName();
-            return new Object[] { arg };
-        }
-        throw new Exception("no ability");
-    }
-
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] setHoloState(Context context, Arguments args)
-    {
-        scale = args.checkInteger(0);
-        shift[0] = args.checkInteger(1);
-        shift[1] = args.checkInteger(2);
-        shift[2] = args.checkInteger(3);
-        return new Object[0];
-    }
-
-    @Override
-    public String getComponentName()
-    {
-        return "afa";
-    }
-
-    @Override
-    public boolean canConnectNode(EnumFacing side)
-    {
-        return side == EnumFacing.DOWN;
     }
 }

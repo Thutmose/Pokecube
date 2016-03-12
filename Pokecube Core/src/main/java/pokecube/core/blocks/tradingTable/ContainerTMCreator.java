@@ -8,19 +8,25 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerTMCreator extends Container
 {
+	/**
+     * Returns true if the item is a filled pokecube.
+     *
+     * @param itemstack the itemstack to test
+     * @return true if the id is a filled pokecube one, false otherwise
+     */
+    protected static boolean isItemValid(ItemStack itemstack)
+    {
+        return true;
+    }
+	
 	TileEntityTradingTable tile;
 	
-	public ContainerTMCreator(TileEntityTradingTable tile, InventoryPlayer playerInv)
+    public ContainerTMCreator(TileEntityTradingTable tile, InventoryPlayer playerInv)
 	{
 		this.tile = tile;
 		tile.moves(playerInv.player);
 		bindInventories(playerInv);
 	}
-	
-    protected void clearSlots()
-    {
-    	this.inventorySlots.clear();
-    }
     
     public void bindInventories(InventoryPlayer playerInv)
     {
@@ -29,11 +35,6 @@ public class ContainerTMCreator extends Container
 		addSlotToContainer(new SlotTMCreator(tile, 0, 15, 12));
     }
     
-	public TileEntityTradingTable getTile()
-	{
-		return tile;
-	}
-	
 	private void bindPlayerInventory(InventoryPlayer playerInventory)
 	{
 		// Inventory
@@ -50,8 +51,18 @@ public class ContainerTMCreator extends Container
 	public boolean canInteractWith(EntityPlayer entityPlayer) {
 		return tile.isUseableByPlayer(entityPlayer);
 	}
+	
+	protected void clearSlots()
+    {
+    	this.inventorySlots.clear();
+    }
 
-	 @Override
+	 public TileEntityTradingTable getTile()
+	{
+		return tile;
+	}
+	 
+    @Override
     public ItemStack slotClick(int i, int j, int flag,
             EntityPlayer entityplayer)
     {
@@ -61,7 +72,7 @@ public class ContainerTMCreator extends Container
         if (flag != 0 && flag != 5)
         {
             ItemStack itemstack = null;
-            Slot slot = (Slot) inventorySlots.get(i);
+            Slot slot = inventorySlots.get(i);
 
             if (slot != null && slot.getHasStack())
             {
@@ -120,16 +131,5 @@ public class ContainerTMCreator extends Container
         {
             return super.slotClick(i, j, flag, entityplayer);
         }
-    }
-	 
-    /**
-     * Returns true if the item is a filled pokecube.
-     *
-     * @param itemstack the itemstack to test
-     * @return true if the id is a filled pokecube one, false otherwise
-     */
-    protected static boolean isItemValid(ItemStack itemstack)
-    {
-        return true;
     }
 }

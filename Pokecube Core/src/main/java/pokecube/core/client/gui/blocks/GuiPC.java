@@ -38,6 +38,8 @@ public class GuiPC extends GuiContainer {
 	boolean bound = false;
 	boolean release = false;
 
+	private Slot theSlot;
+
 	public GuiPC(ContainerPC cont) {
 		super(cont);
 		this.cont = cont;
@@ -48,71 +50,6 @@ public class GuiPC extends GuiContainer {
 		if (cont.pcTile != null)
 			this.bound = cont.pcTile.isBound();
 		// release = cont.release;
-	}
-
-	@Override
-	public void initGui() {
-		super.initGui();
-		buttonList.clear();
-		int xOffset = 0;
-		int yOffset = -11;
-		String next = StatCollector.translateToLocal("tile.pc.next");
-		buttonList.add(new GuiButton(1, width / 2 - xOffset + 15, height / 2
-				- yOffset, 50, 20, next));
-		String prev = StatCollector.translateToLocal("tile.pc.previous");
-		buttonList.add(new GuiButton(2, width / 2 - xOffset - 65, height / 2
-				- yOffset, 50, 20, prev));
-
-		if (!bound) {
-			String auto = StatCollector.translateToLocal("tile.pc.autoon");
-			buttonList.add(new GuiButton(3, width / 2 - xOffset - 137, height
-					/ 2 - yOffset - 105, 50, 20, auto));
-		}
-		if (!bound) {
-			String rename = StatCollector.translateToLocal("tile.pc.rename");
-			buttonList.add(new GuiButton(4, width / 2 - xOffset - 137, height
-					/ 2 - yOffset - 125, 50, 20, rename));
-		}
-		if(cont.pcTile!=null)
-		{
-			if (!bound)
-				buttonList.add(new GuiButton(5, width / 2 - xOffset + 89, height
-						/ 2 - yOffset - 125, 50, 20, "private"));
-			else
-			{
-				buttonList.add(new GuiButton(5, width / 2 - xOffset + 89, height
-						/ 2 - yOffset - 125, 50, 20, "public"));
-				buttonList.add(new GuiButton(9, width / 2 - xOffset + 89, height
-						/ 2 - yOffset - 105, 50, 20, "bind"));
-			}
-		}
-		else
-		{
-			buttonList.add(new GuiButton(5, width / 2 - xOffset + 89, height
-					/ 2 - yOffset - 125, 0, 0, ""));
-		}
-		if (!bound) {
-			buttonList.add(new GuiButton(6, width / 2 - xOffset + 89, height
-					/ 2 - yOffset - 105, 50, 20, "release"));
-			buttonList.add(new GuiButton(7, width / 2 - xOffset + 89, height
-					/ 2 - yOffset - 85, 50, 20, "confirm"));
-			((GuiButton) buttonList.get(6)).visible = false;
-			((GuiButton) buttonList.get(6)).enabled = false;
-			
-		}
-		
-
-		textFieldSelectedBox = new GuiTextField(0, fontRendererObj, width / 2
-				- xOffset - 13, height / 2 - yOffset + 5, 25, 10);
-		textFieldSelectedBox.setText(page);
-
-		textFieldBoxName = new GuiTextField(0, fontRendererObj, width / 2
-				- xOffset - 190, height / 2 - yOffset - 80, 100, 10);
-		textFieldBoxName.setText(boxName);
-
-		textFieldSearch = new GuiTextField(0, fontRendererObj, width / 2 - xOffset
-				- 10, height / 2 - yOffset - 121, 90, 10);
-		textFieldSearch.setText("");
 	}
 
 	@Override
@@ -173,22 +110,22 @@ public class GuiPC extends GuiContainer {
 
 				cont.release = release;
 				if (release) {
-					((GuiButton) buttonList.get(6)).enabled = release;
-					((GuiButton) buttonList.get(6)).visible = release;
+					buttonList.get(6).enabled = release;
+					buttonList.get(6).visible = release;
 				} else {
-					((GuiButton) buttonList.get(6)).enabled = release;
-					((GuiButton) buttonList.get(6)).visible = release;
+					buttonList.get(6).enabled = release;
+					buttonList.get(6).visible = release;
 				}
 			}
 			else if (guibutton.id == 7) {
 				release = !release;
 				cont.setRelease(release);
 				if (release) {
-					((GuiButton) buttonList.get(6)).enabled = release;
-					((GuiButton) buttonList.get(6)).visible = release;
+					buttonList.get(6).enabled = release;
+					buttonList.get(6).visible = release;
 				} else {
-					((GuiButton) buttonList.get(6)).enabled = release;
-					((GuiButton) buttonList.get(6)).visible = release;
+					buttonList.get(6).enabled = release;
+					buttonList.get(6).visible = release;
 				}
 				mc.thePlayer.closeScreen();
 			}
@@ -210,102 +147,6 @@ public class GuiPC extends GuiContainer {
 				textFieldSelectedBox.setText(cont.getPageNb());
 			}
 		}
-	}
-
-	@Override
-	protected void mouseClicked(int par1, int par2, int par3) throws IOException {
-		super.mouseClicked(par1, par2, par3);
-		textFieldSelectedBox.mouseClicked(par1, par2, par3);
-		textFieldSearch.mouseClicked(par1, par2, par3);
-		if (toRename)
-			textFieldBoxName.mouseClicked(par1, par2, par3);
-
-	}
-
-	@Override
-	protected void keyTyped(char par1, int par2) {
-		keyTyped2(par1, par2);
-		if (par2 == 1) {
-			mc.thePlayer.closeScreen();
-			return;
-		}
-
-		textFieldSearch.textboxKeyTyped(par1, par2);
-
-		if (toRename)
-			textFieldBoxName.textboxKeyTyped(par1, par2);
-		if (par1 <= 57) {
-			textFieldSelectedBox.textboxKeyTyped(par1, par2);
-		}
-		if (par2 == 28) {
-			String entry = textFieldSelectedBox.getText();
-			String box = textFieldBoxName.getText();
-			int number = 1;
-
-			try {
-				number = Integer.parseInt(entry);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			number = Math.max(1, Math.min(number, InventoryPC.PAGECOUNT));
-			cont.gotoInventoryPage(number);
-
-			if (toRename && box != boxName) {
-
-				if (toRename) {
-					box = textFieldBoxName.getText();
-					if (box != boxName)
-						cont.changeName(box);
-				}
-				toRename = !toRename;
-			}
-		}
-
-	}
-
-	@Override
-	public void drawScreen(int i1, int j, float f) {
-		super.drawScreen(i1, j, f);
-		textFieldSelectedBox.drawTextBox();
-
-		if (!bound)
-			textFieldSearch.drawTextBox();
-
-		if (toRename)
-			textFieldBoxName.drawTextBox();
-		for (int i = 0; i < 54; i++)
-			if (!textFieldSearch.getText().isEmpty()) {
-				ItemStack stack = cont.inv.getStackInSlot(i + 54 * cont.inv.getPage());
-				// if(stack!=null)
-				int x = (i % 9) * 18 + width/2 - 80;
-				int y = (i / 9) * 18 + height/2 - 96;
-				{
-					String name = stack == null ? "" : stack.getDisplayName();
-					if (name.isEmpty()
-							|| !name.toLowerCase().contains(
-									textFieldSearch.getText())) {
-						GL11.glPushMatrix();
-						GL11.glEnable(GL11.GL_BLEND);
-						GL11.glColor4f(0, 0, 0, 1);
-						mc.renderEngine.bindTexture(new ResourceLocation(
-								PokecubeMod.ID, "textures/hologram.png"));
-						drawTexturedModalRect(x, y, 0, 0, 16, 16);
-						GL11.glDisable(GL11.GL_BLEND);
-						GL11.glPopMatrix();
-					} else {
-						GL11.glPushMatrix();
-						GL11.glEnable(GL11.GL_BLEND);
-						GL11.glColor4f(0, 1, 0, 1);
-						mc.renderEngine.bindTexture(new ResourceLocation(
-						        PokecubeMod.ID, "textures/hologram.png"));
-						drawTexturedModalRect(x, y, 0, 0, 16, 16);
-						GL11.glDisable(GL11.GL_BLEND);
-						GL11.glPopMatrix();
-					}
-				}
-			}
-
 	}
 
 	@Override
@@ -354,16 +195,165 @@ public class GuiPC extends GuiContainer {
 		}
 
 		if (!bound)
-			((GuiButton) buttonList.get(2)).displayString = cont.inv.autoToPC ? autoOn
+			buttonList.get(2).displayString = cont.inv.autoToPC ? autoOn
 					: autoOff;
+	}
+
+	@Override
+	public void drawScreen(int i1, int j, float f) {
+		super.drawScreen(i1, j, f);
+		textFieldSelectedBox.drawTextBox();
+
+		if (!bound)
+			textFieldSearch.drawTextBox();
+
+		if (toRename)
+			textFieldBoxName.drawTextBox();
+		for (int i = 0; i < 54; i++)
+			if (!textFieldSearch.getText().isEmpty()) {
+				ItemStack stack = cont.inv.getStackInSlot(i + 54 * cont.inv.getPage());
+				// if(stack!=null)
+				int x = (i % 9) * 18 + width/2 - 80;
+				int y = (i / 9) * 18 + height/2 - 96;
+				{
+					String name = stack == null ? "" : stack.getDisplayName();
+					if (name.isEmpty()
+							|| !name.toLowerCase().contains(
+									textFieldSearch.getText())) {
+						GL11.glPushMatrix();
+						GL11.glEnable(GL11.GL_BLEND);
+						GL11.glColor4f(0, 0, 0, 1);
+						mc.renderEngine.bindTexture(new ResourceLocation(
+								PokecubeMod.ID, "textures/hologram.png"));
+						drawTexturedModalRect(x, y, 0, 0, 16, 16);
+						GL11.glDisable(GL11.GL_BLEND);
+						GL11.glPopMatrix();
+					} else {
+						GL11.glPushMatrix();
+						GL11.glEnable(GL11.GL_BLEND);
+						GL11.glColor4f(0, 1, 0, 1);
+						mc.renderEngine.bindTexture(new ResourceLocation(
+						        PokecubeMod.ID, "textures/hologram.png"));
+						drawTexturedModalRect(x, y, 0, 0, 16, 16);
+						GL11.glDisable(GL11.GL_BLEND);
+						GL11.glPopMatrix();
+					}
+				}
+			}
+
+	}
+
+	@Override
+	public void initGui() {
+		super.initGui();
+		buttonList.clear();
+		int xOffset = 0;
+		int yOffset = -11;
+		String next = StatCollector.translateToLocal("tile.pc.next");
+		buttonList.add(new GuiButton(1, width / 2 - xOffset + 15, height / 2
+				- yOffset, 50, 20, next));
+		String prev = StatCollector.translateToLocal("tile.pc.previous");
+		buttonList.add(new GuiButton(2, width / 2 - xOffset - 65, height / 2
+				- yOffset, 50, 20, prev));
+
+		if (!bound) {
+			String auto = StatCollector.translateToLocal("tile.pc.autoon");
+			buttonList.add(new GuiButton(3, width / 2 - xOffset - 137, height
+					/ 2 - yOffset - 105, 50, 20, auto));
+		}
+		if (!bound) {
+			String rename = StatCollector.translateToLocal("tile.pc.rename");
+			buttonList.add(new GuiButton(4, width / 2 - xOffset - 137, height
+					/ 2 - yOffset - 125, 50, 20, rename));
+		}
+		if(cont.pcTile!=null)
+		{
+			if (!bound)
+				buttonList.add(new GuiButton(5, width / 2 - xOffset + 89, height
+						/ 2 - yOffset - 125, 50, 20, "private"));
+			else
+			{
+				buttonList.add(new GuiButton(5, width / 2 - xOffset + 89, height
+						/ 2 - yOffset - 125, 50, 20, "public"));
+				buttonList.add(new GuiButton(9, width / 2 - xOffset + 89, height
+						/ 2 - yOffset - 105, 50, 20, "bind"));
+			}
+		}
+		else
+		{
+			buttonList.add(new GuiButton(5, width / 2 - xOffset + 89, height
+					/ 2 - yOffset - 125, 0, 0, ""));
+		}
+		if (!bound) {
+			buttonList.add(new GuiButton(6, width / 2 - xOffset + 89, height
+					/ 2 - yOffset - 105, 50, 20, "release"));
+			buttonList.add(new GuiButton(7, width / 2 - xOffset + 89, height
+					/ 2 - yOffset - 85, 50, 20, "confirm"));
+			buttonList.get(6).visible = false;
+			buttonList.get(6).enabled = false;
+			
+		}
+		
+
+		textFieldSelectedBox = new GuiTextField(0, fontRendererObj, width / 2
+				- xOffset - 13, height / 2 - yOffset + 5, 25, 10);
+		textFieldSelectedBox.setText(page);
+
+		textFieldBoxName = new GuiTextField(0, fontRendererObj, width / 2
+				- xOffset - 190, height / 2 - yOffset - 80, 100, 10);
+		textFieldBoxName.setText(boxName);
+
+		textFieldSearch = new GuiTextField(0, fontRendererObj, width / 2 - xOffset
+				- 10, height / 2 - yOffset - 121, 90, 10);
+		textFieldSearch.setText("");
+	}
+
+	@Override
+	protected void keyTyped(char par1, int par2) {
+		keyTyped2(par1, par2);
+		if (par2 == 1) {
+			mc.thePlayer.closeScreen();
+			return;
+		}
+
+		textFieldSearch.textboxKeyTyped(par1, par2);
+
+		if (toRename)
+			textFieldBoxName.textboxKeyTyped(par1, par2);
+		if (par1 <= 57) {
+			textFieldSelectedBox.textboxKeyTyped(par1, par2);
+		}
+		if (par2 == 28) {
+			String entry = textFieldSelectedBox.getText();
+			String box = textFieldBoxName.getText();
+			int number = 1;
+
+			try {
+				number = Integer.parseInt(entry);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			number = Math.max(1, Math.min(number, InventoryPC.PAGECOUNT));
+			cont.gotoInventoryPage(number);
+
+			if (toRename && box != boxName) {
+
+				if (toRename) {
+					box = textFieldBoxName.getText();
+					if (box != boxName)
+						cont.changeName(box);
+				}
+				toRename = !toRename;
+			}
+		}
+
 	}
 
 	// public boolean getReleaseState(){
 
 	// /return release;
 	// }
-
-	private Slot theSlot;
 
 	/**
 	 * Fired when a key is typed. This is the equivalent of
@@ -381,6 +371,16 @@ public class GuiPC extends GuiContainer {
 						isCtrlKeyDown() ? 1 : 0, 4);
 			}
 		}
+	}
+
+	@Override
+	protected void mouseClicked(int par1, int par2, int par3) throws IOException {
+		super.mouseClicked(par1, par2, par3);
+		textFieldSelectedBox.mouseClicked(par1, par2, par3);
+		textFieldSearch.mouseClicked(par1, par2, par3);
+		if (toRename)
+			textFieldBoxName.mouseClicked(par1, par2, par3);
+
 	}
 
 	/**

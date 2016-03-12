@@ -17,6 +17,31 @@ public class HoneyGather extends Ability
     int range = 4;
 
     @Override
+    public Ability init(Object... args)
+    {
+        for (int i = 0; i < 2; i++)
+            if (args != null && args.length > i)
+            {
+                if (args[i] instanceof Integer)
+                {
+                    range = (int) args[i];
+                    return this;
+                }
+            }
+        return this;
+    }
+
+    @Override
+    public void onAgress(IPokemob mob, EntityLivingBase target)
+    {
+    }
+
+    @Override
+    public void onMoveUse(IPokemob mob, MovePacket move)
+    {
+    }
+
+    @Override
     public void onUpdate(IPokemob mob)
     {
         double diff = (0.0002 * range * range);
@@ -48,30 +73,5 @@ public class HoneyGather extends Ability
                 }
             }
         }
-    }
-
-    @Override
-    public void onMoveUse(IPokemob mob, MovePacket move)
-    {
-    }
-
-    @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
-    {
-    }
-
-    @Override
-    public Ability init(Object... args)
-    {
-        for (int i = 0; i < 2; i++)
-            if (args != null && args.length > i)
-            {
-                if (args[i] instanceof Integer)
-                {
-                    range = (int) args[i];
-                    return this;
-                }
-            }
-        return this;
     }
 }

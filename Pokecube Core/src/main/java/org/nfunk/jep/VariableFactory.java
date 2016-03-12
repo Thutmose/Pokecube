@@ -23,13 +23,13 @@ package org.nfunk.jep;
  */
 public class VariableFactory
 {
-	/** Create a variable with a name and value */
-	public Variable createVariable(String name, Object value) {
-		return new Variable(name,value);
-	}
-
 	/** Create a variable with a name but not value */
 	public Variable createVariable(String name)	{
 		return new Variable(name);
+	}
+
+	/** Create a variable with a name and value */
+	public Variable createVariable(String name, Object value) {
+		return new Variable(name,value);
 	}
 }

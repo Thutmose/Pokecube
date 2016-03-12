@@ -22,13 +22,14 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
 {
     public static final PropertyEnum<BlockBerryWood.EnumType> VARIANT4 = PropertyEnum
             .create("variant", BlockBerryWood.EnumType.class, new Predicate<BlockBerryWood.EnumType>()
             {
+                @Override
                 public boolean apply(BlockBerryWood.EnumType type)
                 {
                     return type.getMetadata() >= 4;
@@ -37,6 +38,7 @@ public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
     public static final PropertyEnum<BlockBerryWood.EnumType> VARIANT0 = PropertyEnum
             .create("variant", BlockBerryWood.EnumType.class, new Predicate<BlockBerryWood.EnumType>()
             {
+                @Override
                 public boolean apply(BlockBerryWood.EnumType type)
                 {
                     return type.getMetadata() < 4;
@@ -53,16 +55,31 @@ public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
         LEAF_TYPES = names;
         shift = logShift;
         BlockBerryCrop.leaves.add(this);
-        setCreativeTab(PokecubeCore.creativeTabPokecubeBerries);
+        setCreativeTab(PokecubeMod.creativeTabPokecubeBerries);
         this.setDefaultState(this.blockState.getBaseState()
                 .withProperty(shift == 0 ? VARIANT0 : VARIANT4, BlockBerryWood.EnumType.byMetadata(shift))
                 .withProperty(CHECK_DECAY, Boolean.valueOf(true)).withProperty(DECAYABLE, Boolean.valueOf(true)));
     }
 
-    /** How many world ticks before ticking */
-    public int tickRate(World p_149738_1_)
+    @Override
+    protected BlockState createBlockState()
     {
-        return 20;
+        IProperty<?> prop = (BlockBerryLog.currentlyConstructing == 0 ? VARIANT0 : VARIANT4);
+        return new BlockState(this, new IProperty[] { prop, CHECK_DECAY, DECAYABLE });
+    }
+
+    @Override
+    protected ItemStack createStackedBlock(IBlockState state)
+    {
+        return new ItemStack(Item.getItemFromBlock(this), 1,
+                state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata() - 4);
+    }
+
+    @Override
+    /** Get the damage value that this Block should drop */
+    public int damageDropped(IBlockState state)
+    {
+        return state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata();
     }
 
     @Override
@@ -73,33 +90,52 @@ public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
     }
 
     @Override
-    /** Ticks the block if it's been scheduled */
-    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
+    public int getDamageValue(World worldIn, BlockPos pos)
     {
-        if (!worldIn.isRemote)
-        {
-            boolean air = worldIn.isAirBlock(pos.down());
-
-            boolean canGrow = ((Boolean) state.getValue(DECAYABLE)) && air && Math.random() > 0.9;
-            if (canGrow)
-            {
-                BlockBerryFruit fruit = (BlockBerryFruit) ((BlockBerryWood.EnumType) state
-                        .getValue(shift == 0 ? VARIANT0 : VARIANT4)).getBerryFruit();
-
-                if (fruit != null)
-                {
-                    worldIn.setBlockState(pos.down(), fruit.getDefaultState());
-                }
-            }
-        }
-        super.updateTick(worldIn, pos, state, rand);
+        IBlockState iblockstate = worldIn.getBlockState(pos);
+        return iblockstate.getBlock().getMetaFromState(iblockstate) & 3;
     }
 
     @Override
-    /** Returns the quantity of items to drop on block destruction. */
-    public int quantityDropped(Random par1Random)
+    /** Convert the BlockState into the correct metadata value */
+    public int getMetaFromState(IBlockState state)
     {
-        return 0;
+        byte b0 = 0;
+        int i = b0
+                | state.getValue((shift == 0 ? VARIANT0 : VARIANT4)).getMetadata() - shift;
+
+        if (!state.getValue(DECAYABLE).booleanValue())
+        {
+            i |= 4;
+        }
+
+        if (state.getValue(CHECK_DECAY).booleanValue())
+        {
+            i |= 8;
+        }
+
+        return i;
+    }
+
+    public IBlockState getStateForTree(String berryName)
+    {
+        BlockBerryWood.EnumType type = BlockBerryWood.EnumType.valueOf(berryName.toUpperCase());
+        if (type != null)
+        {
+            int num = type.getMetadata() - shift;
+            if (num >= 0 && num < 4) { return getStateFromMeta(num + shift).withProperty(CHECK_DECAY, Boolean.FALSE)
+                    .withProperty(DECAYABLE, Boolean.TRUE); }
+        }
+        return null;
+    }
+
+    @Override
+    /** Convert the given metadata into a BlockState for this Block */
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty((shift == 0 ? VARIANT0 : VARIANT4), this.getWoodType2(meta))
+                .withProperty(DECAYABLE, Boolean.valueOf((meta & 4) == 0))
+                .withProperty(CHECK_DECAY, Boolean.valueOf((meta & 8) > 0));
     }
 
     @Override
@@ -130,66 +166,14 @@ public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
     }
 
     @Override
-    /** Get the damage value that this Block should drop */
-    public int damageDropped(IBlockState state)
+    public EnumType getWoodType(int meta)
     {
-        return ((BlockBerryWood.EnumType) state.getValue(shift == 0 ? VARIANT0 : VARIANT4)).getMetadata();
-    }
-
-    @Override
-    public int getDamageValue(World worldIn, BlockPos pos)
-    {
-        IBlockState iblockstate = worldIn.getBlockState(pos);
-        return iblockstate.getBlock().getMetaFromState(iblockstate) & 3;
-    }
-
-    @Override
-    protected ItemStack createStackedBlock(IBlockState state)
-    {
-        return new ItemStack(Item.getItemFromBlock(this), 1,
-                ((BlockBerryWood.EnumType) state.getValue(shift == 0 ? VARIANT0 : VARIANT4)).getMetadata() - 4);
-    }
-
-    @Override
-    /** Convert the given metadata into a BlockState for this Block */
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty((shift == 0 ? VARIANT0 : VARIANT4), this.getWoodType2(meta))
-                .withProperty(DECAYABLE, Boolean.valueOf((meta & 4) == 0))
-                .withProperty(CHECK_DECAY, Boolean.valueOf((meta & 8) > 0));
-    }
-
-    @Override
-    /** Convert the BlockState into the correct metadata value */
-    public int getMetaFromState(IBlockState state)
-    {
-        byte b0 = 0;
-        int i = b0
-                | ((BlockBerryWood.EnumType) state.getValue((shift == 0 ? VARIANT0 : VARIANT4))).getMetadata() - shift;
-
-        if (!((Boolean) state.getValue(DECAYABLE)).booleanValue())
-        {
-            i |= 4;
-        }
-
-        if (((Boolean) state.getValue(CHECK_DECAY)).booleanValue())
-        {
-            i |= 8;
-        }
-
-        return i;
+        return null;
     }
 
     public BlockBerryWood.EnumType getWoodType2(int meta)
     {
         return BlockBerryWood.EnumType.byMetadata((meta & 3) + shift);
-    }
-
-    @Override
-    protected BlockState createBlockState()
-    {
-        IProperty<?> prop = (BlockBerryLog.currentlyConstructing == 0 ? VARIANT0 : VARIANT4);
-        return new BlockState(this, new IProperty[] { prop, CHECK_DECAY, DECAYABLE });
     }
 
     @Override
@@ -201,35 +185,54 @@ public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
     }
 
     @Override
-    public List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IBlockAccess world, BlockPos pos, int fortune)
-    {
-        IBlockState state = world.getBlockState(pos);
-        return Lists.newArrayList(new ItemStack(this, 1,
-                ((BlockBerryWood.EnumType) state.getValue((shift == 0 ? VARIANT0 : VARIANT4))).getMetadata() - shift));
-    }
-
-    @Override
-    public EnumType getWoodType(int meta)
-    {
-        return null;
-    }
-
-    @Override
     public boolean isOpaqueCube()
     {
         return false;
     }
 
-    public IBlockState getStateForTree(String berryName)
+    @Override
+    public List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IBlockAccess world, BlockPos pos, int fortune)
     {
-        BlockBerryWood.EnumType type = BlockBerryWood.EnumType.valueOf(berryName.toUpperCase());
-        if (type != null)
+        IBlockState state = world.getBlockState(pos);
+        return Lists.newArrayList(new ItemStack(this, 1,
+                state.getValue((shift == 0 ? VARIANT0 : VARIANT4)).getMetadata() - shift));
+    }
+
+    @Override
+    /** Returns the quantity of items to drop on block destruction. */
+    public int quantityDropped(Random par1Random)
+    {
+        return 0;
+    }
+
+    /** How many world ticks before ticking */
+    @Override
+    public int tickRate(World p_149738_1_)
+    {
+        return 20;
+    }
+
+    @Override
+    /** Ticks the block if it's been scheduled */
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
+    {
+        if (!worldIn.isRemote)
         {
-            int num = type.getMetadata() - shift;
-            if (num >= 0 && num < 4) { return getStateFromMeta(num + shift).withProperty(CHECK_DECAY, Boolean.FALSE)
-                    .withProperty(DECAYABLE, Boolean.TRUE); }
+            boolean air = worldIn.isAirBlock(pos.down());
+
+            boolean canGrow = (state.getValue(DECAYABLE)) && air && Math.random() > 0.9;
+            if (canGrow)
+            {
+                BlockBerryFruit fruit = (BlockBerryFruit) state
+                        .getValue(shift == 0 ? VARIANT0 : VARIANT4).getBerryFruit();
+
+                if (fruit != null)
+                {
+                    worldIn.setBlockState(pos.down(), fruit.getDefaultState());
+                }
+            }
         }
-        return null;
+        super.updateTick(worldIn, pos, state, rand);
     }
 
 }

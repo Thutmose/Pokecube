@@ -28,59 +28,28 @@ import pokecube.core.client.render.PTezzelator;
 public class ClientProxy extends CommonProxy
 {
 
-    @Override
-    public void registerInformation()
+    private static class GuiOpener
     {
-        MinecraftForge.EVENT_BUS.register(this);
-        SaveStates save = NBTEdit.getSaveStates();
-        save.load();
-        save.save();
-    }
+        final Object         target;
+        final NBTTagCompound tag;
 
-    @Override
-    public File getMinecraftDirectory()
-    {
-        return FMLClientHandler.instance().getClient().mcDataDir;
-    }
-
-    @Override
-    public void openEditGUI(int entityID, NBTTagCompound tag)
-    {
-        new GuiOpener(entityID, tag);
-    }
-
-    @Override
-    public void openEditGUI(BlockPos pos, NBTTagCompound tag)
-    {
-        new GuiOpener(pos, tag);
-    }
-
-    @SubscribeEvent
-    public void renderWorldLast(RenderWorldLastEvent event)
-    {
-        GuiScreen curScreen = Minecraft.getMinecraft().currentScreen;
-        if (curScreen instanceof GuiEditNBTTree)
+        public GuiOpener(Object target, NBTTagCompound tag)
         {
-            GuiEditNBTTree screen = (GuiEditNBTTree) curScreen;
-            Entity e = screen.getEntity();
-
-            if (e != null && e.isEntityAlive())
-                drawBoundingBox(event.context, event.partialTicks, e.getEntityBoundingBox());
-            else if (screen.isTileEntity())
-            {
-                int x = screen.getBlockX();
-                int y = screen.y;
-                int z = screen.z;
-                World world = Minecraft.getMinecraft().theWorld;
-                BlockPos pos = new BlockPos(x, y, z);
-                Block b = world.getBlockState(pos).getBlock();
-                if (b != null)
-                {
-                    b.setBlockBoundsBasedOnState(world, pos);
-                    drawBoundingBox(event.context, event.partialTicks, b.getSelectedBoundingBox(world, pos));
-                }
-            }
+            this.tag = tag;
+            this.target = target;
+            MinecraftForge.EVENT_BUS.register(this);
         }
+
+        @SubscribeEvent
+        public void tick(ClientTickEvent event)
+        {
+            if (target instanceof BlockPos)
+                Minecraft.getMinecraft().displayGuiScreen(new GuiEditNBTTree((BlockPos) target, tag));
+            else if (target instanceof Integer)
+                Minecraft.getMinecraft().displayGuiScreen(new GuiEditNBTTree((int) target, tag));
+            MinecraftForge.EVENT_BUS.unregister(this);
+        }
+
     }
 
     private void drawBoundingBox(RenderGlobal r, float f, AxisAlignedBB aabb)
@@ -89,9 +58,9 @@ public class ClientProxy extends CommonProxy
 
         Entity player = Minecraft.getMinecraft().getRenderViewEntity();
 
-        double var8 = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) f;
-        double var10 = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) f;
-        double var12 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) f;
+        double var8 = player.lastTickPosX + (player.posX - player.lastTickPosX) * f;
+        double var10 = player.lastTickPosY + (player.posY - player.lastTickPosY) * f;
+        double var12 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * f;
 
         aabb = aabb.addCoord(-var8, -var10, -var12);
 
@@ -135,27 +104,58 @@ public class ClientProxy extends CommonProxy
 
     }
 
-    private static class GuiOpener
+    @Override
+    public File getMinecraftDirectory()
     {
-        final Object         target;
-        final NBTTagCompound tag;
+        return FMLClientHandler.instance().getClient().mcDataDir;
+    }
 
-        public GuiOpener(Object target, NBTTagCompound tag)
+    @Override
+    public void openEditGUI(BlockPos pos, NBTTagCompound tag)
+    {
+        new GuiOpener(pos, tag);
+    }
+
+    @Override
+    public void openEditGUI(int entityID, NBTTagCompound tag)
+    {
+        new GuiOpener(entityID, tag);
+    }
+
+    @Override
+    public void registerInformation()
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+        SaveStates save = NBTEdit.getSaveStates();
+        save.load();
+        save.save();
+    }
+
+    @SubscribeEvent
+    public void renderWorldLast(RenderWorldLastEvent event)
+    {
+        GuiScreen curScreen = Minecraft.getMinecraft().currentScreen;
+        if (curScreen instanceof GuiEditNBTTree)
         {
-            this.tag = tag;
-            this.target = target;
-            MinecraftForge.EVENT_BUS.register(this);
-        }
+            GuiEditNBTTree screen = (GuiEditNBTTree) curScreen;
+            Entity e = screen.getEntity();
 
-        @SubscribeEvent
-        public void tick(ClientTickEvent event)
-        {
-            if (target instanceof BlockPos)
-                Minecraft.getMinecraft().displayGuiScreen(new GuiEditNBTTree((BlockPos) target, tag));
-            else if (target instanceof Integer)
-                Minecraft.getMinecraft().displayGuiScreen(new GuiEditNBTTree((int) target, tag));
-            MinecraftForge.EVENT_BUS.unregister(this);
+            if (e != null && e.isEntityAlive())
+                drawBoundingBox(event.context, event.partialTicks, e.getEntityBoundingBox());
+            else if (screen.isTileEntity())
+            {
+                int x = screen.getBlockX();
+                int y = screen.y;
+                int z = screen.z;
+                World world = Minecraft.getMinecraft().theWorld;
+                BlockPos pos = new BlockPos(x, y, z);
+                Block b = world.getBlockState(pos).getBlock();
+                if (b != null)
+                {
+                    b.setBlockBoundsBasedOnState(world, pos);
+                    drawBoundingBox(event.context, event.partialTicks, b.getSelectedBoundingBox(world, pos));
+                }
+            }
         }
-
     }
 }

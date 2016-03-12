@@ -18,7 +18,33 @@ import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
 
 public class ExtraDatabase
 {
+    @XmlRootElement(name = "details")
+    public static class XMLDetails
+    {
+        @XmlElement(name = "RIDDENOFFSET")
+        float  offset = -1;
+        @XmlElement(name = "PARTICLEEFFECTS")
+        String particles;
+    }
+    @XmlRootElement(name = "ModelAnimator")
+    public static class XMLFile
+    {
+        @XmlElement(name = "model")
+        XMLModel        model;
+        @XmlElement(name = "details")
+        XMLDetails      details;
+        @XmlElement(name = "Pokemon")
+        XMLPokedexEntry entry;
+    }
+
+    @XmlRootElement(name = "model")
+    public static class XMLModel
+    {
+
+    }
+
     static HashMap<String, String>          xmls;
+
     static HashMap<String, XMLPokedexEntry> entries = Maps.newHashMap();
 
     public static void addXML(String name, ArrayList<String> xml)
@@ -30,11 +56,6 @@ public class ExtraDatabase
             val += s + "\n";
         }
         xmls.put(name, val);
-    }
-
-    public static XMLPokedexEntry getEntry(String name)
-    {
-        return entries.get(name);
     }
 
     public static void apply()
@@ -82,29 +103,8 @@ public class ExtraDatabase
         entries = null;
     }
 
-    @XmlRootElement(name = "ModelAnimator")
-    public static class XMLFile
+    public static XMLPokedexEntry getEntry(String name)
     {
-        @XmlElement(name = "model")
-        XMLModel        model;
-        @XmlElement(name = "details")
-        XMLDetails      details;
-        @XmlElement(name = "Pokemon")
-        XMLPokedexEntry entry;
-    }
-
-    @XmlRootElement(name = "model")
-    public static class XMLModel
-    {
-
-    }
-
-    @XmlRootElement(name = "details")
-    public static class XMLDetails
-    {
-        @XmlElement(name = "RIDDENOFFSET")
-        float  offset = -1;
-        @XmlElement(name = "PARTICLEEFFECTS")
-        String particles;
+        return entries.get(name);
     }
 }

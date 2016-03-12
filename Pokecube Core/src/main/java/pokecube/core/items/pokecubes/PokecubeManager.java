@@ -14,6 +14,93 @@ import pokecube.core.utils.Tools;
 
 public class PokecubeManager
 {
+    public static int getCheckSum(ItemStack itemStack)
+    {
+        return itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("checkSum")
+                ? itemStack.getTagCompound().getInteger("checkSum") : 0;
+    }
+
+    public static ItemStack getHeldItem(ItemStack stack)
+    {
+        if (!isFilled(stack)) return null;
+
+        try
+        {
+            NBTTagList equipmentTags = (NBTTagList) stack.getTagCompound().getCompoundTag("Pokemob").getTag("Items");
+
+            for (int i = 0; i < equipmentTags.tagCount(); i++)
+            {
+                byte slot = equipmentTags.getCompoundTagAt(i).getByte("Slot");
+                if (slot != 1) continue;
+                ItemStack held = ItemStack.loadItemStackFromNBT(equipmentTags.getCompoundTagAt(i));
+                return held;
+            }
+
+        }
+        catch (Exception e)
+        {
+        }
+        return null;
+    }
+
+    public static String getOwner(ItemStack itemStack)
+    {
+        String ret = "";
+        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("Owner"))
+        {
+            ret = itemStack.getTagCompound().getString("Owner");
+        }
+        if ((ret == null || ret.equals("")) && itemStack.hasTagCompound())
+        {
+            if (itemStack.getTagCompound().hasKey("Pokemob"))
+            {
+                NBTTagCompound nbt = itemStack.getTagCompound().getCompoundTag("Pokemob");
+                if (nbt.hasKey("OwnerUUID"))
+                {
+                    ret = nbt.getString("OwnerUUID");
+                }
+            }
+        }
+
+        return ret;// itemStack.hasTagCompound() &&
+                   // itemStack.getTagCompound().hasKey("Owner") ?
+                   // itemStack.getTagCompound().getString("Owner") : "";
+    }
+
+    public static int getPokedexNb(ItemStack itemStack)
+    {
+        return itemStack != null && itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("PokedexNb")
+                ? itemStack.getTagCompound().getInteger("PokedexNb") : 0;
+    }
+
+    public static NBTTagCompound getSealTag(ItemStack stack)
+    {
+        if (isFilled(stack))
+        {
+            return stack.getTagCompound().getCompoundTag("Pokemob").getCompoundTag("ForgeData")
+                    .getCompoundTag("sealtag");
+        }
+        else if (stack.hasTagCompound()) { return stack.getTagCompound().getCompoundTag("Explosion"); }
+        return null;
+    }
+
+    public static byte getStatus(ItemStack itemStack)
+    {
+        return itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("Status")
+                ? itemStack.getTagCompound().getByte("Status") : 0;
+    }
+
+    public static int getTilt(ItemStack itemStack)
+    {
+        return itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tilt")
+                ? itemStack.getTagCompound().getInteger("tilt") : 0;
+    }
+
+    public static boolean isFilled(ItemStack stack)
+    {
+        return (getPokedexNb(stack) != 0);
+    }
+
     public static IPokemob itemToPokemob(ItemStack itemStack, World world)
     {
         if (!itemStack.hasTagCompound()) return null;
@@ -116,28 +203,6 @@ public class PokecubeManager
         var4.setInteger("cubecolor", color);
     }
 
-    public static int getTilt(ItemStack itemStack)
-    {
-        return itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tilt")
-                ? itemStack.getTagCompound().getInteger("tilt") : 0;
-    }
-
-    public static void setTilt(ItemStack itemStack, int number)
-    {
-        if (!itemStack.hasTagCompound())
-        {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        itemStack.getTagCompound().setInteger("tilt", number);
-    }
-
-    public static int getCheckSum(ItemStack itemStack)
-    {
-        return itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("checkSum")
-                ? itemStack.getTagCompound().getInteger("checkSum") : 0;
-    }
-
     public static void setOwner(ItemStack itemStack, Entity owner)
     {
         if (!itemStack.hasTagCompound())
@@ -162,30 +227,6 @@ public class PokecubeManager
 
     }
 
-    public static String getOwner(ItemStack itemStack)
-    {
-        String ret = "";
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("Owner"))
-        {
-            ret = itemStack.getTagCompound().getString("Owner");
-        }
-        if ((ret == null || ret.equals("")) && itemStack.hasTagCompound())
-        {
-            if (itemStack.getTagCompound().hasKey("Pokemob"))
-            {
-                NBTTagCompound nbt = itemStack.getTagCompound().getCompoundTag("Pokemob");
-                if (nbt.hasKey("OwnerUUID"))
-                {
-                    ret = nbt.getString("OwnerUUID");
-                }
-            }
-        }
-
-        return ret;// itemStack.hasTagCompound() &&
-                   // itemStack.getTagCompound().hasKey("Owner") ?
-                   // itemStack.getTagCompound().getString("Owner") : "";
-    }
-
     public static void setStatus(ItemStack itemStack, byte status)
     {
         if (!itemStack.hasTagCompound())
@@ -196,55 +237,14 @@ public class PokecubeManager
         itemStack.getTagCompound().setByte("Status", status);
     }
 
-    public static ItemStack getHeldItem(ItemStack stack)
+    public static void setTilt(ItemStack itemStack, int number)
     {
-        if (!isFilled(stack)) return null;
-
-        try
+        if (!itemStack.hasTagCompound())
         {
-            NBTTagList equipmentTags = (NBTTagList) stack.getTagCompound().getCompoundTag("Pokemob").getTag("Items");
-
-            for (int i = 0; i < equipmentTags.tagCount(); i++)
-            {
-                byte slot = equipmentTags.getCompoundTagAt(i).getByte("Slot");
-                if (slot != 1) continue;
-                ItemStack held = ItemStack.loadItemStackFromNBT(equipmentTags.getCompoundTagAt(i));
-                return held;
-            }
-
+            itemStack.setTagCompound(new NBTTagCompound());
         }
-        catch (Exception e)
-        {
-        }
-        return null;
-    }
 
-    public static byte getStatus(ItemStack itemStack)
-    {
-        return itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("Status")
-                ? itemStack.getTagCompound().getByte("Status") : 0;
-    }
-
-    public static boolean isFilled(ItemStack stack)
-    {
-        return (getPokedexNb(stack) != 0);
-    }
-
-    public static int getPokedexNb(ItemStack itemStack)
-    {
-        return itemStack != null && itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("PokedexNb")
-                ? itemStack.getTagCompound().getInteger("PokedexNb") : 0;
-    }
-
-    public static NBTTagCompound getSealTag(ItemStack stack)
-    {
-        if (isFilled(stack))
-        {
-            return stack.getTagCompound().getCompoundTag("Pokemob").getCompoundTag("ForgeData")
-                    .getCompoundTag("sealtag");
-        }
-        else if (stack.hasTagCompound()) { return stack.getTagCompound().getCompoundTag("Explosion"); }
-        return null;
+        itemStack.getTagCompound().setInteger("tilt", number);
     }
 
 }

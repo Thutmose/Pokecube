@@ -1,20 +1,20 @@
 package pokecube.modelloader.client.render.tabula.components;
 
+import java.util.ArrayList;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+
+import javax.annotation.Nullable;
+
+import org.w3c.dom.NamedNodeMap;
+
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.modelloader.client.render.animation.AnimationRegistry.IPartRenamer;
-
-import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
-import org.w3c.dom.NamedNodeMap;
 
 /** Container for Tabula animations.
  *
@@ -34,21 +34,6 @@ public class Animation
     public TreeMap<String, ArrayList<AnimationComponent>> sets = new TreeMap<String, ArrayList<AnimationComponent>>(
             Ordering.natural()); // cube identifier to animation component
 
-    public String toString()
-    {
-        return name + "|" + identifier + "|" + loops;
-    }
-
-    public Animation init(NamedNodeMap map, @Nullable IPartRenamer renamer)
-    {
-        return this;
-    }
-
-    public int getLength()
-    {
-        return length;
-    }
-    
     public ArrayList<AnimationComponent> getComponents(String key)
     {
         if(!checked.contains(key))
@@ -70,6 +55,16 @@ public class Animation
         }
         return sets.get(key);
     }
+
+    public int getLength()
+    {
+        return length;
+    }
+
+    public Animation init(NamedNodeMap map, @Nullable IPartRenamer renamer)
+    {
+        return this;
+    }
     
     public void initLength()
     {
@@ -83,5 +78,11 @@ public class Animation
                 }
             }
         }
+    }
+    
+    @Override
+    public String toString()
+    {
+        return name + "|" + identifier + "|" + loops;
     }
 }

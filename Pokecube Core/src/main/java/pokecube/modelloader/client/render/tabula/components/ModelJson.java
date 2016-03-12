@@ -80,65 +80,38 @@ public class ModelJson extends MowzieModelBase
         setInitPose();
     }
 
-    public void render(Entity entity, float limbSwing, float limbSwingAmount, float rotation, float rotationYaw,
-            float rotationPitch, float scale)
+    private boolean canRunConcurrent(Animation toRun)
     {
-        this.setRotationAngles(limbSwing, limbSwingAmount, rotation, rotationYaw, rotationPitch, scale, entity);
-
-        double[] scales = tabulaModel.getScale();
-        GL11.glScaled(scales[0], scales[1], scales[2]);
-
-        // Render based on the group, this ensures they are correctly rendered.
-        for (String s : groupIdents)
-        {
-            Set<MowzieModelRenderer> cubes = groupMap.get(s);
-            for (MowzieModelRenderer cube : cubes)
-            {
-                if (cube != null)
-                {
-                    if (texturer != null) texturer.bindObject(entity);
-                    cube.setTexturer(texturer);
-                    cube.render(0.0625f, entity);
-                }
-            }
-        }
+        return toRun == playingAnimation;
     }
 
-    /** Sets the model's various rotation angles. For bipeds, limbSwing and
-     * limbSwingAmount are used for animating the movement of arms and legs,
-     * where limbSwing represents the time(so that arms and legs swing back and
-     * forth) and limbSwingAmount represents how "far" arms and legs can swing
-     * at most.
-     *
-     * @see net.minecraft.entity.Entity
-     * @since 0.1.0 */
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float rotation, float rotationYaw,
-            float rotationPitch, float partialTicks, Entity entity)
+    private MowzieModelRenderer createModelRenderer(CubeInfo cubeInfo)
     {
-        super.setRotationAngles(limbSwing, limbSwingAmount, rotation, rotationYaw, rotationPitch, partialTicks, entity);
+        MowzieModelRenderer cube = new MowzieModelRenderer(this, cubeInfo.txOffset[0], cubeInfo.txOffset[1]);
+        cube.name = cubeInfo.name;
+        cube.identifier = cubeInfo.identifier;
+        cube.setRotationPoint((float) cubeInfo.position[0], (float) cubeInfo.position[1], (float) cubeInfo.position[2]);
+        // Use cubeInfo.mcScale as the scale, this lets it work properly.
+        cube.addBox((float) cubeInfo.offset[0], (float) cubeInfo.offset[1], (float) cubeInfo.offset[2],
+                cubeInfo.dimensions[0], cubeInfo.dimensions[1], cubeInfo.dimensions[2], (float) cubeInfo.mcScale);
+        cube.rotateAngleX = (float) Math.toRadians((float) cubeInfo.rotation[0]);
+        cube.rotateAngleY = (float) Math.toRadians((float) cubeInfo.rotation[1]);
+        cube.rotateAngleZ = (float) Math.toRadians((float) cubeInfo.rotation[2]);
 
-        if (!Minecraft.getMinecraft().isGamePaused())
-        {
-            this.setToInitPose();
+        if (Math.abs(cube.rotateAngleX) < 1e-6) cube.rotateAngleX = 0;
+        if (Math.abs(cube.rotateAngleY) < 1e-6) cube.rotateAngleY = 0;
+        if (Math.abs(cube.rotateAngleZ) < 1e-6) cube.rotateAngleZ = 0;
 
-            if (playingAnimation != null || !playing.isEmpty())
-            {
-                updateAnimation(entity, partialTicks);
-            }
-        }
-    }
+        // Allows scaling the cube with the cubeinfo scale.
+        cube.scaleX = (float) cubeInfo.scale[0];
+        cube.scaleY = (float) cubeInfo.scale[1];
+        cube.scaleZ = (float) cubeInfo.scale[2];
 
-    private void cubeGroup(CubeGroup group)
-    {
-        for (CubeInfo cube : group.cubes)
-        {
-            cube(cube, null, group.identifier);
-        }
-
-        for (CubeGroup c : group.cubeGroups)
-        {
-            cubeGroup(c);
-        }
+        // Allows mirrored textures
+        cube.mirror = cubeInfo.txMirror;
+        // Allows hidden textures
+        cube.isHidden = cubeInfo.hidden;
+        return cube;
     }
 
     private void cube(CubeInfo cube, MowzieModelRenderer parent, String group)
@@ -172,6 +145,110 @@ public class ModelJson extends MowzieModelBase
         for (CubeInfo c : cube.children)
         {
             cube(c, modelRenderer, group);
+        }
+    }
+
+    private void cubeGroup(CubeGroup group)
+    {
+        for (CubeInfo cube : group.cubes)
+        {
+            cube(cube, null, group.identifier);
+        }
+
+        for (CubeGroup c : group.cubeGroups)
+        {
+            cubeGroup(c);
+        }
+    }
+
+    public int getAnimationLength()
+    {
+        return animationLength;
+    }
+
+    public float getAnimationTimer()
+    {
+        return animationTimer;
+    }
+
+    public MowzieModelRenderer getCube(String name)
+    {
+        return nameMap.get(name);
+    }
+
+    public boolean isAnimationInProgress()
+    {
+        return playingAnimation != null || !playing.isEmpty();
+    }
+
+    @Override
+    public void render(Entity entity, float limbSwing, float limbSwingAmount, float rotation, float rotationYaw,
+            float rotationPitch, float scale)
+    {
+        this.setRotationAngles(limbSwing, limbSwingAmount, rotation, rotationYaw, rotationPitch, scale, entity);
+
+        double[] scales = tabulaModel.getScale();
+        GL11.glScaled(scales[0], scales[1], scales[2]);
+
+        // Render based on the group, this ensures they are correctly rendered.
+        for (String s : groupIdents)
+        {
+            Set<MowzieModelRenderer> cubes = groupMap.get(s);
+            for (MowzieModelRenderer cube : cubes)
+            {
+                if (cube != null)
+                {
+                    if (texturer != null) texturer.bindObject(entity);
+                    cube.setTexturer(texturer);
+                    cube.render(0.0625f, entity);
+                }
+            }
+        }
+    }
+
+    /** Sets the model's various rotation angles. For bipeds, limbSwing and
+     * limbSwingAmount are used for animating the movement of arms and legs,
+     * where limbSwing represents the time(so that arms and legs swing back and
+     * forth) and limbSwingAmount represents how "far" arms and legs can swing
+     * at most.
+     *
+     * @see net.minecraft.entity.Entity
+     * @since 0.1.0 */
+    @Override
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float rotation, float rotationYaw,
+            float rotationPitch, float partialTicks, Entity entity)
+    {
+        super.setRotationAngles(limbSwing, limbSwingAmount, rotation, rotationYaw, rotationPitch, partialTicks, entity);
+
+        if (!Minecraft.getMinecraft().isGamePaused())
+        {
+            this.setToInitPose();
+
+            if (playingAnimation != null || !playing.isEmpty())
+            {
+                updateAnimation(entity, partialTicks);
+            }
+        }
+    }
+
+    /** Starts an animation with the id from the Tabula model. if this is called
+     * when an animation is running, it will stop it, and start the new one.
+     *
+     * @since 0.1.0 */
+    public void startAnimation(Animation animation)
+    {
+        if (!canRunConcurrent(animation)) stopAnimation();
+
+        if (playingAnimation == null)
+        {
+            playingAnimation = animation;
+            animationLength = 0;
+
+            if (animation.getLength() < 0)
+            {
+                animation.initLength();
+            }
+            animationLength = animation.getLength();
         }
     }
 
@@ -224,27 +301,6 @@ public class ModelJson extends MowzieModelBase
                     }
                 }
             }
-        }
-    }
-
-    /** Starts an animation with the id from the Tabula model. if this is called
-     * when an animation is running, it will stop it, and start the new one.
-     *
-     * @since 0.1.0 */
-    public void startAnimation(Animation animation)
-    {
-        if (!canRunConcurrent(animation)) stopAnimation();
-
-        if (playingAnimation == null)
-        {
-            playingAnimation = animation;
-            animationLength = 0;
-
-            if (animation.getLength() < 0)
-            {
-                animation.initLength();
-            }
-            animationLength = animation.getLength();
         }
     }
 
@@ -321,59 +377,5 @@ public class ModelJson extends MowzieModelBase
                 stopAnimation();
             }
         }
-    }
-
-    private boolean canRunConcurrent(Animation toRun)
-    {
-        return toRun == playingAnimation;
-    }
-
-    private MowzieModelRenderer createModelRenderer(CubeInfo cubeInfo)
-    {
-        MowzieModelRenderer cube = new MowzieModelRenderer(this, cubeInfo.txOffset[0], cubeInfo.txOffset[1]);
-        cube.name = cubeInfo.name;
-        cube.identifier = cubeInfo.identifier;
-        cube.setRotationPoint((float) cubeInfo.position[0], (float) cubeInfo.position[1], (float) cubeInfo.position[2]);
-        // Use cubeInfo.mcScale as the scale, this lets it work properly.
-        cube.addBox((float) cubeInfo.offset[0], (float) cubeInfo.offset[1], (float) cubeInfo.offset[2],
-                cubeInfo.dimensions[0], cubeInfo.dimensions[1], cubeInfo.dimensions[2], (float) cubeInfo.mcScale);
-        cube.rotateAngleX = (float) Math.toRadians((float) cubeInfo.rotation[0]);
-        cube.rotateAngleY = (float) Math.toRadians((float) cubeInfo.rotation[1]);
-        cube.rotateAngleZ = (float) Math.toRadians((float) cubeInfo.rotation[2]);
-
-        if (Math.abs(cube.rotateAngleX) < 1e-6) cube.rotateAngleX = 0;
-        if (Math.abs(cube.rotateAngleY) < 1e-6) cube.rotateAngleY = 0;
-        if (Math.abs(cube.rotateAngleZ) < 1e-6) cube.rotateAngleZ = 0;
-
-        // Allows scaling the cube with the cubeinfo scale.
-        cube.scaleX = (float) cubeInfo.scale[0];
-        cube.scaleY = (float) cubeInfo.scale[1];
-        cube.scaleZ = (float) cubeInfo.scale[2];
-
-        // Allows mirrored textures
-        cube.mirror = cubeInfo.txMirror;
-        // Allows hidden textures
-        cube.isHidden = cubeInfo.hidden;
-        return cube;
-    }
-
-    public MowzieModelRenderer getCube(String name)
-    {
-        return nameMap.get(name);
-    }
-
-    public boolean isAnimationInProgress()
-    {
-        return playingAnimation != null || !playing.isEmpty();
-    }
-
-    public int getAnimationLength()
-    {
-        return animationLength;
-    }
-
-    public float getAnimationTimer()
-    {
-        return animationTimer;
     }
 }

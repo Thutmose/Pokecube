@@ -21,8 +21,8 @@ import pokecube.core.items.berries.BerryManager;
 public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
 {
 
-    public int        berryIndex = 0;
     public static int renderID;
+    public int        berryIndex = 0;
     String            berryName  = "";
 
     public BlockBerryFruit(int par1)
@@ -34,75 +34,6 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
         this.setBlockBounds(0.5F - var3, 0F, 0.5F - var3, 0.5F + var3, 0.7F, 0.5F + var3);
     }
 
-    public void setBerry(String berryName)
-    {
-        this.berryName = berryName;
-    }
-
-    public String getBerryName()
-    {
-        return berryName;
-    }
-
-    public void setBerryIndex(int berryId)
-    {
-        this.berryIndex = berryId;
-    }
-
-    /** Returns the ID of the items to drop on destruction. */
-    @Override
-    public Item getItemDropped(IBlockState state, Random p_149650_2_, int p_149650_3_)
-    {
-        return PokecubeItems.berries;
-    }
-
-    @Override
-    /** Determines the damage on the item the block drops. Used in cloth and
-     * wood. */
-    public int damageDropped(IBlockState state)
-    {
-        return berryIndex;
-    }
-
-    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
-    {
-        if (BlockBerryCrop.trees.contains(berryIndex))
-        {
-            float f = 0.15F;
-            this.setBlockBounds(0.5F - f, 1 - f * 3.0F, 0.5F - f, 0.5F + f, 1, 0.5F + f);
-        }
-        else
-        {
-            super.setBlockBoundsBasedOnState(worldIn, pos);
-        }
-    }
-
-    /** Returns the quantity of items to drop on block destruction. */
-    @Override
-    public int quantityDropped(Random par1Random)
-    {
-        int i = par1Random.nextInt(2) + 1;
-        return i;
-    }
-
-    /** The type of render function that is called for this block */
-    public int getRenderType()
-    {
-        return super.getRenderType();
-    }
-
-    @Override
-    /** Called when a user uses the creative pick block button on this block
-     *
-     * @param target
-     *            The full target the player is looking at
-     * @return A ItemStack to add to the player's inventory, Null if nothing
-     *         should be added. */
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
-    {
-        return BerryManager.getBerryItem(berryName);
-    }
-
     /** Can this block stay at this position. Similar to canPlaceBlockAt except
      * gets checked often with plants. */
     @Override
@@ -111,6 +42,14 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
         if (BlockBerryCrop.trees.contains(
                 berryIndex)) { return worldIn.getBlockState(pos.up()).getBlock().isLeaves(worldIn, pos.up()); }
         return worldIn.getBlockState(pos.down()).getBlock() instanceof BlockBerryCrop;
+    }
+
+    @Override
+    /** Determines the damage on the item the block drops. Used in cloth and
+     * wood. */
+    public int damageDropped(IBlockState state)
+    {
+        return berryIndex;
     }
 
     /** Spawns EntityItem in the world for the given ItemStack if the world is
@@ -130,18 +69,81 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
                 return;
             }
             float f = 0.7F;
-            double d0 = (double) (p_149642_1_.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-            double d1 = (double) (p_149642_1_.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-            double d2 = (double) (p_149642_1_.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-            EntityItem entityitem = new EntityItem(p_149642_1_, (double) p_149642_2_ + d0, (double) p_149642_3_ + d1,
-                    (double) p_149642_4_ + d2, p_149642_5_);
+            double d0 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
+            double d1 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
+            double d2 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
+            EntityItem entityitem = new EntityItem(p_149642_1_, p_149642_2_ + d0, p_149642_3_ + d1,
+                    p_149642_4_ + d2, p_149642_5_);
             p_149642_1_.spawnEntityInWorld(entityitem);
         }
+    }
+
+    public String getBerryName()
+    {
+        return berryName;
     }
 
     @Override
     public ItemStack getBerryStack(IBlockAccess world, int x, int y, int z)
     {
         return BerryManager.getBerryItem(berryName);
+    }
+
+    /** Returns the ID of the items to drop on destruction. */
+    @Override
+    public Item getItemDropped(IBlockState state, Random p_149650_2_, int p_149650_3_)
+    {
+        return PokecubeItems.berries;
+    }
+
+    @Override
+    /** Called when a user uses the creative pick block button on this block
+     *
+     * @param target
+     *            The full target the player is looking at
+     * @return A ItemStack to add to the player's inventory, Null if nothing
+     *         should be added. */
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
+    {
+        return BerryManager.getBerryItem(berryName);
+    }
+
+    /** The type of render function that is called for this block */
+    @Override
+    public int getRenderType()
+    {
+        return super.getRenderType();
+    }
+
+    /** Returns the quantity of items to drop on block destruction. */
+    @Override
+    public int quantityDropped(Random par1Random)
+    {
+        int i = par1Random.nextInt(2) + 1;
+        return i;
+    }
+
+    public void setBerry(String berryName)
+    {
+        this.berryName = berryName;
+    }
+
+    public void setBerryIndex(int berryId)
+    {
+        this.berryIndex = berryId;
+    }
+
+    @Override
+    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
+    {
+        if (BlockBerryCrop.trees.contains(berryIndex))
+        {
+            float f = 0.15F;
+            this.setBlockBounds(0.5F - f, 1 - f * 3.0F, 0.5F - f, 0.5F + f, 1, 0.5F + f);
+        }
+        else
+        {
+            super.setBlockBoundsBasedOnState(worldIn, pos);
+        }
     }
 }

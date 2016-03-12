@@ -24,27 +24,19 @@ public enum PokeType
     dragon		(	0x6F37F8, "dragon"),
     dark		( 	0x6F5747, "dark"),
     fairy		( 	0xE6A5E6, "fairy");
-    // @formatter:on
-    public final int    colour;
-    public final String name;
+    private static float     o         = 0;                                                                                                                       // ineffective
+    private static float     n         = 1F;                                                                                                                      // normal
 
-    private PokeType(int colour, String name)
-    {
-        this.colour = colour;
-        this.name = name;
-    }
+    private static float     v         = 2F;                                                                                                                      // very
 
     // public static final PokeType[] TYPES = { unknown,
     // normal, fighting, flying, poison, ground,
     // rock, bug, ghost, steel, fire, water, grass,
     // electric, psychic, ice, dragon, dark, fairy };
 
-    private static float     o         = 0;                                                                                                                       // ineffective
-    private static float     n         = 1F;                                                                                                                      // normal
-    private static float     v         = 2F;                                                                                                                      // very
-                                                                                                                                                                  // effective
+    // effective
     private static float     x         = 0.5F;                                                                                                                    // not
-                                                                                                                                                                  // very
+    // very
                                                                                                                                                                   // effective
  // @formatter:off
     private static float[][] typeTable =
@@ -72,7 +64,6 @@ public enum PokeType
 /* fairy 	*/{ n,	n,		v,		  n,	  x,	  n,	  n,	n,	 n,		x,	   x,	 n,		n,	   n,	     n,		  n,	v,		v,	 n  }
     };
     // @formatter:on
-
     public static float getAttackEfficiency(PokeType type, PokeType defenseType1, PokeType defenseType2)
     {
         float multiplier = typeTable[type.ordinal()][defenseType1.ordinal()];
@@ -84,13 +75,11 @@ public enum PokeType
 
         return multiplier;
     }
-
-    public static String getName(PokeType type)
+                                                                                                                                                                  public static String getName(PokeType type)
     {
         return type.name;
     }
-
-    public static String getTranslatedName(PokeType type)
+                                                                                                                                                                  public static String getTranslatedName(PokeType type)
     {
         String translated = StatCollector.translateToLocal("type." + getName(type));
 
@@ -116,5 +105,16 @@ public enum PokeType
             if (name.equalsIgnoreCase(type.name)) return type;
         }
         return unknown;
+    }
+
+    // @formatter:on
+    public final int    colour;
+
+    public final String name;
+
+    private PokeType(int colour, String name)
+    {
+        this.colour = colour;
+        this.name = name;
     }
 }

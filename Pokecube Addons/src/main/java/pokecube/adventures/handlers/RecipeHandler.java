@@ -13,6 +13,31 @@ public class RecipeHandler
 
     public static boolean tmRecipe = true;
 
+    private static void addLegendarySpawnerRecipes()
+    {
+
+        GameRegistry.addRecipe(getStack("registeelspawner"),
+                new Object[] { "RSR", "SRS", "RSR", 'S', Blocks.iron_block, 'R', Blocks.redstone_block });
+
+        GameRegistry.addRecipe(getStack("regicespawner"),
+                new Object[] { "III", "IGI", "III", 'I', Blocks.packed_ice, 'G', Blocks.gold_block });
+
+        GameRegistry.addRecipe(getStack("regirockspawner"),
+                new Object[] { "OSO", "OOO", "OSO", 'O', Blocks.obsidian, 'S', Blocks.stone });
+
+        GameRegistry.addRecipe(getStack("celebispawner"), new Object[] { "MMM", "SRS", "SIS", 'R', Items.redstone, 'S',
+                Blocks.log, 'M', Blocks.glass, 'I', Items.iron_ingot });
+
+        GameRegistry.addRecipe(getStack("hoohspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Items.feather, 'G',
+                Blocks.gold_block, 'I', Items.gold_ingot });
+
+        GameRegistry.addRecipe(getStack("kyogrespawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.ice, 'G',
+                Blocks.lapis_block, 'I', PokecubeItems.waterstone });
+
+        GameRegistry.addRecipe(getStack("groudonspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.coal_block,
+                'G', Blocks.redstone_block, 'I', PokecubeItems.firestone });
+    }
+
     public static void register()
     {
         if (tmRecipe) GameRegistry.addRecipe(getStack("tm"), new Object[] { "SS ", "SOS", "SRS", 'S', Items.iron_ingot,
@@ -77,30 +102,5 @@ public class RecipeHandler
         // }
         // });
 
-    }
-
-    private static void addLegendarySpawnerRecipes()
-    {
-
-        GameRegistry.addRecipe(getStack("registeelspawner"),
-                new Object[] { "RSR", "SRS", "RSR", 'S', Blocks.iron_block, 'R', Blocks.redstone_block });
-
-        GameRegistry.addRecipe(getStack("regicespawner"),
-                new Object[] { "III", "IGI", "III", 'I', Blocks.packed_ice, 'G', Blocks.gold_block });
-
-        GameRegistry.addRecipe(getStack("regirockspawner"),
-                new Object[] { "OSO", "OOO", "OSO", 'O', Blocks.obsidian, 'S', Blocks.stone });
-
-        GameRegistry.addRecipe(getStack("celebispawner"), new Object[] { "MMM", "SRS", "SIS", 'R', Items.redstone, 'S',
-                Blocks.log, 'M', Blocks.glass, 'I', Items.iron_ingot });
-
-        GameRegistry.addRecipe(getStack("hoohspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Items.feather, 'G',
-                Blocks.gold_block, 'I', Items.gold_ingot });
-
-        GameRegistry.addRecipe(getStack("kyogrespawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.ice, 'G',
-                Blocks.lapis_block, 'I', PokecubeItems.waterstone });
-
-        GameRegistry.addRecipe(getStack("groudonspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.coal_block,
-                'G', Blocks.redstone_block, 'I', PokecubeItems.firestone });
     }
 }

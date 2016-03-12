@@ -9,26 +9,7 @@ import pokecube.core.items.ItemPokemobUseable;
 
 public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants{
 
-	int vitaminIndex = 0;
-	String vitaminName = "";
-
-	public ItemVitamin() {
-		super();
-	}
-
-	public void setVitaminIndex(int vitaminId) {
-		this.vitaminIndex = vitaminId;
-	}
-
-	public void setVitamin(String vitaminName) {
-		this.vitaminName = vitaminName;
-	}
-	
-	public String getVitaminName(){
-		return vitaminName;
-	}
-	
-    public static boolean feedToPokemob(ItemStack stack, Entity entity)
+	public static boolean feedToPokemob(ItemStack stack, Entity entity)
 	{
 		if(entity instanceof IPokemob)
 		{
@@ -64,9 +45,16 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants{
 			}
 		}
 		return false;
-	}	
-    
-    @Override
+	}
+	int vitaminIndex = 0;
+
+	String vitaminName = "";
+
+	public ItemVitamin() {
+		super();
+	}
+
+	@Override
 	public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
 	{
 		boolean ret = feedToPokemob(stack, mob);
@@ -76,5 +64,17 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants{
 		}
 		return feedToPokemob(stack, mob);
 		
+	}
+	
+	public String getVitaminName(){
+		return vitaminName;
+	}
+	
+    public void setVitamin(String vitaminName) {
+		this.vitaminName = vitaminName;
+	}	
+    
+    public void setVitaminIndex(int vitaminId) {
+		this.vitaminIndex = vitaminId;
 	}
 }

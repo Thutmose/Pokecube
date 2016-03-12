@@ -212,26 +212,6 @@ public class Config extends ConfigBase
      * drop rates for */
     private List<Block>        terrain               = new ArrayList<Block>();
 
-    public List<Block> getSurfaceBlocks()
-    {
-        return surfaceBlocks;
-    }
-
-    public List<Block> getCaveBlocks()
-    {
-        return caveBlocks;
-    }
-
-    public List<Block> getRocks()
-    {
-        return rocks;
-    }
-
-    public List<Block> getTerrain()
-    {
-        return terrain;
-    }
-
     private Config()
     {
         super(null);
@@ -247,14 +227,7 @@ public class Config extends ConfigBase
         save();
     }
 
-    public void setSettings()
-    {
-        load();
-        populateSettings(true);
-        applySettings();
-        save();
-    }
-
+    @Override
     public void applySettings()
     {
         initDefaultStarts();
@@ -301,33 +274,6 @@ public class Config extends ConfigBase
         }
     }
 
-    @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
-    {
-        if (eventArgs.modID.equals("pokecube"))
-        {
-            populateSettings();
-            applySettings();
-            save();
-        }
-    }
-
-    @Override
-    public void save()
-    {
-        if (hasChanged())
-        {
-            super.save();
-        }
-    }
-
-    public void requiresRestart(Property property)
-    {
-        // TODO see which need which.
-        // property.setRequiresMcRestart(false);
-        // property.setRequiresWorldRestart(false);
-    }
-
     @Override
     public Property get(String category, String key, String defaultValue, String comment, Property.Type type)
     {
@@ -336,12 +282,24 @@ public class Config extends ConfigBase
         return prop;
     }
 
-    public void seenMessage()
+    public List<Block> getCaveBlocks()
     {
-        load();
-        get(misc, "loginmessage", false).set(false);
-        get(misc, "version", PokecubeMod.VERSION).set(PokecubeMod.VERSION);
-        save();
+        return caveBlocks;
+    }
+
+    public List<Block> getRocks()
+    {
+        return rocks;
+    }
+
+    public List<Block> getSurfaceBlocks()
+    {
+        return surfaceBlocks;
+    }
+
+    public List<Block> getTerrain()
+    {
+        return terrain;
     }
 
     public void initDefaultStarts()
@@ -373,5 +331,48 @@ public class Config extends ConfigBase
             e.printStackTrace();
         }
 
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
+    {
+        if (eventArgs.modID.equals("pokecube"))
+        {
+            populateSettings();
+            applySettings();
+            save();
+        }
+    }
+
+    public void requiresRestart(Property property)
+    {
+        // TODO see which need which.
+        // property.setRequiresMcRestart(false);
+        // property.setRequiresWorldRestart(false);
+    }
+
+    @Override
+    public void save()
+    {
+        if (hasChanged())
+        {
+            super.save();
+        }
+    }
+
+    public void seenMessage()
+    {
+        load();
+        get(misc, "loginmessage", false).set(false);
+        get(misc, "version", PokecubeMod.VERSION).set(PokecubeMod.VERSION);
+        save();
+    }
+
+    public void setSettings()
+    {
+        load();
+        populateSettings(true);
+        applySettings();
+        save();
     }
 }

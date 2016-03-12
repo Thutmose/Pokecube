@@ -58,26 +58,87 @@ import thut.api.maths.Vector3;
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, SimpleComponent
 {
+    private static class TMCConverter
+    {
+        final TileEntityTradingTable toConvert;
+
+        public TMCConverter(TileEntityTradingTable tile)
+        {
+            toConvert = tile;
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void convert(WorldTickEvent event)
+        {
+            if (event.world.isRemote)
+            {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                return;
+            }
+
+            if (!event.world.isAreaLoaded(toConvert.getPos(), 5)) return;
+
+            if (event.phase == Phase.END)
+            {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                boolean pc = false;
+                toConvert.pc = null;
+                for (EnumFacing side : EnumFacing.values())
+                {
+                    Vector3 here = Vector3.getNewVector().set(toConvert);
+                    Block id = here.offset(side).getBlock(toConvert.worldObj);
+                    if (id == PokecubeItems.getBlock("pc"))
+                    {
+                        pc = true;
+                        toConvert.pc = (TileEntityPC) here.offset(side).getTileEntity(toConvert.getWorld());
+                        break;
+                    }
+                }
+                toConvert.trade = !pc;
+
+                if (!toConvert.trade)
+                {
+                    IBlockState state = toConvert.worldObj.getBlockState(toConvert.getPos());
+                    if (!(Boolean) state.getValue(BlockTradingTable.TMC))
+                    {
+                        toConvert.worldObj.setBlockState(toConvert.getPos(),
+                                state.withProperty(BlockTradingTable.TMC, true));
+                    }
+                }
+            }
+        }
+    }
+    public static boolean theftEnabled = false;
+
     private ItemStack[] inventory  = new ItemStack[2];
     private ItemStack[] inventory2 = new ItemStack[1];
 
     public EntityPlayer player1;
-    public EntityPlayer player2;
 
-    public static boolean theftEnabled = false;
+    public EntityPlayer player2;
 
     public HashMap<String, ArrayList<String>> moves = new HashMap<String, ArrayList<String>>();
 
     public int time = 0;
-
     public boolean       trade = true;
     public int           renderpass;
     boolean              init  = true;
+
     private TileEntityPC pc;
 
     public TileEntityTradingTable()
     {
         super();
+    }
+
+    public void addMoveToTM(String move)
+    {
+        ItemStack tm = inventory2[0];
+        if (tm != null && tm.getItem() instanceof ItemTM)
+        {
+            ItemTM.addMoveToStack(move, tm);
+        }
     }
 
     public void addPlayer(EntityPlayer player)
@@ -163,6 +224,412 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             }
         }
         trade();
+    }
+
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] applyMove(Context context, Arguments args) throws Exception
+    {
+        if (hasPC() && pc.isBound())
+        {
+            InventoryPC inv = pc.getPC();
+            ArrayList<String> moves = getMoves(inv);
+            String move = args.checkString(0);
+            for (String s : moves)
+            {
+                if (s.equalsIgnoreCase(move))
+                {
+                    addMoveToTM(s);
+                    return new Object[] {};
+                }
+            }
+            throw new Exception("requested move not found");
+        }
+        if (!hasPC()) throw new Exception("no connected PC");
+        else throw new Exception("connected PC is not bound to a player");
+    }
+
+    @Override
+    public void clear()
+    {
+
+    }
+
+    @Override
+    public void closeInventory(EntityPlayer player)
+    {
+    }
+
+    @Override
+    public ItemStack decrStackSize(int slot, int count)
+    {
+        if (trade)
+        {
+            if (this.inventory[slot] != null)
+            {
+                ItemStack itemStack;
+
+                itemStack = inventory[slot].splitStack(count);
+
+                if (inventory[slot].stackSize <= 0) inventory[slot] = null;
+
+                return itemStack;
+            }
+        }
+        else if (slot < inventory2.length && this.inventory2[slot] != null)
+        {
+            ItemStack itemStack;
+
+            itemStack = inventory2[slot].splitStack(count);
+
+            if (inventory2[slot].stackSize <= 0) inventory2[slot] = null;
+
+            return itemStack;
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getComponentName()
+    {
+        return "tradingtable";
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+    }
+
+    @Override
+    public IChatComponent getDisplayName()
+    {
+        return null;
+    }
+
+    @Override
+    public int getField(int id)
+    {
+        return 0;
+    }
+
+    @Override
+    public int getFieldCount()
+    {
+        return 0;
+    }
+
+    public String[] getForgottenMoves(IPokemob mob)
+    {
+        PokedexEntry entry = Database.getEntry(mob.getPokedexNb());
+        String[] moves = null;
+        List<String> list = new ArrayList<String>();
+
+        list:
+        for (String s : entry.getMovesForLevel(mob.getLevel()))
+        {
+            for (String s1 : mob.getMoves())
+            {
+                if (s1 != null && s1.equalsIgnoreCase(s)) continue list;
+            }
+            list.add(s);
+        }
+        moves = list.toArray(new String[0]);
+
+        return moves;
+    }
+
+    @Override
+    public int getInventoryStackLimit()
+    {
+        return 64;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared()
+    {
+        return 65536.0D;
+    }
+
+    public ArrayList<String> getMoves(InventoryPC pcInv)
+    {
+        ArrayList<String> moves = new ArrayList<String>();
+        HashSet<ItemStack> stacks = pcInv.getContents();
+
+        for (ItemStack stack : stacks)
+        {
+            if (PokecubeManager.isFilled(stack))
+            {
+                IPokemob mob = PokecubeManager.itemToPokemob(stack, worldObj);
+
+                if (mob == null)
+                {
+                    System.err.println("Corrupted Pokemon in PC");
+                    continue;
+                }
+
+                String[] forgotten = getForgottenMoves(mob);
+                String[] current = mob.getMoves();
+                for (String s : forgotten)
+                {
+                    if (s == null || s.contentEquals("") || !MovesUtils.isMoveImplemented(s)) continue;
+
+                    boolean toAdd = true;
+                    if (moves.size() > 0) for (String s1 : moves)
+                    {
+                        if (s1 == null || s1.contentEquals("") || !MovesUtils.isMoveImplemented(s1)) continue;
+                        if (s1.contentEquals(s)) toAdd = false;
+                    }
+                    if (toAdd) moves.add(s);
+                }
+                for (String s : current)
+                {
+                    if (s == null || s.contentEquals("") || !MovesUtils.isMoveImplemented(s)) continue;
+
+                    boolean toAdd = true;
+                    if (moves.size() > 0) for (String s1 : moves)
+                    {
+                        if (s1 == null)
+                        {
+                            continue;
+                        }
+                        if (s1.contentEquals(s)) toAdd = false;
+                    }
+                    if (toAdd) moves.add(s);
+                }
+            }
+        }
+        Collections.sort(moves);
+        return moves;
+    }
+
+    public ArrayList<String> getMoves(String playerName)
+    {
+        return moves.get(playerName);
+    }
+
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getMovesList(Context context, Arguments args) throws Exception
+    {
+        if (hasPC() && pc.isBound())
+        {
+            InventoryPC inv = pc.getPC();
+            ArrayList<String> moves = getMoves(inv);
+            return moves.toArray();
+        }
+        if (!hasPC()) throw new Exception("no connected PC");
+        else throw new Exception("connected PC is not bound to a player");
+    }
+
+    @Override
+    public String getName()
+    {
+        return "tradingtable";
+    }
+
+    @Override
+    public int getSizeInventory()
+    {
+        if (trade) return inventory.length;
+        else return inventory2.length;
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int i)
+    {
+        if (trade) return inventory[i];
+        if (i < inventory2.length) return inventory2[i];
+        return null;
+    }
+
+    @Override
+    public boolean hasCustomName()
+    {
+        return true;
+    }
+
+    protected boolean hasPC()
+    {
+        boolean pc = false;
+        this.pc = null;
+        for (EnumFacing side : EnumFacing.values())
+        {
+            Vector3 here = Vector3.getNewVector().set(this);
+            Block id = here.offset(side).getBlock(worldObj);
+            if (id == PokecubeItems.getBlock("pc"))
+            {
+                pc = true;
+                this.pc = (TileEntityPC) here.offset(side).getTileEntity(getWorld());
+                break;
+            }
+        }
+        trade = !pc;
+
+        if (!trade)
+        {
+            IBlockState state = worldObj.getBlockState(getPos());
+            if (!(Boolean) state.getValue(BlockTradingTable.TMC))
+            {
+                worldObj.setBlockState(getPos(), state.withProperty(BlockTradingTable.TMC, true));
+            }
+        }
+        return pc;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer player)
+    {
+        return worldObj.getTileEntity(getPos()) == this
+                && player.getDistanceSq(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5) < 64;
+    }
+
+    public ArrayList<String> moves(EntityPlayer player)
+    {
+        if (!player.worldObj.isRemote)
+        {
+            boolean pc = hasPC();
+            if (!pc) { return Lists.newArrayList(); }
+            InventoryPC pcInv = InventoryPC.getPC(player.getUniqueID().toString());
+            ArrayList<String> moves = getMoves(pcInv);
+            Collections.sort(moves);
+            String message = "" + 3 + "," + player.getUniqueID().toString();
+            for (String s : moves)
+                message += "," + s;
+
+            MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
+            PokecubePacketHandler.sendToClient(packet, player);
+            this.moves.put(player.getName(), moves);
+            return moves;
+        }
+        else
+        {
+            return null;
+        }
+
+    }
+
+    /** Called when you receive a TileEntityData packet for the location this
+     * TileEntity is currently in. On the client, the NetworkManager will always
+     * be the remote server. On the server, it will be whomever is responsible
+     * for sending the packet.
+     *
+     * @param net
+     *            The NetworkManager the packet originated from
+     * @param pkt
+     *            The data packet */
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    {
+        if (worldObj.isRemote)
+        {
+            NBTTagCompound nbt = pkt.getNbtCompound();
+            readFromNBT(nbt);
+        }
+    }
+
+    @Override
+    public void onLoad()
+    {
+        new TMCConverter(this);
+    }
+
+    public void openGUI(EntityPlayer player)
+    {
+        player.openGui(PokecubeMod.core, Config.GUITRADINGTABLE_ID, worldObj, getPos().getX(),
+                getPos().getY(), getPos().getZ());
+    }
+
+    @Override
+    public void openInventory(EntityPlayer player)
+    {
+    }
+
+    public void pokeseal(ItemStack a, ItemStack b, IPokemob mob)
+    {
+        if (b.hasTagCompound())
+        {
+            NBTTagCompound tag = b.getTagCompound().getCompoundTag("Explosion");
+            NBTTagCompound mobtag = ((Entity) mob).getEntityData();
+            mobtag.setTag("sealtag", tag);
+        }
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tagCompound)
+    {
+        super.readFromNBT(tagCompound);
+        NBTBase temp = tagCompound.getTag("Inventory");
+
+        trade = tagCompound.getBoolean("trade");
+
+        ItemStack[] both = new ItemStack[3];
+        if (temp instanceof NBTTagList)
+        {
+            NBTTagList tagList = (NBTTagList) temp;
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                byte slot = tag.getByte("Slot");
+
+                if (slot >= 0 && slot < both.length)
+                {
+                    both[slot] = ItemStack.loadItemStackFromNBT(tag);
+                }
+            }
+        }
+        inventory[0] = both[0];
+        inventory[1] = both[1];
+        inventory2[0] = both[2];
+        init = false;
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int slot)
+    {
+        if (trade)
+        {
+            if (inventory[slot] != null)
+            {
+                ItemStack stack = inventory[slot];
+                inventory[slot] = null;
+                return stack;
+            }
+        }
+        else if (slot < inventory2.length && inventory2[slot] != null)
+        {
+            ItemStack stack = inventory2[slot];
+            inventory2[slot] = null;
+            return stack;
+        }
+
+        return null;
+    }
+
+    @Override
+    public void setField(int id, int value)
+    {
+
+    }
+
+    @Override
+    public void setInventorySlotContents(int i, ItemStack itemstack)
+    {
+        if (trade) inventory[i] = itemstack;
+        else if (i < inventory2.length) inventory2[i] = itemstack;
     }
 
     public void trade()
@@ -288,144 +755,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         return true;
     }
 
-    public void pokeseal(ItemStack a, ItemStack b, IPokemob mob)
-    {
-        if (b.hasTagCompound())
-        {
-            NBTTagCompound tag = b.getTagCompound().getCompoundTag("Explosion");
-            NBTTagCompound mobtag = ((Entity) mob).getEntityData();
-            mobtag.setTag("sealtag", tag);
-        }
-    }
-
-    @Override
-    public void onLoad()
-    {
-        new TMCConverter(this);
-    }
-
-    @Override
-    public int getSizeInventory()
-    {
-        if (trade) return inventory.length;
-        else return inventory2.length;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int i)
-    {
-        if (trade) return inventory[i];
-        if (i < inventory2.length) return inventory2[i];
-        return null;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int count)
-    {
-        if (trade)
-        {
-            if (this.inventory[slot] != null)
-            {
-                ItemStack itemStack;
-
-                itemStack = inventory[slot].splitStack(count);
-
-                if (inventory[slot].stackSize <= 0) inventory[slot] = null;
-
-                return itemStack;
-            }
-        }
-        else if (slot < inventory2.length && this.inventory2[slot] != null)
-        {
-            ItemStack itemStack;
-
-            itemStack = inventory2[slot].splitStack(count);
-
-            if (inventory2[slot].stackSize <= 0) inventory2[slot] = null;
-
-            return itemStack;
-        }
-
-        return null;
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int slot)
-    {
-        if (trade)
-        {
-            if (inventory[slot] != null)
-            {
-                ItemStack stack = inventory[slot];
-                inventory[slot] = null;
-                return stack;
-            }
-        }
-        else if (slot < inventory2.length && inventory2[slot] != null)
-        {
-            ItemStack stack = inventory2[slot];
-            inventory2[slot] = null;
-            return stack;
-        }
-
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack)
-    {
-        if (trade) inventory[i] = itemstack;
-        else if (i < inventory2.length) inventory2[i] = itemstack;
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
-    {
-        return worldObj.getTileEntity(getPos()) == this
-                && player.getDistanceSq(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5) < 64;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack)
-    {
-        return true;
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound tagCompound)
-    {
-        super.readFromNBT(tagCompound);
-        NBTBase temp = tagCompound.getTag("Inventory");
-
-        trade = tagCompound.getBoolean("trade");
-
-        ItemStack[] both = new ItemStack[3];
-        if (temp instanceof NBTTagList)
-        {
-            NBTTagList tagList = (NBTTagList) temp;
-            for (int i = 0; i < tagList.tagCount(); i++)
-            {
-                NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                byte slot = tag.getByte("Slot");
-
-                if (slot >= 0 && slot < both.length)
-                {
-                    both[slot] = ItemStack.loadItemStackFromNBT(tag);
-                }
-            }
-        }
-        inventory[0] = both[0];
-        inventory[1] = both[1];
-        inventory2[0] = both[2];
-        init = false;
-    }
-
     @Override
     public void writeToNBT(NBTTagCompound tagCompound)
     {
@@ -450,334 +779,5 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         }
         tagCompound.setBoolean("trade", trade);
         tagCompound.setTag("Inventory", itemList);
-    }
-
-    public void openGUI(EntityPlayer player)
-    {
-        player.openGui(PokecubeMod.core, Config.GUITRADINGTABLE_ID, worldObj, getPos().getX(),
-                getPos().getY(), getPos().getZ());
-    }
-
-    protected boolean hasPC()
-    {
-        boolean pc = false;
-        this.pc = null;
-        for (EnumFacing side : EnumFacing.values())
-        {
-            Vector3 here = Vector3.getNewVector().set(this);
-            Block id = here.offset(side).getBlock(worldObj);
-            if (id == PokecubeItems.getBlock("pc"))
-            {
-                pc = true;
-                this.pc = (TileEntityPC) here.offset(side).getTileEntity(getWorld());
-                break;
-            }
-        }
-        trade = !pc;
-
-        if (!trade)
-        {
-            IBlockState state = worldObj.getBlockState(getPos());
-            if (!(Boolean) state.getValue(BlockTradingTable.TMC))
-            {
-                worldObj.setBlockState(getPos(), state.withProperty(BlockTradingTable.TMC, true));
-            }
-        }
-        return pc;
-    }
-
-    public ArrayList<String> getMoves(InventoryPC pcInv)
-    {
-        ArrayList<String> moves = new ArrayList<String>();
-        HashSet<ItemStack> stacks = pcInv.getContents();
-
-        for (ItemStack stack : stacks)
-        {
-            if (PokecubeManager.isFilled(stack))
-            {
-                IPokemob mob = (IPokemob) PokecubeManager.itemToPokemob(stack, worldObj);
-
-                if (mob == null)
-                {
-                    System.err.println("Corrupted Pokemon in PC");
-                    continue;
-                }
-
-                String[] forgotten = getForgottenMoves(mob);
-                String[] current = mob.getMoves();
-                for (String s : forgotten)
-                {
-                    if (s == null || s.contentEquals("") || !MovesUtils.isMoveImplemented(s)) continue;
-
-                    boolean toAdd = true;
-                    if (moves.size() > 0) for (String s1 : moves)
-                    {
-                        if (s1 == null || s1.contentEquals("") || !MovesUtils.isMoveImplemented(s1)) continue;
-                        if (s1.contentEquals(s)) toAdd = false;
-                    }
-                    if (toAdd) moves.add(s);
-                }
-                for (String s : current)
-                {
-                    if (s == null || s.contentEquals("") || !MovesUtils.isMoveImplemented(s)) continue;
-
-                    boolean toAdd = true;
-                    if (moves.size() > 0) for (String s1 : moves)
-                    {
-                        if (s1 == null)
-                        {
-                            continue;
-                        }
-                        if (s1.contentEquals(s)) toAdd = false;
-                    }
-                    if (toAdd) moves.add(s);
-                }
-            }
-        }
-        Collections.sort(moves);
-        return moves;
-    }
-
-    public ArrayList<String> moves(EntityPlayer player)
-    {
-        if (!player.worldObj.isRemote)
-        {
-            boolean pc = hasPC();
-            if (!pc) { return Lists.newArrayList(); }
-            InventoryPC pcInv = InventoryPC.getPC(player.getUniqueID().toString());
-            ArrayList<String> moves = getMoves(pcInv);
-            Collections.sort(moves);
-            String message = "" + 3 + "," + player.getUniqueID().toString();
-            for (String s : moves)
-                message += "," + s;
-
-            MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
-            PokecubePacketHandler.sendToClient(packet, player);
-            this.moves.put(player.getName(), moves);
-            return moves;
-        }
-        else
-        {
-            return null;
-        }
-
-    }
-
-    public ArrayList<String> getMoves(String playerName)
-    {
-        return moves.get(playerName);
-    }
-
-    public void addMoveToTM(String move)
-    {
-        ItemStack tm = inventory2[0];
-        if (tm != null && tm.getItem() instanceof ItemTM)
-        {
-            ItemTM.addMoveToStack(move, tm);
-        }
-    }
-
-    public String[] getForgottenMoves(IPokemob mob)
-    {
-        PokedexEntry entry = Database.getEntry(mob.getPokedexNb());
-        String[] moves = null;
-        List<String> list = new ArrayList<String>();
-
-        list:
-        for (String s : entry.getMovesForLevel(mob.getLevel()))
-        {
-            for (String s1 : mob.getMoves())
-            {
-                if (s1 != null && s1.equalsIgnoreCase(s)) continue list;
-            }
-            list.add(s);
-        }
-        moves = list.toArray(new String[0]);
-
-        return moves;
-    }
-
-    /** Overriden in a sign to provide the text. */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
-    /** Called when you receive a TileEntityData packet for the location this
-     * TileEntity is currently in. On the client, the NetworkManager will always
-     * be the remote server. On the server, it will be whomever is responsible
-     * for sending the packet.
-     *
-     * @param net
-     *            The NetworkManager the packet originated from
-     * @param pkt
-     *            The data packet */
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-    {
-        if (worldObj.isRemote)
-        {
-            NBTTagCompound nbt = pkt.getNbtCompound();
-            readFromNBT(nbt);
-        }
-    }
-
-    @Override
-    public String getName()
-    {
-        return "tradingtable";
-    }
-
-    @Override
-    public boolean hasCustomName()
-    {
-        return true;
-    }
-
-    @Override
-    public void openInventory(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public IChatComponent getDisplayName()
-    {
-        return null;
-    }
-
-    @Override
-    public int getField(int id)
-    {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value)
-    {
-
-    }
-
-    @Override
-    public int getFieldCount()
-    {
-        return 0;
-    }
-
-    @Override
-    public void clear()
-    {
-
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public double getMaxRenderDistanceSquared()
-    {
-        return 65536.0D;
-    }
-
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getMovesList(Context context, Arguments args) throws Exception
-    {
-        if (hasPC() && pc.isBound())
-        {
-            InventoryPC inv = pc.getPC();
-            ArrayList<String> moves = getMoves(inv);
-            return moves.toArray();
-        }
-        if (!hasPC()) throw new Exception("no connected PC");
-        else throw new Exception("connected PC is not bound to a player");
-    }
-
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] applyMove(Context context, Arguments args) throws Exception
-    {
-        if (hasPC() && pc.isBound())
-        {
-            InventoryPC inv = pc.getPC();
-            ArrayList<String> moves = getMoves(inv);
-            String move = args.checkString(0);
-            for (String s : moves)
-            {
-                if (s.equalsIgnoreCase(move))
-                {
-                    addMoveToTM(s);
-                    return new Object[] {};
-                }
-            }
-            throw new Exception("requested move not found");
-        }
-        if (!hasPC()) throw new Exception("no connected PC");
-        else throw new Exception("connected PC is not bound to a player");
-    }
-
-    private static class TMCConverter
-    {
-        final TileEntityTradingTable toConvert;
-
-        public TMCConverter(TileEntityTradingTable tile)
-        {
-            toConvert = tile;
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        @SubscribeEvent
-        public void convert(WorldTickEvent event)
-        {
-            if (event.world.isRemote)
-            {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                return;
-            }
-
-            if (!event.world.isAreaLoaded(toConvert.getPos(), 5)) return;
-
-            if (event.phase == Phase.END)
-            {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                boolean pc = false;
-                toConvert.pc = null;
-                for (EnumFacing side : EnumFacing.values())
-                {
-                    Vector3 here = Vector3.getNewVector().set(toConvert);
-                    Block id = here.offset(side).getBlock(toConvert.worldObj);
-                    if (id == PokecubeItems.getBlock("pc"))
-                    {
-                        pc = true;
-                        toConvert.pc = (TileEntityPC) here.offset(side).getTileEntity(toConvert.getWorld());
-                        break;
-                    }
-                }
-                toConvert.trade = !pc;
-
-                if (!toConvert.trade)
-                {
-                    IBlockState state = toConvert.worldObj.getBlockState(toConvert.getPos());
-                    if (!(Boolean) state.getValue(BlockTradingTable.TMC))
-                    {
-                        toConvert.worldObj.setBlockState(toConvert.getPos(),
-                                state.withProperty(BlockTradingTable.TMC, true));
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public String getComponentName()
-    {
-        return "tradingtable";
     }
 }

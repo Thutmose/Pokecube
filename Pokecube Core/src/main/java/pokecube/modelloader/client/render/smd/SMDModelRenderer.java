@@ -24,11 +24,18 @@ public class SMDModelRenderer<T extends EntityLiving> extends RendererLivingEnti
     public SMDModel          model;
     public String            currentPhase = "idle";
 
+    boolean         blend;
+
+    boolean         light;
+
+    int             src;
+
+    int             dst;
+    private boolean statusRender = false;
     public SMDModelRenderer(RenderManager renderManagerIn)
     {
         super(renderManagerIn, null, 0);
     }
-
     @Override
     public void doRender(T entity, double d, double d1, double d2, float f, float partialTick)
     {
@@ -77,6 +84,45 @@ public class SMDModelRenderer<T extends EntityLiving> extends RendererLivingEnti
         model.render();
         GL11.glPopMatrix();
     }
+    @Override
+    protected ResourceLocation getEntityTexture(T var1)
+    {
+        return RenderPokemobs.getInstance().getEntityTexturePublic(var1);
+    }
+
+    @Override
+    public IPartTexturer getTexturer()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean hasPhase(String phase)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    private void postRenderStatus()
+    {
+        if (light) GL11.glEnable(GL11.GL_LIGHTING);
+        if (!blend) GL11.glDisable(GL11.GL_BLEND);
+        GL11.glBlendFunc(src, dst);
+        statusRender = false;
+    }
+
+    private void preRenderStatus()
+    {
+        blend = GL11.glGetBoolean(GL11.GL_BLEND);
+        light = GL11.glGetBoolean(GL11.GL_LIGHTING);
+        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
+        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        statusRender = true;
+    }
 
     @Override
     public void renderStatus(T entity, double d, double d1, double d2, float f, float partialTick)
@@ -123,57 +169,11 @@ public class SMDModelRenderer<T extends EntityLiving> extends RendererLivingEnti
         GL11.glPopMatrix();
     }
 
-    boolean         blend;
-    boolean         light;
-    int             src;
-    int             dst;
-    private boolean statusRender = false;
-
-    private void preRenderStatus()
-    {
-        blend = GL11.glGetBoolean(GL11.GL_BLEND);
-        light = GL11.glGetBoolean(GL11.GL_LIGHTING);
-        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
-        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
-        statusRender = true;
-    }
-
-    private void postRenderStatus()
-    {
-        if (light) GL11.glEnable(GL11.GL_LIGHTING);
-        if (!blend) GL11.glDisable(GL11.GL_BLEND);
-        GL11.glBlendFunc(src, dst);
-        statusRender = false;
-    }
-
     @Override
     public void setPhase(String phase)
     {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public IPartTexturer getTexturer()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean hasPhase(String phase)
-    {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    protected ResourceLocation getEntityTexture(T var1)
-    {
-        return RenderPokemobs.getInstance().getEntityTexturePublic(var1);
     }
 
 }

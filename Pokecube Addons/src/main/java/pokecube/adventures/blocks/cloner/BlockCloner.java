@@ -30,24 +30,16 @@ public class BlockCloner extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
-        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUICLONER_ID, world, pos.getX(), pos.getY(), pos.getZ());
-        return true;
+        dropItems(world, pos);
+        super.breakBlock(world, pos, state);
     }
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
         return new TileEntityCloner();
-    }
-
-    @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state)
-    {
-        dropItems(world, pos);
-        super.breakBlock(world, pos, state);
     }
 
     private void dropItems(World world, BlockPos pos)
@@ -89,6 +81,14 @@ public class BlockCloner extends Block implements ITileEntityProvider
                 item.stackSize = 0;
             }
         }
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
+            float hitX, float hitY, float hitZ)
+    {
+        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUICLONER_ID, world, pos.getX(), pos.getY(), pos.getZ());
+        return true;
     }
 
 }

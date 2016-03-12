@@ -31,6 +31,47 @@ public class SMDParser
         }
     }
 
+    public void parseAnimation(InputStream stream, String name) throws IOException
+    {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        // Read first line, it is always "version 1" anyway.
+        String line = reader.readLine();
+        Skeleton skelly = model.skeleton;
+        SkeletonAnimation anim = new SkeletonAnimation(skelly);
+        anim.animationName = name;
+        SkeletonFrame currentFrame = null;
+        String section = "";
+        boolean end = true;
+        while ((line = reader.readLine()) != null)
+        {
+            if (end)
+            {
+                section = line;
+                end = false;
+            }
+            else if (line.equals("end"))
+            {
+                end = true;
+            }
+            else
+            {
+                if (section.equals("skeleton"))
+                {
+                    if (line.contains("time"))
+                    {
+                        currentFrame = new SkeletonFrame(Integer.parseInt(line.split(" ")[1].trim()), anim);
+                        anim.frames.add(currentFrame);
+                    }
+                    else
+                    {
+                        currentFrame.addFromLine(line);
+                    }
+                }
+            }
+        }
+        model.poses.put(name, anim);
+    }
+
     public SMDModel parseModel(InputStream stream) throws IOException
     {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -112,46 +153,5 @@ public class SMDParser
         skelly.init();
         skelly.setPose(pose);
         return model;
-    }
-
-    public void parseAnimation(InputStream stream, String name) throws IOException
-    {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        // Read first line, it is always "version 1" anyway.
-        String line = reader.readLine();
-        Skeleton skelly = model.skeleton;
-        SkeletonAnimation anim = new SkeletonAnimation(skelly);
-        anim.animationName = name;
-        SkeletonFrame currentFrame = null;
-        String section = "";
-        boolean end = true;
-        while ((line = reader.readLine()) != null)
-        {
-            if (end)
-            {
-                section = line;
-                end = false;
-            }
-            else if (line.equals("end"))
-            {
-                end = true;
-            }
-            else
-            {
-                if (section.equals("skeleton"))
-                {
-                    if (line.contains("time"))
-                    {
-                        currentFrame = new SkeletonFrame(Integer.parseInt(line.split(" ")[1].trim()), anim);
-                        anim.frames.add(currentFrame);
-                    }
-                    else
-                    {
-                        currentFrame.addFromLine(line);
-                    }
-                }
-            }
-        }
-        model.poses.put(name, anim);
     }
 }

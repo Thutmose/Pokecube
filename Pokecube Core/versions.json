@@ -3,10 +3,11 @@
   "promos": {
     "1.8.8-latest": "2.1.4",
     "1.8.8-recommended": "2.1.4",
-    "1.8.9-latest": "2.2.12",
-    "1.8.9-recommended": "2.2.12"
+    "1.8.9-latest": "2.2.13",
+    "1.8.9-recommended": "2.2.13"
   },
   "1.8.9": {
+    "2.2.13": "Config overhaul.",
     "2.2.12": "Fixes issues with TM/movetutor move lists.",
     "2.2.9": "Fixes crash from using attack hotkey with no pokemob out.",
     "2.2.7": "Fixes singple player starter selection issue.",

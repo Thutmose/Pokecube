@@ -41,7 +41,7 @@ public class SettingsCommand extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/" + aliases.get(0) + "<giftCode>";
+        return "/" + aliases.get(0) + "<option name> <optional:newvalue>";
     }
 
     @Override

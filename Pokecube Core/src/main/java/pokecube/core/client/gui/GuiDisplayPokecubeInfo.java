@@ -276,21 +276,25 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (indexPokemob < 0) indexPokemob = arrayRet.length - 1;
     }
 
-    /** Incremenrs pokemob move index */
-    public void nextMove()
+    /** Incremenrs pokemob move index
+     * 
+     * @param i */
+    public void nextMove(int i)
     {
         IPokemob pokemob = getCurrentPokemob();
         if (pokemob != null)
         {
-            int index = (pokemob.getMoveIndex() + 1);
+            int index = (pokemob.getMoveIndex() + i);
             if (index == 4) index = 5;
             if (index > 5) index = 0;
             pokemob.setMoveIndex(index);
         }
     }
 
-    /** Decrements pokemob move index */
-    public void previousMove()
+    /** Decrements pokemob move index
+     * 
+     * @param j */
+    public void previousMove(int j)
     {
         IPokemob pokemob = getCurrentPokemob();
         if (pokemob != null)
@@ -299,7 +303,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
             if (index == 5)
             {
-                for (int i = 3; i > 0; i--)
+                for (int i = 3; i > 0; i -= j)
                 {
                     if (pokemob.getMove(i) != null)
                     {
@@ -310,7 +314,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
             else
             {
-                index--;
+                index -= j;
             }
 
             if (index % 5 >= 0) pokemob.setMoveIndex(index % 5);

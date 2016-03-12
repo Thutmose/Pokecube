@@ -42,6 +42,7 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.IPlayerUsage;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
@@ -85,7 +86,6 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.SpecialCaseRegister;
 import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.entity.pokemobs.GenericPokemob;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.events.handlers.EventsHandler;
@@ -336,7 +336,7 @@ public class PokecubeCore extends PokecubeMod
         {
             if (loader == null)
             {
-                loader = new ByteClassLoader(GenericPokemob.class.getClassLoader());
+                loader = new ByteClassLoader(Launch.classLoader);
             }
             try
             {

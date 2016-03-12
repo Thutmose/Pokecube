@@ -189,8 +189,7 @@ public abstract class ConfigBase extends Configuration
                 }
             }
         }
-        
-        System.out.println(this.getClass() + " " + fields.size());
+
         ConfigCategory cc;
         for (String s : getCategoryNames())
         {
@@ -204,7 +203,6 @@ public abstract class ConfigBase extends Configuration
                     removeThis.add(e.getKey());
                 }
             }
-            System.out.println(this.getClass() + " " + removeThis.size());
             for (String g : removeThis)
             {
                 cc.remove(g);

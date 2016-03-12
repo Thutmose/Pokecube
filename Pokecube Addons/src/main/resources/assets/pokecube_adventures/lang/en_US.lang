@@ -69,3 +69,35 @@ entity.pokecube_adventures.targetParticles.name=Target
 
 pokecube.trainer.agress=wants to battle!
 pokecube.trainer.defeat=has been defeated!
+
+#Config Stuff
+
+#Machines
+pokecube.config.machine=Machine Options
+pokecube.config.maxOutput.tooltip=Maximum RF/t a RF Siphon can produce
+pokecube.config.powerFunction.tooltip=Function of power and level to RF output, a = maximum offensive stat, x = level
+pokecube.config.warpPadEnergy.tooltip=Do warppads require RF to work
+pokecube.config.warpPadRange.tooltip=Maximum distance a warppad can send to, use -1 for no limit
+pokecube.config.theft.tooltip=Can the trading table be used to trade tame Pokémobs for a stack of emeralds, thereby "stealing" it
+pokecube.config.ranchables.tooltip=Outputs from MFR rancher from Pokémobs
+
+#Spawning
+pokecube.config.biomeLevels.tooltip=Used to set what levels Pokémobs spawn at in specific sub-biomes
+pokecube.config.dimensionBlackList.tooltip=Dimension IDs to blacklist for spawning
+
+#Trainers
+pokecube.config.trainers=Trainer Options
+pokecube.config.trainerSpawn.tooltip=Do trainers spawn naturally
+pokecube.config.trainersInvul.tooltip=Can trainers take damage
+pokecube.config.trainerBox.tooltip=Roughly how close more than two trainers can spawn
+
+#teams
+pokecube.config.teams=Team Options
+pokecube.config.teamLandPerPlayer.tooltip=Amount of land claimable per member of a team
+
+
+#World
+pokecube.config.structureBiomes.tooltip=Special biomes to assign to structures made in Ruins or RecurrentComplex
+
+#Misc
+pokecube.config.tmRecipe.tooltip=Can TMs be crafted

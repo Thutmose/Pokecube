@@ -41,10 +41,10 @@ public class ByteClassLoader extends ClassLoader
             try
             {
                 byte[] bytes = jarBytes;
-                clazz = defineClass(name, bytes, 0, bytes.length);
+                clazz = super.defineClass(name, bytes, 0, bytes.length);
                 if (resolve)
                 {
-                    resolveClass(clazz);
+                    super.resolveClass(clazz);
                 }
             }
             catch (Exception e)

@@ -55,7 +55,7 @@ public class PokecubeAdv
     public static final String ID                 = "pokecube_adventures";
     public static final String version            = "@VERSION@";
     public final static String MCVERSIONS         = "[1.8.9]";
-    public final static String MINVERSION         = "";                                                                                          // "@[2.2.11,)";//
+    public final static String MINVERSION         = "";//"@[2.2.13,)";//
 
     public final static String UPDATEURL          = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Addons/versions.json";
     public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";

@@ -191,11 +191,13 @@ public abstract class ConfigBase extends Configuration
         }
 
         ConfigCategory cc;
+        List<ConfigCategory> empty = new ArrayList<>();
         for (String s : getCategoryNames())
         {
             cc = getCategory(s);
             cc.setLanguageKey("pokecube.config." + cc.getName());
             List<String> removeThis = new ArrayList<>();
+            if (cc.entrySet().isEmpty()) empty.add(cc);
             for (Map.Entry<String, Property> e : cc.entrySet())
             {
                 if (!fields.contains(e.getValue()))
@@ -208,6 +210,8 @@ public abstract class ConfigBase extends Configuration
                 cc.remove(g);
             }
         }
+        for (ConfigCategory cat : empty)
+            removeCategory(cat);
     }
 
     public void updateField(Field field, String update) throws Exception

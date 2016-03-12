@@ -9,7 +9,7 @@ import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.compat.Config;
+import pokecube.adventures.comands.Config;
 
 public class ModGuiConfig extends GuiConfig
 {

@@ -110,6 +110,8 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     /** Do explosions occur and cause damage */
     public boolean             explosions            = true;
+    @Configure(category = mobAI)
+    public int                 attackCooldown        = 20;
 
     // World Gen and World effect settings
     @Configure(category = world)

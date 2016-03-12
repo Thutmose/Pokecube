@@ -440,6 +440,7 @@ pokecube.config.pokemobsDamageOwner.tooltip=Can your own Pokémob hurt you if yo
 pokecube.config.pokemobsDamagePlayers.tooltip=Can Pokémob attacks harm players
 pokecube.config.pokemobsDamageBlocks.tooltip=Can Pokémob attacks affect blocks
 pokecube.config.explosions.tooltip=Can Pokémobs explode
+pokecube.config.attackCooldown.tooltip=Related to delay time between attacks
 
 #World
 pokecube.config.generation=World Generation and Interaction

@@ -94,8 +94,8 @@ public class AIAttack extends AIBase implements IAICombat
             targetLoc.set(entityTarget);
             this.chaseTime = 0;
             running = true;
-            if (PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1 && entityTarget instanceof EntityPlayer
-                    && !((IPokemob) attacker).getPokemonAIState(IPokemob.TAMED)
+            if (PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1
+                    && entityTarget instanceof EntityPlayer && !((IPokemob) attacker).getPokemonAIState(IPokemob.TAMED)
                     && ((EntityPlayer) entityTarget).getLastAttacker() != attacker
                     && ((EntityPlayer) entityTarget).getAITarget() != attacker)
             {
@@ -303,7 +303,8 @@ public class AIAttack extends AIBase implements IAICombat
     private void applyDelay(boolean distanced)
     {
         byte[] mods = ((IPokemob) attacker).getModifiers();
-        int def = distanced ? 20 : 10;
+        int cd = PokecubeMod.core.getConfig().attackCooldown;
+        int def = distanced ? cd : cd / 2;
         if (entityTarget instanceof EntityPlayer) def *= distanced ? 3 : 2;
         double accuracyMod = Tools.modifierToRatio(mods[6], true);
         delayTime = (int) (def / accuracyMod);

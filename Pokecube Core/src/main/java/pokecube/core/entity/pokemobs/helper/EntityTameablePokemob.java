@@ -661,6 +661,14 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         }
     }
 
+    /** Will get destroyed next tick. */
+    @Override
+    public void setDead()
+    {
+        if (!this.returning) returnToPokecube();
+        super.setDead();
+    }
+
     @Override
     public void setHeldItem(ItemStack itemStack)
     {

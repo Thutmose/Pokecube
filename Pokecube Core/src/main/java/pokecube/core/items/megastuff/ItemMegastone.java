@@ -11,7 +11,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.client.ItemTextureHandler;
+import pokecube.core.handlers.HeldItemHandler;
 
 public class ItemMegastone extends Item
 {
@@ -72,7 +72,7 @@ public class ItemMegastone extends Item
         ItemStack stack;
         subItems.add(new ItemStack(itemIn));
         int n = 0;
-        for (String s : ItemTextureHandler.megaVariants)
+        for (String s : HeldItemHandler.megaVariants)
         {
             if (n++ == 0) continue;
             stack = new ItemStack(itemIn);

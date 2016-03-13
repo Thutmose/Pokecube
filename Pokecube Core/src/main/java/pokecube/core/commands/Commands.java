@@ -46,13 +46,7 @@ public class Commands implements ICommand
         if (args[0].isEmpty())
         {
             List<String> ret = new ArrayList<String>();
-            ret.add("tm");
             ret.add("recall");
-            ret.add("spawn");
-            ret.add("spawns");
-            ret.add("semihardmode");
-            ret.add("hardmode");
-            ret.add("explosions");
             if (isOp)
             {
                 ret.add("count");

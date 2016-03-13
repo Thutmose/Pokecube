@@ -15,6 +15,8 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
+import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.adventures.entity.trainers.EntityTrainer.CubeTrade;
 import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
@@ -110,7 +112,23 @@ public class Config extends ConfigBase
     @Configure(category = trainers)
     public boolean                     trainersInvul      = false;
     @Configure(category = trainers)
+    public boolean                     trainersTradeMobs  = true;
+    @Configure(category = trainers)
+    public boolean                     trainersTradeItems = true;
+    @Configure(category = trainers)
     public int                         trainerBox         = 128;
+    @Configure(category = trainers)
+    public int                         megaCost           = 16;
+    @Configure(category = trainers)
+    public int                         orbCost            = 32;
+    @Configure(category = trainers)
+    public int                         shinyCost          = 128;
+    @Configure(category = trainers)
+    public int                         tmCost             = 16;
+    @Configure(category = trainers)
+    public int                         badgeCost          = 64;
+    @Configure(category = trainers)
+    String[]                           cubeCosts          = { "0:16:4-8:1", "1:8:2-4:1", "2:2:1-2:1", "3:1:1:64" };
 
     @Configure(category = teams)
     private int                        teamLandPerPlayer  = 125;
@@ -155,6 +173,23 @@ public class Config extends ConfigBase
         TileEntityTradingTable.theftEnabled = theft;
         TrainerSpawnHandler.trainerBox = trainerBox;
         RecipeHandler.tmRecipe = tmRecipe;
+
+        EntityTrainer.cubeList.clear();
+        for (String s : cubeCosts)
+        {
+            String[] args = s.split(":");
+            int id = Integer.parseInt(args[0]);
+            int num = Integer.parseInt(args[1]);
+            String[] nums = args[2].split("-");
+            int cost = Integer.parseInt(args[3]);
+            int min, max;
+            min = Integer.parseInt(nums[0]);
+            if (nums.length > 1) max = Integer.parseInt(nums[1]);
+            else max = min;
+            CubeTrade trade = new CubeTrade(id, min, max, cost);
+            for (int i = 0; i < num; i++)
+                EntityTrainer.cubeList.add(trade);
+        }
     }
 
     protected FluidStack getFluid(String toParse)

@@ -1,5 +1,7 @@
 package pokecube.core.handlers;
 
+import java.util.ArrayList;
+
 import net.minecraft.item.ItemStack;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
@@ -7,6 +9,24 @@ import pokecube.core.utils.PokeType;
 
 public class HeldItemHandler
 {
+    public static ArrayList<String> megaVariants = new ArrayList<>();
+
+    static
+    {
+        megaVariants.add("megastone");
+        megaVariants.add("shiny_charm");
+        megaVariants.add("omegaorb");
+        megaVariants.add("alphaorb");
+        megaVariants.add("gardevoirmega");
+        megaVariants.add("charizardmega-y");
+        megaVariants.add("scizormega");
+        megaVariants.add("sceptilemega");
+        megaVariants.add("salamencemega");
+        megaVariants.add("gallademega");
+        megaVariants.add("absolmega");
+        megaVariants.add("blastoisemega");
+    }
+
     private static double getMoveMultiplier(ItemStack held, PokeType move)
     {
         double ret = 1;

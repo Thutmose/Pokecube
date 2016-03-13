@@ -55,7 +55,7 @@ public class PokecubeAdv
     public static final String ID                 = "pokecube_adventures";
     public static final String version            = "@VERSION";
     public final static String MCVERSIONS         = "@MCVERSION";
-    public final static String DEPSTRING    = "required-after:pokecube@@POKECUBEVERSION";
+    public final static String DEPSTRING          = "required-after:pokecube@@POKECUBEVERSION";
 
     public final static String UPDATEURL          = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Addons/versions.json";
     public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
@@ -67,6 +67,7 @@ public class PokecubeAdv
     public static int          GUICLONER_ID       = 4;
     public static int          GUIBIOMESETTER_ID  = 5;
     public static int          GUIAFA_ID          = 6;
+//    public static int          GUITRAINERMERC_ID  = 7;
 
     @SidedProxy(clientSide = "pokecube.adventures.client.ClientProxy", serverSide = "pokecube.adventures.CommonProxy")
     public static CommonProxy  proxy;

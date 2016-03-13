@@ -32,7 +32,6 @@ import thut.api.maths.Vector3;
 
 public class EntityTrader extends EntityVillager
 {
-
     EntityPlayer customer;
 
     MerchantRecipeList list  = new MerchantRecipeList();

@@ -1,14 +1,22 @@
 package pokecube.adventures.entity.trainers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IMerchant;
+import net.minecraft.entity.INpc;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
@@ -17,8 +25,11 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ContainerMerchant;
+import net.minecraft.inventory.InventoryMerchant;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -29,8 +40,12 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import net.minecraft.village.MerchantRecipe;
+import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.ai.trainers.EntityAITrainer;
 import pokecube.adventures.comands.Config;
@@ -38,49 +53,94 @@ import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
+import pokecube.core.PokecubeItems;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
+import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.ItemTM;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.moves.MovesUtils;
+import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
-public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpawnData
+public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpawnData, INpc, IMerchant
 {
+    public static class CubeTrade
+    {
+        final int   cubeId;
+        final int[] amtRange = { 0, 0 };
+        final int   cost;
 
-    public static final int  STATIONARY       = 1;
-    public static final int  ANGRY            = 2;
-    public static final int  THROWING         = 4;
+        public CubeTrade(int cubeId, int min, int max, int cost)
+        {
+            this.cubeId = cubeId;
+            amtRange[0] = min;
+            amtRange[1] = max;
+            this.cost = cost;
+        }
 
-    public static int        ATTACKCOOLDOWN   = 10000;
-    private int              battleCooldown   = ATTACKCOOLDOWN;
+        public MerchantRecipe getTrade()
+        {
+            ItemStack sell = new ItemStack(PokecubeItems.getEmptyCube(cubeId));
+            sell.stackSize = amtRange[0];
+            if (amtRange[0] < amtRange[1])
+            {
+                sell.stackSize += new Random().nextInt(amtRange[1] - amtRange[0] + 1);
+            }
+            ItemStack buy1 = new ItemStack(Items.emerald);
+            ItemStack buy2 = null;
+            buy1.stackSize = (cost % 64) + 1;
+            if (cost > 64)
+            {
+                buy2 = buy1.copy();
+                buy2.stackSize = ((cost - 64) % 64) + 1;
+            }
+            return new MerchantRecipe(buy1, buy2, sell);
+        }
+    }
 
-    private boolean          randomize        = false;
-    public ItemStack[]       pokecubes        = new ItemStack[6];
-    public int[]             pokenumbers      = new int[6];
-    public int[]             pokelevels       = new int[6];
-    public int[]             attackCooldown   = new int[6];
-    public int               cooldown         = 0;
-    public int               globalCooldown   = 0;
-    public int               friendlyCooldown = 0;
-    public List<IPokemob>    currentPokemobs  = new ArrayList<IPokemob>();
-    private EntityLivingBase target;
-    public TypeTrainer       type;
-    private int              id;
-    public String            name             = "";
-    public UUID              outID;
-    public IPokemob          outMob;
-    public boolean           male             = true;
+    public static final int            STATIONARY       = 1;
+    public static final int            ANGRY            = 2;
+    public static final int            THROWING         = 4;
 
-    boolean                  added            = false;
+    public static ArrayList<CubeTrade> cubeList         = Lists.newArrayList();
+    public static int                  ATTACKCOOLDOWN   = 10000;
+    private int                        battleCooldown   = ATTACKCOOLDOWN;
+    /** This villager's current customer. */
+    private EntityPlayer               buyingPlayer;
+    /** Initialises the MerchantRecipeList.java */
+    private MerchantRecipeList         tradeList;
+    /** Initialises the MerchantRecipeList.java */
+    private MerchantRecipeList         itemList;
 
-    int                      timercounter     = 0;
+    private boolean                    randomize        = false;
+    public ItemStack[]                 pokecubes        = new ItemStack[6];
+    public int[]                       pokenumbers      = new int[6];
+    public int[]                       pokelevels       = new int[6];
+    public int[]                       attackCooldown   = new int[6];
+    public int                         cooldown         = 0;
+    public int                         globalCooldown   = 0;
+    public int                         friendlyCooldown = 0;
+    public List<IPokemob>              currentPokemobs  = new ArrayList<IPokemob>();
+    private EntityLivingBase           target;
+    public TypeTrainer                 type;
+    private int                        id;
+    public String                      name             = "";
+    public UUID                        outID;
+    public IPokemob                    outMob;
+    public boolean                     male             = true;
+    boolean                            clear            = false;
+    boolean                            added            = false;
+
+    int                                timercounter     = 0;
 
     public EntityTrainer(World par1World)
     {
@@ -225,9 +285,34 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         return this.getTarget();
     }
 
+    @Override
+    public EntityPlayer getCustomer()
+    {
+        return buyingPlayer;
+    }
+
     public int getId()
     {
         return id;
+    }
+
+    @Override
+    public MerchantRecipeList getRecipes(EntityPlayer player)
+    {
+        if (player.openContainer instanceof ContainerMerchant)
+        {
+            InventoryMerchant inv = ((ContainerMerchant) player.openContainer).getMerchantInventory();
+            if (clear)
+            {
+                inv.removeStackFromSlot(0);
+            }
+            clear = false;
+        }
+        if (this.tradeList == null)
+        {
+            this.populateBuyingList();
+        }
+        return this.tradeList;
     }
 
     public boolean getShouldRandomize()
@@ -282,12 +367,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     }
 
     @Override
-    public boolean interact(EntityPlayer entityplayer)
+    public boolean interact(EntityPlayer player)
     {
-        if (entityplayer.capabilities.isCreativeMode)
+        if (player.capabilities.isCreativeMode && player.isSneaking())
         {
-            if (getType() != null && !worldObj.isRemote && entityplayer.isSneaking()
-                    && entityplayer.getHeldItem() == null)
+            if (getType() != null && !worldObj.isRemote && player.getHeldItem() == null)
             {
                 String message = this.getName() + " " + getAIState(STATIONARY) + " " + countPokemon() + " ";
                 for (ItemStack i : pokecubes)
@@ -299,28 +383,27 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                     ItemStack item = getEquipmentInSlot(i);
                     if (item != null) message += item.getDisplayName() + " ";
                 }
-                entityplayer.addChatMessage(new ChatComponentText(message));
+                player.addChatMessage(new ChatComponentText(message));
             }
-            else if (!worldObj.isRemote && entityplayer.isSneaking()
-                    && entityplayer.getHeldItem().getItem() == Items.stick)
+            else if (!worldObj.isRemote && player.isSneaking() && player.getHeldItem().getItem() == Items.stick)
             {
-                throwCubeAt(entityplayer);
+                throwCubeAt(player);
             }
-            else if (entityplayer.getHeldItem() == null) setTarget(entityplayer);
+            else if (player.getHeldItem() != null && player.getHeldItem().getItem() == Items.stick) setTarget(player);
 
-            if (entityplayer.getHeldItem() != null && entityplayer.getHeldItem().getItem() instanceof ItemTrainer)
+            if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemTrainer)
             {
-                entityplayer.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getId(), 0, 0);
+                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getId(), 0, 0);
             }
         }
         else
         {
-            if (entityplayer.getHeldItem() != null)
+            if (player.getHeldItem() != null && friendlyCooldown <= 0)
             {
-                if (entityplayer.getHeldItem().getItem() == Item.itemRegistry
+                if (player.getHeldItem().getItem() == Item.itemRegistry
                         .getObject(new ResourceLocation("minecraft:emerald")))
                 {
-                    entityplayer.inventory.consumeInventoryItem(
+                    player.inventory.consumeInventoryItem(
                             Item.itemRegistry.getObject(new ResourceLocation("minecraft:emerald")));
                     setTrainerTarget(null);
                     for (IPokemob pokemob : currentPokemobs)
@@ -331,17 +414,25 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                     friendlyCooldown = 2400;
                 }
             }
-            else
+            else if (friendlyCooldown >= 0)
             {
-                // System.out.println("HeldItem is null");
+                this.setCustomer(player);
+                if (!this.worldObj.isRemote && (getRecipes(player) == null || this.tradeList.size() > 0))
+                {
+                    player.displayVillagerTradeGui(this);
+                    return true;
+                }
+                else this.setCustomer(null);
+                return true;
             }
         }
-
-        return false;// super.interact(entityplayer);
+        return true;// super.interact(entityplayer);
     }
 
     public void lowerCooldowns()
     {
+        if (friendlyCooldown-- >= 0) return;
+
         boolean done = attackCooldown[0] <= 0;
         cooldown--;
         if (done)
@@ -429,14 +520,120 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             return;
         }
         timercounter = 0;
-
-        friendlyCooldown--;
     }
 
     @Override
     public void onUpdate()
     {
         super.onUpdate();
+    }
+
+    private void populateBuyingList()
+    {
+        tradeList = new MerchantRecipeList();
+        if (itemList == null && Config.instance.trainersTradeItems)
+        {
+            itemList = new MerchantRecipeList();
+            addRandomTrades();
+        }
+        if (Config.instance.trainersTradeItems) tradeList.addAll(itemList);
+        ItemStack buy = buyingPlayer.getHeldItem();
+        if (buy != null && PokecubeManager.isFilled(buy) && Config.instance.trainersTradeMobs)
+        {
+            addMobTrades(buy);
+        }
+    }
+
+    private void addMobTrades(ItemStack buy1)
+    {
+        for (int i = 0; i < pokecubes.length; i++)
+        {
+            ItemStack stack = pokecubes[i];
+            if (stack != null && PokecubeManager.isFilled(stack))
+            {
+                IPokemob mon = PokecubeManager.itemToPokemob(stack, worldObj);
+                IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, worldObj);
+                if (mon1.getLevel() < mon.getLevel()) continue;
+                String trader1 = mon1.getPokemonOwnerName();
+                mon.setOriginalOwnerUUID(getUniqueID());
+                mon.setPokemonOwnerByName(trader1);
+                stack = PokecubeManager.pokemobToItem(mon);
+                tradeList.add(new MerchantRecipe(buy1, stack));
+            }
+        }
+    }
+
+    private void addRandomTrades()
+    {
+        itemList.clear();
+        int num = rand.nextInt(4);
+        Set<Object> added = Sets.newHashSet();
+        for (int i = 0; i < num; i++)
+        {
+            String name = HeldItemHandler.megaVariants.get(rand.nextInt(HeldItemHandler.megaVariants.size()));
+            if (!added.contains(name))
+            {
+                ItemStack output = PokecubeItems.getStack(name);
+                if (output == null) continue;
+                added.add(name);
+                ItemStack in1 = new ItemStack(Items.emerald);
+                int size = Config.instance.megaCost;
+                if (name.endsWith("orb")) size = Config.instance.orbCost;
+                else if (name.endsWith("charm")) size = Config.instance.shinyCost;
+                size -= 1;
+                in1.stackSize = (size % 64) + 1;
+                ItemStack in2 = null;
+                if (size > 64)
+                {
+                    in2 = in1.copy();
+                    in2.stackSize = ((size - 64) % 64) + 1;
+                }
+                itemList.add(new MerchantRecipe(in1, in2, output));
+            }
+        }
+        added.clear();
+        num = rand.nextInt(4);
+        ArrayList<String> moves = Lists.newArrayList(MovesUtils.moves.keySet());
+        Collections.shuffle(moves);
+        for (int i = 0; i < num; i++)
+        {
+            String name = moves.get(i);
+            if (added.contains(name)) continue;
+            added.add(name);
+            ItemStack tm = PokecubeItems.getStack("tm");
+            ItemStack in = new ItemStack(Items.emerald);
+            in.stackSize = Config.instance.tmCost;
+            ItemTM.addMoveToStack(name, tm);
+            itemList.add(new MerchantRecipe(in, tm));
+        }
+        added.clear();
+        num = rand.nextInt(4);
+        if (!cubeList.isEmpty()) for (int i = 0; i < num; i++)
+        {
+            CubeTrade trade = cubeList.get(rand.nextInt(cubeList.size()));
+            if (added.contains(trade)) continue;
+            added.add(trade);
+            itemList.add(trade.getTrade());
+        }
+        if (Math.random() > 0.99)
+        {
+            PokeType type = PokeType.values()[rand.nextInt(PokeType.values().length)];
+            if (type == PokeType.unknown) return;
+            ItemStack badge = PokecubeItems.getStack("badge" + type);
+            if (badge != null)
+            {
+                ItemStack in1 = new ItemStack(Items.emerald);
+                int size = Config.instance.badgeCost;
+                in1.stackSize = (size % 64) + 1;
+                ItemStack in2 = null;
+                if (size > 64)
+                {
+                    in2 = in1.copy();
+                    in2.stackSize = ((size - 64) % 64) + 1;
+                }
+                itemList.add(new MerchantRecipe(in1, in2, badge));
+            }
+        }
     }
 
     @Override
@@ -452,6 +649,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 pokecubes[n] = ItemStack.loadItemStackFromNBT(tag);
                 if (PokecubeManager.getPokedexNb(pokecubes[n]) == 0) pokecubes[n] = null;
             }
+        }
+        if (nbt.hasKey("Offers", 10))
+        {
+            NBTTagCompound nbttagcompound = nbt.getCompoundTag("Offers");
+            this.itemList = new MerchantRecipeList(nbttagcompound);
         }
         dataWatcher.updateObject(5, nbt.getInteger("aiState"));
         randomize = nbt.getBoolean("randomTeam");
@@ -492,6 +694,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         name = new String(string);
         male = buff.readBoolean();
+        friendlyCooldown = buff.readInt();
         setId(buff.readInt());
         for (int i = 0; i < 6; i++)
         {
@@ -512,6 +715,13 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         {
             dataWatcher.updateObject(5, Integer.valueOf((byte0 & -state - 1)));
         }
+    }
+
+    @Override
+    public void setCustomer(EntityPlayer player)
+    {
+        tradeList = null;
+        this.buyingPlayer = player;
     }
 
     /** Will get destroyed next tick. */
@@ -554,6 +764,12 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         pokenumbers[index] = number;
         pokelevels[index] = level;
         attackCooldown[index] = 0;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void setRecipes(MerchantRecipeList recipeList)
+    {
     }
 
     public void setStationary(boolean stationary)
@@ -644,10 +860,55 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             }
             if (i != null && attackCooldown[j] < 30) { return; }
         }
-        if (globalCooldown > 0 && outID == null)
+        if (globalCooldown > 0 && outID == null && outMob == null)
         {
             globalCooldown = 0;
             onDefeated(target);
+        }
+    }
+
+    @Override
+    public void useRecipe(MerchantRecipe recipe)
+    {
+        trade(recipe);
+        this.livingSoundTime = -this.getTalkInterval();
+        this.playSound("mob.villager.yes", this.getSoundVolume(), this.getSoundPitch());
+        int i = 3 + this.rand.nextInt(4);
+        if (recipe.getRewardsExp())
+        {
+            this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY + 0.5D, this.posZ, i));
+        }
+    }
+
+    private void trade(MerchantRecipe recipe)
+    {
+        ItemStack poke1 = recipe.getItemToBuy();
+        ItemStack poke2 = recipe.getItemToSell();
+        if (!(PokecubeManager.isFilled(poke1) && PokecubeManager.isFilled(poke2))) { return; }
+        EntityLivingBase player2 = this;
+        IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, worldObj);
+        String trader2 = player2.getUniqueID().toString();
+        mon1.setPokemonOwnerByName(trader2);
+        poke1 = PokecubeManager.pokemobToItem(mon1);
+        clear = true;
+        pokecubes[0] = poke1;
+    }
+
+    @Override
+    public void verifySellingItem(ItemStack stack)
+    {
+        if (!this.worldObj.isRemote && this.livingSoundTime > -this.getTalkInterval() + 20)
+        {
+            this.livingSoundTime = -this.getTalkInterval();
+
+            if (stack != null)
+            {
+                this.playSound("mob.villager.yes", this.getSoundVolume(), this.getSoundPitch());
+            }
+            else
+            {
+                this.playSound("mob.villager.no", this.getSoundVolume(), this.getSoundPitch());
+            }
         }
     }
 
@@ -665,6 +926,10 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 nbt.setTag("slot" + n, tag);
                 n++;
             }
+        }
+        if (this.itemList != null)
+        {
+            nbt.setTag("Offers", this.itemList.getRecipiesAsTags());
         }
         nbt.setBoolean("gender", male);
         nbt.setInteger("battleCD", battleCooldown);
@@ -688,6 +953,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         buffer.writeInt(name.length());
         buffer.writeBytes(name.getBytes());
         buffer.writeBoolean(male);
+        buffer.writeInt(friendlyCooldown);
         buffer.writeInt(getId());
         for (int i = 0; i < 6; i++)
         {

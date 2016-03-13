@@ -22,7 +22,7 @@ public class GuiInfoMessages
     public static void addMessage(String message)
     {
         instance.messages.add(message);
-        instance.time = System.currentTimeMillis();
+        instance.time = Minecraft.getMinecraft().theWorld.getTotalWorldTime();
         instance.recent.add(message);
         if (instance.messages.size() > 100)
         {
@@ -75,7 +75,7 @@ public class GuiInfoMessages
             num = 7;
             offset += (int) (i != 0 ? Math.signum(i) : 0);
         }
-        else if (time > System.currentTimeMillis() - 1500)
+        else if (time > minecraft.theWorld.getTotalWorldTime() - 1500)
         {
             num = 6;
             offset = 0;
@@ -83,7 +83,7 @@ public class GuiInfoMessages
         else
         {
             offset = 0;
-            time = System.currentTimeMillis();
+            time = minecraft.theWorld.getTotalWorldTime();
             if (recent.size() > 0)
             {
                 recent.remove(0);

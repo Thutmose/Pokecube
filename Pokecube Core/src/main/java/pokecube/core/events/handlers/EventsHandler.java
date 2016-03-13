@@ -569,7 +569,7 @@ public class EventsHandler
     {
         if (evt.target instanceof EntityLivingBase && evt.entityLiving instanceof EntityLiving)
         {
-            List<IPokemob> pokemon = getPokemobs((EntityLivingBase) evt.target, 32);
+            List<IPokemob> pokemon = getPokemobs(evt.target, 32);
             if (pokemon.isEmpty()) return;
             double closest = 1000;
             IPokemob newtarget = null;

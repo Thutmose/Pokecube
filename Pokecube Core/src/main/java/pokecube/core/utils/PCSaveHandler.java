@@ -85,7 +85,6 @@ public class PCSaveHandler
     public void loadPC(String uuid)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-        System.out.println(uuid);
         try
         {
             World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
@@ -127,10 +126,8 @@ public class PCSaveHandler
         if (FMLCommonHandler.instance().getMinecraftServerInstance() == null
                 || FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             return;
-        System.out.println(uuid);
         try
         {
-
             World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
             saveHandler = world.getSaveHandler();
             String seperator = System.getProperty("file.separator");

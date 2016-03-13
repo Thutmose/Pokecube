@@ -8,9 +8,13 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IWorldAccess;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Pokedex;
+import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -70,7 +74,10 @@ public class Move_Explode extends Move_Ongoing
     public void attack(IPokemob attacker, Vector3 attacked, float f)
     {
         if (PokecubeMod.core.getConfig().explosions) attack(attacker, (Entity) attacker, f);
-        else super.attack(attacker, attacked, f);
+        else
+        {
+            super.attack(attacker, attacked, f);
+        }
     }
 
     @Override
@@ -128,6 +135,34 @@ public class Move_Explode extends Move_Ongoing
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public IMoveAnimation getAnimation()
+    {
+        return new IMoveAnimation()
+        {
+            @Override
+            public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
+            {
+                EntityLivingBase voltorb = (EntityLivingBase) info.attacker;
+                Explosion explosion = new Explosion(voltorb.worldObj, voltorb, voltorb.posX, voltorb.posY, voltorb.posZ,
+                        10, false, true);
+                explosion.doExplosionB(true);
+            }
+
+            @Override
+            public int getDuration()
+            {
+                return 0;
+            }
+
+            @Override
+            public void setDuration(int duration)
+            {
+            }
+        };
+    }
+
+    @Override
     public int getDuration()
     {
         return 4;
@@ -143,5 +178,12 @@ public class Move_Explode extends Move_Ongoing
     public boolean onTarget()
     {
         return false;
+    }
+
+    @Override
+    public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+    {
+        EntityLivingBase voltorb = (EntityLivingBase) attacker;
+        voltorb.attackEntityFrom(DamageSource.generic, voltorb.getMaxHealth());
     }
 }

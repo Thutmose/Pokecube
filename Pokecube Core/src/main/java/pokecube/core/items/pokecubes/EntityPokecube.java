@@ -419,8 +419,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D
                     / Math.PI);
-            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D
-                    / Math.PI);
+            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / Math.PI);
         }
 
         BlockPos pos = tilePos == null ? getPosition() : tilePos;
@@ -462,7 +461,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 this.inGround = false;
                 this.ticksInGround = 0;
             }
-            if (tilt < 0)
+            if (tilt < 0 && !(targetEntity == null && targetLocation.isEmpty()))
             {
                 if (PokecubeManager.isFilled(getEntityItem()))
                 {
@@ -657,8 +656,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         {
             float f = MathHelper.sqrt_double(p_70016_1_ * p_70016_1_ + p_70016_5_ * p_70016_5_);
             this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(p_70016_1_, p_70016_5_) * 180.0D / Math.PI);
-            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(p_70016_3_, f) * 180.0D
-                    / Math.PI);
+            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(p_70016_3_, f) * 180.0D / Math.PI);
             this.prevRotationPitch = this.rotationPitch;
             this.prevRotationYaw = this.rotationYaw;
             this.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);

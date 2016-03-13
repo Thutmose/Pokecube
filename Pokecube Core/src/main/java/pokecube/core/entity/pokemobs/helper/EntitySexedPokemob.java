@@ -40,13 +40,13 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public abstract class EntitySexedPokemob extends EntityStatsPokemob
 {
-    protected Entity               egg   = null;
+    protected Entity               egg            = null;
     private Entity                 lover;
     protected int                  inLove;
-    protected byte                 sexe  = 0;
-    protected Vector<IBreedingMob> males = new Vector<>();
+    protected byte                 sexe           = 0;
+    protected Vector<IBreedingMob> males          = new Vector<>();
 
-    int spawnBabyDelay = 0;
+    int                            spawnBabyDelay = 0;
 
     /** @param par1World */
     public EntitySexedPokemob(World world)
@@ -123,7 +123,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
                     return input instanceof IPokemob;
                 }
             });
-            bb = here.getAABB().expand(5*searchingLoveDist, 2*searchingLoveDist, 5*searchingLoveDist);
+            bb = here.getAABB().expand(5 * searchingLoveDist, 2 * searchingLoveDist, 5 * searchingLoveDist);
             List<Entity> list2 = worldObj.getEntitiesInAABBexcluding(this, bb, new Predicate<Entity>()
             {
                 @Override
@@ -353,7 +353,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     protected void mate(IBreedingMob male)
     {
         if (male == null || ((Entity) male).isDead) return;
-        if (this.getSexe() == MALE || male.getSexe() == FEMALE)
+        if (this.getSexe() == MALE || male.getSexe() == FEMALE && male != this)
         {
             ((EntityPokemob) male).mateWith(this);
             return;

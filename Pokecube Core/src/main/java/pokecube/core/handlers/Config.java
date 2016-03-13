@@ -7,6 +7,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
@@ -18,6 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
@@ -230,7 +233,6 @@ public class Config extends ConfigBase
     @Override
     public void applySettings()
     {
-        initDefaultStarts();
         SpawnHandler.MAX_DENSITY = mobDensityMultiplier;
         SpawnHandler.MAXNUM = mobSpawnNumber;
         if (breedingDelay < 600) breedingDelay = 1000;
@@ -304,33 +306,40 @@ public class Config extends ConfigBase
 
     public void initDefaultStarts()
     {
-        try
+        FMLCommonHandler.callFuture(new FutureTask<Object>(new Callable<Object>()
         {
-            JsonParser parser = new JsonParser();
-            URL url = new URL(PokecubeMod.CONTRIBURL);
-            URLConnection con = url.openConnection();
-            con.setConnectTimeout(1000);
-            con.setReadTimeout(1000);
-            InputStream in = con.getInputStream();
-            JsonElement element = parser.parse(new InputStreamReader(in));
-            JsonElement element1 = element.getAsJsonObject().get("contributors");
-            JsonArray contribArray = element1.getAsJsonArray();
-            List<String> defaults = Lists.newArrayList(defaultStarts);
-            for (int i = 0; i < contribArray.size(); i++)
+            @Override
+            public Object call() throws Exception
             {
-                element1 = contribArray.get(i);
-                JsonObject obj = element1.getAsJsonObject();
-                String name = obj.get("username").getAsString();
-                String info = obj.get("info").getAsString();
-                if (info != null && !info.isEmpty()) defaults.add(name + ":" + info);
+                try
+                {
+                    JsonParser parser = new JsonParser();
+                    URL url = new URL(PokecubeMod.CONTRIBURL);
+                    URLConnection con = url.openConnection();
+                    con.setConnectTimeout(1000);
+                    con.setReadTimeout(1000);
+                    InputStream in = con.getInputStream();
+                    JsonElement element = parser.parse(new InputStreamReader(in));
+                    JsonElement element1 = element.getAsJsonObject().get("contributors");
+                    JsonArray contribArray = element1.getAsJsonArray();
+                    List<String> defaults = Lists.newArrayList(defaultStarts);
+                    for (int i = 0; i < contribArray.size(); i++)
+                    {
+                        element1 = contribArray.get(i);
+                        JsonObject obj = element1.getAsJsonObject();
+                        String name = obj.get("username").getAsString();
+                        String info = obj.get("info").getAsString();
+                        if (info != null && !info.isEmpty()) defaults.add(name + ":" + info);
+                    }
+                    defaultStarts = defaults.toArray(new String[0]);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                return null;
             }
-            defaultStarts = defaults.toArray(new String[0]);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
+        }));
     }
 
     @SubscribeEvent

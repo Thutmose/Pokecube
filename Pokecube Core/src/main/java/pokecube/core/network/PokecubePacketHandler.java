@@ -912,9 +912,9 @@ public class PokecubePacketHandler
                 target.set(attacked);
             }
 
-            if (move.animation != null && attacker != null)
+            if (move.getAnimation() != null && attacker != null)
             {
-                MoveAnimation anim = new MoveAnimation(attacker, attacked, target, move, move.animation.getDuration());
+                MoveAnimation anim = new MoveAnimation(attacker, attacked, target, move, move.getAnimation().getDuration());
                 MoveAnimationHelper.Instance().addMove(attacker, anim);
             }
         }

@@ -50,10 +50,10 @@ public class MoveAnimationHelper
 
         public void render(double partialTick)
         {
-            if (move.animation != null)
+            if (move.getAnimation() != null)
             {
-                info.currentTick = move.animation.getDuration() - duration;
-                move.animation.clientAnimation(info, Minecraft.getMinecraft().renderGlobal, (float) partialTick);
+                info.currentTick = move.getAnimation().getDuration() - duration;
+                move.getAnimation().clientAnimation(info, Minecraft.getMinecraft().renderGlobal, (float) partialTick);
             }
             else
             {

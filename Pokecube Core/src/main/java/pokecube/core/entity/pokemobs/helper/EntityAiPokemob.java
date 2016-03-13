@@ -90,7 +90,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     public TerrainSegment     currentTerrain    = null;
 
-    float moveF;
+    float                     moveF;
 
     public EntityAiPokemob(World world)
     {
@@ -105,6 +105,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public boolean attackEntityAsMob(Entity par1Entity)
     {
         return super.attackEntityAsMob(par1Entity);
+    }
+
+    @Override
+    public void attackEntityWithRangedAttack(EntityLivingBase p_82196_1_, float p_82196_2_)
+    {
     }
 
     ///////////////////////////////////// AI
@@ -467,8 +472,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             if (PokecubeCore.isOnClientSide() && !player.isSneaking())
             {
-                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, worldObj, (int) posX,
-                        (int) posY, (int) posZ);
+                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, worldObj, (int) posX, (int) posY,
+                        (int) posZ);
             }
             return true;
         }

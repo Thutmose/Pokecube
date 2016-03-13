@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,30 +55,30 @@ import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
-public abstract class EntityTameablePokemob extends EntityTameable
-        implements IPokemob, IMob, IInvBasic, IHungrymob, IPathingMob, IShearable, IBreedingMob, IMobColourable
+public abstract class EntityTameablePokemob extends EntityTameable implements IPokemob, IMob, IInvBasic, IHungrymob,
+        IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob
 {
-    public static int          EXITCUBEDURATION = 40;
+    public static int          EXITCUBEDURATION  = 40;
 
-    static final int AIACTIONSTATESDW  = 5;
-    static final int DIRECTIONPITCHDW  = 10;
-    static final int STATSDW           = 11;
-    static final int ATTACKTARGETIDDW  = 13;
-    static final int STATMODDW         = 18;
-    static final int BOOMSTATEDW       = 19;
-    static final int EXPDW             = 20;
-    static final int HUNGERDW          = 21;
-    static final int NICKNAMEDW        = 22;
-    static final int STATUSMOVEINDEXDW = 23;
+    static final int           AIACTIONSTATESDW  = 5;
+    static final int           DIRECTIONPITCHDW  = 10;
+    static final int           STATSDW           = 11;
+    static final int           ATTACKTARGETIDDW  = 13;
+    static final int           STATMODDW         = 18;
+    static final int           BOOMSTATEDW       = 19;
+    static final int           EXPDW             = 20;
+    static final int           HUNGERDW          = 21;
+    static final int           NICKNAMEDW        = 22;
+    static final int           STATUSMOVEINDEXDW = 23;
 
-    static final int EVS1DW            = 24;
-    static final int EVS2DV            = 25;
+    static final int           EVS1DW            = 24;
+    static final int           EVS2DV            = 25;
 
-    static final int SPECIALINFO       = 26;
-    static final int EVOLNBDW          = 27;
-    static final int EVOLTICKDW        = 28;
-    static final int HAPPYDW           = 29;
-    static final int MOVESDW           = 30;
+    static final int           SPECIALINFO       = 26;
+    static final int           EVOLNBDW          = 27;
+    static final int           EVOLTICKDW        = 28;
+    static final int           HAPPYDW           = 29;
+    static final int           MOVESDW           = 30;
 
     protected boolean          looksWithInterest;
 
@@ -90,26 +91,26 @@ public abstract class EntityTameablePokemob extends EntityTameable
 
     protected float            timePokemonIsShaking;
     protected float            prevTimePokemonIsShaking;
-    protected Integer          pokedexNb        = 0;
-    public float               length           = 1;
+    protected Integer          pokedexNb         = 0;
+    public float               length            = 1;
     // protected int hungerTime;
     protected EntityLivingBase owner;
-    private String             ownerName        = "";
-    private UUID               original         = new UUID(1234, 4321);
-    protected Vector3          here             = Vector3.getNewVector();
+    private String             ownerName         = "";
+    private UUID               original          = new UUID(1234, 4321);
+    protected Vector3          here              = Vector3.getNewVector();
 
-    protected Vector3          vec              = Vector3.getNewVector();
+    protected Vector3          vec               = Vector3.getNewVector();
 
-    protected Vector3          v1               = Vector3.getNewVector();
-    protected Vector3          v2               = Vector3.getNewVector();
-    protected Vector3          vBak             = Vector3.getNewVector();
-    boolean named    = false;
+    protected Vector3          v1                = Vector3.getNewVector();
+    protected Vector3          v2                = Vector3.getNewVector();
+    protected Vector3          vBak              = Vector3.getNewVector();
+    boolean                    named             = false;
 
-    boolean initHome = true;
+    boolean                    initHome          = true;
 
-    protected AnimalChest pokeChest;
+    protected AnimalChest      pokeChest;
 
-    boolean returning = false;
+    boolean                    returning         = false;
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -148,6 +149,7 @@ public abstract class EntityTameablePokemob extends EntityTameable
             }
         }
     }
+
     /** Moved all of these into Tameable, to keep them together */
     @Override
     protected void entityInit()
@@ -649,7 +651,8 @@ public abstract class EntityTameablePokemob extends EntityTameable
                         ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F),
                                 PokecubeMod.getFakePlayer());
                         MinecraftForge.EVENT_BUS.post(toss);
-                        if (!toss.isCanceled()) entityDropItem(itemstack, 0F);
+                        if (!toss.isCanceled()) entityDropItem(itemstack, 0F).setPickupDelay(1000);
+                        ;
                     }
                 }
             }

@@ -50,6 +50,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         }
         return new ItemStack(item, 1, i);
     }
+
     protected static boolean shouldSilk(IPokemob pokemob)
     {
         if (pokemob.getAbility() == null) return false;
@@ -300,19 +301,6 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     @Override
     protected void finalAttack(IPokemob attacker, Entity attacked, float f)
     {
-        if (animation instanceof Thunder && attacked != null)
-        {
-            EntityLightningBolt lightning = new EntityLightningBolt(attacked.worldObj, 0, 0, 0);
-            attacked.onStruckByLightning(lightning);
-        }
-        if (f > 0 && attacked instanceof EntityCreeper)
-        {
-            EntityCreeper creeper = (EntityCreeper) attacked;
-            if (move.type == PokeType.psychic && creeper.getHealth() > 0)
-            {
-                creeper.explode();
-            }
-        }
         finalAttack(attacker, attacked, f, true);
     }
 
@@ -321,6 +309,19 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     {
         if (doAttack(attacker, attacked, f))
         {
+            if (getAnimation() instanceof Thunder && attacked != null)
+            {
+                EntityLightningBolt lightning = new EntityLightningBolt(attacked.worldObj, 0, 0, 0);
+                attacked.onStruckByLightning(lightning);
+            }
+            if (f > 0 && attacked instanceof EntityCreeper)
+            {
+                EntityCreeper creeper = (EntityCreeper) attacked;
+                if (move.type == PokeType.psychic && creeper.getHealth() > 0)
+                {
+                    creeper.explode();
+                }
+            }
             if (message) MovesUtils.displayMoveMessages(attacker, attacked, name);
             if (move.multiTarget && (getAttackCategory() & CATEGORY_SELF) == 0)
             {

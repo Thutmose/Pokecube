@@ -118,7 +118,7 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 117,Bide ,Normal ,Physical ,Tough ,10,-4,100.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,pons
 118,Metronome ,Normal ,Status ,Cute ,10,-4,_,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 119,Mirror Move ,Flying ,Status ,Smart ,20,-4,_,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-120,Self-Destruct ,Normal ,Physical ,Beauty ,5,200,100.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+120,Self-Destruct ,Normal ,Physical_Distance,Beauty ,5,200,100.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 121,Egg Bomb ,Normal ,Physical_Distance,Tough ,10,100,75.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw:w0.2
 122,Lick ,Ghost ,Physical ,Tough ,30,30,100.00%,I ,Par;30,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 123,Smog ,Poison ,Special ,Tough ,20,30,70.00%,I ,Psn;40,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,powder
@@ -151,7 +151,7 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 150,Splash ,Normal ,Status ,Cute ,40,_,_,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 151,Acid Armor ,Poison ,Self,Tough ,20,_,_,I ,none;0,Def;2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 152,Crabhammer ,Water ,Physical ,Tough ,10,100,90.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-153,Explosion ,Normal ,Physical ,Beauty ,5,250,100.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+153,Explosion ,Normal ,Physical_Distance,Beauty ,5,250,100.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 154,Fury Swipes ,Normal ,Physical ,Tough ,15,18,80.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 155,Bonemerang ,Ground ,Physical_Distance,Tough ,10,50,90.00%,I ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
 156,Rest ,Psychic ,Self,Cute ,10,_,_,I ,Slp;100,none;0,none;0,0;100%,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none

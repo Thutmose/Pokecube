@@ -55,7 +55,7 @@ public class MovesAdder implements IMoveConstants
     {
         for (Move_Base move : MovesUtils.moves.values())
         {
-            if (move.animation == null)
+            if (move.getAnimation() == null)
             {
                 String anim = move.move.animDefault;
                 if (anim.contains("beam"))

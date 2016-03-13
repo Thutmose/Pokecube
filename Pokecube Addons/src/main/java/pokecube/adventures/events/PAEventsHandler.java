@@ -16,6 +16,7 @@ import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.pc.InventoryPC;
+import pokecube.core.events.PCEvent;
 import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.interfaces.IPokemob;
@@ -117,7 +118,7 @@ public class PAEventsHandler
             {
                 InventoryPC.addStackToPC(evt.player.getUniqueID().toString(), e);
             }
-            PCSaveHandler.getInstance().savePC();
+            PCSaveHandler.getInstance().savePC(evt.player.getUniqueID().toString());
         }
     }
 
@@ -137,6 +138,15 @@ public class PAEventsHandler
     }
 
     @SubscribeEvent
+    public void TrainerPokemobPC(PCEvent evt)
+    {
+        if (evt.owner instanceof EntityTrainer)
+        {
+            evt.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public void TrainerSendOutEvent(SendOut evt)
     {
         IPokemob sent = evt.pokemob;
@@ -149,7 +159,6 @@ public class PAEventsHandler
             {
                 t.outMob.returnToPokecube();
             }
-            System.out.println("Sent out " + evt.pokemob);
             t.outID = evt.entity.getUniqueID();
             t.outMob = evt.pokemob;
         }

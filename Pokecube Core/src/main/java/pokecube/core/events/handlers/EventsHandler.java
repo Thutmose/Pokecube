@@ -126,6 +126,7 @@ public class EventsHandler
             }
         }
     }
+
     public static class UpdateNotifier
     {
         public UpdateNotifier()
@@ -187,21 +188,21 @@ public class EventsHandler
     public static final Capability<IGuardAICapability> GUARDAI_CAP = null;
 
     public static IGuardAICapability.Storage           storage;
-    static double max        = 0;
-    static int    count      = 0;
-    static int    countAbove = 0;
-    static double mean       = 0;
+    static double                                      max         = 0;
+    static int                                         count       = 0;
+    static int                                         countAbove  = 0;
+    static double                                      mean        = 0;
 
-    static long   starttime  = 0;
+    static long                                        starttime   = 0;
 
-    static boolean notified = false;
+    static boolean                                     notified    = false;
 
     // 4 = 1 per 10mins, 2 = 1 per 10s, 5 = 1 per 48 hours
-    public static double candyChance = 4.5;
+    public static double                               candyChance = 4.5;
 
-    public static double juiceChance = 3.5;
+    public static double                               juiceChance = 3.5;
 
-    public static List<IPokemob> getPokemobs(EntityPlayer owner, double distance)
+    public static List<IPokemob> getPokemobs(EntityLivingBase owner, double distance)
     {
         List<IPokemob> ret = new ArrayList<IPokemob>();
 
@@ -256,7 +257,8 @@ public class EventsHandler
             if (o instanceof IPokemob)
             {
                 IPokemob mob = (IPokemob) o;
-                if (mob != excluded && mob.getPokemonOwner() == player && !mob.getPokemonAIState(IMoveConstants.GUARDING)
+                if (mob != excluded && mob.getPokemonOwner() == player
+                        && !mob.getPokemonAIState(IMoveConstants.GUARDING)
                         && !mob.getPokemonAIState(IMoveConstants.STAYING))
                 {
                     mob.returnToPokecube();
@@ -416,6 +418,7 @@ public class EventsHandler
 
         }
     }
+
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent evt)
     {
@@ -564,9 +567,10 @@ public class EventsHandler
     @SubscribeEvent
     public void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
     {
-        if (evt.target instanceof EntityPlayer && evt.entityLiving instanceof EntityLiving)
+        if (evt.target instanceof EntityLivingBase && evt.entityLiving instanceof EntityLiving)
         {
-            List<IPokemob> pokemon = getPokemobs((EntityPlayer) evt.target, 32);
+            List<IPokemob> pokemon = getPokemobs((EntityLivingBase) evt.target, 32);
+            if (pokemon.isEmpty()) return;
             double closest = 1000;
             IPokemob newtarget = null;
             for (IPokemob e : pokemon)

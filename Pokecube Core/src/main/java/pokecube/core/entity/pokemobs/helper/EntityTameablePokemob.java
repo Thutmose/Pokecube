@@ -36,7 +36,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.database.Database;
-import pokecube.core.events.KillEvent;
+import pokecube.core.events.PCEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IBreedingMob;
@@ -641,11 +641,11 @@ public abstract class EntityTameablePokemob extends EntityTameable
                 }
                 else
                 {
-                    KillEvent evt = new KillEvent(null, this);
-                    MinecraftForge.EVENT_BUS.post(evt);
-                    if (evt.isCanceled())
+                    ItemStack itemstack = PokecubeManager.pokemobToItem(this);
+                    PCEvent event = new PCEvent(itemstack, getPokemonOwner());
+                    MinecraftForge.EVENT_BUS.post(event);
+                    if (!event.isCanceled())
                     {
-                        ItemStack itemstack = PokecubeManager.pokemobToItem(this);
                         ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F),
                                 PokecubeMod.getFakePlayer());
                         MinecraftForge.EVENT_BUS.post(toss);

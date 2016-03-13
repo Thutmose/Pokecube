@@ -3,6 +3,7 @@ package pokecube.core.ai.thread.aiRunnables;
 import java.util.Random;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.pathfinding.PathEntity;
 import pokecube.core.database.PokedexEntry;
@@ -170,7 +171,9 @@ public class AIIdle extends AIBase
             }
             else
             {
-                v.set(entity);
+                EntityLivingBase setTo = entity;
+                if(mob.getPokemonOwner()!=null) setTo = mob.getPokemonOwner();
+                v.set(setTo);
             }
             v1.set((v.isEmpty()
                     && (mob.getPokemonAIState(IMoveConstants.GUARDING) || mob.getPokemonAIState(IMoveConstants.STAYING))) ? entity

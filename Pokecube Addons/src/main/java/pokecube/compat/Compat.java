@@ -188,6 +188,13 @@ public class Compat
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
     }
 
+    @Optional.Method(modid = "Baubles")
+    @EventHandler
+    public void BaublesCompat(FMLPostInitializationEvent evt)
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.baubles.BaublesEventHandler());
+    }
+
     private void doMetastuff()
     {
         ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();

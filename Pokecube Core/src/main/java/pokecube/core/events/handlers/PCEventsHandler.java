@@ -212,7 +212,7 @@ public class PCEventsHandler
     public void playerTossPokecubeToPC(ItemTossEvent evt)
     {
         if (evt.entityItem.worldObj.isRemote) return;
-        if (PokecubeManager.isFilled(evt.entityItem.getEntityItem()) && evt.entityItem.getEntityItem().hasTagCompound())
+        if (PokecubeManager.isFilled(evt.entityItem.getEntityItem()))
         {
             InventoryPC.addPokecubeToPC(evt.entityItem.getEntityItem(), evt.entityItem.worldObj);
             evt.entityItem.setDead();

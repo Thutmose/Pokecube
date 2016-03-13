@@ -78,9 +78,9 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public IPokemob          outMob;
     public boolean           male             = true;
 
-    boolean added = false;
+    boolean                  added            = false;
 
-    int timercounter = 0;
+    int                      timercounter     = 0;
 
     public EntityTrainer(World par1World)
     {
@@ -284,7 +284,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     @Override
     public boolean interact(EntityPlayer entityplayer)
     {
-        setTarget(entityplayer);
         if (entityplayer.capabilities.isCreativeMode)
         {
             if (getType() != null && !worldObj.isRemote && entityplayer.isSneaking()
@@ -307,6 +306,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             {
                 throwCubeAt(entityplayer);
             }
+            else if (entityplayer.getHeldItem() == null) setTarget(entityplayer);
 
             if (entityplayer.getHeldItem() != null && entityplayer.getHeldItem().getItem() instanceof ItemTrainer)
             {
@@ -317,8 +317,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         {
             if (entityplayer.getHeldItem() != null)
             {
-                if (entityplayer.getHeldItem()
-                        .getItem() == Item.itemRegistry.getObject(new ResourceLocation("minecraft:emerald")))
+                if (entityplayer.getHeldItem().getItem() == Item.itemRegistry
+                        .getObject(new ResourceLocation("minecraft:emerald")))
                 {
                     entityplayer.inventory.consumeInventoryItem(
                             Item.itemRegistry.getObject(new ResourceLocation("minecraft:emerald")));

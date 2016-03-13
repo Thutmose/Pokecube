@@ -34,7 +34,6 @@ public class InventoryPC implements IInventory
     	if(!(PokecubeManager.isFilled(mob))) return;
     	String player = PokecubeManager.getOwner(mob);
     	boolean isUUID = false;
-    	
 		try {
 			UUID.fromString(player);
 			isUUID = true;
@@ -96,6 +95,7 @@ public class InventoryPC implements IInventory
 				PokecubeCore.proxy.getPlayer(uuid).addChatMessage(new ChatComponentText(message));
 		}
     	pc.addItem(mob.copy());
+    	PCSaveHandler.getInstance().savePC(uuid);
     	mob = null;
     }
 	public static void clearPC()
@@ -383,7 +383,7 @@ public class InventoryPC implements IInventory
     @Override
 	public void closeInventory(EntityPlayer player) 
 	{
-		PCSaveHandler.getInstance().savePC();
+		PCSaveHandler.getInstance().savePC(player.getUniqueID().toString());
 	}
     
     @Override

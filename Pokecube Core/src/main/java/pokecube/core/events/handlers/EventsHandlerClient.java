@@ -9,8 +9,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Sets;
 
-import baubles.common.container.InventoryBaubles;
-import baubles.common.lib.PlayerHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -33,9 +31,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -45,7 +41,6 @@ import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.client.render.entity.RenderHeldPokemobs;
-import pokecube.core.client.render.entity.RingRenderer;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -64,7 +59,7 @@ import thut.api.terrain.TerrainSegment;
 @SideOnly(Side.CLIENT)
 public class EventsHandlerClient
 {
-    private static interface RingChecker
+    public static interface RingChecker
     {
         boolean hasRing(EntityPlayer player);
     }
@@ -74,9 +69,26 @@ public class EventsHandlerClient
     static long                                   counter    = 0;
 
     public static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
-    public static RingChecker                     noBaubles  = null;
 
-    public static RingChecker                     baubles    = null;
+    public static RingChecker                     checker    = new RingChecker()
+                                                             {
+                                                                 @Override
+                                                                 public boolean hasRing(EntityPlayer player)
+                                                                 {
+                                                                     for (int i = 0; i < player.inventory
+                                                                             .getSizeInventory(); i++)
+                                                                     {
+                                                                         ItemStack stack = player.inventory
+                                                                                 .getStackInSlot(i);
+                                                                         if (stack != null)
+                                                                         {
+                                                                             Item item = stack.getItem();
+                                                                             if (item instanceof ItemMegaring) { return true; }
+                                                                         }
+                                                                     }
+                                                                     return false;
+                                                                 }
+                                                             };
 
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
     {
@@ -147,21 +159,10 @@ public class EventsHandlerClient
 
     private Set<RenderPlayer> addedLayers  = Sets.newHashSet();
 
-    private Set<RenderPlayer> addedBaubles = Sets.newHashSet();
-
     boolean                   debug        = false;
 
     public EventsHandlerClient()
     {
-    }
-
-    @SubscribeEvent
-    @Optional.Method(modid = "Baubles")
-    public void addBaubleRender(RenderPlayerEvent.Post event)
-    {
-        if (addedBaubles.contains(event.renderer)) { return; }
-        event.renderer.addLayer(new RingRenderer(event.renderer));
-        addedBaubles.add(event.renderer);
     }
 
     @SideOnly(Side.CLIENT)
@@ -181,54 +182,6 @@ public class EventsHandlerClient
     }
 
     @SubscribeEvent
-    @Optional.Method(modid = "Baubles")
-    public void initBaubles(WorldEvent.Load event)
-    {
-        if (baubles != null) return;
-        baubles = new RingChecker()
-        {
-            @Override
-            public boolean hasRing(EntityPlayer player)
-            {
-                InventoryBaubles inv = PlayerHandler.getPlayerBaubles(player);
-                for (int i = 0; i < inv.getSizeInventory(); i++)
-                {
-                    ItemStack stack = inv.getStackInSlot(i);
-                    if (stack != null)
-                    {
-                        Item item = stack.getItem();
-                        if (item instanceof ItemMegaring) { return true; }
-                    }
-                }
-                return false;
-            }
-        };
-    }
-
-    @SubscribeEvent
-    public void initDefault(WorldEvent.Load event)
-    {
-        if (noBaubles != null) return;
-        noBaubles = new RingChecker()
-        {
-            @Override
-            public boolean hasRing(EntityPlayer player)
-            {
-                for (int i = 0; i < player.inventory.getSizeInventory(); i++)
-                {
-                    ItemStack stack = player.inventory.getStackInSlot(i);
-                    if (stack != null)
-                    {
-                        Item item = stack.getItem();
-                        if (item instanceof ItemMegaring) { return true; }
-                    }
-                }
-                return false;
-            }
-        };
-    }
-
-    @SubscribeEvent
     public void keyInput(KeyInputEvent evt)
     {
         int key = Keyboard.getEventKey();
@@ -245,7 +198,7 @@ public class EventsHandlerClient
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.mobMegavolve))
         {
-            boolean ring = baubles == null ? noBaubles.hasRing(player) : baubles.hasRing(player);
+            boolean ring = checker.hasRing(player);
 
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING)

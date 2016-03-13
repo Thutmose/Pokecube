@@ -4,18 +4,25 @@
 package pokecube.core.items.pokemobeggs;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
+
+import com.google.common.base.Predicate;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList.EntityEggInfo;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -333,18 +340,54 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
 
         Vector3 location = Vector3.getNewVector().set(mob);
         EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 2);
-        if (player == null)
+        EntityLivingBase owner = player;
+        AxisAlignedBB box = location.getAABB().expand(4, 4, 4);
+        if (owner == null)
         {
-            IPokemob pokemob = (IPokemob) ((Entity) mob).worldObj.findNearestEntityWithinAABB(EntityPokemob.class,
-                    location.getAABB().expand(4, 4, 4), (Entity) mob);
+            List<EntityLivingBase> list = ((Entity) mob).worldObj.getEntitiesWithinAABB(EntityLivingBase.class, box,
+                    new Predicate<EntityLivingBase>()
+                    {
+                        @Override
+                        public boolean apply(EntityLivingBase input)
+                        {
+                            return !(input instanceof EntityPokemobEgg) && !(input instanceof IEntityOwnable);
+                        }
+                    });
+            EntityLivingBase closestTo = (EntityLivingBase) mob;
+            EntityLivingBase t = null;
+            double d0 = Double.MAX_VALUE;
+
+            for (int i = 0; i < list.size(); ++i)
+            {
+                EntityLivingBase t1 = list.get(i);
+
+                if (t1 != closestTo && EntitySelectors.NOT_SPECTATING.apply(t1))
+                {
+                    double d1 = closestTo.getDistanceSqToEntity(t1);
+
+                    if (d1 <= d0)
+                    {
+                        t = t1;
+                        d0 = d1;
+                    }
+                }
+            }
+            owner = t;
+        }
+        if (owner == null)
+        {
+            IPokemob pokemob = (IPokemob) ((Entity) mob).worldObj.findNearestEntityWithinAABB(EntityPokemob.class, box,
+                    (Entity) mob);
             if (pokemob != null && pokemob.getPokemonOwner() instanceof EntityPlayer)
                 player = (EntityPlayer) pokemob.getPokemonOwner();
+            owner = player;
         }
-        if (player != null)
+
+        if (owner != null)
         {
-            mob.setPokemonOwner(player);
+            mob.setPokemonOwner(owner);
             mob.setPokemonAIState(IMoveConstants.TAMED, true);
-            mob.setPokemonAIState(IMoveConstants.SITTING, true);
+            mob.setPokemonAIState(IMoveConstants.SITTING, owner instanceof EntityPlayer);
             mob.setPokecubeId(0);
             mob.setHeldItem(null);
         }

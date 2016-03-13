@@ -76,11 +76,6 @@ public class Shape
             GL11.glShadeModel(GL11.GL_SMOOTH);
         }
 
-        if (material != null)
-        {
-            material.preRender();
-        }
-
         GL11.glBegin(GL11.GL_TRIANGLES);
         int n = 0;
         for (Integer i : order)
@@ -102,18 +97,14 @@ public class Shape
             GL11.glVertex3f(vertex.x, vertex.y, vertex.z);
         }
         GL11.glEnd();
-        
-        if (material != null)
-        {
-            material.postRender();
-        }
     }
 
     private void compileList(IPartTexturer texturer)
     {
         if (!GL11.glIsList(meshId))
         {
-            if (material != null && texturer != null && !texturer.hasMapping(material.name) && material.texture!=null) texturer.addMapping(material.name, material.texture);
+            if (material != null && texturer != null && !texturer.hasMapping(material.name) && material.texture != null)
+                texturer.addMapping(material.name, material.texture);
             meshId = GL11.glGenLists(1);
             GL11.glNewList(meshId, GL11.GL_COMPILE);
             addTris(texturer);
@@ -169,9 +160,17 @@ public class Shape
                 GL11.glMatrixMode(GL11.GL_MODELVIEW);
             }
         }
+        if (material != null)
+        {
+            material.preRender();
+        }
         // Call the list
         GL11.glCallList(meshId);
         GL11.glFlush();
+        if (material != null)
+        {
+            material.postRender();
+        }
 
         // Reset Texture Matrix if changed.
         if (textureShift)

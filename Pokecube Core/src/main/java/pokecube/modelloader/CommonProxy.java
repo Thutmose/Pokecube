@@ -38,9 +38,9 @@ public class CommonProxy implements IGuiHandler
     public static final String                       MODELPATH      = "models/pokemobs/";
     /** texture folder */
     public final static String                       TEXTUREPATH    = "textures/entities/";
-    private static final char DOT   = '.';
+    private static final char                        DOT            = '.';
 
-    private static final char SLASH = '/';
+    private static final char                        SLASH          = '/';
 
     private HashMap<String, Object>                  mobProviders   = new HashMap<String, Object>();
 
@@ -280,6 +280,11 @@ public class CommonProxy implements IGuiHandler
     public void init()
     {
         ArrayList<String> toAdd = ModPokecubeML.addedPokemon;
+        if (toAdd == null)
+        {
+            Thread.dumpStack();
+            return;
+        }
         ArrayList<PokedexEntry> entries = Lists.newArrayList();
         for (PokedexEntry entry : Database.allFormes)
         {
@@ -292,7 +297,7 @@ public class CommonProxy implements IGuiHandler
         {
             if (entryArr[i] == null)
             {
-                new Exception().printStackTrace();
+                Thread.dumpStack();
                 continue;
             }
             if (toAdd.contains(entryArr[i].getName()))

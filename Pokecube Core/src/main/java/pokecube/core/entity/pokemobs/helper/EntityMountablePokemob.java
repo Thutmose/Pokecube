@@ -31,22 +31,22 @@ import pokecube.core.utils.PokeType;
  * @author Manchou */
 public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 {
+    private int       mountCounter       = 0;
+    public float      landSpeedFactor    = 1;
+    public float      waterSpeedFactor   = 0.25f;
+    public float      airbornSpeedFactor = 0.02f;
+    public float      speedFactor        = 1;
+    private float     hungerFactor       = 1;
+    public float      scale;
 
-    public float  landSpeedFactor    = 1;
-    public float  waterSpeedFactor   = 0.25f;
-    public float  airbornSpeedFactor = 0.02f;
-    public float  speedFactor        = 1;
-    private float hungerFactor       = 1;
-    public float  scale;
+    public boolean    canUseSaddle       = false;
+    public boolean    canFly             = false;
+    public boolean    canSurf            = false;
+    public boolean    canDive            = false;
 
-    public boolean canUseSaddle = false;
-    public boolean canFly       = false;
-    public boolean canSurf      = false;
-    public boolean canDive      = false;
+    protected double  yOffset;
 
-    protected double yOffset;
-
-    public int counterMount = 0;
+    public int        counterMount       = 0;
 
     protected boolean pokemobJumping;
 
@@ -216,6 +216,19 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     public boolean isRiding()
     {
         return ridingEntity != null || getFlag(2);
+    }
+
+    /** Called when a player mounts an entity. e.g. mounts a pig, mounts a
+     * boat. */
+    @Override
+    public void mountEntity(Entity entityIn)
+    {
+        if (entityIn == null)
+        {
+            mountCounter = 5;
+            motionX = motionY = motionZ = 0;
+        }
+        super.mountEntity(entityIn);
     }
 
     /** Moves the entity based on the specified heading. Args: strafe,
@@ -540,7 +553,8 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     public void onUpdate()
     {
         super.onUpdate();
-
+        if (mountCounter > 0) motionX = motionY = motionZ = 0;
+        mountCounter--;
         if (ridingEntity != null)
         {
             rotationYaw = ridingEntity.rotationYaw;
@@ -616,6 +630,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     {
         return !this.canDive;
     }
+
     /** main AI tick function, replaces updateEntityActionState */// TODO move
                                                                   // this over
                                                                   // to an AI
@@ -641,6 +656,5 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
                 counterMount = 0;
             }
         }
-
     }
 }

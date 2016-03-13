@@ -56,6 +56,30 @@ public class AIAttack extends AIBase implements IAICombat
         delayTime = (int) (def / accuracyMod);
     }
 
+    private void checkMateFight(IPokemob pokemob)
+    {
+        if (pokemob.getPokemonAIState(IMoveConstants.MATEFIGHT))
+        {
+            if (entityTarget instanceof IPokemob)
+            {
+                IPokemob target = (IPokemob) entityTarget;
+                if (((EntityLiving) target).getHealth() < ((EntityLiving) target).getMaxHealth() / 1.5f)
+                {
+                    setPokemobAIState((IPokemob) attacker, IMoveConstants.MATEFIGHT, false);
+                    setPokemobAIState(target, IMoveConstants.MATEFIGHT, false);
+                    addTargetInfo(attacker, null);
+                    pokemob.setPokemonAIState(IMoveConstants.ANGRY, false);
+                    ((EntityLiving) target).setAttackTarget(null);
+                    target.setPokemonAIState(IMoveConstants.ANGRY, false);
+                }
+            }
+            else
+            {
+                setPokemobAIState((IPokemob) attacker, IMoveConstants.MATEFIGHT, false);
+            }
+        }
+    }
+
     public boolean continueExecuting()
     {
         entityTarget = attacker.getAttackTarget();
@@ -87,7 +111,6 @@ public class AIAttack extends AIBase implements IAICombat
             reset();
             return;
         }
-        // System.out.println("attack "+attacker);
         PathEntity path;
         if (!running)
         {
@@ -101,7 +124,8 @@ public class AIAttack extends AIBase implements IAICombat
             this.chaseTime = 0;
             running = true;
             if (PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1
-                    && entityTarget instanceof EntityPlayer && !((IPokemob) attacker).getPokemonAIState(IMoveConstants.TAMED)
+                    && entityTarget instanceof EntityPlayer
+                    && !((IPokemob) attacker).getPokemonAIState(IMoveConstants.TAMED)
                     && ((EntityPlayer) entityTarget).getLastAttacker() != attacker
                     && ((EntityPlayer) entityTarget).getAITarget() != attacker)
             {
@@ -114,37 +138,26 @@ public class AIAttack extends AIBase implements IAICombat
             {
                 delayTime = 0;
             }
+
         }
 
         this.attacker.getLookHelper().setLookPositionWithEntity(entityTarget, 30.0F, 30.0F);
 
         IPokemob pokemob = (IPokemob) attacker;
 
-        if (pokemob.getPokemonAIState(IMoveConstants.MATEFIGHT))
-        {
-            if (entityTarget instanceof IPokemob)
-            {
-                IPokemob target = (IPokemob) entityTarget;
-                if (((EntityLiving) target).getHealth() < ((EntityLiving) target).getMaxHealth() / 1.5f)
-                {
-                    setPokemobAIState((IPokemob) attacker, IMoveConstants.MATEFIGHT, false);
-                    setPokemobAIState(target, IMoveConstants.MATEFIGHT, false);
-                    // System.out.println("resetting fight");
-                    addTargetInfo(attacker, null);
-                    pokemob.setPokemonAIState(IMoveConstants.ANGRY, false);
-                    ((EntityLiving) target).setAttackTarget(null);
-                    target.setPokemonAIState(IMoveConstants.ANGRY, false);
-                }
-            }
-            else
-            {
-                setPokemobAIState((IPokemob) attacker, IMoveConstants.MATEFIGHT, false);
-            }
-        }
+        checkMateFight(pokemob);
 
         if (pokemob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE) && targetLoc.isEmpty())
         {
             setPokemobAIState((IPokemob) attacker, IMoveConstants.EXECUTINGMOVE, false);
+        }
+
+        if (chaseTime > 200)
+        {
+            addTargetInfo(attacker.getEntityId(), -1, attacker.dimension);
+            pokemob.setPokemonAIState(IMoveConstants.ANGRY, false);
+            addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
+            return;
         }
 
         double var1 = (double) (this.attacker.width * 2.0F) * (this.attacker.width * 2.0F);
@@ -193,14 +206,6 @@ public class AIAttack extends AIBase implements IAICombat
                 this.entityTarget.posZ);
         boolean canSee = dist < 1 || Vector3.isVisibleEntityFromEntity(attacker, entityTarget);
 
-        if (chaseTime > 200)
-        {
-            addTargetInfo(attacker.getEntityId(), -1, attacker.dimension);
-            pokemob.setPokemonAIState(IMoveConstants.ANGRY, false);
-            addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
-            return;
-        }
-
         boolean inRange = false;
 
         ((IMultibox) attacker).setBoxes();
@@ -242,22 +247,14 @@ public class AIAttack extends AIBase implements IAICombat
             }
         }
 
-        if (attacker.riddenByEntity == null && !targetLoc.isEmpty() && !self)
-        {
-            path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
-            if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
-
-        }
         if (delayTime < -20)
         {
             applyDelay(distanced);
             addTargetInfo(attacker, entityTarget);
             ((IPokemob) attacker).setPokemonAIState(IMoveConstants.ANGRY, true);
             targetLoc.set(entityTarget);
-            path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
-            if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
-
         }
+        boolean shouldPath = true;
         boolean delay = false;
         if ((inRange || self))
         {
@@ -268,7 +265,7 @@ public class AIAttack extends AIBase implements IAICombat
                     applyDelay(distanced);
                     delay = true;
                 }
-                if (distanced || self) addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
+                shouldPath = false;
                 setPokemobAIState((IPokemob) attacker, IMoveConstants.EXECUTINGMOVE, true);
             }
         }
@@ -282,7 +279,8 @@ public class AIAttack extends AIBase implements IAICombat
         }
         if (!targetLoc.isEmpty() && delay && inRange)
         {
-            if ((entityTarget instanceof IPokemob && !((IPokemob) entityTarget).getPokemonAIState(IMoveConstants.DODGING))
+            if ((entityTarget instanceof IPokemob
+                    && !((IPokemob) entityTarget).getPokemonAIState(IMoveConstants.DODGING))
                     || !(entityTarget instanceof IPokemob) || attack.move.notIntercepable)
             {
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
@@ -291,7 +289,8 @@ public class AIAttack extends AIBase implements IAICombat
             {
 
             }
-            if (entityTarget instanceof IPokemob) setPokemobAIState((IPokemob) entityTarget, IMoveConstants.DODGING, false);
+            if (entityTarget instanceof IPokemob)
+                setPokemobAIState((IPokemob) entityTarget, IMoveConstants.DODGING, false);
             if (this.attacker.getHeldItem() != null)
             {
                 this.attacker.swingItem();
@@ -299,9 +298,18 @@ public class AIAttack extends AIBase implements IAICombat
             float f = (float) targetLoc.distToEntity(attacker);
             Vector3 loc = targetLoc.copy();
             addMoveInfo(attacker.getEntityId(), entityTarget.getEntityId(), attacker.dimension, loc, f);
-            addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
+            shouldPath = false;
             setPokemobAIState((IPokemob) attacker, IMoveConstants.EXECUTINGMOVE, false);
             targetLoc.clear();
+        }
+        if (!targetLoc.isEmpty() && shouldPath)
+        {
+            path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
+            if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
+        }
+        else
+        {
+            addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
         }
         delayTime--;
     }
@@ -314,7 +322,8 @@ public class AIAttack extends AIBase implements IAICombat
         EntityLivingBase var1 = attacker.getAttackTarget();
         if (var1 == null)
         {
-            if (attacker.getNavigator().noPath() && ((IPokemob) attacker).getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
+            if (attacker.getNavigator().noPath()
+                    && ((IPokemob) attacker).getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
             {
                 setPokemobAIState((IPokemob) attacker, IMoveConstants.EXECUTINGMOVE, false);
             }
@@ -332,5 +341,4 @@ public class AIAttack extends AIBase implements IAICombat
             return true;
         }
     }
-
 }

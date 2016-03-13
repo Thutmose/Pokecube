@@ -50,7 +50,7 @@ public class ModPokecubeML
 
     public static boolean                   checkResourcesForModels = true;
 
-    public static ArrayList<String>         addedPokemon;
+    public static ArrayList<String>         addedPokemon            = Lists.newArrayList();
     public static Map<PokedexEntry, String> textureProviders        = Maps.newHashMap();
 
     public static boolean                   info                    = false;
@@ -60,7 +60,7 @@ public class ModPokecubeML
     public static CommonProxy               proxy;
     public static File                      configDir;
 
-    boolean postInit = false;
+    boolean                                 postInit                = false;
 
     private void doMetastuff()
     {
@@ -120,7 +120,13 @@ public class ModPokecubeML
                 "Disabling this will prevent Pokecube from checking resource packs for models, it might speed up loading times.");
         config.save();
 
-        if (checkResourcesForModels) processResources();
+        try
+        {
+            if (checkResourcesForModels) processResources();
+        }
+        catch (Exception e)
+        {
+        }
 
         GameRegistry.registerItem(
                 new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),

@@ -9,20 +9,18 @@ import com.google.common.collect.Sets;
 
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,14 +28,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.client.ClientProxy;
 import pokecube.adventures.client.render.item.BagRenderer;
-import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.bags.ItemBag;
 import pokecube.adventures.network.PacketPokeAdv;
-import pokecube.adventures.network.PacketPokeAdv.MessageServer;
-import pokecube.core.client.ClientProxyPokecube;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
@@ -101,6 +94,7 @@ public class RenderHandler
     }
 
     @SubscribeEvent
+    @Optional.Method(modid = "Baubles")
     public void keyInput(KeyInputEvent evt)
     {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
@@ -123,25 +117,10 @@ public class RenderHandler
         {
             PacketPokeAdv.sendBagOpenPacket(false, Vector3.empty);
         }
-
-        IPokemob entity = PlayerAsPokemobManager.getInstance().getTransformed(player);
-        if (entity != null && Keyboard.getEventKey() == ClientProxyPokecube.mobAttack.getKeyCode())
-        {
-            Vector3 here = Vector3.getNewVector().set(player, false);
-            Entity hit = here.firstEntityExcluding(16, Vector3.getNewVector().set(player.getLookVec()), player.worldObj,
-                    false, player);
-            if (hit != null)
-            {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-                buffer.writeByte(10);
-                buffer.writeInt(hit.getEntityId());
-                MessageServer message = new MessageServer(buffer);
-                PokecubeMod.packetPipeline.sendToServer(message);
-            }
-        }
     }
 
     @SubscribeEvent
+    @Optional.Method(modid = "Baubles")
     public void onPlayerRender(RenderPlayerEvent.Post event)
     {
         if (addedLayers.contains(event.renderer)) { return; }

@@ -97,10 +97,11 @@ public class Compat
             }
         }
     }
-    public static String CUSTOMSPAWNSFILE;
+
+    public static String       CUSTOMSPAWNSFILE;
 
     @Instance("pokecube_compat")
-    public static Compat instance;
+    public static Compat       instance;
 
     private static PrintWriter out;
 
@@ -153,7 +154,7 @@ public class Compat
         }
     }
 
-    GCCompat             gccompat;
+    GCCompat gccompat;
 
     public Compat()
     {
@@ -188,6 +189,7 @@ public class Compat
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
     }
 
+    @SideOnly(Side.CLIENT)
     @Optional.Method(modid = "Baubles")
     @EventHandler
     public void BaublesCompat(FMLPostInitializationEvent evt)
@@ -244,6 +246,7 @@ public class Compat
             }
         }
     }
+
     @EventHandler
     public void postInit(FMLPostInitializationEvent evt)
     {
@@ -263,6 +266,7 @@ public class Compat
             WikiWriter.writeWiki();
         }
     }
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent evt)
     {
@@ -282,6 +286,7 @@ public class Compat
 
         Database.addSpawnData(CUSTOMSPAWNSFILE);
     }
+
     @Optional.Method(modid = "reccomplex")
     @EventHandler
     public void RecComplex_Compat(FMLPostInitializationEvent evt)

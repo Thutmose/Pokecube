@@ -139,6 +139,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public boolean                     male             = true;
     boolean                            clear            = false;
     boolean                            added            = false;
+    protected boolean                  trades           = true;
 
     int                                timercounter     = 0;
 
@@ -362,7 +363,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 pokelevels[i] = 0;
             }
         }
-
         setTypes();
     }
 
@@ -417,7 +417,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             else if (friendlyCooldown >= 0)
             {
                 this.setCustomer(player);
-                if (!this.worldObj.isRemote && (getRecipes(player) == null || this.tradeList.size() > 0))
+                if (!this.worldObj.isRemote && trades && (getRecipes(player) == null || this.tradeList.size() > 0))
                 {
                     player.displayVillagerTradeGui(this);
                     return true;
@@ -566,7 +566,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     private void addRandomTrades()
     {
         itemList.clear();
-        int num = rand.nextInt(4);
+        int num = rand.nextInt(3);
         Set<Object> added = Sets.newHashSet();
         for (int i = 0; i < num; i++)
         {
@@ -592,7 +592,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             }
         }
         added.clear();
-        num = rand.nextInt(4);
+        num = rand.nextInt(3);
         ArrayList<String> moves = Lists.newArrayList(MovesUtils.moves.keySet());
         Collections.shuffle(moves);
         for (int i = 0; i < num; i++)
@@ -655,6 +655,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             NBTTagCompound nbttagcompound = nbt.getCompoundTag("Offers");
             this.itemList = new MerchantRecipeList(nbttagcompound);
         }
+        if (nbt.hasKey("trades")) trades = nbt.getBoolean("trades");
         dataWatcher.updateObject(5, nbt.getInteger("aiState"));
         randomize = nbt.getBoolean("randomTeam");
         type = TypeTrainer.getTrainer(nbt.getString("type"));
@@ -931,6 +932,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         {
             nbt.setTag("Offers", this.itemList.getRecipiesAsTags());
         }
+        nbt.setBoolean("trades", trades);
         nbt.setBoolean("gender", male);
         nbt.setInteger("battleCD", battleCooldown);
         nbt.setBoolean("randomTeam", randomize);

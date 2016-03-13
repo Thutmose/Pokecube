@@ -217,7 +217,6 @@ public class PCEventsHandler
             InventoryPC.addPokecubeToPC(evt.entityItem.getEntityItem(), evt.entityItem.worldObj);
             evt.entityItem.setDead();
             evt.setCanceled(true);
-
         }
     }
 

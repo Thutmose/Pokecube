@@ -444,13 +444,14 @@ public class MovesUtils implements IMoveConstants
                     attacked = ((EntityLiving) attacker).getAttackTarget();
                     String name = attacked.getName();
                     missed = StatCollector.translateToLocalFormatted("pokemob.move.missed", name);
+                    attacker.displayMessageToOwner("\u00a7c" + missed);
                 }
-                else
+                else if (attacker.getPokemonAIState(IMoveConstants.ANGRY))
                 {
                     missed = StatCollector.translateToLocalFormatted("pokemob.move.missed", "");
                     missed.replace(" !", "");
+                    attacker.displayMessageToOwner("\u00a7c" + missed);
                 }
-                attacker.displayMessageToOwner("\u00a7c" + missed);
             }
         }
         if (efficiency == -2)
@@ -593,8 +594,7 @@ public class MovesUtils implements IMoveConstants
             }
             else if (attacker instanceof IPokemob)
             {
-                String missed = StatCollector.translateToLocalFormatted(message,
-                        attacker.getPokemonDisplayName(),
+                String missed = StatCollector.translateToLocalFormatted(message, attacker.getPokemonDisplayName(),
                         StatCollector.translateToLocalFormatted(statName));
 
                 String colour = fell ? "\u00a7c" : "\u00a7a";

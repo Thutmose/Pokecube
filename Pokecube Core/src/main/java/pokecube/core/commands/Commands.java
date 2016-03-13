@@ -228,7 +228,7 @@ public class Commands implements ICommand
         {
 
             WorldServer world = (WorldServer) cSender.getEntityWorld();
-            List<Entity> items = world.getLoadedEntityList();
+            List<Entity> items = world.loadedEntityList;
             for (Entity e : items)
             {
                 if (e instanceof EntityItem) e.setDead();

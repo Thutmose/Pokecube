@@ -147,7 +147,6 @@ public class Shape
     {
         // Compiles the list if the meshId is invalid.
         compileList(texturer);
-
         boolean textureShift = false;
         // Apply Texturing.
         if (texturer != null)

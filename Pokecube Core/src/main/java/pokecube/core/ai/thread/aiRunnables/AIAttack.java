@@ -138,7 +138,7 @@ public class AIAttack extends AIBase implements IAICombat
             {
                 delayTime = 0;
             }
-
+            return;
         }
 
         this.attacker.getLookHelper().setLookPositionWithEntity(entityTarget, 30.0F, 30.0F);

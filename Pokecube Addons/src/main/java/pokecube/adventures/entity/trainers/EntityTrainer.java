@@ -167,9 +167,9 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     {
         if (outID != null && outMob == null)
         {
-            for (int i = 0; i < worldObj.getLoadedEntityList().size(); ++i)
+            for (int i = 0; i < worldObj.loadedEntityList.size(); ++i)
             {
-                Entity entity = worldObj.getLoadedEntityList().get(i);
+                Entity entity = worldObj.loadedEntityList.get(i);
                 if (entity instanceof IPokemob && outID.equals(entity.getUniqueID()))
                 {
                     outMob = (IPokemob) entity;

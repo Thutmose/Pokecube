@@ -138,6 +138,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public IPokemob                    outMob;
     public boolean                     male             = true;
     boolean                            clear            = false;
+    boolean                            shouldrefresh    = false;
     boolean                            added            = false;
     protected boolean                  trades           = true;
 
@@ -309,8 +310,9 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             }
             clear = false;
         }
-        if (this.tradeList == null)
+        if (this.tradeList == null || shouldrefresh)
         {
+            shouldrefresh = false;
             this.populateBuyingList();
         }
         return this.tradeList;
@@ -553,11 +555,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             {
                 IPokemob mon = PokecubeManager.itemToPokemob(stack, worldObj);
                 IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, worldObj);
-                if (mon1.getLevel() < mon.getLevel()) continue;
                 String trader1 = mon1.getPokemonOwnerName();
                 mon.setOriginalOwnerUUID(getUniqueID());
                 mon.setPokemonOwnerByName(trader1);
                 stack = PokecubeManager.pokemobToItem(mon);
+                stack.getTagCompound().setInteger("slotnum", i);
                 tradeList.add(new MerchantRecipe(buy1, stack));
             }
         }
@@ -886,13 +888,18 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         ItemStack poke1 = recipe.getItemToBuy();
         ItemStack poke2 = recipe.getItemToSell();
         if (!(PokecubeManager.isFilled(poke1) && PokecubeManager.isFilled(poke2))) { return; }
+
+        int num = poke2.getTagCompound().getInteger("slotnum");
         EntityLivingBase player2 = this;
         IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, worldObj);
         String trader2 = player2.getUniqueID().toString();
         mon1.setPokemonOwnerByName(trader2);
         poke1 = PokecubeManager.pokemobToItem(mon1);
         clear = true;
-        pokecubes[0] = poke1;
+        pokecubes[num] = poke1;
+        pokenumbers[num] = mon1.getPokedexNb();
+        pokelevels[num] = mon1.getLevel();
+        shouldrefresh = true;
     }
 
     @Override

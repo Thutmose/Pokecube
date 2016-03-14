@@ -83,12 +83,16 @@ public class GuiInfoMessages
         else
         {
             offset = 0;
+            num = 6;
             time = minecraft.thePlayer.ticksExisted;
             if (recent.size() > 0)
             {
                 recent.remove(0);
             }
         }
+
+        while (recent.size() > 8)
+            recent.remove(0);
 
         int size = (num == 7 ? messages.size() : recent.size()) - 1;
 

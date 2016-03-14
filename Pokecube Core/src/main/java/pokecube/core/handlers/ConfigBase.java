@@ -271,11 +271,12 @@ public abstract class ConfigBase extends Configuration
         }
         else
         {
-            // TODO handle these properly.
             Object o = field.get(defaults);
             if (o instanceof String[])
             {
                 String[] defaultValue = (String[]) o;
+                String[] vars = update.split("``");
+                field.set(this, vars);
                 p = get(c.category(), field.getName(), defaultValue);
                 o = field.get(this);
                 defaultValue = (String[]) o;
@@ -284,6 +285,10 @@ public abstract class ConfigBase extends Configuration
             else if (o instanceof int[])
             {
                 int[] defaultValue = (int[]) o;
+                String[] vars = update.split("`");
+                int[] toSet = new int[vars.length];
+                for (int i = 0; i < vars.length; i++)
+                    toSet[i] = Integer.parseInt(vars[i]);
                 p = get(c.category(), field.getName(), defaultValue);
                 o = field.get(this);
                 defaultValue = (int[]) o;

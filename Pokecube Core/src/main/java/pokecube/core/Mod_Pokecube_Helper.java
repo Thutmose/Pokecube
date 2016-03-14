@@ -372,36 +372,4 @@ public class Mod_Pokecube_Helper
         removeFromHoldables("tm");
         initLoots();
     }
-
-    public void registerStarterTrades()
-    {// TODO 1.8 villager trades
-     // LIBRARIAN
-     // VillagerRegistry.instance().registerVillageTradeHandler(1, new
-     // VillagerRegistry.IVillageTradeHandler() {
-     // @Override
-     // public void manipulateTradesForVillager(EntityVillager villager,
-     // MerchantRecipeList recipeList, Random random) {
-     // Integer[] starters = core.getStarters();
-     // int num = 1;
-     // List<Integer> starts = new ArrayList<Integer>();
-     // for(Integer i: starters)
-     // {
-     // if(i>0)
-     // {
-     // starts.add(i);
-     // num++;
-     // }
-     // }
-     // int rand = random.nextInt(num);
-     // if(rand<starts.size())
-     // {
-     // ItemStack eggStarter = new ItemStack(pokemobEgg, 1, new
-     // Integer(starts.get(rand) + 7463));
-     // recipeList.add(new MerchantRecipe(
-     // new ItemStack(Items.emerald, 30),
-     // eggStarter));
-     // }
-     // }
-     // });
-    }
 }

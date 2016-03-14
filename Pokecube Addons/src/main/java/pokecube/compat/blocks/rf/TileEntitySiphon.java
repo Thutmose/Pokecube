@@ -1,10 +1,12 @@
 package pokecube.compat.blocks.rf;
 
 import java.util.List;
+import java.util.Map;
 
 import org.nfunk.jep.JEP;
 
-import cofh.api.energy.EnergyStorage;
+import com.google.common.collect.Maps;
+
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import li.cil.oc.api.machine.Arguments;
@@ -29,12 +31,11 @@ import thut.api.maths.Vector3;
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntitySiphon extends TileEntity implements ITickable, SimpleComponent, IEnergyProvider
 {
-    public static int       maxOutput = 256;
-    public static String    function;
-    AxisAlignedBB           box;
-    public JEP              parser    = new JEP();
-    int                     lastInput = 0;
-    protected EnergyStorage storage   = new EnergyStorage(maxOutput);
+    public static int    maxOutput = 256;
+    public static String function;
+    AxisAlignedBB        box;
+    public JEP           parser    = new JEP();
+    int                  lastInput = 0;
 
     public TileEntitySiphon()
     {
@@ -55,20 +56,19 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
     @Override
     public int extractEnergy(EnumFacing facing, int maxExtract, boolean simulate)
     {
-        return storage.extractEnergy(maxExtract, simulate);
+        int ret = maxExtract;
+        if (lastInput < maxExtract)
+        {
+            ret = lastInput;
+        }
+        if (!simulate) lastInput -= ret;
+        return ret;
     }
 
     @Override
     public String getComponentName()
     {
         return "pokesiphon";
-    }
-
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getEnergy(Context context, Arguments args)
-    {
-        return new Object[] { storage.getEnergyStored() };
     }
 
     public int getEnergyGain(int level, int spAtk, int atk, PokedexEntry entry)
@@ -92,7 +92,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
     @Override
     public int getEnergyStored(EnumFacing facing)
     {
-        return storage.getEnergyStored();
+        return lastInput;
     }
 
     public int getInput()
@@ -160,7 +160,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
     @Override
     public int getMaxEnergyStored(EnumFacing facing)
     {
-        return storage.getMaxEnergyStored();
+        return maxOutput;
     }
 
     @Callback
@@ -210,18 +210,33 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
             box = v.getAABB().expand(10, 10, 10);
         }
         lastInput = getInput();
-        storage.setEnergyStored(lastInput);
-
+        Map<IEnergyReceiver, Integer> tiles = Maps.newHashMap();
+        Map<IEnergyReceiver, EnumFacing> sides = Maps.newHashMap();
         for (EnumFacing side : EnumFacing.values())
         {
             TileEntity te = v.getTileEntity(worldObj, side);
             if (te != null && te instanceof IEnergyReceiver)
             {
                 IEnergyReceiver h = (IEnergyReceiver) te;
-                int toSend = h.receiveEnergy(side.getOpposite(), storage.getEnergyStored(), true);
-                storage.extractEnergy(toSend, false);
-                h.receiveEnergy(side.getOpposite(), toSend, false);
+                int toSend = h.receiveEnergy(side.getOpposite(), lastInput, true);
+                if (toSend > 0)
+                {
+                    tiles.put(h, toSend);
+                }
             }
+        }
+        for (Map.Entry<IEnergyReceiver, Integer> entry : tiles.entrySet())
+        {
+            int fraction = lastInput / tiles.size();
+            int request = entry.getValue();
+            if (request > fraction)
+            {
+                request = fraction;
+            }
+            if (fraction == 0 || lastInput <= 0) continue;
+            IEnergyReceiver h = entry.getKey();
+            lastInput -= request;
+            h.receiveEnergy(sides.get(h), request, false);
         }
     }
 

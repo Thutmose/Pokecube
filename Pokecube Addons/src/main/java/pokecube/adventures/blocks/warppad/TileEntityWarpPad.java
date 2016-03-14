@@ -66,7 +66,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
 
-    @Callback
+    @Callback(doc = "Returns the current 4-vector destination")
     @Optional.Method(modid = "OpenComputers")
     public Object[] getDestination(Context context, Arguments args) throws Exception
     {
@@ -183,7 +183,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         return storage.receiveEnergy(maxReceive, simulate);
     }
 
-    @Callback
+    @Callback(doc = "function(x:number, y:number, z:number, w:number) - Sets the 4-vector destination, w is the dimension")
     @Optional.Method(modid = "OpenComputers")
     public Object[] setDestination(Context context, Arguments args) throws Exception
     {
@@ -201,7 +201,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
             {
                 link.set(x, y, z, w);
             }
-            return new Object[] {};
+            return new Object[] { link.x, link.y, link.z, link.w };
         }
         throw new Exception("invalid arguments, expected number,number,number,number");
     }

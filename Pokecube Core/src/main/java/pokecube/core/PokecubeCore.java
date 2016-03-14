@@ -133,17 +133,17 @@ import thut.api.maths.Vector3;
 public class PokecubeCore extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")
-    public static CommonProxyPokecube proxy;
+    public static CommonProxyPokecube       proxy;
 
     @Instance(ID)
-    public static PokecubeCore        instance;
+    public static PokecubeCore              instance;
 
-    static boolean                    server  = false;
+    static boolean                          server          = false;
 
-    static boolean                    checked = false;
+    static boolean                          checked         = false;
     private static HashMap<Object, Integer> highestEntityId = new HashMap<Object, Integer>();
 
-    private static int messageId = 0;
+    private static int                      messageId       = 0;
 
     public static int getMessageID()
     {
@@ -246,7 +246,7 @@ public class PokecubeCore extends PokecubeMod
         else System.out.println("Registered " + n + " Pokemob Spawn");
     }
 
-    public SpawnHandler               spawner;
+    public SpawnHandler        spawner;
 
     public String              newVersion;
 
@@ -340,11 +340,13 @@ public class PokecubeCore extends PokecubeMod
         file = new File(folder);
         return new Configuration(file);
     }
+
     @Override
     public Integer[] getStarters()
     {
         return starters.toArray(new Integer[0]);
     }
+
     /** Returns the translated Pokemob name of the pokemob with the specify
      * pokedex number.
      *
@@ -360,6 +362,7 @@ public class PokecubeCore extends PokecubeMod
 
         return "" + nb;
     }
+
     @EventHandler
     private void init(FMLInitializationEvent evt)
     {
@@ -416,7 +419,6 @@ public class PokecubeCore extends PokecubeMod
         StarterInfo.processStarterInfo(config.defaultStarts);
         postInitPokemobs();
         helper.addVillagerTrades();
-        helper.registerStarterTrades();
         SpecialCaseRegister.register();
         MoveAnimationHelper.Instance();
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
@@ -453,13 +455,8 @@ public class PokecubeCore extends PokecubeMod
     {
         PokecubeTerrainChecker.init();
         config = new Config(getPokecubeConfig(evt).getConfigFile());
-        // It initializes elements needed by plugins.
-        // Configuration config = getPokecubeConfig(evt);
-        // config.load();
 
         helper = new Mod_Pokecube_Helper();
-        // MinecraftForge.EVENT_BUS.register(helper);
-        // helper.loadConfig(config);
         // used to register the moves from the spreadsheets
         Database.init(evt);
 
@@ -474,6 +471,7 @@ public class PokecubeCore extends PokecubeMod
         }
 
         config.save();
+        config.initDefaultStarts();
         EventsHandler evts = new EventsHandler();
         MinecraftForge.EVENT_BUS.register(evts);
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new LoadingCallback()

@@ -215,7 +215,6 @@ public class LegendaryConditions
             @Override
             public void onSpawn(IPokemob mob)
             {
-
                 mob.setExp(54500, true, true);
             }
         };

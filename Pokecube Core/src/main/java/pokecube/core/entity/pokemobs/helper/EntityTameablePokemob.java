@@ -665,7 +665,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public void setDead()
     {
-        if (!this.returning) returnToPokecube();
+        if (!this.returning && this.addedToChunk) returnToPokecube();
         super.setDead();
     }
 

@@ -47,6 +47,7 @@ public class TileEntityAFA extends TileEntityOwnable
         implements IInventory, IEnergyReceiver, ITickable, SimpleComponent, SidedComponent
 {
     public static ItemStack shiny_charm = null;
+
     public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
     {
         float scale = tag.getFloat("scale");
@@ -85,19 +86,20 @@ public class TileEntityAFA extends TileEntityOwnable
         pokemob.changeForme(forme);
         pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
-    public IPokemob         pokemob     = null;
-    boolean                 shiny       = false;
-    private ItemStack[]     inventory   = new ItemStack[1];
-    public int[]            shift       = { 0, 0, 0 };
-    public int              scale       = 1000;
-    public Ability          ability     = null;
-    int                     energy      = 0;
-    int                     distance    = 4;
-    boolean                 noEnergy    = false;
+
+    public IPokemob         pokemob        = null;
+    boolean                 shiny          = false;
+    private ItemStack[]     inventory      = new ItemStack[1];
+    public int[]            shift          = { 0, 0, 0 };
+    public int              scale          = 1000;
+    public Ability          ability        = null;
+    int                     energy         = 0;
+    int                     distance       = 4;
+    boolean                 noEnergy       = false;
 
     protected EnergyStorage storage;
 
-    protected boolean addedToNetwork = false;
+    protected boolean       addedToNetwork = false;
 
     public TileEntityAFA()
     {
@@ -148,7 +150,7 @@ public class TileEntityAFA extends TileEntityOwnable
         return null;
     }
 
-    @Callback
+    @Callback(doc = "Returns the current loaded ability")
     @Optional.Method(modid = "OpenComputers")
     public Object[] getAbility(Context context, Arguments args) throws Exception
     {
@@ -183,7 +185,7 @@ public class TileEntityAFA extends TileEntityOwnable
         return new ChatComponentText("Ability Field Amplifier");
     }
 
-    @Callback
+    @Callback(doc = "Returns the amount of stored energy")
     @Optional.Method(modid = "OpenComputers")
     public Object[] getEnergy(Context context, Arguments args)
     {
@@ -235,7 +237,7 @@ public class TileEntityAFA extends TileEntityOwnable
         return "AFA";
     }
 
-    @Callback
+    @Callback(doc = "Returns the current set range")
     @Optional.Method(modid = "OpenComputers")
     public Object[] getRange(Context context, Arguments args)
     {
@@ -409,7 +411,7 @@ public class TileEntityAFA extends TileEntityOwnable
         refreshAbility();
     }
 
-    @Callback
+    @Callback(doc = "function(scale:number, dx:number, dy:number, dz:number) - Sets the parameters for the hologram.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] setHoloState(Context context, Arguments args)
     {
@@ -417,6 +419,7 @@ public class TileEntityAFA extends TileEntityOwnable
         shift[0] = args.checkInteger(1);
         shift[1] = args.checkInteger(2);
         shift[2] = args.checkInteger(3);
+        worldObj.markBlockForUpdate(getPos());
         return new Object[0];
     }
 
@@ -428,11 +431,12 @@ public class TileEntityAFA extends TileEntityOwnable
         refreshAbility();
     }
 
-    @Callback
+    @Callback(doc = "function(range:number) - sets the radius of affect")
     @Optional.Method(modid = "OpenComputers")
     public Object[] setRange(Context context, Arguments args)
     {
         distance = args.checkInteger(0);
+        worldObj.markBlockForUpdate(getPos());
         return new Object[] { distance };
     }
 

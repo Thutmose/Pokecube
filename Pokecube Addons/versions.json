@@ -3,34 +3,11 @@
   "promos": {
     "1.8.8-latest": "2.1.4",
     "1.8.8-recommended": "2.1.4",
-    "1.8.9-latest": "2.2.8",
-    "1.8.9-recommended": "2.2.8"
+    "1.8.9-latest": "2.2.9",
+    "1.8.9-recommended": "2.2.9"
   },
   "1.8.9": {
-    "2.2.6": "Updates to Pokecube Core 2.2.13, Overhaul of configs",
-    "2.2.1": "Updates to Pokecube Core 2.2.6",
-    "2.1.18": "TC Loot bags",
-    "2.1.11": "Compound fixes",
+    "2.2.9": "Trainer Trades",
     "2.1.0": "initial 1.8.9 port"
-  },
-  "1.8.8": {
-    "2.0.17": "Updates to Core 2.0.31.",
-    "2.0.16": "fixes some issues with trainer cooldowns.",
-    "2.0.15": "Updates for Core 2.0.25.",
-    "2.0.14": "Fixes a crash when trainers have null pokemobs. Removes integrated IGW-mod.",
-    "2.0.13": "WAILA compatbility",
-    "2.0.12": "updates to Thut Core 2.1.8 and pokecube Core 2.0.17",
-    "2.0.11": "fixes a rendering issue with bag on servers",
-    "2.0.10": "fixes an issue with trainer GUI",
-    "2.0.9": "Adds the legendary spawner blocks in, as well as legendary requirements",
-    "2.0.8": "updates to Thut Core 2.1.6 and pokecube Core 2.0.11",
-    "2.0.7": "updates to Thut Core 2.1.5 and pokecube Core 2.0.10",
-    "2.0.6": "updates to the version checker",
-    "2.0.5": "fixes and issue in bag gui and a crash with trader",
-    "2.0.4": "improvements to ingame wiki",
-    "2.0.3": "fixes up the trader a bit",
-    "2.0.2": "cloner now revives fossils",
-    "2.0.1": "updated for core 2.0.2",
-    "2.0.0": "initial 1.8.8 version"
   }
 }

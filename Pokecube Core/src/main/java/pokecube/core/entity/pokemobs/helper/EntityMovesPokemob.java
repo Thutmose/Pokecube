@@ -51,11 +51,11 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public abstract class EntityMovesPokemob extends EntitySexedPokemob
 {
-    private PokemobMoveStats moveInfo = new PokemobMoveStats();
+    private PokemobMoveStats moveInfo         = new PokemobMoveStats();
 
-    private int moveIndexCounter = 0;
+    private int              moveIndexCounter = 0;
 
-    int attackTime;
+    int                      attackTime;
 
     /** @param par1World */
     public EntityMovesPokemob(World world)
@@ -646,12 +646,12 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         {
             moveInfo.substituteHP = getMaxHealth() / 4;
         }
-        
-        if(getHeldItem()!=null)
+
+        if (getHeldItem() != null)
         {
             HeldItemHandler.processHeldItemUse(move, this, getHeldItem());
         }
-        
+
         if (getAbility() != null)
         {
             getAbility().onMoveUse(this, move);
@@ -820,7 +820,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         moveInfo.ROLLOUTCOUNTER = 0;
         moveInfo.FURYCUTTERCOUNTER = 0;
 
-        if (PokecubeCore.isOnClientSide() && getPokemonAIState(IMoveConstants.TAMED))
+        if (PokecubeCore.isOnClientSide())
         {
             try
             {

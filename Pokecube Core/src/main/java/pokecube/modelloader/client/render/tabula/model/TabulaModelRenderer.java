@@ -117,6 +117,15 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
         GlStateManager.rotate(entity.rotationYaw + 180, 0, 1, 0);
 
         set.rotation.rotations.glRotate();
+        
+        if (entity instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) entity;
+            float scale = (mob.getSize());
+            GL11.glScalef(scale, scale, scale);
+            shadowSize = entry.width * mob.getSize();
+        }
+        
         GlStateManager.translate(set.shift.x, set.shift.y, set.shift.z);
         GlStateManager.scale(set.scale.x, set.scale.y, set.scale.z);
 

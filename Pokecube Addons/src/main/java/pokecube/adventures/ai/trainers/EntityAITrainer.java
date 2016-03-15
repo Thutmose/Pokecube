@@ -15,6 +15,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
 public class EntityAITrainer extends EntityAIBase
@@ -94,7 +95,13 @@ public class EntityAITrainer extends EntityAIBase
     private int getPower(String move, IPokemob user, Entity target)
     {
         Move_Base attack = MovesUtils.getMoveFromName(move);
-        return attack.getPWR(user, target);
+        int pwr = attack.getPWR(user, target);
+        if (target instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) target;
+            pwr *= PokeType.getAttackEfficiency(attack.getType(user), mob.getType1(), mob.getType2());
+        }
+        return pwr;
     }
 
     /** Resets the task */

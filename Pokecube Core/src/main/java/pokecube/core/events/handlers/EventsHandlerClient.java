@@ -34,6 +34,8 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
@@ -45,11 +47,14 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
+import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
@@ -157,12 +162,34 @@ public class EventsHandlerClient
 
     }
 
-    private Set<RenderPlayer> addedLayers  = Sets.newHashSet();
+    private Set<RenderPlayer> addedLayers = Sets.newHashSet();
 
-    boolean                   debug        = false;
+    boolean                   debug       = false;
+    long                      lastSetTime = 0;
 
     public EventsHandlerClient()
     {
+    }
+
+    @SubscribeEvent
+    public void clientTick(TickEvent.PlayerTickEvent event)
+    {
+        if (!PokecubeMod.core.getConfig().autoSelectMoves || event.phase == Phase.START
+                || lastSetTime >= System.currentTimeMillis())
+            return;
+        IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
+        if (pokemob != null)
+        {
+            Entity target = ((EntityLiving) pokemob).getAttackTarget();
+            if (target != null && !pokemob.getPokemonAIState(IMoveConstants.MATING))
+            {
+                if (target != null)
+                {
+                    setMostDamagingMove(pokemob, target);
+                    lastSetTime = System.currentTimeMillis() + 1000;
+                }
+            }
+        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -179,6 +206,18 @@ public class EventsHandlerClient
                 evt.setCanceled(true);
             }
         }
+    }
+
+    private int getPower(String move, IPokemob user, Entity target)
+    {
+        Move_Base attack = MovesUtils.getMoveFromName(move);
+        int pwr = attack.getPWR(user, target);
+        if (target instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) target;
+            pwr *= PokeType.getAttackEfficiency(attack.getType(user), mob.getType1(), mob.getType2());
+        }
+        return pwr;
     }
 
     @SubscribeEvent
@@ -415,6 +454,30 @@ public class EventsHandlerClient
 
         debug = event.type == ElementType.DEBUG;
 
+    }
+
+    private void setMostDamagingMove(IPokemob outMob, Entity target)
+    {
+        int index = outMob.getMoveIndex();
+        int max = 0;
+        String[] moves = outMob.getMoves();
+        for (int i = 0; i < 4; i++)
+        {
+            String s = moves[i];
+            if (s != null)
+            {
+                int temp = getPower(s, outMob, target);
+                if (temp > max)
+                {
+                    index = i;
+                    max = temp;
+                }
+            }
+        }
+        if (index != outMob.getMoveIndex())
+        {
+            GuiDisplayPokecubeInfo.instance().setMove(index);
+        }
     }
 
     @SubscribeEvent

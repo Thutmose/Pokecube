@@ -190,6 +190,8 @@ public class Config extends ConfigBase
     public int[]               guiOffset             = { 0, 0 };
     @Configure(category = client)
     public boolean             guiDown               = true;
+    @Configure(category = client)
+    public boolean             autoSelectMoves       = false;
 
     @Configure(category = advanced)
     String[]                   mystLocs              = {};

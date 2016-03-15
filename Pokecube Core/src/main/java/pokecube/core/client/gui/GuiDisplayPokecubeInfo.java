@@ -113,7 +113,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         int n = pokemobs.length;
         if (pokemob != null)
         {
-            pokemob.setMoveIndex(pokemob.getMoveIndex());
+//            pokemob.setMoveIndex(pokemob.getMoveIndex());
 
             if (pokemob.getMoveIndex() == 5)
             {
@@ -155,7 +155,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                 h -= 25 + 12 * (moveCount - 1);
                 // h1 = 0;
             }
-            pokemob.setMoveIndex(pokemob.getMoveIndex());
+//            pokemob.setMoveIndex(pokemob.getMoveIndex());
 
             for (moveIndex = 0; moveIndex < 4; moveIndex++)
             {

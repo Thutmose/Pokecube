@@ -96,11 +96,15 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             }
             ItemStack buy1 = new ItemStack(Items.emerald);
             ItemStack buy2 = null;
-            buy1.stackSize = (cost % 64) + 1;
+            buy1.stackSize = (cost & 63);
             if (cost > 64)
             {
                 buy2 = buy1.copy();
-                buy2.stackSize = ((cost - 64) % 64) + 1;
+                buy2.stackSize = ((cost - 64) & 63);
+            }
+            else if (cost == 64)
+            {
+                buy1.stackSize = 64;
             }
             return new MerchantRecipe(buy1, buy2, sell);
         }
@@ -119,7 +123,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     /** Initialises the MerchantRecipeList.java */
     private MerchantRecipeList         tradeList;
     /** Initialises the MerchantRecipeList.java */
-    private MerchantRecipeList         itemList;
+    protected MerchantRecipeList       itemList;
 
     private boolean                    randomize        = false;
     public ItemStack[]                 pokecubes        = new ItemStack[6];
@@ -175,6 +179,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
         this.setSize(0.6F, 1.8F);
         this.renderDistanceWeight = 4;
+        initAI(location, stationary);
+    }
+
+    protected void initAI(Vector3 location, boolean stationary)
+    {
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(1, new EntityAITrainer(this, EntityPlayer.class));
         this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
@@ -222,7 +231,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
     }
 
-    private void addRandomTrades()
+    protected void addRandomTrades()
     {
         itemList.clear();
         int num = rand.nextInt(3);
@@ -239,13 +248,17 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 int size = Config.instance.megaCost;
                 if (name.endsWith("orb")) size = Config.instance.orbCost;
                 else if (name.endsWith("charm")) size = Config.instance.shinyCost;
-                size -= 1;
-                in1.stackSize = (size % 64) + 1;
+                in1.stackSize = (size & 63);
                 ItemStack in2 = null;
                 if (size > 64)
                 {
                     in2 = in1.copy();
-                    in2.stackSize = ((size - 64) % 64) + 1;
+                    in2.stackSize = ((size - 64) & 63);
+                    if (size - 64 > 64) in2.stackSize = 64;
+                }
+                else if (size == 64)
+                {
+                    in1.stackSize = 64;
                 }
                 itemList.add(new MerchantRecipe(in1, in2, output));
             }
@@ -284,12 +297,18 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             {
                 ItemStack in1 = new ItemStack(Items.emerald);
                 int size = Config.instance.badgeCost;
-                in1.stackSize = (size % 64) + 1;
+                in1.stackSize = (size & 63);
                 ItemStack in2 = null;
                 if (size > 64)
                 {
                     in2 = in1.copy();
-                    in2.stackSize = ((size - 64) % 64) + 1;
+                    in1.stackSize = 64;
+                    in2.stackSize = ((size - 64) & 63);
+                    if (size - 64 >= 64) in2.stackSize = 64;
+                }
+                else if (size == 64)
+                {
+                    in1.stackSize = 64;
                 }
                 itemList.add(new MerchantRecipe(in1, in2, badge));
             }
@@ -609,11 +628,12 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
         }
 
-        if (this.countPokemon() == 0 && !getAIState(STATIONARY))
+        if (this.countPokemon() == 0 && !getAIState(STATIONARY) && !getAIState(PERMFRIENDLY))
         {
             timercounter++;
             if (timercounter > 50)
             {
+                Thread.dumpStack();
                 this.setDead();
             }
             return;
@@ -630,7 +650,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     private void populateBuyingList()
     {
         tradeList = new MerchantRecipeList();
-        if (itemList == null && Config.instance.trainersTradeItems)
+//        if (itemList == null && Config.instance.trainersTradeItems)//TODO
         {
             itemList = new MerchantRecipeList();
             addRandomTrades();
@@ -736,6 +756,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     @Override
     public void setDead()
     {
+        if (isServerWorld())
+        {
+            System.out.println(this + " " + getType());
+            Thread.dumpStack();
+        }
         PCEventsHandler.recallAllPokemobs(this);
         super.setDead();
     }

@@ -148,7 +148,7 @@ public class TrainerSpawnHandler
         Vector3 v = SpawnHandler.getRandomSpawningPointNearEntity(w, p, trainerBox);
         if (v == null) return;
         if (v.y < 0) v.y = v.getMaxY(w);
-        Vector3 temp = Vector3.getNextSurfacePoint2(w, v, v1.set(0, -1, 0), 4);
+        Vector3 temp = Vector3.getNextSurfacePoint2(w, v, Vector3.secondAxisNeg, 4);
         v = temp != null ? temp.offset(EnumFacing.UP) : v;
 
         if (!SpawnHandler.checkNoSpawnerInArea(w, v.intX(), v.intY(), v.intZ())) return;
@@ -192,7 +192,6 @@ public class TrainerSpawnHandler
             {
                 addTrainerCoord(t);
                 w.spawnEntityInWorld(t);
-
             }
             else t.setDead();
         }

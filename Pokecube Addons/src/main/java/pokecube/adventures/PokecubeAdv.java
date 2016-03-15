@@ -20,6 +20,7 @@ import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.comands.TeamCommands;
 import pokecube.adventures.entity.trainers.EntityLeader;
+import pokecube.adventures.entity.trainers.EntityPokemartSeller;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.villager.EntityTrader;
 import pokecube.adventures.events.PAEventsHandler;
@@ -40,6 +41,8 @@ import pokecube.core.events.PostPostInit;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
+import thut.api.maths.Vector3;
 
 @Mod( // @formatter:off
     modid = PokecubeAdv.ID, 
@@ -105,13 +108,21 @@ public class PokecubeAdv
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 
-        // VillageHandlerCubeSalesman.init();
+        try
+        {
+            registerMerchant();
+        }
+        catch (NoSuchMethodException | SecurityException e)
+        {
+            e.printStackTrace();
+        }
 
         EntityRegistry.registerModEntity(EntityTarget.class, "targetParticles", 0, this, 16, 3, true);
 
         EntityRegistry.registerModEntity(EntityTrainer.class, "pokecube:trainer", 1, this, 80, 3, true);
         EntityRegistry.registerModEntity(EntityLeader.class, "pokecube:leader", 2, this, 80, 3, true);
         EntityRegistry.registerModEntity(EntityTrader.class, "pokecube:trader", 3, this, 80, 3, true);
+        EntityRegistry.registerModEntity(EntityPokemartSeller.class, "pokecube:trainermerchant", 4, this, 80, 3, true);
 
         PAEventsHandler events = new PAEventsHandler();
         TeamEventsHandler teams = new TeamEventsHandler();
@@ -159,6 +170,12 @@ public class PokecubeAdv
         setTrainerConfig(e);
         MinecraftForge.EVENT_BUS.register(this);
         proxy.preinit();
+    }
+
+    private void registerMerchant() throws NoSuchMethodException, SecurityException
+    {
+        ComponentPokeMart.seller = EntityPokemartSeller.class;
+        ComponentPokeMart.setLocation = EntityTrainer.class.getMethod("setStationary", Vector3.class);
     }
 
     @EventHandler

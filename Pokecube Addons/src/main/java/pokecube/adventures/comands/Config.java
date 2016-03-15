@@ -128,6 +128,8 @@ public class Config extends ConfigBase
     @Configure(category = trainers)
     public int                         badgeCost          = 64;
     @Configure(category = trainers)
+    public int                         vitaminCost        = 8;
+    @Configure(category = trainers)
     String[]                           cubeCosts          = { "0:16:4-8:1", "1:8:2-4:1", "2:2:1-2:1", "3:1:1:64" };
 
     @Configure(category = teams)

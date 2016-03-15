@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -986,9 +987,21 @@ public class MovesAdder implements IMoveConstants
             @Override
             public PokeType getType(IPokemob user)
             {
-                if(user==null)
+                if(user==null || !(user instanceof EntityLivingBase))
                 return move.type;
-                else return user.getType1();
+                ItemStack held = ((EntityLivingBase) user).getHeldItem();
+                if (held != null && held.getItem().getRegistryName().contains("pokecube")
+                        && held.getItem().getRegistryName().contains("badge"))
+                {
+                    String name = held.getItem().getRegistryName().split(":")[1];
+                    String typename = name.replace("badge", "");
+                    PokeType type = PokeType.getType(typename);
+                    if (type != PokeType.unknown)
+                    {
+                        return type;
+                    }
+                }
+                return move.type;
             }
         });
         

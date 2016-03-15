@@ -45,7 +45,7 @@ public class CommandTools
 
     public static void sendMessage(ICommandSender sender, String text)
     {
-        StatCollector.translateToLocal(text);
+        text = StatCollector.translateToLocal(text);
         IChatComponent message;
         message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
         sender.addChatMessage(message);

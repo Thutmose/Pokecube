@@ -69,7 +69,7 @@ public class PokedexEntry
 
         public String    FX        = "";
 
-        private String data;
+        private String   data;
 
         private EvolutionData(int number)
         {
@@ -276,6 +276,7 @@ public class PokedexEntry
             return ret;
         }
     }
+
     public static class InteractionLogic
     {
         static HashMap<PokeType, String> defaults = new HashMap<>();
@@ -431,10 +432,12 @@ public class PokedexEntry
             return stacks.get(getKey(key));
         }
     }
+
     public static interface MegaRule
     {
         boolean shouldMegaEvolve(IPokemob mobIn);
     }
+
     public static class SpawnData
     {
         public static class TypeEntry
@@ -492,6 +495,7 @@ public class PokedexEntry
                 return biomes + " " + biome2 + " " + weight + " " + groupMin + "-" + groupMax;
             }
         }
+
         public static final int     DAY        = 0;
 
         public static final int     NIGHT      = 1;
@@ -706,10 +710,12 @@ public class PokedexEntry
             return ret;
         }
     }
-    public static TimePeriod                   night              = new TimePeriod(0.6, 0.9);
-    public static TimePeriod                   day                = new TimePeriod(0.0, 0.5);
-    public static TimePeriod                   dusk               = new TimePeriod(0.5, 0.6);
-    public static TimePeriod                   dawn               = new TimePeriod(0.9, 0.0);
+
+    public static TimePeriod night = new TimePeriod(0.6, 0.9);
+    public static TimePeriod day   = new TimePeriod(0.0, 0.5);
+    public static TimePeriod dusk  = new TimePeriod(0.5, 0.6);
+    public static TimePeriod dawn  = new TimePeriod(0.9, 0.0);
+
     private static void addFromEvolution(PokedexEntry a, PokedexEntry b)
     {
         for (EvolutionData d : a.evolutions)
@@ -724,8 +730,7 @@ public class PokedexEntry
             c.addRelation(b);
         }
     }
-    // TODO write a way to load this from a single file, so I can have 1 file
-    // per entry.
+
     Random                                     rand               = new Random();
     protected int                              pokedexNb;
     protected String                           name;
@@ -778,6 +783,7 @@ public class PokedexEntry
 
     public boolean                             canSitShoulder     = false;
     public boolean                             shouldFly          = false;
+    public boolean                             shouldSurf         = false;
     public boolean                             shouldDive         = false;
     /** Mass of the pokemon in kg. */
     public double                              mass               = -1;

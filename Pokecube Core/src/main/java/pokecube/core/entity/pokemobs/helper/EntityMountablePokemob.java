@@ -170,7 +170,8 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
     public void initRidable()
     {
-        if (isType(PokeType.water) || getPokedexEntry().mobType == Type.WATER)
+        if (isType(PokeType.water) || getPokedexEntry().mobType == Type.WATER || getPokedexEntry().shouldSurf
+                || getPokedexEntry().shouldDive)
         {
             this.setCanSurf(true);
         }

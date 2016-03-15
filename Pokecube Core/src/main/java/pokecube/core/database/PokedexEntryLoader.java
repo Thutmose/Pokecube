@@ -70,6 +70,7 @@ public class PokedexEntryLoader
             return rule && hasMove && rightStack;
         }
     }
+
     @XmlRootElement(name = "MOVES")
     public static class Moves
     {
@@ -79,6 +80,7 @@ public class PokedexEntryLoader
             @XmlAnyAttribute
             Map<QName, String> values;
         }
+
         @XmlRootElement(name = "MISC")
         public static class Misc
         {
@@ -107,6 +109,7 @@ public class PokedexEntryLoader
             @XmlAnyAttribute
             Map<QName, String> values;
         }
+
         @XmlAttribute
         public String spawns;
         // Evolution stuff
@@ -217,9 +220,9 @@ public class PokedexEntryLoader
         }
     }
 
-    static XMLDatabase              database;
+    static XMLDatabase                            database;
 
-    static HashSet<XMLPokedexEntry> overrides = Sets.newHashSet();
+    static HashSet<XMLPokedexEntry>               overrides  = Sets.newHashSet();
 
     private static HashMap<Integer, PokedexEntry> baseFormes = new HashMap<>();
 
@@ -719,6 +722,7 @@ public class PokedexEntryLoader
                 if (keyString.equals("shoulder")) entry.canSitShoulder = Boolean.parseBoolean(value);
                 if (keyString.equals("fly")) entry.canSitShoulder = Boolean.parseBoolean(value);
                 if (keyString.equals("dive")) entry.canSitShoulder = Boolean.parseBoolean(value);
+                if (keyString.equals("surf")) entry.canSitShoulder = Boolean.parseBoolean(value);
                 if (keyString.equals("stationary")) entry.canSitShoulder = Boolean.parseBoolean(value);
                 if (keyString.equals("dye"))
                 {

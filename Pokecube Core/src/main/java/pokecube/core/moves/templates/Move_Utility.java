@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.commands.CommandTools;
@@ -124,8 +123,7 @@ public class Move_Utility extends Move_Basic
             }
             else
             {
-                IChatComponent message = CommandTools.makeError("pokemob.action.needsberries");
-                owner.addChatMessage(message);
+                CommandTools.sendError(owner,"pokemob.action.needsberries");
             }
         }
     }
@@ -201,12 +199,10 @@ public class Move_Utility extends Move_Basic
             EntityLivingBase owner;
             if ((owner = user.getPokemonOwner()) != null)
             {
-                IChatComponent message = CommandTools.makeError("pokemob.action.denydamageblock");
-                owner.addChatMessage(message);
+                CommandTools.sendError(owner,"pokemob.action.denydamageblock");
             }
             return;
         }
-        IChatComponent message;
         boolean used = false;
         boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).worldObj, location.intX(), location.intY(),
                 location.intZ());
@@ -219,8 +215,7 @@ public class Move_Utility extends Move_Basic
         {
             if (!repel)
             {
-                message = CommandTools.makeError("pokemob.action.denyrepel");
-                owner.addChatMessage(message);
+                CommandTools.sendError(owner,"pokemob.action.denyrepel");
                 return;
             }
             number = countBerries(user, (EntityPlayer) owner);
@@ -277,8 +272,7 @@ public class Move_Utility extends Move_Basic
         }
         else
         {
-            message = CommandTools.makeError("pokemob.action.needsberries");
-            owner.addChatMessage(message);
+            CommandTools.sendError(owner,"pokemob.action.needsberries");
         }
     }
 

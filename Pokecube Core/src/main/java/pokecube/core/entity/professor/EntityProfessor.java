@@ -105,7 +105,7 @@ public class EntityProfessor extends EntityAgeable
             }
             else
             {
-                CommandTools.makeError("pokecube.professor.deny");
+                CommandTools.sendError(player, "pokecube.professor.deny");
             }
         }
         return false;// super.interact(entityplayer);

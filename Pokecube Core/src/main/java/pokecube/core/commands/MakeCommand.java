@@ -177,7 +177,7 @@ public class MakeCommand extends CommandBase
 
                         if (mob == null)
                         {
-                            CommandTools.makeError("pokecube.command.makeinvalid");
+                            CommandTools.sendError(sender, "pokecube.command.makeinvalid");
                             return;
                         }
                         mob.changeForme(name);
@@ -328,10 +328,10 @@ public class MakeCommand extends CommandBase
                     }
                 }
             }
-            CommandTools.makeError("pokecube.command.makeneedname");
+            CommandTools.sendError(sender, "pokecube.command.makeneedname");
             return;
         }
-        CommandTools.makeError("pokecube.command.makedeny");
+        CommandTools.sendError(sender, "pokecube.command.makedeny");
         return;
     }
 

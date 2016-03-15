@@ -173,12 +173,12 @@ public class GuiDisplayPokecubeInfo extends Gui
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
                     this.drawTexturedModalRect(0 + w, 13 + 12 * index + h, 0, 13 + h1, 91, 12);
                     GL11.glPushMatrix();// TODO find out why both needed
-                    Color moveColor = new Color(move.getType().colour);
+                    Color moveColor = new Color(move.getType(pokemob).colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);
                     fontRenderer.drawString(MovesUtils.getTranslatedMove(move.getName()), 5 + 0 + w,
                             index * 12 + 14 + h, // white.getRGB());
-                            move.getType().colour);
+                            move.getType(pokemob).colour);
                     GL11.glPopMatrix();
                 }
             }

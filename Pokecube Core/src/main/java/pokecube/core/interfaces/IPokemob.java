@@ -109,7 +109,7 @@ public interface IPokemob extends IMoveConstants
 
         public MovePacket(IPokemob attacker, Entity attacked, Move_Base move)
         {
-            this(attacker, attacked, move.name, move.getType(), move.getPWR(), move.move.crit, move.move.statusChange,
+            this(attacker, attacked, move.name, move.getType(attacker), move.getPWR(), move.move.crit, move.move.statusChange,
                     move.move.change);
         }
 

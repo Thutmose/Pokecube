@@ -236,7 +236,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         World world = ((Entity) attacker).worldObj;
         IBlockState state = location.getBlockState(world);
         Block block = state.getBlock();
-        if (getType() == PokeType.ice && (move.attackCategory & CATEGORY_DISTANCE) > 0 && move.power > 0)
+        if (getType(attacker) == PokeType.ice && (move.attackCategory & CATEGORY_DISTANCE) > 0 && move.power > 0)
         {
             if (block.isAir(world, location.getPos()))
             {
@@ -254,7 +254,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             }
         }
         int strong = 100;
-        if (getType() == PokeType.water && getPWR() >= strong)
+        if (getType(attacker) == PokeType.water && getPWR() >= strong)
         {
             Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
                     .addTo(location);
@@ -268,7 +268,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 nextBlock.setBlock(world, Blocks.obsidian);
             }
         }
-        if (getType() == PokeType.electric && getPWR() >= strong)
+        if (getType(attacker) == PokeType.electric && getPWR() >= strong)
         {
             Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
                     .addTo(location);
@@ -282,7 +282,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 nextBlock.setBlock(world, Blocks.glass);
             }
         }
-        if (getType() == PokeType.fire && getPWR() >= strong)
+        if (getType(attacker) == PokeType.fire && getPWR() >= strong)
         {
             Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
                     .addTo(location);

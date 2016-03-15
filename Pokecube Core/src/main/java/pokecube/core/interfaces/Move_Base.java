@@ -153,7 +153,7 @@ public abstract class Move_Base
     /** Type getter
      * 
      * @return the type of this move */
-    public PokeType getType()
+    public PokeType getType(IPokemob user)
     {
         return move.type;
     }

@@ -516,7 +516,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         if (source instanceof PokemobDamageSource)
         {
             Move_Base move = ((PokemobDamageSource) source).move;
-            return PokeType.getAttackEfficiency(move.getType(), getType1(), getType2()) <= 0;
+            return PokeType.getAttackEfficiency(move.getType(((PokemobDamageSource) source).user), getType1(), getType2()) <= 0;
         }
 
         return super.isEntityInvulnerable(source);

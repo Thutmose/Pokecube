@@ -12,7 +12,7 @@ public abstract class MoveAnimationBase implements IMoveAnimation
     public int getColourFromMove(Move_Base move, int alpha)
     {
         alpha = Math.min(255, alpha);
-        int colour = move.getType().colour + 0x01000000 * alpha;
+        int colour = move.getType(null).colour + 0x01000000 * alpha;
         return colour;
     }
 

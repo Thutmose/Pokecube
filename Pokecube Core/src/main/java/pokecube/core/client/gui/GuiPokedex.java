@@ -560,7 +560,7 @@ public class GuiPokedex extends GuiScreen
                 pwr = "-";
             }
             drawString(fontRendererObj, MovesUtils.getTranslatedMove(move.getName()), xOffset + 14, yOffset + 99,
-                    move.getType().colour);
+                    move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 99, 0xffffff);
         }
 
@@ -577,7 +577,7 @@ public class GuiPokedex extends GuiScreen
                 pwr = "-";
             }
             drawString(fontRendererObj, MovesUtils.getTranslatedMove(move.getName()), xOffset + 14, yOffset + 113,
-                    move.getType().colour);
+                    move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 113, 0xffffff);
         }
 
@@ -594,7 +594,7 @@ public class GuiPokedex extends GuiScreen
                 pwr = "-";
             }
             drawString(fontRendererObj, MovesUtils.getTranslatedMove(move.getName()), xOffset + 14, yOffset + 127,
-                    move.getType().colour);
+                    move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 127, 0xffffff);
         }
 
@@ -611,7 +611,7 @@ public class GuiPokedex extends GuiScreen
                 pwr = "-";
             }
             drawString(fontRendererObj, MovesUtils.getTranslatedMove(move.getName()), xOffset + 14, yOffset + 141,
-                    move.getType().colour);
+                    move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 141, 0xffffff);
         }
 
@@ -628,7 +628,7 @@ public class GuiPokedex extends GuiScreen
                 pwr = "-";
             }
             drawString(fontRendererObj, MovesUtils.getTranslatedMove(move.getName()), xOffset + 14, yOffset + 155,
-                    move.getType().colour);
+                    move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 155, 0xffffff);
         }
     }

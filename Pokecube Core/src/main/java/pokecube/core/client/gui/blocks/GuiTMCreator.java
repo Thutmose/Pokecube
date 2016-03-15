@@ -104,7 +104,7 @@ public class GuiTMCreator extends GuiContainer
             if (move != null)
             {
                 drawString(fontRendererObj, MovesUtils.getTranslatedMove(s), xOffset + 14, yOffset + 99,
-                        move.getType().colour);
+                        move.getType(null).colour);
                 drawString(fontRendererObj, "" + move.getPWR(), xOffset + 102, yOffset + 99, 0xffffff);
             }
         }
@@ -162,7 +162,7 @@ public class GuiTMCreator extends GuiContainer
             {
                 for (PokeType t : PokeType.values())
                 {
-                    if (move.getType() == t && PokeType.getTranslatedName(t).toLowerCase()
+                    if (move.getType(null) == t && PokeType.getTranslatedName(t).toLowerCase()
                             .contains(textFieldSearch.getText().toLowerCase()))
                     {
                         typeMatch = true;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package pokecube.core.moves;
 
 import java.util.List;
@@ -47,7 +44,6 @@ import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
-/** @author Manchou */
 public class MovesAdder implements IMoveConstants
 {
 
@@ -982,6 +978,20 @@ public class MovesAdder implements IMoveConstants
     /** things like Acupressure, Power Split, Power Trick, etc */
     static void registerSpecialMoves()
     {
+        registerMove(new Move_Basic(MOVE_JUDGMENT)
+        {
+            /** Type getter
+             * 
+             * @return the type of this move */
+            @Override
+            public PokeType getType(IPokemob user)
+            {
+                if(user==null)
+                return move.type;
+                else return user.getType1();
+            }
+        });
+        
         registerMove(new Move_Basic(MOVE_ACUPRESSURE)
         {
             /** Do anything special for self attacks, usually raising/lowering

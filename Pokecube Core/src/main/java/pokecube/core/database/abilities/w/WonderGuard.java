@@ -26,7 +26,7 @@ public class WonderGuard extends Ability
 
         if (attacker == mob || !move.pre || attacker == move.attacked) return;
 
-        float eff = PokeType.getAttackEfficiency(attack.getType(), mob.getType1(), mob.getType2());
+        float eff = PokeType.getAttackEfficiency(attack.getType(move.attacker), mob.getType1(), mob.getType2());
         if (eff <= 1 && attack.getPWR(attacker, (Entity) mob) > 0)
         {
             move.canceled = true;

@@ -37,12 +37,11 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     public float      airbornSpeedFactor = 0.02f;
     public float      speedFactor        = 1;
     private float     hungerFactor       = 1;
-    public float      scale;
 
     public boolean    canUseSaddle       = false;
-    public boolean    canFly             = false;
-    public boolean    canSurf            = false;
-    public boolean    canDive            = false;
+    private boolean   canFly             = false;
+    private boolean   canSurf            = false;
+    private boolean   canDive            = false;
 
     protected double  yOffset;
 
@@ -207,8 +206,8 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             System.err.println("Null Entry for " + this);
             return false;
         }
-        return (entry.height * scale + entry.width * scale) > rider.width
-                && Math.max(entry.width, entry.length) * scale > rider.width * 1.8;
+        return (entry.height * getSize() + entry.width * getSize()) > rider.width
+                && Math.max(entry.width, entry.length) * getSize() > rider.width * 1.8;
     }
 
     /** Returns true if the entity is riding another entity, used by render to
@@ -629,7 +628,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     @Override
     public boolean shouldDismountInWater(Entity rider)
     {
-        return !this.canDive;
+        return !this.canUseDive();
     }
 
     /** main AI tick function, replaces updateEntityActionState */// TODO move

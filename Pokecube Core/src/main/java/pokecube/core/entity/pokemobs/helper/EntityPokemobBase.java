@@ -61,6 +61,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     protected int                   particleIntensity = 0;
     protected int                   particleCounter   = 0;
     protected String                particle;
+    private float                   scale;
 
     private int[]                   flavourAmounts    = new int[5];
 
@@ -328,7 +329,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public double getWeight()
     {
-        return scale * scale * scale * getPokedexEntry().mass;
+        return this.getSize() * this.getSize() * this.getSize() * getPokedexEntry().mass;
     }
 
     @Override
@@ -352,8 +353,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         setAbility(getPokedexEntry().getAbility(abilityNumber));
         if (getAbility() != null) getAbility().init(this);
 
-        this.scale = 1 + scaleFactor * (float) (random).nextGaussian();
-        setSize(scale);
+        setSize(1 + scaleFactor * (float) (random).nextGaussian());
         this.initRidable();
         shiny = random.nextInt(8196) == 0;
 
@@ -545,8 +545,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 this.distanceWalkedOnStepModified = (float) (this.distanceWalkedOnStepModified
                         + MathHelper.sqrt_double(d15 * d15 + d16 * d16 + d17 * d17) * 0.6D);
 
-                if (this.distanceWalkedOnStepModified > this.nextStepDistance
-                        && block1.getMaterial() != Material.air)
+                if (this.distanceWalkedOnStepModified > this.nextStepDistance && block1.getMaterial() != Material.air)
                 {
                     this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
 
@@ -682,7 +681,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         super.readEntityFromNBT(nbttagcompound);
         setPokecubeId(nbttagcompound.getInteger("PokeballId"));
-        scale = nbttagcompound.getFloat("scale");
+        setSize(nbttagcompound.getFloat("scale"));
         uid = nbttagcompound.getInteger("PokemobUID");
         if (nbttagcompound.hasKey("flavours")) flavourAmounts = nbttagcompound.getIntArray("flavours");
 
@@ -703,8 +702,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             corruptedSum = -123586;
         }
 
-        setSize(scale);
-
         this.initRidable();
     }
 
@@ -713,10 +710,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void readSpawnData(ByteBuf data)
     {
         this.pokedexNb = data.readInt();
-        scale = data.readFloat();
+        setSize(data.readFloat());
         pokecubeId = data.readInt();
         this.uid = data.readInt();
-        this.setSize(scale);
         this.initRidable();
         for (int i = 0; i < 4; i++)
             rgba[i] = data.readByte() + 128;
@@ -730,12 +726,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         if (mainBox == null)
         {
-            setSize(scale);
+            setSize(getSize());
         }
         mainBox.boxMin().clear();
-        mainBox.boxMax().x = getPokedexEntry().width * scale;
-        mainBox.boxMax().z = getPokedexEntry().length * scale;
-        mainBox.boxMax().y = getPokedexEntry().height * scale;
+        mainBox.boxMax().x = getPokedexEntry().width * getSize();
+        mainBox.boxMax().z = getPokedexEntry().length * getSize();
+        mainBox.boxMax().y = getPokedexEntry().height * getSize();
 
         mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
         boxes.put("main", mainBox);
@@ -759,7 +755,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void setPokedexEntry(PokedexEntry newEntry)
     {
         super.setPokedexEntry(newEntry);
-        setSize(scale);
+        setSize(getSize());
     }
 
     @Override
@@ -787,8 +783,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         this.setSize(width, height);
         this.setEntityBoundingBox(new AxisAlignedBB(this.getEntityBoundingBox().minX, this.getEntityBoundingBox().minY,
                 this.getEntityBoundingBox().minZ, this.getEntityBoundingBox().minX + this.width,
-                this.getEntityBoundingBox().minY + this.height,
-                this.getEntityBoundingBox().minZ + this.width));
+                this.getEntityBoundingBox().minY + this.height, this.getEntityBoundingBox().minZ + this.width));
 
         mainBox = new Matrix3(a, b, c);
         offset.set(-a / 2, 0, -c / 2);
@@ -862,7 +857,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setInteger("PokeballId", getPokecubeId());
-        nbttagcompound.setFloat("scale", scale);
+        nbttagcompound.setFloat("scale", getSize());
         nbttagcompound.setInteger("PokemobUID", uid);
         nbttagcompound.setIntArray("flavours", flavourAmounts);
         if (corruptedSum == -123586) nbttagcompound.setInteger("checkSum", computeCheckSum());
@@ -879,7 +874,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
         PokecubeSerializer.getInstance().addPokemob(this);
         data.writeInt(pokedexNb);
-        data.writeFloat(scale);
+        data.writeFloat(getSize());
         data.writeInt(pokecubeId);
         data.writeInt(uid);
         byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),

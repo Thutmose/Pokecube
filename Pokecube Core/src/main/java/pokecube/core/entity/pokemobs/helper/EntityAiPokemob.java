@@ -1250,7 +1250,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         }
 
-        if (isWet() && !(this.canSurf))
+        if (isWet() && !(this.canUseSurf()))
         {
             isPokemonShaking = true;
             field_25052_g = false;

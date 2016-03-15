@@ -391,7 +391,7 @@ public class GuiGifCapture extends GuiScreen
             if (entity instanceof EntityPokemob)
             {
                 ((EntityPokemob) entity).setRGBA(255, 255, 255, 255);
-                ((EntityPokemob) entity).scale = 1;
+                ((EntityPokemob) entity).setSize(1);
                 ((EntityPokemob) entity).shiny = false;
             }
             size = Math.max(entity.width, entity.height);

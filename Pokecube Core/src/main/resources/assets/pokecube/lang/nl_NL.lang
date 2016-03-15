@@ -440,6 +440,7 @@ pokecube.config.pokemobsDamageOwner.tooltip=Kan je eigen Pokémob je pijn doen a
 pokecube.config.pokemobsDamagePlayers.tooltip=Kunnen Pokémob aanvallen spelers pijn doen?
 pokecube.config.pokemobsDamageBlocks.tooltip=Kunnen Pokémob aanvallen blokken beïnvloeden?
 pokecube.config.explosions.tooltip=Kunnen Pokémobs exploderen?
+pokecube.config.attackCooldown.tooltip=De cooldown tijd tussen Pokémob aanvallen.
 
 #World
 pokecube.config.generation=Wereld Generatie en Interactie

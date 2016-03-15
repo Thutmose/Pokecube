@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
@@ -22,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.entity.trainers.EntityLeader;
+import pokecube.adventures.entity.trainers.EntityPokemartSeller;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.entity.villager.EntityTrader;
@@ -82,23 +84,10 @@ public class ItemTrainer extends Item
                 break;
             }
         }
-
         IGuardAICapability capability = v.getCapability(EventsHandler.GUARDAI_CAP, null);
         capability.setActiveTime(TimePeriod.fullDay);
         capability.setPos(v.getPosition());
         v.tasks.addTask(2, new GuardAI(v, capability));
-        System.out.println(capability);
-        // Vector3 pos = Vector3.getNewVector().set(target);//TODO
-        // interact with capability instead
-        // v.tasks.addTask(2, new GuardAI(v, new BlockPos(pos.intX(),
-        // pos.intY(), pos.intZ()), 1.0f, 48.0f,
-        // new TimePeriod(0.00, 0.5), false));
-        // GuardAIProperties props = new GuardAIProperties();
-        // props.init(v, v.worldObj);
-        // NBTTagCompound nbt = new NBTTagCompound();
-        // v.writeToNBT(nbt);
-        // props.saveNBTData(nbt);
-        // v.readFromNBT(nbt);
         return true;
     }
 
@@ -107,8 +96,7 @@ public class ItemTrainer extends Item
     {
         if (world.isRemote) { return itemstack; }
 
-        Vector3 location = Vector3.getNewVector().set(player)
-                .add(Vector3.getNewVector().set(player.getLookVec()));
+        Vector3 location = Vector3.getNewVector().set(player).add(Vector3.getNewVector().set(player.getLookVec()));
         if (player.capabilities.isCreativeMode)
         {
             if (player.isSneaking())
@@ -143,7 +131,17 @@ public class ItemTrainer extends Item
             }
             if (!item) return itemstack;
 
-            EntityTrader t = new EntityTrader(world);
+            EntityLiving t;
+
+            if (player.isSneaking())
+            {
+                t = new EntityTrader(world);
+            }
+            else
+            {
+                t = new EntityPokemartSeller(world);
+            }
+
             location.offset(EnumFacing.UP).moveEntity(t);
             world.spawnEntityInWorld(t);
             ArrayList<EntityAIBase> toRemove = Lists.newArrayList();
@@ -157,7 +155,7 @@ public class ItemTrainer extends Item
             for (EntityAIBase ai : toRemove)
                 t.tasks.removeTask(ai);
             IGuardAICapability capability = t.getCapability(EventsHandler.GUARDAI_CAP, null);
-            capability.setActiveTime(new TimePeriod(0,0.5));
+            capability.setActiveTime(new TimePeriod(0, 0.5));
             capability.setPos(t.getPosition());
             t.tasks.addTask(2, new GuardAI(t, capability));
         }

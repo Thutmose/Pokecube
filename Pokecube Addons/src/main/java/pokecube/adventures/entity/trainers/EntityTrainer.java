@@ -524,7 +524,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                     {
                         pokemob.returnToPokecube();
                     }
-
                     friendlyCooldown = 2400;
                 }
             }
@@ -545,12 +544,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     public void lowerCooldowns()
     {
+        if (getAIState(PERMFRIENDLY)) { return; }
         if (friendlyCooldown-- >= 0) return;
-        if (getAIState(PERMFRIENDLY))
-        {
-            friendlyCooldown = 1000;
-            return;
-        }
         boolean done = attackCooldown[0] <= 0;
         cooldown--;
         if (done)
@@ -650,7 +645,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     private void populateBuyingList()
     {
         tradeList = new MerchantRecipeList();
-//        if (itemList == null && Config.instance.trainersTradeItems)//TODO
+        if (itemList == null && Config.instance.trainersTradeItems)
         {
             itemList = new MerchantRecipeList();
             addRandomTrades();

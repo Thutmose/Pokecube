@@ -39,6 +39,7 @@ public class EntityPokemartSeller extends EntityTrainer
         super(par1World, merchant, 100);
         this.setAIState(STATIONARY, true);
         this.setAIState(PERMFRIENDLY, true);
+        friendlyCooldown = Integer.MAX_VALUE;
     }
 
     protected void initAI(Vector3 location, boolean stationary)

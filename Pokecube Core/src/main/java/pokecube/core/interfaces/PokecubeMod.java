@@ -49,45 +49,47 @@ public abstract class PokecubeMod
             return NORMAL;
         }
     }
-    public final static String                  ID                    = "pokecube";
-    public final static String                  VERSION               = "@VERSION";
-    public final static String                  MCVERSIONS            = "@MCVERSION";
-    public final static String                  MINFORGEVERSION       = "@FORGEVERSION";
 
-    public final static String                  DEPSTRING             = ";required-after:thutcore@@THUTCORE";//required-after:Baubles@@BAUBLES";
-    public final static String                  UPDATEURL             = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Core/versions.json";
-    public final static String                  CONTRIBURL            = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/contributors.json";
+    public final static String                  ID                         = "pokecube";
+    public final static String                  VERSION                    = "@VERSION";
+    public final static String                  MCVERSIONS                 = "@MCVERSION";
+    public final static String                  MINFORGEVERSION            = "@FORGEVERSION";
 
-    public final static String                  GIFTURL               = "https://gist.githubusercontent.com/Thutmose/b2b592fd6d554e9cd55f/raw";
-    public static final int                     MAX_DAMAGE            = 0x7FFF;
+    public final static String                  DEPSTRING                  = ";required-after:thutcore@@THUTCORE";
+    private final static String                 GIST                       = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/";
+    public final static String                  UPDATEURL                  = GIST + "core.json";
+    public final static String                  CONTRIBURL                 = GIST + "contributors.json";
 
-    public static final int                     FULL_HEALTH           = MAX_DAMAGE - 1;
-    private static HashMap<Integer, FakePlayer> fakePlayers           = new HashMap<Integer, FakePlayer>();
+    public final static String                  GIFTURL                    = GIST + "gift";
+    public static final int                     MAX_DAMAGE                 = 0x7FFF;
+
+    public static final int                     FULL_HEALTH                = MAX_DAMAGE - 1;
+    private static HashMap<Integer, FakePlayer> fakePlayers                = new HashMap<Integer, FakePlayer>();
 
     /** If you are a developer, you can set this flag to true. Set to false
      * before a build. */
-    public final static boolean                 debug                 = false;
+    public final static boolean                 debug                      = false;
 
     public static PokecubeMod                   core;
 
     public static SimpleNetworkWrapper          packetPipeline;
 
     // Manchou mobs are default mobs
-    public static String                        defaultMod            = "pokecube_ml";
-    public static boolean                       pokemobsDamageOwner   = false;
-    public static boolean                       pokemobsDamagePlayers = true;
-    public static boolean                       pokemobsDamageBlocks  = false;
+    public static String                        defaultMod                 = "pokecube_ml";
+    public static boolean                       pokemobsDamageOwner        = false;
+    public static boolean                       pokemobsDamagePlayers      = true;
+    public static boolean                       pokemobsDamageBlocks       = false;
 
-    public static double                        MAX_DENSITY           = 1;
-    public static Map<String, String>           gifts                 = new HashMap<String, String>();
+    public static double                        MAX_DENSITY                = 1;
+    public static Map<String, String>           gifts                      = new HashMap<String, String>();
 
-    public static List<String>                  giftLocations         = new ArrayList<String>();
+    public static List<String>                  giftLocations              = new ArrayList<String>();
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Map<Integer, Class>           pokedexmap            = new HashMap();
+    public static Map<Integer, Class>           pokedexmap                 = new HashMap();
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Map<Integer, Class>           genericMobClasses     = new HashMap();
+    public static Map<Integer, Class>           genericMobClasses          = new HashMap();
 
-    public static BitSet                        registered            = new BitSet();
+    public static BitSet                        registered                 = new BitSet();
 
     public static CreativeTabs                  creativeTabPokecube        = new CreativeTabPokecube(
             CreativeTabs.creativeTabArray.length, "Pokecube");
@@ -143,21 +145,25 @@ public abstract class PokecubeMod
         }
         return fakePlayers.get(dim);
     }
+
     public static FakePlayer getFakePlayer(World world)
     {
         return getFakePlayer(world.provider.getDimensionId());
     }
+
     public static CommonProxy getProxy()
     {
         return CommonProxy.getClientInstance();
     }
+
     public static boolean isDeobfuscated()
     {
         Object deObf = Launch.blackboard.get("fml.deobfuscatedEnvironment");
         return Boolean.valueOf(String.valueOf(deObf)).booleanValue();
     }
-    public ByteClassLoader                      loader;
-    public ArrayList<Integer>                   starters                   = new ArrayList<Integer>();
+
+    public ByteClassLoader    loader;
+    public ArrayList<Integer> starters = new ArrayList<Integer>();
 
     /** Creates a new instance of an entity in the world for the pokemob
      * specified by its pokedex number.

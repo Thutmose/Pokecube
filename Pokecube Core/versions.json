@@ -3,8 +3,8 @@
   "promos": {
     "1.8.8-latest": "2.1.4",
     "1.8.8-recommended": "2.1.4",
-    "1.8.9-latest": "2.2.18",
-    "1.8.9-recommended": "2.2.18"
+    "1.8.9-latest": "2.2.19",
+    "1.8.9-recommended": "2.2.19"
   },
   "1.8.9": {
     "2.2.17": "more move message GUI tweaks",

@@ -16247,7 +16247,7 @@
             <MASSKG>320.0</MASSKG>
             <EXPYIELD>324</EXPYIELD>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
-            <LOGIC shoulder="FALSE"/>
+            <LOGIC shoulder="FALSE" fly="TRUE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
             <SPECIALCASES>legendary day night</SPECIALCASES>

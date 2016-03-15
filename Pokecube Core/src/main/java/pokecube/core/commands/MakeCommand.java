@@ -177,10 +177,7 @@ public class MakeCommand extends CommandBase
 
                         if (mob == null)
                         {
-                            text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC
-                                    + "Invalid mob name or number";
-                            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                            sender.addChatMessage(message);
+                            CommandTools.makeError("pokecube.command.makeinvalid");
                             return;
                         }
                         mob.changeForme(name);
@@ -331,15 +328,10 @@ public class MakeCommand extends CommandBase
                     }
                 }
             }
-            text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Missing mob name or number";
-            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-            sender.addChatMessage(message);
+            CommandTools.makeError("pokecube.command.makeneedname");
             return;
         }
-        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC
-                + "This command can only be used by command blocks";
-        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-        sender.addChatMessage(message);
+        CommandTools.makeError("pokecube.command.makedeny");
         return;
     }
 

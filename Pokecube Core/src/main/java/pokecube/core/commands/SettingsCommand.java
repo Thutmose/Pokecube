@@ -14,8 +14,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.StatCollector;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.Configure;
 import pokecube.core.interfaces.PokecubeMod;
@@ -23,7 +22,7 @@ import scala.actors.threadpool.Arrays;
 
 public class SettingsCommand extends CommandBase
 {
-    private List<String> aliases;
+    private List<String>   aliases;
 
     ArrayList<String>      fields   = Lists.newArrayList();
 
@@ -92,6 +91,7 @@ public class SettingsCommand extends CommandBase
     {
         return 4;
     }
+
     private void populateFields()
     {
         Class<Config> me = Config.class;
@@ -111,13 +111,10 @@ public class SettingsCommand extends CommandBase
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
-        String text = "";
-        IChatComponent message;
+
         if (args.length == 0)
         {
-            text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Invalid arguments, missing option";
-            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-            sender.addChatMessage(message);
+            CommandTools.sendBadArgumentsTryTab(sender);
             return;
         }
         boolean check = args.length <= 1;
@@ -125,29 +122,25 @@ public class SettingsCommand extends CommandBase
 
         if (field == null)
         {
-            text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC
-                    + "Invalid arguments, invalid option, use TAB to see valid choices";
-            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-            sender.addChatMessage(message);
+            CommandTools.sendBadArgumentsTryTab(sender);
             return;
         }
         try
         {
+            String text = "";
             Object o = field.get(PokecubeMod.core.getConfig());
+            if (o instanceof String[] || o instanceof int[])
+            {
+                text += Arrays.toString((Object[]) o);
+            }
+            else
+            {
+                text += o;
+            }
+            String mess = StatCollector.translateToLocalFormatted("pokecube.command.settings.check", args[0], text);
             if (check)
             {
-                text += EnumChatFormatting.GREEN + args[0] + EnumChatFormatting.WHITE + " is set to: "
-                        + EnumChatFormatting.GOLD;
-                if (o instanceof String[] || o instanceof int[])
-                {
-                    text += Arrays.toString((Object[]) o);
-                }
-                else
-                {
-                    text += o;
-                }
-                message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.addChatMessage(message);
+                CommandTools.sendMessage(sender, mess);
                 return;
             }
             else
@@ -158,35 +151,18 @@ public class SettingsCommand extends CommandBase
                 }
                 catch (Exception e)
                 {
-                    text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Invalid option for " + args[0];
-                    message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                    sender.addChatMessage(message);
+                    CommandTools.sendError(sender,
+                            StatCollector.translateToLocalFormatted("pokecube.commands.settings.invalid", args[1]));
                     return;
                 }
                 o = field.get(PokecubeMod.core.getConfig());
-                text += EnumChatFormatting.GREEN + args[0] + EnumChatFormatting.WHITE + " set to: "
-                        + EnumChatFormatting.GOLD;
-                if (o instanceof String[] || o instanceof int[])
-                {
-                    text += Arrays.toString((Object[]) o);
-                }
-                else
-                {
-                    text += o;
-                }
-
-                message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.addChatMessage(message);
+                CommandTools.sendMessage(sender, mess);
                 return;
             }
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC
-                    + "Error while checking config field, please report this as a bug.";
-            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-            sender.addChatMessage(message);
+            CommandTools.sendError(sender, "pokecube.command.settings.error");
             return;
         }
     }

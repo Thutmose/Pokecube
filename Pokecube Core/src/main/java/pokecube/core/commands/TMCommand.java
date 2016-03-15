@@ -14,8 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
 import pokecube.core.PokecubeItems;
 import pokecube.core.items.ItemTM;
@@ -93,8 +91,6 @@ public class TMCommand extends CommandBase
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
-        String text = "";
-        IChatComponent message;
         EntityPlayerMP[] targets = null;
         for (int i = 1; i < args.length; i++)
         {
@@ -108,9 +104,7 @@ public class TMCommand extends CommandBase
         }
         if (args.length == 0)
         {
-            text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Invalid arguments, missing movename";
-            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-            sender.addChatMessage(message);
+            CommandTools.sendBadArgumentsMissingArg(sender);
             return;
         }
         if (args.length >= 1)
@@ -149,9 +143,7 @@ public class TMCommand extends CommandBase
                 }
                 return;
             }
-            text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Invalid arguments, invalid move name";
-            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-            sender.addChatMessage(message);
+            CommandTools.sendBadArgumentsTryTab(sender);
             return;
         }
     }

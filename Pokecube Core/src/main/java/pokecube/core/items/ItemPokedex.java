@@ -11,9 +11,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.stats.StatsCollector;
@@ -56,8 +58,7 @@ public class ItemPokedex extends Item
         Block block = hit.getBlockState(worldIn).getBlock();
         if (block instanceof BlockHealTable)
         {
-            if (worldIn.isRemote)
-                playerIn.addChatMessage(new ChatComponentText("Pokecenter set as a Teleport Location"));
+            if (worldIn.isRemote) CommandTools.sendMessage(playerIn, "pokedex.setteleport");
             Vector4 loc = new Vector4(playerIn);
             loc.y++;
             PokecubeSerializer.getInstance().setTeleport(loc, playerIn.getUniqueID().toString());
@@ -81,7 +82,10 @@ public class ItemPokedex extends Item
                     "There are " + Pokedex.getInstance().getEntries().size() + " Registered Pokemon"));
             TerrainSegment t = TerrainManager.getInstance().getTerrian(worldIn, hit);
             int b = t.getBiome(hit);
-            playerIn.addChatMessage(new ChatComponentText(SpawnHandler.spawnLists.get(b) + " Spawn here"));
+            String biomeList = SpawnHandler.spawnLists.get(b)!=null?SpawnHandler.spawnLists.get(b).toString():"Nothing";
+            String message = StatCollector.translateToLocalFormatted("pokedex.locationinfo", Database.spawnables.size(),
+                    Pokedex.getInstance().getEntries().size(), biomeList);
+            CommandTools.sendMessage(playerIn, message);
         }
 
         if (!playerIn.isSneaking()) showGui(playerIn);

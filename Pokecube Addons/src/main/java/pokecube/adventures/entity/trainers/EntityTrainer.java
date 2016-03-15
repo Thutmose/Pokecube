@@ -109,6 +109,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public static final int            STATIONARY       = 1;
     public static final int            ANGRY            = 2;
     public static final int            THROWING         = 4;
+    public static final int            PERMFRIENDLY     = 8;
 
     public static ArrayList<CubeTrade> cubeList         = Lists.newArrayList();
     public static int                  ATTACKCOOLDOWN   = 10000;
@@ -526,7 +527,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public void lowerCooldowns()
     {
         if (friendlyCooldown-- >= 0) return;
-
+        if (getAIState(PERMFRIENDLY))
+        {
+            friendlyCooldown = 1000;
+            return;
+        }
         boolean done = attackCooldown[0] <= 0;
         cooldown--;
         if (done)

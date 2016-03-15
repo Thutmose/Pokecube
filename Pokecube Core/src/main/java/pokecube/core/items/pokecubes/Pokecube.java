@@ -9,13 +9,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -230,7 +230,7 @@ public class Pokecube extends Item implements IPokecube
         }
         else
         {
-            player.addChatMessage(new ChatComponentText("I should probably aim more carefully"));
+            CommandTools.makeError("pokecube.badaim");
             return false;
         }
 

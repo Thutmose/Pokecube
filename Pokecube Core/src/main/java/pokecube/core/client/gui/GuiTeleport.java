@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -93,7 +94,7 @@ public class GuiTeleport extends Gui
         // bind texture
         minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
         this.drawTexturedModalRect(90 * xOffset + w, yOffset + h, 0, 0, 100, 13);
-        fontRenderer.drawString("Teleports", 2 + 90 * xOffset + w, 2 + yOffset + h, lightGrey);
+        fontRenderer.drawString(StatCollector.translateToLocal("gui.pokemob.teleport"), 2 + 90 * xOffset + w, 2 + yOffset + h, lightGrey);
         // ArrayList<Vector4> list = new ArrayList(locations.keySet());
 
         for (int k = 0; k < 1; k++)

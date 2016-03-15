@@ -47,35 +47,36 @@ import pokecube.core.utils.PokecubeSerializer;
 public class GuiChooseFirstPokemob extends GuiScreen
 {
 
-    public final static float POKEDEX_RENDER   = 1.5f;
-    public static boolean     options          = true;
+    public final static float                     POKEDEX_RENDER     = 1.5f;
+    public static boolean                         options            = true;
 
-    public static Integer[]   starters;
+    public static Integer[]                       starters;
     private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
 
-    int                       xSize            = 150;
-    int                       ySize            = 150;
+    int                                           xSize              = 150;
+    int                                           ySize              = 150;
 
-    private float             yRenderAngle     = 10;
+    private float                                 yRenderAngle       = 10;
 
-    private float             xRenderAngle     = 0;
+    private float                                 xRenderAngle       = 0;
 
-    private float             yHeadRenderAngle = 10;
+    private float                                 yHeadRenderAngle   = 10;
 
-    private float             xHeadRenderAngle = 0;
-    protected EntityPlayer    entityPlayer     = null;
-    protected PokedexEntry    pokedexEntry     = null;
-    int                       index            = 0;
+    private float                                 xHeadRenderAngle   = 0;
+    protected EntityPlayer                        entityPlayer       = null;
+    protected PokedexEntry                        pokedexEntry       = null;
+    int                                           index              = 0;
 
-    boolean                   fixed            = false;
+    boolean                                       fixed              = false;
 
-    GuiButton next;
+    GuiButton                                     next;
 
-    GuiButton prev;
-    GuiButton choose;
-    GuiButton accept;
+    GuiButton                                     prev;
+    GuiButton                                     choose;
+    GuiButton                                     accept;
 
-    GuiButton deny;
+    GuiButton                                     deny;
+
     public GuiChooseFirstPokemob(Integer[] _starters)
     {
         super();
@@ -212,7 +213,8 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
         if (!options)
         {
-            drawCenteredString(fontRendererObj, "Start with Override Starter?", (width / 2), 17, 0xffffff);
+            drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.pokemob.choose1st.override"),
+                    (width / 2), 17, 0xffffff);
             return;
         }
 
@@ -324,10 +326,10 @@ public class GuiChooseFirstPokemob extends GuiScreen
         buttonList.add(
                 this.choose = new GuiButton(3, width / 2 - xOffset - 25, height / 2 - yOffset + 160, 50, 20, choose));
 
-        buttonList.add(
-                this.accept = new GuiButton(4, width / 2 - xOffset + 64, height / 2 - yOffset + 30, 50, 20, "Accept"));
-        buttonList.add(
-                this.deny = new GuiButton(5, width / 2 - xOffset - 115, height / 2 - yOffset + 30, 50, 20, "Deny"));
+        buttonList.add(this.accept = new GuiButton(4, width / 2 - xOffset + 64, height / 2 - yOffset + 30, 50, 20,
+                StatCollector.translateToLocal("gui.pokemob.accept")));
+        buttonList.add(this.deny = new GuiButton(5, width / 2 - xOffset - 115, height / 2 - yOffset + 30, 50, 20,
+                StatCollector.translateToLocal("gui.pokemob.deny")));
 
         if (options)
         {

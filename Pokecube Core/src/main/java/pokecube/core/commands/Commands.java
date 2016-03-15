@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -134,7 +135,7 @@ public class Commands implements ICommand
             }
             else
             {
-                cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
+                CommandTools.sendNoPermissions(cSender);
                 return false;
             }
         }
@@ -168,13 +169,13 @@ public class Commands implements ICommand
                         }
                     }
                 }
-                cSender.addChatMessage(
-                        new ChatComponentText("Found " + count1 + " in range and " + count2 + " out of range"));
+                cSender.addChatMessage(new ChatComponentText(
+                        StatCollector.translateToLocalFormatted("pokecube.command.count", count1, count2)));
                 return true;
             }
             else
             {
-                cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
+                CommandTools.sendNoPermissions(cSender);
                 return false;
             }
         }
@@ -213,7 +214,7 @@ public class Commands implements ICommand
             }
             else
             {
-                cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
+                CommandTools.sendNoPermissions(cSender);
                 return false;
             }
         }
@@ -266,7 +267,7 @@ public class Commands implements ICommand
             }
             else
             {
-                cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
+                CommandTools.sendNoPermissions(cSender);
                 return false;
             }
         }
@@ -295,7 +296,7 @@ public class Commands implements ICommand
                 if (!allall)
                 {
                     allall = false;
-                    cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
+                    CommandTools.sendNoPermissions(cSender);
                     return false;
                 }
 
@@ -337,13 +338,14 @@ public class Commands implements ICommand
                     buf.writeBoolean(true);
                     PokecubeClientPacket packet = new PokecubeClientPacket(buf);
                     PokecubePacketHandler.sendToClient(packet, player);
-                    cSender.addChatMessage(new ChatComponentText("Reset Starter for " + player.getName()));
-                    player.addChatMessage(new ChatComponentText("You may choose a new starter"));
+                    cSender.addChatMessage(new ChatComponentText(
+                            StatCollector.translateToLocalFormatted("pokecube.command.reset", player.getName())));
+                    CommandTools.sendMessage(player, "pokecube.command.canchoose");
 
                 }
                 else
                 {
-                    cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
+                    CommandTools.sendNoPermissions(cSender);
                     return false;
                 }
 
@@ -385,24 +387,19 @@ public class Commands implements ICommand
                             PokecubeClientPacket packet = new PokecubeClientPacket(buf);
                             PokecubePacketHandler.sendToClient(packet, player);
 
-                            cSender.addChatMessage(new ChatComponentText("Reset Starter for " + player.getName()));
-                            player.addChatMessage(new ChatComponentText("You may choose a new starter"));
+                            cSender.addChatMessage(new ChatComponentText(StatCollector
+                                    .translateToLocalFormatted("pokecube.command.reset", player.getName())));
+                            CommandTools.sendMessage(player, "pokecube.command.canchoose");
                         }
                     }
                     else
                     {
-                        cSender.addChatMessage(new ChatComponentText("Insufficient Permissions"));
+                        CommandTools.sendNoPermissions(cSender);
                         return false;
                     }
                 return true;
             }
         }
-        return false;
-    }
-
-    private boolean doSettings(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
-    {
-        //TODO make this check Config.
         return false;
     }
 
@@ -447,7 +444,7 @@ public class Commands implements ICommand
     {
         if (args.length == 0)
         {
-            cSender.addChatMessage(new ChatComponentText("Invalid arguments"));
+            CommandTools.sendBadArgumentsTryTab(cSender);
             return;
         }
         EntityPlayerMP[] targets = null;
@@ -478,10 +475,14 @@ public class Commands implements ICommand
 
             return;
         }
-        doRecall(cSender, args, isOp, targets);
-        doDebug(cSender, args, isOp, targets);
-        doSettings(cSender, args, isOp, targets);
-        doReset(cSender, args, isOp, targets);
-        doMeteor(cSender, args, isOp, targets);
+        boolean message = false;
+        message |= doRecall(cSender, args, isOp, targets);
+        message |= doDebug(cSender, args, isOp, targets);
+        message |= doReset(cSender, args, isOp, targets);
+        message |= doMeteor(cSender, args, isOp, targets);
+        if (!message)
+        {
+            CommandTools.sendBadArgumentsTryTab(cSender);
+        }
     }
 }

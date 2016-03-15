@@ -20,7 +20,6 @@ import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -56,6 +55,7 @@ import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.blocks.nests.TileEntityNest;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.EggEvent;
 import pokecube.core.events.handlers.EventsHandler;
@@ -507,35 +507,33 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     String message = "";
                     if (happiness == 0)
                     {
-                        message = "Your pokemon is very unhappy";
+                        message = "pokemob.info.happy0";
                     }
                     if (happiness > 0)
                     {
-                        message = "Your pokemon is unhappy";
+                        message = "pokemob.info.happy1";
                     }
                     if (happiness > 49)
                     {
-                        message = "Your pokemon is feeling fine";
+                        message = "pokemob.info.happy2";
                     }
                     if (happiness > 99)
                     {
-                        message = "Your pokemon is content";
+                        message = "pokemob.info.happy3";
                     }
                     if (happiness > 149)
                     {
-                        message = "Your pokemon is happy";
+                        message = "pokemob.info.happy4";
                     }
                     if (happiness > 199)
                     {
-                        message = "Your pokemon is very happy";
+                        message = "pokemob.info.happy5";
                     }
                     if (happiness > 254)
                     {
-                        message = "Your pokemon is ecstatic";
+                        message = "pokemob.info.happy6";
                     }
-
-                    player.addChatMessage(new ChatComponentText(message));
-
+                    CommandTools.sendMessage(player, message);
                 }
                 // Check if gold apple for breeding.
                 if (itemstack.getItem() == Items.golden_apple)

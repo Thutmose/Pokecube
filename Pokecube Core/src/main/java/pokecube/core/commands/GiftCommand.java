@@ -9,8 +9,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import pokecube.core.database.Database;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IMobColourable;
@@ -62,15 +60,11 @@ public class GiftCommand extends CommandBase
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
-        String text = "";
-        IChatComponent message;
         if (sender instanceof EntityPlayer)
         {
             if (!PokecubeMod.core.getConfig().mysterygift)
             {
-                text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Mystery Gift is disabled in configs.";
-                message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.addChatMessage(message);
+                CommandTools.sendError(sender, "pokecube.command.giftdisabled");
                 return;
             }
             if (args.length > 0)
@@ -83,10 +77,8 @@ public class GiftCommand extends CommandBase
 
                     if (player.getEntityData().getString("code:" + code).equals(code))
                     {
-                        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC
-                                + "You have already used this code.";
-                        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                        sender.addChatMessage(message);
+
+                        CommandTools.sendError(sender, "pokecube.command.giftdenyused");
                         return;
                     }
                     String[] gift = giftSt.split(";");
@@ -186,21 +178,15 @@ public class GiftCommand extends CommandBase
                     mob.setPokemonOwner(player);
                     mob.setHp(((EntityLiving) mob).getMaxHealth());
                     mob.returnToPokecube();
-                    text = EnumChatFormatting.GREEN + "Congratulations!";
-                    message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                    sender.addChatMessage(message);
+                    CommandTools.sendMessage(sender, "pokecube.command.gift");
                     player.getEntityData().setString("code:" + code, code);
 
                     return;
                 }
-                text = EnumChatFormatting.GREEN + "The code " + args[1] + " is invalid!";
-                message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.addChatMessage(message);
+                CommandTools.sendError(sender, "pokecube.command.giftinvalid");
                 return;
             }
-            text = EnumChatFormatting.GREEN + "You need to enter a code!";
-            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-            sender.addChatMessage(message);
+            CommandTools.sendError(sender, "pokecube.command.giftneedcode");
             return;
         }
     }

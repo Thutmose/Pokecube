@@ -41,6 +41,17 @@ pokemob.action.sendout=%1$s was sent out
 pokemob.action.return=%1$s has returned to the Pokécube
 pokemob.action.usemove=You tell %1$s to use %2$s
 pokemob.action.faint=%1$s has fainted
+pokemob.action.denydamageblock=pokemobsDamageBlocks is disabled via configs
+pokemob.action.needsberries=Your Pokémob needs to eat more Berries to do that
+pokemob.action.denyrepel=Your Pokémob is too disgusted by repel to do that
+
+pokemob.info.happy0=§4Your Pokémob is very unhappy
+pokemob.info.happy1=§cYour Pokémob is unhappy
+pokemob.info.happy2=Your Pokémob is feeling fine
+pokemob.info.happy3=Your Pokémob is content
+pokemob.info.happy4=Your Pokémob is happy
+pokemob.info.happy5=§aYour Pokémob is very happy
+pokemob.info.happy6=§aYour Pokémob is ecstatic
 
 pokemob.megaevolve.success=%1$s Mega-evolved into %2$s
 pokemob.megaevolve.revert=%1$s Reverted to %2$s
@@ -246,13 +257,22 @@ achievement.catch=Catch a %1$s
 achievement.get1stPokemob=Get 1st Pokémob
 achievement.get1stPokemob.desc=Get your starter
 gui.pokemob.choose1st=Choose your first Pokémob.
+gui.pokemob.choose1st.override=Start with Override Starter?
 gui.pokemob.select=Select
+gui.pokemob.accept=Accept
+gui.pokemob.deny=Deny
+gui.pokemob.teleport=Teleports
 gui.pokedex.village=Nearest Village
 
 pokecube.caught=%1$s has been caught!
 pokecube.missed=You missed the Pokémob!
 pokecube.denied=The Pokémob refuses to enter the cube!
 pokecube.noroom=There is not enough room for the Pokémob here.
+pokecube.badaim=I should probably aim more carefully
+
+pokecube.professor.deny=Professor: You have already recieved a Pokémob
+pokedex.setteleport=Pokecenter set as a Teleport Location
+pokedex.locationinfo=There are %1$s Registered Spawns\nThere are %2$s registered Pokémobs\n%3$s Spawn here
 
 pokemobEgg.name=Egg of %1$s
 
@@ -383,6 +403,10 @@ tile.pc.top.name=PC Top
 tile.pc.autoon=Auto On
 tile.pc.autooff=Auto Off
 tile.pc.rename=Rename
+tile.pc.sentto=%1$s was sent to your PC
+tile.pc.title=%1$s's PC
+tile.pc.public=Public
+tile.pc.bound=Private bound
 
 item.pokecube.bubbles=Droplets
 item.pokecube.flames=Flames
@@ -401,6 +425,15 @@ item.revive.name=Revive
 
 item.shiny_charm.name=Shiny Charm
 item.gardevoirmega.name=Gardevoirite
+item.charizardmega-y.name=Charizardite Y
+item.scizormega.name=Scizorite
+item.sceptilemega.name=Sceptilite
+item.salamencemega.name=Salamencite
+item.gallademega.name=Galladite
+item.absolmega.name=Absolite
+item.blastoisemega.name=Blastoisinite
+item.alphaorb.name=Alpha Orb
+item.omegaorb.name=Omega Orb
 
 item.silkyhair.name=Silky Hair
 
@@ -484,3 +517,26 @@ pokecube.config.extraValues.tooltip=Some internal values used for Pokémob items
 pokecube.config.database=Database Options
 pokecube.config.forceDatabase.tooltip=Will Pokécube overwrite the copy of the database with config with the one in the jar, set to false if you plan on changing the database
 pokecube.config.configDatabases.tooltip=Databases for Pokémob information Add additional databases by appending , <newfile>.  If you remove any of the strings here, things will break
+
+#Commands
+
+pokecube.command.noperms=Insufficient Permissions
+pokecube.command.invalidtab=Invalid Arguments, try TAB for options
+pokecube.command.invalidmissing=Invalid Arguments, Missing an Argument
+pokecube.command.reset=Reset Starter for %1$s
+pokecube.command.canchoose=You may choose a new starter
+pokecube.command.count=Found %1$s in range and %2$s out of range
+
+pokecube.command.giftdisabled=Mystery Gift is currently disabled via configs
+pokecube.command.giftdenyused=You have already used this code.
+pokecube.command.gift=Congratulations!
+pokecube.command.giftinvalid=The code %1$s is invalid!
+pokecube.command.giftneedcode=You need to enter a code!
+
+pokecube.command.makedeny=This command can only be used by command blocks
+pokecube.command.makeneedname=Missing mob name or number
+pokecube.command.makeinvalid=Invalid mob name or number
+
+pokecube.command.settings.check=§a%1$s§f is currently set to: §6%2$s
+pokecube.command.settings.invalid=Invalid option for %1$s
+pokecube.command.settings.error=Error while checking config field, please report this as a bug.

@@ -10,9 +10,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
@@ -91,8 +92,7 @@ public class Move_Utility extends Move_Basic
             super.attack(attacker, attacked, f);
             return;
         }
-        if ((attacker instanceof IPokemob && (PokecubeMod.pokemobsDamageBlocks || PokecubeMod.debug)
-                && attacker.getPokemonAIState(IMoveConstants.TAMED)))
+        if ((attacker instanceof IPokemob && attacker.getPokemonAIState(IMoveConstants.TAMED)))
         {
             IPokemob a = (attacker);
 
@@ -106,7 +106,6 @@ public class Move_Utility extends Move_Basic
 
             if (this.name == MOVE_FLASH)
             {
-                System.out.println("Flashing");
                 owner.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5000));
                 used = true;
                 int level = a.getLevel();
@@ -125,8 +124,8 @@ public class Move_Utility extends Move_Basic
             }
             else
             {
-                ((EntityPlayer) owner)
-                        .addChatMessage(new ChatComponentText("Your pokemon needs to eat more Berries to do that"));
+                IChatComponent message = CommandTools.makeError("pokemob.action.needsberries");
+                owner.addChatMessage(message);
             }
         }
     }
@@ -197,8 +196,17 @@ public class Move_Utility extends Move_Basic
     @Override
     public void doWorldAction(IPokemob user, Vector3 location)
     {
-        if (!(PokecubeMod.pokemobsDamageBlocks || PokecubeMod.debug)) return;
-
+        if (!(PokecubeMod.pokemobsDamageBlocks || PokecubeMod.debug))
+        {
+            EntityLivingBase owner;
+            if ((owner = user.getPokemonOwner()) != null)
+            {
+                IChatComponent message = CommandTools.makeError("pokemob.action.denydamageblock");
+                owner.addChatMessage(message);
+            }
+            return;
+        }
+        IChatComponent message;
         boolean used = false;
         boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).worldObj, location.intX(), location.intY(),
                 location.intZ());
@@ -209,13 +217,13 @@ public class Move_Utility extends Move_Basic
 
         if (owner != null && owner instanceof EntityPlayer)
         {
-            number = countBerries(user, (EntityPlayer) owner);
             if (!repel)
             {
-                ((EntityPlayer) owner)
-                        .addChatMessage(new ChatComponentText("Your pokemon is too disgusted by the repel to do that"));
+                message = CommandTools.makeError("pokemob.action.denyrepel");
+                owner.addChatMessage(message);
                 return;
             }
+            number = countBerries(user, (EntityPlayer) owner);
             EntityPlayer player = (EntityPlayer) owner;
 
             BreakEvent evt = new BreakEvent(player.worldObj, location.getPos(), location.getBlockState(player.worldObj),
@@ -269,8 +277,8 @@ public class Move_Utility extends Move_Basic
         }
         else
         {
-            ((EntityPlayer) owner)
-                    .addChatMessage(new ChatComponentText("Your pokemon needs to eat more Berries to do that"));
+            message = CommandTools.makeError("pokemob.action.needsberries");
+            owner.addChatMessage(message);
         }
     }
 

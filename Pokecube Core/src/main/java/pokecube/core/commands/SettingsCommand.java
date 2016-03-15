@@ -151,8 +151,8 @@ public class SettingsCommand extends CommandBase
                 }
                 catch (Exception e)
                 {
-                    CommandTools.sendError(sender,
-                            StatCollector.translateToLocalFormatted("pokecube.commands.settings.invalid", args[1]));
+                    text = StatCollector.translateToLocalFormatted("pokecube.command.settings.invalid", args[0]);
+                    CommandTools.sendError(sender, text);
                     return;
                 }
                 o = field.get(PokecubeMod.core.getConfig());

@@ -123,6 +123,15 @@ public class PAEventsHandler
     }
 
     @SubscribeEvent
+    public void TrainerPokemobPC(PCEvent evt)
+    {
+        if (evt.owner instanceof EntityTrainer)
+        {
+            evt.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public void TrainerRecallEvent(pokecube.core.events.RecallEvent evt)
     {
         IPokemob recalled = evt.recalled;
@@ -134,15 +143,6 @@ public class PAEventsHandler
             t.outMob = null;
             System.out.println("Recalling " + recalled);
             t.addPokemob(PokecubeManager.pokemobToItem(recalled));
-        }
-    }
-
-    @SubscribeEvent
-    public void TrainerPokemobPC(PCEvent evt)
-    {
-        if (evt.owner instanceof EntityTrainer)
-        {
-            evt.setCanceled(true);
         }
     }
 

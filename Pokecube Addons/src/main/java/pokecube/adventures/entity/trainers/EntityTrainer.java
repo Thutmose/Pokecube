@@ -1,7 +1,6 @@
 package pokecube.adventures.entity.trainers;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -190,6 +189,25 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
     }
 
+    private void addMobTrades(ItemStack buy1)
+    {
+        for (int i = 0; i < pokecubes.length; i++)
+        {
+            ItemStack stack = pokecubes[i];
+            if (stack != null && PokecubeManager.isFilled(stack))
+            {
+                IPokemob mon = PokecubeManager.itemToPokemob(stack, worldObj);
+                IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, worldObj);
+                String trader1 = mon1.getPokemonOwnerName();
+                mon.setOriginalOwnerUUID(getUniqueID());
+                mon.setPokemonOwnerByName(trader1);
+                stack = PokecubeManager.pokemobToItem(mon);
+                stack.getTagCompound().setInteger("slotnum", i);
+                tradeList.add(new MerchantRecipe(buy1, stack));
+            }
+        }
+    }
+
     public void addPokemob(ItemStack mob)
     {
         for (int i = 0; i < 6; i++)
@@ -199,6 +217,80 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 InventoryPC.heal(mob);
                 pokecubes[i] = mob.copy();
                 return;
+            }
+        }
+    }
+
+    private void addRandomTrades()
+    {
+        itemList.clear();
+        int num = rand.nextInt(3);
+        Set<Object> added = Sets.newHashSet();
+        for (int i = 0; i < num; i++)
+        {
+            String name = HeldItemHandler.megaVariants.get(rand.nextInt(HeldItemHandler.megaVariants.size()));
+            if (!added.contains(name))
+            {
+                ItemStack output = PokecubeItems.getStack(name);
+                if (output == null) continue;
+                added.add(name);
+                ItemStack in1 = new ItemStack(Items.emerald);
+                int size = Config.instance.megaCost;
+                if (name.endsWith("orb")) size = Config.instance.orbCost;
+                else if (name.endsWith("charm")) size = Config.instance.shinyCost;
+                size -= 1;
+                in1.stackSize = (size % 64) + 1;
+                ItemStack in2 = null;
+                if (size > 64)
+                {
+                    in2 = in1.copy();
+                    in2.stackSize = ((size - 64) % 64) + 1;
+                }
+                itemList.add(new MerchantRecipe(in1, in2, output));
+            }
+        }
+        added.clear();
+        num = rand.nextInt(3);
+        ArrayList<String> moves = Lists.newArrayList(MovesUtils.moves.keySet());
+        int randNum = rand.nextInt(moves.size());
+        for (int i = 0; i < num; i++)
+        {
+            int index = (randNum + i) % moves.size();
+            String name = moves.get(index);
+            if (added.contains(name)) continue;
+            added.add(name);
+            ItemStack tm = PokecubeItems.getStack("tm");
+            ItemStack in = new ItemStack(Items.emerald);
+            in.stackSize = Config.instance.tmCost;
+            ItemTM.addMoveToStack(name, tm);
+            itemList.add(new MerchantRecipe(in, tm));
+        }
+        added.clear();
+        num = rand.nextInt(4);
+        if (!cubeList.isEmpty()) for (int i = 0; i < num; i++)
+        {
+            CubeTrade trade = cubeList.get(rand.nextInt(cubeList.size()));
+            if (added.contains(trade)) continue;
+            added.add(trade);
+            itemList.add(trade.getTrade());
+        }
+        if (Math.random() > 0.99)
+        {
+            PokeType type = PokeType.values()[rand.nextInt(PokeType.values().length)];
+            if (type == PokeType.unknown) return;
+            ItemStack badge = PokecubeItems.getStack("badge" + type);
+            if (badge != null)
+            {
+                ItemStack in1 = new ItemStack(Items.emerald);
+                int size = Config.instance.badgeCost;
+                in1.stackSize = (size % 64) + 1;
+                ItemStack in2 = null;
+                if (size > 64)
+                {
+                    in2 = in1.copy();
+                    in2.stackSize = ((size - 64) % 64) + 1;
+                }
+                itemList.add(new MerchantRecipe(in1, in2, badge));
             }
         }
     }
@@ -546,98 +638,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
     }
 
-    private void addMobTrades(ItemStack buy1)
-    {
-        for (int i = 0; i < pokecubes.length; i++)
-        {
-            ItemStack stack = pokecubes[i];
-            if (stack != null && PokecubeManager.isFilled(stack))
-            {
-                IPokemob mon = PokecubeManager.itemToPokemob(stack, worldObj);
-                IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, worldObj);
-                String trader1 = mon1.getPokemonOwnerName();
-                mon.setOriginalOwnerUUID(getUniqueID());
-                mon.setPokemonOwnerByName(trader1);
-                stack = PokecubeManager.pokemobToItem(mon);
-                stack.getTagCompound().setInteger("slotnum", i);
-                tradeList.add(new MerchantRecipe(buy1, stack));
-            }
-        }
-    }
-
-    private void addRandomTrades()
-    {
-        itemList.clear();
-        int num = rand.nextInt(3);
-        Set<Object> added = Sets.newHashSet();
-        for (int i = 0; i < num; i++)
-        {
-            String name = HeldItemHandler.megaVariants.get(rand.nextInt(HeldItemHandler.megaVariants.size()));
-            if (!added.contains(name))
-            {
-                ItemStack output = PokecubeItems.getStack(name);
-                if (output == null) continue;
-                added.add(name);
-                ItemStack in1 = new ItemStack(Items.emerald);
-                int size = Config.instance.megaCost;
-                if (name.endsWith("orb")) size = Config.instance.orbCost;
-                else if (name.endsWith("charm")) size = Config.instance.shinyCost;
-                size -= 1;
-                in1.stackSize = (size % 64) + 1;
-                ItemStack in2 = null;
-                if (size > 64)
-                {
-                    in2 = in1.copy();
-                    in2.stackSize = ((size - 64) % 64) + 1;
-                }
-                itemList.add(new MerchantRecipe(in1, in2, output));
-            }
-        }
-        added.clear();
-        num = rand.nextInt(3);
-        ArrayList<String> moves = Lists.newArrayList(MovesUtils.moves.keySet());
-        Collections.shuffle(moves);
-        for (int i = 0; i < num; i++)
-        {
-            String name = moves.get(i);
-            if (added.contains(name)) continue;
-            added.add(name);
-            ItemStack tm = PokecubeItems.getStack("tm");
-            ItemStack in = new ItemStack(Items.emerald);
-            in.stackSize = Config.instance.tmCost;
-            ItemTM.addMoveToStack(name, tm);
-            itemList.add(new MerchantRecipe(in, tm));
-        }
-        added.clear();
-        num = rand.nextInt(4);
-        if (!cubeList.isEmpty()) for (int i = 0; i < num; i++)
-        {
-            CubeTrade trade = cubeList.get(rand.nextInt(cubeList.size()));
-            if (added.contains(trade)) continue;
-            added.add(trade);
-            itemList.add(trade.getTrade());
-        }
-        if (Math.random() > 0.99)
-        {
-            PokeType type = PokeType.values()[rand.nextInt(PokeType.values().length)];
-            if (type == PokeType.unknown) return;
-            ItemStack badge = PokecubeItems.getStack("badge" + type);
-            if (badge != null)
-            {
-                ItemStack in1 = new ItemStack(Items.emerald);
-                int size = Config.instance.badgeCost;
-                in1.stackSize = (size % 64) + 1;
-                ItemStack in2 = null;
-                if (size > 64)
-                {
-                    in2 = in1.copy();
-                    in2.stackSize = ((size - 64) % 64) + 1;
-                }
-                itemList.add(new MerchantRecipe(in1, in2, badge));
-            }
-        }
-    }
-
     @Override
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
@@ -870,19 +870,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
     }
 
-    @Override
-    public void useRecipe(MerchantRecipe recipe)
-    {
-        trade(recipe);
-        this.livingSoundTime = -this.getTalkInterval();
-        this.playSound("mob.villager.yes", this.getSoundVolume(), this.getSoundPitch());
-        int i = 3 + this.rand.nextInt(4);
-        if (recipe.getRewardsExp())
-        {
-            this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY + 0.5D, this.posZ, i));
-        }
-    }
-
     private void trade(MerchantRecipe recipe)
     {
         ItemStack poke1 = recipe.getItemToBuy();
@@ -900,6 +887,19 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         pokenumbers[num] = mon1.getPokedexNb();
         pokelevels[num] = mon1.getLevel();
         shouldrefresh = true;
+    }
+
+    @Override
+    public void useRecipe(MerchantRecipe recipe)
+    {
+        trade(recipe);
+        this.livingSoundTime = -this.getTalkInterval();
+        this.playSound("mob.villager.yes", this.getSoundVolume(), this.getSoundPitch());
+        int i = 3 + this.rand.nextInt(4);
+        if (recipe.getRewardsExp())
+        {
+            this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY + 0.5D, this.posZ, i));
+        }
     }
 
     @Override

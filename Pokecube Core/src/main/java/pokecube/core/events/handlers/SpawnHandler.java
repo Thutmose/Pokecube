@@ -65,28 +65,28 @@ public final class SpawnHandler
     }
 
     // randomized for spawning
-    public static final HashMap<Integer, ArrayList<PokedexEntry>> spawns     = new HashMap<Integer, ArrayList<PokedexEntry>>();
+    public static final HashMap<Integer, ArrayList<PokedexEntry>> spawns      = new HashMap<Integer, ArrayList<PokedexEntry>>();
     // not randomized
-    public static final HashMap<Integer, ArrayList<PokedexEntry>> spawnLists = new HashMap<Integer, ArrayList<PokedexEntry>>();
-    public static int                                             number     = 0;
+    public static final HashMap<Integer, ArrayList<PokedexEntry>> spawnLists  = new HashMap<Integer, ArrayList<PokedexEntry>>();
+    public static int                                             number      = 0;
 
-    private static Vector3                                        vec        = Vector3.getNewVector();
-    private static Vector3                                        vec1       = Vector3.getNewVector();
-    private static Vector3                                        vec2       = Vector3.getNewVector();
-    private static Vector3                                        temp       = Vector3.getNewVector();
+    private static Vector3                                        vec         = Vector3.getNewVector();
+    private static Vector3                                        vec1        = Vector3.getNewVector();
+    private static Vector3                                        vec2        = Vector3.getNewVector();
+    private static Vector3                                        temp        = Vector3.getNewVector();
 
-    public static double MAX_DENSITY = 1;
+    public static double                                          MAX_DENSITY = 1;
 
-    public static int    MAXNUM      = 10;
-    static double maxtime = 0;
+    public static int                                             MAXNUM      = 10;
+    static double                                                 maxtime     = 0;
 
-    public static boolean lvlCap   = false;
+    public static boolean                                         lvlCap      = false;
 
-    public static int     capLevel = 50;
+    public static int                                             capLevel    = 50;
 
-    public static final HashMap<Integer, JEP> parsers = new HashMap<Integer, JEP>();
+    public static final HashMap<Integer, JEP>                     parsers     = new HashMap<Integer, JEP>();
 
-    public static long time   = 0;
+    public static long                                            time        = 0;
 
     public static boolean addForbiddenSpawningCoord(BlockPos pos, int dimensionId, int distance)
     {
@@ -378,6 +378,7 @@ public final class SpawnHandler
         maxXp = Math.max(maxXp, 10);
         return maxXp;
     }
+
     public static boolean isPointValidForSpawn(World world, Vector3 point, PokedexEntry dbe)
     {
         int i = point.intX();
@@ -468,6 +469,7 @@ public final class SpawnHandler
         ChunkCoordinate coord = new ChunkCoordinate(x, y, z, dim);
         return forbiddenSpawningCoords.remove(coord) != null;
     }
+
     public static void sortSpawnables()
     {
         spawnLists.clear();
@@ -491,12 +493,13 @@ public final class SpawnHandler
 
         }
     }
-    public JEP         parser = new JEP();
-    Vector3            v      = Vector3.getNewVector();
-    Vector3            v1     = Vector3.getNewVector();
-    Vector3            v2     = Vector3.getNewVector();
 
-    Vector3            v3     = Vector3.getNewVector();
+    public JEP parser = new JEP();
+    Vector3    v      = Vector3.getNewVector();
+    Vector3    v1     = Vector3.getNewVector();
+    Vector3    v2     = Vector3.getNewVector();
+
+    Vector3    v3     = Vector3.getNewVector();
 
     public SpawnHandler()
     {
@@ -519,7 +522,7 @@ public final class SpawnHandler
             if (o instanceof EntityPlayer)
             {
                 EntityPlayer playerEntity = (EntityPlayer) o;
-                //Stops pokemobs building up at bottom of sea floor.
+                // Stops pokemobs building up at bottom of sea floor.
                 if (playerEntity.posY > v.y - 10 && playerEntity.posY < v.y + 10) player = true;
             }
         }
@@ -545,8 +548,7 @@ public final class SpawnHandler
                 spawns.remove(b);
                 return ret;
             }
-            Collections.shuffle(entries);
-            int index = 0;
+            int index = world.rand.nextInt(entries.size());
             if (index >= entries.size()) return ret;
             PokedexEntry dbe = entries.get(index);
             float weight = dbe.getSpawnData().getWeight(b);
@@ -627,7 +629,8 @@ public final class SpawnHandler
             float y = (float) point.y;
             float z = (float) point.z + 0.5F;
 
-            boolean playerNearCheck = world.getClosestPlayer(x, y, z, PokecubeMod.core.getConfig().minSpawnRadius) == null;
+            boolean playerNearCheck = world.getClosestPlayer(x, y, z,
+                    PokecubeMod.core.getConfig().minSpawnRadius) == null;
             if (!playerNearCheck) continue;
 
             float var28 = x - world.getSpawnPoint().getX();
@@ -725,12 +728,10 @@ public final class SpawnHandler
 
                 List<Object> players = new ArrayList<Object>(world.playerEntities);
                 if (players.size() < 1) return;
-                Collections.shuffle(players);
-
                 if (Math.random() > 0.999)
                 {
-                    Entity player = (Entity) players.get(0);
                     Random rand = new Random();
+                    Entity player = (Entity) players.get(rand.nextInt(players.size()));
                     int dx = rand.nextInt(200) - 100;
                     int dz = rand.nextInt(200) - 100;
 

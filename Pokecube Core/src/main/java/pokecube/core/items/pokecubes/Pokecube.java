@@ -230,7 +230,7 @@ public class Pokecube extends Item implements IPokecube
         }
         else
         {
-            CommandTools.makeError("pokecube.badaim");
+            CommandTools.sendError(player, "pokecube.badaim");
             return false;
         }
 

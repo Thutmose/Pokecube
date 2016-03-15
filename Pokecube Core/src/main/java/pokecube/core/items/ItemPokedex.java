@@ -9,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -76,10 +75,6 @@ public class ItemPokedex extends Item
 
         if (playerIn.isSneaking() && !worldIn.isRemote)
         {
-            playerIn.addChatMessage(
-                    new ChatComponentText("There are " + Database.spawnables.size() + " Registered Spawns"));
-            playerIn.addChatMessage(new ChatComponentText(
-                    "There are " + Pokedex.getInstance().getEntries().size() + " Registered Pokemon"));
             TerrainSegment t = TerrainManager.getInstance().getTerrian(worldIn, hit);
             int b = t.getBiome(hit);
             String biomeList = SpawnHandler.spawnLists.get(b)!=null?SpawnHandler.spawnLists.get(b).toString():"Nothing";

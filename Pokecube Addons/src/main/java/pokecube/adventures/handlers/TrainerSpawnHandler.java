@@ -158,6 +158,12 @@ public class TrainerSpawnHandler
         {
             TypeTrainer ttype;
             Material m = v.getBlockMaterial(w);
+
+            if (m == Material.air && v.offset(EnumFacing.DOWN).getBlockMaterial(w) == Material.air)
+            {
+                v = v.getTopBlockPos(w).offsetBy(EnumFacing.UP);
+            }
+
             String biome = BiomeDatabase.getNameFromType(TerrainManager.getInstance().getTerrian(w, v).getBiome(v));
 
             List<TypeTrainer> trainers = TypeTrainer.biomes.get(biome);
@@ -187,7 +193,8 @@ public class TrainerSpawnHandler
             double dt = (System.nanoTime() - time) / 1000000D;
             if (dt > 20) System.err.println(
                     FMLCommonHandler.instance().getEffectiveSide() + " Trainer " + ttype.name + " " + dt + "ms ");
-            v.offset(EnumFacing.UP).moveEntity(t);
+
+            v.offsetBy(EnumFacing.UP).moveEntity(t);
             if (t.countPokemon() > 0 && SpawnHandler.checkNoSpawnerInArea(w, (int) t.posX, (int) t.posY, (int) t.posZ))
             {
                 addTrainerCoord(t);

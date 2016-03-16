@@ -445,7 +445,7 @@ public class PokecubeCore extends PokecubeMod
             }
             p.updateMoves();
             // Refreshes the forme's modIds
-            p.setModId(p.getModId());
+            // p.setModId(p.getModId());
         }
         System.out.println("Loaded " + n + " Pokemob sounds, " + Pokedex.getInstance().getEntries().size()
                 + " Pokemon and " + Database.allFormes.size() + " Formes");
@@ -569,11 +569,16 @@ public class PokecubeCore extends PokecubeMod
      *            the instance of your mod
      * @param pokedexnb
      *            the pokedex number */
-    @SuppressWarnings("rawtypes")
     @Override
     public void registerPokemon(boolean createEgg, Object mod, int pokedexNb)
     {
-        Class c = genericMobClasses.get(pokedexNb);
+        registerPokemon(createEgg, mod, Database.getEntry(pokedexNb));
+    }
+
+    @Override
+    public void registerPokemon(boolean createEgg, Object mod, PokedexEntry entry)
+    {
+        Class<?> c = genericMobClasses.get(entry.getPokedexNb());
         if (c == null)
         {
             if (loader == null)
@@ -582,27 +587,25 @@ public class PokecubeCore extends PokecubeMod
             }
             try
             {
-                c = loader.generatePokemobClass(pokedexNb);
-                registerPokemonByClass(c, createEgg, mod, pokedexNb);
+                c = loader.generatePokemobClass(entry.getPokedexNb());
+                registerPokemonByClass(c, createEgg, mod, entry);
             }
             catch (ClassNotFoundException e)
             {
-                System.err.println("Error Making Class for  " + Database.getEntry(pokedexNb));
+                System.err.println("Error Making Class for  " + entry);
                 e.printStackTrace();
             }
         }
         else
         {
-            registerPokemonByClass(c, createEgg, mod, pokedexNb);
+            registerPokemonByClass(c, createEgg, mod, entry);
         }
-
-        return;
     }
 
     @Override
     public void registerPokemon(boolean createEgg, Object mod, String name)
     {
-        registerPokemon(createEgg, mod, Database.getEntry(name).getPokedexNb());
+        registerPokemon(createEgg, mod, Database.getEntry(name));
     }
 
     /** Registers a Pokemob into the Pokedex. Have a look to the file called
@@ -619,7 +622,7 @@ public class PokecubeCore extends PokecubeMod
      *            the {@link PokedexEntry} */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, int pokedexNb)
+    public void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry)
     {
         if (pokedexmap == null || pokemobAchievements == null)
         {
@@ -637,56 +640,52 @@ public class PokecubeCore extends PokecubeMod
             achievementPagePokecube = new AchievementPage("Pokecube", get1stPokemob);
             AchievementPage.registerAchievementPage(achievementPagePokecube);
         }
-
-        PokedexEntry pokedexEntry = Database.getEntry(pokedexNb);
+        ;
         Mod annotation = mod.getClass().getAnnotation(Mod.class);
         String modId = ID;
         if (annotation != null) modId = annotation.modid();
-        if (pokedexEntry.getModId() == null)
+        if (entry.getModId() == null)
         {
-            pokedexEntry.setModId(modId);
+            entry.setModId(modId);
+            System.out.println(entry + " " + modId);
+            Thread.dumpStack();
         }
 
-        String name = pokedexEntry.getName();
-        Achievement achievement = pokemobAchievements.get(pokedexNb);
+        String name = entry.getName();
+        Achievement achievement = pokemobAchievements.get(entry.getPokedexNb());
         if (clazz != null)
         {
-            PokedexEntry previousEntry = Pokedex.getInstance().getEntry(pokedexEntry.getPokedexNb());
             try
             {
                 // in case of double definition, the Manchou's implementation
                 // will have the priority by default, or whatever is set in
                 // config.
-                if (!registered.get(pokedexNb))
+                if (!registered.get(entry.getPokedexNb()))
                 {
-                    EntityRegistry.registerModEntity(clazz, name, 25 + pokedexNb, mod, 80, 3, true);
+                    EntityRegistry.registerModEntity(clazz, name, 25 + entry.getPokedexNb(), mod, 80, 3, true);
 
-                    if (!pokemobEggs.containsKey(pokedexNb))
+                    if (!pokemobEggs.containsKey(entry.getPokedexNb()))
                     {
-                        pokemobEggs.put(new Integer(pokedexNb),
-                                new EntityEggInfo(pokedexNb + 7000, 0xE8E0A0, 0x78C848));
+                        pokemobEggs.put(new Integer(entry.getPokedexNb()),
+                                new EntityEggInfo(entry.getPokedexNb() + 7000, 0xE8E0A0, 0x78C848));
                     }
-                    pokedexmap.put(new Integer(pokedexNb), clazz);
-                    registered.set(pokedexNb);
+                    pokedexmap.put(new Integer(entry.getPokedexNb()), clazz);
+                    registered.set(entry.getPokedexNb());
 
-                    if (previousEntry != null)
-                    {
-                        Database.getEntry(pokedexNb).setModId(modId);
-                    }
-                    Pokedex.getInstance().registerPokemon(pokedexEntry);
+                    Pokedex.getInstance().registerPokemon(entry);
 
                     if (achievement == null)
                     {
-                        int x = -2 + (pokedexNb / 16) * 2;
-                        int y = -2 + (pokedexNb % 16) - 1;
+                        int x = -2 + (entry.getPokedexNb() / 16) * 2;
+                        int y = -2 + (entry.getPokedexNb() % 16) - 1;
                         try
                         {
                             if (PokecubeItems.getEmptyCube(0) == null) System.err.println("cube is null");
-                            achievement = (new AchievementCatch(pokedexNb, name, x, y, PokecubeItems.getEmptyCube(0),
-                                    get1stPokemob));
+                            achievement = (new AchievementCatch(entry.getPokedexNb(), name, x, y,
+                                    PokecubeItems.getEmptyCube(0), get1stPokemob));
                             achievement.registerStat();
                             achievementPagePokecube.getAchievements().add(achievement);
-                            pokemobAchievements.put(pokedexNb, achievement);
+                            pokemobAchievements.put(entry.getPokedexNb(), achievement);
                         }
                         catch (Throwable e)
                         {
@@ -696,8 +695,8 @@ public class PokecubeCore extends PokecubeMod
                     }
                     else
                     {
-                        System.err.println("Double Registration " + pokedexEntry + " Default set to version from "
-                                + pokedexEntry.getModId());
+                        System.err.println(
+                                "Double Registration " + entry + " Default set to version from " + entry.getModId());
                     }
                 }
             }

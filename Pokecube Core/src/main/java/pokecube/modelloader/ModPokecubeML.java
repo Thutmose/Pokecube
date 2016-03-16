@@ -43,24 +43,24 @@ import pokecube.modelloader.items.ItemModelReloader;
 public class ModPokecubeML
 {
     /** The id of your mod */
-    public final static String              ID                      = "pokecube_ml";
+    public final static String        ID                      = "pokecube_ml";
 
     @Instance(ID)
-    public static ModPokecubeML             instance;
+    public static ModPokecubeML       instance;
 
-    public static boolean                   checkResourcesForModels = true;
+    public static boolean             checkResourcesForModels = true;
 
-    public static ArrayList<String>         addedPokemon            = Lists.newArrayList();
-    public static Map<PokedexEntry, String> textureProviders        = Maps.newHashMap();
+    public static ArrayList<String>   addedPokemon            = Lists.newArrayList();
+    public static Map<String, String> textureProviders        = Maps.newHashMap();
 
-    public static boolean                   info                    = false;
-    public static boolean                   preload                 = true;
+    public static boolean             info                    = false;
+    public static boolean             preload                 = true;
 
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
-    public static CommonProxy               proxy;
-    public static File                      configDir;
+    public static CommonProxy         proxy;
+    public static File                configDir;
 
-    boolean                                 postInit                = false;
+    boolean                           postInit                = false;
 
     private void doMetastuff()
     {
@@ -71,7 +71,9 @@ public class ModPokecubeML
     @EventHandler
     public void init(FMLInitializationEvent evt)
     {
+        System.out.println("startInit");
         proxy.init();
+        System.out.println("endinit");
         if (info)
         {
             for (PokedexEntry e : Database.allFormes)
@@ -122,7 +124,10 @@ public class ModPokecubeML
 
         try
         {
-            if (checkResourcesForModels) processResources();
+            if (checkResourcesForModels)
+            {
+                processResources();
+            }
         }
         catch (Exception e)
         {
@@ -195,13 +200,17 @@ public class ModPokecubeML
     private void registerMob(String mob)
     {
         PokedexEntry e;
-        if ((e = Database.getEntry(mob)) != null)
+        if ((e = Database.getEntry(mob)) != null && e.baseForme == null)
         {
-            PokecubeMod.core.registerPokemon(true, this, mob);
-            if (textureProviders.containsKey(e))
+            if (textureProviders.containsKey(e.getName()))
             {
-                e.setModId(textureProviders.get(e));
+                e.setModId(textureProviders.get(e.getName()));
             }
+            else
+            {
+                e.setModId(ID);
+            }
+            if (e.baseForme == null) PokecubeMod.core.registerPokemon(true, this, e);
         }
         else
         {
@@ -222,11 +231,15 @@ public class ModPokecubeML
             }
             if ((e = Database.getEntry(mob)) != null)
             {
-                PokecubeMod.core.registerPokemon(true, this, mob);
-                if (textureProviders.containsKey(e))
+                if (textureProviders.containsKey(e.getName()))
                 {
-                    e.setModId(textureProviders.get(e));
+                    e.setModId(textureProviders.get(e.getName()));
                 }
+                else
+                {
+                    e.setModId(ID);
+                }
+                if (e.baseForme == null) PokecubeMod.core.registerPokemon(true, this, e);
             }
             else
             {

@@ -52,6 +52,8 @@ public class CommonProxy implements IGuiHandler
         {
             if (folder.isDirectory())
             {
+                File subDir = new File(folder, "assets" + File.separator + files[0].getResourceDomain());
+                if (!subDir.exists()) continue;
                 for (n = 0; n < files.length; n++)
                 {
                     ResourceLocation file = files[n];
@@ -74,6 +76,7 @@ public class CommonProxy implements IGuiHandler
                     {
                         ZipEntry entry = entries.nextElement();
                         String s = entry.getName();
+                        if (!s.contains(files[0].getResourceDomain())) continue;
                         for (n = 0; n < files.length; n++)
                         {
                             ResourceLocation file = files[n];
@@ -90,7 +93,6 @@ public class CommonProxy implements IGuiHandler
                 {
                     if (!folder.getName().contains(".jar")) e.printStackTrace();
                 }
-
             }
         }
         else
@@ -105,6 +107,7 @@ public class CommonProxy implements IGuiHandler
                     {
                         ZipEntry entry = entries.nextElement();
                         String s = entry.getName();
+                        if (!s.contains(files[0].getResourceDomain())) continue;
                         for (n = 0; n < files.length; n++)
                         {
                             ResourceLocation file = files[n];
@@ -292,7 +295,6 @@ public class CommonProxy implements IGuiHandler
         }
         PokedexEntry[] entryArr = entries.toArray(new PokedexEntry[0]);
         boolean[] has = new boolean[entryArr.length];
-
         for (int i = 0; i < has.length; i++)
         {
             if (entryArr[i] == null)
@@ -303,7 +305,7 @@ public class CommonProxy implements IGuiHandler
             if (toAdd.contains(entryArr[i].getName()))
             {
                 has[i] = true;
-                ModPokecubeML.textureProviders.put(entryArr[i], ModPokecubeML.ID);
+                ModPokecubeML.textureProviders.put(entryArr[i].getName(), ModPokecubeML.ID);
             }
         }
         for (String modId : mobProviders.keySet())
@@ -315,7 +317,7 @@ public class CommonProxy implements IGuiHandler
                 if (!hasArr[i] || has[i]) continue;
                 PokedexEntry entry = entryArr[i];
                 toAdd.add(entry.getName());
-                ModPokecubeML.textureProviders.put(entry, modId);
+                ModPokecubeML.textureProviders.put(entry.getName(), modId);
                 ArrayList<String> list = Lists.newArrayList();
                 ResourceLocation xml = new ResourceLocation(modId, MODELPATH + entry.getName() + ".xml");
                 try

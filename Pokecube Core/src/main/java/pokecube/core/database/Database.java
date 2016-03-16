@@ -48,6 +48,7 @@ public class Database implements IMoveConstants
     {
         POKEMON, MOVES
     }
+
     public static boolean                                  FORCECOPY        = true;
     public static HashMap<Integer, PokedexEntry>           data             = new HashMap<Integer, PokedexEntry>();
     public static HashMap<String, PokedexEntry>            data2            = new HashMap<String, PokedexEntry>();
@@ -71,9 +72,9 @@ public class Database implements IMoveConstants
     private static List<ArrayList<String>>                 configDatabases  = Lists
             .newArrayList(new ArrayList<String>(), new ArrayList<String>());
 
-    private static PrintWriter out;
+    private static PrintWriter                             out;
 
-    private static FileWriter  fwriter;
+    private static FileWriter                              fwriter;
 
     public static void addDatabase(String file, EnumDatabase database)
     {
@@ -692,6 +693,7 @@ public class Database implements IMoveConstants
             move.animDefault = anim;
         }
     }
+
     private static void loadSpawns()
     {
         for (String s : spawnDatabases)
@@ -1018,7 +1020,11 @@ public class Database implements IMoveConstants
                 e.length = e.baseForme.length;
                 e.childNumbers = e.baseForme.childNumbers;
                 e.species = e.baseForme.species;
-                e.setModId(e.baseForme.getModId());
+                if (e.getModId() == null)
+                {
+                    Thread.dumpStack();
+                    e.setModId(e.baseForme.getModId());
+                }
                 e.mobType = e.baseForme.mobType;
                 e.catchRate = e.baseForme.catchRate;
                 e.mass = e.baseForme.mass;

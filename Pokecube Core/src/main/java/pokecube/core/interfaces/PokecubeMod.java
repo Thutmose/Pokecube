@@ -31,6 +31,7 @@ import pokecube.core.CreativeTabPokecube;
 import pokecube.core.CreativeTabPokecubeBerries;
 import pokecube.core.CreativeTabPokecubeBlocks;
 import pokecube.core.CreativeTabPokecubes;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.Config;
 import thut.api.maths.Vector3;
 
@@ -210,8 +211,10 @@ public abstract class PokecubeMod
 
     public abstract void registerPokemon(boolean createEgg, Object mod, String name);
 
+    public abstract void registerPokemon(boolean createEgg, Object mod, PokedexEntry entry);
+
     @SuppressWarnings("rawtypes")
-    public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, int pokedexNb);
+    public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry);
 
     public abstract void spawnParticle(String par1Str, Vector3 location, Vector3 velocity);
 }

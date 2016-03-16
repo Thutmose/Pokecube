@@ -1054,9 +1054,9 @@ public class PokedexEntry
         if (e.foodDrop == null) e.foodDrop = foodDrop;
         if (e.commonDrops.isEmpty()) e.commonDrops = commonDrops;
         if (e.rareDrops.isEmpty()) e.rareDrops = rareDrops;
+        if (e.modId == null) e.setModId(getModId());
 
         e.baseForme = this;
-        e.setModId(getModId());
         this.addForm(e);
     }
 
@@ -1676,11 +1676,6 @@ public class PokedexEntry
         this.evolutionMode = evolutionMode;
     }
 
-    private void setFormModId(String modId)
-    {
-        this.modId = modId;
-    }
-
     /** Sets the Mod which declares this mob.
      * 
      * @param modId
@@ -1688,10 +1683,6 @@ public class PokedexEntry
     public void setModId(String modId)
     {
         this.modId = modId;
-        for (PokedexEntry forme : forms.values())
-        {
-            if (forme != this) forme.setFormModId(modId);
-        }
     }
 
     /** @param sound */

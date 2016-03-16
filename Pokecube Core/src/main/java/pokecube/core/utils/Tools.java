@@ -22,7 +22,9 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 
 public class Tools
@@ -32,7 +34,7 @@ public class Tools
 
     private static int[] fluctuatingXp = new int[101];
 
-    public static int[] maxXPs = { 800000, 1000000, 1059860, 1250000, 600000, 1640000 };
+    public static int[]  maxXPs        = { 800000, 1000000, 1059860, 1250000, 600000, 1640000 };
 
     public static int computeCatchRate(IPokemob pokemob, double cubeBonus)
     {
@@ -194,6 +196,7 @@ public class Tools
 
         return level;
     }
+
     public static Entity getPointedEntity(Entity entity, double distance)
     {
         Vec3 vec3 = new Vec3(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
@@ -202,17 +205,18 @@ public class Tools
         Vec3 vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
         Entity pointedEntity = null;
         float f = 1.0F;
-        List<Entity> list = entity.worldObj.getEntitiesInAABBexcluding(entity,
-                entity.getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0)
-                        .expand(f, f, f),
-                Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
-                {
-                    @Override
-                    public boolean apply(Entity p_apply_1_)
-                    {
-                        return p_apply_1_.canBeCollidedWith();
-                    }
-                }));
+        List<Entity> list = entity.worldObj
+                .getEntitiesInAABBexcluding(
+                        entity, entity.getEntityBoundingBox()
+                                .addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand(f, f, f),
+                        Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
+                        {
+                            @Override
+                            public boolean apply(Entity p_apply_1_)
+                            {
+                                return p_apply_1_.canBeCollidedWith();
+                            }
+                        }));
         double d2 = distance;
 
         for (int j = 0; j < list.size(); ++j)
@@ -516,6 +520,18 @@ public class Tools
         }
 
         return Math.min(level, 100);
+    }
+
+    public static int getPower(String move, IPokemob user, Entity target)
+    {
+        Move_Base attack = MovesUtils.getMoveFromName(move);
+        int pwr = attack.getPWR(user, target);
+        if (target instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) target;
+            pwr *= PokeType.getAttackEfficiency(attack.getType(user), mob.getType1(), mob.getType2());
+        }
+        return pwr;
     }
 
     public Tools()

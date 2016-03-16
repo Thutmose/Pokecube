@@ -188,6 +188,26 @@ public class AIAttack extends AIBase implements IAICombat
                 }
                 move = MovesUtils.getMoveFromName(mob.getMove(mob.getMoveIndex()));
             }
+            else if (mob.getPokemonAIState(IMoveConstants.GUARDING))
+            {
+                int index = mob.getMoveIndex();
+                int max = 0;
+                String[] moves = mob.getMoves();
+                for (int i = 0; i < 4; i++)
+                {
+                    String s = moves[i];
+                    if (s != null)
+                    {
+                        int temp = Tools.getPower(s, mob, entityTarget);
+                        if (temp > max)
+                        {
+                            index = i;
+                            max = temp;
+                        }
+                    }
+                }
+                if (index != mob.getMoveIndex()) mob.setMoveIndex(index);
+            }
 
             if (move == null) move = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
 

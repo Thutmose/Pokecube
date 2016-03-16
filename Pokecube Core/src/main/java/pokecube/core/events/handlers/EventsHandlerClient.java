@@ -47,14 +47,11 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
@@ -206,18 +203,6 @@ public class EventsHandlerClient
                 evt.setCanceled(true);
             }
         }
-    }
-
-    private int getPower(String move, IPokemob user, Entity target)
-    {
-        Move_Base attack = MovesUtils.getMoveFromName(move);
-        int pwr = attack.getPWR(user, target);
-        if (target instanceof IPokemob)
-        {
-            IPokemob mob = (IPokemob) target;
-            pwr *= PokeType.getAttackEfficiency(attack.getType(user), mob.getType1(), mob.getType2());
-        }
-        return pwr;
     }
 
     @SubscribeEvent
@@ -466,7 +451,7 @@ public class EventsHandlerClient
             String s = moves[i];
             if (s != null)
             {
-                int temp = getPower(s, outMob, target);
+                int temp = Tools.getPower(s, outMob, target);
                 if (temp > max)
                 {
                     index = i;

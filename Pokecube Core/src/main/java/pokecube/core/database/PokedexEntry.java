@@ -856,6 +856,9 @@ public class PokedexEntry
 
     protected HashMap<PokedexEntry, MegaRule>  megaRules          = Maps.newHashMap();
 
+    public boolean                             isShadowForme      = false;
+    public PokedexEntry                        shadowForme        = null;
+
     public PokedexEntry(int nb, String name)
     {
         this.name = name;
@@ -1054,7 +1057,7 @@ public class PokedexEntry
         if (e.foodDrop == null) e.foodDrop = foodDrop;
         if (e.commonDrops.isEmpty()) e.commonDrops = commonDrops;
         if (e.rareDrops.isEmpty()) e.rareDrops = rareDrops;
-        if (e.modId == null) e.setModId(getModId());
+        // if (e.modId == null) e.setModId(getModId());
 
         e.baseForme = this;
         this.addForm(e);

@@ -640,17 +640,6 @@ public class PokecubeCore extends PokecubeMod
             achievementPagePokecube = new AchievementPage("Pokecube", get1stPokemob);
             AchievementPage.registerAchievementPage(achievementPagePokecube);
         }
-        ;
-        Mod annotation = mod.getClass().getAnnotation(Mod.class);
-        String modId = ID;
-        if (annotation != null) modId = annotation.modid();
-        if (entry.getModId() == null)
-        {
-            entry.setModId(modId);
-            System.out.println(entry + " " + modId);
-            Thread.dumpStack();
-        }
-
         String name = entry.getName();
         Achievement achievement = pokemobAchievements.get(entry.getPokedexNb());
         if (clazz != null)

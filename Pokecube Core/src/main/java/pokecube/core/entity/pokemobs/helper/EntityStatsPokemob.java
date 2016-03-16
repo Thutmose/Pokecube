@@ -232,8 +232,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                             d1 = (Math.random() - Math.random()) * 0.01D;
                         }
 
-                        this.attackedAtYaw = (float) (MathHelper.atan2(d0, d1) * 180.0D / Math.PI
-                                - this.rotationYaw);
+                        this.attackedAtYaw = (float) (MathHelper.atan2(d0, d1) * 180.0D / Math.PI - this.rotationYaw);
                         // Reduces knockback from distanced moves
                         if (source instanceof PokemobDamageSource)
                         {
@@ -306,7 +305,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         int ATT = getPokedexEntry().getStatATT();
         int ATTSPE = getPokedexEntry().getStatATTSPE();
-        float mult = getPokemonAIState(SHADOW) ? 2 : 1;
+        float mult = getPokedexEntry().isShadowForme ? 2 : 1;
 
         return mult * (Tools.getStat((ATT + ATTSPE) / 2, 0, 0, getLevel(), (getModifiers()[1] + getModifiers()[3]) / 2,
                 (nature.getStatsMod()[1] + nature.getStatsMod()[3]) / 2) / 3);
@@ -338,7 +337,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public int getCatchRate()
     {
-        return getPokemonAIState(SHADOW) ? 0 : isAncient() ? 0 : getPokedexEntry().getCatchRate();
+        return getPokedexEntry().isShadowForme ? 0 : isAncient() ? 0 : getPokedexEntry().getCatchRate();
     }
 
     @Override
@@ -516,7 +515,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         if (source instanceof PokemobDamageSource)
         {
             Move_Base move = ((PokemobDamageSource) source).move;
-            return PokeType.getAttackEfficiency(move.getType(((PokemobDamageSource) source).user), getType1(), getType2()) <= 0;
+            return PokeType.getAttackEfficiency(move.getType(((PokemobDamageSource) source).user), getType1(),
+                    getType2()) <= 0;
         }
 
         return super.isEntityInvulnerable(source);
@@ -525,7 +525,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public boolean isShadow()
     {
-        boolean isShadow = getPokemonAIState(SHADOW);
+        boolean isShadow = getPokedexEntry().isShadowForme;
         if (isShadow && !wasShadow)
         {
             wasShadow = true;
@@ -943,7 +943,15 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void setShadow(boolean shadow)
     {
-        setPokemonAIState(SHADOW, shadow);
+        PokedexEntry entry = getPokedexEntry();
+        if (entry.isShadowForme && !shadow)
+        {
+            this.changeForme(entry.getBaseName());
+        }
+        else if (shadow && !entry.isShadowForme && entry.shadowForme != null)
+        {
+            this.changeForme(entry.shadowForme.getName());
+        }
         if (shadow && !wasShadow)
         {
             wasShadow = true;

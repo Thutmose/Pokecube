@@ -1020,11 +1020,6 @@ public class Database implements IMoveConstants
                 e.length = e.baseForme.length;
                 e.childNumbers = e.baseForme.childNumbers;
                 e.species = e.baseForme.species;
-                if (e.getModId() == null)
-                {
-                    Thread.dumpStack();
-                    e.setModId(e.baseForme.getModId());
-                }
                 e.mobType = e.baseForme.mobType;
                 e.catchRate = e.baseForme.catchRate;
                 e.mass = e.baseForme.mass;

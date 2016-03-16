@@ -208,6 +208,8 @@ public class PokedexEntryLoader
         public String name;
         @XmlAttribute
         public int    number;
+        @XmlAttribute
+        public String special;
         @XmlElement(name = "STATS")
         StatsNode     stats;
         @XmlElement(name = "MOVES")
@@ -701,6 +703,15 @@ public class PokedexEntryLoader
         }
     }
 
+    private static void parseSpecial(String special, PokedexEntry entry)
+    {
+        if (special.equals("shadow"))
+        {
+            entry.isShadowForme = true;
+            if (entry.baseForme != null) entry.baseForme.shadowForme = entry;
+        }
+    }
+
     private static void postIniStats(PokedexEntry entry, StatsNode xmlStats)
     {
 
@@ -986,6 +997,10 @@ public class PokedexEntryLoader
                 postIniStats(entry, stats);
                 parseSpawns(entry, stats);
                 parseEvols(entry, stats);
+                if (xmlEntry.special != null)
+                {
+                    parseSpecial(xmlEntry.special, entry);
+                }
             }
         }
         catch (Exception e)

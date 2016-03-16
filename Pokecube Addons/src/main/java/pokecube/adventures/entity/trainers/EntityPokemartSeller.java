@@ -22,6 +22,8 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.world.World;
 import pokecube.adventures.comands.Config;
 import pokecube.core.PokecubeItems;
+import pokecube.core.ai.utils.GuardAI;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.vitamins.ItemVitamin;
@@ -37,7 +39,6 @@ public class EntityPokemartSeller extends EntityTrainer
     public EntityPokemartSeller(World par1World)
     {
         super(par1World, merchant, 100);
-        this.setAIState(STATIONARY, true);
         this.setAIState(PERMFRIENDLY, true);
         friendlyCooldown = Integer.MAX_VALUE;
     }
@@ -51,6 +52,8 @@ public class EntityPokemartSeller extends EntityTrainer
         this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
         this.tasks.addTask(9, new EntityAIWander(this, 0.6D));
         this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
+        this.tasks.addTask(0, guardAI);
         if (location != null)
         {
             location.moveEntity(this);

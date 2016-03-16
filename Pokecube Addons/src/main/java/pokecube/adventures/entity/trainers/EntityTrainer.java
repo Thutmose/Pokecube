@@ -16,7 +16,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.INpc;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
 import net.minecraft.entity.ai.EntityAIOpenDoor;
@@ -33,6 +32,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
@@ -53,7 +53,6 @@ import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.core.PokecubeItems;
-import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.events.handlers.EventsHandler;
@@ -136,6 +135,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public List<IPokemob>              currentPokemobs  = new ArrayList<IPokemob>();
     private EntityLivingBase           target;
     public TypeTrainer                 type;
+    public Vector3                     location         = null;
     private int                        id;
     public String                      name             = "";
     public UUID                        outID;
@@ -145,6 +145,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     boolean                            shouldrefresh    = false;
     boolean                            added            = false;
     protected boolean                  trades           = true;
+    public GuardAI                     guardAI;
 
     int                                timercounter     = 0;
 
@@ -192,6 +193,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
         this.tasks.addTask(9, new EntityAIWander(this, 0.6D));
         this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
+        this.tasks.addTask(1, guardAI);
         if (location != null)
         {
             location.moveEntity(this);
@@ -628,7 +631,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             timercounter++;
             if (timercounter > 50)
             {
-                Thread.dumpStack();
                 this.setDead();
             }
             return;
@@ -687,7 +689,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             outID = UUID.fromString(nbt.getString("outPokemob"));
         }
         if (nbt.hasKey("battleCD")) battleCooldown = nbt.getInteger("battleCD");
-        setAIState(STATIONARY, nbt.getBoolean("stationary"));
         globalCooldown = nbt.getInteger("cooldown");
         attackCooldown = nbt.getIntArray("cooldowns");
         male = nbt.getBoolean("gender");
@@ -754,7 +755,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         if (isServerWorld())
         {
             System.out.println(this + " " + getType());
-            Thread.dumpStack();
         }
         PCEventsHandler.recallAllPokemobs(this);
         super.setDead();
@@ -802,31 +802,22 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     public void setStationary(boolean stationary)
     {
-        if (stationary && !getAIState(STATIONARY)) setStationary(Vector3.getNewVector().set(this));
-        else if (!stationary && getAIState(STATIONARY))
-        {
-            for (Object o : this.tasks.taskEntries)
-                if (o instanceof GuardAI) this.tasks.removeTask((EntityAIBase) o);
-            setAIState(STATIONARY, false);
-        }
+
     }
 
     public void setStationary(Vector3 location)
     {
+        System.out.println(location);
+        this.location = location;
         if (location == null)
         {
             setAIState(STATIONARY, false);
-            for (Object o : this.tasks.taskEntries)
-                if (o instanceof GuardAI) this.tasks.removeTask((EntityAIBase) o);
+            guardAI.setPos(new BlockPos(0, 0, 0));
+            guardAI.setTimePeriod(new TimePeriod(0, 0));
             return;
         }
-        IGuardAICapability capability = getCapability(EventsHandler.GUARDAI_CAP, null);
-        if (capability != null)
-        {
-            capability.setActiveTime(TimePeriod.fullDay);
-            capability.setPos(getPosition());
-            tasks.addTask(2, new GuardAI(this, capability));
-        }
+        guardAI.setTimePeriod(TimePeriod.fullDay);
+        guardAI.setPos(getPosition());
         setAIState(STATIONARY, true);
     }
 
@@ -981,7 +972,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
-
         buffer.writeInt(type.name.length());
         buffer.writeBytes(type.name.getBytes());
         buffer.writeInt(name.length());

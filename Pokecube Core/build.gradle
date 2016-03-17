@@ -55,7 +55,7 @@ dependencies {
 }
 
 group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Pokecube Core"
+archivesBaseName = "pokecube"
 
 minecraft {
     version = "${version_minecraft}-${version_forge}"
@@ -115,6 +115,8 @@ task srcJar(type: Jar) {
 }
 
 task deobfJar(type: Jar) {
+    version = "${version_minecraft}-${version}"
+    jar.baseName = "Pokecube Core"
     from sourceSets.main.output
     classifier = 'dev'
 }

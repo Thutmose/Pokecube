@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import pokecube.modelloader.client.render.model.IAnimationChanger;
 import pokecube.modelloader.client.render.tabula.components.Animation;
@@ -144,5 +145,31 @@ public class AnimationRandomizer implements IAnimationChanger
             }
         }
         return phase;
+    }
+
+    @Override
+    public int getColourForPart(String partIdentifier, Entity entity, int default_)
+    {
+        return default_;
+    }
+
+    @Override
+    public boolean isPartHidden(String part, Entity entity, boolean default_)
+    {
+        return default_;
+    }
+
+    @Override
+    public boolean isHeadRoot(String part)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public float[] getHeadInfo()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

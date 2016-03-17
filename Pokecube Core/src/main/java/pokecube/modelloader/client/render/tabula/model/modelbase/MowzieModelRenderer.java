@@ -9,81 +9,55 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.IShearable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMobColourable;
-import pokecube.core.interfaces.IPokemob;
+import pokecube.modelloader.client.render.model.IAnimationChanger;
 import pokecube.modelloader.client.render.model.IPartTexturer;
 import pokecube.modelloader.client.render.model.IRetexturableModel;
-import pokecube.modelloader.client.render.tabula.TabulaPackLoader;
-import pokecube.modelloader.client.render.tabula.TabulaPackLoader.TabulaModelSet;
 
 /** @author BobMowzie, gegy1000, FiskFille, Thutmose
  * @since 0.1.0 */
 @SideOnly(Side.CLIENT)
 public class MowzieModelRenderer extends ModelRenderer implements IRetexturableModel
 {
-    static final float    ratio       = 180f / (float) Math.PI;
-    public static int getColour(String partIdentifier, TabulaModelSet set, IPokemob pokemob, int default_)
-    {
-        if (set != null && set.dyeableIdents.contains(partIdentifier))
-        {
-            int rgba = 0xFF000000;
-            rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;
-            return rgba;
-        }
-        return default_;
-    }
-    public static boolean isHidden(String partIdentifier, TabulaModelSet set, IPokemob pokemob, boolean default_)
-    {
-        if (set != null && set.shearableIdents.contains(partIdentifier))
-        {
-            boolean shearable = ((IShearable) pokemob).isShearable(new ItemStack(Items.shears),
-                    ((Entity) pokemob).worldObj, ((Entity) pokemob).getPosition());
-            return !shearable;
-        }
-        return default_;
-    }
+    static final float       ratio       = 180f / (float) Math.PI;
 
-    public float          initRotateAngleX;
-    public float          initRotateAngleY;
-    public float          initRotateAngleZ;
+    public float             initRotateAngleX;
+    public float             initRotateAngleY;
+    public float             initRotateAngleZ;
 
-    public float          initOffsetX;
-    public float          initOffsetY;
-    public float          initOffsetZ;
+    public float             initOffsetX;
+    public float             initOffsetY;
+    public float             initOffsetZ;
 
-    public float          initRotationPointX;
-    public float          initRotationPointY;
-    public float          initRotationPointZ;
+    public float             initRotationPointX;
+    public float             initRotationPointY;
+    public float             initRotationPointZ;
 
-    public float          initScaleX  = 1f;
-    public float          initScaleY  = 1f;
-    public float          initScaleZ  = 1f;
-    public float          scaleX      = 1f;
-    public float          scaleY      = 1f;
-    public float          scaleZ      = 1f;
-    public ModelRenderer  parent;
-    public boolean        hasInitPose;
-    private boolean       compiled;
-    private int           displayList;
-    public String         name;
-    public String         identifier;
+    public float             initScaleX  = 1f;
+    public float             initScaleY  = 1f;
+    public float             initScaleZ  = 1f;
+    public float             scaleX      = 1f;
+    public float             scaleY      = 1f;
+    public float             scaleZ      = 1f;
+    public ModelRenderer     parent;
+    public boolean           hasInitPose;
+    private boolean          compiled;
+    private int              displayList;
+    public String            name;
+    public String            identifier;
 
-    public TabulaModelSet set;
-    IPartTexturer         texturer;
-    double[]              texOffsets  = { 0, 0 };
-    boolean               offset      = true;
+    public IAnimationChanger set;
+    IPartTexturer            texturer;
+    double[]                 texOffsets  = { 0, 0 };
+    boolean                  offset      = true;
 
-    boolean               rotate      = true;
+    boolean                  rotate      = true;
 
-    boolean               translate   = true;
+    boolean                  translate   = true;
 
-    boolean               shouldScale = true;
+    boolean                  shouldScale = true;
 
     public MowzieModelRenderer(ModelBase modelBase)
     {
@@ -96,7 +70,6 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
         if (modelBase instanceof MowzieModelBase)
         {
             MowzieModelBase mowzieModelBase = (MowzieModelBase) modelBase;
-
             mowzieModelBase.addPart(this);
         }
     }
@@ -172,20 +145,17 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
         {
             parent.postRender(par1);
         }
-
         postRender(par1);
     }
 
     @SideOnly(Side.CLIENT)
     public void render(float scale, Entity entity)
     {
-        GL11.glPushMatrix();
-        if (set == null) set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry());
-        if (set == null) set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry().baseForme);
         if (set == null) return;
+        GL11.glPushMatrix();
         // Allows specific part hiding based on entity state. should probably be
         // somehow moved over to this class somewhere
-        isHidden = isHidden(identifier, set, (IPokemob) entity, isHidden);
+        isHidden = set.isPartHidden(identifier, entity, isHidden);
         if (!isHidden && showModel)
         {
             if (!compiled)
@@ -204,12 +174,10 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
             if (translate) GL11.glTranslatef(-rotationPointX * f5, -rotationPointY * f5, -rotationPointZ * f5);
             int i;
 
-            TabulaModelSet set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry());
-            if (set == null) set = TabulaPackLoader.modelMap.get(((IPokemob) entity).getPokedexEntry().baseForme);
             /** Rotate the head */
-            if (set.isHeadRoot(identifier) && entity instanceof IPokemob)
+            if (set.isHeadRoot(identifier))
             {
-                rotateHead(entity, scale);
+                rotateHead(entity, set.getHeadInfo(), scale);
             }
 
             GL11.glPushMatrix();
@@ -249,7 +217,7 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
                 rgba = 0xFFFFFFFF;
             }
 
-            rgba = getColour(identifier, set, (IPokemob) entity, rgba);
+            rgba = set.getColourForPart(identifier, entity, rgba);
 
             float alpha = ((rgba >> 24) & 255) / 255f;
             float red = ((rgba >> 16) & 255) / 255f;
@@ -366,32 +334,32 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
         rotateAngleZ = initRotateAngleZ;
     }
 
-    private void rotateHead(Entity entity, float scale)
+    private void rotateHead(Entity entity, float[] headInfo, float scale)
     {
         float ang;
         float head = (entity.getRotationYawHead()) % 360 + 180;
         float diff = 0;
         float body = (entity.rotationYaw) % 360;
-        if (set.headDir == 1) body *= -1;
+        if (headInfo[2] == 1) body *= -1;
         else head *= -1;
 
         diff = (head + body) % 360;
 
         diff = (diff + 360) % 360;
         diff = (diff - 180) % 360;
-        diff = Math.max(diff, set.headCap[0]);
-        diff = Math.min(diff, set.headCap[1]);
+        diff = Math.max(diff, headInfo[0]);
+        diff = Math.min(diff, headInfo[1]);
 
         ang = diff;
 
-        float ang2 = Math.max(entity.rotationPitch, set.headCap1[0]);
-        ang2 = Math.min(ang2, set.headCap1[1]);
+        float ang2 = Math.max(entity.rotationPitch, headInfo[3]);
+        ang2 = Math.min(ang2, headInfo[4]);
 
         GL11.glTranslatef(rotationPointX * scale, rotationPointY * scale, rotationPointZ * scale);
 
         rotateToParent();
 
-        if (set.headAxis == 2) GlStateManager.rotate(ang, 0, 0, 1);
+        if (headInfo[5] == 2) GlStateManager.rotate(ang, 0, 0, 1);
         else GlStateManager.rotate(ang, 0, 1, 0);
         GlStateManager.rotate(ang2, 1, 0, 0);
 
@@ -521,6 +489,19 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
             if (parent.rotateAngleX != 0f)
             {
                 GL11.glRotatef(parent.rotateAngleX * (180f / (float) Math.PI), 1f, 0f, 0f);
+            }
+        }
+    }
+
+    @Override
+    public void setAnimationChanger(IAnimationChanger changer)
+    {
+        this.set = changer;
+        if (childModels != null) for (ModelRenderer r : childModels)
+        {
+            if (r instanceof IRetexturableModel)
+            {
+                ((IRetexturableModel) r).setAnimationChanger(changer);
             }
         }
     }

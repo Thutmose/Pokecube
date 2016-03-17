@@ -21,9 +21,16 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.IShearable;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
 import pokecube.modelloader.client.render.animation.AnimationBuilder;
 import pokecube.modelloader.client.render.animation.AnimationLoader;
@@ -31,6 +38,7 @@ import pokecube.modelloader.client.render.animation.AnimationRandomizer;
 import pokecube.modelloader.client.render.animation.AnimationRegistry;
 import pokecube.modelloader.client.render.animation.AnimationRegistry.IPartRenamer;
 import pokecube.modelloader.client.render.animation.TextureHelper;
+import pokecube.modelloader.client.render.model.IAnimationChanger;
 import pokecube.modelloader.client.render.model.IPartTexturer;
 import pokecube.modelloader.client.render.tabula.components.Animation;
 import pokecube.modelloader.client.render.tabula.components.CubeGroup;
@@ -43,7 +51,7 @@ import thut.api.maths.Vector3;
 
 public class TabulaPackLoader extends AnimationLoader
 {
-    public static class TabulaModelSet implements IPartRenamer
+    public static class TabulaModelSet implements IPartRenamer, IAnimationChanger
     {
         /** The pokemon associated with this model. */
         final PokedexEntry                entry;
@@ -80,6 +88,7 @@ public class TabulaPackLoader extends AnimationLoader
         public int                        headAxis         = 1;
         /** Which direction the head rotates */
         public int                        headDir          = 1;
+        private float[]                   headInfo         = new float[6];
         /** Internal, used to determine if it should copy xml data from base
          * forme. */
         private boolean                   foundExtra       = false;
@@ -386,6 +395,12 @@ public class TabulaPackLoader extends AnimationLoader
                 anims.addAll(loadedAnimations.values());
                 animator.init(anims);
             }
+            headInfo[0] = headCap[0];
+            headInfo[1] = headCap[1];
+            headInfo[2] = headDir;
+            headInfo[3] = headCap1[0];
+            headInfo[4] = headCap1[1];
+            headInfo[5] = headAxis;
         }
 
         private void processMetadata()
@@ -437,6 +452,42 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 processMetadataForCubeInfo(cube1);
             }
+        }
+
+        @Override
+        public String modifyAnimation(EntityLiving entity, float partialTicks, String phase)
+        {
+            return animator.modifyAnimation(entity, partialTicks, phase);
+        }
+
+        @Override
+        public int getColourForPart(String partIdentifier, Entity entity, int default_)
+        {
+            if (dyeableIdents.contains(partIdentifier))
+            {
+                int rgba = 0xFF000000;
+                rgba += EnumDyeColor.byDyeDamage(((IPokemob) entity).getSpecialInfo()).getMapColor().colorValue;
+                return rgba;
+            }
+            return default_;
+        }
+
+        @Override
+        public boolean isPartHidden(String part, Entity entity, boolean default_)
+        {
+            if (shearableIdents.contains(part))
+            {
+                boolean shearable = ((IShearable) entity).isShearable(new ItemStack(Items.shears), entity.worldObj,
+                        entity.getPosition());
+                return !shearable;
+            }
+            return default_;
+        }
+
+        @Override
+        public float[] getHeadInfo()
+        {
+            return headInfo;
         }
     }
 

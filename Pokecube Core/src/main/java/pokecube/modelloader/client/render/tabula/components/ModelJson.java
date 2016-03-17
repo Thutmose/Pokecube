@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.modelloader.client.render.model.IAnimationChanger;
 import pokecube.modelloader.client.render.model.IPartTexturer;
 import pokecube.modelloader.client.render.tabula.json.JsonTabulaModel;
 import pokecube.modelloader.client.render.tabula.model.modelbase.MowzieModelBase;
@@ -47,6 +48,7 @@ public class ModelJson extends MowzieModelBase
     public Set<Animation>                        playing       = Sets.newHashSet();
 
     public IPartTexturer                         texturer;
+    public IAnimationChanger                     changer;
     public Animation                             playingAnimation;
     private float                                animationTimer;
     private int                                  animationLength;
@@ -200,6 +202,7 @@ public class ModelJson extends MowzieModelBase
                 {
                     if (texturer != null) texturer.bindObject(entity);
                     cube.setTexturer(texturer);
+                    cube.setAnimationChanger(changer);
                     cube.render(0.0625f, entity);
                 }
             }

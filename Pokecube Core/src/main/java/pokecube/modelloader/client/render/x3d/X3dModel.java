@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import net.minecraft.util.ResourceLocation;
+import pokecube.modelloader.client.render.model.IAnimationChanger;
 import pokecube.modelloader.client.render.model.IExtendedModelPart;
 import pokecube.modelloader.client.render.model.IModel;
 import pokecube.modelloader.client.render.model.IModelCustom;
@@ -160,6 +161,15 @@ public class X3dModel implements IModelCustom, IModel, IRetexturableModel
         for (IExtendedModelPart part : parts.values())
         {
             if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setTexturer(texturer);
+        }
+    }
+
+    @Override
+    public void setAnimationChanger(IAnimationChanger changer)
+    {
+        for (IExtendedModelPart part : parts.values())
+        {
+            if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setAnimationChanger(changer);;
         }
     }
 }

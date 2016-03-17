@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.Lists;
 
 import pokecube.core.utils.Vector4;
+import pokecube.modelloader.client.render.model.IAnimationChanger;
 import pokecube.modelloader.client.render.model.IExtendedModelPart;
 import pokecube.modelloader.client.render.model.IPartTexturer;
 import pokecube.modelloader.client.render.model.IRetexturableModel;
@@ -16,28 +17,30 @@ import thut.api.maths.Vector3;
 
 public class X3dObject implements IExtendedModelPart, IRetexturableModel
 {
-    public int GLMODE = GL11.GL_TRIANGLES;
+    public int                                 GLMODE     = GL11.GL_TRIANGLES;
 
-    public List<Shape> shapes = Lists.newArrayList();
+    public List<Shape>                         shapes     = Lists.newArrayList();
 
     public HashMap<String, IExtendedModelPart> childParts = new HashMap<String, IExtendedModelPart>();
     public final String                        name;
     public IExtendedModelPart                  parent     = null;
     IPartTexturer                              texturer;
+    IAnimationChanger                          changer;
 
-    public Vector4 preRot    = new Vector4();
-    public Vector4 postRot   = new Vector4();
-    public Vector4 postRot1  = new Vector4();
-    public Vector3 preTrans  = Vector3.getNewVector();
-    public Vector3 postTrans = Vector3.getNewVector();
+    public Vector4                             preRot     = new Vector4();
+    public Vector4                             postRot    = new Vector4();
+    public Vector4                             postRot1   = new Vector4();
+    public Vector3                             preTrans   = Vector3.getNewVector();
+    public Vector3                             postTrans  = Vector3.getNewVector();
 
-    public Vector3 offset    = Vector3.getNewVector();
-    public Vector4 rotations = new Vector4();
-    public Vertex  scale     = new Vertex(1, 1, 1);
+    public Vector3                             offset     = Vector3.getNewVector();
+    public Vector4                             rotations  = new Vector4();
+    public Vertex                              scale      = new Vertex(1, 1, 1);
 
-    public int red        = 255, green = 255, blue = 255, alpha = 255;
+    public int                                 red        = 255, green = 255, blue = 255, alpha = 255;
 
-    public int brightness = 15728640;
+    public int                                 brightness = 15728640;
+
     public X3dObject(String name)
     {
         this.name = name;
@@ -271,6 +274,16 @@ public class X3dObject implements IExtendedModelPart, IRetexturableModel
         for (IExtendedModelPart part : childParts.values())
         {
             if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setTexturer(texturer);
+        }
+    }
+
+    @Override
+    public void setAnimationChanger(IAnimationChanger changer)
+    {
+        this.changer = changer;
+        for (IExtendedModelPart part : childParts.values())
+        {
+            if (part instanceof IRetexturableModel) ((IRetexturableModel) part).setAnimationChanger(changer);
         }
     }
 }

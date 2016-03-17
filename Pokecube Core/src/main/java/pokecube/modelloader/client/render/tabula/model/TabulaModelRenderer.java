@@ -29,13 +29,13 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
     public TabulaModelSet set;
     private boolean       statusRender = false;
 
-    boolean blend;
+    boolean               blend;
 
-    boolean light;
+    boolean               light;
 
-    int     src;
+    int                   src;
 
-    int     dst;
+    int                   dst;
 
     public TabulaModelRenderer(TabulaModelSet set)
     {
@@ -97,9 +97,10 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
         ModelJson modelj = pars.modelMap.get(model);
         if (!statusRender) modelj.texturer = set.texturer;
         else modelj.texturer = null;
+        modelj.changer = set;
         if (set.animator != null)
         {
-            phase = set.animator.modifyAnimation(entity, partialTick, phase);
+            phase = set.modifyAnimation(entity, partialTick, phase);
         }
         boolean inSet = false;
         if (modelj.animationMap.containsKey(phase) || (inSet = set.loadedAnimations.containsKey(phase)))
@@ -117,7 +118,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
         GlStateManager.rotate(entity.rotationYaw + 180, 0, 1, 0);
 
         set.rotation.rotations.glRotate();
-        
+
         if (entity instanceof IPokemob)
         {
             IPokemob mob = (IPokemob) entity;
@@ -125,7 +126,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
             GL11.glScalef(scale, scale, scale);
             shadowSize = entry.width * mob.getSize();
         }
-        
+
         GlStateManager.translate(set.shift.x, set.shift.y, set.shift.z);
         GlStateManager.scale(set.scale.x, set.scale.y, set.scale.z);
 
@@ -134,16 +135,19 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
         GlStateManager.enableCull();
         GlStateManager.popMatrix();
     }
+
     @Override
     protected ResourceLocation getEntityTexture(T entity)
     {
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
     }
+
     @Override
     public IPartTexturer getTexturer()
     {
         return set.texturer;
     }
+
     @Override
     public boolean hasPhase(String phase)
     {

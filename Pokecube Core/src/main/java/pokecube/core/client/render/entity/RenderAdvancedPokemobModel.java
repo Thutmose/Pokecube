@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.render;
+package pokecube.core.client.render.entity;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -17,14 +17,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.client.render.PTezzelator;
-import pokecube.core.client.render.entity.RenderPokemob;
-import pokecube.core.client.render.entity.RenderPokemobInfos;
-import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Tools;
 import pokecube.modelloader.client.render.animation.AnimationLoader;
 import pokecube.modelloader.client.render.model.IModelRenderer;
+import pokecube.modelloader.common.IEntityAnimator;
 
 public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLiving<T>
 {
@@ -32,23 +30,26 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     {
         return AnimationLoader.getModel(name);
     }
-    public IModelRenderer<T>      model;
-    final String                  modelName;
-    public boolean                overrideAnim = false;
 
-    public String                 anim         = "";
+    public IModelRenderer<T> model;
+    final String             modelName;
+    public boolean           overrideAnim = false;
 
-    boolean blend;
+    public String            anim         = "";
 
-    boolean normalize;
+    boolean                  blend;
 
-    int     src;
-    int     dst;
+    boolean                  normalize;
+
+    int                      src;
+    int                      dst;
+
     public RenderAdvancedPokemobModel(String name, float par2)
     {
         super(Minecraft.getMinecraft().getRenderManager(), null, par2);
         modelName = name;
     }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void doRender(T entity, double d0, double d1, double d2, float yaw, float partialTick)
@@ -61,8 +62,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         }
         model = (IModelRenderer<T>) getRenderer(modelName, entity);
 
-        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(entity, this, d0, d1, d2)))
-            return;
+        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(entity, this, d0, d1, d2))) return;
 
         GL11.glPushMatrix();
         this.preRenderCallback(entity, partialTick);
@@ -80,7 +80,19 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
         float f8 = this.handleRotationFloat(entity, partialTick);
         if (entity.getHealth() <= 0) this.rotateCorpse(entity, f8, yaw, partialTick);
-        model.setPhase(getPhase(entity, partialTick));
+        String phase;
+        if (overrideAnim) phase = anim;
+        else if (entity instanceof IEntityAnimator)
+        {
+            phase = ((IEntityAnimator) entity).getAnimation(partialTick);
+        }
+        else
+        {
+            phase = getPhase(entity, partialTick);
+        }
+        if (!model.hasPhase(phase)) 
+            phase = "idle";
+        model.setPhase(phase);
         model.doRender(toRender, d0, d1, d2, yaw, partialTick);
         model.renderStatus(toRender, d0, d1, d2, yaw, partialTick);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post(entity, this, d0, d1, d2));
@@ -99,7 +111,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
     private String getPhase(EntityLiving entity, float partialTick)
     {
         String phase = "idle";
-        if (overrideAnim) { return anim; }
 
         IPokemob pokemob = (IPokemob) entity;
         float walkspeed = entity.prevLimbSwingAmount
@@ -154,7 +165,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
 
     protected void postRenderCallback()
     {
-        //Reset to original state. This fixes changes to guis when rendered in them.
+        // Reset to original state. This fixes changes to guis when rendered in
+        // them.
         if (!normalize) GL11.glDisable(GL11.GL_NORMALIZE);
         if (!blend) GL11.glDisable(GL11.GL_BLEND);
         GL11.glBlendFunc(src, dst);
@@ -281,7 +293,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             if (((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED))
             {
                 String n;
-                //Your pokemob has white name, other's has gray name.
+                // Your pokemob has white name, other's has gray name.
                 int colour = renderManager.livingPlayer.equals(((IPokemob) entityliving).getPokemonOwner()) ? 0xFFFFFF
                         : 0xAAAAAA;
                 if ((entityliving.hasCustomName()))

@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -21,7 +22,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.ModPokecubeML;
-import pokecube.modelloader.client.render.RenderAdvancedPokemobModel;
 import pokecube.modelloader.client.render.animation.TextureHelper;
 
 public class GuiAnimate extends GuiScreen

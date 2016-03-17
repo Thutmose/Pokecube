@@ -51,6 +51,11 @@
           "layer0": "pokecube:items/Blastoisinite"
         }
       },
+      "slowbromega": {
+        "textures": {
+          "layer0": "pokecube:items/Slowbronite"
+        }
+      },
       "shiny_charm": {
         "textures": {
           "layer0": "pokecube:items/shiny_charm"

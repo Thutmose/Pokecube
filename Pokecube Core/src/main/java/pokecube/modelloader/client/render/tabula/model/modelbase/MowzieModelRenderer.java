@@ -263,7 +263,6 @@ public class MowzieModelRenderer extends ModelRenderer implements IRetexturableM
             if (offset) GL11.glTranslatef(-offsetX, -offsetY, -offsetZ);
             if (shouldScale) GL11.glScalef(1f / scaleX, 1f / scaleY, 1f / scaleZ);
         }
-
         GL11.glPopMatrix();
 
     }

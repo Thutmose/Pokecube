@@ -55,7 +55,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
@@ -81,9 +80,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IOwnableTE;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -97,6 +94,7 @@ import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import thut.api.entity.IMobColourable;
 import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
@@ -695,17 +693,6 @@ public class EventsHandler
                 }
             }
             event.addCapability(new ResourceLocation("pokecube:GuardAI"), new Provider());
-        }
-    }
-
-    @SubscribeEvent
-    public void placeEvent(PlaceEvent event)
-    {
-        TileEntity te = event.world.getTileEntity(event.pos);
-        if (te != null && te instanceof IOwnableTE)
-        {
-            IOwnableTE ownable = (IOwnableTE) te;
-            ownable.setPlacer(event.player);
         }
     }
 

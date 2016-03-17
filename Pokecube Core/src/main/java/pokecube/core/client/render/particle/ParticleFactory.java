@@ -1,7 +1,7 @@
 package pokecube.core.client.render.particle;
 
-import pokecube.core.utils.Vector4;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 
 public class ParticleFactory
 {

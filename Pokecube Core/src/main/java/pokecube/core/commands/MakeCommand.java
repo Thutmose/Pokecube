@@ -20,11 +20,11 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
+import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 
 public class MakeCommand extends CommandBase

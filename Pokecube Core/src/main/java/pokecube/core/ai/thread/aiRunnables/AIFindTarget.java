@@ -15,12 +15,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.ai.thread.PokemobAIThread;
-import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.TickHandler;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class AIFindTarget extends AIBase implements IAICombat

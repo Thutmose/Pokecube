@@ -28,9 +28,17 @@ public class CommandTools
         return sender.getName().equalsIgnoreCase("@") || sender.getName().equals("Server");
     }
 
-    public static void sendNoPermissions(ICommandSender sender)
+    public static IChatComponent makeError(String text)
     {
-        sender.addChatMessage(makeError("pokecube.command.noperms"));
+        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal(text);
+        IChatComponent message;
+        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+        return message;
+    }
+
+    public static void sendBadArgumentsMissingArg(ICommandSender sender)
+    {
+        sender.addChatMessage(makeError("pokecube.command.invalidmissing"));
     }
 
     public static void sendBadArgumentsTryTab(ICommandSender sender)
@@ -38,9 +46,9 @@ public class CommandTools
         sender.addChatMessage(makeError("pokecube.command.invalidtab"));
     }
 
-    public static void sendBadArgumentsMissingArg(ICommandSender sender)
+    public static void sendError(ICommandSender sender, String text)
     {
-        sender.addChatMessage(makeError("pokecube.command.invalidmissing"));
+        sender.addChatMessage(makeError(text));
     }
 
     public static void sendMessage(ICommandSender sender, String text)
@@ -51,16 +59,8 @@ public class CommandTools
         sender.addChatMessage(message);
     }
 
-    public static void sendError(ICommandSender sender, String text)
+    public static void sendNoPermissions(ICommandSender sender)
     {
-        sender.addChatMessage(makeError(text));
-    }
-
-    public static IChatComponent makeError(String text)
-    {
-        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal(text);
-        IChatComponent message;
-        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-        return message;
+        sender.addChatMessage(makeError("pokecube.command.noperms"));
     }
 }

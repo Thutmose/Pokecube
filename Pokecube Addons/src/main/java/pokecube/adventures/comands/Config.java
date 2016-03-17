@@ -24,9 +24,9 @@ import pokecube.compat.blocks.rf.TileEntitySiphon;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.events.handlers.SpawnHandler;
-import pokecube.core.handlers.ConfigBase;
-import pokecube.core.handlers.Configure;
 import thut.api.terrain.BiomeType;
+import thut.core.common.config.ConfigBase;
+import thut.core.common.config.Configure;
 
 public class Config extends ConfigBase
 {

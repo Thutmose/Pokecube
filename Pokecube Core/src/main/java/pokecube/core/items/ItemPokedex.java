@@ -23,8 +23,8 @@ import pokecube.core.handlers.Config;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.utils.Vector4;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 

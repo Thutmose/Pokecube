@@ -7,8 +7,8 @@ import java.util.HashSet;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
-import pokecube.modelloader.client.render.model.Vertex;
 import pokecube.modelloader.client.render.smd.SkeletonAnimation.SkeletonFrame;
+import thut.core.client.render.model.Vertex;
 
 public class Skeleton
 {

@@ -20,9 +20,9 @@ import pokecube.core.client.render.PTezzelator;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Tools;
-import pokecube.modelloader.client.render.animation.AnimationLoader;
-import pokecube.modelloader.client.render.model.IModelRenderer;
+import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.common.IEntityAnimator;
+import thut.core.client.render.model.IModelRenderer;
 
 public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLiving<T>
 {

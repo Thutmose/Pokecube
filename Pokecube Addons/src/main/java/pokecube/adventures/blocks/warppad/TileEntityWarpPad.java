@@ -22,9 +22,9 @@ import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
-import pokecube.core.utils.Vector4;
 import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityWarpPad extends TileEntityOwnable implements SimpleComponent, IEnergyReceiver

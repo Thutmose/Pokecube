@@ -11,10 +11,10 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.database.Database;
 import pokecube.core.database.abilities.AbilityManager;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
+import thut.api.entity.IMobColourable;
 
 public class GiftCommand extends CommandBase
 {

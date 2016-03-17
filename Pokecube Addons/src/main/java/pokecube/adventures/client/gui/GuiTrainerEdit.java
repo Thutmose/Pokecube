@@ -25,10 +25,10 @@ import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
+import thut.api.entity.IMobColourable;
 
 @SuppressWarnings("deprecation")
 public class GuiTrainerEdit extends GuiScreen

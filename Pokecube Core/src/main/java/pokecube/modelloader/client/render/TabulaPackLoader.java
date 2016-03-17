@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.render.tabula;
+package pokecube.modelloader.client.render;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,22 +32,19 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
-import pokecube.modelloader.client.render.animation.AnimationBuilder;
-import pokecube.modelloader.client.render.animation.AnimationLoader;
-import pokecube.modelloader.client.render.animation.AnimationRandomizer;
-import pokecube.modelloader.client.render.animation.AnimationRegistry;
-import pokecube.modelloader.client.render.animation.AnimationRegistry.IPartRenamer;
-import pokecube.modelloader.client.render.animation.TextureHelper;
-import pokecube.modelloader.client.render.model.IAnimationChanger;
-import pokecube.modelloader.client.render.model.IPartTexturer;
-import pokecube.modelloader.client.render.tabula.components.Animation;
-import pokecube.modelloader.client.render.tabula.components.CubeGroup;
-import pokecube.modelloader.client.render.tabula.components.CubeInfo;
-import pokecube.modelloader.client.render.tabula.components.ModelJson;
-import pokecube.modelloader.client.render.tabula.model.TabulaModelRenderer;
-import pokecube.modelloader.client.render.tabula.model.tabula.TabulaModel;
-import pokecube.modelloader.client.render.tabula.model.tabula.TabulaModelParser;
 import thut.api.maths.Vector3;
+import thut.core.client.render.animation.AnimationBuilder;
+import thut.core.client.render.animation.AnimationRandomizer;
+import thut.core.client.render.animation.AnimationRegistry;
+import thut.core.client.render.animation.AnimationRegistry.IPartRenamer;
+import thut.core.client.render.model.IAnimationChanger;
+import thut.core.client.render.model.IPartTexturer;
+import thut.core.client.render.tabula.components.Animation;
+import thut.core.client.render.tabula.components.CubeGroup;
+import thut.core.client.render.tabula.components.CubeInfo;
+import thut.core.client.render.tabula.components.ModelJson;
+import thut.core.client.render.tabula.model.tabula.TabulaModel;
+import thut.core.client.render.tabula.model.tabula.TabulaModelParser;
 
 public class TabulaPackLoader extends AnimationLoader
 {
@@ -169,15 +166,52 @@ public class TabulaPackLoader extends AnimationLoader
             }
         }
 
+        @Override
+        public int getColourForPart(String partIdentifier, Entity entity, int default_)
+        {
+            if (dyeableIdents.contains(partIdentifier))
+            {
+                int rgba = 0xFF000000;
+                rgba += EnumDyeColor.byDyeDamage(((IPokemob) entity).getSpecialInfo()).getMapColor().colorValue;
+                return rgba;
+            }
+            return default_;
+        }
+
+        @Override
+        public float[] getHeadInfo()
+        {
+            return headInfo;
+        }
+
         /** Returns true of the given identifier matches the part listed as the
          * root of the head.
          * 
          * @param identifier
          * @return */
+        @Override
         public boolean isHeadRoot(String identifier)
         {
             if (!headRoots.isEmpty()) { return headRoots.contains(identifier); }
             return identifier.equals(headRoot);
+        }
+
+        @Override
+        public boolean isPartHidden(String part, Entity entity, boolean default_)
+        {
+            if (shearableIdents.contains(part))
+            {
+                boolean shearable = ((IShearable) entity).isShearable(new ItemStack(Items.shears), entity.worldObj,
+                        entity.getPosition());
+                return !shearable;
+            }
+            return default_;
+        }
+
+        @Override
+        public String modifyAnimation(EntityLiving entity, float partialTicks, String phase)
+        {
+            return animator.modifyAnimation(entity, partialTicks, phase);
         }
 
         public void parse(ResourceLocation animation) throws Exception
@@ -452,42 +486,6 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 processMetadataForCubeInfo(cube1);
             }
-        }
-
-        @Override
-        public String modifyAnimation(EntityLiving entity, float partialTicks, String phase)
-        {
-            return animator.modifyAnimation(entity, partialTicks, phase);
-        }
-
-        @Override
-        public int getColourForPart(String partIdentifier, Entity entity, int default_)
-        {
-            if (dyeableIdents.contains(partIdentifier))
-            {
-                int rgba = 0xFF000000;
-                rgba += EnumDyeColor.byDyeDamage(((IPokemob) entity).getSpecialInfo()).getMapColor().colorValue;
-                return rgba;
-            }
-            return default_;
-        }
-
-        @Override
-        public boolean isPartHidden(String part, Entity entity, boolean default_)
-        {
-            if (shearableIdents.contains(part))
-            {
-                boolean shearable = ((IShearable) entity).isShearable(new ItemStack(Items.shears), entity.worldObj,
-                        entity.getPosition());
-                return !shearable;
-            }
-            return default_;
-        }
-
-        @Override
-        public float[] getHeadInfo()
-        {
-            return headInfo;
         }
     }
 

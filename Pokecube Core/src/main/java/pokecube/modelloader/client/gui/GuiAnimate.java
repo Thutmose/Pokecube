@@ -22,7 +22,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.ModPokecubeML;
-import pokecube.modelloader.client.render.animation.TextureHelper;
+import pokecube.modelloader.client.render.TextureHelper;
 
 public class GuiAnimate extends GuiScreen
 {

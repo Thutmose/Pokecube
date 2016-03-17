@@ -12,10 +12,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IBerryFruitBlock;
-import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.TickHandler;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class AIGatherStuff extends AIBase

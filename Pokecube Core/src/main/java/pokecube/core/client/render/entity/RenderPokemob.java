@@ -26,10 +26,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 
 @SideOnly(Side.CLIENT)

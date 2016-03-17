@@ -25,7 +25,6 @@ import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
-import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -35,6 +34,7 @@ import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */

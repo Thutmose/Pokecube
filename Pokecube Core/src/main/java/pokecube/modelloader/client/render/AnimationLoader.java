@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.render.animation;
+package pokecube.modelloader.client.render;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,14 +22,15 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.utils.Vector4;
 import pokecube.modelloader.ModPokecubeML;
-import pokecube.modelloader.client.render.DefaultIModelRenderer;
 import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
-import pokecube.modelloader.client.render.PartInfo;
-import pokecube.modelloader.client.render.model.IModelRenderer;
-import pokecube.modelloader.client.render.tabula.components.Animation;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
+import thut.core.client.render.animation.AnimationBuilder;
+import thut.core.client.render.animation.AnimationRandomizer;
+import thut.core.client.render.animation.AnimationRegistry;
+import thut.core.client.render.model.IModelRenderer;
+import thut.core.client.render.tabula.components.Animation;
 
 public class AnimationLoader
 {

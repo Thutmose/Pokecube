@@ -150,7 +150,7 @@ public class ComponentPokeMart extends ComponentVillageBase
             int globalZ = getZWithOffset(4, 6);
             try
             {
-                EntityLiving merchant = (EntityLiving) seller.getConstructor(new Class[] { World.class })
+                EntityLiving merchant = seller.getConstructor(new Class[] { World.class })
                         .newInstance(new Object[] { world });
                 merchant.setPosition(globalX, globalY, globalZ);
                 world.spawnEntityInWorld(merchant);

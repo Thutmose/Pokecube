@@ -34,11 +34,11 @@ import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.events.SpawnEvent;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 
 @Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),

@@ -258,6 +258,18 @@ public class Tools
         return pointedEntity;
     }
 
+    public static int getPower(String move, IPokemob user, Entity target)
+    {
+        Move_Base attack = MovesUtils.getMoveFromName(move);
+        int pwr = attack.getPWR(user, target);
+        if (target instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) target;
+            pwr *= PokeType.getAttackEfficiency(attack.getType(user), mob.getType1(), mob.getType2());
+        }
+        return pwr;
+    }
+
     public static byte getRandomIV(Random random)
     {
         return (byte) random.nextInt(32);
@@ -520,18 +532,6 @@ public class Tools
         }
 
         return Math.min(level, 100);
-    }
-
-    public static int getPower(String move, IPokemob user, Entity target)
-    {
-        Move_Base attack = MovesUtils.getMoveFromName(move);
-        int pwr = attack.getPWR(user, target);
-        if (target instanceof IPokemob)
-        {
-            IPokemob mob = (IPokemob) target;
-            pwr *= PokeType.getAttackEfficiency(attack.getType(user), mob.getType1(), mob.getType2());
-        }
-        return pwr;
     }
 
     public Tools()

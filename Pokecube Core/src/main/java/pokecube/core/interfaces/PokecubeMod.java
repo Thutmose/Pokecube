@@ -209,9 +209,9 @@ public abstract class PokecubeMod
      *            the pokedex number */
     public abstract void registerPokemon(boolean createEgg, Object mod, int pokedexNb);
 
-    public abstract void registerPokemon(boolean createEgg, Object mod, String name);
-
     public abstract void registerPokemon(boolean createEgg, Object mod, PokedexEntry entry);
+
+    public abstract void registerPokemon(boolean createEgg, Object mod, String name);
 
     @SuppressWarnings("rawtypes")
     public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry);

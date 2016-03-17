@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 import org.lwjgl.util.vector.Matrix4f;
 
-import pokecube.modelloader.client.render.model.VectorMath;
 import pokecube.modelloader.client.render.smd.Skeleton.Bone;
+import thut.core.client.render.model.VectorMath;
 
 public class SkeletonAnimation
 {

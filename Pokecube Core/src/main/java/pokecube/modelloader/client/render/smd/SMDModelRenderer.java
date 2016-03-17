@@ -14,28 +14,33 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.modelloader.client.render.model.IAnimationChanger;
-import pokecube.modelloader.client.render.model.IModelRenderer;
-import pokecube.modelloader.client.render.model.IPartTexturer;
+import pokecube.core.interfaces.PokecubeMod;
+import thut.core.client.render.model.IAnimationChanger;
+import thut.core.client.render.model.IModelRenderer;
+import thut.core.client.render.model.IPartTexturer;
 
 public class SMDModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T> implements IModelRenderer<T>
 {
-    public IAnimationChanger animator;
-    public SMDModel          model;
-    public String            currentPhase = "idle";
+    public static final ResourceLocation FRZ          = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
+    public static final ResourceLocation PAR          = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
+    public IAnimationChanger             animator;
+    public SMDModel                      model;
+    public String                        currentPhase = "idle";
 
-    boolean         blend;
+    boolean                              blend;
 
-    boolean         light;
+    boolean                              light;
 
-    int             src;
+    int                                  src;
 
-    int             dst;
-    private boolean statusRender = false;
+    int                                  dst;
+    private boolean                      statusRender = false;
+
     public SMDModelRenderer(RenderManager renderManagerIn)
     {
         super(renderManagerIn, null, 0);
     }
+
     @Override
     public void doRender(T entity, double d, double d1, double d2, float f, float partialTick)
     {
@@ -84,6 +89,7 @@ public class SMDModelRenderer<T extends EntityLiving> extends RendererLivingEnti
         model.render();
         GL11.glPopMatrix();
     }
+
     @Override
     protected ResourceLocation getEntityTexture(T var1)
     {

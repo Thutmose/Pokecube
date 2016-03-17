@@ -2,7 +2,7 @@ package pokecube.modelloader.common;
 
 import java.io.File;
 
-import pokecube.core.handlers.ConfigBase;
+import thut.core.common.config.ConfigBase;
 
 public class Config extends ConfigBase
 {

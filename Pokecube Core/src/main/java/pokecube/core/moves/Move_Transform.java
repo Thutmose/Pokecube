@@ -8,13 +8,13 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.IWorldAccess;
-import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.templates.Move_Basic;
+import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */

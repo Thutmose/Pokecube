@@ -27,8 +27,8 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.CommonProxy;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.gui.GuiAnimate;
-import pokecube.modelloader.client.render.animation.AnimationLoader;
-import pokecube.modelloader.client.render.tabula.TabulaPackLoader;
+import pokecube.modelloader.client.render.AnimationLoader;
+import pokecube.modelloader.client.render.TabulaPackLoader;
 import pokecube.modelloader.items.ItemModelReloader;
 
 /** @author Manchou */

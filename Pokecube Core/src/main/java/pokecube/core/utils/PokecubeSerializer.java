@@ -39,6 +39,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 
 /** @author Manchou */
 public class PokecubeSerializer

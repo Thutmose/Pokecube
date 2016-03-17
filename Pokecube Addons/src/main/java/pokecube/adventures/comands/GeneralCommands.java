@@ -17,8 +17,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.commands.CommandTools;
-import pokecube.core.handlers.Configure;
 import scala.actors.threadpool.Arrays;
+import thut.core.common.config.Configure;
 
 public class GeneralCommands implements ICommand
 {

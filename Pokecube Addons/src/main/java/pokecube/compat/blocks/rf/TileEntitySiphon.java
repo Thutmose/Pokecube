@@ -23,9 +23,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokeType;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")

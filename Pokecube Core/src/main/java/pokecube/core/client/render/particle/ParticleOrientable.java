@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.render.PTezzelator;
-import pokecube.core.utils.Vector4;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 
 public class ParticleOrientable extends ParticleBase
 {

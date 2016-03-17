@@ -1,10 +1,10 @@
 package pokecube.core.ai.thread.aiRunnables;
 
 import net.minecraft.entity.passive.EntityAnimal;
-import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.TickHandler;
+import thut.api.entity.IBreedingMob;
 
 public class AIMate extends AIBase
 {

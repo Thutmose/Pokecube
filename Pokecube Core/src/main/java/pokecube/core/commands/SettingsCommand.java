@@ -16,9 +16,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 import pokecube.core.handlers.Config;
-import pokecube.core.handlers.Configure;
 import pokecube.core.interfaces.PokecubeMod;
 import scala.actors.threadpool.Arrays;
+import thut.core.common.config.Configure;
 
 public class SettingsCommand extends CommandBase
 {

@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.render.animation;
+package pokecube.modelloader.client.render;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.modelloader.client.render.model.IPartTexturer;
+import thut.core.client.render.model.IPartTexturer;
 
 public class TextureHelper implements IPartTexturer
 {

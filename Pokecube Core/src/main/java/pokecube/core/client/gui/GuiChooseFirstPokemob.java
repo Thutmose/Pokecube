@@ -34,7 +34,6 @@ import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -42,6 +41,7 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
+import thut.api.entity.IMobColourable;
 
 @SuppressWarnings("deprecation")
 public class GuiChooseFirstPokemob extends GuiScreen

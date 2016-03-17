@@ -29,6 +29,8 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
+import thut.core.common.config.ConfigBase;
+import thut.core.common.config.Configure;
 
 public class Config extends ConfigBase
 {

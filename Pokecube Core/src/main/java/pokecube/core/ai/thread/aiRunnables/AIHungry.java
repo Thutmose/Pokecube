@@ -12,13 +12,13 @@ import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.util.EnumFacing;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IBerryFruitBlock;
-import pokecube.core.interfaces.IBreedingMob;
-import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.ItemBerry;
 import thut.api.TickHandler;
+import thut.api.entity.IBreedingMob;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class AIHungry extends AIBase

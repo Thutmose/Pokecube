@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.render.tabula.model;
+package pokecube.modelloader.client.render;
 
 import org.lwjgl.opengl.GL11;
 
@@ -15,16 +15,19 @@ import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.modelloader.client.render.model.IModelRenderer;
-import pokecube.modelloader.client.render.model.IPartTexturer;
-import pokecube.modelloader.client.render.tabula.TabulaPackLoader;
-import pokecube.modelloader.client.render.tabula.TabulaPackLoader.TabulaModelSet;
-import pokecube.modelloader.client.render.tabula.components.ModelJson;
-import pokecube.modelloader.client.render.tabula.model.tabula.TabulaModel;
-import pokecube.modelloader.client.render.tabula.model.tabula.TabulaModelParser;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.modelloader.client.render.TabulaPackLoader.TabulaModelSet;
+import thut.core.client.render.model.IModelRenderer;
+import thut.core.client.render.model.IPartTexturer;
+import thut.core.client.render.tabula.components.ModelJson;
+import thut.core.client.render.tabula.model.IModelParser;
+import thut.core.client.render.tabula.model.tabula.TabulaModel;
+import thut.core.client.render.tabula.model.tabula.TabulaModelParser;
 
 public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T> implements IModelRenderer<T>
 {
+    public static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
+    public static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
     private String        phase        = "";
     public TabulaModelSet set;
     private boolean       statusRender = false;

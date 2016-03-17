@@ -19,22 +19,22 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.utils.Vector4;
-import pokecube.modelloader.client.render.animation.AnimationHelper;
-import pokecube.modelloader.client.render.animation.AnimationLoader.Model;
-import pokecube.modelloader.client.render.animation.TextureHelper;
-import pokecube.modelloader.client.render.model.IAnimationChanger;
-import pokecube.modelloader.client.render.model.IExtendedModelPart;
-import pokecube.modelloader.client.render.model.IModel;
-import pokecube.modelloader.client.render.model.IModelRenderer;
-import pokecube.modelloader.client.render.model.IPartTexturer;
-import pokecube.modelloader.client.render.model.IRetexturableModel;
-import pokecube.modelloader.client.render.tabula.components.Animation;
-import pokecube.modelloader.client.render.x3d.X3dModel;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.modelloader.client.render.AnimationLoader.Model;
+import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
+import thut.core.client.render.animation.AnimationHelper;
+import thut.core.client.render.model.IAnimationChanger;
+import thut.core.client.render.model.IExtendedModelPart;
+import thut.core.client.render.model.IModel;
+import thut.core.client.render.model.IModelRenderer;
+import thut.core.client.render.model.IPartTexturer;
+import thut.core.client.render.model.IRetexturableModel;
+import thut.core.client.render.tabula.components.Animation;
+import thut.core.client.render.x3d.X3dModel;
 
 public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T> implements IModelRenderer<T>
 {
@@ -92,6 +92,10 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
             return "|r:" + rotations + "|t:" + time;
         }
     }
+    public static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
+
+    public static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
+
     public static final String          DEFAULTPHASE   = "idle";
     public String                       name;
     public String                       currentPhase   = "idle";
@@ -125,13 +129,13 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
 
     private boolean                     statusRender   = false;
 
-    boolean blend;
+    boolean                             blend;
 
-    boolean light;
+    boolean                             light;
 
-    int     src;
+    int                                 src;
 
-    int     dst;
+    int                                 dst;
 
     public DefaultIModelRenderer(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global,
             Model model)
@@ -393,6 +397,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
     {
         currentPhase = phase;
     }
+
     public void setRotationAngles(Vector4 rotations)
     {
         rotateAngle = rotations.w;
@@ -400,12 +405,14 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
         rotateAngleY = rotations.y;
         rotateAngleZ = rotations.z;
     }
+
     public void setRotationPoint(float par1, float par2, float par3)
     {
         this.rotationPointX = par1;
         this.rotationPointY = par2;
         this.rotationPointZ = par3;
     }
+
     public void setRotationPoint(Vector3 point)
     {
         setRotationPoint((float) point.x, (float) point.y, (float) point.z);

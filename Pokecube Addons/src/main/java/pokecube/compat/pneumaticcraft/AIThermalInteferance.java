@@ -6,9 +6,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Loader;
 import pokecube.core.database.abilities.AbilityManager;
-import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class AIThermalInteferance extends EntityAIBase

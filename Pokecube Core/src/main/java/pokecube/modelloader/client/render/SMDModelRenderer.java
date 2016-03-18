@@ -1,4 +1,4 @@
-package pokecube.modelloader.client.render.smd;
+package pokecube.modelloader.client.render;
 
 import org.lwjgl.opengl.GL11;
 
@@ -18,6 +18,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IModelRenderer;
 import thut.core.client.render.model.IPartTexturer;
+import thut.core.client.render.smd.SMDModel;
 
 public class SMDModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T> implements IModelRenderer<T>
 {

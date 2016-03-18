@@ -309,6 +309,10 @@ public class TextureHelper implements IPartTexturer
     {
         if (bindPerState(part)) return;
         String texName = texNames.containsKey(part) ? texNames.get(part) : default_path;
+        if(texName == null || texName.trim().isEmpty())
+        {
+            texNames.put(part, default_path);
+        }
         ResourceLocation tex = getResource(texName);
         TexState state;
         String texMod;

@@ -50,6 +50,7 @@ public class AnimationLoader
         }
 
     }
+
     public static final String                    MODELPATH   = "models/pokemobs/";
 
     public static boolean                         loaded      = false;
@@ -303,7 +304,6 @@ public class AnimationLoader
             {
                 Node modelNode = modelList.item(i);
                 String modelName = model.name;
-                HashMap<String, PartInfo> parts = new HashMap<String, PartInfo>();
                 HashMap<String, ArrayList<Vector5>> phaseList = new HashMap<String, ArrayList<Vector5>>();
                 NodeList partsList = modelNode.getChildNodes();
                 for (int j = 0; j < partsList.getLength(); j++)
@@ -402,9 +402,9 @@ public class AnimationLoader
                 if (renderer instanceof DefaultIModelRenderer) loaded = (DefaultIModelRenderer) renderer;
                 if (loaded == null)
                 {
-                    loaded = new DefaultIModelRenderer(parts, phaseList, model);
+                    loaded = new DefaultIModelRenderer(phaseList, model);
                 }
-                loaded.updateModel(parts, phaseList, model);
+                loaded.updateModel(phaseList, model);
                 loaded.offset.set(offset);
                 loaded.scale.set(scale);
                 loaded.rotations = rotation;
@@ -481,12 +481,11 @@ public class AnimationLoader
             if (renderer instanceof DefaultIModelRenderer) loaded = (DefaultIModelRenderer) renderer;
             if (loaded == null)
             {
-                loaded = new DefaultIModelRenderer(new HashMap<String, PartInfo>(),
-                        new HashMap<String, ArrayList<Vector5>>(), model);
+                loaded = new DefaultIModelRenderer(new HashMap<String, ArrayList<Vector5>>(), model);
             }
             else
             {
-                loaded.updateModel(new HashMap<String, PartInfo>(), new HashMap<String, ArrayList<Vector5>>(), model);
+                loaded.updateModel(new HashMap<String, ArrayList<Vector5>>(), model);
             }
             models.put(model.name, model);
             modelMaps.put(model.name, loaded);

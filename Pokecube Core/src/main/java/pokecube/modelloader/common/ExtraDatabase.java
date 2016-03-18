@@ -29,18 +29,10 @@ public class ExtraDatabase
     @XmlRootElement(name = "ModelAnimator")
     public static class XMLFile
     {
-        @XmlElement(name = "model")
-        XMLModel        model;
         @XmlElement(name = "details")
         XMLDetails      details;
         @XmlElement(name = "Pokemon")
         XMLPokedexEntry entry;
-    }
-
-    @XmlRootElement(name = "model")
-    public static class XMLModel
-    {
-
     }
 
     static HashMap<String, String>          xmls;

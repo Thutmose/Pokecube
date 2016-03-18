@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
@@ -27,6 +28,7 @@ import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.core.client.render.animation.AnimationHelper;
+import thut.core.client.render.mca.McaModel;
 import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.model.IModel;
@@ -92,59 +94,58 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
             return "|r:" + rotations + "|t:" + time;
         }
     }
-    public static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
 
-    public static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
+    public static final ResourceLocation FRZ            = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
+    public static final ResourceLocation PAR            = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
 
-    public static final String          DEFAULTPHASE   = "idle";
-    public String                       name;
-    public String                       currentPhase   = "idle";
-    HashMap<String, PartInfo>           parts;
-    HashMap<String, ArrayList<Vector5>> global;
-    public HashMap<String, Animation>   animations     = new HashMap<String, Animation>();
-    public Set<String>                  headParts      = Sets.newHashSet();
-    public TextureHelper                texturer;
+    public static final String           DEFAULTPHASE   = "idle";
+    public String                        name;
+    public String                        currentPhase   = "idle";
+    HashMap<String, PartInfo>            parts          = Maps.newHashMap();
+    HashMap<String, ArrayList<Vector5>>  global;
+    public HashMap<String, Animation>    animations     = new HashMap<String, Animation>();
+    public Set<String>                   headParts      = Sets.newHashSet();
+    public TextureHelper                 texturer;
 
-    public IAnimationChanger            animator;;
-    public Vector3                      offset         = Vector3.getNewVector();;
-    public Vector3                      scale          = Vector3.getNewVector();
+    public IAnimationChanger             animator;;
+    public Vector3                       offset         = Vector3.getNewVector();;
+    public Vector3                       scale          = Vector3.getNewVector();
 
-    public Vector5                      rotations      = new Vector5();
+    public Vector5                       rotations      = new Vector5();
 
-    public IModel                       model;
-    public int                          headDir        = 2;
-    public int                          headAxis       = 2;
-    public int                          headAxis2      = 0;
+    public IModel                        model;
+    public int                           headDir        = 2;
+    public int                           headAxis       = 2;
+    public int                           headAxis2      = 0;
     /** A set of names of shearable parts. */
-    public Set<String>                  shearableParts = Sets.newHashSet();
+    public Set<String>                   shearableParts = Sets.newHashSet();
 
     /** A set of namess of dyeable parts. */
-    public Set<String>                  dyeableParts   = Sets.newHashSet();
-    public float[]                      headCaps       = { -180, 180 };
+    public Set<String>                   dyeableParts   = Sets.newHashSet();
+    public float[]                       headCaps       = { -180, 180 };
 
-    public float[]                      headCaps1      = { -20, 40 };
-    public float                        rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
-    public float                        rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
-    ResourceLocation                    texture;
+    public float[]                       headCaps1      = { -20, 40 };
+    public float                         rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
+    public float                         rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
+    ResourceLocation                     texture;
 
-    private boolean                     statusRender   = false;
+    private boolean                      statusRender   = false;
 
-    boolean                             blend;
+    boolean                              blend;
 
-    boolean                             light;
+    boolean                              light;
 
-    int                                 src;
+    int                                  src;
 
-    int                                 dst;
+    int                                  dst;
 
-    public DefaultIModelRenderer(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global,
-            Model model)
+    public DefaultIModelRenderer(HashMap<String, ArrayList<Vector5>> global, Model model)
     {
         super(Minecraft.getMinecraft().getRenderManager(), null, 0);
         name = model.name;
-        this.parts = parts;
         this.texture = model.texture;
         if (model.model.getResourcePath().contains(".x3d")) this.model = new X3dModel(model.model);
+        if (model.model.getResourcePath().contains(".mca")) this.model = new McaModel(model.model);
 
         if (this.model == null) { return; }
 
@@ -463,12 +464,10 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
         }
     }
 
-    public void updateModel(HashMap<String, PartInfo> parts, HashMap<String, ArrayList<Vector5>> global, Model model)
+    public void updateModel(HashMap<String, ArrayList<Vector5>> global, Model model)
     {
         name = model.name;
-        this.parts = parts;
         this.texture = model.texture;
-        if (model.model.getResourcePath().contains(".x3d")) this.model = new X3dModel(model.model);
         initModelParts();
         this.global = global;
     }

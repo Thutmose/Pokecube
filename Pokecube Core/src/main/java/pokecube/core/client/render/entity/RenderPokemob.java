@@ -339,11 +339,11 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             PokedexEntry entry = mob.getPokedexEntry();
 
             if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IMoveConstants.SHOULDER)
-                    && ((Entity) mob).ridingEntity != null)
+                    && ((Entity) mob).getRidingEntity() != null)
             {
                 GL11.glTranslated(1 - entry.width / 2, 0, 0);
             }
-            else if (mob.getPokemonAIState(IMoveConstants.HELD) && ((Entity) mob).ridingEntity instanceof EntityLivingBase)
+            else if (mob.getPokemonAIState(IMoveConstants.HELD) && ((Entity) mob).getRidingEntity() instanceof EntityLivingBase)
             {
                 Vector3 look = v.set(-0.5, 0.5, -0.5);
                 GL11.glTranslated(look.x, ((Entity) mob).height + 1 - look.y, look.z);

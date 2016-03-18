@@ -27,15 +27,15 @@ import pokecube.core.network.PokecubePacketHandler;
 
 public class GuiTradingTable extends GuiContainer
 {
-    public final static float POKEDEX_RENDER = 1.5f;
-    private float yRenderAngle = 10;
+    public final static float    POKEDEX_RENDER   = 1.5f;
+    private float                yRenderAngle     = 10;
 
-    private float xRenderAngle = 0;
-    private float yHeadRenderAngle = 10;
+    private float                xRenderAngle     = 0;
+    private float                yHeadRenderAngle = 10;
 
-    private float xHeadRenderAngle = 0;
+    private float                xHeadRenderAngle = 0;
 
-    protected EntityPlayer entityPlayer = null;
+    protected EntityPlayer       entityPlayer     = null;
 
     final TileEntityTradingTable table;
 
@@ -209,7 +209,7 @@ public class GuiTradingTable extends GuiContainer
         entity.limbSwingAmount = 0;
         entity.onGround = ((IPokemob) entity).getType1() != flying && ((IPokemob) entity).getType2() != flying;
 
-        Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, 0, 0, 0, POKEDEX_RENDER);
+        Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
         GL11.glPopMatrix();
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);

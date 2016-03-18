@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.client.models.ModelRing;
@@ -14,9 +15,9 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
 {
     private ModelRing ring = new ModelRing();
 
-    private final RendererLivingEntity<?> livingEntityRenderer;
+    private final RenderLivingBase<?> livingEntityRenderer;
 
-    public RingRenderer(RendererLivingEntity<?> livingEntityRendererIn)
+    public RingRenderer(RenderLivingBase<?> livingEntityRendererIn)
     {
         this.livingEntityRenderer = livingEntityRendererIn;
     }
@@ -25,19 +26,19 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
     public void doRenderLayer(EntityPlayer player, float f, float f1, float partialTicks, float f3, float f4, float f5,
             float scale)
     {
-        InventoryBaubles inv = PlayerHandler.getPlayerBaubles(player);
+//        InventoryBaubles inv = PlayerHandler.getPlayerBaubles(player);//TODO baubles
 
         boolean left = false;
         boolean right = false;
 
-        if (inv.getStackInSlot(1) != null && inv.getStackInSlot(1).getItem() instanceof ItemMegaring)
-        {
-            right = true;
-        }
-        if (inv.getStackInSlot(2) != null && inv.getStackInSlot(2).getItem() instanceof ItemMegaring)
-        {
-            left = true;
-        }
+//        if (inv.getStackInSlot(1) != null && inv.getStackInSlot(1).getItem() instanceof ItemMegaring)
+//        {
+//            right = true;
+//        }
+//        if (inv.getStackInSlot(2) != null && inv.getStackInSlot(2).getItem() instanceof ItemMegaring)
+//        {
+//            left = true;
+//        }
 
         boolean thin = ((AbstractClientPlayer) player).getSkinType().equals("slim");
 

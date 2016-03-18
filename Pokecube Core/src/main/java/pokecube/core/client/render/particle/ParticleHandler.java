@@ -69,11 +69,11 @@ public class ParticleHandler
                 source.x = player.prevPosX - player.posX;
                 source.y = player.prevPosY - player.posY;
                 source.z = player.prevPosZ - player.posZ;
-                source.scalarMultBy(event.renderPartialTicks);
+                source.scalarMultBy(event.getRenderPartialTicks());
                 GL11.glTranslated(source.x, source.y, source.z);
                 // TODO see about fixing the slight movement that occurs when
                 // the player stops or starts moving
-                particle.render(event.renderPartialTicks);
+                particle.render(event.getRenderPartialTicks());
                 GL11.glPopMatrix();
             }
             // particles.clear();
@@ -82,10 +82,10 @@ public class ParticleHandler
             {
                 IParticle particle = this.particles.get(e);
 
-                if (particle.lastTick() != event.entity.worldObj.getTotalWorldTime())
+                if (particle.lastTick() != event.getEntity().worldObj.getTotalWorldTime())
                 {
                     particle.setDuration(particle.getDuration() - 1);
-                    particle.setLastTick(event.entity.worldObj.getTotalWorldTime());
+                    particle.setLastTick(event.getEntity().worldObj.getTotalWorldTime());
                 }
             }
             HashSet<Vector3> toRemove = new HashSet<Vector3>();

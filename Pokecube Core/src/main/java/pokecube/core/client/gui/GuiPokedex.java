@@ -28,6 +28,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -66,42 +67,42 @@ import thut.api.terrain.TerrainSegment;
 
 public class GuiPokedex extends GuiScreen
 {
-    public static PokedexEntry pokedexEntry = null;
-    public static Vector3 closestVillage = Vector3.getNewVector();
+    public static PokedexEntry                    pokedexEntry       = null;
+    public static Vector3                         closestVillage     = Vector3.getNewVector();
 
-    private static final int PAGECOUNT = 5;
+    private static final int                      PAGECOUNT          = 5;
 
     private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
 
     /** to pass as last parameter when rendering the mob so that the render
      * knows the rendering is asked by the pokedex gui */
-    public final static float POKEDEX_RENDER = 1.5f;
+    public final static float                     POKEDEX_RENDER     = 1.5f;
 
-    protected IPokemob     pokemob      = null;
-    protected EntityPlayer entityPlayer = null;
-    protected GuiTextField nicknameTextField;
+    protected IPokemob                            pokemob            = null;
+    protected EntityPlayer                        entityPlayer       = null;
+    protected GuiTextField                        nicknameTextField;
     /** The X size of the inventory window in pixels. */
-    protected int xSize = 253;
+    protected int                                 xSize              = 253;
     /** The Y size of the inventory window in pixels. */
-    protected int ySize            = 180; // old:166
+    protected int                                 ySize              = 180;                                 // old:166
 
-    private float xRenderAngle     = 0;
-    private float yHeadRenderAngle = 10;
-    private float xHeadRenderAngle = 0;
+    private float                                 xRenderAngle       = 0;
+    private float                                 yHeadRenderAngle   = 10;
+    private float                                 xHeadRenderAngle   = 0;
 
-    private int   mouseRotateControl;
+    private int                                   mouseRotateControl;
 
-    private int page   = 0;
+    private int                                   page               = 0;
 
-    private int index  = 0;
+    private int                                   index              = 0;
 
-    private int index2 = 0;
+    private int                                   index2             = 0;
 
-    List<Integer> biomes = new ArrayList<Integer>();
+    List<Integer>                                 biomes             = new ArrayList<Integer>();
 
-    int prevX = 0;
+    int                                           prevX              = 0;
 
-    int prevY = 0;
+    int                                           prevY              = 0;
 
     /**
      *
@@ -125,11 +126,13 @@ public class GuiPokedex extends GuiScreen
             pokedexEntry = Pokedex.getInstance().getFirstEntry();
         }
 
-        for (BiomeGenBase b : BiomeGenBase.getBiomeGenArray())
+        for (ResourceLocation key : BiomeGenBase.biomeRegistry.getKeys())
         {
+            BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(key);
             if (b != null)
             {
-                biomes.add(b.biomeID);
+                int id = BiomeGenBase.getIdForBiome(b);
+                biomes.add(id);
             }
         }
         for (BiomeType b : BiomeType.values())
@@ -144,6 +147,7 @@ public class GuiPokedex extends GuiScreen
                 && ((pokemob.getPokemonAIState(IMoveConstants.TAMED) && entityPlayer == pokemob.getPokemonOwner())
                         || entityPlayer.capabilities.isCreativeMode);
     }
+
     @Override
     public boolean doesGuiPauseGame()
     {
@@ -283,7 +287,7 @@ public class GuiPokedex extends GuiScreen
         if (index2 < 0) index2 = biomes.size() - 2;
         index2 = Math.max(0, index2 % (biomes.size() - 1));
 
-        String getBiomeName() = BiomeDatabase.getNameFromType(biomes.get(index2));
+        String biomeName = BiomeDatabase.getNameFromType(biomes.get(index2));
         int n = 0;
         ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
 
@@ -324,7 +328,7 @@ public class GuiPokedex extends GuiScreen
 
             if (dbe.getSpawnData().types[SpawnData.DAY]) time = time + "D";
             if (dbe.getSpawnData().types[SpawnData.NIGHT]) time = time + "N";
-            if (cave && !getBiomeName().toLowerCase().contains("cave"))
+            if (cave && !biomeName.toLowerCase().contains("cave"))
             {
                 time = time + "C";
             }
@@ -804,12 +808,7 @@ public class GuiPokedex extends GuiScreen
             {
                 volume = 1F;
             }
-            // mod_Pokecube.getWorld().playSoundAtEntity(entityPlayer,
-            // pokedexEntry.getSound(), volume, 1.0F);
-            mc.theWorld.playSoundAtEntity(mc.thePlayer, pokedexEntry.getSound(), volume, 1.0F);// .playSoundFX(pokedexEntry.getSound(),
-                                                                                               // volume,
-                                                                                               // 1.0F);
-            mc.thePlayer.playSound(pokedexEntry.getSound(), volume, 1.0F);
+            mc.thePlayer.playSound(pokedexEntry.getSoundEvent(), volume, 1.0F);
 
             nicknameTextField.setVisible(true);
             if (canEditPokemob())
@@ -865,7 +864,8 @@ public class GuiPokedex extends GuiScreen
         {
             page = (page + 1) % PAGECOUNT;
 
-            if (entityPlayer.getHeldItemMainhand() != null && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
+            if (entityPlayer.getHeldItemMainhand() != null
+                    && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
                 // entityPlayer.getHeldItemMainhand().setItemDamage(page);
                 PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
@@ -893,7 +893,8 @@ public class GuiPokedex extends GuiScreen
             page = (page - 1) % PAGECOUNT;
             if (page < 0) page = PAGECOUNT - 1;
 
-            if (entityPlayer.getHeldItemMainhand() != null && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
+            if (entityPlayer.getHeldItemMainhand() != null
+                    && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
                 // entityPlayer.getHeldItemMainhand().setItemDamage(page);
                 PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 5,
@@ -1280,32 +1281,11 @@ public class GuiPokedex extends GuiScreen
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
             RenderHelper.enableStandardItemLighting();
-            Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, 0, 0, 1, POKEDEX_RENDER);
+            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 1, POKEDEX_RENDER, false);
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
             GL11.glPopMatrix();
-
-            // GL11.glPushMatrix();
-            //
-            // float offset = 1.6f;
-            //
-            // float f, f1, f2;
-            // f = entityPlayer.rotationPitch;
-            // f1 = entityPlayer.rotationYaw;
-            // f2 = entityPlayer.rotationYawHead;
-            //
-            // entityPlayer.rotationPitch = 00;
-            // entityPlayer.renderYawOffset = 50;
-            // entityPlayer.rotationYawHead = 40;
-            // Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entityPlayer,
-            // offset + entity.width / 2f,
-            // 1.0D, 1.0D, 1.0F, 1.0F);
-            //
-            // entityPlayer.rotationPitch = f;
-            // entityPlayer.renderYawOffset = f1;
-            // entityPlayer.rotationYawHead = f2;
-            // GL11.glPopMatrix();
 
         }
         catch (Throwable e)

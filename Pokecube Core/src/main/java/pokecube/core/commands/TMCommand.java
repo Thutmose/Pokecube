@@ -8,10 +8,12 @@ import java.util.List;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import pokecube.core.PokecubeItems;
@@ -29,7 +31,8 @@ public class TMCommand extends CommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+            BlockPos pos)
     {
         Collection<String> moves = MovesUtils.moves.keySet();
         List<String> ret = new ArrayList<String>();
@@ -57,7 +60,7 @@ public class TMCommand extends CommandBase
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         return true;
     }
@@ -88,7 +91,7 @@ public class TMCommand extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         EntityPlayerMP[] targets = null;
         for (int i = 1; i < args.length; i++)
@@ -97,7 +100,7 @@ public class TMCommand extends CommandBase
             if (s.contains("@"))
             {
                 ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(
-                        PlayerSelector.matchEntities(sender, s, EntityPlayer.class));
+                        EntitySelector.matchEntities(sender, s, EntityPlayer.class));
                 targets = targs.toArray(new EntityPlayerMP[0]);
             }
         }

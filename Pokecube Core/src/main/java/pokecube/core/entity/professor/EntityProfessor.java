@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.commands.CommandTools;
@@ -94,7 +95,7 @@ public class EntityProfessor extends EntityAgeable
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player player)
+    public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
         if (!worldObj.isRemote)
         {

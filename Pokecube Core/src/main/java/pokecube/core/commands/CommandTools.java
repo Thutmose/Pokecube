@@ -20,7 +20,7 @@ public class CommandTools
         if (sender instanceof EntityPlayer)
         {
             EntityPlayer player = sender.getEntityWorld().getPlayerEntityByName(sender.getName());
-            UserListOpsEntry userentry = ((EntityPlayerMP) player).mcServer.getConfigurationManager().getOppedPlayers()
+            UserListOpsEntry userentry = ((EntityPlayerMP) player).mcServer.getPlayerList().getOppedPlayers()
                     .getEntry(player.getGameProfile());
             return userentry != null && userentry.getPermissionLevel() >= 4;
         }

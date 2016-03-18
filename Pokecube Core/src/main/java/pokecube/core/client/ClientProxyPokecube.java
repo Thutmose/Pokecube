@@ -43,6 +43,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -148,7 +149,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
         if (PokecubeCore.isOnClientSide())
         {
-            MovingObjectPosition objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
+            RayTraceResult objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
 
             if (objectClicked != null)
             {

@@ -25,13 +25,13 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
 {
     public static boolean shouldShow(EntityLivingBase entity)
     {
-        if (((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI || entity.riddenByEntity != null)
+        if (((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI || entity.isBeingRidden())
         {
             return false;
         }
 
         EntityLivingBase player = Minecraft.getMinecraft().thePlayer;
-        if(!entity.addedToChunk || entity.ridingEntity == player)return false;
+        if(!entity.addedToChunk || entity.getRidingEntity() == player)return false;
         float d = entity.getDistanceToEntity(player);
         IPokemob pokemob = ((IPokemob) entity);
         boolean tameFactor = pokemob.getPokemonAIState(IMoveConstants.TAMED) && !pokemob.getPokemonAIState(IMoveConstants.STAYING); 

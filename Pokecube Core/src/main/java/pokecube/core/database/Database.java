@@ -200,7 +200,7 @@ public class Database implements IMoveConstants
 
     private static ArrayList<String> getFile(String file)
     {
-        InputStream res = (net.minecraft.util.StringTranslate.class).getResourceAsStream(file);
+        InputStream res = (Database.class).getResourceAsStream(file);
 
         ArrayList<String> rows = new ArrayList<String>();
         BufferedReader br = null;
@@ -431,7 +431,7 @@ public class Database implements IMoveConstants
 
     private static ArrayList<ArrayList<String>> getRows(String file)
     {
-        InputStream res = (net.minecraft.util.StringTranslate.class).getResourceAsStream(file);
+        InputStream res = (Database.class).getResourceAsStream(file);
 
         ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
         BufferedReader br = null;

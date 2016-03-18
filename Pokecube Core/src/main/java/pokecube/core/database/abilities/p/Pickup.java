@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IPokemob;
@@ -36,7 +37,7 @@ public class Pickup extends Ability
                 Collections.shuffle(items);
                 ItemStack item = (ItemStack) items.get(0);
 
-                if (item != null) poke.setCurrentItemOrArmor(0, item.copy());
+                if (item != null) poke.setHeldItem(EnumHand.MAIN_HAND, item);;
             }
         }
     }

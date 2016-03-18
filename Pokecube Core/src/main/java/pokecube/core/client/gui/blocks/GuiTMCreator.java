@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
@@ -201,11 +202,11 @@ public class GuiTMCreator extends GuiContainer
         {
             if (par2 == this.mc.gameSettings.keyBindPickBlock.getKeyCode())
             {
-                this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, 0, 3);
+                this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, 0, ClickType.CLONE);
             }
             else if (par2 == this.mc.gameSettings.keyBindDrop.getKeyCode())
             {
-                this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, isCtrlKeyDown() ? 1 : 0, 4);
+                this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, isCtrlKeyDown() ? 1 : 0, ClickType.THROW);
             }
         }
     }

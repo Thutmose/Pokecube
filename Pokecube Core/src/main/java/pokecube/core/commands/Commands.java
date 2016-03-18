@@ -6,12 +6,15 @@ import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
@@ -40,7 +43,8 @@ public class Commands implements ICommand
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+            BlockPos pos)
     {
         boolean isOp = CommandTools.isOp(sender);
         if (args[0].isEmpty())
@@ -76,7 +80,7 @@ public class Commands implements ICommand
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         return true;
     }
@@ -386,8 +390,8 @@ public class Commands implements ICommand
                             PokecubeClientPacket packet = new PokecubeClientPacket(buf);
                             PokecubePacketHandler.sendToClient(packet, player);
 
-                            cSender.addChatMessage(new TextComponentString(I18n
-                                    .translateToLocalFormatted("pokecube.command.reset", player.getName())));
+                            cSender.addChatMessage(new TextComponentString(
+                                    I18n.translateToLocalFormatted("pokecube.command.reset", player.getName())));
                             CommandTools.sendMessage(player, "pokecube.command.canchoose");
                         }
                     }
@@ -439,11 +443,11 @@ public class Commands implements ICommand
     }
 
     @Override
-    public void processCommand(ICommandSender cSender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
-            CommandTools.sendBadArgumentsTryTab(cSender);
+            CommandTools.sendBadArgumentsTryTab(sender);
             return;
         }
         EntityPlayerMP[] targets = null;
@@ -453,13 +457,13 @@ public class Commands implements ICommand
             if (s.contains("@"))
             {
                 ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(
-                        PlayerSelector.matchEntities(cSender, s, EntityPlayer.class));
+                        EntitySelector.matchEntities(sender, s, EntityPlayer.class));
                 targets = targs.toArray(new EntityPlayerMP[0]);
             }
         }
-        boolean isOp = CommandTools.isOp(cSender);
+        boolean isOp = CommandTools.isOp(sender);
 
-        if (args[0].equalsIgnoreCase("gif") && args.length > 1 && cSender instanceof EntityPlayer)
+        if (args[0].equalsIgnoreCase("gif") && args.length > 1 && sender instanceof EntityPlayer)
         {
             String name = args[1];
             PokedexEntry entry = Database.getEntry(name);
@@ -469,19 +473,19 @@ public class Commands implements ICommand
                 buffer.writeByte(PokecubeClientPacket.WIKIWRITE);
                 buffer.writeInt(entry.getPokedexNb());
                 PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
-                PokecubePacketHandler.sendToClient(packet, (EntityPlayer) cSender);
+                PokecubePacketHandler.sendToClient(packet, (EntityPlayer) sender);
             }
 
             return;
         }
         boolean message = false;
-        message |= doRecall(cSender, args, isOp, targets);
-        message |= doDebug(cSender, args, isOp, targets);
-        message |= doReset(cSender, args, isOp, targets);
-        message |= doMeteor(cSender, args, isOp, targets);
+        message |= doRecall(sender, args, isOp, targets);
+        message |= doDebug(sender, args, isOp, targets);
+        message |= doReset(sender, args, isOp, targets);
+        message |= doMeteor(sender, args, isOp, targets);
         if (!message)
         {
-            CommandTools.sendBadArgumentsTryTab(cSender);
+            CommandTools.sendBadArgumentsTryTab(sender);
         }
     }
 }

@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -43,7 +44,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
+    public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
     {
         ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);

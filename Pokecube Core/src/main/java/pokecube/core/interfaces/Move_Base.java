@@ -1,6 +1,8 @@
 package pokecube.core.interfaces;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import pokecube.core.database.MoveEntry;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
@@ -17,7 +19,7 @@ public abstract class Move_Base
 
     public boolean          fixedDamage      = false;
 
-    protected String        sound;
+    protected SoundEvent    sound;
 
     public boolean          hasStatModSelf   = false;
     public boolean          hasStatModTarget = false;
@@ -242,8 +244,7 @@ public abstract class Move_Base
      * @return the move */
     public Move_Base setSound(String sound)
     {
-        this.sound = sound;
-
+        this.sound = new SoundEvent(new ResourceLocation(sound));
         return this;
     }
 }

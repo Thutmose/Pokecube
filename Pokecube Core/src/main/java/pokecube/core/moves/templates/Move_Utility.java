@@ -105,7 +105,7 @@ public class Move_Utility extends Move_Basic
 
             if (this.name == MOVE_FLASH)
             {
-                owner.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5000));
+                owner.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("night_vision"), 5000));
                 used = true;
                 int level = a.getLevel();
                 count = (int) Math.max(1, Math.ceil(count * Math.pow((100 - level) / 100d, 3)));

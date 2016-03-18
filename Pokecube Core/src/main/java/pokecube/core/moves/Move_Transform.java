@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.IWorldEventListener;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
@@ -24,7 +25,7 @@ public class Move_Transform extends Move_Basic
     {
 
         @Override
-        public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
+        public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
         {
             if (info.attacker == null) return;
 

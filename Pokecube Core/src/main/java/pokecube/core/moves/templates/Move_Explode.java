@@ -6,8 +6,10 @@ package pokecube.core.moves.templates;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,7 +48,7 @@ public class Move_Explode extends Move_Ongoing
             {
                 if (pokemob.getMoveStats().timeSinceIgnited == 0)
                 {
-                    voltorb.worldObj.playSoundAtEntity(voltorb, "game.tnt.primed", 1.0F, 0.5F);
+                    voltorb.playSound(SoundEvents.entity_creeper_primed, 1.0F, 0.5F);
                 }
                 pokemob.setExplosionState(1);
                 if (PokecubeMod.core.getConfig().explosions) attacker.addOngoingEffect(this);
@@ -140,7 +142,7 @@ public class Move_Explode extends Move_Ongoing
         return new IMoveAnimation()
         {
             @Override
-            public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
+            public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
             {
                 EntityLivingBase voltorb = (EntityLivingBase) info.attacker;
                 Explosion explosion = new Explosion(voltorb.worldObj, voltorb, voltorb.posX, voltorb.posY, voltorb.posZ,

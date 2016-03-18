@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,7 +46,7 @@ public class ThrowParticle extends MoveAnimationBase
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
+    public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
     {
         Vector3 source = info.source;
         Vector3 target = info.target;

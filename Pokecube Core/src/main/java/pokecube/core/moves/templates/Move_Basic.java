@@ -18,7 +18,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.abilities.Ability;
@@ -141,9 +145,9 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         if (!move.notIntercepable)
         {
-            Vec3 loc1 = new Vec3(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
-            Vec3 loc2 = new Vec3(location.x, location.y, location.z);
-            MovingObjectPosition pos = entity.worldObj.rayTraceBlocks(loc1, loc2, false);
+            Vec3d loc1 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+            Vec3d loc2 = new Vec3d(location.x, location.y, location.z);
+            RayTraceResult pos = entity.worldObj.rayTraceBlocks(loc1, loc2, false);
             if (pos != null)
             {
                 location.set(pos.hitVec);
@@ -216,8 +220,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             MovesUtils.displayMoveMessages(mob, (Entity) mob, name);
             if (sound != null)
             {
-                ((Entity) mob).worldObj.playSoundAtEntity((Entity) mob, sound, 0.5F,
-                        1F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
+                ((Entity) mob).playSound(sound, 0.5F, 1F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
             }
             Vector3 v = Vector3.getNewVector().set(mob);
             notifyClient((Entity) mob, v, (Entity) mob);
@@ -236,9 +239,9 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         Block block = state.getBlock();
         if (getType(attacker) == PokeType.ice && (move.attackCategory & CATEGORY_DISTANCE) > 0 && move.power > 0)
         {
-            if (block.isAir(world, location.getPos()))
+            if (block.isAir(state, world, location.getPos()))
             {
-                if (location.getBlock(world, EnumFacing.DOWN).isNormalCube())
+                if (location.offset(EnumFacing.DOWN).getBlockState(world).isNormalCube())
                     location.setBlock(world, Blocks.snow_layer.getDefaultState());
             }
             else if (block == Blocks.water && state.getValue(BlockLiquid.LEVEL) == 0)
@@ -247,7 +250,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             }
             else if (block.isReplaceable(world, location.getPos()))
             {
-                if (location.getBlock(world, EnumFacing.DOWN).isNormalCube())
+                if (location.offset(EnumFacing.DOWN).getBlockState(world).isNormalCube())
                     location.setBlock(world, Blocks.snow_layer.getDefaultState());
             }
         }
@@ -309,7 +312,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             if (getAnimation() instanceof Thunder && attacked != null)
             {
-                EntityLightningBolt lightning = new EntityLightningBolt(attacked.worldObj, 0, 0, 0);
+                EntityLightningBolt lightning = new EntityLightningBolt(attacked.worldObj, 0, 0, 0, false);
                 attacked.onStruckByLightning(lightning);
             }
             if (f > 0 && attacked instanceof EntityCreeper)
@@ -325,7 +328,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             {
                 if (sound != null)
                 {
-                    ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.25F, 1f);
+                    ((Entity) attacker).playSound(sound, 0.25F, 1f);
                 }
                 List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker),
                         v.set(attacked).addTo(0, attacked.height / 3, 0));
@@ -360,8 +363,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 }
                 if (sound != null)
                 {
-                    ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
-                            0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
+                    ((Entity) attacker).playSound(sound, 0.5F, 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                 }
                 if (attacked == null) attacked = temp;
                 notifyClient((Entity) attacker, v.set(attacked), attacked);
@@ -451,7 +453,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     @Override
     public Move_Basic setSound(String sound)
     {
-        this.sound = sound;
+        this.sound = new SoundEvent(new ResourceLocation(sound));
 
         return this;
     }

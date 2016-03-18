@@ -127,7 +127,7 @@ public class ComponentPokeMart extends ComponentVillageBase
         if (here.isAir(world) && !here.offset(EnumFacing.DOWN).isAir(world))
             this.placeBlockAtCurrentPosition(world, Blocks.stone_stairs, // this.getBiomeSpecificBlock(Blocks.stone_stairs,
                                                                          // 0)
-                    this.getMetadataWithOffset(Blocks.stone_stairs, 3), 4, 2, -1, structureboundingbox);//
+                    this.getMetaWithOffset(Blocks.stone_stairs, 3), 4, 2, -1, structureboundingbox);//
         this.placeBlockAtCurrentPosition(world, Blocks.air, 0, 4, 3, -1, structureboundingbox);//
         this.placeBlockAtCurrentPosition(world, Blocks.air, 0, 4, 4, -1, structureboundingbox);//
 

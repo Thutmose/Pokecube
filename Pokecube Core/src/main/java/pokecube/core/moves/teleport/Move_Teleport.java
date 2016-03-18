@@ -5,7 +5,9 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
@@ -55,8 +57,9 @@ public class Move_Teleport extends Move_Utility
             toTeleport.worldObj.spawnParticle(EnumParticleTypes.PORTAL, var24, var26, var28, var21, var22, var23);
         }
 
-        toTeleport.worldObj.playSoundEffect(par1, par3, par5, "mob.endermen.portal", 1.0F, 1.0F);
-        toTeleport.playSound("mob.endermen.portal", 1.0F, 1.0F);
+        toTeleport.worldObj.playSound(par1, par3, par5, SoundEvents.entity_endermen_teleport, SoundCategory.HOSTILE,
+                1.0F, 1.0F, false);
+        toTeleport.playSound(SoundEvents.entity_endermen_teleport, 1.0F, 1.0F);
         return true;
 
     }

@@ -60,7 +60,8 @@ public class MovesUtils implements IMoveConstants
 
             if (change == IMoveConstants.CHANGE_CONFUSED)
             {
-                ((EntityLivingBase) attacked).addPotionEffect(new PotionEffect(Potion.confusion.id, duration));
+                ((EntityLivingBase) attacked)
+                        .addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("nausea"), duration));
             }
 
         }
@@ -511,8 +512,7 @@ public class MovesUtils implements IMoveConstants
 
         if (attack.equals("pokemob.status.confusion"))
         {
-            String used = I18n.translateToLocalFormatted("pokemob.status.confusion",
-                    attacker.getPokemonDisplayName());
+            String used = I18n.translateToLocalFormatted("pokemob.status.confusion", attacker.getPokemonDisplayName());
             attacker.displayMessageToOwner("\u00a7c" + used);
             return;
         }
@@ -522,8 +522,8 @@ public class MovesUtils implements IMoveConstants
                 translatedAttack);
         attacker.displayMessageToOwner("\u00a7a" + used);
 
-        String enemyUsed = I18n.translateToLocalFormatted("pokemob.move.enemyUsed",
-                attacker.getPokemonDisplayName(), translatedAttack);
+        String enemyUsed = I18n.translateToLocalFormatted("pokemob.move.enemyUsed", attacker.getPokemonDisplayName(),
+                translatedAttack);
         if (attacker == attacked) return;
 
         if (attacked instanceof IPokemob)
@@ -570,8 +570,7 @@ public class MovesUtils implements IMoveConstants
             String statName = "pokemob.move.stat" + stat;
             if (attacked instanceof IPokemob && attacker != null)
             {
-                String missed = I18n.translateToLocalFormatted(message,
-                        ((IPokemob) attacked).getPokemonDisplayName(),
+                String missed = I18n.translateToLocalFormatted(message, ((IPokemob) attacked).getPokemonDisplayName(),
                         I18n.translateToLocalFormatted(statName));
 
                 if (attacker == attacked)
@@ -587,8 +586,7 @@ public class MovesUtils implements IMoveConstants
             }
             else if (attacker == null && (attacked instanceof IPokemob))
             {
-                String missed = I18n.translateToLocalFormatted(message,
-                        ((IPokemob) attacked).getPokemonDisplayName(),
+                String missed = I18n.translateToLocalFormatted(message, ((IPokemob) attacked).getPokemonDisplayName(),
                         I18n.translateToLocalFormatted(statName));
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + missed);
             }
@@ -1015,29 +1013,34 @@ public class MovesUtils implements IMoveConstants
             }
             if (status == IMoveConstants.STATUS_FRZ)
             {
-                ((EntityLivingBase) attacked)
-                        .addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, duration * 2, 100));
-                ((EntityLivingBase) attacked).addPotionEffect(new PotionEffect(Potion.weakness.id, duration * 3, 100));
+                ((EntityLivingBase) attacked).addPotionEffect(
+                        new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
+                ((EntityLivingBase) attacked).addPotionEffect(
+                        new PotionEffect(Potion.getPotionFromResourceLocation("weakness"), duration * 3, 100));
             }
             if (status == IMoveConstants.STATUS_PAR)
             {
-                ((EntityLivingBase) attacked)
-                        .addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, duration * 2, 1));
+                ((EntityLivingBase) attacked).addPotionEffect(
+                        new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 1));
             }
             if (status == IMoveConstants.STATUS_PSN)
             {
-                ((EntityLivingBase) attacked).addPotionEffect(new PotionEffect(Potion.poison.id, duration, 10));
+                ((EntityLivingBase) attacked).addPotionEffect(
+                        new PotionEffect(Potion.getPotionFromResourceLocation("poison"), duration, 10));
             }
             if (status == IMoveConstants.STATUS_PSN2)
             {
-                ((EntityLivingBase) attacked).addPotionEffect(new PotionEffect(Potion.poison.id, duration * 2, 10));
+                ((EntityLivingBase) attacked).addPotionEffect(
+                        new PotionEffect(Potion.getPotionFromResourceLocation("poison"), duration * 2, 10));
             }
             if (status == IMoveConstants.STATUS_SLP)
             {
-                ((EntityLivingBase) attacked).addPotionEffect(new PotionEffect(Potion.blindness.id, duration * 2, 100));
-                ((EntityLivingBase) attacked)
-                        .addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, duration * 2, 100));
-                ((EntityLivingBase) attacked).addPotionEffect(new PotionEffect(Potion.weakness.id, duration * 2, 100));
+                ((EntityLivingBase) attacked).addPotionEffect(
+                        new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration * 2, 100));
+                ((EntityLivingBase) attacked).addPotionEffect(
+                        new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
+                ((EntityLivingBase) attacked).addPotionEffect(
+                        new PotionEffect(Potion.getPotionFromResourceLocation("weakness"), duration * 2, 100));
             }
 
         }
@@ -1064,7 +1067,7 @@ public class MovesUtils implements IMoveConstants
         {
             if (e instanceof EntityLivingBase && attacker.getDistanceToEntity(e) < closest
                     && (PokecubeMod.pokemobsDamagePlayers || !(e instanceof EntityPlayer))
-                    && e != attacker.ridingEntity)
+                    && e != attacker.getRidingEntity())
             {
                 if (ignoreAllies && e instanceof IPokemob)
                 {

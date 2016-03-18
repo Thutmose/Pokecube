@@ -90,17 +90,16 @@ public abstract class ComponentVillageBase extends House1
         IBlockState newState = super.func_175847_a(oldState);
 
         BlockPos pos = new BlockPos(j1, k1, l1);
-        // if (par7StructuregetEntityBoundingBox().isVecInside(j1, k1, l1))
+        IBlockState state = par1World.getBlockState(pos);
+        while ((!state.isNormalCube() || par1World.isAirBlock(pos) || state.getMaterial().isLiquid()
+                || state.getBlock().isLeaves(state, par1World, pos)) && k1 > 1)
         {
-            while ((!par1World.getBlockState(pos).getBlock().isNormalCube() || par1World.isAirBlock(pos)
-                    || par1World.getBlockState(pos).getBlock().getMaterial().isLiquid()
-                    || par1World.getBlockState(pos).getBlock().isLeaves(par1World, pos)) && k1 > 1)
-            {
-                par1World.setBlockState(pos, newState, 0);
-                --k1;
-                pos = new BlockPos(j1, k1, l1);
-            }
+            par1World.setBlockState(pos, newState, 0);
+            --k1;
+            pos = new BlockPos(j1, k1, l1);
+            state = par1World.getBlockState(pos);
         }
+
     }
 
     protected void fillDownwards(World world, Block block, int par3, int xx, int par5, int zz,
@@ -277,8 +276,7 @@ public abstract class ComponentVillageBase extends House1
                 if (null != entity)
                 {
                     ++spawned;
-                    entity.setLocationAndAngles(globalX + 0.5d, globalY, globalZ + 0.5d,
-                            0.5f, 0.0f);
+                    entity.setLocationAndAngles(globalX + 0.5d, globalY, globalZ + 0.5d, 0.5f, 0.0f);
                     world.spawnEntityInWorld(entity);
                 }
             }

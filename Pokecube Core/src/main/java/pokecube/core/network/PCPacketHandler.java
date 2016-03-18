@@ -424,7 +424,7 @@ public class PCPacketHandler
                 tradeTable.addPlayer(sender);
                 tradeTable.trade = !tradeTable.trade;
 
-                tradeTable.getWorld().markBlockForUpdate(tradeTable.getPos());
+//                tradeTable.getWorld().markBlockForUpdate(tradeTable.getPos());//TODO see if this was needed
                 tradeTable.markDirty();
                 tradeTable.openGUI(sender);
             }

@@ -1,6 +1,7 @@
 package pokecube.core.interfaces;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import thut.api.maths.Vector3;
@@ -33,7 +34,7 @@ public interface IMoveAnimation
      * @param world
      * @param partialTick */
     @SideOnly(Side.CLIENT)
-    public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick);
+    public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick);
 
     /**
      * How long this animation plays for in world ticks.

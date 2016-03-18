@@ -14,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntry;
@@ -197,10 +199,10 @@ public class Tools
 
     public static Entity getPointedEntity(Entity entity, double distance)
     {
-        Vec3 vec3 = new Vec3(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+        Vec3d vec3 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         double d0 = distance;
-        Vec3 vec31 = entity.getLook(0);
-        Vec3 vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
+        Vec3d vec31 = entity.getLook(0);
+        Vec3d vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
         Entity pointedEntity = null;
         float f = 1.0F;
         List<Entity> list = entity.worldObj
@@ -222,7 +224,7 @@ public class Tools
             Entity entity1 = list.get(j);
             float f1 = entity1.getCollisionBorderSize();
             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand(f1, f1, f1);
-            MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
+            RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
             if (axisalignedbb.isVecInside(vec3))
             {
@@ -238,7 +240,7 @@ public class Tools
 
                 if (d3 < d2 || d2 == 0.0D)
                 {
-                    if (entity1 == entity.ridingEntity && !entity.canRiderInteract())
+                    if (entity1 == entity.getRidingEntity() && !entity.canRiderInteract())
                     {
                         if (d2 == 0.0D)
                         {

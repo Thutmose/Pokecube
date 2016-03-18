@@ -118,12 +118,12 @@ public class MoveAnimationHelper
                     source.x = player.prevPosX - player.posX;
                     source.y = player.prevPosY - player.posY;
                     source.z = player.prevPosZ - player.posZ;
-                    source.scalarMultBy(event.renderPartialTicks);
+                    source.scalarMultBy(event.getRenderPartialTicks());
                     GL11.glTranslated(source.x, source.y, source.z);
                     // TODO see about fixing the slight movement that occurs
                     // when the player stops or starts moving
 
-                    move.render(event.renderPartialTicks);
+                    move.render(event.getRenderPartialTicks());
                     GL11.glPopMatrix();
                 }
 
@@ -134,10 +134,10 @@ public class MoveAnimationHelper
                 HashSet<MoveAnimation> moves = this.moves.get(e);
                 for (MoveAnimation move : moves)
                 {
-                    if (move.lastDrop != event.entity.worldObj.getTotalWorldTime())
+                    if (move.lastDrop != event.getEntity().worldObj.getTotalWorldTime())
                     {
                         move.duration--;
-                        move.lastDrop = event.entity.worldObj.getTotalWorldTime();
+                        move.lastDrop = event.getEntity().worldObj.getTotalWorldTime();
                     }
                 }
             }

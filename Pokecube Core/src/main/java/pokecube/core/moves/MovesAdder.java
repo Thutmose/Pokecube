@@ -15,8 +15,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.MoveEntry;
@@ -730,7 +732,7 @@ public class MovesAdder implements IMoveConstants
                 {
                     if (sound != null)
                     {
-                        ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
+                        ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     Vector3 v = Vector3.getNewVector().set(attacked);
@@ -1017,7 +1019,7 @@ public class MovesAdder implements IMoveConstants
                 {
                     if (sound != null)
                     {
-                        ((Entity) mob).worldObj.playSoundAtEntity((Entity) mob, sound, 0.5F,
+                        ((Entity) mob).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     MovesUtils.attack(
@@ -1348,7 +1350,7 @@ public class MovesAdder implements IMoveConstants
                 {
                     if (sound != null)
                     {
-                        ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
+                        ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     Vector3 v = Vector3.getNewVector().set(attacked);
@@ -1423,7 +1425,7 @@ public class MovesAdder implements IMoveConstants
                 {
                     if (sound != null)
                     {
-                        ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
+                        ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     Vector3 v = Vector3.getNewVector().set(attacked);
@@ -1477,7 +1479,7 @@ public class MovesAdder implements IMoveConstants
         {
 
             @Override
-            public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
+            public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
             {
                 Vector3 source = info.source;
                 Vector3 target = info.target;
@@ -1581,7 +1583,7 @@ public class MovesAdder implements IMoveConstants
             // @SideOnly(Side.CLIENT)
             // public void clientAnimation(Entity attacker, Vector3 target,
             // Entity attacked,
-            // IWorldAccess world) {
+            // IWorldEventListener world) {
             // attacked.worldObj.spawnEntityInWorld(new
             // EntityWhip(attacked.worldObj, (EntityPokemob) attacker, 1));
             // attacked.worldObj.spawnEntityInWorld(new
@@ -1603,7 +1605,7 @@ public class MovesAdder implements IMoveConstants
                 {
                     if (sound != null)
                     {
-                        ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
+                        ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     Vector3 v = Vector3.getNewVector().set(attacked);
@@ -1646,7 +1648,7 @@ public class MovesAdder implements IMoveConstants
                 {
                     if (sound != null)
                     {
-                        ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
+                        ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     Vector3 v = Vector3.getNewVector().set(attacked);
@@ -1700,7 +1702,7 @@ public class MovesAdder implements IMoveConstants
                 {
                     if (sound != null)
                     {
-                        ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
+                        ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     Vector3 v = Vector3.getNewVector().set(attacked);
@@ -1857,7 +1859,7 @@ public class MovesAdder implements IMoveConstants
                 {
                     if (sound != null)
                     {
-                        ((Entity) attacker).worldObj.playSoundAtEntity((Entity) attacker, sound, 0.5F,
+                        ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     Vector3 v = Vector3.getNewVector().set(attacked);
@@ -1925,7 +1927,7 @@ public class MovesAdder implements IMoveConstants
             }
             // @Override TODO make an IMoveAnimation for this.
             // public void clientAnimation(Entity attacker, Vector3 target,
-            // Entity attacked, IWorldAccess world)
+            // Entity attacked, IWorldEventListener world)
             // {
             // double x = attacker.posX;
             // double z = attacker.posZ;
@@ -1982,7 +1984,7 @@ public class MovesAdder implements IMoveConstants
             @Override
             protected void finalAttack(IPokemob attacker, Entity attacked, float f)
             {
-                sound = attacker.getSound();
+                sound = new SoundEvent(new ResourceLocation(attacker.getSound()));
                 super.finalAttack(attacker, attacked, f);
             }
         });
@@ -2014,7 +2016,7 @@ public class MovesAdder implements IMoveConstants
             @Override
             protected void finalAttack(IPokemob attacker, Entity attacked, float f)
             {
-                sound = attacker.getSound();
+                sound = new SoundEvent(new ResourceLocation(attacker.getSound()));
                 super.finalAttack(attacker, attacked, f);
             }
         });// setAnimtion(new ParticlesOnSource("note")));

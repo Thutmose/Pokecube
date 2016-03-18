@@ -14,6 +14,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNavigate;
@@ -22,8 +23,10 @@ import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -151,7 +154,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public float getDirectionPitch()
     {
-        return dataWatcher.getWatchableObjectFloat(DIRECTIONPITCHDW);
+        return dataWatcher.get(DIRECTIONPITCHDW);
     }
 
     @Override
@@ -164,7 +167,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public double getMovementSpeed()
     {
-        return this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+        return this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
     }
     ////////////////////////// Death Related things////////////////////////
 
@@ -186,7 +189,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
      *            The full target the player is looking at
      * @return A ItemStack to add to the player's inventory, Null if nothing
      *         should be added. */
-    public ItemStack getPickedResult(MovingObjectPosition target)
+    public ItemStack getPickedResult(RayTraceResult target)
     {
         return ItemPokemobEgg.getEggStack(this);
     }
@@ -200,7 +203,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             handleArmourAndSaddle();
         }
 
-        return (dataWatcher.getWatchableObjectInt(AIACTIONSTATESDW) & state) != 0;
+        return (dataWatcher.get(AIACTIONSTATESDW) & state) != 0;
     }
 
     /////////////////// Movement related things///////////////////////////
@@ -244,7 +247,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         f = 1.0F;
                     }
 
-                    this.playSound("game.neutral.swim", f,
+                    this.playSound(SoundEvents.entity_generic_swim, f,
                             1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
                     float f1 = MathHelper.floor_double(this.getEntityBoundingBox().minY);
                     int i;
@@ -301,7 +304,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (entry.flys()) moveSpeed /= 1.25f;
 
         this.getNavigator().setSpeed(moveSpeed);
-        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(moveSpeed);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
 
         this.tasks.addTask(1, new PokemobAISwimming(this));
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
@@ -346,13 +349,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player player)
+    public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
     {
         ItemStack itemstack = player.inventory.getCurrentItem();
         ItemStack key = new ItemStack(Items.shears);
         // Check shearable interaction.
-        if (getPokedexEntry().interact(key) && player.getHeldItemMainhand() != null
-                && player.getHeldItemMainhand().isItemEqual(key)) { return false; }
+        if (getPokedexEntry().interact(key) && held != null && held.isItemEqual(key)) { return false; }
         // Check Pokedex Entry defined Interaction for player.
         if (getPokedexEntry().interact(player, this, true)) return true;
         Item torch = Item.getItemFromBlock(Blocks.torch);
@@ -367,7 +369,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 {
                     this.setPokemonAIState(SHOULDER, true);
                     this.setPokemonAIState(SITTING, true);
-                    mountEntity(player);
+                    this.startRiding(player);
                 }
                 return true;
             }
@@ -401,22 +403,22 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (player.isSneaking())
             {
                 this.setShiny(!this.isShiny());
-                player.getHeldItemMainhand().splitStack(1);
+                held.splitStack(1);
             }
             return true;
         }
 
         // is Dyeable
-        if (player.getHeldItemMainhand() != null && getPokedexEntry().hasSpecialTextures[4])
+        if (held != null && getPokedexEntry().hasSpecialTextures[4])
         {
-            if (player.getHeldItemMainhand().getItem() == Items.dye)
+            if (held.getItem() == Items.dye)
             {
-                setSpecialInfo(player.getHeldItemMainhand().getItemDamage());
+                setSpecialInfo(held.getItemDamage());
                 System.out.println(getSpecialInfo());
-                player.getHeldItemMainhand().stackSize--;
+                held.stackSize--;
                 return true;
             }
-            else if (player.getHeldItemMainhand().getItem() == Items.shears) { return false; }
+            else if (held.getItem() == Items.shears) { return false; }
         }
 
         // Check saddle for riding.
@@ -435,23 +437,24 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // Attempt to pick the pokemob up.
-        if (!worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking() && player.getHeldItemMainhand() == null
+        if (!worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking() && held == null
                 && getWeight() < 40)
         {
 
-            boolean held = getPokemonAIState(HELD);
+            boolean isHeld = getPokemonAIState(HELD);
 
-            if ((!getPokemonAIState(TAMED) || getHeldItemMainhand() == null) && !getPokemonAIState(GUARDING))
+            if ((!getPokemonAIState(IMoveConstants.TAMED) || getHeldItemMainhand() == null)
+                    && !getPokemonAIState(GUARDING))
             {
-                if (!held)
+                if (!isHeld)
                 {
-                    mountEntity(player);
+                    this.startRiding(player);
                     setPokemonAIState(HELD, true);
                     setPokemonAIState(SITTING, false);
                 }
                 else
                 {
-                    mountEntity(null);
+                    this.dismountRidingEntity();
                     setPokemonAIState(HELD, false);
 
                     if (player != getPokemonOwner())
@@ -478,7 +481,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // Owner only interactions.
-        if (getPokemonAIState(TAMED) && player == getOwner() && !PokecubeCore.isOnClientSide())
+        if (getPokemonAIState(IMoveConstants.TAMED) && player == getOwner() && !PokecubeCore.isOnClientSide())
         {
             if (itemstack != null)
             {
@@ -608,7 +611,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         d0 = Math.max(1, d0);
 
-        d0 = d0 * 64.0D * this.renderDistanceWeight;
+        d0 = d0 * 64.0D * 10;// this.renderDistanceWeight;
         return distance < d0 * d0;
     }
 
@@ -638,11 +641,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             // block.
             this.motionY += 0.41999998688697815D + 0.1 * 1 / getPokedexEntry().height;
 
-            if (this.isPotionActive(Potion.jump))
+            Potion jump = Potion.getPotionFromResourceLocation("jump_boost");
+
+            if (this.isPotionActive(jump))
             {
-                this.motionY += (this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F;
+                this.motionY += (this.getActivePotionEffect(jump).getAmplifier() + 1) * 0.1F;
             }
-            if (riddenByEntity != null)
+            if (isBeingRidden())
             {
                 motionY += 0.3;
             }
@@ -670,8 +675,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         // new Exception().printStackTrace();
         double d0;
-        if (this.riddenByEntity != null) // &&
-                                         // !getPokemonAIState(EXECUTINGMOVE))
+        if (isBeingRidden()) // &&
+                             // !getPokemonAIState(EXECUTINGMOVE))
         {
             super.moveEntityWithHeading(f, f1);
             return;
@@ -679,7 +684,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (isServerWorld())
         {
             PokedexEntry entry = getPokedexEntry();
-            int aiState = dataWatcher.getWatchableObjectInt(AIACTIONSTATESDW);
+            int aiState = dataWatcher.get(AIACTIONSTATESDW);
             boolean isAbleToFly = entry.mobType == Type.FLOATING || entry.mobType == Type.FLYING;
             boolean isWaterMob = entry.mobType == Type.WATER;
             boolean shouldGoDown = false;
@@ -920,7 +925,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         if (ForgeHooks.onLivingDeath(this, damageSource)) return;
         Entity entity = damageSource.getEntity();
-        EntityLivingBase entitylivingbase = this.func_94060_bK();
+        EntityLivingBase entitylivingbase = this.getAttackingEntity();
 
         if (this.scoreValue >= 0 && entitylivingbase != null)
         {
@@ -956,7 +961,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                 if (this.recentlyHit > 0 && this.rand.nextFloat() < 0.025F + i * 0.01F)
                 {
-                    this.addRandomDrop();
+                    // this.addRandomDrop();
                 }
             }
 
@@ -1001,7 +1006,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             displayMessageToOwner("\u00a7c" + mess);
             returnToPokecube();
         }
-        if (!getPokemonAIState(TAMED))
+        if (!getPokemonAIState(IMoveConstants.TAMED))
         {
             AISaveHandler.instance().removeAI(this);
             if (this.getHeldItemMainhand() != null) PokecubeItems.deValidate(getHeldItemMainhand());
@@ -1044,7 +1049,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (material.equalsIgnoreCase("light"))
             {
                 float value = 0.5f;
-                if (worldObj.isDaytime() && !worldObj.isRemote && getPokemonAIState(TAMED) == false)
+                if (worldObj.isDaytime() && !worldObj.isRemote && getPokemonAIState(IMoveConstants.TAMED) == false)
                 {
 
                     value = Float.parseFloat(getPokedexEntry().hatedMaterial[1]);
@@ -1112,7 +1117,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         if (worldObj.isRemote)
         {
-            int id = dataWatcher.getWatchableObjectInt(ATTACKTARGETIDDW);
+            int id = dataWatcher.get(ATTACKTARGETIDDW);
             if (id >= 0 && getAttackTarget() == null)
             {
                 setAttackTarget((EntityLivingBase) worldObj.getEntityByID(id));
@@ -1123,10 +1128,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
         String s;
-        int state = dataWatcher.getWatchableObjectInt(AIACTIONSTATESDW);
-        if (getAIState(TAMED, state) && ((s = getPokemonOwnerName()) == null || s.isEmpty()))
+        int state = dataWatcher.get(AIACTIONSTATESDW);
+        if (getAIState(IMoveConstants.TAMED, state) && ((s = getPokemonOwnerName()) == null || s.isEmpty()))
         {
-            setPokemonAIState(TAMED, false);
+            setPokemonAIState(IMoveConstants.TAMED, false);
         }
 
         if (inLove > 600)
@@ -1138,26 +1143,22 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         if (getAIState(HELD, state))
         {
-            if (ridingEntity == null
-                    || (ridingEntity instanceof EntityPlayer && ((EntityPlayer) ridingEntity).getHeldItemMainhand() != null))
+            if (!isRiding() || (getRidingEntity() instanceof EntityPlayer
+                    && ((EntityPlayer) getRidingEntity()).getHeldItemMainhand() != null))
             {
                 setPokemonAIState(HELD, false);
-                if (ridingEntity != null)
+                if (getRidingEntity() != null)
                 {
-                    Entity entity = ridingEntity;
-                    this.mountEntity(null);
-                    this.dismountEntity(entity);
+                    this.dismountRidingEntity();
                 }
             }
         }
-        if (getAIState(SHOULDER, state) && (ridingEntity == null || !getAIState(SITTING, state)))
+        if (getAIState(SHOULDER, state) && (getRidingEntity() == null || !getAIState(SITTING, state)))
         {
             setPokemonAIState(SHOULDER, false);
-            if (ridingEntity != null)
+            if (getRidingEntity() != null)
             {
-                Entity entity = ridingEntity;
-                this.mountEntity(null);
-                this.dismountEntity(entity);
+                this.dismountRidingEntity();
             }
         }
         if (getAIState(GUARDING, state) && getAIState(SITTING, state))
@@ -1183,7 +1184,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
             Block b;
             if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) && !getAIState(SLEEPING, state)
-                    || b.getMaterial().isLiquid())
+                    || b.getMaterial(here.getBlockState(worldObj)).isLiquid())
             {
                 motionY += 0.01;
             }
@@ -1195,7 +1196,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             here.set(this);
         }
         canFloat = entry.mobType == Type.FLYING;
-        if (canFloat && here.getBlock(worldObj, EnumFacing.DOWN).getMaterial().isLiquid())
+        if (canFloat && here.getBlock(worldObj, EnumFacing.DOWN)
+                .getMaterial(here.offset(EnumFacing.DOWN).getBlockState(worldObj)).isLiquid())
         {
             if (motionY < -0.1) motionY = 0;
             motionY += 0.05;
@@ -1302,11 +1304,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (entity != null) setPokemonAIState(SITTING, false);
         if (entity != null && !worldObj.isRemote)
         {
-            dataWatcher.updateObject(ATTACKTARGETIDDW, Integer.valueOf(entity.getEntityId()));
+            dataWatcher.set(ATTACKTARGETIDDW, Integer.valueOf(entity.getEntityId()));
         }
         if (entity == null && !worldObj.isRemote)
         {
-            dataWatcher.updateObject(ATTACKTARGETIDDW, Integer.valueOf(-1));
+            dataWatcher.set(ATTACKTARGETIDDW, Integer.valueOf(-1));
         }
         if (entity != getAttackTarget() && getAbility() != null)
         {
@@ -1342,7 +1344,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 nest.removeResident(this);
             }
         }
-        if (!getPokemonAIState(TAMED))
+        if (!getPokemonAIState(IMoveConstants.TAMED))
         {
             AISaveHandler.instance().removeAI(this);
         }
@@ -1352,7 +1354,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void setDirectionPitch(float pitch)
     {
-        dataWatcher.updateObject(DIRECTIONPITCHDW, pitch);
+        dataWatcher.set(DIRECTIONPITCHDW, pitch);
     }
 
     @Override
@@ -1379,7 +1381,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void setPokemonAIState(int state, boolean flag)
     {
-        int byte0 = dataWatcher.getWatchableObjectInt(AIACTIONSTATESDW);
+        int byte0 = dataWatcher.get(AIACTIONSTATESDW);
 
         if (state == STAYING)
         {
@@ -1389,11 +1391,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         if (flag)
         {
-            dataWatcher.updateObject(AIACTIONSTATESDW, Integer.valueOf((byte0 | state)));
+            dataWatcher.set(AIACTIONSTATESDW, Integer.valueOf((byte0 | state)));
         }
         else
         {
-            dataWatcher.updateObject(AIACTIONSTATESDW, Integer.valueOf((byte0 & -state - 1)));
+            dataWatcher.set(AIACTIONSTATESDW, Integer.valueOf((byte0 & -state - 1)));
         }
         if ((state & SITTING) > 0)
         {

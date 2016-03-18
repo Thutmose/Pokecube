@@ -141,7 +141,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             {
                 IPokemob entityanimal = (IPokemob) list.get(i);
                 EntityAnimal animal = (EntityAnimal) list.get(i);
-                if (entityanimal == this || entityanimal.getPokemonAIState(TAMED) != getPokemonAIState(TAMED)) continue;
+                if (entityanimal == this || entityanimal.getPokemonAIState(IMoveConstants.TAMED) != getPokemonAIState(IMoveConstants.TAMED)) continue;
 
                 boolean validMate = canMate((EntityAnimal) entityanimal);
 
@@ -181,7 +181,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
         boolean transforms = false;
         boolean otherTransforms = false;
-        String movesString = dataWatcher.getWatchableObjectString(30);
+        String movesString = dataWatcher.get(MOVESDW);
         String[] moves = new String[5];
 
         if (movesString != null && movesString.length() > 2)

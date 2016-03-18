@@ -11,6 +11,7 @@ import java.util.UUID;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
@@ -22,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -33,6 +35,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.SpawnEvent;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
@@ -41,7 +44,7 @@ import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 
 /** @author Manchou, Thutmose */
-public abstract class EntityPokemobBase extends EntityHungryPokemob implements IMultibox, IBossDisplayData
+public abstract class EntityPokemobBase extends EntityHungryPokemob implements IMultibox//, IBossDisplayData
 {
 
     static String[]                 unowns            = { "Unown_A", "Unown_B", "Unown_C", "Unown_D", "Unown_E",
@@ -106,7 +109,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     protected boolean canDespawn()
     {
         boolean canDespawn = getHungerTime() > PokecubeMod.core.getConfig().pokemobLifeSpan;
-        boolean checks = getPokemonAIState(TAMED) || this.getPokemonOwner() != null || getPokemonAIState(ANGRY)
+        boolean checks = getPokemonAIState(IMoveConstants.TAMED) || this.getPokemonOwner() != null || getPokemonAIState(ANGRY)
                 || getAttackTarget() != null || this.hasCustomName() || isAncient() || isNoDespawnRequired();
         despawntimer--;
         if (checks) return false;
@@ -152,10 +155,10 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         int blue = rgba[2];
         int checkSum = getExp() * getPokedexNb() + getPokecubeId() + ((int) getSize() * 1000)
                 + (shiny ? 1234 : 4321) * nature.ordinal() + red * green * blue;
-        String movesString = dataWatcher.getWatchableObjectString(30);
+        String movesString = dataWatcher.get(MOVESDW);
         checkSum += movesString.hashCode();
         int[] IVs = PokecubeSerializer.byteArrayAsIntArray(ivs);
-        int IVEV = dataWatcher.getWatchableObjectInt(24) + dataWatcher.getWatchableObjectInt(25) + IVs[0] + IVs[1];
+        int IVEV = dataWatcher.get(EVS1DW) + dataWatcher.get(EVS2DV) + IVs[0] + IVs[1];
         checkSum += IVEV;
         // checkSum += getSexe();
         return checkSum;
@@ -208,9 +211,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    protected String getDeathSound()
+    protected SoundEvent getDeathSound()
     {
-        return getLivingSound();
+        return getAmbientSound();
     }
 
     @Override
@@ -226,15 +229,15 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    protected String getHurtSound()
+    protected SoundEvent getHurtSound()
     {
-        return getLivingSound();
+        return getAmbientSound();
     }
 
     @Override
-    public String getLivingSound()
+    public SoundEvent getAmbientSound()
     {
-        return getPokedexEntry().getSound();
+        return getPokedexEntry().getSoundEvent();
     }
 
     @Override
@@ -286,10 +289,10 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         return scale;
     }
 
-    @Override
+    @Override//TODO remove this
     public String getSound()
     {
-        return getLivingSound();
+        return getPokedexEntry().getSound();
     }
 
     @Override
@@ -380,17 +383,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             int num = random.nextInt(unowns.length);
             changeForme(unowns[num]);
         }
-    }
-
-    @Override
-    public boolean processInteract(EntityPlayer player player)
-    {
-        if (corruptedSum != -123586)
-        {
-            player.addChatMessage(new TextComponentString("Corrupt Pokemon"));
-            return false;
-        }
-        return super.interact(player);
     }
 
     /** Checks if this entity is inside of an opaque block */
@@ -518,11 +510,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.onGround = y0 != y && y0 <= 0.0D;
             this.isCollided = this.isCollidedHorizontally || this.isCollidedVertically;
             BlockPos blockpos = getPosition().down();
-            Block block1 = worldObj.getBlockState(blockpos).getBlock();
+            IBlockState state = worldObj.getBlockState(blockpos);
+            Block block1 = state.getBlock();
 
-            this.updateFallState(y, this.onGround, block1, blockpos);
+            this.updateFallState(y, this.onGround, state, blockpos);
 
-            if (this.canTriggerWalking() && this.ridingEntity == null)
+            if (this.canTriggerWalking() && this.getRidingEntity() == null)
             {
                 double d15 = this.posX;
                 double d16 = this.posY;
@@ -543,7 +536,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 this.distanceWalkedOnStepModified = (float) (this.distanceWalkedOnStepModified
                         + MathHelper.sqrt_double(d15 * d15 + d16 * d16 + d17 * d17) * 0.6D);
 
-                if (this.distanceWalkedOnStepModified > this.nextStepDistance && block1.getMaterial() != Material.air)
+                if (this.distanceWalkedOnStepModified > this.nextStepDistance && state.getMaterial() != Material.air)
                 {
                     this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
 
@@ -610,8 +603,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         if (isAncient())
         {
-            BossStatus.setBossStatus(this, true);
-            BossStatus.bossName = getPokemonDisplayName();
+//            BossStatus.setBossStatus(this, true);
+//            BossStatus.bossName = getPokemonDisplayName();
+            //TODO Boss Stuff
         }
     }
 

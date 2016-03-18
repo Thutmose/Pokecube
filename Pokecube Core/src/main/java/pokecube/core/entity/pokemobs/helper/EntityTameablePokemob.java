@@ -15,12 +15,16 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.AnimalChest;
 import net.minecraft.inventory.IInvBasic;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -58,59 +62,77 @@ import thut.api.pathing.IPathingMob;
 public abstract class EntityTameablePokemob extends EntityTameable implements IPokemob, IMob, IInvBasic, IHungrymob,
         IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob
 {
-    public static int          EXITCUBEDURATION  = 40;
+    public static int                   EXITCUBEDURATION  = 40;
 
-    static final int           AIACTIONSTATESDW  = 5;
-    static final int           DIRECTIONPITCHDW  = 10;
-    static final int           STATSDW           = 11;
-    static final int           ATTACKTARGETIDDW  = 13;
-    static final int           STATMODDW         = 18;
-    static final int           BOOMSTATEDW       = 19;
-    static final int           EXPDW             = 20;
-    static final int           HUNGERDW          = 21;
-    static final int           NICKNAMEDW        = 22;
-    static final int           STATUSMOVEINDEXDW = 23;
+    static final DataParameter<Integer> AIACTIONSTATESDW  = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> ATTACKTARGETIDDW  = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> STATMODDW         = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> EXPDW             = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> HUNGERDW          = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> STATUSMOVEINDEXDW = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> EVS1DW            = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> EVS2DV            = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> SPECIALINFO       = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> EVOLNBDW          = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> EVOLTICKDW        = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+    static final DataParameter<Integer> HAPPYDW           = EntityDataManager
+            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
 
-    static final int           EVS1DW            = 24;
-    static final int           EVS2DV            = 25;
+    static final DataParameter<String>  MOVESDW           = EntityDataManager.<String> createKey(EntityLivingBase.class,
+            DataSerializers.STRING);
+    static final DataParameter<String>  STATSDW           = EntityDataManager.<String> createKey(EntityLivingBase.class,
+            DataSerializers.STRING);
+    static final DataParameter<String>  NICKNAMEDW        = EntityDataManager.<String> createKey(EntityLivingBase.class,
+            DataSerializers.STRING);
 
-    static final int           SPECIALINFO       = 26;
-    static final int           EVOLNBDW          = 27;
-    static final int           EVOLTICKDW        = 28;
-    static final int           HAPPYDW           = 29;
-    static final int           MOVESDW           = 30;
+    static final DataParameter<Byte>    BOOMSTATEDW       = EntityDataManager.<Byte> createKey(EntityLivingBase.class,
+            DataSerializers.BYTE);
 
-    protected boolean          looksWithInterest;
+    static final DataParameter<Float>   DIRECTIONPITCHDW  = EntityDataManager.<Float> createKey(EntityLivingBase.class,
+            DataSerializers.FLOAT);
 
-    protected float            field_25048_b;
+    protected boolean                   looksWithInterest;
 
-    protected float            field_25054_c;
-    protected boolean          isPokemonShaking;
+    protected float                     field_25048_b;
 
-    protected boolean          field_25052_g;
+    protected float                     field_25054_c;
+    protected boolean                   isPokemonShaking;
 
-    protected float            timePokemonIsShaking;
-    protected float            prevTimePokemonIsShaking;
-    protected Integer          pokedexNb         = 0;
-    public float               length            = 1;
+    protected boolean                   field_25052_g;
+
+    protected float                     timePokemonIsShaking;
+    protected float                     prevTimePokemonIsShaking;
+    protected Integer                   pokedexNb         = 0;
+    public float                        length            = 1;
     // protected int hungerTime;
-    protected EntityLivingBase owner;
-    private String             ownerName         = "";
-    private UUID               original          = new UUID(1234, 4321);
-    protected Vector3          here              = Vector3.getNewVector();
+    protected EntityLivingBase          owner;
+    private String                      ownerName         = "";
+    private UUID                        original          = new UUID(1234, 4321);
+    protected Vector3                   here              = Vector3.getNewVector();
 
-    protected Vector3          vec               = Vector3.getNewVector();
+    protected Vector3                   vec               = Vector3.getNewVector();
 
-    protected Vector3          v1                = Vector3.getNewVector();
-    protected Vector3          v2                = Vector3.getNewVector();
-    protected Vector3          vBak              = Vector3.getNewVector();
-    boolean                    named             = false;
+    protected Vector3                   v1                = Vector3.getNewVector();
+    protected Vector3                   v2                = Vector3.getNewVector();
+    protected Vector3                   vBak              = Vector3.getNewVector();
+    boolean                             named             = false;
 
-    boolean                    initHome          = true;
+    boolean                             initHome          = true;
 
-    protected AnimalChest      pokeChest;
+    protected AnimalChest               pokeChest;
 
-    boolean                    returning         = false;
+    boolean                             returning         = false;
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -157,42 +179,32 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         super.entityInit();
 
         // From EntityStatsPokemob
-        dataWatcher.addObject(STATSDW, "0,0,0,0,0,0");// Stats
+        dataWatcher.register(STATSDW, "0,0,0,0,0,0");// Stats
 
-        dataWatcher.addObject(STATMODDW, new Integer(1717986918));// stat
-                                                                  // modifiers
-        dataWatcher.addObject(EXPDW, new Integer(0));// exp for level 1
-        dataWatcher.addObject(HUNGERDW, new Integer(0));// Hunger time
+        dataWatcher.register(STATMODDW, new Integer(1717986918));
+        dataWatcher.register(EXPDW, new Integer(0));// exp for level 1
+        dataWatcher.register(HUNGERDW, new Integer(0));// Hunger time
         // // for sheared status
-        dataWatcher.addObject(NICKNAMEDW, "");// nickname
-        dataWatcher.addObject(EVS1DW, new Integer(1));// evs
-        dataWatcher.addObject(EVS2DV, new Integer(1));// evs
-        dataWatcher.addObject(HAPPYDW, new Integer(0));// Happiness
+        dataWatcher.register(NICKNAMEDW, "");// nickname
+        dataWatcher.register(EVS1DW, new Integer(1));// evs
+        dataWatcher.register(EVS2DV, new Integer(1));// evs
+        dataWatcher.register(HAPPYDW, new Integer(0));// Happiness
 
         // From EntityAiPokemob
-        this.dataWatcher.addObject(DIRECTIONPITCHDW, Float.valueOf(0));// Direction
-                                                                       // pitch
-        this.dataWatcher.addObject(ATTACKTARGETIDDW, Integer.valueOf(-1));// Attack
-                                                                          // Target
-                                                                          // ID
-        this.dataWatcher.addObject(AIACTIONSTATESDW, Integer.valueOf(0));// more
-                                                                         // action
-                                                                         // states
+        this.dataWatcher.register(DIRECTIONPITCHDW, Float.valueOf(0));
+        this.dataWatcher.register(ATTACKTARGETIDDW, Integer.valueOf(-1));
+        this.dataWatcher.register(AIACTIONSTATESDW, Integer.valueOf(0));
 
         // from EntityEvolvablePokemob
-        dataWatcher.addObject(EVOLNBDW, new Integer(0));// current evolution nb
-        dataWatcher.addObject(EVOLTICKDW, new Integer(0));// evolution tick
+        dataWatcher.register(EVOLNBDW, new Integer(0));// current evolution nb
+        dataWatcher.register(EVOLTICKDW, new Integer(0));// evolution tick
 
         // From EntityMovesPokemb
-        dataWatcher.addObject(BOOMSTATEDW, Byte.valueOf((byte) -1)); // explosion
-                                                                     // state
-        dataWatcher.addObject(STATUSMOVEINDEXDW, Integer.valueOf(0));// status
-                                                                     // and
-                                                                     // moveIndex
-        dataWatcher.addObject(MOVESDW, "");// moves
+        dataWatcher.register(BOOMSTATEDW, Byte.valueOf((byte) -1));
+        dataWatcher.register(STATUSMOVEINDEXDW, Integer.valueOf(0));
+        dataWatcher.register(MOVESDW, "");// moves
 
-        dataWatcher.addObject(SPECIALINFO, Integer.valueOf(0));// Used for
-                                                               // mareep colour
+        dataWatcher.register(SPECIALINFO, Integer.valueOf(0));
 
     }
 
@@ -241,6 +253,9 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     public EntityLivingBase getOwner()
     {
         if (!this.getPokemonAIState(IMoveConstants.TAMED)) return null;
+
+        UUID ownerID = super.getOwnerId();
+        if (ownerID == null) return null;
         if (owner == null)
         {
             List<Object> entities = null;
@@ -257,9 +272,8 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 if (o instanceof EntityLivingBase)
                 {
                     EntityLivingBase e = (EntityLivingBase) o;
-                    String owneruuid = super.getOwnerId();
 
-                    if (e.getUniqueID().toString().equals(owneruuid))
+                    if (e.getUniqueID().equals(ownerID))
                     {
                         owner = e;
                         ownerName = owner.getName();
@@ -292,7 +306,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
         try
         {
-            return super.getOwnerId();// .func_152113_b();//super.getOwnerName();
+            return super.getOwnerId().toString();// .func_152113_b();//super.getOwnerName();
         }
         catch (Exception e)
         {
@@ -333,7 +347,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public int getSpecialInfo()
     {
-        return dataWatcher.getWatchableObjectInt(SPECIALINFO);
+        return dataWatcher.get(SPECIALINFO);
     }
 
     protected void handleArmourAndSaddle()
@@ -362,7 +376,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
         if (animalchest != null)
         {
-            animalchest.func_110132_b(this);
+            animalchest.removeInventoryChangeListener(this);
             int i = Math.min(animalchest.getSizeInventory(), this.pokeChest.getSizeInventory());
 
             for (int j = 0; j < i; ++j)
@@ -378,7 +392,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
             animalchest = null;
         }
 
-        this.pokeChest.func_110134_a(this);
+        this.pokeChest.addInventoryChangeListener(this);
         this.handleArmourAndSaddle();
     }
 
@@ -456,7 +470,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                     ret.add(toAdd);
                 }
             }
-            this.playSound("mob.sheep.shear", 1.0F, 1.0F);
+            this.playSound(SoundEvents.entity_sheep_shear, 1.0F, 1.0F);
             return ret;
         }
         return null;
@@ -497,7 +511,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
     public void openGUI(EntityPlayer player)
     {
-        if (!this.worldObj.isRemote && (this.riddenByEntity == null || this.riddenByEntity == player)
+        if (!this.worldObj.isRemote && (!this.isBeingRidden())
                 && this.getPokemonAIState(IMoveConstants.TAMED))
         {
             this.pokeChest.setCustomName(this.getName());
@@ -521,7 +535,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         pokedexNb = nbttagcompound.getInteger(PokecubeSerializer.POKEDEXNB);
         this.setPokedexEntry(Database.getEntry(pokedexNb));
         this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
-        dataWatcher.updateObject(5, nbttagcompound.getInteger("PokemobActionState"));
+        dataWatcher.set(AIACTIONSTATESDW, nbttagcompound.getInteger("PokemobActionState"));
         setHungerTime(nbttagcompound.getInteger("hungerTime"));
         int[] home = nbttagcompound.getIntArray("homeLocation");
         if (home.length == 4)
@@ -708,7 +722,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     {
         if (e == null)
         {
-            super.setOwnerId("");
+            super.setOwnerId(null);
             owner = null;
             ownerName = "";
             this.setPokemonAIState(IMoveConstants.TAMED, false);
@@ -724,7 +738,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         {
             ownerName = e.getName();
             this.setPokemonAIState(IMoveConstants.TAMED, true);
-            super.setOwnerId(e.getUniqueID().toString());
+            super.setOwnerId(e.getUniqueID());
 
             if (original.compareTo(PokecubeMod.fakeUUID) == 0)
             {
@@ -734,8 +748,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         else
         {
             this.setPokemonAIState(IMoveConstants.TAMED, true);
-            String uuid = e.getUniqueID().toString();
-            super.setOwnerId(uuid);
+            super.setOwnerId(e.getUniqueID());
         }
     }
 
@@ -743,30 +756,8 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     public void setPokemonOwnerByName(String s)
     {
         EntityPlayer player = PokecubeCore.getPlayer(s);
-
         this.setPokemonOwner(player);
-        super.setOwnerId(s);
-    }
-
-    /** Sets the x,y,z of the entity from the given parameters. Also seems to
-     * set up a bounding box. */
-    @Override
-    public void setPosition(double x, double y, double z)
-    {
-        super.setPosition(x, y, z);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int posRotationIncrements,
-            boolean p_180426_10_)
-    {
-        this.newPosX = x;
-        this.newPosY = y;
-        this.newPosZ = z;
-        this.newRotationYaw = yaw;
-        this.newRotationPitch = pitch;
-        this.newPosRotationIncrements = posRotationIncrements;
+        super.setOwnerId(player.getUniqueID());
     }
 
     /** make a sheep sheared if set to true */
@@ -778,7 +769,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public void setSpecialInfo(int info)
     {
-        this.dataWatcher.updateObject(SPECIALINFO, Integer.valueOf(info));
+        this.dataWatcher.set(SPECIALINFO, Integer.valueOf(info));
     }
 
     @Override
@@ -793,7 +784,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setInteger(PokecubeSerializer.POKEDEXNB, pokedexNb);
-        nbttagcompound.setInteger("PokemobActionState", dataWatcher.getWatchableObjectInt(5));
+        nbttagcompound.setInteger("PokemobActionState", dataWatcher.get(AIACTIONSTATESDW));
         nbttagcompound.setInteger("hungerTime", getHungerTime());
         nbttagcompound.setInteger("specialInfo", getSpecialInfo());
         nbttagcompound.setIntArray("homeLocation",

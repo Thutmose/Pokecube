@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,6 +32,7 @@ import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.LevelUpEvent;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.Nature;
@@ -111,7 +113,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void addHappiness(int toAdd)
     {
         this.bonusHappiness += toAdd;
-        this.dataWatcher.updateObject(HAPPYDW, Integer.valueOf(bonusHappiness));
+        this.dataWatcher.set(HAPPYDW, Integer.valueOf(bonusHappiness));
     }
 
     @Override
@@ -119,14 +121,14 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         super.applyEntityAttributes();
         // Max Health - default 20.0D - min 0.0D - max Double.MAX_VALUE
-        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);// .setAttribute(20);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);// .setAttribute(20);
         // Follow Range - default 32.0D - min 0.0D - max 2048.0D
-        this.getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(32);// .setAttribute(32.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32);// .setAttribute(32.0D);
         // Knockback Resistance - default 0.0D - min 0.0D - max 1.0D
-        this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(10);// .setAttribute(0.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(10);// .setAttribute(0.0D);
         // Movement Speed - default 0.699D - min 0.0D - max Double.MAX_VALUE
         moveSpeed = 0.6f;
-        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(moveSpeed);// .setAttribute(moveSpeed);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);// .setAttribute(moveSpeed);
         // Attack Damage - default 2.0D - min 0.0D - max Doubt.MAX_VALUE
         // getEntityAttribute(SharedMonsterAttributes.attackDamage).setAttribute(2.0D);
     }
@@ -152,20 +154,12 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             {
                 return false;
             }
-            else if (source.isFireDamage() && this.isPotionActive(Potion.fireResistance))
+            else if (source.isFireDamage() && this.isPotionActive(Potion.getPotionFromResourceLocation("fire_resistance")))
             {
                 return false;
             }
             else
             {
-                if ((source == DamageSource.anvil || source == DamageSource.fallingBlock)
-                        && this.getEquipmentInSlot(4) != null)
-                {
-                    this.getEquipmentInSlot(4).damageItem((int) (amount * 4.0F + this.rand.nextFloat() * amount * 2.0F),
-                            this);
-                    amount *= 0.75F;
-                }
-
                 this.limbSwingAmount = 1.5F;
                 boolean flag = true;
 
@@ -254,7 +248,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
                 if (this.getHealth() <= 0.0F)
                 {
-                    String s = this.getDeathSound();
+                    SoundEvent s = this.getDeathSound();
 
                     if (flag && s != null)
                     {
@@ -265,7 +259,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 }
                 else
                 {
-                    String s1 = this.getHurtSound();
+                    SoundEvent s1 = this.getHurtSound();
 
                     if (flag && s1 != null)
                     {
@@ -315,7 +309,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public int[] getBaseStats()
     {
         int[] stats = new int[6];
-        String[] sta = dataWatcher.getWatchableObjectString(STATSDW).split(",");
+        String[] sta = dataWatcher.get(STATSDW).split(",");
         for (int i = 0; i < 6; i++)
         {
             stats[i] = Integer.parseInt(sta[i].trim());
@@ -343,7 +337,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public byte[] getEVs()
     {
-        int[] ints = new int[] { dataWatcher.getWatchableObjectInt(EVS1DW), dataWatcher.getWatchableObjectInt(EVS2DV) };
+        int[] ints = new int[] { dataWatcher.get(EVS1DW), dataWatcher.get(EVS2DV) };
         byte[] evs = PokecubeSerializer.intArrayAsByteArray(ints);
         return evs;
     }
@@ -351,7 +345,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public int getExp()
     {
-        return dataWatcher.getWatchableObjectInt(EXPDW);
+        return dataWatcher.get(EXPDW);
     }
 
     @Override
@@ -363,7 +357,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public int getHappiness()
     {
-        bonusHappiness = dataWatcher.getWatchableObjectInt(HAPPYDW);
+        bonusHappiness = dataWatcher.get(HAPPYDW);
         bonusHappiness = Math.max(bonusHappiness, -getPokedexEntry().getHappiness());
         bonusHappiness = Math.min(bonusHappiness, 255 - getPokedexEntry().getHappiness());
         return bonusHappiness + getPokedexEntry().getHappiness();
@@ -384,7 +378,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public byte[] getModifiers()
     {
-        return PokecubeSerializer.intAsModifierArray(dataWatcher.getWatchableObjectInt(STATMODDW));
+        return PokecubeSerializer.intAsModifierArray(dataWatcher.get(STATMODDW));
     }
 
     @Override
@@ -445,7 +439,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public String getPokemonNickname()
     {
-        return dataWatcher.getWatchableObjectString(NICKNAMEDW);
+        return dataWatcher.get(NICKNAMEDW);
     }
 
     @Override
@@ -560,7 +554,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             {
 
             }
-            else if (!(((IPokemob) attacked).getPokemonAIState(TAMED) && !PokecubeMod.core.getConfig().pvpExp))
+            else if (!(((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().pvpExp))
             {
                 attacker.setExp(
                         attacker.getExp()
@@ -600,7 +594,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         super.onUpdate();
         if (getBaseStats()[0] == 0) setStats(getPokedexEntry().getStats());
-        if (Math.random() > 0.999 && this.getPokemonAIState(TAMED))
+        if (Math.random() > 0.999 && this.getPokemonAIState(IMoveConstants.TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.TIME);
         }
@@ -752,8 +746,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setEVs(byte[] evs)
     {
         int[] ints = PokecubeSerializer.byteArrayAsIntArray(evs);
-        dataWatcher.updateObject(EVS1DW, ints[0]);
-        dataWatcher.updateObject(EVS2DV, ints[1]);
+        dataWatcher.set(EVS1DW, ints[0]);
+        dataWatcher.set(EVS2DV, ints[1]);
     }
 
     @Override
@@ -761,12 +755,12 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         if (this.isDead) return;
 
-        int old = dataWatcher.getWatchableObjectInt(EXPDW);
+        int old = dataWatcher.get(EXPDW);
         oldLevel = this.getLevel();
         int lvl100xp = Tools.maxXPs[getExperienceMode()];
         exp = Math.min(lvl100xp, exp);
 
-        dataWatcher.updateObject(EXPDW, exp);
+        dataWatcher.set(EXPDW, exp);
         int newLvl = Tools.xpToLevel(getExperienceMode(), exp);
         int oldLvl = Tools.xpToLevel(getExperienceMode(), old);
 
@@ -827,14 +821,14 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
     private void setMaxHealth(float maxHealth)
     {
-        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth);// .setAttribute(maxHealth);
-        // dataWatcher.updateObject(28, maxHealth);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(maxHealth);// .setAttribute(maxHealth);
+        // dataWatcher.set(28, maxHealth);
     }
 
     @Override
     public void setModifiers(byte[] modifiers)
     {
-        dataWatcher.updateObject(STATMODDW, PokecubeSerializer.modifierArrayAsInt(modifiers));
+        dataWatcher.set(STATMODDW, PokecubeSerializer.modifierArrayAsInt(modifiers));
     }
 
     @Override
@@ -877,11 +871,11 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             if (getPokedexEntry().getTranslatedName().equals(nickname))
             {
-                dataWatcher.updateObject(NICKNAMEDW, "");
+                dataWatcher.set(NICKNAMEDW, "");
             }
             else
             {
-                dataWatcher.updateObject(NICKNAMEDW, nickname);
+                dataWatcher.set(NICKNAMEDW, nickname);
             }
         }
     }
@@ -968,7 +962,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setStats(int[] stats)
     {
         String sta = stats[0] + "," + stats[1] + "," + stats[2] + "," + stats[3] + "," + stats[4] + "," + stats[5];
-        dataWatcher.updateObject(STATSDW, sta);
+        dataWatcher.set(STATSDW, sta);
     }
 
     @Override

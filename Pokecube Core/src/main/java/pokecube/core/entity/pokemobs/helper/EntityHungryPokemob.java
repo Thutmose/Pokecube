@@ -5,6 +5,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -27,13 +28,13 @@ import thut.api.maths.Vector3;
 public abstract class EntityHungryPokemob extends EntityAiPokemob
 {
 
-    public static int HUNGERDELAY = 6000;
-    boolean           sleepy      = false;
-    Vector3           sizes       = Vector3.getNewVector();
+    public static int HUNGERDELAY    = 6000;
+    boolean           sleepy         = false;
+    Vector3           sizes          = Vector3.getNewVector();
 
-    protected int hungerCooldown = 0;
+    protected int     hungerCooldown = 0;
 
-    int fleeingTick;
+    int               fleeingTick;
 
     public EntityHungryPokemob(World world)
     {
@@ -185,17 +186,18 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     @Override
     public float getBlockPathWeight(IBlockAccess world, Vector3 location)
     {
-        Block block = location.getBlock(world);
+        IBlockState state = location.getBlockState(world);
+        Block block = state.getBlock();
         boolean water = getPokedexEntry().swims();
         boolean air = getPokedexEntry().flys() || getPokedexEntry().floats();
 
         if (getPokedexEntry().hatedMaterial != null)
         {
             String material = getPokedexEntry().hatedMaterial[0];
-            if (material.equalsIgnoreCase("water") && block.getMaterial() == Material.water) { return 100; }
+            if (material.equalsIgnoreCase("water") && state.getMaterial() == Material.water) { return 100; }
         }
 
-        if (block.getMaterial() == Material.water) return water ? 1 : air ? 100 : 40;
+        if (state.getMaterial() == Material.water) return water ? 1 : air ? 100 : 40;
         if (block == Blocks.gravel) return water ? 40 : 5;
 
         return water ? 40 : 20;
@@ -216,7 +218,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     @Override
     public int getHungerTime()
     {
-        return getDataManager().getWatchableObjectInt(HUNGERDW);
+        return getDataManager().get(HUNGERDW);
     }
 
     @Override
@@ -230,7 +232,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     public int getPathTime()
     {
         int time = 2500000;
-        if (getPokemonAIState(TAMED)) time *= 3;
+        if (getPokemonAIState(IMoveConstants.TAMED)) time *= 3;
         return time;
     }
 
@@ -253,8 +255,8 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         float light = this.getBrightness(0);
         List<TimePeriod> active = getPokedexEntry().activeTimes();
         if (this.hasHome() && this.getPosition().distanceSq(getHome()) > 10) return false;
-        
-        //TODO refine timing
+
+        // TODO refine timing
         for (TimePeriod p : active)
         {
             if (p.contains(18000)) { return light < 0.1; }
@@ -377,7 +379,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     @Override
     public void setHungerTime(int hungerTime)
     {
-        getDataManager().updateObject(HUNGERDW, hungerTime);
+        getDataManager().set(HUNGERDW, hungerTime);
     }
 
     @Override

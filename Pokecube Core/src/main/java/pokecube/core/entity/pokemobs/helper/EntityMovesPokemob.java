@@ -15,6 +15,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -226,8 +227,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             }
             else if (Math.random() > 0.5)
             {
-                String message = I18n.translateToLocalFormatted("pokemob.status.infatuate",
-                        getPokemonDisplayName());
+                String message = I18n.translateToLocalFormatted("pokemob.status.infatuate", getPokemonDisplayName());
                 displayMessageToOwner("\u00a7c" + message);
                 return;
             }
@@ -297,7 +297,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public int getExplosionState()
     {
-        return dataWatcher.getWatchableObjectByte(BOOMSTATEDW);
+        return dataWatcher.get(BOOMSTATEDW);
     }
 
     public int getLastAttackTick()
@@ -358,7 +358,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public int getMoveIndex()
     {
-        int value = dataWatcher.getWatchableObjectInt(STATUSMOVEINDEXDW);
+        int value = dataWatcher.get(STATUSMOVEINDEXDW);
 
         return (value >> 8) & 0xff;
     }
@@ -371,7 +371,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             IPokemob to = (IPokemob) transformedTo;
             if (to.getTransformedTo() != this) return to.getMoves();
         }
-        String movesString = dataWatcher.getWatchableObjectString(MOVESDW);
+        String movesString = dataWatcher.get(MOVESDW);
         String[] moves = new String[4];
 
         if (movesString != null && movesString.length() > 2)
@@ -405,7 +405,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public byte getStatus()
     {
-        int value = dataWatcher.getWatchableObjectInt(STATUSMOVEINDEXDW);
+        int value = dataWatcher.get(STATUSMOVEINDEXDW);
 
         return (byte) (value & 0xff);
     }
@@ -413,7 +413,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public short getStatusTimer()
     {
-        int value = dataWatcher.getWatchableObjectInt(STATUSMOVEINDEXDW);
+        int value = dataWatcher.get(STATUSMOVEINDEXDW);
 
         return (short) ((value >> 16) & 0xffff);
     }
@@ -454,10 +454,10 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void healStatus()
     {
-        int value = dataWatcher.getWatchableObjectInt(STATUSMOVEINDEXDW);
+        int value = dataWatcher.get(STATUSMOVEINDEXDW);
         value = value >> 8;
         value = (value << 8) | STATUS_NON;
-        dataWatcher.updateObject(STATUSMOVEINDEXDW, value);
+        dataWatcher.set(STATUSMOVEINDEXDW, value);
     }
 
     @Override
@@ -477,8 +477,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
         if (getPokemonOwner() != null && !this.isDead)
         {
-            String message = I18n.translateToLocalFormatted("pokemob.move.notify.learn",
-                    getPokemonDisplayName(), MovesUtils.getTranslatedMove(moveName));
+            String message = I18n.translateToLocalFormatted("pokemob.move.notify.learn", getPokemonDisplayName(),
+                    MovesUtils.getTranslatedMove(moveName));
             displayMessageToOwner(message);
         }
         if (moves[0] == null)
@@ -597,7 +597,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         {
             getAbility().onUpdate(this);
         }
-        if (!this.isDead && getHeldItemMainhand() != null && getHeldItemMainhand().getItem() instanceof ItemPokemobUseable)
+        if (!this.isDead && getHeldItemMainhand() != null
+                && getHeldItemMainhand().getItem() instanceof ItemPokemobUseable)
         {
             ((IPokemobUseable) getHeldItemMainhand().getItem()).itemUse(getHeldItemMainhand(), this, null);
         }
@@ -722,7 +723,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
             if (i > 0 && moveInfo.timeSinceIgnited == 0 && worldObj.isRemote)
             {
-                worldObj.playSoundAtEntity(this, "random.fuse", 1.0F, 0.5F);
+                playSound(SoundEvents.entity_creeper_primed, 1.0F, 0.5F);
             }
             moveInfo.timeSinceIgnited += i;
 
@@ -758,7 +759,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         this.setPokemonAIState(LEARNINGMOVE, nbttagcompound.getBoolean("newMoves"));
         moveInfo.newMoves = nbttagcompound.getInteger("numberMoves");
         String movesString = nbttagcompound.getString(PokecubeSerializer.MOVES);
-        dataWatcher.updateObject(MOVESDW, movesString);
+        dataWatcher.set(MOVESDW, movesString);
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -780,7 +781,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public void setExplosionState(int i)
     {
         if (i >= 0) moveInfo.Exploding = true;
-        dataWatcher.updateObject(BOOMSTATEDW, Byte.valueOf((byte) i));
+        dataWatcher.set(BOOMSTATEDW, Byte.valueOf((byte) i));
     }
 
     public void setHasAttacked(String move)
@@ -838,10 +839,10 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         }
         else
         {
-            int value = dataWatcher.getWatchableObjectInt(STATUSMOVEINDEXDW);
+            int value = dataWatcher.get(STATUSMOVEINDEXDW);
             int toSet = moveIndex << 8;
             value = (value & 0xffff00ff) | toSet;
-            dataWatcher.updateObject(STATUSMOVEINDEXDW, value);
+            dataWatcher.set(STATUSMOVEINDEXDW, value);
         }
     }
 
@@ -861,7 +862,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                 }
             }
         }
-        dataWatcher.updateObject(MOVESDW, movesString);
+        dataWatcher.set(MOVESDW, movesString);
     }
 
     @Override
@@ -876,10 +877,10 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                 || getType2() == PokeType.poison || getType1() == PokeType.steel || getType2() == PokeType.steel))
             return false;
 
-        int value = dataWatcher.getWatchableObjectInt(STATUSMOVEINDEXDW);
+        int value = dataWatcher.get(STATUSMOVEINDEXDW);
         value = value >> 8;
         value = (value << 8) | status;
-        dataWatcher.updateObject(STATUSMOVEINDEXDW, value);
+        dataWatcher.set(STATUSMOVEINDEXDW, value);
         setStatusTimer((short) 100);
         return true;
     }
@@ -887,13 +888,13 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void setStatusTimer(short timer)
     {
-        int value = dataWatcher.getWatchableObjectInt(STATUSMOVEINDEXDW);
+        int value = dataWatcher.get(STATUSMOVEINDEXDW);
 
         timer = (short) Math.max(0, timer);
 
         int toSet = (timer) << 16;
         value = (value & 0x0000ffff) | toSet;
-        dataWatcher.updateObject(STATUSMOVEINDEXDW, value);
+        dataWatcher.set(STATUSMOVEINDEXDW, value);
     }
 
     @Override
@@ -969,8 +970,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
             if ((statusChange & CHANGE_CURSE) != 0)
             {
-                String message = I18n.translateToLocalFormatted("pokemob.status.curse",
-                        getPokemonDisplayName());
+                String message = I18n.translateToLocalFormatted("pokemob.status.curse", getPokemonDisplayName());
                 displayMessageToOwner("\u00a7c" + message);
                 setHealth(getHealth() - getMaxHealth() * 0.25f);
             }
@@ -981,8 +981,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         {
             if (getPokemonAIState(SLEEPING))
             {
-                this.addPotionEffect(new PotionEffect(Potion.blindness.id, duration, 2));
-                this.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, duration, 100));
+                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration * 2, 100));
+                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
             }
             return;
         }
@@ -995,7 +995,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             }
             else if (status == IMoveConstants.STATUS_FRZ)
             {
-                this.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, duration, 100));
+                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
+                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration * 2, 100));
                 if (Math.random() > 0.9)
                 {
                     healStatus();
@@ -1016,9 +1017,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             }
             else if (status == IMoveConstants.STATUS_SLP)
             {
-                this.addPotionEffect(new PotionEffect(Potion.blindness.id, duration, 2));
-                this.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, duration, 100));
-
+                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
+                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration * 2, 100));
                 if (Math.random() > 0.9 || timer <= 0)
                 {
                     healStatus();
@@ -1039,7 +1039,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         nbttagcompound.setByte(PokecubeSerializer.STATUS, getStatus());
         nbttagcompound.setBoolean("newMoves", getPokemonAIState(LEARNINGMOVE));
         nbttagcompound.setInteger("numberMoves", moveInfo.newMoves);
-        String movesString = dataWatcher.getWatchableObjectString(MOVESDW);
+        String movesString = dataWatcher.get(MOVESDW);
         nbttagcompound.setString(PokecubeSerializer.MOVES, movesString);
     }
 

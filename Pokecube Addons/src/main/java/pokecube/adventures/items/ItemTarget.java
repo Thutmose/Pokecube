@@ -9,9 +9,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -63,7 +66,8 @@ public class ItemTarget extends Item
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
+            EnumHand hand)
     {
         int meta = itemstack.getItemDamage();
 
@@ -98,7 +102,7 @@ public class ItemTarget extends Item
                 }
             }
         }
-        if (e != null && !e.isEmpty()) return itemstack;
+        if (e != null && !e.isEmpty()) return new ActionResult<>(EnumActionResult.PASS, itemstack);
 
         if (world.isRemote)
         {
@@ -112,7 +116,7 @@ public class ItemTarget extends Item
             {
                 // WorldTerrain t =
                 // TerrainManager.getInstance().getTerrain(world);
-                // player.addChatMessage(new ChatComponentText("There are
+                // player.addChatMessage(new TextComponentString("There are
                 // "+t.chunks.size()+" loaded terrain segments on your
                 // client"));
             }
@@ -120,7 +124,7 @@ public class ItemTarget extends Item
             {
                 player.openGui(PokecubeAdv.instance, 5, player.worldObj, 0, 0, 0);
             }
-            return itemstack;
+            return new ActionResult<>(EnumActionResult.PASS, itemstack);
         }
 
         if (player.isSneaking() && meta == 10)
@@ -148,64 +152,63 @@ public class ItemTarget extends Item
             location.moveEntity(t);
             world.spawnEntityInWorld(t);
         }
-
-        return itemstack;
+        return new ActionResult<>(EnumActionResult.PASS, itemstack);
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer entityplayer, World world, BlockPos pos, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
+            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         Vector3 hit = Vector3.getNewVector().set(pos);
-        Block block = hit.getBlock(world);
+        Block block = hit.getBlock(worldIn);
         int meta = stack.getItemDamage();
 
-        if (entityplayer.isSneaking() && !world.isRemote && meta == 0)
+        if (playerIn.isSneaking() && !worldIn.isRemote && meta == 0)
         {
-            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(pos, entityplayer.dimension);
+            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(pos, playerIn.dimension);
             String team = TeamManager.getInstance().getLandOwner(c);
-            String playerTeam = world.getScoreboard().getPlayersTeam(entityplayer.getName()).getRegisteredName();
+            String playerTeam = worldIn.getScoreboard().getPlayersTeam(playerIn.getName()).getRegisteredName();
             if (team != null && team.equalsIgnoreCase(playerTeam) && TeamManager.getInstance()
-                    .isAdmin(entityplayer.getName(), world.getScoreboard().getPlayersTeam(entityplayer.getName())))
+                    .isAdmin(playerIn.getName(), worldIn.getScoreboard().getPlayersTeam(playerIn.getName())))
             {
-                ChunkCoordinate blockLoc = new ChunkCoordinate(pos, entityplayer.dimension);
+                ChunkCoordinate blockLoc = new ChunkCoordinate(pos, playerIn.dimension);
                 if (TeamManager.getInstance().isPublic(blockLoc))
                 {
-                    entityplayer.addChatMessage(new ChatComponentText("Set Block to Team Only"));
+                    playerIn.addChatMessage(new TextComponentString("Set Block to Team Only"));
                     TeamManager.getInstance().unsetPublic(blockLoc);
                 }
                 else
                 {
-                    entityplayer.addChatMessage(new ChatComponentText("Set Block to Public Use"));
+                    playerIn.addChatMessage(new TextComponentString("Set Block to Public Use"));
                     TeamManager.getInstance().setPublic(blockLoc);
                 }
             }
-            return true;
+            return EnumActionResult.SUCCESS;
         }
 
-        if (meta == 1 && block instanceof BlockWarpPad && !world.isRemote)
+        if (meta == 1 && block instanceof BlockWarpPad && !worldIn.isRemote)
         {
 
-            TileEntityWarpPad pad = (TileEntityWarpPad) hit.getTileEntity(world);
-            if (entityplayer.isSneaking() && stack.hasTagCompound() && pad.canEdit(entityplayer))
+            TileEntityWarpPad pad = (TileEntityWarpPad) hit.getTileEntity(worldIn);
+            if (playerIn.isSneaking() && stack.hasTagCompound() && pad.canEdit(playerIn))
             {
                 pad.link = new Vector4(stack.getTagCompound().getCompoundTag("link"));
-                entityplayer.addChatMessage(new ChatComponentText("linked pad to " + pad.link));
+                playerIn.addChatMessage(new TextComponentString("linked pad to " + pad.link));
             }
             else
             {
                 if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
                 NBTTagCompound linkTag = new NBTTagCompound();
-                Vector4 link = new Vector4(hit.x, hit.y + 1, hit.z, entityplayer.dimension);
+                Vector4 link = new Vector4(hit.x, hit.y + 1, hit.z, playerIn.dimension);
                 link.writeToNBT(linkTag);
                 stack.getTagCompound().setTag("link", linkTag);
-                entityplayer.addChatMessage(new ChatComponentText("Saved location " + link));
+                playerIn.addChatMessage(new TextComponentString("Saved location " + link));
             }
         }
-        if (meta == 2 && !world.isRemote)
+        if (meta == 2 && !worldIn.isRemote)
         {
 
-            if (entityplayer.isSneaking())
+            if (playerIn.isSneaking())
             {
 
             }
@@ -214,20 +217,20 @@ public class ItemTarget extends Item
 
             }
         }
-        if (meta == 3 && entityplayer.isSneaking() && !world.isRemote)
+        if (meta == 3 && playerIn.isSneaking() && !worldIn.isRemote)
         {
             if (stack.hasTagCompound())
             {
                 if (!stack.getTagCompound().hasKey("pos1x"))
                 {
                     hit.writeToNBT(stack.getTagCompound(), "pos1");
-                    entityplayer.addChatMessage(new ChatComponentText("First Position " + hit));
+                    playerIn.addChatMessage(new TextComponentString("First Position " + hit));
                 }
                 else
                 {
                     String s = stack.getTagCompound().getString("biome");
                     BiomeType type = BiomeType.getBiome(s);
-                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityplayer);
+                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(playerIn);
 
                     Vector3 pos1 = Vector3.readFromNBT(stack.getTagCompound(), "pos1");
                     stack.getTagCompound().removeTag("pos1x");
@@ -246,13 +249,13 @@ public class ItemTarget extends Item
                             for (z = zMin; z <= zMax; z++)
                             {
                                 pos1.set(x, y, z);
-                                t = TerrainManager.getInstance().getTerrian(world, pos1);
+                                t = TerrainManager.getInstance().getTerrian(worldIn, pos1);
                                 t.setBiome(pos1, type.getType());
                             }
                     try
                     {
-                        entityplayer.addChatMessage(
-                                new ChatComponentText("Second Position " + hit + ", setting all in between to " + s));
+                        playerIn.addChatMessage(
+                                new TextComponentString("Second Position " + hit + ", setting all in between to " + s));
                     }
                     catch (Exception e)
                     {
@@ -260,9 +263,9 @@ public class ItemTarget extends Item
                     }
                 }
             }
-            return true;
+            return EnumActionResult.SUCCESS;
         }
-        return super.onItemUse(stack, entityplayer, world, pos, side, hitX, hitY, hitZ);
+        return EnumActionResult.FAIL;
     }
 
 }

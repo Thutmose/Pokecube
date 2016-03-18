@@ -20,7 +20,7 @@ public class PokecubeManager
                 ? itemStack.getTagCompound().getInteger("checkSum") : 0;
     }
 
-    public static ItemStack getHeldItem(ItemStack stack)
+    public static ItemStack getHeldItemMainhand(ItemStack stack)
     {
         if (!isFilled(stack)) return null;
 

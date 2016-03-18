@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -369,10 +370,10 @@ public class PokecubePacketHandler
                             else if (channel == POKEDEX)
                             {
                                 byte index = buffer.readByte();
-                                if (player.getHeldItem() != null
-                                        && player.getHeldItem().getItem() == PokecubeItems.pokedex && index >= 0)
+                                if (player.getHeldItemMainhand() != null
+                                        && player.getHeldItemMainhand().getItem() == PokecubeItems.pokedex && index >= 0)
                                 {
-                                    player.getHeldItem().setItemDamage(index);
+                                    player.getHeldItemMainhand().setItemDamage(index);
                                 }
                                 else
                                 {
@@ -390,7 +391,7 @@ public class PokecubePacketHandler
                                         {
                                             PokecubeSerializer.getInstance().setTeleport(vec,
                                                     player.getUniqueID().toString(), name);
-                                            player.addChatMessage(new ChatComponentText(
+                                            player.addChatMessage(new TextComponentString(
                                                     "Set The location " + vec.toIntString() + " as " + name));
                                             PokecubeSerializer.getInstance().save();
 
@@ -410,7 +411,7 @@ public class PokecubePacketHandler
                                         if (vec != null)
                                         {
                                             player.addChatMessage(
-                                                    new ChatComponentText("Removed The location " + vec.toIntString()));
+                                                    new TextComponentString("Removed The location " + vec.toIntString()));
                                             PokecubeSerializer.getInstance().unsetTeleport(vec,
                                                     player.getUniqueID().toString());
                                             PokecubeSerializer.getInstance().save();
@@ -431,7 +432,7 @@ public class PokecubePacketHandler
                             }
                             else if (channel == POKECUBEUSE)
                             {
-                                if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IPokecube)
+                                if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof IPokecube)
                                 {
                                     Vector3 targetLocation = null;
                                     Entity target = null;
@@ -452,15 +453,15 @@ public class PokecubePacketHandler
 
                                     if (target != null && target instanceof IPokemob) targetLocation.set(target);
 
-                                    boolean used = ((IPokecube) player.getHeldItem().getItem()).throwPokecube(
-                                            player.worldObj, player, player.getHeldItem(), targetLocation, target);
-                                    if (player.getHeldItem() != null
-                                            && !(!PokecubeManager.isFilled(player.getHeldItem())
+                                    boolean used = ((IPokecube) player.getHeldItemMainhand().getItem()).throwPokecube(
+                                            player.worldObj, player, player.getHeldItemMainhand(), targetLocation, target);
+                                    if (player.getHeldItemMainhand() != null
+                                            && !(!PokecubeManager.isFilled(player.getHeldItemMainhand())
                                                     && player.capabilities.isCreativeMode)
                                             && used)
                                     {
-                                        player.getHeldItem().stackSize--;
-                                        if (player.getHeldItem().stackSize == 0)
+                                        player.getHeldItemMainhand().stackSize--;
+                                        if (player.getHeldItemMainhand().stackSize == 0)
                                         {
                                             int current = player.inventory.currentItem;
                                             player.inventory.mainInventory[current] = null;

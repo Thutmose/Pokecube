@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -213,7 +214,7 @@ public class PokemobPacketHandler
                                         megaEntry = pokemob.getPokedexEntry().baseForme;
                                         String mess = I18n.translateToLocalFormatted(
                                                 "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());
-                                        player.addChatMessage(new ChatComponentText(mess));
+                                        player.addChatMessage(new TextComponentString(mess));
                                     }
                                     else
                                     {
@@ -221,7 +222,7 @@ public class PokemobPacketHandler
                                         pokemob.megaEvolve(megaEntry.getName());
                                         String mess = I18n.translateToLocalFormatted(
                                                 "pokemob.megaevolve.success", old, megaEntry.getTranslatedName());
-                                        player.addChatMessage(new ChatComponentText(mess));
+                                        player.addChatMessage(new TextComponentString(mess));
                                     }
                                 }
                                 else
@@ -234,13 +235,13 @@ public class PokemobPacketHandler
                                         megaEntry = pokemob.getPokedexEntry().baseForme;
                                         String mess = I18n.translateToLocalFormatted(
                                                 "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());
-                                        player.addChatMessage(new ChatComponentText(mess));
+                                        player.addChatMessage(new TextComponentString(mess));
                                     }
                                     else
                                     {
                                         String mess = I18n.translateToLocalFormatted(
                                                 "pokemob.megaevolve.failed", pokemob.getPokemonDisplayName());
-                                        player.addChatMessage(new ChatComponentText(mess));
+                                        player.addChatMessage(new TextComponentString(mess));
                                     }
                                 }
 
@@ -270,7 +271,7 @@ public class PokemobPacketHandler
                                     if (pokemob.getPokemonOwner() != null)
                                     {
                                         String mess = I18n.translateToLocal("pokemob.rename.deny");
-                                        pokemob.getPokemonOwner().addChatMessage(new ChatComponentText(mess));
+                                        pokemob.getPokemonOwner().addChatMessage(new TextComponentString(mess));
                                     }
                                 }
                                 else

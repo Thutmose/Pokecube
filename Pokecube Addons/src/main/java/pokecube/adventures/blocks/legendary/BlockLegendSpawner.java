@@ -8,16 +8,17 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -44,21 +45,21 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
         if (TYPE == null)
         {
             if (LegendaryConditions.spawner1 == null)
                 TYPE = PropertyInteger.create("type", 0, LegendaryConditions.SPAWNER1COUNT - 1);
         }
-        return new BlockState(this, new IProperty[] { TYPE });
+        return new BlockStateContainer(this, new IProperty[] { TYPE });
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public EnumWorldBlockLayer getBlockLayer()
+    public BlockRenderLayer getBlockLayer()
     {
-        return EnumWorldBlockLayer.TRANSLUCENT;
+        return BlockRenderLayer.TRANSLUCENT;
     }
 
     @Override
@@ -94,13 +95,13 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
     }
 
     @Override
-    public boolean isFullCube()
+    public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
@@ -112,8 +113,8 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player,
-            EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (worldIn.isRemote) { return true; }
 
@@ -127,7 +128,7 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
         if (condition != null)
         {
             Vector3 location = Vector3.getNewVector().set(pos);
-            if (condition.canSpawn(player, location))
+            if (condition.canSpawn(playerIn, location))
             {
                 EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexNb, worldIn);
                 entity.setHealth(entity.getMaxHealth());

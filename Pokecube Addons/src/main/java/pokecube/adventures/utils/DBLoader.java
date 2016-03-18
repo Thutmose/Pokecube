@@ -38,7 +38,7 @@ public class DBLoader
 
     private static ArrayList<ArrayList<String>> getRows(String file)
     {
-        InputStream res = (net.minecraft.util.StringTranslate.class).getResourceAsStream(file);
+        InputStream res = (DBLoader.class).getResourceAsStream(file);
         ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
         BufferedReader br = null;
         String line = "";

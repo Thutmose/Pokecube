@@ -9,9 +9,11 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pokecube.adventures.ai.trainers.EntityAITrainer;
 import pokecube.adventures.handlers.PASaveHandler;
@@ -87,32 +89,31 @@ public class EntityLeader extends EntityTrainer
     }
 
     @Override
-    public boolean interact(EntityPlayer entityplayer)
+    public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
-        if (!entityplayer.capabilities.isCreativeMode) return false;
+        if (!player.capabilities.isCreativeMode) return false;
 
-        if (entityplayer.getHeldItem() != null
-                && entityplayer.getHeldItem().getUnlocalizedName().toLowerCase().contains("badge"))
+        if (player.getHeldItemMainhand() != null
+                && player.getHeldItemMainhand().getUnlocalizedName().toLowerCase().contains("badge"))
         {
-            this.badge = entityplayer.getHeldItem().getUnlocalizedName().replace("item.", "");
-            this.setCurrentItemOrArmor(1, PokecubeItems.getStack(badge));
-            entityplayer.addChatMessage(new ChatComponentText("Badge set to " + this.getEquipmentInSlot(1)));
+            this.badge = player.getHeldItemMainhand().getUnlocalizedName().replace("item.", "");
+            this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, PokecubeItems.getStack(badge));
+            player.addChatMessage(new TextComponentString("Badge set to " + this.getHeldItemOffhand()));
         }
 
-        return super.interact(entityplayer);
+        return super.processInteract(player, hand, stack);
     }
 
     @Override
     public void onDefeated(Entity defeater)
     {
         if (hasDefeated(defeater)) return;
-
         defeaters.add(defeater.getUniqueID().toString());
-
         for (int i = 1; i < 5; i++)
         {
-            ItemStack stack = getEquipmentInSlot(i);
-            if (stack != null) this.entityDropItem(stack, 0.5f);
+            EntityEquipmentSlot slotIn = EntityEquipmentSlot.values()[i];
+            ItemStack stack = getItemStackFromSlot(slotIn);
+            if (stack != null) this.entityDropItem(stack.copy(), 0.5f);
         }
     }
 
@@ -128,7 +129,7 @@ public class EntityLeader extends EntityTrainer
             defeaters.add(names.getString("" + i));
         }
         badge = nbt.getString("badge");
-        this.setCurrentItemOrArmor(1, PokecubeItems.getStack(badge));
+        this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, PokecubeItems.getStack(badge));
     }
 
     @Override

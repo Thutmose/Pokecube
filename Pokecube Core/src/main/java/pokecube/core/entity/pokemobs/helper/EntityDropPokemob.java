@@ -92,7 +92,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
 
     public void dropItem()
     {
-        ItemStack toDrop = this.getHeldItem();
+        ItemStack toDrop = this.getHeldItemMainhand();
         if (toDrop == null) return;
 
         EntityItem drop = new EntityItem(this.worldObj, this.posX, this.posY + 0.5, this.posZ, toDrop);

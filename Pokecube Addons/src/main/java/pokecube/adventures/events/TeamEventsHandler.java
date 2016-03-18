@@ -5,7 +5,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.UserListOpsEntry;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -38,8 +39,8 @@ public class TeamEventsHandler
             if (!TeamManager.getInstance().isOwned(c)) return;
             if (!player.worldObj.isRemote)
             {
-                UserListOpsEntry userentry = ((EntityPlayerMP) player).mcServer
-                        .getConfigurationManager().getOppedPlayers().getEntry(player.getGameProfile());
+                UserListOpsEntry userentry = ((EntityPlayerMP) player).mcServer.getPlayerList().getOppedPlayers()
+                        .getEntry(player.getGameProfile());
 
                 if (userentry != null
                         || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) { return; }
@@ -47,12 +48,12 @@ public class TeamEventsHandler
             if (TeamManager.getInstance().isOwned(c)
                     && !TeamManager.getInstance().isTeamLand(c, player.getTeam().getRegisteredName()))
             {
-                player.addChatMessage(new ChatComponentText("You may not remove blocks from land owned by Team "
+                player.addChatMessage(new TextComponentString("You may not remove blocks from land owned by Team "
                         + TeamManager.getInstance().getLandOwner(c)));
                 evt.setCanceled(true);
                 return;
             }
-            ChunkCoordinate block = new ChunkCoordinate(evt.pos, evt.world.provider.getDimensionId());
+            ChunkCoordinate block = new ChunkCoordinate(evt.pos, evt.world.provider.getDimension());
             TeamManager.getInstance().unsetPublic(block);
         }
     }
@@ -79,14 +80,15 @@ public class TeamEventsHandler
             {
                 // return;
             }
-            else if (block != null && evt.entityPlayer.getHeldItem() != null
-                    && evt.entityPlayer.getHeldItem().getItem() instanceof IPokecube)
+            else if (block != null && evt.entityPlayer.getHeldItemMainhand() != null
+                    && evt.entityPlayer.getHeldItemMainhand().getItem() instanceof IPokecube)
             {
-                b = block.onBlockActivated(evt.world, evt.pos, state, evt.entityPlayer, evt.face,
-                        (float) evt.localPos.xCoord, (float) evt.localPos.yCoord, (float) evt.localPos.zCoord);
+                b = block.onBlockActivated(evt.world, evt.pos, state, evt.entityPlayer, EnumHand.MAIN_HAND, null,
+                        evt.face, (float) evt.localPos.xCoord, (float) evt.localPos.yCoord,
+                        (float) evt.localPos.zCoord);
                 if (!b) { return; }
             }
-            if (!b && evt.entityPlayer.getHeldItem() == null) return;
+            if (!b && evt.entityPlayer.getHeldItemMainhand() == null) return;
 
             ChunkCoordinate blockLoc = new ChunkCoordinate(evt.pos, evt.entityPlayer.dimension);
             TeamManager.getInstance().isPublic(blockLoc);
@@ -95,7 +97,7 @@ public class TeamEventsHandler
                 if (!TeamManager.getInstance().isPublic(blockLoc))
                 {
                     evt.entityPlayer.addChatMessage(
-                            new ChatComponentText("You must be a member of Team " + owner + " to do that."));
+                            new TextComponentString("You must be a member of Team " + owner + " to do that."));
                     evt.useBlock = Result.DENY;
                     evt.setCanceled(true);
                 }
@@ -107,7 +109,7 @@ public class TeamEventsHandler
     @SubscribeEvent
     public void WorldLoadEvent(Load evt)
     {
-        if (evt.world.provider.getDimensionId() == 0 && !evt.world.isRemote)
+        if (evt.world.provider.getDimension() == 0 && !evt.world.isRemote)
         {
             if (evt.world.getScoreboard().getTeam("Pokecube") == null)
             {

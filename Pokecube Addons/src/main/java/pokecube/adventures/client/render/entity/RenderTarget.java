@@ -6,14 +6,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
 
-public class RenderTarget<T extends EntityLivingBase> extends RendererLivingEntity<EntityLivingBase>
+public class RenderTarget<T extends EntityLivingBase> extends RenderLivingBase<EntityLivingBase>
 {
 
     public static class ModelTarget extends ModelBase

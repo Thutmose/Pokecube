@@ -94,7 +94,7 @@ public class EntityProfessor extends EntityAgeable
     }
 
     @Override
-    public boolean interact(EntityPlayer player)
+    public boolean processInteract(EntityPlayer player player)
     {
         if (!worldObj.isRemote)
         {
@@ -108,7 +108,7 @@ public class EntityProfessor extends EntityAgeable
                 CommandTools.sendError(player, "pokecube.professor.deny");
             }
         }
-        return false;// super.interact(entityplayer);
+        return false;// super.processInteract(EntityPlayer player);
     }
 
     @Override

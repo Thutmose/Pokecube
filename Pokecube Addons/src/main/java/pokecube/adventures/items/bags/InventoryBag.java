@@ -10,7 +10,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.PokecubeMod;
@@ -347,7 +347,7 @@ public class InventoryBag implements IInventory
 	}
 
 	@Override
-	public IChatComponent getDisplayName() {
+	public ITextComponent getDisplayName() {
 		// TODO Auto-generated method stub
 		return null;
 	}	

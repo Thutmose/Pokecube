@@ -11,7 +11,7 @@ import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -179,33 +179,33 @@ public class ContainerCloner extends Container
         tile.setInventorySlotContents(9, null);
     }
 
-    @Override
-    /** Handles slot click.
-     * 
-     * @param mode
-     *            0 = basic click, 1 = shift click, 2 = hotbar, 3 = pick block,
-     *            4 = drop, 5 = ?, 6 = double click */
-    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer playerIn)
-    {
-        if (slotId == 0 && getSlot(0).getHasStack() && egg != null)
-        {
-            tile.setField(0, tile.getField(0) - 10000);
-            // If there is a nether star, consume it, but leave a pokecube
-            // behind.
-            for (int i = 0; i < tile.craftMatrix.getSizeInventory(); i++)
-            {
-                ItemStack item = tile.craftMatrix.getStackInSlot(i);
-                if (star != null && item != null && item.isItemEqual(cube))
-                {
-                    cube.stackSize = 2;
-                    tile.craftMatrix.setInventorySlotContents(i, cube);
-                    break;
-                }
-            }
-
-        }
-        return super.slotClick(slotId, clickedButton, mode, playerIn);
-    }
+//    @Override
+//    /** Handles slot click.//TODO see if this was needed
+//     * 
+//     * @param mode
+//     *            0 = basic click, 1 = shift click, 2 = hotbar, 3 = pick block,
+//     *            4 = drop, 5 = ?, 6 = double click */
+//    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer playerIn)
+//    {
+//        if (slotId == 0 && getSlot(0).getHasStack() && egg != null)
+//        {
+//            tile.setField(0, tile.getField(0) - 10000);
+//            // If there is a nether star, consume it, but leave a pokecube
+//            // behind.
+//            for (int i = 0; i < tile.craftMatrix.getSizeInventory(); i++)
+//            {
+//                ItemStack item = tile.craftMatrix.getStackInSlot(i);
+//                if (star != null && item != null && item.isItemEqual(cube))
+//                {
+//                    cube.stackSize = 2;
+//                    tile.craftMatrix.setInventorySlotContents(i, cube);
+//                    break;
+//                }
+//            }
+//
+//        }
+//        return super.slotClick(slotId, clickedButton, mode, playerIn);
+//    }
 
     @Override
     /** This is called on shift click Take a stack from the specified inventory

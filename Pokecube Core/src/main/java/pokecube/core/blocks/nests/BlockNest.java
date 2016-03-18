@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.ColorizerGrass;
 import net.minecraft.world.World;
 import pokecube.core.database.Database;
@@ -38,12 +39,12 @@ public class BlockNest extends Block implements ITileEntityProvider {
     {
     	
         TileEntity tile_entity = world.getTileEntity(pos);
-        if(tile_entity instanceof TileEntityNest && player.capabilities.isCreativeMode && player.getHeldItem()!=null && player.getHeldItem().getItem() instanceof ItemPokemobEgg && !player.worldObj.isRemote)
+        if(tile_entity instanceof TileEntityNest && player.capabilities.isCreativeMode && player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() instanceof ItemPokemobEgg && !player.worldObj.isRemote)
         {
         	TileEntityNest nest = (TileEntityNest) tile_entity;
         	
-        	nest.pokedexNb = ItemPokemobEgg.getNumber(player.getHeldItem());
-        	player.addChatComponentMessage(new ChatComponentText("Set to "+Database.getEntry(nest.pokedexNb)));
+        	nest.pokedexNb = ItemPokemobEgg.getNumber(player.getHeldItemMainhand());
+        	player.addTextComponentMessage(new TextComponentString("Set to "+Database.getEntry(nest.pokedexNb)));
         	return true;
         }
         return false;

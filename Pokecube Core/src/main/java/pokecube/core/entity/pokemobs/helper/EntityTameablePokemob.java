@@ -207,7 +207,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     }
 
     @Override
-    public ItemStack getHeldItem()
+    public ItemStack getHeldItemMainhand()
     {
         return pokeChest != null ? pokeChest.getStackInSlot(1) : null;
     }
@@ -674,7 +674,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     {
         try
         {
-            ItemStack oldStack = getHeldItem();
+            ItemStack oldStack = getHeldItemMainhand();
             pokeChest.setInventorySlotContents(1, itemStack);
             getPokedexEntry().onHeldItemChange(oldStack, itemStack, this);
         }

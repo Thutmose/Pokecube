@@ -38,6 +38,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
@@ -246,7 +247,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
     }
     @Override
-    public IPlayerUsage getMinecraftInstance()
+    public ISnooperInfo getMinecraftInstance()
     {
         if (isOnClientSide())
         {

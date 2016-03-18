@@ -10,11 +10,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.items.berries.BerryManager;
 import thut.api.maths.Vector3;
+import thut.api.terrain.BiomeDatabase;
 
 /** @author Oracion
  * @author Manchou */
@@ -24,7 +26,7 @@ public class WorldGenBerries implements IWorldGenerator
     Block grassBlock = Blocks.grass;
 
     @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator,
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
             IChunkProvider chunkProvider)
     {
         switch (world.provider.getDimension())
@@ -49,7 +51,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosX = chunkX + rand.nextInt(15) + 1;
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
-            if (world.getBiomeGenForCoords(pos) == (BiomeGenBase.sky))
+            if (world.getBiomeGenForCoords(pos) == (BiomeDatabase.getBiome("sky")))
             {
                 if (world.getBlockState(pos.down()).getBlock() == Blocks.end_stone)
                 {
@@ -68,7 +70,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
 
-            if (world.getBiomeGenForCoords(pos) == (BiomeGenBase.hell))
+            if (world.getBiomeGenForCoords(pos) == (BiomeDatabase.getBiome("hell")))
             {
                 if (world.getBlockState(pos).getBlock() == Blocks.netherrack)
                 {
@@ -508,8 +510,8 @@ public class WorldGenBerries implements IWorldGenerator
                             temp = new BlockPos(l1, i1, j1);
                             Block block = par1World.getBlockState(temp).getBlock();
 
-                            if (!par1World.isAirBlock(temp) && !block.isLeaves(par1World, temp) && block != Blocks.grass
-                                    && block != Blocks.dirt && !block.isWood(par1World, temp))
+                            if (!par1World.isAirBlock(temp) && !block.isLeaves(leaves, par1World, temp)
+                                    && block != Blocks.grass && block != Blocks.dirt && !block.isWood(par1World, temp))
                             {
                                 flag = false;
                             }
@@ -529,7 +531,8 @@ public class WorldGenBerries implements IWorldGenerator
             else
             {
                 temp = pos.down();
-                Block soil = par1World.getBlockState(temp).getBlock();
+                IBlockState state = par1World.getBlockState(temp);
+                Block soil = state.getBlock();
                 boolean isSoil = true;// (soil != null &&
                                       // soil.canSustainPlant(par1World, par3,
                                       // par4 - 1, par5, EnumFacing.UP,
@@ -537,7 +540,7 @@ public class WorldGenBerries implements IWorldGenerator
 
                 if (isSoil && y < 256 - l - 1)
                 {
-                    soil.onPlantGrow(par1World, temp, pos);
+                    soil.onPlantGrow(state, par1World, temp, pos);
                     b0 = 3;
                     byte b1 = 0;
                     int i2;
@@ -560,9 +563,10 @@ public class WorldGenBerries implements IWorldGenerator
                                 if (Math.abs(k2) != i2 || Math.abs(i3) != i2 || par2Random.nextInt(2) != 0 && k1 != 0)
                                 {
                                     temp = new BlockPos(j2, j1, l2);
-                                    Block block = par1World.getBlockState(temp).getBlock();
+                                    state = par1World.getBlockState(temp);
+                                    Block block = state.getBlock();
 
-                                    if (block == null || block.canBeReplacedByLeaves(par1World, temp))
+                                    if (block == null || block.canBeReplacedByLeaves(state, par1World, temp))
                                     {
                                         par1World.setBlockState(temp, leaves);
                                     }
@@ -574,9 +578,11 @@ public class WorldGenBerries implements IWorldGenerator
                     for (j1 = 0; j1 < l; ++j1)
                     {
                         temp = new BlockPos(x, y + j1, z);
-                        Block block = par1World.getBlockState(temp).getBlock();
+                        state = par1World.getBlockState(temp);
+                        Block block = state.getBlock();
 
-                        if (block == null || block.isAir(par1World, temp) || block.isLeaves(par1World, temp))
+                        if (block == null || block.isAir(state, par1World, temp)
+                                || block.isLeaves(state, par1World, temp))
                         {
                             par1World.setBlockState(temp, wood);
                         }

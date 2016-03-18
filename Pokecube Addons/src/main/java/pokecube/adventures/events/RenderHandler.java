@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -47,7 +47,7 @@ public class RenderHandler
             diff.x = player.prevPosX - player.posX;
             diff.y = player.prevPosY - player.posY;
             diff.z = player.prevPosZ - player.posZ;
-            diff.scalarMultBy(evt.renderPartialTicks);
+            diff.scalarMultBy(evt.getRenderPartialTicks());
             source.addTo(diff);
             GL11.glTranslated(source.x, source.y, source.z);
             int rgba = 0xFFFFFFFF;

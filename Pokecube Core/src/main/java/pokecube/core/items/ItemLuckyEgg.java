@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.utils.PokecubeSerializer;
@@ -40,7 +41,7 @@ public class ItemLuckyEgg extends Item
             else
             {
                 boolean meteor = PokecubeSerializer.getInstance().canMeteorLand(location);
-                player.addChatMessage(new ChatComponentText("Meteor Can Land: " + meteor));
+                player.addChatMessage(new TextComponentString("Meteor Can Land: " + meteor));
             }
         }
         return itemstack;

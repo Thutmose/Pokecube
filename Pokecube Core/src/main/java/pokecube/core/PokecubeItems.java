@@ -44,6 +44,7 @@ public class PokecubeItems extends Items
         }
 
     }
+
     static HashMap<String, ItemStack>         itemstacks     = new HashMap<String, ItemStack>();
     static HashMap<String, Item>              items          = new HashMap<String, Item>();
 
@@ -111,7 +112,7 @@ public class PokecubeItems extends Items
 
     public static Block                       tradingtable;
 
-    public static boolean resetTimeTags = false;
+    public static boolean                     resetTimeTags  = false;
 
     /** Registers a pokecube id, the Object[] is an array with the item or block
      * assosicated with the unfilled and filled cubes. example: Object cubes =
@@ -448,10 +449,13 @@ public class PokecubeItems extends Items
         {
             if (grasses.contains(b)) continue;
 
-            if (b.getMaterial() == Material.grass) grasses.add(b);
-            if (b.getMaterial() == Blocks.red_flower.getMaterial()) grasses.add(b);
-            if (b.getMaterial() == Blocks.tallgrass.getMaterial()) PokecubeItems.grasses.add(b);
-            if (b.getMaterial() == Blocks.wheat.getMaterial()) PokecubeItems.grasses.add(b);
+            if (b.getMaterial(b.getDefaultState()) == Material.grass) grasses.add(b);
+            if (b.getMaterial(b.getDefaultState()) == Blocks.red_flower.getMaterial(b.getDefaultState()))
+                grasses.add(b);
+            if (b.getMaterial(b.getDefaultState()) == Blocks.tallgrass.getMaterial(b.getDefaultState()))
+                PokecubeItems.grasses.add(b);
+            if (b.getMaterial(b.getDefaultState()) == Blocks.wheat.getMaterial(b.getDefaultState()))
+                PokecubeItems.grasses.add(b);
         }
         postInitFossils();
     }

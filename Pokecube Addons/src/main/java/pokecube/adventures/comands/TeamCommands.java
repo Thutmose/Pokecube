@@ -6,13 +6,15 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.ScorePlayerTeam;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.MathHelper;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentString;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.utils.ChunkCoordinate;
@@ -50,7 +52,7 @@ public class TeamCommands implements ICommand
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -65,7 +67,7 @@ public class TeamCommands implements ICommand
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         return true;
     }
@@ -106,7 +108,7 @@ public class TeamCommands implements ICommand
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length > 0)
         {
@@ -130,7 +132,7 @@ public class TeamCommands implements ICommand
                 if (!TeamManager.getInstance().isAdmin(sender.getName(), team)
                         || team.getRegisteredName().equalsIgnoreCase("Trainers"))
                 {
-                    sender.addChatMessage(new ChatComponentText("You are not Authorized to claim land for your team"));
+                    sender.addChatMessage(new TextComponentString("You are not Authorized to claim land for your team"));
                     return;
                 }
                 int teamCount = team.getMembershipCollection().size();
@@ -166,7 +168,7 @@ public class TeamCommands implements ICommand
                         int x = MathHelper.floor_double(sender.getPosition().getX() / 16f);
                         int y = MathHelper.floor_double(sender.getPosition().getY() / 16f) + i * dir;
                         int z = MathHelper.floor_double(sender.getPosition().getZ() / 16f);
-                        int dim = sender.getEntityWorld().provider.getDimensionId();
+                        int dim = sender.getEntityWorld().provider.getDimension();
                         if (y < 0 || y > 15) return;
 
                         String owner = TeamManager.getInstance().getLandOwner(new ChunkCoordinate(x, y, z, dim));
@@ -175,12 +177,12 @@ public class TeamCommands implements ICommand
                         {
                             if (owner.equals(team.getRegisteredName())) continue;
 
-                            sender.addChatMessage(new ChatComponentText("This land is already claimed by " + owner));
+                            sender.addChatMessage(new TextComponentString("This land is already claimed by " + owner));
                             return;
                         }
 
                         sender.addChatMessage(
-                                new ChatComponentText("Claimed This land for Team" + team.getRegisteredName()));
+                                new TextComponentString("Claimed This land for Team" + team.getRegisteredName()));
                         TeamManager.getInstance().addTeamLand(team.getRegisteredName(),
                                 new ChunkCoordinate(x, y, z, dim));
                         num--;
@@ -198,7 +200,7 @@ public class TeamCommands implements ICommand
                         || team.getRegisteredName().equalsIgnoreCase("Trainers"))
                 {
                     sender.addChatMessage(
-                            new ChatComponentText("You are not Authorized to unclaim land for your team"));
+                            new TextComponentString("You are not Authorized to unclaim land for your team"));
                     return;
                 }
                 boolean up = false;
@@ -225,10 +227,10 @@ public class TeamCommands implements ICommand
                     int x = MathHelper.floor_double(sender.getPosition().getX() / 16f);
                     int y = MathHelper.floor_double(sender.getPosition().getY() / 16f) + dir * i;
                     int z = MathHelper.floor_double(sender.getPosition().getZ() / 16f);
-                    int dim = sender.getEntityWorld().provider.getDimensionId();
+                    int dim = sender.getEntityWorld().provider.getDimension();
                     if (y < 0 || y > 15) return;
                     sender.addChatMessage(
-                            new ChatComponentText("Unclaimed This land for Team" + team.getRegisteredName()));
+                            new TextComponentString("Unclaimed This land for Team" + team.getRegisteredName()));
                     TeamManager.getInstance().removeTeamLand(team.getRegisteredName(),
                             new ChunkCoordinate(x, y, z, dim));
                 }
@@ -269,7 +271,7 @@ public class TeamCommands implements ICommand
                     }
                     if (TeamManager.getInstance().hasInvite(sender.getName(), teamname) || isOp)
                         TeamManager.getInstance().addToTeam((EntityPlayer) sender, teamname);
-                    else sender.addChatMessage(new ChatComponentText("You do not have an invite for Team " + teamname));
+                    else sender.addChatMessage(new TextComponentString("You do not have an invite for Team " + teamname));
 
                 }
                 return;
@@ -297,7 +299,7 @@ public class TeamCommands implements ICommand
                     {
                         TeamManager.getInstance().removeFromTeam((EntityPlayer) sender, team.getRegisteredName(),
                                 teamname);
-                        sender.addChatMessage(new ChatComponentText(
+                        sender.addChatMessage(new TextComponentString(
                                 "Removed " + teamname + " From Team " + team.getRegisteredName()));
                     }
                 }
@@ -311,7 +313,7 @@ public class TeamCommands implements ICommand
                         || TeamManager.getInstance().isAdmin(sender.getName(), team))
                 {
                     TeamManager.getInstance().removeFromTeam((EntityPlayer) sender, team.getRegisteredName(), teamname);
-                    sender.addChatMessage(new ChatComponentText("Left Team " + team.getRegisteredName()));
+                    sender.addChatMessage(new TextComponentString("Left Team " + team.getRegisteredName()));
                 }
                 return;
             }
@@ -326,12 +328,12 @@ public class TeamCommands implements ICommand
                     {
                         TeamManager.getInstance().addToAdmins(player, teamName);
                         sender.addChatMessage(
-                                new ChatComponentText(player + " added as an Admin for Team " + teamName));
+                                new TextComponentString(player + " added as an Admin for Team " + teamName));
 
                     }
                     else
                     {
-                        sender.addChatMessage(new ChatComponentText("You are not Authorized to do that"));
+                        sender.addChatMessage(new TextComponentString("You are not Authorized to do that"));
                     }
                 }
                 return;
@@ -347,11 +349,11 @@ public class TeamCommands implements ICommand
                     {
                         TeamManager.getInstance().removeFromAdmins(player, teamName);
                         sender.addChatMessage(
-                                new ChatComponentText(player + " removed as an Admin for Team " + teamName));
+                                new TextComponentString(player + " removed as an Admin for Team " + teamName));
                     }
                     else
                     {
-                        sender.addChatMessage(new ChatComponentText("You are not Authorized to do that"));
+                        sender.addChatMessage(new TextComponentString("You are not Authorized to do that"));
                     }
                 }
                 return;
@@ -359,39 +361,39 @@ public class TeamCommands implements ICommand
             if (arg1.equalsIgnoreCase("team") && team != null)
             {
                 String teamName = team.getRegisteredName();
-                sender.addChatMessage(new ChatComponentText("Currently a member of Team " + teamName));
+                sender.addChatMessage(new TextComponentString("Currently a member of Team " + teamName));
                 return;
             }
             if (arg1.equalsIgnoreCase("list") && team != null)
             {
                 String teamName = team.getRegisteredName();
-                sender.addChatMessage(new ChatComponentText("Members of Team " + teamName));
+                sender.addChatMessage(new TextComponentString("Members of Team " + teamName));
                 Collection<?> c = team.getMembershipCollection();
                 for (Object o : c)
                 {
-                    sender.addChatMessage(new ChatComponentText("" + o));
+                    sender.addChatMessage(new TextComponentString("" + o));
                 }
                 return;
             }
             if (arg1.equalsIgnoreCase("admins") && team != null)
             {
                 String teamName = team.getRegisteredName();
-                sender.addChatMessage(new ChatComponentText("Admins of Team " + teamName));
+                sender.addChatMessage(new TextComponentString("Admins of Team " + teamName));
                 Collection<?> c = TeamManager.getInstance().getAdmins(teamName);
                 for (Object o : c)
                 {
-                    sender.addChatMessage(new ChatComponentText("" + o));
+                    sender.addChatMessage(new TextComponentString("" + o));
                 }
                 return;
             }
             if (arg1.equalsIgnoreCase("invites") && team != null)
             {
                 String teamName = sender.getName();
-                sender.addChatMessage(new ChatComponentText("Invites for " + teamName));
+                sender.addChatMessage(new TextComponentString("Invites for " + teamName));
                 Collection<?> c = TeamManager.getInstance().getInvites(teamName);
                 for (Object o : c)
                 {
-                    sender.addChatMessage(new ChatComponentText("" + o));
+                    sender.addChatMessage(new TextComponentString("" + o));
                 }
                 return;
             }
@@ -400,10 +402,10 @@ public class TeamCommands implements ICommand
                 int x = MathHelper.floor_double(sender.getPosition().getX() / 16f);
                 int y = MathHelper.floor_double(sender.getPosition().getY() / 16f);
                 int z = MathHelper.floor_double(sender.getPosition().getZ() / 16f);
-                int dim = sender.getEntityWorld().provider.getDimensionId();
+                int dim = sender.getEntityWorld().provider.getDimension();
                 String owner = TeamManager.getInstance().getLandOwner(new ChunkCoordinate(x, y, z, dim));
-                if (owner == null) sender.addChatMessage(new ChatComponentText("This Land is not owned"));
-                else sender.addChatMessage(new ChatComponentText("This Land is owned by Team " + owner));
+                if (owner == null) sender.addChatMessage(new TextComponentString("This Land is not owned"));
+                else sender.addChatMessage(new TextComponentString("This Land is owned by Team " + owner));
                 System.out.println(new ChunkCoordinate(x, y, z, dim) + " " + sender.getPosition());
                 return;
             }

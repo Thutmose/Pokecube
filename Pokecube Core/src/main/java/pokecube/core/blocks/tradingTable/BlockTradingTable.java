@@ -19,6 +19,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -62,7 +63,7 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     /** Queries if this block should render in a given layer. ISmartBlockModel
      * can use MinecraftForgeClient.getRenderLayer to alter their model based on
      * layer */
-    public boolean canRenderInLayer(EnumWorldBlockLayer layer)
+    public boolean canRenderInLayer(BlockRenderLayer layer)
     {
         return true;
     }

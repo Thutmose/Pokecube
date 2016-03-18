@@ -17,9 +17,10 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.translation.I18n;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.database.Database;
@@ -30,7 +31,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 import thut.api.entity.IMobColourable;
 
-@SuppressWarnings("deprecation")
 public class GuiTrainerEdit extends GuiScreen
 {
     public static int x;
@@ -85,8 +85,8 @@ public class GuiTrainerEdit extends GuiScreen
         if (guibutton.id == 2)
         {
             sendChooseToServer();
-            mc.thePlayer.addChatComponentMessage(
-                    new ChatComponentText(StatCollector.translateToLocal("gui.trainer.saved")));
+            mc.thePlayer.addChatMessage(
+                    new TextComponentString(I18n.translateToLocal("gui.trainer.saved")));
         }
     }
 
@@ -98,12 +98,13 @@ public class GuiTrainerEdit extends GuiScreen
         int x1 = width / 2;
         int y1 = height / 2;
 
-        String info = StatCollector.translateToLocal("gui.trainer.stationary");
+        String info = I18n.translateToLocal("gui.trainer.stationary");
         int l = fontRendererObj.getStringWidth(info);
         this.fontRendererObj.drawString(info, x1 + 90 - l / 2, y1 + 10, 0xffffff);
 
         int num = 0;
-        if (trainer.getEquipmentInSlot(1) != null)
+        ItemStack stack = trainer.getHeldItemOffhand(); 
+        if (stack != null)
         {
                     int i1 = x1 + 50;
                     int j1 = y1 - 20;
@@ -111,7 +112,7 @@ public class GuiTrainerEdit extends GuiScreen
                     GL11.glPushMatrix();
                     GL11.glTranslated(i1,j1, z);
                     GL11.glScaled(8, 8, 8);
-                    Minecraft.getMinecraft().getItemRenderer().renderItem(mc.thePlayer, trainer.getEquipmentInSlot(1),TransformType.GUI);
+                    Minecraft.getMinecraft().getItemRenderer().renderItem(mc.thePlayer, stack,TransformType.GUI);
                     GL11.glPopMatrix();
         }
 
@@ -476,7 +477,7 @@ public class GuiTrainerEdit extends GuiScreen
             int j1 = i % 65536;
             int k1 = i / 65536;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
-            Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, 0, 0, 0, POKEDEX_RENDER);
+            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
             GL11.glPopMatrix();
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);

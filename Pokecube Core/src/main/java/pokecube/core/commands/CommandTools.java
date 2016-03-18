@@ -5,6 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -26,11 +28,11 @@ public class CommandTools
         return sender.getName().equalsIgnoreCase("@") || sender.getName().equals("Server");
     }
 
-    public static IChatComponent makeError(String text)
+    public static ITextComponent makeError(String text)
     {
-        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + I18n.translateToLocal(text);
-        IChatComponent message;
-        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+        text = TextFormatting.RED + "" + TextFormatting.ITALIC + I18n.translateToLocal(text);
+        ITextComponent message;
+        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
         return message;
     }
 
@@ -52,8 +54,8 @@ public class CommandTools
     public static void sendMessage(ICommandSender sender, String text)
     {
         text = I18n.translateToLocal(text);
-        IChatComponent message;
-        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+        ITextComponent message;
+        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
         sender.addChatMessage(message);
     }
 

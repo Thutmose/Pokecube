@@ -1,6 +1,5 @@
 package pokecube.compat;
 
-import igwmod.gui.tabs.BaseWikiTab;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import pokecube.core.PokecubeItems;

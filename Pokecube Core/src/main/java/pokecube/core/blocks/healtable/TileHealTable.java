@@ -9,6 +9,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.text.ITextComponent;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
@@ -73,7 +74,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
         return null;
     }

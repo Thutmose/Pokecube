@@ -115,7 +115,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public IPokemob evolve(boolean showAnimation)
     {
-        return evolve(showAnimation, this.getHeldItem());
+        return evolve(showAnimation, this.getHeldItemMainhand());
     }
 
     @Override
@@ -133,7 +133,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     if (d.shouldEvolve(this, stack))
                     {
                         evol = Database.getEntry(d.evolutionNb);
-                        if (!d.shouldEvolve(this, null) && stack == getHeldItem()) neededItem = true;
+                        if (!d.shouldEvolve(this, null) && stack == getHeldItemMainhand()) neededItem = true;
                         break;
                     }
                 }
@@ -334,11 +334,11 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public void onUpdate()
     {
         super.onUpdate();
-        if (getHeldItem() != null && getHeldItem().getItem() == PokecubeItems.everstone)
+        if (getHeldItemMainhand() != null && getHeldItemMainhand().getItem() == PokecubeItems.everstone)
         {
             traded = false;
         }
-        if (!this.getPokemonAIState(IMoveConstants.TAMED) && this.canEvolve(getHeldItem()))
+        if (!this.getPokemonAIState(IMoveConstants.TAMED) && this.canEvolve(getHeldItemMainhand()))
         {
             this.evolve(false);
         }

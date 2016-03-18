@@ -134,7 +134,7 @@ public class PokecubeAdv
     @SubscribeEvent
     public void pokemobSpawnCheck(SpawnEvent.Pre evt)
     {
-        int id = evt.world.provider.getDimensionId();
+        int id = evt.world.provider.getDimension();
         for (int i : conf.dimensionBlackList)
         {
             if (i == id)

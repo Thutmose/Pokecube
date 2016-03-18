@@ -4,21 +4,12 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
-import jeresources.api.IJERAPI;
-import jeresources.api.JERPlugin;
-import jeresources.api.conditionals.LightLevel;
-import jeresources.api.distributions.DistributionSquare;
-import jeresources.api.drop.DropItem;
-import jeresources.api.drop.PlantDrop;
-import jeresources.api.render.IMobRenderHook;
-import jeresources.api.restrictions.BiomeRestriction;
-import jeresources.api.restrictions.Restriction;
-import jeresources.api.restrictions.Type;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.fml.common.versioning.Restriction;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;

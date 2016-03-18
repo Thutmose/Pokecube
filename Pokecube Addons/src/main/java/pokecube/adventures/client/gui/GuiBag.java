@@ -8,11 +8,12 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.adventures.items.bags.InventoryBag;
@@ -158,16 +159,16 @@ public class GuiBag extends GuiContainer {
         buttonList.clear();
         int xOffset = 0;
         int yOffset = -11;
-        String next = StatCollector.translateToLocal("tile.pc.next");
+        String next = I18n.translateToLocal("tile.pc.next");
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 15, height / 2 - yOffset, 50, 20, next));
-        String prev = StatCollector.translateToLocal("tile.pc.previous");
+        String prev = I18n.translateToLocal("tile.pc.previous");
         buttonList.add(new GuiButton(2, width / 2 - xOffset-65, height / 2 - yOffset, 50, 20, prev));
 
-        String rename = StatCollector.translateToLocal("tile.pc.rename");
+        String rename = I18n.translateToLocal("tile.pc.rename");
         buttonList.add(new GuiButton(3, width / 2 - xOffset-137, height / 2 - yOffset - 125, 50, 20, rename));
         if(pc)
         {
-        	String bag = "PC";//StatCollector.translateToLocal("tile.pc.rename");
+        	String bag = "PC";//I18n.translateToLocal("tile.pc.rename");
         	buttonList.add(new GuiButton(4, width / 2 - xOffset-137, height / 2 - yOffset - 105, 50, 20, bag));
         }
         
@@ -244,11 +245,11 @@ public class GuiBag extends GuiContainer {
         {
             if (par2 == this.mc.gameSettings.keyBindPickBlock.getKeyCode())
             {
-                this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, 0, 3);
+                this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, 0, ClickType.CLONE);
             }
             else if (par2 == this.mc.gameSettings.keyBindDrop.getKeyCode())
             {
-                this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, isCtrlKeyDown() ? 1 : 0, 4);
+                this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, isCtrlKeyDown() ? 1 : 0, ClickType.THROW);
             }
         }
     }

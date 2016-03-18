@@ -4,7 +4,9 @@ import static pokecube.core.PokecubeItems.register;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubes;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import com.sun.jna.platform.unix.X11.XSizeHints.Aspect;
+
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.compat.CompatPokecubes;
@@ -17,8 +19,6 @@ import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.Pokecube;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
 
 public class ThaumiumPokecube// extends Mod_Pokecube_Helper
 {

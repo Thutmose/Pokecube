@@ -9,6 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
@@ -50,7 +51,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         return FMLCommonHandler.instance().getMinecraftServerInstance();
     }
 
-    public IPlayerUsage getMinecraftInstance()
+    public ISnooperInfo getMinecraftInstance()
     {
         return FMLCommonHandler.instance().getMinecraftServerInstance();
     }

@@ -10,8 +10,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
-import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
-import mezz.jei.plugins.vanilla.VanillaRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import pokecube.core.database.PokedexEntry;

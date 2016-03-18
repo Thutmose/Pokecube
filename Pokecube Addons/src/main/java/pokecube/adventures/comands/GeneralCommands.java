@@ -12,9 +12,10 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.commands.CommandTools;
 import scala.actors.threadpool.Arrays;
@@ -30,13 +31,13 @@ public class GeneralCommands implements ICommand
         options.add("killtrainers");
     }
 
-    public static boolean TRAINERSDIE = false;
+    public static boolean  TRAINERSDIE = false;
 
-    private List<String>  aliases;
+    private List<String>   aliases;
 
-    ArrayList<String>      fields   = Lists.newArrayList();
+    ArrayList<String>      fields      = Lists.newArrayList();
 
-    HashMap<String, Field> fieldMap = Maps.newHashMap();
+    HashMap<String, Field> fieldMap    = Maps.newHashMap();
 
     public GeneralCommands()
     {
@@ -47,7 +48,8 @@ public class GeneralCommands implements ICommand
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender p_71516_1_, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+            BlockPos pos)
     {
         if (args.length == 2 && args[0].equalsIgnoreCase("settings"))
         {
@@ -85,7 +87,7 @@ public class GeneralCommands implements ICommand
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender p_71519_1_)
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         return true;
     }
@@ -119,6 +121,7 @@ public class GeneralCommands implements ICommand
     {
         return false;
     }
+
     private void populateFields()
     {
         Class<Config> me = Config.class;
@@ -136,14 +139,14 @@ public class GeneralCommands implements ICommand
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args)
     {
         String text = "";
-        IChatComponent message;
+        ITextComponent message;
         if (args.length == 0)
         {
-            text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Invalid arguments, try TAB for options";
-            message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+            text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid arguments, try TAB for options";
+            message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
             sender.addChatMessage(message);
             return;
         }
@@ -160,8 +163,8 @@ public class GeneralCommands implements ICommand
         {
             if (args.length == 0)
             {
-                text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Invalid arguments, missing option";
-                message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid arguments, missing option";
+                message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                 sender.addChatMessage(message);
                 return;
             }
@@ -170,9 +173,9 @@ public class GeneralCommands implements ICommand
 
             if (field == null)
             {
-                text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC
+                text = TextFormatting.RED + "" + TextFormatting.ITALIC
                         + "Invalid arguments, invalid option, use TAB to see valid choices";
-                message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                 sender.addChatMessage(message);
                 return;
             }
@@ -181,8 +184,8 @@ public class GeneralCommands implements ICommand
                 Object o = field.get(Config.instance);
                 if (check)
                 {
-                    text += EnumChatFormatting.GREEN + args[1] + EnumChatFormatting.WHITE + " is set to: "
-                            + EnumChatFormatting.GOLD;
+                    text += TextFormatting.GREEN + args[1] + TextFormatting.WHITE + " is set to: "
+                            + TextFormatting.GOLD;
                     if (o instanceof String[] || o instanceof int[])
                     {
                         text += Arrays.toString((Object[]) o);
@@ -191,7 +194,7 @@ public class GeneralCommands implements ICommand
                     {
                         text += o;
                     }
-                    message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                    message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                     sender.addChatMessage(message);
                     return;
                 }
@@ -203,15 +206,13 @@ public class GeneralCommands implements ICommand
                     }
                     catch (Exception e)
                     {
-                        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Invalid option for "
-                                + args[1];
-                        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                        text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid option for " + args[1];
+                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                         sender.addChatMessage(message);
                         return;
                     }
                     o = field.get(Config.instance);
-                    text += EnumChatFormatting.GREEN + args[1] + EnumChatFormatting.WHITE + " set to: "
-                            + EnumChatFormatting.GOLD;
+                    text += TextFormatting.GREEN + args[1] + TextFormatting.WHITE + " set to: " + TextFormatting.GOLD;
                     if (o instanceof String[] || o instanceof int[])
                     {
                         text += Arrays.toString((Object[]) o);
@@ -221,7 +222,7 @@ public class GeneralCommands implements ICommand
                         text += o;
                     }
 
-                    message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                    message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                     sender.addChatMessage(message);
                     return;
                 }
@@ -229,9 +230,9 @@ public class GeneralCommands implements ICommand
             catch (Exception e)
             {
                 e.printStackTrace();
-                text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC
+                text = TextFormatting.RED + "" + TextFormatting.ITALIC
                         + "Error while checking config field, please report this as a bug.";
-                message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                 sender.addChatMessage(message);
                 return;
             }
@@ -250,15 +251,15 @@ public class GeneralCommands implements ICommand
                     if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
                     {
                         TRAINERSDIE = on;
-                        text = EnumChatFormatting.GREEN + "Trainer all dieing set to " + on;
-                        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                        text = TextFormatting.GREEN + "Trainer all dieing set to " + on;
+                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                         sender.addChatMessage(message);
                         return;
                     }
                     else
                     {
-                        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Insufficient Permissions";
-                        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                        text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
+                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                         sender.addChatMessage(message);
                         return;
                     }

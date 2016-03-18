@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -382,11 +383,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public boolean interact(EntityPlayer player)
+    public boolean processInteract(EntityPlayer player player)
     {
         if (corruptedSum != -123586)
         {
-            player.addChatMessage(new ChatComponentText("Corrupt Pokemon"));
+            player.addChatMessage(new TextComponentString("Corrupt Pokemon"));
             return false;
         }
         return super.interact(player);
@@ -689,7 +690,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             if (getPokemonOwner() != null && getPokemonOwner() instanceof EntityPlayer)
             {
                 // ((EntityPlayer)getPokemonOwner()).addChatMessage(new
-                // ChatComponentText("This Pokemon is Corrupted"));
+                // TextComponentString("This Pokemon is Corrupted"));
 
             }
             // corruptedSum = checkSum;

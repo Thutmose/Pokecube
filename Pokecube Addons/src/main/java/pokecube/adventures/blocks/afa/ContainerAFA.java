@@ -6,7 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -70,62 +70,62 @@ public class ContainerAFA extends Container
         this.inventorySlots.clear();
     }
 
-    @Override
-    public ItemStack slotClick(int i, int j, int flag, EntityPlayer entityplayer)
-    {
-        if (i == -999) return null;
-        if (flag != 0 && flag != 5)
-        {
-            ItemStack itemstack = null;
-            Slot slot = inventorySlots.get(i);
-
-            if (slot != null && slot.getHasStack())
-            {
-                ItemStack itemstack1 = slot.getStack();
-                itemstack = itemstack1.copy();
-
-                if (i < 6)
-                {
-                    if (!mergeItemStack(itemstack1, 1, 37, true)) { return null; }
-                }
-                else
-                {
-                    if (itemstack != null && !tile.isItemValidForSlot(36, itemstack1)) { return null; }
-
-                    if (!mergeItemStack(itemstack1, 0, 1, false)) { return null; }
-                }
-
-                if (itemstack1.stackSize == 0)
-                {
-                    slot.putStack(null);
-                }
-                else
-                {
-                    slot.onSlotChanged();
-                }
-
-                if (itemstack1.stackSize != itemstack.stackSize)
-                {
-                    // slot.onPickupFromSlot(itemstack1);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-            if (itemstack != null)
-            {
-                return itemstack;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        else
-        {
-            return super.slotClick(i, j, flag, entityplayer);
-        }
-    }
+//    @Override //TODO see of this was needed
+//    public ItemStack slotClick(int i, int j, int flag, EntityPlayer entityplayer)
+//    {
+//        if (i == -999) return null;
+//        if (flag != 0 && flag != 5)
+//        {
+//            ItemStack itemstack = null;
+//            Slot slot = inventorySlots.get(i);
+//
+//            if (slot != null && slot.getHasStack())
+//            {
+//                ItemStack itemstack1 = slot.getStack();
+//                itemstack = itemstack1.copy();
+//
+//                if (i < 6)
+//                {
+//                    if (!mergeItemStack(itemstack1, 1, 37, true)) { return null; }
+//                }
+//                else
+//                {
+//                    if (itemstack != null && !tile.isItemValidForSlot(36, itemstack1)) { return null; }
+//
+//                    if (!mergeItemStack(itemstack1, 0, 1, false)) { return null; }
+//                }
+//
+//                if (itemstack1.stackSize == 0)
+//                {
+//                    slot.putStack(null);
+//                }
+//                else
+//                {
+//                    slot.onSlotChanged();
+//                }
+//
+//                if (itemstack1.stackSize != itemstack.stackSize)
+//                {
+//                    // slot.onPickupFromSlot(itemstack1);
+//                }
+//                else
+//                {
+//                    return null;
+//                }
+//            }
+//
+//            if (itemstack != null)
+//            {
+//                return itemstack;
+//            }
+//            else
+//            {
+//                return null;
+//            }
+//        }
+//        else
+//        {
+//            return super.slotClick(i, j, flag, entityplayer);
+//        }
+//    }
 }

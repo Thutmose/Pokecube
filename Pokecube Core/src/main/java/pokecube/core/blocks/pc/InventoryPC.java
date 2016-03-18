@@ -11,6 +11,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
@@ -93,7 +95,7 @@ public class InventoryPC implements IInventory
             ItemStack stack = mob;
             heal(stack);
             if (PokecubeCore.proxy.getPlayer(uuid) != null)
-                PokecubeCore.proxy.getPlayer(uuid).addChatMessage(new ChatComponentText(message));
+                PokecubeCore.proxy.getPlayer(uuid).addChatMessage(new TextComponentString(message));
         }
         pc.addItem(mob.copy());
         PCSaveHandler.getInstance().savePC(uuid);
@@ -437,7 +439,7 @@ public class InventoryPC implements IInventory
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
         return null;
     }

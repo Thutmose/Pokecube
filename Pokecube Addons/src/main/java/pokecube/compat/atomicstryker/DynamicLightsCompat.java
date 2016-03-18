@@ -2,7 +2,6 @@ package pokecube.compat.atomicstryker;
 
 import java.lang.reflect.Method;
 
-import atomicstryker.dynamiclights.client.IDynamicLightSource;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;

@@ -14,6 +14,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -101,7 +102,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
                 if (this.ticksExisted % 20 == 0 && !worldObj.isRemote)
                 {
                     String mess = I18n.translateToLocal("pokemob.hungry.slow");
-                    ((EntityPlayer) this.riddenByEntity).addChatMessage(new ChatComponentText(mess));
+                    ((EntityPlayer) this.riddenByEntity).addChatMessage(new TextComponentString(mess));
                 }
                 hungerFactor = 0.01f;
                 return false;
@@ -185,11 +186,11 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     }
 
     @Override
-    public boolean interact(EntityPlayer entityplayer)
+    public boolean processInteract(EntityPlayer player entityplayer)
     {
         if (entityplayer == ridingEntity && getPokemonAIState(SHOULDER)) { return false; }
 
-        return super.interact(entityplayer);
+        return super.processInteract(EntityPlayer player);
     }
 
     public boolean isPokemobJumping()

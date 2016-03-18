@@ -59,7 +59,7 @@ public class PokedexEntryLoader
             boolean rule = false;
             if (stack != null)
             {
-                rightStack = Tools.isSameStack(stack, ((EntityLivingBase) mobIn).getHeldItem());
+                rightStack = Tools.isSameStack(stack, ((EntityLivingBase) mobIn).getHeldItemMainhand());
                 rule = true;
             }
             if (moveName != null && !moveName.isEmpty())

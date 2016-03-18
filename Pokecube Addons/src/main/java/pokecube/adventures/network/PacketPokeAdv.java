@@ -6,10 +6,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -125,7 +127,8 @@ public class PacketPokeAdv
                                 v.y + rand.nextDouble() * 2.0D, v.z + 0.5, rand.nextGaussian(), 0.0D,
                                 rand.nextGaussian());
                     }
-                    player.worldObj.playSoundEffect(v.x, v.y, v.z, "mob.endermen.portal", 1.0F, 1.0F);
+                    player.worldObj.playSound(v.x, v.y, v.z, SoundEvents.entity_endermen_teleport, SoundCategory.BLOCKS,
+                            1, 1, false);
                 }
                 if (channel == MESSAGEGUIAFA && player.openContainer instanceof ContainerAFA)
                 {
@@ -146,6 +149,7 @@ public class PacketPokeAdv
             }
 
         }
+
         public static final byte MESSAGEGUIAFA = 11;
 
         PacketBuffer             buffer;;
@@ -194,6 +198,7 @@ public class PacketPokeAdv
         }
 
     }
+
     public static class MessageServer implements IMessage
     {
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
@@ -235,12 +240,13 @@ public class PacketPokeAdv
                     {
                         NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
                         String biome = tag.getString("biome");
-                        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemTarget
-                                && player.getHeldItem().getItemDamage() == 3)
+                        if (player.getHeldItemMainhand() != null
+                                && player.getHeldItemMainhand().getItem() instanceof ItemTarget
+                                && player.getHeldItemMainhand().getItemDamage() == 3)
                         {
-                            player.getHeldItem().setTagCompound(tag);
+                            player.getHeldItemMainhand().setTagCompound(tag);
                             BiomeType type = BiomeType.getBiome(biome);
-                            player.getHeldItem().setStackDisplayName(type.readableName + " Setter");
+                            player.getHeldItemMainhand().setStackDisplayName(type.readableName + " Setter");
                         }
                     }
                     catch (Exception e)
@@ -270,7 +276,7 @@ public class PacketPokeAdv
                     {
                         int id = buffer.readInt();
                         int val = buffer.readInt();
-                        System.out.println(id+" "+ val);
+                        System.out.println(id + " " + val);
                         tile.setField(id, val);
                     }
                     PacketBuffer retBuf = new PacketBuffer(Unpooled.buffer(5));
@@ -292,6 +298,7 @@ public class PacketPokeAdv
             }
 
         }
+
         public static final byte MESSAGEGUIAFA = 11;
 
         PacketBuffer             buffer;;
@@ -340,6 +347,7 @@ public class PacketPokeAdv
         }
 
     }
+
     public static byte TYPESETPUBLIC  = 0;
 
     public static byte TYPEADDLAND    = 1;

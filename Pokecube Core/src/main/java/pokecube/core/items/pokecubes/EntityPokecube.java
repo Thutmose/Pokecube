@@ -20,6 +20,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -262,7 +263,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     }
 
     @Override
-    public boolean interact(EntityPlayer player)
+    public boolean processInteract(EntityPlayer player player)
     {
 
         if (!player.worldObj.isRemote)
@@ -356,7 +357,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 {
                     String message = I18n.translateToLocalFormatted("pokecube.caught",
                             PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNumber));
-                    ((EntityPlayer) shootingEntity).addChatMessage(new ChatComponentText("\u00a7d" + message));
+                    ((EntityPlayer) shootingEntity).addChatMessage(new TextComponentString("\u00a7d" + message));
 
                     worldObj.playSoundAtEntity(shootingEntity, PokecubeMod.ID + ":pokecube_caught", 0.5F, 1.0F);
                 }
@@ -403,7 +404,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
                 {
                     ((EntityPlayer) shootingEntity).addChatMessage(
-                            new ChatComponentText("\u00a7d" + I18n.translateToLocal("pokecube.missed")));
+                            new TextComponentString("\u00a7d" + I18n.translateToLocal("pokecube.missed")));
                     ((EntityCreature) entity1).setAttackTarget(shootingEntity);
                 }
             }

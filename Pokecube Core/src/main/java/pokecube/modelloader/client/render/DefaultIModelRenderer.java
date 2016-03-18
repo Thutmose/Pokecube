@@ -11,6 +11,7 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,7 +38,7 @@ import thut.core.client.render.model.IRetexturableModel;
 import thut.core.client.render.tabula.components.Animation;
 import thut.core.client.render.x3d.X3dModel;
 
-public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T> implements IModelRenderer<T>
+public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingBase<T> implements IModelRenderer<T>
 {
     public static class Vector5
     {
@@ -162,9 +163,9 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RendererLivin
         float f2 = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
         float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
         float f4;
-        if (entity.isRiding() && entity.ridingEntity instanceof EntityLivingBase)
+        if (entity.isRiding() && entity.getRidingEntity() instanceof EntityLivingBase)
         {
-            EntityLivingBase entitylivingbase1 = (EntityLivingBase) entity.ridingEntity;
+            EntityLivingBase entitylivingbase1 = (EntityLivingBase) entity.getRidingEntity();
             f2 = this.interpolateRotation(entitylivingbase1.prevRenderYawOffset, entitylivingbase1.renderYawOffset,
                     partialTick);
             f4 = MathHelper.wrapAngleTo180_float(f3 - f2);

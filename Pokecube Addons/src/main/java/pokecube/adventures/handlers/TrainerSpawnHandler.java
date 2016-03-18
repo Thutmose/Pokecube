@@ -71,7 +71,7 @@ public class TrainerSpawnHandler
             if (chunkPosX >= coord.getX() - tolerance && chunkPosZ >= coord.getZ() - tolerance
                     && chunkPosY >= coord.getY() - tolerance && chunkPosY <= coord.getY() + tolerance
                     && chunkPosX <= coord.getX() + tolerance && chunkPosZ <= coord.getZ() + tolerance
-                    && world.provider.getDimensionId() == coord.dim)
+                    && world.provider.getDimension() == coord.dim)
             {
                 ret++;
             }

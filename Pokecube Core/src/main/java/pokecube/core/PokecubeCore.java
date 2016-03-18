@@ -43,8 +43,10 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
@@ -122,14 +124,9 @@ import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
 @Mod( // @formatter:off
-        modid = PokecubeMod.ID, 
-        name = "Pokecube", 
-        version = PokecubeMod.VERSION, 
-        dependencies = "required-after:Forge@"+ PokecubeMod.MINFORGEVERSION + PokecubeMod.DEPSTRING, 
-        acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, 
-        updateJSON = PokecubeMod.UPDATEURL,
-        guiFactory = "pokecube.core.client.gui.config.ModGuiFactory"
-    )// @formatter:on
+        modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:Forge@"
+                + PokecubeMod.MINFORGEVERSION
+                + PokecubeMod.DEPSTRING, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, updateJSON = PokecubeMod.UPDATEURL, guiFactory = "pokecube.core.client.gui.config.ModGuiFactory") // @formatter:on
 public class PokecubeCore extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")
@@ -155,7 +152,7 @@ public class PokecubeCore extends PokecubeMod
      * returns the instance of MinecraftServer.
      * 
      * @return */
-    public static IPlayerUsage getMinecraftInstance()
+    public static ISnooperInfo getMinecraftInstance()
     {
         return getProxy().getMinecraftInstance();
     }
@@ -634,7 +631,7 @@ public class PokecubeCore extends PokecubeMod
             System.out.println("REGISTERING ACHIEVEMENT");
             get1stPokemob = (new AchievementCatch(0, "get1stPokemob", -3, -3, PokecubeItems.getItem("pokedex"), null));
             get1stPokemob.registerStat();
-            AchievementList.achievementList.add(get1stPokemob);
+            AchievementList.ACHIEVEMENTS.add(get1stPokemob);
             pokemobAchievements.put(new Integer(0), get1stPokemob);
             achievementPagePokecube = new AchievementPage("Pokecube", get1stPokemob);
             AchievementPage.registerAchievementPage(achievementPagePokecube);
@@ -655,7 +652,7 @@ public class PokecubeCore extends PokecubeMod
                     if (!pokemobEggs.containsKey(entry.getPokedexNb()))
                     {
                         pokemobEggs.put(new Integer(entry.getPokedexNb()),
-                                new EntityEggInfo(entry.getPokedexNb() + 7000, 0xE8E0A0, 0x78C848));
+                                new EntityEggInfo(entry.getName(), 0xE8E0A0, 0x78C848));
                     }
                     pokedexmap.put(new Integer(entry.getPokedexNb()), clazz);
                     registered.set(entry.getPokedexNb());
@@ -699,8 +696,11 @@ public class PokecubeCore extends PokecubeMod
     {
         BiomeGenBase[] biomes;
         ArrayList<BiomeGenBase> biomelist = new ArrayList<BiomeGenBase>();
-        for (BiomeGenBase b : BiomeGenBase.getBiomeGenArray())
+        for (ResourceLocation key : BiomeGenBase.biomeRegistry.getKeys())
+        {
+            BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(key);
             if (b != null) biomelist.add(b);
+        }
         biomes = biomelist.toArray(new BiomeGenBase[0]);
 
         if (config.deactivateAnimals)

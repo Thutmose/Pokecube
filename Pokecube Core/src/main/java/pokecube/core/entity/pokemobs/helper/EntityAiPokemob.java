@@ -346,13 +346,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     }
 
     @Override
-    public boolean interact(EntityPlayer player)
+    public boolean processInteract(EntityPlayer player player)
     {
         ItemStack itemstack = player.inventory.getCurrentItem();
         ItemStack key = new ItemStack(Items.shears);
         // Check shearable interaction.
-        if (getPokedexEntry().interact(key) && player.getHeldItem() != null
-                && player.getHeldItem().isItemEqual(key)) { return false; }
+        if (getPokedexEntry().interact(key) && player.getHeldItemMainhand() != null
+                && player.getHeldItemMainhand().isItemEqual(key)) { return false; }
         // Check Pokedex Entry defined Interaction for player.
         if (getPokedexEntry().interact(player, this, true)) return true;
         Item torch = Item.getItemFromBlock(Blocks.torch);
@@ -401,22 +401,22 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (player.isSneaking())
             {
                 this.setShiny(!this.isShiny());
-                player.getHeldItem().splitStack(1);
+                player.getHeldItemMainhand().splitStack(1);
             }
             return true;
         }
 
         // is Dyeable
-        if (player.getHeldItem() != null && getPokedexEntry().hasSpecialTextures[4])
+        if (player.getHeldItemMainhand() != null && getPokedexEntry().hasSpecialTextures[4])
         {
-            if (player.getHeldItem().getItem() == Items.dye)
+            if (player.getHeldItemMainhand().getItem() == Items.dye)
             {
-                setSpecialInfo(player.getHeldItem().getItemDamage());
+                setSpecialInfo(player.getHeldItemMainhand().getItemDamage());
                 System.out.println(getSpecialInfo());
-                player.getHeldItem().stackSize--;
+                player.getHeldItemMainhand().stackSize--;
                 return true;
             }
-            else if (player.getHeldItem().getItem() == Items.shears) { return false; }
+            else if (player.getHeldItemMainhand().getItem() == Items.shears) { return false; }
         }
 
         // Check saddle for riding.
@@ -435,13 +435,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // Attempt to pick the pokemob up.
-        if (!worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking() && player.getHeldItem() == null
+        if (!worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking() && player.getHeldItemMainhand() == null
                 && getWeight() < 40)
         {
 
             boolean held = getPokemonAIState(HELD);
 
-            if ((!getPokemonAIState(TAMED) || getHeldItem() == null) && !getPokemonAIState(GUARDING))
+            if ((!getPokemonAIState(TAMED) || getHeldItemMainhand() == null) && !getPokemonAIState(GUARDING))
             {
                 if (!held)
                 {
@@ -565,7 +565,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 // Try to hold the item.
                 if (canBeHeld(itemstack))
                 {
-                    ItemStack heldItem = getHeldItem();
+                    ItemStack heldItem = getHeldItemMainhand();
 
                     if (heldItem != null)
                     {
@@ -1004,7 +1004,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!getPokemonAIState(TAMED))
         {
             AISaveHandler.instance().removeAI(this);
-            if (this.getHeldItem() != null) PokecubeItems.deValidate(getHeldItem());
+            if (this.getHeldItemMainhand() != null) PokecubeItems.deValidate(getHeldItemMainhand());
         }
         super.onDeathUpdate();
     }
@@ -1139,7 +1139,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (getAIState(HELD, state))
         {
             if (ridingEntity == null
-                    || (ridingEntity instanceof EntityPlayer && ((EntityPlayer) ridingEntity).getHeldItem() != null))
+                    || (ridingEntity instanceof EntityPlayer && ((EntityPlayer) ridingEntity).getHeldItemMainhand() != null))
             {
                 setPokemonAIState(HELD, false);
                 if (ridingEntity != null)

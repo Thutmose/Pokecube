@@ -3,19 +3,16 @@ package pokecube.adventures.blocks.warppad;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import io.netty.buffer.Unpooled;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.common.Optional;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
@@ -27,7 +24,8 @@ import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityWarpPad extends TileEntityOwnable implements SimpleComponent, IEnergyReceiver
+public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyReceiver// ,
+                                                                                   // SimpleComponent
 {
     public static double    MAXRANGE    = 64;
     public static int       COOLDOWN    = 1000;
@@ -49,30 +47,31 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         return facing == EnumFacing.DOWN;
     }
 
-    @Override
-    public String getComponentName()
-    {
-        return "warppad";
-    }
+    // @Override//TODO OC
+    // public String getComponentName()
+    // {
+    // return "warppad";
+    // }
 
     /** Overriden in a sign to provide the text. */
-    @SuppressWarnings("rawtypes")
     @Override
-    public Packet getDescriptionPacket()
+    public Packet<?> getDescriptionPacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
 
-    @Callback(doc = "Returns the current 4-vector destination")
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getDestination(Context context, Arguments args) throws Exception
-    {
-        if (link != null) { return new Object[] { link.x, link.y, link.z, link.w }; }
-        throw new Exception("no link");
-    }
+    // @Callback(doc = "Returns the current 4-vector destination")
+    // @Optional.Method(modid = "OpenComputers")//TODO OC
+    // public Object[] getDestination(Context context, Arguments args) throws
+    // Exception
+    // {
+    // if (link != null) { return new Object[] { link.x, link.y, link.z, link.w
+    // }; }
+    // throw new Exception("no link");
+    // }
 
     @Override
     public int getEnergyStored(EnumFacing facing)
@@ -96,7 +95,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
      * @param pkt
      *            The data packet */
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
         if (worldObj.isRemote)
         {
@@ -127,7 +126,8 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
 
             if (!tele)
             {
-                worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "note.bd", 1.0F, 1.0F);
+                worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.block_note_basedrum,
+                        SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                 lastStepped = time;
             }
         }
@@ -136,8 +136,8 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         {
             TileEntity te = linkPos.getTileEntity(getWorld(), EnumFacing.DOWN);
 
-            worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "mob.endermen.portal", 1.0F,
-                    1.0F);
+            worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.entity_endermen_teleport,
+                    SoundCategory.BLOCKS, 1.0F, 1.0F, false);
 
             PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
             buff.writeByte(9);
@@ -158,7 +158,8 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
 
             Transporter.teleportEntity(stepper, loc, dim, false);
 
-            worldObj.playSoundEffect(loc.x, loc.y, loc.z, "mob.endermen.portal", 1.0F, 1.0F);
+            worldObj.playSound(loc.x, loc.y, loc.z, SoundEvents.entity_endermen_teleport, SoundCategory.BLOCKS, 1.0F,
+                    1.0F, false);
             buff = new PacketBuffer(Unpooled.buffer());
             buff.writeByte(9);
             linkPos.writeToBuff(buff);
@@ -183,28 +184,32 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         return storage.receiveEnergy(maxReceive, simulate);
     }
 
-    @Callback(doc = "function(x:number, y:number, z:number, w:number) - Sets the 4-vector destination, w is the dimension")
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] setDestination(Context context, Arguments args) throws Exception
-    {
-        if (args.isDouble(0) && args.isDouble(1) && args.isDouble(2) && args.isDouble(3))
-        {
-            float x = (float) args.checkDouble(0);
-            float y = (float) args.checkDouble(1);
-            float z = (float) args.checkDouble(2);
-            float w = (float) args.checkDouble(3);
-            if (link == null)
-            {
-                link = new Vector4(x, y, z, w);
-            }
-            else
-            {
-                link.set(x, y, z, w);
-            }
-            return new Object[] { link.x, link.y, link.z, link.w };
-        }
-        throw new Exception("invalid arguments, expected number,number,number,number");
-    }
+    // @Callback(doc = "function(x:number, y:number, z:number, w:number) - Sets
+    // the 4-vector destination, w is the dimension")
+    // @Optional.Method(modid = "OpenComputers")//TODO OC
+    // public Object[] setDestination(Context context, Arguments args) throws
+    // Exception
+    // {
+    // if (args.isDouble(0) && args.isDouble(1) && args.isDouble(2) &&
+    // args.isDouble(3))
+    // {
+    // float x = (float) args.checkDouble(0);
+    // float y = (float) args.checkDouble(1);
+    // float z = (float) args.checkDouble(2);
+    // float w = (float) args.checkDouble(3);
+    // if (link == null)
+    // {
+    // link = new Vector4(x, y, z, w);
+    // }
+    // else
+    // {
+    // link.set(x, y, z, w);
+    // }
+    // return new Object[] { link.x, link.y, link.z, link.w };
+    // }
+    // throw new Exception("invalid arguments, expected
+    // number,number,number,number");
+    // }
 
     @Override
     public void writeToNBT(NBTTagCompound tagCompound)

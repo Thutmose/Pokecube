@@ -6,6 +6,10 @@ package pokecube.core;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.stats.Achievement;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.util.text.translation.I18n;
 import pokecube.core.database.Pokedex;
@@ -55,17 +59,17 @@ public class AchievementCatch extends Achievement
     }
 
     @Override
-	public IChatComponent getStatName() {
+	public ITextComponent getStatName() {
 		if ("get1stPokemob".equals(statId)) {
 			return super.getStatName();
 		}
-		IChatComponent ichatcomponent = new ChatComponentTranslation(statId,
+		ITextComponent iTextComponent = new TextComponentTranslation(statId,
 				new Object[0]);
-		ichatcomponent.getChatStyle().setColor(EnumChatFormatting.GRAY);
-		ichatcomponent.getChatStyle().setChatHoverEvent(
+		iTextComponent.getChatStyle().setColor(TextFormatting.GRAY);
+		iTextComponent.getChatStyle().setChatHoverEvent(
 				new HoverEvent(HoverEvent.Action.SHOW_ACHIEVEMENT,
-						new ChatComponentText(this.statId)));
-		return ichatcomponent;
+						new TextComponentString(this.statId)));
+		return iTextComponent;
 	}
 
 

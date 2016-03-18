@@ -597,9 +597,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         {
             getAbility().onUpdate(this);
         }
-        if (!this.isDead && getHeldItem() != null && getHeldItem().getItem() instanceof ItemPokemobUseable)
+        if (!this.isDead && getHeldItemMainhand() != null && getHeldItemMainhand().getItem() instanceof ItemPokemobUseable)
         {
-            ((IPokemobUseable) getHeldItem().getItem()).itemUse(getHeldItem(), this, null);
+            ((IPokemobUseable) getHeldItemMainhand().getItem()).itemUse(getHeldItemMainhand(), this, null);
         }
         moves:
         if (this.getLevel() > 0)
@@ -647,9 +647,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             moveInfo.substituteHP = getMaxHealth() / 4;
         }
 
-        if (getHeldItem() != null)
+        if (getHeldItemMainhand() != null)
         {
-            HeldItemHandler.processHeldItemUse(move, this, getHeldItem());
+            HeldItemHandler.processHeldItemUse(move, this, getHeldItemMainhand());
         }
 
         if (getAbility() != null)
@@ -953,7 +953,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (timer > 0) setStatusTimer((short) (timer - 1));
         byte status = getStatus();
 
-        ItemStack held = getHeldItem();
+        ItemStack held = getHeldItemMainhand();
         if (held != null && held.getItem() instanceof ItemBerry)
         {
             if (BerryManager.berryEffect(this, held))

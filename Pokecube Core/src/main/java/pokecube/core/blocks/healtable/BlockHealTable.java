@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import pokecube.core.PokecubeCore;
@@ -121,7 +122,7 @@ public class BlockHealTable extends Block implements ITileEntityProvider
             if (player.capabilities.isCreativeMode && !world.isRemote)
             {
                 state = state.cycleProperty(FIXED);
-                player.addChatMessage(new ChatComponentText("Set Block to "
+                player.addChatMessage(new TextComponentString("Set Block to "
                         + (state.getValue(BlockHealTable.FIXED) ? "Breakable" : "Unbreakable")));
                 world.setBlockState(pos, state);
             }

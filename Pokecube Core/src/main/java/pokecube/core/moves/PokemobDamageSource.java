@@ -8,6 +8,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -36,15 +38,15 @@ public class PokemobDamageSource extends DamageSource
     }
 
     @Override
-    public IChatComponent getDeathMessage(EntityLivingBase par1EntityPlayer)
+    public ITextComponent getDeathMessage(EntityLivingBase par1EntityPlayer)
     {
         ItemStack localObject = (this.damageSourceEntity instanceof EntityLivingBase)
-                ? this.damageSourceEntity.getHeldItem() : null;
+                ? this.damageSourceEntity.getHeldItemMainhand() : null;
         if ((localObject != null) && (localObject.hasDisplayName()))
-            return new ChatComponentTranslation("death.attack." + this.damageType,
+            return new TextComponentTranslation("death.attack." + this.damageType,
                     new Object[] { par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName(),
-                            localObject.getChatComponent() });
-        return new ChatComponentTranslation("death.attack." + this.damageType,
+                            localObject.getTextComponent() });
+        return new TextComponentTranslation("death.attack." + this.damageType,
                 new Object[] { par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName() });
     }
 

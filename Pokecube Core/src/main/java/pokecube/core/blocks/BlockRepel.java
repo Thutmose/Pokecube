@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.berries.ItemBerry;
@@ -51,17 +52,17 @@ public class BlockRepel extends Block implements ITileEntityProvider
     {
     	
     	TileEntity te = world.getTileEntity(pos);
-    	if(te instanceof TileEntityRepel && player.getHeldItem()!=null && player.getHeldItem().getItem() instanceof ItemBerry)
+    	if(te instanceof TileEntityRepel && player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() instanceof ItemBerry)
     	{
     		TileEntityRepel repel = (TileEntityRepel) te;
     		repel.invalidate();
-    		repel.distance = (byte) Math.max(5, player.getHeldItem().getItemDamage());
+    		repel.distance = (byte) Math.max(5, player.getHeldItemMainhand().getItemDamage());
     		repel.validate();
     	}
-    	if(te instanceof TileEntityRepel && player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemPokedex && !world.isRemote)
+    	if(te instanceof TileEntityRepel && player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemPokedex && !world.isRemote)
     	{
     		TileEntityRepel repel = (TileEntityRepel) te;
-    		player.addChatMessage(new ChatComponentText(""+repel.distance));
+    		player.addChatMessage(new TextComponentString(""+repel.distance));
     	}
     	
     	return true;

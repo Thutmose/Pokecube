@@ -2,8 +2,6 @@ package pokecube.compat.jei.cloner;
 
 import javax.annotation.Nonnull;
 
-import mezz.jei.api.recipe.IRecipeHandler;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import pokecube.compat.jei.JEICompat;
 

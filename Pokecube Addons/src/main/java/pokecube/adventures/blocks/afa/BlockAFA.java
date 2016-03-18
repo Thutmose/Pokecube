@@ -12,8 +12,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
 
@@ -46,10 +47,7 @@ public final class BlockAFA extends Block implements ITileEntityProvider
         Random rand = new Random();
         TileEntity tile_entity = world.getTileEntity(pos);
 
-        if (!(tile_entity instanceof IInventory))
-        {
-            return;
-        }
+        if (!(tile_entity instanceof IInventory)) { return; }
 
         IInventory inventory = (IInventory) tile_entity;
 
@@ -62,14 +60,12 @@ public final class BlockAFA extends Block implements ITileEntityProvider
                 float rx = rand.nextFloat() * 0.6F + 0.1F;
                 float ry = rand.nextFloat() * 0.6F + 0.1F;
                 float rz = rand.nextFloat() * 0.6F + 0.1F;
-                EntityItem entity_item = new EntityItem(world, pos.getX() + rx, pos.getY() + ry,
-                        pos.getZ() + rz, new ItemStack(item.getItem(), item.stackSize,
-                                item.getItemDamage()));
+                EntityItem entity_item = new EntityItem(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz,
+                        new ItemStack(item.getItem(), item.stackSize, item.getItemDamage()));
 
                 if (item.hasTagCompound())
                 {
-                    entity_item.getEntityItem().setTagCompound((NBTTagCompound) item
-                            .getTagCompound().copy());
+                    entity_item.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
                 }
 
                 float factor = 0.005F;
@@ -83,13 +79,13 @@ public final class BlockAFA extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean isFullCube()
+    public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
@@ -101,10 +97,10 @@ public final class BlockAFA extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIAFA_ID, world, pos.getX(), pos.getY(), pos.getZ());
+        playerIn.openGui(PokecubeAdv.instance, PokecubeAdv.GUIAFA_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 

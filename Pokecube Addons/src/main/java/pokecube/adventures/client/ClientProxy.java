@@ -6,20 +6,20 @@ import static pokecube.adventures.handlers.BlockHandler.warppad;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -60,7 +60,7 @@ public class ClientProxy extends CommonProxy
     public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
         Entity entityHit = null;
-        MovingObjectPosition objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
+        RayTraceResult objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
 
         if (objectClicked != null)
         {
@@ -85,7 +85,7 @@ public class ClientProxy extends CommonProxy
         }
         else if (guiID == PokecubeAdv.GUIBIOMESETTER_ID)
         {
-            return new GUIBiomeSetter(player.getHeldItem());
+            return new GUIBiomeSetter(player.getHeldItemMainhand());
         }
         else if (guiID == PokecubeAdv.GUIAFA_ID) { return new GuiAFA(player.inventory,
                 (TileEntityAFA) world.getTileEntity(pos)); }

@@ -4,13 +4,11 @@ import static pokecube.core.PokecubeItems.addSpecificItemStack;
 import static pokecube.core.PokecubeItems.register;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecube;
 
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.WeightedRandomChestContent;
-import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -119,11 +117,12 @@ public class ItemHandler
     public static void postInitItems()
     {
         ItemStack share = PokecubeItems.getStack("exp_share");
-        WeightedRandomChestContent shareContent = new WeightedRandomChestContent(share, 1, 1, 2);
-        ChestGenHooks.addItem(ChestGenHooks.PYRAMID_JUNGLE_CHEST, shareContent);
-        ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, shareContent);
-        ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, shareContent);
-        ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, shareContent);
+        //TODO loot table for exp share
+//        WeightedRandomChestContent shareContent = new WeightedRandomChestContent(share, 1, 1, 2);
+//        ChestGenHooks.addItem(ChestGenHooks.PYRAMID_JUNGLE_CHEST, shareContent);
+//        ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, shareContent);
+//        ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, shareContent);
+//        ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, shareContent);
 
     }
 

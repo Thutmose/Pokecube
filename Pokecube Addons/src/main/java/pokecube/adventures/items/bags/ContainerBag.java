@@ -235,81 +235,81 @@ public class ContainerBag extends Container {
         }
     }
     
-    @Override
-    public ItemStack slotClick(int i, int j, int flag,
-            EntityPlayer entityplayer)
-    {
-//    	if(true)
-//    		return super.slotClick(i, j, flag, entityplayer);
-//    	
-    	if (i < 0)
-    		return null;
-		if(PokecubeCore.isOnClientSide()&&FMLClientHandler.instance().getServer()!=null)
-		{
-			return clientSlotClick(i, j, flag, entityplayer);
-		}
-        if (flag != 0 && flag != 5)
-        {
-            ItemStack itemstack = null;
-            Slot slot = inventorySlots.get(i);
-
-            if (slot != null && slot.getHasStack())
-            {
-                ItemStack itemstack1 = slot.getStack();
-                itemstack = itemstack1.copy();
-                if(!ContainerBag.isItemValid(itemstack1)) return null;
-
-                if (i > 35)
-                {
-                    if (!mergeItemStack(itemstack1, 0, 36, false))
-                    {
-                        return null;
-                    }
-                }
-                else
-                {
-                    if (!mergeItemStack(itemstack1, 36, 89, false))
-                    {
-                        return null;
-                    }
-                }
-
-                if (itemstack1.stackSize == 0)
-                {
-                    slot.putStack(null);
-                }
-                else
-                {
-                    slot.onSlotChanged();
-                }
-
-                if (itemstack1.stackSize != itemstack.stackSize)
-                {
-					slot.onPickupFromSlot(entityplayer, itemstack1);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            
-            //release = gpc.getReleaseState();
-
-            if (itemstack != null && isItemValid(itemstack))
-            {
-                return null;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        else
-        {
-            return super.slotClick(i, j, flag, entityplayer);
-        }
-    }
-    
+//    @Override//TODO see if func_184996_a needs dealing with
+//    public ItemStack slotClick(int i, int j, int flag,
+//            EntityPlayer entityplayer)
+//    {
+////    	if(true)
+////    		return super.slotClick(i, j, flag, entityplayer);
+////    	
+//    	if (i < 0)
+//    		return null;
+//		if(PokecubeCore.isOnClientSide()&&FMLClientHandler.instance().getServer()!=null)
+//		{
+//			return clientSlotClick(i, j, flag, entityplayer);
+//		}
+//        if (flag != 0 && flag != 5)
+//        {
+//            ItemStack itemstack = null;
+//            Slot slot = inventorySlots.get(i);
+//
+//            if (slot != null && slot.getHasStack())
+//            {
+//                ItemStack itemstack1 = slot.getStack();
+//                itemstack = itemstack1.copy();
+//                if(!ContainerBag.isItemValid(itemstack1)) return null;
+//
+//                if (i > 35)
+//                {
+//                    if (!mergeItemStack(itemstack1, 0, 36, false))
+//                    {
+//                        return null;
+//                    }
+//                }
+//                else
+//                {
+//                    if (!mergeItemStack(itemstack1, 36, 89, false))
+//                    {
+//                        return null;
+//                    }
+//                }
+//
+//                if (itemstack1.stackSize == 0)
+//                {
+//                    slot.putStack(null);
+//                }
+//                else
+//                {
+//                    slot.onSlotChanged();
+//                }
+//
+//                if (itemstack1.stackSize != itemstack.stackSize)
+//                {
+//					slot.onPickupFromSlot(entityplayer, itemstack1);
+//                }
+//                else
+//                {
+//                    return null;
+//                }
+//            }
+//            
+//            //release = gpc.getReleaseState();
+//
+//            if (itemstack != null && isItemValid(itemstack))
+//            {
+//                return null;
+//            }
+//            else
+//            {
+//                return null;
+//            }
+//        }
+//        else
+//        {
+//            return super.slotClick(i, j, flag, entityplayer);
+//        }
+//    }
+//    
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slot) {
             ItemStack stack = null;

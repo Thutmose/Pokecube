@@ -4,13 +4,9 @@ import java.util.Random;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SidedComponent;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -18,11 +14,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -43,8 +41,9 @@ import thut.api.maths.Vector3;
 
 @Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
         @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
-public class TileEntityAFA extends TileEntityOwnable
-        implements IInventory, IEnergyReceiver, ITickable, SimpleComponent, SidedComponent
+public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEnergyReceiver, ITickable// ,
+                                                                                                      // SimpleComponent,
+                                                                                                      // SidedComponent
 {
     public static ItemStack shiny_charm = null;
 
@@ -114,11 +113,11 @@ public class TileEntityAFA extends TileEntityOwnable
         return true;
     }
 
-    @Override
-    public boolean canConnectNode(EnumFacing side)
-    {
-        return side == EnumFacing.DOWN;
-    }
+    // @Override//TODO OC
+    // public boolean canConnectNode(EnumFacing side)
+    // {
+    // return side == EnumFacing.DOWN;
+    // }
 
     @Override
     public void clear()
@@ -150,47 +149,47 @@ public class TileEntityAFA extends TileEntityOwnable
         return null;
     }
 
-    @Callback(doc = "Returns the current loaded ability")
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getAbility(Context context, Arguments args) throws Exception
-    {
-        if (ability != null)
-        {
-            String arg = ability.getName();
-            return new Object[] { arg };
-        }
-        throw new Exception("no ability");
-    }
+    // @Callback(doc = "Returns the current loaded ability")//TODO OC
+    // @Optional.Method(modid = "OpenComputers")
+    // public Object[] getAbility(Context context, Arguments args) throws
+    // Exception
+    // {
+    // if (ability != null)
+    // {
+    // String arg = ability.getName();
+    // return new Object[] { arg };
+    // }
+    // throw new Exception("no ability");
+    // }
 
-    @Override
-    public String getComponentName()
-    {
-        return "afa";
-    }
+    // @Override
+    // public String getComponentName()//TODO OC
+    // {
+    // return "afa";
+    // }
 
     /** Overriden in a sign to provide the text. */
-    @SuppressWarnings("rawtypes")
     @Override
-    public Packet getDescriptionPacket()
+    public Packet<?> getDescriptionPacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
-        return new ChatComponentText("Ability Field Amplifier");
+        return new TextComponentString("Ability Field Amplifier");
     }
 
-    @Callback(doc = "Returns the amount of stored energy")
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getEnergy(Context context, Arguments args)
-    {
-        return new Object[] { storage.getEnergyStored() };
-    }
+    // @Callback(doc = "Returns the amount of stored energy")//TODO OC
+    // @Optional.Method(modid = "OpenComputers")
+    // public Object[] getEnergy(Context context, Arguments args)
+    // {
+    // return new Object[] { storage.getEnergyStored() };
+    // }
 
     @Override
     public int getEnergyStored(EnumFacing facing)
@@ -237,18 +236,18 @@ public class TileEntityAFA extends TileEntityOwnable
         return "AFA";
     }
 
-    @Callback(doc = "Returns the current set range")
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getRange(Context context, Arguments args)
-    {
-        return new Object[] { distance };
-    }
+    // @Callback(doc = "Returns the current set range")//TODO OC
+    // @Optional.Method(modid = "OpenComputers")
+    // public Object[] getRange(Context context, Arguments args)
+    // {
+    // return new Object[] { distance };
+    // }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public net.minecraft.util.AxisAlignedBB getRenderBoundingBox()
+    public AxisAlignedBB getRenderBoundingBox()
     {
-        net.minecraft.util.AxisAlignedBB bb = INFINITE_EXTENT_AABB;
+        AxisAlignedBB bb = INFINITE_EXTENT_AABB;
         return bb;
     }
 
@@ -302,7 +301,7 @@ public class TileEntityAFA extends TileEntityOwnable
      * @param pkt
      *            The data packet */
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
         if (worldObj.isRemote)
         {
@@ -411,17 +410,18 @@ public class TileEntityAFA extends TileEntityOwnable
         refreshAbility();
     }
 
-    @Callback(doc = "function(scale:number, dx:number, dy:number, dz:number) - Sets the parameters for the hologram.")
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] setHoloState(Context context, Arguments args)
-    {
-        scale = args.checkInteger(0);
-        shift[0] = args.checkInteger(1);
-        shift[1] = args.checkInteger(2);
-        shift[2] = args.checkInteger(3);
-        worldObj.markBlockForUpdate(getPos());
-        return new Object[0];
-    }
+    // @Callback(doc = "function(scale:number, dx:number, dy:number, dz:number)
+    // - Sets the parameters for the hologram.")
+    // @Optional.Method(modid = "OpenComputers")//TODO OC
+    // public Object[] setHoloState(Context context, Arguments args)
+    // {
+    // scale = args.checkInteger(0);
+    // shift[0] = args.checkInteger(1);
+    // shift[1] = args.checkInteger(2);
+    // shift[2] = args.checkInteger(3);
+    // worldObj.markBlockForUpdate(getPos());
+    // return new Object[0];
+    // }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
@@ -431,14 +431,14 @@ public class TileEntityAFA extends TileEntityOwnable
         refreshAbility();
     }
 
-    @Callback(doc = "function(range:number) - sets the radius of affect")
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] setRange(Context context, Arguments args)
-    {
-        distance = args.checkInteger(0);
-        worldObj.markBlockForUpdate(getPos());
-        return new Object[] { distance };
-    }
+    // @Callback(doc = "function(range:number) - sets the radius of affect")
+    // @Optional.Method(modid = "OpenComputers")//TODO OC
+    // public Object[] setRange(Context context, Arguments args)
+    // {
+    // distance = args.checkInteger(0);
+    // worldObj.markBlockForUpdate(getPos());
+    // return new Object[] { distance };
+    // }
 
     @SubscribeEvent
     public void spawnEvent(SpawnEvent.Post evt)
@@ -458,15 +458,16 @@ public class TileEntityAFA extends TileEntityOwnable
                         int energy = storage.extractEnergy(needed, false);
                         if (energy < needed)
                         {
-                            worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "node.bd", 1.0F,
-                                    1.0F);
+                            worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(),
+                                    SoundEvents.block_note_basedrum, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                             return;
                         }
                     }
                     evt.pokemob.setShiny(true);
-                    worldObj.playSoundAtEntity(evt.entity, "mob.endermen.portal", 1, 1);
-                    worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "mob.endermen.portal",
-                            1.0F, 1.0F);
+                    worldObj.playSound(evt.entity.posX, evt.entity.posY, evt.entity.posZ,
+                            SoundEvents.entity_endermen_teleport, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                    worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(),
+                            SoundEvents.entity_endermen_teleport, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                 }
             }
         }

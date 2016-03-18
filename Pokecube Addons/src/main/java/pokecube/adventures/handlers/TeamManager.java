@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Team;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.network.PacketPokeAdv;
@@ -110,7 +110,7 @@ public class TeamManager
     public void addToTeam(EntityPlayer player, String team)
     {
         player.worldObj.getScoreboard().addPlayerToTeam(player.getName(), team);
-        player.addChatMessage(new ChatComponentText("You joined Team " + team));
+        player.addChatMessage(new TextComponentString("You joined Team " + team));
         teamInvites.remove(player.getName());
     }
 
@@ -127,7 +127,7 @@ public class TeamManager
             String s = (String) o;
             if (s.equalsIgnoreCase(team))
             {
-                player.addChatMessage(new ChatComponentText("Team " + team + " Already Exists"));
+                player.addChatMessage(new TextComponentString("Team " + team + " Already Exists"));
                 return;
             }
         }

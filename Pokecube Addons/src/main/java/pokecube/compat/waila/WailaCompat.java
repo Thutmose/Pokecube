@@ -3,14 +3,6 @@ package pokecube.compat.waila;
 import java.awt.Dimension;
 import java.util.List;
 
-import mcp.mobius.waila.api.IWailaCommonAccessor;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaEntityAccessor;
-import mcp.mobius.waila.api.IWailaEntityProvider;
-import mcp.mobius.waila.api.IWailaTooltipRenderer;
-import mcp.mobius.waila.api.SpecialChars;
-import mcp.mobius.waila.api.impl.ModuleRegistrar;
-import mcp.mobius.waila.overlay.DisplayUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;

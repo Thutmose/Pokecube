@@ -33,6 +33,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
@@ -129,32 +132,32 @@ public class EventsHandler
             MinecraftForge.EVENT_BUS.register(this);
         }
 
-        private IChatComponent getInfoMessage(CheckResult result, String name)
+        private ITextComponent getInfoMessage(CheckResult result, String name)
         {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + PokecubeMod.VERSION
-                    + EnumChatFormatting.WHITE;
+            String linkName = "[" + TextFormatting.GREEN + name + " " + PokecubeMod.VERSION
+                    + TextFormatting.WHITE;
             String link = "" + result.url;
             String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
                     + link + "\"}}";
 
-            String info = "\"" + EnumChatFormatting.GOLD + "Currently Running " + "\"";
+            String info = "\"" + TextFormatting.GOLD + "Currently Running " + "\"";
             String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return IChatComponent.Serializer.jsonToComponent(mess);
+            return ITextComponent.Serializer.jsonToComponent(mess);
         }
 
         @Deprecated // Use one from ThutCore whenever that is updated for a bit.
-        private IChatComponent getOutdatedMessage(CheckResult result, String name)
+        private ITextComponent getOutdatedMessage(CheckResult result, String name)
         {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
+            String linkName = "[" + TextFormatting.GREEN + name + " " + result.target + TextFormatting.WHITE;
             String link = "" + result.url;
             String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
                     + link + "\"}}";
 
-            String info = "\"" + EnumChatFormatting.RED
+            String info = "\"" + TextFormatting.RED
                     + "New Pokecube Core version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
                     + "\"";
             String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return IChatComponent.Serializer.jsonToComponent(mess);
+            return ITextComponent.Serializer.jsonToComponent(mess);
         }
 
         @SubscribeEvent
@@ -167,12 +170,12 @@ public class EventsHandler
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
                 if (result.status == Status.OUTDATED)
                 {
-                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Core");
+                    ITextComponent mess = getOutdatedMessage(result, "Pokecube Core");
                     (event.player).addChatMessage(mess);
                 }
                 else if (PokecubeMod.core.getConfig().loginmessage)
                 {
-                    IChatComponent mess = getInfoMessage(result, "Pokecube Core");
+                    ITextComponent mess = getInfoMessage(result, "Pokecube Core");
                     (event.player).addChatMessage(mess);
                 }
             }
@@ -417,8 +420,8 @@ public class EventsHandler
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent evt)
     {
-        if (evt.action == Action.LEFT_CLICK_BLOCK && evt.entityPlayer.getHeldItem() != null
-                && evt.entityPlayer.getHeldItem().getItem() == Items.stick)
+        if (evt.action == Action.LEFT_CLICK_BLOCK && evt.entityPlayer.getHeldItemMainhand() != null
+                && evt.entityPlayer.getHeldItemMainhand().getItem() == Items.stick)
         {
             TileEntity te = evt.world.getTileEntity(evt.pos);
             if (te instanceof TileEntityOwnable)
@@ -433,8 +436,8 @@ public class EventsHandler
                 }
             }
         }
-        if (evt.entityPlayer.worldObj.isRemote && evt.entityPlayer.getHeldItem() != null
-                && evt.entityPlayer.getHeldItem().getItem() instanceof IPokecube)
+        if (evt.entityPlayer.worldObj.isRemote && evt.entityPlayer.getHeldItemMainhand() != null
+                && evt.entityPlayer.getHeldItemMainhand().getItem() instanceof IPokecube)
         {
             Block block = null;
             if (evt.action == Action.RIGHT_CLICK_BLOCK)
@@ -494,7 +497,7 @@ public class EventsHandler
                     PokecubePacketHandler.sendToServer(packet);
                 }
             }
-            if (evt.entityPlayer.getHeldItem() == null || evt.entityPlayer.getHeldItem().stackSize <= 0)
+            if (evt.entityPlayer.getHeldItemMainhand() == null || evt.entityPlayer.getHeldItemMainhand().stackSize <= 0)
             {
                 int current = evt.entityPlayer.inventory.currentItem;
                 evt.entityPlayer.inventory.mainInventory[current] = null;
@@ -521,7 +524,7 @@ public class EventsHandler
         {
             EntityLivingBase owner = killer.getPokemonOwner();
 
-            ItemStack stack = ((EntityLivingBase) killer).getHeldItem();
+            ItemStack stack = ((EntityLivingBase) killer).getHeldItemMainhand();
             if (stack != null && PokecubeItems.getStack("luckyegg").isItemEqual(stack))
             {
                 int exp = killer.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
@@ -537,8 +540,8 @@ public class EventsHandler
                     if (mob instanceof IPokemob)
                     {
                         IPokemob poke = mob;
-                        if (((EntityLiving) poke).getHeldItem() != null)
-                            if (((EntityLiving) poke).getHeldItem().isItemEqual(PokecubeItems.getStack("exp_share")))
+                        if (((EntityLiving) poke).getHeldItemMainhand() != null)
+                            if (((EntityLiving) poke).getHeldItemMainhand().isItemEqual(PokecubeItems.getStack("exp_share")))
                             {
                             int exp = poke.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
 
@@ -623,7 +626,7 @@ public class EventsHandler
 
             if (evt.entityLiving.worldObj.isRemote) return;
 
-            ItemStack item = evt.entityLiving.getHeldItem();
+            ItemStack item = evt.entityLiving.getHeldItemMainhand();
             if (item == null) return;
             Item itemId = item.getItem();
             boolean berry = item.isItemEqual(BerryManager.getBerryItem("oran"));
@@ -633,7 +636,7 @@ public class EventsHandler
                 if (shuckle.getPokemonOwner() != null)
                 {
                     String message = "A sweet smell is coming from " + shuckle.getPokemonDisplayName();
-                    ((EntityPlayer) shuckle.getPokemonOwner()).addChatMessage(new ChatComponentText(message));
+                    ((EntityPlayer) shuckle.getPokemonOwner()).addChatMessage(new TextComponentString(message));
                 }
                 shuckle.setHeldItem(new ItemStack(PokecubeItems.berryJuice));
                 return;
@@ -647,7 +650,7 @@ public class EventsHandler
                 if (shuckle.getPokemonOwner() != null)
                 {
                     String message = "The smell coming from " + shuckle.getPokemonDisplayName() + " has changed";
-                    ((EntityPlayer) shuckle.getPokemonOwner()).addChatMessage(new ChatComponentText(message));
+                    ((EntityPlayer) shuckle.getPokemonOwner()).addChatMessage(new TextComponentString(message));
                 }
                 shuckle.setHeldItem(candy);
                 return;

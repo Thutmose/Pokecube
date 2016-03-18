@@ -1,7 +1,7 @@
 package pokecube.mobs;
 
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
 import net.minecraftforge.common.ForgeVersion.Status;
@@ -28,18 +28,18 @@ public class PokecubeMobs
         }
 
         @Deprecated // Use one from ThutCore whenever that is updated for a bit.
-        private IChatComponent getOutdatedMessage(CheckResult result, String name)
+        private ITextComponent getOutdatedMessage(CheckResult result, String name)
         {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
+            String linkName = "[" + TextFormatting.GREEN + name + " " + result.target + TextFormatting.WHITE;
             String link = "" + result.url;
             String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
                     + link + "\"}}";
 
-            String info = "\"" + EnumChatFormatting.RED + "New " + name
+            String info = "\"" + TextFormatting.RED + "New " + name
                     + " version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
                     + "\"";
             String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return IChatComponent.Serializer.jsonToComponent(mess);
+            return ITextComponent.Serializer.jsonToComponent(mess);
         }
 
         @SubscribeEvent
@@ -52,7 +52,7 @@ public class PokecubeMobs
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
                 if (result.status == Status.OUTDATED)
                 {
-                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Mobs");
+                    ITextComponent mess = getOutdatedMessage(result, "Pokecube Mobs");
                     (event.player).addChatMessage(mess);
                 }
             }

@@ -26,19 +26,25 @@ import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ContainerMerchant;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.InventoryMerchant;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
@@ -109,50 +115,53 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
     }
 
-    public static final int            STATIONARY       = 1;
-    public static final int            ANGRY            = 2;
-    public static final int            THROWING         = 4;
-    public static final int            PERMFRIENDLY     = 8;
+    static final DataParameter<Integer> AIACTIONSTATESDW = EntityDataManager.<Integer> createKey(EntityLivingBase.class,
+            DataSerializers.VARINT);
+    public static final int             STATIONARY       = 1;
+    public static final int             ANGRY            = 2;
+    public static final int             THROWING         = 4;
+    public static final int             PERMFRIENDLY     = 8;
 
-    public static ArrayList<CubeTrade> cubeList         = Lists.newArrayList();
-    public static int                  ATTACKCOOLDOWN   = 10000;
-    private int                        battleCooldown   = ATTACKCOOLDOWN;
+    public static ArrayList<CubeTrade>  cubeList         = Lists.newArrayList();
+    public static int                   ATTACKCOOLDOWN   = 10000;
+    private int                         battleCooldown   = ATTACKCOOLDOWN;
     /** This villager's current customer. */
-    private EntityPlayer               buyingPlayer;
+    private EntityPlayer                buyingPlayer;
     /** Initialises the MerchantRecipeList.java */
-    private MerchantRecipeList         tradeList;
+    private MerchantRecipeList          tradeList;
     /** Initialises the MerchantRecipeList.java */
-    protected MerchantRecipeList       itemList;
+    protected MerchantRecipeList        itemList;
 
-    private boolean                    randomize        = false;
-    public ItemStack[]                 pokecubes        = new ItemStack[6];
-    public int[]                       pokenumbers      = new int[6];
-    public int[]                       pokelevels       = new int[6];
-    public int[]                       attackCooldown   = new int[6];
-    public int                         cooldown         = 0;
-    public int                         globalCooldown   = 0;
-    public int                         friendlyCooldown = 0;
-    public List<IPokemob>              currentPokemobs  = new ArrayList<IPokemob>();
-    private EntityLivingBase           target;
-    public TypeTrainer                 type;
-    public Vector3                     location         = null;
-    private int                        id;
-    public String                      name             = "";
-    public UUID                        outID;
-    public IPokemob                    outMob;
-    public boolean                     male             = true;
-    boolean                            clear            = false;
-    boolean                            shouldrefresh    = false;
-    boolean                            added            = false;
-    protected boolean                  trades           = true;
-    public GuardAI                     guardAI;
+    private boolean                     randomize        = false;
+    public ItemStack[]                  pokecubes        = new ItemStack[6];
+    public int[]                        pokenumbers      = new int[6];
+    public int[]                        pokelevels       = new int[6];
+    public int[]                        attackCooldown   = new int[6];
+    public int                          cooldown         = 0;
+    public int                          globalCooldown   = 0;
+    public int                          friendlyCooldown = 0;
+    public List<IPokemob>               currentPokemobs  = new ArrayList<IPokemob>();
+    private EntityLivingBase            target;
+    public TypeTrainer                  type;
+    public Vector3                      location         = null;
+    private int                         id;
+    public String                       name             = "";
+    public UUID                         outID;
+    public IPokemob                     outMob;
+    public boolean                      male             = true;
+    boolean                             clear            = false;
+    boolean                             shouldrefresh    = false;
+    boolean                             added            = false;
+    protected boolean                   trades           = true;
+    public GuardAI                      guardAI;
 
-    int                                timercounter     = 0;
+    int                                 timercounter     = 0;
 
     public EntityTrainer(World par1World)
     {
         this(par1World, null);
-        this.equipmentDropChances = new float[] { 1, 1, 1, 1, 1 };
+        inventoryHandsDropChances = new float[] { 1, 1 };
+        inventoryArmorDropChances = new float[] { 1, 1, 1, 1 };
     }
 
     public EntityTrainer(World world, TypeTrainer type, int level)
@@ -179,7 +188,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         super(par1World);
 
         this.setSize(0.6F, 1.8F);
-        this.renderDistanceWeight = 4;
         initAI(location, stationary);
     }
 
@@ -387,13 +395,13 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     protected void entityInit()
     {
         super.entityInit();
-        this.dataWatcher.addObject(5, Integer.valueOf(0));// more action states
+        this.dataWatcher.register(AIACTIONSTATESDW, 0);// more action states
     }
 
     public boolean getAIState(int state)
     {
 
-        return (dataWatcher.getWatchableObjectInt(5) & state) != 0;
+        return (dataWatcher.get(AIACTIONSTATESDW) & state) != 0;
     }
 
     @Override
@@ -484,44 +492,45 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     }
 
     @Override
-    public boolean interact(EntityPlayer player)
+    public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
         if (player.capabilities.isCreativeMode && player.isSneaking())
         {
-            if (getType() != null && !worldObj.isRemote && player.getHeldItem() == null)
+            if (getType() != null && !worldObj.isRemote && player.getHeldItemMainhand() == null)
             {
                 String message = this.getName() + " " + getAIState(STATIONARY) + " " + countPokemon() + " ";
                 for (ItemStack i : pokecubes)
                 {
                     if (i != null) message += i.getDisplayName() + " ";
                 }
-                for (int i = 0; i < 5; i++)
-                {
-                    ItemStack item = getEquipmentInSlot(i);
-                    if (item != null) message += item.getDisplayName() + " ";
-                }
-                player.addChatMessage(new ChatComponentText(message));
+                // for (int i = 0; i < 5; i++)
+                // {
+                // ItemStack item = getEquipmentInSlot(i);
+                // if (item != null) message += item.getDisplayName() + " ";
+                // }
+                player.addChatMessage(new TextComponentString(message));
             }
-            else if (!worldObj.isRemote && player.isSneaking() && player.getHeldItem().getItem() == Items.stick)
+            else if (!worldObj.isRemote && player.isSneaking() && player.getHeldItemMainhand().getItem() == Items.stick)
             {
                 throwCubeAt(player);
             }
-            else if (player.getHeldItem() != null && player.getHeldItem().getItem() == Items.stick) setTarget(player);
+            else if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Items.stick)
+                setTarget(player);
 
-            if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemTrainer)
+            if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemTrainer)
             {
                 player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getId(), 0, 0);
             }
         }
         else
         {
-            if (player.getHeldItem() != null && friendlyCooldown <= 0)
+            if (player.getHeldItemMainhand() != null && friendlyCooldown <= 0)
             {
-                if (player.getHeldItem().getItem() == Item.itemRegistry
+                if (player.getHeldItemMainhand().getItem() == Item.itemRegistry
                         .getObject(new ResourceLocation("minecraft:emerald")))
                 {
-                    player.inventory.consumeInventoryItem(
-                            Item.itemRegistry.getObject(new ResourceLocation("minecraft:emerald")));
+                    Item item = Item.itemRegistry.getObject(new ResourceLocation("minecraft:emerald"));
+                    player.inventory.clearMatchingItems(item, 0, 1, null);
                     setTrainerTarget(null);
                     for (IPokemob pokemob : currentPokemobs)
                     {
@@ -542,7 +551,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 return true;
             }
         }
-        return true;// super.interact(entityplayer);
+        return true;// super.processInteract(EntityPlayer player);
     }
 
     public void lowerCooldowns()
@@ -571,17 +580,18 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     {
         for (int i = 1; i < 5; i++)
         {
-            ItemStack stack = getEquipmentInSlot(i);
+            EntityEquipmentSlot slotIn = EntityEquipmentSlot.values()[i];
+            ItemStack stack = getItemStackFromSlot(slotIn);
             if (stack != null) this.entityDropItem(stack.copy(), 0.5f);
         }
         if (defeater != null)
         {
-            String text = StatCollector.translateToLocal("pokecube.trainer.defeat");
-            IChatComponent message;
-            IChatComponent name = getDisplayName();
-            name.getChatStyle().setColor(EnumChatFormatting.RED);
-            text = EnumChatFormatting.RED + text;
-            message = name.appendSibling(IChatComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
+            String text = I18n.translateToLocal("pokecube.trainer.defeat");
+            ITextComponent message;
+            ITextComponent name = getDisplayName();
+            name.getChatStyle().setColor(TextFormatting.RED);
+            text = TextFormatting.RED + text;
+            message = name.appendSibling(ITextComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
             target.addChatMessage(message);
         }
     }
@@ -598,7 +608,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         super.onLivingUpdate();
         if (worldObj.isRemote) return;
 
-        if (this.getEquipmentInSlot(1) == null) type.initTrainerItems(this);
+        if (this.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND) == null) type.initTrainerItems(this);
 
         if (!added)
         {
@@ -611,10 +621,10 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             ItemStack item = pokecubes[i];
             if (item != null && attackCooldown[i] <= 0)
             {
-                this.setCurrentItemOrArmor(0, item);
+                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, item);
                 break;
             }
-            if (i == 5) this.setCurrentItemOrArmor(0, null);
+            if (i == 5) this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
         }
 
         EntityLivingBase target = getAITarget() != null ? getAITarget()
@@ -653,7 +663,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             addRandomTrades();
         }
         if (Config.instance.trainersTradeItems) tradeList.addAll(itemList);
-        ItemStack buy = buyingPlayer.getHeldItem();
+        ItemStack buy = buyingPlayer.getHeldItemMainhand();
         if (buy != null && PokecubeManager.isFilled(buy) && Config.instance.trainersTradeMobs)
         {
             addMobTrades(buy);
@@ -680,7 +690,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             this.itemList = new MerchantRecipeList(nbttagcompound);
         }
         if (nbt.hasKey("trades")) trades = nbt.getBoolean("trades");
-        dataWatcher.updateObject(5, nbt.getInteger("aiState"));
+        dataWatcher.set(AIACTIONSTATESDW, nbt.getInteger("aiState"));
         randomize = nbt.getBoolean("randomTeam");
         type = TypeTrainer.getTrainer(nbt.getString("type"));
         setId(nbt.getInteger("uniqueid"));
@@ -729,16 +739,18 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     public void setAIState(int state, boolean flag)
     {
-        int byte0 = dataWatcher.getWatchableObjectInt(5);
+        int byte0 = dataWatcher.get(AIACTIONSTATESDW);
 
+        Integer toSet;
         if (flag)
         {
-            dataWatcher.updateObject(5, Integer.valueOf((byte0 | state)));
+            toSet = Integer.valueOf((byte0 | state));
         }
         else
         {
-            dataWatcher.updateObject(5, Integer.valueOf((byte0 & -state - 1)));
+            toSet = Integer.valueOf((byte0 & -state - 1));
         }
+        dataWatcher.set(AIACTIONSTATESDW, toSet);
     }
 
     @Override
@@ -826,12 +838,12 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         if (target != null && target != this.target)
         {
             cooldown = 100;
-            String text = StatCollector.translateToLocal("pokecube.trainer.agress");
-            IChatComponent message;
-            IChatComponent name = getDisplayName();
-            name.getChatStyle().setColor(EnumChatFormatting.RED);
-            text = EnumChatFormatting.RED + text;
-            message = name.appendSibling(IChatComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
+            String text = I18n.translateToLocal("pokecube.trainer.agress");
+            ITextComponent message;
+            ITextComponent name = getDisplayName();
+            name.getChatStyle().setColor(TextFormatting.RED);
+            text = TextFormatting.RED + text;
+            message = name.appendSibling(ITextComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
             target.addChatMessage(message);
         }
         this.target = target;
@@ -910,7 +922,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     {
         trade(recipe);
         this.livingSoundTime = -this.getTalkInterval();
-        this.playSound("mob.villager.yes", this.getSoundVolume(), this.getSoundPitch());
+        this.playSound(SoundEvents.entity_villager_yes, this.getSoundVolume(), this.getSoundPitch());
         int i = 3 + this.rand.nextInt(4);
         if (recipe.getRewardsExp())
         {
@@ -927,11 +939,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
             if (stack != null)
             {
-                this.playSound("mob.villager.yes", this.getSoundVolume(), this.getSoundPitch());
+                this.playSound(SoundEvents.entity_villager_yes, this.getSoundVolume(), this.getSoundPitch());
             }
             else
             {
-                this.playSound("mob.villager.no", this.getSoundVolume(), this.getSoundPitch());
+                this.playSound(SoundEvents.entity_villager_no, this.getSoundVolume(), this.getSoundPitch());
             }
         }
     }
@@ -963,7 +975,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         nbt.setString("type", type.name);
         nbt.setInteger("uniqueid", getId());
         if (outID != null) nbt.setString("outPokemob", outID.toString());
-        nbt.setInteger("aiState", dataWatcher.getWatchableObjectInt(5));
+        nbt.setInteger("aiState", dataWatcher.get(AIACTIONSTATESDW));
         nbt.setInteger("cooldown", globalCooldown);
         nbt.setIntArray("cooldowns", attackCooldown);
         nbt.setInteger("friendly", friendlyCooldown);

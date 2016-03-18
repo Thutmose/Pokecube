@@ -7,15 +7,15 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
 import net.minecraftforge.common.ForgeVersion.Status;
@@ -64,18 +64,18 @@ public class Compat
         }
 
         @Deprecated // Use one from ThutCore whenever that is updated for a bit.
-        private IChatComponent getOutdatedMessage(CheckResult result, String name)
+        private ITextComponent getOutdatedMessage(CheckResult result, String name)
         {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
+            String linkName = "[" + TextFormatting.GREEN + name + " " + result.target + TextFormatting.WHITE;
             String link = "" + result.url;
             String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
                     + link + "\"}}";
 
-            String info = "\"" + EnumChatFormatting.RED + "New " + name
+            String info = "\"" + TextFormatting.RED + "New " + name
                     + " version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
                     + "\"";
             String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return IChatComponent.Serializer.jsonToComponent(mess);
+            return ITextComponent.Serializer.jsonToComponent(mess);
         }
 
         @SubscribeEvent
@@ -85,13 +85,13 @@ public class Compat
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
                 String message = "msg.pokedexbuttonforwiki.text";
-                message = StatCollector.translateToLocal(message);
-                if (Loader.isModLoaded("IGWMod")) event.player.addChatMessage(new ChatComponentText(message));
+                message = I18n.translateToLocal(message);
+                if (Loader.isModLoaded("IGWMod")) event.player.addChatMessage(new TextComponentString(message));
                 Object o = Loader.instance().getIndexedModList().get(PokecubeAdv.ID);
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
                 if (result.status == Status.OUTDATED)
                 {
-                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Revival");
+                    ITextComponent mess = getOutdatedMessage(result, "Pokecube Revival");
                     (event.player).addChatMessage(mess);
                 }
             }
@@ -226,7 +226,7 @@ public class Compat
     public void load(FMLInitializationEvent evt)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new WikiInfoNotifier();
-        new IGWSupportNotifier();
+        // new IGWSupportNotifier();
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) if (Loader.isModLoaded("IGWMod"))
         {
@@ -258,13 +258,6 @@ public class Compat
     public void postPostInit(PostPostInit evt)
     {
         gccompat.register();
-
-        boolean wikiWrite = false;
-
-        if (wikiWrite)
-        {
-            WikiWriter.writeWiki();
-        }
     }
 
     @EventHandler

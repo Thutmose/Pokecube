@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
 
 
 /**
@@ -45,6 +46,6 @@ public abstract class AbstractPacket {
     public abstract void handleServerSide(EntityPlayerMP player);
     
     public void sendMessageToPlayer(EntityPlayer player, String msg) {
-    	player.addChatMessage(new ChatComponentText(msg));
+    	player.addChatMessage(new TextComponentString(msg));
     }
 }

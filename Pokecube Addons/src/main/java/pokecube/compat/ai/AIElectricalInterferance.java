@@ -7,7 +7,7 @@ import cofh.api.energy.IEnergyStorage;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Cruncher;

@@ -17,8 +17,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -70,7 +73,7 @@ public class ItemTrainer extends Item
     /** Returns true if the item can be used on the given entity, e.g. shears on
      * sheep. */
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target)
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target, EnumHand hand)
     {
         if (stack.getItemDamage() != 2) return false;
         if (!(target instanceof EntityVillager)) return false;
@@ -92,9 +95,10 @@ public class ItemTrainer extends Item
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
+            EnumHand hand)
     {
-        if (world.isRemote) { return itemstack; }
+        if (world.isRemote) { return new ActionResult<>(EnumActionResult.PASS, itemstack); }
 
         Vector3 location = Vector3.getNewVector().set(player).add(Vector3.getNewVector().set(player.getLookVec()));
         if (player.capabilities.isCreativeMode)
@@ -129,7 +133,7 @@ public class ItemTrainer extends Item
                     break;
                 }
             }
-            if (!item) return itemstack;
+            if (!item) return new ActionResult<>(EnumActionResult.PASS, itemstack);
 
             EntityLiving t;
 
@@ -159,29 +163,29 @@ public class ItemTrainer extends Item
             capability.setPos(t.getPosition());
             t.tasks.addTask(2, new GuardAI(t, capability));
         }
-        return itemstack;
+        return new ActionResult<>(EnumActionResult.PASS, itemstack);
     }
 
     @Override
-    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
+            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
 
-        if (!player.capabilities.isCreativeMode)
+        if (!playerIn.capabilities.isCreativeMode)
         {
-            if (!itemStack.hasTagCompound())
+            if (!stack.hasTagCompound())
             {
-                itemStack.setTagCompound(new NBTTagCompound());
+                stack.setTagCompound(new NBTTagCompound());
             }
-            itemStack.getTagCompound().setIntArray("coords", new int[] { pos.getX(), pos.getY(), pos.getZ() });
+            stack.getTagCompound().setIntArray("coords", new int[] { pos.getX(), pos.getY(), pos.getZ() });
             System.out.println("test");
-            return true;
+            return EnumActionResult.SUCCESS;
         }
 
         Vector3 v = Vector3.getNewVector().set(pos);
-        Block b = v.getBlock(world);
-        b.rotateBlock(world, pos, EnumFacing.DOWN);
-        return false;
+        Block b = v.getBlock(worldIn);
+        b.rotateBlock(worldIn, pos, EnumFacing.DOWN);
+        return EnumActionResult.FAIL;
     }
 
 }

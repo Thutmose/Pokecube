@@ -75,7 +75,7 @@ public class EntityPokemobEgg extends EntityLiving
         {
             if (this.delayBeforeCanPickup > 0) { return false; }
 
-            ItemStack itemstack = this.getHeldItem();
+            ItemStack itemstack = this.getHeldItemMainhand();
             int i = itemstack.stackSize;
             EntityPlayer player = (EntityPlayer) e;
             if (this.delayBeforeCanPickup <= 0 && (i <= 0 || player.inventory.addItemStackToInventory(itemstack)))
@@ -125,7 +125,7 @@ public class EntityPokemobEgg extends EntityLiving
     @Override
     public ItemStack getPickedResult(MovingObjectPosition target)
     {
-        return getHeldItem().copy();
+        return getHeldItemMainhand().copy();
     }
 
     /** Returns a generic pokemob instance with the data of the one in the egg,
@@ -134,7 +134,7 @@ public class EntityPokemobEgg extends EntityLiving
      * @return */
     public IPokemob getPokemob()
     {
-        IPokemob pokemob = ItemPokemobEgg.getFakePokemob(worldObj, here, getHeldItem());
+        IPokemob pokemob = ItemPokemobEgg.getFakePokemob(worldObj, here, getHeldItemMainhand());
         if (pokemob == null) return null;
         ((Entity) pokemob).worldObj = worldObj;
         return pokemob;
@@ -156,7 +156,7 @@ public class EntityPokemobEgg extends EntityLiving
         motionX *= 0.6;
         motionZ *= 0.6;
         moveEntity(motionX, motionY, motionZ);
-        if (getHeldItem() == null)
+        if (getHeldItemMainhand() == null)
         {
             this.setDead();
             return;
@@ -164,7 +164,7 @@ public class EntityPokemobEgg extends EntityLiving
         here.set(this);
         if (worldObj.isRemote) return;
         this.delayBeforeCanPickup--;
-        boolean spawned = getHeldItem().hasTagCompound() && getHeldItem().getTagCompound().hasKey("nestLocation");
+        boolean spawned = getHeldItemMainhand().hasTagCompound() && getHeldItemMainhand().getTagCompound().hasKey("nestLocation");
 
         if (age++ >= hatch || spawned)
         {
@@ -172,7 +172,7 @@ public class EntityPokemobEgg extends EntityLiving
             MinecraftForge.EVENT_BUS.post(event);
             if (!event.isCanceled())
             {
-                ItemPokemobEgg.spawn(worldObj, getHeldItem(), Math.floor(posX) + 0.5, Math.floor(posY) + 0.5,
+                ItemPokemobEgg.spawn(worldObj, getHeldItemMainhand(), Math.floor(posX) + 0.5, Math.floor(posY) + 0.5,
                         Math.floor(posZ) + 0.5);
                 setDead();
             }

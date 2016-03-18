@@ -32,7 +32,7 @@ public class Multitype extends Ability
 
         if (!entry.getName().contains("Arceus")) return;
 
-        ItemStack held = ((EntityLivingBase) mob).getHeldItem();
+        ItemStack held = ((EntityLivingBase) mob).getHeldItemMainhand();
         if (held != null && held.getItem().getRegistryName().contains("pokecube")
                 && held.getItem().getRegistryName().contains("badge"))
         {

@@ -110,7 +110,7 @@ public class GuiPokedex extends GuiScreen
     {
         this.pokemob = pokemob;
         this.entityPlayer = entityPlayer;
-        ItemStack item = entityPlayer.getHeldItem();
+        ItemStack item = entityPlayer.getHeldItemMainhand();
         if (item != null)
         {
             page = item.getItemDamage();
@@ -283,7 +283,7 @@ public class GuiPokedex extends GuiScreen
         if (index2 < 0) index2 = biomes.size() - 2;
         index2 = Math.max(0, index2 % (biomes.size() - 1));
 
-        String biomeName = BiomeDatabase.getNameFromType(biomes.get(index2));
+        String getBiomeName() = BiomeDatabase.getNameFromType(biomes.get(index2));
         int n = 0;
         ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
 
@@ -324,7 +324,7 @@ public class GuiPokedex extends GuiScreen
 
             if (dbe.getSpawnData().types[SpawnData.DAY]) time = time + "D";
             if (dbe.getSpawnData().types[SpawnData.NIGHT]) time = time + "N";
-            if (cave && !biomeName.toLowerCase().contains("cave"))
+            if (cave && !getBiomeName().toLowerCase().contains("cave"))
             {
                 time = time + "C";
             }
@@ -865,9 +865,9 @@ public class GuiPokedex extends GuiScreen
         {
             page = (page + 1) % PAGECOUNT;
 
-            if (entityPlayer.getHeldItem() != null && entityPlayer.getHeldItem().getItem() == PokecubeItems.pokedex)
+            if (entityPlayer.getHeldItemMainhand() != null && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
-                // entityPlayer.getHeldItem().setItemDamage(page);
+                // entityPlayer.getHeldItemMainhand().setItemDamage(page);
                 PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
                         new byte[] { (byte) page });
                 PokecubePacketHandler.sendToServer(packet);
@@ -893,9 +893,9 @@ public class GuiPokedex extends GuiScreen
             page = (page - 1) % PAGECOUNT;
             if (page < 0) page = PAGECOUNT - 1;
 
-            if (entityPlayer.getHeldItem() != null && entityPlayer.getHeldItem().getItem() == PokecubeItems.pokedex)
+            if (entityPlayer.getHeldItemMainhand() != null && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
-                // entityPlayer.getHeldItem().setItemDamage(page);
+                // entityPlayer.getHeldItemMainhand().setItemDamage(page);
                 PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 5,
                         new byte[] { (byte) page });
                 PokecubePacketHandler.sendToServer(packet);

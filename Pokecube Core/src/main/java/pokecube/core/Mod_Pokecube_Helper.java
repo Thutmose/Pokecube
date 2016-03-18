@@ -22,9 +22,9 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.handlers.RecipeHandler;
@@ -40,6 +40,7 @@ public class Mod_Pokecube_Helper
     public static final String   CATEGORY_ADVANCED = "advanced";
 
     public static HashSet<Block> allBlocks         = new HashSet<Block>();
+
     private static void addToList(List<Block> list, String toAdd)
     {
         if (toAdd == null || toAdd.equals("")) return;
@@ -146,29 +147,38 @@ public class Mod_Pokecube_Helper
         ItemStack rockSmash = new ItemStack(getItem("tm"));
         ItemTM.addMoveToStack(IMoveNames.MOVE_ROCKSMASH, rockSmash);
         HMs.add(rockSmash);
-
-        WeightedRandomChestContent cutContent = new WeightedRandomChestContent(cut, 1, 1, 20);
-        ChestGenHooks.addItem(ChestGenHooks.PYRAMID_JUNGLE_CHEST, cutContent);
-
-        WeightedRandomChestContent flashContent = new WeightedRandomChestContent(flash, 1, 1, 20);
-        ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, flashContent);
-
-        WeightedRandomChestContent digContent = new WeightedRandomChestContent(dig, 1, 1, 20);
-        ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, digContent);
-
-        WeightedRandomChestContent smashContent = new WeightedRandomChestContent(rockSmash, 1, 1, 20);
-        ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, smashContent);
-
-        // TODO do this for each stone, instead of just one.
-        ItemStack stone = new ItemStack(getItem("megastone"));
-        WeightedRandomChestContent stoneContent = new WeightedRandomChestContent(stone, 1, 1, 20);
-        ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, stoneContent);
-        ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, stoneContent);
-
-        ItemStack ring = new ItemStack(getItem("megaring"));
-        WeightedRandomChestContent ringContent = new WeightedRandomChestContent(ring, 1, 1, 5);
-        ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, ringContent);
-        ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, ringContent);
+        // TODO loot tables
+        // WeightedRandomChestContent cutContent = new
+        // WeightedRandomChestContent(cut, 1, 1, 20);
+        // ChestGenHooks.addItem(ChestGenHooks.PYRAMID_JUNGLE_CHEST,
+        // cutContent);
+        //
+        // WeightedRandomChestContent flashContent = new
+        // WeightedRandomChestContent(flash, 1, 1, 20);
+        // ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, flashContent);
+        //
+        // WeightedRandomChestContent digContent = new
+        // WeightedRandomChestContent(dig, 1, 1, 20);
+        // ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, digContent);
+        //
+        // WeightedRandomChestContent smashContent = new
+        // WeightedRandomChestContent(rockSmash, 1, 1, 20);
+        // ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR,
+        // smashContent);
+        //
+        // // TODO do this for each stone, instead of just one.
+        // ItemStack stone = new ItemStack(getItem("megastone"));
+        // WeightedRandomChestContent stoneContent = new
+        // WeightedRandomChestContent(stone, 1, 1, 20);
+        // ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH,
+        // stoneContent);
+        // ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, stoneContent);
+        //
+        // ItemStack ring = new ItemStack(getItem("megaring"));
+        // WeightedRandomChestContent ringContent = new
+        // WeightedRandomChestContent(ring, 1, 1, 5);
+        // ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, ringContent);
+        // ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, ringContent);
     }
 
     public void addItems()
@@ -320,15 +330,10 @@ public class Mod_Pokecube_Helper
             {
                 if (getCaveBlocks().contains(b)) continue;
 
-                if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.stone).apply(b.getDefaultState()))
-                    getCaveBlocks().add(b);
-                else if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.netherrack)
-                        .apply(b.getDefaultState()))
-                    getCaveBlocks().add(b);
-                else if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.dirt).apply(b.getDefaultState()))
-                    getCaveBlocks().add(b);
-                else if (net.minecraft.block.state.pattern.BlockHelper.forBlock(Blocks.sand).apply(b.getDefaultState()))
-                    getCaveBlocks().add(b);
+                if (BlockMatcher.forBlock(Blocks.stone).apply(b.getDefaultState())) getCaveBlocks().add(b);
+                else if (BlockMatcher.forBlock(Blocks.netherrack).apply(b.getDefaultState())) getCaveBlocks().add(b);
+                else if (BlockMatcher.forBlock(Blocks.dirt).apply(b.getDefaultState())) getCaveBlocks().add(b);
+                else if (BlockMatcher.forBlock(Blocks.sand).apply(b.getDefaultState())) getCaveBlocks().add(b);
             }
             catch (Exception e)
             {
@@ -336,7 +341,7 @@ public class Mod_Pokecube_Helper
         }
         for (Block b : getCaveBlocks())
         {
-            if (b.getMaterial() == Material.rock && !getRocks().contains(b)) getRocks().add(b);
+            if (b.getMaterial(b.getDefaultState()) == Material.rock && !getRocks().contains(b)) getRocks().add(b);
             if (!getSurfaceBlocks().contains(b)) getSurfaceBlocks().add(b);
         }
 

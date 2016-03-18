@@ -3,6 +3,7 @@ package pokecube.modelloader.client.render;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -19,7 +20,7 @@ import thut.core.client.render.model.IModelRenderer;
 import thut.core.client.render.model.IPartTexturer;
 import thut.core.client.render.smd.SMDModel;
 
-public class SMDModelRenderer<T extends EntityLiving> extends RendererLivingEntity<T> implements IModelRenderer<T>
+public class SMDModelRenderer<T extends EntityLiving> extends RenderLivingBase<T> implements IModelRenderer<T>
 {
     public static final ResourceLocation FRZ          = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
     public static final ResourceLocation PAR          = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
@@ -47,9 +48,9 @@ public class SMDModelRenderer<T extends EntityLiving> extends RendererLivingEnti
         float f2 = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
         float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
         float f4;
-        if (entity.isRiding() && entity.ridingEntity instanceof EntityLivingBase)
+        if (entity.isRiding() && entity.getRidingEntity() instanceof EntityLivingBase)
         {
-            EntityLivingBase entitylivingbase1 = (EntityLivingBase) entity.ridingEntity;
+            EntityLivingBase entitylivingbase1 = (EntityLivingBase) entity.getRidingEntity();
             f2 = this.interpolateRotation(entitylivingbase1.prevRenderYawOffset, entitylivingbase1.renderYawOffset,
                     partialTick);
             f4 = MathHelper.wrapAngleTo180_float(f3 - f2);

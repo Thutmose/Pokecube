@@ -30,7 +30,7 @@ public class Pickup extends Ability
         EntityLivingBase poke = (EntityLivingBase) mob;
         if (poke.ticksExisted % 200 == 0 && Math.random() < 0.1)
         {
-            if (poke.getHeldItem() == null)
+            if (poke.getHeldItemMainhand() == null)
             {
                 List<?> items = new ArrayList<Object>(PokecubeItems.heldItems);
                 Collections.shuffle(items);

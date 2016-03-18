@@ -8,7 +8,7 @@ import com.mcf.davidee.nbteditpqb.NBTEdit;
 import com.mcf.davidee.nbteditpqb.gui.GuiEditNBTTree;
 import com.mcf.davidee.nbteditpqb.nbt.SaveStates;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -149,11 +149,10 @@ public class ClientProxy extends CommonProxy
                 int z = screen.z;
                 World world = Minecraft.getMinecraft().theWorld;
                 BlockPos pos = new BlockPos(x, y, z);
-                Block b = world.getBlockState(pos).getBlock();
-                if (b != null)
+                IBlockState state = world.getBlockState(pos);
+                if (state != null)
                 {
-                    b.setBlockBoundsBasedOnState(world, pos);
-                    drawBoundingBox(event.context, event.partialTicks, b.getSelectedBoundingBox(world, pos));
+                    drawBoundingBox(event.context, event.partialTicks, state.getSelectedBoundingBox(world, pos));
                 }
             }
         }

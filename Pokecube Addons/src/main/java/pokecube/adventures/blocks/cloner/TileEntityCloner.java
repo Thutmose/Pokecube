@@ -1,17 +1,9 @@
 package pokecube.adventures.blocks.cloner;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -27,14 +19,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
-import net.minecraftforge.fml.common.Optional;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
@@ -44,7 +36,8 @@ import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.Tools;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityCloner extends TileEntity implements IInventory, ITickable, SimpleComponent, IEnergyReceiver
+public class TileEntityCloner extends TileEntity implements IInventory, ITickable, IEnergyReceiver// ,
+                                                                                                  // SimpleComponent
 {
     public static class CraftMatrix extends InventoryCrafting
     {
@@ -242,7 +235,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
 
     }
 
-    protected EnergyStorage storage = new EnergyStorage(32000);
+    protected EnergyStorage     storage   = new EnergyStorage(32000);
     public CraftMatrix          craftMatrix;
     public InventoryCraftResult result;
     private ItemStack[]         inventory = new ItemStack[10];
@@ -335,8 +328,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             }
             else if (stack.getItem() instanceof ItemPotion)
             {
-                ItemPotion potion = (ItemPotion) stack.getItem();
-                List<PotionEffect> effects = potion.getEffects(stack);
+                List<PotionEffect> effects = PotionUtils.getEffectsFromStack(stack);
                 for (PotionEffect effect : effects)
                 {
                     if (effect != null && effect.getEffectName().contains("regeneration") && effect.getAmplifier() == 1)
@@ -399,8 +391,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             }
             else if (stack.getItem() instanceof ItemPotion)
             {
-                ItemPotion potion = (ItemPotion) stack.getItem();
-                List<PotionEffect> effects = potion.getEffects(stack);
+                List<PotionEffect> effects = PotionUtils.getEffectsFromStack(stack);
                 if (!correctPotion) potionIndex = i;
                 for (PotionEffect effect : effects)
                 {
@@ -493,31 +484,30 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         return null;
     }
 
-    @Override
-    public String getComponentName()
-    {
-        return "splicer";
-    }
+    // @Override//TODO OC
+    // public String getComponentName()
+    // {
+    // return "splicer";
+    // }
 
     /** Overriden in a sign to provide the text. */
-    @SuppressWarnings("rawtypes")
     @Override
-    public Packet getDescriptionPacket()
+    public Packet<?> getDescriptionPacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
         if (craftMatrix != null)
         {
             craftMatrix.eventHandler.onCraftMatrixChanged(craftMatrix);
         }
-        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
-        return new ChatComponentText("cloner");
+        return new TextComponentString("cloner");
     }
 
     /* IEnergyReceiver and IEnergyProvider */
@@ -539,73 +529,84 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         return 1;
     }
 
-    @Callback(doc = "function(slot:number, info:number) -- slot is which slot to get the info for,"
-            + " info is which information to return." + " 0 is the name," + " 1 is the ivs," + " 2 is the size,"
-            + " 3 is the nature," + " 4 is the list of egg moves," + " 5 is shininess ")
-    /** Returns the info for the slot number given in args. the second argument
-     * is which info to return.<br>
-     * <br>
-     * If the slot is out of bounds, it returns the info for slot 0.<br>
-     * <br>
-     * Returns the following: Stack name, ivs, size, nature.<br>
-     * <br>
-     * ivs are a long.
-     * 
-     * @param context
-     * @param args
-     * @return */
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getInfo(Context context, Arguments args) throws Exception
-    {
-        ArrayList<Object> ret = new ArrayList<>();
-        int i = args.checkInteger(0);
-        int j = args.checkInteger(1);
-        if (i < 0 || i > inventory.length) throw new Exception("index out of bounds");
-        ItemStack stack = inventory[i];
-        if (stack != null)
-        {
-            if (j == 0) ret.add(stack.getDisplayName());
-            else if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))
-            {
-                if (j == 1)
-                {
-                    if (!stack.getTagCompound().hasKey("ivs")) throw new Exception("no ivs found");
-                    ret.add(stack.getTagCompound().getLong("ivs"));
-                }
-                if (j == 2)
-                {
-                    if (!stack.getTagCompound().hasKey("size")) throw new Exception("no size found");
-                    ret.add(stack.getTagCompound().getFloat("size"));
-                }
-                if (j == 3)
-                {
-                    if (!stack.getTagCompound().hasKey("nature")) throw new Exception("no nature found");
-                    ret.add(stack.getTagCompound().getByte("nature"));
-                }
-                if (j == 4)
-                {
-                    if (!stack.getTagCompound().hasKey("moves")) throw new Exception("no egg moves found");
-                    Map<Integer, String> moves = Maps.newHashMap();
-                    String eggMoves[] = stack.getTagCompound().getString("moves").split(";");
-                    if (eggMoves.length == 0) throw new Exception("no egg moves found");
-                    for (int k = 1; k < eggMoves.length + 1; k++)
-                    {
-                        moves.put(k, eggMoves[k - 1]);
-                    }
-                    ret.add(moves);
-                }
-                if (j == 5)
-                {
-                    if (!stack.getTagCompound().hasKey("shiny")) throw new Exception("no shinyInfo found");
-                    ret.add(stack.getTagCompound().getBoolean("shiny"));
-                }
-            }
-            else throw new Exception("the itemstack does not contain the required info");
-
-            return ret.toArray();
-        }
-        throw new Exception("no item in slot " + i);
-    }
+    // @Callback(doc = "function(slot:number, info:number) -- slot is which slot
+    // to get the info for,"
+    // + " info is which information to return." + " 0 is the name," + " 1 is
+    // the ivs," + " 2 is the size,"
+    // + " 3 is the nature," + " 4 is the list of egg moves," + " 5 is shininess
+    // ")
+    // /** Returns the info for the slot number given in args. the second
+    // argument
+    // * is which info to return.<br>//TODO OC
+    // * <br>
+    // * If the slot is out of bounds, it returns the info for slot 0.<br>
+    // * <br>
+    // * Returns the following: Stack name, ivs, size, nature.<br>
+    // * <br>
+    // * ivs are a long.
+    // *
+    // * @param context
+    // * @param args
+    // * @return */
+    // @Optional.Method(modid = "OpenComputers")
+    // public Object[] getInfo(Context context, Arguments args) throws Exception
+    // {
+    // ArrayList<Object> ret = new ArrayList<>();
+    // int i = args.checkInteger(0);
+    // int j = args.checkInteger(1);
+    // if (i < 0 || i > inventory.length) throw new Exception("index out of
+    // bounds");
+    // ItemStack stack = inventory[i];
+    // if (stack != null)
+    // {
+    // if (j == 0) ret.add(stack.getDisplayName());
+    // else if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))
+    // {
+    // if (j == 1)
+    // {
+    // if (!stack.getTagCompound().hasKey("ivs")) throw new Exception("no ivs
+    // found");
+    // ret.add(stack.getTagCompound().getLong("ivs"));
+    // }
+    // if (j == 2)
+    // {
+    // if (!stack.getTagCompound().hasKey("size")) throw new Exception("no size
+    // found");
+    // ret.add(stack.getTagCompound().getFloat("size"));
+    // }
+    // if (j == 3)
+    // {
+    // if (!stack.getTagCompound().hasKey("nature")) throw new Exception("no
+    // nature found");
+    // ret.add(stack.getTagCompound().getByte("nature"));
+    // }
+    // if (j == 4)
+    // {
+    // if (!stack.getTagCompound().hasKey("moves")) throw new Exception("no egg
+    // moves found");
+    // Map<Integer, String> moves = Maps.newHashMap();
+    // String eggMoves[] = stack.getTagCompound().getString("moves").split(";");
+    // if (eggMoves.length == 0) throw new Exception("no egg moves found");
+    // for (int k = 1; k < eggMoves.length + 1; k++)
+    // {
+    // moves.put(k, eggMoves[k - 1]);
+    // }
+    // ret.add(moves);
+    // }
+    // if (j == 5)
+    // {
+    // if (!stack.getTagCompound().hasKey("shiny")) throw new Exception("no
+    // shinyInfo found");
+    // ret.add(stack.getTagCompound().getBoolean("shiny"));
+    // }
+    // }
+    // else throw new Exception("the itemstack does not contain the required
+    // info");
+    //
+    // return ret.toArray();
+    // }
+    // throw new Exception("no item in slot " + i);
+    // }
 
     @Override
     public int getInventoryStackLimit()
@@ -679,7 +680,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
      * @param pkt
      *            The data packet */
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
         if (worldObj.isRemote)
         {

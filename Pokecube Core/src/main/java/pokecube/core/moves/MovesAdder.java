@@ -988,7 +988,7 @@ public class MovesAdder implements IMoveConstants
             {
                 if(user==null || !(user instanceof EntityLivingBase))
                 return move.type;
-                ItemStack held = ((EntityLivingBase) user).getHeldItem();
+                ItemStack held = ((EntityLivingBase) user).getHeldItemMainhand();
                 if (held != null && held.getItem().getRegistryName().contains("pokecube")
                         && held.getItem().getRegistryName().contains("badge"))
                 {

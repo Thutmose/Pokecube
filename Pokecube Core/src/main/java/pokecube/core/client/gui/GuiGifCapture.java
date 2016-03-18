@@ -80,7 +80,7 @@ public class GuiGifCapture extends GuiScreen
     {
         this.pokemob = pokemob;
         this.entityPlayer = entityPlayer;
-        ItemStack item = entityPlayer.getHeldItem();
+        ItemStack item = entityPlayer.getHeldItemMainhand();
         if (item != null)
         {
             page = item.getItemDamage();

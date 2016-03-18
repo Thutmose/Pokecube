@@ -15,11 +15,12 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
@@ -130,8 +131,8 @@ public class EntityTrader extends EntityVillager
         if (e == null || !(e instanceof EntityPlayer)) { return super.attackEntityFrom(source, i); }
 
         if ((e instanceof EntityPlayer && (((EntityPlayer) e).capabilities.isCreativeMode))
-                || (((EntityPlayer) e).getHeldItem() != null
-                        && (((EntityPlayer) e).getHeldItem().getItem() instanceof ItemTrainer)))
+                || (((EntityPlayer) e).getHeldItemMainhand() != null
+                        && (((EntityPlayer) e).getHeldItemMainhand().getItem() instanceof ItemTrainer)))
         {
 
             EntityPlayer p = (EntityPlayer) e;
@@ -175,16 +176,16 @@ public class EntityTrader extends EntityVillager
     }
 
     @Override
-    /** Get the formatted ChatComponent that will be used for the sender's
+    /** Get the formatted TextComponent that will be used for the sender's
      * username in chat */
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
         String s = "Trader";
 
-        ChatComponentText chatcomponenttext = new ChatComponentText(s);
-        chatcomponenttext.getChatStyle().setChatHoverEvent(this.getHoverEvent());
-        chatcomponenttext.getChatStyle().setInsertion(this.getUniqueID().toString());
-        return chatcomponenttext;
+        TextComponentString TextComponentString = new TextComponentString(s);
+        TextComponentString.getChatStyle().setChatHoverEvent(this.getHoverEvent());
+        TextComponentString.getChatStyle().setInsertion(this.getUniqueID().toString());
+        return TextComponentString;
 
     }
 
@@ -203,9 +204,8 @@ public class EntityTrader extends EntityVillager
     /** Called when a player interacts with a mob. e.g. gets milk from a cow,
      * gets into the saddle on a pig. */
     @Override
-    public boolean interact(EntityPlayer p)
+    public boolean processInteract(EntityPlayer p, EnumHand hand, ItemStack itemstack)
     {
-        ItemStack itemstack = p.inventory.getCurrentItem();
         boolean flag = itemstack != null && itemstack.getItem() == Items.spawn_egg;
         System.out.println("Test");
         if (!flag && this.isEntityAlive() && !this.isChild() && !p.isSneaking())
@@ -220,10 +220,10 @@ public class EntityTrader extends EntityVillager
         }
         else if (p.isSneaking())
         {
-            if (p.getHeldItem() != null && p.getHeldItem().hasTagCompound()
-                    && p.getHeldItem().getItem() instanceof ItemTrainer)
+            if (p.getHeldItemMainhand() != null && p.getHeldItemMainhand().hasTagCompound()
+                    && p.getHeldItemMainhand().getItem() instanceof ItemTrainer)
             {
-                int[] loc = p.getHeldItem().getTagCompound().getIntArray("coords");
+                int[] loc = p.getHeldItemMainhand().getTagCompound().getIntArray("coords");
                 if (loc.length == 3)
                 {
                     ChunkCoordinate c = new ChunkCoordinate(MathHelper.floor_double(loc[0] / 16f), loc[1] / 16,
@@ -247,7 +247,7 @@ public class EntityTrader extends EntityVillager
         }
         else
         {
-            return super.interact(p);
+            return super.processInteract(p, hand, itemstack);
         }
     }
 

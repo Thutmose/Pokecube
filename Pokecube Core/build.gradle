@@ -46,12 +46,12 @@ repositories {
 }
 
 dependencies {
-    compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
-    deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
-    deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
-    deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
+   // compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
+   // deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
+  //  deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
+    //deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
     
-    compile "igwmod:IGW-Mod-1.8.9:1.2.4-4:userdev"
+  //  compile "igwmod:IGW-Mod-1.8.9:1.2.4-4:userdev"
 }
 
 group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-conventions.html

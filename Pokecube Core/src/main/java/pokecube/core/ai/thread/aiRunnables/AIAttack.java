@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.interfaces.IMoveConstants;
@@ -131,7 +132,7 @@ public class AIAttack extends AIBase implements IAICombat
                 delayTime = PokecubeMod.core.getConfig().pokemobagressticks;
                 String missed = I18n.translateToLocalFormatted("pokemob.agress",
                         ((IPokemob) attacker).getPokemonDisplayName());
-                entityTarget.addChatMessage(new ChatComponentText("\u00a7c" + missed));
+                entityTarget.addChatMessage(new TextComponentString("\u00a7c" + missed));
             }
             else
             {
@@ -310,7 +311,7 @@ public class AIAttack extends AIBase implements IAICombat
             }
             if (entityTarget instanceof IPokemob)
                 setPokemobAIState((IPokemob) entityTarget, IMoveConstants.DODGING, false);
-            if (this.attacker.getHeldItem() != null)
+            if (this.attacker.getHeldItemMainhand() != null)
             {
                 this.attacker.swingItem();
             }

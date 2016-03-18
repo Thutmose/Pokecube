@@ -13,6 +13,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -104,7 +106,7 @@ public class MakeCommand extends CommandBase
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         String text = "";
-        IChatComponent message;
+        ITextComponent message;
         EntityPlayerMP[] targets = null;
         for (int i = 1; i < args.length; i++)
         {
@@ -318,8 +320,8 @@ public class MakeCommand extends CommandBase
                         {
                             ((Entity) mob).worldObj.spawnEntityInWorld((Entity) mob);
                         }
-                        text = EnumChatFormatting.GREEN + "Spawned " + mob;
-                        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                        text = TextFormatting.GREEN + "Spawned " + mob;
+                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                         sender.addChatMessage(message);
                         return;
                     }

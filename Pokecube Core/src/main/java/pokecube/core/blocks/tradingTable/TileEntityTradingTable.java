@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -303,7 +304,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
         return null;
     }
@@ -670,10 +671,10 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                 mon1.setPokemonOwnerByName(trader2);
             }
 
-            boolean mon1everstone = PokecubeManager.getHeldItem(poke1) != null
-                    && PokecubeManager.getHeldItem(poke1).getItem() == PokecubeItems.everstone;
-            boolean mon2everstone = PokecubeManager.getHeldItem(poke2) != null
-                    && PokecubeManager.getHeldItem(poke2).getItem() == PokecubeItems.everstone;
+            boolean mon1everstone = PokecubeManager.getHeldItemMainhand(poke1) != null
+                    && PokecubeManager.getHeldItemMainhand(poke1).getItem() == PokecubeItems.everstone;
+            boolean mon2everstone = PokecubeManager.getHeldItemMainhand(poke2) != null
+                    && PokecubeManager.getHeldItemMainhand(poke2).getItem() == PokecubeItems.everstone;
 
             if (!mon1everstone) mon1.setTraded(true);
             if (!mon2everstone) mon2.setTraded(true);

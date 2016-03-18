@@ -9,18 +9,13 @@ import com.google.common.collect.Maps;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
@@ -29,7 +24,7 @@ import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntitySiphon extends TileEntity implements ITickable, SimpleComponent, IEnergyProvider
+public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyProvider//, SimpleComponent
 {
     public static int    maxOutput = 256;
     public static String function;
@@ -65,11 +60,11 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
         return ret;
     }
 
-    @Override
-    public String getComponentName()
-    {
-        return "pokesiphon";
-    }
+//    @Override//TODO OC
+//    public String getComponentName()
+//    {
+//        return "pokesiphon";
+//    }
 
     public int getEnergyGain(int level, int spAtk, int atk, PokedexEntry entry)
     {
@@ -163,12 +158,12 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
         return maxOutput;
     }
 
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getPower(Context context, Arguments args)
-    {
-        return new Object[] { lastInput };
-    }
+//    @Callback//TODO OC
+//    @Optional.Method(modid = "OpenComputers")
+//    public Object[] getPower(Context context, Arguments args)
+//    {
+//        return new Object[] { lastInput };
+//    }
 
     private void initParser()
     {

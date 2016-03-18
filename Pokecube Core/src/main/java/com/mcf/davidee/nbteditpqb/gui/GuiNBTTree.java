@@ -24,10 +24,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ResourceLocation;
 import pokecube.core.client.render.PTezzelator;
 
 /*
@@ -41,22 +41,22 @@ import pokecube.core.client.render.PTezzelator;
 public class GuiNBTTree extends Gui
 {
 
-    private Minecraft mc = Minecraft.getMinecraft();
+    private Minecraft           mc    = Minecraft.getMinecraft();
 
     private NBTTree             tree;
     private List<GuiNBTNode>    nodes;
     private GuiSaveSlotButton[] saves;
     private GuiNBTButton[]      buttons;
 
-    private final int X_GAP = 10, START_X = 10, START_Y = 30;
-    private final int Y_GAP = Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 2;
+    private final int           X_GAP = 10, START_X = 10, START_Y = 30;
+    private final int           Y_GAP = Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 2;
 
-    private int y, yClick, bottom, width, height, heightDiff, offset;
+    private int                 y, yClick, bottom, width, height, heightDiff, offset;
 
-    private Node<NamedNBT> focused;
-    private int            focusedSlotIndex;
+    private Node<NamedNBT>      focused;
+    private int                 focusedSlotIndex;
 
-    private GuiEditNBT window;
+    private GuiEditNBT          window;
 
     public GuiNBTTree(NBTTree tree)
     {
@@ -515,8 +515,8 @@ public class GuiNBTTree extends Gui
                     {
                         button.reset();
                         NBTEdit.getSaveStates().save();
-                        mc.getSoundHandler().playSound(
-                                PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+                        mc.getSoundHandler()
+                                .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
                         return;
                     }
                     if (button.inBounds(mx, my))
@@ -561,11 +561,9 @@ public class GuiNBTTree extends Gui
         tez.begin();
         tez.color(4210752, par4);
         tez.vertex(0.0D, par2, 0.0D).tex(0.0D, par2 / var6);
-        tez.vertex(this.width, par2, 0.0D).tex(this.width / var6,
-                par2 / var6);
+        tez.vertex(this.width, par2, 0.0D).tex(this.width / var6, par2 / var6);
         tez.color(4210752, par3);
-        tez.vertex(this.width, par1, 0.0D).tex(this.width / var6,
-                par1 / var6);
+        tez.vertex(this.width, par1, 0.0D).tex(this.width / var6, par1 / var6);
         tez.vertex(0.0D, par1, 0.0D).tex(0.0D, par1 / var6);
         tez.end();
     }
@@ -659,8 +657,7 @@ public class GuiNBTTree extends Gui
             else button.save.tag.setTag(name, base.copy());
             button.saved();
             NBTEdit.getSaveStates().save();
-            mc.getSoundHandler()
-                    .playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
         }
         else
         { // Paste into
@@ -685,7 +682,7 @@ public class GuiNBTTree extends Gui
                     tree = new NBTTree((NBTTagCompound) nbt);
                     initGUI();
                     mc.getSoundHandler()
-                            .playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+                            .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
                 }
                 else if (canAddToParent(focused.getObject().getNBT(), nbt))
                 {
@@ -704,7 +701,7 @@ public class GuiNBTTree extends Gui
                     setFocused(node);
                     initGUI(true);
                     mc.getSoundHandler()
-                            .playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+                            .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
                 }
             }
         }

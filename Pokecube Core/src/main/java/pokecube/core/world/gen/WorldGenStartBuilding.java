@@ -9,6 +9,7 @@ import net.minecraft.item.ItemDoor;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.PokecubeItems;
@@ -110,11 +111,11 @@ public class WorldGenStartBuilding implements IWorldGenerator
         temp1.set(centre).addTo(4, 2, 7).setBlock(world, Blocks.redstone_torch.getDefaultState());// table
                                                                                                   // power
 
-        ItemDoor.placeDoor(world, temp1.set(centre).addTo(4, 3, 0).getPos(), EnumFacing.SOUTH, Blocks.oak_door);
+        ItemDoor.placeDoor(world, temp1.set(centre).addTo(4, 3, 0).getPos(), EnumFacing.SOUTH, Blocks.oak_door, false);
     }
 
     @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator,
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
             IChunkProvider chunkProvider)
     {
         if (building || !PokecubeMod.core.getConfig().doSpawnBuilding) return;
@@ -185,7 +186,8 @@ public class WorldGenStartBuilding implements IWorldGenerator
         int y = 255;
         Block id = Blocks.air;
         BlockPos pos = new BlockPos(x, y, z);
-        while ((id.isAir(world, pos) || id == Blocks.snow || id.isLeaves(world, pos) || id.isWood(world, pos)) && y > 1)
+        while ((id.isAir(id.getDefaultState(), world, pos) || id == Blocks.snow
+                || id.isLeaves(id.getDefaultState(), world, pos) || id.isWood(world, pos)) && y > 1)
         {
             y--;
             pos = new BlockPos(x, y, z);

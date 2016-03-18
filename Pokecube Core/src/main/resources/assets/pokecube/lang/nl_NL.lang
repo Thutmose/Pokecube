@@ -41,6 +41,17 @@ pokemob.action.sendout=%1$s ik kies jou!
 pokemob.action.return=%1$s is naar de Pokécube teruggekeerd
 pokemob.action.usemove=Je beveelt %1$s om %2$s te gebruiken
 pokemob.action.faint=%1$s is flauw gevallen
+pokemob.action.denydamageblock=pokemobsDamageBlocks is uitgeschakeld in de mod-instellingen
+pokemob.action.needsberries=Je Pokémob moet meer Bessen eten om dat te doen
+pokemob.action.denyrepel=Je Pokémob heeft er te veel afkeer voor om dat te doen
+
+pokemob.info.happy0=Je Pokémob is erg ongelukkig
+pokemob.info.happy1=§cJe Pokémob is ongelukkig
+pokemob.info.happy2=Je Pokémob voelt zich ok
+pokemob.info.happy3=Je Pokémob is tevreden
+pokemob.info.happy4=Je Pokémob is gelukkig
+pokemob.info.happy5=§aYour Pokémob is erg gelukkig
+pokemob.info.happy6=§aYour Pokémob is in ecstase
 
 pokemob.megaevolve.success=%1$s is gemega-evolueerd tot %2$s
 pokemob.megaevolve.revert=%1$s is teruggekeerd naar %2$s
@@ -246,13 +257,22 @@ achievement.catch=Vang een %1$s
 achievement.get1stPokemob=Bemachtig je eerste Pokémob
 achievement.get1stPokemob.desc=Ontvang je starter Pokémob
 gui.pokemob.choose1st=Kies je eerste Pokémob
+gui.pokemob.choose1st.override=Starten met Persoonlijke Starter?
 gui.pokemob.select=Kies
+gui.pokemob.accept=Accepteer
+gui.pokemob.deny=Annuleer
+gui.pokemob.teleport=Teleports
 gui.pokedex.village=Dichtstbijzijnde Dorp
 
 pokecube.caught=%1$s is gevangen!
 pokecube.missed=Je miste de Pokémob!
 pokecube.denied=De Pokémob weigert de cube in te gaan!
 pokecube.noroom=Er is niet genoeg ruimte voor de Pokémob hier.
+pokecube.badaim=Ik moet waarschijnlijk beter richten
+
+pokecube.professor.deny=Professor: Je hebt al een Pokémob ontvangen
+pokedex.setteleport=Pokécenter ingesteld als Teleporteer locatie
+pokedex.locationinfo=Er zijn %1$s geregistreerde spawns\ner zijn %2$s geregistreerde Pokémobs\n%3$s spawnen hier
 
 pokemobEgg.name=Ei van %1$s
 
@@ -383,6 +403,10 @@ tile.pc.top.name=PC Top
 tile.pc.autoon=Auto Aan
 tile.pc.autooff=Auto Uit
 tile.pc.rename=Hernoem
+tile.pc.sentto=%1$s is naar je PC verzonden
+tile.pc.title=%1$ss PC
+tile.pc.public=Publiek
+tile.pc.bound=Privé gebonden
 
 item.pokecube.bubbles=Bubbels
 item.pokecube.flames=Vlammen
@@ -401,6 +425,15 @@ item.revive.name=Opwekken
 
 item.shiny_charm.name=Glimmend Amulet
 item.gardevoirmega.name=Gardevoiriet
+item.charizardmega-y.name=Charizardiet Y
+item.scizormega.name=Scizoriet
+item.sceptilemega.name=Sceptiliet
+item.salamencemega.name=Salamenciet
+item.gallademega.name=Galladiet
+item.absolmega.name=Absoliet
+item.blastoisemega.name=Blastoisiniet
+item.alphaorb.name=Alpha Bol
+item.omegaorb.name=Omega Bol
 
 item.silkyhair.name=Zijdeachtig Haar
 
@@ -484,3 +517,26 @@ pokecube.config.extraValues.tooltip=Een aantal interne waarden die voor Pokémob
 pokecube.config.database=Database Opties
 pokecube.config.forceDatabase.tooltip=Overschrijft Pokécube de kopie van de database met config door die in de jar? Stel in als false als je van plan bent om de database te veranderen.
 pokecube.config.configDatabases.tooltip=Databases voor Pokémob informatie. Voeg extra databases toe door <newfile> aan te vullen. Als je  een "string" van hier verwijderd, gaat alles kapot.
+
+#Commands
+
+pokecube.command.noperms=Niet genoeg toestemming
+pokecube.command.invalidtab=Ongeldige Argumenten. Probeer TAB voor opties.
+pokecube.command.invalidmissing=Ongeldige Argumenten. Er mist een Argument.
+pokecube.command.reset=Reset Starter voor %1$s
+pokecube.command.canchoose=Je kunt nu een nieuwe starter kiezen.
+pokecube.command.count=%1$s gevonden in bereik en %2$s buiten bereik
+
+pokecube.command.giftdisabled=Mysterie Cadeau is momenteel uitgeschakeld via de mod-instellingen
+pokecube.command.giftdenyused=Je hebt deze code al gebruikt.
+pokecube.command.gift=Gefeliciteerd!
+pokecube.command.giftinvalid=De code %1$s is ongeldig!
+pokecube.command.giftneedcode=Je moet een code invullen!
+
+pokecube.command.makedeny=Dit commando kan alleen door Commando Blokken gebruikt worden
+pokecube.command.makeneedname=Missende mob naam of nummer
+pokecube.command.makeinvalid=Ongeldige mob naam of nummer
+
+pokecube.command.settings.check=§a%1$s§f is momenteel ingesteld als: §6%2$s
+pokecube.command.settings.invalid=Ongeldige optie voor %1$s
+pokecube.command.settings.error=Fout bij het controleren van de instelling, rapporteer dit s.v.p. als een bug.

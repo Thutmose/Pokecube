@@ -22,15 +22,47 @@ public class Divide extends PostfixMathCommand
 		numberOfParameters = 2;
 	}
 	
-	@Override
-	public void run(Stack inStack)
-		throws ParseException 
+	public Complex div(Complex c1, Complex c2)
 	{
-		checkStack(inStack); // check the stack
-		Object param2 = inStack.pop();
-		Object param1 = inStack.pop();
-		inStack.push(div(param1, param2)); //push the result on the inStack
-		return;
+		return c1.div(c2);
+	}
+	
+	public Complex div(Complex c, Number d)
+	{
+		return new Complex(c.re()/d.doubleValue(), c.im()/d.doubleValue());
+	}
+
+
+	public Vector div(Complex c, Vector v)
+	{
+		Vector result = new Vector();
+
+		for (int i=0; i<v.size(); i++)
+			result.addElement(div(c, (Number)v.elementAt(i)));
+		
+		return result;
+	}
+	
+	public Complex div(Number d, Complex c)
+	{
+		Complex c1 = new Complex(d.doubleValue(), 0);
+
+		return c1.div(c);
+	}
+	
+	public Double div(Number d1, Number d2)
+	{
+		return new Double(d1.doubleValue() / d2.doubleValue());
+	}
+
+	public Vector div(Number d, Vector v)
+	{
+		Vector result = new Vector();
+
+		for (int i=0; i<v.size(); i++)
+			result.addElement(div(d, (Number)v.elementAt(i)));
+		
+		return result;
 	}
 	
 	public Object div(Object param1, Object param2)
@@ -64,28 +96,15 @@ public class Divide extends PostfixMathCommand
 
 		throw new ParseException("Invalid parameter type");
 	}
-
-
-	public Double div(Number d1, Number d2)
-	{
-		return new Double(d1.doubleValue() / d2.doubleValue());
-	}
 	
-	public Complex div(Complex c1, Complex c2)
+	public Vector div(Vector v, Complex c)
 	{
-		return c1.div(c2);
-	}
-	
-	public Complex div(Number d, Complex c)
-	{
-		Complex c1 = new Complex(d.doubleValue(), 0);
+		Vector result = new Vector();
 
-		return c1.div(c);
-	}
-
-	public Complex div(Complex c, Number d)
-	{
-		return new Complex(c.re()/d.doubleValue(), c.im()/d.doubleValue());
+		for (int i=0; i<v.size(); i++)
+			result.addElement(div((Number)v.elementAt(i), c));
+		
+		return result;
 	}
 	
 	public Vector div(Vector v, Number d)
@@ -98,33 +117,14 @@ public class Divide extends PostfixMathCommand
 		return result;
 	}
 	
-	public Vector div(Number d, Vector v)
+	@Override
+	public void run(Stack inStack)
+		throws ParseException 
 	{
-		Vector result = new Vector();
-
-		for (int i=0; i<v.size(); i++)
-			result.addElement(div(d, (Number)v.elementAt(i)));
-		
-		return result;
-	}
-	
-	public Vector div(Vector v, Complex c)
-	{
-		Vector result = new Vector();
-
-		for (int i=0; i<v.size(); i++)
-			result.addElement(div((Number)v.elementAt(i), c));
-		
-		return result;
-	}
-	
-	public Vector div(Complex c, Vector v)
-	{
-		Vector result = new Vector();
-
-		for (int i=0; i<v.size(); i++)
-			result.addElement(div(c, (Number)v.elementAt(i)));
-		
-		return result;
+		checkStack(inStack); // check the stack
+		Object param2 = inStack.pop();
+		Object param1 = inStack.pop();
+		inStack.push(div(param1, param2)); //push the result on the inStack
+		return;
 	}	
 }

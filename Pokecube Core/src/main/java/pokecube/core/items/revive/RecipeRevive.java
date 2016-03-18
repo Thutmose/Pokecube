@@ -15,6 +15,27 @@ import pokecube.core.utils.Tools;
 public class RecipeRevive implements IRecipe {
 	private ItemStack healed;
 	@Override
+	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_) {
+		return healed;
+	}
+
+	@Override
+	public ItemStack getRecipeOutput() {
+		return healed;
+	}
+
+	@Override
+	public int getRecipeSize() {
+		return 10;
+	}
+
+	@Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+		ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
+		return ret;
+	}
+
+	@Override
 	public boolean matches(InventoryCrafting craftMatrix, World world) {
 		healed = null;
 		
@@ -68,27 +89,6 @@ public class RecipeRevive implements IRecipe {
     		return healed !=null;
 		}
 		return healed!=null;
-	}
-
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_) {
-		return healed;
-	}
-
-	@Override
-	public int getRecipeSize() {
-		return 10;
-	}
-
-	@Override
-	public ItemStack getRecipeOutput() {
-		return healed;
-	}
-
-	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-		ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
-		return ret;
 	}
 
 }

@@ -20,9 +20,7 @@ import thut.api.maths.Vector3;
 
 public class ParticleHandler
 {
-    Map<Vector3, IParticle>        particles = Maps.newHashMap();
     private static ParticleHandler instance;
-
     public static ParticleHandler Instance()
     {
         if (instance == null)
@@ -33,6 +31,8 @@ public class ParticleHandler
         return instance;
     }
 
+    Map<Vector3, IParticle>        particles = Maps.newHashMap();
+
     public void addParticle(Vector3 location, IParticle particle)
     {
         particles.put(location, particle);
@@ -41,16 +41,6 @@ public class ParticleHandler
     public void clear()
     {
         particles.clear();
-    }
-
-    @SubscribeEvent
-    public void WorldUnloadEvent(Unload evt)
-    {
-        if (evt.world.provider.getDimensionId() == 0 && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            clear();
-        }
-
     }
 
     @SideOnly(Side.CLIENT)
@@ -117,5 +107,15 @@ public class ParticleHandler
         {
             e.printStackTrace();
         }
+    }
+
+    @SubscribeEvent
+    public void WorldUnloadEvent(Unload evt)
+    {
+        if (evt.world.provider.getDimensionId() == 0 && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            clear();
+        }
+
     }
 }

@@ -40,19 +40,6 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
     			EntityNBTPacket.class, TileNBTPacket.class, TileNBTUpdatePacket.class);
     }
 
-    // In line encoding of the packet, including discriminator setting
-    @Override
-    protected void encode(ChannelHandlerContext ctx, AbstractPacket msg, List<Object> out) throws Exception {
-        ByteBuf buffer = Unpooled.buffer();
-        Class<? extends AbstractPacket> clazz = msg.getClass();
-        
-        byte discriminator = (byte) this.packets.indexOf(clazz);
-        buffer.writeByte(discriminator);
-        msg.encodeInto(ctx, buffer);
-        FMLProxyPacket proxyPacket = new FMLProxyPacket(new PacketBuffer(buffer.copy()), ctx.channel().attr(NetworkRegistry.FML_CHANNEL).get());
-        out.add(proxyPacket);
-    }
-
     // In line decoding and handling of the packet
     @Override
     protected void decode(ChannelHandlerContext ctx, FMLProxyPacket msg, List<Object> out) throws Exception {
@@ -78,9 +65,17 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
         out.add(pkt);
     }
 
-    // Method to call from FMLInitializationEvent
-    public void initialize() {
-        this.channels = NetworkRegistry.INSTANCE.newChannel("NBTEDIT", this);
+    // In line encoding of the packet, including discriminator setting
+    @Override
+    protected void encode(ChannelHandlerContext ctx, AbstractPacket msg, List<Object> out) throws Exception {
+        ByteBuf buffer = Unpooled.buffer();
+        Class<? extends AbstractPacket> clazz = msg.getClass();
+        
+        byte discriminator = (byte) this.packets.indexOf(clazz);
+        buffer.writeByte(discriminator);
+        msg.encodeInto(ctx, buffer);
+        FMLProxyPacket proxyPacket = new FMLProxyPacket(new PacketBuffer(buffer.copy()), ctx.channel().attr(NetworkRegistry.FML_CHANNEL).get());
+        out.add(proxyPacket);
     }
 
     @SideOnly(Side.CLIENT)
@@ -88,16 +83,9 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
         return Minecraft.getMinecraft().thePlayer;
     }
 
-    /**
-     * Send this message to everyone.
-     * <p/>
-     * Adapted from CPW's code in cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
-     *
-     * @param message The message to send
-     */
-    public void sendToAll(AbstractPacket message) {
-        this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-        this.channels.get(Side.SERVER).writeAndFlush(message);
+    // Method to call from FMLInitializationEvent
+    public void initialize() {
+        this.channels = NetworkRegistry.INSTANCE.newChannel("NBTEDIT", this);
     }
 
     /**
@@ -111,6 +99,18 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
     public void sendTo(AbstractPacket message, EntityPlayerMP player) {
         this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
         this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+        this.channels.get(Side.SERVER).writeAndFlush(message);
+    }
+
+    /**
+     * Send this message to everyone.
+     * <p/>
+     * Adapted from CPW's code in cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
+     *
+     * @param message The message to send
+     */
+    public void sendToAll(AbstractPacket message) {
+        this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
         this.channels.get(Side.SERVER).writeAndFlush(message);
     }
 

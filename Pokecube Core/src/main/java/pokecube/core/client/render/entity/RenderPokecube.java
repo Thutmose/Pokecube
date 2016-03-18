@@ -18,40 +18,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.PokecubeItems;
-import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
 @SuppressWarnings("deprecation")
 public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
 {
-    public RenderPokecube(RenderManager renderManager)
-    {
-        super(renderManager, new ModelPokecube(), 0);
-    }
-
-    public static HashMap<Integer, Render<Entity>> pokecubeRenderers = new HashMap<Integer, Render<Entity>>();
-
-    @Override
-    public void doRender(T entity, double x, double y, double z, float f, float f1)
-    {
-        EntityPokecube pokecube = (EntityPokecube) entity;
-
-        int num = PokecubeItems.getCubeId(pokecube.getEntityItem());
-        if (pokecubeRenderers.containsKey(num))
-        {
-            pokecubeRenderers.get(num).doRender(entity, x, y, z, f, f1);
-            return;
-        }
-        super.doRender(entity, x, y, z, f, f1);
-    }
-
-    @Override
-    protected ResourceLocation getEntityTexture(T entity)
-    {
-        return new ResourceLocation(PokecubeCore.ID, "textures/items/pokecubefront.png");
-    }
-
     public static class ModelPokecube extends ModelBase
     {
 
@@ -99,6 +72,33 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
             modelRenderer.rotateAngleY = y;
             modelRenderer.rotateAngleZ = z;
         }
+    }
+
+    public static HashMap<Integer, Render<Entity>> pokecubeRenderers = new HashMap<Integer, Render<Entity>>();
+
+    public RenderPokecube(RenderManager renderManager)
+    {
+        super(renderManager, new ModelPokecube(), 0);
+    }
+
+    @Override
+    public void doRender(T entity, double x, double y, double z, float f, float f1)
+    {
+        EntityPokecube pokecube = (EntityPokecube) entity;
+
+        int num = PokecubeItems.getCubeId(pokecube.getEntityItem());
+        if (pokecubeRenderers.containsKey(num))
+        {
+            pokecubeRenderers.get(num).doRender(entity, x, y, z, f, f1);
+            return;
+        }
+        super.doRender(entity, x, y, z, f, f1);
+    }
+
+    @Override
+    protected ResourceLocation getEntityTexture(T entity)
+    {
+        return new ResourceLocation(PokecubeMod.ID, "textures/items/pokecubefront.png");
     }
 
 }

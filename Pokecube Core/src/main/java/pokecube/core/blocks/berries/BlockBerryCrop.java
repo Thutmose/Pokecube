@@ -27,13 +27,10 @@ import pokecube.core.world.gen.WorldGenBerries;
  */
 public class BlockBerryCrop extends BlockCrops {
 
-	int berryIndex = 0;
-	String berryName = "";
-	
 	static ArrayList<Integer> trees = new ArrayList<Integer>();
 	public static ArrayList<BlockBerryLeaves> leaves = new ArrayList<BlockBerryLeaves>();
-	public static ArrayList<BlockBerryLog> logs = new ArrayList<BlockBerryLog>();
 	
+	public static ArrayList<BlockBerryLog> logs = new ArrayList<BlockBerryLog>();
 	static
 	{
 		trees.add(3);
@@ -43,6 +40,9 @@ public class BlockBerryCrop extends BlockCrops {
 		trees.add(18);
 		trees.add(60);
 	}
+	int berryIndex = 0;
+	
+	String berryName = "";
 	
 	public BlockBerryCrop() {
 		super();
@@ -52,29 +52,55 @@ public class BlockBerryCrop extends BlockCrops {
 		this.setBlockBounds(0.5F - var3, -0.05F, 0.5F - var3, 0.5F + var3, 1F, 0.5F + var3);
 	}
 
-	public void setBerry(String berryName) {
-		this.berryName = berryName;
-	}
-	
-	public String getBerryName(){
-		return berryName;
-	}
-
-	public void setBerryIndex(int berryId) {
-		this.berryIndex = berryId;
-	}
-
 	/**
 	 * Gets passed in the blockID of the block below and supposed to return true if its allowed to grow on the type of blockID passed in. Args: blockID
 	 */
 	protected boolean canThisPlantGrowOnThisBlockID(Block par1) {
 		return par1 == Blocks.farmland;
 	}
+	
+	@Override
+    /**
+     * Get the damage value that this Block should drop
+     */
+    public int damageDropped(IBlockState state)
+    {
+        return berryIndex;
+    }
 
+	public String getBerryName(){
+		return berryName;
+	}
+
+	@Override
+    @SideOnly(Side.CLIENT)
+    public Item getItem(World worldIn, BlockPos pos)
+    {
+        return BerryManager.getBerryItem(berryName).getItem();
+    }
+
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune)
+    {
+        return BerryManager.getBerryItem(berryName).getItem();
+    }
+    
+    @Override
+    /**
+     * Called when a user uses the creative pick block button on this block
+     *
+     * @param target The full target the player is looking at
+     * @return A ItemStack to add to the player's inventory, Null if nothing should be added.
+     */
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
+    {
+    	return BerryManager.getBerryItem(berryName);
+    }
+    
     @Override
     public void grow(World worldIn, BlockPos pos, IBlockState state)
     {
-        int i = ((Integer)state.getValue(AGE)).intValue() + MathHelper.getRandomIntegerInRange(worldIn.rand, 2, 5);
+        int i = state.getValue(AGE).intValue() + MathHelper.getRandomIntegerInRange(worldIn.rand, 2, 5);
 
         if (i > 7)
         {
@@ -118,78 +144,6 @@ public class BlockBerryCrop extends BlockCrops {
 
         worldIn.setBlockState(pos, state.withProperty(AGE, Integer.valueOf(i)), 2);
     }
-    
-    @Override
-    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
-    {
-        super.updateTick(worldIn, pos, state, rand);
-
-        if (worldIn.getLightFromNeighbors(pos.up()) >= 9)
-        {
-            int i = ((Integer)state.getValue(AGE)).intValue();
-
-            if (i < 7)
-            {
-                float f = getGrowthChance(this, worldIn, pos);
-
-                if (rand.nextInt((int)(25.0F / f) + 1) == 0)
-                {
-                    grow(worldIn, pos, state);
-                }
-            }
-        }
-    }
-    
-    @Override
-    /**
-     * Called when a user uses the creative pick block button on this block
-     *
-     * @param target The full target the player is looking at
-     * @return A ItemStack to add to the player's inventory, Null if nothing should be added.
-     */
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
-    {
-    	return BerryManager.getBerryItem(berryName);
-    }
-
-    @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune)
-    {
-        return BerryManager.getBerryItem(berryName).getItem();
-    }
-    
-    @Override
-    @SideOnly(Side.CLIENT)
-    public Item getItem(World worldIn, BlockPos pos)
-    {
-        return BerryManager.getBerryItem(berryName).getItem();
-    }
-
-    @Override
-    /**
-     * Get the damage value that this Block should drop
-     */
-    public int damageDropped(IBlockState state)
-    {
-        return berryIndex;
-    }
-
-    
-	/**
-	 * Returns the quantity of items to drop on block destruction.
-	 */
-	@Override
-	public int quantityDropped(Random par1Random) {
-		return 1;
-	}
-
-    
-    private boolean isPalm()
-    {
-    	boolean ret = false;
-    	ret = ret || berryIndex == 18;
-    	return ret;
-    }
 
     /**
      * Attempts to grow a sapling into a tree
@@ -209,6 +163,52 @@ public class BlockBerryCrop extends BlockCrops {
         else
         {
         	object.generateTree(par1World, par1World.rand, pos, wood, leaves);
+        }
+    }
+    
+    private boolean isPalm()
+    {
+    	boolean ret = false;
+    	ret = ret || berryIndex == 18;
+    	return ret;
+    }
+
+    /**
+	 * Returns the quantity of items to drop on block destruction.
+	 */
+	@Override
+	public int quantityDropped(Random par1Random) {
+		return 1;
+	}
+
+    
+	public void setBerry(String berryName) {
+		this.berryName = berryName;
+	}
+
+    
+    public void setBerryIndex(int berryId) {
+		this.berryIndex = berryId;
+	}
+
+    @Override
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
+    {
+        super.updateTick(worldIn, pos, state, rand);
+
+        if (worldIn.getLightFromNeighbors(pos.up()) >= 9)
+        {
+            int i = state.getValue(AGE).intValue();
+
+            if (i < 7)
+            {
+                float f = getGrowthChance(this, worldIn, pos);
+
+                if (rand.nextInt((int)(25.0F / f) + 1) == 0)
+                {
+                    grow(worldIn, pos, state);
+                }
+            }
         }
     }
     

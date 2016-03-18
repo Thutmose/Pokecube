@@ -29,15 +29,6 @@ public class Logarithm extends PostfixMathCommand
 		numberOfParameters = 1;
 	}
 
-	@Override
-	public void run(Stack inStack) throws ParseException {
-		checkStack(inStack);// check the stack
-		Object param = inStack.pop();
-		inStack.push(log(param));//push the result on the inStack
-		return;
-	}
-	
-
 	public Object log(Object param) throws ParseException 
 	{
 		if (param instanceof Complex) {
@@ -55,6 +46,15 @@ public class Logarithm extends PostfixMathCommand
 			}
 		}
 		throw new ParseException("Invalid parameter type");
+	}
+	
+
+	@Override
+	public void run(Stack inStack) throws ParseException {
+		checkStack(inStack);// check the stack
+		Object param = inStack.pop();
+		inStack.push(log(param));//push the result on the inStack
+		return;
 	}
 	
 

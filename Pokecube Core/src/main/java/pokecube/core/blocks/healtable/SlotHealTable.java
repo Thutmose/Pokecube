@@ -28,12 +28,6 @@ public class SlotHealTable extends Slot
         super(inventory, slotIndex, xDisplayPosition, yDisplayPosition);
     }
 
-    @Override
-    public boolean isItemValid(ItemStack itemstack)
-    {
-        return ContainerHealTable.isItemValid(itemstack);
-    }
-
     public void heal()
     {
         ItemStack stack = this.getStack();
@@ -60,6 +54,12 @@ public class SlotHealTable extends Slot
             stack.getTagCompound().getCompoundTag("Pokemob").setInteger("hungerTime", 0);
             PokecubeManager.setStatus(stack, IMoveConstants.STATUS_NON);
         }
+    }
+
+    @Override
+    public boolean isItemValid(ItemStack itemstack)
+    {
+        return ContainerHealTable.isItemValid(itemstack);
     }
 
     @Override

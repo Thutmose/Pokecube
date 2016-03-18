@@ -33,6 +33,7 @@ public class BlockFossilStone extends Block
      * @param fortune
      *            Breakers fortune level
      * @return A ArrayList containing all items this block drops */
+    @Override
     public ArrayList<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
     {
         ArrayList<ItemStack> ret = new ArrayList<ItemStack>();

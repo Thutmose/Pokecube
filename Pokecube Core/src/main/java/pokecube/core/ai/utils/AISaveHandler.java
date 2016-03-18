@@ -15,18 +15,39 @@ import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 
 public class AISaveHandler
 {
 
+	public static class PokemobAI
+	{
+		
+		
+		
+		
+		public void readEntityFromNBT(NBTTagCompound nbttagcompound)
+		{
+
+		}
+
+		public void writeEntityToNBT(NBTTagCompound nbttagcompound)
+		{
+
+		}
+
+	}
 	private static final String	POKEAI	= "pokecubeAI";
+
 	private static final String	DATA	= "data";
 
 	private static AISaveHandler instance;
-
-	ISaveHandler				saveHandler;
-	HashMap<UUID, PokemobAI>	aiMap	= new HashMap<UUID, PokemobAI>();
+	public static void clearInstance()
+	{
+		if (instance != null) instance.saveData();
+		instance = null;
+	}
 
 	public static AISaveHandler instance()
 	{
@@ -34,11 +55,9 @@ public class AISaveHandler
 		return instance;
 	}
 
-	public static void clearInstance()
-	{
-		if (instance != null) instance.saveData();
-		instance = null;
-	}
+	ISaveHandler				saveHandler;
+
+	HashMap<UUID, PokemobAI>	aiMap	= new HashMap<UUID, PokemobAI>();
 
 	private AISaveHandler()
 	{
@@ -46,43 +65,19 @@ public class AISaveHandler
 		loadData();
 	}
 
-	private void saveData()
+	public PokemobAI getAI(IPokemob entityAiPokemob)
 	{
-		if (saveHandler == null || FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) { return; }
-
-		try
+		if (!entityAiPokemob.getPokemonAIState(IMoveConstants.TAMED)) { return new PokemobAI(); }
+		EntityLiving entity = (EntityLiving) entityAiPokemob;
+		if (aiMap.containsKey(entity.getUniqueID()))
 		{
-			File file = saveHandler.getMapFileFromName(POKEAI);
-			if (file != null)
-			{
-				NBTTagCompound nbttagcompound = new NBTTagCompound();
-				writeToNBT(nbttagcompound);
-				NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-				nbttagcompound1.setTag(DATA, nbttagcompound);
-				FileOutputStream fileoutputstream = new FileOutputStream(file);
-				CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
-				fileoutputstream.close();
-			}
+			return aiMap.get(entity.getUniqueID());
 		}
-		catch (Exception exception)
+		else
 		{
-			exception.printStackTrace();
+			aiMap.put(entity.getUniqueID(), new PokemobAI());
+			return aiMap.get(entity.getUniqueID());
 		}
-	}
-
-	private void writeToNBT(NBTTagCompound nbttagcompound)
-	{
-		NBTTagList people = new NBTTagList();
-		for (UUID u : aiMap.keySet())
-		{
-			NBTTagCompound tag = new NBTTagCompound();
-			NBTTagCompound aiTag = new NBTTagCompound();
-			aiMap.get(u).writeEntityToNBT(aiTag);
-			tag.setTag("value", aiTag);
-			tag.setString("name", u.toString());
-			people.appendTag(tag);
-		}
-		nbttagcompound.setTag("entityMemories", people);
 	}
 
 	public void loadData()
@@ -136,21 +131,6 @@ public class AISaveHandler
 		}
 	}
 
-	public PokemobAI getAI(IPokemob entityAiPokemob)
-	{
-		if (!entityAiPokemob.getPokemonAIState(IPokemob.TAMED)) { return new PokemobAI(); }
-		EntityLiving entity = (EntityLiving) entityAiPokemob;
-		if (aiMap.containsKey(entity.getUniqueID()))
-		{
-			return aiMap.get(entity.getUniqueID());
-		}
-		else
-		{
-			aiMap.put(entity.getUniqueID(), new PokemobAI());
-			return aiMap.get(entity.getUniqueID());
-		}
-	}
-
 	public void removeAI(EntityLiving pokemob)
 	{
 		if (aiMap.containsKey(pokemob.getUniqueID()))
@@ -159,21 +139,42 @@ public class AISaveHandler
 		}
 	}
 
-	public static class PokemobAI
+	private void saveData()
 	{
-		
-		
-		
-		
-		public void writeEntityToNBT(NBTTagCompound nbttagcompound)
+		if (saveHandler == null || FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) { return; }
+
+		try
 		{
-
+			File file = saveHandler.getMapFileFromName(POKEAI);
+			if (file != null)
+			{
+				NBTTagCompound nbttagcompound = new NBTTagCompound();
+				writeToNBT(nbttagcompound);
+				NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+				nbttagcompound1.setTag(DATA, nbttagcompound);
+				FileOutputStream fileoutputstream = new FileOutputStream(file);
+				CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
+				fileoutputstream.close();
+			}
 		}
-
-		public void readEntityFromNBT(NBTTagCompound nbttagcompound)
+		catch (Exception exception)
 		{
-
+			exception.printStackTrace();
 		}
+	}
 
+	private void writeToNBT(NBTTagCompound nbttagcompound)
+	{
+		NBTTagList people = new NBTTagList();
+		for (UUID u : aiMap.keySet())
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			NBTTagCompound aiTag = new NBTTagCompound();
+			aiMap.get(u).writeEntityToNBT(aiTag);
+			tag.setTag("value", aiTag);
+			tag.setString("name", u.toString());
+			people.appendTag(tag);
+		}
+		nbttagcompound.setTag("entityMemories", people);
 	}
 }

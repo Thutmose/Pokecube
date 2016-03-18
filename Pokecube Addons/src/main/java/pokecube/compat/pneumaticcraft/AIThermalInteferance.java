@@ -6,29 +6,34 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Loader;
 import pokecube.core.database.abilities.AbilityManager;
-import pokecube.core.interfaces.IHungrymob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class AIThermalInteferance extends EntityAIBase
 {
     static boolean PCloaded     = false;
-    final IPokemob pokemob;
-    final Vector3  mobLoc       = Vector3.getNewVector();
-    final Entity   entity;
-    double         tempLastTick = 0;
-
     static
     {
         PCloaded = Loader.isModLoaded("PneumaticCraft");
     }
+    final IPokemob pokemob;
+    final Vector3  mobLoc       = Vector3.getNewVector();
+    final Entity   entity;
+
+    double         tempLastTick = 0;
 
     public AIThermalInteferance(IPokemob pokemob_)
     {
         pokemob = pokemob_;
         entity = (Entity) pokemob;
         tempLastTick = -12345;
+    }
+
+    // TODO write ELN thermal effects
+    private void doElnThermalInterference()
+    {
     }
 
     @Override
@@ -56,7 +61,7 @@ public class AIThermalInteferance extends EntityAIBase
             if (heating <= 0)
             {
                 pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
-                pokemob.setPokemonAIState(IPokemob.TIRED, false);
+                pokemob.setPokemonAIState(IMoveConstants.TIRED, false);
             }
             else
             {
@@ -74,7 +79,7 @@ public class AIThermalInteferance extends EntityAIBase
             {
                 entity.getEntityData().setDouble("heatOut", 150 - pokemob.getLevel());
                 pokemob.setPokemonAIState(IMoveConstants.SLEEPING, true);
-                pokemob.setPokemonAIState(IPokemob.TIRED, true);
+                pokemob.setPokemonAIState(IMoveConstants.TIRED, true);
             }
             // heating = 100;
             double temp = tempLastTick;
@@ -120,11 +125,6 @@ public class AIThermalInteferance extends EntityAIBase
                 doElnThermalInterference();
             }
         }
-    }
-
-    // TODO write ELN thermal effects
-    private void doElnThermalInterference()
-    {
     }
 
 }

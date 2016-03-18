@@ -32,6 +32,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Pre;
+import pokecube.core.events.SpawnEvent.SendOut;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
@@ -72,6 +74,20 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         this.isImmuneToFire = true;
     }
 
+    public EntityPokecube(World world, EntityLivingBase shootingEntity, Entity target, ItemStack entityItem)
+    {
+        this(world);
+        this.setEntityItemStack(entityItem);
+        if (shootingEntity != null) shooter = shootingEntity.getPersistentID();
+
+        Vector3 start = Vector3.getNewVector().set(shootingEntity, false);
+        start.moveEntity(this);
+        Vector3 dir = Vector3.getNewVector().set(target, false).subtract(start).normalize();
+        setVelocity(speed, dir);
+        this.shootingEntity = shootingEntity;
+        if (PokecubeManager.isFilled(entityItem)) tilt = -2;
+    }
+
     public EntityPokecube(World world, EntityLivingBase shootingEntity, ItemStack entityItem)
     {
         this(world);
@@ -88,158 +104,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         if (PokecubeManager.isFilled(entityItem)) tilt = -2;
     }
 
-    public EntityPokecube(World world, EntityLivingBase shootingEntity, Entity target, ItemStack entityItem)
-    {
-        this(world);
-        this.setEntityItemStack(entityItem);
-        if (shootingEntity != null) shooter = shootingEntity.getPersistentID();
-
-        Vector3 start = Vector3.getNewVector().set(shootingEntity, false);
-        start.moveEntity(this);
-        Vector3 dir = Vector3.getNewVector().set(target, false).subtract(start).normalize();
-        setVelocity(speed, dir);
-        this.shootingEntity = shootingEntity;
-        if (PokecubeManager.isFilled(entityItem)) tilt = -2;
-    }
-
-    public void setVelocity(double speed, Vector3 dir)
-    {
-        dir = dir.scalarMult(speed);
-        dir.setVelocities(this);
-    }
-
-    /** Returns the ItemStack corresponding to the Entity (Note: if no item
-     * exists, will log an error but still return an ItemStack containing
-     * Block.stone) */
-    public ItemStack getEntityItem()
-    {
-        ItemStack itemstack = this.getDataWatcher().getWatchableObjectItemStack(24);
-        return itemstack == null ? new ItemStack(Blocks.stone) : itemstack;
-    }
-
-    /** Sets the ItemStack for this entity */
-    public void setEntityItemStack(ItemStack p_92058_1_)
-    {
-        this.getDataWatcher().updateObject(24, p_92058_1_);
-        this.getDataWatcher().setObjectWatched(24);
-    }
-
-    @Override
-    protected void entityInit()
-    {
-        super.entityInit();
-        getDataWatcher().addObjectByDataType(24, 5);
-        getDataWatcher().addObject(25, Byte.valueOf((byte) 0));
-        getDataWatcher().addObject(29, -1);
-    }
-
-    public void setReleasing(boolean tag)
-    {
-        getDataWatcher().updateObject(25, tag ? Byte.valueOf((byte) 1) : Byte.valueOf((byte) 0));
-    }
-
-    public boolean isReleasing()
-    {
-        return getDataWatcher().getWatchableObjectByte(25) == 1;
-    }
-
-    public void setReleased(Entity entity)
-    {
-        getDataWatcher().updateObject(29, entity.getEntityId());
-    }
-
-    public Entity getReleased()
-    {
-        int id = getDataWatcher().getWatchableObjectInt(29);
-        Entity ret = worldObj.getEntityByID(id);
-        return ret;
-    }
-
-    public Entity copy()
-    {
-        EntityPokecube copy = new EntityPokecube(worldObj, shootingEntity, getEntityItem());
-        copy.posX = this.posX;
-        copy.posY = this.posY;
-        copy.posZ = this.posZ;
-        copy.motionX = this.motionX;
-        copy.motionY = this.motionY;
-        copy.motionZ = this.motionZ;
-        copy.setEntityItemStack(getEntityItem());
-        copy.tilt = this.tilt;
-        copy.time = this.time;
-        return copy;
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
-    {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setInteger("tilt", tilt);
-        nbttagcompound.setInteger("time", time);
-        if (shooter != null) nbttagcompound.setString("shooter", shooter.toString());
-        if (this.getEntityItem() != null)
-        {
-            nbttagcompound.setTag("Item", this.getEntityItem().writeToNBT(new NBTTagCompound()));
-        }
-        if (tilePos != null)
-        {
-            nbttagcompound.setInteger("xTile", this.tilePos.getX());
-            nbttagcompound.setInteger("yTile", this.tilePos.getY());
-            nbttagcompound.setInteger("zTile", this.tilePos.getZ());
-        }
-        nbttagcompound.setShort("life", (short) this.ticksInGround);
-        nbttagcompound.setByte("inTile", (byte) Block.getIdFromBlock(this.tile));
-        nbttagcompound.setByte("inData", (byte) this.inData);
-        nbttagcompound.setByte("shake", (byte) this.arrowShake);
-        nbttagcompound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
-    }
-
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
-    {
-        super.readEntityFromNBT(nbttagcompound);
-        tilt = nbttagcompound.getInteger("tilt");
-        time = nbttagcompound.getInteger("time");
-        NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Item");
-        this.setEntityItemStack(ItemStack.loadItemStackFromNBT(nbttagcompound1));
-
-        ItemStack item = getDataWatcher().getWatchableObjectItemStack(24);
-
-        if (nbttagcompound.hasKey("shooter"))
-        {
-            shooter = UUID.fromString(nbttagcompound.getString("shooter"));
-        }
-
-        if (item == null || item.stackSize <= 0)
-        {
-            this.setDead();
-        }
-        this.tilePos = new BlockPos(nbttagcompound.getInteger("xTile"), nbttagcompound.getInteger("yTile"),
-                nbttagcompound.getInteger("zTile"));
-        this.ticksInGround = nbttagcompound.getShort("life");
-        this.tile = Block.getBlockById(nbttagcompound.getByte("inTile") & 255);
-        this.inData = nbttagcompound.getByte("inData") & 255;
-        this.arrowShake = nbttagcompound.getByte("shake") & 255;
-        this.inGround = nbttagcompound.getByte("inGround") == 1;
-    }
-
-    @Override
-    public void onCollideWithPlayer(EntityPlayer entityplayer)
-    {
-        if (entityplayer.getName() == PokecubeManager.getOwner(getEntityItem())
-                || entityplayer.getUniqueID().toString() == PokecubeManager.getOwner(getEntityItem()))
-        {
-            if (shootingEntity == entityplayer
-                    && entityplayer.inventory.addItemStackToInventory(new ItemStack(Items.arrow, 1)))
-            {
-                worldObj.playSoundAtEntity(this, "random.pop", 0.2F,
-                        ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                entityplayer.onItemPickup(this, 1);
-                setDead();
-            }
-        }
-    }
-
     /** Applies a velocity to each of the entities pushing them away from each
      * other. Args: entity */
     @Override
@@ -254,7 +118,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 && ((IPokemob) e).getPokemonOwner() == shootingEntity) { return; }
 
         if (e instanceof EntityLivingBase && e instanceof IPokemob && ((EntityLivingBase) e).getHealth() > 0
-                && tilt == -1 && !((IPokemob) e).getPokemonAIState(IPokemob.TAMED))
+                && tilt == -1 && !((IPokemob) e).getPokemonAIState(IMoveConstants.TAMED))
         {
             IPokemob hitten = (IPokemob) e;
             if (hitten.getPokemonOwner() == shootingEntity) { return; }
@@ -326,7 +190,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                     else
                     {
                         ((EntityCreature) entity1).setAttackTarget(entityHit);
-                        if (entityHit != null) entity1.setPokemonAIState(IPokemob.SITTING, false);
+                        if (entityHit != null) entity1.setPokemonAIState(IMoveConstants.SITTING, false);
 
                         if (entityHit instanceof EntityCreature)
                         {
@@ -334,7 +198,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                         }
                         if (entityHit instanceof IPokemob)
                         {
-                            ((IPokemob) entityHit).setPokemonAIState(IPokemob.ANGRY, true);
+                            ((IPokemob) entityHit).setPokemonAIState(IMoveConstants.ANGRY, true);
                         }
                     }
                 }
@@ -346,55 +210,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         }
     }
 
-    public IPokemob sendOut()
-    {
-        if (worldObj.isRemote || isReleasing()) { return null; }
-        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-
-        if (entity1 != null)
-        {
-            Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
-            Vector3 dv = v1.set(motionX, motionY, motionZ);
-            v = Vector3.getNextSurfacePoint(worldObj, v, dv, Math.max(2, dv.mag()));
-            if (v == null) v = v0.set(this);
-            v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
-            Block b = v.getBlock(worldObj);
-            if (b.getMaterial().isSolid()) v.y = Math.ceil(v.y);
-            v.moveEntity(((Entity) entity1));
-            worldObj.spawnEntityInWorld((Entity) entity1);
-            ((IMultibox) entity1).setBoxes();
-            ((IMultibox) entity1).setOffsets();
-
-            entity1.setPokemonAIState(IPokemob.ANGRY, false);
-            entity1.setPokemonAIState(IPokemob.TAMED, true);
-            entity1.setPokemonAIState(IPokemob.EXITINGCUBE, true);
-
-            Entity owner = entity1.getPokemonOwner();
-            if (owner instanceof EntityPlayer)
-            {
-                String mess = StatCollector.translateToLocalFormatted("pokemob.action.sendout",
-                        entity1.getPokemonDisplayName());
-                entity1.displayMessageToOwner(mess);
-            }
-
-            if (((EntityLiving) entity1).getHealth() <= 0)
-            {
-                // notify the mob is dead
-                this.worldObj.setEntityState((Entity) entity1, (byte) 3);
-            }
-            setReleased((Entity) entity1);
-            motionX = motionY = motionZ = 0;
-            time = 10;
-            setReleasing(true);
-        }
-        else
-        {
-            this.entityDropItem(getEntityItem(), 0.5f);
-            this.setDead();
-        }
-        return entity1;
-    }
-
     /** Called when the entity is attacked. */
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage)
@@ -402,80 +217,99 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         return false;
     }
 
-    @Override
-    public void writeSpawnData(ByteBuf buffer)
+    public Entity copy()
     {
-        buffer.writeDouble(motionX);
-        buffer.writeDouble(motionY);
-        buffer.writeDouble(motionZ);
+        EntityPokecube copy = new EntityPokecube(worldObj, shootingEntity, getEntityItem());
+        copy.posX = this.posX;
+        copy.posY = this.posY;
+        copy.posZ = this.posZ;
+        copy.motionX = this.motionX;
+        copy.motionY = this.motionY;
+        copy.motionZ = this.motionZ;
+        copy.setEntityItemStack(getEntityItem());
+        copy.tilt = this.tilt;
+        copy.time = this.time;
+        return copy;
     }
 
     @Override
-    public void readSpawnData(ByteBuf buffer)
+    protected void doBlockCollisions()
     {
-        motionX = buffer.readDouble();
-        motionY = buffer.readDouble();
-        motionZ = buffer.readDouble();
+        super.doBlockCollisions();
     }
 
     @Override
-    public void setThrowableHeading(double p_70186_1_, double p_70186_3_, double p_70186_5_, float p_70186_7_,
-            float p_70186_8_)
+    protected void entityInit()
     {
-        float f2 = MathHelper.sqrt_double(p_70186_1_ * p_70186_1_ + p_70186_3_ * p_70186_3_ + p_70186_5_ * p_70186_5_);
-        p_70186_1_ /= (double) f2;
-        p_70186_3_ /= (double) f2;
-        p_70186_5_ /= (double) f2;
-        p_70186_1_ += this.rand.nextGaussian() * (double) (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D
-                * (double) p_70186_8_;
-        p_70186_3_ += this.rand.nextGaussian() * (double) (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D
-                * (double) p_70186_8_;
-        p_70186_5_ += this.rand.nextGaussian() * (double) (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D
-                * (double) p_70186_8_;
-        p_70186_1_ *= (double) p_70186_7_;
-        p_70186_3_ *= (double) p_70186_7_;
-        p_70186_5_ *= (double) p_70186_7_;
-        this.motionX = p_70186_1_;
-        this.motionY = p_70186_3_;
-        this.motionZ = p_70186_5_;
-        float f3 = MathHelper.sqrt_double(p_70186_1_ * p_70186_1_ + p_70186_5_ * p_70186_5_);
-        this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(p_70186_1_, p_70186_5_) * 180.0D / Math.PI);
-        this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(p_70186_3_, (double) f3) * 180.0D / Math.PI);
-        this.ticksInGround = 0;
+        super.entityInit();
+        getDataWatcher().addObjectByDataType(24, 5);
+        getDataWatcher().addObject(25, Byte.valueOf((byte) 0));
+        getDataWatcher().addObject(29, -1);
     }
 
-    /** Sets the position and rotation. Only difference from the other one is no
-     * bounding on the rotation. Args: posX, posY, posZ, yaw, pitch */
-    @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double p_70056_1_, double p_70056_3_, double p_70056_5_, float p_70056_7_,
-            float p_70056_8_, int p_70056_9_)
+    /** Returns the ItemStack corresponding to the Entity (Note: if no item
+     * exists, will log an error but still return an ItemStack containing
+     * Block.stone) */
+    public ItemStack getEntityItem()
     {
-        this.setPosition(p_70056_1_, p_70056_3_, p_70056_5_);
-        this.setRotation(p_70056_7_, p_70056_8_);
+        ItemStack itemstack = this.getDataWatcher().getWatchableObjectItemStack(24);
+        return itemstack == null ? new ItemStack(Blocks.stone) : itemstack;
     }
 
-    /** Sets the velocity to the args. Args: x, y, z */
-    @SideOnly(Side.CLIENT)
-    public void setVelocity(double p_70016_1_, double p_70016_3_, double p_70016_5_)
+    public Entity getReleased()
     {
-        this.motionX = p_70016_1_;
-        this.motionY = p_70016_3_;
-        this.motionZ = p_70016_5_;
+        int id = getDataWatcher().getWatchableObjectInt(29);
+        Entity ret = worldObj.getEntityByID(id);
+        return ret;
+    }
 
-        if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F)
+    @Override
+    public boolean interact(EntityPlayer player)
+    {
+
+        if (!player.worldObj.isRemote)
         {
-            float f = MathHelper.sqrt_double(p_70016_1_ * p_70016_1_ + p_70016_5_ * p_70016_5_);
-            this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(p_70016_1_, p_70016_5_) * 180.0D / Math.PI);
-            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(p_70016_3_, (double) f) * 180.0D
-                    / Math.PI);
-            this.prevRotationPitch = this.rotationPitch;
-            this.prevRotationYaw = this.rotationYaw;
-            this.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
-            this.ticksInGround = 0;
+            IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+            if ((pokemob != null && pokemob.getPokemonOwner() == player && !isReleasing()) || pokemob == null)
+            {
+                this.setReleasing(true);
+                if (!player.inventory.addItemStackToInventory(getEntityItem()))
+                    this.entityDropItem(getEntityItem(), 0.5f);
+                this.setDead();
+            }
+            else if (!isReleasing() && pokemob != null)
+            {
+                sendOut();
+            }
+        }
+
+        return super.interact(player);
+    }
+
+    public boolean isReleasing()
+    {
+        return getDataWatcher().getWatchableObjectByte(25) == 1;
+    }
+
+    @Override
+    public void onCollideWithPlayer(EntityPlayer entityplayer)
+    {
+        if (entityplayer.getName() == PokecubeManager.getOwner(getEntityItem())
+                || entityplayer.getUniqueID().toString() == PokecubeManager.getOwner(getEntityItem()))
+        {
+            if (shootingEntity == entityplayer
+                    && entityplayer.inventory.addItemStackToInventory(new ItemStack(Items.arrow, 1)))
+            {
+                worldObj.playSoundAtEntity(this, "random.pop", 0.2F,
+                        ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                entityplayer.onItemPickup(this, 1);
+                setDead();
+            }
         }
     }
 
     /** Called to update the entity's position/logic. */
+    @Override
     public void onUpdate()
     {
 
@@ -509,7 +343,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             }
 
             HappinessType.applyHappiness(mob, HappinessType.TRADE);
-            if (shootingEntity != null) mob.setPokemonOwner(((EntityPlayer) shootingEntity));
+            if (shootingEntity != null) mob.setPokemonOwner((shootingEntity));
             ItemStack mobStack = PokecubeManager.pokemobToItem(mob);
             this.setEntityItemStack(mobStack);
 
@@ -563,9 +397,9 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                             entity1.getPokemonDisplayName()));
                 }
 
-                entity1.setPokemonAIState(IPokemob.ANGRY, true);
-                entity1.setPokemonAIState(IPokemob.SITTING, false);
-                entity1.setPokemonAIState(IPokemob.TAMED, false);
+                entity1.setPokemonAIState(IMoveConstants.ANGRY, true);
+                entity1.setPokemonAIState(IMoveConstants.SITTING, false);
+                entity1.setPokemonAIState(IMoveConstants.TAMED, false);
                 entity1.setPokemonOwnerByName("");
 
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
@@ -585,8 +419,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D
                     / Math.PI);
-            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, (double) f) * 180.0D
-                    / Math.PI);
+            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / Math.PI);
         }
 
         BlockPos pos = tilePos == null ? getPosition() : tilePos;
@@ -628,7 +461,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 this.inGround = false;
                 this.ticksInGround = 0;
             }
-            if (tilt < 0)
+            if (tilt < 0 && !(targetEntity == null && targetLocation.isEmpty()))
             {
                 if (PokecubeManager.isFilled(getEntityItem()))
                 {
@@ -670,30 +503,202 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     }
 
     @Override
-    public boolean interact(EntityPlayer player)
+    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
+        super.readEntityFromNBT(nbttagcompound);
+        tilt = nbttagcompound.getInteger("tilt");
+        time = nbttagcompound.getInteger("time");
+        NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Item");
+        this.setEntityItemStack(ItemStack.loadItemStackFromNBT(nbttagcompound1));
 
-        if (!player.worldObj.isRemote)
+        ItemStack item = getDataWatcher().getWatchableObjectItemStack(24);
+
+        if (nbttagcompound.hasKey("shooter"))
         {
-            IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-            if ((pokemob != null && pokemob.getPokemonOwner() == player && !isReleasing()) || pokemob == null)
-            {
-                this.setReleasing(true);
-                if (!player.inventory.addItemStackToInventory(getEntityItem()))
-                    this.entityDropItem(getEntityItem(), 0.5f);
-                this.setDead();
-            }
-            else if (!isReleasing() && pokemob != null)
-            {
-                sendOut();
-            }
+            shooter = UUID.fromString(nbttagcompound.getString("shooter"));
         }
 
-        return super.interact(player);
+        if (item == null || item.stackSize <= 0)
+        {
+            this.setDead();
+        }
+        this.tilePos = new BlockPos(nbttagcompound.getInteger("xTile"), nbttagcompound.getInteger("yTile"),
+                nbttagcompound.getInteger("zTile"));
+        this.ticksInGround = nbttagcompound.getShort("life");
+        this.tile = Block.getBlockById(nbttagcompound.getByte("inTile") & 255);
+        this.inData = nbttagcompound.getByte("inData") & 255;
+        this.arrowShake = nbttagcompound.getByte("shake") & 255;
+        this.inGround = nbttagcompound.getByte("inGround") == 1;
     }
 
-    protected void doBlockCollisions()
+    @Override
+    public void readSpawnData(ByteBuf buffer)
     {
-        super.doBlockCollisions();
+        motionX = buffer.readDouble();
+        motionY = buffer.readDouble();
+        motionZ = buffer.readDouble();
+    }
+
+    public IPokemob sendOut()
+    {
+        if (worldObj.isRemote || isReleasing()) { return null; }
+        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+
+        if (entity1 != null)
+        {
+            Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
+            Vector3 dv = v1.set(motionX, motionY, motionZ);
+            v = Vector3.getNextSurfacePoint(worldObj, v, dv, Math.max(2, dv.mag()));
+            if (v == null) v = v0.set(this);
+            v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
+            Block b = v.getBlock(worldObj);
+            if (b.getMaterial().isSolid()) v.y = Math.ceil(v.y);
+            v.moveEntity(((Entity) entity1));
+            worldObj.spawnEntityInWorld((Entity) entity1);
+            ((IMultibox) entity1).setBoxes();
+            ((IMultibox) entity1).setOffsets();
+
+            entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
+            entity1.setPokemonAIState(IMoveConstants.TAMED, true);
+            entity1.setPokemonAIState(IMoveConstants.EXITINGCUBE, true);
+
+            Entity owner = entity1.getPokemonOwner();
+            if (owner instanceof EntityPlayer)
+            {
+                String mess = StatCollector.translateToLocalFormatted("pokemob.action.sendout",
+                        entity1.getPokemonDisplayName());
+                entity1.displayMessageToOwner(mess);
+            }
+
+            if (((EntityLiving) entity1).getHealth() <= 0)
+            {
+                // notify the mob is dead
+                this.worldObj.setEntityState((Entity) entity1, (byte) 3);
+            }
+            setReleased((Entity) entity1);
+            motionX = motionY = motionZ = 0;
+            time = 10;
+            setReleasing(true);
+            SendOut evt = new SendOut(entity1.getPokedexEntry(), v, worldObj, entity1);
+            MinecraftForge.EVENT_BUS.post(evt);
+        }
+        else
+        {
+            this.entityDropItem(getEntityItem(), 0.5f);
+            this.setDead();
+        }
+        return entity1;
+    }
+
+    /** Sets the ItemStack for this entity */
+    public void setEntityItemStack(ItemStack p_92058_1_)
+    {
+        this.getDataWatcher().updateObject(24, p_92058_1_);
+        this.getDataWatcher().setObjectWatched(24);
+    }
+
+    /** Sets the position and rotation. Only difference from the other one is no
+     * bounding on the rotation. Args: posX, posY, posZ, yaw, pitch */
+    @SideOnly(Side.CLIENT)
+    public void setPositionAndRotation2(double p_70056_1_, double p_70056_3_, double p_70056_5_, float p_70056_7_,
+            float p_70056_8_, int p_70056_9_)
+    {
+        this.setPosition(p_70056_1_, p_70056_3_, p_70056_5_);
+        this.setRotation(p_70056_7_, p_70056_8_);
+    }
+
+    public void setReleased(Entity entity)
+    {
+        getDataWatcher().updateObject(29, entity.getEntityId());
+    }
+
+    public void setReleasing(boolean tag)
+    {
+        getDataWatcher().updateObject(25, tag ? Byte.valueOf((byte) 1) : Byte.valueOf((byte) 0));
+    }
+
+    @Override
+    public void setThrowableHeading(double p_70186_1_, double p_70186_3_, double p_70186_5_, float p_70186_7_,
+            float p_70186_8_)
+    {
+        float f2 = MathHelper.sqrt_double(p_70186_1_ * p_70186_1_ + p_70186_3_ * p_70186_3_ + p_70186_5_ * p_70186_5_);
+        p_70186_1_ /= f2;
+        p_70186_3_ /= f2;
+        p_70186_5_ /= f2;
+        p_70186_1_ += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D
+                * p_70186_8_;
+        p_70186_3_ += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D
+                * p_70186_8_;
+        p_70186_5_ += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D
+                * p_70186_8_;
+        p_70186_1_ *= p_70186_7_;
+        p_70186_3_ *= p_70186_7_;
+        p_70186_5_ *= p_70186_7_;
+        this.motionX = p_70186_1_;
+        this.motionY = p_70186_3_;
+        this.motionZ = p_70186_5_;
+        float f3 = MathHelper.sqrt_double(p_70186_1_ * p_70186_1_ + p_70186_5_ * p_70186_5_);
+        this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(p_70186_1_, p_70186_5_) * 180.0D / Math.PI);
+        this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(p_70186_3_, f3) * 180.0D / Math.PI);
+        this.ticksInGround = 0;
+    }
+
+    /** Sets the velocity to the args. Args: x, y, z */
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void setVelocity(double p_70016_1_, double p_70016_3_, double p_70016_5_)
+    {
+        this.motionX = p_70016_1_;
+        this.motionY = p_70016_3_;
+        this.motionZ = p_70016_5_;
+
+        if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F)
+        {
+            float f = MathHelper.sqrt_double(p_70016_1_ * p_70016_1_ + p_70016_5_ * p_70016_5_);
+            this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(p_70016_1_, p_70016_5_) * 180.0D / Math.PI);
+            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(p_70016_3_, f) * 180.0D / Math.PI);
+            this.prevRotationPitch = this.rotationPitch;
+            this.prevRotationYaw = this.rotationYaw;
+            this.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
+            this.ticksInGround = 0;
+        }
+    }
+
+    public void setVelocity(double speed, Vector3 dir)
+    {
+        dir = dir.scalarMult(speed);
+        dir.setVelocities(this);
+    }
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
+    {
+        super.writeEntityToNBT(nbttagcompound);
+        nbttagcompound.setInteger("tilt", tilt);
+        nbttagcompound.setInteger("time", time);
+        if (shooter != null) nbttagcompound.setString("shooter", shooter.toString());
+        if (this.getEntityItem() != null)
+        {
+            nbttagcompound.setTag("Item", this.getEntityItem().writeToNBT(new NBTTagCompound()));
+        }
+        if (tilePos != null)
+        {
+            nbttagcompound.setInteger("xTile", this.tilePos.getX());
+            nbttagcompound.setInteger("yTile", this.tilePos.getY());
+            nbttagcompound.setInteger("zTile", this.tilePos.getZ());
+        }
+        nbttagcompound.setShort("life", (short) this.ticksInGround);
+        nbttagcompound.setByte("inTile", (byte) Block.getIdFromBlock(this.tile));
+        nbttagcompound.setByte("inData", (byte) this.inData);
+        nbttagcompound.setByte("shake", (byte) this.arrowShake);
+        nbttagcompound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer)
+    {
+        buffer.writeDouble(motionX);
+        buffer.writeDouble(motionY);
+        buffer.writeDouble(motionZ);
     }
 }

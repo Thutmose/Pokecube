@@ -24,48 +24,6 @@ public class SimpleNode implements Node {
 		parser = p;
 	}
 	
-	@Override
-	public void jjtOpen() {
-	}
-	
-	@Override
-	public void jjtClose() {
-	}
-	
-	@Override
-	public void jjtSetParent(Node n) { parent = n; }
-	@Override
-	public Node jjtGetParent() { return parent; }
-	
-	@Override
-	public void jjtAddChild(Node n, int i) {
-		if (children == null) {
-			children = new Node[i + 1];
-		} else if (i >= children.length) {
-			Node c[] = new Node[i + 1];
-			System.arraycopy(children, 0, c, 0, children.length);
-			children = c;
-		}
-		children[i] = n;
-	}
-	
-	@Override
-	public Node jjtGetChild(int i) {
-		return children[i];
-	}
-	
-	@Override
-	public int jjtGetNumChildren() {
-		return (children == null) ? 0 : children.length;
-	}
-	
-	/** Accept the visitor. **/
-	@Override
-	public Object jjtAccept(ParserVisitor visitor, Object data)  throws ParseException
-	{
-		return visitor.visit(this, data);
-	}
-	
 	/** Accept the visitor. **/
 	public Object childrenAccept(ParserVisitor visitor, Object data)  throws ParseException
 	{
@@ -76,19 +34,6 @@ public class SimpleNode implements Node {
 		}
 		return data;
 	}
-	
-	/* You can override these two methods in subclasses of SimpleNode to
-	customize the way the node appears when the tree is dumped.  If
-	your output uses more than one line you should override
-	toString(String), otherwise overriding toString() is probably all
-	you need to do. */
-	
-	@Override
-	public String toString() { return ParserTreeConstants.jjtNodeName[id]; }
-	public String toString(String prefix) { return prefix + toString(); }
-	
-	/* Override this method if you want to customize how the node dumps
-	out its children. */
 	
 	public void dump(String prefix)
 	{
@@ -111,4 +56,59 @@ public class SimpleNode implements Node {
 	public int getId() {
 		return id;
 	}
+	/** Accept the visitor. **/
+	@Override
+	public Object jjtAccept(ParserVisitor visitor, Object data)  throws ParseException
+	{
+		return visitor.visit(this, data);
+	}
+	
+	@Override
+	public void jjtAddChild(Node n, int i) {
+		if (children == null) {
+			children = new Node[i + 1];
+		} else if (i >= children.length) {
+			Node c[] = new Node[i + 1];
+			System.arraycopy(children, 0, c, 0, children.length);
+			children = c;
+		}
+		children[i] = n;
+	}
+	
+	@Override
+	public void jjtClose() {
+	}
+	
+	@Override
+	public Node jjtGetChild(int i) {
+		return children[i];
+	}
+	
+	@Override
+	public int jjtGetNumChildren() {
+		return (children == null) ? 0 : children.length;
+	}
+	
+	@Override
+	public Node jjtGetParent() { return parent; }
+	
+	/* You can override these two methods in subclasses of SimpleNode to
+	customize the way the node appears when the tree is dumped.  If
+	your output uses more than one line you should override
+	toString(String), otherwise overriding toString() is probably all
+	you need to do. */
+	
+	@Override
+	public void jjtOpen() {
+	}
+	@Override
+	public void jjtSetParent(Node n) { parent = n; }
+	
+	/* Override this method if you want to customize how the node dumps
+	out its children. */
+	
+	@Override
+	public String toString() { return ParserTreeConstants.jjtNodeName[id]; }
+	
+	public String toString(String prefix) { return prefix + toString(); }
 }

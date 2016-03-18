@@ -8,6 +8,25 @@ import thut.api.maths.Vector3;
 
 public interface IMoveAnimation
 {
+    public static class MovePacketInfo
+    {
+        public final Move_Base move;
+        public final Entity    attacker;
+        public final Entity    attacked;
+        public final Vector3   source;
+        public final Vector3   target;
+        public int             currentTick;
+
+        public MovePacketInfo(Move_Base move, Entity attacker, Entity attacked, Vector3 source, Vector3 target)
+        {
+            this.move = move;
+            this.attacked = attacked;
+            this.attacker = attacker;
+            this.source = source;
+            this.target = target;
+        }
+    }
+
     /** Actually plays the animation in the world, this is called every
      * render tick for the number of world ticks specificed in getDuration();
      * 
@@ -28,23 +47,4 @@ public interface IMoveAnimation
      * @param duration
      */
     public void setDuration(int duration);
-
-    public static class MovePacketInfo
-    {
-        public final Move_Base move;
-        public final Entity    attacker;
-        public final Entity    attacked;
-        public final Vector3   source;
-        public final Vector3   target;
-        public int             currentTick;
-
-        public MovePacketInfo(Move_Base move, Entity attacker, Entity attacked, Vector3 source, Vector3 target)
-        {
-            this.move = move;
-            this.attacked = attacked;
-            this.attacker = attacker;
-            this.source = source;
-            this.target = target;
-        }
-    }
 }

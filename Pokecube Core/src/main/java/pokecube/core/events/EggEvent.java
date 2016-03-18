@@ -7,23 +7,14 @@ import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 
 public class EggEvent extends Event 
 {
-	public final Entity placer;
-	public final EntityPokemobEgg egg;
-	
-	private EggEvent(EntityPokemobEgg egg)
+	@Cancelable
+	public static class Hatch extends EggEvent
 	{
-		this.placer = egg.getEggOwner();
-		this.egg = egg;
-	}
-
-	public static class Place extends EggEvent
-	{
-		public Place(Entity egg)
+		public Hatch(Entity egg)
 		{
 			super((EntityPokemobEgg) egg);
 		}
 	}
-
 	@Cancelable
 	public static class Lay extends EggEvent
 	{
@@ -33,12 +24,21 @@ public class EggEvent extends Event
 		}
 	}
 	
-	@Cancelable
-	public static class Hatch extends EggEvent
+	public static class Place extends EggEvent
 	{
-		public Hatch(Entity egg)
+		public Place(Entity egg)
 		{
 			super((EntityPokemobEgg) egg);
 		}
+	}
+
+	public final Entity placer;
+
+	public final EntityPokemobEgg egg;
+	
+	private EggEvent(EntityPokemobEgg egg)
+	{
+		this.placer = egg.getEggOwner();
+		this.egg = egg;
 	}
 }

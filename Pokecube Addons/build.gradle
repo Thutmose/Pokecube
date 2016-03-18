@@ -82,7 +82,11 @@ minecraft {
     
     useDepAts = true
     
-    replace "@VERSION@", project.version
+    replace "@VERSION", project.version
+    replaceIn "PokecubeAdv.java"
+    replace "@MCVERSION", "${version_mcsupport}"
+    replaceIn "PokecubeAdv.java"
+    replace "@POKECUBEVERSION", "[${version_pokecube},)"
     replaceIn "PokecubeAdv.java"
     
     makeObfSourceJar = false

@@ -16,17 +16,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.PTezzelator;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Tools;
 
 @SideOnly(Side.CLIENT)
 public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderLiving<T>
 {
-    public RenderPokemobInfos(RenderManager m, ModelBase modelbase, float shadowSize)
-    {
-        super(m, modelbase, shadowSize);
-    }
-
     public static boolean shouldShow(EntityLivingBase entity)
     {
         if (((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI || entity.riddenByEntity != null)
@@ -38,7 +34,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
         if(!entity.addedToChunk || entity.ridingEntity == player)return false;
         float d = entity.getDistanceToEntity(player);
         IPokemob pokemob = ((IPokemob) entity);
-        boolean tameFactor = pokemob.getPokemonAIState(IPokemob.TAMED) && !pokemob.getPokemonAIState(IPokemob.STAYING); 
+        boolean tameFactor = pokemob.getPokemonAIState(IMoveConstants.TAMED) && !pokemob.getPokemonAIState(IMoveConstants.STAYING); 
         if (( tameFactor && d < 35) || d < 8)
         {
             return true;
@@ -46,8 +42,13 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
         else
         {
             Entity target = ((EntityCreature) entity).getAttackTarget();
-            return (player.equals(target) || ((IPokemob) entity).getPokemonAIState(IPokemob.TAMED));
+            return (player.equals(target) || ((IPokemob) entity).getPokemonAIState(IMoveConstants.TAMED));
         }
+    }
+
+    public RenderPokemobInfos(RenderManager m, ModelBase modelbase, float shadowSize)
+    {
+        super(m, modelbase, shadowSize);
     }
 
     @Override
@@ -119,7 +120,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
             	maxExp = exp = 1;
             
             
-            if (exp < 0 || !((IPokemob) entityliving).getPokemonAIState(IPokemob.TAMED))
+            if (exp < 0 || !((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED))
             {
                 exp = 0;
             }
@@ -142,7 +143,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             FontRenderer fontrenderer = getFontRendererFromRenderManager();
 
-            if (((IPokemob) entityliving).getPokemonAIState(IPokemob.TAMED) && renderManager.livingPlayer.equals(((IPokemob) entityliving).getPokemonOwner()))
+            if (((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED) && renderManager.livingPlayer.equals(((IPokemob) entityliving).getPokemonOwner()))
             {
                 fontrenderer = getFontRendererFromRenderManager();
                 String s = (int)health + "/" + (int)maxHealth;
@@ -153,7 +154,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
             
             //Nickname code
             
-          if (((IPokemob) entityliving).getPokemonAIState(IPokemob.TAMED))// && ))
+          if (((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED))// && ))
           {
           	String n;// = ((IPokemob) entityliving).getDisplayName();
           	int colour = renderManager.livingPlayer.equals(((IPokemob) entityliving).getPokemonOwner())?0xFFFFFF:0xAAAAAA;
@@ -194,13 +195,14 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
         }
     }
     
-    public void setShadowSize(float size)
-    {
-    	this.shadowSize = size;
-    }
-
+    @Override
     public ModelBase getMainModel()
     {
         return mainModel;
+    }
+
+    public void setShadowSize(float size)
+    {
+    	this.shadowSize = size;
     }
 }

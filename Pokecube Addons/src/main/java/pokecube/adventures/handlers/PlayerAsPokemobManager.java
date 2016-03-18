@@ -23,10 +23,45 @@ public class PlayerAsPokemobManager
 	private static PlayerAsPokemobManager instance;
 	private static PlayerAsPokemobManager instance2;
 
-	private HashMap<String, NBTTagCompound> playerData = new HashMap<String, NBTTagCompound>();
+	public static void copyEntity(EntityLivingBase from, EntityLivingBase to)
+	{
+		to.lastTickPosX = from.lastTickPosX;
+		to.lastTickPosY = from.lastTickPosY;
+		to.lastTickPosZ = from.lastTickPosZ;
+		
+		to.chunkCoordX = from.chunkCoordX;
+		to.chunkCoordY = from.chunkCoordY;
+		to.chunkCoordZ = from.chunkCoordZ;
+		
+		to.motionX = from.motionX;
+		to.motionY = from.motionY;
+		to.motionZ = from.motionZ;
+		
+		to.posX = from.posX;
+		to.posY = from.posY;
+		to.posZ = from.posZ;
+		
+		to.rotationPitch = from.rotationPitch;
+		to.rotationYaw = from.rotationYaw;
+		to.rotationYawHead = from.rotationYawHead;
+		
+		to.prevCameraPitch = from.prevCameraPitch;
+		to.prevRotationPitch = from.prevRotationPitch;
+		to.prevRotationYaw = from.prevRotationYaw;
+		to.prevRenderYawOffset = from.prevRenderYawOffset;
+		to.prevRotationYawHead = from.prevRotationYawHead;
+		
+		to.renderYawOffset = from.renderYawOffset;
+		
+		to.dimension = from.dimension;
+		
+		to.swingProgress = from.swingProgress;
+		to.swingProgressInt = from.swingProgressInt;
+		to.limbSwing = from.limbSwing;
+		to.limbSwingAmount = from.limbSwingAmount;
+		to.prevLimbSwingAmount = from.prevLimbSwingAmount;
+	}
 	
-	private PlayerAsPokemobManager(){}
-
 	public static PlayerAsPokemobManager getInstance()
 	{
 		Side side = FMLCommonHandler.instance().getEffectiveSide();
@@ -40,6 +75,15 @@ public class PlayerAsPokemobManager
 		if(instance==null)
 			instance = new PlayerAsPokemobManager();
 		return instance;
+	}
+
+	private HashMap<String, NBTTagCompound> playerData = new HashMap<String, NBTTagCompound>();
+	
+	private PlayerAsPokemobManager(){}
+	
+	public NBTTagCompound getData(EntityPlayer player)
+	{
+		return playerData.get(player.getName());
 	}
 	
 	public IPokemob getTransformed(EntityPlayer player)
@@ -65,36 +109,6 @@ public class PlayerAsPokemobManager
 		   }
 		   
 		   return null;
-	}
-	
-	public void setPlayerTransform(EntityPlayer player, IPokemob pokemob)
-	{
-		if(pokemob==null)
-		{
-			playerData.remove(player.getName());
-			return;
-		}
-		
-		
-		ItemStack stack = PokecubeManager.pokemobToItem(pokemob);
-		playerData.put(player.getName(), stack.getTagCompound());
-	}
-	
-	public void setData(String playerName, NBTTagCompound data)
-	{
-		if(!data.hasKey("Pokemob"))
-		{
-			playerData.remove(playerName);
-		}
-		else
-		{
-			playerData.put(playerName, data);
-		}
-	}
-	
-	public NBTTagCompound getData(EntityPlayer player)
-	{
-		return playerData.get(player.getName());
 	}
 	
 	public void sendClientUpdatePacket(EntityPlayer sendTo, String infoToSend)
@@ -144,42 +158,28 @@ public class PlayerAsPokemobManager
 		}
 	}
 	
-	public static void copyEntity(EntityLivingBase from, EntityLivingBase to)
+	public void setData(String playerName, NBTTagCompound data)
 	{
-		to.lastTickPosX = from.lastTickPosX;
-		to.lastTickPosY = from.lastTickPosY;
-		to.lastTickPosZ = from.lastTickPosZ;
+		if(!data.hasKey("Pokemob"))
+		{
+			playerData.remove(playerName);
+		}
+		else
+		{
+			playerData.put(playerName, data);
+		}
+	}
+	
+	public void setPlayerTransform(EntityPlayer player, IPokemob pokemob)
+	{
+		if(pokemob==null)
+		{
+			playerData.remove(player.getName());
+			return;
+		}
 		
-		to.chunkCoordX = from.chunkCoordX;
-		to.chunkCoordY = from.chunkCoordY;
-		to.chunkCoordZ = from.chunkCoordZ;
 		
-		to.motionX = from.motionX;
-		to.motionY = from.motionY;
-		to.motionZ = from.motionZ;
-		
-		to.posX = from.posX;
-		to.posY = from.posY;
-		to.posZ = from.posZ;
-		
-		to.rotationPitch = from.rotationPitch;
-		to.rotationYaw = from.rotationYaw;
-		to.rotationYawHead = from.rotationYawHead;
-		
-		to.prevCameraPitch = from.prevCameraPitch;
-		to.prevRotationPitch = from.prevRotationPitch;
-		to.prevRotationYaw = from.prevRotationYaw;
-		to.prevRenderYawOffset = from.prevRenderYawOffset;
-		to.prevRotationYawHead = from.prevRotationYawHead;
-		
-		to.renderYawOffset = from.renderYawOffset;
-		
-		to.dimension = from.dimension;
-		
-		to.swingProgress = from.swingProgress;
-		to.swingProgressInt = from.swingProgressInt;
-		to.limbSwing = from.limbSwing;
-		to.limbSwingAmount = from.limbSwingAmount;
-		to.prevLimbSwingAmount = from.prevLimbSwingAmount;
+		ItemStack stack = PokecubeManager.pokemobToItem(pokemob);
+		playerData.put(player.getName(), stack.getTagCompound());
 	}
 }

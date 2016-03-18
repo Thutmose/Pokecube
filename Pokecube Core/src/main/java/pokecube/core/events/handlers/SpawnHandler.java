@@ -65,46 +65,40 @@ public final class SpawnHandler
     }
 
     // randomized for spawning
-    public static final HashMap<Integer, ArrayList<PokedexEntry>> spawns     = new HashMap<Integer, ArrayList<PokedexEntry>>();
+    public static final HashMap<Integer, ArrayList<PokedexEntry>> spawns      = new HashMap<Integer, ArrayList<PokedexEntry>>();
     // not randomized
-    public static final HashMap<Integer, ArrayList<PokedexEntry>> spawnLists = new HashMap<Integer, ArrayList<PokedexEntry>>();
-    public static int                                             number     = 0;
+    public static final HashMap<Integer, ArrayList<PokedexEntry>> spawnLists  = new HashMap<Integer, ArrayList<PokedexEntry>>();
+    public static int                                             number      = 0;
 
-    private static Vector3                                        vec        = Vector3.getNewVector();
-    private static Vector3                                        vec1       = Vector3.getNewVector();
-    private static Vector3                                        vec2       = Vector3.getNewVector();
-    private static Vector3                                        temp       = Vector3.getNewVector();
+    private static Vector3                                        vec         = Vector3.getNewVector();
+    private static Vector3                                        vec1        = Vector3.getNewVector();
+    private static Vector3                                        vec2        = Vector3.getNewVector();
+    private static Vector3                                        temp        = Vector3.getNewVector();
 
-    public SpawnHandler()
+    public static double                                          MAX_DENSITY = 1;
+
+    public static int                                             MAXNUM      = 10;
+    static double                                                 maxtime     = 0;
+
+    public static boolean                                         lvlCap      = false;
+
+    public static int                                             capLevel    = 50;
+
+    public static final HashMap<Integer, JEP>                     parsers     = new HashMap<Integer, JEP>();
+
+    public static long                                            time        = 0;
+
+    public static boolean addForbiddenSpawningCoord(BlockPos pos, int dimensionId, int distance)
     {
-        if (PokecubeMod.core.getConfig().pokemonSpawn) MinecraftForge.EVENT_BUS.register(this);
+        return addForbiddenSpawningCoord(pos.getX(), pos.getY(), pos.getZ(), dimensionId, distance);
     }
 
-    public static double MAX_DENSITY = 1;
-    public static int    MAXNUM      = 10;
-
-    public static void sortSpawnables()
+    public static boolean addForbiddenSpawningCoord(int x, int y, int z, int dim, int range)
     {
-        spawnLists.clear();
-
-        for (int s : spawns.keySet())
-        {
-            ArrayList<Double> occurances = new ArrayList<Double>();
-            ArrayList<Integer> numbers = new ArrayList<Integer>();
-            for (PokedexEntry p : spawns.get(s))
-            {
-                occurances.add((double) p.getSpawnData().getWeight(s));
-                numbers.add(p.getPokedexNb());
-            }
-            spawnLists.put(s, new ArrayList<PokedexEntry>());
-            Double[] oc = occurances.toArray(new Double[0]);
-            Integer[] i = numbers.toArray(new Integer[0]);
-            new Cruncher().sort22(oc, i);
-            for (int j = i.length; j > 0; j--)
-                if (!spawnLists.get(s).contains(Database.getEntry(i[j - 1])))
-                    spawnLists.get(s).add(Database.getEntry(i[j - 1]));
-
-        }
+        ChunkCoordinate coord = new ChunkCoordinate(x, y, z, dim);
+        if (forbiddenSpawningCoords.containsKey(coord)) return false;
+        forbiddenSpawningCoords.put(coord, range);
+        return true;
     }
 
     public static void addSpawn(PokedexEntry entry)
@@ -159,18 +153,127 @@ public final class SpawnHandler
         }
     }
 
-    public static boolean addForbiddenSpawningCoord(int x, int y, int z, int dim, int range)
+    public static boolean canPokemonSpawnHere(Vector3 location, World worldObj, PokedexEntry entry)
     {
-        ChunkCoordinate coord = new ChunkCoordinate(x, y, z, dim);
-        if (forbiddenSpawningCoords.containsKey(coord)) return false;
-        forbiddenSpawningCoords.put(coord, range);
+        if (!location.clearOfBlocks(worldObj)) return false;
+        if (!temp.set(location).addTo(0, entry.height, 0).clearOfBlocks(worldObj)) return false;
+        if (!temp.set(location).addTo(entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
+        if (!temp.set(location).addTo(0, 0, entry.width / 2).clearOfBlocks(worldObj)) return false;
+        if (!temp.set(location).addTo(0, 0, -entry.width / 2).clearOfBlocks(worldObj)) return false;
+        if (!temp.set(location).addTo(-entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
+
+        SpawnEvent.Pre evt = new SpawnEvent.Pre(entry, location, worldObj);
+        MinecraftForge.EVENT_BUS.post(evt);
+        if (evt.isCanceled()) return false;
+
+        SpawnData dat = entry.getSpawnData();
+        boolean water = dat == null ? false : dat.types[WATER];
+        Material here = location.getBlockMaterial(worldObj);
+        Material up = temp.set(location).addTo(0, entry.height, 0).getBlockMaterial(worldObj);
+        boolean inAir = entry.mobType == PokecubeMod.Type.FLOATING || entry.mobType == PokecubeMod.Type.FLYING;
+
+        if (water) { return location.getBlockMaterial(worldObj) == Material.water && (!up.blocksMovement()); }
+        if (inAir && !temp.set(location).addTo(0, -1, 0).isSideSolid(worldObj,
+                EnumFacing.UP)) { return !here.blocksMovement() && !here.isLiquid() && !up.blocksMovement()
+                        && !up.isLiquid(); }
+
+        if (!temp.set(location).addTo(0, -1, 0).isSideSolid(worldObj, EnumFacing.UP)) return false;
+
+        Block down = temp.set(location).addTo(0, -1, 0).getBlock(worldObj);
+
+        boolean validMaterial = !here.blocksMovement() && !here.isLiquid() && !up.blocksMovement() && !up.isLiquid();
+
+        if (!validMaterial) return false;
+
+        return down.canCreatureSpawn(worldObj, temp.getPos(),
+                net.minecraft.entity.EntityLiving.SpawnPlacementType.ON_GROUND);// validSurfaces.contains(down);
+    }
+
+    public static boolean canSpawn(TerrainSegment terrain, SpawnData data, Vector3 v, World world)
+    {
+        int biome2 = terrain.getBiome(v.intX(), v.intY(), v.intZ());
+
+        if (data == null) return false;
+
+        if (biome2 == PokecubeTerrainChecker.INSIDE.getType())
+        {
+            biome2 = BiomeType.VILLAGE.getType();
+        }
+
+        if ((data.getWeight(BiomeType.ALL.getType())) > 0) return true;
+
+        int b = biome2;
+        int b1 = v.getBiomeID(world);
+
+        boolean ret = data.isValid(b1, b);
+
+        return ret;
+    }
+
+    /** Checks there's no spawner in the area
+     * 
+     * @param world
+     * @param chunkPosX
+     * @param chunkPosY
+     * @param chunkPosZ
+     * @return */
+    public static boolean checkNoSpawnerInArea(World world, int chunkPosX, int chunkPosY, int chunkPosZ)
+    {
+        ArrayList<ChunkCoordinate> coords = new ArrayList<ChunkCoordinate>(forbiddenSpawningCoords.keySet());
+
+        for (ChunkCoordinate coord : coords)
+        {
+            int tolerance = forbiddenSpawningCoords.get(coord);
+            if (chunkPosX >= coord.getX() - tolerance && chunkPosZ >= coord.getZ() - tolerance
+                    && chunkPosY >= coord.getY() - tolerance && chunkPosY <= coord.getY() + tolerance
+                    && chunkPosX <= coord.getX() + tolerance && chunkPosZ <= coord.getZ() + tolerance
+                    && world.provider.getDimensionId() == coord.dim) { return false; }
+        }
         return true;
     }
 
-    public static boolean removeForbiddenSpawningCoord(int x, int y, int z, int dim)
+    public static boolean creatureSpecificInit(EntityLiving entityliving, World world, double posX, double posY,
+            double posZ, Vector3 spawnPoint)
     {
-        ChunkCoordinate coord = new ChunkCoordinate(x, y, z, dim);
-        return forbiddenSpawningCoords.remove(coord) != null;
+        if (ForgeEventFactory.doSpecialSpawn(entityliving, world, (float) posX, (float) posY,
+                (float) posZ)) { return false; }
+
+        if (entityliving instanceof IPokemob)
+        {
+            int maxXP = getSpawnXp(world, vec.set(entityliving), ((IPokemob) entityliving).getPokedexEntry());
+
+            if (lvlCap) maxXP = Math.min(maxXP,
+                    Tools.levelToXp(((IPokemob) entityliving).getPokedexEntry().getEvolutionMode(), capLevel));
+            maxXP = Math.max(10, maxXP);
+
+            ((IPokemob) entityliving).setExp(maxXP, false, true);
+            ((IPokemob) entityliving).levelUp(((IPokemob) entityliving).getLevel());
+            ((IPokemob) entityliving).specificSpawnInit();
+
+            return true;
+        }
+        return false;
+    }
+
+    public static Vector3 getRandomPointNear(IBlockAccess world, Vector3 v, int distance)
+    {
+        Vector3 ret = v;
+        Vector3 temp = ret.copy();
+        int rand = Math.abs(new Random().nextInt());
+        if (distance % 2 == 0) distance++;
+        int num = distance * distance * distance;
+        for (int i = 0; i < num; i++)
+        {
+            int j = (i + rand) % num;
+            int x = j % (distance) - distance / 2;
+            int y = (j / distance) % (distance) - distance / 2;
+            int z = (j / (distance * distance)) % (distance) - distance / 2;
+            y = Math.max(1, y);
+            temp.set(ret).addTo(x, y, z);
+            if (temp.isClearOfBlocks(world)) { return temp; }
+
+        }
+        return null;
     }
 
     /** Given a player, find a random position near it. */
@@ -213,25 +316,67 @@ public final class SpawnHandler
         return temp;
     }
 
-    public static Vector3 getRandomPointNear(IBlockAccess world, Vector3 v, int distance)
+    public static int getSpawnXp(World world, Vector3 location, PokedexEntry pokemon)
     {
-        Vector3 ret = v;
-        Vector3 temp = ret.copy();
-        int rand = Math.abs(new Random().nextInt());
-        if (distance % 2 == 0) distance++;
-        int num = distance * distance * distance;
-        for (int i = 0; i < num; i++)
-        {
-            int j = (i + rand) % num;
-            int x = j % (distance) - distance / 2;
-            int y = (j / distance) % (distance) - distance / 2;
-            int z = (j / (distance * distance)) % (distance) - distance / 2;
-            y = Math.max(1, y);
-            temp.set(ret).addTo(x, y, z);
-            if (temp.isClearOfBlocks(world)) { return temp; }
+        int maxXp = 10;
 
+        TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
+        int b = t.getBiome(location);
+        if (subBiomeLevels.containsKey(b))
+        {
+            Integer[] range = subBiomeLevels.get(b);
+            int dl = range[1] - range[0];
+            if (dl > 0) dl = new Random().nextInt(dl) + 1;
+            int level = range[0] + dl;
+            maxXp = Math.max(10, Tools.levelToXp(pokemon.getEvolutionMode(), level));
+            return maxXp;
         }
-        return null;
+
+        Vector3 spawn = temp.set(world.getSpawnPoint());
+        JEP toUse;
+        int type = world.getWorldType().getWorldTypeID();
+        boolean isNew = false;
+        String function = "";
+        if (functions.containsKey(type))
+        {
+            function = functions.get(type);
+        }
+        else
+        {
+            function = functions.get(0);
+        }
+        if (parsers.containsKey(type))
+        {
+            toUse = parsers.get(type);
+        }
+        else
+        {
+            parsers.put(type, new JEP());
+            toUse = parsers.get(type);
+            isNew = true;
+        }
+        if (Double.isNaN(toUse.getValue()))
+        {
+            toUse = new JEP();
+            parsers.put(type, toUse);
+            isNew = true;
+        }
+
+        boolean r = function.split(";").length == 2;
+        if (!r)
+        {
+            parseExpression(toUse, function, location.x - spawn.x, location.z - spawn.z, r, isNew);
+        }
+        else
+        {
+            double d = location.distToSq(spawn);
+            parseExpression(toUse, function.split(";")[0], d, location.y, r, isNew);
+        }
+        maxXp = (int) Math.abs(toUse.getValue());
+        maxXp = Math.max(maxXp, 10);
+        maxXp = new Random().nextInt(maxXp);
+        maxXp = Math.max(maxXp, 10);
+        return maxXp;
     }
 
     public static boolean isPointValidForSpawn(World world, Vector3 point, PokedexEntry dbe)
@@ -262,22 +407,103 @@ public final class SpawnHandler
         return validLocation;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void spawn(World world)
+    public static void loadFunctionFromString(String args)
     {
-        if (world.getDifficulty() == EnumDifficulty.PEACEFUL || !doSpawns) return;
-        List players = new ArrayList(world.playerEntities);
-        if (players.isEmpty()) return;
-        Collections.shuffle(players);
-        for (int i = 0; i < players.size(); i++)
+        String[] strings = args.split(":");
+        if (strings.length == 0) return;
+        int id = Integer.parseInt(strings[0]);
+        functions.put(id, strings[1]);
+    }
+
+    public static void loadFunctionsFromStrings(String[] args)
+    {
+        for (String s : args)
         {
-            Vector3 v = getRandomSpawningPointNearEntity(world, (Entity) players.get(0),
-                    PokecubeMod.core.getConfig().maxSpawnRadius);
-            if (v != null)
+            loadFunctionFromString(s);
+        }
+    }
+
+    private static void parseExpression(JEP parser, String toParse, double xValue, double yValue, boolean r,
+            boolean isNew)
+    {
+        if (isNew)
+        {
+            parser.initFunTab(); // clear the contents of the function table
+            parser.addStandardFunctions();
+            parser.initSymTab(); // clear the contents of the symbol table
+            parser.addStandardConstants();
+            parser.addComplex(); // among other things adds i to the symbol
+                                 // table
+            if (!r)
             {
-                doSpawnForLocation(world, v);
+                parser.addVariable("x", xValue);
+                parser.addVariable("y", yValue);
+            }
+            else
+            {
+                parser.addVariable("r", xValue);
+            }
+            parser.parseExpression(toParse);
+        }
+        else
+        {
+            if (!r)
+            {
+                parser.setVarValue("x", xValue);
+                parser.setVarValue("y", yValue);
+            }
+            else
+            {
+                parser.setVarValue("r", xValue);
             }
         }
+    }
+
+    public static boolean removeForbiddenSpawningCoord(BlockPos pos, int dimensionId)
+    {
+        return removeForbiddenSpawningCoord(pos.getX(), pos.getY(), pos.getZ(), dimensionId);
+    }
+
+    public static boolean removeForbiddenSpawningCoord(int x, int y, int z, int dim)
+    {
+        ChunkCoordinate coord = new ChunkCoordinate(x, y, z, dim);
+        return forbiddenSpawningCoords.remove(coord) != null;
+    }
+
+    public static void sortSpawnables()
+    {
+        spawnLists.clear();
+
+        for (int s : spawns.keySet())
+        {
+            ArrayList<Double> occurances = new ArrayList<Double>();
+            ArrayList<Integer> numbers = new ArrayList<Integer>();
+            for (PokedexEntry p : spawns.get(s))
+            {
+                occurances.add((double) p.getSpawnData().getWeight(s));
+                numbers.add(p.getPokedexNb());
+            }
+            spawnLists.put(s, new ArrayList<PokedexEntry>());
+            Double[] oc = occurances.toArray(new Double[0]);
+            Integer[] i = numbers.toArray(new Integer[0]);
+            new Cruncher().sort22(oc, i);
+            for (int j = i.length; j > 0; j--)
+                if (!spawnLists.get(s).contains(Database.getEntry(i[j - 1])))
+                    spawnLists.get(s).add(Database.getEntry(i[j - 1]));
+
+        }
+    }
+
+    public JEP parser = new JEP();
+    Vector3    v      = Vector3.getNewVector();
+    Vector3    v1     = Vector3.getNewVector();
+    Vector3    v2     = Vector3.getNewVector();
+
+    Vector3    v3     = Vector3.getNewVector();
+
+    public SpawnHandler()
+    {
+        if (PokecubeMod.core.getConfig().pokemonSpawn) MinecraftForge.EVENT_BUS.register(this);
     }
 
     private int doSpawnForLocation(World world, Vector3 v)
@@ -296,7 +522,7 @@ public final class SpawnHandler
             if (o instanceof EntityPlayer)
             {
                 EntityPlayer playerEntity = (EntityPlayer) o;
-                //Stops pokemobs building up at bottom of sea floor.
+                // Stops pokemobs building up at bottom of sea floor.
                 if (playerEntity.posY > v.y - 10 && playerEntity.posY < v.y + 10) player = true;
             }
         }
@@ -322,8 +548,7 @@ public final class SpawnHandler
                 spawns.remove(b);
                 return ret;
             }
-            Collections.shuffle(entries);
-            int index = 0;
+            int index = world.rand.nextInt(entries.size());
             if (index >= entries.size()) return ret;
             PokedexEntry dbe = entries.get(index);
             float weight = dbe.getSpawnData().getWeight(b);
@@ -376,8 +601,6 @@ public final class SpawnHandler
         return ret;
     }
 
-    static double maxtime = 0;
-
     private int doSpawnForType(World world, Vector3 loc, PokedexEntry dbe, JEP parser, TerrainSegment t)
     {
         SpawnData entry = dbe.getSpawnData();
@@ -406,7 +629,8 @@ public final class SpawnHandler
             float y = (float) point.y;
             float z = (float) point.z + 0.5F;
 
-            boolean playerNearCheck = world.getClosestPlayer(x, y, z, PokecubeMod.core.getConfig().minSpawnRadius) == null;
+            boolean playerNearCheck = world.getClosestPlayer(x, y, z,
+                    PokecubeMod.core.getConfig().minSpawnRadius) == null;
             if (!playerNearCheck) continue;
 
             float var28 = x - world.getSpawnPoint().getX();
@@ -469,197 +693,23 @@ public final class SpawnHandler
         return totalSpawnCount;
     }
 
-    /** Checks there's no spawner in the area
-     * 
-     * @param world
-     * @param chunkPosX
-     * @param chunkPosY
-     * @param chunkPosZ
-     * @return */
-    public static boolean checkNoSpawnerInArea(World world, int chunkPosX, int chunkPosY, int chunkPosZ)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void spawn(World world)
     {
-        ArrayList<ChunkCoordinate> coords = new ArrayList<ChunkCoordinate>(forbiddenSpawningCoords.keySet());
-
-        for (ChunkCoordinate coord : coords)
+        if (world.getDifficulty() == EnumDifficulty.PEACEFUL || !doSpawns) return;
+        List players = new ArrayList(world.playerEntities);
+        if (players.isEmpty()) return;
+        Collections.shuffle(players);
+        for (int i = 0; i < players.size(); i++)
         {
-            int tolerance = forbiddenSpawningCoords.get(coord);
-            if (chunkPosX >= coord.getX() - tolerance && chunkPosZ >= coord.getZ() - tolerance
-                    && chunkPosY >= coord.getY() - tolerance && chunkPosY <= coord.getY() + tolerance
-                    && chunkPosX <= coord.getX() + tolerance && chunkPosZ <= coord.getZ() + tolerance
-                    && world.provider.getDimensionId() == coord.dim) { return false; }
-        }
-        return true;
-    }
-
-    public static boolean canPokemonSpawnHere(Vector3 location, World worldObj, PokedexEntry entry)
-    {
-        if (!location.clearOfBlocks(worldObj)) return false;
-        if (!temp.set(location).addTo(0, entry.height, 0).clearOfBlocks(worldObj)) return false;
-        if (!temp.set(location).addTo(entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
-        if (!temp.set(location).addTo(0, 0, entry.width / 2).clearOfBlocks(worldObj)) return false;
-        if (!temp.set(location).addTo(0, 0, -entry.width / 2).clearOfBlocks(worldObj)) return false;
-        if (!temp.set(location).addTo(-entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
-
-        SpawnEvent.Pre evt = new SpawnEvent.Pre(entry, location, worldObj);
-        MinecraftForge.EVENT_BUS.post(evt);
-        if (evt.isCanceled()) return false;
-
-        SpawnData dat = entry.getSpawnData();
-        boolean water = dat == null ? false : dat.types[WATER];
-        Material here = location.getBlockMaterial(worldObj);
-        Material up = temp.set(location).addTo(0, entry.height, 0).getBlockMaterial(worldObj);
-        boolean inAir = entry.mobType == PokecubeMod.Type.FLOATING || entry.mobType == PokecubeMod.Type.FLYING;
-
-        if (water) { return location.getBlockMaterial(worldObj) == Material.water && (!up.blocksMovement()); }
-        if (inAir && !temp.set(location).addTo(0, -1, 0).isSideSolid(worldObj,
-                EnumFacing.UP)) { return !here.blocksMovement() && !here.isLiquid() && !up.blocksMovement()
-                        && !up.isLiquid(); }
-
-        if (!temp.set(location).addTo(0, -1, 0).isSideSolid(worldObj, EnumFacing.UP)) return false;
-
-        Block down = temp.set(location).addTo(0, -1, 0).getBlock(worldObj);
-
-        boolean validMaterial = !here.blocksMovement() && !here.isLiquid() && !up.blocksMovement() && !up.isLiquid();
-
-        if (!validMaterial) return false;
-
-        return down.canCreatureSpawn(worldObj, temp.getPos(),
-                net.minecraft.entity.EntityLiving.SpawnPlacementType.ON_GROUND);// validSurfaces.contains(down);
-    }
-
-    public static boolean lvlCap   = false;
-    public static int     capLevel = 50;
-
-    public static boolean creatureSpecificInit(EntityLiving entityliving, World world, double posX, double posY,
-            double posZ, Vector3 spawnPoint)
-    {
-        if (ForgeEventFactory.doSpecialSpawn(entityliving, world, (float) posX, (float) posY,
-                (float) posZ)) { return false; }
-
-        if (entityliving instanceof IPokemob)
-        {
-            int maxXP = getSpawnXp(world, vec.set(entityliving), ((IPokemob) entityliving).getPokedexEntry());
-
-            if (lvlCap) maxXP = Math.min(maxXP,
-                    Tools.levelToXp(((IPokemob) entityliving).getPokedexEntry().getEvolutionMode(), capLevel));
-            maxXP = Math.max(10, maxXP);
-
-            ((IPokemob) entityliving).setExp(maxXP, false, true);
-            ((IPokemob) entityliving).levelUp(((IPokemob) entityliving).getLevel());
-            ((IPokemob) entityliving).specificSpawnInit();
-
-            return true;
-        }
-        return false;
-    }
-
-    public static final HashMap<Integer, JEP> parsers = new HashMap<Integer, JEP>();
-
-    public static int getSpawnXp(World world, Vector3 location, PokedexEntry pokemon)
-    {
-        int maxXp = 10;
-
-        TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
-        int b = t.getBiome(location);
-        if (subBiomeLevels.containsKey(b))
-        {
-            Integer[] range = subBiomeLevels.get(b);
-            int dl = range[1] - range[0];
-            if (dl > 0) dl = new Random().nextInt(dl) + 1;
-            int level = range[0] + dl;
-            maxXp = Math.max(10, Tools.levelToXp(pokemon.getEvolutionMode(), level));
-            return maxXp;
-        }
-
-        Vector3 spawn = temp.set(world.getSpawnPoint());
-        JEP toUse;
-        int type = world.getWorldType().getWorldTypeID();
-        boolean isNew = false;
-        String function = "";
-        if (functions.containsKey(type))
-        {
-            function = functions.get(type);
-        }
-        else
-        {
-            function = functions.get(0);
-        }
-        if (parsers.containsKey(type))
-        {
-            toUse = (JEP) parsers.get(type);
-        }
-        else
-        {
-            parsers.put(type, new JEP());
-            toUse = (JEP) parsers.get(type);
-            isNew = true;
-        }
-        if (Double.isNaN(toUse.getValue()))
-        {
-            toUse = new JEP();
-            parsers.put(type, toUse);
-            isNew = true;
-        }
-
-        boolean r = function.split(";").length == 2;
-        if (!r)
-        {
-            parseExpression(toUse, function, location.x - spawn.x, location.z - spawn.z, r, isNew);
-        }
-        else
-        {
-            double d = location.distToSq(spawn);
-            parseExpression(toUse, function.split(";")[0], d, location.y, r, isNew);
-        }
-        maxXp = (int) Math.abs(toUse.getValue());
-        maxXp = Math.max(maxXp, 10);
-        maxXp = new Random().nextInt(maxXp);
-        maxXp = Math.max(maxXp, 10);
-        return maxXp;
-    }
-
-    private static void parseExpression(JEP parser, String toParse, double xValue, double yValue, boolean r,
-            boolean isNew)
-    {
-        if (isNew)
-        {
-            parser.initFunTab(); // clear the contents of the function table
-            parser.addStandardFunctions();
-            parser.initSymTab(); // clear the contents of the symbol table
-            parser.addStandardConstants();
-            parser.addComplex(); // among other things adds i to the symbol
-                                 // table
-            if (!r)
+            Vector3 v = getRandomSpawningPointNearEntity(world, (Entity) players.get(0),
+                    PokecubeMod.core.getConfig().maxSpawnRadius);
+            if (v != null)
             {
-                parser.addVariable("x", xValue);
-                parser.addVariable("y", yValue);
-            }
-            else
-            {
-                parser.addVariable("r", xValue);
-            }
-            parser.parseExpression(toParse);
-        }
-        else
-        {
-            if (!r)
-            {
-                parser.setVarValue("x", xValue);
-                parser.setVarValue("y", yValue);
-            }
-            else
-            {
-                parser.setVarValue("r", xValue);
+                doSpawnForLocation(world, v);
             }
         }
     }
-
-    public static long time   = 0;
-    public JEP         parser = new JEP();
-    Vector3            v      = Vector3.getNewVector();
-    Vector3            v1     = Vector3.getNewVector();
-    Vector3            v2     = Vector3.getNewVector();
-    Vector3            v3     = Vector3.getNewVector();
 
     public void tick(World world)
     {
@@ -678,12 +728,10 @@ public final class SpawnHandler
 
                 List<Object> players = new ArrayList<Object>(world.playerEntities);
                 if (players.size() < 1) return;
-                Collections.shuffle(players);
-
                 if (Math.random() > 0.999)
                 {
-                    Entity player = (Entity) players.get(0);
                     Random rand = new Random();
+                    Entity player = (Entity) players.get(rand.nextInt(players.size()));
                     int dx = rand.nextInt(200) - 100;
                     int dz = rand.nextInt(200) - 100;
 
@@ -719,52 +767,5 @@ public final class SpawnHandler
         {
             e.printStackTrace();
         }
-    }
-
-    public static void loadFunctionsFromStrings(String[] args)
-    {
-        for (String s : args)
-        {
-            loadFunctionFromString(s);
-        }
-    }
-
-    public static void loadFunctionFromString(String args)
-    {
-        String[] strings = args.split(":");
-        if (strings.length == 0) return;
-        int id = Integer.parseInt(strings[0]);
-        functions.put(id, strings[1]);
-    }
-
-    public static boolean addForbiddenSpawningCoord(BlockPos pos, int dimensionId, int distance)
-    {
-        return addForbiddenSpawningCoord(pos.getX(), pos.getY(), pos.getZ(), dimensionId, distance);
-    }
-
-    public static boolean removeForbiddenSpawningCoord(BlockPos pos, int dimensionId)
-    {
-        return removeForbiddenSpawningCoord(pos.getX(), pos.getY(), pos.getZ(), dimensionId);
-    }
-
-    public static boolean canSpawn(TerrainSegment terrain, SpawnData data, Vector3 v, World world)
-    {
-        int biome2 = terrain.getBiome(v.intX(), v.intY(), v.intZ());
-
-        if (data == null) return false;
-
-        if (biome2 == PokecubeTerrainChecker.INSIDE.getType())
-        {
-            biome2 = BiomeType.VILLAGE.getType();
-        }
-
-        if ((data.getWeight(BiomeType.ALL.getType())) > 0) return true;
-
-        int b = biome2;
-        int b1 = v.getBiomeID(world);
-
-        boolean ret = data.isValid(b1, b);
-
-        return ret;
     }
 }

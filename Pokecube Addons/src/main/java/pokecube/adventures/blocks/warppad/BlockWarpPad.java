@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class BlockWarpPad extends Block implements ITileEntityProvider
@@ -20,17 +20,13 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
     {
         super(Material.rock);
         this.setHardness(10);
-        this.setCreativeTab(PokecubeCore.creativeTabPokecube);
+        this.setCreativeTab(PokecubeMod.creativeTabPokecube);
     }
 
     @Override
-    /** Called whenever an entity is walking on top of this block. Args: world,
-     * x, y, z, entity */
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity entity)
+    public TileEntity createNewTileEntity(World world_, int meta)
     {
-        Vector3 loc = Vector3.getNewVector().set(pos);
-        TileEntityWarpPad pad = (TileEntityWarpPad) loc.getTileEntity(world);
-        if (!world.isRemote) pad.onStepped(entity);
+        return new TileEntityWarpPad();
     }
 
     /** Called when the block is placed in the world. */
@@ -49,9 +45,13 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world_, int meta)
+    /** Called whenever an entity is walking on top of this block. Args: world,
+     * x, y, z, entity */
+    public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity entity)
     {
-        return new TileEntityWarpPad();
+        Vector3 loc = Vector3.getNewVector().set(pos);
+        TileEntityWarpPad pad = (TileEntityWarpPad) loc.getTileEntity(world);
+        if (!world.isRemote) pad.onStepped(entity);
     }
 
 }

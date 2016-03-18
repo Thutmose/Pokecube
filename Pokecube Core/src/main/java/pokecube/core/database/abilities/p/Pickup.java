@@ -15,6 +15,16 @@ public class Pickup extends Ability
 {
 
     @Override
+    public void onAgress(IPokemob mob, EntityLivingBase target)
+    {
+    }
+
+    @Override
+    public void onMoveUse(IPokemob mob, MovePacket move)
+    {
+    }
+
+    @Override
     public void onUpdate(IPokemob mob)
     {
         EntityLivingBase poke = (EntityLivingBase) mob;
@@ -29,16 +39,6 @@ public class Pickup extends Ability
                 if (item != null) poke.setCurrentItemOrArmor(0, item.copy());
             }
         }
-    }
-
-    @Override
-    public void onMoveUse(IPokemob mob, MovePacket move)
-    {
-    }
-
-    @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
-    {
     }
 
 }

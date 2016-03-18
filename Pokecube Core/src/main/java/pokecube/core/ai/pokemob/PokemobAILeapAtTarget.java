@@ -33,6 +33,13 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
         pokemob = (IPokemob) leaper;
     }
 
+    /** Returns whether an in-progress EntityAIBase should continue executing */
+    @Override
+    public boolean continueExecuting()
+    {
+        return !pokemob.getPokemonAIState(IMoveConstants.LEAPING);
+    }
+
     /** Returns whether the EntityAIBase should begin execution. */
     @Override
     public boolean shouldExecute()
@@ -41,13 +48,13 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
         Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
         if (move == null) move = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
 
-        if (pokemob.getPokemonAIState(IPokemob.LEAPING))
+        if (pokemob.getPokemonAIState(IMoveConstants.LEAPING))
         {
-            pokemob.setPokemonAIState(IPokemob.LEAPING, false);
+            pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
             return false;
         }
 
-        if (pokemob.getPokemonAIState(IPokemob.HUNTING) && !pokemob.getPokemonAIState(IPokemob.ANGRY))
+        if (pokemob.getPokemonAIState(IMoveConstants.HUNTING) && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {
             if (pokemob.getPokedexEntry().swims())
             {
@@ -86,7 +93,7 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
         {
             return false;
         }
-        else if (!pokemob.getPokemonAIState(IPokemob.LEAPING)
+        else if (!pokemob.getPokemonAIState(IMoveConstants.LEAPING)
                 && !((move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0))
         {
             double d0 = this.leaper.getDistanceSqToEntity(this.leapTarget);
@@ -103,20 +110,6 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
         }
     }
 
-    /** Returns whether an in-progress EntityAIBase should continue executing */
-    @Override
-    public boolean continueExecuting()
-    {
-        return !pokemob.getPokemonAIState(IPokemob.LEAPING);
-    }
-
-    /** Updates the task */
-    @Override
-    public void updateTask()
-    {
-        this.leaper.getLookHelper().setLookPositionWithEntity(this.leapTarget, 30.0F, 30.0F);
-    }
-
     /** Execute a one shot task or start executing a continuous task */
     @Override
     public void startExecuting()
@@ -124,13 +117,13 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
         if (leapTarget instanceof IPokemob)
         {
             IPokemob targ = (IPokemob) leapTarget;
-            if (!targ.getPokemonAIState(IPokemob.ANGRY))
+            if (!targ.getPokemonAIState(IMoveConstants.ANGRY))
             {
                 ((EntityLiving) targ).setAttackTarget(leaper);
-                targ.setPokemonAIState(IPokemob.ANGRY, true);
+                targ.setPokemonAIState(IMoveConstants.ANGRY, true);
             }
         }
-        pokemob.setPokemonAIState(IPokemob.LEAPING, true);
+        pokemob.setPokemonAIState(IMoveConstants.LEAPING, true);
 
         Vector3 targetLoc = Vector3.getNewVector().set(leapTarget);
         Vector3 leaperLoc = Vector3.getNewVector().set(leaper);
@@ -144,5 +137,12 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
             dir.clear();
         }
         dir.addVelocities(leaper);
+    }
+
+    /** Updates the task */
+    @Override
+    public void updateTask()
+    {
+        this.leaper.getLookHelper().setLookPositionWithEntity(this.leapTarget, 30.0F, 30.0F);
     }
 }

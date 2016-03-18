@@ -43,13 +43,53 @@ public class SymbolTable extends Hashtable
 	{
 		vf = varFac;
 	}
+	/** Create a constant variable with the given name and value.
+	 * Returns null if variable already exists.
+	 */
+	public Variable addConstant(String name,Object val)
+	{
+		Variable var = addVariable(name,val);
+		if(var != null)	var.setIsConstant(true);
+		return var;
+	}
+	
+
+	/** Creates a variable with given value.
+	 * Returns null if variable already exists.
+	 */
+    public Variable addVariable(String name,Object val)
+	{
+		Variable var = (Variable) super.get(name);
+		if(var != null)	return null;
+		else
+		{
+			var = vf.createVariable(name,val);
+			super.put(name,var);
+		}
+		var.setValidValue(true);
+		return var;
+	}
+	
+	/**
+	 * Clears the values of all variables.
+	 * Finer control is available through the
+	 * {@link Variable#setValidValue Variable.setValidValue} method.
+	 */
+	public void clearValues()
+	{
+		for(Enumeration e = this.elements(); e.hasMoreElements(); ) 
+		{
+			Variable var = (Variable) e.nextElement();
+			if(!var.isConstant()) var.setValidValue(false);
+		}
+	}
+
 	/**
 	 * @deprecated The getValue or getVar methods should be used instead. 
 	 */
 	@Deprecated
 	@Override
 	public Object get(Object key) { return getValue(key); }
-	
 
 	/** Finds the value of the variable with the given name. 
 	 * Returns null if variable does not exist. */
@@ -59,12 +99,53 @@ public class SymbolTable extends Hashtable
 		if(var==null) return null;
 		return var.getValue();
 	}
-	
+
 	/** Finds the variable with given name. 
 	* Returns null if variable does not exist. */
 	public Variable getVar(String name)
 	{
 		return (Variable) super.get(name);
+	}
+
+	/**
+	 * Returns the variable factory of this instance.
+	 */
+	public VariableFactory getVariableFactory() {
+		return vf;
+	}
+
+	/** If necessary create a variable with the given name.
+	 * If the variable exists its value will not be changed.
+	 * @return the Variable.
+	 */
+	public Variable makeVarIfNeeded(String name)
+	{
+		Variable var = (Variable) super.get(name);
+		if(var != null)	return var; 
+
+		var = vf.createVariable(name,null);
+		super.put(name,var);
+		return var;
+	}
+
+	/** Create a variable with the given name and value.
+	 * It siliently does nothing if the value cannot be set.
+	 * @return the Variable.
+	 */
+	public Variable makeVarIfNeeded(String name,Object val)
+	{
+		Variable var = (Variable) super.get(name);
+		if(var != null)
+		{
+			var.setValue(val);
+			return var; 
+		}
+		else
+		{
+			var = vf.createVariable(name,val);
+			super.put(name,var);
+			return var;
+		}
 	}
 
 	/**
@@ -90,67 +171,6 @@ public class SymbolTable extends Hashtable
 		} 
 		else return false;
 	}
-
-	/** Creates a variable with given value.
-	 * Returns null if variable already exists.
-	 */
-    public Variable addVariable(String name,Object val)
-	{
-		Variable var = (Variable) super.get(name);
-		if(var != null)	return null;
-		else
-		{
-			var = vf.createVariable(name,val);
-			super.put(name,var);
-		}
-		var.setValidValue(true);
-		return var;
-	}
-
-	/** Create a constant variable with the given name and value.
-	 * Returns null if variable already exists.
-	 */
-	public Variable addConstant(String name,Object val)
-	{
-		Variable var = addVariable(name,val);
-		if(var != null)	var.setIsConstant(true);
-		return var;
-	}
-
-	/** Create a variable with the given name and value.
-	 * It siliently does nothing if the value cannot be set.
-	 * @return the Variable.
-	 */
-	public Variable makeVarIfNeeded(String name,Object val)
-	{
-		Variable var = (Variable) super.get(name);
-		if(var != null)
-		{
-			var.setValue(val);
-			return var; 
-		}
-		else
-		{
-			var = vf.createVariable(name,val);
-			super.put(name,var);
-			return var;
-		}
-	}
-
-	/** If necessary create a variable with the given name.
-	 * If the variable exists its value will not be changed.
-	 * @return the Variable.
-	 */
-	public Variable makeVarIfNeeded(String name)
-	{
-		Variable var = (Variable) super.get(name);
-		if(var != null)	return var; 
-
-		var = vf.createVariable(name,null);
-		super.put(name,var);
-		return var;
-	}
-
 	/**
 	 * Returns a list of variables, one per line.
 	 */
@@ -165,26 +185,6 @@ public class SymbolTable extends Hashtable
 			sb.append("\n");
 		}
 		return sb.toString();
-	}
-
-	/**
-	 * Clears the values of all variables.
-	 * Finer control is available through the
-	 * {@link Variable#setValidValue Variable.setValidValue} method.
-	 */
-	public void clearValues()
-	{
-		for(Enumeration e = this.elements(); e.hasMoreElements(); ) 
-		{
-			Variable var = (Variable) e.nextElement();
-			if(!var.isConstant()) var.setValidValue(false);
-		}
-	}
-	/**
-	 * Returns the variable factory of this instance.
-	 */
-	public VariableFactory getVariableFactory() {
-		return vf;
 	}
 
 }

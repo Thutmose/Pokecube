@@ -23,19 +23,19 @@ public class ASTConstant extends SimpleNode {
 		super(p, id);
 	}
 	
-	public void setValue(Object val) {
-		value = val;
-	}
-	
 	public Object getValue() {
 		return value;
 	}
-
+	
 	/** Accept the visitor. **/
 	@Override
 	public Object jjtAccept(ParserVisitor visitor, Object data)  throws ParseException
 	{
 		return visitor.visit(this, data);
+	}
+
+	public void setValue(Object val) {
+		value = val;
 	}
 	
 	@Override

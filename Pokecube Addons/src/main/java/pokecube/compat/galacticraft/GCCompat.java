@@ -46,12 +46,37 @@ public class GCCompat {
 	private HashSet<Integer> spaceNums = new HashSet<Integer>();
 	boolean init = false;
 
-	public void register() {
-		addToMoons();
-		addToMars();
-		addToSpace();
-		addToAsteroids();
-		SpawnHandler.sortSpawnables();
+	private void addToAsteroids() {
+		try {
+			Class<?> biomeClass = Class
+					.forName("micdoodle8.mods.galacticraft.planets.asteroids.world.gen.BiomeGenBaseAsteroids");
+			if (biomeClass != null) {
+				for (BiomeGenBase b : BiomeGenBase.getBiomeGenArray()) {
+					if (biomeClass.isInstance(b)) {
+						SpawnHandler.spawns.remove(b.biomeID);
+						for (String s : roidmon.keySet()) {
+							PokedexEntry entry = Database.getEntry(s);
+							if (entry != null) {
+								if(entry.getSpawnData() == null)
+								{
+									entry.setSpawnData(new SpawnData());
+								}
+								entry.getSpawnData()
+										.addBiome(b, roidmon.get(s));
+								SpawnHandler.addSpawn(entry, b);
+								System.out.println("Registered " + s
+										+ " for Asteroids " + b.biomeID);
+							}
+						}
+					}
+				}
+			}
+		} catch (ClassNotFoundException e) {
+		}
+	}
+
+	private void addToMars() {
+
 	}
 
 	private void addToMoons() {
@@ -83,10 +108,6 @@ public class GCCompat {
 		}
 	}
 
-	private void addToMars() {
-
-	}
-
 	private void addToSpace() {
 		try {
 			Class<?> biomeClass = Class
@@ -107,35 +128,6 @@ public class GCCompat {
 								SpawnHandler.addSpawn(entry, b);
 								System.out.println("Registered " + s
 										+ " for Orbit " + b.biomeID);
-							}
-						}
-					}
-				}
-			}
-		} catch (ClassNotFoundException e) {
-		}
-	}
-
-	private void addToAsteroids() {
-		try {
-			Class<?> biomeClass = Class
-					.forName("micdoodle8.mods.galacticraft.planets.asteroids.world.gen.BiomeGenBaseAsteroids");
-			if (biomeClass != null) {
-				for (BiomeGenBase b : BiomeGenBase.getBiomeGenArray()) {
-					if (biomeClass.isInstance(b)) {
-						SpawnHandler.spawns.remove(b.biomeID);
-						for (String s : roidmon.keySet()) {
-							PokedexEntry entry = Database.getEntry(s);
-							if (entry != null) {
-								if(entry.getSpawnData() == null)
-								{
-									entry.setSpawnData(new SpawnData());
-								}
-								entry.getSpawnData()
-										.addBiome(b, roidmon.get(s));
-								SpawnHandler.addSpawn(entry, b);
-								System.out.println("Registered " + s
-										+ " for Asteroids " + b.biomeID);
 							}
 						}
 					}
@@ -212,5 +204,13 @@ public class GCCompat {
 				
 			}
 		}
+	}
+
+	public void register() {
+		addToMoons();
+		addToMars();
+		addToSpace();
+		addToAsteroids();
+		SpawnHandler.sortSpawnables();
 	}
 }

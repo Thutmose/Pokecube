@@ -23,5 +23,4 @@ public class ItemModelReloader extends Item
         player.openGui(ModPokecubeML.instance, 0, player.worldObj, 0, 0, 0);
         return itemstack;
     }
-
 }

@@ -28,23 +28,23 @@ public abstract class VillageHandlerBase
 		}
 	}
 	
-	protected ItemStack randomItem(Item item, int min, int max, Random rnd)
+	protected ItemStack randomItem(Block block, int min, int max, int metadata, Random rnd)
 	{
-		return randomItem(item, min, max, 0, rnd);
+		return new ItemStack(block, min + rnd.nextInt(max - min + 1), metadata);
 	}
 	
-	protected ItemStack randomItem(Item item, int min, int max, int metadata, Random rnd)
-	{
-		return new ItemStack(item, min + rnd.nextInt(max - min + 1), metadata);
-	}
-
 	protected ItemStack randomItem(Block block, int min, int max, Random rnd)
 	{
 		return randomItem(block, min, max, 0, rnd);
 	}
-	
-	protected ItemStack randomItem(Block block, int min, int max, int metadata, Random rnd)
+
+	protected ItemStack randomItem(Item item, int min, int max, int metadata, Random rnd)
 	{
-		return new ItemStack(block, min + rnd.nextInt(max - min + 1), metadata);
+		return new ItemStack(item, min + rnd.nextInt(max - min + 1), metadata);
+	}
+	
+	protected ItemStack randomItem(Item item, int min, int max, Random rnd)
+	{
+		return randomItem(item, min, max, 0, rnd);
 	}
 }

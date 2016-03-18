@@ -109,6 +109,7 @@ public class ParticleFlow extends MoveAnimationBase
 
     }
 
+    @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
         if (particle.equals("airbubble"))

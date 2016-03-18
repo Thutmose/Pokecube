@@ -32,10 +32,10 @@ import pokecube.core.interfaces.PokecubeMod;
 
 public class BlockPC extends Block implements ITileEntityProvider
 {
-    private ExtendedBlockState            state  = new ExtendedBlockState(this, new IProperty[0],
-            new IUnlistedProperty[] { OBJModel.OBJProperty.instance });
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final PropertyBool      TOP    = PropertyBool.create("top");
+    private ExtendedBlockState            state  = new ExtendedBlockState(this, new IProperty[0],
+            new IUnlistedProperty[] { OBJModel.OBJProperty.instance });
 
     public BlockPC()
     {
@@ -49,18 +49,84 @@ public class BlockPC extends Block implements ITileEntityProvider
     }
 
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
-            int meta, EntityLivingBase placer)
+    protected BlockState createBlockState()
     {
-        TileEntity te = worldIn.getTileEntity(pos);
-        if (te instanceof TileEntityOwnable)
+        return new BlockState(this, new IProperty[] { FACING, TOP });
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World var1, int var2)
+    {
+        return new TileEntityPC();
+    }
+
+    @Override
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
+    {
+        List<String> visible = Lists.newArrayList();
+        if ((state.getValue(TOP)))
         {
-            TileEntityOwnable tile = (TileEntityOwnable) te;
-            tile.setPlacer(placer);
+            visible.add("pc_top");
+        }
+        else
+        {
+            visible.add("pc_base");
+        }
+        EnumFacing facing = state.getValue(FACING);
+        facing = facing.rotateYCCW();
+
+        TRSRTransformation transform = new TRSRTransformation(facing);
+        OBJModel.OBJState retState = new OBJModel.OBJState(visible, true, transform);
+        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
+    }
+
+    @Override
+    /** Convert the BlockState into the correct metadata value */
+    public int getMetaFromState(IBlockState state)
+    {
+        int ret = state.getValue(FACING).getIndex();
+        if ((state.getValue(TOP))) ret += 8;
+        return ret;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public int getRenderType()
+    {
+        return super.getRenderType();
+    }
+
+    @Override
+    /** Convert the given metadata into a BlockState for this Block */
+    public IBlockState getStateFromMeta(int meta)
+    {
+        EnumFacing enumfacing = EnumFacing.getFront(meta & 7);
+
+        boolean top = (meta & 8) > 0;
+        if (enumfacing.getAxis() == EnumFacing.Axis.Y)
+        {
+            enumfacing = EnumFacing.NORTH;
         }
 
-        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()).withProperty(TOP,
-                ((meta & 8) > 0));
+        return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(TOP, Boolean.valueOf(top));
+    }
+
+    @Override
+    public boolean isFullCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isVisuallyOpaque()
+    {
+        return false;
     }
 
     /** Called upon block activation (right click on the block.) */
@@ -99,88 +165,22 @@ public class BlockPC extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean isOpaqueCube()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isVisuallyOpaque()
-    {
-        return false;
-    }
-
-    @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
     {
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public int getRenderType()
+    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+            int meta, EntityLivingBase placer)
     {
-        return super.getRenderType();
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World var1, int var2)
-    {
-        return new TileEntityPC();
-    }
-
-    @Override
-    /** Convert the given metadata into a BlockState for this Block */
-    public IBlockState getStateFromMeta(int meta)
-    {
-        EnumFacing enumfacing = EnumFacing.getFront(meta & 7);
-
-        boolean top = (meta & 8) > 0;
-        if (enumfacing.getAxis() == EnumFacing.Axis.Y)
+        TileEntity te = worldIn.getTileEntity(pos);
+        if (te instanceof TileEntityOwnable)
         {
-            enumfacing = EnumFacing.NORTH;
+            TileEntityOwnable tile = (TileEntityOwnable) te;
+            tile.setPlacer(placer);
         }
 
-        return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(TOP, Boolean.valueOf(top));
-    }
-
-    @Override
-    /** Convert the BlockState into the correct metadata value */
-    public int getMetaFromState(IBlockState state)
-    {
-        int ret = ((EnumFacing) state.getValue(FACING)).getIndex();
-        if (((Boolean) state.getValue(TOP))) ret += 8;
-        return ret;
-    }
-
-    @Override
-    protected BlockState createBlockState()
-    {
-        return new BlockState(this, new IProperty[] { FACING, TOP });
-    }
-
-    @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
-    {
-        List<String> visible = Lists.newArrayList();
-        if (((Boolean) state.getValue(TOP)))
-        {
-            visible.add("pc_top");
-        }
-        else
-        {
-            visible.add("pc_base");
-        }
-        EnumFacing facing = (EnumFacing) state.getValue(FACING);
-        facing = facing.rotateYCCW();
-
-        TRSRTransformation transform = new TRSRTransformation(facing);
-        OBJModel.OBJState retState = new OBJModel.OBJState(visible, true, transform);
-        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
+        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()).withProperty(TOP,
+                ((meta & 8) > 0));
     }
 }

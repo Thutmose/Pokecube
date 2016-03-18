@@ -21,26 +21,19 @@ public class Synchronize extends Ability
     int range = 16;
     
     @Override
-    public void onUpdate(IPokemob mob)
-    {   
-        location.set(mob);
-        pokemob = mob;
+    public void destroy()
+    {
+        if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT) return;
+        MinecraftForge.EVENT_BUS.unregister(this);
     }
 
-    @Override
-    public void onMoveUse(IPokemob mob, MovePacket move)
+    @SubscribeEvent
+    public void editNature(SpawnEvent.Post event)
     {
-        if (mob == move.attacked && move.statusChange != IMoveConstants.STATUS_NON
-                && mob.getStatus() == IMoveConstants.STATUS_NON)
+        if(event.location.distToSq(location)<range*range && Math.random() > 0.5)
         {
-            if (move.statusChange != IMoveConstants.STATUS_FRZ && move.statusChange != IMoveConstants.STATUS_SLP)
-                MovesUtils.setStatus((Entity) move.attacker, move.statusChange);
+            event.pokemob.setNature(pokemob.getNature());
         }
-    }
-
-    @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
-    {
     }
 
     @Override
@@ -65,18 +58,25 @@ public class Synchronize extends Ability
     }
 
     @Override
-    public void destroy()
+    public void onAgress(IPokemob mob, EntityLivingBase target)
     {
-        if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT) return;
-        MinecraftForge.EVENT_BUS.unregister(this);
+    }
+
+    @Override
+    public void onMoveUse(IPokemob mob, MovePacket move)
+    {
+        if (mob == move.attacked && move.statusChange != IMoveConstants.STATUS_NON
+                && mob.getStatus() == IMoveConstants.STATUS_NON)
+        {
+            if (move.statusChange != IMoveConstants.STATUS_FRZ && move.statusChange != IMoveConstants.STATUS_SLP)
+                MovesUtils.setStatus((Entity) move.attacker, move.statusChange);
+        }
     }
     
-    @SubscribeEvent
-    public void editNature(SpawnEvent.Post event)
-    {
-        if(event.location.distToSq(location)<range*range && Math.random() > 0.5)
-        {
-            event.pokemob.setNature(pokemob.getNature());
-        }
+    @Override
+    public void onUpdate(IPokemob mob)
+    {   
+        location.set(mob);
+        pokemob = mob;
     }
 }

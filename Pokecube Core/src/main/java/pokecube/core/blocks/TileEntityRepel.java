@@ -15,10 +15,8 @@ public class TileEntityRepel extends TileEntity
 	
     public TileEntityRepel() { }
     
-    @Override
-    public void validate() {
-    	super.validate();
-    	addForbiddenSpawningCoord();
+    public boolean addForbiddenSpawningCoord(){
+    	return SpawnHandler.addForbiddenSpawningCoord(pos, worldObj.provider.getDimensionId(), distance);
     }
     
     @Override
@@ -37,6 +35,16 @@ public class TileEntityRepel extends TileEntity
         distance = nbt.getByte("distance");
     }
 
+    public boolean removeForbiddenSpawningCoord(){
+    	return SpawnHandler.removeForbiddenSpawningCoord(pos, worldObj.provider.getDimensionId());
+    }
+    
+    @Override
+    public void validate() {
+    	super.validate();
+    	addForbiddenSpawningCoord();
+    }
+    
     /**
      * Writes a tile entity to NBT.
      */
@@ -45,13 +53,5 @@ public class TileEntityRepel extends TileEntity
     {
         super.writeToNBT(nbt);
         nbt.setByte("distance", distance);
-    }
-    
-    public boolean addForbiddenSpawningCoord(){
-    	return SpawnHandler.addForbiddenSpawningCoord(pos, worldObj.provider.getDimensionId(), distance);
-    }
-    
-    public boolean removeForbiddenSpawningCoord(){
-    	return SpawnHandler.removeForbiddenSpawningCoord(pos, worldObj.provider.getDimensionId());
     }
 }

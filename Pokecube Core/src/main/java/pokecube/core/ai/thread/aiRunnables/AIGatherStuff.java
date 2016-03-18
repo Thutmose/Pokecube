@@ -12,9 +12,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IBerryFruitBlock;
-import pokecube.core.interfaces.IHungrymob;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.TickHandler;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class AIGatherStuff extends AIBase
@@ -42,59 +43,6 @@ public class AIGatherStuff extends AIBase
         this.distance = distance;
         this.storage = storage;
         this.setMutex(1);
-    }
-
-    @Override
-    public boolean shouldRun()
-    {
-        world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null) return false;
-        if (storage.cooldowns[1] > AIStoreStuff.COOLDOWN || storage.seeking.isEmpty()) return false;
-        int rate = pokemob.getPokemonAIState(IPokemob.TAMED) ? 20 : 200;
-        if (pokemob.getHome() == null || entity.ticksExisted % rate != 0) return false;
-
-        if(cooldowns[0] < -2000)
-        {
-            cooldowns[0] = COOLDOWN;
-        }
-        
-        if (stuffLoc.distToEntity(entity) > 32) stuffLoc.clear();
-        if (cooldowns[0] > 0) return false;
-        IInventory inventory = pokemob.getPokemobInventory();
-
-        for (int i = 3; i < inventory.getSizeInventory() && !states[1]; i++)
-        {
-            states[0] = inventory.getStackInSlot(i) == null;
-        }
-        return states[0] && cooldowns[0] < 0;
-    }
-
-    /** Only tame pokemobs set to "stay" should run this AI.
-     * 
-     * @return */
-    private boolean tameCheck()
-    {
-        return pokemob.getPokemonAIState(IPokemob.TAMED) && !pokemob.getPokemonAIState(IPokemob.STAYING);
-    }
-
-    @Override
-    public void run()
-    {
-        if (stuffLoc.isEmpty())
-        {
-            findStuff();
-        }
-        if (!stuffLoc.isEmpty())
-        {
-            gatherStuff(false);
-        }
-    }
-
-    @Override
-    public void reset()
-    {
-        stuffLoc.clear();
-        stuff = null;
     }
 
     @Override
@@ -126,7 +74,7 @@ public class AIGatherStuff extends AIBase
 
     private void findStuff()
     {
-        if (pokemob.getHome() == null || pokemob.getPokemonAIState(IPokemob.TAMED) && pokemob.getPokemonAIState(IPokemob.SITTING)) { return; }
+        if (pokemob.getHome() == null || pokemob.getPokemonAIState(IMoveConstants.TAMED) && pokemob.getPokemonAIState(IMoveConstants.SITTING)) { return; }
 
         block = false;
         v.set(pokemob.getHome()).add(0, entity.height, 0);
@@ -205,7 +153,7 @@ public class AIGatherStuff extends AIBase
             }
             if (dist < diff)
             {
-                setPokemobAIState(pokemob, IPokemob.HUNTING, false);
+                setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                 Block plant = stuffLoc.getBlock(world);
                 TickHandler.addBlockChange(stuffLoc, entity.dimension, Blocks.air);
                 if (plant.getMaterial() != Material.grass)
@@ -217,5 +165,58 @@ public class AIGatherStuff extends AIBase
                 addEntityPath(entity.getEntityId(), entity.dimension, null, 0);
             }
         }
+    }
+
+    @Override
+    public void reset()
+    {
+        stuffLoc.clear();
+        stuff = null;
+    }
+
+    @Override
+    public void run()
+    {
+        if (stuffLoc.isEmpty())
+        {
+            findStuff();
+        }
+        if (!stuffLoc.isEmpty())
+        {
+            gatherStuff(false);
+        }
+    }
+
+    @Override
+    public boolean shouldRun()
+    {
+        world = TickHandler.getInstance().getWorldCache(entity.dimension);
+        if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null) return false;
+        if (storage.cooldowns[1] > AIStoreStuff.COOLDOWN || storage.seeking.isEmpty()) return false;
+        int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? 20 : 200;
+        if (pokemob.getHome() == null || entity.ticksExisted % rate != 0) return false;
+
+        if(cooldowns[0] < -2000)
+        {
+            cooldowns[0] = COOLDOWN;
+        }
+        
+        if (stuffLoc.distToEntity(entity) > 32) stuffLoc.clear();
+        if (cooldowns[0] > 0) return false;
+        IInventory inventory = pokemob.getPokemobInventory();
+
+        for (int i = 3; i < inventory.getSizeInventory() && !states[1]; i++)
+        {
+            states[0] = inventory.getStackInSlot(i) == null;
+        }
+        return states[0] && cooldowns[0] < 0;
+    }
+
+    /** Only tame pokemobs set to "stay" should run this AI.
+     * 
+     * @return */
+    private boolean tameCheck()
+    {
+        return pokemob.getPokemonAIState(IMoveConstants.TAMED) && !pokemob.getPokemonAIState(IMoveConstants.STAYING);
     }
 }

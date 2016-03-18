@@ -42,6 +42,7 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.IPlayerUsage;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
@@ -75,15 +76,18 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.pc.InventoryPC;
+import pokecube.core.commands.Commands;
+import pokecube.core.commands.GiftCommand;
+import pokecube.core.commands.MakeCommand;
+import pokecube.core.commands.SettingsCommand;
+import pokecube.core.commands.TMCommand;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.SpecialCaseRegister;
 import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.entity.pokemobs.GenericPokemob;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.PostPostInit;
-import pokecube.core.events.handlers.Commands;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
@@ -118,48 +122,34 @@ import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
-@Mod(modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:Forge@"
-        + PokecubeMod.MINFORGEVERSION
-        + PokecubeMod.DEPSTRING, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, guiFactory = "pokecube.core.client.gui.config.ModGuiFactory")
+@Mod( // @formatter:off
+        modid = PokecubeMod.ID, 
+        name = "Pokecube", 
+        version = PokecubeMod.VERSION, 
+        dependencies = "required-after:Forge@"+ PokecubeMod.MINFORGEVERSION + PokecubeMod.DEPSTRING, 
+        acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, 
+        updateJSON = PokecubeMod.UPDATEURL,
+        guiFactory = "pokecube.core.client.gui.config.ModGuiFactory"
+    )// @formatter:on
 public class PokecubeCore extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")
-    public static CommonProxyPokecube proxy;
+    public static CommonProxyPokecube       proxy;
 
     @Instance(ID)
-    public static PokecubeCore        instance;
+    public static PokecubeCore              instance;
 
-    public SpawnHandler               spawner;
+    static boolean                          server          = false;
 
-    static boolean                    server  = false;
-    static boolean                    checked = false;
+    static boolean                          checked         = false;
+    private static HashMap<Object, Integer> highestEntityId = new HashMap<Object, Integer>();
 
-    @SuppressWarnings({ "rawtypes", "unused" })
-    public static boolean isOnClientSide()
+    private static int                      messageId       = 0;
+
+    public static int getMessageID()
     {
-        if (!checked)
-        {
-            checked = true;
-            try
-            {
-                Class c = Class.forName("net.minecraft.server.dedicated.DedicatedServer");
-                server = true;
-            }
-            catch (ClassNotFoundException e)
-            {
-            }
-        }
-
-        if (server) return false;
-        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
-    }
-
-    /** Should be useless on final install. But needed in Eclipse.
-     * 
-     * @return the Proxy depending on the SimpleComponent */
-    public static CommonProxyPokecube getProxy()
-    {
-        return proxy;
+        messageId++;
+        return messageId;
     }
 
     /** On client side, returns the instance of Minecraft. On server side
@@ -181,15 +171,13 @@ public class PokecubeCore extends PokecubeMod
         return getProxy().getPlayer(playerName);
     }
 
-    /** Should not be used. Prefer FML methods.
+    /** Should be useless on final install. But needed in Eclipse.
      * 
-     * @return an instance of the World */
-    public static World getWorld()
+     * @return the Proxy depending on the SimpleComponent */
+    public static CommonProxyPokecube getProxy()
     {
-        return getProxy().getWorld();
+        return proxy;
     }
-
-    private static HashMap<Object, Integer> highestEntityId = new HashMap<Object, Integer>();
 
     public static int getUniqueEntityId(Object mod)
     {
@@ -204,196 +192,75 @@ public class PokecubeCore extends PokecubeMod
         return id;
     }
 
-    /** Registers a Pokemob into the Pokedex. Have a look to the file called
-     * <code>"HelpEntityJava.png"</code> provided with the SDK.
-     *
-     * @param clazz
-     *            the {@link Entity} class, must extends {@link EntityPokemob}
-     * @param createEgg
-     *            whether an egg should be created for this species (is a base
-     *            non legendary pokemob)
-     * @param mod
-     *            the instance of your mod
-     * @param pokedexEntry
-     *            the {@link PokedexEntry} */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
-    public void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, int pokedexNb)
+    /** Should not be used. Prefer FML methods.
+     * 
+     * @return an instance of the World */
+    public static World getWorld()
     {
-        if (pokedexmap == null || pokemobAchievements == null)
-        {
-            pokedexmap = new HashMap();
-            pokemobAchievements = new HashMap<Integer, Achievement>();
-        }
-
-        if (get1stPokemob == null)
-        {
-            System.out.println("REGISTERING ACHIEVEMENT");
-            get1stPokemob = (new AchievementCatch(0, "get1stPokemob", -3, -3, PokecubeItems.getItem("pokedex"), null));
-            get1stPokemob.registerStat();
-            AchievementList.achievementList.add(get1stPokemob);
-            pokemobAchievements.put(new Integer(0), get1stPokemob);
-            achievementPagePokecube = new AchievementPage("Pokecube", get1stPokemob);
-            AchievementPage.registerAchievementPage(achievementPagePokecube);
-        }
-
-        PokedexEntry pokedexEntry = Database.getEntry(pokedexNb);
-        Mod annotation = mod.getClass().getAnnotation(Mod.class);
-        String modId = ID;
-        if (annotation != null) modId = annotation.modid();
-        if (pokedexEntry.getModId() == null)
-        {
-            pokedexEntry.setModId(modId);
-        }
-
-        String name = pokedexEntry.getName();
-        Achievement achievement = pokemobAchievements.get(pokedexNb);
-        if (clazz != null)
-        {
-            PokedexEntry previousEntry = Pokedex.getInstance().getEntry(pokedexEntry.getPokedexNb());
-            try
-            {
-                // in case of double definition, the Manchou's implementation
-                // will have the priority by default, or whatever is set in
-                // config.
-                if (!registered.get(pokedexNb))
-                {
-                    EntityRegistry.registerModEntity(clazz, name, 25 + pokedexNb, mod, 80, 3, true);
-
-                    if (!pokemobEggs.containsKey(pokedexNb))
-                    {
-                        pokemobEggs.put(new Integer(pokedexNb),
-                                new EntityEggInfo(pokedexNb + 7000, 0xE8E0A0, 0x78C848));
-                    }
-                    pokedexmap.put(new Integer(pokedexNb), clazz);
-                    registered.set(pokedexNb);
-
-                    if (previousEntry != null)
-                    {
-                        Database.getEntry(pokedexNb).setModId(modId);
-                    }
-                    Pokedex.getInstance().registerPokemon(pokedexEntry);
-
-                    if (achievement == null)
-                    {
-                        int x = -2 + (pokedexNb / 16) * 2;
-                        int y = -2 + (pokedexNb % 16) - 1;
-                        try
-                        {
-                            if (PokecubeItems.getEmptyCube(0) == null) System.err.println("cube is null");
-                            achievement = (new AchievementCatch(pokedexNb, name, x, y, PokecubeItems.getEmptyCube(0),
-                                    get1stPokemob));
-                            achievement.registerStat();
-                            achievementPagePokecube.getAchievements().add(achievement);
-                            pokemobAchievements.put(pokedexNb, achievement);
-                        }
-                        catch (Throwable e)
-                        {
-                            System.err.println("An achievement could not be added.");
-                            e.printStackTrace();
-                        }
-                    }
-                    else
-                    {
-                        System.err.println("Double Registration " + pokedexEntry + " Default set to version from "
-                                + pokedexEntry.getModId());
-                    }
-                }
-            }
-            catch (Throwable e)
-            {
-                e.printStackTrace();
-            }
-        }
+        return getProxy().getWorld();
     }
 
-    @Override
-    public void registerPokemon(boolean createEgg, Object mod, String name)
+    @SuppressWarnings({ "rawtypes", "unused" })
+    public static boolean isOnClientSide()
     {
-        registerPokemon(createEgg, mod, Database.getEntry(name).getPokedexNb());
-    }
-
-    /** Registers a Pokemob into the Pokedex. Have a look to the file called
-     * <code>"HelpEntityJava.png"</code> provided with the SDK.
-     *
-     * @param createEgg
-     *            whether an egg should be created for this species (is a base
-     *            non legendary pokemob)
-     * @param mod
-     *            the instance of your mod
-     * @param pokedexnb
-     *            the pokedex number */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public void registerPokemon(boolean createEgg, Object mod, int pokedexNb)
-    {
-        Class c = genericMobClasses.get(pokedexNb);
-        if (c == null)
+        if (!checked)
         {
-            if (loader == null)
-            {
-                loader = new ByteClassLoader(GenericPokemob.class.getClassLoader());
-            }
+            checked = true;
             try
             {
-                c = loader.generatePokemobClass(pokedexNb);
-                registerPokemonByClass(c, createEgg, mod, pokedexNb);
+                Class c = Class.forName("net.minecraft.server.dedicated.DedicatedServer");
+                server = true;
             }
             catch (ClassNotFoundException e)
             {
-                System.err.println("Error Making Class for  " + Database.getEntry(pokedexNb));
-                e.printStackTrace();
             }
         }
-        else
-        {
-            registerPokemonByClass(c, createEgg, mod, pokedexNb);
-        }
 
-        return;
+        if (server) return false;
+        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }
 
-    @Override
-    public Integer[] getStarters()
+    public static void registerSpawns()
     {
-        return starters.toArray(new Integer[0]);
+        int n = 0;
+        List<PokedexEntry> spawns = new ArrayList<PokedexEntry>();
+        SpawnHandler.spawns.clear();
+        for (PokedexEntry dbe : Database.data.values())
+        {
+            if (dbe.getSpawnData() != null)
+            {
+                dbe.getSpawnData().postInit();
+            }
+        }
+
+        for (PokedexEntry dbe : Database.spawnables)
+        {
+            if (Pokedex.getInstance().getEntry(dbe.getPokedexNb()) != null && !spawns.contains(dbe))
+            {
+                spawns.add(dbe);
+                SpawnHandler.addSpawn(dbe);
+                n++;
+            }
+        }
+
+        if (n != 1) System.out.println("Registered " + n + " Pokemob Spawns");
+        else System.out.println("Registered " + n + " Pokemob Spawn");
     }
 
-    /** Returns the translated Pokemob name of the pokemob with the specify
-     * pokedex number.
-     *
-     * @param nb
-     *            the pokedex number
-     * @return the {@link String} name */
-    @Override
-    public String getTranslatedPokenameFromPokedexNumber(int nb)
+    public SpawnHandler        spawner;
+
+    public String              newVersion;
+
+    public String              newAlphaVersion;
+
+    public Mod_Pokecube_Helper helper;
+
+    private Config             config;
+
+    public PokecubeCore()
     {
-        PokedexEntry entry = Pokedex.getInstance().getEntry(nb);
-
-        if (entry != null) { return Pokedex.getInstance().getEntry(nb).getTranslatedName(); }
-
-        return "" + nb;
-    }
-
-    /** Returns the class of the {@link EntityLiving} for the given pokedexNb.
-     * If no Pokemob has been registered for this pokedex number, it returns
-     * <code>null</code>.
-     * 
-     * @param pokedexNb
-     *            the pokedex number
-     * @return the {@link Class} of the pokemob */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Class getEntityClassFromPokedexNumber(int pokedexNb)
-    {
-        try
-        {
-            return pokedexmap.get(new Integer(pokedexNb));
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
+        new Tools();
+        core = this;
     }
 
     /** Creates a new instance of an entity in the world for the pokemob
@@ -435,18 +302,31 @@ public class PokecubeCore extends PokecubeMod
         return entity;
     }
 
-    private static int messageId = 0;
-
-    public static int getMessageID()
+    @Override
+    public Config getConfig()
     {
-        messageId++;
-        return messageId;
+        return config;
     }
 
-    public PokecubeCore()
+    /** Returns the class of the {@link EntityLiving} for the given pokedexNb.
+     * If no Pokemob has been registered for this pokedex number, it returns
+     * <code>null</code>.
+     * 
+     * @param pokedexNb
+     *            the pokedex number
+     * @return the {@link Class} of the pokemob */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Class getEntityClassFromPokedexNumber(int pokedexNb)
     {
-        new Tools();
-        core = this;
+        try
+        {
+            return pokedexmap.get(new Integer(pokedexNb));
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 
     @Override
@@ -462,15 +342,113 @@ public class PokecubeCore extends PokecubeMod
         return new Configuration(file);
     }
 
-    public String              newVersion;
-    public String              newAlphaVersion;
-    public Mod_Pokecube_Helper helper;
-    private Config             config;
-
     @Override
-    public Config getConfig()
+    public Integer[] getStarters()
     {
-        return config;
+        return starters.toArray(new Integer[0]);
+    }
+
+    /** Returns the translated Pokemob name of the pokemob with the specify
+     * pokedex number.
+     *
+     * @param nb
+     *            the pokedex number
+     * @return the {@link String} name */
+    @Override
+    public String getTranslatedPokenameFromPokedexNumber(int nb)
+    {
+        PokedexEntry entry = Pokedex.getInstance().getEntry(nb);
+
+        if (entry != null) { return Pokedex.getInstance().getEntry(nb).getTranslatedName(); }
+
+        return "" + nb;
+    }
+
+    @EventHandler
+    private void init(FMLInitializationEvent evt)
+    {
+        System.out.println("mod_pokecube.init() " + FMLCommonHandler.instance().getEffectiveSide());
+        proxy.registerRenderInformation();
+        EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,
+                1, true);
+        EntityRegistry.registerModEntity(EntityProfessor.class, "pokecube:Professor", getUniqueEntityId(this), this, 80,
+                3, true);
+        EntityRegistry.registerModEntity(EntityPokemobEgg.class, "pokecube:pokemobEgg", getUniqueEntityId(this), this,
+                80, 3, false);
+        EntityRegistry.registerModEntity(EntityPokecube.class, "pokecube:cube", getUniqueEntityId(this), this, 80, 3,
+                true);
+
+        if (!Loader.isModLoaded("reccomplex"))
+        {
+            VillagerRegistry.instance().registerVillageCreationHandler(new PokeCentreCreationHandler());
+            VillagerRegistry.instance().registerVillageCreationHandler(new PokeMartCreationHandler());
+            PokecubePacketHandler.giveHealer = false;
+            try
+            {
+                MapGenStructureIO.registerStructureComponent(ComponentPokeCentre.class,
+                        "poke_adventures:PokeCentreStructure");
+                MapGenStructureIO.registerStructureComponent(ComponentPokeMart.class,
+                        "poke_adventures:PokeMartStructure");
+            }
+            catch (Throwable e1)
+            {
+                System.out.println(
+                        "Error registering Structures with Vanilla Minecraft: this is expected in versions earlier than 1.6.4");
+            }
+        }
+        else
+        {
+
+        }
+        GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
+        // TODO figure out good spawn weights, Also config for these
+        GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);
+        GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
+        GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
+        helper.initAllBlocks();
+        proxy.registerKeyBindings();
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+        helper.postInit();
+    }
+
+    @EventHandler
+    private void postInit(FMLPostInitializationEvent evt)
+    {
+        removeAllMobs();
+        PokecubeItems.init();
+        Database.postInit();
+        StarterInfo.processStarterInfo(config.defaultStarts);
+        postInitPokemobs();
+        helper.addVillagerTrades();
+        SpecialCaseRegister.register();
+        MoveAnimationHelper.Instance();
+        MinecraftForge.EVENT_BUS.post(new PostPostInit());
+        MovesAdder.postInitMoves();
+    }
+
+    private void postInitPokemobs()
+    {
+        registerSpawns();
+        SpawnHandler.sortSpawnables();
+        int n = 0;
+        for (Integer i : Pokedex.getInstance().getEntries())
+        {
+            PokedexEntry p = Pokedex.getInstance().getEntry(i);
+            if (p.getPokedexNb() < 722)
+            {
+                p.setSound(ID + ":mobs." + p.getName());
+                n++;
+            }
+            else
+            {
+                p.setSound(p.getModId() + ":mobs." + p.getName());
+            }
+            p.updateMoves();
+            // Refreshes the forme's modIds
+            // p.setModId(p.getModId());
+        }
+        System.out.println("Loaded " + n + " Pokemob sounds, " + Pokedex.getInstance().getEntries().size()
+                + " Pokemon and " + Database.allFormes.size() + " Formes");
     }
 
     @EventHandler
@@ -478,13 +456,8 @@ public class PokecubeCore extends PokecubeMod
     {
         PokecubeTerrainChecker.init();
         config = new Config(getPokecubeConfig(evt).getConfigFile());
-        // It initializes elements needed by plugins.
-        // Configuration config = getPokecubeConfig(evt);
-        // config.load();
 
         helper = new Mod_Pokecube_Helper();
-        // MinecraftForge.EVENT_BUS.register(helper);
-        // helper.loadConfig(config);
         // used to register the moves from the spreadsheets
         Database.init(evt);
 
@@ -499,6 +472,7 @@ public class PokecubeCore extends PokecubeMod
         }
 
         config.save();
+        config.initDefaultStarts();
         EventsHandler evts = new EventsHandler();
         MinecraftForge.EVENT_BUS.register(evts);
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new LoadingCallback()
@@ -585,153 +559,141 @@ public class PokecubeCore extends PokecubeMod
         MinecraftForge.EVENT_BUS.register(events);
     }
 
-    @EventHandler
-    private void init(FMLInitializationEvent evt)
+    /** Registers a Pokemob into the Pokedex. Have a look to the file called
+     * <code>"HelpEntityJava.png"</code> provided with the SDK.
+     *
+     * @param createEgg
+     *            whether an egg should be created for this species (is a base
+     *            non legendary pokemob)
+     * @param mod
+     *            the instance of your mod
+     * @param pokedexnb
+     *            the pokedex number */
+    @Override
+    public void registerPokemon(boolean createEgg, Object mod, int pokedexNb)
     {
-        System.out.println("mod_pokecube.init() " + FMLCommonHandler.instance().getEffectiveSide());
-        proxy.registerRenderInformation();
-        EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,
-                1, true);
-        EntityRegistry.registerModEntity(EntityProfessor.class, "pokecube:Professor", getUniqueEntityId(this), this, 80,
-                3, true);
-        EntityRegistry.registerModEntity(EntityPokemobEgg.class, "pokecube:pokemobEgg", getUniqueEntityId(this), this,
-                80, 3, false);
-        EntityRegistry.registerModEntity(EntityPokecube.class, "pokecube:cube", getUniqueEntityId(this), this, 80, 3,
-                true);
+        registerPokemon(createEgg, mod, Database.getEntry(pokedexNb));
+    }
 
-        if (!Loader.isModLoaded("reccomplex"))
+    @Override
+    public void registerPokemon(boolean createEgg, Object mod, PokedexEntry entry)
+    {
+        Class<?> c = genericMobClasses.get(entry.getPokedexNb());
+        if (c == null)
         {
-            VillagerRegistry.instance().registerVillageCreationHandler(new PokeCentreCreationHandler());
-            VillagerRegistry.instance().registerVillageCreationHandler(new PokeMartCreationHandler());
-            PokecubePacketHandler.giveHealer = false;
+            if (loader == null)
+            {
+                loader = new ByteClassLoader(Launch.classLoader);
+            }
             try
             {
-                MapGenStructureIO.registerStructureComponent(ComponentPokeCentre.class,
-                        "poke_adventures:PokeCentreStructure");
-                MapGenStructureIO.registerStructureComponent(ComponentPokeMart.class,
-                        "poke_adventures:PokeMartStructure");
+                c = loader.generatePokemobClass(entry.getPokedexNb());
+                registerPokemonByClass(c, createEgg, mod, entry);
             }
-            catch (Throwable e1)
+            catch (ClassNotFoundException e)
             {
-                System.out.println(
-                        "Error registering Structures with Vanilla Minecraft: this is expected in versions earlier than 1.6.4");
+                System.err.println("Error Making Class for  " + entry);
+                e.printStackTrace();
             }
         }
         else
         {
-
+            registerPokemonByClass(c, createEgg, mod, entry);
         }
-        GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
-        // TODO figure out good spawn weights, Also config for these
-        GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);
-        GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
-        GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
-        helper.initAllBlocks();
-        proxy.registerKeyBindings();
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-        helper.postInit();
     }
 
-    @EventHandler
-    private void postInit(FMLPostInitializationEvent evt)
+    @Override
+    public void registerPokemon(boolean createEgg, Object mod, String name)
     {
-        removeAllMobs();
-        PokecubeItems.init();
-        Database.postInit();
-        StarterInfo.processStarterInfo(config.defaultStarts);
-        postInitPokemobs();
-        helper.addVillagerTrades();
-        helper.registerStarterTrades();
-        SpecialCaseRegister.register();
-        MoveAnimationHelper.Instance();
-        MinecraftForge.EVENT_BUS.post(new PostPostInit());
-        MovesAdder.postInitMoves();
+        registerPokemon(createEgg, mod, Database.getEntry(name));
     }
 
-    @EventHandler
-    public void serverLoad(FMLServerStartingEvent event)
+    /** Registers a Pokemob into the Pokedex. Have a look to the file called
+     * <code>"HelpEntityJava.png"</code> provided with the SDK.
+     *
+     * @param clazz
+     *            the {@link Entity} class, must extends {@link EntityPokemob}
+     * @param createEgg
+     *            whether an egg should be created for this species (is a base
+     *            non legendary pokemob)
+     * @param mod
+     *            the instance of your mod
+     * @param pokedexEntry
+     *            the {@link PokedexEntry} */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry)
     {
-        event.registerServerCommand(new Commands());
-    }
-
-    @EventHandler
-    public void serverStop(FMLServerStoppingEvent event)
-    {
-        PokemobAIThread.clear();
-    }
-
-    /** Loads PC data when server starts
-     * 
-     * @param evt */
-    @EventHandler
-    public void WorldLoadEvent(FMLServerStartedEvent evt)
-    {
-        PCSaveHandler.getInstance().loadPC();
-        AISaveHandler.instance();
-    }
-
-    /** clears PC when server stops
-     * 
-     * @param evt */
-    @EventHandler
-    public void WorldUnloadEvent(FMLServerStoppedEvent evt)
-    {
-        InventoryPC.clearPC();
-        WorldGenStartBuilding.building = false;
-        if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
-        AISaveHandler.clearInstance();
-    }
-
-    public static void registerSpawns()
-    {
-        int n = 0;
-        List<PokedexEntry> spawns = new ArrayList<PokedexEntry>();
-        SpawnHandler.spawns.clear();
-        for (PokedexEntry dbe : Database.data.values())
+        if (pokedexmap == null || pokemobAchievements == null)
         {
-            if (dbe.getSpawnData() != null)
-            {
-                dbe.getSpawnData().postInit();
-            }
+            pokedexmap = new HashMap();
+            pokemobAchievements = new HashMap<Integer, Achievement>();
         }
 
-        for (PokedexEntry dbe : Database.spawnables)
+        if (get1stPokemob == null)
         {
-            if (Pokedex.getInstance().getEntry(dbe.getPokedexNb()) != null && !spawns.contains(dbe))
-            {
-                spawns.add(dbe);
-                SpawnHandler.addSpawn(dbe);
-                n++;
-            }
+            System.out.println("REGISTERING ACHIEVEMENT");
+            get1stPokemob = (new AchievementCatch(0, "get1stPokemob", -3, -3, PokecubeItems.getItem("pokedex"), null));
+            get1stPokemob.registerStat();
+            AchievementList.achievementList.add(get1stPokemob);
+            pokemobAchievements.put(new Integer(0), get1stPokemob);
+            achievementPagePokecube = new AchievementPage("Pokecube", get1stPokemob);
+            AchievementPage.registerAchievementPage(achievementPagePokecube);
         }
-
-        if (n != 1) System.out.println("Registered " + n + " Pokemob Spawns");
-        else System.out.println("Registered " + n + " Pokemob Spawn");
-    }
-
-    private void postInitPokemobs()
-    {
-        registerSpawns();
-        SpawnHandler.sortSpawnables();
-        int n = 0;
-        for (Integer i : Pokedex.getInstance().getEntries())
+        String name = entry.getName();
+        Achievement achievement = pokemobAchievements.get(entry.getPokedexNb());
+        if (clazz != null)
         {
-            PokedexEntry p = Pokedex.getInstance().getEntry(i);
-            if (p.getPokedexNb() < 722)
+            try
             {
-                p.setSound(ID + ":mobs." + p.getName());
-                n++;
+                // in case of double definition, the Manchou's implementation
+                // will have the priority by default, or whatever is set in
+                // config.
+                if (!registered.get(entry.getPokedexNb()))
+                {
+                    EntityRegistry.registerModEntity(clazz, name, 25 + entry.getPokedexNb(), mod, 80, 3, true);
+
+                    if (!pokemobEggs.containsKey(entry.getPokedexNb()))
+                    {
+                        pokemobEggs.put(new Integer(entry.getPokedexNb()),
+                                new EntityEggInfo(entry.getPokedexNb() + 7000, 0xE8E0A0, 0x78C848));
+                    }
+                    pokedexmap.put(new Integer(entry.getPokedexNb()), clazz);
+                    registered.set(entry.getPokedexNb());
+
+                    Pokedex.getInstance().registerPokemon(entry);
+
+                    if (achievement == null)
+                    {
+                        int x = -2 + (entry.getPokedexNb() / 16) * 2;
+                        int y = -2 + (entry.getPokedexNb() % 16) - 1;
+                        try
+                        {
+                            if (PokecubeItems.getEmptyCube(0) == null) System.err.println("cube is null");
+                            achievement = (new AchievementCatch(entry.getPokedexNb(), name, x, y,
+                                    PokecubeItems.getEmptyCube(0), get1stPokemob));
+                            achievement.registerStat();
+                            achievementPagePokecube.getAchievements().add(achievement);
+                            pokemobAchievements.put(entry.getPokedexNb(), achievement);
+                        }
+                        catch (Throwable e)
+                        {
+                            System.err.println("An achievement could not be added.");
+                            e.printStackTrace();
+                        }
+                    }
+                    else
+                    {
+                        System.err.println(
+                                "Double Registration " + entry + " Default set to version from " + entry.getModId());
+                    }
+                }
             }
-            else
+            catch (Throwable e)
             {
-                p.setSound(p.getModId() + ":mobs." + p.getName());
+                e.printStackTrace();
             }
-            p.updateMoves();
-            // Refreshes the forme's modIds
-            p.setModId(p.getModId());
         }
-        System.out.println("Loaded " + n + " Pokemob sounds, " + Pokedex.getInstance().getEntries().size()
-                + " Pokemon and " + Database.allFormes.size() + " Formes");
     }
 
     private void removeAllMobs()
@@ -776,9 +738,48 @@ public class PokecubeCore extends PokecubeMod
         }
     }
 
+    @EventHandler
+    public void serverLoad(FMLServerStartingEvent event)
+    {
+        event.registerServerCommand(new Commands());
+        event.registerServerCommand(new SettingsCommand());
+        event.registerServerCommand(new MakeCommand());
+        event.registerServerCommand(new GiftCommand());
+        event.registerServerCommand(new TMCommand());
+    }
+
+    @EventHandler
+    public void serverStop(FMLServerStoppingEvent event)
+    {
+        PokemobAIThread.clear();
+    }
+
+    @Override
     public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
     {
         getProxy().spawnParticle(par1Str, location, velocity);
+    }
+
+    /** Loads PC data when server starts
+     * 
+     * @param evt */
+    @EventHandler
+    public void WorldLoadEvent(FMLServerStartedEvent evt)
+    {
+        PCSaveHandler.getInstance().loadPC();
+        AISaveHandler.instance();
+    }
+
+    /** clears PC when server stops
+     * 
+     * @param evt */
+    @EventHandler
+    public void WorldUnloadEvent(FMLServerStoppedEvent evt)
+    {
+        InventoryPC.clearPC();
+        WorldGenStartBuilding.building = false;
+        if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
+        AISaveHandler.clearInstance();
     }
 
 }

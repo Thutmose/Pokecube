@@ -4,18 +4,25 @@
 package pokecube.core.items.pokemobeggs;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
+
+import com.google.common.base.Predicate;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList.EntityEggInfo;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -28,13 +35,13 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -42,120 +49,50 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
 {
     static HashMap<PokedexEntry, IPokemob> fakeMobs = new HashMap<PokedexEntry, IPokemob>();
 
-    /** @param par1 */
-    public ItemPokemobEgg()
+    public static byte[] getColour(int[] fatherColours, int[] motherColours)
     {
-        this.setCreativeTab(null);
+        byte[] ret = new byte[] { 127, 127, 127, 127 };
+        if (fatherColours.length < 3 && motherColours.length < 3) return ret;
+        for (int i = 0; i < 3; i++)
+        {
+            ret[i] = (byte) (((fatherColours[i] + motherColours[i]) / 2) - 128);
+        }
+        return ret;
     }
 
-    /** Callback for item usage. If the item does something special on right
-     * clicking, he will have one of those. Return True if something happen and
-     * false if it don't. This is for ITEMS, not BLOCKS */
-    @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public static ItemStack getEggStack(int pokedexNb)
     {
-        if (worldIn.isRemote) { return true; }
-        Block i = worldIn.getBlockState(pos).getBlock();
-        BlockPos newPos = pos.offset(side);
-        double d = 0.0D;
-
-        if (side == EnumFacing.UP && i instanceof BlockFence)
-        {
-            d = 0.5D;
-        }
-        Vector3 loc = Vector3.getNewVector().set(newPos).addTo(hitX, d, hitZ);
-
-        if (dropEgg(worldIn, stack, loc, playerIn) && !playerIn.capabilities.isCreativeMode)
-        {
-            stack.stackSize--;
-        }
-        return true;
+        ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg);
+        eggItemStack.setTagCompound(new NBTTagCompound());
+        eggItemStack.getTagCompound().setInteger("pokemobNumber", pokedexNb);
+        return eggItemStack;
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
+    public static ItemStack getEggStack(IPokemob pokemob)
     {
-        int damage = getNumber(par1ItemStack);
-        EntityEggInfo entityegginfo = (EntityEggInfo) PokecubeMod.pokemobEggs.get(Integer.valueOf(damage));
-
-        PokedexEntry entry = Database.getEntry(damage);
-
-        if (entry != null)
-        {
-            int colour = entry.getType1().colour;
-
-            if (par2 == 0)
-            {
-                return colour;
-            }
-            else
-            {
-                colour = entry.getType2().colour;
-                return colour;
-            }
-        }
-
-        if (entityegginfo != null)
-        {
-            if (par2 == 0)
-            {
-                return entityegginfo.primaryColor;
-            }
-            else
-            {
-                return entityegginfo.secondaryColor;
-            }
-        }
-        else
-        {
-            return 0xffffff;
-        }
+        ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg);
+        eggItemStack.setTagCompound(new NBTTagCompound());
+        eggItemStack.getTagCompound().setInteger("pokemobNumber", pokemob.getPokedexNb());
+        return eggItemStack;
     }
 
-    public boolean dropEgg(World world, ItemStack stack, Vector3 location, Entity placer)
+    public static IPokemob getFakePokemob(World world, Vector3 location, ItemStack stack)
     {
-        if (!PokecubeMod.pokemobEggs.containsKey(getNumber(stack))) { return false; }
+        if (stack == null || stack.getTagCompound() == null
+                || !stack.getTagCompound().hasKey("pokemobNumber")) { return null; }
+        int number = stack.getTagCompound().getInteger("pokemobNumber");
 
-        ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg, 1, stack.getItemDamage());
-        if (stack.hasTagCompound()) eggItemStack.setTagCompound(stack.getTagCompound());
-        else eggItemStack.setTagCompound(new NBTTagCompound());
-
-        initStack(placer, eggItemStack);
-
-        Entity entity = new EntityPokemobEgg(world, location.x, location.y, location.z, eggItemStack, placer);
-        EggEvent.Place event = new EggEvent.Place(entity);
-        MinecraftForge.EVENT_BUS.post(event);
-        world.spawnEntityInWorld(entity);
-        return entity != null;
-    }
-
-    public static void initStack(Entity placer, ItemStack stack)
-    {
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-
-        if (placer instanceof IPokemob)
+        PokedexEntry entry = Database.getEntry(number);
+        IPokemob pokemob = fakeMobs.get(entry);
+        if (pokemob == null)
         {
-            IPokemob mob = (IPokemob) placer;
-            if (!mob.getPokemonOwnerName().equals("")) { return; }
+            pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(number, world);
+            if (pokemob == null) return null;
+            fakeMobs.put(entry, pokemob);
         }
-        return;
-    }
-
-    public static void initStack(Entity mother, IPokemob father, ItemStack stack)
-    {
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-
-        if (mother instanceof IPokemob)
-        {
-            IPokemob mob = (IPokemob) mother;
-            if (father != null)
-            {
-                getGenetics(mob, father, stack.getTagCompound());
-            }
-        }
-        return;
+        location.moveEntity((Entity) pokemob);
+        initPokemobGenetics(pokemob, stack.getTagCompound());
+        return pokemob;
     }
 
     private static void getGenetics(IPokemob mother, IPokemob father, NBTTagCompound nbt)
@@ -204,71 +141,26 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         nbt.setString("moves", moveString);
     }
 
-    private static void initPokemobGenetics(IPokemob mob, NBTTagCompound nbt)
+    public static byte[] getIVs(byte[] fatherIVs, byte[] motherIVs, byte[] fatherEVs, byte[] motherEVs)
     {
-
-        boolean fixedShiny = nbt.getBoolean("shiny");
-
-        String moveString = nbt.getString("moves");
-        String[] moves = moveString.split(";");
-        long ivs = nbt.getLong("ivs");
-
-        mob.setShiny(fixedShiny);
-        if (!nbt.hasKey("ivs"))
+        byte[] ret = new byte[6];
+        Random rand = new Random();
+        for (int i = 0; i < 6; i++)
         {
+            byte mi = motherIVs[i];
+            byte fi = fatherIVs[i];
+            byte me = motherEVs[i];
+            byte fe = fatherEVs[i];
 
-        }
-        else
-        {
-            if (moves.length > 0)
-            {
-                for (int i = 1; i < Math.max(moves.length + 1, 5); i++)
-                {
-                    mob.setMove(4 - i, null);
-                }
-            }
-            // IsDead is set to prevent it notifiying owner of move learning.
-            ((Entity) mob).isDead = true;
-            for (String s : moves)
-            {
-                if (s != null && !s.isEmpty()) mob.learn(s);
-            }
-            ((Entity) mob).isDead = false;
-            byte[] rgba = new byte[4];
-            if (nbt.hasKey("colour", 7))
-            {
-                rgba = nbt.getByteArray("colour");
-                if (rgba.length == 4)
-                {
-                    ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128, rgba[3] + 128);
-                }
-                else if (rgba.length == 3)
-                {
-                    ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128);
-                }
-            }
-            mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
-            mob.setNature(Nature.values()[nbt.getByte("nature")]);
-            mob.setSize(nbt.getFloat("size"));
+            byte aE = (byte) (((me + fe + 256) * 31) / 512);
+
+            byte iv = (byte) ((mi + fi) / 2);
+            iv = (byte) Math.min((rand.nextInt(iv + 1) + rand.nextInt(iv + 1) + rand.nextInt(aE + 1)), 31);
+
+            ret[i] = iv;
         }
 
-        Vector3 location = Vector3.getNewVector().set(mob);
-        EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 2);
-        if (player == null)
-        {
-            IPokemob pokemob = (IPokemob) ((Entity) mob).worldObj.findNearestEntityWithinAABB(EntityPokemob.class,
-                    location.getAABB().expand(4, 4, 4), (Entity) mob);
-            if (pokemob != null && pokemob.getPokemonOwner() instanceof EntityPlayer)
-                player = (EntityPlayer) pokemob.getPokemonOwner();
-        }
-        if (player != null)
-        {
-            mob.setPokemonOwner(player);
-            mob.setPokemonAIState(IPokemob.TAMED, true);
-            mob.setPokemonAIState(IPokemob.SITTING, true);
-            mob.setPokecubeId(0);
-            mob.setHeldItem(null);
-        }
+        return ret;
     }
 
     public static String[] getMoves(String motherMoves, String fatherMoves)
@@ -293,48 +185,6 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
                 }
             }
         }
-        return ret;
-    }
-
-    public static byte[] getIVs(byte[] fatherIVs, byte[] motherIVs, byte[] fatherEVs, byte[] motherEVs)
-    {
-        byte[] ret = new byte[6];
-        Random rand = new Random();
-        for (int i = 0; i < 6; i++)
-        {
-            byte mi = motherIVs[i];
-            byte fi = fatherIVs[i];
-            byte me = motherEVs[i];
-            byte fe = fatherEVs[i];
-
-            byte aE = (byte) (((me + fe + 256) * 31) / 512);
-
-            byte iv = (byte) ((mi + fi) / 2);
-            iv = (byte) Math.min((rand.nextInt(iv + 1) + rand.nextInt(iv + 1) + rand.nextInt(aE + 1)), 31);
-
-            ret[i] = iv;
-        }
-
-        return ret;
-    }
-
-    public static byte[] getColour(int[] fatherColours, int[] motherColours)
-    {
-        byte[] ret = new byte[] { 127, 127, 127, 127 };
-        if (fatherColours.length < 3 && motherColours.length < 3) return ret;
-        for (int i = 0; i < 3; i++)
-        {
-            ret[i] = (byte) (((fatherColours[i] + motherColours[i]) / 2) - 128);
-        }
-        return ret;
-    }
-
-    public static float getSize(float fatherSize, float motherSize)
-    {
-        float ret = 1;
-
-        ret = (fatherSize + motherSize) * 0.5f * (1 + 0.075f * (float) (new Random()).nextGaussian());
-
         return ret;
     }
 
@@ -415,6 +265,161 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
 
     }
 
+    public static int getNumber(ItemStack stack)
+    {
+        if (stack == null || stack.getTagCompound() == null
+                || !stack.getTagCompound().hasKey("pokemobNumber")) { return -1; }
+        return stack.getTagCompound().getInteger("pokemobNumber");
+    }
+
+    public static IPokemob getPokemob(World world, ItemStack stack)
+    {
+        if (stack == null || stack.getTagCompound() == null
+                || !stack.getTagCompound().hasKey("pokemobNumber")) { return null; }
+        int number = stack.getTagCompound().getInteger("pokemobNumber");
+        IPokemob ret = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(number, world);
+        return ret;
+    }
+
+    public static float getSize(float fatherSize, float motherSize)
+    {
+        float ret = 1;
+
+        ret = (fatherSize + motherSize) * 0.5f * (1 + 0.075f * (float) (new Random()).nextGaussian());
+
+        return ret;
+    }
+
+    private static void initPokemobGenetics(IPokemob mob, NBTTagCompound nbt)
+    {
+
+        boolean fixedShiny = nbt.getBoolean("shiny");
+
+        String moveString = nbt.getString("moves");
+        String[] moves = moveString.split(";");
+        long ivs = nbt.getLong("ivs");
+
+        mob.setShiny(fixedShiny);
+        if (!nbt.hasKey("ivs"))
+        {
+
+        }
+        else
+        {
+            if (moves.length > 0)
+            {
+                for (int i = 1; i < Math.max(moves.length + 1, 5); i++)
+                {
+                    mob.setMove(4 - i, null);
+                }
+            }
+            // IsDead is set to prevent it notifiying owner of move learning.
+            ((Entity) mob).isDead = true;
+            for (String s : moves)
+            {
+                if (s != null && !s.isEmpty()) mob.learn(s);
+            }
+            ((Entity) mob).isDead = false;
+            byte[] rgba = new byte[4];
+            if (nbt.hasKey("colour", 7))
+            {
+                rgba = nbt.getByteArray("colour");
+                if (rgba.length == 4)
+                {
+                    ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128, rgba[3] + 128);
+                }
+                else if (rgba.length == 3)
+                {
+                    ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128);
+                }
+            }
+            mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
+            mob.setNature(Nature.values()[nbt.getByte("nature")]);
+            mob.setSize(nbt.getFloat("size"));
+        }
+
+        Vector3 location = Vector3.getNewVector().set(mob);
+        EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 2);
+        EntityLivingBase owner = player;
+        AxisAlignedBB box = location.getAABB().expand(4, 4, 4);
+        if (owner == null)
+        {
+            List<EntityLivingBase> list = ((Entity) mob).worldObj.getEntitiesWithinAABB(EntityLivingBase.class, box,
+                    new Predicate<EntityLivingBase>()
+                    {
+                        @Override
+                        public boolean apply(EntityLivingBase input)
+                        {
+                            return !(input instanceof EntityPokemobEgg) && !(input instanceof IEntityOwnable);
+                        }
+                    });
+            EntityLivingBase closestTo = (EntityLivingBase) mob;
+            EntityLivingBase t = null;
+            double d0 = Double.MAX_VALUE;
+
+            for (int i = 0; i < list.size(); ++i)
+            {
+                EntityLivingBase t1 = list.get(i);
+
+                if (t1 != closestTo && EntitySelectors.NOT_SPECTATING.apply(t1))
+                {
+                    double d1 = closestTo.getDistanceSqToEntity(t1);
+
+                    if (d1 <= d0)
+                    {
+                        t = t1;
+                        d0 = d1;
+                    }
+                }
+            }
+            owner = t;
+        }
+        if (owner == null)
+        {
+            IPokemob pokemob = (IPokemob) ((Entity) mob).worldObj.findNearestEntityWithinAABB(EntityPokemob.class, box,
+                    (Entity) mob);
+            if (pokemob != null && pokemob.getPokemonOwner() instanceof EntityPlayer)
+                player = (EntityPlayer) pokemob.getPokemonOwner();
+            owner = player;
+        }
+
+        if (owner != null)
+        {
+            mob.setPokemonOwner(owner);
+            mob.setPokemonAIState(IMoveConstants.TAMED, true);
+            mob.setPokemonAIState(IMoveConstants.SITTING, owner instanceof EntityPlayer);
+            mob.setPokecubeId(0);
+            mob.setHeldItem(null);
+        }
+    }
+
+    public static void initStack(Entity mother, IPokemob father, ItemStack stack)
+    {
+        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+
+        if (mother instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) mother;
+            if (father != null)
+            {
+                getGenetics(mob, father, stack.getTagCompound());
+            }
+        }
+        return;
+    }
+
+    public static void initStack(Entity placer, ItemStack stack)
+    {
+        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+
+        if (placer instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) placer;
+            if (!mob.getPokemonOwnerName().equals("")) { return; }
+        }
+        return;
+    }
+
     public static boolean spawn(World world, ItemStack stack, double par2, double par4, double par6)
     {
         int pokedexNb = getNumber(stack);
@@ -425,7 +430,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         if (entity != null)
         {
             IPokemob mob = ((IPokemob) entity);
-            mob.setPokemonAIState(IPokemob.EXITINGCUBE, true);
+            mob.setPokemonAIState(IMoveConstants.EXITINGCUBE, true);
             entity.setHealth(entity.getMaxHealth());
             int exp = Tools.levelToXp(mob.getExperienceMode(), 1);
             exp = Math.max(1, exp);
@@ -436,7 +441,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
                 if (stack.getTagCompound().hasKey("nestLocation"))
                 {
                     int[] nest = stack.getTagCompound().getIntArray("nestLocation");
-                    ((IPokemob) mob).setHome(nest[0], nest[1], nest[2], 16);
+                    mob.setHome(nest[0], nest[1], nest[2], 16);
                     mob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
                 }
                 else
@@ -453,55 +458,68 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         return entity != null;
     }
 
-    public static IPokemob getPokemob(World world, ItemStack stack)
+    /** @param par1 */
+    public ItemPokemobEgg()
     {
-        if (stack == null || stack.getTagCompound() == null
-                || !stack.getTagCompound().hasKey("pokemobNumber")) { return null; }
-        int number = stack.getTagCompound().getInteger("pokemobNumber");
-        IPokemob ret = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(number, world);
-        return ret;
+        this.setCreativeTab(null);
     }
 
-    public static IPokemob getFakePokemob(World world, Vector3 location, ItemStack stack)
+    public boolean dropEgg(World world, ItemStack stack, Vector3 location, Entity placer)
     {
-        if (stack == null || stack.getTagCompound() == null
-                || !stack.getTagCompound().hasKey("pokemobNumber")) { return null; }
-        int number = stack.getTagCompound().getInteger("pokemobNumber");
+        if (!PokecubeMod.pokemobEggs.containsKey(getNumber(stack))) { return false; }
 
-        PokedexEntry entry = Database.getEntry(number);
-        IPokemob pokemob = fakeMobs.get(entry);
-        if (pokemob == null)
+        ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg, 1, stack.getItemDamage());
+        if (stack.hasTagCompound()) eggItemStack.setTagCompound(stack.getTagCompound());
+        else eggItemStack.setTagCompound(new NBTTagCompound());
+
+        initStack(placer, eggItemStack);
+
+        Entity entity = new EntityPokemobEgg(world, location.x, location.y, location.z, eggItemStack, placer);
+        EggEvent.Place event = new EggEvent.Place(entity);
+        MinecraftForge.EVENT_BUS.post(event);
+        world.spawnEntityInWorld(entity);
+        return entity != null;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
+    {
+        int damage = getNumber(par1ItemStack);
+        EntityEggInfo entityegginfo = (EntityEggInfo) PokecubeMod.pokemobEggs.get(Integer.valueOf(damage));
+
+        PokedexEntry entry = Database.getEntry(damage);
+
+        if (entry != null)
         {
-            pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(number, world);
-            if (pokemob == null) return null;
-            fakeMobs.put(entry, pokemob);
+            int colour = entry.getType1().colour;
+
+            if (par2 == 0)
+            {
+                return colour;
+            }
+            else
+            {
+                colour = entry.getType2().colour;
+                return colour;
+            }
         }
-        location.moveEntity((Entity) pokemob);
-        initPokemobGenetics(pokemob, stack.getTagCompound());
-        return pokemob;
-    }
 
-    public static int getNumber(ItemStack stack)
-    {
-        if (stack == null || stack.getTagCompound() == null
-                || !stack.getTagCompound().hasKey("pokemobNumber")) { return -1; }
-        return stack.getTagCompound().getInteger("pokemobNumber");
-    }
-
-    public static ItemStack getEggStack(IPokemob pokemob)
-    {
-        ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg);
-        eggItemStack.setTagCompound(new NBTTagCompound());
-        eggItemStack.getTagCompound().setInteger("pokemobNumber", pokemob.getPokedexNb());
-        return eggItemStack;
-    }
-
-    public static ItemStack getEggStack(int pokedexNb)
-    {
-        ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg);
-        eggItemStack.setTagCompound(new NBTTagCompound());
-        eggItemStack.getTagCompound().setInteger("pokemobNumber", pokedexNb);
-        return eggItemStack;
+        if (entityegginfo != null)
+        {
+            if (par2 == 0)
+            {
+                return entityegginfo.primaryColor;
+            }
+            else
+            {
+                return entityegginfo.secondaryColor;
+            }
+        }
+        else
+        {
+            return 0xffffff;
+        }
     }
 
     @Override
@@ -523,6 +541,31 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         }
 
         return s;
+    }
+
+    /** Callback for item usage. If the item does something special on right
+     * clicking, he will have one of those. Return True if something happen and
+     * false if it don't. This is for ITEMS, not BLOCKS */
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side,
+            float hitX, float hitY, float hitZ)
+    {
+        if (worldIn.isRemote) { return true; }
+        Block i = worldIn.getBlockState(pos).getBlock();
+        BlockPos newPos = pos.offset(side);
+        double d = 0.0D;
+
+        if (side == EnumFacing.UP && i instanceof BlockFence)
+        {
+            d = 0.5D;
+        }
+        Vector3 loc = Vector3.getNewVector().set(newPos).addTo(hitX, d, hitZ);
+
+        if (dropEgg(worldIn, stack, loc, playerIn) && !playerIn.capabilities.isCreativeMode)
+        {
+            stack.stackSize--;
+        }
+        return true;
     }
 
 }

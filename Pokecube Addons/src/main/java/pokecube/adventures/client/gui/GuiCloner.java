@@ -18,6 +18,16 @@ public class GuiCloner extends GuiContainer {
         super(new ContainerCloner(inventory, tile));
     }
 
+    @Override
+	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
+    {
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.mc.getTextureManager().bindTexture(craftingTableGuiTextures);
+        int k = (this.width - this.xSize) / 2;
+        int l = (this.height - this.ySize) / 2;
+        this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+    }
+
     /**
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
@@ -39,15 +49,5 @@ public class GuiCloner extends GuiContainer {
             this.fontRendererObj.drawString(""+energy, 128, 6, 4210752);
             
         }
-    }
-
-    @Override
-	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
-    {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(craftingTableGuiTextures);
-        int k = (this.width - this.xSize) / 2;
-        int l = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
     }
 }

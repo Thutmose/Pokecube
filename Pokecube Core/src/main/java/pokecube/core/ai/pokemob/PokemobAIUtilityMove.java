@@ -37,18 +37,18 @@ public class PokemobAIUtilityMove extends EntityAIBase
         speed = pokemon.getMovementSpeed();
     }
 
-    @Override
-    public boolean shouldExecute()
-    {
-        return pokemon.getPokemonAIState(IPokemob.NEWEXECUTEMOVE) && entity.getAttackTarget() == null;
-    }
-
     /** Returns whether an in-progress EntityAIBase should continue executing */
     @Override
     public boolean continueExecuting()
     {
-        return destination != null && !pokemon.getPokemonAIState(IPokemob.NEWEXECUTEMOVE)
-                && pokemon.getPokemonAIState(IPokemob.EXECUTINGMOVE);
+        return destination != null && !pokemon.getPokemonAIState(IMoveConstants.NEWEXECUTEMOVE)
+                && pokemon.getPokemonAIState(IMoveConstants.EXECUTINGMOVE);
+    }
+
+    @Override
+    public boolean shouldExecute()
+    {
+        return pokemon.getPokemonAIState(IMoveConstants.NEWEXECUTEMOVE) && entity.getAttackTarget() == null;
     }
 
     /** Execute a one shot task or start executing a continuous task */
@@ -56,8 +56,8 @@ public class PokemobAIUtilityMove extends EntityAIBase
     public void startExecuting()
     {
         EntityLivingBase owner = null;
-        pokemon.setPokemonAIState(IPokemob.NEWEXECUTEMOVE, false);
-        if (pokemon.getPokemonAIState(IPokemob.TAMED))
+        pokemon.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, false);
+        if (pokemon.getPokemonAIState(IMoveConstants.TAMED))
         {
             owner = pokemon.getPokemonOwner();
         }
@@ -90,7 +90,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
         }
         else
         {
-            pokemon.setPokemonAIState(IPokemob.EXECUTINGMOVE, true);
+            pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, true);
             entity.getNavigator().tryMoveToXYZ(destination.x, destination.y, destination.z, speed);
         }
     }
@@ -102,8 +102,8 @@ public class PokemobAIUtilityMove extends EntityAIBase
 
         if (destination == null)
         {
-            if (pokemon.getPokemonAIState(IPokemob.EXECUTINGMOVE))
-                pokemon.setPokemonAIState(IPokemob.EXECUTINGMOVE, false);
+            if (pokemon.getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
+                pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);
             return;
         }
         entity.getLookHelper().setLookPosition(destination.x, destination.y, destination.z, 10,
@@ -123,7 +123,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
             // move.doWorldAction(pokemon, destination);
             move.attack(pokemon, destination, (float) destination.distToEntity(entity));
             entity.getNavigator().clearPathEntity();
-            pokemon.setPokemonAIState(IPokemob.EXECUTINGMOVE, false);
+            pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);
             destination = null;
         }
     }

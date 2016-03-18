@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockStaticLiquid;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,7 +39,45 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public class Move_Basic extends Move_Base implements IMoveConstants
 {
+    protected static ItemStack createStackedBlock(IBlockState state)
+    {
+        int i = 0;
+        Item item = Item.getItemFromBlock(state.getBlock());
+
+        if (item != null && item.getHasSubtypes())
+        {
+            i = state.getBlock().getMetaFromState(state);
+        }
+        return new ItemStack(item, 1, i);
+    }
+
+    protected static boolean shouldSilk(IPokemob pokemob)
+    {
+        if (pokemob.getAbility() == null) return false;
+        Ability ability = pokemob.getAbility();
+        return pokemob.getLevel() > 90 && ability.toString().equalsIgnoreCase("hypercutter");
+    }
+
+    protected static void silkHarvest(IBlockState state, BlockPos pos, World worldIn, EntityPlayer player)
+    {
+        java.util.ArrayList<ItemStack> items = new java.util.ArrayList<ItemStack>();
+        ItemStack itemstack = createStackedBlock(state);
+
+        if (itemstack != null)
+        {
+            items.add(itemstack);
+        }
+
+        net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(items, worldIn, pos, worldIn.getBlockState(pos),
+                0, 1.0f, true, player);
+        for (ItemStack stack : items)
+        {
+            Block.spawnAsEntity(worldIn, pos, stack);
+        }
+    }
+
     Vector3 v  = Vector3.getNewVector();
+
     Vector3 v1 = Vector3.getNewVector();
 
     /** Constructor for a Pokemob move. <br/>
@@ -55,19 +93,6 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     public Move_Basic(String name)
     {
         super(name);
-    }
-
-    /** Specify the sound this move should play when executed.
-     * 
-     * @param sound
-     *            the string id of the sound to play
-     * @return the move */
-    @Override
-    public Move_Basic setSound(String sound)
-    {
-        this.sound = sound;
-
-        return this;
     }
 
     @Override
@@ -169,21 +194,113 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     }
 
     @Override
-    protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+    public boolean doAttack(IPokemob attacker, Entity attacked, float f)
     {
-        if (animation instanceof Thunder && attacked != null)
+        if (attacked == null && getAttackCategory() != CATEGORY_SELF) return false;
+
+        if (getAttackCategory() == CATEGORY_SELF && this.hasStatModSelf)
         {
-            EntityLightningBolt lightning = new EntityLightningBolt(attacked.worldObj, 0, 0, 0);
-            attacked.onStruckByLightning(lightning);
+            return attacker.getMoveStats().SELFRAISECOUNTER == 0;
         }
-        if (f > 0 && attacked instanceof EntityCreeper)
+        else if (this.hasStatModTarget && f == 0) return attacker.getMoveStats().TARGETLOWERCOUNTER == 0;
+
+        return true;
+    }
+
+    /** Do anything special for self attacks, usually raising/lowering of stats.
+     * 
+     * @param mob */
+    @Override
+    public void doSelfAttack(IPokemob mob, float f)
+    {
+        if (doAttack(mob, (Entity) mob, f))
         {
-            EntityCreeper creeper = (EntityCreeper) attacked;
-            if (move.type == PokeType.psychic && creeper.getHealth() > 0)
+            MovesUtils.displayMoveMessages(mob, (Entity) mob, name);
+            if (sound != null)
             {
-                creeper.explode();
+                ((Entity) mob).worldObj.playSoundAtEntity((Entity) mob, sound, 0.5F,
+                        1F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
+            }
+            Vector3 v = Vector3.getNewVector().set(mob);
+            notifyClient((Entity) mob, v, (Entity) mob);
+            MovesUtils.attack(
+                    new MovePacket(mob, (Entity) mob, name, move.type, getPWR(), move.crit, (byte) 0, (byte) 0, false));
+            postAttack(mob, (Entity) mob, f, 0);
+        }
+    }
+
+    @Override
+    public void doWorldAction(IPokemob attacker, Vector3 location)
+    {
+        if (!PokecubeMod.pokemobsDamageBlocks) return;
+        World world = ((Entity) attacker).worldObj;
+        IBlockState state = location.getBlockState(world);
+        Block block = state.getBlock();
+        if (getType(attacker) == PokeType.ice && (move.attackCategory & CATEGORY_DISTANCE) > 0 && move.power > 0)
+        {
+            if (block.isAir(world, location.getPos()))
+            {
+                if (location.getBlock(world, EnumFacing.DOWN).isNormalCube())
+                    location.setBlock(world, Blocks.snow_layer.getDefaultState());
+            }
+            else if (block == Blocks.water && state.getValue(BlockLiquid.LEVEL) == 0)
+            {
+                location.setBlock(world, Blocks.ice.getDefaultState());
+            }
+            else if (block.isReplaceable(world, location.getPos()))
+            {
+                if (location.getBlock(world, EnumFacing.DOWN).isNormalCube())
+                    location.setBlock(world, Blocks.snow_layer.getDefaultState());
             }
         }
+        int strong = 100;
+        if (getType(attacker) == PokeType.water && getPWR() >= strong)
+        {
+            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                    .addTo(location);
+            IBlockState nextState = nextBlock.getBlockState(world);
+            if (block == Blocks.lava)
+            {
+                location.setBlock(world, Blocks.obsidian);
+            }
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.lava)
+            {
+                nextBlock.setBlock(world, Blocks.obsidian);
+            }
+        }
+        if (getType(attacker) == PokeType.electric && getPWR() >= strong)
+        {
+            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                    .addTo(location);
+            IBlockState nextState = nextBlock.getBlockState(world);
+            if (block == Blocks.sand)
+            {
+                location.setBlock(world, Blocks.glass);
+            }
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.sand)
+            {
+                nextBlock.setBlock(world, Blocks.glass);
+            }
+        }
+        if (getType(attacker) == PokeType.fire && getPWR() >= strong)
+        {
+            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                    .addTo(location);
+            IBlockState nextState = nextBlock.getBlockState(world);
+            if (block == Blocks.obsidian)
+            {
+                location.setBlock(world, Blocks.lava);
+            }
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.obsidian)
+            {
+                nextBlock.setBlock(world, Blocks.lava);
+            }
+        }
+    }
+
+    @Override
+    protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+    {
         finalAttack(attacker, attacked, f, true);
     }
 
@@ -192,6 +309,19 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     {
         if (doAttack(attacker, attacked, f))
         {
+            if (getAnimation() instanceof Thunder && attacked != null)
+            {
+                EntityLightningBolt lightning = new EntityLightningBolt(attacked.worldObj, 0, 0, 0);
+                attacked.onStruckByLightning(lightning);
+            }
+            if (f > 0 && attacked instanceof EntityCreeper)
+            {
+                EntityCreeper creeper = (EntityCreeper) attacked;
+                if (move.type == PokeType.psychic && creeper.getHealth() > 0)
+                {
+                    creeper.explode();
+                }
+            }
             if (message) MovesUtils.displayMoveMessages(attacker, attacked, name);
             if (move.multiTarget && (getAttackCategory() & CATEGORY_SELF) == 0)
             {
@@ -254,38 +384,22 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         }
     }
 
-    /** Do anything special for self attacks, usually raising/lowering of stats.
-     * 
-     * @param mob */
     @Override
-    public void doSelfAttack(IPokemob mob, float f)
+    public int getAttackDelay(IPokemob attacker)
     {
-        if (doAttack(mob, (Entity) mob, f))
-        {
-            MovesUtils.displayMoveMessages(mob, (Entity) mob, name);
-            if (sound != null)
-            {
-                ((Entity) mob).worldObj.playSoundAtEntity((Entity) mob, sound, 0.5F,
-                        1F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
-            }
-            Vector3 v = Vector3.getNewVector().set(mob);
-            notifyClient((Entity) mob, v, (Entity) mob);
-            MovesUtils.attack(
-                    new MovePacket(mob, (Entity) mob, name, move.type, getPWR(), move.crit, (byte) 0, (byte) 0, false));
-            postAttack(mob, (Entity) mob, f, 0);
-        }
+        return 0;
     }
 
-    /** Called after the attack for special post attack treatment.
-     * 
-     * @param attacker
-     * @param attacked
-     * @param f
-     * @param finalAttackStrength
-     *            the number of HPs the attack takes from target */
     @Override
-    public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+    public Move_Base getMove(String name)
     {
+        return MovesUtils.getMoveFromName(name);
+    }
+
+    @Override
+    public boolean isMoveImplemented(String s)
+    {
+        return MovesUtils.isMoveImplemented(s);
     }
 
     /** Sends a message to clients to display specific animation on the client
@@ -319,141 +433,28 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         }
     }
 
+    /** Called after the attack for special post attack treatment.
+     * 
+     * @param attacker
+     * @param attacked
+     * @param f
+     * @param finalAttackStrength
+     *            the number of HPs the attack takes from target */
     @Override
-    public boolean doAttack(IPokemob attacker, Entity attacked, float f)
+    public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
     {
-        if (attacked == null && getAttackCategory() != CATEGORY_SELF) return false;
-
-        if (getAttackCategory() == CATEGORY_SELF && this.hasStatModSelf)
-        {
-            return ((IPokemob) attacker).getMoveStats().SELFRAISECOUNTER == 0;
-        }
-        else if (this.hasStatModTarget && f == 0) return ((IPokemob) attacker).getMoveStats().TARGETLOWERCOUNTER == 0;
-
-        return true;
     }
 
+    /** Specify the sound this move should play when executed.
+     * 
+     * @param sound
+     *            the string id of the sound to play
+     * @return the move */
     @Override
-    public Move_Base getMove(String name)
+    public Move_Basic setSound(String sound)
     {
-        return MovesUtils.getMoveFromName(name);
-    }
+        this.sound = sound;
 
-    @Override
-    public boolean isMoveImplemented(String s)
-    {
-        return MovesUtils.isMoveImplemented(s);
-    }
-
-    @Override
-    public int getAttackDelay(IPokemob attacker)
-    {
-        return 0;
-    }
-
-    @Override
-    public void doWorldAction(IPokemob attacker, Vector3 location)
-    {
-        if (!PokecubeMod.pokemobsDamageBlocks) return;
-        World world = ((Entity) attacker).worldObj;
-        IBlockState state = location.getBlockState(world);
-        Block block = state.getBlock();
-        if (getType() == PokeType.ice && (move.attackCategory & CATEGORY_DISTANCE) > 0 && move.power > 0)
-        {
-            if (block.isAir(world, location.getPos()))
-            {
-                if (location.getBlock(world, EnumFacing.DOWN).isNormalCube())
-                    location.setBlock(world, Blocks.snow_layer.getDefaultState());
-            }
-            else if (block == Blocks.water && state.getValue(BlockStaticLiquid.LEVEL) == 0)
-            {
-                location.setBlock(world, Blocks.ice.getDefaultState());
-            }
-            else if (block.isReplaceable(world, location.getPos()))
-            {
-                if (location.getBlock(world, EnumFacing.DOWN).isNormalCube())
-                    location.setBlock(world, Blocks.snow_layer.getDefaultState());
-            }
-        }
-        int strong = 100;
-        if (getType() == PokeType.water && getPWR() >= strong)
-        {
-            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
-                    .addTo(location);
-            IBlockState nextState = nextBlock.getBlockState(world);
-            if (block == Blocks.lava)
-            {
-                location.setBlock(world, Blocks.obsidian);
-            }
-            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.lava)
-            {
-                nextBlock.setBlock(world, Blocks.obsidian);
-            }
-        }
-        if (getType() == PokeType.electric && getPWR() >= strong)
-        {
-            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
-                    .addTo(location);
-            IBlockState nextState = nextBlock.getBlockState(world);
-            if (block == Blocks.sand)
-            {
-                location.setBlock(world, Blocks.glass);
-            }
-            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.sand)
-            {
-                nextBlock.setBlock(world, Blocks.glass);
-            }
-        }
-        if (getType() == PokeType.fire && getPWR() >= strong)
-        {
-            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
-                    .addTo(location);
-            IBlockState nextState = nextBlock.getBlockState(world);
-            if (block == Blocks.obsidian)
-            {
-                location.setBlock(world, Blocks.lava);
-            }
-            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.obsidian)
-            {
-                nextBlock.setBlock(world, Blocks.lava);
-            }
-        }
-    }
-
-    protected static boolean shouldSilk(IPokemob pokemob)
-    {
-        if (pokemob.getAbility() == null) return false;
-        Ability ability = pokemob.getAbility();
-        return pokemob.getLevel() > 90 && ability.toString().equalsIgnoreCase("hypercutter");
-    }
-
-    protected static void silkHarvest(IBlockState state, BlockPos pos, World worldIn, EntityPlayer player)
-    {
-        java.util.ArrayList<ItemStack> items = new java.util.ArrayList<ItemStack>();
-        ItemStack itemstack = createStackedBlock(state);
-
-        if (itemstack != null)
-        {
-            items.add(itemstack);
-        }
-
-        net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(items, worldIn, pos, worldIn.getBlockState(pos),
-                0, 1.0f, true, player);
-        for (ItemStack stack : items)
-        {
-            Block.spawnAsEntity(worldIn, pos, stack);
-        }
-    }
-
-    protected static ItemStack createStackedBlock(IBlockState state)
-    {
-        int i = 0;
-        Item item = Item.getItemFromBlock(state.getBlock());
-
-        if (item != null && item.getHasSubtypes())
-        {
-            i = state.getBlock().getMetaFromState(state);
-        }
-        return new ItemStack(item, 1, i);
+        return this;
     }
 }

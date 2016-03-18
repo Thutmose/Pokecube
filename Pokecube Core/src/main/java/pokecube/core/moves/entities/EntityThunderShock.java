@@ -32,6 +32,16 @@ public class EntityThunderShock extends EntityLightningBolt
         this.boltLivingTime = this.rand.nextInt(3) + 1;
     }
 
+    @Override
+    protected void entityInit() {}
+
+    @Override
+	@SideOnly(Side.CLIENT)
+    public boolean isInRangeToRender3d(double p_145770_1_, double p_145770_3_, double p_145770_5_)
+    {
+        return true;
+    }
+
     /**
      * Called to update the entity's position/logic.
      */
@@ -73,9 +83,6 @@ public class EntityThunderShock extends EntityLightningBolt
         }
     }
 
-    @Override
-    protected void entityInit() {}
-
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
@@ -87,12 +94,5 @@ public class EntityThunderShock extends EntityLightningBolt
      */
     @Override
     protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {}
-
-    @Override
-	@SideOnly(Side.CLIENT)
-    public boolean isInRangeToRender3d(double p_145770_1_, double p_145770_3_, double p_145770_5_)
-    {
-        return true;
-    }
 
 }

@@ -63,16 +63,6 @@ public class PostfixMathCommand implements PostfixMathCommandI
 	}
 	
 	/**
-	 * Sets the number of current number of parameters used in the next call
-	 * of run(). This method is only called when the reqNumberOfParameters is
-	 * -1.
-	 */
-	@Override
-	public void setCurNumberOfParameters(int n) {
-		curNumberOfParameters = n;
-	}
-	
-	/**
 	 * Throws an exception because this method should never be called under
 	 * normal circumstances. Each function should use it's own run() method
 	 * for evaluating the function. This includes popping off the parameters
@@ -81,5 +71,15 @@ public class PostfixMathCommand implements PostfixMathCommandI
 	@Override
 	public void run(Stack s) throws ParseException {
 		throw new ParseException("run() method of PostfixMathCommand called");
+	}
+	
+	/**
+	 * Sets the number of current number of parameters used in the next call
+	 * of run(). This method is only called when the reqNumberOfParameters is
+	 * -1.
+	 */
+	@Override
+	public void setCurNumberOfParameters(int n) {
+		curNumberOfParameters = n;
 	}
 }

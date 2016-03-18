@@ -44,33 +44,6 @@ public class GuardAI extends EntityAIBase
     }
 
     @Override
-    public boolean shouldExecute()
-    {
-        if (null == entity || entity.isDead || capability.getActiveTime() == null
-                || capability.getPos() == null) { return false; }
-        if (capability.getActiveTime() != TimePeriod.fullDay
-                && !capability.getActiveTime().contains((int) (entity.worldObj.getWorldTime() % 24000L)))
-        {
-            return false;
-        }
-        BlockPos pos = capability.getPos();
-        if (pos.getX() == 0 && pos.getY() == 0 && pos.getZ() == 0) return false;
-        double distanceToGuardPointSq = entity.getDistanceSq(capability.getPos());
-        return (distanceToGuardPointSq > capability.getRoamDistance() * capability.getRoamDistance());
-    }
-
-    @Override
-    public void startExecuting()
-    {
-        capability.setState(GuardState.RUNNING);
-        entity.getEntityAttribute(SharedMonsterAttributes.followRange).removeModifier(goingHome);
-        entity.getEntityAttribute(SharedMonsterAttributes.followRange).applyModifier(goingHome);
-        double speed = entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
-        entity.getNavigator().tryMoveToXYZ(capability.getPos().getX() + 0.5, capability.getPos().getY(),
-                capability.getPos().getZ() + 0.5, speed);
-    }
-
-    @Override
     public boolean continueExecuting()
     {
         switch (capability.getState())
@@ -101,12 +74,6 @@ public class GuardAI extends EntityAIBase
     }
 
     @Override
-    public void updateTask()
-    {
-        super.updateTask();
-    }
-
-    @Override
     public void resetTask()
     {
         super.resetTask();
@@ -114,13 +81,46 @@ public class GuardAI extends EntityAIBase
         entity.getEntityAttribute(SharedMonsterAttributes.followRange).removeModifier(goingHome);
     }
 
+    public void setPos(BlockPos pos)
+    {
+        capability.setPos(pos);
+    }
+
     public void setTimePeriod(TimePeriod time)
     {
         capability.setActiveTime(time);
     }
 
-    public void setPos(BlockPos pos)
+    @Override
+    public boolean shouldExecute()
     {
-        capability.setPos(pos);
+        if (null == entity || entity.isDead || capability.getActiveTime() == null
+                || capability.getPos() == null) { return false; }
+        if (capability.getActiveTime() != TimePeriod.fullDay
+                && !capability.getActiveTime().contains((int) (entity.worldObj.getWorldTime() % 24000L)))
+        {
+            return false;
+        }
+        BlockPos pos = capability.getPos();
+        if (pos.getX() == 0 && pos.getY() == 0 && pos.getZ() == 0) return false;
+        double distanceToGuardPointSq = entity.getDistanceSq(capability.getPos());
+        return (distanceToGuardPointSq > capability.getRoamDistance() * capability.getRoamDistance());
+    }
+
+    @Override
+    public void startExecuting()
+    {
+        capability.setState(GuardState.RUNNING);
+        entity.getEntityAttribute(SharedMonsterAttributes.followRange).removeModifier(goingHome);
+        entity.getEntityAttribute(SharedMonsterAttributes.followRange).applyModifier(goingHome);
+        double speed = entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+        entity.getNavigator().tryMoveToXYZ(capability.getPos().getX() + 0.5, capability.getPos().getY(),
+                capability.getPos().getZ() + 0.5, speed);
+    }
+
+    @Override
+    public void updateTask()
+    {
+        super.updateTask();
     }
 }

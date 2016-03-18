@@ -9,16 +9,16 @@ import pokecube.compat.jei.JEICompat;
 
 public class ClonerRecipeHandler implements IRecipeHandler<ClonerRecipe> {
 
-    @Override
-    @Nonnull
-    public Class<ClonerRecipe> getRecipeClass() {
-        return ClonerRecipe.class;
-    }
-
     @Nonnull
     @Override
     public String getRecipeCategoryUid() {
         return JEICompat.CLONER;
+    }
+
+    @Override
+    @Nonnull
+    public Class<ClonerRecipe> getRecipeClass() {
+        return ClonerRecipe.class;
     }
 
     @Override

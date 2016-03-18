@@ -19,6 +19,7 @@ import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 
 /**
@@ -57,53 +58,34 @@ public class PokemobAIHurt extends EntityAIBase {
     }
 
     /**
-     * Returns whether the EntityAIBase should begin execution.
+     * Checks to see if this entity can find a short path to the given target.
      */
-    @Override
-	public boolean shouldExecute()
+    private boolean canEasilyReach(EntityLivingBase p_75295_1_)
     {
-        int i = this.taskOwner.getRevengeTimer();
-        return i != this.revengeTimer && this.isSuitableTarget(this.taskOwner.getAITarget(), false);
-    }
+        this.targetSearchDelay = 10 + this.taskOwner.getRNG().nextInt(5);
+        PathEntity pathentity = this.taskOwner.getNavigator().getPathToEntityLiving(p_75295_1_);
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    @Override
-	public void startExecuting()
-    {
-
-        this.targetSearchStatus = 0;
-        this.targetSearchDelay = 0;
-        this.lastSeenTime = 0;
-      //  this.taskOwner.setAttackTarget(this.taskOwner.getAITarget());
-        this.revengeTimer = this.taskOwner.getRevengeTimer();
-
-        if (this.entityCallsForHelp && Math.random() > 0.95)
+        if (pathentity == null)
         {
-            double d0 = this.getTargetDistance();
-            List<? extends EntityCreature> list = this.taskOwner.worldObj.getEntitiesWithinAABB(this.taskOwner.getClass(), new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ, this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D).expand(d0, 10.0D, d0));
-            Iterator<? extends EntityCreature> iterator = list.iterator();
+            return false;
+        }
+        else
+        {
+            PathPoint pathpoint = pathentity.getFinalPathPoint();
 
-            while (iterator.hasNext())
+            if (pathpoint == null)
             {
-                IPokemob mob = (IPokemob)iterator.next();
-
-                if (this.taskOwner != mob && ((EntityLiving)mob).getAttackTarget() == null 
-                		&& this.taskOwner.getAttackTarget() !=null
-                		&& !((EntityLiving)mob).isOnSameTeam(this.taskOwner.getAttackTarget())
-                		&& mob.getPokedexEntry().areRelated(pokemob.getPokedexEntry())
-                		)
-                {
-                	((EntityLiving)mob).setAttackTarget(this.taskOwner.getAttackTarget());
-                    mob.setPokemonAIState(IPokemob.ANGRY, true);
-                }
+                return false;
+            }
+            else
+            {
+                int i = pathpoint.xCoord - MathHelper.floor_double(p_75295_1_.posX);
+                int j = pathpoint.zCoord - MathHelper.floor_double(p_75295_1_.posZ);
+                return i * i + j * j <= 2.25D;
             }
         }
-
-        super.startExecuting();
     }
-    
+
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
@@ -146,20 +128,11 @@ public class PokemobAIHurt extends EntityAIBase {
             }
         }
     }
-
+    
     protected double getTargetDistance()
     {
         IAttributeInstance iattributeinstance = this.taskOwner.getEntityAttribute(SharedMonsterAttributes.followRange);
         return iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
-    }
-
-    /**
-     * Resets the task
-     */
-    @Override
-	public void resetTask()
-    {
-        ;
     }
 
     /**
@@ -236,31 +209,59 @@ public class PokemobAIHurt extends EntityAIBase {
     }
 
     /**
-     * Checks to see if this entity can find a short path to the given target.
+     * Resets the task
      */
-    private boolean canEasilyReach(EntityLivingBase p_75295_1_)
+    @Override
+	public void resetTask()
     {
-        this.targetSearchDelay = 10 + this.taskOwner.getRNG().nextInt(5);
-        PathEntity pathentity = this.taskOwner.getNavigator().getPathToEntityLiving(p_75295_1_);
+        ;
+    }
 
-        if (pathentity == null)
-        {
-            return false;
-        }
-        else
-        {
-            PathPoint pathpoint = pathentity.getFinalPathPoint();
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    @Override
+	public boolean shouldExecute()
+    {
+        int i = this.taskOwner.getRevengeTimer();
+        return i != this.revengeTimer && this.isSuitableTarget(this.taskOwner.getAITarget(), false);
+    }
 
-            if (pathpoint == null)
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    @Override
+	public void startExecuting()
+    {
+
+        this.targetSearchStatus = 0;
+        this.targetSearchDelay = 0;
+        this.lastSeenTime = 0;
+      //  this.taskOwner.setAttackTarget(this.taskOwner.getAITarget());
+        this.revengeTimer = this.taskOwner.getRevengeTimer();
+
+        if (this.entityCallsForHelp && Math.random() > 0.95)
+        {
+            double d0 = this.getTargetDistance();
+            List<? extends EntityCreature> list = this.taskOwner.worldObj.getEntitiesWithinAABB(this.taskOwner.getClass(), new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ, this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D).expand(d0, 10.0D, d0));
+            Iterator<? extends EntityCreature> iterator = list.iterator();
+
+            while (iterator.hasNext())
             {
-                return false;
-            }
-            else
-            {
-                int i = pathpoint.xCoord - MathHelper.floor_double(p_75295_1_.posX);
-                int j = pathpoint.zCoord - MathHelper.floor_double(p_75295_1_.posZ);
-                return i * i + j * j <= 2.25D;
+                IPokemob mob = (IPokemob)iterator.next();
+
+                if (this.taskOwner != mob && ((EntityLiving)mob).getAttackTarget() == null 
+                		&& this.taskOwner.getAttackTarget() !=null
+                		&& !((EntityLiving)mob).isOnSameTeam(this.taskOwner.getAttackTarget())
+                		&& mob.getPokedexEntry().areRelated(pokemob.getPokedexEntry())
+                		)
+                {
+                	((EntityLiving)mob).setAttackTarget(this.taskOwner.getAttackTarget());
+                    mob.setPokemonAIState(IMoveConstants.ANGRY, true);
+                }
             }
         }
+
+        super.startExecuting();
     }
 }

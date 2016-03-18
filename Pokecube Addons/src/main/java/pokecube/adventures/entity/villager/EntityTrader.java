@@ -32,7 +32,6 @@ import thut.api.maths.Vector3;
 
 public class EntityTrader extends EntityVillager
 {
-
     EntityPlayer customer;
 
     MerchantRecipeList list  = new MerchantRecipeList();
@@ -75,30 +74,6 @@ public class EntityTrader extends EntityVillager
             trade = new ItemStack(vitamin);
             list.add(new MerchantRecipe(emeralds.copy(), trade.copy()));
         }
-    }
-
-    @Override
-    public void setCustomer(EntityPlayer p)
-    {
-        customer = p;
-    }
-
-    @Override
-    public EntityPlayer getCustomer()
-    {
-        return customer;
-    }
-
-    @Override
-    public MerchantRecipeList getRecipes(EntityPlayer p)
-    {
-
-        if (chests.isEmpty()) { return list; }
-        list2.clear();
-
-        addRecipes(p);
-
-        return list2;
     }
 
     private void addRecipes(EntityPlayer p)
@@ -146,6 +121,167 @@ public class EntityTrader extends EntityVillager
             }
         }
 
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float i)
+    {
+        Entity e = source.getSourceOfDamage();
+        if (e == null || !(e instanceof EntityPlayer)) { return super.attackEntityFrom(source, i); }
+
+        if ((e instanceof EntityPlayer && (((EntityPlayer) e).capabilities.isCreativeMode))
+                || (((EntityPlayer) e).getHeldItem() != null
+                        && (((EntityPlayer) e).getHeldItem().getItem() instanceof ItemTrainer)))
+        {
+
+            EntityPlayer p = (EntityPlayer) e;
+            if (!p.capabilities.isCreativeMode)
+            {
+                ChunkCoordinate c = new ChunkCoordinate(MathHelper.floor_double(posX / 16f), (int) posY / 16,
+                        MathHelper.floor_double(posZ / 16f), dimension);
+                String owner = TeamManager.getInstance().getLandOwner(c);
+                Vector3 v = Vector3.getNewVector().set(this);
+                String owner1 = TeamManager.getInstance()
+                        .getLandOwner(new ChunkCoordinate(MathHelper.floor_double(v.intX() / 16f), v.intY() / 16,
+                                MathHelper.floor_double(v.intZ() / 16f), dimension));
+                if (owner1 == null || !owner1.equals(owner)) { return false; }
+                String team = worldObj.getScoreboard().getPlayersTeam(p.getName()).getRegisteredName();
+                if (owner == null) return false;
+                if (!owner.equals(team)
+                        || !TeamManager.getInstance().isAdmin(p.getName(), p.getTeam())) { return false; }
+            }
+            this.setDead();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean canDespawn()
+    {
+        return false;
+    }
+
+    @Override
+    public EntityVillager createChild(EntityAgeable p_90011_1_)
+    {
+        return null;
+    }
+
+    @Override
+    public EntityPlayer getCustomer()
+    {
+        return customer;
+    }
+
+    @Override
+    /** Get the formatted ChatComponent that will be used for the sender's
+     * username in chat */
+    public IChatComponent getDisplayName()
+    {
+        String s = "Trader";
+
+        ChatComponentText chatcomponenttext = new ChatComponentText(s);
+        chatcomponenttext.getChatStyle().setChatHoverEvent(this.getHoverEvent());
+        chatcomponenttext.getChatStyle().setInsertion(this.getUniqueID().toString());
+        return chatcomponenttext;
+
+    }
+
+    @Override
+    public MerchantRecipeList getRecipes(EntityPlayer p)
+    {
+
+        if (chests.isEmpty()) { return list; }
+        list2.clear();
+
+        addRecipes(p);
+
+        return list2;
+    }
+
+    /** Called when a player interacts with a mob. e.g. gets milk from a cow,
+     * gets into the saddle on a pig. */
+    @Override
+    public boolean interact(EntityPlayer p)
+    {
+        ItemStack itemstack = p.inventory.getCurrentItem();
+        boolean flag = itemstack != null && itemstack.getItem() == Items.spawn_egg;
+        System.out.println("Test");
+        if (!flag && this.isEntityAlive() && !this.isChild() && !p.isSneaking())
+        {
+            if (!this.worldObj.isRemote)
+            {
+                this.setCustomer(p);
+                p.displayVillagerTradeGui(this);
+            }
+
+            return true;
+        }
+        else if (p.isSneaking())
+        {
+            if (p.getHeldItem() != null && p.getHeldItem().hasTagCompound()
+                    && p.getHeldItem().getItem() instanceof ItemTrainer)
+            {
+                int[] loc = p.getHeldItem().getTagCompound().getIntArray("coords");
+                if (loc.length == 3)
+                {
+                    ChunkCoordinate c = new ChunkCoordinate(MathHelper.floor_double(loc[0] / 16f), loc[1] / 16,
+                            MathHelper.floor_double(loc[2] / 16f), dimension);
+                    String owner = TeamManager.getInstance().getLandOwner(c);
+                    Vector3 v = Vector3.getNewVector().set(this);
+                    String owner1 = TeamManager.getInstance()
+                            .getLandOwner(new ChunkCoordinate(MathHelper.floor_double(v.intX() / 16f), v.intY() / 16,
+                                    MathHelper.floor_double(v.intZ() / 16f), dimension));
+                    if (owner1 == null || !owner1.equals(owner)) { return false; }
+                    String team = worldObj.getScoreboard().getPlayersTeam(p.getName()).getRegisteredName();
+                    if (owner == null) return false;
+                    if (!owner.equals(team)
+                            || !TeamManager.getInstance().isAdmin(p.getName(), p.getTeam())) { return false; }
+                    BlockPos c1 = new BlockPos(loc[0], loc[1], loc[2]);
+                    if (chests.contains(c1)) chests.remove(c1);
+                    else chests.add(c1);
+                }
+            }
+            return true;
+        }
+        else
+        {
+            return super.interact(p);
+        }
+    }
+
+    @Override
+    public void onUpdate()
+    {
+        super.onUpdate();
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound nbt)
+    {
+        super.readEntityFromNBT(nbt);
+        list.clear();
+        list.readRecipiesFromTags(nbt.getCompoundTag("goods"));
+        NBTBase temp = nbt.getTag("chests");
+        if (temp instanceof NBTTagList)
+        {
+            NBTTagList tagList = (NBTTagList) temp;
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                int[] loc = tag.getIntArray("loc");
+                if (loc.length == 3) chests.add(new BlockPos(loc[0], loc[1], loc[2]));
+            }
+        }
+
+        texture = nbt.getString("texture");
+    }
+
+    @Override
+    public void setCustomer(EntityPlayer p)
+    {
+        customer = p;
     }
 
     @Override
@@ -264,143 +400,6 @@ public class EntityTrader extends EntityVillager
         }
         nbt.setTag("chests", chestsList);
         nbt.setString("texture", texture);
-    }
-
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbt)
-    {
-        super.readEntityFromNBT(nbt);
-        list.clear();
-        list.readRecipiesFromTags(nbt.getCompoundTag("goods"));
-        NBTBase temp = nbt.getTag("chests");
-        if (temp instanceof NBTTagList)
-        {
-            NBTTagList tagList = (NBTTagList) temp;
-            for (int i = 0; i < tagList.tagCount(); i++)
-            {
-                NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                int[] loc = tag.getIntArray("loc");
-                if (loc.length == 3) chests.add(new BlockPos(loc[0], loc[1], loc[2]));
-            }
-        }
-
-        texture = nbt.getString("texture");
-    }
-
-    @Override
-    public EntityVillager createChild(EntityAgeable p_90011_1_)
-    {
-        return null;
-    }
-
-    @Override
-    public boolean attackEntityFrom(DamageSource source, float i)
-    {
-        Entity e = source.getSourceOfDamage();
-        if (e == null || !(e instanceof EntityPlayer)) { return super.attackEntityFrom(source, i); }
-
-        if ((e instanceof EntityPlayer && (((EntityPlayer) e).capabilities.isCreativeMode))
-                || (((EntityPlayer) e).getHeldItem() != null
-                        && (((EntityPlayer) e).getHeldItem().getItem() instanceof ItemTrainer)))
-        {
-
-            EntityPlayer p = (EntityPlayer) e;
-            if (!p.capabilities.isCreativeMode)
-            {
-                ChunkCoordinate c = new ChunkCoordinate(MathHelper.floor_double(posX / 16f), (int) posY / 16,
-                        MathHelper.floor_double(posZ / 16f), dimension);
-                String owner = TeamManager.getInstance().getLandOwner(c);
-                Vector3 v = Vector3.getNewVector().set(this);
-                String owner1 = TeamManager.getInstance()
-                        .getLandOwner(new ChunkCoordinate(MathHelper.floor_double(v.intX() / 16f), v.intY() / 16,
-                                MathHelper.floor_double(v.intZ() / 16f), dimension));
-                if (owner1 == null || !owner1.equals(owner)) { return false; }
-                String team = worldObj.getScoreboard().getPlayersTeam(p.getName()).getRegisteredName();
-                if (owner == null) return false;
-                if (!owner.equals(team)
-                        || !TeamManager.getInstance().isAdmin(p.getName(), p.getTeam())) { return false; }
-            }
-            this.setDead();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void onUpdate()
-    {
-        super.onUpdate();
-    }
-
-    @Override
-    protected boolean canDespawn()
-    {
-        return false;
-    }
-
-    @Override
-    /** Get the formatted ChatComponent that will be used for the sender's
-     * username in chat */
-    public IChatComponent getDisplayName()
-    {
-        String s = "Trader";
-
-        ChatComponentText chatcomponenttext = new ChatComponentText(s);
-        chatcomponenttext.getChatStyle().setChatHoverEvent(this.getHoverEvent());
-        chatcomponenttext.getChatStyle().setInsertion(this.getUniqueID().toString());
-        return chatcomponenttext;
-
-    }
-
-    /** Called when a player interacts with a mob. e.g. gets milk from a cow,
-     * gets into the saddle on a pig. */
-    @Override
-    public boolean interact(EntityPlayer p)
-    {
-        ItemStack itemstack = p.inventory.getCurrentItem();
-        boolean flag = itemstack != null && itemstack.getItem() == Items.spawn_egg;
-        System.out.println("Test");
-        if (!flag && this.isEntityAlive() && !this.isChild() && !p.isSneaking())
-        {
-            if (!this.worldObj.isRemote)
-            {
-                this.setCustomer(p);
-                p.displayVillagerTradeGui(this);
-            }
-
-            return true;
-        }
-        else if (p.isSneaking())
-        {
-            if (p.getHeldItem() != null && p.getHeldItem().hasTagCompound()
-                    && p.getHeldItem().getItem() instanceof ItemTrainer)
-            {
-                int[] loc = p.getHeldItem().getTagCompound().getIntArray("coords");
-                if (loc.length == 3)
-                {
-                    ChunkCoordinate c = new ChunkCoordinate(MathHelper.floor_double(loc[0] / 16f), loc[1] / 16,
-                            MathHelper.floor_double(loc[2] / 16f), dimension);
-                    String owner = TeamManager.getInstance().getLandOwner(c);
-                    Vector3 v = Vector3.getNewVector().set(this);
-                    String owner1 = TeamManager.getInstance()
-                            .getLandOwner(new ChunkCoordinate(MathHelper.floor_double(v.intX() / 16f), v.intY() / 16,
-                                    MathHelper.floor_double(v.intZ() / 16f), dimension));
-                    if (owner1 == null || !owner1.equals(owner)) { return false; }
-                    String team = worldObj.getScoreboard().getPlayersTeam(p.getName()).getRegisteredName();
-                    if (owner == null) return false;
-                    if (!owner.equals(team)
-                            || !TeamManager.getInstance().isAdmin(p.getName(), p.getTeam())) { return false; }
-                    BlockPos c1 = new BlockPos(loc[0], loc[1], loc[2]);
-                    if (chests.contains(c1)) chests.remove(c1);
-                    else chests.add(c1);
-                }
-            }
-            return true;
-        }
-        else
-        {
-            return super.interact(p);
-        }
     }
 
 }

@@ -12,7 +12,6 @@ import pokecube.adventures.blocks.legendary.BlockLegendSpawner;
 import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.core.PokecubeItems;
-import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.ItemBlockMeta;
 import pokecube.core.interfaces.PokecubeMod;
 
@@ -26,16 +25,16 @@ public class BlockHandler
     {
         warppad = new BlockWarpPad().setUnlocalizedName("warppad");
         PokecubeItems.register(warppad, "warppad");
-        warppad.setCreativeTab(PokecubeCore.creativeTabPokecubeBlocks);
+        warppad.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         GameRegistry.registerTileEntity(TileEntityWarpPad.class, "warppad");
 
         cloner = new BlockCloner().setUnlocalizedName("cloner");
-        cloner.setCreativeTab(PokecubeCore.creativeTabPokecubeBlocks);
+        cloner.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         PokecubeItems.register(cloner, "cloner");
         GameRegistry.registerTileEntity(TileEntityCloner.class, "cloner");
 
         afa = new BlockAFA().setUnlocalizedName("afa");
-        afa.setCreativeTab(PokecubeCore.creativeTabPokecubeBlocks);
+        afa.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         PokecubeItems.register(afa, "afa");
         GameRegistry.registerTileEntity(TileEntityAFA.class, "afa");
 

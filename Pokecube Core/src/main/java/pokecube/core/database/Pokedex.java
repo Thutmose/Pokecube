@@ -11,17 +11,7 @@ import java.util.HashSet;
  */
 public class Pokedex
 {
-    private HashSet<Integer> entries;
-
     private static Pokedex instance;
-
-    /**
-     *
-     */
-    private Pokedex()
-    {
-        entries = new HashSet<Integer>();
-    }
 
     public static Pokedex getInstance()
     {
@@ -32,18 +22,64 @@ public class Pokedex
         return instance;
     }
 
-    public void registerPokemon(PokedexEntry entry)
+    private HashSet<Integer> entries;
+
+    /**
+     *
+     */
+    private Pokedex()
     {
-        if (entry == null || entry.pokedexNb == 0)
-        {
-            return;
-        }
-        getEntries().add(entry.pokedexNb);
+        entries = new HashSet<Integer>();
     }
+
+    public HashSet<Integer> getEntries()
+	{
+		return entries;
+	}
 
     public PokedexEntry getEntry(Integer pokedexNb)
     {
         return Database.getEntry(pokedexNb);
+    }
+
+    public PokedexEntry getFirstEntry()
+    {
+        int pokedexNb = 0;
+        PokedexEntry returned = null;
+
+        do
+        {
+            pokedexNb += 1;
+            returned = getEntry(pokedexNb);
+
+            if (returned != null)
+            {
+                return returned;
+            }
+        }
+        while (pokedexNb < 1500);
+
+        return null;
+    }
+
+    public PokedexEntry getLastEntry()
+    {
+        int pokedexNb = 1500;
+        PokedexEntry returned = null;
+
+        do
+        {
+            pokedexNb -= 1;
+            returned = getEntry(pokedexNb);
+
+            if (returned != null)
+            {
+                return returned;
+            }
+        }
+        while (pokedexNb > 00);
+
+        return null;
     }
 
     public PokedexEntry getNext(PokedexEntry pokedexEntry, int i)
@@ -99,48 +135,12 @@ public class Pokedex
         return pokedexEntry;
     }
 
-    public PokedexEntry getFirstEntry()
+	public void registerPokemon(PokedexEntry entry)
     {
-        int pokedexNb = 0;
-        PokedexEntry returned = null;
-
-        do
+        if (entry == null || entry.pokedexNb == 0)
         {
-            pokedexNb += 1;
-            returned = getEntry(pokedexNb);
-
-            if (returned != null)
-            {
-                return returned;
-            }
+            return;
         }
-        while (pokedexNb < 1500);
-
-        return null;
+        getEntries().add(entry.pokedexNb);
     }
-
-    public PokedexEntry getLastEntry()
-    {
-        int pokedexNb = 1500;
-        PokedexEntry returned = null;
-
-        do
-        {
-            pokedexNb -= 1;
-            returned = getEntry(pokedexNb);
-
-            if (returned != null)
-            {
-                return returned;
-            }
-        }
-        while (pokedexNb > 00);
-
-        return null;
-    }
-
-	public HashSet<Integer> getEntries()
-	{
-		return entries;
-	}
 }

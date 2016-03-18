@@ -66,12 +66,6 @@ public class ParticlesOnTarget extends MoveAnimationBase
         GlStateManager.popMatrix();
     }
 
-    @Override
-    public void initColour(long time, float partialTicks, Move_Base move)
-    {
-        rgba = getColourFromMove(move, 255);
-    }
-
     private void compileList()
     {
         if (!GL11.glIsList(meshId))
@@ -98,5 +92,11 @@ public class ParticlesOnTarget extends MoveAnimationBase
             GlStateManager.enableTexture2D();
             GL11.glEndList();
         }
+    }
+
+    @Override
+    public void initColour(long time, float partialTicks, Move_Base move)
+    {
+        rgba = getColourFromMove(move, 255);
     }
 }

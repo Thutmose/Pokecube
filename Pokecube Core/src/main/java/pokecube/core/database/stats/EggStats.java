@@ -8,6 +8,24 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.PokeType;
 
 public class EggStats {
+	public static int getNumberUniqueHatched()
+	{
+		int count = 0;
+
+		for(HashMap<PokedexEntry, Integer> map: eggsHatched.values())
+		{
+			count += map.size();
+		}
+		return count;
+	}
+	public static int getNumberUniqueHatchedBy(String playerName)
+	{
+		int count = 0;
+		HashMap<PokedexEntry, Integer> map = eggsHatched.get(playerName);
+		if(map==null) return 0;
+		count += map.size();
+		return count;
+	}
 	public static int getTotalNumberHatched()
 	{
 		int count = 0;
@@ -16,18 +34,6 @@ public class EggStats {
 			for(Integer i: map.values())
 			{
 				count += i;
-			}
-		}
-		return count;
-	}
-	public static int getTotalOfPokemobHatched(PokedexEntry type)
-	{
-		int count = 0;
-		for(HashMap<PokedexEntry, Integer> map: eggsHatched.values())
-		{
-			if(map.containsKey(type))
-			{
-				count += map.get(type);
 			}
 		}
 		return count;
@@ -52,22 +58,16 @@ public class EggStats {
 			count += map.get(type);
 		return count;
 	}
-	public static int getNumberUniqueHatched()
+	public static int getTotalOfPokemobHatched(PokedexEntry type)
 	{
 		int count = 0;
-
 		for(HashMap<PokedexEntry, Integer> map: eggsHatched.values())
 		{
-			count += map.size();
+			if(map.containsKey(type))
+			{
+				count += map.get(type);
+			}
 		}
-		return count;
-	}
-	public static int getNumberUniqueHatchedBy(String playerName)
-	{
-		int count = 0;
-		HashMap<PokedexEntry, Integer> map = eggsHatched.get(playerName);
-		if(map==null) return 0;
-		count += map.size();
 		return count;
 	}
 	public static int getTotalOfTypeHatched(PokeType type)

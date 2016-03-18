@@ -34,7 +34,6 @@ import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -42,35 +41,41 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
+import thut.api.entity.IMobColourable;
 
 @SuppressWarnings("deprecation")
 public class GuiChooseFirstPokemob extends GuiScreen
 {
 
-    int                       xSize            = 150;
-    int                       ySize            = 150;
+    public final static float                     POKEDEX_RENDER     = 1.5f;
+    public static boolean                         options            = true;
 
-    private float             yRenderAngle     = 10;
-    private float             xRenderAngle     = 0;
+    public static Integer[]                       starters;
+    private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
 
-    private float             yHeadRenderAngle = 10;
-    private float             xHeadRenderAngle = 0;
+    int                                           xSize              = 150;
+    int                                           ySize              = 150;
 
-    public final static float POKEDEX_RENDER   = 1.5f;
+    private float                                 yRenderAngle       = 10;
 
-    public static boolean     options          = true;
+    private float                                 xRenderAngle       = 0;
 
-    protected EntityPlayer    entityPlayer     = null;
+    private float                                 yHeadRenderAngle   = 10;
 
-    protected PokedexEntry    pokedexEntry     = null;
-    public static Integer[]   starters;
-    int                       index            = 0;
-    boolean                   fixed            = false;
+    private float                                 xHeadRenderAngle   = 0;
+    protected EntityPlayer                        entityPlayer       = null;
+    protected PokedexEntry                        pokedexEntry       = null;
+    int                                           index              = 0;
 
-    public GuiChooseFirstPokemob(Integer[] _starters, boolean fixed)
-    {
-        this(_starters);
-    }
+    boolean                                       fixed              = false;
+
+    GuiButton                                     next;
+
+    GuiButton                                     prev;
+    GuiButton                                     choose;
+    GuiButton                                     accept;
+
+    GuiButton                                     deny;
 
     public GuiChooseFirstPokemob(Integer[] _starters)
     {
@@ -111,49 +116,86 @@ public class GuiChooseFirstPokemob extends GuiScreen
         entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
     }
 
-    GuiButton next;
-    GuiButton prev;
-    GuiButton choose;
-
-    GuiButton accept;
-    GuiButton deny;
+    public GuiChooseFirstPokemob(Integer[] _starters, boolean fixed)
+    {
+        this(_starters);
+    }
 
     @Override
-    public void initGui()
+    protected void actionPerformed(GuiButton guibutton)
     {
-        super.initGui();
-        buttonList.clear();
-        int xOffset = 0;
-        int yOffset = 110;
-        if (starters.length > 1)
+        int n = guibutton.id;
+        if (n == 1)
         {
-            String next = StatCollector.translateToLocal("tile.pc.next");
-            buttonList.add(this.next = new GuiButton(1, width / 2 - xOffset + 65, height / 2 - yOffset, 50, 20, next));
-            String prev = StatCollector.translateToLocal("tile.pc.previous");
-            buttonList.add(this.prev = new GuiButton(2, width / 2 - xOffset - 115, height / 2 - yOffset, 50, 20, prev));
+            index++;
+            if (index >= starters.length) index = 0;
         }
-
-        String choose = StatCollector.translateToLocal("gui.pokemob.select");
-        buttonList.add(
-                this.choose = new GuiButton(3, width / 2 - xOffset - 25, height / 2 - yOffset + 160, 50, 20, choose));
-
-        buttonList.add(
-                this.accept = new GuiButton(4, width / 2 - xOffset + 64, height / 2 - yOffset + 30, 50, 20, "Accept"));
-        buttonList.add(
-                this.deny = new GuiButton(5, width / 2 - xOffset - 115, height / 2 - yOffset + 30, 50, 20, "Deny"));
-
-        if (options)
+        if (n == 2)
         {
+            if (index > 0) index--;
+            else index = starters.length - 1;
+        }
+        if (n == 4)
+        {
+            int pokedexNb = 0;
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+            DataOutputStream outputStream = new DataOutputStream(bos);
+            try
+            {
+                outputStream.writeInt(pokedexNb);
+                outputStream.writeBoolean(fixed);
+                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
+                        bos.toByteArray());
+                PokecubePacketHandler.sendToServer(packet);
+                if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
+                    PokecubeSerializer.instance.setHasStarter(entityPlayer);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+            mc.thePlayer.closeScreen();
+            options = true;
+        }
+        if (n == 5)
+        {
+            next.visible = true;
+            prev.visible = true;
+            choose.visible = true;
             accept.visible = false;
             deny.visible = false;
+            options = true;
+            fixed = true;
         }
-        else
+        if (n == 3)
         {
-            next.visible = false;
-            prev.visible = false;
-            this.choose.visible = false;
+            int pokedexNb = pokedexEntry.getPokedexNb();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+            DataOutputStream outputStream = new DataOutputStream(bos);
+            try
+            {
+                outputStream.writeInt(pokedexNb);
+                outputStream.writeBoolean(fixed);
+                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
+                        bos.toByteArray());
+                PokecubePacketHandler.sendToServer(packet);
+                if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
+                    PokecubeSerializer.instance.setHasStarter(entityPlayer);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+            mc.thePlayer.closeScreen();
         }
+    }
 
+    /** Returns true if this GUI should pause the game when it is displayed in
+     * single-player */
+    @Override
+    public boolean doesGuiPauseGame()
+    {
+        return false;
     }
 
     @Override
@@ -171,7 +213,8 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
         if (!options)
         {
-            drawCenteredString(fontRendererObj, "Start with Override Starter?", (width / 2), 17, 0xffffff);
+            drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.pokemob.choose1st.override"),
+                    (width / 2), 17, 0xffffff);
             return;
         }
 
@@ -246,90 +289,6 @@ public class GuiChooseFirstPokemob extends GuiScreen
         GL11.glPopMatrix();
     }
 
-    @Override
-    protected void keyTyped(char par1, int par2) throws IOException
-    {
-
-        super.keyTyped(par1, par2);
-        if (par2 == 1)
-        {
-            mc.thePlayer.closeScreen();
-            return;
-        }
-
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton guibutton)
-    {
-        int n = guibutton.id;
-        if (n == 1)
-        {
-            index++;
-            if (index >= starters.length) index = 0;
-        }
-        if (n == 2)
-        {
-            if (index > 0) index--;
-            else index = starters.length - 1;
-        }
-        if (n == 4)
-        {
-            int pokedexNb = 0;
-            ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-            DataOutputStream outputStream = new DataOutputStream(bos);
-            try
-            {
-                outputStream.writeInt(pokedexNb);
-                outputStream.writeBoolean(fixed);
-                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
-                        bos.toByteArray());
-                PokecubePacketHandler.sendToServer(packet);
-                if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
-                    PokecubeSerializer.instance.setHasStarter(entityPlayer);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-            mc.thePlayer.closeScreen();
-            options = true;
-        }
-        if (n == 5)
-        {
-            next.visible = true;
-            prev.visible = true;
-            choose.visible = true;
-            accept.visible = false;
-            deny.visible = false;
-            options = true;
-            fixed = true;
-        }
-        if (n == 3)
-        {
-            int pokedexNb = pokedexEntry.getPokedexNb();
-            ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-            DataOutputStream outputStream = new DataOutputStream(bos);
-            try
-            {
-                outputStream.writeInt(pokedexNb);
-                outputStream.writeBoolean(fixed);
-                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
-                        bos.toByteArray());
-                PokecubePacketHandler.sendToServer(packet);
-                if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
-                    PokecubeSerializer.instance.setHasStarter(entityPlayer);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-            mc.thePlayer.closeScreen();
-        }
-    }
-
-    private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
-
     private EntityLiving getEntityToDisplay()
     {
         EntityLiving pokemob = entityToDisplayMap.get(pokedexEntry.getPokedexNb());
@@ -346,6 +305,85 @@ public class GuiChooseFirstPokemob extends GuiScreen
         }
 
         return pokemob;
+    }
+
+    @Override
+    public void initGui()
+    {
+        super.initGui();
+        buttonList.clear();
+        int xOffset = 0;
+        int yOffset = 110;
+        if (starters.length > 1)
+        {
+            String next = StatCollector.translateToLocal("tile.pc.next");
+            buttonList.add(this.next = new GuiButton(1, width / 2 - xOffset + 65, height / 2 - yOffset, 50, 20, next));
+            String prev = StatCollector.translateToLocal("tile.pc.previous");
+            buttonList.add(this.prev = new GuiButton(2, width / 2 - xOffset - 115, height / 2 - yOffset, 50, 20, prev));
+        }
+
+        String choose = StatCollector.translateToLocal("gui.pokemob.select");
+        buttonList.add(
+                this.choose = new GuiButton(3, width / 2 - xOffset - 25, height / 2 - yOffset + 160, 50, 20, choose));
+
+        buttonList.add(this.accept = new GuiButton(4, width / 2 - xOffset + 64, height / 2 - yOffset + 30, 50, 20,
+                StatCollector.translateToLocal("gui.pokemob.accept")));
+        buttonList.add(this.deny = new GuiButton(5, width / 2 - xOffset - 115, height / 2 - yOffset + 30, 50, 20,
+                StatCollector.translateToLocal("gui.pokemob.deny")));
+
+        if (options)
+        {
+            accept.visible = false;
+            deny.visible = false;
+        }
+        else
+        {
+            next.visible = false;
+            prev.visible = false;
+            this.choose.visible = false;
+        }
+
+    }
+
+    @Override
+    protected void keyTyped(char par1, int par2) throws IOException
+    {
+
+        super.keyTyped(par1, par2);
+        if (par2 == 1)
+        {
+            mc.thePlayer.closeScreen();
+            return;
+        }
+
+    }
+
+    public void renderItem(double x, double y, double z)
+    {
+        ItemStack item = PokecubeItems.getStack("pokecube");
+        if (item.getItem() instanceof IPokecube)
+        {
+            glPushMatrix();
+            GL11.glPushAttrib(GL11.GL_BLEND);
+            GL11.glEnable(GL11.GL_BLEND);
+            glTranslatef((float) x, (float) y, (float) z);
+            glPushMatrix();
+            glTranslatef(0.5F, 1.0f, 0.5F);
+            glRotatef(-180, 1.0F, 0.0F, 0.0F);
+            glRotatef(entityPlayer.worldObj.getWorldTime() * 2, 0.0F, 1.0F, 0.0F);
+            glScalef(50f, 50f, 50f);
+
+            GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(xRenderAngle, 1.0F, 0.0F, 0.0F);
+            RenderHelper.disableStandardItemLighting();
+
+            Minecraft.getMinecraft().getItemRenderer().renderItem(entityPlayer, item, TransformType.GUI);
+
+            glPopMatrix();
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glPopAttrib();
+            glPopMatrix();
+        }
     }
 
     private void renderMob()
@@ -411,42 +449,6 @@ public class GuiChooseFirstPokemob extends GuiScreen
         {
             e.printStackTrace();
         }
-    }
-
-    public void renderItem(double x, double y, double z)
-    {
-        ItemStack item = PokecubeItems.getStack("pokecube");
-        if (item.getItem() instanceof IPokecube)
-        {
-            glPushMatrix();
-            GL11.glPushAttrib(GL11.GL_BLEND);
-            GL11.glEnable(GL11.GL_BLEND);
-            glTranslatef((float) x, (float) y, (float) z);
-            glPushMatrix();
-            glTranslatef(0.5F, 1.0f, 0.5F);
-            glRotatef(-180, 1.0F, 0.0F, 0.0F);
-            glRotatef(entityPlayer.worldObj.getWorldTime() * 2, 0.0F, 1.0F, 0.0F);
-            glScalef(50f, 50f, 50f);
-
-            GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(xRenderAngle, 1.0F, 0.0F, 0.0F);
-            RenderHelper.disableStandardItemLighting();
-
-            Minecraft.getMinecraft().getItemRenderer().renderItem(entityPlayer, item, TransformType.GUI);
-
-            glPopMatrix();
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glPopAttrib();
-            glPopMatrix();
-        }
-    }
-
-    /** Returns true if this GUI should pause the game when it is displayed in
-     * single-player */
-    @Override
-    public boolean doesGuiPauseGame()
-    {
-        return false;
     }
 
 }

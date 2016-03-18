@@ -34,63 +34,6 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
 {
-    /** Client side only register stuff... */
-    public void registerRenderInformation()
-    {
-        // unused server side. -- see ClientProxyPokecube for implementation
-    }
-
-    public void registerKeyBindings()
-    {
-    }
-
-    public void preInit(FMLPreInitializationEvent evt)
-    {
-
-    }
-
-    @Override
-    public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
-    {
-        if (id == Config.GUIPOKECENTER_ID)
-        {
-            TileEntity tile_entity = world.getTileEntity(new BlockPos(x, y, z));
-
-            if (tile_entity instanceof TileHealTable) { return new ContainerHealTable((TileHealTable) tile_entity,
-                    player.inventory); }
-        }
-        if (id == Config.GUIPOKEMOB_ID)
-        {
-            IPokemob e = (IPokemob) world.getEntityByID(x);
-            return new ContainerPokemob(player.inventory, e.getPokemobInventory(), e);
-        }
-        BlockPos pos = new BlockPos(x, y, z);
-        if (id == Config.GUITRADINGTABLE_ID)
-        {
-            TileEntity tile_entity = world.getTileEntity(pos);
-            IBlockState state = world.getBlockState(pos);
-            if (tile_entity instanceof TileEntityTradingTable)
-            {
-                boolean tmc = (Boolean) state.getValue(BlockTradingTable.TMC);
-
-                if (!tmc) return new ContainerTradingTable((TileEntityTradingTable) tile_entity, player.inventory);
-                else return new ContainerTMCreator((TileEntityTradingTable) tile_entity, player.inventory);
-            }
-        }
-        if (id == Config.GUIPC_ID)
-        {
-            TileEntity te = world.getTileEntity(pos);
-            if (te instanceof TileEntityPC)
-            {
-                ContainerPC cont = new ContainerPC(player.inventory, (TileEntityPC) te);
-
-                return cont;
-            }
-        }
-        return null;
-
-    }
-
     @Override
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
     {
@@ -98,22 +41,17 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         return null;
     }
 
-    public boolean isOnClientSide()
-    {
-        return false;
-    }
-
     public String getFolderName()
     {
         return FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName();
     }
 
-    public IPlayerUsage getMinecraftInstance()
+    public IThreadListener getMainThreadListener()
     {
         return FMLCommonHandler.instance().getMinecraftServerInstance();
     }
 
-    public IThreadListener getMainThreadListener()
+    public IPlayerUsage getMinecraftInstance()
     {
         return FMLCommonHandler.instance().getMinecraftServerInstance();
     }
@@ -139,6 +77,48 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         }
     }
 
+    @Override
+    public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
+    {
+        if (id == Config.GUIPOKECENTER_ID)
+        {
+            TileEntity tile_entity = world.getTileEntity(new BlockPos(x, y, z));
+
+            if (tile_entity instanceof TileHealTable) { return new ContainerHealTable((TileHealTable) tile_entity,
+                    player.inventory); }
+        }
+        if (id == Config.GUIPOKEMOB_ID)
+        {
+            IPokemob e = (IPokemob) world.getEntityByID(x);
+            return new ContainerPokemob(player.inventory, e.getPokemobInventory(), e);
+        }
+        BlockPos pos = new BlockPos(x, y, z);
+        if (id == Config.GUITRADINGTABLE_ID)
+        {
+            TileEntity tile_entity = world.getTileEntity(pos);
+            IBlockState state = world.getBlockState(pos);
+            if (tile_entity instanceof TileEntityTradingTable)
+            {
+                boolean tmc = state.getValue(BlockTradingTable.TMC);
+
+                if (!tmc) return new ContainerTradingTable((TileEntityTradingTable) tile_entity, player.inventory);
+                else return new ContainerTMCreator((TileEntityTradingTable) tile_entity, player.inventory);
+            }
+        }
+        if (id == Config.GUIPC_ID)
+        {
+            TileEntity te = world.getTileEntity(pos);
+            if (te instanceof TileEntityPC)
+            {
+                ContainerPC cont = new ContainerPC(player.inventory, (TileEntityPC) te);
+
+                return cont;
+            }
+        }
+        return null;
+
+    }
+
     public World getWorld()
     {
         if (FMLCommonHandler.instance().getMinecraftServerInstance().worldServers.length > 1)
@@ -146,9 +126,18 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         return null;
     }
 
-    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
+    public boolean isOnClientSide()
     {
-        // TODO send a packet to spawn it on client if sent from here
+        return false;
+    }
+
+    public void preInit(FMLPreInitializationEvent evt)
+    {
+
+    }
+
+    public void registerKeyBindings()
+    {
     }
 
     @Override
@@ -171,6 +160,17 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     @Override
     public void registerPokemobRenderer(String name, Render renderer, Object mod)
     {
+    }
+
+    /** Client side only register stuff... */
+    public void registerRenderInformation()
+    {
+        // unused server side. -- see ClientProxyPokecube for implementation
+    }
+
+    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
+    {
+        // TODO send a packet to spawn it on client if sent from here
     }
 
 }

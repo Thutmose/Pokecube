@@ -30,6 +30,18 @@ public class AIReturnHome extends AIBase
     }
 
     @Override
+    public void reset()
+    {
+    }
+
+    @Override
+    public void run()
+    {
+        PathEntity path = entity.getNavigator().getPathToPos(mob.getHome());
+        if (path != null) addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
+    }
+
+    @Override
     public boolean shouldRun()
     {
         BlockPos home = mob.getHome();
@@ -46,18 +58,6 @@ public class AIReturnHome extends AIBase
             }
         }
         return !activeTime && !mob.getPokemonAIState(IMoveConstants.ANGRY);
-    }
-
-    @Override
-    public void run()
-    {
-        PathEntity path = entity.getNavigator().getPathToPos(mob.getHome());
-        if (path != null) addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
-    }
-
-    @Override
-    public void reset()
-    {
     }
 
 }

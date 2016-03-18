@@ -35,6 +35,96 @@ public class ThaumcraftCompat
 
     protected static Map<PokeType, AspectList> pokeTypeToAspects = new HashMap<PokeType, AspectList>();
 
+    public static void addLoot()
+    {
+        ItemStack pokecube = PokecubeItems.getStack("pokecube");
+        ItemStack greatcube = PokecubeItems.getStack("greatcube");
+        ItemStack ultracube = PokecubeItems.getStack("ultracube");
+        ItemStack mastercube = PokecubeItems.getStack("mastercube");
+        ItemStack expshare = PokecubeItems.getStack("exp_share");
+
+        pokecube.stackSize = 4;
+        greatcube.stackSize = 2;
+
+        ThaumcraftApi.addLootBagItem(pokecube, 50, 0);
+        ThaumcraftApi.addLootBagItem(greatcube, 10, 0);
+        ThaumcraftApi.addLootBagItem(ultracube, 5, 0);
+
+        ThaumcraftApi.addLootBagItem(pokecube, 500, 1);
+        ThaumcraftApi.addLootBagItem(greatcube, 100, 1);
+        ThaumcraftApi.addLootBagItem(ultracube, 50, 1);
+
+        ThaumcraftApi.addLootBagItem(ultracube, 200, 2);
+        ThaumcraftApi.addLootBagItem(mastercube, 20, 2);
+        ThaumcraftApi.addLootBagItem(expshare, 100, 2);
+
+        for (ItemStack stack : PokecubeMod.HMs)
+        {
+            ThaumcraftApi.addLootBagItem(stack.copy(), 10, 0);
+        }
+    }
+
+    private static void addMapping(PokeType type, AspectList aspects)
+    {
+        if (pokeTypeToAspects
+                .containsKey(type)) { throw new IllegalArgumentException("PokeType aspects already registered"); }
+        pokeTypeToAspects.put(type, aspects);
+    }
+
+    public static void addPage()
+    {
+        ResearchCategories.registerCategory("POKECUBE", null,
+                new ResourceLocation("pokecube", "textures/items/thaumiumpokecubefront.png"),
+                new ResourceLocation("pokecube", "textures/items/pokedex.png"));
+    }
+
+    public static void addResearch()
+    {
+        ArrayList<ResearchPage> pagelist = Lists.newArrayList();
+        pagelist.add(new ResearchPage("tc.research_page.THAUMIUMPOKECUBE.1"));
+        pagelist.add(new ResearchPage(RecipeThaumiumPokecube()));
+        ArrayList<InfusionRecipe> recipes = Lists.newArrayList();
+        for (PokeType type : PokeType.values())
+        {
+            recipes.add(InfusedThaumiumPokecube(type));
+        }
+        pagelist.add(new ResearchPage(recipes.toArray(new InfusionRecipe[0])));
+        new ResearchItem("THAUMIUMPOKECUBE", "POKECUBE",
+                (new AspectList()).add(Aspect.METAL, 3).add(Aspect.AURA, 2).add(Aspect.TRAP, 2), 0, 3, 2,
+                new ItemStack(PokecubeItems.getEmptyCube(98))).setPages(pagelist.toArray(new ResearchPage[0]))
+                        .registerResearchItem();
+    }
+
+    static Aspect fromType(PokeType type)
+    {
+        AspectList list = pokeTypeToAspects.get(type);
+        return list.getAspects()[0];
+    }
+
+    static Object infuse(Aspect aspect)
+    {
+        ItemStack ret = new ItemStack(PokecubeItems.getEmptyCube(98));
+        ret.setTagCompound(new NBTTagCompound());
+        AspectList list = new AspectList();
+        list.add(aspect, 3);
+        list.writeToNBT(ret.getTagCompound(), "Aspects");
+        return ret;
+    }
+
+    static InfusionRecipe InfusedThaumiumPokecube(PokeType type)
+    {
+        Aspect aspect = fromType(type);
+        String item = "crystal_essence";
+        ItemStack stack = PokecubeItems.getStack(item);
+        stack.setTagCompound(new NBTTagCompound());
+        AspectList list = new AspectList();
+        list.add(aspect, 1);
+        list.writeToNBT(stack.getTagCompound(), "Aspects");
+        return ThaumcraftApi.addInfusionCraftingRecipe("THAUMIUMPOKECUBE", infuse(aspect), 1,
+                (new AspectList()).add(Aspect.TRAP, 16).add(aspect, 16), new ItemStack(PokecubeItems.getEmptyCube(98)),
+                new ItemStack[] { stack.copy(), stack.copy(), stack });
+    }
+
     static void init()
     {
         addMapping(PokeType.unknown, new AspectList().add(Aspect.ELDRITCH, 2));
@@ -66,11 +156,13 @@ public class ThaumcraftCompat
         addMapping(PokeType.fairy, new AspectList().add(Aspect.AURA, 2));
     }
 
-    private static void addMapping(PokeType type, AspectList aspects)
+    static InfusionRecipe RecipeThaumiumPokecube()
     {
-        if (pokeTypeToAspects
-                .containsKey(type)) { throw new IllegalArgumentException("PokeType aspects already registered"); }
-        pokeTypeToAspects.put(type, aspects);
+        ItemStack stack = new ItemStack(thaumcraft.api.items.ItemsTC.ingots);
+        return ThaumcraftApi.addInfusionCraftingRecipe("THAUMIUMPOKECUBE",
+                new ItemStack(PokecubeItems.getEmptyCube(98)), 1,
+                (new AspectList()).add(Aspect.METAL, 8).add(Aspect.TRAP, 8).add(Aspect.AURA, 4),
+                new ItemStack(PokecubeItems.getEmptyCube(0)), new ItemStack[] { stack.copy(), stack.copy(), stack });
     }
 
     public AspectList getAspects(PokedexEntry entry)
@@ -138,7 +230,7 @@ public class ThaumcraftCompat
             NBTTagList tlist = stack.getTagCompound().getTagList("Aspects", (byte) 10);
             for (int j = 0; j < tlist.tagCount(); j++)
             {
-                NBTTagCompound rs = (NBTTagCompound) tlist.getCompoundTagAt(j);
+                NBTTagCompound rs = tlist.getCompoundTagAt(j);
                 if (rs.hasKey("key"))
                 {
                     thaumcraft.api.aspects.Aspect a = thaumcraft.api.aspects.Aspect.getAspect(rs.getString("key"));
@@ -146,26 +238,6 @@ public class ThaumcraftCompat
                     evt.toolTip.add(a.getName() + " x" + num);
                 }
             }
-        }
-    }
-
-    public void registerTrainersThaumcraft()
-    {
-        Class<EntityTrainer> klass = pokecube.adventures.entity.trainers.EntityTrainer.class;
-
-        String name = (String) EntityList.classToStringMapping.get(klass);
-
-        AspectList aspects = new AspectList();
-
-        aspects.add(Aspect.MAN, 4);
-        aspects.add(Aspect.BEAST, 2);
-        aspects.add(Aspect.ORDER, 2);
-        aspects.add(Aspect.TRAP, 1);
-        aspects.add(Aspect.EXCHANGE, 1);
-
-        if (name != null)
-        {
-            ThaumcraftApi.registerEntityTag(name, aspects);
         }
     }
 
@@ -178,7 +250,7 @@ public class ThaumcraftCompat
 
             if (klass != null && entry != null)
             {
-                String name = (String) EntityList.classToStringMapping.get(klass);
+                String name = EntityList.classToStringMapping.get(klass);
 
                 if (name != null)
                 {
@@ -210,95 +282,23 @@ public class ThaumcraftCompat
         }
     }
 
-    static InfusionRecipe RecipeThaumiumPokecube()
+    public void registerTrainersThaumcraft()
     {
-        ItemStack stack = new ItemStack(thaumcraft.api.items.ItemsTC.ingots);
-        return ThaumcraftApi.addInfusionCraftingRecipe("THAUMIUMPOKECUBE",
-                new ItemStack(PokecubeItems.getEmptyCube(98)), 1,
-                (new AspectList()).add(Aspect.METAL, 8).add(Aspect.TRAP, 8).add(Aspect.AURA, 4),
-                new ItemStack(PokecubeItems.getEmptyCube(0)), new ItemStack[] { stack.copy(), stack.copy(), stack });
-    }
+        Class<EntityTrainer> klass = pokecube.adventures.entity.trainers.EntityTrainer.class;
 
-    static Object infuse(Aspect aspect)
-    {
-        ItemStack ret = new ItemStack(PokecubeItems.getEmptyCube(98));
-        ret.setTagCompound(new NBTTagCompound());
-        AspectList list = new AspectList();
-        list.add(aspect, 3);
-        list.writeToNBT(ret.getTagCompound(), "Aspects");
-        return ret;
-    }
+        String name = EntityList.classToStringMapping.get(klass);
 
-    static InfusionRecipe InfusedThaumiumPokecube(PokeType type)
-    {
-        Aspect aspect = fromType(type);
-        String item = "crystal_essence";
-        ItemStack stack = PokecubeItems.getStack(item);
-        stack.setTagCompound(new NBTTagCompound());
-        AspectList list = new AspectList();
-        list.add(aspect, 1);
-        list.writeToNBT(stack.getTagCompound(), "Aspects");
-        return ThaumcraftApi.addInfusionCraftingRecipe("THAUMIUMPOKECUBE", infuse(aspect), 1,
-                (new AspectList()).add(Aspect.TRAP, 16).add(aspect, 16), new ItemStack(PokecubeItems.getEmptyCube(98)),
-                new ItemStack[] { stack.copy(), stack.copy(), stack });
-    }
+        AspectList aspects = new AspectList();
 
-    public static void addPage()
-    {
-        ResearchCategories.registerCategory("POKECUBE", null,
-                new ResourceLocation("pokecube", "textures/items/thaumiumpokecubefront.png"),
-                new ResourceLocation("pokecube", "textures/items/pokedex.png"));
-    }
+        aspects.add(Aspect.MAN, 4);
+        aspects.add(Aspect.BEAST, 2);
+        aspects.add(Aspect.ORDER, 2);
+        aspects.add(Aspect.TRAP, 1);
+        aspects.add(Aspect.EXCHANGE, 1);
 
-    public static void addResearch()
-    {
-        ArrayList<ResearchPage> pagelist = Lists.newArrayList();
-        pagelist.add(new ResearchPage("tc.research_page.THAUMIUMPOKECUBE.1"));
-        pagelist.add(new ResearchPage(RecipeThaumiumPokecube()));
-        ArrayList<InfusionRecipe> recipes = Lists.newArrayList();
-        for (PokeType type : PokeType.values())
+        if (name != null)
         {
-            recipes.add(InfusedThaumiumPokecube(type));
-        }
-        pagelist.add(new ResearchPage(recipes.toArray(new InfusionRecipe[0])));
-        new ResearchItem("THAUMIUMPOKECUBE", "POKECUBE",
-                (new AspectList()).add(Aspect.METAL, 3).add(Aspect.AURA, 2).add(Aspect.TRAP, 2), 0, 3, 2,
-                new ItemStack(PokecubeItems.getEmptyCube(98))).setPages(pagelist.toArray(new ResearchPage[0]))
-                        .registerResearchItem();
-    }
-
-    static Aspect fromType(PokeType type)
-    {
-        AspectList list = pokeTypeToAspects.get(type);
-        return list.getAspects()[0];
-    }
-
-    public static void addLoot()
-    {
-        ItemStack pokecube = PokecubeItems.getStack("pokecube");
-        ItemStack greatcube = PokecubeItems.getStack("greatcube");
-        ItemStack ultracube = PokecubeItems.getStack("ultracube");
-        ItemStack mastercube = PokecubeItems.getStack("mastercube");
-        ItemStack expshare = PokecubeItems.getStack("exp_share");
-
-        pokecube.stackSize = 4;
-        greatcube.stackSize = 2;
-
-        ThaumcraftApi.addLootBagItem(pokecube, 50, 0);
-        ThaumcraftApi.addLootBagItem(greatcube, 10, 0);
-        ThaumcraftApi.addLootBagItem(ultracube, 5, 0);
-
-        ThaumcraftApi.addLootBagItem(pokecube, 500, 1);
-        ThaumcraftApi.addLootBagItem(greatcube, 100, 1);
-        ThaumcraftApi.addLootBagItem(ultracube, 50, 1);
-
-        ThaumcraftApi.addLootBagItem(ultracube, 200, 2);
-        ThaumcraftApi.addLootBagItem(mastercube, 20, 2);
-        ThaumcraftApi.addLootBagItem(expshare, 100, 2);
-
-        for (ItemStack stack : PokecubeMod.HMs)
-        {
-            ThaumcraftApi.addLootBagItem(stack.copy(), 10, 0);
+            ThaumcraftApi.registerEntityTag(name, aspects);
         }
     }
 }

@@ -7,21 +7,30 @@ import pokecube.core.utils.TimePeriod;
 
 public class GuardAICapability implements IGuardAICapability
 {
+    public static class Factory implements Callable<IGuardAICapability>
+    {
+        @Override
+        public IGuardAICapability call() throws Exception
+        {
+            return new GuardAICapability();
+        }
+    }
     private BlockPos   pos;
     private float      roamDistance;
     private TimePeriod activeTime;
+
     private GuardState state = GuardState.IDLE;
+
+    @Override
+    public TimePeriod getActiveTime()
+    {
+        return activeTime;
+    }
 
     @Override
     public BlockPos getPos()
     {
         return pos;
-    }
-
-    @Override
-    public void setPos(BlockPos pos)
-    {
-        this.pos = pos;
     }
 
     @Override
@@ -31,15 +40,9 @@ public class GuardAICapability implements IGuardAICapability
     }
 
     @Override
-    public void setRoamDistance(float roam)
+    public GuardState getState()
     {
-        this.roamDistance = roam;
-    }
-
-    @Override
-    public TimePeriod getActiveTime()
-    {
-        return activeTime;
+        return state;
     }
 
     @Override
@@ -49,23 +52,20 @@ public class GuardAICapability implements IGuardAICapability
     }
 
     @Override
-    public GuardState getState()
+    public void setPos(BlockPos pos)
     {
-        return state;
+        this.pos = pos;
+    }
+
+    @Override
+    public void setRoamDistance(float roam)
+    {
+        this.roamDistance = roam;
     }
 
     @Override
     public void setState(GuardState state)
     {
         this.state = state;
-    }
-
-    public static class Factory implements Callable<IGuardAICapability>
-    {
-        @Override
-        public IGuardAICapability call() throws Exception
-        {
-            return new GuardAICapability();
-        }
     }
 }

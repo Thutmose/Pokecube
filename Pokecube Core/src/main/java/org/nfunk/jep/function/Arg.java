@@ -27,16 +27,6 @@ public class Arg extends PostfixMathCommand
 		numberOfParameters = 1;
 	}
 	
-	@Override
-	public void run(Stack inStack)
-		throws ParseException 
-	{
-		checkStack(inStack);// check the stack
-		Object param = inStack.pop();
-		inStack.push(arg(param));//push the result on the inStack
-		return;
-	}
-	
 	public Number arg(Object param) throws ParseException {
 		if (param instanceof Complex) {
 					return new Double(((Complex)param).arg());
@@ -45,6 +35,16 @@ public class Arg extends PostfixMathCommand
 			return (ONE);
 		} 
 		throw new ParseException("Invalid parameter type");
+	}
+	
+	@Override
+	public void run(Stack inStack)
+		throws ParseException 
+	{
+		checkStack(inStack);// check the stack
+		Object param = inStack.pop();
+		inStack.push(arg(param));//push the result on the inStack
+		return;
 	}
 
 }

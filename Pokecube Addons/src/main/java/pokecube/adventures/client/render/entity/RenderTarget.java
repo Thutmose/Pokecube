@@ -16,34 +16,6 @@ import pokecube.adventures.PokecubeAdv;
 public class RenderTarget<T extends EntityLivingBase> extends RendererLivingEntity<EntityLivingBase>
 {
 
-    public RenderTarget(ModelBase par1ModelBase, float par2)
-    {
-        super(Minecraft.getMinecraft().getRenderManager(), par1ModelBase, par2);
-    }
-
-    public RenderTarget(RenderManager manager)
-    {
-        super(manager, new ModelTarget(), 0);
-    }
-
-    @Override
-    public void doRender(EntityLivingBase entity, double d, double d1, double d2, float f, float partialTick)
-    {
-        super.doRender(entity,d,d1,d2,f,partialTick);
-    }
-
-    @Override
-    protected ResourceLocation getEntityTexture(EntityLivingBase entity)
-    {
-        return new ResourceLocation(PokecubeAdv.ID, "textures/hologram.png");
-    }
-
-    @Override
-    protected boolean canRenderName(EntityLivingBase entity)
-    {
-        return false;
-    }
-
     public static class ModelTarget extends ModelBase
     {
 
@@ -57,11 +29,7 @@ public class RenderTarget<T extends EntityLivingBase> extends RendererLivingEnti
             box.addBox(0F, 0F, 0F, 5, 5, 5);
         }
 
-        public void renderAll(float f5)
-        {
-            box.render(f5);
-        }
-
+        @Override
         public void render(Entity par1Entity, float par2, float par3, float par4, float par5, float par6, float par7)
         {
             GL11.glPushMatrix();
@@ -80,5 +48,38 @@ public class RenderTarget<T extends EntityLivingBase> extends RendererLivingEnti
             GL11.glPopMatrix();
         }
 
+        public void renderAll(float f5)
+        {
+            box.render(f5);
+        }
+
+    }
+
+    public RenderTarget(ModelBase par1ModelBase, float par2)
+    {
+        super(Minecraft.getMinecraft().getRenderManager(), par1ModelBase, par2);
+    }
+
+    public RenderTarget(RenderManager manager)
+    {
+        super(manager, new ModelTarget(), 0);
+    }
+
+    @Override
+    protected boolean canRenderName(EntityLivingBase entity)
+    {
+        return false;
+    }
+
+    @Override
+    public void doRender(EntityLivingBase entity, double d, double d1, double d2, float f, float partialTick)
+    {
+        super.doRender(entity,d,d1,d2,f,partialTick);
+    }
+
+    @Override
+    protected ResourceLocation getEntityTexture(EntityLivingBase entity)
+    {
+        return new ResourceLocation(PokecubeAdv.ID, "textures/hologram.png");
     }
 }

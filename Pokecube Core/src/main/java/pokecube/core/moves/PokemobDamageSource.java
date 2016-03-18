@@ -11,6 +11,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.IChatComponent;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 
 /** This class extends {@link EntityDamageSource} and only modifies the death
@@ -23,6 +24,7 @@ public class PokemobDamageSource extends DamageSource
     private EntityLivingBase damageSourceEntity;
     // TODO use this for damage stuff
     public Move_Base         move;
+    public IPokemob          user;
 
     /** @param par1Str
      * @param par2Entity */
@@ -30,6 +32,8 @@ public class PokemobDamageSource extends DamageSource
     {
         super(par1Str);
         damageSourceEntity = par2Entity;
+        if (par2Entity instanceof IPokemob) user = (IPokemob) par2Entity;
+        else user = null;
         move = type;
     }
 

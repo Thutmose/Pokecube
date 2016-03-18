@@ -45,6 +45,16 @@ public class ExpressionCompiler implements ParserVisitor {
 	}
 
 	@Override
+	public Object visit(ASTConstant node, Object data) {
+		CommandElement c = new CommandElement();
+		c.setType(CommandElement.CONST);
+		c.setValue(node.getValue());
+		commands.addElement(c);
+
+		return data;
+	}
+
+	@Override
 	public Object visit(ASTFunNode node, Object data) throws ParseException {
 		node.childrenAccept(this,data);
 		
@@ -58,6 +68,11 @@ public class ExpressionCompiler implements ParserVisitor {
 	}
 
 	@Override
+	public Object visit(ASTStart node, Object data) {
+		return data;
+	}
+	
+	@Override
 	public Object visit(ASTVarNode node, Object data) {
 		CommandElement c = new CommandElement();
 		c.setType(CommandElement.VAR);
@@ -66,24 +81,9 @@ public class ExpressionCompiler implements ParserVisitor {
 
 		return data;
 	}
-
-	@Override
-	public Object visit(ASTConstant node, Object data) {
-		CommandElement c = new CommandElement();
-		c.setType(CommandElement.CONST);
-		c.setValue(node.getValue());
-		commands.addElement(c);
-
-		return data;
-	}
 	
 	@Override
 	public Object visit(SimpleNode node, Object data) {
-		return data;
-	}
-	
-	@Override
-	public Object visit(ASTStart node, Object data) {
 		return data;
 	}
 }

@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.core.events.handlers.EventsHandlerClient;
-import pokecube.core.interfaces.IMobColourable;
 import pokecube.core.interfaces.IPokemob;
+import thut.api.entity.IMobColourable;
 
 public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
 {
@@ -50,7 +50,7 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
 
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         ItemStack item = te.getStackInSlot(0);
-        Minecraft.getMinecraft().getItemRenderer().renderItem(player, item, null);//TransformType.NONE);
+        Minecraft.getMinecraft().getItemRenderer().renderItem(player, item, null);
         RenderHelper.enableStandardItemLighting();
         GL11.glPopMatrix();
     }

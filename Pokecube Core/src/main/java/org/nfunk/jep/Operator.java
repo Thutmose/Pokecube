@@ -53,11 +53,11 @@ public class Operator {
 		this.name = name; this.pfmc = pfmc;
 		this.symbol = symbol;
 	}
-	/** returns the symbol used by this operator. */
-	public final String getSymbol() {return symbol;}
 	/** returns a unique name definig this operator. */
 	public final String getName() {return name;}
 	public final PostfixMathCommandI getPFMC() { return pfmc;}
+	/** returns the symbol used by this operator. */
+	public final String getSymbol() {return symbol;}
 	public final void setPFMC(PostfixMathCommandI pfmc) { this.pfmc = pfmc;}
 	/** returns a verbose representation of the operator. **/
 	@Override

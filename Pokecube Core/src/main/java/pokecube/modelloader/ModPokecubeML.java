@@ -17,6 +17,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -34,7 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.modelloader.client.render.animation.AnimationLoader;
+import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.common.ExtraDatabase;
 import pokecube.modelloader.items.ItemModelReloader;
 
@@ -42,20 +43,24 @@ import pokecube.modelloader.items.ItemModelReloader;
 public class ModPokecubeML
 {
     /** The id of your mod */
-    public final static String              ID               = "pokecube_ml";
+    public final static String        ID                      = "pokecube_ml";
 
     @Instance(ID)
-    public static ModPokecubeML             instance;
+    public static ModPokecubeML       instance;
 
-    public static ArrayList<String>         addedPokemon;
-    public static Map<PokedexEntry, String> textureProviders = Maps.newHashMap();
+    public static boolean             checkResourcesForModels = true;
 
-    public static boolean                   info             = false;
-    public static boolean                   preload          = true;
+    public static ArrayList<String>   addedPokemon            = Lists.newArrayList();
+    public static Map<String, String> textureProviders        = Maps.newHashMap();
+
+    public static boolean             info                    = false;
+    public static boolean             preload                 = true;
 
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
-    public static CommonProxy               proxy;
-    public static File                      configDir;
+    public static CommonProxy         proxy;
+    public static File                configDir;
+
+    boolean                           postInit                = false;
 
     private void doMetastuff()
     {
@@ -63,28 +68,12 @@ public class ModPokecubeML
         meta.parent = PokecubeMod.ID;
     }
 
-    /** This function is called by Forge at initialization.
-     * 
-     * @param evt */
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent evt)
-    {
-        proxy.registerModelProvider(ID, this);
-        proxy.preInit();
-        doMetastuff();
-        configDir = evt.getModConfigurationDirectory();
-        processResources();
-
-        GameRegistry.registerItem(
-                new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),
-                "modelreloader");
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
     @EventHandler
     public void init(FMLInitializationEvent evt)
     {
+        System.out.println("startInit");
         proxy.init();
+        System.out.println("endinit");
         if (info)
         {
             for (PokedexEntry e : Database.allFormes)
@@ -97,18 +86,8 @@ public class ModPokecubeML
         {
             registerMob(s);
         }
-        // proxy.registerRenderInformation();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }
-
-    @EventHandler
-    private void postInit(FMLPostInitializationEvent evt)
-    {
-        proxy.postInit();
-        postInit = true;
-    }
-
-    boolean postInit = false;
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
@@ -119,47 +98,45 @@ public class ModPokecubeML
         AnimationLoader.load();
     }
 
-    private void registerMob(String mob)
+    @EventHandler
+    private void postInit(FMLPostInitializationEvent evt)
     {
-        PokedexEntry e;
-        if ((e = Database.getEntry(mob)) != null)
+        proxy.postInit();
+        postInit = true;
+    }
+
+    /** This function is called by Forge at initialization.
+     * 
+     * @param evt */
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent evt)
+    {
+        proxy.registerModelProvider(ID, this);
+        proxy.preInit();
+        doMetastuff();
+        configDir = evt.getModConfigurationDirectory();
+
+        Configuration config = PokecubeMod.core.getPokecubeConfig(evt);
+        config.load();
+        checkResourcesForModels = config.getBoolean("checkForResourcepacks", "General", true,
+                "Disabling this will prevent Pokecube from checking resource packs for models, it might speed up loading times.");
+        config.save();
+
+        try
         {
-            PokecubeMod.core.registerPokemon(true, this, mob);
-            if (textureProviders.containsKey(e))
+            if (checkResourcesForModels)
             {
-                e.setModId(textureProviders.get(e));
+                processResources();
             }
         }
-        else
+        catch (Exception e)
         {
-            ArrayList<String> list = Lists.newArrayList();
-            ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
-            try
-            {
-                proxy.fileAsList(this, xml, list);
-                if (!list.isEmpty())
-                {
-                    ExtraDatabase.addXML(mob, list);
-                    ExtraDatabase.apply(mob);
-                }
-            }
-            catch (Exception e1)
-            {
-                e1.printStackTrace();
-            }
-            if ((e = Database.getEntry(mob)) != null)
-            {
-                PokecubeMod.core.registerPokemon(true, this, mob);
-                if (textureProviders.containsKey(e))
-                {
-                    e.setModId(textureProviders.get(e));
-                }
-            }
-            else
-            {
-                System.err.println("Failed to register "+mob);
-            }
         }
+
+        GameRegistry.registerItem(
+                new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),
+                "modelreloader");
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     private void processResources()
@@ -218,5 +195,56 @@ public class ModPokecubeML
             }
         }
         addedPokemon = toAdd;
+    }
+
+    private void registerMob(String mob)
+    {
+        PokedexEntry e;
+        if ((e = Database.getEntry(mob)) != null && e.baseForme == null)
+        {
+            if (textureProviders.containsKey(e.getName()))
+            {
+                e.setModId(textureProviders.get(e.getName()));
+            }
+            else
+            {
+                e.setModId(ID);
+            }
+            if (e.baseForme == null) PokecubeMod.core.registerPokemon(true, this, e);
+        }
+        else
+        {
+            ArrayList<String> list = Lists.newArrayList();
+            ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
+            try
+            {
+                proxy.fileAsList(this, xml, list);
+                if (!list.isEmpty())
+                {
+                    ExtraDatabase.addXML(mob, list);
+                    ExtraDatabase.apply(mob);
+                }
+            }
+            catch (Exception e1)
+            {
+                e1.printStackTrace();
+            }
+            if ((e = Database.getEntry(mob)) != null)
+            {
+                if (textureProviders.containsKey(e.getName()))
+                {
+                    e.setModId(textureProviders.get(e.getName()));
+                }
+                else
+                {
+                    e.setModId(ID);
+                }
+                if (e.baseForme == null) PokecubeMod.core.registerPokemon(true, this, e);
+            }
+            else
+            {
+                System.err.println("Failed to register " + mob);
+            }
+        }
     }
 }

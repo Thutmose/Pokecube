@@ -10,9 +10,8 @@ public class Insomnia extends Ability
 {
 
     @Override
-    public void onUpdate(IPokemob mob)
+    public void onAgress(IPokemob mob, EntityLivingBase target)
     {
-        if (mob.getStatus() == IMoveConstants.STATUS_SLP) mob.setStatus(IMoveConstants.STATUS_NON);
     }
 
     @Override
@@ -24,8 +23,9 @@ public class Insomnia extends Ability
     }
 
     @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
+    public void onUpdate(IPokemob mob)
     {
+        if (mob.getStatus() == IMoveConstants.STATUS_SLP) mob.setStatus(IMoveConstants.STATUS_NON);
     }
 
 }

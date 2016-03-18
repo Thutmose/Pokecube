@@ -72,6 +72,38 @@ public class ContainerCloner extends Container
     }
 
     @Override
+    public boolean canInteractWith(EntityPlayer p)
+    {
+        return true;
+    }
+
+    @Override
+    /** Looks for changes made in the container, sends them to every
+     * listener. */
+    public void detectAndSendChanges()
+    {
+        super.detectAndSendChanges();
+
+        for (int i = 0; i < this.crafters.size(); ++i)
+        {
+            ICrafting icrafting = this.crafters.get(i);
+            if (energy != tile.getField(0))
+            {
+                icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
+                this.onCraftMatrixChanged(tile.craftMatrix);
+            }
+        }
+    }
+
+    /** Called when the container is closed. */
+    @Override
+    public void onContainerClosed(EntityPlayer playerIn)
+    {
+        super.onContainerClosed(playerIn);
+        tile.closeInventory(playerIn);
+    }
+
+    @Override
     /** Callback for when the crafting matrix is changed. */
     public void onCraftMatrixChanged(IInventory p_75130_1_)
     {
@@ -148,12 +180,40 @@ public class ContainerCloner extends Container
     }
 
     @Override
+    /** Handles slot click.
+     * 
+     * @param mode
+     *            0 = basic click, 1 = shift click, 2 = hotbar, 3 = pick block,
+     *            4 = drop, 5 = ?, 6 = double click */
+    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer playerIn)
+    {
+        if (slotId == 0 && getSlot(0).getHasStack() && egg != null)
+        {
+            tile.setField(0, tile.getField(0) - 10000);
+            // If there is a nether star, consume it, but leave a pokecube
+            // behind.
+            for (int i = 0; i < tile.craftMatrix.getSizeInventory(); i++)
+            {
+                ItemStack item = tile.craftMatrix.getStackInSlot(i);
+                if (star != null && item != null && item.isItemEqual(cube))
+                {
+                    cube.stackSize = 2;
+                    tile.craftMatrix.setInventorySlotContents(i, cube);
+                    break;
+                }
+            }
+
+        }
+        return super.slotClick(slotId, clickedButton, mode, playerIn);
+    }
+
+    @Override
     /** This is called on shift click Take a stack from the specified inventory
      * slot. */
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot) this.inventorySlots.get(index);
+        Slot slot = this.inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack())
         {
@@ -192,69 +252,10 @@ public class ContainerCloner extends Container
     }
 
     @Override
-    /** Handles slot click.
-     * 
-     * @param mode
-     *            0 = basic click, 1 = shift click, 2 = hotbar, 3 = pick block,
-     *            4 = drop, 5 = ?, 6 = double click */
-    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer playerIn)
-    {
-        if (slotId == 0 && getSlot(0).getHasStack() && egg != null)
-        {
-            tile.setField(0, tile.getField(0) - 10000);
-            // If there is a nether star, consume it, but leave a pokecube
-            // behind.
-            for (int i = 0; i < tile.craftMatrix.getSizeInventory(); i++)
-            {
-                ItemStack item = tile.craftMatrix.getStackInSlot(i);
-                if (star != null && item != null && item.isItemEqual(cube))
-                {
-                    cube.stackSize = 2;
-                    tile.craftMatrix.setInventorySlotContents(i, cube);
-                    break;
-                }
-            }
-
-        }
-        return super.slotClick(slotId, clickedButton, mode, playerIn);
-    }
-
-    @Override
-    /** Looks for changes made in the container, sends them to every
-     * listener. */
-    public void detectAndSendChanges()
-    {
-        super.detectAndSendChanges();
-
-        for (int i = 0; i < this.crafters.size(); ++i)
-        {
-            ICrafting icrafting = (ICrafting) this.crafters.get(i);
-            if (energy != tile.getField(0))
-            {
-                icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
-                this.onCraftMatrixChanged(tile.craftMatrix);
-            }
-        }
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public void updateProgressBar(int id, int data)
     {
         this.tile.setField(id, data);
         this.onCraftMatrixChanged(tile.craftMatrix);
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer p)
-    {
-        return true;
-    }
-
-    /** Called when the container is closed. */
-    public void onContainerClosed(EntityPlayer playerIn)
-    {
-        super.onContainerClosed(playerIn);
-        tile.closeInventory(playerIn);
     }
 }

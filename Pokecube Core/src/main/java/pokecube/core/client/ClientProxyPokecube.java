@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
@@ -60,7 +61,6 @@ import pokecube.core.CommonProxyPokecube;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BerryPlantManager;
-import pokecube.core.blocks.berries.BlockBerryCrop;
 import pokecube.core.blocks.berries.BlockBerryLeaves;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
@@ -110,6 +110,30 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     static boolean        init   = true;
     static boolean        first  = true;
 
+    public static KeyBinding nextMob;
+
+    public static KeyBinding nextMove;
+
+    public static KeyBinding previousMob;
+
+    public static KeyBinding previousMove;
+
+    public static KeyBinding mobBack;
+
+    public static KeyBinding mobAttack;
+
+    public static KeyBinding mobStance;
+
+    public static KeyBinding mobMegavolve;
+
+    public static KeyBinding mobMove1;
+
+    public static KeyBinding mobMove2;
+
+    public static KeyBinding mobMove3;
+
+    public static KeyBinding mobMove4;
+    private HashMap<Integer, Object> cubeRenders = new HashMap<Integer, Object>();
     public ClientProxyPokecube()
     {
         if (first) instance = this;
@@ -118,81 +142,92 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         MinecraftForge.EVENT_BUS.register(hndlr);
         MinecraftForge.EVENT_BUS.register(this);
     }
-
-    /** Used to register a model for the pokemob
-     * 
-     * @param nb
-     *            - the pokedex number
-     * @param model
-     *            - the model */
     @Override
-    public void registerPokemobModel(int nb, ModelBase model, Object mod)
+    public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
-        registerPokemobModel(Database.getEntry(nb).getName(), model, mod);
-    }
+        Entity entityHit = null;
 
-    @Override
-    public void registerPokemobModel(String name, ModelBase model, Object mod)
-    {
-        if (Database.getEntry(name) == null)
+        if (PokecubeCore.isOnClientSide())
         {
-            Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addModel(name + annotation.modid(), model);
-        }
-        else
-        {
-            Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addModel(Database.getEntry(name) + annotation.modid(), model);
-            int number = Database.getEntry(name).getPokedexNb();
-            if (models.get(number))
+            MovingObjectPosition objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
+
+            if (objectClicked != null)
             {
-                String modid = annotation.modid();
-                if (!modid.equals(PokecubeMod.defaultMod)) return;
+                entityHit = objectClicked.entityHit;
             }
-            models.set(number);
         }
-    }
+        BlockPos pos = new BlockPos(x, y, z);
 
-    /** Used to register a custom renderer for the pokemob
-     * 
-     * @param nb
-     *            - the pokedex number
-     * @param renderer
-     *            - the renderer */
-    @Override
-    public void registerPokemobRenderer(int nb, Render renderer, Object mod)
-    {
-        Mod annotation = mod.getClass().getAnnotation(Mod.class);
-        RenderPokemobs.addCustomRenderer(Database.getEntry(nb).getName() + annotation.modid(), renderer);
-    }
-
-    @Override
-    public void registerPokemobRenderer(String name, Render renderer, Object mod)
-    {
-        if (Database.getEntry(name) == null)
+        if (guiID == Config.GUIPOKECENTER_ID)
         {
-            Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addCustomRenderer(name + annotation.modid(), renderer);
+            TileEntity tile_entity = world.getTileEntity(pos);
+
+            if (tile_entity instanceof TileHealTable) { return new GuiHealTable(player.inventory,
+                    (TileHealTable) tile_entity); }
         }
         else
         {
-            Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addCustomRenderer(Database.getEntry(name).getName() + annotation.modid(), renderer);
+
+            if (guiID == Config.GUIDISPLAYPOKECUBEINFO_ID)
+            {
+                return null;
+            }
+            else
+            {
+
+                if (guiID == Config.GUIDISPLAYTELEPORTINFO_ID)
+                {
+                    return null;
+                }
+                else
+                {
+
+                    if (guiID == Config.GUIPOKEDEX_ID)
+                    {
+                        if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, player);
+                        else return new GuiPokedex(null, player);
+                    }
+                    else
+                    {
+
+                        if (guiID == Config.GUIPOKEMOB_ID)
+                        {
+                            EntityPokemob e = (EntityPokemob) world.getEntityByID(x);
+                            return new GuiPokemob(player.inventory, e);
+                        }
+                        else
+                        {
+
+                            if (guiID == Config.GUITRADINGTABLE_ID)
+                            {
+                                TileEntityTradingTable tile = (TileEntityTradingTable) world.getTileEntity(pos);
+                                boolean tmc = world.getBlockState(pos).getValue(BlockTradingTable.TMC);
+                                if (!tmc) return new GuiTradingTable(player.inventory, tile);
+                                else return new GuiTMCreator(new ContainerTMCreator(tile, player.inventory));
+                            }
+                            else
+                            {
+
+                                if (guiID == Config.GUIPC_ID)
+                                {
+                                    TileEntityPC tile = (TileEntityPC) world.getTileEntity(pos);
+                                    ContainerPC pc = new ContainerPC(player.inventory, tile);
+                                    return new GuiPC(pc);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+
+        if (guiID == Config.GUICHOOSEFIRSTPOKEMOB_ID)
+        {
+            boolean fixed = false;
+            return new GuiChooseFirstPokemob(null, fixed);
+        }
+        return null;
     }
-
-    @Override
-    public void registerRenderInformation()
-    {
-        super.registerRenderInformation();
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPokecubeTable.class, new RenderPokecubeTable());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
-
-        MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
-        MinecraftForge.EVENT_BUS.register(new GuiTeleport());
-        new GuiInfoMessages();
-    }
-
     @Override
     public String getFolderName()
     {
@@ -200,7 +235,64 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             return FMLClientHandler.instance().getClient().theWorld.provider.getSaveFolder();
         return "";
     }
+    @Override
+    public IThreadListener getMainThreadListener()
+    {
+        if (isOnClientSide())
+        {
+            return Minecraft.getMinecraft();
+        }
+        else
+        {
+            return super.getMainThreadListener();
+        }
+    }
+    @Override
+    public IPlayerUsage getMinecraftInstance()
+    {
+        if (isOnClientSide())
+        {
+            return Minecraft.getMinecraft();
+        }
+        else
+        {
+            return super.getMinecraftInstance();
+        }
+    }
+    @Override
+    public EntityPlayer getPlayer(String playerName)
+    {
+        if (playerName != null)
+        {
+            try
+            {
+                UUID.fromString(playerName);
+                return getWorld().getPlayerEntityByUUID(UUID.fromString(playerName));
+            }
+            catch (Exception e)
+            {
 
+            }
+            return getWorld().getPlayerEntityByName(playerName);
+        }
+        else
+        {
+            return Minecraft.getMinecraft().thePlayer;
+        }
+    }
+
+    @Override
+    public World getWorld()
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            return FMLClientHandler.instance().getWorldClient();
+        }
+        else
+        {
+            return super.getWorld();
+        }
+    }
     @Override
     public void initClient()
     {
@@ -217,28 +309,11 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             TileHealTable.noSound = true;
         }
     }
-
-    private HashMap<Integer, Object> cubeRenders = new HashMap<Integer, Object>();
-
     @Override
-    public void registerPokecubeRenderer(int cubeId, Render renderer, Object mod)
+    public boolean isOnClientSide()
     {
-        if (!RenderPokecube.pokecubeRenderers.containsKey(cubeId))
-        {
-            RenderPokecube.pokecubeRenderers.put(cubeId, renderer);
-            cubeRenders.put(cubeId, mod);
-        }
-        else
-        {
-            Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            if (annotation.modid().equals(PokecubeCore.defaultMod))
-            {
-                RenderPokecube.pokecubeRenderers.put(cubeId, renderer);
-                cubeRenders.put(cubeId, mod);
-            }
-        }
+        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }
-
     @Override
     public boolean isSoundPlaying(Vector3 location)
     {
@@ -254,40 +329,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
 
         return false;
-    }
-
-    public static KeyBinding nextMob;
-    public static KeyBinding nextMove;
-    public static KeyBinding previousMob;
-    public static KeyBinding previousMove;
-    public static KeyBinding mobBack;
-    public static KeyBinding mobAttack;
-    public static KeyBinding mobStance;
-    public static KeyBinding mobMegavolve;
-
-    public static KeyBinding mobMove1;
-    public static KeyBinding mobMove2;
-    public static KeyBinding mobMove3;
-    public static KeyBinding mobMove4;
-
-    @Override
-    public void registerKeyBindings()
-    {
-        ClientRegistry.registerKeyBinding(nextMob = new KeyBinding("Next Pokemob", Keyboard.KEY_RIGHT, "Pokecube"));
-        ClientRegistry
-                .registerKeyBinding(previousMob = new KeyBinding("Previous Pokemob", Keyboard.KEY_LEFT, "Pokecube"));
-        ClientRegistry.registerKeyBinding(nextMove = new KeyBinding("Next Move", Keyboard.KEY_DOWN, "Pokecube"));
-        ClientRegistry.registerKeyBinding(previousMove = new KeyBinding("Previous Move", Keyboard.KEY_UP, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobBack = new KeyBinding("Pokemob Back", Keyboard.KEY_R, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobAttack = new KeyBinding("Pokemob Attack", Keyboard.KEY_G, "Pokecube"));
-        ClientRegistry
-                .registerKeyBinding(mobStance = new KeyBinding("Pokemob Stance", Keyboard.KEY_BACKSLASH, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobMegavolve = new KeyBinding("Mega Evolve", Keyboard.KEY_M, "Pokecube"));
-
-        ClientRegistry.registerKeyBinding(mobMove1 = new KeyBinding("Move 1", Keyboard.KEY_Y, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobMove2 = new KeyBinding("Move 2", Keyboard.KEY_U, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobMove3 = new KeyBinding("Move 3", Keyboard.KEY_H, "Pokecube"));
-        ClientRegistry.registerKeyBinding(mobMove4 = new KeyBinding("Move 4", Keyboard.KEY_J, "Pokecube"));
     }
 
     @Override
@@ -329,7 +370,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                     @Override
                     protected ResourceLocation getEntityTexture(Entity egg)
                     {
-                        return new ResourceLocation(PokecubeCore.ID + ":textures/egg.png");
+                        return new ResourceLocation(PokecubeMod.ID + ":textures/egg.png");
                     }
                 };
             }
@@ -449,7 +490,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         for (String ident : BerryPlantManager.cropsToRegister.keySet())
         {
             Block crop = BerryPlantManager.cropsToRegister.get(ident);
-            map = (new StateMap.Builder()).ignore(new IProperty[] { BlockBerryCrop.AGE }).withSuffix("").build();
+            map = (new StateMap.Builder()).ignore(new IProperty[] { BlockCrops.AGE }).withSuffix("").build();
             registerItemTexture(Item.getItemFromBlock(crop), 0, new ModelResourceLocation(ident, "inventory"));
             ModelLoader.setCustomStateMapper(crop, map);
         }
@@ -459,156 +500,116 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     }
 
     @Override
-    public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
+    public void registerKeyBindings()
     {
-        Entity entityHit = null;
+        ClientRegistry.registerKeyBinding(nextMob = new KeyBinding("Next Pokemob", Keyboard.KEY_RIGHT, "Pokecube"));
+        ClientRegistry
+                .registerKeyBinding(previousMob = new KeyBinding("Previous Pokemob", Keyboard.KEY_LEFT, "Pokecube"));
+        ClientRegistry.registerKeyBinding(nextMove = new KeyBinding("Next Move", Keyboard.KEY_DOWN, "Pokecube"));
+        ClientRegistry.registerKeyBinding(previousMove = new KeyBinding("Previous Move", Keyboard.KEY_UP, "Pokecube"));
+        ClientRegistry.registerKeyBinding(mobBack = new KeyBinding("Pokemob Back", Keyboard.KEY_R, "Pokecube"));
+        ClientRegistry.registerKeyBinding(mobAttack = new KeyBinding("Pokemob Attack", Keyboard.KEY_G, "Pokecube"));
+        ClientRegistry
+                .registerKeyBinding(mobStance = new KeyBinding("Pokemob Stance", Keyboard.KEY_BACKSLASH, "Pokecube"));
+        ClientRegistry.registerKeyBinding(mobMegavolve = new KeyBinding("Mega Evolve", Keyboard.KEY_M, "Pokecube"));
 
-        if (PokecubeCore.isOnClientSide())
-        {
-            MovingObjectPosition objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
-
-            if (objectClicked != null)
-            {
-                entityHit = objectClicked.entityHit;
-            }
-        }
-        BlockPos pos = new BlockPos(x, y, z);
-
-        if (guiID == Config.GUIPOKECENTER_ID)
-        {
-            TileEntity tile_entity = world.getTileEntity(pos);
-
-            if (tile_entity instanceof TileHealTable) { return new GuiHealTable(player.inventory,
-                    (TileHealTable) tile_entity); }
-        }
-        else
-        {
-
-            if (guiID == Config.GUIDISPLAYPOKECUBEINFO_ID)
-            {
-                return null;
-            }
-            else
-            {
-
-                if (guiID == Config.GUIDISPLAYTELEPORTINFO_ID)
-                {
-                    return null;
-                }
-                else
-                {
-
-                    if (guiID == Config.GUIPOKEDEX_ID)
-                    {
-                        if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, player);
-                        else return new GuiPokedex(null, player);
-                    }
-                    else
-                    {
-
-                        if (guiID == Config.GUIPOKEMOB_ID)
-                        {
-                            EntityPokemob e = (EntityPokemob) world.getEntityByID(x);
-                            return new GuiPokemob(player.inventory, e);
-                        }
-                        else
-                        {
-
-                            if (guiID == Config.GUITRADINGTABLE_ID)
-                            {
-                                TileEntityTradingTable tile = (TileEntityTradingTable) world.getTileEntity(pos);
-                                boolean tmc = (Boolean) world.getBlockState(pos).getValue(BlockTradingTable.TMC);
-                                if (!tmc) return new GuiTradingTable(player.inventory, tile);
-                                else return new GuiTMCreator(new ContainerTMCreator(tile, player.inventory));
-                            }
-                            else
-                            {
-
-                                if (guiID == Config.GUIPC_ID)
-                                {
-                                    TileEntityPC tile = (TileEntityPC) world.getTileEntity(pos);
-                                    ContainerPC pc = new ContainerPC(player.inventory, tile);
-                                    return new GuiPC(pc);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (guiID == Config.GUICHOOSEFIRSTPOKEMOB_ID)
-        {
-            boolean fixed = false;
-            return new GuiChooseFirstPokemob(null, fixed);
-        }
-        return null;
+        ClientRegistry.registerKeyBinding(mobMove1 = new KeyBinding("Move 1", Keyboard.KEY_Y, "Pokecube"));
+        ClientRegistry.registerKeyBinding(mobMove2 = new KeyBinding("Move 2", Keyboard.KEY_U, "Pokecube"));
+        ClientRegistry.registerKeyBinding(mobMove3 = new KeyBinding("Move 3", Keyboard.KEY_H, "Pokecube"));
+        ClientRegistry.registerKeyBinding(mobMove4 = new KeyBinding("Move 4", Keyboard.KEY_J, "Pokecube"));
     }
 
     @Override
-    public boolean isOnClientSide()
+    public void registerPokecubeRenderer(int cubeId, Render renderer, Object mod)
     {
-        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
+        if (!RenderPokecube.pokecubeRenderers.containsKey(cubeId))
+        {
+            RenderPokecube.pokecubeRenderers.put(cubeId, renderer);
+            cubeRenders.put(cubeId, mod);
+        }
+        else
+        {
+            Mod annotation = mod.getClass().getAnnotation(Mod.class);
+            if (annotation.modid().equals(PokecubeMod.defaultMod))
+            {
+                RenderPokecube.pokecubeRenderers.put(cubeId, renderer);
+                cubeRenders.put(cubeId, mod);
+            }
+        }
+    }
+
+    /** Used to register a model for the pokemob
+     * 
+     * @param nb
+     *            - the pokedex number
+     * @param model
+     *            - the model */
+    @Override
+    public void registerPokemobModel(int nb, ModelBase model, Object mod)
+    {
+        registerPokemobModel(Database.getEntry(nb).getName(), model, mod);
     }
 
     @Override
-    public IPlayerUsage getMinecraftInstance()
+    public void registerPokemobModel(String name, ModelBase model, Object mod)
     {
-        if (isOnClientSide())
+        if (Database.getEntry(name) == null)
         {
-            return Minecraft.getMinecraft();
+            Mod annotation = mod.getClass().getAnnotation(Mod.class);
+            RenderPokemobs.addModel(name + annotation.modid(), model);
         }
         else
         {
-            return super.getMinecraftInstance();
+            Mod annotation = mod.getClass().getAnnotation(Mod.class);
+            RenderPokemobs.addModel(Database.getEntry(name) + annotation.modid(), model);
+            int number = Database.getEntry(name).getPokedexNb();
+            if (models.get(number))
+            {
+                String modid = annotation.modid();
+                if (!modid.equals(PokecubeMod.defaultMod)) return;
+            }
+            models.set(number);
         }
     }
 
-    public IThreadListener getMainThreadListener()
+    /** Used to register a custom renderer for the pokemob
+     * 
+     * @param nb
+     *            - the pokedex number
+     * @param renderer
+     *            - the renderer */
+    @Override
+    public void registerPokemobRenderer(int nb, Render renderer, Object mod)
     {
-        if (isOnClientSide())
+        Mod annotation = mod.getClass().getAnnotation(Mod.class);
+        RenderPokemobs.addCustomRenderer(Database.getEntry(nb).getName() + annotation.modid(), renderer);
+    }
+
+    @Override
+    public void registerPokemobRenderer(String name, Render renderer, Object mod)
+    {
+        if (Database.getEntry(name) == null)
         {
-            return Minecraft.getMinecraft();
+            Mod annotation = mod.getClass().getAnnotation(Mod.class);
+            RenderPokemobs.addCustomRenderer(name + annotation.modid(), renderer);
         }
         else
         {
-            return super.getMainThreadListener();
+            Mod annotation = mod.getClass().getAnnotation(Mod.class);
+            RenderPokemobs.addCustomRenderer(Database.getEntry(name).getName() + annotation.modid(), renderer);
         }
     }
 
     @Override
-    public EntityPlayer getPlayer(String playerName)
+    public void registerRenderInformation()
     {
-        if (playerName != null)
-        {
-            try
-            {
-                UUID.fromString(playerName);
-                return getWorld().getPlayerEntityByUUID(UUID.fromString(playerName));
-            }
-            catch (Exception e)
-            {
+        super.registerRenderInformation();
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPokecubeTable.class, new RenderPokecubeTable());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
 
-            }
-            return getWorld().getPlayerEntityByName(playerName);
-        }
-        else
-        {
-            return Minecraft.getMinecraft().thePlayer;
-        }
-    }
-
-    @Override
-    public World getWorld()
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            return FMLClientHandler.instance().getWorldClient();
-        }
-        else
-        {
-            return super.getWorld();
-        }
+        MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
+        MinecraftForge.EVENT_BUS.register(new GuiTeleport());
+        new GuiInfoMessages();
     }
 
     @Override

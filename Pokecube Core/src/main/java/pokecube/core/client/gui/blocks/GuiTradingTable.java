@@ -17,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -26,13 +27,13 @@ import pokecube.core.network.PokecubePacketHandler;
 
 public class GuiTradingTable extends GuiContainer
 {
-    private float yRenderAngle = 10;
-    private float xRenderAngle = 0;
-
-    private float yHeadRenderAngle = 10;
-    private float xHeadRenderAngle = 0;
-
     public final static float POKEDEX_RENDER = 1.5f;
+    private float yRenderAngle = 10;
+
+    private float xRenderAngle = 0;
+    private float yHeadRenderAngle = 10;
+
+    private float xHeadRenderAngle = 0;
 
     protected EntityPlayer entityPlayer = null;
 
@@ -53,15 +54,6 @@ public class GuiTradingTable extends GuiContainer
             MessageServer packet = PCPacketHandler.makeServerPacket(MessageServer.TRADE, "0".getBytes());
             PokecubePacketHandler.sendToServer(packet);
         }
-    }
-
-    @Override
-    public void initGui()
-    {
-        buttonList.clear();
-        String trade = StatCollector.translateToLocal("tile.tradingtable.trade");
-        buttonList.add(new GuiButton(1, width / 2 - 30, height / 2 - 40, 60, 20, trade));
-        super.initGui();
     }
 
     @Override
@@ -137,6 +129,22 @@ public class GuiTradingTable extends GuiContainer
 
     }
 
+    private EntityLiving getEntityToDisplay(int index)
+    {
+        EntityLiving pokemob = (EntityLiving) PokecubeManager.itemToPokemob(table.getStackInSlot(index),
+                table.getWorld());
+        return pokemob;
+    }
+
+    @Override
+    public void initGui()
+    {
+        buttonList.clear();
+        String trade = StatCollector.translateToLocal("tile.tradingtable.trade");
+        buttonList.add(new GuiButton(1, width / 2 - 30, height / 2 - 40, 60, 20, trade));
+        super.initGui();
+    }
+
     /** Called when the screen is unloaded. Used to disable keyboard repeat
      * events */
     @Override
@@ -147,13 +155,6 @@ public class GuiTradingTable extends GuiContainer
         MessageServer packet = PCPacketHandler.makeServerPacket(MessageServer.TRADE,
                 ("5," + table.getPos().getX() + "," + table.getPos().getY() + "," + table.getPos().getZ()).getBytes());
         PokecubePacketHandler.sendToServer(packet);
-    }
-
-    private EntityLiving getEntityToDisplay(int index)
-    {
-        EntityLiving pokemob = (EntityLiving) PokecubeManager.itemToPokemob(table.getStackInSlot(index),
-                table.getWorld());
-        return pokemob;
     }
 
     private void renderMob(int index)
@@ -177,7 +178,7 @@ public class GuiTradingTable extends GuiContainer
         // ((EntityPokemob) entity).setSizes();//TODO see if needed
         // }
         size = Math.max(entity.width, entity.height);
-        pokemob.setPokemonAIState(IPokemob.EXITINGCUBE, false);
+        pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
         // }
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);

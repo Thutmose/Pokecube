@@ -12,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 
@@ -24,6 +25,61 @@ public class RenderPokemobs extends RenderPokemob
     public static Map<String, Render>     renderMap    = new HashMap<String, Render>();
 
     private static RenderPokemobs instance;
+
+    public static void addCustomRenderer(String name, Render renderer)
+    {
+        renderMap.put(name, renderer);
+    }
+
+    public static void addModel(String name, ModelBase model)
+    {
+        models.put(name, model);
+        renderMap.put(name, instance);
+    }
+
+    public static RenderPokemobs getInstance()
+    {
+        if (instance == null) instance = new RenderPokemobs(Minecraft.getMinecraft().getRenderManager());
+        if (instance.renderManager == null)
+        {
+            System.out.println(Minecraft.getMinecraft().getRenderManager());
+            new Exception().printStackTrace();
+        }
+        return instance;
+    }
+
+    public static RenderPokemobs getInstance(RenderManager manager)
+    {
+        if (instance == null) instance = new RenderPokemobs(manager);
+        if (instance.renderManager == null)
+        {
+            System.out.println(Minecraft.getMinecraft().getRenderManager());
+            new Exception().printStackTrace();
+        }
+        return instance;
+    }
+
+    public static ModelBase[] getModels(PokedexEntry entry)
+    {
+        String nbm = entry.getName() + entry.getModId();
+        ModelBase[] ret = new ModelBase[2];
+        ret[0] = models.get(nbm);
+        if (statusModels.get(nbm) == null)
+        {
+            try
+            {
+                statusModels.put(nbm, ret[0].getClass().getConstructor().newInstance());
+            }
+            catch (Exception e)
+            {
+                System.out.println(nbm);
+                e.printStackTrace();
+            }
+        }
+        ret[1] = statusModels.get(nbm);
+
+        return ret;
+    }
 
     private RenderPokemobs(RenderManager m)
     {
@@ -56,13 +112,13 @@ public class RenderPokemobs extends RenderPokemob
 
             GlStateManager.pushMatrix();
             // Handle these two via the RenderHeldPokemobs
-            if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IPokemob.SHOULDER)
+            if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IMoveConstants.SHOULDER)
                     && ((Entity) mob).ridingEntity != null)
             {
                 GlStateManager.popMatrix();
                 return;
             }
-            if (mob.getPokemonAIState(IPokemob.HELD) && ((Entity) mob).ridingEntity != null)
+            if (mob.getPokemonAIState(IMoveConstants.HELD) && ((Entity) mob).ridingEntity != null)
             {
                 GlStateManager.popMatrix();
                 return;
@@ -93,6 +149,25 @@ public class RenderPokemobs extends RenderPokemob
         }
     }
 
+    @Override
+    protected ResourceLocation getPokemobTexture(IPokemob entity)
+    {
+        IPokemob mob = entity;
+
+        if (mob.getTransformedTo() instanceof IPokemob)
+        {
+            int num = mob.getPokedexNb();
+
+            if (num == 132)
+            {
+                if (((EntityLiving) mob).getEntityData()
+                        .getBoolean("dittotag")) { return super.getPokemobTexture(mob); }
+            }
+            mob = (IPokemob) mob.getTransformedTo();
+        }
+        return super.getPokemobTexture(mob);
+    }
+
     public Render getRenderer(PokedexEntry entry)
     {
         String nbm = entry.getName() + entry.getModId();
@@ -110,25 +185,6 @@ public class RenderPokemobs extends RenderPokemob
         return ret;
     }
 
-    @Override
-    protected ResourceLocation getPokemobTexture(IPokemob entity)
-    {
-        IPokemob mob = (IPokemob) entity;
-
-        if (mob.getTransformedTo() instanceof IPokemob)
-        {
-            int num = mob.getPokedexNb();
-
-            if (num == 132)
-            {
-                if (((EntityLiving) mob).getEntityData()
-                        .getBoolean("dittotag")) { return super.getPokemobTexture(mob); }
-            }
-            mob = (IPokemob) mob.getTransformedTo();
-        }
-        return super.getPokemobTexture(mob);
-    }
-
     @SuppressWarnings("unchecked")
     public void setModel(String nb)
     {
@@ -144,60 +200,5 @@ public class RenderPokemobs extends RenderPokemob
             System.out.println(nb);
             e.printStackTrace();
         }
-    }
-
-    public static ModelBase[] getModels(PokedexEntry entry)
-    {
-        String nbm = entry.getName() + entry.getModId();
-        ModelBase[] ret = new ModelBase[2];
-        ret[0] = models.get(nbm);
-        if (statusModels.get(nbm) == null)
-        {
-            try
-            {
-                statusModels.put(nbm, ret[0].getClass().getConstructor().newInstance());
-            }
-            catch (Exception e)
-            {
-                System.out.println(nbm);
-                e.printStackTrace();
-            }
-        }
-        ret[1] = statusModels.get(nbm);
-
-        return ret;
-    }
-
-    public static void addModel(String name, ModelBase model)
-    {
-        models.put(name, model);
-        renderMap.put(name, instance);
-    }
-
-    public static void addCustomRenderer(String name, Render renderer)
-    {
-        renderMap.put(name, renderer);
-    }
-
-    public static RenderPokemobs getInstance()
-    {
-        if (instance == null) instance = new RenderPokemobs(Minecraft.getMinecraft().getRenderManager());
-        if (instance.renderManager == null)
-        {
-            System.out.println(Minecraft.getMinecraft().getRenderManager());
-            new Exception().printStackTrace();
-        }
-        return instance;
-    }
-
-    public static RenderPokemobs getInstance(RenderManager manager)
-    {
-        if (instance == null) instance = new RenderPokemobs(manager);
-        if (instance.renderManager == null)
-        {
-            System.out.println(Minecraft.getMinecraft().getRenderManager());
-            new Exception().printStackTrace();
-        }
-        return instance;
     }
 }

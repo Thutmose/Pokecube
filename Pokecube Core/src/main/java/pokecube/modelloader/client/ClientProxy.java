@@ -20,15 +20,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.b3d.B3DLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.CommonProxy;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.gui.GuiAnimate;
-import pokecube.modelloader.client.render.RenderAdvancedPokemobModel;
-import pokecube.modelloader.client.render.animation.AnimationLoader;
-import pokecube.modelloader.client.render.tabula.TabulaPackLoader;
+import pokecube.modelloader.client.render.AnimationLoader;
+import pokecube.modelloader.client.render.TabulaPackLoader;
 import pokecube.modelloader.items.ItemModelReloader;
 
 /** @author Manchou */
@@ -36,60 +36,9 @@ public class ClientProxy extends CommonProxy
 {
 
     @Override
-    public void registerModelProvider(String modid, Object mod)
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        super.registerModelProvider(modid, mod);
-        if (!modelProviders.containsKey(modid)) modelProviders.put(modid, mod);
-    }
-
-    @Override
-    public void preInit()
-    {
-        super.preInit();
-        OBJLoader.instance.addDomain(ModPokecubeML.ID);
-        B3DLoader.instance.addDomain(ModPokecubeML.ID);
-    }
-
-    @Override
-    public void postInit()
-    {
-        super.postInit();
-        AnimationLoader.loaded = true;
-    }
-
-    @Override
-    public void registerRenderInformation()
-    {
-        for (String modid : modelProviders.keySet())
-        {
-            Object mod = modelProviders.get(modid);
-            if (modModels.containsKey(modid))
-            {
-                for (String s : modModels.get(modid))
-                {
-                    if (AnimationLoader.models.containsKey(s))
-                    {
-                        PokecubeMod.getProxy().registerPokemobRenderer(s, new RenderAdvancedPokemobModel<>(s, 1), mod);
-                    }
-                }
-            }
-        }
-        for (PokedexEntry entry : TabulaPackLoader.modelMap.keySet())
-        {
-            if (entry == null) continue;
-
-            Object mod = null;
-            for (String modid : modelProviders.keySet())
-            {
-                if (modid.equalsIgnoreCase(entry.getModId()))
-                {
-                    mod = modelProviders.get(modid);
-                    break;
-                }
-            }
-            if (mod != null) PokecubeMod.getProxy().registerPokemobRenderer(entry.getName(),
-                    new RenderAdvancedPokemobModel<>(entry.getName(), 1), mod);
-        }
+        return new GuiAnimate();
     }
 
     @Override
@@ -195,8 +144,59 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    public void postInit()
     {
-        return new GuiAnimate();
+        super.postInit();
+        AnimationLoader.loaded = true;
+    }
+
+    @Override
+    public void preInit()
+    {
+        super.preInit();
+        OBJLoader.instance.addDomain(ModPokecubeML.ID);
+        B3DLoader.instance.addDomain(ModPokecubeML.ID);
+    }
+
+    @Override
+    public void registerModelProvider(String modid, Object mod)
+    {
+        super.registerModelProvider(modid, mod);
+        if (!modelProviders.containsKey(modid)) modelProviders.put(modid, mod);
+    }
+
+    @Override
+    public void registerRenderInformation()
+    {
+        for (String modid : modelProviders.keySet())
+        {
+            Object mod = modelProviders.get(modid);
+            if (modModels.containsKey(modid))
+            {
+                for (String s : modModels.get(modid))
+                {
+                    if (AnimationLoader.models.containsKey(s))
+                    {
+                        PokecubeMod.getProxy().registerPokemobRenderer(s, new RenderAdvancedPokemobModel<>(s, 1), mod);
+                    }
+                }
+            }
+        }
+        for (PokedexEntry entry : TabulaPackLoader.modelMap.keySet())
+        {
+            if (entry == null) continue;
+
+            Object mod = null;
+            for (String modid : modelProviders.keySet())
+            {
+                if (modid.equalsIgnoreCase(entry.getModId()))
+                {
+                    mod = modelProviders.get(modid);
+                    break;
+                }
+            }
+            if (mod != null) PokecubeMod.getProxy().registerPokemobRenderer(entry.getName(),
+                    new RenderAdvancedPokemobModel<>(entry.getName(), 1), mod);
+        }
     }
 }

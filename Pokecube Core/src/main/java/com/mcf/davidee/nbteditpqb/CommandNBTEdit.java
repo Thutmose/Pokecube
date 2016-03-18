@@ -18,9 +18,14 @@ import net.minecraft.util.BlockPos;
 public class CommandNBTEdit extends CommandBase{
 
 	@Override
+	public boolean canCommandSenderUseCommand(ICommandSender s) {
+		return s instanceof EntityPlayer && (super.canCommandSenderUseCommand(s) || !NBTEdit.opOnly && ((EntityPlayer)s).capabilities.isCreativeMode);
+	}
+	@Override
 	public String getCommandName() {
 		return "nbtedit";
 	}
+
 	@Override
 	public String getCommandUsage(ICommandSender par1ICommandSender)
 	{
@@ -59,11 +64,6 @@ public class CommandNBTEdit extends CommandBase{
 				throw new WrongUsageException("Pass 0, 1, or 3 integers -- ex. /nbtedit", new Object[0]);
 			}
 		}
-	}
-
-	@Override
-	public boolean canCommandSenderUseCommand(ICommandSender s) {
-		return s instanceof EntityPlayer && (super.canCommandSenderUseCommand(s) || !NBTEdit.opOnly && ((EntityPlayer)s).capabilities.isCreativeMode);
 	}
 
 }

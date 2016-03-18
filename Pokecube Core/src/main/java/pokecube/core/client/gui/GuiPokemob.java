@@ -19,61 +19,21 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import pokecube.core.client.Resources;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 
 public class GuiPokemob extends GuiContainer
 {
+    public static class Button extends GuiButton
+    {
+        public Button(int p_i1021_1_, int p_i1021_2_, int p_i1021_3_, int p_i1021_4_, int p_i1021_5_, String p_i1021_6_)
+        {
+            super(p_i1021_1_, p_i1021_2_, p_i1021_3_, p_i1021_4_, p_i1021_5_, p_i1021_6_);
+        }
+    }
     private static final ResourceLocation pokemobGuiTextures = Resources.GUI_POKEMOB;
-    private IInventory                    playerInventory;
-    private IInventory                    pokeInventory;
-    private IPokemob                      pokemob;
-    private EntityLiving                  entity;
-    private float                         yRenderAngle       = 10;
-    private float                         xRenderAngle       = 0;
-    Button                                stance;
-
-    public GuiPokemob(IInventory playerInv, IPokemob pokemob)
-    {
-        super(new ContainerPokemob(playerInv, pokemob.getPokemobInventory(), pokemob));
-        this.playerInventory = playerInv;
-        this.pokeInventory = pokemob.getPokemobInventory();
-        this.pokemob = pokemob;
-        this.entity = (EntityLiving) pokemob;
-        this.allowUserInput = false;
-    }
-
-    /** Draw the foreground layer for the GuiContainer (everything in front of
-     * the items) */
-    @Override
-    protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
-    {
-        this.fontRendererObj.drawString(this.pokeInventory.hasCustomName() ? this.pokeInventory.getName()
-                : I18n.format(this.pokeInventory.getName(), new Object[0]), 8, 6, 4210752);
-        this.fontRendererObj.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName()
-                : I18n.format(this.playerInventory.getName(), new Object[0]), 8, this.ySize - 96 + 2, 4210752);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
-    {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(pokemobGuiTextures);
-        int k = (this.width - this.xSize) / 2;
-        int l = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
-
-        this.drawTexturedModalRect(k + 79, l + 17, 0, this.ySize, 90, 18);
-
-        this.drawTexturedModalRect(k + 7, l + 35, 0, this.ySize + 54, 18, 18);
-
-        yRenderAngle = -30;
-        xRenderAngle = 0;
-
-        renderMob(pokemob, k, l, xSize, ySize, xRenderAngle, yRenderAngle, 0, 1);
-    }
-
     public static void renderMob(IPokemob pokemob, int width, int height, int xSize, int ySize, float xRenderAngle,
             float yRenderAngle, float zRenderAngle, float scale)
     {
@@ -128,62 +88,24 @@ public class GuiPokemob extends GuiContainer
             e.printStackTrace();
         }
     }
+    private IInventory                    playerInventory;
+    private IInventory                    pokeInventory;
+    private IPokemob                      pokemob;
+    private EntityLiving                  entity;
+    private float                         yRenderAngle       = 10;
 
-    @Override
-    public void initGui()
+    private float                         xRenderAngle       = 0;
+
+    Button                                stance;
+
+    public GuiPokemob(IInventory playerInv, IPokemob pokemob)
     {
-        super.initGui();
-        buttonList.clear();
-        int xOffset = 10;
-        int yOffset = 33;
-        String prev;
-        if (pokemob.getPokemonAIState(IPokemob.GUARDING))
-        {
-            prev = StatCollector.translateToLocal("pokemob.stance.guard");// "GUARD";
-        }
-        else if (pokemob.getPokemonAIState(IPokemob.STAYING))
-        {
-            prev = StatCollector.translateToLocal("pokemob.stance.stay");// "STAY";
-        }
-        else
-        {
-            prev = StatCollector.translateToLocal("pokemob.stance.follow");// "FOLLOW";
-        }
-
-        String next;
-        if (pokemob.getPokemonAIState(IPokemob.SITTING))
-        {
-            next = StatCollector.translateToLocal("pokemob.stance.sit");// "SIT";
-        }
-        else
-        {
-            next = StatCollector.translateToLocal("pokemob.stance.stand");// "STAND";
-        }
-        buttonList.add(new GuiButton(2, width / 2 - xOffset + 50, height / 2 - yOffset, 40, 20, next));
-        buttonList.add(stance = new Button(1, width / 2 - xOffset + 2, height / 2 - yOffset, 40, 20, prev));
-    }
-
-    /** Called when the mouse is clicked.
-     * 
-     * @throws IOException */
-    protected void mouseClicked(int x, int y, int button) throws IOException
-    {
-        super.mouseClicked(x, y, button);
-
-        if (stance.isMouseOver() && button == 1)
-        {
-            stance.playPressSound(this.mc.getSoundHandler());
-            byte type = -1;
-            if (type != 0)
-            {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-                buffer.writeByte(MessageServer.STANCE);
-                buffer.writeInt(entity.getEntityId());
-                buffer.writeByte(type);
-                MessageServer packet = new MessageServer(buffer);
-                PokecubePacketHandler.sendToServer(packet);
-            }
-        }
+        super(new ContainerPokemob(playerInv, pokemob.getPokemobInventory(), pokemob));
+        this.playerInventory = playerInv;
+        this.pokeInventory = pokemob.getPokemobInventory();
+        this.pokemob = pokemob;
+        this.entity = (EntityLiving) pokemob;
+        this.allowUserInput = false;
     }
 
     @Override
@@ -205,7 +127,7 @@ public class GuiPokemob extends GuiContainer
         else if (guibutton.id == 2)
         {
             byte type = 4;
-            if (pokemob.getPokemonAIState(IPokemob.SITTING))
+            if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
             {
                 guibutton.displayString = StatCollector.translateToLocal("pokemob.stance.stand");
             }
@@ -225,26 +147,56 @@ public class GuiPokemob extends GuiContainer
         }
     }
 
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
+    {
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.mc.getTextureManager().bindTexture(pokemobGuiTextures);
+        int k = (this.width - this.xSize) / 2;
+        int l = (this.height - this.ySize) / 2;
+        this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+
+        this.drawTexturedModalRect(k + 79, l + 17, 0, this.ySize, 90, 18);
+
+        this.drawTexturedModalRect(k + 7, l + 35, 0, this.ySize + 54, 18, 18);
+
+        yRenderAngle = -30;
+        xRenderAngle = 0;
+
+        renderMob(pokemob, k, l, xSize, ySize, xRenderAngle, yRenderAngle, 0, 1);
+    }
+
+    /** Draw the foreground layer for the GuiContainer (everything in front of
+     * the items) */
+    @Override
+    protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
+    {
+        this.fontRendererObj.drawString(this.pokeInventory.hasCustomName() ? this.pokeInventory.getName()
+                : I18n.format(this.pokeInventory.getName(), new Object[0]), 8, 6, 4210752);
+        this.fontRendererObj.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName()
+                : I18n.format(this.playerInventory.getName(), new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+    }
+
     /** Draws the screen and all the components in it. */
     @Override
     public void drawScreen(int x, int y, float z)
     {
         super.drawScreen(x, y, z);
-        GuiButton b = (GuiButton) buttonList.get(0);
-        GuiButton guibutton = (GuiButton) buttonList.get(1);
-        if (!(pokemob.getPokemonAIState(IPokemob.GUARDING) || pokemob.getPokemonAIState(IPokemob.STAYING)))
+        GuiButton b = buttonList.get(0);
+        GuiButton guibutton = buttonList.get(1);
+        if (!(pokemob.getPokemonAIState(IMoveConstants.GUARDING) || pokemob.getPokemonAIState(IMoveConstants.STAYING)))
         {
             guibutton.displayString = StatCollector.translateToLocal("pokemob.stance.follow");
         }
-        else if (pokemob.getPokemonAIState(IPokemob.GUARDING))
+        else if (pokemob.getPokemonAIState(IMoveConstants.GUARDING))
         {
             guibutton.displayString = StatCollector.translateToLocal("pokemob.stance.guard");
         }
-        else if (pokemob.getPokemonAIState(IPokemob.STAYING))
+        else if (pokemob.getPokemonAIState(IMoveConstants.STAYING))
         {
             guibutton.displayString = StatCollector.translateToLocal("pokemob.stance.stay");
         }
-        if (pokemob.getPokemonAIState(IPokemob.SITTING))
+        if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
         {
             b.displayString = StatCollector.translateToLocal("pokemob.stance.sit");
         }
@@ -254,11 +206,61 @@ public class GuiPokemob extends GuiContainer
         }
     }
 
-    public static class Button extends GuiButton
+    @Override
+    public void initGui()
     {
-        public Button(int p_i1021_1_, int p_i1021_2_, int p_i1021_3_, int p_i1021_4_, int p_i1021_5_, String p_i1021_6_)
+        super.initGui();
+        buttonList.clear();
+        int xOffset = 10;
+        int yOffset = 33;
+        String prev;
+        if (pokemob.getPokemonAIState(IMoveConstants.GUARDING))
         {
-            super(p_i1021_1_, p_i1021_2_, p_i1021_3_, p_i1021_4_, p_i1021_5_, p_i1021_6_);
+            prev = StatCollector.translateToLocal("pokemob.stance.guard");// "GUARD";
+        }
+        else if (pokemob.getPokemonAIState(IMoveConstants.STAYING))
+        {
+            prev = StatCollector.translateToLocal("pokemob.stance.stay");// "STAY";
+        }
+        else
+        {
+            prev = StatCollector.translateToLocal("pokemob.stance.follow");// "FOLLOW";
+        }
+
+        String next;
+        if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
+        {
+            next = StatCollector.translateToLocal("pokemob.stance.sit");// "SIT";
+        }
+        else
+        {
+            next = StatCollector.translateToLocal("pokemob.stance.stand");// "STAND";
+        }
+        buttonList.add(new GuiButton(2, width / 2 - xOffset + 50, height / 2 - yOffset, 40, 20, next));
+        buttonList.add(stance = new Button(1, width / 2 - xOffset + 2, height / 2 - yOffset, 40, 20, prev));
+    }
+
+    /** Called when the mouse is clicked.
+     * 
+     * @throws IOException */
+    @Override
+    protected void mouseClicked(int x, int y, int button) throws IOException
+    {
+        super.mouseClicked(x, y, button);
+
+        if (stance.isMouseOver() && button == 1)
+        {
+            stance.playPressSound(this.mc.getSoundHandler());
+            byte type = -1;
+            if (type != 0)
+            {
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+                buffer.writeByte(MessageServer.STANCE);
+                buffer.writeInt(entity.getEntityId());
+                buffer.writeByte(type);
+                MessageServer packet = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(packet);
+            }
         }
     }
 }

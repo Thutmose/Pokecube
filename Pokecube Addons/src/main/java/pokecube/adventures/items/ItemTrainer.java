@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
@@ -22,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.entity.trainers.EntityLeader;
+import pokecube.adventures.entity.trainers.EntityPokemartSeller;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.entity.villager.EntityTrader;
@@ -39,13 +41,62 @@ public class ItemTrainer extends Item
         this.setHasSubtypes(true);
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    /** returns a list of items with the same ID, but different meta (eg: dye
+     * returns 16 items) */
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
+    {
+        par3List.add(new ItemStack(par1, 1, 0));
+        par3List.add(new ItemStack(par1, 1, 1));
+        par3List.add(new ItemStack(par1, 1, 2));
+    }
+
+    /** Returns the unlocalized name of this item. This version accepts an
+     * ItemStack so different stacks can have different names based on their
+     * damage or NBT. */
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        int i = stack.getItemDamage();
+
+        if (i == 0) return "item.trainerSpawner";
+        if (i == 1) return "item.leaderSpawner";
+        if (i == 2) { return "item.traderSpawner"; }
+
+        return super.getUnlocalizedName();
+    }
+
+    /** Returns true if the item can be used on the given entity, e.g. shears on
+     * sheep. */
+    @Override
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target)
+    {
+        if (stack.getItemDamage() != 2) return false;
+        if (!(target instanceof EntityVillager)) return false;
+        EntityVillager v = (EntityVillager) target;
+        for (Object o2 : v.tasks.taskEntries)
+        {
+            EntityAITaskEntry taskEntry = (EntityAITaskEntry) o2;
+            if (taskEntry.action instanceof GuardAI)
+            {
+                v.tasks.removeTask(taskEntry.action);
+                break;
+            }
+        }
+        IGuardAICapability capability = v.getCapability(EventsHandler.GUARDAI_CAP, null);
+        capability.setActiveTime(TimePeriod.fullDay);
+        capability.setPos(v.getPosition());
+        v.tasks.addTask(2, new GuardAI(v, capability));
+        return true;
+    }
+
     @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
         if (world.isRemote) { return itemstack; }
 
-        Vector3 location = Vector3.getNewVector().set(player)
-                .add(Vector3.getNewVector().set(player.getLookVec()));
+        Vector3 location = Vector3.getNewVector().set(player).add(Vector3.getNewVector().set(player.getLookVec()));
         if (player.capabilities.isCreativeMode)
         {
             if (player.isSneaking())
@@ -80,7 +131,17 @@ public class ItemTrainer extends Item
             }
             if (!item) return itemstack;
 
-            EntityTrader t = new EntityTrader(world);
+            EntityLiving t;
+
+            if (player.isSneaking())
+            {
+                t = new EntityTrader(world);
+            }
+            else
+            {
+                t = new EntityPokemartSeller(world);
+            }
+
             location.offset(EnumFacing.UP).moveEntity(t);
             world.spawnEntityInWorld(t);
             ArrayList<EntityAIBase> toRemove = Lists.newArrayList();
@@ -94,7 +155,7 @@ public class ItemTrainer extends Item
             for (EntityAIBase ai : toRemove)
                 t.tasks.removeTask(ai);
             IGuardAICapability capability = t.getCapability(EventsHandler.GUARDAI_CAP, null);
-            capability.setActiveTime(new TimePeriod(0,0.5));
+            capability.setActiveTime(new TimePeriod(0, 0.5));
             capability.setPos(t.getPosition());
             t.tasks.addTask(2, new GuardAI(t, capability));
         }
@@ -121,68 +182,6 @@ public class ItemTrainer extends Item
         Block b = v.getBlock(world);
         b.rotateBlock(world, pos, EnumFacing.DOWN);
         return false;
-    }
-
-    /** Returns true if the item can be used on the given entity, e.g. shears on
-     * sheep. */
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target)
-    {
-        if (stack.getItemDamage() != 2) return false;
-        if (!(target instanceof EntityVillager)) return false;
-        EntityVillager v = (EntityVillager) target;
-        for (Object o2 : v.tasks.taskEntries)
-        {
-            EntityAITaskEntry taskEntry = (EntityAITaskEntry) o2;
-            if (taskEntry.action instanceof GuardAI)
-            {
-                v.tasks.removeTask(taskEntry.action);
-                break;
-            }
-        }
-
-        IGuardAICapability capability = v.getCapability(EventsHandler.GUARDAI_CAP, null);
-        capability.setActiveTime(TimePeriod.fullDay);
-        capability.setPos(v.getPosition());
-        v.tasks.addTask(2, new GuardAI(v, capability));
-        System.out.println(capability);
-        // Vector3 pos = Vector3.getNewVector().set(target);//TODO
-        // interact with capability instead
-        // v.tasks.addTask(2, new GuardAI(v, new BlockPos(pos.intX(),
-        // pos.intY(), pos.intZ()), 1.0f, 48.0f,
-        // new TimePeriod(0.00, 0.5), false));
-        // GuardAIProperties props = new GuardAIProperties();
-        // props.init(v, v.worldObj);
-        // NBTTagCompound nbt = new NBTTagCompound();
-        // v.writeToNBT(nbt);
-        // props.saveNBTData(nbt);
-        // v.readFromNBT(nbt);
-        return true;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    /** returns a list of items with the same ID, but different meta (eg: dye
-     * returns 16 items) */
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
-    {
-        par3List.add(new ItemStack(par1, 1, 0));
-        par3List.add(new ItemStack(par1, 1, 1));
-        par3List.add(new ItemStack(par1, 1, 2));
-    }
-
-    /** Returns the unlocalized name of this item. This version accepts an
-     * ItemStack so different stacks can have different names based on their
-     * damage or NBT. */
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        int i = stack.getItemDamage();
-
-        if (i == 0) return "item.trainerSpawner";
-        if (i == 1) return "item.leaderSpawner";
-        if (i == 2) { return "item.traderSpawner"; }
-
-        return super.getUnlocalizedName();
     }
 
 }

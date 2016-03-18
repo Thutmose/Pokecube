@@ -31,92 +31,76 @@ import pokecube.core.CreativeTabPokecube;
 import pokecube.core.CreativeTabPokecubeBerries;
 import pokecube.core.CreativeTabPokecubeBlocks;
 import pokecube.core.CreativeTabPokecubes;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.Config;
 import thut.api.maths.Vector3;
 
 public abstract class PokecubeMod
 {
-    public final static String                  ID                    = "pokecube";
-    public final static String                  VERSION               = "@VERSION@";
-    public final static String                  MCVERSIONS            = "@MCVERSION@";
-    public final static String                  MINFORGEVERSION       = "[11.15.1.1763,)";
-    public final static String                  DEPSTRING             = "";                                                                                        // ";required-after:thutcore@[2.3.4,);required-after:Baubles@[1.1.3,)";//"";//
+    public static enum Type
+    {
+        FLYING, FLOATING, WATER, NORMAL;
 
-    public final static String                  UPDATEURL             = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/Pokecube%20Core/versions.json";
-    public final static String                  CONTRIBURL            = "https://raw.githubusercontent.com/Thutmose/Pokecube/master/contributors.json";
-    public final static String                  GIFTURL               = "https://gist.githubusercontent.com/Thutmose/b2b592fd6d554e9cd55f/raw";
+        public static Type getType(String type)
+        {
+            for (Type t : values())
+            {
+                if (t.toString().equalsIgnoreCase(type)) return t;
+            }
+            return NORMAL;
+        }
+    }
 
-    public static final int                     MAX_DAMAGE            = 0x7FFF;
-    public static final int                     FULL_HEALTH           = MAX_DAMAGE - 1;
+    public final static String                  ID                         = "pokecube";
+    public final static String                  VERSION                    = "@VERSION";
+    public final static String                  MCVERSIONS                 = "@MCVERSION";
+    public final static String                  MINFORGEVERSION            = "@FORGEVERSION";
 
-    private static HashMap<Integer, FakePlayer> fakePlayers           = new HashMap<Integer, FakePlayer>();
+    public final static String                  DEPSTRING                  = ";required-after:thutcore@@THUTCORE";
+    private final static String                 GIST                       = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/";
+    public final static String                  UPDATEURL                  = GIST + "core.json";
+    public final static String                  CONTRIBURL                 = GIST + "contributors.json";
+
+    public final static String                  GIFTURL                    = GIST + "gift";
+    public static final int                     MAX_DAMAGE                 = 0x7FFF;
+
+    public static final int                     FULL_HEALTH                = MAX_DAMAGE - 1;
+    private static HashMap<Integer, FakePlayer> fakePlayers                = new HashMap<Integer, FakePlayer>();
+
     /** If you are a developer, you can set this flag to true. Set to false
      * before a build. */
-    public final static boolean                 debug                 = false;
+    public final static boolean                 debug                      = false;
 
     public static PokecubeMod                   core;
 
     public static SimpleNetworkWrapper          packetPipeline;
 
     // Manchou mobs are default mobs
-    public static String                        defaultMod            = "pokecube_ml";
+    public static String                        defaultMod                 = "pokecube_ml";
+    public static boolean                       pokemobsDamageOwner        = false;
+    public static boolean                       pokemobsDamagePlayers      = true;
+    public static boolean                       pokemobsDamageBlocks       = false;
 
-    public static boolean                       pokemobsDamageOwner   = false;
-    public static boolean                       pokemobsDamagePlayers = true;
-    public static boolean                       pokemobsDamageBlocks  = false;
-    public static double                        MAX_DENSITY           = 1;
+    public static double                        MAX_DENSITY                = 1;
+    public static Map<String, String>           gifts                      = new HashMap<String, String>();
 
-    public static Map<String, String>           gifts                 = new HashMap<String, String>();
-    public static List<String>                  giftLocations         = new ArrayList<String>();
-
+    public static List<String>                  giftLocations              = new ArrayList<String>();
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Map<Integer, Class>           pokedexmap            = new HashMap();
+    public static Map<Integer, Class>           pokedexmap                 = new HashMap();
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Map<Integer, Class>           genericMobClasses     = new HashMap();
-    public static BitSet                        registered            = new BitSet();
+    public static Map<Integer, Class>           genericMobClasses          = new HashMap();
 
-    public abstract Configuration getPokecubeConfig(FMLPreInitializationEvent evt);
-
-    /** Creates a new instance of an entity in the world for the pokemob
-     * specified by its pokedex number.
-     * 
-     * @param pokedexNb
-     *            the pokedex number
-     * @param world
-     *            the {@link World} where to spawn
-     * @return the {@link Entity} instance or null if a problem occurred */
-    public abstract Entity createEntityByPokedexNb(int pokedexNb, World world);
-
-    public abstract Integer[] getStarters();
-
-    public abstract void registerPokemon(boolean createEgg, Object mod, String name);
-
-    /** Registers a Pokemob into the Pokedex. Have a look to the file called
-     * <code>"HelpEntityJava.png"</code> provided with the SDK.
-     *
-     * @param createEgg
-     *            whether an egg should be created for this species (is a base
-     *            non legendary pokemob)
-     * @param mod
-     *            the instance of your mod
-     * @param pokedexnb
-     *            the pokedex number */
-    public abstract void registerPokemon(boolean createEgg, Object mod, int pokedexNb);
-
-    @SuppressWarnings("rawtypes")
-    public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, int pokedexNb);
-
-    public static CommonProxy getProxy()
-    {
-        return CommonProxy.getClientInstance();
-    }
+    public static BitSet                        registered                 = new BitSet();
 
     public static CreativeTabs                  creativeTabPokecube        = new CreativeTabPokecube(
             CreativeTabs.creativeTabArray.length, "Pokecube");
+
     public static CreativeTabs                  creativeTabPokecubes       = new CreativeTabPokecubes(
             CreativeTabs.creativeTabArray.length, "Pokecubes");
+
     public static CreativeTabs                  creativeTabPokecubeBerries = new CreativeTabPokecubeBerries(
             CreativeTabs.creativeTabArray.length, "Berries");
+
     public static CreativeTabs                  creativeTabPokecubeBlocks  = new CreativeTabPokecubeBlocks(
             CreativeTabs.creativeTabArray.length, "Pokecube Blocks");
 
@@ -127,13 +111,11 @@ public abstract class PokecubeMod
     // can be copied by teaching to a pokemob, then
     // placing it in the PC.
     public static ArrayList<ItemStack>          HMs                        = new ArrayList<ItemStack>();
+
     // Achievements
     public static AchievementPage               achievementPagePokecube;
     public static Achievement                   get1stPokemob;
     public static HashMap<Integer, Achievement> pokemobAchievements;
-    public ByteClassLoader                      loader;
-    public ArrayList<Integer>                   starters                   = new ArrayList<Integer>();
-
     public static final UUID                    fakeUUID                   = new UUID(1234, 4321);
 
     public static FakePlayer getFakePlayer()
@@ -170,24 +152,31 @@ public abstract class PokecubeMod
         return getFakePlayer(world.provider.getDimensionId());
     }
 
-    public static enum Type
+    public static CommonProxy getProxy()
     {
-        FLYING, FLOATING, WATER, NORMAL;
-
-        public static Type getType(String type)
-        {
-            for (Type t : values())
-            {
-                if (t.toString().equalsIgnoreCase(type)) return t;
-            }
-            return NORMAL;
-        }
+        return CommonProxy.getClientInstance();
     }
 
-    public String getTranslatedPokenameFromPokedexNumber(int pokedexNb)
+    public static boolean isDeobfuscated()
     {
-        return null;
+        Object deObf = Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        return Boolean.valueOf(String.valueOf(deObf)).booleanValue();
     }
+
+    public ByteClassLoader    loader;
+    public ArrayList<Integer> starters = new ArrayList<Integer>();
+
+    /** Creates a new instance of an entity in the world for the pokemob
+     * specified by its pokedex number.
+     * 
+     * @param pokedexNb
+     *            the pokedex number
+     * @param world
+     *            the {@link World} where to spawn
+     * @return the {@link Entity} instance or null if a problem occurred */
+    public abstract Entity createEntityByPokedexNb(int pokedexNb, World world);
+
+    public abstract Config getConfig();
 
     /** Returns the class of the {@link EntityLiving} for the given pokedexNb.
      * If no Pokemob has been registered for this pokedex number, it returns
@@ -199,13 +188,33 @@ public abstract class PokecubeMod
     @SuppressWarnings("rawtypes")
     public abstract Class getEntityClassFromPokedexNumber(int pokedexNb);
 
-    public abstract void spawnParticle(String par1Str, Vector3 location, Vector3 velocity);
+    public abstract Configuration getPokecubeConfig(FMLPreInitializationEvent evt);
 
-    public static boolean isDeobfuscated()
+    public abstract Integer[] getStarters();
+
+    public String getTranslatedPokenameFromPokedexNumber(int pokedexNb)
     {
-        Object deObf = Launch.blackboard.get("fml.deobfuscatedEnvironment");
-        return Boolean.valueOf(String.valueOf(deObf)).booleanValue();
+        return null;
     }
 
-    public abstract Config getConfig();
+    /** Registers a Pokemob into the Pokedex. Have a look to the file called
+     * <code>"HelpEntityJava.png"</code> provided with the SDK.
+     *
+     * @param createEgg
+     *            whether an egg should be created for this species (is a base
+     *            non legendary pokemob)
+     * @param mod
+     *            the instance of your mod
+     * @param pokedexnb
+     *            the pokedex number */
+    public abstract void registerPokemon(boolean createEgg, Object mod, int pokedexNb);
+
+    public abstract void registerPokemon(boolean createEgg, Object mod, PokedexEntry entry);
+
+    public abstract void registerPokemon(boolean createEgg, Object mod, String name);
+
+    @SuppressWarnings("rawtypes")
+    public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry);
+
+    public abstract void spawnParticle(String par1Str, Vector3 location, Vector3 velocity);
 }

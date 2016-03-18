@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 
 public class RenderHeldPokemobs implements LayerRenderer<EntityPlayer>
@@ -28,7 +29,7 @@ public class RenderHeldPokemobs implements LayerRenderer<EntityPlayer>
         
         IPokemob pokemob = (IPokemob) entity;
         
-        if(pokemob.getPokemonAIState(IPokemob.HELD))
+        if(pokemob.getPokemonAIState(IMoveConstants.HELD))
         {
             GlStateManager.pushMatrix();
             ((ModelBiped) this.livingEntityRenderer.getMainModel()).bipedRightArm.postRender(0.0625F);

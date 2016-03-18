@@ -22,6 +22,27 @@ import thaumcraft.api.aspects.AspectList;
 
 public class ThaumiumPokecube// extends Mod_Pokecube_Helper
 {
+    static boolean has(AspectList list, AspectList listoriginal)
+    {
+        for (Aspect a : list.getAspects())
+        {
+            for (Aspect b : listoriginal.getAspects())
+            {
+                if (a == b) return true;
+            }
+        }
+        return false;
+    }
+
+    static int matches(IPokemob mob, AspectList list)
+    {
+        AspectList list1 = ThaumcraftCompat.pokeTypeToAspects.get(mob.getType1());
+        AspectList list2 = ThaumcraftCompat.pokeTypeToAspects.get(mob.getType2());
+        int ret = has(list1, list) ? 3 : 0;
+        if (mob.getType1() != mob.getType2() && mob.getType2() != PokeType.unknown) ret += has(list2, list) ? 3 : 0;
+        return ret;
+    }
+
     public void addThaumiumPokecube()
     {
         Pokecube thaumiumpokecube = new CompatPokecubes();
@@ -34,6 +55,12 @@ public class ThaumiumPokecube// extends Mod_Pokecube_Helper
 
         PokecubeBehavior thaumic = new PokecubeBehavior()
         {
+            @Override
+            public void onPostCapture(Post evt)
+            {
+
+            }
+
             @Override
             public void onPreCapture(Pre evt)
             {
@@ -55,34 +82,7 @@ public class ThaumiumPokecube// extends Mod_Pokecube_Helper
                     evt.pokecube.entityDropItem(((EntityPokecube) evt.pokecube).getEntityItem(), (float) 0.5);
                 }
             }
-
-            @Override
-            public void onPostCapture(Post evt)
-            {
-
-            }
         };
         PokecubeBehavior.addCubeBehavior(98, thaumic);
-    }
-
-    static int matches(IPokemob mob, AspectList list)
-    {
-        AspectList list1 = ThaumcraftCompat.pokeTypeToAspects.get(mob.getType1());
-        AspectList list2 = ThaumcraftCompat.pokeTypeToAspects.get(mob.getType2());
-        int ret = has(list1, list) ? 3 : 0;
-        if (mob.getType1() != mob.getType2() && mob.getType2() != PokeType.unknown) ret += has(list2, list) ? 3 : 0;
-        return ret;
-    }
-
-    static boolean has(AspectList list, AspectList listoriginal)
-    {
-        for (Aspect a : list.getAspects())
-        {
-            for (Aspect b : listoriginal.getAspects())
-            {
-                if (a == b) return true;
-            }
-        }
-        return false;
     }
 }

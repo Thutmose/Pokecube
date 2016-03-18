@@ -20,6 +20,13 @@ public class CommandElement {
 	private Object              value;
 
 	/**
+	 * @return The number of parameters.
+	 */
+	public final int getNumParam() {
+		return nParam;
+	}
+
+	/**
 	 * @return The function associated with this element.
 	 */
 	public final PostfixMathCommandI getPFMC() {
@@ -48,10 +55,10 @@ public class CommandElement {
 	}
 
 	/**
-	 * @return The number of parameters.
+	 * @param i The number of parameters.
 	 */
-	public final int getNumParam() {
-		return nParam;
+	public final void setNumParam(int i) {
+		nParam = i;
 	}
 
 	/**
@@ -80,13 +87,6 @@ public class CommandElement {
 	 */
 	public final void setVarName(String string) {
 		varName = string;
-	}
-
-	/**
-	 * @param i The number of parameters.
-	 */
-	public final void setNumParam(int i) {
-		nParam = i;
 	}
 
 }

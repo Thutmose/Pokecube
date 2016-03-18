@@ -7,9 +7,17 @@ import pokecube.core.interfaces.IPokemob;
  * @author Thutmose */
 public class EvolveEvent extends LevelUpEvent
 {
-    public EvolveEvent(IPokemob mob)
+    /** Called after the evolution.<br>
+     * 
+     * @author Thutmose */
+    public static class Post extends EvolveEvent
     {
-        super(mob, mob.getLevel(), mob.getLevel());
+        /** @param mob
+         *            - the result of the evolution. */
+        public Post(IPokemob mob)
+        {
+            super(mob);
+        }
     }
 
     /** Called before the evolution, if canceled, it will not evolve.<br>
@@ -30,17 +38,9 @@ public class EvolveEvent extends LevelUpEvent
         }
     }
 
-    /** Called after the evolution.<br>
-     * 
-     * @author Thutmose */
-    public static class Post extends EvolveEvent
+    public EvolveEvent(IPokemob mob)
     {
-        /** @param mob
-         *            - the result of the evolution. */
-        public Post(IPokemob mob)
-        {
-            super(mob);
-        }
+        super(mob, mob.getLevel(), mob.getLevel());
     }
 
 }

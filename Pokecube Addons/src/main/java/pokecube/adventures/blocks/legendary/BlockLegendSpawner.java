@@ -22,12 +22,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.LegendaryConditions;
-import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.IMetaBlock;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.ISpecialSpawnCondition;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class BlockLegendSpawner extends Block implements IMetaBlock
@@ -38,22 +38,65 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
     public BlockLegendSpawner()
     {
         super(Material.rock);
-        this.setCreativeTab(PokecubeCore.creativeTabPokecubeBlocks);
+        this.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         this.setHardness(10);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE, Integer.valueOf(0)));
     }
 
-    public void registerType(String pokemon)
+    @Override
+    protected BlockState createBlockState()
     {
-        if (types.size() > 15)
-            throw new ArrayIndexOutOfBoundsException("Cannot add more legends to this block, please make another");
-        types.add(pokemon);
+        if (TYPE == null)
+        {
+            if (LegendaryConditions.spawner1 == null)
+                TYPE = PropertyInteger.create("type", 0, LegendaryConditions.SPAWNER1COUNT - 1);
+        }
+        return new BlockState(this, new IProperty[] { TYPE });
     }
 
     @Override
-    public int quantityDropped(Random par1Random)
+    @SideOnly(Side.CLIENT)
+    public EnumWorldBlockLayer getBlockLayer()
     {
-        return 0;
+        return EnumWorldBlockLayer.TRANSLUCENT;
+    }
+
+    @Override
+    /** Convert the BlockState into the correct metadata value */
+    public int getMetaFromState(IBlockState state)
+    {
+        return state.getValue(TYPE).intValue();
+    }
+
+    @Override
+    /** Convert the given metadata into a BlockState for this Block */
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty(TYPE, Integer.valueOf(meta));
+    }
+
+    @Override
+    /** returns a list of blocks with the same ID, but different meta (eg: wood
+     * returns 4 blocks) */
+    @SideOnly(Side.CLIENT)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
+    {
+        for (int j = 0; j < types.size(); ++j)
+        {
+            list.add(new ItemStack(itemIn, 1, j));
+        }
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        return "tile." + types.get(stack.getItemDamage());
+    }
+
+    @Override
+    public boolean isFullCube()
+    {
+        return false;
     }
 
     @Override
@@ -66,19 +109,6 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
     public boolean isVisuallyOpaque()
     {
         return false;
-    }
-
-    @Override
-    public boolean isFullCube()
-    {
-        return false;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public EnumWorldBlockLayer getBlockLayer()
-    {
-        return EnumWorldBlockLayer.TRANSLUCENT;
     }
 
     @Override
@@ -99,7 +129,7 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
             Vector3 location = Vector3.getNewVector().set(pos);
             if (condition.canSpawn(player, location))
             {
-                EntityLiving entity = (EntityLiving) PokecubeCore.core.createEntityByPokedexNb(pokedexNb, worldIn);
+                EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexNb, worldIn);
                 entity.setHealth(entity.getMaxHealth());
                 location.add(0, 1, 0).moveEntity(entity);
                 condition.onSpawn((IPokemob) entity);
@@ -116,45 +146,15 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
     }
 
     @Override
-    /** Convert the given metadata into a BlockState for this Block */
-    public IBlockState getStateFromMeta(int meta)
+    public int quantityDropped(Random par1Random)
     {
-        return this.getDefaultState().withProperty(TYPE, Integer.valueOf(meta));
+        return 0;
     }
 
-    @Override
-    /** Convert the BlockState into the correct metadata value */
-    public int getMetaFromState(IBlockState state)
+    public void registerType(String pokemon)
     {
-        return ((Integer) state.getValue(TYPE)).intValue();
-    }
-
-    @Override
-    protected BlockState createBlockState()
-    {
-        if (TYPE == null)
-        {
-            if (LegendaryConditions.spawner1 == null)
-                TYPE = PropertyInteger.create("type", 0, LegendaryConditions.SPAWNER1COUNT - 1);
-        }
-        return new BlockState(this, new IProperty[] { TYPE });
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        return "tile." + types.get(stack.getItemDamage());
-    }
-
-    @Override
-    /** returns a list of blocks with the same ID, but different meta (eg: wood
-     * returns 4 blocks) */
-    @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
-    {
-        for (int j = 0; j < types.size(); ++j)
-        {
-            list.add(new ItemStack(itemIn, 1, j));
-        }
+        if (types.size() > 15)
+            throw new ArrayIndexOutOfBoundsException("Cannot add more legends to this block, please make another");
+        types.add(pokemon);
     }
 }

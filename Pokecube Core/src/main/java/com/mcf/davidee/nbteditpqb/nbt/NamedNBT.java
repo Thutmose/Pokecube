@@ -16,24 +16,24 @@ public class NamedNBT {
 		this.nbt = nbt;
 	}
 	
-	public String getName() {
-		return name;
+	public NamedNBT copy() {
+		return new NamedNBT(name, nbt.copy());
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	public String getName() {
+		return name;
 	}
 	
 	public NBTBase getNBT() {
 		return nbt;
 	}
 	
-	public void setNBT(NBTBase nbt) {
-		this.nbt = nbt;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
-	public NamedNBT copy() {
-		return new NamedNBT(name, nbt.copy());
+	public void setNBT(NBTBase nbt) {
+		this.nbt = nbt;
 	}
 	
 }

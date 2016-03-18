@@ -33,36 +33,14 @@ public enum Nature
     QUIRKY  (new byte[]{0,0,0,0,0,0});
     // @formatter:on
 
-    final byte[] stats;
-    final byte badFlavour;
-    final byte goodFlavour;
-    int favourteBerry = -1;
-
-    private Nature(byte[] stats)
+    public static int getBerryWeight(int berryIndex, Nature type)
     {
-        this.stats = stats;
-        byte good = -1;
-        byte bad = -1;
-        for (int i = 1; i < 6; i++)
-        {
-            if (stats[i] == 1)
-            {
-                good = (byte) (i - 1);
-            }
-            if (stats[i] == -1)
-            {
-                bad = (byte) (i - 1);
-            }
-        }
-        goodFlavour = good;
-        badFlavour = bad;
+        int ret = 0;
+        int[] flavours = BerryManager.berryFlavours.get(berryIndex);
+        if(type.goodFlavour == type.badFlavour || flavours == null) return ret;
+        ret = flavours[type.goodFlavour] - flavours[type.badFlavour];
+        return ret;
     }
-
-    public byte[] getStatsMod()
-    {
-        return stats;
-    }
-
     /** Returns the prefered berry for this nature, if it returns -1, it likes
      * all berries equally.
      * 
@@ -90,7 +68,6 @@ public enum Nature
         type.favourteBerry = ret;
         return ret;
     }
-
     public static String getTranslatedName(Nature type)
     {
         String translated = StatCollector.translateToLocal("nature." + type);
@@ -99,13 +76,36 @@ public enum Nature
 
         return translated;
     }
-    
-    public static int getBerryWeight(int berryIndex, Nature type)
+    final byte[] stats;
+
+    final byte badFlavour;
+
+    final byte goodFlavour;
+
+    int favourteBerry = -1;
+
+    private Nature(byte[] stats)
     {
-        int ret = 0;
-        int[] flavours = BerryManager.berryFlavours.get(berryIndex);
-        if(type.goodFlavour == type.badFlavour || flavours == null) return ret;
-        ret = flavours[type.goodFlavour] - flavours[type.badFlavour];
-        return ret;
+        this.stats = stats;
+        byte good = -1;
+        byte bad = -1;
+        for (int i = 1; i < 6; i++)
+        {
+            if (stats[i] == 1)
+            {
+                good = (byte) (i - 1);
+            }
+            if (stats[i] == -1)
+            {
+                bad = (byte) (i - 1);
+            }
+        }
+        goodFlavour = good;
+        badFlavour = bad;
+    }
+    
+    public byte[] getStatsMod()
+    {
+        return stats;
     }
 }

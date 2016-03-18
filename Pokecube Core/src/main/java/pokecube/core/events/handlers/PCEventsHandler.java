@@ -34,6 +34,192 @@ import pokecube.core.utils.PCSaveHandler;
 
 public class PCEventsHandler
 {
+    /** Gets a list of all pokemobs out of their cube belonging to the player in
+     * the player's current world.
+     * 
+     * @param player
+     * @return */
+    public static List<IPokemob> getOutMobs(EntityLivingBase player)
+    {
+        List<?> pokemobs = new ArrayList<Object>(player.worldObj.loadedEntityList);
+        List<IPokemob> ret = new ArrayList<IPokemob>();
+        for (Object o : pokemobs)
+        {
+            if (o instanceof IPokemob)
+            {
+                IPokemob mob = (IPokemob) o;
+                if (mob.getPokemonOwner() != null && mob.getPokemonOwner() == player)
+                {
+                    ret.add(mob);
+                }
+            }
+            else if (o instanceof EntityPokecube)
+            {
+                EntityPokecube mob = (EntityPokecube) o;
+                if (mob.getEntityItem() != null)
+                {
+                    IPokemob poke = PokecubeManager.itemToPokemob(mob.getEntityItem(), mob.worldObj);
+                    if (poke != null && poke.getPokemonOwner() != null && poke.getPokemonOwner() == player)
+                    {
+                        ret.add(poke);
+                    }
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    /** Recalls all pokemobs belonging to the player in the player's current
+     * world.
+     * 
+     * @param player */
+    public static void recallAllPokemobs(Entity player)
+    {
+        List<Object> pokemobs = new ArrayList<Object>(player.worldObj.loadedEntityList);
+        boolean sentToPC = false;
+        for (Object o : pokemobs)
+        {
+            if (o instanceof IPokemob)
+            {
+                IPokemob mob = (IPokemob) o;
+                if (mob.getPokemonOwner() != null && mob.getPokemonOwner() == player)
+                {
+                    mob.returnToPokecube();
+                }
+            }
+            else if (o instanceof EntityPokecube)
+            {
+                EntityPokecube mob = (EntityPokecube) o;
+                if (mob.getEntityItem() != null)
+                {
+                    String name = PokecubeManager.getOwner(mob.getEntityItem());
+                    if (name != null && (name.equalsIgnoreCase(player.getName())
+                            || name.equals(player.getUniqueID().toString())))
+                    {
+                        InventoryPC.addStackToPC(name, mob.getEntityItem());
+                        mob.setDead();
+                        sentToPC = true;
+                    }
+                }
+            }
+        }
+        if (sentToPC && player instanceof EntityPlayer)
+        {
+            String uuid = player.getUniqueID().toString();
+            if (!PokecubeCore.isOnClientSide())
+            {
+                PCSaveHandler.getInstance().savePC(uuid);
+                NBTTagCompound nbt = new NBTTagCompound();
+                NBTTagList tags = InventoryPC.saveToNBT(player.getUniqueID().toString());
+
+                nbt.setTag("pc", tags);
+
+                MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
+                PokecubePacketHandler.sendToClient(packet, (EntityPlayer) player);
+            }
+        }
+    }
+
+    /** Used for changing name from "Someone's PC" to "Thutmose's PC". This is
+     * done as all of the PC systems are named after whoever made them. See
+     * Bill's PC for an example.
+     * 
+     * @param evt */
+    @SubscribeEvent
+    public void PCLoggin(EntityJoinWorldEvent evt)
+    {
+        if (!(evt.entity instanceof EntityPlayer)) return;
+
+        EntityPlayer entityPlayer = (EntityPlayer) evt.entity;
+
+        if (entityPlayer.getName().toLowerCase().trim().equals("thutmose"))
+        {
+            for (Object o : evt.world.playerEntities)
+            {
+                if (o instanceof EntityPlayer)
+                {
+                    EntityPlayer p = (EntityPlayer) o;
+                    if (InventoryPC.map.containsKey(p.getUniqueID().toString()))
+                    {
+                        InventoryPC.getPC(p.getUniqueID().toString()).seenOwner = true;
+
+                        if (evt.world.isRemote) continue;
+
+                        NBTTagCompound nbt = new NBTTagCompound();
+                        NBTTagList tags = InventoryPC.saveToNBT(p.getUniqueID().toString());
+
+                        nbt.setTag("pc", tags);
+                        nbt.setBoolean("pcCreator", true);
+                        MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
+                        PokecubePacketHandler.sendToClient(packet, p);
+                    }
+                }
+            }
+        }
+    }
+
+    /** Sends the packet with the player's PC data to that player.
+     * 
+     * @param evt */
+    @SubscribeEvent
+    public void PlayerLoggin(PlayerLoggedInEvent evt)
+    {
+        EntityPlayer entityPlayer = evt.player;
+
+        if (entityPlayer.getName().toLowerCase().trim().equals("thutmose"))
+        {
+            PCSaveHandler.getInstance().seenPCCreator = true;
+        }
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
+
+        NBTTagCompound nbt = new NBTTagCompound();
+        NBTTagList tags = InventoryPC.saveToNBT(entityPlayer.getUniqueID().toString());
+
+        nbt.setTag("pc", tags);
+        nbt.setBoolean("pcCreator", PCSaveHandler.getInstance().seenPCCreator);
+        MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
+        PokecubePacketHandler.sendToClient(packet, entityPlayer);
+
+    }
+
+    /** This sends pokecube to PC if the player has a full inventory and tries
+     * to pick up a pokecube.
+     * 
+     * @param evt */
+    @SubscribeEvent
+    public void playerPickupItem(EntityItemPickupEvent evt)
+    {
+        if (evt.item.worldObj.isRemote) return;
+        InventoryPlayer inv = evt.entityPlayer.inventory;
+        int num = inv.getFirstEmptyStack();
+
+        if (num == -1)
+        {
+            if (PokecubeManager.isFilled(evt.item.getEntityItem()))
+            {
+                InventoryPC.addPokecubeToPC(evt.item.getEntityItem(), evt.entityPlayer.worldObj);
+                evt.item.setDead();
+
+            }
+        }
+    }
+
+    /** If player tosses a pokecube item, it will be send to PC instead.
+     * 
+     * @param evt */
+    @SubscribeEvent
+    public void playerTossPokecubeToPC(ItemTossEvent evt)
+    {
+        if (evt.entityItem.worldObj.isRemote) return;
+        if (PokecubeManager.isFilled(evt.entityItem.getEntityItem()))
+        {
+            InventoryPC.addPokecubeToPC(evt.entityItem.getEntityItem(), evt.entityItem.worldObj);
+            evt.entityItem.setDead();
+            evt.setCanceled(true);
+        }
+    }
+
     /** Attempts to send the pokecube to the PC whenever the entityitem it is in
      * expires. This prevents losing pokemobs if the cube is somehow left in the
      * world.
@@ -144,192 +330,5 @@ public class PCEventsHandler
         {
             evt.pokecube.entityDropItem(evt.filledCube, 0.5f);
         }
-    }
-
-    /** If player tosses a pokecube item, it will be send to PC instead.
-     * 
-     * @param evt */
-    @SubscribeEvent
-    public void playerTossPokecubeToPC(ItemTossEvent evt)
-    {
-        if (evt.entityItem.worldObj.isRemote) return;
-        if (PokecubeManager.isFilled(evt.entityItem.getEntityItem()) && evt.entityItem.getEntityItem().hasTagCompound())
-        {
-            InventoryPC.addPokecubeToPC(evt.entityItem.getEntityItem(), evt.entityItem.worldObj);
-            evt.entityItem.setDead();
-            evt.setCanceled(true);
-
-        }
-    }
-
-    /** This sends pokecube to PC if the player has a full inventory and tries
-     * to pick up a pokecube.
-     * 
-     * @param evt */
-    @SubscribeEvent
-    public void playerPickupItem(EntityItemPickupEvent evt)
-    {
-        if (evt.item.worldObj.isRemote) return;
-        InventoryPlayer inv = evt.entityPlayer.inventory;
-        int num = inv.getFirstEmptyStack();
-
-        if (num == -1)
-        {
-            if (PokecubeManager.isFilled(evt.item.getEntityItem()))
-            {
-                InventoryPC.addPokecubeToPC(evt.item.getEntityItem(), evt.entityPlayer.worldObj);
-                evt.item.setDead();
-
-            }
-        }
-    }
-
-    /** Sends the packet with the player's PC data to that player.
-     * 
-     * @param evt */
-    @SubscribeEvent
-    public void PlayerLoggin(PlayerLoggedInEvent evt)
-    {
-        EntityPlayer entityPlayer = evt.player;
-
-        if (entityPlayer.getName().toLowerCase().trim().equals("thutmose"))
-        {
-            PCSaveHandler.getInstance().seenPCCreator = true;
-        }
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-
-        NBTTagCompound nbt = new NBTTagCompound();
-        NBTTagList tags = InventoryPC.saveToNBT(entityPlayer.getUniqueID().toString());
-
-        nbt.setTag("pc", tags);
-        nbt.setBoolean("pcCreator", PCSaveHandler.getInstance().seenPCCreator);
-        MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
-        PokecubePacketHandler.sendToClient(packet, entityPlayer);
-
-    }
-
-    /** Used for changing name from "Someone's PC" to "Thutmose's PC". This is
-     * done as all of the PC systems are named after whoever made them. See
-     * Bill's PC for an example.
-     * 
-     * @param evt */
-    @SubscribeEvent
-    public void PCLoggin(EntityJoinWorldEvent evt)
-    {
-        if (!(evt.entity instanceof EntityPlayer)) return;
-
-        EntityPlayer entityPlayer = (EntityPlayer) evt.entity;
-
-        if (entityPlayer.getName().toLowerCase().trim().equals("thutmose"))
-        {
-            for (Object o : evt.world.playerEntities)
-            {
-                if (o instanceof EntityPlayer)
-                {
-                    EntityPlayer p = (EntityPlayer) o;
-                    if (InventoryPC.map.containsKey(p.getUniqueID().toString()))
-                    {
-                        InventoryPC.getPC(p.getUniqueID().toString()).seenOwner = true;
-
-                        if (evt.world.isRemote) continue;
-
-                        NBTTagCompound nbt = new NBTTagCompound();
-                        NBTTagList tags = InventoryPC.saveToNBT(p.getUniqueID().toString());
-
-                        nbt.setTag("pc", tags);
-                        nbt.setBoolean("pcCreator", true);
-                        MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
-                        PokecubePacketHandler.sendToClient(packet, p);
-                    }
-                }
-            }
-        }
-    }
-
-    /** Recalls all pokemobs belonging to the player in the player's current
-     * world.
-     * 
-     * @param player */
-    public static void recallAllPokemobs(Entity player)
-    {
-        List<Object> pokemobs = new ArrayList<Object>(player.worldObj.loadedEntityList);
-        boolean sentToPC = false;
-        for (Object o : pokemobs)
-        {
-            if (o instanceof IPokemob)
-            {
-                IPokemob mob = (IPokemob) o;
-                if (mob.getPokemonOwner() != null && mob.getPokemonOwner() == player)
-                {
-                    mob.returnToPokecube();
-                }
-            }
-            else if (o instanceof EntityPokecube)
-            {
-                EntityPokecube mob = (EntityPokecube) o;
-                if (mob.getEntityItem() != null)
-                {
-                    String name = PokecubeManager.getOwner(mob.getEntityItem());
-                    if (name != null && (name.equalsIgnoreCase(player.getName())
-                            || name.equals(player.getUniqueID().toString())))
-                    {
-                        InventoryPC.addStackToPC(name, mob.getEntityItem());
-                        mob.setDead();
-                        sentToPC = true;
-                    }
-                }
-            }
-        }
-        if (sentToPC && player instanceof EntityPlayer)
-        {
-            String uuid = player.getUniqueID().toString();
-            if (!PokecubeCore.isOnClientSide())
-            {
-                PCSaveHandler.getInstance().savePC(uuid);
-                NBTTagCompound nbt = new NBTTagCompound();
-                NBTTagList tags = InventoryPC.saveToNBT(player.getUniqueID().toString());
-
-                nbt.setTag("pc", tags);
-
-                MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
-                PokecubePacketHandler.sendToClient(packet, (EntityPlayer) player);
-            }
-        }
-    }
-
-    /** Gets a list of all pokemobs out of their cube belonging to the player in
-     * the player's current world.
-     * 
-     * @param player
-     * @return */
-    public static List<IPokemob> getOutMobs(EntityLivingBase player)
-    {
-        List<?> pokemobs = new ArrayList<Object>(player.worldObj.loadedEntityList);
-        List<IPokemob> ret = new ArrayList<IPokemob>();
-        for (Object o : pokemobs)
-        {
-            if (o instanceof IPokemob)
-            {
-                IPokemob mob = (IPokemob) o;
-                if (mob.getPokemonOwner() != null && mob.getPokemonOwner() == player)
-                {
-                    ret.add(mob);
-                }
-            }
-            else if (o instanceof EntityPokecube)
-            {
-                EntityPokecube mob = (EntityPokecube) o;
-                if (mob.getEntityItem() != null)
-                {
-                    IPokemob poke = PokecubeManager.itemToPokemob(mob.getEntityItem(), mob.worldObj);
-                    if (poke != null && poke.getPokemonOwner() != null && poke.getPokemonOwner() == player)
-                    {
-                        ret.add(poke);
-                    }
-                }
-            }
-        }
-
-        return ret;
     }
 }

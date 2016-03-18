@@ -32,6 +32,8 @@ public class GuiTMCreator extends GuiContainer
     int               index = 0;
     ArrayList<String> moves = new ArrayList<String>();
 
+    private Slot theSlot;
+
     public GuiTMCreator(ContainerTMCreator container)
     {
         super(container);
@@ -60,26 +62,6 @@ public class GuiTMCreator extends GuiContainer
     }
 
     @Override
-    public void initGui()
-    {
-        buttonList.clear();
-        int xOffset = 0;
-        int yOffset = 22;
-
-        String next = StatCollector.translateToLocal("tile.pc.next");
-        buttonList.add(new GuiButton(2, width / 2 - xOffset + 28, height / 2 - yOffset, 50, 20, next));
-        String prev = StatCollector.translateToLocal("tile.pc.previous");
-        buttonList.add(new GuiButton(3, width / 2 - xOffset - 78, height / 2 - yOffset, 50, 20, prev));
-        String apply = StatCollector.translateToLocal("tile.tradingtable.apply");
-        buttonList.add(new GuiButton(4, width / 2 - xOffset - 25, height / 2 - yOffset, 50, 20, apply));
-        textFieldSearch = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 29, height / 2 - yOffset - 25, 90,
-                10);
-        textFieldSearch.setText("");
-
-        super.initGui();
-    }
-
-    @Override
     protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
     {
         GL11.glColor4f(1f, 1f, 1f, 1f);
@@ -88,13 +70,6 @@ public class GuiTMCreator extends GuiContainer
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-    }
-
-    @Override
-    public void drawScreen(int i, int j, float f)
-    {
-        super.drawScreen(i, j, f);
-        textFieldSearch.drawTextBox();
     }
 
     @Override
@@ -129,10 +104,37 @@ public class GuiTMCreator extends GuiContainer
             if (move != null)
             {
                 drawString(fontRendererObj, MovesUtils.getTranslatedMove(s), xOffset + 14, yOffset + 99,
-                        move.getType().colour);
+                        move.getType(null).colour);
                 drawString(fontRendererObj, "" + move.getPWR(), xOffset + 102, yOffset + 99, 0xffffff);
             }
         }
+    }
+
+    @Override
+    public void drawScreen(int i, int j, float f)
+    {
+        super.drawScreen(i, j, f);
+        textFieldSearch.drawTextBox();
+    }
+
+    @Override
+    public void initGui()
+    {
+        buttonList.clear();
+        int xOffset = 0;
+        int yOffset = 22;
+
+        String next = StatCollector.translateToLocal("tile.pc.next");
+        buttonList.add(new GuiButton(2, width / 2 - xOffset + 28, height / 2 - yOffset, 50, 20, next));
+        String prev = StatCollector.translateToLocal("tile.pc.previous");
+        buttonList.add(new GuiButton(3, width / 2 - xOffset - 78, height / 2 - yOffset, 50, 20, prev));
+        String apply = StatCollector.translateToLocal("tile.tradingtable.apply");
+        buttonList.add(new GuiButton(4, width / 2 - xOffset - 25, height / 2 - yOffset, 50, 20, apply));
+        textFieldSearch = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 29, height / 2 - yOffset - 25, 90,
+                10);
+        textFieldSearch.setText("");
+
+        super.initGui();
     }
 
     @Override
@@ -160,7 +162,7 @@ public class GuiTMCreator extends GuiContainer
             {
                 for (PokeType t : PokeType.values())
                 {
-                    if (move.getType() == t && PokeType.getTranslatedName(t).toLowerCase()
+                    if (move.getType(null) == t && PokeType.getTranslatedName(t).toLowerCase()
                             .contains(textFieldSearch.getText().toLowerCase()))
                     {
                         typeMatch = true;
@@ -176,16 +178,6 @@ public class GuiTMCreator extends GuiContainer
         }
         moves.removeAll(noMatch);
     }
-
-    @Override
-    protected void mouseClicked(int par1, int par2, int par3) throws IOException
-    {
-        super.mouseClicked(par1, par2, par3);
-        textFieldSearch.mouseClicked(par1, par2, par3);
-
-    }
-
-    private Slot theSlot;
 
     /** Fired when a key is typed. This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). */
@@ -216,6 +208,14 @@ public class GuiTMCreator extends GuiContainer
                 this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, isCtrlKeyDown() ? 1 : 0, 4);
             }
         }
+    }
+
+    @Override
+    protected void mouseClicked(int par1, int par2, int par3) throws IOException
+    {
+        super.mouseClicked(par1, par2, par3);
+        textFieldSearch.mouseClicked(par1, par2, par3);
+
     }
 
 }

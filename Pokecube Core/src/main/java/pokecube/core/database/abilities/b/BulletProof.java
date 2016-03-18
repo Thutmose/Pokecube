@@ -12,7 +12,7 @@ public class BulletProof extends Ability
             "RockWrecker", "SearingShot", "SeedBomb", "ShadowBall", "SludgeBomb", "WeatherBall", "ZapCannon" };
 
     @Override
-    public void onUpdate(IPokemob mob)
+    public void onAgress(IPokemob mob, EntityLivingBase target)
     {
     }
 
@@ -33,7 +33,7 @@ public class BulletProof extends Ability
     }
 
     @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
+    public void onUpdate(IPokemob mob)
     {
     }
 

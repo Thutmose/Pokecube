@@ -17,32 +17,6 @@ public class MagmaArmor extends Ability
     int range = 4;
 
     @Override
-    public void onUpdate(IPokemob mob)
-    {
-        if (mob.getStatus() == IMoveConstants.STATUS_FRZ) mob.setStatus(IMoveConstants.STATUS_NON);
-        Vector3 v = Vector3.getNewVector().set(mob);
-        List<EntityPokemobEgg> eggs = ((Entity) mob).worldObj.getEntitiesWithinAABB(EntityPokemobEgg.class,
-                v.getAABB().expand(range, range, range));
-        for (EntityPokemobEgg egg : eggs)
-        {
-            egg.incubateEgg();
-        }
-    }
-
-    @Override
-    public void onMoveUse(IPokemob mob, MovePacket move)
-    {
-        IPokemob attacker = move.attacker;
-        if (attacker == mob || !move.pre || attacker == move.attacked) return;
-        if (move.statusChange == IMoveConstants.STATUS_FRZ) move.statusChange = IMoveConstants.STATUS_FRZ;
-    }
-
-    @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
-    {
-    }
-
-    @Override
     public Ability init(Object... args)
     {
         for (int i = 0; i < 2; i++)
@@ -55,6 +29,32 @@ public class MagmaArmor extends Ability
                 }
             }
         return this;
+    }
+
+    @Override
+    public void onAgress(IPokemob mob, EntityLivingBase target)
+    {
+    }
+
+    @Override
+    public void onMoveUse(IPokemob mob, MovePacket move)
+    {
+        IPokemob attacker = move.attacker;
+        if (attacker == mob || !move.pre || attacker == move.attacked) return;
+        if (move.statusChange == IMoveConstants.STATUS_FRZ) move.statusChange = IMoveConstants.STATUS_FRZ;
+    }
+
+    @Override
+    public void onUpdate(IPokemob mob)
+    {
+        if (mob.getStatus() == IMoveConstants.STATUS_FRZ) mob.setStatus(IMoveConstants.STATUS_NON);
+        Vector3 v = Vector3.getNewVector().set(mob);
+        List<EntityPokemobEgg> eggs = ((Entity) mob).worldObj.getEntitiesWithinAABB(EntityPokemobEgg.class,
+                v.getAABB().expand(range, range, range));
+        for (EntityPokemobEgg egg : eggs)
+        {
+            egg.incubateEgg();
+        }
     }
 
 }

@@ -22,31 +22,18 @@ import pokecube.core.utils.Tools;
 public class ItemTM extends ItemPokemobUseable
 {
 
-    public ItemTM()
-    {
-        super();
-        this.setMaxStackSize(64);
-        this.setMaxDamage(0);
-        this.setHasSubtypes(true);
-    }
-
-    /** If this function returns true (or the item is damageable), the
-     * ItemStack's NBT tag will be sent to the client. */
-    public boolean getShareTag()
-    {
-        return true;
-    }
-
-    public static String getMoveFromStack(ItemStack stack)
+    public static void addMoveToStack(String move, ItemStack stack)
     {
         if (stack.getItem() instanceof ItemTM)
         {
-            NBTTagCompound nbt = stack.getTagCompound();
-            if (nbt == null) return null;
-            String name = nbt.getString("move");
-            if (!name.contentEquals("")) return name;
+            Move_Base attack = MovesUtils.getMoveFromName(move.trim());
+            NBTTagCompound nbt = stack.getTagCompound() == null ? new NBTTagCompound() : stack.getTagCompound();
+
+            nbt.setString("move", move.trim());
+            stack.setTagCompound(nbt);
+            stack.setItemDamage(attack.getType(null).ordinal());
+            stack.setStackDisplayName(MovesUtils.getTranslatedMove(move.trim()));
         }
-        return null;
     }
 
     public static boolean feedToPokemob(ItemStack stack, Entity entity)
@@ -73,67 +60,16 @@ public class ItemTM extends ItemPokemobUseable
         return false;
     }
 
-    @Override
-    public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
-    {
-        if (mob.worldObj.isRemote) return true;
-
-        if (stack.hasTagCompound())
-        {
-            int num = stack.getItemDamage();
-            // Check if is TM or valid candy
-            if (num != 20 || PokecubeItems.isValid(stack))
-            {
-                return feedToPokemob(stack, mob);
-            }
-            else
-            {
-                // If invalid candy, drop level since it is bad candy
-                if (num == 20)
-                {
-                    int xp = Tools.levelToXp(((IPokemob) mob).getExperienceMode(), ((IPokemob) mob).getLevel() - 1);
-                    ((IPokemob) mob).setExp(xp, true, false);
-                    stack.setTagCompound(null);
-                    stack.splitStack(1);
-                    return true;
-                }
-            }
-        }
-        else
-        {
-            int num = stack.getItemDamage();
-            // If invalid candy, drop level since it is bad candy
-            if (num == 20)
-            {
-                int xp = Tools.levelToXp(((IPokemob) mob).getExperienceMode(), ((IPokemob) mob).getLevel() - 1);
-                ((IPokemob) mob).setExp(xp, true, false);
-                stack.setTagCompound(null);
-                stack.splitStack(1);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
-    {
-        if (world.isRemote) return itemstack;
-        return itemstack;
-    }
-
-    public static void addMoveToStack(String move, ItemStack stack)
+    public static String getMoveFromStack(ItemStack stack)
     {
         if (stack.getItem() instanceof ItemTM)
         {
-            Move_Base attack = MovesUtils.getMoveFromName(move.trim());
-            NBTTagCompound nbt = stack.getTagCompound() == null ? new NBTTagCompound() : stack.getTagCompound();
-
-            nbt.setString("move", move.trim());
-            stack.setTagCompound(nbt);
-            stack.setItemDamage(attack.getType().ordinal());
-            stack.setStackDisplayName(MovesUtils.getTranslatedMove(move.trim()));
+            NBTTagCompound nbt = stack.getTagCompound();
+            if (nbt == null) return null;
+            String name = nbt.getString("move");
+            if (!name.contentEquals("")) return name;
         }
+        return null;
     }
 
     public static boolean teachToPokemob(ItemStack tm, IPokemob mob)
@@ -181,6 +117,64 @@ public class ItemTM extends ItemPokemobUseable
         return false;
     }
 
+    public ItemTM()
+    {
+        super();
+        this.setMaxStackSize(64);
+        this.setMaxDamage(0);
+        this.setHasSubtypes(true);
+    }
+
+    @Override
+    public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
+    {
+        if (mob.worldObj.isRemote) return true;
+
+        if (stack.hasTagCompound())
+        {
+            int num = stack.getItemDamage();
+            // Check if is TM or valid candy
+            if (num != 20 || PokecubeItems.isValid(stack))
+            {
+                return feedToPokemob(stack, mob);
+            }
+            else
+            {
+                // If invalid candy, drop level since it is bad candy
+                if (num == 20)
+                {
+                    int xp = Tools.levelToXp(((IPokemob) mob).getExperienceMode(), ((IPokemob) mob).getLevel() - 1);
+                    ((IPokemob) mob).setExp(xp, true, false);
+                    stack.setTagCompound(null);
+                    stack.splitStack(1);
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            int num = stack.getItemDamage();
+            // If invalid candy, drop level since it is bad candy
+            if (num == 20)
+            {
+                int xp = Tools.levelToXp(((IPokemob) mob).getExperienceMode(), ((IPokemob) mob).getLevel() - 1);
+                ((IPokemob) mob).setExp(xp, true, false);
+                stack.setTagCompound(null);
+                stack.splitStack(1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** If this function returns true (or the item is damageable), the
+     * ItemStack's NBT tag will be sent to the client. */
+    @Override
+    public boolean getShareTag()
+    {
+        return true;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     /** returns a list of items with the same ID, but different meta (eg: dye
@@ -194,6 +188,7 @@ public class ItemTM extends ItemPokemobUseable
     /** Returns the unlocalized name of this item. This version accepts an
      * ItemStack so different stacks can have different names based on their
      * damage or NBT. */
+    @Override
     public String getUnlocalizedName(ItemStack stack)
     {
         int i = stack.getItemDamage();
@@ -201,6 +196,13 @@ public class ItemTM extends ItemPokemobUseable
         if (i == 20) return "item.candy";
         if (i == 19) return "item.emerald_shard";
         return super.getUnlocalizedName() + i;
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
+    {
+        if (world.isRemote) return itemstack;
+        return itemstack;
     }
 
 }

@@ -6,15 +6,15 @@ import net.minecraft.entity.EntityLivingBase;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.Move_Base;
 import pokecube.core.utils.PokeType;
 
 public class EffectSpore extends Ability
 {
 
     @Override
-    public void onUpdate(IPokemob mob)
+    public void onAgress(IPokemob mob, EntityLivingBase target)
     {
     }
 
@@ -44,7 +44,7 @@ public class EffectSpore extends Ability
     }
 
     @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
+    public void onUpdate(IPokemob mob)
     {
     }
 

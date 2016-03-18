@@ -11,6 +11,13 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -28,13 +35,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 /**
  * This class is meant to be copied to your own mod which implements IGW-Mod. When properly implemented by instantiating a new instance somewhere in your mod
  * loading stage, this will notify the player when it doesn't have IGW in the instance. It also needs to have the config option enabled to
@@ -42,51 +42,7 @@ import com.google.gson.JsonParser;
  * @author MineMaarten https://github.com/MineMaarten/IGW-mod
  */
 public class IGWSupportNotifier{
-    private String supportingMod;
-    //TODO update this as needed, until curseforge fixes the problem.
-    private static final String LATEST_DL_URL = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/2276687/download";
-    private static final String DL_URL_1_7_10 = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/2248719/download";
-
-    /**
-     * Needs to be instantiated somewhere in your mod's loading stage.
-     */
-    public IGWSupportNotifier(){
-        if(FMLCommonHandler.instance().getSide() == Side.CLIENT && !Loader.isModLoaded("IGWMod")) {
-            File dir = new File(".", "config");
-            Configuration config = new Configuration(new File(dir, "IGWMod.cfg"));
-            config.load();
-
-            if(config.get(Configuration.CATEGORY_GENERAL, "enable_missing_notification", true, "When enabled, this will notify players when IGW-Mod is not installed even though mods add support.").getBoolean()) {
-                ModContainer mc = Loader.instance().activeModContainer();
-                String modid = mc.getModId();
-                List<ModContainer> loadedMods = Loader.instance().getActiveModList();
-                for(ModContainer container : loadedMods) {
-                    if(container.getModId().equals(modid)) {
-                        supportingMod = container.getName();
-                        MinecraftForge.EVENT_BUS.register(this);
-                        ClientCommandHandler.instance.registerCommand(new CommandDownloadIGW());
-                        break;
-                    }
-                }
-            }
-            config.save();
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerJoin(TickEvent.PlayerTickEvent event){
-        if(event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity()) {
-            event.player.addChatComponentMessage(IChatComponent.Serializer.jsonToComponent("[\"" + EnumChatFormatting.GOLD + "The mod " + supportingMod + " is supporting In-Game Wiki mod. " + EnumChatFormatting.GOLD + "However, In-Game Wiki isn't installed! " + "[\"," + "{\"text\":\"Download Latest\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/igwmod_download\"}}," + "\"]\"]"));
-            MinecraftForge.EVENT_BUS.unregister(this);
-        }
-    }
-
     private class CommandDownloadIGW extends CommandBase{
-
-        @Override
-        public int getRequiredPermissionLevel(){
-            return -100;
-        }
 
         @Override
         public String getCommandName(){
@@ -99,12 +55,16 @@ public class IGWSupportNotifier{
         }
 
         @Override
+        public int getRequiredPermissionLevel(){
+            return -100;
+        }
+
+        @Override
         public void processCommand(ICommandSender p_71515_1_, String[] p_71515_2_){
             new ThreadDownloadIGW();
         }
 
     }
-
     private class ThreadDownloadIGW extends Thread{
 
         public ThreadDownloadIGW(){
@@ -160,5 +120,45 @@ public class IGWSupportNotifier{
             }
         }
 
+    }
+    //TODO update this as needed, until curseforge fixes the problem.
+    private static final String LATEST_DL_URL = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/2276687/download";
+
+    private static final String DL_URL_1_7_10 = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/2248719/download";
+
+    private String supportingMod;
+
+    /**
+     * Needs to be instantiated somewhere in your mod's loading stage.
+     */
+    public IGWSupportNotifier(){
+        if(FMLCommonHandler.instance().getSide() == Side.CLIENT && !Loader.isModLoaded("IGWMod")) {
+            File dir = new File(".", "config");
+            Configuration config = new Configuration(new File(dir, "IGWMod.cfg"));
+            config.load();
+
+            if(config.get(Configuration.CATEGORY_GENERAL, "enable_missing_notification", true, "When enabled, this will notify players when IGW-Mod is not installed even though mods add support.").getBoolean()) {
+                ModContainer mc = Loader.instance().activeModContainer();
+                String modid = mc.getModId();
+                List<ModContainer> loadedMods = Loader.instance().getActiveModList();
+                for(ModContainer container : loadedMods) {
+                    if(container.getModId().equals(modid)) {
+                        supportingMod = container.getName();
+                        MinecraftForge.EVENT_BUS.register(this);
+                        ClientCommandHandler.instance.registerCommand(new CommandDownloadIGW());
+                        break;
+                    }
+                }
+            }
+            config.save();
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerJoin(TickEvent.PlayerTickEvent event){
+        if(event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity()) {
+            event.player.addChatComponentMessage(IChatComponent.Serializer.jsonToComponent("[\"" + EnumChatFormatting.GOLD + "The mod " + supportingMod + " is supporting In-Game Wiki mod. " + EnumChatFormatting.GOLD + "However, In-Game Wiki isn't installed! " + "[\"," + "{\"text\":\"Download Latest\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/igwmod_download\"}}," + "\"]\"]"));
+            MinecraftForge.EVENT_BUS.unregister(this);
+        }
     }
 }

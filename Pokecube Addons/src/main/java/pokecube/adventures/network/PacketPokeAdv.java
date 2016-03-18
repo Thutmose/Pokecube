@@ -33,68 +33,8 @@ import thut.api.terrain.BiomeType;
 
 public class PacketPokeAdv
 {
-    public static byte TYPESETPUBLIC  = 0;
-    public static byte TYPEADDLAND    = 1;
-    public static byte TYPEREMOVELAND = 2;
-
-    public static void sendBagOpenPacket(boolean fromPC, Vector3 loc)
-    {
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-        buf.writeByte(7);
-        buf.writeBoolean(true);
-        loc.writeToBuff(buf);
-        MessageServer packet = new MessageServer(buf);
-        PokecubePacketHandler.sendToServer(packet);
-    }
-
     public static class MessageClient implements IMessage
     {
-        PacketBuffer             buffer;
-        public static final byte MESSAGEGUIAFA = 11;
-
-        public MessageClient()
-        {
-        };
-
-        public MessageClient(byte[] data)
-        {
-            this.buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeBytes(data);
-        }
-
-        public MessageClient(PacketBuffer buffer)
-        {
-            this.buffer = buffer;
-        }
-
-        public MessageClient(byte channel, NBTTagCompound nbt)
-        {
-            this.buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeByte(channel);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
-            // System.out.println(buffer.array().length);
-        }
-
-        @Override
-        public void fromBytes(ByteBuf buf)
-        {
-            if (buffer == null)
-            {
-                buffer = new PacketBuffer(Unpooled.buffer());
-            }
-            buffer.writeBytes(buf);
-        }
-
-        @Override
-        public void toBytes(ByteBuf buf)
-        {
-            if (buffer == null)
-            {
-                buffer = new PacketBuffer(Unpooled.buffer());
-            }
-            buf.writeBytes(buffer);
-        }
-
         public static class MessageHandlerClient implements IMessageHandler<MessageClient, MessageServer>
         {
             public void handleClientSide(EntityPlayer player, PacketBuffer buffer)
@@ -206,35 +146,31 @@ public class PacketPokeAdv
             }
 
         }
-
-    }
-
-    public static class MessageServer implements IMessage
-    {
         public static final byte MESSAGEGUIAFA = 11;
-        PacketBuffer             buffer;
 
-        public MessageServer()
-        {
-        };
+        PacketBuffer             buffer;;
 
-        public MessageServer(byte[] data)
+        public MessageClient()
         {
-            this.buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeBytes(data);
         }
 
-        public MessageServer(PacketBuffer buffer)
-        {
-            this.buffer = buffer;
-        }
-
-        public MessageServer(byte channel, NBTTagCompound nbt)
+        public MessageClient(byte channel, NBTTagCompound nbt)
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
             buffer.writeNBTTagCompoundToBuffer(nbt);
             // System.out.println(buffer.array().length);
+        }
+
+        public MessageClient(byte[] data)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeBytes(data);
+        }
+
+        public MessageClient(PacketBuffer buffer)
+        {
+            this.buffer = buffer;
         }
 
         @Override
@@ -257,6 +193,9 @@ public class PacketPokeAdv
             buf.writeBytes(buffer);
         }
 
+    }
+    public static class MessageServer implements IMessage
+    {
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
         {
             public IMessage handleServerSide(EntityPlayer player, PacketBuffer buffer)
@@ -353,8 +292,59 @@ public class PacketPokeAdv
             }
 
         }
+        public static final byte MESSAGEGUIAFA = 11;
+
+        PacketBuffer             buffer;;
+
+        public MessageServer()
+        {
+        }
+
+        public MessageServer(byte channel, NBTTagCompound nbt)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeByte(channel);
+            buffer.writeNBTTagCompoundToBuffer(nbt);
+            // System.out.println(buffer.array().length);
+        }
+
+        public MessageServer(byte[] data)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeBytes(data);
+        }
+
+        public MessageServer(PacketBuffer buffer)
+        {
+            this.buffer = buffer;
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer());
+            }
+            buffer.writeBytes(buf);
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer());
+            }
+            buf.writeBytes(buffer);
+        }
 
     }
+    public static byte TYPESETPUBLIC  = 0;
+
+    public static byte TYPEADDLAND    = 1;
+
+    public static byte TYPEREMOVELAND = 2;
 
     public static void handleTrainerEditPacket(PacketBuffer buffer, EntityPlayer player)
     {
@@ -416,6 +406,18 @@ public class PacketPokeAdv
         }
     }
 
+    public static MessageClient makeClientPacket(byte channel, byte[] data)
+    {
+        byte[] packetData = new byte[data.length + 1];
+        packetData[0] = channel;
+
+        for (int i = 1; i < packetData.length; i++)
+        {
+            packetData[i] = data[i - 1];
+        }
+        return new MessageClient(packetData);
+    }
+
     public static MessageServer makeServerPacket(byte channel, byte[] data)
     {
         byte[] packetData = new byte[data.length + 1];
@@ -428,16 +430,14 @@ public class PacketPokeAdv
         return new MessageServer(packetData);
     }
 
-    public static MessageClient makeClientPacket(byte channel, byte[] data)
+    public static void sendBagOpenPacket(boolean fromPC, Vector3 loc)
     {
-        byte[] packetData = new byte[data.length + 1];
-        packetData[0] = channel;
-
-        for (int i = 1; i < packetData.length; i++)
-        {
-            packetData[i] = data[i - 1];
-        }
-        return new MessageClient(packetData);
+        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+        buf.writeByte(7);
+        buf.writeBoolean(true);
+        loc.writeToBuff(buf);
+        MessageServer packet = new MessageServer(buf);
+        PokecubePacketHandler.sendToServer(packet);
     }
 
 }

@@ -17,6 +17,7 @@ public class SlotBag extends Slot {
     /**
      * Return whether this slot's stack can be taken from this slot.
      */
+    @Override
     public boolean canTakeStack(EntityPlayer par1EntityPlayer)
     {
     	return !release;
@@ -32,6 +33,7 @@ public class SlotBag extends Slot {
     /**
      * Called when the stack in a Slot changes
      */
+    @Override
     public void onSlotChanged()
     {
     //	System.out.println("Slot change "+mod_Pokecube.isOnClientSide()+" "+this.getStack()+" "+this.getSlotIndex());
@@ -42,6 +44,7 @@ public class SlotBag extends Slot {
     /**
      * Helper method to put a stack in the slot.
      */
+    @Override
     public void putStack(ItemStack par1ItemStack)
     {
         this.inventory.setInventorySlotContents(this.getSlotIndex(), par1ItemStack);

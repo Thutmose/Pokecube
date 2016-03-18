@@ -1,7 +1,6 @@
 package pokecube.core.interfaces;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.world.IWorldAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import thut.api.maths.Vector3;

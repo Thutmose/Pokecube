@@ -1,6 +1,6 @@
 package pokecube.core.utils;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 public enum PokeType
 {
@@ -81,7 +81,7 @@ public enum PokeType
     }
                                                                                                                                                                   public static String getTranslatedName(PokeType type)
     {
-        String translated = StatCollector.translateToLocal("type." + getName(type));
+        String translated = I18n.translateToLocal("type." + getName(type));
 
         if (translated == null || translated.startsWith("type.")) { return getName(type); }
 

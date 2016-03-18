@@ -8,14 +8,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -170,7 +168,7 @@ public class Commands implements ICommand
                     }
                 }
                 cSender.addChatMessage(new ChatComponentText(
-                        StatCollector.translateToLocalFormatted("pokecube.command.count", count1, count2)));
+                        I18n.translateToLocalFormatted("pokecube.command.count", count1, count2)));
                 return true;
             }
             else
@@ -339,7 +337,7 @@ public class Commands implements ICommand
                     PokecubeClientPacket packet = new PokecubeClientPacket(buf);
                     PokecubePacketHandler.sendToClient(packet, player);
                     cSender.addChatMessage(new ChatComponentText(
-                            StatCollector.translateToLocalFormatted("pokecube.command.reset", player.getName())));
+                            I18n.translateToLocalFormatted("pokecube.command.reset", player.getName())));
                     CommandTools.sendMessage(player, "pokecube.command.canchoose");
 
                 }
@@ -387,7 +385,7 @@ public class Commands implements ICommand
                             PokecubeClientPacket packet = new PokecubeClientPacket(buf);
                             PokecubePacketHandler.sendToClient(packet, player);
 
-                            cSender.addChatMessage(new ChatComponentText(StatCollector
+                            cSender.addChatMessage(new ChatComponentText(I18n
                                     .translateToLocalFormatted("pokecube.command.reset", player.getName())));
                             CommandTools.sendMessage(player, "pokecube.command.canchoose");
                         }

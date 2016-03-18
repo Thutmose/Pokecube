@@ -13,8 +13,8 @@ import com.google.common.collect.Maps;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
 import scala.actors.threadpool.Arrays;
@@ -137,7 +137,7 @@ public class SettingsCommand extends CommandBase
             {
                 text += o;
             }
-            String mess = StatCollector.translateToLocalFormatted("pokecube.command.settings.check", args[0], text);
+            String mess = I18n.translateToLocalFormatted("pokecube.command.settings.check", args[0], text);
             if (check)
             {
                 CommandTools.sendMessage(sender, mess);
@@ -151,7 +151,7 @@ public class SettingsCommand extends CommandBase
                 }
                 catch (Exception e)
                 {
-                    text = StatCollector.translateToLocalFormatted("pokecube.command.settings.invalid", args[0]);
+                    text = I18n.translateToLocalFormatted("pokecube.command.settings.invalid", args[0]);
                     CommandTools.sendError(sender, text);
                     return;
                 }

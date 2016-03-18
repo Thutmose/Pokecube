@@ -1,6 +1,6 @@
 package pokecube.core.interfaces;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import pokecube.core.items.berries.BerryManager;
 
 public enum Nature
@@ -70,7 +70,7 @@ public enum Nature
     }
     public static String getTranslatedName(Nature type)
     {
-        String translated = StatCollector.translateToLocal("nature." + type);
+        String translated = I18n.translateToLocal("nature." + type);
 
         if (translated == null || translated.startsWith("nature.")) { return type.toString(); }
 

@@ -17,8 +17,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.S06PacketUpdateHealth;
-import net.minecraft.network.play.server.S1FPacketSetExperience;
 import net.minecraft.world.WorldSettings.GameType;
 
 public class EntityNBTPacket extends AbstractPacket {

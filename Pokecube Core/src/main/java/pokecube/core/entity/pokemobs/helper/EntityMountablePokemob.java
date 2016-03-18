@@ -12,10 +12,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -101,7 +100,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             {
                 if (this.ticksExisted % 20 == 0 && !worldObj.isRemote)
                 {
-                    String mess = StatCollector.translateToLocal("pokemob.hungry.slow");
+                    String mess = I18n.translateToLocal("pokemob.hungry.slow");
                     ((EntityPlayer) this.riddenByEntity).addChatMessage(new ChatComponentText(mess));
                 }
                 hungerFactor = 0.01f;

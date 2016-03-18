@@ -60,7 +60,7 @@ public abstract class AIBase implements IAIRunnable
         @Override
         public boolean run(World world)
         {
-            if (dim != world.provider.getDimensionId()) return false;
+            if (dim != world.provider.getDimension()) return false;
             Entity e = world.getEntityByID(entity);
             if (e == null || !(e instanceof IPokemob)) return false;
             if (slot > 0) ((IPokemob) e).getPokemobInventory().setInventorySlotContents(slot, stack);
@@ -121,7 +121,7 @@ public abstract class AIBase implements IAIRunnable
         @Override
         public boolean run(World world)
         {
-            if (dim != world.provider.getDimensionId()) return false;
+            if (dim != world.provider.getDimension()) return false;
             Entity e = world.getEntityByID(attacker);
             if (e == null || !(e instanceof EntityLiving)) return false;
 
@@ -156,7 +156,7 @@ public abstract class AIBase implements IAIRunnable
         @Override
         public boolean run(World world)
         {
-            if (dim != world.provider.getDimensionId()) return false;
+            if (dim != world.provider.getDimension()) return false;
             Entity e = world.getEntityByID(pather);
             if (e == null || !(e instanceof EntityLiving)) { return false; }
             EntityLiving mob = (EntityLiving) e;
@@ -213,7 +213,7 @@ public abstract class AIBase implements IAIRunnable
         @Override
         public boolean run(World world)
         {
-            if (dim != world.provider.getDimensionId()) return false;
+            if (dim != world.provider.getDimension()) return false;
             Entity e = world.getEntityByID(attacker);
             Entity e1 = world.getEntityByID(target);
             if (e == null || !(e instanceof EntityLiving)) { return false; }

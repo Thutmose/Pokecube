@@ -9,10 +9,7 @@ import java.util.UUID;
 
 import com.google.common.collect.Lists;
 
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
+import jdk.nashorn.internal.runtime.regexp.joni.constants.Arguments;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -25,9 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -150,7 +145,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             String message = 9 + "," + getPos().getX() + "," + getPos().getY() + "," + getPos().getZ() + ",0,0";
             Vector3 point = Vector3.getNewVector().set(player);
             MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
-            PokecubePacketHandler.sendToAllNear(packet, point, worldObj.provider.getDimensionId(), 10);
+            PokecubePacketHandler.sendToAllNear(packet, point, worldObj.provider.getDimension(), 10);
             return;
         }
         if (inventory[0] != null)

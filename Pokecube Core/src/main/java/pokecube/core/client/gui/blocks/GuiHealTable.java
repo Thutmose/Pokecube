@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.client.Resources;
@@ -51,7 +51,7 @@ public class GuiHealTable extends GuiContainer
     public void initGui()
     {
         buttonList.clear();
-        String heal = StatCollector.translateToLocal("tile.pokecenter.heal");
+        String heal = I18n.translateToLocal("tile.pokecenter.heal");
         buttonList.add(new GuiButton(1, width / 2 + 20, height / 2 - 50, 60, 20, heal));
         super.initGui();
     }

@@ -28,7 +28,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -262,7 +262,7 @@ public class GuiPokedex extends GuiScreen
                 GL11.glRotated(angle, 0, 0, 1);
                 drawString(fontRendererObj, "--->", 0, 0, 0xFF0000);
                 GL11.glPopMatrix();
-                String mess = StatCollector.translateToLocal("gui.pokedex.village");
+                String mess = I18n.translateToLocal("gui.pokedex.village");
                 int width = fontRendererObj.getStringWidth(mess);
                 drawString(fontRendererObj, mess, xOffset - width / 2 + 60, yOffset + 85, 0x78C850);
                 mess = ((int) v.set(closestVillage).distToEntity(entityPlayer)) + "";

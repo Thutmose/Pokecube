@@ -11,8 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -212,7 +211,7 @@ public class PokemobPacketHandler
                                     {
                                         pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
                                         megaEntry = pokemob.getPokedexEntry().baseForme;
-                                        String mess = StatCollector.translateToLocalFormatted(
+                                        String mess = I18n.translateToLocalFormatted(
                                                 "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());
                                         player.addChatMessage(new ChatComponentText(mess));
                                     }
@@ -220,7 +219,7 @@ public class PokemobPacketHandler
                                     {
                                         pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, true);
                                         pokemob.megaEvolve(megaEntry.getName());
-                                        String mess = StatCollector.translateToLocalFormatted(
+                                        String mess = I18n.translateToLocalFormatted(
                                                 "pokemob.megaevolve.success", old, megaEntry.getTranslatedName());
                                         player.addChatMessage(new ChatComponentText(mess));
                                     }
@@ -233,13 +232,13 @@ public class PokemobPacketHandler
                                         pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
                                         pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
                                         megaEntry = pokemob.getPokedexEntry().baseForme;
-                                        String mess = StatCollector.translateToLocalFormatted(
+                                        String mess = I18n.translateToLocalFormatted(
                                                 "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());
                                         player.addChatMessage(new ChatComponentText(mess));
                                     }
                                     else
                                     {
-                                        String mess = StatCollector.translateToLocalFormatted(
+                                        String mess = I18n.translateToLocalFormatted(
                                                 "pokemob.megaevolve.failed", pokemob.getPokemonDisplayName());
                                         player.addChatMessage(new ChatComponentText(mess));
                                     }
@@ -270,7 +269,7 @@ public class PokemobPacketHandler
                                 {
                                     if (pokemob.getPokemonOwner() != null)
                                     {
-                                        String mess = StatCollector.translateToLocal("pokemob.rename.deny");
+                                        String mess = I18n.translateToLocal("pokemob.rename.deny");
                                         pokemob.getPokemonOwner().addChatMessage(new ChatComponentText(mess));
                                     }
                                 }

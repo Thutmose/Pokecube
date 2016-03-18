@@ -13,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraftforge.common.MinecraftForge;
@@ -42,7 +41,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
     public boolean addForbiddenSpawningCoord()
     {
-        return SpawnHandler.addForbiddenSpawningCoord(getPos(), worldObj.provider.getDimensionId(), 10);
+        return SpawnHandler.addForbiddenSpawningCoord(getPos(), worldObj.provider.getDimension(), 10);
     }
 
     public void addResident(IPokemob resident)
@@ -209,7 +208,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
     public boolean removeForbiddenSpawningCoord()
     {
-        return SpawnHandler.removeForbiddenSpawningCoord(getPos(), worldObj.provider.getDimensionId());
+        return SpawnHandler.removeForbiddenSpawningCoord(getPos(), worldObj.provider.getDimension());
     }
 
     public void removeResident(IPokemob resident)

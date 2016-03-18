@@ -2,8 +2,7 @@ package pokecube.core.events.handlers;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.event.world.WorldEvent.Unload;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeItems;
@@ -34,7 +33,7 @@ public class StatsHandler
     			evt.setCanceled(true);
     			if(catcher instanceof EntityPlayer)
     			{
-    				((EntityPlayer)catcher).addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pokecube.denied")));
+    				((EntityPlayer)catcher).addChatMessage(new ChatComponentText(I18n.translateToLocal("pokecube.denied")));
     			}
     			evt.pokecube.entityDropItem(((EntityPokecube)evt.pokecube).getEntityItem(), (float) 0.5);
     			evt.pokecube.setDead();

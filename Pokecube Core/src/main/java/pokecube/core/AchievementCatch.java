@@ -4,14 +4,10 @@
 package pokecube.core;
 
 import net.minecraft.block.Block;
-import net.minecraft.event.HoverEvent;
 import net.minecraft.item.Item;
 import net.minecraft.stats.Achievement;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.util.text.translation.I18n;
 import pokecube.core.database.Pokedex;
 
 /**
@@ -40,9 +36,9 @@ public class AchievementCatch extends Achievement
     {
         if ("get1stPokemob".equals(statId))
         {
-            return StatCollector.translateToLocal("achievement."+statId + ".desc");
+            return I18n.translateToLocal("achievement."+statId + ".desc");
         }
-        return StatCollector.translateToLocalFormatted("achievement.catch", getPokemobTranslatedName());
+        return I18n.translateToLocalFormatted("achievement.catch", getPokemobTranslatedName());
     }
     
     protected String getPokemobTranslatedName()

@@ -22,9 +22,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -629,7 +629,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 }
                 if (!owner.isSneaking() && !isDead)
                     ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
-                String mess = StatCollector.translateToLocalFormatted("pokemob.action.return", getPokemonDisplayName());
+                String mess = I18n.translateToLocalFormatted("pokemob.action.return", getPokemonDisplayName());
                 displayMessageToOwner(mess);
             }
             else if (getPokemonOwnerName() != null && !getPokemonOwnerName().isEmpty())

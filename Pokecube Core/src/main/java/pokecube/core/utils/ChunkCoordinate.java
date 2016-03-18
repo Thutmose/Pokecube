@@ -1,8 +1,8 @@
 package pokecube.core.utils;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import thut.api.maths.Vector3;
 
 public class ChunkCoordinate extends BlockPos {

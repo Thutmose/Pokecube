@@ -21,7 +21,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -195,7 +195,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
         if ((statusChange & CHANGE_FLINCH) != 0)
         {
-            String message = StatCollector.translateToLocalFormatted("pokemob.status.flinch", getPokemonDisplayName());
+            String message = I18n.translateToLocalFormatted("pokemob.status.flinch", getPokemonDisplayName());
             displayMessageToOwner("\u00a7c" + message);
 
             removeChanges(CHANGE_FLINCH);
@@ -207,7 +207,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             if (Math.random() > 0.75)
             {
                 removeChanges(CHANGE_CONFUSED);
-                String message = StatCollector.translateToLocalFormatted("pokemob.status.confuse.remove",
+                String message = I18n.translateToLocalFormatted("pokemob.status.confuse.remove",
                         getPokemonDisplayName());
                 displayMessageToOwner("\u00a7a" + message);
             }
@@ -226,7 +226,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             }
             else if (Math.random() > 0.5)
             {
-                String message = StatCollector.translateToLocalFormatted("pokemob.status.infatuate",
+                String message = I18n.translateToLocalFormatted("pokemob.status.infatuate",
                         getPokemonDisplayName());
                 displayMessageToOwner("\u00a7c" + message);
                 return;
@@ -477,7 +477,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
         if (getPokemonOwner() != null && !this.isDead)
         {
-            String message = StatCollector.translateToLocalFormatted("pokemob.move.notify.learn",
+            String message = I18n.translateToLocalFormatted("pokemob.move.notify.learn",
                     getPokemonDisplayName(), MovesUtils.getTranslatedMove(moveName));
             displayMessageToOwner(message);
         }
@@ -513,7 +513,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                     }
                     for (String s : moves)
                     {
-                        String message = StatCollector.translateToLocalFormatted("pokemob.move.notify.learn",
+                        String message = I18n.translateToLocalFormatted("pokemob.move.notify.learn",
                                 getPokemonDisplayName(), MovesUtils.getTranslatedMove(s));
                         displayMessageToOwner(message);
                         moveInfo.newMoves++;
@@ -552,7 +552,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                     }
                     for (String s : moves)
                     {
-                        String message = StatCollector.translateToLocalFormatted("pokemob.move.notify.learn",
+                        String message = I18n.translateToLocalFormatted("pokemob.move.notify.learn",
                                 getPokemonDisplayName(), MovesUtils.getTranslatedMove(s));
                         displayMessageToOwner(message);
                         moveInfo.newMoves++;
@@ -969,7 +969,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
             if ((statusChange & CHANGE_CURSE) != 0)
             {
-                String message = StatCollector.translateToLocalFormatted("pokemob.status.curse",
+                String message = I18n.translateToLocalFormatted("pokemob.status.curse",
                         getPokemonDisplayName());
                 displayMessageToOwner("\u00a7c" + message);
                 setHealth(getHealth() - getMaxHealth() * 0.25f);

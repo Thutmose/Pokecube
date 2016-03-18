@@ -1,7 +1,7 @@
 package pokecube.core.database.abilities;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 
@@ -26,7 +26,7 @@ public abstract class Ability
 
     public String getName()
     {
-        String translated = StatCollector.translateToLocal("ability." + toString() + ".name").trim();
+        String translated = I18n.translateToLocal("ability." + toString() + ".name").trim();
         if (translated.contains(".")) { return toString(); }
         return translated;
     }

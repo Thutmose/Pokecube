@@ -2,7 +2,7 @@ package pokecube.core.ai.properties;
 
 import java.util.concurrent.Callable;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import pokecube.core.utils.TimePeriod;
 
 public class GuardAICapability implements IGuardAICapability

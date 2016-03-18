@@ -19,9 +19,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
@@ -227,7 +227,7 @@ public final class SpawnHandler
             if (chunkPosX >= coord.getX() - tolerance && chunkPosZ >= coord.getZ() - tolerance
                     && chunkPosY >= coord.getY() - tolerance && chunkPosY <= coord.getY() + tolerance
                     && chunkPosX <= coord.getX() + tolerance && chunkPosZ <= coord.getZ() + tolerance
-                    && world.provider.getDimensionId() == coord.dim) { return false; }
+                    && world.provider.getDimension() == coord.dim) { return false; }
         }
         return true;
     }

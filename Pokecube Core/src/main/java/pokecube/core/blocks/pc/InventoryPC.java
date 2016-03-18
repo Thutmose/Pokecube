@@ -11,9 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
@@ -86,7 +84,7 @@ public class InventoryPC implements IInventory
             return;
         }
         InventoryPC pc = getPC(uuid);
-        String message = StatCollector.translateToLocalFormatted("tile.pc.sentto", mob.getDisplayName());
+        String message = I18n.translateToLocalFormatted("tile.pc.sentto", mob.getDisplayName());
 
         if (pc == null) { return; }
 
@@ -476,8 +474,8 @@ public class InventoryPC implements IInventory
         {
             name = player.getName() + "'s";
         }
-        else if (name.equals("Public")) { return StatCollector.translateToLocalFormatted("tile.pc.public"); }
-        return StatCollector.translateToLocalFormatted("tile.pc.title", name);
+        else if (name.equals("Public")) { return I18n.translateToLocalFormatted("tile.pc.public"); }
+        return I18n.translateToLocalFormatted("tile.pc.title", name);
     }
 
     public int getPage()

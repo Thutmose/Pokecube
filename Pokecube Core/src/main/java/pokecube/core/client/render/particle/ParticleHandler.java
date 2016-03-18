@@ -112,7 +112,7 @@ public class ParticleHandler
     @SubscribeEvent
     public void WorldUnloadEvent(Unload evt)
     {
-        if (evt.world.provider.getDimensionId() == 0 && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (evt.world.provider.getDimension() == 0 && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             clear();
         }

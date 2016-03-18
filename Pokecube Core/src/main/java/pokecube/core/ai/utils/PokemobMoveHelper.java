@@ -3,7 +3,7 @@ package pokecube.core.ai.utils;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;

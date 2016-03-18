@@ -5,9 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandTools
@@ -30,7 +28,7 @@ public class CommandTools
 
     public static IChatComponent makeError(String text)
     {
-        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal(text);
+        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + I18n.translateToLocal(text);
         IChatComponent message;
         message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
         return message;
@@ -53,7 +51,7 @@ public class CommandTools
 
     public static void sendMessage(ICommandSender sender, String text)
     {
-        text = StatCollector.translateToLocal(text);
+        text = I18n.translateToLocal(text);
         IChatComponent message;
         message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
         sender.addChatMessage(message);

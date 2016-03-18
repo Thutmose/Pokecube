@@ -16,7 +16,7 @@ public class TileEntityRepel extends TileEntity
     public TileEntityRepel() { }
     
     public boolean addForbiddenSpawningCoord(){
-    	return SpawnHandler.addForbiddenSpawningCoord(pos, worldObj.provider.getDimensionId(), distance);
+    	return SpawnHandler.addForbiddenSpawningCoord(pos, worldObj.provider.getDimension(), distance);
     }
     
     @Override
@@ -36,7 +36,7 @@ public class TileEntityRepel extends TileEntity
     }
 
     public boolean removeForbiddenSpawningCoord(){
-    	return SpawnHandler.removeForbiddenSpawningCoord(pos, worldObj.provider.getDimensionId());
+    	return SpawnHandler.removeForbiddenSpawningCoord(pos, worldObj.provider.getDimension());
     }
     
     @Override

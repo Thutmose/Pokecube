@@ -1,7 +1,6 @@
 package pokecube.core.moves.animations;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.world.IWorldAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import thut.api.maths.Vector3;

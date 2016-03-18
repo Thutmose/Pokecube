@@ -13,11 +13,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.IWorldAccess;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.MoveEntry;
@@ -1954,7 +1953,7 @@ public class MovesAdder implements IMoveConstants
                 super.postAttack(attacker, attacked, f, finalAttackStrength);
                 if (attacked instanceof IPokemob)
                 {
-                    String doesntAffect = StatCollector.translateToLocalFormatted("pokemob.move.doesnt.affect",
+                    String doesntAffect = I18n.translateToLocalFormatted("pokemob.move.doesnt.affect",
                             ((IPokemob) attacked).getPokemonDisplayName());
                     attacker.displayMessageToOwner("\u00a7a" + doesntAffect);
                     ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + doesntAffect);

@@ -14,7 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.interfaces.IMoveConstants;
@@ -140,7 +140,7 @@ public class GuiTradingTable extends GuiContainer
     public void initGui()
     {
         buttonList.clear();
-        String trade = StatCollector.translateToLocal("tile.tradingtable.trade");
+        String trade = I18n.translateToLocal("tile.tradingtable.trade");
         buttonList.add(new GuiButton(1, width / 2 - 30, height / 2 - 40, 60, 20, trade));
         super.initGui();
     }

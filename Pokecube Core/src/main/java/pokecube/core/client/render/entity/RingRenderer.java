@@ -2,12 +2,9 @@ package pokecube.core.client.render.entity;
 
 import org.lwjgl.opengl.GL11;
 
-import baubles.common.container.InventoryBaubles;
-import baubles.common.lib.PlayerHandler;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.client.models.ModelRing;

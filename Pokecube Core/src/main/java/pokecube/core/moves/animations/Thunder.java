@@ -2,7 +2,6 @@ package pokecube.core.moves.animations;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.world.IWorldAccess;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.Move_Base;
 

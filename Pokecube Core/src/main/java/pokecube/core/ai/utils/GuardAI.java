@@ -6,7 +6,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability.GuardState;
 import pokecube.core.utils.TimePeriod;

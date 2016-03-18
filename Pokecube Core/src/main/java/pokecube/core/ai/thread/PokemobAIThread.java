@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Vector;
 
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -353,14 +353,14 @@ public class PokemobAIThread
         // At the start, refresh the player lists.
         if (evt.phase == Phase.START)
         {
-            Vector players = worldPlayers.get(evt.world.provider.getDimensionId());
+            Vector players = worldPlayers.get(evt.world.provider.getDimension());
             if (players == null)
             {
                 players = new Vector();
             }
             players.clear();
             players.addAll(evt.world.playerEntities);
-            worldPlayers.put(evt.world.provider.getDimensionId(), players);
+            worldPlayers.put(evt.world.provider.getDimension(), players);
         }
         else try// At the end, apply all of the paths, targets, moves and
                 // states.

@@ -28,14 +28,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
@@ -751,7 +748,7 @@ public class EventsHandler
     @SubscribeEvent
     public void WorldSave(WorldEvent.Save evt)
     {
-        if (FMLCommonHandler.instance().getSide() == Side.SERVER && evt.world.provider.getDimensionId() == 0)
+        if (FMLCommonHandler.instance().getSide() == Side.SERVER && evt.world.provider.getDimension() == 0)
         {
             long time = System.nanoTime();
             PokecubeSerializer.getInstance().save();

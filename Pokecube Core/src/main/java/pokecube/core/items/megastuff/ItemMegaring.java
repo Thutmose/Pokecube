@@ -1,7 +1,5 @@
 package pokecube.core.items.megastuff;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

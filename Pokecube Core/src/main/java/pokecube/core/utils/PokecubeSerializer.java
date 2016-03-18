@@ -257,7 +257,7 @@ public class PokecubeSerializer
 
     public void addChunks(World world, Vector3 location, ChunkCoordIntPair centre)
     {
-        Integer dimension = world.provider.getDimensionId();
+        Integer dimension = world.provider.getDimension();
 
         HashMap<Vector3, ChunkCoordIntPair> map = this.chunks.get(dimension);
         if (map == null)
@@ -554,7 +554,7 @@ public class PokecubeSerializer
 
     public void reloadChunk(List<Ticket> tickets, World world)
     {
-        Integer dim = world.provider.getDimensionId();
+        Integer dim = world.provider.getDimension();
         HashMap<Vector3, ChunkCoordIntPair> map = this.chunks.get(dim);
         Iterator<Ticket> next = tickets.iterator();
         if (map != null)
@@ -614,7 +614,7 @@ public class PokecubeSerializer
 
     public void removeChunks(World world, Vector3 location)
     {
-        Integer dimension = world.provider.getDimensionId();
+        Integer dimension = world.provider.getDimension();
 
         HashMap<Vector3, ChunkCoordIntPair> map = this.chunks.get(dimension);
         if (map == null) { return; }

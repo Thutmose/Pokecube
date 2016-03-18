@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.interfaces.Move_Base;
@@ -124,11 +124,11 @@ public class GuiTMCreator extends GuiContainer
         int xOffset = 0;
         int yOffset = 22;
 
-        String next = StatCollector.translateToLocal("tile.pc.next");
+        String next = I18n.translateToLocal("tile.pc.next");
         buttonList.add(new GuiButton(2, width / 2 - xOffset + 28, height / 2 - yOffset, 50, 20, next));
-        String prev = StatCollector.translateToLocal("tile.pc.previous");
+        String prev = I18n.translateToLocal("tile.pc.previous");
         buttonList.add(new GuiButton(3, width / 2 - xOffset - 78, height / 2 - yOffset, 50, 20, prev));
-        String apply = StatCollector.translateToLocal("tile.tradingtable.apply");
+        String apply = I18n.translateToLocal("tile.tradingtable.apply");
         buttonList.add(new GuiButton(4, width / 2 - xOffset - 25, height / 2 - yOffset, 50, 20, apply));
         textFieldSearch = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 29, height / 2 - yOffset - 25, 90,
                 10);

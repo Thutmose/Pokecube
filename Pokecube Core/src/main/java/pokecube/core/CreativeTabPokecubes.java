@@ -5,7 +5,7 @@ package pokecube.core;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,7 +30,7 @@ public class CreativeTabPokecubes extends CreativeTabs
     @SideOnly(Side.CLIENT)
     public String getTabLabel()
     {
-        return StatCollector.translateToLocal("igwtab.entry.Pokecubes");
+        return I18n.translateToLocal("igwtab.entry.Pokecubes");
     }
 
     @Override

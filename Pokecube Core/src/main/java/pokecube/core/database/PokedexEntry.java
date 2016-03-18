@@ -23,7 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -1427,7 +1427,7 @@ public class PokedexEntry
     /** @return the name in the language of player */
     public String getTranslatedName()
     {
-        String translated = StatCollector.translateToLocal("pkmn." + name + ".name").trim();
+        String translated = I18n.translateToLocal("pkmn." + name + ".name").trim();
         if (translated.contains(".")) { return name; }
 
         return translated;

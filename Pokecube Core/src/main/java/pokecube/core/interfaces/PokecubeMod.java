@@ -149,7 +149,7 @@ public abstract class PokecubeMod
 
     public static FakePlayer getFakePlayer(World world)
     {
-        return getFakePlayer(world.provider.getDimensionId());
+        return getFakePlayer(world.provider.getDimension());
     }
 
     public static CommonProxy getProxy()

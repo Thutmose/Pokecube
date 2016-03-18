@@ -17,8 +17,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import pokecube.core.database.MoveEntry;
@@ -430,7 +430,7 @@ public class MovesUtils implements IMoveConstants
         {
             if (attacked instanceof IPokemob)
             {
-                String missed = StatCollector.translateToLocalFormatted("pokemob.move.missed",
+                String missed = I18n.translateToLocalFormatted("pokemob.move.missed",
                         ((IPokemob) attacked).getPokemonDisplayName());
                 if (attacked != attacker) attacker.displayMessageToOwner("\u00a7a" + missed);
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + missed);
@@ -443,12 +443,12 @@ public class MovesUtils implements IMoveConstants
                 {
                     attacked = ((EntityLiving) attacker).getAttackTarget();
                     String name = attacked.getName();
-                    missed = StatCollector.translateToLocalFormatted("pokemob.move.missed", name);
+                    missed = I18n.translateToLocalFormatted("pokemob.move.missed", name);
                     attacker.displayMessageToOwner("\u00a7c" + missed);
                 }
                 else if (attacker.getPokemonAIState(IMoveConstants.ANGRY))
                 {
-                    missed = StatCollector.translateToLocalFormatted("pokemob.move.missed", "");
+                    missed = I18n.translateToLocalFormatted("pokemob.move.missed", "");
                     missed.replace(" !", "");
                     attacker.displayMessageToOwner("\u00a7c" + missed);
                 }
@@ -458,7 +458,7 @@ public class MovesUtils implements IMoveConstants
         {
             if (attacked instanceof IPokemob)
             {
-                String missed = StatCollector.translateToLocalFormatted("pokemob.move.failed",
+                String missed = I18n.translateToLocalFormatted("pokemob.move.failed",
                         ((IPokemob) attacked).getPokemonDisplayName());
                 if (attacked != attacker) attacker.displayMessageToOwner("\u00a7a" + missed);
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + missed);
@@ -469,7 +469,7 @@ public class MovesUtils implements IMoveConstants
         {
             if (attacked instanceof IPokemob)
             {
-                String doesntAffect = StatCollector.translateToLocalFormatted("pokemob.move.doesnt.affect",
+                String doesntAffect = I18n.translateToLocalFormatted("pokemob.move.doesnt.affect",
                         ((IPokemob) attacked).getPokemonDisplayName());
                 attacker.displayMessageToOwner("\u00a7a" + doesntAffect);
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + doesntAffect);
@@ -480,7 +480,7 @@ public class MovesUtils implements IMoveConstants
         {
             if (attacked instanceof IPokemob)
             {
-                String notVeryEffective = StatCollector.translateToLocal("pokemob.move.not.very.effective");
+                String notVeryEffective = I18n.translateToLocal("pokemob.move.not.very.effective");
                 attacker.displayMessageToOwner("\u00a7a" + notVeryEffective);
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + notVeryEffective);
             }
@@ -489,7 +489,7 @@ public class MovesUtils implements IMoveConstants
         {
             if (attacked instanceof IPokemob)
             {
-                String superEffective = StatCollector.translateToLocal("pokemob.move.super.effective");
+                String superEffective = I18n.translateToLocal("pokemob.move.super.effective");
                 attacker.displayMessageToOwner("\u00a7a" + superEffective);
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + superEffective);
             }
@@ -499,7 +499,7 @@ public class MovesUtils implements IMoveConstants
         {
             if (attacked instanceof IPokemob)
             {
-                String criticalHit = StatCollector.translateToLocal("pokemob.move.critical.hit");
+                String criticalHit = I18n.translateToLocal("pokemob.move.critical.hit");
                 attacker.displayMessageToOwner("\u00a7a" + criticalHit);
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + criticalHit);
             }
@@ -511,18 +511,18 @@ public class MovesUtils implements IMoveConstants
 
         if (attack.equals("pokemob.status.confusion"))
         {
-            String used = StatCollector.translateToLocalFormatted("pokemob.status.confusion",
+            String used = I18n.translateToLocalFormatted("pokemob.status.confusion",
                     attacker.getPokemonDisplayName());
             attacker.displayMessageToOwner("\u00a7c" + used);
             return;
         }
 
         String translatedAttack = getTranslatedMove(attack);
-        String used = StatCollector.translateToLocalFormatted("pokemob.move.used", attacker.getPokemonDisplayName(),
+        String used = I18n.translateToLocalFormatted("pokemob.move.used", attacker.getPokemonDisplayName(),
                 translatedAttack);
         attacker.displayMessageToOwner("\u00a7a" + used);
 
-        String enemyUsed = StatCollector.translateToLocalFormatted("pokemob.move.enemyUsed",
+        String enemyUsed = I18n.translateToLocalFormatted("pokemob.move.enemyUsed",
                 attacker.getPokemonDisplayName(), translatedAttack);
         if (attacker == attacked) return;
 
@@ -547,7 +547,7 @@ public class MovesUtils implements IMoveConstants
         {
             if (attacked instanceof IPokemob)
             {
-                String missed = StatCollector.translateToLocalFormatted("pokemob.move.stat.fail",
+                String missed = I18n.translateToLocalFormatted("pokemob.move.stat.fail",
                         ((IPokemob) attacked).getPokemonDisplayName());
                 attacker.displayMessageToOwner("\u00a7a" + missed);
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + missed);
@@ -570,9 +570,9 @@ public class MovesUtils implements IMoveConstants
             String statName = "pokemob.move.stat" + stat;
             if (attacked instanceof IPokemob && attacker != null)
             {
-                String missed = StatCollector.translateToLocalFormatted(message,
+                String missed = I18n.translateToLocalFormatted(message,
                         ((IPokemob) attacked).getPokemonDisplayName(),
-                        StatCollector.translateToLocalFormatted(statName));
+                        I18n.translateToLocalFormatted(statName));
 
                 if (attacker == attacked)
                 {
@@ -587,15 +587,15 @@ public class MovesUtils implements IMoveConstants
             }
             else if (attacker == null && (attacked instanceof IPokemob))
             {
-                String missed = StatCollector.translateToLocalFormatted(message,
+                String missed = I18n.translateToLocalFormatted(message,
                         ((IPokemob) attacked).getPokemonDisplayName(),
-                        StatCollector.translateToLocalFormatted(statName));
+                        I18n.translateToLocalFormatted(statName));
                 ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + missed);
             }
             else if (attacker instanceof IPokemob)
             {
-                String missed = StatCollector.translateToLocalFormatted(message, attacker.getPokemonDisplayName(),
-                        StatCollector.translateToLocalFormatted(statName));
+                String missed = I18n.translateToLocalFormatted(message, attacker.getPokemonDisplayName(),
+                        I18n.translateToLocalFormatted(statName));
 
                 String colour = fell ? "\u00a7c" : "\u00a7a";
                 attacker.displayMessageToOwner(colour + missed);
@@ -725,31 +725,31 @@ public class MovesUtils implements IMoveConstants
         String message = null;
         if (status == STATUS_FRZ)
         {
-            message = StatCollector.translateToLocalFormatted("pokemob.move.isfrozen", mobDisplayName);
+            message = I18n.translateToLocalFormatted("pokemob.move.isfrozen", mobDisplayName);
         }
         if (status == STATUS_SLP)
         {
-            message = StatCollector.translateToLocalFormatted("pokemob.move.issleeping", mobDisplayName);
+            message = I18n.translateToLocalFormatted("pokemob.move.issleeping", mobDisplayName);
         }
         if (status == STATUS_PAR && onMove)
         {
-            message = StatCollector.translateToLocalFormatted("pokemob.move.isparalyzed", mobDisplayName);
+            message = I18n.translateToLocalFormatted("pokemob.move.isparalyzed", mobDisplayName);
         }
         else if (status == STATUS_PAR)
         {
-            message = StatCollector.translateToLocalFormatted("pokemob.move.isfullyparalyzed", mobDisplayName);
+            message = I18n.translateToLocalFormatted("pokemob.move.isfullyparalyzed", mobDisplayName);
         }
         if (status == STATUS_BRN)
         {
-            message = StatCollector.translateToLocalFormatted("pokemob.move.isburned", mobDisplayName);
+            message = I18n.translateToLocalFormatted("pokemob.move.isburned", mobDisplayName);
         }
         if (status == STATUS_PSN)
         {
-            message = StatCollector.translateToLocalFormatted("pokemob.move.ispoisoned", mobDisplayName);
+            message = I18n.translateToLocalFormatted("pokemob.move.ispoisoned", mobDisplayName);
         }
         if (status == STATUS_PSN2)
         {
-            message = StatCollector.translateToLocalFormatted("pokemob.move.isbadlypoisoned", mobDisplayName);
+            message = I18n.translateToLocalFormatted("pokemob.move.isbadlypoisoned", mobDisplayName);
         }
         return message;
     }
@@ -833,7 +833,7 @@ public class MovesUtils implements IMoveConstants
     public static String getTranslatedMove(String attack)
     {
         String PREFIX = "pokemob.move.";
-        String translatedAttack = StatCollector.translateToLocal(PREFIX + attack);
+        String translatedAttack = I18n.translateToLocal(PREFIX + attack);
 
         if (translatedAttack == null || translatedAttack.startsWith(PREFIX))
         {

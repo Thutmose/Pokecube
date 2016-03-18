@@ -16,13 +16,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
@@ -242,9 +240,9 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     protected void entityInit()
     {
         super.entityInit();
-        getDataWatcher().addObjectByDataType(24, 5);
-        getDataWatcher().addObject(25, Byte.valueOf((byte) 0));
-        getDataWatcher().addObject(29, -1);
+        getDataManager().addObjectByDataType(24, 5);
+        getDataManager().addObject(25, Byte.valueOf((byte) 0));
+        getDataManager().addObject(29, -1);
     }
 
     /** Returns the ItemStack corresponding to the Entity (Note: if no item
@@ -252,13 +250,13 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
      * Block.stone) */
     public ItemStack getEntityItem()
     {
-        ItemStack itemstack = this.getDataWatcher().getWatchableObjectItemStack(24);
+        ItemStack itemstack = this.getDataManager().getWatchableObjectItemStack(24);
         return itemstack == null ? new ItemStack(Blocks.stone) : itemstack;
     }
 
     public Entity getReleased()
     {
-        int id = getDataWatcher().getWatchableObjectInt(29);
+        int id = getDataManager().getWatchableObjectInt(29);
         Entity ret = worldObj.getEntityByID(id);
         return ret;
     }
@@ -288,7 +286,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
 
     public boolean isReleasing()
     {
-        return getDataWatcher().getWatchableObjectByte(25) == 1;
+        return getDataManager().getWatchableObjectByte(25) == 1;
     }
 
     @Override
@@ -356,7 +354,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 mobStack = PokecubeManager.pokemobToItem(mob);
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
                 {
-                    String message = StatCollector.translateToLocalFormatted("pokecube.caught",
+                    String message = I18n.translateToLocalFormatted("pokecube.caught",
                             PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNumber));
                     ((EntityPlayer) shootingEntity).addChatMessage(new ChatComponentText("\u00a7d" + message));
 
@@ -405,7 +403,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
                 {
                     ((EntityPlayer) shootingEntity).addChatMessage(
-                            new ChatComponentText("\u00a7d" + StatCollector.translateToLocal("pokecube.missed")));
+                            new ChatComponentText("\u00a7d" + I18n.translateToLocal("pokecube.missed")));
                     ((EntityCreature) entity1).setAttackTarget(shootingEntity);
                 }
             }
@@ -511,7 +509,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Item");
         this.setEntityItemStack(ItemStack.loadItemStackFromNBT(nbttagcompound1));
 
-        ItemStack item = getDataWatcher().getWatchableObjectItemStack(24);
+        ItemStack item = getDataManager().getWatchableObjectItemStack(24);
 
         if (nbttagcompound.hasKey("shooter"))
         {
@@ -565,7 +563,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             Entity owner = entity1.getPokemonOwner();
             if (owner instanceof EntityPlayer)
             {
-                String mess = StatCollector.translateToLocalFormatted("pokemob.action.sendout",
+                String mess = I18n.translateToLocalFormatted("pokemob.action.sendout",
                         entity1.getPokemonDisplayName());
                 entity1.displayMessageToOwner(mess);
             }
@@ -593,8 +591,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     /** Sets the ItemStack for this entity */
     public void setEntityItemStack(ItemStack p_92058_1_)
     {
-        this.getDataWatcher().updateObject(24, p_92058_1_);
-        this.getDataWatcher().setObjectWatched(24);
+        this.getDataManager().updateObject(24, p_92058_1_);
+        this.getDataManager().setObjectWatched(24);
     }
 
     /** Sets the position and rotation. Only difference from the other one is no
@@ -609,12 +607,12 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
 
     public void setReleased(Entity entity)
     {
-        getDataWatcher().updateObject(29, entity.getEntityId());
+        getDataManager().updateObject(29, entity.getEntityId());
     }
 
     public void setReleasing(boolean tag)
     {
-        getDataWatcher().updateObject(25, tag ? Byte.valueOf((byte) 1) : Byte.valueOf((byte) 0));
+        getDataManager().updateObject(25, tag ? Byte.valueOf((byte) 1) : Byte.valueOf((byte) 0));
     }
 
     @Override

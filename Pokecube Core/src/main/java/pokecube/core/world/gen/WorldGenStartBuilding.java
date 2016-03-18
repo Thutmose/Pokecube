@@ -6,8 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
@@ -119,7 +119,7 @@ public class WorldGenStartBuilding implements IWorldGenerator
     {
         if (building || !PokecubeMod.core.getConfig().doSpawnBuilding) return;
 
-        if (world.provider.getDimensionId() != 0) return;
+        if (world.provider.getDimension() != 0) return;
 
         int x = world.getSpawnPoint().getX() / 16;
         int z = world.getSpawnPoint().getZ() / 16;

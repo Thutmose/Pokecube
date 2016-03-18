@@ -7,7 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.IWorldAccess;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;

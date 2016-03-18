@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -38,7 +38,7 @@ public class ItemMegastone extends Item
     @Override
     public String getItemStackDisplayName(ItemStack stack)
     {
-        String name = ("" + StatCollector.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name"))
+        String name = ("" + I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name"))
                 .trim();
         if (stack.hasTagCompound())
         {
@@ -49,7 +49,7 @@ public class ItemMegastone extends Item
                 String stackname = tag.getString("pokemon");
                 variant = stackname.toLowerCase();
             }
-            variant = ("" + StatCollector.translateToLocal("item." + variant + ".name")).trim();
+            variant = ("" + I18n.translateToLocal("item." + variant + ".name")).trim();
             if (!variant.contains(".name")) name = variant;
         }
         return name;

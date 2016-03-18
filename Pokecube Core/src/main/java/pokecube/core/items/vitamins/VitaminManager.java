@@ -8,7 +8,7 @@ import static pokecube.core.PokecubeItems.registerItemTexture;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeItems;

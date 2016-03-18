@@ -216,7 +216,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     @Override
     public int getHungerTime()
     {
-        return getDataWatcher().getWatchableObjectInt(HUNGERDW);
+        return getDataManager().getWatchableObjectInt(HUNGERDW);
     }
 
     @Override
@@ -377,7 +377,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     @Override
     public void setHungerTime(int hungerTime)
     {
-        getDataWatcher().updateObject(HUNGERDW, hungerTime);
+        getDataManager().updateObject(HUNGERDW, hungerTime);
     }
 
     @Override

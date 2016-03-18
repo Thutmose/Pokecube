@@ -65,7 +65,7 @@ public class Move_Terrain extends Move_Basic
             }
             PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
             Vector3 v = Vector3.getNewVector().set(attacked);
-            PokecubePacketHandler.sendToAllNear(packet, v, attacked.worldObj.provider.getDimensionId(), 64);
+            PokecubePacketHandler.sendToAllNear(packet, v, attacked.worldObj.provider.getDimension(), 64);
         }
 
     }

@@ -9,7 +9,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -33,28 +33,28 @@ public class Pokecube extends Item implements IPokecube
 
         if (flag2)
         {
-            list.add(StatCollector.translateToLocal("item.pokecube.flames"));
+            list.add(I18n.translateToLocal("item.pokecube.flames"));
         }
 
         boolean flag3 = nbt.getBoolean("Bubbles");
 
         if (flag3)
         {
-            list.add(StatCollector.translateToLocal("item.pokecube.bubbles"));
+            list.add(I18n.translateToLocal("item.pokecube.bubbles"));
         }
 
         boolean flag4 = nbt.getBoolean("Leaves");
 
         if (flag4)
         {
-            list.add(StatCollector.translateToLocal("item.pokecube.leaves"));
+            list.add(I18n.translateToLocal("item.pokecube.leaves"));
         }
 
         boolean flag5 = nbt.hasKey("dye");
 
         if (flag5)
         {
-            // list.add(StatCollector.translateToLocal(ItemDye.field_150921_b[nbt.getInteger("dye")]));//TODO
+            // list.add(I18n.translateToLocal(ItemDye.field_150921_b[nbt.getInteger("dye")]));//TODO
             // dye names in pokeseals
         }
     }

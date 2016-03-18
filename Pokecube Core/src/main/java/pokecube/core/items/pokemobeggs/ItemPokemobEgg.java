@@ -20,11 +20,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
@@ -533,7 +533,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         if (entry != null)
         {
             entityName = entry.getTranslatedName();
-            s = StatCollector.translateToLocalFormatted("pokemobEgg.name", entityName).trim();
+            s = I18n.translateToLocalFormatted("pokemobEgg.name", entityName).trim();
         }
         else
         {

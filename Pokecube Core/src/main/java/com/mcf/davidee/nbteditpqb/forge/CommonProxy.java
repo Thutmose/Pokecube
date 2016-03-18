@@ -3,7 +3,7 @@ package com.mcf.davidee.nbteditpqb.forge;
 import java.io.File;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 public class CommonProxy {
 	public File getMinecraftDirectory(){

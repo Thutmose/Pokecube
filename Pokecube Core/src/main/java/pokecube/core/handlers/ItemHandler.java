@@ -35,7 +35,7 @@ import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubeBlocks;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubes;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;

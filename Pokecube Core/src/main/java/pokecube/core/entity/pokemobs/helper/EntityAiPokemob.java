@@ -23,9 +23,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -998,7 +997,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!PokecubeCore.isOnClientSide())// && getPokemonAIState(TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
-            String mess = StatCollector.translateToLocalFormatted("pokemob.action.faint", getPokemonDisplayName());
+            String mess = I18n.translateToLocalFormatted("pokemob.action.faint", getPokemonDisplayName());
             displayMessageToOwner("\u00a7c" + mess);
             returnToPokecube();
         }
@@ -1108,7 +1107,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             popped = false;
         }
         if (getPokedexEntry().floats() || getPokedexEntry().flys()) fallDistance = 0;
-        dimension = worldObj.provider.getDimensionId();
+        dimension = worldObj.provider.getDimension();
         super.onUpdate();
 
         if (worldObj.isRemote)

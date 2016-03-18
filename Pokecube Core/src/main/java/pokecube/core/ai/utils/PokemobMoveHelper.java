@@ -69,7 +69,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
 	public void onUpdateMoveHelper()
     {
         this.entity.setMoveForward(0.0F);
-        this.speed = entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+        this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
         if (this.update)
         {
         	pos.set(entity);
@@ -109,7 +109,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
                 	entity.rotationPitch = -(float) (Math.atan((float) (d2/Math.sqrt(d4))) * 180/Math.PI);
                 	((IPokemob)entity).setDirectionPitch(entity.rotationPitch);
                 }
-                float newSpeed = (float) (this.speed * this.entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
+                float newSpeed = (float) (this.speed * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
                
                 this.entity.setAIMoveSpeed(newSpeed);
                 double d6 = lastPos.distanceTo(pos);

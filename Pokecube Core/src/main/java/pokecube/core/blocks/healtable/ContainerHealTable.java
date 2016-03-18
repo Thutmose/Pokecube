@@ -161,74 +161,74 @@ public class ContainerHealTable extends Container
         // return stack;
     }
 
-    @Override
-    public ItemStack slotClick(int i, int j, int flag,
-            EntityPlayer entityplayer)
-    {
-    	if (i < 0)
-    		return null;
-//    	System.out.println("i="+i+" | j="+j+" | flag="+flag);
-        if (flag != 0 && flag != 5)
-        {
-            ItemStack itemstack = null;
-            Slot slot = inventorySlots.get(i);
-
-            if (slot != null && slot.getHasStack())
-            {
-                ItemStack itemstack1 = slot.getStack();
-                itemstack = itemstack1.copy();
-
-                if (i < 6)
-                {
-                    if (!mergeItemStack(itemstack1, 6, 42, true))
-                    {
-                        return null;
-                    }
-                }
-                else
-                {
-                    if (itemstack != null && !isItemValid(itemstack1))
-                    {
-                        return null;
-                    }
-
-                    if (!mergeItemStack(itemstack1, 0, 6, false))
-                    {
-                        return null;
-                    }
-                }
-
-                if (itemstack1.stackSize == 0)
-                {
-                    slot.putStack(null);
-                }
-                else
-                {
-                    slot.onSlotChanged();
-                }
-
-                if (itemstack1.stackSize != itemstack.stackSize)
-                {
-//					slot.onPickupFromSlot(itemstack1);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-            if (itemstack != null && isItemValid(itemstack))
-            {
-                return itemstack;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        else
-        {
-            return super.slotClick(i, j, flag, entityplayer);
-        }
-    }
+//    @Override//TODO slot click
+//    public ItemStack slotClick(int i, int j, int flag,
+//            EntityPlayer entityplayer)
+//    {
+//    	if (i < 0)
+//    		return null;
+////    	System.out.println("i="+i+" | j="+j+" | flag="+flag);
+//        if (flag != 0 && flag != 5)
+//        {
+//            ItemStack itemstack = null;
+//            Slot slot = inventorySlots.get(i);
+//
+//            if (slot != null && slot.getHasStack())
+//            {
+//                ItemStack itemstack1 = slot.getStack();
+//                itemstack = itemstack1.copy();
+//
+//                if (i < 6)
+//                {
+//                    if (!mergeItemStack(itemstack1, 6, 42, true))
+//                    {
+//                        return null;
+//                    }
+//                }
+//                else
+//                {
+//                    if (itemstack != null && !isItemValid(itemstack1))
+//                    {
+//                        return null;
+//                    }
+//
+//                    if (!mergeItemStack(itemstack1, 0, 6, false))
+//                    {
+//                        return null;
+//                    }
+//                }
+//
+//                if (itemstack1.stackSize == 0)
+//                {
+//                    slot.putStack(null);
+//                }
+//                else
+//                {
+//                    slot.onSlotChanged();
+//                }
+//
+//                if (itemstack1.stackSize != itemstack.stackSize)
+//                {
+////					slot.onPickupFromSlot(itemstack1);
+//                }
+//                else
+//                {
+//                    return null;
+//                }
+//            }
+//
+//            if (itemstack != null && isItemValid(itemstack))
+//            {
+//                return itemstack;
+//            }
+//            else
+//            {
+//                return null;
+//            }
+//        }
+//        else
+//        {
+//            return super.slotClick(i, j, flag, entityplayer);
+//        }
+//    }
 }

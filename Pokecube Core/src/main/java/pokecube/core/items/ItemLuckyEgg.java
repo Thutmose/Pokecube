@@ -6,7 +6,10 @@ package pokecube.core.items;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pokecube.core.entity.professor.EntityProfessor;
@@ -25,9 +28,10 @@ public class ItemLuckyEgg extends Item
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
+            EnumHand hand)
     {
-        if (world.isRemote) { return itemstack; }
+        if (world.isRemote) { return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack); }
 
         if (player.capabilities.isCreativeMode)
         {
@@ -44,7 +48,7 @@ public class ItemLuckyEgg extends Item
                 player.addChatMessage(new TextComponentString("Meteor Can Land: " + meteor));
             }
         }
-        return itemstack;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
     }
 
 }

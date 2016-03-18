@@ -17,6 +17,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -24,8 +25,6 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.network.PokecubePacketHandler;
@@ -61,21 +60,14 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
         return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public int getRenderType()
-    {
-        return super.getRenderType();// RenderPokecubeTable.ID;
-    }
-
-    @Override
-    public boolean isFullCube()
+    public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
@@ -89,19 +81,19 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
     /** Called upon block activation (right click on the block.) */
     /** Called upon block activation (right click on the block.) */
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        if (!world.isRemote)
+        if (!worldIn.isRemote)
         {
-            if (!PokecubeSerializer.getInstance().hasStarter(player))
+            if (!PokecubeSerializer.getInstance().hasStarter(playerIn))
             {
                 ByteBuf buf = Unpooled.buffer();
                 buf.writeByte(PokecubeClientPacket.CHOOSE1ST);
                 buf.writeBoolean(true);
 
                 ArrayList<Integer> starters = new ArrayList<Integer>();
-                TileEntity te = player.worldObj.getTileEntity(pos.down(2));
+                TileEntity te = playerIn.worldObj.getTileEntity(pos.down(2));
                 if (te != null && te instanceof IInventory)
                 {
                     IInventory container = (IInventory) te;
@@ -110,7 +102,7 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                         ItemStack stack = container.getStackInSlot(i1);
                         if (stack != null && stack.getItem() instanceof ItemPokemobEgg)
                         {
-                            IPokemob mob = ItemPokemobEgg.getPokemob(world, stack);
+                            IPokemob mob = ItemPokemobEgg.getPokemob(worldIn, stack);
                             if (mob != null)
                             {
                                 starters.add(mob.getPokedexNb());
@@ -125,7 +117,7 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                 }
 
                 PokecubeClientPacket packet = new PokecubeClientPacket(buf);
-                PokecubePacketHandler.sendToClient(packet, player);
+                PokecubePacketHandler.sendToClient(packet, playerIn);
             }
         }
         return true;

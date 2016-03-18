@@ -15,11 +15,13 @@ import org.nfunk.jep.JEP;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumDifficulty;
@@ -106,16 +108,17 @@ public final class SpawnHandler
         SpawnData spawn = entry.getSpawnData();
         if (spawn == null) return;
 
-        for (BiomeGenBase b : BiomeGenBase.getBiomeGenArray())
+        for (ResourceLocation key : BiomeGenBase.biomeRegistry.getKeys())
         {
+            BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(key);
             if (b == null) continue;
-            ArrayList<PokedexEntry> entries = spawns.get(b.biomeID);
+            ArrayList<PokedexEntry> entries = spawns.get(BiomeGenBase.getIdForBiome(b));
             if (entries == null)
             {
                 entries = new ArrayList<PokedexEntry>();
-                spawns.put(b.biomeID, entries);
+                spawns.put(BiomeGenBase.getIdForBiome(b), entries);
             }
-            if (spawn.isValid(b.biomeID))
+            if (spawn.isValid(BiomeGenBase.getIdForBiome(b)))
             {
                 entries.add(entry);
             }
@@ -140,14 +143,14 @@ public final class SpawnHandler
     {
         SpawnData spawn = entry.getSpawnData();
         if (spawn == null) return;
-
-        ArrayList<PokedexEntry> entries = spawns.get(b.biomeID);
+        int id = BiomeGenBase.getIdForBiome(b);
+        ArrayList<PokedexEntry> entries = spawns.get(id);
         if (entries == null)
         {
             entries = new ArrayList<PokedexEntry>();
-            spawns.put(b.biomeID, entries);
+            spawns.put(id, entries);
         }
-        if (spawn.isValid(b.biomeID))
+        if (spawn.isValid(id))
         {
             entries.add(entry);
         }
@@ -178,14 +181,14 @@ public final class SpawnHandler
                         && !up.isLiquid(); }
 
         if (!temp.set(location).addTo(0, -1, 0).isSideSolid(worldObj, EnumFacing.UP)) return false;
-
-        Block down = temp.set(location).addTo(0, -1, 0).getBlock(worldObj);
+        IBlockState state = temp.set(location).addTo(0, -1, 0).getBlockState(worldObj);
+        Block down = state.getBlock();
 
         boolean validMaterial = !here.blocksMovement() && !here.isLiquid() && !up.blocksMovement() && !up.isLiquid();
 
         if (!validMaterial) return false;
 
-        return down.canCreatureSpawn(worldObj, temp.getPos(),
+        return down.canCreatureSpawn(state, worldObj, temp.getPos(),
                 net.minecraft.entity.EntityLiving.SpawnPlacementType.ON_GROUND);// validSurfaces.contains(down);
     }
 
@@ -532,7 +535,7 @@ public final class SpawnHandler
 
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, v);
         int b = t.getBiome(v);
-        if (onlySubbiomes && b <= BiomeGenBase.getBiomeGenArray().length) { return ret; }
+        if (onlySubbiomes && b <= 255) { return ret; }
 
         if (b == BiomeType.CAVE.getType())
         {
@@ -628,9 +631,8 @@ public final class SpawnHandler
             float x = (float) point.x + 0.5F;
             float y = (float) point.y;
             float z = (float) point.z + 0.5F;
-
-            boolean playerNearCheck = world.getClosestPlayer(x, y, z,
-                    PokecubeMod.core.getConfig().minSpawnRadius) == null;
+            EntityPlayer player = world.func_184137_a(x, y, z, PokecubeMod.core.getConfig().minSpawnRadius, false);
+            boolean playerNearCheck = player == null;
             if (!playerNearCheck) continue;
 
             float var28 = x - world.getSpawnPoint().getX();
@@ -736,8 +738,7 @@ public final class SpawnHandler
                     int dz = rand.nextInt(200) - 100;
 
                     Vector3 v = this.v.set(player).add(dx, 0, dz);
-
-                    if (world.getClosestPlayer(v.x, v.y, v.z, 64) != null) return;
+                    if (world.func_184137_a(v.x, v.y, v.z, 64, false) != null) return;
 
                     v.add(0, 255 - player.posY, 0);
 

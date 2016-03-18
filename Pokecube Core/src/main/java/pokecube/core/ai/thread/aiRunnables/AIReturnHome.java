@@ -26,7 +26,7 @@ public class AIReturnHome extends AIBase
         this.setMutex(2);
         mob = (IPokemob) entity;
         entry = mob.getPokedexEntry();
-        this.speed = entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue() * 0.4;
+        this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 0.4;
     }
 
     @Override

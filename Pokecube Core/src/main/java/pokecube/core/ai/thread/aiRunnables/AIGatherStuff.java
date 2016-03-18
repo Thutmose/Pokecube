@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -154,9 +155,10 @@ public class AIGatherStuff extends AIBase
             if (dist < diff)
             {
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                IBlockState state = stuffLoc.getBlockState(world);
                 Block plant = stuffLoc.getBlock(world);
                 TickHandler.addBlockChange(stuffLoc, entity.dimension, Blocks.air);
-                if (plant.getMaterial() != Material.grass)
+                if (state.getMaterial() != Material.grass)
                 {
                     for (ItemStack stack : plant.getDrops(world, stuffLoc.getPos(), stuffLoc.getBlockState(world), 0))
                         toRun.addElement(new InventoryChange(entity, 2, stack, true));

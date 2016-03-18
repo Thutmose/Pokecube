@@ -4,23 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.common.collect.Lists;
-
-import jdk.nashorn.internal.runtime.regexp.joni.constants.Arguments;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.core.blocks.TileEntityOwnable;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityPC extends TileEntityOwnable implements IInventory, SimpleComponent
+public class TileEntityPC extends TileEntityOwnable implements IInventory//, SimpleComponent
 {
     private boolean     bound   = false;
     private String      boundId = "";
@@ -48,20 +45,19 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         return null;
     }
 
-    @Override
-    public String getComponentName()
-    {
-        return "pokecubepc";
-    }
+//    @Override//TODO OC
+//    public String getComponentName()
+//    {
+//        return "pokecubepc";
+//    }
 
     /** Overriden in a sign to provide the text. */
-    @SuppressWarnings("rawtypes")
     @Override
-    public Packet getDescriptionPacket()
+    public Packet<?> getDescriptionPacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         this.writeToNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
 
     @Override
@@ -89,23 +85,23 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         return 0;
     }
 
-    @Callback(doc="Returns the items in the PC")
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getItemList(Context context, Arguments args) throws Exception
-    {
-        if (isBound())
-        {
-            InventoryPC inv = getPC();
-            ArrayList<Object> items = Lists.newArrayList();
-            for (int i = 0; i < inv.getSizeInventory(); i++)
-            {
-                ItemStack stack = inv.getStackInSlot(i);
-                if (stack != null) items.add(stack.getDisplayName());
-            }
-            return items.toArray();
-        }
-        throw new Exception("PC not bound");
-    }
+//    @Callback(doc="Returns the items in the PC")//TODO OC
+//    @Optional.Method(modid = "OpenComputers")
+//    public Object[] getItemList(Context context, Arguments args) throws Exception
+//    {
+//        if (isBound())
+//        {
+//            InventoryPC inv = getPC();
+//            ArrayList<Object> items = Lists.newArrayList();
+//            for (int i = 0; i < inv.getSizeInventory(); i++)
+//            {
+//                ItemStack stack = inv.getStackInSlot(i);
+//                if (stack != null) items.add(stack.getDisplayName());
+//            }
+//            return items.toArray();
+//        }
+//        throw new Exception("PC not bound");
+//    }
 
     @Override
     public String getName()
@@ -174,7 +170,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
      * @param pkt
      *            The data packet */
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
         NBTTagCompound nbt = pkt.getNbtCompound();
         this.readFromNBT(nbt);
@@ -225,7 +221,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
             boundId = uuid;
         }
 
-        worldObj.markBlockForUpdate(getPos());
+//        worldObj.markBlockForUpdate(getPos());
 
     }
 
@@ -259,7 +255,8 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         {
             boundId = "";
         }
-        worldObj.markBlockForUpdate(getPos());
+//        worldObj.upda
+//        worldObj.markBlockForUpdate(getPos());
     }
 
     /** Writes a tile entity to NBT. */

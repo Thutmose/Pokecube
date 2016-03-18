@@ -7,6 +7,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -51,9 +53,9 @@ public class BlockHealTable extends Block implements ITileEntityProvider
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, new IProperty[] { FIXED });
+        return new BlockStateContainer(this, new IProperty[] { FIXED });
     }
 
     @Override
@@ -112,23 +114,23 @@ public class BlockHealTable extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        TileEntity tile_entity = world.getTileEntity(pos);
+        TileEntity tile_entity = worldIn.getTileEntity(pos);
 
-        if (tile_entity == null || player.isSneaking())
+        if (tile_entity == null || playerIn.isSneaking())
         {
-            if (player.capabilities.isCreativeMode && !world.isRemote)
+            if (playerIn.capabilities.isCreativeMode && !worldIn.isRemote)
             {
                 state = state.cycleProperty(FIXED);
-                player.addChatMessage(new TextComponentString("Set Block to "
-                        + (state.getValue(BlockHealTable.FIXED) ? "Breakable" : "Unbreakable")));
-                world.setBlockState(pos, state);
+                playerIn.addChatMessage(new TextComponentString(
+                        "Set Block to " + (state.getValue(BlockHealTable.FIXED) ? "Breakable" : "Unbreakable")));
+                worldIn.setBlockState(pos, state);
             }
             return false;
         }
-        player.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, world, pos.getX(), pos.getY(), pos.getZ());
+        playerIn.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 

@@ -78,7 +78,7 @@ public class GuardAI extends EntityAIBase
     {
         super.resetTask();
         capability.setState(GuardState.IDLE);
-        entity.getEntityAttribute(SharedMonsterAttributes.followRange).removeModifier(goingHome);
+        entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).removeModifier(goingHome);
     }
 
     public void setPos(BlockPos pos)
@@ -111,9 +111,9 @@ public class GuardAI extends EntityAIBase
     public void startExecuting()
     {
         capability.setState(GuardState.RUNNING);
-        entity.getEntityAttribute(SharedMonsterAttributes.followRange).removeModifier(goingHome);
-        entity.getEntityAttribute(SharedMonsterAttributes.followRange).applyModifier(goingHome);
-        double speed = entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+        entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).removeModifier(goingHome);
+        entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).applyModifier(goingHome);
+        double speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
         entity.getNavigator().tryMoveToXYZ(capability.getPos().getX() + 0.5, capability.getPos().getY(),
                 capability.getPos().getZ() + 0.5, speed);
     }

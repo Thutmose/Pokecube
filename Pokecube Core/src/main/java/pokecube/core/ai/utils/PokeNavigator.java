@@ -12,6 +12,7 @@ import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
@@ -29,10 +30,10 @@ public class PokeNavigator extends PathNavigate
     /** The PathEntity being followed. */
     private PathEntity               currentPath;
     private double                   speed;
-    Vector3                          v            = Vector3.getNewVector();
-    Vector3                          v1           = Vector3.getNewVector();
-    Vector3                          v2           = Vector3.getNewVector();
-    Vector3                          v3           = Vector3.getNewVector();
+    Vector3                          v               = Vector3.getNewVector();
+    Vector3                          v1              = Vector3.getNewVector();
+    Vector3                          v2              = Vector3.getNewVector();
+    Vector3                          v3              = Vector3.getNewVector();
     /** The number of blocks (extra) +/- in each axis that get pulled out as
      * cache for the pathfinder's search space */
     private final IAttributeInstance pathSearchRange;
@@ -44,28 +45,28 @@ public class PokeNavigator extends PathNavigate
     private int                      ticksAtLastPos;
     /** Coordinates of the entity's position last time a check was done (part of
      * monitoring getting 'stuck') */
-    private Vec3                     lastPosCheck = new Vec3(0.0D, 0.0D, 0.0D);
+    private Vec3d                    lastPosCheck    = new Vec3d(0.0D, 0.0D, 0.0D);
     /** If the entity can swim. Swimming AI enables this and the pathfinder will
      * also cause the entity to swim straight upwards when underwater */
     private boolean                  canSwim;
 
-    private boolean canDive;
+    private boolean                  canDive;
 
-    private boolean    canFly;
-    public final Paths pathfinder;
+    private boolean                  canFly;
+    public final Paths               pathfinder;
 
-    final IPokemob pokemob;
+    final IPokemob                   pokemob;
 
-    long lastCacheUpdate = 0;
+    long                             lastCacheUpdate = 0;
 
-    int sticks = 0;
+    int                              sticks          = 0;
 
     public PokeNavigator(EntityLiving entity, World world)
     {
         super(entity, world);
         this.theEntity = entity;
         this.worldObj = world;
-        this.pathSearchRange = entity.getEntityAttribute(SharedMonsterAttributes.followRange);
+        this.pathSearchRange = entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
         pokemob = (IPokemob) entity;
         canSwim = true;
         canDive = ((IPathingMob) entity).swims();
@@ -89,9 +90,9 @@ public class PokeNavigator extends PathNavigate
     }
 
     @Override
-    public Vec3 getEntityPosition()
+    public Vec3d getEntityPosition()
     {
-        return new Vec3(this.theEntity.posX, this.getPathableYPos(), this.theEntity.posZ);
+        return new Vec3d(this.theEntity.posX, this.getPathableYPos(), this.theEntity.posZ);
     }
 
     private int getNextPoint()
@@ -205,7 +206,7 @@ public class PokeNavigator extends PathNavigate
      * straight line between the two points. Args: pos1, pos2, entityXSize,
      * entityYSize, entityZSize */
     @Override
-    public boolean isDirectPathBetweenPoints(Vec3 start, Vec3 end, int sizeX, int sizeY, int sizeZ)
+    public boolean isDirectPathBetweenPoints(Vec3d start, Vec3d end, int sizeX, int sizeY, int sizeZ)
     {
         double d0 = end.xCoord - start.xCoord;
         double d1 = end.zCoord - start.zCoord;
@@ -293,7 +294,7 @@ public class PokeNavigator extends PathNavigate
     @Override
     public void pathFollow()
     {
-        Vec3 vec3 = this.getEntityPosition();
+        Vec3d vec3 = this.getEntityPosition();
         int i = this.currentPath.getCurrentPathLength();
 
         float f = this.theEntity.width * this.theEntity.width;
@@ -302,13 +303,13 @@ public class PokeNavigator extends PathNavigate
 
         if (!((canFly || canSwim && theEntity.isInWater()) && !theEntity.onGround))
             for (int j = this.currentPath.getCurrentPathIndex(); j < this.currentPath.getCurrentPathLength(); ++j)
-        {
+            {
             if (this.currentPath.getPathPointFromIndex(j).yCoord != (int) vec3.yCoord)
             {
-                i = j;
-                break;
+            i = j;
+            break;
             }
-        }
+            }
 
         int k;
 
@@ -431,7 +432,7 @@ public class PokeNavigator extends PathNavigate
             else
             {
                 this.speed = speed;
-                Vec3 vec3 = this.getEntityPosition();
+                Vec3d vec3 = this.getEntityPosition();
                 this.ticksAtLastPos = this.totalTicks;
                 lastPosCheck = vec3;
                 return true;

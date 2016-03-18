@@ -11,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -21,6 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -29,8 +31,6 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.PokecubeMod;
 
 public class BlockTradingTable extends Block implements ITileEntityProvider
@@ -43,7 +43,7 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     public BlockTradingTable()
     {
         super(Material.cloth);
-        this.setBlockBounds(0, 0, 0, 1, 0.75f, 1);
+        // this.setBlockBounds(0, 0, 0, 1, 0.75f, 1);
         this.setCreativeTab(PokecubeMod.creativeTabPokecube);
         this.setDefaultState(
                 this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TMC, false));
@@ -69,9 +69,9 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, new IProperty[] { FACING, TMC });
+        return new BlockStateContainer(this, new IProperty[] { FACING, TMC });
     }
 
     @Override
@@ -143,13 +143,6 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
         return ret;
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public int getRenderType()
-    {
-        return super.getRenderType();
-    }
-
     @Override
     /** Convert the given metadata into a BlockState for this Block */
     public IBlockState getStateFromMeta(int meta)
@@ -165,13 +158,13 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean isFullCube()
+    public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
@@ -183,11 +176,11 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        TileEntityTradingTable table = (TileEntityTradingTable) world.getTileEntity(pos);
-        table.openGUI(player);
+        TileEntityTradingTable table = (TileEntityTradingTable) worldIn.getTileEntity(pos);
+        table.openGUI(playerIn);
         return true;
     }
 

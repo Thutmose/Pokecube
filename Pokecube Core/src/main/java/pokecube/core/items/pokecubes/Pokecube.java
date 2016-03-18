@@ -6,9 +6,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
@@ -169,10 +173,12 @@ public class Pokecube extends Item implements IPokecube
     @Override
     /** Called whenever this item is equipped and the right mouse button is
      * pressed. Args: itemStack, world, entityPlayer */
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
+            EnumHand hand)
     {
-        throwPokecube(par2World, par3EntityPlayer, par1ItemStack, null, null);
-        return par1ItemStack;
+        return new ActionResult<ItemStack>(
+                throwPokecube(world, player, itemstack, null, null) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL,
+                itemstack);
     }
 
     public double quick(IPokemob mob, int id)
@@ -224,7 +230,7 @@ public class Pokecube extends Item implements IPokecube
 
             if (!world.isRemote)
             {
-                world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+                player.playSound(SoundEvents.entity_egg_throw, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
                 world.spawnEntityInWorld(entity);
             }
         }

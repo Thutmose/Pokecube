@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.event.terraingen.TerrainGen;
 import net.minecraftforge.fml.relauncher.Side;
@@ -48,7 +49,7 @@ public class BlockBerryCrop extends BlockCrops {
 		this.setTickRandomly(true);
 		disableStats();
 		float var3 = 0.3F;
-		this.setBlockBounds(0.5F - var3, -0.05F, 0.5F - var3, 0.5F + var3, 1F, 0.5F + var3);
+//		this.setBlockBounds(0.5F - var3, -0.05F, 0.5F - var3, 0.5F + var3, 1F, 0.5F + var3);
 	}
 
 	/**
@@ -73,9 +74,9 @@ public class BlockBerryCrop extends BlockCrops {
 
 	@Override
     @SideOnly(Side.CLIENT)
-    public Item getItem(World worldIn, BlockPos pos)
+    public ItemStack getItem(World worldIn, BlockPos pos,IBlockState state)
     {
-        return BerryManager.getBerryItem(berryName).getItem();
+        return BerryManager.getBerryItem(berryName);
     }
 
     @Override
@@ -91,7 +92,7 @@ public class BlockBerryCrop extends BlockCrops {
      * @param target The full target the player is looking at
      * @return A ItemStack to add to the player's inventory, Null if nothing should be added.
      */
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
     {
     	return BerryManager.getBerryItem(berryName);
     }

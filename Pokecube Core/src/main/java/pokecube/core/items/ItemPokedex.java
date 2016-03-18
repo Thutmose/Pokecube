@@ -8,7 +8,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
@@ -37,21 +40,21 @@ public class ItemPokedex extends Item
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
+            EnumHand hand)
     {
 
         if (!player.isSneaking())
         {
             showGui(player);
-            return itemstack;
+            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
         }
-
-        return itemstack;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
+            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         Vector3 hit = Vector3.getNewVector().set(pos);
         Block block = hit.getBlockState(worldIn).getBlock();
@@ -70,21 +73,22 @@ public class ItemPokedex extends Item
                 PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST, teletag);
                 PokecubePacketHandler.sendToClient(packet, playerIn);
             }
-            return true;
+            return EnumActionResult.SUCCESS;
         }
 
         if (playerIn.isSneaking() && !worldIn.isRemote)
         {
             TerrainSegment t = TerrainManager.getInstance().getTerrian(worldIn, hit);
             int b = t.getBiome(hit);
-            String biomeList = SpawnHandler.spawnLists.get(b)!=null?SpawnHandler.spawnLists.get(b).toString():"Nothing";
+            String biomeList = SpawnHandler.spawnLists.get(b) != null ? SpawnHandler.spawnLists.get(b).toString()
+                    : "Nothing";
             String message = I18n.translateToLocalFormatted("pokedex.locationinfo", Database.spawnables.size(),
                     Pokedex.getInstance().getEntries().size(), biomeList);
             CommandTools.sendMessage(playerIn, message);
         }
 
         if (!playerIn.isSneaking()) showGui(playerIn);
-        return super.onItemUse(stack, playerIn, worldIn, pos, side, hitX, hitY, hitZ);
+        return EnumActionResult.FAIL;
     }
 
     private void showGui(EntityPlayer player)

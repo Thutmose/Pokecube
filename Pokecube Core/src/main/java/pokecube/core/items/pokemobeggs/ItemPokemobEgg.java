@@ -12,7 +12,6 @@ import com.google.common.base.Predicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList.EntityEggInfo;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
@@ -21,14 +20,14 @@ import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -339,7 +338,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         }
 
         Vector3 location = Vector3.getNewVector().set(mob);
-        EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 2);
+        EntityPlayer player = ((Entity) mob).worldObj.func_184137_a(location.x, location.y, location.z, 2, false);
         EntityLivingBase owner = player;
         AxisAlignedBB box = location.getAABB().expand(4, 4, 4);
         if (owner == null)
@@ -451,7 +450,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             }
             mob.specificSpawnInit();
             world.spawnEntityInWorld(entity);
-            entity.setCurrentItemOrArmor(0, null);
+            entity.setHeldItem(EnumHand.MAIN_HAND, null);
             entity.playLivingSound();
         }
 
@@ -481,46 +480,47 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         return entity != null;
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
-    {
-        int damage = getNumber(par1ItemStack);
-        EntityEggInfo entityegginfo = (EntityEggInfo) PokecubeMod.pokemobEggs.get(Integer.valueOf(damage));
-
-        PokedexEntry entry = Database.getEntry(damage);
-
-        if (entry != null)
-        {
-            int colour = entry.getType1().colour;
-
-            if (par2 == 0)
-            {
-                return colour;
-            }
-            else
-            {
-                colour = entry.getType2().colour;
-                return colour;
-            }
-        }
-
-        if (entityegginfo != null)
-        {
-            if (par2 == 0)
-            {
-                return entityegginfo.primaryColor;
-            }
-            else
-            {
-                return entityegginfo.secondaryColor;
-            }
-        }
-        else
-        {
-            return 0xffffff;
-        }
-    }
+    // @Override
+    // @SideOnly(Side.CLIENT)//TODO see if this acuallt did anything
+    // public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
+    // {
+    // int damage = getNumber(par1ItemStack);
+    // EntityEggInfo entityegginfo = (EntityEggInfo)
+    // PokecubeMod.pokemobEggs.get(Integer.valueOf(damage));
+    //
+    // PokedexEntry entry = Database.getEntry(damage);
+    //
+    // if (entry != null)
+    // {
+    // int colour = entry.getType1().colour;
+    //
+    // if (par2 == 0)
+    // {
+    // return colour;
+    // }
+    // else
+    // {
+    // colour = entry.getType2().colour;
+    // return colour;
+    // }
+    // }
+    //
+    // if (entityegginfo != null)
+    // {
+    // if (par2 == 0)
+    // {
+    // return entityegginfo.primaryColor;
+    // }
+    // else
+    // {
+    // return entityegginfo.secondaryColor;
+    // }
+    // }
+    // else
+    // {
+    // return 0xffffff;
+    // }
+    // }
 
     @Override
     public String getItemStackDisplayName(ItemStack par1ItemStack)
@@ -547,10 +547,10 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
      * clicking, he will have one of those. Return True if something happen and
      * false if it don't. This is for ITEMS, not BLOCKS */
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
+            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        if (worldIn.isRemote) { return true; }
+        if (worldIn.isRemote) { return EnumActionResult.SUCCESS; }
         Block i = worldIn.getBlockState(pos).getBlock();
         BlockPos newPos = pos.offset(side);
         double d = 0.0D;
@@ -565,7 +565,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         {
             stack.stackSize--;
         }
-        return true;
+        return EnumActionResult.SUCCESS;
     }
 
 }

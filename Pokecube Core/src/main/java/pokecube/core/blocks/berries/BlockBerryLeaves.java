@@ -10,6 +10,7 @@ import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockPlanks.EnumType;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -61,10 +62,10 @@ public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
         IProperty<?> prop = (BlockBerryLog.currentlyConstructing == 0 ? VARIANT0 : VARIANT4);
-        return new BlockState(this, new IProperty[] { prop, CHECK_DECAY, DECAYABLE });
+        return new BlockStateContainer(this, new IProperty[] { prop, CHECK_DECAY, DECAYABLE });
     }
 
     @Override
@@ -86,13 +87,6 @@ public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
     public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.CUTOUT_MIPPED;
-    }
-
-    @Override
-    public int getDamageValue(World worldIn, BlockPos pos)
-    {
-        IBlockState iblockstate = worldIn.getBlockState(pos);
-        return iblockstate.getBlock().getMetaFromState(iblockstate) & 3;
     }
 
     @Override
@@ -176,15 +170,7 @@ public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
     }
 
     @Override
-    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te)
-    {
-
-        super.harvestBlock(worldIn, player, pos, state, te);
-
-    }
-
-    @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }

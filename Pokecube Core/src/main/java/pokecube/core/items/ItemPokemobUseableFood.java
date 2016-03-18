@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
@@ -84,7 +85,7 @@ public class ItemPokemobUseableFood extends ItemFood implements IPokemobUseable{
 			
 			if(applyEffect(mob, stack))
 			{
-				mob.setCurrentItemOrArmor(0, null);
+				mob.setHeldItem(EnumHand.MAIN_HAND, null);
 				return true;
 			}
 		}

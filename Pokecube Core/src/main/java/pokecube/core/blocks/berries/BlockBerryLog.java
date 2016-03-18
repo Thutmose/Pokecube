@@ -7,6 +7,7 @@ import com.google.common.base.Predicate;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -94,9 +95,9 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 	}
 
 	@Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
 	{
-		return new BlockState(this, new IProperty[] { currentlyConstructing == 0 ? VARIANT0 : VARIANT4, LOG_AXIS });
+		return new BlockStateContainer(this, new IProperty[] { currentlyConstructing == 0 ? VARIANT0 : VARIANT4, LOG_AXIS });
 	}
 
 	@Override

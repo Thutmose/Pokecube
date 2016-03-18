@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
 
@@ -69,7 +70,7 @@ public class ItemPokemobUseable extends Item implements IPokemobUseable {
 			
 			if(applyEffect(mob, stack))
 			{
-				mob.setCurrentItemOrArmor(0, null);
+                mob.setHeldItem(EnumHand.MAIN_HAND, null);
 				return true;
 			}
 		}

@@ -485,7 +485,7 @@ public class EventsHandler
                 if (block != null && !loop)
                 {
                     IBlockState state = evt.world.getBlockState(evt.pos);
-                    boolean b = block.onBlockActivated(evt.world, evt.pos, state, evt.entityPlayer, evt.face,
+                    boolean b = block.onBlockActivated(evt.world, evt.pos, state, evt.entityPlayer, evt.entityPlayer.getActiveHand(), evt.entityLiving.getActiveItemStack(), evt.face,
                             (float) evt.localPos.xCoord, (float) evt.localPos.yCoord, (float) evt.localPos.zCoord);
                     if (!b && !evt.entityPlayer.isSneaking())
                     {
@@ -558,7 +558,7 @@ public class EventsHandler
     {
         if (evt.entityLiving instanceof EntityPlayer && evt.source == DamageSource.inWall)
         {
-            if (evt.entityLiving.ridingEntity instanceof IPokemob) evt.setCanceled(true);
+            if (evt.entityLiving.getRidingEntity() instanceof IPokemob) evt.setCanceled(true);
         }
     }
 

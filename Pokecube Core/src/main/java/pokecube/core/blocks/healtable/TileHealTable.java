@@ -7,8 +7,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
@@ -16,12 +19,13 @@ import thut.api.maths.Vector3;
 public class TileHealTable extends TileEntity implements IInventory, ITickable
 {
     public static boolean noSound = false;
-    private ItemStack[] inventory;
+    private ItemStack[]   inventory;
 
-    Vector3             here = Vector3.getNewVector();
+    Vector3               here    = Vector3.getNewVector();
 
     int                   ticks   = 0;
     boolean               stopped = false;
+
     public TileHealTable()
     {
         this.inventory = new ItemStack[9];
@@ -64,13 +68,12 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
 
     /** Overriden in a sign to provide the text. */
     @Override
-    @SuppressWarnings("rawtypes")
-    public Packet getDescriptionPacket()
+    public Packet<?> getDescriptionPacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(pos, 3, nbttagcompound);
+        if (worldObj.isRemote) return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(pos, 3, nbttagcompound);
+        return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
     }
 
     @Override
@@ -154,7 +157,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
      * @param pkt
      *            The data packet */
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
         if (worldObj.isRemote)
         {
@@ -228,7 +231,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         if (!noSound && worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
         {
             worldObj.playRecord(pos, null);
-            worldObj.playRecord(pos, "pokecube:pokecenterloop");
+            worldObj.playRecord(pos, new SoundEvent(new ResourceLocation("pokecube:pokecenterloop")));
         }
         ticks++;
     }

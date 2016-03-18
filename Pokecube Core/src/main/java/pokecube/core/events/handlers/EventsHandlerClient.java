@@ -153,7 +153,7 @@ public class EventsHandlerClient
         int j1 = i % 65536;
         int k1 = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
-        Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, -0.123456, 0, 0, 1.5F);
+        Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
 
@@ -193,11 +193,11 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void FogRenderTick(EntityViewRenderEvent.FogDensity evt)
     {
-        if (evt.entity instanceof EntityPlayer && evt.entity.ridingEntity != null
-                && evt.entity.ridingEntity instanceof IPokemob)
+        if (evt.getEntity() instanceof EntityPlayer && evt.getEntity().getRidingEntity() != null
+                && evt.getEntity().getRidingEntity() instanceof IPokemob)
         {
-            IPokemob mount = (IPokemob) evt.entity.ridingEntity;
-            if (evt.entity.isInWater() && mount.canUseDive())
+            IPokemob mount = (IPokemob) evt.getEntity().getRidingEntity();
+            if (evt.getEntity().isInWater() && mount.canUseDive())
             {
                 evt.density = 0.05f;
                 evt.setCanceled(true);
@@ -215,9 +215,9 @@ public class EventsHandlerClient
         EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
 
         eventTime = Keyboard.getEventNanoseconds();
-        if (key == Keyboard.KEY_SPACE && player.ridingEntity instanceof IPokemob)
+        if (key == Keyboard.KEY_SPACE && player.getRidingEntity() instanceof IPokemob)
         {
-            MessageServer packet = new MessageServer(MessageServer.JUMP, player.ridingEntity.getEntityId());
+            MessageServer packet = new MessageServer(MessageServer.JUMP, player.getRidingEntity().getEntityId());
             PokecubePacketHandler.sendToServer(packet);
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.mobMegavolve))

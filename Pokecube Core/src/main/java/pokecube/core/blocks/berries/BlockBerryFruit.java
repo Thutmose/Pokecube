@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
@@ -30,7 +31,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
         this.setCreativeTab(null);
         this.setTickRandomly(true);
         float var3 = 0.4F;
-        this.setBlockBounds(0.5F - var3, 0F, 0.5F - var3, 0.5F + var3, 0.7F, 0.5F + var3);
+        // this.setBlockBounds(0.5F - var3, 0F, 0.5F - var3, 0.5F + var3, 0.7F,
+        // 0.5F + var3);
     }
 
     /** Can this block stay at this position. Similar to canPlaceBlockAt except
@@ -38,8 +40,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
     @Override
     public boolean canBlockStay(World worldIn, BlockPos pos, IBlockState state)
     {
-        if (BlockBerryCrop.trees.contains(
-                berryIndex)) { return worldIn.getBlockState(pos.up()).getBlock().isLeaves(worldIn, pos.up()); }
+        if (BlockBerryCrop.trees.contains(berryIndex)) { return worldIn.getBlockState(pos.up()).getBlock()
+                .isLeaves(worldIn.getBlockState(pos.up()), worldIn, pos.up()); }
         return worldIn.getBlockState(pos.down()).getBlock() instanceof BlockBerryCrop;
     }
 
@@ -71,8 +73,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
             double d0 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
             double d1 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
             double d2 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
-            EntityItem entityitem = new EntityItem(p_149642_1_, p_149642_2_ + d0, p_149642_3_ + d1,
-                    p_149642_4_ + d2, p_149642_5_);
+            EntityItem entityitem = new EntityItem(p_149642_1_, p_149642_2_ + d0, p_149642_3_ + d1, p_149642_4_ + d2,
+                    p_149642_5_);
             p_149642_1_.spawnEntityInWorld(entityitem);
         }
     }
@@ -102,16 +104,10 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
      *            The full target the player is looking at
      * @return A ItemStack to add to the player's inventory, Null if nothing
      *         should be added. */
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
+            EntityPlayer player)
     {
         return BerryManager.getBerryItem(berryName);
-    }
-
-    /** The type of render function that is called for this block */
-    @Override
-    public int getRenderType()
-    {
-        return super.getRenderType();
     }
 
     /** Returns the quantity of items to drop on block destruction. */
@@ -132,17 +128,17 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
         this.berryIndex = berryId;
     }
 
-    @Override
-    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
-    {
-        if (BlockBerryCrop.trees.contains(berryIndex))
-        {
-            float f = 0.15F;
-            this.setBlockBounds(0.5F - f, 1 - f * 3.0F, 0.5F - f, 0.5F + f, 1, 0.5F + f);
-        }
-        else
-        {
-            super.setBlockBoundsBasedOnState(worldIn, pos);
-        }
-    }
+//    @Override
+//    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
+//    {
+//        if (BlockBerryCrop.trees.contains(berryIndex))
+//        {
+//            float f = 0.15F;
+//            this.setBlockBounds(0.5F - f, 1 - f * 3.0F, 0.5F - f, 0.5F + f, 1, 0.5F + f);
+//        }
+//        else
+//        {
+//            super.setBlockBoundsBasedOnState(worldIn, pos);
+//        }
+//    }
 }

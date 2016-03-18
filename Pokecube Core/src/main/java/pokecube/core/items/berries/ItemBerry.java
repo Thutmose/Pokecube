@@ -10,7 +10,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
@@ -125,8 +127,8 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
+            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         Block i = worldIn.getBlockState(pos).getBlock();
         int index = stack.getItemDamage();
@@ -136,7 +138,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
 
             stack.stackSize--;
         }
-        return true;
+        return EnumActionResult.SUCCESS;
     }
 
     @Override

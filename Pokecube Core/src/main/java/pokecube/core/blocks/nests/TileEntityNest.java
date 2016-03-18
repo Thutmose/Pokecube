@@ -250,8 +250,8 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
         if (worldObj.isRemote || (worldObj.getDifficulty() == EnumDifficulty.PEACEFUL && power == 0)) return;
 
-        if (worldObj.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(),
-                PokecubeMod.core.getConfig().maxSpawnRadius) == null)
+        if (worldObj.func_184137_a(getPos().getX(), getPos().getY(), getPos().getZ(),
+                PokecubeMod.core.getConfig().maxSpawnRadius, false) == null)
             return;
 
         if (pokedexNb == 0 && time >= 200)

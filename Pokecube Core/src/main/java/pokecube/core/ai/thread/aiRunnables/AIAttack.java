@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import pokecube.core.ai.thread.IAICombat;
@@ -42,7 +43,7 @@ public class AIAttack extends AIBase implements IAICombat
     public AIAttack(EntityLiving par1EntityLiving)
     {
         this.attacker = par1EntityLiving;
-        this.movementSpeed = attacker.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+        this.movementSpeed = attacker.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
         this.setMutex(3);
     }
 
@@ -115,7 +116,7 @@ public class AIAttack extends AIBase implements IAICombat
         if (!running)
         {
             if (!(attack == null || ((attack.getAttackCategory() & IMoveConstants.CATEGORY_SELF) != 0))
-                    && attacker.riddenByEntity == null)
+                    && !attacker.isBeingRidden())
             {
                 path = this.attacker.getNavigator().getPathToEntityLiving(entityTarget);
                 addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
@@ -313,7 +314,7 @@ public class AIAttack extends AIBase implements IAICombat
                 setPokemobAIState((IPokemob) entityTarget, IMoveConstants.DODGING, false);
             if (this.attacker.getHeldItemMainhand() != null)
             {
-                this.attacker.swingItem();
+                this.attacker.swingArm(EnumHand.MAIN_HAND);
             }
             float f = (float) targetLoc.distToEntity(attacker);
             Vector3 loc = targetLoc.copy();

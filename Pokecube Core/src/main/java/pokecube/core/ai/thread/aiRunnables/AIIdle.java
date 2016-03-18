@@ -32,7 +32,7 @@ public class AIIdle extends AIBase
         this.setMutex(2);
         mob = (IPokemob) entity;
         entry = mob.getPokedexEntry();
-        this.speed = entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue() * 0.4;
+        this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 0.4;
     }
 
     private void doFloatingIdle()
@@ -148,13 +148,14 @@ public class AIIdle extends AIBase
         mob.getPokedexEntry().flys();
         if (mob.getPokemonAIState(IMoveConstants.SITTING)) return false;
         if (mob.getPokemonAIState(IMoveConstants.SLEEPING)) return false;
-        else if (this.entity.riddenByEntity != null || current != null)
+        else if (this.entity.isBeingRidden() || current != null)
         {
             return false;
         }
         else if (entity.ticksExisted % (50 + new Random().nextInt(50)) == 0)
         {
-            boolean tameFactor = mob.getPokemonAIState(IMoveConstants.TAMED) && !mob.getPokemonAIState(IMoveConstants.GUARDING)
+            boolean tameFactor = mob.getPokemonAIState(IMoveConstants.TAMED)
+                    && !mob.getPokemonAIState(IMoveConstants.GUARDING)
                     && !mob.getPokemonAIState(IMoveConstants.STAYING);
             int distance = tameFactor ? 8 : 16;
             v.clear();
@@ -172,12 +173,11 @@ public class AIIdle extends AIBase
             else
             {
                 EntityLivingBase setTo = entity;
-                if(mob.getPokemonOwner()!=null) setTo = mob.getPokemonOwner();
+                if (mob.getPokemonOwner() != null) setTo = mob.getPokemonOwner();
                 v.set(setTo);
             }
-            v1.set((v.isEmpty()
-                    && (mob.getPokemonAIState(IMoveConstants.GUARDING) || mob.getPokemonAIState(IMoveConstants.STAYING))) ? entity
-                            : v);
+            v1.set((v.isEmpty() && (mob.getPokemonAIState(IMoveConstants.GUARDING)
+                    || mob.getPokemonAIState(IMoveConstants.STAYING))) ? entity : v);
             Vector3 v = SpawnHandler.getRandomPointNear(world, v1, distance);
 
             double diff = Math.max(mob.getPokedexEntry().length * mob.getSize(),

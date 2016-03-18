@@ -10,11 +10,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -23,8 +26,6 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
@@ -48,9 +49,9 @@ public class BlockPC extends Block implements ITileEntityProvider
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, new IProperty[] { FACING, TOP });
+        return new BlockStateContainer(this, new IProperty[] { FACING, TOP });
     }
 
     @Override
@@ -88,13 +89,6 @@ public class BlockPC extends Block implements ITileEntityProvider
         return ret;
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public int getRenderType()
-    {
-        return super.getRenderType();
-    }
-
     @Override
     /** Convert the given metadata into a BlockState for this Block */
     public IBlockState getStateFromMeta(int meta)
@@ -111,13 +105,13 @@ public class BlockPC extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean isFullCube()
+    public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
@@ -130,30 +124,29 @@ public class BlockPC extends Block implements ITileEntityProvider
 
     /** Called upon block activation (right click on the block.) */
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
-            float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         int meta = this.getMetaFromState(state);
 
         this.setLightLevel(1f);
         if (!((meta & 8) > 0)) { return false; }
-        IBlockState down = world.getBlockState(pos.down());
+        IBlockState down = worldIn.getBlockState(pos.down());
         Block idDown = down.getBlock();
         int metaDown = idDown.getMetaFromState(down);
         if (!((!((metaDown & 8) > 0)) && idDown == this)) return false;
 
-        InventoryPC inventoryPC = InventoryPC.getPC(player.getUniqueID().toString());
+        InventoryPC inventoryPC = InventoryPC.getPC(playerIn.getUniqueID().toString());
 
         if (inventoryPC != null)
         {
-            if (world.isRemote)
+            if (worldIn.isRemote)
             {
                 return true;
             }
             else
             {
-                player.openGui(PokecubeMod.core, Config.GUIPC_ID, world, pos.getX(), pos.getY(),
-                        pos.getZ());
+                playerIn.openGui(PokecubeMod.core, Config.GUIPC_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
                 return true;
             }
         }

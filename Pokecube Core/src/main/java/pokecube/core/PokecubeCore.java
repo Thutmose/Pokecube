@@ -216,6 +216,7 @@ public class PokecubeCore extends PokecubeMod
         return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }
 
+    //TODO This should be called on world load, to allow refreshing biome ids
     public static void registerSpawns()
     {
         int n = 0;

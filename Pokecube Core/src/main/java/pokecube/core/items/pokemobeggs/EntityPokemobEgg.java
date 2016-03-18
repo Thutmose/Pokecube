@@ -9,7 +9,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.events.EggEvent;
@@ -45,7 +47,7 @@ public class EntityPokemobEgg extends EntityLiving
     {
         this(world);
         ItemPokemobEgg.initStack(placer, itemstack);
-        this.setCurrentItemOrArmor(0, itemstack);
+        this.setHeldItem(EnumHand.MAIN_HAND, itemstack);
         this.setPosition(d, d1, d2);
         delayBeforeCanPickup = 20;
     }
@@ -61,7 +63,7 @@ public class EntityPokemobEgg extends EntityLiving
         this(world);
 
         ItemPokemobEgg.initStack(placer, father, itemstack);
-        this.setCurrentItemOrArmor(0, itemstack);
+        this.setHeldItem(EnumHand.MAIN_HAND, itemstack);
         this.setPosition(d, d1, d2);
         delayBeforeCanPickup = 20;
     }
@@ -80,8 +82,7 @@ public class EntityPokemobEgg extends EntityLiving
             EntityPlayer player = (EntityPlayer) e;
             if (this.delayBeforeCanPickup <= 0 && (i <= 0 || player.inventory.addItemStackToInventory(itemstack)))
             {
-                this.worldObj.playSoundAtEntity(player, "random.pop", 0.2F,
-                        ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                //TODO maybe make egg plop sound
                 player.onItemPickup(this, i);
 
                 if (itemstack.stackSize <= 0)
@@ -123,7 +124,7 @@ public class EntityPokemobEgg extends EntityLiving
      * @return A ItemStack to add to the player's inventory, Null if nothing
      *         should be added. */
     @Override
-    public ItemStack getPickedResult(MovingObjectPosition target)
+    public ItemStack getPickedResult(RayTraceResult target)
     {
         return getHeldItemMainhand().copy();
     }

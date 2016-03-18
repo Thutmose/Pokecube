@@ -43,7 +43,7 @@ public class AIHungry extends AIBase
         this.distance = distance;
         this.hungrymob = (IHungrymob) entity;
         this.pokemob = (IPokemob) entity;
-        this.moveSpeed = entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue() * 0.75;
+        this.moveSpeed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 0.75;
     }
 
     protected void eatBerry(Block block, double distance)
@@ -100,8 +100,8 @@ public class AIHungry extends AIBase
             berry.setEntityItemStack(new ItemStack(plant));
             hungrymob.eat(berry);
             TickHandler.addBlockChange(foodLoc, entity.dimension,
-                    plant.getMaterial() == Material.grass ? Blocks.dirt : Blocks.air);
-            if (plant.getMaterial() != Material.grass)
+                    plant.getMaterial(plant.getDefaultState()) == Material.grass ? Blocks.dirt : Blocks.air);
+            if (plant.getMaterial(plant.getDefaultState()) != Material.grass)
             {
                 for (ItemStack stack : plant.getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0))
                     toRun.addElement(new InventoryChange(entity, 2, stack, true));
@@ -171,7 +171,7 @@ public class AIHungry extends AIBase
                 {
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.air);
                 }
-                else if (rock.getMaterial() == Material.rock)
+                else if (rock.getMaterial(rock.getDefaultState()) == Material.rock)
                 {
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.cobblestone);
                 }
@@ -271,7 +271,7 @@ public class AIHungry extends AIBase
                     {
                         TickHandler.addBlockChange(v, entity.dimension, Blocks.air);
                     }
-                    else if (b.getMaterial() == Material.rock)
+                    else if (b.getMaterial(b.getDefaultState()) == Material.rock)
                     {
                         TickHandler.addBlockChange(v, entity.dimension, Blocks.cobblestone);
                     }

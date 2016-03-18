@@ -115,7 +115,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
     }
 
-    static final DataParameter<Integer> AIACTIONSTATESDW = EntityDataManager.<Integer> createKey(EntityLivingBase.class,
+    static final DataParameter<Integer> AIACTIONSTATESDW = EntityDataManager.<Integer> createKey(EntityTrainer.class,
             DataSerializers.VARINT);
     public static final int             STATIONARY       = 1;
     public static final int             ANGRY            = 2;

@@ -13,7 +13,6 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -55,11 +54,11 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
 {
 
     private static final DataParameter<Optional<ItemStack>> ITEM           = EntityDataManager
-            .<Optional<ItemStack>> createKey(EntityItem.class, DataSerializers.OPTIONAL_ITEM_STACK);
+            .<Optional<ItemStack>> createKey(EntityPokecube.class, DataSerializers.OPTIONAL_ITEM_STACK);
     static final DataParameter<Integer>                     ENTITYID       = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityPokecube.class, DataSerializers.VARINT);
     static final DataParameter<Boolean>                     RELEASING      = EntityDataManager
-            .<Boolean> createKey(EntityLivingBase.class, DataSerializers.BOOLEAN);
+            .<Boolean> createKey(EntityPokecube.class, DataSerializers.BOOLEAN);
 
     public int                                              time           = 0;
     public int                                              tilt           = -1;

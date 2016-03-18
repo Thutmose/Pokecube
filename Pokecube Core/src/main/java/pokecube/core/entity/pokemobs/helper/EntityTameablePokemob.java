@@ -65,41 +65,41 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     public static int                   EXITCUBEDURATION  = 40;
 
     static final DataParameter<Integer> AIACTIONSTATESDW  = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> ATTACKTARGETIDDW  = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> STATMODDW         = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> EXPDW             = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> HUNGERDW          = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> STATUSMOVEINDEXDW = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> EVS1DW            = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> EVS2DV            = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> SPECIALINFO       = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> EVOLNBDW          = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> EVOLTICKDW        = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer> HAPPYDW           = EntityDataManager
-            .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
 
-    static final DataParameter<String>  MOVESDW           = EntityDataManager.<String> createKey(EntityLivingBase.class,
+    static final DataParameter<String>  MOVESDW           = EntityDataManager.<String> createKey(EntityTameablePokemob.class,
             DataSerializers.STRING);
-    static final DataParameter<String>  STATSDW           = EntityDataManager.<String> createKey(EntityLivingBase.class,
+    static final DataParameter<String>  STATSDW           = EntityDataManager.<String> createKey(EntityTameablePokemob.class,
             DataSerializers.STRING);
-    static final DataParameter<String>  NICKNAMEDW        = EntityDataManager.<String> createKey(EntityLivingBase.class,
+    static final DataParameter<String>  NICKNAMEDW        = EntityDataManager.<String> createKey(EntityTameablePokemob.class,
             DataSerializers.STRING);
 
-    static final DataParameter<Byte>    BOOMSTATEDW       = EntityDataManager.<Byte> createKey(EntityLivingBase.class,
+    static final DataParameter<Byte>    BOOMSTATEDW       = EntityDataManager.<Byte> createKey(EntityTameablePokemob.class,
             DataSerializers.BYTE);
 
-    static final DataParameter<Float>   DIRECTIONPITCHDW  = EntityDataManager.<Float> createKey(EntityLivingBase.class,
+    static final DataParameter<Float>   DIRECTIONPITCHDW  = EntityDataManager.<Float> createKey(EntityTameablePokemob.class,
             DataSerializers.FLOAT);
 
     protected boolean                   looksWithInterest;

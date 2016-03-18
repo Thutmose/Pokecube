@@ -26,8 +26,6 @@ import thut.api.maths.Vector3;
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyProvider//, SimpleComponent
 {
-    public static int    maxOutput = 256;
-    public static String function;
     AxisAlignedBB        box;
     public JEP           parser    = new JEP();
     int                  lastInput = 0;

@@ -62,7 +62,7 @@ public class PokecubeMobs
     public static final String VERSION    = "@VERSION@";
     public static final String UPDATEURL  = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/mobs.json";
 
-    public final static String MCVERSIONS = "[1.8.9]";
+    public final static String MCVERSIONS = "[1.9]";
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)

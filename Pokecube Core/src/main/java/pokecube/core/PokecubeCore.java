@@ -425,8 +425,6 @@ public class PokecubeCore extends PokecubeMod
 
     private void postInitPokemobs()
     {
-        registerSpawns();
-        SpawnHandler.sortSpawnables();
         int n = 0;
         for (Integer i : Pokedex.getInstance().getEntries())
         {
@@ -746,6 +744,8 @@ public class PokecubeCore extends PokecubeMod
         event.registerServerCommand(new MakeCommand());
         event.registerServerCommand(new GiftCommand());
         event.registerServerCommand(new TMCommand());
+        registerSpawns();
+        SpawnHandler.sortSpawnables();
     }
 
     @EventHandler

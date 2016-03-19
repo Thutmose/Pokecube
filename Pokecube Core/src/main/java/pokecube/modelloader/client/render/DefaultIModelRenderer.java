@@ -17,12 +17,10 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.client.render.AnimationLoader.Model;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
@@ -95,49 +93,46 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         }
     }
 
-    public static final ResourceLocation FRZ            = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
-    public static final ResourceLocation PAR            = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
+    public static final String          DEFAULTPHASE   = "idle";
+    public String                       name;
+    public String                       currentPhase   = "idle";
+    HashMap<String, PartInfo>           parts          = Maps.newHashMap();
+    HashMap<String, ArrayList<Vector5>> global;
+    public HashMap<String, Animation>   animations     = new HashMap<String, Animation>();
+    public Set<String>                  headParts      = Sets.newHashSet();
+    public TextureHelper                texturer;
 
-    public static final String           DEFAULTPHASE   = "idle";
-    public String                        name;
-    public String                        currentPhase   = "idle";
-    HashMap<String, PartInfo>            parts          = Maps.newHashMap();
-    HashMap<String, ArrayList<Vector5>>  global;
-    public HashMap<String, Animation>    animations     = new HashMap<String, Animation>();
-    public Set<String>                   headParts      = Sets.newHashSet();
-    public TextureHelper                 texturer;
+    public IAnimationChanger            animator;;
+    public Vector3                      offset         = Vector3.getNewVector();;
+    public Vector3                      scale          = Vector3.getNewVector();
 
-    public IAnimationChanger             animator;;
-    public Vector3                       offset         = Vector3.getNewVector();;
-    public Vector3                       scale          = Vector3.getNewVector();
+    public Vector5                      rotations      = new Vector5();
 
-    public Vector5                       rotations      = new Vector5();
-
-    public IModel                        model;
-    public int                           headDir        = 2;
-    public int                           headAxis       = 2;
-    public int                           headAxis2      = 0;
+    public IModel                       model;
+    public int                          headDir        = 2;
+    public int                          headAxis       = 2;
+    public int                          headAxis2      = 0;
     /** A set of names of shearable parts. */
-    public Set<String>                   shearableParts = Sets.newHashSet();
+    public Set<String>                  shearableParts = Sets.newHashSet();
 
     /** A set of namess of dyeable parts. */
-    public Set<String>                   dyeableParts   = Sets.newHashSet();
-    public float[]                       headCaps       = { -180, 180 };
+    public Set<String>                  dyeableParts   = Sets.newHashSet();
+    public float[]                      headCaps       = { -180, 180 };
 
-    public float[]                       headCaps1      = { -20, 40 };
-    public float                         rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
-    public float                         rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
-    ResourceLocation                     texture;
+    public float[]                      headCaps1      = { -20, 40 };
+    public float                        rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
+    public float                        rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
+    ResourceLocation                    texture;
 
-    private boolean                      statusRender   = false;
+    private boolean                     statusRender   = false;
 
-    boolean                              blend;
+    boolean                             blend;
 
-    boolean                              light;
+    boolean                             light;
 
-    int                                  src;
+    int                                 src;
 
-    int                                  dst;
+    int                                 dst;
 
     public DefaultIModelRenderer(HashMap<String, ArrayList<Vector5>> global, Model model)
     {
@@ -346,46 +341,9 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
     @Override
     public void renderStatus(T entity, double d, double d1, double d2, float f, float partialTick)
     {
-        IPokemob pokemob = (IPokemob) entity;
-        byte status;
-        if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
-        ResourceLocation texture = null;
-        if (status == IMoveConstants.STATUS_FRZ)
-        {
-            texture = FRZ;
-        }
-        else if (status == IMoveConstants.STATUS_PAR)
-        {
-            texture = PAR;
-        }
-        if (texture == null) return;
-
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-
-        float time = (((Entity) pokemob).ticksExisted + partialTick);
-        GL11.glPushMatrix();
-
-        float speed = status == IMoveConstants.STATUS_FRZ ? 0.001f : 0.005f;
-
-        GL11.glMatrixMode(GL11.GL_TEXTURE);
-        GL11.glLoadIdentity();
-        float var5 = time * speed;
-        float var6 = time * speed;
-        GL11.glTranslatef(var5, var6, 0.0F);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-        float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
-        GL11.glColor4f(var7, var7, var7, 0.5F);
-        var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
-        GL11.glScalef(var7, var7, var7);
         preRenderStatus();
-        doRender(entity, d, d1, d2, f, partialTick);
+        RenderPokemob.renderStatus(this, entity, d, d1, d2, f, partialTick);
         postRenderStatus();
-        GL11.glMatrixMode(GL11.GL_TEXTURE);
-        GL11.glLoadIdentity();
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-        GL11.glPopMatrix();
     }
 
     protected void rotate()

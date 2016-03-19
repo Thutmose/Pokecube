@@ -325,7 +325,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     @Override
     public void onUpdate()
     {
-
         super.onUpdate();
         boolean releasing = isReleasing();
 
@@ -427,7 +426,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             setDead();
             return;
         }
-
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F)
         {
             float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
@@ -440,7 +438,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         IBlockState state = worldObj.getBlockState(pos);
 
         Block block = state.getBlock();
-
         if (state.getMaterial() != Material.air)
         {
             AxisAlignedBB axisalignedbb = block.getCollisionBoundingBox(state, worldObj, pos);
@@ -474,7 +471,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 this.inGround = false;
                 this.ticksInGround = 0;
             }
-            if (tilt < 0 && !(targetEntity == null && targetLocation.isEmpty()))
+            if (tilt < 0 )//&& (targetEntity == null  targetLocation.isEmpty()))
             {
                 if (PokecubeManager.isFilled(getEntityItem()))
                 {

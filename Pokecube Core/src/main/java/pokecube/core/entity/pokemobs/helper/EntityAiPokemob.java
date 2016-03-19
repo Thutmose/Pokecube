@@ -1400,7 +1400,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if ((state & SITTING) > 0)
         {
-            aiSit.setSitting(flag);
+            if (aiSit != null) aiSit.setSitting(flag);
             super.setSitting(flag);
         }
     }

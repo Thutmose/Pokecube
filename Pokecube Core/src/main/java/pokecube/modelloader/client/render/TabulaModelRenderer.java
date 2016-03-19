@@ -5,15 +5,13 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.client.render.TabulaPackLoader.TabulaModelSet;
@@ -182,48 +180,9 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RendererLivingE
     @Override
     public void renderStatus(T entity, double d0, double d1, double d2, float f, float partialTick)
     {
-        IPokemob pokemob = (IPokemob) entity;
-        byte status;
-        if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
-        ResourceLocation texture = null;
-        if (status == IMoveConstants.STATUS_FRZ)
-        {
-            texture = FRZ;
-        }
-        else if (status == IMoveConstants.STATUS_PAR)
-        {
-            texture = PAR;
-        }
-        if (texture == null) return;
-
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-
-        float time = (((Entity) pokemob).ticksExisted + partialTick);
-        GL11.glPushMatrix();
-
-        float speed = status == IMoveConstants.STATUS_FRZ ? 0.001f : 0.005f;
-
-        GL11.glMatrixMode(GL11.GL_TEXTURE);
-        GL11.glLoadIdentity();
-        float var5 = time * speed;
-        float var6 = time * speed;
-        GL11.glTranslatef(var5, var6, 0.0F);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-        float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
-        GL11.glColor4f(var7, var7, var7, 0.5F);
-        var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
-        GL11.glScalef(var7, var7, var7);
-
         preRenderStatus();
-        doRender(entity, d0, d1, d2, f, partialTick);
+        RenderPokemob.renderStatus(this, entity, d0, d1, d2, f, partialTick);
         postRenderStatus();
-
-        GL11.glMatrixMode(GL11.GL_TEXTURE);
-        GL11.glLoadIdentity();
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
-        GL11.glPopMatrix();
     }
 
     @Override

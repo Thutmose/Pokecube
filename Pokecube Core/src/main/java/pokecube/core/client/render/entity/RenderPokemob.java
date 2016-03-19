@@ -21,6 +21,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.client.gui.GuiPokedex;
@@ -28,13 +29,18 @@ import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
+import thut.core.client.render.model.IModelRenderer;
 
 @SideOnly(Side.CLIENT)
 public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 {
+    public static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
+    public static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
+
     public static void renderEvolution(IPokemob pokemob, float par2)
     {
         PTezzelator tez = PTezzelator.instance;
@@ -99,8 +105,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             RenderHelper.enableStandardItemLighting();
         }
     }
-//
-//    HashSet<ResourceLocation> mobTextures = new HashSet<ResourceLocation>();
+
     public static void renderExitCube(IPokemob pokemob, float partialTick)
     {
         if (!pokemob.getPokemonAIState(IMoveConstants.EXITINGCUBE)) return;
@@ -211,6 +216,57 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         RenderHelper.enableStandardItemLighting();
     }
+
+    public static <V extends EntityLiving> void renderStatus(IModelRenderer<V> renderer, V entity, double d, double d1,
+            double d2, float f, float partialTick)
+    {
+        IPokemob pokemob = (IPokemob) entity;
+        byte status;
+        if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
+        ResourceLocation texture = null;
+        if (status == IMoveConstants.STATUS_FRZ)
+        {
+            texture = FRZ;
+        }
+        else if (status == IMoveConstants.STATUS_PAR)
+        {
+            texture = PAR;
+        }
+        if (texture == null) return;
+
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
+
+        float time = (((Entity) pokemob).ticksExisted + partialTick);
+        GL11.glPushMatrix();
+
+        float speed = status == IMoveConstants.STATUS_FRZ ? 0.001f : 0.005f;
+
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glLoadIdentity();
+        float var5 = time * speed;
+        float var6 = time * speed;
+        GL11.glTranslatef(var5, var6, 0.0F);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
+        GL11.glColor4f(var7, var7, var7, 0.5F);
+        var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
+        GL11.glScalef(var7, var7, var7);
+        
+        IMobColourable colour = (IMobColourable) entity;
+        int[] col = colour.getRGBA();
+        int[] bak = col.clone();
+        col[3] = 85;
+        colour.setRGBA(col);
+        renderer.doRender(entity, d, d1, d2, f, partialTick);
+        colour.setRGBA(bak);
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glLoadIdentity();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        GL11.glPopMatrix();
+    }
+
     protected float     scale;
 
     protected ModelBase modelStatus;
@@ -266,23 +322,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     {
         if (entity == null) return null;
         ResourceLocation texture = entity.getTexture();
-//        if (!mobTextures.contains(texture))
-//        {
-//            ResourceLocation test = texture;
-//            try
-//            {
-//                Minecraft.getMinecraft().getResourceManager().getResource(test);
-//            }
-//            catch (IOException e)
-//            {
-//                String tex = "textures/FRZ.png";
-//                test = new ResourceLocation("pokecube", tex);
-//                texture = test;
-//                System.err.println("a Texture for " + entity + " Is missing:" + texture);
-//            }
-//            mobTextures.add(texture);
-//        }
-
         return texture;
     }
 
@@ -291,17 +330,10 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         return scale;
     }
 
-    // @Override
-    // protected void renderEquippedItems(EntityLivingBase entity,
-    // float par2) {
-    // super.renderEquippedItems(entity, par2);
-    // }
-
     @Override
     protected void preRenderCallback(T entity, float f)
     {
         preRenderScale(entity, f);
-        updateCreeperScale(entity, f);
         GL11.glEnable(GL11.GL_NORMALIZE);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -316,7 +348,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     protected void renderModel(T entity, float walktime, float walkspeed, float time, float rotationYaw,
             float rotationPitch, float scale)
     {
-
         GL11.glPushMatrix();
 
         glEnable(GL_BLEND);
@@ -343,7 +374,8 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             {
                 GL11.glTranslated(1 - entry.width / 2, 0, 0);
             }
-            else if (mob.getPokemonAIState(IMoveConstants.HELD) && ((Entity) mob).ridingEntity instanceof EntityLivingBase)
+            else if (mob.getPokemonAIState(IMoveConstants.HELD)
+                    && ((Entity) mob).ridingEntity instanceof EntityLivingBase)
             {
                 Vector3 look = v.set(-0.5, 0.5, -0.5);
                 GL11.glTranslated(look.x, ((Entity) mob).height + 1 - look.y, look.z);
@@ -407,29 +439,5 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
             GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
         }
-    }
-
-    /** Updates creeper scale in prerender callback */
-    protected void updateCreeperScale(EntityLiving par1EntityCreeper, float par2)
-    {
-        // float var4 = par1EntityCreeper.getCreeperFlashIntensity(par2);//TODO
-        // findout what this was for
-        // float var5 = 1.0F + MathHelper.sin(var4 * 100.0F) * var4 * 0.01F;
-        //
-        // if (var4 < 0.0F)
-        // {
-        // var4 = 0.0F;
-        // }
-        //
-        // if (var4 > 1.0F)
-        // {
-        // var4 = 1.0F;
-        // }
-        //
-        // var4 *= var4;
-        // var4 *= var4;
-        // float var6 = (1.0F + var4 * 0.4F) * var5;
-        // float var7 = (1.0F + var4 * 0.1F) / var5;
-        // GL11.glScalef(var6, var7, var6);
     }
 }

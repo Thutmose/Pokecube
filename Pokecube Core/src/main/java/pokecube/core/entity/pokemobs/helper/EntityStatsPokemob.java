@@ -72,6 +72,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
     /** Used for if there is a special texture */
     public boolean      shiny            = false;
+    PokeType            type1, type2;
 
     public EntityStatsPokemob(World world)
     {
@@ -158,14 +159,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             }
             else
             {
-                if ((source == DamageSource.anvil || source == DamageSource.fallingBlock)
-                        && this.getEquipmentInSlot(4) != null)
-                {
-                    this.getEquipmentInSlot(4).damageItem((int) (amount * 4.0F + this.rand.nextFloat() * amount * 2.0F),
-                            this);
-                    amount *= 0.75F;
-                }
-
                 this.limbSwingAmount = 1.5F;
                 boolean flag = true;
 
@@ -457,23 +450,13 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public PokeType getType1()
     {
-        if (transformedTo instanceof IPokemob)
-        {
-            IPokemob to = (IPokemob) transformedTo;
-            return to.getType1();
-        }
-        return getPokedexEntry().getType1();
+        return type1!=null?type1:getPokedexEntry().getType1();
     }
 
     @Override
     public PokeType getType2()
     {
-        if (transformedTo instanceof IPokemob)
-        {
-            IPokemob to = (IPokemob) transformedTo;
-            return to.getType2();
-        }
-        return getPokedexEntry().getType2();
+        return type2!=null?type2:getPokedexEntry().getType2();
     }
 
     @Override
@@ -969,6 +952,18 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         String sta = stats[0] + "," + stats[1] + "," + stats[2] + "," + stats[3] + "," + stats[4] + "," + stats[5];
         dataWatcher.updateObject(STATSDW, sta);
+    }
+
+    @Override
+    public void setType1(PokeType type1)
+    {
+        this.type1 = type1;
+    }
+
+    @Override
+    public void setType2(PokeType type2)
+    {
+        this.type2 = type2;
     }
 
     @Override

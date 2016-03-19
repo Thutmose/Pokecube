@@ -527,13 +527,6 @@ public interface IPokemob extends IMoveConstants
 
     boolean isType(PokeType type);
 
-    // @Deprecated
-    // /** @return rgb colours in that order. */
-    // byte[] getColours();
-    //
-    // @Deprecated
-    // void setColours(byte[] colours);
-
     /** The pokemob learns the specified move. It will be set to an available
      * position or erase an existing one if non are available.
      *
@@ -720,6 +713,10 @@ public interface IPokemob extends IMoveConstants
     void setTraded(boolean traded);
     
     void setTransformedTo(Entity to);
+    
+    void setType1(PokeType type1);
+    
+    void setType2(PokeType type2);
     
     /** Used by moves such as vine whip to set the pokemob as using something.
      * 

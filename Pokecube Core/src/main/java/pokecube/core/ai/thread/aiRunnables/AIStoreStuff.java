@@ -1,6 +1,6 @@
 package pokecube.core.ai.thread.aiRunnables;
 
-import java.util.function.Predicate;
+import com.google.common.base.Predicate;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
@@ -24,7 +24,8 @@ import thut.api.maths.Vector3;
 
 public class AIStoreStuff extends AIBase
 {
-    public static int  COOLDOWN  = 500;
+    public static int COOLDOWN = 500;
+
     /** Adds the item stack to the inventory, returns false if it is
      * impossible. */
     public static boolean addItemStackToInventory(ItemStack itemStackIn, IInventory toAddTo, int minIndex)
@@ -83,6 +84,7 @@ public class AIStoreStuff extends AIBase
             return false;
         }
     }
+
     /** Returns the first item stack that is empty. */
     private static int getFirstEmptyStack(IInventory inventory, int minIndex)
     {
@@ -93,6 +95,7 @@ public class AIStoreStuff extends AIBase
 
         return -1;
     }
+
     /** stores an itemstack in the users inventory */
     private static int storeItemStack(ItemStack itemStackIn, IInventory inventory, int minIndex)
     {
@@ -109,6 +112,7 @@ public class AIStoreStuff extends AIBase
 
         return -1;
     }
+
     /** This function stores as many items of an ItemStack as possible in a
      * matching slot and returns the quantity of left over items. */
     private static int storePartialItemStack(ItemStack itemStackIn, IInventory inventory, int minIndex)
@@ -163,6 +167,7 @@ public class AIStoreStuff extends AIBase
             }
         }
     }
+
     final EntityLiving entity;
 
     final boolean[]    states    = { false, false };
@@ -195,7 +200,7 @@ public class AIStoreStuff extends AIBase
             Predicate<Object> matcher = new Predicate<Object>()
             {
                 @Override
-                public boolean test(Object t)
+                public boolean apply(Object t)
                 {
                     if (!(t instanceof IBlockState)) return false;
                     IBlockState state = (IBlockState) t;
@@ -305,7 +310,8 @@ public class AIStoreStuff extends AIBase
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
-        if (world == null || entity.getAttackTarget()!=null || entity.ticksExisted % 10 > 0 || tameCheck() || cooldowns[0] > 0 || cooldowns[1] > 0)
+        if (world == null || entity.getAttackTarget() != null || entity.ticksExisted % 10 > 0 || tameCheck()
+                || cooldowns[0] > 0 || cooldowns[1] > 0)
             return false;
         IPokemob pokemob = (IPokemob) entity;
 

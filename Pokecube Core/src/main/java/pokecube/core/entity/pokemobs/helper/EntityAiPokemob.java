@@ -350,254 +350,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     }
 
     @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
-    {
-        ItemStack itemstack = player.inventory.getCurrentItem();
-        ItemStack key = new ItemStack(Items.shears);
-        // Check shearable interaction.
-        if (getPokedexEntry().interact(key) && held != null && held.isItemEqual(key)) { return false; }
-        // Check Pokedex Entry defined Interaction for player.
-        if (getPokedexEntry().interact(player, this, true)) return true;
-        Item torch = Item.getItemFromBlock(Blocks.torch);
-        // Either push pokemob around, or if sneaking, make it try to climb on
-        // shoulder
-        if (player == getPokemonOwner() && itemstack != null
-                && (itemstack.getItem() == Items.stick || itemstack.getItem() == torch))
-        {
-            if (player.isSneaking())
-            {
-                if (getPokedexEntry().canSitShoulder)
-                {
-                    this.setPokemonAIState(SHOULDER, true);
-                    this.setPokemonAIState(SITTING, true);
-                    this.startRiding(player);
-                }
-                return true;
-            }
-            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(5);
-            look.y = 0.2;
-            this.motionX += look.x;
-            this.motionY += look.y;
-            this.motionZ += look.z;
-            return false;
-        }
-        // Debug thing to maximize happiness
-        if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.apple)
-        {
-            if (player.capabilities.isCreativeMode && player.isSneaking())
-            {
-                this.addHappiness(255);
-            }
-        }
-        // Debug thing to increase hunger time
-        if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.golden_hoe)
-        {
-            if (player.capabilities.isCreativeMode && player.isSneaking())
-            {
-                this.setHungerTime(this.getHungerTime() + 1000);
-            }
-        }
-        // Use shiny charm to make shiny
-        if (player == getPokemonOwner() && itemstack != null
-                && ItemStack.areItemStackTagsEqual(itemstack, PokecubeItems.getStack("shiny_charm")))
-        {
-            if (player.isSneaking())
-            {
-                this.setShiny(!this.isShiny());
-                held.splitStack(1);
-            }
-            return true;
-        }
-
-        // is Dyeable
-        if (held != null && getPokedexEntry().hasSpecialTextures[4])
-        {
-            if (held.getItem() == Items.dye)
-            {
-                setSpecialInfo(held.getItemDamage());
-                System.out.println(getSpecialInfo());
-                held.stackSize--;
-                return true;
-            }
-            else if (held.getItem() == Items.shears) { return false; }
-        }
-
-        // Check saddle for riding.
-        if (getPokemonAIState(SADDLED) && !player.isSneaking() && player == getPokemonOwner()
-                && (itemstack == null || itemstack.getItem() != PokecubeItems.pokedex))
-        {
-            if (!handleHmAndSaddle(player, new ItemStack(Items.saddle)))
-            {
-                this.setJumping(false);
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        // Attempt to pick the pokemob up.
-        if (!worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking() && held == null
-                && getWeight() < 40)
-        {
-
-            boolean isHeld = getPokemonAIState(HELD);
-
-            if ((!getPokemonAIState(IMoveConstants.TAMED) || getHeldItemMainhand() == null)
-                    && !getPokemonAIState(GUARDING))
-            {
-                if (!isHeld)
-                {
-                    this.startRiding(player);
-                    setPokemonAIState(HELD, true);
-                    setPokemonAIState(SITTING, false);
-                }
-                else
-                {
-                    this.dismountRidingEntity();
-                    setPokemonAIState(HELD, false);
-
-                    if (player != getPokemonOwner())
-                    {
-                        setPokemonAIState(ANGRY, true);
-                        setAttackTarget(player);
-                    }
-                }
-                return true;
-            }
-
-        }
-        if (getPokemonAIState(HELD)) return false;
-
-        // Open Pokedex Gui
-        if (itemstack != null && itemstack.getItem() == PokecubeItems.pokedex)
-        {
-            if (PokecubeCore.isOnClientSide() && !player.isSneaking())
-            {
-                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, worldObj, (int) posX, (int) posY,
-                        (int) posZ);
-            }
-            return true;
-        }
-
-        // Owner only interactions.
-        if (getPokemonAIState(IMoveConstants.TAMED) && player == getOwner() && !PokecubeCore.isOnClientSide())
-        {
-            if (itemstack != null)
-            {
-                // Check if it should evolve from item, do so if yes.
-                if (PokecubeItems.isValidEvoItem(itemstack) && canEvolve(itemstack))
-                {
-                    IPokemob evolution = evolve(true, itemstack);
-
-                    if (evolution != null)
-                    {
-                        itemstack.stackSize--;
-
-                        if (itemstack.stackSize <= 0)
-                        {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-                        }
-                    }
-
-                    return true;
-                }
-                // Check if it is stew for happiness test. Report if yes.
-                else if (itemstack.isItemEqual(new ItemStack(Items.mushroom_stew)))
-                {
-                    int happiness = getHappiness();
-                    String message = "";
-                    if (happiness == 0)
-                    {
-                        message = "pokemob.info.happy0";
-                    }
-                    if (happiness > 0)
-                    {
-                        message = "pokemob.info.happy1";
-                    }
-                    if (happiness > 49)
-                    {
-                        message = "pokemob.info.happy2";
-                    }
-                    if (happiness > 99)
-                    {
-                        message = "pokemob.info.happy3";
-                    }
-                    if (happiness > 149)
-                    {
-                        message = "pokemob.info.happy4";
-                    }
-                    if (happiness > 199)
-                    {
-                        message = "pokemob.info.happy5";
-                    }
-                    if (happiness > 254)
-                    {
-                        message = "pokemob.info.happy6";
-                    }
-                    CommandTools.sendMessage(player, message);
-                }
-                // Check if gold apple for breeding.
-                if (itemstack.getItem() == Items.golden_apple)
-                {
-                    if (!player.capabilities.isCreativeMode)
-                    {
-                        --itemstack.stackSize;
-
-                        if (itemstack.stackSize <= 0)
-                        {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
-                        }
-                    }
-                    this.inLove = 10;
-                    this.setAttackTarget(null);
-                    this.worldObj.setEntityState(this, (byte) 18);
-                    return true;
-                }
-                // Otherwise check if useable item.
-                if (itemstack.getItem() instanceof IPokemobUseable)
-                {
-                    boolean used = ((IPokemobUseable) itemstack.getItem()).itemUse(itemstack, this, player);
-
-                    if (used)
-                    {
-                        itemstack.splitStack(1);
-                        return true;
-                    }
-                }
-                // Try to hold the item.
-                if (canBeHeld(itemstack))
-                {
-                    ItemStack heldItem = getHeldItemMainhand();
-
-                    if (heldItem != null)
-                    {
-                        dropItem();
-                    }
-
-                    setHeldItem(itemstack.copy());
-                    itemstack.stackSize--;
-
-                    if (itemstack.stackSize <= 0)
-                    {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-                    }
-                    return true;
-                }
-            }
-            // Open Gui
-            if (!PokecubeCore.isOnClientSide() && getPokemonOwner() == player && itemstack == null)
-            {
-                openGUI(player);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
     /** Checks if the entity is in range to render by using the past in distance
      * and comparing it to its average edge length * 64 * renderDistanceWeight
      * Args: distance */
@@ -994,9 +746,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.worldObj.setEntityState(this, (byte) 3);
     }
 
-    /////////////////////////// Interaction
-    /////////////////////////// logic/////////////////////////////////////////////////////
-
     @Override
     protected void onDeathUpdate()
     {
@@ -1015,7 +764,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         super.onDeathUpdate();
     }
 
-    //////////////// Jumping related//////////////////////////
+    /////////////////////////// Interaction
+    /////////////////////////// logic/////////////////////////////////////////////////////
 
     @Override
     public void onLivingUpdate()
@@ -1099,6 +849,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             worldObj.setEntityState(this, (byte) 8);
         }
     }
+
+    //////////////// Jumping related//////////////////////////
 
     @Override
     public void onUpdate()
@@ -1291,6 +1043,254 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         super.popFromPokecube();
         popped = true;
+    }
+
+    @Override
+    public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
+    {
+        ItemStack itemstack = player.inventory.getCurrentItem();
+        ItemStack key = new ItemStack(Items.shears);
+        // Check shearable interaction.
+        if (getPokedexEntry().interact(key) && held != null && held.isItemEqual(key)) { return false; }
+        // Check Pokedex Entry defined Interaction for player.
+        if (getPokedexEntry().interact(player, this, true)) return true;
+        Item torch = Item.getItemFromBlock(Blocks.torch);
+        // Either push pokemob around, or if sneaking, make it try to climb on
+        // shoulder
+        if (player == getPokemonOwner() && itemstack != null
+                && (itemstack.getItem() == Items.stick || itemstack.getItem() == torch))
+        {
+            if (player.isSneaking())
+            {
+                if (getPokedexEntry().canSitShoulder)
+                {
+                    this.setPokemonAIState(SHOULDER, true);
+                    this.setPokemonAIState(SITTING, true);
+                    this.startRiding(player);
+                }
+                return true;
+            }
+            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(5);
+            look.y = 0.2;
+            this.motionX += look.x;
+            this.motionY += look.y;
+            this.motionZ += look.z;
+            return false;
+        }
+        // Debug thing to maximize happiness
+        if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.apple)
+        {
+            if (player.capabilities.isCreativeMode && player.isSneaking())
+            {
+                this.addHappiness(255);
+            }
+        }
+        // Debug thing to increase hunger time
+        if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.golden_hoe)
+        {
+            if (player.capabilities.isCreativeMode && player.isSneaking())
+            {
+                this.setHungerTime(this.getHungerTime() + 1000);
+            }
+        }
+        // Use shiny charm to make shiny
+        if (player == getPokemonOwner() && itemstack != null
+                && ItemStack.areItemStackTagsEqual(itemstack, PokecubeItems.getStack("shiny_charm")))
+        {
+            if (player.isSneaking())
+            {
+                this.setShiny(!this.isShiny());
+                held.splitStack(1);
+            }
+            return true;
+        }
+
+        // is Dyeable
+        if (held != null && getPokedexEntry().hasSpecialTextures[4])
+        {
+            if (held.getItem() == Items.dye)
+            {
+                setSpecialInfo(held.getItemDamage());
+                System.out.println(getSpecialInfo());
+                held.stackSize--;
+                return true;
+            }
+            else if (held.getItem() == Items.shears) { return false; }
+        }
+
+        // Check saddle for riding.
+        if (getPokemonAIState(SADDLED) && !player.isSneaking() && player == getPokemonOwner()
+                && (itemstack == null || itemstack.getItem() != PokecubeItems.pokedex))
+        {
+            if (!handleHmAndSaddle(player, new ItemStack(Items.saddle)))
+            {
+                this.setJumping(false);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        // Attempt to pick the pokemob up.
+        if (!worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking() && held == null
+                && getWeight() < 40)
+        {
+
+            boolean isHeld = getPokemonAIState(HELD);
+
+            if ((!getPokemonAIState(IMoveConstants.TAMED) || getHeldItemMainhand() == null)
+                    && !getPokemonAIState(GUARDING))
+            {
+                if (!isHeld)
+                {
+                    this.startRiding(player);
+                    setPokemonAIState(HELD, true);
+                    setPokemonAIState(SITTING, false);
+                }
+                else
+                {
+                    this.dismountRidingEntity();
+                    setPokemonAIState(HELD, false);
+
+                    if (player != getPokemonOwner())
+                    {
+                        setPokemonAIState(ANGRY, true);
+                        setAttackTarget(player);
+                    }
+                }
+                return true;
+            }
+
+        }
+        if (getPokemonAIState(HELD)) return false;
+
+        // Open Pokedex Gui
+        if (itemstack != null && itemstack.getItem() == PokecubeItems.pokedex)
+        {
+            if (PokecubeCore.isOnClientSide() && !player.isSneaking())
+            {
+                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, worldObj, (int) posX, (int) posY,
+                        (int) posZ);
+            }
+            return true;
+        }
+
+        // Owner only interactions.
+        if (getPokemonAIState(IMoveConstants.TAMED) && player == getOwner() && !PokecubeCore.isOnClientSide())
+        {
+            if (itemstack != null)
+            {
+                // Check if it should evolve from item, do so if yes.
+                if (PokecubeItems.isValidEvoItem(itemstack) && canEvolve(itemstack))
+                {
+                    IPokemob evolution = evolve(true, itemstack);
+
+                    if (evolution != null)
+                    {
+                        itemstack.stackSize--;
+
+                        if (itemstack.stackSize <= 0)
+                        {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                        }
+                    }
+
+                    return true;
+                }
+                // Check if it is stew for happiness test. Report if yes.
+                else if (itemstack.isItemEqual(new ItemStack(Items.mushroom_stew)))
+                {
+                    int happiness = getHappiness();
+                    String message = "";
+                    if (happiness == 0)
+                    {
+                        message = "pokemob.info.happy0";
+                    }
+                    if (happiness > 0)
+                    {
+                        message = "pokemob.info.happy1";
+                    }
+                    if (happiness > 49)
+                    {
+                        message = "pokemob.info.happy2";
+                    }
+                    if (happiness > 99)
+                    {
+                        message = "pokemob.info.happy3";
+                    }
+                    if (happiness > 149)
+                    {
+                        message = "pokemob.info.happy4";
+                    }
+                    if (happiness > 199)
+                    {
+                        message = "pokemob.info.happy5";
+                    }
+                    if (happiness > 254)
+                    {
+                        message = "pokemob.info.happy6";
+                    }
+                    CommandTools.sendMessage(player, message);
+                }
+                // Check if gold apple for breeding.
+                if (itemstack.getItem() == Items.golden_apple)
+                {
+                    if (!player.capabilities.isCreativeMode)
+                    {
+                        --itemstack.stackSize;
+
+                        if (itemstack.stackSize <= 0)
+                        {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                        }
+                    }
+                    this.inLove = 10;
+                    this.setAttackTarget(null);
+                    this.worldObj.setEntityState(this, (byte) 18);
+                    return true;
+                }
+                // Otherwise check if useable item.
+                if (itemstack.getItem() instanceof IPokemobUseable)
+                {
+                    boolean used = ((IPokemobUseable) itemstack.getItem()).itemUse(itemstack, this, player);
+
+                    if (used)
+                    {
+                        itemstack.splitStack(1);
+                        return true;
+                    }
+                }
+                // Try to hold the item.
+                if (canBeHeld(itemstack))
+                {
+                    ItemStack heldItem = getHeldItemMainhand();
+
+                    if (heldItem != null)
+                    {
+                        dropItem();
+                    }
+
+                    setHeldItem(itemstack.copy());
+                    itemstack.stackSize--;
+
+                    if (itemstack.stackSize <= 0)
+                    {
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                    }
+                    return true;
+                }
+            }
+            // Open Gui
+            if (!PokecubeCore.isOnClientSide() && getPokemonOwner() == player && itemstack == null)
+            {
+                openGUI(player);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

@@ -278,27 +278,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         return ret;
     }
 
-    @Override
-    public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
-    {
-        if (!player.worldObj.isRemote)
-        {
-            IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-            if ((pokemob != null && pokemob.getPokemonOwner() == player && !isReleasing()) || pokemob == null)
-            {
-                this.setReleasing(true);
-                if (!player.inventory.addItemStackToInventory(getEntityItem()))
-                    this.entityDropItem(getEntityItem(), 0.5f);
-                this.setDead();
-            }
-            else if (!isReleasing() && pokemob != null)
-            {
-                sendOut();
-            }
-        }
-        return true;
-    }
-
     public boolean isReleasing()
     {
         return getDataManager().get(RELEASING);
@@ -510,6 +489,27 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             dir.scalarMultBy(dist);
             dir.setVelocities(this);
         }
+    }
+
+    @Override
+    public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
+    {
+        if (!player.worldObj.isRemote)
+        {
+            IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+            if ((pokemob != null && pokemob.getPokemonOwner() == player && !isReleasing()) || pokemob == null)
+            {
+                this.setReleasing(true);
+                if (!player.inventory.addItemStackToInventory(getEntityItem()))
+                    this.entityDropItem(getEntityItem(), 0.5f);
+                this.setDead();
+            }
+            else if (!isReleasing() && pokemob != null)
+            {
+                sendOut();
+            }
+        }
+        return true;
     }
 
     @Override

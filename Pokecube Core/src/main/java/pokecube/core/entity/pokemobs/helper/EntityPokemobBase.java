@@ -181,6 +181,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
+    public SoundEvent getAmbientSound()
+    {
+        return getPokedexEntry().getSoundEvent();
+    }
+
+    @Override
     public HashMap<String, Matrix3> getBoxes()
     {
         if (boxes.isEmpty())
@@ -231,12 +237,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     protected SoundEvent getHurtSound()
     {
         return getAmbientSound();
-    }
-
-    @Override
-    public SoundEvent getAmbientSound()
-    {
-        return getPokedexEntry().getSoundEvent();
     }
 
     @Override

@@ -43,43 +43,6 @@ public class Commands implements ICommand
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
-            BlockPos pos)
-    {
-        boolean isOp = CommandTools.isOp(sender);
-        if (args[0].isEmpty())
-        {
-            List<String> ret = new ArrayList<String>();
-            ret.add("recall");
-            if (isOp)
-            {
-                ret.add("count");
-                ret.add("kill");
-                ret.add("cull");
-                ret.add("reset");
-            }
-            return ret;
-        }
-        if (args[0].equalsIgnoreCase("recall"))
-        {
-            List<String> ret = new ArrayList<String>();
-            if (args.length == 2)
-            {
-                ret.add("all");
-                ret.add("guard");
-                ret.add("stay");
-                ret.add("<name>");
-                if (isOp)
-                {
-                    ret.add("all all");
-                }
-            }
-            return ret;
-        }
-        return null;
-    }
-
-    @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         return true;
@@ -407,42 +370,6 @@ public class Commands implements ICommand
     }
 
     @Override
-    public List<String> getCommandAliases()
-    {
-        return this.aliases;
-    }
-
-    @Override
-    public String getCommandName()
-    {
-        return "pokecube";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender icommandsender)
-    {
-        return "pokecube <text>";
-    }
-
-    @Override
-    public boolean isUsernameIndex(String[] astring, int i)
-    {
-        String arg = astring[0];
-        if (arg.equalsIgnoreCase("make"))
-        {
-            int j = astring.length - 1;
-            return i == j;
-        }
-        if (arg.equalsIgnoreCase("tm") || arg.equalsIgnoreCase("reset"))
-        {
-            if (arg.equalsIgnoreCase("reset")) return i == 1;
-            return i == 2;
-
-        }
-        return false;
-    }
-
-    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 0)
@@ -487,5 +414,78 @@ public class Commands implements ICommand
         {
             CommandTools.sendBadArgumentsTryTab(sender);
         }
+    }
+
+    @Override
+    public List<String> getCommandAliases()
+    {
+        return this.aliases;
+    }
+
+    @Override
+    public String getCommandName()
+    {
+        return "pokecube";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender icommandsender)
+    {
+        return "pokecube <text>";
+    }
+
+    @Override
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+            BlockPos pos)
+    {
+        boolean isOp = CommandTools.isOp(sender);
+        if (args[0].isEmpty())
+        {
+            List<String> ret = new ArrayList<String>();
+            ret.add("recall");
+            if (isOp)
+            {
+                ret.add("count");
+                ret.add("kill");
+                ret.add("cull");
+                ret.add("reset");
+            }
+            return ret;
+        }
+        if (args[0].equalsIgnoreCase("recall"))
+        {
+            List<String> ret = new ArrayList<String>();
+            if (args.length == 2)
+            {
+                ret.add("all");
+                ret.add("guard");
+                ret.add("stay");
+                ret.add("<name>");
+                if (isOp)
+                {
+                    ret.add("all all");
+                }
+            }
+            return ret;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isUsernameIndex(String[] astring, int i)
+    {
+        String arg = astring[0];
+        if (arg.equalsIgnoreCase("make"))
+        {
+            int j = astring.length - 1;
+            return i == j;
+        }
+        if (arg.equalsIgnoreCase("tm") || arg.equalsIgnoreCase("reset"))
+        {
+            if (arg.equalsIgnoreCase("reset")) return i == 1;
+            return i == 2;
+
+        }
+        return false;
     }
 }

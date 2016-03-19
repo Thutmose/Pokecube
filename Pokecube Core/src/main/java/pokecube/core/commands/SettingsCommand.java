@@ -37,76 +37,9 @@ public class SettingsCommand extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        List<String> ret = new ArrayList<String>();
-        if (args.length == 1)
-        {
-            String text = args[0];
-            for (String name : fields)
-            {
-                if (name.contains(text))
-                {
-                    ret.add(name);
-                }
-            }
-            Collections.sort(ret, new Comparator<String>()
-            {
-                @Override
-                public int compare(String o1, String o2)
-                {
-                    return o1.compareToIgnoreCase(o2);
-                }
-            });
-        }
-        return ret;
-    }
-
-    @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         return true;
-    }
-
-    @Override
-    public List<String> getCommandAliases()
-    {
-        return this.aliases;
-    }
-
-    @Override
-    public String getCommandName()
-    {
-        return aliases.get(0);
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/" + aliases.get(0) + "<option name> <optional:newvalue>";
-    }
-
-    @Override
-    /** Return the required permission level for this command. */
-    public int getRequiredPermissionLevel()
-    {
-        return 4;
-    }
-
-    private void populateFields()
-    {
-        Class<Config> me = Config.class;
-        Configure c;
-        for (Field f : me.getDeclaredFields())
-        {
-            c = f.getAnnotation(Configure.class);
-            if (c != null)
-            {
-                f.setAccessible(true);
-                fields.add(f.getName());
-                fieldMap.put(f.getName(), f);
-            }
-        }
     }
 
     @Override
@@ -165,6 +98,73 @@ public class SettingsCommand extends CommandBase
         {
             CommandTools.sendError(sender, "pokecube.command.settings.error");
             return;
+        }
+    }
+
+    @Override
+    public List<String> getCommandAliases()
+    {
+        return this.aliases;
+    }
+
+    @Override
+    public String getCommandName()
+    {
+        return aliases.get(0);
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/" + aliases.get(0) + "<option name> <optional:newvalue>";
+    }
+
+    @Override
+    /** Return the required permission level for this command. */
+    public int getRequiredPermissionLevel()
+    {
+        return 4;
+    }
+
+    @Override
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    {
+        List<String> ret = new ArrayList<String>();
+        if (args.length == 1)
+        {
+            String text = args[0];
+            for (String name : fields)
+            {
+                if (name.contains(text))
+                {
+                    ret.add(name);
+                }
+            }
+            Collections.sort(ret, new Comparator<String>()
+            {
+                @Override
+                public int compare(String o1, String o2)
+                {
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+        }
+        return ret;
+    }
+
+    private void populateFields()
+    {
+        Class<Config> me = Config.class;
+        Configure c;
+        for (Field f : me.getDeclaredFields())
+        {
+            c = f.getAnnotation(Configure.class);
+            if (c != null)
+            {
+                f.setAccessible(true);
+                fields.add(f.getName());
+                fieldMap.put(f.getName(), f);
+            }
         }
     }
 }

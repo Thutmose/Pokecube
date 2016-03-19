@@ -867,6 +867,8 @@ public class PokedexEntry
     public boolean                             isShadowForme      = false;
     public PokedexEntry                        shadowForme        = null;
 
+    SoundEvent event;
+
     public PokedexEntry(int nb, String name)
     {
         this.name = name;
@@ -1368,8 +1370,6 @@ public class PokedexEntry
     {
         return sound;
     }
-
-    SoundEvent event;
 
     public SoundEvent getSoundEvent()
     {

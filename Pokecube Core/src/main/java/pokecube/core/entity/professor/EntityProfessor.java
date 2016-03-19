@@ -95,6 +95,18 @@ public class EntityProfessor extends EntityAgeable
     }
 
     @Override
+    public void onLivingUpdate()
+    {
+        super.onLivingUpdate();
+    }
+
+    @Override
+    public void onUpdate()
+    {
+        super.onUpdate();
+    }
+
+    @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
         if (!worldObj.isRemote)
@@ -110,18 +122,6 @@ public class EntityProfessor extends EntityAgeable
             }
         }
         return false;// super.processInteract(EntityPlayer player);
-    }
-
-    @Override
-    public void onLivingUpdate()
-    {
-        super.onLivingUpdate();
-    }
-
-    @Override
-    public void onUpdate()
-    {
-        super.onUpdate();
     }
 
     @Override

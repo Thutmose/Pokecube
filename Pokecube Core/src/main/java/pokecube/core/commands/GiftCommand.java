@@ -34,31 +34,6 @@ public class GiftCommand extends CommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
-    {
-        return this.aliases;
-    }
-
-    @Override
-    public String getCommandName()
-    {
-        return aliases.get(0);
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/" + aliases.get(0) + "<giftCode>";
-    }
-
-    @Override
-    /** Return the required permission level for this command. */
-    public int getRequiredPermissionLevel()
-    {
-        return 0;
-    }
-
-    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (sender instanceof EntityPlayer)
@@ -190,5 +165,30 @@ public class GiftCommand extends CommandBase
             CommandTools.sendError(sender, "pokecube.command.giftneedcode");
             return;
         }
+    }
+
+    @Override
+    public List<String> getCommandAliases()
+    {
+        return this.aliases;
+    }
+
+    @Override
+    public String getCommandName()
+    {
+        return aliases.get(0);
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/" + aliases.get(0) + "<giftCode>";
+    }
+
+    @Override
+    /** Return the required permission level for this command. */
+    public int getRequiredPermissionLevel()
+    {
+        return 0;
     }
 }

@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.client.models.ModelRing;
-import pokecube.core.items.megastuff.ItemMegaring;
 
 public class RingRenderer implements LayerRenderer<EntityPlayer>
 {

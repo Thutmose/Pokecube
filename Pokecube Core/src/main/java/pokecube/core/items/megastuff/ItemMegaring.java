@@ -1,9 +1,6 @@
 package pokecube.core.items.megastuff;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Optional;
 
 @net.minecraftforge.fml.common.Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class ItemMegaring extends Item// implements IBauble

@@ -39,69 +39,9 @@ public class MakeCommand extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        List<String> ret = new ArrayList<String>();
-        if (args.length == 1)
-        {
-            String text = args[0];
-            for (PokedexEntry entry : Database.allFormes)
-            {
-                String check = entry.getName().toLowerCase();
-                if (check.startsWith(text.toLowerCase()))
-                {
-                    String name = entry.getName();
-                    if (name.contains(" "))
-                    {
-                        name = "\'" + name + "\'";
-                    }
-
-                    ret.add(name);
-                }
-            }
-            Collections.sort(ret, new Comparator<String>()
-            {
-                @Override
-                public int compare(String o1, String o2)
-                {
-                    if (o1.contains("'") && !o2.contains("'")) return 1;
-                    else if (o2.contains("'") && !o1.contains("'")) return -1;
-                    return o1.compareToIgnoreCase(o2);
-                }
-            });
-        }
-        return ret;
-    }
-
-    @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         return true;
-    }
-
-    @Override
-    public List<String> getCommandAliases()
-    {
-        return this.aliases;
-    }
-
-    @Override
-    public String getCommandName()
-    {
-        return aliases.get(0);
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/" + aliases.get(0) + "<pokemob name> <arguments>";
-    }
-
-    @Override
-    /** Return the required permission level for this command. */
-    public int getRequiredPermissionLevel()
-    {
-        return 0;
     }
 
     @Override
@@ -334,6 +274,66 @@ public class MakeCommand extends CommandBase
         }
         CommandTools.sendError(sender, "pokecube.command.makedeny");
         return;
+    }
+
+    @Override
+    public List<String> getCommandAliases()
+    {
+        return this.aliases;
+    }
+
+    @Override
+    public String getCommandName()
+    {
+        return aliases.get(0);
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/" + aliases.get(0) + "<pokemob name> <arguments>";
+    }
+
+    @Override
+    /** Return the required permission level for this command. */
+    public int getRequiredPermissionLevel()
+    {
+        return 0;
+    }
+
+    @Override
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    {
+        List<String> ret = new ArrayList<String>();
+        if (args.length == 1)
+        {
+            String text = args[0];
+            for (PokedexEntry entry : Database.allFormes)
+            {
+                String check = entry.getName().toLowerCase();
+                if (check.startsWith(text.toLowerCase()))
+                {
+                    String name = entry.getName();
+                    if (name.contains(" "))
+                    {
+                        name = "\'" + name + "\'";
+                    }
+
+                    ret.add(name);
+                }
+            }
+            Collections.sort(ret, new Comparator<String>()
+            {
+                @Override
+                public int compare(String o1, String o2)
+                {
+                    if (o1.contains("'") && !o2.contains("'")) return 1;
+                    else if (o2.contains("'") && !o1.contains("'")) return -1;
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+        }
+        return ret;
     }
 
 }

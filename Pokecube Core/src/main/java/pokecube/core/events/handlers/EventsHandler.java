@@ -33,13 +33,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
-import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.common.ForgeVersion.CheckResult;
-import net.minecraftforge.common.ForgeVersion.Status;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -58,10 +53,7 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -121,63 +113,6 @@ public class EventsHandler
                 PokecubeClientPacket packet2 = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.CHOOSE1ST });
                 PokecubePacketHandler.sendToClient(packet2, event.player);
                 MinecraftForge.EVENT_BUS.unregister(this);
-            }
-        }
-    }
-
-    public static class UpdateNotifier
-    {
-        public UpdateNotifier()
-        {
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        private ITextComponent getInfoMessage(CheckResult result, String name)
-        {
-            String linkName = "[" + TextFormatting.GREEN + name + " " + PokecubeMod.VERSION
-                    + TextFormatting.WHITE;
-            String link = "" + result.url;
-            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
-                    + link + "\"}}";
-
-            String info = "\"" + TextFormatting.GOLD + "Currently Running " + "\"";
-            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return ITextComponent.Serializer.jsonToComponent(mess);
-        }
-
-        @Deprecated // Use one from ThutCore whenever that is updated for a bit.
-        private ITextComponent getOutdatedMessage(CheckResult result, String name)
-        {
-            String linkName = "[" + TextFormatting.GREEN + name + " " + result.target + TextFormatting.WHITE;
-            String link = "" + result.url;
-            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
-                    + link + "\"}}";
-
-            String info = "\"" + TextFormatting.RED
-                    + "New Pokecube Core version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
-                    + "\"";
-            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return ITextComponent.Serializer.jsonToComponent(mess);
-        }
-
-        @SubscribeEvent
-        public void onPlayerJoin(TickEvent.PlayerTickEvent event)
-        {
-            if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
-            {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
-                CheckResult result = ForgeVersion.getResult(((ModContainer) o));
-                if (result.status == Status.OUTDATED)
-                {
-                    ITextComponent mess = getOutdatedMessage(result, "Pokecube Core");
-                    (event.player).addChatMessage(mess);
-                }
-                else if (PokecubeMod.core.getConfig().loginmessage)
-                {
-                    ITextComponent mess = getInfoMessage(result, "Pokecube Core");
-                    (event.player).addChatMessage(mess);
-                }
             }
         }
     }
@@ -321,7 +256,6 @@ public class EventsHandler
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         PokemobAIThread aiTicker = new PokemobAIThread();
         MinecraftForge.EVENT_BUS.register(aiTicker);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new UpdateNotifier();
     }
 
     @SubscribeEvent
@@ -485,7 +419,8 @@ public class EventsHandler
                 if (block != null && !loop)
                 {
                     IBlockState state = evt.world.getBlockState(evt.pos);
-                    boolean b = block.onBlockActivated(evt.world, evt.pos, state, evt.entityPlayer, evt.entityPlayer.getActiveHand(), evt.entityLiving.getActiveItemStack(), evt.face,
+                    boolean b = block.onBlockActivated(evt.world, evt.pos, state, evt.entityPlayer,
+                            evt.entityPlayer.getActiveHand(), evt.entityLiving.getActiveItemStack(), evt.face,
                             (float) evt.localPos.xCoord, (float) evt.localPos.yCoord, (float) evt.localPos.zCoord);
                     if (!b && !evt.entityPlayer.isSneaking())
                     {
@@ -540,13 +475,13 @@ public class EventsHandler
                     if (mob instanceof IPokemob)
                     {
                         IPokemob poke = mob;
-                        if (((EntityLiving) poke).getHeldItemMainhand() != null)
-                            if (((EntityLiving) poke).getHeldItemMainhand().isItemEqual(PokecubeItems.getStack("exp_share")))
-                            {
+                        if (((EntityLiving) poke).getHeldItemMainhand() != null) if (((EntityLiving) poke)
+                                .getHeldItemMainhand().isItemEqual(PokecubeItems.getStack("exp_share")))
+                        {
                             int exp = poke.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
 
                             poke.setExp(exp, true, false);
-                            }
+                        }
                     }
                 }
             }

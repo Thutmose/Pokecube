@@ -1,6 +1,6 @@
 package pokecube.core.ai.thread.aiRunnables;
 
-import java.util.function.Predicate;
+import com.google.common.base.Predicate;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
@@ -195,7 +195,7 @@ public class AIStoreStuff extends AIBase
             Predicate<Object> matcher = new Predicate<Object>()
             {
                 @Override
-                public boolean test(Object t)
+                public boolean apply(Object t)
                 {
                     if (!(t instanceof IBlockState)) return false;
                     IBlockState state = (IBlockState) t;

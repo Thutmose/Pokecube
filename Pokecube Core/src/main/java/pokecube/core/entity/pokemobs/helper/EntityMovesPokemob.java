@@ -30,6 +30,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.MoveEntry;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.handlers.HeldItemHandler;
@@ -905,6 +906,12 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             MovesUtils.getMoveFromName(MOVE_TRANSFORM).notifyClient(this, here, to);
         }
         transformedTo = to;
+        if (to instanceof IPokemob)
+        {
+            PokedexEntry newEntry = ((IPokemob) to).getPokedexEntry();
+            this.setType1(newEntry.getType1());
+            this.setType2(newEntry.getType2());
+        }
     }
 
     @Override

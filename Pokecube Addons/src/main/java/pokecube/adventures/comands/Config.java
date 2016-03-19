@@ -20,7 +20,6 @@ import pokecube.adventures.entity.trainers.EntityTrainer.CubeTrade;
 import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
-import pokecube.compat.blocks.rf.TileEntitySiphon;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.events.handlers.SpawnHandler;
@@ -167,8 +166,6 @@ public class Config extends ConfigBase
                 biomeMap.put(key, BiomeType.getBiome(subbiome).getType());
             }
         }
-        TileEntitySiphon.maxOutput = maxOutput;
-        TileEntitySiphon.function = powerFunction;
 
         TileEntityWarpPad.MAXRANGE = warpPadRange;
         TeamManager.maxLandCount = teamLandPerPlayer;

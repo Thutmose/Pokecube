@@ -22,6 +22,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokeType;
@@ -31,11 +32,9 @@ import thut.api.maths.Vector3;
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntitySiphon extends TileEntity implements ITickable, SimpleComponent, IEnergyProvider
 {
-    public static int    maxOutput = 256;
-    public static String function;
-    AxisAlignedBB        box;
-    public JEP           parser    = new JEP();
-    int                  lastInput = 0;
+    AxisAlignedBB box;
+    public JEP    parser    = new JEP();
+    int           lastInput = 0;
 
     public TileEntitySiphon()
     {
@@ -149,7 +148,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
             }
         }
 
-        return Math.min(ret, maxOutput);
+        return Math.min(ret, PokecubeAdv.conf.maxOutput);
     }
 
     public int getMaxEnergy(int level, int spAtk, int atk, PokedexEntry entry)
@@ -160,7 +159,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
     @Override
     public int getMaxEnergyStored(EnumFacing facing)
     {
-        return maxOutput;
+        return PokecubeAdv.conf.maxOutput;
     }
 
     @Callback
@@ -180,7 +179,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
                              // table
         parser.addVariable("x", 0);
         parser.addVariable("a", 0);
-        parser.parseExpression(function);
+        parser.parseExpression(PokecubeAdv.conf.powerFunction);
     }
 
     @Override

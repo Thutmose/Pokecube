@@ -509,7 +509,7 @@ public class GuiTrainerEdit extends GuiScreen
             buff.writeBytes(textFieldName.getText().getBytes());
             buff.writeInt(textFieldType.getText().length());
             buff.writeBytes(textFieldType.getText().getBytes());
-            buff.writeInt(trainer.getId());
+            buff.writeInt(trainer.getEntityId());
         }
         catch (NumberFormatException e)
         {

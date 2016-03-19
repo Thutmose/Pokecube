@@ -16,8 +16,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
+import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
-import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.ItemTarget;
@@ -385,14 +385,14 @@ public class PacketPokeAdv
             type = new String(string);
             int id = buffer.readInt();
             ret.writeInt(id);
-            PASaveHandler.getInstance().trainers.get(id).name = name;
-            PASaveHandler.getInstance().trainers.get(id).type = TypeTrainer.getTrainer(type);
-            PASaveHandler.getInstance().trainers.get(id).setTypes();
+            EntityTrainer trainer = (EntityTrainer) player.worldObj.getEntityByID(id);
+            trainer.name = name;
+            trainer.type = TypeTrainer.getTrainer(type);
+            trainer.setTypes();
             for (int index = 0; index < 6; index++)
             {
-                PASaveHandler.getInstance().trainers.get(id).setPokemob(numbers[index], levels[index], index);
+                trainer.setPokemob(numbers[index], levels[index], index);
             }
-
             if (!player.worldObj.isRemote)
             {
                 MessageClient mes = new MessageClient(ret.array());

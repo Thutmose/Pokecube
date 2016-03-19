@@ -33,20 +33,12 @@ public class PASaveHandler
         if (clientInstance == null) clientInstance = new PASaveHandler();
         return clientInstance;
     }
-    private int lastId;
     private ISaveHandler                   saveHandler;
 
     public HashMap<Integer, EntityTrainer> trainers = new HashMap<Integer, EntityTrainer>();
 
     private PASaveHandler()
     {
-        lastId = 0;
-    }
-
-    public int getNewId()
-    {
-        lastId++;
-        return lastId;
     }
 
     public void loadBag()

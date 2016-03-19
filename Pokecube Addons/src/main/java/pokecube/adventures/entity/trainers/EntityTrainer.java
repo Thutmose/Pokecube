@@ -55,7 +55,6 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.ai.trainers.EntityAITrainer;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
-import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.core.PokecubeItems;
@@ -144,7 +143,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     private EntityLivingBase            target;
     public TypeTrainer                  type;
     public Vector3                      location         = null;
-    private int                         id;
     public String                       name             = "";
     public UUID                         outID;
     public IPokemob                     outMob;
@@ -167,14 +165,12 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public EntityTrainer(World world, TypeTrainer type, int level)
     {
         this(world);
-        setId(PASaveHandler.getInstance().getNewId());
         initTrainer(type, level);
     }
 
     public EntityTrainer(World world, TypeTrainer type, int level, Vector3 location, boolean stationary)
     {
         this(world, location, true);
-        setId(PASaveHandler.getInstance().getNewId());
         initTrainer(type, level);
     }
 
@@ -416,11 +412,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         return buyingPlayer;
     }
 
-    public int getId()
-    {
-        return id;
-    }
-
     @Override
     public MerchantRecipeList getRecipes(EntityPlayer player)
     {
@@ -519,7 +510,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
             if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemTrainer)
             {
-                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getId(), 0, 0);
+                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getEntityId(), 0, 0);
             }
         }
         else
@@ -693,7 +684,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         dataWatcher.set(AIACTIONSTATESDW, nbt.getInteger("aiState"));
         randomize = nbt.getBoolean("randomTeam");
         type = TypeTrainer.getTrainer(nbt.getString("type"));
-        setId(nbt.getInteger("uniqueid"));
         if (nbt.hasKey("outPokemob"))
         {
             outID = UUID.fromString(nbt.getString("outPokemob"));
@@ -729,7 +719,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         name = new String(string);
         male = buff.readBoolean();
         friendlyCooldown = buff.readInt();
-        setId(buff.readInt());
         for (int i = 0; i < 6; i++)
         {
             pokenumbers[i] = buff.readInt();
@@ -770,12 +759,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         PCEventsHandler.recallAllPokemobs(this);
         super.setDead();
-    }
-
-    protected void setId(int id)
-    {
-        this.id = id;
-        PASaveHandler.getInstance().trainers.put(id, this);
     }
 
     public void setPokemob(int number, int level, int index)
@@ -858,7 +841,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     {
         if (name.isEmpty())
         {
-            int index = getId() % (male ? TypeTrainer.maleNames.size() : TypeTrainer.femaleNames.size());
+            int index = getEntityId() % (male ? TypeTrainer.maleNames.size() : TypeTrainer.femaleNames.size());
             name = (male ? TypeTrainer.maleNames.get(index) : TypeTrainer.femaleNames.get(index));
         }
         this.setCustomNameTag(type.name + " " + name);
@@ -973,7 +956,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         nbt.setBoolean("randomTeam", randomize);
         nbt.setString("name", name);
         nbt.setString("type", type.name);
-        nbt.setInteger("uniqueid", getId());
         if (outID != null) nbt.setString("outPokemob", outID.toString());
         nbt.setInteger("aiState", dataWatcher.get(AIACTIONSTATESDW));
         nbt.setInteger("cooldown", globalCooldown);
@@ -990,7 +972,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         buffer.writeBytes(name.getBytes());
         buffer.writeBoolean(male);
         buffer.writeInt(friendlyCooldown);
-        buffer.writeInt(getId());
         for (int i = 0; i < 6; i++)
         {
             if (pokecubes[i] != null)

@@ -16,7 +16,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pokecube.adventures.ai.trainers.EntityAITrainer;
-import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.utils.Tools;
@@ -38,7 +37,6 @@ public class EntityLeader extends EntityTrainer
     public EntityLeader(World world, TypeTrainer type, int maxXp, Vector3 location)
     {
         this(world, location);
-        setId(PASaveHandler.getInstance().getNewId());
         initTrainer(type, maxXp);
     }
 

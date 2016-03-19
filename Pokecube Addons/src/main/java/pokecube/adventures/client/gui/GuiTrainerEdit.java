@@ -33,41 +33,41 @@ import thut.api.entity.IMobColourable;
 
 public class GuiTrainerEdit extends GuiScreen
 {
-    public static int x;
-    public static int y;
+    public static int           x;
+    public static int           y;
 
-    static float              lastTime       = 0;
+    static float                lastTime       = 0;
     /** to pass as last parameter when rendering the mob so that the render
      * knows the rendering is asked by the pokedex gui */
-    public final static float POKEDEX_RENDER = 1.5f;
+    public final static float   POKEDEX_RENDER = 1.5f;
 
-    GuiTextField textfieldPokedexNb0;
-    GuiTextField textfieldLevel0;
+    GuiTextField                textfieldPokedexNb0;
+    GuiTextField                textfieldLevel0;
 
-    GuiTextField textfieldPokedexNb1;
-    GuiTextField textfieldLevel1;
+    GuiTextField                textfieldPokedexNb1;
+    GuiTextField                textfieldLevel1;
 
-    GuiTextField textfieldPokedexNb2;
-    GuiTextField textfieldLevel2;
+    GuiTextField                textfieldPokedexNb2;
+    GuiTextField                textfieldLevel2;
 
-    GuiTextField textfieldPokedexNb3;
-    GuiTextField textfieldLevel3;
+    GuiTextField                textfieldPokedexNb3;
+    GuiTextField                textfieldLevel3;
 
-    GuiTextField textfieldPokedexNb4;
-    GuiTextField textfieldLevel4;
+    GuiTextField                textfieldPokedexNb4;
+    GuiTextField                textfieldLevel4;
 
-    GuiTextField textfieldPokedexNb5;
+    GuiTextField                textfieldPokedexNb5;
 
-    GuiTextField textfieldLevel5;
-    GuiTextField textFieldName;
+    GuiTextField                textfieldLevel5;
+    GuiTextField                textFieldName;
 
-    GuiTextField textFieldType;
+    GuiTextField                textFieldType;
 
     private final EntityTrainer trainer;
 
-    String F = "false";
+    String                      F              = "false";
 
-    String T = "true";
+    String                      T              = "true";
 
     public GuiTrainerEdit(EntityTrainer trainer)
     {
@@ -85,8 +85,7 @@ public class GuiTrainerEdit extends GuiScreen
         if (guibutton.id == 2)
         {
             sendChooseToServer();
-            mc.thePlayer.addChatMessage(
-                    new TextComponentString(I18n.translateToLocal("gui.trainer.saved")));
+            mc.thePlayer.addChatMessage(new TextComponentString(I18n.translateToLocal("gui.trainer.saved")));
         }
     }
 
@@ -103,17 +102,17 @@ public class GuiTrainerEdit extends GuiScreen
         this.fontRendererObj.drawString(info, x1 + 90 - l / 2, y1 + 10, 0xffffff);
 
         int num = 0;
-        ItemStack stack = trainer.getHeldItemOffhand(); 
+        ItemStack stack = trainer.getHeldItemOffhand();
         if (stack != null)
         {
-                    int i1 = x1 + 50;
-                    int j1 = y1 - 20;
-                    int z = 0;
-                    GL11.glPushMatrix();
-                    GL11.glTranslated(i1,j1, z);
-                    GL11.glScaled(8, 8, 8);
-                    Minecraft.getMinecraft().getItemRenderer().renderItem(mc.thePlayer, stack,TransformType.GUI);
-                    GL11.glPopMatrix();
+            int i1 = x1 + 50;
+            int j1 = y1 - 20;
+            int z = 0;
+            GL11.glPushMatrix();
+            GL11.glTranslated(i1, j1, z);
+            GL11.glScaled(8, 8, 8);
+            Minecraft.getMinecraft().getItemRenderer().renderItem(mc.thePlayer, stack, TransformType.GUI);
+            GL11.glPopMatrix();
         }
 
         try
@@ -384,6 +383,7 @@ public class GuiTrainerEdit extends GuiScreen
 
         }
     }
+
     @Override
     protected void mouseClicked(int par1, int par2, int par3) throws IOException
     {
@@ -488,6 +488,7 @@ public class GuiTrainerEdit extends GuiScreen
             e.printStackTrace();
         }
     }
+
     private void sendChooseToServer()
     {
         PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
@@ -510,7 +511,7 @@ public class GuiTrainerEdit extends GuiScreen
             buff.writeBytes(textFieldName.getText().getBytes());
             buff.writeInt(textFieldType.getText().length());
             buff.writeBytes(textFieldType.getText().getBytes());
-            buff.writeInt(trainer.getId());
+            buff.writeInt(trainer.getEntityId());
         }
         catch (NumberFormatException e)
         {

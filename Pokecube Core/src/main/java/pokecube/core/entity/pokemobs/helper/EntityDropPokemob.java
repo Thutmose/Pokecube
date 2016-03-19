@@ -7,6 +7,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveConstants;
@@ -33,7 +34,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     }
 
     @Override
-    protected void dropFewItems(boolean flag, int nb)
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingModifier)
     {
         if (!getPokemonAIState(IMoveConstants.TAMED))
         {
@@ -45,9 +46,9 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
             }
         }
 
-        if (wasEaten || !flag) return;
+        if (wasEaten || !wasRecentlyHit) return;
 
-        ItemStack food = getPokedexEntry().getFoodDrop(nb);
+        ItemStack food = getPokedexEntry().getFoodDrop(lootingModifier);
         int j = 0;
         if (food != null) j = food.stackSize;
 
@@ -70,7 +71,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
 
         if (getPokemonAIState(IMoveConstants.TAMED)) return;
 
-        food = getPokedexEntry().getRandomCommonDrop(nb);
+        food = getPokedexEntry().getRandomCommonDrop(lootingModifier);
         if (food == null && this.getDropItem() != null) food = new ItemStack(this.getDropItem());
         if (food != null)
         {
@@ -78,7 +79,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         }
 
         dropItem();
-        food = getPokedexEntry().getRandomRareDrop(nb);
+        food = getPokedexEntry().getRandomRareDrop(lootingModifier);
         if (food != null)
         {
             if (rand.nextInt(7) == 0) entityDropItem(food, 0.5f);
@@ -88,6 +89,12 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         {
             if (rand.nextInt(15) == 0) entityDropItem(food, 0.5f);
         }
+    }
+    
+    @Override
+    protected void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source)
+    {
+        dropFewItems(wasRecentlyHit, lootingModifier);
     }
 
     public void dropItem()

@@ -87,6 +87,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         super(world);
         this.setSize(0.25F, 0.25F);
         this.isImmuneToFire = true;
+        this.enablePersistence();
     }
 
     public EntityPokecube(World world, EntityLivingBase shootingEntity, Entity target, ItemStack entityItem)

@@ -25,13 +25,21 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.common.ForgeVersion.CheckResult;
+import net.minecraftforge.common.ForgeVersion.Status;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -57,6 +65,7 @@ import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.core.client.ClientProxy;
 
 @SideOnly(Side.CLIENT)
 public class EventsHandlerClient
@@ -64,6 +73,48 @@ public class EventsHandlerClient
     public static interface RingChecker
     {
         boolean hasRing(EntityPlayer player);
+    }
+
+    public static class UpdateNotifier
+    {
+        public UpdateNotifier()
+        {
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        private IChatComponent getInfoMessage(CheckResult result, String name)
+        {
+            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + PokecubeMod.VERSION
+                    + EnumChatFormatting.WHITE;
+            String link = "" + result.url;
+            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
+                    + link + "\"}}";
+
+            String info = "\"" + EnumChatFormatting.GOLD + "Currently Running " + "\"";
+            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
+            return IChatComponent.Serializer.jsonToComponent(mess);
+        }
+
+        @SubscribeEvent
+        public void onPlayerJoin(TickEvent.PlayerTickEvent event)
+        {
+            if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
+            {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
+                CheckResult result = ForgeVersion.getResult(((ModContainer) o));
+                if (result.status == Status.OUTDATED)
+                {
+                    IChatComponent mess = ClientProxy.getOutdatedMessage(result, "Pokecube Core");
+                    (event.player).addChatMessage(mess);
+                }
+                else if (PokecubeMod.core.getConfig().loginmessage)
+                {
+                    IChatComponent mess = getInfoMessage(result, "Pokecube Core");
+                    (event.player).addChatMessage(mess);
+                }
+            }
+        }
     }
 
     static long                                   eventTime  = 0;
@@ -166,6 +217,7 @@ public class EventsHandlerClient
 
     public EventsHandlerClient()
     {
+        new UpdateNotifier();
     }
 
     @SubscribeEvent

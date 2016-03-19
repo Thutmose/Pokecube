@@ -13,7 +13,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.ForgeVersion;
@@ -52,6 +51,7 @@ import pokecube.core.database.Database;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import thut.core.client.ClientProxy;
 
 @Mod(modid = "pokecube_compat", name = "Pokecube Compat", version = "1.0", acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
 public class Compat
@@ -61,21 +61,6 @@ public class Compat
         public WikiInfoNotifier()
         {
             MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        @Deprecated // Use one from ThutCore whenever that is updated for a bit.
-        private IChatComponent getOutdatedMessage(CheckResult result, String name)
-        {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
-            String link = "" + result.url;
-            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
-                    + link + "\"}}";
-
-            String info = "\"" + EnumChatFormatting.RED + "New " + name
-                    + " version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
-                    + "\"";
-            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return IChatComponent.Serializer.jsonToComponent(mess);
         }
 
         @SubscribeEvent
@@ -91,7 +76,7 @@ public class Compat
                 CheckResult result = ForgeVersion.getResult(((ModContainer) o));
                 if (result.status == Status.OUTDATED)
                 {
-                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Revival");
+                    IChatComponent mess = ClientProxy.getOutdatedMessage(result, "Pokecube Revival");
                     (event.player).addChatMessage(mess);
                 }
             }

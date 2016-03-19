@@ -32,14 +32,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
-import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.common.ForgeVersion.CheckResult;
-import net.minecraftforge.common.ForgeVersion.Status;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -58,10 +53,7 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -121,63 +113,6 @@ public class EventsHandler
                 PokecubeClientPacket packet2 = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.CHOOSE1ST });
                 PokecubePacketHandler.sendToClient(packet2, event.player);
                 MinecraftForge.EVENT_BUS.unregister(this);
-            }
-        }
-    }
-
-    public static class UpdateNotifier
-    {
-        public UpdateNotifier()
-        {
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        private IChatComponent getInfoMessage(CheckResult result, String name)
-        {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + PokecubeMod.VERSION
-                    + EnumChatFormatting.WHITE;
-            String link = "" + result.url;
-            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
-                    + link + "\"}}";
-
-            String info = "\"" + EnumChatFormatting.GOLD + "Currently Running " + "\"";
-            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return IChatComponent.Serializer.jsonToComponent(mess);
-        }
-
-        @Deprecated // Use one from ThutCore whenever that is updated for a bit.
-        private IChatComponent getOutdatedMessage(CheckResult result, String name)
-        {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
-            String link = "" + result.url;
-            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
-                    + link + "\"}}";
-
-            String info = "\"" + EnumChatFormatting.RED
-                    + "New Pokecube Core version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
-                    + "\"";
-            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return IChatComponent.Serializer.jsonToComponent(mess);
-        }
-
-        @SubscribeEvent
-        public void onPlayerJoin(TickEvent.PlayerTickEvent event)
-        {
-            if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
-            {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
-                CheckResult result = ForgeVersion.getResult(((ModContainer) o));
-                if (result.status == Status.OUTDATED)
-                {
-                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Core");
-                    (event.player).addChatMessage(mess);
-                }
-                else if (PokecubeMod.core.getConfig().loginmessage)
-                {
-                    IChatComponent mess = getInfoMessage(result, "Pokecube Core");
-                    (event.player).addChatMessage(mess);
-                }
             }
         }
     }
@@ -321,7 +256,6 @@ public class EventsHandler
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         PokemobAIThread aiTicker = new PokemobAIThread();
         MinecraftForge.EVENT_BUS.register(aiTicker);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new UpdateNotifier();
     }
 
     @SubscribeEvent

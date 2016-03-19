@@ -424,6 +424,7 @@ item.megastone.name=Mega Stone
 item.revive.name=Revive
 
 item.shiny_charm.name=Shiny Charm
+
 item.gardevoirmega.name=Gardevoirite
 item.charizardmega-y.name=Charizardite Y
 item.scizormega.name=Scizorite
@@ -432,6 +433,8 @@ item.salamencemega.name=Salamencite
 item.gallademega.name=Galladite
 item.absolmega.name=Absolite
 item.blastoisemega.name=Blastoisinite
+item.slowbromega.name=Slowbronite
+
 item.alphaorb.name=Alpha Orb
 item.omegaorb.name=Omega Orb
 

@@ -108,13 +108,6 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
         return BerryManager.getBerryItem(berryName);
     }
 
-    /** The type of render function that is called for this block */
-    @Override
-    public int getRenderType()
-    {
-        return super.getRenderType();
-    }
-
     /** Returns the quantity of items to drop on block destruction. */
     @Override
     public int quantityDropped(Random par1Random)

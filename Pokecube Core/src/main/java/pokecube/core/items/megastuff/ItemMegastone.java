@@ -8,7 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.handlers.HeldItemHandler;
@@ -80,11 +79,5 @@ public class ItemMegastone extends Item
             stack.getTagCompound().setString("pokemon", s);
             subItems.add(stack);
         }
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
-    {
-        return itemstack;
     }
 }

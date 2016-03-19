@@ -24,8 +24,6 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.network.PokecubePacketHandler;
@@ -59,13 +57,6 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
         OBJModel.OBJState retState = new OBJModel.OBJState(
                 tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) : tileEntity.visible, true);
         return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public int getRenderType()
-    {
-        return super.getRenderType();// RenderPokecubeTable.ID;
     }
 
     @Override

@@ -24,8 +24,6 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
@@ -87,13 +85,6 @@ public class BlockPC extends Block implements ITileEntityProvider
         int ret = state.getValue(FACING).getIndex();
         if ((state.getValue(TOP))) ret += 8;
         return ret;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public int getRenderType()
-    {
-        return super.getRenderType();
     }
 
     @Override
@@ -162,11 +153,6 @@ public class BlockPC extends Block implements ITileEntityProvider
         {
             return true;
         }
-    }
-
-    @Override
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
-    {
     }
 
     @Override

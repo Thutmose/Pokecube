@@ -178,25 +178,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         initAI(location, stationary);
     }
 
-    protected void initAI(Vector3 location, boolean stationary)
-    {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAITrainer(this, EntityPlayer.class));
-        this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
-        this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
-        this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
-        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
-        this.tasks.addTask(9, new EntityAIWander(this, 0.6D));
-        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
-        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
-        this.tasks.addTask(1, guardAI);
-        if (location != null)
-        {
-            location.moveEntity(this);
-            if (stationary) setStationary(location);
-        }
-    }
-
     private void addMobTrades(ItemStack buy1)
     {
         for (int i = 0; i < pokecubes.length; i++)
@@ -436,6 +417,25 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public TypeTrainer getType()
     {
         return type;
+    }
+
+    protected void initAI(Vector3 location, boolean stationary)
+    {
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(1, new EntityAITrainer(this, EntityPlayer.class));
+        this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
+        this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
+        this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
+        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
+        this.tasks.addTask(9, new EntityAIWander(this, 0.6D));
+        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
+        this.tasks.addTask(1, guardAI);
+        if (location != null)
+        {
+            location.moveEntity(this);
+            if (stationary) setStationary(location);
+        }
     }
 
     public void initTrainer(TypeTrainer type, int level)

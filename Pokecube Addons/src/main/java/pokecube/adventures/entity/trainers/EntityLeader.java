@@ -87,6 +87,19 @@ public class EntityLeader extends EntityTrainer
     }
 
     @Override
+    public void onDefeated(Entity defeater)
+    {
+        if (hasDefeated(defeater)) return;
+        defeaters.add(defeater.getUniqueID().toString());
+        for (int i = 1; i < 5; i++)
+        {
+            EntityEquipmentSlot slotIn = EntityEquipmentSlot.values()[i];
+            ItemStack stack = getItemStackFromSlot(slotIn);
+            if (stack != null) this.entityDropItem(stack.copy(), 0.5f);
+        }
+    }
+
+    @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
         if (!player.capabilities.isCreativeMode) return false;
@@ -100,19 +113,6 @@ public class EntityLeader extends EntityTrainer
         }
 
         return super.processInteract(player, hand, stack);
-    }
-
-    @Override
-    public void onDefeated(Entity defeater)
-    {
-        if (hasDefeated(defeater)) return;
-        defeaters.add(defeater.getUniqueID().toString());
-        for (int i = 1; i < 5; i++)
-        {
-            EntityEquipmentSlot slotIn = EntityEquipmentSlot.values()[i];
-            ItemStack stack = getItemStackFromSlot(slotIn);
-            if (stack != null) this.entityDropItem(stack.copy(), 0.5f);
-        }
     }
 
     @Override

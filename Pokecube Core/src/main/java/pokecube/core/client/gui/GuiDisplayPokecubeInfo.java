@@ -71,7 +71,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         fontRenderer = minecraft.fontRendererObj;
         instance = this;
     }
-    private void draw(RenderGameOverlayEvent.Post event)
+    protected void draw(RenderGameOverlayEvent.Post event)
     {
         int w = PokecubeMod.core.getConfig().guiOffset[0];
         int h = PokecubeMod.core.getConfig().guiOffset[1];

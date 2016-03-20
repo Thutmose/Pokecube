@@ -201,6 +201,12 @@ public class EntityTrader extends EntityVillager
         return list2;
     }
 
+    @Override
+    public void onUpdate()
+    {
+        super.onUpdate();
+    }
+
     /** Called when a player interacts with a mob. e.g. gets milk from a cow,
      * gets into the saddle on a pig. */
     @Override
@@ -249,12 +255,6 @@ public class EntityTrader extends EntityVillager
         {
             return super.processInteract(p, hand, itemstack);
         }
-    }
-
-    @Override
-    public void onUpdate()
-    {
-        super.onUpdate();
     }
 
     @Override

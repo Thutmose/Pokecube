@@ -48,45 +48,6 @@ public class GeneralCommands implements ICommand
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
-            BlockPos pos)
-    {
-        if (args.length == 2 && args[0].equalsIgnoreCase("settings"))
-        {
-            List<String> ret = new ArrayList<String>();
-
-            String text = args[1];
-            for (String name : fields)
-            {
-                if (name.contains(text))
-                {
-                    ret.add(name);
-                }
-            }
-            Collections.sort(ret, new Comparator<String>()
-            {
-                @Override
-                public int compare(String o1, String o2)
-                {
-                    return o1.compareToIgnoreCase(o2);
-                }
-            });
-
-            return ret;
-        }
-        else if (args.length == 1)
-        {
-            List<String> ret = new ArrayList<String>();
-            for (String s : options)
-            {
-                if (s.startsWith(args[0])) ret.add(s);
-            }
-            return ret;
-        }
-        return null;
-    }
-
-    @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         return true;
@@ -96,46 +57,6 @@ public class GeneralCommands implements ICommand
     public int compareTo(ICommand o)
     {
         return 0;
-    }
-
-    @Override
-    public List<String> getCommandAliases()
-    {
-        return this.aliases;
-    }
-
-    @Override
-    public String getCommandName()
-    {
-        return "pokeAdv";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender icommandsender)
-    {
-        return "pokeAdv <text>";
-    }
-
-    @Override
-    public boolean isUsernameIndex(String[] args, int index)
-    {
-        return false;
-    }
-
-    private void populateFields()
-    {
-        Class<Config> me = Config.class;
-        Configure c;
-        for (Field f : me.getDeclaredFields())
-        {
-            c = f.getAnnotation(Configure.class);
-            if (c != null)
-            {
-                f.setAccessible(true);
-                fields.add(f.getName());
-                fieldMap.put(f.getName(), f);
-            }
-        }
     }
 
     @Override
@@ -268,6 +189,85 @@ public class GeneralCommands implements ICommand
             }
         }
 
+    }
+
+    @Override
+    public List<String> getCommandAliases()
+    {
+        return this.aliases;
+    }
+
+    @Override
+    public String getCommandName()
+    {
+        return "pokeAdv";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender icommandsender)
+    {
+        return "pokeAdv <text>";
+    }
+
+    @Override
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+            BlockPos pos)
+    {
+        if (args.length == 2 && args[0].equalsIgnoreCase("settings"))
+        {
+            List<String> ret = new ArrayList<String>();
+
+            String text = args[1];
+            for (String name : fields)
+            {
+                if (name.contains(text))
+                {
+                    ret.add(name);
+                }
+            }
+            Collections.sort(ret, new Comparator<String>()
+            {
+                @Override
+                public int compare(String o1, String o2)
+                {
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+
+            return ret;
+        }
+        else if (args.length == 1)
+        {
+            List<String> ret = new ArrayList<String>();
+            for (String s : options)
+            {
+                if (s.startsWith(args[0])) ret.add(s);
+            }
+            return ret;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isUsernameIndex(String[] args, int index)
+    {
+        return false;
+    }
+
+    private void populateFields()
+    {
+        Class<Config> me = Config.class;
+        Configure c;
+        for (Field f : me.getDeclaredFields())
+        {
+            c = f.getAnnotation(Configure.class);
+            if (c != null)
+            {
+                f.setAccessible(true);
+                fields.add(f.getName());
+                fieldMap.put(f.getName(), f);
+            }
+        }
     }
 
 }

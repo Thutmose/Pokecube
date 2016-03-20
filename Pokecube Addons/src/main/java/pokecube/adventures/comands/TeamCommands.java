@@ -52,21 +52,6 @@ public class TeamCommands implements ICommand
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            List<String> ret = new ArrayList<String>();
-            for (String s : options)
-            {
-                if (s.startsWith(args[0])) ret.add(s);
-            }
-            return ret;
-        }
-        return null;
-    }
-
-    @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         return true;
@@ -76,35 +61,6 @@ public class TeamCommands implements ICommand
     public int compareTo(ICommand arg0)
     {
         return 0;
-    }
-
-    @Override
-    public List<String> getCommandAliases()
-    {
-        return aliases;
-    }
-
-    @Override
-    public String getCommandName()
-    {
-        return "pokeTeam";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
-    {
-        return "poketeam <text>";
-    }
-
-    @Override
-    public boolean isUsernameIndex(String[] args, int index)
-    {
-        String arg = args[0];
-        if (arg.equalsIgnoreCase("invite") || arg.equalsIgnoreCase("remove") || arg.equalsIgnoreCase("admin")
-                || arg.equalsIgnoreCase("unadmin"))
-            return index == 1;
-
-        return false;
     }
 
     @Override
@@ -411,6 +367,50 @@ public class TeamCommands implements ICommand
             }
 
         }
+    }
+
+    @Override
+    public List<String> getCommandAliases()
+    {
+        return aliases;
+    }
+
+    @Override
+    public String getCommandName()
+    {
+        return "pokeTeam";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender p_71518_1_)
+    {
+        return "poketeam <text>";
+    }
+
+    @Override
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    {
+        if (args.length == 1)
+        {
+            List<String> ret = new ArrayList<String>();
+            for (String s : options)
+            {
+                if (s.startsWith(args[0])) ret.add(s);
+            }
+            return ret;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isUsernameIndex(String[] args, int index)
+    {
+        String arg = args[0];
+        if (arg.equalsIgnoreCase("invite") || arg.equalsIgnoreCase("remove") || arg.equalsIgnoreCase("admin")
+                || arg.equalsIgnoreCase("unadmin"))
+            return index == 1;
+
+        return false;
     }
 
 }

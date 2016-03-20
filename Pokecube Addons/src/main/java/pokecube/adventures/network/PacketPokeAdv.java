@@ -102,19 +102,6 @@ public class PacketPokeAdv
                         e.printStackTrace();
                     }
                 }
-                if (channel == 8) // Player transforming packets
-                {
-                    try
-                    {
-                        NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
-                        String name = tag.getString("playername");
-                        PlayerAsPokemobManager.getInstance().setData(name, tag);
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
                 if (channel == 9)
                 {
                     Vector3 v = Vector3.readFromBuff(buffer);

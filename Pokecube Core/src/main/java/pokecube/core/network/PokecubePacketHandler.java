@@ -90,12 +90,12 @@ public class PokecubePacketHandler
         public void tick(ClientTickEvent event)
         {
             pokecube.core.client.gui.GuiChooseFirstPokemob.options = starter;
-            player.openGui(PokecubeCore.instance, Config.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 0,
-                    0);
+            player.openGui(PokecubeCore.instance, Config.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 0, 0);
             MinecraftForge.EVENT_BUS.unregister(this);
         }
 
     }
+
     public static class PokecubeClientPacket implements IMessage
     {
 
@@ -270,6 +270,7 @@ public class PokecubePacketHandler
                 return null;
             }
         }
+
         public static final byte CHOOSE1ST      = 0;
         public static final byte MOVEANIMATION  = 1;
         public static final byte TERRAIN        = 5;
@@ -329,6 +330,7 @@ public class PokecubePacketHandler
             buf.writeBytes(buffer);
         }
     }
+
     public static class PokecubeServerPacket implements IMessage
     {
 
@@ -371,7 +373,8 @@ public class PokecubePacketHandler
                             {
                                 byte index = buffer.readByte();
                                 if (player.getHeldItemMainhand() != null
-                                        && player.getHeldItemMainhand().getItem() == PokecubeItems.pokedex && index >= 0)
+                                        && player.getHeldItemMainhand().getItem() == PokecubeItems.pokedex
+                                        && index >= 0)
                                 {
                                     player.getHeldItemMainhand().setItemDamage(index);
                                 }
@@ -410,8 +413,8 @@ public class PokecubePacketHandler
                                         vec = new Vector4(x, y, z, w);
                                         if (vec != null)
                                         {
-                                            player.addChatMessage(
-                                                    new TextComponentString("Removed The location " + vec.toIntString()));
+                                            player.addChatMessage(new TextComponentString(
+                                                    "Removed The location " + vec.toIntString()));
                                             PokecubeSerializer.getInstance().unsetTeleport(vec,
                                                     player.getUniqueID().toString());
                                             PokecubeSerializer.getInstance().save();
@@ -432,7 +435,8 @@ public class PokecubePacketHandler
                             }
                             else if (channel == POKECUBEUSE)
                             {
-                                if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof IPokecube)
+                                if (player.getHeldItemMainhand() != null
+                                        && player.getHeldItemMainhand().getItem() instanceof IPokecube)
                                 {
                                     Vector3 targetLocation = null;
                                     Entity target = null;
@@ -454,7 +458,8 @@ public class PokecubePacketHandler
                                     if (target != null && target instanceof IPokemob) targetLocation.set(target);
 
                                     boolean used = ((IPokecube) player.getHeldItemMainhand().getItem()).throwPokecube(
-                                            player.worldObj, player, player.getHeldItemMainhand(), targetLocation, target);
+                                            player.worldObj, player, player.getHeldItemMainhand(), targetLocation,
+                                            target);
                                     if (player.getHeldItemMainhand() != null
                                             && !(!PokecubeManager.isFilled(player.getHeldItemMainhand())
                                                     && player.capabilities.isCreativeMode)
@@ -503,6 +508,7 @@ public class PokecubePacketHandler
                 return null;
             }
         }
+
         public static final byte CHOOSE1ST      = 0;
         public static final byte POKECENTER     = 3;
         public static final byte POKEMOBSPAWNER = 4;
@@ -555,6 +561,7 @@ public class PokecubePacketHandler
             buf.writeBytes(buffer);
         }
     }
+
     public static class StarterInfo
     {
         public static void processStarterInfo(String[] infos)
@@ -594,6 +601,7 @@ public class PokecubePacketHandler
                 specialStarters.put(username, info);
             }
         }
+
         public final String  name;
         public final String  data;
         public int           red     = 255;
@@ -701,21 +709,22 @@ public class PokecubePacketHandler
             return name + " " + data;
         }
     }
-    public final static byte CHANNEL_ID_ChooseFirstPokemob = 0;
-    public final static byte CHANNEL_ID_PokemobMove        = 1;
 
-    public final static byte CHANNEL_ID_EntityPokemob      = 2;
-    public final static byte CHANNEL_ID_HealTable          = 3;
+    public final static byte                     CHANNEL_ID_ChooseFirstPokemob = 0;
+    public final static byte                     CHANNEL_ID_PokemobMove        = 1;
 
-    public final static byte CHANNEL_ID_PokemobSpawner     = 4;
+    public final static byte                     CHANNEL_ID_EntityPokemob      = 2;
+    public final static byte                     CHANNEL_ID_HealTable          = 3;
 
-    public final static byte CHANNEL_ID_STATS              = 6;
+    public final static byte                     CHANNEL_ID_PokemobSpawner     = 4;
 
-    public static boolean    giveHealer                    = true;
+    public final static byte                     CHANNEL_ID_STATS              = 6;
 
-    public static boolean    serverOffline                 = false;
+    public static boolean                        giveHealer                    = true;
 
-    public static HashMap<String, StarterInfo[]> specialStarters = new HashMap<String, StarterInfo[]>();
+    public static boolean                        serverOffline                 = false;
+
+    public static HashMap<String, StarterInfo[]> specialStarters               = new HashMap<String, StarterInfo[]>();
 
     private static void handlePacketGuiChooseFirstPokemobClient(byte[] packet, EntityPlayer player)
     {
@@ -911,10 +920,15 @@ public class PokecubePacketHandler
             {
                 target.set(attacked);
             }
+            if (attacker == null)
+            {
+                attacker = FMLClientHandler.instance().getClient().thePlayer;
+            }
 
             if (move.getAnimation() != null && attacker != null)
             {
-                MoveAnimation anim = new MoveAnimation(attacker, attacked, target, move, move.getAnimation().getDuration());
+                MoveAnimation anim = new MoveAnimation(attacker, attacked, target, move,
+                        move.getAnimation().getDuration());
                 MoveAnimationHelper.Instance().addMove(attacker, anim);
             }
         }

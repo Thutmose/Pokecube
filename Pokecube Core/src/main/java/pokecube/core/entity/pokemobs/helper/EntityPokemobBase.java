@@ -446,7 +446,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void moveEntity(double x, double y, double z)
     {
-        if (!multibox)
+        if (!multibox || !this.addedToChunk)
         {
             super.moveEntity(x, y, z);
             return;

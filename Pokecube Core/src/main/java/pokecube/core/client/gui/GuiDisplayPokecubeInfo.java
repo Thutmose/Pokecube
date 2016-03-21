@@ -46,21 +46,23 @@ import thut.api.maths.Vector3;
 
 public class GuiDisplayPokecubeInfo extends Gui
 {
-    protected static int                  lightGrey = 0xDDDDDD;
-    private static GuiDisplayPokecubeInfo instance;
+    protected static int                 lightGrey = 0xDDDDDD;
+    public static GuiDisplayPokecubeInfo instance;
+
     public static GuiDisplayPokecubeInfo instance()
     {
         return instance;
     }
-    protected FontRenderer                fontRenderer;
 
-    protected Minecraft                   minecraft;
+    protected FontRenderer fontRenderer;
 
-    IPokemob[] arrayRet       = new IPokemob[0];
+    protected Minecraft    minecraft;
 
-    int        refreshCounter = 0;
+    IPokemob[]             arrayRet       = new IPokemob[0];
 
-    int indexPokemob = 0;
+    int                    refreshCounter = 0;
+
+    int                    indexPokemob   = 0;
 
     /**
      *
@@ -71,6 +73,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         fontRenderer = minecraft.fontRendererObj;
         instance = this;
     }
+
     protected void draw(RenderGameOverlayEvent.Post event)
     {
         int w = PokecubeMod.core.getConfig().guiOffset[0];
@@ -113,7 +116,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         int n = pokemobs.length;
         if (pokemob != null)
         {
-//            pokemob.setMoveIndex(pokemob.getMoveIndex());
+            // pokemob.setMoveIndex(pokemob.getMoveIndex());
 
             if (pokemob.getMoveIndex() == 5)
             {
@@ -155,7 +158,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                 h -= 25 + 12 * (moveCount - 1);
                 // h1 = 0;
             }
-//            pokemob.setMoveIndex(pokemob.getMoveIndex());
+            // pokemob.setMoveIndex(pokemob.getMoveIndex());
 
             for (moveIndex = 0; moveIndex < 4; moveIndex++)
             {
@@ -226,7 +229,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
             int id = pokemob.getPokemonUID();
 
-            if (owner && !pokemob.getPokemonAIState(IMoveConstants.SITTING) && !pokemob.getPokemonAIState(IMoveConstants.GUARDING)
+            if (owner && !pokemob.getPokemonAIState(IMoveConstants.SITTING)
+                    && !pokemob.getPokemonAIState(IMoveConstants.GUARDING)
                     && !pokemob.getPokemonAIState(IMoveConstants.STAYING) && !added.contains(id))
             {
                 ret.add(pokemob);
@@ -346,8 +350,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
-                String mess = I18n.translateToLocalFormatted("pokemob.command.attack",
-                        pokemob.getPokemonDisplayName(), target.getName());
+                String mess = I18n.translateToLocalFormatted("pokemob.command.attack", pokemob.getPokemonDisplayName(),
+                        target.getName());
                 pokemob.displayMessageToOwner(mess);
                 attack = true;
             }

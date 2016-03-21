@@ -1,27 +1,33 @@
-/**
- *
- */
 package pokecube.modelloader;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.ProgressManager;
+import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -33,8 +39,9 @@ import pokecube.modelloader.common.ExtraDatabase;
  * @author Manchou */
 public class CommonProxy implements IGuiHandler
 {
-    public static HashMap<String, Object>            modelProviders = new HashMap<String, Object>();
-    public static HashMap<String, ArrayList<String>> modModels      = new HashMap<String, ArrayList<String>>();
+    public static HashMap<String, Object>            modelProviders = Maps.newHashMap();
+    public static HashMap<String, ArrayList<String>> modModels      = Maps.newHashMap();
+    private HashMap<String, XMLLocs>                 xmlFiles       = Maps.newHashMap();
     public static final String                       MODELPATH      = "models/pokemobs/";
     /** texture folder */
     public final static String                       TEXTUREPATH    = "textures/entities/";
@@ -42,7 +49,18 @@ public class CommonProxy implements IGuiHandler
 
     private static final char                        SLASH          = '/';
 
-    private HashMap<String, Object>                  mobProviders   = new HashMap<String, Object>();
+    private HashMap<String, Object>                  mobProviders   = Maps.newHashMap();
+
+    private void addXML(ResourceLocation xml, Object location)
+    {
+        XMLLocs locs = xmlFiles.get(xml.toString());
+        if (locs == null)
+        {
+            xmlFiles.put(xml.toString(), locs = new XMLLocs());
+        }
+        if (location instanceof File) locs.directFiles.add((File) location);
+        else if (location instanceof ZippedLoc) locs.jarlocs.add((ZippedLoc) location);
+    }
 
     private void checkInFolder(File resourceDir, boolean[] ret, ResourceLocation[] files)
     {
@@ -62,6 +80,10 @@ public class CommonProxy implements IGuiHandler
                             + file.getResourcePath());
                     if (f.exists())
                     {
+                        if (file.getResourcePath().contains(".xml"))
+                        {
+                            addXML(file, f);
+                        }
                         ret[n] = true;
                     }
                 }
@@ -83,6 +105,11 @@ public class CommonProxy implements IGuiHandler
                             if (file == null) continue;
                             if (s.contains(file.getResourceDomain()) && s.endsWith(file.getResourcePath()))
                             {
+                                if (file.getResourcePath().contains(".xml"))
+                                {
+                                    ZippedLoc loc = new ZippedLoc(folder, entry.getName());
+                                    addXML(file, loc);
+                                }
                                 ret[n] = true;
                             }
                         }
@@ -114,6 +141,11 @@ public class CommonProxy implements IGuiHandler
                             if (file == null) continue;
                             if (s.contains(file.getResourceDomain()) && s.endsWith(file.getResourcePath()))
                             {
+                                if (file.getResourcePath().contains(".xml"))
+                                {
+                                    ZippedLoc loc = new ZippedLoc(resourceDir, entry.getName());
+                                    addXML(file, loc);
+                                }
                                 ret[n] = true;
                             }
                         }
@@ -131,25 +163,49 @@ public class CommonProxy implements IGuiHandler
 
     void fileAsList(Object mod, ResourceLocation file, ArrayList<String> toFill) throws Exception
     {
-        File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
-        // Check Resource Packs
-        if (ModPokecubeML.checkResourcesForModels && fillFromFolder(mod, resourceDir, file, toFill)) return;
-        // Check jars.
-        String scannedPackage = mod.getClass().getPackage().getName();
-        String scannedPath = scannedPackage.replace(DOT, SLASH);
-        URL scannedUrl = Thread.currentThread().getContextClassLoader().getResource(scannedPath);
-        if (scannedUrl == null) return;
-        resourceDir = new File(java.net.URLDecoder.decode(scannedUrl.getFile(), Charset.defaultCharset().name()));
-        if (resourceDir.toString().contains("file:") && resourceDir.toString().contains(".jar"))
+        String name = file.toString();
+        XMLLocs locations = xmlFiles.get(name);
+        if (locations != null)
         {
-            String name = resourceDir.toString();
-            name = name.replace("file:", "");
-            name = name.replaceAll("(.jar)(.*)", ".jar");
-            resourceDir = new File(name);
-            FMLLog.getLogger().debug("Checking in " + resourceDir + " " + mod);
+            // TODO sort this to allow prioritizing resources.
+            for (File f : locations.directFiles)
+            {
+                if (f.exists())
+                {
+                    FileReader reader = new FileReader(f);
+                    BufferedReader br = new BufferedReader(reader);
+                    String line = null;
+                    while ((line = br.readLine()) != null)
+                    {
+                        toFill.add(line);
+                    }
+                    br.close();
+                    return;
+                }
+            }
+            for (ZippedLoc f : locations.jarlocs)
+            {
+                Reader reader = new InputStreamReader(f.getStream());
+                BufferedReader br = new BufferedReader(reader);
+                String line = null;
+                while ((line = br.readLine()) != null)
+                {
+                    toFill.add(line);
+                }
+                br.close();
+
+                try
+                {
+                    f.close();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+                return;
+            }
         }
-        else resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
-        fillFromFolder(mod, resourceDir, file, toFill);
     }
 
     private void filesExist(Object mod, boolean[] ret, ResourceLocation[] file) throws UnsupportedEncodingException
@@ -174,98 +230,6 @@ public class CommonProxy implements IGuiHandler
         }
         else resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
         checkInFolder(resourceDir, ret, file);
-    }
-
-    private boolean fillFromFolder(Object mod, File resourceDir, ResourceLocation file, ArrayList<String> toFill)
-            throws Exception
-    {
-        if (!resourceDir.exists()) return false;
-        if (resourceDir.isDirectory()) for (File folder : resourceDir.listFiles())
-        {
-            if (folder.isDirectory())
-            {
-                File f = new File(folder,
-                        "assets" + File.separator + file.getResourceDomain() + File.separator + file.getResourcePath());
-                if (f.exists())
-                {
-                    FileReader reader = new FileReader(f);
-                    BufferedReader br = new BufferedReader(reader);
-                    String line = null;
-                    while ((line = br.readLine()) != null)
-                    {
-                        toFill.add(line);
-                    }
-                    br.close();
-                    return true;
-                }
-            }
-            else if (folder.getName().contains(".zip") || folder.getName().contains(".jar"))
-            {
-                try
-                {
-                    ZipFile zip = new ZipFile(folder);
-                    Enumeration<? extends ZipEntry> entries = zip.entries();
-                    while (entries.hasMoreElements())
-                    {
-                        ZipEntry entry = entries.nextElement();
-                        String s = entry.getName();
-                        if (s.contains(file.getResourceDomain()) && s.endsWith(file.getResourcePath()))
-                        {
-                            InputStreamReader reader = new InputStreamReader(zip.getInputStream(entry));
-                            BufferedReader br = new BufferedReader(reader);
-                            String line = null;
-                            while ((line = br.readLine()) != null)
-                            {
-                                toFill.add(line);
-                            }
-                            br.close();
-                            return true;
-                        }
-                    }
-                    zip.close();
-                }
-                catch (Exception e)
-                {
-                    if (!folder.getName().contains(".jar")) e.printStackTrace();
-                }
-
-            }
-        }
-        else
-        {
-            if (resourceDir.getName().contains(".zip") || resourceDir.getName().contains(".jar"))
-            {
-                try
-                {
-                    ZipFile zip = new ZipFile(resourceDir);
-                    Enumeration<? extends ZipEntry> entries = zip.entries();
-                    while (entries.hasMoreElements())
-                    {
-                        ZipEntry entry = entries.nextElement();
-                        String s = entry.getName();
-                        if (s.contains(file.getResourceDomain()) && s.endsWith(file.getResourcePath()))
-                        {
-                            InputStreamReader reader = new InputStreamReader(zip.getInputStream(entry));
-                            BufferedReader br = new BufferedReader(reader);
-                            String line = null;
-                            while ((line = br.readLine()) != null)
-                            {
-                                toFill.add(line);
-                            }
-                            br.close();
-                            return true;
-                        }
-                    }
-                    zip.close();
-                }
-                catch (Exception e)
-                {
-                    if (!resourceDir.getName().contains(".jar")) e.printStackTrace();
-                }
-
-            }
-        }
-        return false;
     }
 
     @Override
@@ -308,14 +272,24 @@ public class CommonProxy implements IGuiHandler
                 ModPokecubeML.textureProviders.put(entryArr[i].getName(), ModPokecubeML.ID);
             }
         }
+
+        ProgressBar bar = ProgressManager.push("Model Locations", mobProviders.size());
         for (String modId : mobProviders.keySet())
         {
+            bar.step(modId);
             Object mod = mobProviders.get(modId);
+            xmlFiles.clear();
             boolean[] hasArr = providesModels(modId, mod, entryArr);
+            ProgressBar bar2 = ProgressManager.push("Pokemob", hasArr.length);
             for (int i = 0; i < hasArr.length; i++)
             {
-                if (!hasArr[i] || has[i]) continue;
+                if (!hasArr[i] || has[i])
+                {
+                    bar2.step("skip");
+                    continue;
+                }
                 PokedexEntry entry = entryArr[i];
+                bar2.step(entry.getName());
                 toAdd.add(entry.getName());
                 ModPokecubeML.textureProviders.put(entry.getName(), modId);
                 ArrayList<String> list = Lists.newArrayList();
@@ -333,7 +307,9 @@ public class CommonProxy implements IGuiHandler
 
                 }
             }
+            ProgressManager.pop(bar2);
         }
+        ProgressManager.pop(bar);
         ExtraDatabase.apply();
     }
 
@@ -391,5 +367,36 @@ public class CommonProxy implements IGuiHandler
             ret[i] = new ResourceLocation(modid, MODELPATH + entries[i].getName() + ext);
         }
         return ret;
+    }
+
+    private static class XMLLocs
+    {
+        Set<ZippedLoc> jarlocs     = Sets.newHashSet();
+        Set<File>      directFiles = Sets.newHashSet();
+    }
+
+    private static class ZippedLoc
+    {
+        File    file;
+        String  subPath;
+        ZipFile zip;
+
+        public ZippedLoc(File jar, String path)
+        {
+            file = jar;
+            subPath = path;
+        }
+
+        public InputStream getStream() throws ZipException, IOException
+        {
+            zip = new ZipFile(file);
+            ZipEntry entry = zip.getEntry(subPath);
+            return zip.getInputStream(entry);
+        }
+
+        public void close() throws IOException
+        {
+            zip.close();
+        }
     }
 }

@@ -71,9 +71,7 @@ public class ModPokecubeML
     @EventHandler
     public void init(FMLInitializationEvent evt)
     {
-        System.out.println("startInit");
         proxy.init();
-        System.out.println("endinit");
         if (info)
         {
             for (PokedexEntry e : Database.allFormes)

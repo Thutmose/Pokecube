@@ -11,6 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.common.collect.Maps;
 
+import net.minecraftforge.fml.common.ProgressManager;
+import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntryLoader;
@@ -26,6 +28,7 @@ public class ExtraDatabase
         @XmlElement(name = "PARTICLEEFFECTS")
         String particles;
     }
+
     @XmlRootElement(name = "ModelAnimator")
     public static class XMLFile
     {
@@ -57,11 +60,20 @@ public class ExtraDatabase
 
     public static void apply(String toApply)
     {
+        boolean bar = toApply == null;
+
+        ProgressBar loading = null;
+        if (bar)
+        {
+            loading = ProgressManager.push("XML Overrides", xmls.size());
+        }
+
         if (xmls != null) for (String s : xmls.keySet())
         {
             if (toApply != null && !toApply.equalsIgnoreCase(s)) continue;
 
             PokedexEntry entry = Database.getEntry(s);
+            if (bar) loading.step(entry.getName());
             try
             {
                 JAXBContext jaxbContext = JAXBContext.newInstance(XMLFile.class);
@@ -86,6 +98,10 @@ public class ExtraDatabase
             {
                 e.printStackTrace();
             }
+        }
+        if (bar)
+        {
+            ProgressManager.pop(loading);
         }
     }
 

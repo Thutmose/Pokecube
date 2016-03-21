@@ -466,7 +466,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 for (ItemStack stack : list)
                 {
                     ItemStack toAdd = stack.copy();
-                    if (getPokedexEntry().hasSpecialTextures[4]) toAdd.setItemDamage(15 - getSpecialInfo() & 15);
+                    if (getPokedexEntry().dyeable) toAdd.setItemDamage(15 - getSpecialInfo() & 15);
                     ret.add(toAdd);
                 }
             }

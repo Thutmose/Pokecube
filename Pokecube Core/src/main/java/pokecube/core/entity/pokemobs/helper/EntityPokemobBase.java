@@ -43,7 +43,8 @@ import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 
 /** @author Manchou, Thutmose */
-public abstract class EntityPokemobBase extends EntityHungryPokemob implements IMultibox//, IBossDisplayData
+public abstract class EntityPokemobBase extends EntityHungryPokemob implements IMultibox// ,
+                                                                                        // IBossDisplayData
 {
 
     static String[]                 unowns            = { "Unown_A", "Unown_B", "Unown_C", "Unown_D", "Unown_E",
@@ -108,8 +109,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     protected boolean canDespawn()
     {
         boolean canDespawn = getHungerTime() > PokecubeMod.core.getConfig().pokemobLifeSpan;
-        boolean checks = getPokemonAIState(IMoveConstants.TAMED) || this.getPokemonOwner() != null || getPokemonAIState(ANGRY)
-                || getAttackTarget() != null || this.hasCustomName() || isAncient() || isNoDespawnRequired();
+        boolean checks = getPokemonAIState(IMoveConstants.TAMED) || this.getPokemonOwner() != null
+                || getPokemonAIState(ANGRY) || getAttackTarget() != null || this.hasCustomName() || isAncient()
+                || isNoDespawnRequired();
         despawntimer--;
         if (checks) return false;
 
@@ -288,7 +290,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         return scale;
     }
 
-    @Override//TODO remove this
+    @Override // TODO remove this
     public String getSound()
     {
         return getPokedexEntry().getSound();
@@ -411,29 +413,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         String domain = texture == null ? getPokedexEntry().getModId() : texture.getResourceDomain();
         String texName = texture == null ? null : texture.getResourcePath();
         texName = this.getPokedexEntry().getTexture(texName, this.getSexe(), this.ticksExisted);
-        int red = rgba[0];
-        int green = rgba[1];
-        int blue = rgba[2];
-        if (this.getPokedexEntry().hasSpecialTextures[0] && red == 0 && green != 0 && blue != 0)
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Ra.png");
-        }
-        else if (this.getPokedexEntry().hasSpecialTextures[1] && blue == 0 && green != 0 && red != 0)
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Ga.png");
-        }
-        else if (this.getPokedexEntry().hasSpecialTextures[2] && blue != 0 && green == 0 && red != 0)
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Ba.png");
-        }
-        if (wasShadow && this.getPokedexEntry().hasSpecialTextures[3])
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Sh.png");
-        }
         texture = new ResourceLocation(domain, texName);
         if (!shiny) // || !getPokedexEntry().hasSpecialTextures[3])
             return texture;
@@ -602,9 +581,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         if (isAncient())
         {
-//            BossStatus.setBossStatus(this, true);
-//            BossStatus.bossName = getPokemonDisplayName();
-            //TODO Boss Stuff
+            // BossStatus.setBossStatus(this, true);
+            // BossStatus.bossName = getPokemonDisplayName();
+            // TODO Boss Stuff
         }
     }
 

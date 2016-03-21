@@ -173,7 +173,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RenderLivingBas
         dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         statusRender = true;
     }
 

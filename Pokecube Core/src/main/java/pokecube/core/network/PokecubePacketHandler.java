@@ -63,7 +63,6 @@ import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
-import thut.api.entity.IMobColourable;
 import thut.api.entity.Transporter;
 import thut.api.entity.Transporter.TelDestination;
 import thut.api.maths.Vector3;
@@ -678,7 +677,12 @@ public class PokecubePacketHandler
                     entity.setPokecubeId(0);
                     entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), false, false);
                     if (shiny) entity.setShiny(true);
-                    ((IMobColourable) entity).setRGBA(red, green, blue);
+                    if (red == 0 && Database.getEntry(entry.getName() + "R") != null)
+                        entity.changeForme(entry.getName() + "R");
+                    if (green == 0 && Database.getEntry(entry.getName() + "G") != null)
+                        entity.changeForme(entry.getName() + "G");
+                    if (blue == 0 && Database.getEntry(entry.getName() + "B") != null)
+                        entity.changeForme(entry.getName() + "B");
                     if (ability != null && AbilityManager.abilityExists(ability))
                     {
                         entity.setAbility(AbilityManager.getAbility(ability));

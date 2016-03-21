@@ -49,7 +49,7 @@ public class Proxy
 
         if (!player.worldObj.isRemote)
         {
-            new PokePlayer.SendPacket(player);
+            new EventsHandler.SendPacket(player);
         }
     }
 

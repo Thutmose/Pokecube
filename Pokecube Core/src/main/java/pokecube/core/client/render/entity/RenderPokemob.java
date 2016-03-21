@@ -256,7 +256,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         IMobColourable colour = (IMobColourable) entity;
         int[] col = colour.getRGBA();
         int[] bak = col.clone();
-        col[3] = 85;
+        col[3] = 200;
         colour.setRGBA(col);
         renderer.doRender(entity, d, d1, d2, f, partialTick);
         colour.setRGBA(bak);

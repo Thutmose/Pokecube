@@ -29,8 +29,6 @@ public class TileEntityTransformer extends TileEntityOwnable
 
     public void onInteract(EntityPlayer player)
     {
-        System.out.println(player.getEntityBoundingBox());
-
         if (worldObj.isRemote || random) return;
 
         if (canEdit(player))

@@ -2,8 +2,11 @@ package pokecube.pokeplayer;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.utils.PokeType;
 
 public class PokeInfo
 {
@@ -26,25 +29,16 @@ public class PokeInfo
         float height = originalHeight;
         float width = originalWidth;
         player.setSize(width, height);
-        boolean fly = pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats();
-        if (fly && player.capabilities.allowFlying && player.worldObj.isRemote && !player.capabilities.isCreativeMode)
-        {
-            player.capabilities.allowFlying = false;
-            player.sendPlayerAbilities();
-        }
+        setFlying(player, false);
     }
 
     public void setPlayer(EntityPlayer player)
     {
         float height = pokemob.getSize() * entry.height;
         float width = pokemob.getSize() * entry.width;
+        player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
         player.setSize(width, height);
-        boolean fly = pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats();
-        if (fly && !player.capabilities.allowFlying && player.worldObj.isRemote)
-        {
-            player.capabilities.allowFlying = true;
-            player.sendPlayerAbilities();
-        }
+        setFlying(player, true);
     }
 
     public void onUpdate(EntityPlayer player)
@@ -53,10 +47,56 @@ public class PokeInfo
         poke.onUpdate();
         player.setHealth(poke.getHealth());
         PokePlayer.proxy.copyTransform((EntityLivingBase) pokemob, player);
-        // TODO handle floating and swimming.
+        updateFloating(player);
+        updateFlying(player);
+        updateSwimming(player);
+    }
+
+    private void setFlying(EntityPlayer player, boolean set)
+    {
+        boolean fly = pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys();
+        boolean check = set ? !player.capabilities.allowFlying : player.capabilities.allowFlying;
+        if (fly && check && player.worldObj.isRemote && !player.capabilities.isCreativeMode)
+        {
+            player.capabilities.allowFlying = set;
+            player.sendPlayerAbilities();
+        }
+    }
+
+    private void updateFlying(EntityPlayer player)
+    {
         if (pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys())
         {
             player.fallDistance = 0;
         }
     }
+
+    private void updateFloating(EntityPlayer player)
+    {
+        if (!player.isSneaking() && pokemob.getPokedexEntry().floats() && !player.capabilities.isFlying)
+        {
+            double h = pokemob.getPokedexEntry().preferedHeight;
+            Vec3 start = new Vec3(player.posX, player.posY, player.posZ);
+            Vec3 end = new Vec3(player.posX, player.posY - h, player.posZ);
+
+            MovingObjectPosition position = player.worldObj.rayTraceBlocks(start, end, true, true, false);
+
+            if (position != null)
+            {
+                double d = position.hitVec.subtract(start).lengthVector();
+                if (d < 0.9 * h) player.motionY += 0.1;
+                else player.motionY = 0;
+            }
+            else
+            {
+                player.motionY *= 0.6;
+            }
+        }
+    }
+
+    private void updateSwimming(EntityPlayer player)
+    {
+        if (pokemob.getPokedexEntry().swims() || pokemob.isType(PokeType.water)) player.setAir(300);
+    }
+
 }

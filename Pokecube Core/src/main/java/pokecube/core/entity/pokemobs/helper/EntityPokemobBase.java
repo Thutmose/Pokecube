@@ -422,29 +422,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         String domain = texture == null ? getPokedexEntry().getModId() : texture.getResourceDomain();
         String texName = texture == null ? null : texture.getResourcePath();
         texName = this.getPokedexEntry().getTexture(texName, this.getSexe(), this.ticksExisted);
-        int red = rgba[0];
-        int green = rgba[1];
-        int blue = rgba[2];
-        if (this.getPokedexEntry().hasSpecialTextures[0] && red == 0 && green != 0 && blue != 0)
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Ra.png");
-        }
-        else if (this.getPokedexEntry().hasSpecialTextures[1] && blue == 0 && green != 0 && red != 0)
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Ga.png");
-        }
-        else if (this.getPokedexEntry().hasSpecialTextures[2] && blue != 0 && green == 0 && red != 0)
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Ba.png");
-        }
-        if (wasShadow && this.getPokedexEntry().hasSpecialTextures[3])
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Sh.png");
-        }
         texture = new ResourceLocation(domain, texName);
         if (!shiny) // || !getPokedexEntry().hasSpecialTextures[3])
             return texture;

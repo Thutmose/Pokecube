@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -58,12 +59,12 @@ public class TileEntityTransformer extends TileEntityOwnable
         if (worldObj.isRemote) return;
         boolean isPokemob = player.getEntityData().getBoolean("isPokemob");
 
-        if (stack != null && !isPokemob)
+        if ((stack != null || random) && !isPokemob)
         {
             IPokemob pokemob = getPokemob();
             if (pokemob != null) PokePlayer.proxy.setPokemob(player, pokemob);
         }
-        else if (stack == null && isPokemob)
+        else if (stack == null && !random && isPokemob)
         {
             PokePlayer.proxy.setPokemob(player, null);
         }
@@ -83,7 +84,14 @@ public class TileEntityTransformer extends TileEntityOwnable
                 List<Integer> numbers = Lists.newArrayList(Database.data.keySet());
                 num = numbers.get(worldObj.rand.nextInt(numbers.size()));
             }
-            return (IPokemob) PokecubeMod.core.createEntityByPokedexNb(num, worldObj);
+            Entity entity = PokecubeMod.core.createEntityByPokedexNb(num, worldObj);
+
+            if (entity != null)
+            {
+                ((IPokemob) entity).specificSpawnInit();
+            }
+
+            return (IPokemob) entity;
         }
         IPokemob pokemob = PokecubeManager.itemToPokemob(stack, worldObj);
         return pokemob;

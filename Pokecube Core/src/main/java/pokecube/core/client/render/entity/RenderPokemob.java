@@ -387,13 +387,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 float s = (ticks) / max;
                 GL11.glScalef(s, s, s);
             }
-            boolean shouldColour = (red == blue && blue == green && green == 0);
-            boolean redCheck = mob.getPokedexEntry().hasSpecialTextures[0] && red == 0;
-            boolean blueCheck = mob.getPokedexEntry().hasSpecialTextures[1] && blue == 0;
-            boolean greenCheck = mob.getPokedexEntry().hasSpecialTextures[2] && green == 0;
-            shouldColour = shouldColour || (!redCheck && !blueCheck && !greenCheck);
-
-            if (shouldColour) GL11.glColor4f(red, green, blue, alpha);
+            GL11.glColor4f(red, green, blue, alpha);
         }
         if ((time != GuiPokedex.POKEDEX_RENDER))
         {

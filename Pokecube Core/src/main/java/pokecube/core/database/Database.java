@@ -19,12 +19,10 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.BiomeDictionary.Type;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ProgressManager;
+import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.TypeEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -951,65 +949,47 @@ public class Database implements IMoveConstants
     {
         PokedexEntryLoader.postInit();
         loadSpawns();
+        ProgressBar bar = ProgressManager.push("Removal Checking", data.size());
         List<PokedexEntry> toRemove = new ArrayList<PokedexEntry>();
         for (PokedexEntry p : data.values())
         {
+            bar.step(p.getName());
             if (!Pokedex.getInstance().getEntries().contains(p.getPokedexNb()))
             {
                 toRemove.add(p);
             }
         }
+        ProgressManager.pop(bar);
+        bar = ProgressManager.push("Removal", toRemove.size());
         for (PokedexEntry p : toRemove)
         {
+            bar.step(p.getName());
             data.remove(p.pokedexNb);
             spawnables.remove(p);
         }
+        ProgressManager.pop(bar);
         System.err.println("Removed " + toRemove.size() + " Missing Pokemon");
-
+        bar = ProgressManager.push("Relations", data.size());
         for (PokedexEntry p : data.values())
         {
+            bar.step(p.getName());
             p.initRelations();
         }
-
+        ProgressManager.pop(bar);
+        bar = ProgressManager.push("Prey", data.size());
         for (PokedexEntry p : data.values())
         {
+            bar.step(p.getName());
             p.initPrey();
         }
-
+        ProgressManager.pop(bar);
+        bar = ProgressManager.push("Children", data.size());
         for (PokedexEntry p : data.values())
         {
+            bar.step(p.getName());
             p.getChildNb();
         }
-
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) for (PokedexEntry p : Database.data.values())
-        {
-            try
-            {
-                String args = p.getTexture((byte) 0).substring(0, p.getTexture((byte) 0).length() - 4);
-                args = args + "Sh.png";
-                ResourceLocation tex = new ResourceLocation(p.getModId(), args);
-                Minecraft.getMinecraft().getResourceManager().getResource(tex);
-
-                p.hasSpecialTextures[3] = true;
-
-            }
-            catch (Exception e)
-            {
-            }
-            try
-            {
-                String args = p.getTexture((byte) 0).substring(0, p.getTexture((byte) 0).length() - 4);
-                args = args + "Ra.png";
-                ResourceLocation tex = new ResourceLocation(p.getModId(), args);
-                Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                p.hasSpecialTextures[0] = true;
-
-            }
-            catch (Exception e)
-            {
-            }
-
-        }
+        ProgressManager.pop(bar);
         toRemove.clear();
         for (PokedexEntry e : allFormes)
         {

@@ -67,13 +67,11 @@ public class ModPokecubeML
         ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
         meta.parent = PokecubeMod.ID;
     }
-
+    
     @EventHandler
     public void init(FMLInitializationEvent evt)
     {
-        System.out.println("startInit");
         proxy.init();
-        System.out.println("endinit");
         if (info)
         {
             for (PokedexEntry e : Database.allFormes)

@@ -1,6 +1,3 @@
-/**
- *
- */
 package pokecube.modelloader.client;
 
 import java.util.ArrayList;
@@ -20,6 +17,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.b3d.B3DLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.fml.common.ProgressManager;
+import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -31,7 +30,6 @@ import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.client.render.TabulaPackLoader;
 import pokecube.modelloader.items.ItemModelReloader;
 
-/** @author Manchou */
 public class ClientProxy extends CommonProxy
 {
 
@@ -67,10 +65,14 @@ public class ClientProxy extends CommonProxy
             }
         });
 
+        ProgressBar bar = ProgressManager.push("Model Locations", modList.size());
         for (String mod : modList)
         {
+            bar.step(mod);
+            ProgressBar bar2 = ProgressManager.push("Pokemob", Database.allFormes.size());
             for (PokedexEntry p : Database.allFormes)
             {
+                bar2.step(p.getName());
                 try
                 {
                     ResourceLocation tex = new ResourceLocation(mod, AnimationLoader.MODELPATH + p.getName() + ".xml");
@@ -120,16 +122,20 @@ public class ClientProxy extends CommonProxy
                     }
                 }
             }
+            ProgressManager.pop(bar2);
             if (modModels.containsKey(mod))
             {
                 HashSet<String> alternateFormes = Sets.newHashSet();
+                bar2 = ProgressManager.push("Pokemob", modModels.get(mod).size());
                 for (String s : modModels.get(mod))
                 {
+                    bar2.step(s);
                     if (!AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s, alternateFormes))
                     {
                         TabulaPackLoader.loadModel(mod + ":" + AnimationLoader.MODELPATH + s, alternateFormes);
                     }
                 }
+                ProgressManager.pop(bar2);
                 for (String s : alternateFormes)
                 {
                     if (!AnimationLoader.initModel(s, alternateFormes))
@@ -139,6 +145,7 @@ public class ClientProxy extends CommonProxy
                 }
             }
         }
+        ProgressManager.pop(bar);
         TabulaPackLoader.postProcess();
         registerRenderInformation();
     }

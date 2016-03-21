@@ -24,6 +24,8 @@ import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.BiomeDictionary.Type;
+import net.minecraftforge.fml.common.ProgressManager;
+import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
@@ -462,20 +464,30 @@ public class PokedexEntryLoader
 
     public static void makeEntries(File file, boolean create) throws Exception
     {
-        if (database == null) database = loadDatabase(file);
+        ProgressBar bar = ProgressManager.push("Loading Database", 1);
+        if (database == null)
+        {
+            database = loadDatabase(file);
+        }
         else if (create)
         {
             XMLDatabase toAdd = loadDatabase(file);
             if (toAdd != null) database.pokemon.addAll(toAdd.pokemon);
             else throw new NullPointerException(file + " Contains no database");
         }
+        bar.step("Done");
+        ProgressManager.pop(bar);
+
+        bar = ProgressManager.push("Loading Pokemon", database.pokemon.size());
         for (XMLPokedexEntry xmlEntry : database.pokemon)
         {
             String name = xmlEntry.name;
+            bar.step(name);
             int number = xmlEntry.number;
             if (create) new PokedexEntry(number, name);
             updateEntry(xmlEntry, create);
         }
+        ProgressManager.pop(bar);
     }
 
     private static void parseEvols(PokedexEntry entry, StatsNode xmlStats)
@@ -737,7 +749,7 @@ public class PokedexEntryLoader
                 if (keyString.equals("stationary")) entry.canSitShoulder = Boolean.parseBoolean(value);
                 if (keyString.equals("dye"))
                 {
-                    entry.hasSpecialTextures[4] = Boolean.parseBoolean(value.split("#")[0]);
+                    entry.dyeable = Boolean.parseBoolean(value.split("#")[0]);
                     entry.defaultSpecial = Integer.parseInt(value.split("#")[1]);
                 }
             }
@@ -912,9 +924,11 @@ public class PokedexEntryLoader
 
     public static void postInit()
     {
-        System.out.println("Processing default Database Entries");
+        ProgressBar bar = ProgressManager.push("Databases",
+                Database.defaultDatabases.size() + Database.extraDatabases.size());
         for (String s : Database.defaultDatabases)
         {
+            bar.step(s);
             try
             {
                 PokedexEntryLoader.makeEntries(new File(Database.DBLOCATION + s), false);
@@ -924,9 +938,9 @@ public class PokedexEntryLoader
                 e.printStackTrace();
             }
         }
-        System.out.println("Processing config Database Entries");
         for (String s : Database.extraDatabases)
         {
+            bar.step(s);
             try
             {
                 PokedexEntryLoader.makeEntries(new File(s), false);
@@ -936,11 +950,14 @@ public class PokedexEntryLoader
                 e.printStackTrace();
             }
         }
-        System.out.println("Processing other Database Entries");
+        ProgressManager.pop(bar);
+        bar = ProgressManager.push("Overrides", overrides.size());
         for (XMLPokedexEntry entry : overrides)
         {
+            bar.step(entry.name);
             updateEntry(entry, false);
         }
+        ProgressManager.pop(bar);
     }
 
     private static boolean processWeights(String val, TypeEntry entry)

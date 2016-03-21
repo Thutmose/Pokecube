@@ -408,7 +408,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // is Dyeable
-        if (player.getHeldItem() != null && getPokedexEntry().hasSpecialTextures[4])
+        if (player.getHeldItem() != null && getPokedexEntry().dyeable)
         {
             if (player.getHeldItem().getItem() == Items.dye)
             {

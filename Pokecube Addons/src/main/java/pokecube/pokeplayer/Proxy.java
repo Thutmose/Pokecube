@@ -9,9 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 
@@ -106,6 +104,14 @@ public class Proxy
         return null;
     }
 
+    public void updateInfo(EntityPlayer player)
+    {
+        if (getPokemob(player) != null)
+        {
+            playerMap.get(player.getUniqueID()).onUpdate(player);
+        }
+    }
+
     public void init()
     {
         MinecraftForge.EVENT_BUS.register(this);
@@ -114,78 +120,5 @@ public class Proxy
     public void postInit()
     {
 
-    }
-
-    public static class PokeInfo
-    {
-        public final IPokemob     pokemob;
-        public final PokedexEntry entry;
-        public float              originalHeight;
-        public float              originalWidth;
-
-        public PokeInfo(IPokemob pokemob, EntityPlayer player)
-        {
-            this.pokemob = pokemob;
-            this.entry = pokemob.getPokedexEntry();
-            this.originalHeight = 1.8f;
-            this.originalWidth = 0.6f;
-        }
-
-        public void resetPlayer(EntityPlayer player)
-        {
-            player.eyeHeight = player.getDefaultEyeHeight();
-            float height = originalHeight;
-            float width = originalWidth;
-            float f = player.width;
-            if (width != player.width || height != player.height)
-            {
-                player.width = width;
-                player.height = height;
-                player.setEntityBoundingBox(
-                        new AxisAlignedBB(player.getEntityBoundingBox().minX, player.getEntityBoundingBox().minY,
-                                player.getEntityBoundingBox().minZ, player.getEntityBoundingBox().minX + player.width,
-                                player.getEntityBoundingBox().minY + player.height,
-                                player.getEntityBoundingBox().minZ + player.width));
-                if (player.width > f && !player.worldObj.isRemote)
-                {
-                    player.moveEntity(f - player.width, 0.0D, f - player.width);
-                }
-            }
-            boolean fly = pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats();
-            if (fly && player.capabilities.allowFlying && player.worldObj.isRemote
-                    && !player.capabilities.isCreativeMode)
-            {
-                player.capabilities.allowFlying = false;
-                player.sendPlayerAbilities();
-            }
-        }
-
-        public void setPlayer(EntityPlayer player)
-        {
-            float height = pokemob.getSize() * entry.height;
-            float width = pokemob.getSize() * entry.width;
-            float f = player.width;
-            if (width != player.width || height != player.height)
-            {
-                player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
-                player.width = width;
-                player.height = height;
-                player.setEntityBoundingBox(
-                        new AxisAlignedBB(player.getEntityBoundingBox().minX, player.getEntityBoundingBox().minY,
-                                player.getEntityBoundingBox().minZ, player.getEntityBoundingBox().minX + player.width,
-                                player.getEntityBoundingBox().minY + player.height,
-                                player.getEntityBoundingBox().minZ + player.width));
-                if (player.width > f && !player.worldObj.isRemote)
-                {
-                    player.moveEntity(f - player.width, 0.0D, f - player.width);
-                }
-            }
-            boolean fly = pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats();
-            if (fly && !player.capabilities.allowFlying && player.worldObj.isRemote)
-            {
-                player.capabilities.allowFlying = true;
-                player.sendPlayerAbilities();
-            }
-        }
     }
 }

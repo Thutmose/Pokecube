@@ -8,6 +8,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.Proxy;
 import pokecube.pokeplayer.client.gui.GuiAsPokemob;
 

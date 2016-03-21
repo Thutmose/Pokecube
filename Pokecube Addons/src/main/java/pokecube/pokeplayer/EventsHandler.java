@@ -1,19 +1,15 @@
 package pokecube.pokeplayer;
 
 import io.netty.buffer.Unpooled;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.pokeplayer.Proxy.PokeInfo;
 import pokecube.pokeplayer.network.PacketPokePlayer.MessageClient;
 
 public class EventsHandler
@@ -37,16 +33,7 @@ public class EventsHandler
     {
         if (event.phase == Phase.END)
         {
-            IPokemob pokemob = proxy.getPokemob(event.player);
-            if (pokemob != null)
-            {
-                ((Entity) pokemob).onUpdate();
-                proxy.copyTransform((EntityLivingBase) pokemob, event.player);
-                if (pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys())
-                {
-                    event.player.fallDistance = 0;
-                }
-            }
+            proxy.updateInfo(event.player);
         }
     }
 

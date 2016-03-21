@@ -23,8 +23,8 @@ import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.PokePlayer;
-import pokecube.pokeplayer.Proxy.PokeInfo;
 import thut.api.maths.Vector3;
 
 public class PacketPokePlayer

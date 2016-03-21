@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -11,8 +14,18 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Move_Base;
+import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.templates.Move_Explode;
+import pokecube.core.moves.templates.Move_Utility;
+import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.utils.PokecubeSerializer;
 import pokecube.pokeplayer.PokePlayer;
 import pokecube.pokeplayer.Proxy.PokeInfo;
+import thut.api.maths.Vector3;
 
 public class PacketPokePlayer
 {
@@ -51,6 +64,7 @@ public class PacketPokePlayer
                                     PokeInfo info = PokePlayer.proxy.playerMap.get(player.getUniqueID());
                                     info.originalHeight = h;
                                     info.originalWidth = w;
+                                    System.out.println(h + " " + w);
                                 }
                                 else
                                 {
@@ -127,10 +141,104 @@ public class PacketPokePlayer
 
     public static class MessageServer implements IMessage
     {
+        static class PacketHandler
+        {
+            final EntityPlayer player;
+            final PacketBuffer buffer;
+
+            public PacketHandler(EntityPlayer p, PacketBuffer b)
+            {
+                this.player = p;
+                this.buffer = b;
+                Runnable toRun = new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        byte channel = buffer.readByte();
+                        if (channel == MOVEUSE)
+                        {
+                            handleMoveUse(PokePlayer.proxy.getPokemob(player));
+                        }
+                        else if(channel==MOVEINDEX)
+                        {
+                            IPokemob pokemob = PokePlayer.proxy.getPokemob(player);
+                            if(pokemob!=null) pokemob.setMoveIndex(buffer.readByte());
+                        }
+                    }
+                };
+                PokecubeCore.proxy.getMainThreadListener().addScheduledTask(toRun);
+            }
+
+            private void handleMoveUse(IPokemob pokemob)
+            {
+                PacketBuffer dat = buffer;
+                int id = dat.readInt();
+                Vector3 v = Vector3.getNewVector();
+
+                if (pokemob != null)
+                {
+                    int currentMove = pokemob.getMoveIndex();
+
+                    if (currentMove == 5) { return; }
+
+                    Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
+                    boolean teleport = dat.readBoolean();
+
+                    if (teleport)
+                    {
+                        NBTTagCompound teletag = new NBTTagCompound();
+                        PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(), teletag);
+
+                        PokecubeClientPacket packe = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST,
+                                teletag);
+                        PokecubePacketHandler.sendToClient(packe, player);
+                    }
+
+                    if (move instanceof Move_Explode && (id == 0))
+                    {
+                        pokemob.executeMove(null, v.set(pokemob), 0);
+                    }
+                    else if (Move_Utility.isUtilityMove(move.name) && (id == 0))
+                    {
+                        pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);
+                    }
+                    else
+                    {
+                        Entity owner = player;
+                        if (owner != null)
+                        {
+                            Entity closest = owner.worldObj.getEntityByID(id);
+
+                            if (closest != null)
+                            {
+                                if (closest instanceof EntityLivingBase)
+                                {
+                                    ((EntityLiving) pokemob).setAttackTarget((EntityLivingBase) closest);
+                                    if (closest instanceof EntityLiving)
+                                    {
+                                        ((EntityLiving) closest).setAttackTarget((EntityLivingBase) pokemob);
+                                    }
+                                }
+                                else pokemob.executeMove(closest, v.set(closest),
+                                        closest.getDistanceToEntity((Entity) pokemob));
+                            }
+                            else if (buffer.isReadable(24))
+                            {
+                                v = Vector3.readFromBuff(buffer);
+                                pokemob.executeMove(closest, v, (float) v.distToEntity((Entity) pokemob));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
         {
             public IMessage handleServerSide(EntityPlayer player, PacketBuffer buffer)
             {
+                new PacketHandler(player, buffer);
                 return null;
             }
 
@@ -144,7 +252,8 @@ public class PacketPokePlayer
 
         }
 
-        public static final byte MESSAGEGUIAFA = 11;
+        public static final byte MOVEUSE   = 1;
+        public static final byte MOVEINDEX = 2;
 
         PacketBuffer             buffer;;
 

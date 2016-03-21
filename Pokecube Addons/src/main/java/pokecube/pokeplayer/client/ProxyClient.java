@@ -16,13 +16,24 @@ public class ProxyClient extends Proxy
     @Override
     public IPokemob getPokemob(EntityPlayer player)
     {
-        return super.getPokemob(player);
+        IPokemob ret = super.getPokemob(player);
+        if (ret != null)
+        {
+            PokeInfo info = playerMap.get(player.getUniqueID());
+            info.setPlayer(player);
+        }
+        return ret;
     }
 
     @Override
     public void init()
     {
         super.init();
+    }
+
+    public void postInit()
+    {
+        super.postInit();
         MinecraftForge.EVENT_BUS.register(new GuiAsPokemob());
     }
 
@@ -32,8 +43,11 @@ public class ProxyClient extends Proxy
         IPokemob pokemob = getPokemob(event.entityPlayer);
         if (pokemob == null) return;
         event.setCanceled(true);
+        boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
+        Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
         Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw((EntityLivingBase) pokemob, event.x, event.y,
                 event.z, event.entityPlayer.rotationYaw, event.partialRenderTick);
+        Minecraft.getMinecraft().getRenderManager().setRenderShadow(shadow);
     }
 
     @SubscribeEvent

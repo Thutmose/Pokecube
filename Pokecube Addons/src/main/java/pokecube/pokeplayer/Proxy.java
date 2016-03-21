@@ -19,8 +19,14 @@ public class Proxy
 {
     public Map<UUID, PokeInfo> playerMap = Maps.newHashMap();
 
-    private void copyTransform(EntityLivingBase to, EntityPlayer from)
+    void copyTransform(EntityLivingBase to, EntityPlayer from)
     {
+        to.posX = from.posX;
+        to.posY = from.posY;
+        to.posZ = from.posZ;
+        to.motionX = from.motionX;
+        to.motionY = from.motionY;
+        to.motionZ = from.motionZ;
         to.rotationPitch = from.rotationPitch;
         to.ticksExisted = from.ticksExisted;
         to.rotationYaw = from.rotationYaw;
@@ -28,6 +34,8 @@ public class Proxy
         to.dimension = from.dimension;
         to.prevRotationPitch = from.prevRotationPitch;
         to.prevRotationYaw = from.prevRotationYaw;
+        to.prevRenderYawOffset = from.prevRenderYawOffset;
+        to.prevRotationYawHead = from.prevRotationYawHead;
         to.onGround = from.onGround;
         to.prevLimbSwingAmount = from.prevLimbSwingAmount;
         to.limbSwing = from.limbSwing;
@@ -48,19 +56,16 @@ public class Proxy
     private void setMapping(EntityPlayer player, IPokemob pokemob)
     {
         PokeInfo info = new PokeInfo(pokemob, player);
+        info.pokemob.setPokemonOwner(player);
+        info.pokemob.setPokemonNickname(player.getName());
+        info.pokemob.setSize(info.pokemob.getSize());
         info.setPlayer(player);
+        copyTransform((EntityLivingBase) info.pokemob, player);
         playerMap.put(player.getUniqueID(), info);
         player.getEntityData().setBoolean("isPokemob", true);
         NBTTagCompound poketag = new NBTTagCompound();
         poketag.setInteger("pokenum", pokemob.getPokedexNb());
         ((Entity) pokemob).writeToNBT(poketag);
-        boolean fly = pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats();
-        if (fly)
-        {
-            System.out.println("fly " + player.capabilities.allowFlying + " " + player.capabilities.isFlying);
-            player.capabilities.allowFlying = true;
-            player.capabilities.isFlying = true;
-        }
         player.getEntityData().setTag("Pokemob", poketag);
     }
 
@@ -80,9 +85,7 @@ public class Proxy
         if (playerMap.containsKey(player.getUniqueID()))
         {
             PokeInfo info = playerMap.get(player.getUniqueID());
-            info.setPlayer(player);
             IPokemob ret = info.pokemob;
-            copyTransform((EntityLivingBase) ret, player);
             return ret;
         }
         else if (player.getEntityData().getBoolean("isPokemob"))
@@ -108,6 +111,11 @@ public class Proxy
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    public void postInit()
+    {
+
+    }
+
     public static class PokeInfo
     {
         public final IPokemob     pokemob;
@@ -119,8 +127,8 @@ public class Proxy
         {
             this.pokemob = pokemob;
             this.entry = pokemob.getPokedexEntry();
-            this.originalHeight = player.height;
-            this.originalWidth = player.width;
+            this.originalHeight = 1.8f;
+            this.originalWidth = 0.6f;
         }
 
         public void resetPlayer(EntityPlayer player)
@@ -128,7 +136,6 @@ public class Proxy
             player.eyeHeight = player.getDefaultEyeHeight();
             float height = originalHeight;
             float width = originalWidth;
-            System.out.println("Reset " + originalHeight);
             float f = player.width;
             if (width != player.width || height != player.height)
             {
@@ -143,17 +150,24 @@ public class Proxy
                 {
                     player.moveEntity(f - player.width, 0.0D, f - player.width);
                 }
+            }
+            boolean fly = pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats();
+            if (fly && player.capabilities.allowFlying && player.worldObj.isRemote
+                    && !player.capabilities.isCreativeMode)
+            {
+                player.capabilities.allowFlying = false;
+                player.sendPlayerAbilities();
             }
         }
 
         public void setPlayer(EntityPlayer player)
         {
-            player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
             float height = pokemob.getSize() * entry.height;
             float width = pokemob.getSize() * entry.width;
             float f = player.width;
             if (width != player.width || height != player.height)
             {
+                player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
                 player.width = width;
                 player.height = height;
                 player.setEntityBoundingBox(
@@ -166,7 +180,12 @@ public class Proxy
                     player.moveEntity(f - player.width, 0.0D, f - player.width);
                 }
             }
-            if (!player.worldObj.isRemote) System.out.println(player.getEntityBoundingBox());
+            boolean fly = pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats();
+            if (fly && !player.capabilities.allowFlying && player.worldObj.isRemote)
+            {
+                player.capabilities.allowFlying = true;
+                player.sendPlayerAbilities();
+            }
         }
     }
 }

@@ -5,8 +5,6 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -238,17 +236,10 @@ public class PacketPokePlayer
                         if (owner != null)
                         {
                             Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.worldObj, id, false);
+                            
                             if (closest != null)
                             {
-                                if (closest instanceof EntityLivingBase)
-                                {
-                                    ((EntityLiving) pokemob).setAttackTarget((EntityLivingBase) closest);
-                                    if (closest instanceof EntityLiving)
-                                    {
-                                        ((EntityLiving) closest).setAttackTarget((EntityLivingBase) pokemob);
-                                    }
-                                }
-                                else pokemob.executeMove(closest, v.set(closest),
+                                pokemob.executeMove(closest, v.set(closest),
                                         closest.getDistanceToEntity((Entity) pokemob));
                             }
                             else if (buffer.isReadable(24))

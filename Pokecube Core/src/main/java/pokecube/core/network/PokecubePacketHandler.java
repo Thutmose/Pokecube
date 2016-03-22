@@ -926,7 +926,7 @@ public class PokecubePacketHandler
             }
             if (attacker == null)
             {
-                attacker = FMLClientHandler.instance().getClient().thePlayer;
+                attacker = PokecubeCore.getPlayer(null);
             }
 
             if (move.getAnimation() != null && attacker != null)

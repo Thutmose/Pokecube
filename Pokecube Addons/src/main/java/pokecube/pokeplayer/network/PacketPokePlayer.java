@@ -26,13 +26,15 @@ import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.PokePlayer;
+import pokecube.pokeplayer.client.gui.GuiAsPokemob;
 import thut.api.maths.Vector3;
 
 public class PacketPokePlayer
 {
     public static class MessageClient implements IMessage
     {
-        public static final byte SETPOKE = 1;
+        public static final byte SETPOKE   = 1;
+        public static final byte MOVEINDEX = 2;
 
         static class PacketHandler
         {
@@ -71,8 +73,8 @@ public class PacketPokePlayer
                                     float w = buffer.readFloat();
                                     NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
                                     player.getEntityData().setTag("Pokemob", tag);
-                                    PokePlayer.proxy.getPokemob(player);
-                                    PokeInfo info = PokePlayer.proxy.playerMap.get(player.getUniqueID());
+                                    PokePlayer.PROXY.getPokemob(player);
+                                    PokeInfo info = PokePlayer.PROXY.playerMap.get(player.getUniqueID());
                                     info.originalHeight = h;
                                     info.originalWidth = w;
                                     info.pokemob.setPokemonOwner(player);
@@ -80,13 +82,18 @@ public class PacketPokePlayer
                                 }
                                 else
                                 {
-                                    PokePlayer.proxy.setPokemob(player, null);
+                                    PokePlayer.PROXY.setPokemob(player, null);
                                 }
                             }
                             catch (IOException e)
                             {
                                 e.printStackTrace();
                             }
+                        }
+                        else if (channel == MOVEINDEX)
+                        {
+                            int index = buffer.readByte();
+                            GuiAsPokemob.moveIndex = index;
                         }
                     }
                 };
@@ -170,12 +177,22 @@ public class PacketPokePlayer
                         byte channel = buffer.readByte();
                         if (channel == MOVEUSE)
                         {
-                            handleMoveUse(PokePlayer.proxy.getPokemob(player));
+                            handleMoveUse(PokePlayer.PROXY.getPokemob(player));
                         }
                         else if (channel == MOVEINDEX)
                         {
-                            IPokemob pokemob = PokePlayer.proxy.getPokemob(player);
-                            if (pokemob != null) pokemob.setMoveIndex(buffer.readByte());
+                            IPokemob pokemob = PokePlayer.PROXY.getPokemob(player);
+                            if (pokemob != null)
+                            {
+                                byte index = buffer.readByte();
+                                pokemob.setMoveIndex(index);
+                                PacketBuffer bufferRet = new PacketBuffer(Unpooled.buffer(2));
+                                bufferRet.writeByte(MessageClient.MOVEINDEX);
+                                bufferRet.writeByte(index);
+                                MessageClient message = new MessageClient(bufferRet);
+                                PokecubePacketHandler.sendToClient(message, player);
+                            }
+
                         }
                     }
                 };

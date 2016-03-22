@@ -1,23 +1,28 @@
 package pokecube.pokeplayer;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokeType;
+import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
 
 public class PokeInfo
 {
-    public final IPokemob     pokemob;
-    public final PokedexEntry entry;
-    public float              originalHeight;
-    public float              originalWidth;
+    public final IPokemob               pokemob;
+    public final PokedexEntry           entry;
+    public final InventoryPlayerPokemob pokeInventory;
+    public float                        originalHeight;
+    public float                        originalWidth;
 
     public PokeInfo(IPokemob pokemob, EntityPlayer player)
     {
         this.pokemob = pokemob;
+        this.pokeInventory = new InventoryPlayerPokemob(this);
         this.entry = pokemob.getPokedexEntry();
         this.originalHeight = 1.8f;
         this.originalWidth = 0.6f;
@@ -46,10 +51,21 @@ public class PokeInfo
         EntityLivingBase poke = (EntityLivingBase) pokemob;
         poke.onUpdate();
         player.setHealth(poke.getHealth());
-        PokePlayer.proxy.copyTransform((EntityLivingBase) pokemob, player);
+        PokePlayer.PROXY.copyTransform((EntityLivingBase) pokemob, player);
         updateFloating(player);
         updateFlying(player);
         updateSwimming(player);
+    }
+
+    public void saveInventory(EntityPlayer player)
+    {
+        if (pokemob != null)
+        {
+            NBTTagCompound poketag = new NBTTagCompound();
+            poketag.setInteger("pokenum", pokemob.getPokedexNb());
+            ((Entity) pokemob).writeToNBT(poketag);
+            player.getEntityData().setTag("Pokemob", poketag);
+        }
     }
 
     private void setFlying(EntityPlayer player, boolean set)

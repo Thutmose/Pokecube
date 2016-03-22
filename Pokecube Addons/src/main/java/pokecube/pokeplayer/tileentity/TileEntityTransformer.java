@@ -60,11 +60,11 @@ public class TileEntityTransformer extends TileEntityOwnable
         if ((stack != null || random) && !isPokemob)
         {
             IPokemob pokemob = getPokemob();
-            if (pokemob != null) PokePlayer.proxy.setPokemob(player, pokemob);
+            if (pokemob != null) PokePlayer.PROXY.setPokemob(player, pokemob);
         }
         else if (stack == null && !random && isPokemob)
         {
-            PokePlayer.proxy.setPokemob(player, null);
+            PokePlayer.PROXY.setPokemob(player, null);
         }
     }
 

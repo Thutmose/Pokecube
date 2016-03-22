@@ -5,10 +5,12 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
@@ -26,7 +28,7 @@ import pokecube.pokeplayer.tileentity.TileEntityTransformer;
 @Mod( // @formatter:off
         modid = PokePlayer.ID, 
         name = "Pokecube Mystery Dungeon", 
-        version = PokePlayer.version, 
+        version = PokePlayer.VERSION, 
         dependencies = PokePlayer.DEPSTRING, 
       //  guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", 
       //  updateJSON = PokePlayer.UPDATEURL, 
@@ -35,19 +37,23 @@ import pokecube.pokeplayer.tileentity.TileEntityTransformer;
 public class PokePlayer
 {
     public static final String ID         = "pokeplayer";
-    public static final String version    = "@VERSION";
+    public static final String VERSION    = "@VERSION";
     public final static String MCVERSIONS = "@MCVERSION";
     public final static String DEPSTRING  = "required-after:pokecube@@POKECUBEVERSION";
     public final static String UPDATEURL  = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/pokeplayer.json";
 
     @SidedProxy(clientSide = "pokecube.pokeplayer.client.ProxyClient", serverSide = "pokecube.pokeplayer.Proxy")
-    public static Proxy        proxy;
+    public static Proxy        PROXY;
+
+    @Instance(ID)
+    public static PokePlayer   INSTANCE;
 
     @EventHandler
     public void load(FMLInitializationEvent evt)
     {
-        new EventsHandler(proxy);
-        proxy.init();
+        new EventsHandler(PROXY);
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, PROXY);
+        PROXY.init();
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
@@ -57,7 +63,7 @@ public class PokePlayer
     @EventHandler
     public void postInit(FMLPostInitializationEvent e)
     {
-        proxy.postInit();
+        PROXY.postInit();
         PokecubeMod.core
                 .setEntityProvider(new EntityProviderPokeplayer((EntityProvider) PokecubeMod.core.getEntityProvider()));
     }

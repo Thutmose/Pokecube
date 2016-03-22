@@ -3,6 +3,7 @@ package pokecube.pokeplayer.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,6 +15,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.Proxy;
 import pokecube.pokeplayer.client.gui.GuiAsPokemob;
+import pokecube.pokeplayer.client.gui.GuiPokemob;
 
 public class ProxyClient extends Proxy
 {
@@ -72,5 +74,12 @@ public class ProxyClient extends Proxy
         IPokemob pokemob = getPokemob(Minecraft.getMinecraft().thePlayer);
         if (pokemob == null) return;
         event.setCanceled(true);
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        if (ID == POKEMOBGUI && getPokemob(player) != null) { return new GuiPokemob(player); }
+        return null;
     }
 }

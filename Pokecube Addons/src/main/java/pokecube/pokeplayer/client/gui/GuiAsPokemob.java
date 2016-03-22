@@ -25,6 +25,8 @@ import thut.api.maths.Vector3;
 
 public class GuiAsPokemob extends GuiDisplayPokecubeInfo
 {
+    public static int moveIndex = 0;
+
     public GuiAsPokemob()
     {
         super();
@@ -32,7 +34,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
 
     public IPokemob[] getPokemobsToDisplay()
     {
-        IPokemob pokemob = PokePlayer.proxy.getPokemob(minecraft.thePlayer);
+        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
         if (pokemob != null) return new IPokemob[] { pokemob };
         return super.getPokemobsToDisplay();
     }
@@ -40,13 +42,15 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
     @Override
     public IPokemob getCurrentPokemob()
     {
-        IPokemob pokemob = PokePlayer.proxy.getPokemob(minecraft.thePlayer);
-        return pokemob != null ? pokemob : super.getCurrentPokemob();
+        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
+        if (pokemob == null) return super.getCurrentPokemob();
+        if (pokemob != null) currentMoveIndex = moveIndex;
+        return pokemob;
     }
 
     public void pokemobAttack()
     {
-        IPokemob pokemob = PokePlayer.proxy.getPokemob(minecraft.thePlayer);
+        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
         if (pokemob == null)
         {
             super.pokemobAttack();
@@ -143,8 +147,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         if (!isPokemob()) super.nextMove(i);
         else
         {
-            IPokemob pokemob = PokePlayer.proxy.getPokemob(minecraft.thePlayer);
-            setMove(pokemob.getMoveIndex() + i);
+            setMove(moveIndex + i);
         }
     }
 
@@ -153,8 +156,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         if (!isPokemob()) super.previousMove(j);
         else
         {
-            IPokemob pokemob = PokePlayer.proxy.getPokemob(minecraft.thePlayer);
-            setMove(pokemob.getMoveIndex() - j);
+            setMove(moveIndex - j);
         }
     }
 
@@ -191,7 +193,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
 
     boolean isPokemob()
     {
-        IPokemob pokemob = PokePlayer.proxy.getPokemob(minecraft.thePlayer);
+        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
         return pokemob != null;
     }
 }

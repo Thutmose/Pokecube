@@ -19,7 +19,7 @@ public class EntityProviderPokeplayer extends EntityProvider
     {
         Entity ret = world.getEntityByID(id);
         if (expectsPokemob
-                && ret instanceof EntityPlayer) { return (Entity) PokePlayer.proxy.getPokemob((EntityPlayer) ret); }
+                && ret instanceof EntityPlayer) { return (Entity) PokePlayer.PROXY.getPokemob((EntityPlayer) ret); }
         return super.getEntity(world, id, expectsPokemob);
     }
 

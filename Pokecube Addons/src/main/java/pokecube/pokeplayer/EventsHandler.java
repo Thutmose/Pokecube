@@ -4,6 +4,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInvBasic;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -15,7 +16,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemPokedex;
@@ -40,9 +40,12 @@ public class EventsHandler
         if (event.entityPlayer.getHeldItem() != null && event.entityPlayer.isSneaking()
                 && event.entityPlayer.getHeldItem().getItem() instanceof ItemPokedex)
         {
-            event.setCanceled(true);
-            event.entityPlayer.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, event.entityPlayer.worldObj,
-                    event.entityPlayer.getEntityId(), 0, 0);
+             pokemob.getPokemobInventory().func_110134_a((IInvBasic) pokemob);
+            if (!event.world.isRemote)
+            {
+                event.setCanceled(true);
+                event.entityPlayer.openGui(PokePlayer.INSTANCE, Proxy.POKEMOBGUI, event.entityPlayer.worldObj, 0, 0, 0);
+            }
         }
         else if (event.action == Action.RIGHT_CLICK_AIR && event.entityPlayer.getHeldItem() != null)
         {

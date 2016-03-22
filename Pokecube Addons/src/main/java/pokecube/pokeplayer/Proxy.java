@@ -9,13 +9,18 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.pokeplayer.inventory.ContainerPokemob;
 
-public class Proxy
+public class Proxy implements IGuiHandler
 {
-    public Map<UUID, PokeInfo> playerMap = Maps.newHashMap();
+    public static final int    POKEMOBGUI = 0;
+
+    public Map<UUID, PokeInfo> playerMap  = Maps.newHashMap();
 
     void copyTransform(EntityLivingBase to, EntityPlayer from)
     {
@@ -50,6 +55,12 @@ public class Proxy
         {
             new EventsHandler.SendPacket(player);
         }
+    }
+
+    public void savePokemob(EntityPlayer player)
+    {
+        PokeInfo info = playerMap.get(player.getUniqueID());
+        if (info != null) info.saveInventory(player);
     }
 
     private void setMapping(EntityPlayer player, IPokemob pokemob)
@@ -121,5 +132,18 @@ public class Proxy
     public void postInit()
     {
 
+    }
+
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        if (ID == POKEMOBGUI && getPokemob(player) != null) { return new ContainerPokemob(player); }
+        return null;
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        return null;
     }
 }

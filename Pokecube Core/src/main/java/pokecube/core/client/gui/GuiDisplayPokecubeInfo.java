@@ -58,11 +58,12 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     protected Minecraft    minecraft;
 
-    IPokemob[]             arrayRet       = new IPokemob[0];
+    IPokemob[]             arrayRet         = new IPokemob[0];
 
-    int                    refreshCounter = 0;
+    int                    refreshCounter   = 0;
 
-    int                    indexPokemob   = 0;
+    int                    indexPokemob     = 0;
+    protected int          currentMoveIndex = 0;
 
     /**
      *
@@ -112,13 +113,11 @@ public class GuiDisplayPokecubeInfo extends Gui
             GL11.glPopMatrix();
             return;
         }
-        IPokemob pokemob = pokemobs[indexPokemob];
+        IPokemob pokemob = getCurrentPokemob();
         int n = pokemobs.length;
         if (pokemob != null)
         {
-            // pokemob.setMoveIndex(pokemob.getMoveIndex());
-
-            if (pokemob.getMoveIndex() == 5)
+            if (currentMoveIndex == 5)
             {
                 GL11.glColor4f(0.0F, 1.0F, 0.4F, 1.0F);
             }
@@ -156,20 +155,16 @@ public class GuiDisplayPokecubeInfo extends Gui
             if (dir == -1)
             {
                 h -= 25 + 12 * (moveCount - 1);
-                // h1 = 0;
             }
-            // pokemob.setMoveIndex(pokemob.getMoveIndex());
-
             for (moveIndex = 0; moveIndex < 4; moveIndex++)
             {
                 int index = moveIndex;
-                // if(dir==-1) index = 3-index;
 
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(index));
 
                 if (move != null)
                 {
-                    if (pokemob.getMoveIndex() == index) GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
+                    if (currentMoveIndex == index) GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
                     else GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     // bind texture
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
@@ -198,6 +193,10 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (indexPokemob < arrayRet.length && indexPokemob >= 0 && arrayRet.length > 0)
         {
             pokemob = arrayRet[indexPokemob];
+        }
+        if(pokemob!=null)
+        {
+            currentMoveIndex = pokemob.getMoveIndex();
         }
         return pokemob;
     }

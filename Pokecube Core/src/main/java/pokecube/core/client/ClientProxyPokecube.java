@@ -192,7 +192,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
                         if (guiID == Config.GUIPOKEMOB_ID)
                         {
-                            EntityPokemob e = (EntityPokemob) world.getEntityByID(x);
+                            IPokemob e = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, x, true);
                             return new GuiPokemob(player.inventory, e);
                         }
                         else

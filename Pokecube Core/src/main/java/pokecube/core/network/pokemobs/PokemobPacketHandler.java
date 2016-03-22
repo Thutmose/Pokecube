@@ -64,7 +64,7 @@ public class PokemobPacketHandler
                             int id = buffer.readInt();
                             IPokemob pokemob;
                             World world = player.getEntityWorld();
-                            pokemob = (IPokemob) world.getEntityByID(id);
+                            pokemob = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, id, true);
                             if (pokemob == null) { return; }
 
                             if (channel == CHANGEFORME)
@@ -171,7 +171,7 @@ public class PokemobPacketHandler
                             IPokemob pokemob;
                             WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
                                     .worldServerForDimension(player.dimension);
-                            pokemob = (IPokemob) world.getEntityByID(id);
+                            pokemob = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, id, true);
                             if (pokemob == null) { return; }
 
                             if (channel == RETURN)
@@ -397,7 +397,7 @@ public class PokemobPacketHandler
                             Entity owner = pokemob.getPokemonOwner();
                             if (owner != null)
                             {
-                                Entity closest = owner.worldObj.getEntityByID(id);
+                                Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.worldObj, id, false);
                                 if (closest instanceof IPokemob)
                                 {
                                     IPokemob target = (IPokemob) closest;

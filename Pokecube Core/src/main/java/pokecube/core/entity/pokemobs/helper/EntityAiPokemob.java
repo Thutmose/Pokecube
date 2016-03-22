@@ -66,6 +66,7 @@ import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.PokecubeMod.Type;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
@@ -873,7 +874,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             int id = dataWatcher.get(ATTACKTARGETIDDW);
             if (id >= 0 && getAttackTarget() == null)
             {
-                setAttackTarget((EntityLivingBase) worldObj.getEntityByID(id));
+                setAttackTarget((EntityLivingBase) PokecubeMod.core.getEntityProvider().getEntity(worldObj, id, false));
             }
             if (id < 0 && getAttackTarget() != null)
             {
@@ -1055,9 +1056,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Check Pokedex Entry defined Interaction for player.
         if (getPokedexEntry().interact(player, this, true)) return true;
         Item torch = Item.getItemFromBlock(Blocks.torch);
+        boolean isOwner = false;
+        if (getPokemonAIState(IMoveConstants.TAMED) && getOwner() != null)
+        {
+            isOwner = getOwner().getEntityId() == player.getEntityId();
+        }
         // Either push pokemob around, or if sneaking, make it try to climb on
         // shoulder
-        if (player == getPokemonOwner() && itemstack != null
+        if (isOwner && itemstack != null
                 && (itemstack.getItem() == Items.stick || itemstack.getItem() == torch))
         {
             if (player.isSneaking())
@@ -1078,7 +1084,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             return false;
         }
         // Debug thing to maximize happiness
-        if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.apple)
+        if (isOwner && itemstack != null && itemstack.getItem() == Items.apple)
         {
             if (player.capabilities.isCreativeMode && player.isSneaking())
             {
@@ -1086,7 +1092,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
         // Debug thing to increase hunger time
-        if (player == getPokemonOwner() && itemstack != null && itemstack.getItem() == Items.golden_hoe)
+        if (isOwner && itemstack != null && itemstack.getItem() == Items.golden_hoe)
         {
             if (player.capabilities.isCreativeMode && player.isSneaking())
             {
@@ -1094,7 +1100,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
         // Use shiny charm to make shiny
-        if (player == getPokemonOwner() && itemstack != null
+        if (isOwner && itemstack != null
                 && ItemStack.areItemStackTagsEqual(itemstack, PokecubeItems.getStack("shiny_charm")))
         {
             if (player.isSneaking())
@@ -1119,7 +1125,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // Check saddle for riding.
-        if (getPokemonAIState(SADDLED) && !player.isSneaking() && player == getPokemonOwner()
+        if (getPokemonAIState(SADDLED) && !player.isSneaking() && isOwner
                 && (itemstack == null || itemstack.getItem() != PokecubeItems.pokedex))
         {
             if (!handleHmAndSaddle(player, new ItemStack(Items.saddle)))
@@ -1134,7 +1140,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // Attempt to pick the pokemob up.
-        if (!worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking() && held == null
+        if (this.addedToChunk && !worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking() && held == null
                 && getWeight() < 40)
         {
 
@@ -1178,7 +1184,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // Owner only interactions.
-        if (getPokemonAIState(IMoveConstants.TAMED) && player == getOwner() && !PokecubeCore.isOnClientSide())
+        if (isOwner && !PokecubeCore.isOnClientSide())
         {
             if (itemstack != null)
             {
@@ -1283,7 +1289,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
             }
             // Open Gui
-            if (!PokecubeCore.isOnClientSide() && getPokemonOwner() == player && itemstack == null)
+            if (!PokecubeCore.isOnClientSide() && isOwner && itemstack == null)
             {
                 openGUI(player);
                 return true;

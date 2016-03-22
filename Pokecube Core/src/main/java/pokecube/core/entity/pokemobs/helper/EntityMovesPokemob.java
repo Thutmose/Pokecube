@@ -298,7 +298,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public int getExplosionState()
     {
-        return dataWatcher.get(BOOMSTATEDW);
+        return (int) dataWatcher.get(BOOMSTATEDW);
     }
 
     public int getLastAttackTick()

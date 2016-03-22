@@ -40,6 +40,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -159,11 +160,11 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         String[] names = { "pecha", "oran", "leppa", "sitrus" };
         BlockBerryLog.currentlyConstructing = 0;
-        log0 = new BlockBerryLog(0, names).setHardness(2.0F)//.setStepSound(Block.soundTypeWood)
+        log0 = new BlockBerryLog(0, names).setHardness(2.0F)// .setStepSound(Block.soundTypeWood)
                 .setUnlocalizedName("log0");
-        leaf0 = new BlockBerryLeaves(0, names).setHardness(0.2F).setLightOpacity(1)//.setStepSound(Block.soundTypeGrass)
+        leaf0 = new BlockBerryLeaves(0, names).setHardness(0.2F).setLightOpacity(1)// .setStepSound(Block.soundTypeGrass)
                 .setUnlocalizedName("leaves0");
-        plank0 = new BlockBerryWood(0, names).setHardness(2.0F).setResistance(5.0F)//.setStepSound(Block.soundTypeWood)
+        plank0 = new BlockBerryWood(0, names).setHardness(2.0F).setResistance(5.0F)// .setStepSound(Block.soundTypeWood)
                 .setUnlocalizedName("wood0");
 
         register(log0, ItemBlockMeta.class, "pokecube_log0");
@@ -172,9 +173,9 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         names = new String[] { "enigma", "nanab" };
         BlockBerryLog.currentlyConstructing = 4;
-        log1 = new BlockBerryLog(4, names).setHardness(2.0F)//.setStepSound(Block.soundTypeWood)
+        log1 = new BlockBerryLog(4, names).setHardness(2.0F)// .setStepSound(Block.soundTypeWood)
                 .setUnlocalizedName("log1");
-        leaf1 = new BlockBerryLeaves(4, names).setHardness(0.2F).setLightOpacity(1)//.setStepSound(Block.soundTypeGrass)
+        leaf1 = new BlockBerryLeaves(4, names).setHardness(0.2F).setLightOpacity(1)// .setStepSound(Block.soundTypeGrass)
                 .setUnlocalizedName("leaves1");
 
         register(log1, ItemBlockMeta.class, "pokecube_log1");
@@ -348,6 +349,14 @@ public class ItemHandler extends Mod_Pokecube_Helper
         megastone.setCreativeTab(creativeTabPokecube);
         register(megastone, "megastone");
         addToHoldables("megastone");
+
+        for (String s : HeldItemHandler.megaVariants)
+        {
+            ItemStack stack = new ItemStack(PokecubeItems.megastone);
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setString("pokemon", s);
+            PokecubeItems.addSpecificItemStack(s, stack);
+        }
 
         revive = (new ItemRevive()).setUnlocalizedName("revive");
         revive.setCreativeTab(creativeTabPokecube);

@@ -46,11 +46,6 @@ public class ItemTextureHandler
         for (String s : HeldItemHandler.megaVariants)
         {
             registerItemVariant("type=" + s);
-            ItemStack stack = new ItemStack(PokecubeItems.megastone);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("pokemon", s);
-            PokecubeItems.addSpecificItemStack(s, stack);
         }
-
     }
 }

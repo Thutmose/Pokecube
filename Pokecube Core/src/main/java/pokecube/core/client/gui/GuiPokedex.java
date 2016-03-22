@@ -78,7 +78,7 @@ public class GuiPokedex extends GuiScreen
      * knows the rendering is asked by the pokedex gui */
     public final static float                     POKEDEX_RENDER     = 1.5f;
 
-    protected IPokemob                            pokemob            = null;
+    public IPokemob                               pokemob            = null;
     protected EntityPlayer                        entityPlayer       = null;
     protected GuiTextField                        nicknameTextField;
     /** The X size of the inventory window in pixels. */

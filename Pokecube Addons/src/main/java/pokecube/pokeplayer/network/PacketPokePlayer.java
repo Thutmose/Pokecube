@@ -76,7 +76,6 @@ public class PacketPokePlayer
                                     info.originalWidth = w;
                                     info.pokemob.setPokemonOwner(player);
                                     info.pokemob.setPokemonNickname(player.getName());
-                                    System.out.println(h + " " + w);
                                 }
                                 else
                                 {

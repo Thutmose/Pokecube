@@ -1,15 +1,23 @@
 package pokecube.adventures.client.render.item;
 
-import baubles.common.container.InventoryBaubles;
-import baubles.common.lib.PlayerHandler;
+import java.lang.reflect.InvocationTargetException;
+
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import pokecube.adventures.client.models.items.ModelBag;
 import pokecube.adventures.items.bags.ItemBag;
 
 public class BagRenderer implements LayerRenderer<EntityPlayer>
 {
+    private static BagChecker checker = new BagChecker(null);
+
+    public static BagChecker getChecker()
+    {
+        return checker;
+    }
+
     public BagRenderer(RendererLivingEntity<?> livingEntityRendererIn)
     {
     }
@@ -18,16 +26,8 @@ public class BagRenderer implements LayerRenderer<EntityPlayer>
     public void doRenderLayer(EntityPlayer player, float f, float f1, float partialTicks, float f3, float f4, float f5,
             float scale)
     {
-        InventoryBaubles inv = PlayerHandler.getPlayerBaubles(player);
-
-        boolean bag = false;
-
-        if (inv.getStackInSlot(3) != null && inv.getStackInSlot(3).getItem() instanceof ItemBag)
-        {
-            bag = true;
-        }
-        
-        if(bag)
+        boolean bag = checker.isWearingBag(player);
+        if (bag)
         {
             ModelBag.model.render(0.5f);
         }
@@ -39,4 +39,41 @@ public class BagRenderer implements LayerRenderer<EntityPlayer>
         return false;
     }
 
+    public static class BagChecker
+    {
+
+        final BagChecker defaults;
+
+        public BagChecker(BagChecker defaults)
+        {
+            this.defaults = defaults;
+        }
+
+        /** Override this one if you want to make different type of bag.
+         * 
+         * @param player
+         * @return */
+        protected boolean hasBag(EntityPlayer player)
+        {
+            ItemStack armour = player.getCurrentArmor(2);
+            if (armour != null) return armour.getItem() instanceof ItemBag
+                    || (armour.hasTagCompound() && armour.getTagCompound().getBoolean("isapokebag"));
+            return false;
+        }
+
+        public final boolean isWearingBag(EntityPlayer player)
+        {
+            boolean ret;
+            if (!(ret = hasBag(player)) && defaults != null) return defaults.isWearingBag(player);
+            return ret;
+        }
+    }
+
+    public static void setChecker(Class<? extends BagChecker> checkerIn)
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+            NoSuchMethodException, SecurityException
+    {
+        BagChecker newchecker = checkerIn.getConstructor(BagChecker.class).newInstance(checker);
+        checker = newchecker;
+    }
 }

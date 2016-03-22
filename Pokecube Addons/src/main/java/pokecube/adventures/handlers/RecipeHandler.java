@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import pokecube.adventures.items.bags.RecipeBag;
 import pokecube.core.PokecubeItems;
 
 public class RecipeHandler
@@ -15,7 +16,6 @@ public class RecipeHandler
 
     private static void addLegendarySpawnerRecipes()
     {
-
         GameRegistry.addRecipe(getStack("registeelspawner"),
                 new Object[] { "RSR", "SRS", "RSR", 'S', Blocks.iron_block, 'R', Blocks.redstone_block });
 
@@ -40,6 +40,7 @@ public class RecipeHandler
 
     public static void register()
     {
+        GameRegistry.addRecipe(new RecipeBag());
         if (tmRecipe) GameRegistry.addRecipe(getStack("tm"), new Object[] { "SS ", "SOS", "SRS", 'S', Items.iron_ingot,
                 'O', Blocks.glass_pane, 'R', Items.redstone });
 
@@ -69,7 +70,8 @@ public class RecipeHandler
         // Mega ring
         GameRegistry.addRecipe(getStack("megaring"),
                 new Object[] { " S ", "I I", " I ", 'S', getStack("megastone"), 'I', Items.iron_ingot });
-        GameRegistry.addRecipe(getStack("pokecubebag"),
+        ItemStack output = getStack("pokecubebag");
+        GameRegistry.addRecipe(output,
                 new Object[] { "CCC", "COC", "CCC", 'C', Blocks.wool, 'O', getStack("pctop").getItem() });
 
         // Mega Stone
@@ -83,24 +85,6 @@ public class RecipeHandler
         GameRegistry.addShapelessRecipe(new ItemStack(Items.emerald), shards1, shards1, shards1, shards1, shards1,
                 shards1, shards1, shards1, shards1);
         addLegendarySpawnerRecipes();
-        // PRIEST
-        // VillagerRegistry.instance().registerVillageTradeHandler(2, new
-        // VillagerRegistry.IVillageTradeHandler() {
-        // @Override
-        // public void manipulateTradesForVillager(EntityVillager villager,
-        // MerchantRecipeList recipeList, Random random) {
-        // int rand = random.nextInt(1);
-        // switch (rand) {
-        // case 0:
-        // recipeList.add(new MerchantRecipe(
-        // new ItemStack(Items.emerald, 20),
-        // getStack("exp_share")));
-        // break;
-        // default:
-        // break;
-        // }
-        // }
-        // });
 
     }
 }

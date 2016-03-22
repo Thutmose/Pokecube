@@ -4,7 +4,6 @@ import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -18,14 +17,11 @@ import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
-import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.ItemTarget;
 import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
@@ -206,15 +202,10 @@ public class PacketPokeAdv
                 }
                 if (channel == 7)
                 {
-                    boolean pc = buffer.readBoolean();// TODO see when bag vs pc
-                                                      // packets were used
+                    boolean pc = buffer.readBoolean();
                     Vector3 v = Vector3.readFromBuff(buffer);
                     if (pc) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, v.intX(),
                             v.intY(), v.intZ());
-                    // else player.openGui(PokecubeAdv.instance,
-                    // PokecubeAdv.GUIPC_ID, player.worldObj, v.intX(),
-                    // v.intY(),
-                    // v.intZ());
                 }
                 if (channel == 9)
                 {
@@ -233,20 +224,6 @@ public class PacketPokeAdv
                     catch (Exception e)
                     {
                         e.printStackTrace();
-                    }
-                }
-                if (channel == 10)
-                {
-                    IPokemob pokemob = PlayerAsPokemobManager.getInstance().getTransformed(player);
-                    if (pokemob != null)
-                    {
-                        int id = buffer.readInt();
-                        Entity hit = player.worldObj.getEntityByID(id);
-                        if (hit != null)
-                        {
-                            String moveName = pokemob.getMove(pokemob.getMoveIndex());
-                            MovesUtils.doAttack(moveName, pokemob, hit, 0);
-                        }
                     }
                 }
                 if (channel == MESSAGEGUIAFA && player.openContainer instanceof ContainerAFA)

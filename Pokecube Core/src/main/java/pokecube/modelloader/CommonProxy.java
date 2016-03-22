@@ -42,15 +42,46 @@ import pokecube.modelloader.common.ExtraDatabase;
  * @author Manchou */
 public class CommonProxy implements IGuiHandler
 {
+    private static class XMLLocs
+    {
+        Set<ZippedLoc> jarlocs     = Sets.newHashSet();
+        Set<File>      directFiles = Sets.newHashSet();
+    }
+    private static class ZippedLoc
+    {
+        File    file;
+        String  subPath;
+        ZipFile zip;
+
+        public ZippedLoc(File jar, String path)
+        {
+            file = jar;
+            subPath = path;
+        }
+
+        public void close() throws IOException
+        {
+            zip.close();
+        }
+
+        public InputStream getStream() throws ZipException, IOException
+        {
+            zip = new ZipFile(file);
+            ZipEntry entry = zip.getEntry(subPath);
+            return zip.getInputStream(entry);
+        }
+    }
     public static HashMap<String, Object>            modelProviders = Maps.newHashMap();
     public static HashMap<String, ArrayList<String>> modModels      = Maps.newHashMap();
-    private HashMap<String, XMLLocs>                 xmlFiles       = Maps.newHashMap();
     public static final String                       MODELPATH      = "models/pokemobs/";
     /** texture folder */
     public final static String                       TEXTUREPATH    = "textures/entities/";
+
     private static final char                        DOT            = '.';
 
     private static final char                        SLASH          = '/';
+
+    private HashMap<String, XMLLocs>                 xmlFiles       = Maps.newHashMap();
 
     private HashMap<String, Object>                  mobProviders   = Maps.newHashMap();
 
@@ -370,36 +401,5 @@ public class CommonProxy implements IGuiHandler
             ret[i] = new ResourceLocation(modid, MODELPATH + entries[i].getName() + ext);
         }
         return ret;
-    }
-
-    private static class XMLLocs
-    {
-        Set<ZippedLoc> jarlocs     = Sets.newHashSet();
-        Set<File>      directFiles = Sets.newHashSet();
-    }
-
-    private static class ZippedLoc
-    {
-        File    file;
-        String  subPath;
-        ZipFile zip;
-
-        public ZippedLoc(File jar, String path)
-        {
-            file = jar;
-            subPath = path;
-        }
-
-        public InputStream getStream() throws ZipException, IOException
-        {
-            zip = new ZipFile(file);
-            ZipEntry entry = zip.getEntry(subPath);
-            return zip.getInputStream(entry);
-        }
-
-        public void close() throws IOException
-        {
-            zip.close();
-        }
     }
 }

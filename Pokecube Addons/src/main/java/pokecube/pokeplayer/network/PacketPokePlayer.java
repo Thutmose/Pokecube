@@ -52,7 +52,17 @@ public class PacketPokePlayer
                         {
                             try
                             {
+                                int id = buffer.readInt();
                                 boolean isPokemob = buffer.readBoolean();
+
+                                Entity e = player.worldObj.getEntityByID(id);
+                                EntityPlayer temp = player;
+                                EntityPlayer player = temp;
+                                if (e instanceof EntityPlayer)
+                                {
+                                    player = (EntityPlayer) e;
+                                }
+
                                 player.getEntityData().setBoolean("isPokemob", isPokemob);
                                 if (isPokemob)
                                 {
@@ -64,6 +74,8 @@ public class PacketPokePlayer
                                     PokeInfo info = PokePlayer.proxy.playerMap.get(player.getUniqueID());
                                     info.originalHeight = h;
                                     info.originalWidth = w;
+                                    info.pokemob.setPokemonOwner(player);
+                                    info.pokemob.setPokemonNickname(player.getName());
                                     System.out.println(h + " " + w);
                                 }
                                 else
@@ -160,10 +172,10 @@ public class PacketPokePlayer
                         {
                             handleMoveUse(PokePlayer.proxy.getPokemob(player));
                         }
-                        else if(channel==MOVEINDEX)
+                        else if (channel == MOVEINDEX)
                         {
                             IPokemob pokemob = PokePlayer.proxy.getPokemob(player);
-                            if(pokemob!=null) pokemob.setMoveIndex(buffer.readByte());
+                            if (pokemob != null) pokemob.setMoveIndex(buffer.readByte());
                         }
                     }
                 };

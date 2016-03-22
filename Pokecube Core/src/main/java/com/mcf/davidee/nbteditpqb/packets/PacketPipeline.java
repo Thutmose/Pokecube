@@ -1,14 +1,15 @@
 package com.mcf.davidee.nbteditpqb.packets;
 
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
+
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,7 +23,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
 
 /**
  * Packet pipeline class. Directs all registered packet data to be handled by the packets themselves.
@@ -35,7 +35,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
     private EnumMap<Side, FMLEmbeddedChannel> channels;
     private List<Class<? extends AbstractPacket>> packets;
     
-	public PacketPipeline() {
+    public PacketPipeline() {
     	packets = Arrays.asList(MouseOverPacket.class, EntityRequestPacket.class, TileRequestPacket.class, 
     			EntityNBTPacket.class, TileNBTPacket.class, TileNBTUpdatePacket.class);
     }
@@ -50,9 +50,18 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
         AbstractPacket pkt = clazz.newInstance();
         pkt.decodeInto(ctx, payload.slice());
 
-        switch (FMLCommonHandler.instance().getEffectiveSide()) {
+        //FMLCommonHandler.instance().getEffectiveSide() doesn't take in to account Netty's new "Epoll" Thread name.
+        Side side;
+        Thread thr = Thread.currentThread();
+        if (FMLCommonHandler.instance().getSide() == Side.SERVER) side = Side.SERVER;
+        else if (thr.getName().equals("Server thread") || thr.getName().startsWith("Netty Server IO") || thr.getName().startsWith("Netty Epoll Server IO")) {
+            side = Side.SERVER;
+        } else side = Side.CLIENT;
+
+        //switch (FMLCommonHandler.instance().getEffectiveSide()) {
+        switch (side) {
             case CLIENT:
-                pkt.handleClientSide(PokecubeCore.getPlayer(null));
+                pkt.handleClientSide(this.getClientPlayer());
                 break;
             case SERVER:
                 INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();

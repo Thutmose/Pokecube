@@ -1,14 +1,14 @@
 package com.mcf.davidee.nbteditpqb.gui;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
 
 import com.mcf.davidee.nbteditpqb.NBTStringHelper;
 import com.mcf.davidee.nbteditpqb.nbt.NamedNBT;
 import com.mcf.davidee.nbteditpqb.nbt.Node;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiNBTNode extends Gui{
 	

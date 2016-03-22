@@ -26,29 +26,28 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import pokecube.core.interfaces.PokecubeMod;
 
-@Mod(modid = NBTEdit.MODID, name = NBTEdit.NAME, version = NBTEdit.VERSION, acceptableRemoteVersions = "*", acceptedMinecraftVersions=PokecubeMod.MCVERSIONS)
+@Mod(modid = NBTEdit.MODID, name = NBTEdit.NAME, version = NBTEdit.VERSION, acceptableRemoteVersions = "*")
 public class NBTEdit
 {
 
-    public static final String MODID   = "NBTEditpqb";
-    public static final String NAME    = "In-game NBTEdit - Pokecube Edition";
-    public static final String VERSION = "1.8-1.0";
+    public static final String         MODID        = "NBTEditpqb";
+    public static final String         NAME         = "In-game NBTEdit - Pokecube Edition";
+    public static final String         VERSION      = "1.8.9-1.0";
 
     private static final String        SEP          = System.getProperty("line.separator");
     public static final NBTNodeSorter  SORTER       = new NBTNodeSorter();
     public static final PacketPipeline DISPATCHER   = new PacketPipeline();
     public static final char           SECTION_SIGN = '\u00A7';
 
-    private static FileHandler logHandler = null;
-    private static Logger      logger     = Logger.getLogger("NBTEdit");
+    private static FileHandler         logHandler   = null;
+    private static Logger              logger       = Logger.getLogger("NBTEditpqb");
 
-    public static NamedNBT clipboard = null;
-    public static boolean  opOnly    = true;
+    public static NamedNBT             clipboard    = null;
+    public static boolean              opOnly       = true;
 
     @Instance(MODID)
-    private static NBTEdit instance;
+    private static NBTEdit             instance;
 
     @SidedProxy(clientSide = "com.mcf.davidee.nbteditpqb.forge.ClientProxy", serverSide = "com.mcf.davidee.nbteditpqb.forge.CommonProxy")
     public static CommonProxy proxy;
@@ -81,6 +80,7 @@ public class NBTEdit
 
     private SaveStates saves;
 
+    @SuppressWarnings("deprecation")
     private void AddMeta(FMLPreInitializationEvent event)
     {
         ModMetadata m = event.getModMetadata();
@@ -88,13 +88,12 @@ public class NBTEdit
         m.modId = MODID;
         m.version = VERSION;
         m.name = NAME;
-//        m.updateUrl = "";
-        m.authorList.add("Davidee, Thutmose");
+        m.updateUrl = "";
+        m.authorList.add("Davidee");
 
         m.credits = "Thanks to Mojang, Forge, and all your support.";
-        m.description = "Allows you to edit NBT Tags in-game.\n";
-        m.url = "";
-        m.parent = PokecubeMod.ID;
+        m.description = "Allows you to edit NBT Tags in-game.\nPlease visit the URL above for help.";
+        m.url = "http://www.minecraftforum.net/topic/1558668-151/";
     }
 
     @EventHandler

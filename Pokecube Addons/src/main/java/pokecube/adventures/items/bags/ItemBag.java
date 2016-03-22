@@ -1,9 +1,16 @@
 package pokecube.adventures.items.bags;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.world.World;
+import pokecube.adventures.PokecubeAdv;
 
-@net.minecraftforge.fml.common.Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class ItemBag extends Item// implements IBauble//, IBaubleRender TODO readd baubles
+public class ItemBag extends Item
 {
     public ItemBag()
     {
@@ -13,52 +20,16 @@ public class ItemBag extends Item// implements IBauble//, IBaubleRender TODO rea
         this.setHasSubtypes(true);
     }
 
-//    @Override
-//    @Optional.Method(modid = "Baubles")
-//    public boolean canEquip(ItemStack arg0, EntityLivingBase arg1)
-//    {
-//        return true;
-//    }
-//
-//    @Override
-//    @Optional.Method(modid = "Baubles")
-//    public boolean canUnequip(ItemStack arg0, EntityLivingBase arg1)
-//    {
-//        return true;
-//    }
-//
-//    @Override
-//    @Optional.Method(modid = "Baubles")
-//    public BaubleType getBaubleType(ItemStack arg0)
-//    {
-//        return BaubleType.BELT;
-//    }
-//
-//    @Override
-//    @Optional.Method(modid = "Baubles")
-//    public void onEquipped(ItemStack arg0, EntityLivingBase arg1)
-//    {
-//
-//    }
-//
-//    @Override
-//    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
-//    {
-//        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, 0, 0, 0);
-//        return itemstack;
-//    }
-//
-//    @Override
-//    @Optional.Method(modid = "Baubles")
-//    public void onUnequipped(ItemStack arg0, EntityLivingBase arg1)
-//    {
-//
-//    }
-//
-//    @Override
-//    @Optional.Method(modid = "Baubles")
-//    public void onWornTick(ItemStack arg0, EntityLivingBase arg1)
-//    {
-//
-//    }
+    @Override
+    public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
+    {
+        return armorType == EntityEquipmentSlot.CHEST;
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player, EnumHand hand)
+    {
+        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, 0, 0, 0);
+        return super.onItemRightClick(itemstack, world, player, hand);
+    }
 }

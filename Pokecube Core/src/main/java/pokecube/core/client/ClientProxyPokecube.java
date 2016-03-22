@@ -398,7 +398,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         registerItemTexture(Item.getItemFromBlock(tradingtable), 0,
                 new ModelResourceLocation("pokecube:tradingtable", "inventory"));
 
-        OBJLoader.instance.addDomain(PokecubeMod.ID.toLowerCase());
+        OBJLoader.INSTANCE.addDomain(PokecubeMod.ID.toLowerCase());
         Item item2 = Item.getItemFromBlock(PokecubeItems.tableBlock);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":pokecube_table", "inventory"));

@@ -34,7 +34,7 @@ import pokecube.core.utils.PokecubeSerializer;
 public class BlockPokecubeTable extends Block implements ITileEntityProvider
 {
     private ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[0],
-            new IUnlistedProperty[] { OBJModel.OBJProperty.instance });
+            new IUnlistedProperty[] { OBJModel.OBJProperty.INSTANCE });
 
     public BlockPokecubeTable()
     {
@@ -57,7 +57,7 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
         TileEntityPokecubeTable tileEntity = (TileEntityPokecubeTable) world.getTileEntity(pos);
         OBJModel.OBJState retState = new OBJModel.OBJState(
                 tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) : tileEntity.visible, true);
-        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
+        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.INSTANCE, retState);
     }
 
     @Override

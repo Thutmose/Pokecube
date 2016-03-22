@@ -21,8 +21,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -35,7 +35,7 @@ public class BlockPC extends Block implements ITileEntityProvider
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final PropertyBool      TOP    = PropertyBool.create("top");
     private ExtendedBlockState            state  = new ExtendedBlockState(this, new IProperty[0],
-            new IUnlistedProperty[] { OBJModel.OBJProperty.instance });
+            new IUnlistedProperty[] { OBJModel.OBJProperty.INSTANCE });
 
     public BlockPC()
     {
@@ -77,7 +77,7 @@ public class BlockPC extends Block implements ITileEntityProvider
 
         TRSRTransformation transform = new TRSRTransformation(facing);
         OBJModel.OBJState retState = new OBJModel.OBJState(visible, true, transform);
-        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
+        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.INSTANCE, retState);
     }
 
     @Override

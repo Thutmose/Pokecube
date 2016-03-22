@@ -161,8 +161,8 @@ public class ClientProxy extends CommonProxy
     public void preInit()
     {
         super.preInit();
-        OBJLoader.instance.addDomain(ModPokecubeML.ID);
-        B3DLoader.instance.addDomain(ModPokecubeML.ID);
+        OBJLoader.INSTANCE.addDomain(ModPokecubeML.ID);
+        B3DLoader.INSTANCE.addDomain(ModPokecubeML.ID);
     }
 
     @Override

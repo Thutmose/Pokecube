@@ -57,29 +57,4 @@ public class BaublesEventHandler
         event.renderer.addLayer(new BagRenderer(event.renderer));
         addedBaubles.add(event.renderer);
     }
-
-    @SubscribeEvent
-    public void keyInput(KeyInputEvent evt)
-    {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        InventoryBaubles inv = PlayerHandler.getPlayerBaubles(player);
-        boolean bag = false;
-        for (int i = 0; i < inv.getSizeInventory(); i++)
-        {
-            ItemStack stack = inv.getStackInSlot(i);
-            if (stack != null)
-            {
-                Item item = stack.getItem();
-                if (item instanceof ItemBag)
-                {
-                    bag = true;
-                    break;
-                }
-            }
-        }
-        if (bag && Keyboard.getEventKey() == ClientProxy.bag.getKeyCode())
-        {
-            PacketPokeAdv.sendBagOpenPacket(false, Vector3.empty);
-        }
-    }
 }

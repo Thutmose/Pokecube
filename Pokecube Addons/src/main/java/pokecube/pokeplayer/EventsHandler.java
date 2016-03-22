@@ -40,7 +40,7 @@ public class EventsHandler
         if (event.entityPlayer.getHeldItem() != null && event.entityPlayer.isSneaking()
                 && event.entityPlayer.getHeldItem().getItem() instanceof ItemPokedex)
         {
-             pokemob.getPokemobInventory().func_110134_a((IInvBasic) pokemob);
+            pokemob.getPokemobInventory().func_110134_a((IInvBasic) pokemob);
             if (!event.world.isRemote)
             {
                 event.setCanceled(true);
@@ -50,7 +50,7 @@ public class EventsHandler
         else if (event.action == Action.RIGHT_CLICK_AIR && event.entityPlayer.getHeldItem() != null)
         {
             ((Entity) pokemob).interactFirst(player);
-            System.out.println("interact");
+            proxy.playerMap.get(event.entityPlayer.getUniqueID()).save(player);
         }
     }
 
@@ -74,7 +74,8 @@ public class EventsHandler
     @SubscribeEvent
     public void PlayerLogout(PlayerLoggedOutEvent evt)
     {
-        proxy.playerMap.remove(evt.player.getUniqueID());
+        PokeInfo info = proxy.playerMap.remove(evt.player.getUniqueID());
+        if (info != null) info.save(evt.player);
     }
 
     @SubscribeEvent

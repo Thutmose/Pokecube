@@ -57,7 +57,7 @@ public class PokeInfo
         updateSwimming(player);
     }
 
-    public void saveInventory(EntityPlayer player)
+    public void save(EntityPlayer player)
     {
         if (pokemob != null)
         {

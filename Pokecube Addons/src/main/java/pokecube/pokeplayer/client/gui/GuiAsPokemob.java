@@ -68,7 +68,6 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         if ((move.getAttackCategory() & IMoveConstants.CATEGORY_CONTACT) > 0) range = contactRange;
 
         Entity target = Tools.getPointedEntity(player, range);
-        System.out.println(target);
         buffer.writeInt(target != null ? target.getEntityId() : 0);
 
         if (pokemob != null)

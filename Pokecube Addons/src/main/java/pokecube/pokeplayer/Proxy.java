@@ -60,7 +60,7 @@ public class Proxy implements IGuiHandler
     public void savePokemob(EntityPlayer player)
     {
         PokeInfo info = playerMap.get(player.getUniqueID());
-        if (info != null) info.saveInventory(player);
+        if (info != null) info.save(player);
     }
 
     private void setMapping(EntityPlayer player, IPokemob pokemob)

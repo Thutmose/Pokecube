@@ -39,7 +39,7 @@ public class InventoryPlayerPokemob extends AnimalChest
         }
         if (info != null)
         {
-            info.saveInventory(player);
+            info.save(player);
         }
     }
 

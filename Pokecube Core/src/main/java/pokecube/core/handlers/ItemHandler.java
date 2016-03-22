@@ -40,6 +40,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -348,6 +349,14 @@ public class ItemHandler extends Mod_Pokecube_Helper
         megastone.setCreativeTab(creativeTabPokecube);
         register(megastone, "megastone");
         addToHoldables("megastone");
+
+        for (String s : HeldItemHandler.megaVariants)
+        {
+            ItemStack stack = new ItemStack(PokecubeItems.megastone);
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setString("pokemon", s);
+            PokecubeItems.addSpecificItemStack(s, stack);
+        }
 
         revive = (new ItemRevive()).setUnlocalizedName("revive");
         revive.setCreativeTab(creativeTabPokecube);

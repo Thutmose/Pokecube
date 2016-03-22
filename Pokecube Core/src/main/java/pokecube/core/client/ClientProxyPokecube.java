@@ -106,34 +106,35 @@ import thut.api.maths.Vector3;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ClientProxyPokecube extends CommonProxyPokecube
 {
-    private static BitSet models = new BitSet();
-    static boolean        init   = true;
-    static boolean        first  = true;
+    private static BitSet            models      = new BitSet();
+    static boolean                   init        = true;
+    static boolean                   first       = true;
 
-    public static KeyBinding nextMob;
+    public static KeyBinding         nextMob;
 
-    public static KeyBinding nextMove;
+    public static KeyBinding         nextMove;
 
-    public static KeyBinding previousMob;
+    public static KeyBinding         previousMob;
 
-    public static KeyBinding previousMove;
+    public static KeyBinding         previousMove;
 
-    public static KeyBinding mobBack;
+    public static KeyBinding         mobBack;
 
-    public static KeyBinding mobAttack;
+    public static KeyBinding         mobAttack;
 
-    public static KeyBinding mobStance;
+    public static KeyBinding         mobStance;
 
-    public static KeyBinding mobMegavolve;
+    public static KeyBinding         mobMegavolve;
 
-    public static KeyBinding mobMove1;
+    public static KeyBinding         mobMove1;
 
-    public static KeyBinding mobMove2;
+    public static KeyBinding         mobMove2;
 
-    public static KeyBinding mobMove3;
+    public static KeyBinding         mobMove3;
 
-    public static KeyBinding mobMove4;
+    public static KeyBinding         mobMove4;
     private HashMap<Integer, Object> cubeRenders = new HashMap<Integer, Object>();
+
     public ClientProxyPokecube()
     {
         if (first) instance = this;
@@ -142,6 +143,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         MinecraftForge.EVENT_BUS.register(hndlr);
         MinecraftForge.EVENT_BUS.register(this);
     }
+
     @Override
     public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
@@ -192,7 +194,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
                         if (guiID == Config.GUIPOKEMOB_ID)
                         {
-                            EntityPokemob e = (EntityPokemob) world.getEntityByID(x);
+                            IPokemob e = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, x, true);
                             return new GuiPokemob(player.inventory, e);
                         }
                         else
@@ -228,6 +230,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
         return null;
     }
+
     @Override
     public String getFolderName()
     {
@@ -235,6 +238,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             return FMLClientHandler.instance().getClient().theWorld.provider.getSaveFolder();
         return "";
     }
+
     @Override
     public IThreadListener getMainThreadListener()
     {
@@ -247,6 +251,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             return super.getMainThreadListener();
         }
     }
+
     @Override
     public IPlayerUsage getMinecraftInstance()
     {
@@ -259,6 +264,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             return super.getMinecraftInstance();
         }
     }
+
     @Override
     public EntityPlayer getPlayer(String playerName)
     {
@@ -293,6 +299,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             return super.getWorld();
         }
     }
+
     @Override
     public void initClient()
     {
@@ -309,11 +316,13 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             TileHealTable.noSound = true;
         }
     }
+
     @Override
     public boolean isOnClientSide()
     {
         return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }
+
     @Override
     public boolean isSoundPlaying(Vector3 location)
     {

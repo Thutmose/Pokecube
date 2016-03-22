@@ -7,6 +7,9 @@ import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.Proxy;
@@ -36,6 +39,18 @@ public class ProxyClient extends Proxy
     {
         super.postInit();
         MinecraftForge.EVENT_BUS.register(new GuiAsPokemob());
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        IPokemob pokemob;
+        if (event.side == Side.SERVER || (pokemob = getPokemob(event.player)) == null) return;
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiPokedex)
+        {
+            ((GuiPokedex) Minecraft.getMinecraft().currentScreen).pokemob = pokemob;
+            GuiPokedex.pokedexEntry = pokemob.getPokedexEntry();
+        }
     }
 
     @SubscribeEvent

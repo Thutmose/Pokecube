@@ -1,17 +1,24 @@
 package pokecube.pokeplayer;
 
 import io.netty.buffer.Unpooled;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import pokecube.core.entity.pokemobs.EntityPokemob;
+import pokecube.core.handlers.Config;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.ItemPokedex;
 import pokecube.pokeplayer.network.PacketPokePlayer.MessageClient;
 
 public class EventsHandler
@@ -27,7 +34,21 @@ public class EventsHandler
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent event)
     {
-
+        IPokemob pokemob = proxy.getPokemob(event.entityPlayer);
+        if (pokemob == null || !(pokemob instanceof EntityPokemob)) return;
+        EntityPlayer player = event.entityPlayer;
+        if (event.entityPlayer.getHeldItem() != null && event.entityPlayer.isSneaking()
+                && event.entityPlayer.getHeldItem().getItem() instanceof ItemPokedex)
+        {
+            event.setCanceled(true);
+            event.entityPlayer.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, event.entityPlayer.worldObj,
+                    event.entityPlayer.getEntityId(), 0, 0);
+        }
+        else if (event.action == Action.RIGHT_CLICK_AIR && event.entityPlayer.getHeldItem() != null)
+        {
+            ((Entity) pokemob).interactFirst(player);
+            System.out.println("interact");
+        }
     }
 
     @SubscribeEvent
@@ -45,6 +66,12 @@ public class EventsHandler
         if (!evt.player.worldObj.isRemote)
         {
         }
+    }
+
+    @SubscribeEvent
+    public void PlayerLogout(PlayerLoggedOutEvent evt)
+    {
+        proxy.playerMap.remove(evt.player.getUniqueID());
     }
 
     @SubscribeEvent

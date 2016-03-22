@@ -92,11 +92,13 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
+import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MovesAdder;
 import pokecube.core.moves.animations.MoveAnimationHelper;
+import pokecube.core.network.EntityProvider;
 import pokecube.core.network.PCPacketHandler;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
@@ -780,6 +782,21 @@ public class PokecubeCore extends PokecubeMod
         WorldGenStartBuilding.building = false;
         if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
         AISaveHandler.clearInstance();
+    }
+
+    IEntityProvider provider;
+
+    @Override
+    public IEntityProvider getEntityProvider()
+    {
+        if (provider == null) provider = new EntityProvider(null);
+        return provider;
+    }
+
+    @Override
+    public void setEntityProvider(IEntityProvider provider)
+    {
+        this.provider = provider;
     }
 
 }

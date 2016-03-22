@@ -163,15 +163,24 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         if (!isPokemob()) super.setMove(num);
         else
         {
+            int numMoves = 0;
+            String[] moves = getCurrentPokemob().getMoves();
+            for (int i = 0; i < moves.length; i++)
+            {
+                numMoves++;
+                if (moves[i] == null)
+                {
+                    break;
+                }
+            }
             if (num < 0)
             {
-                num = 5;
+                num = numMoves - 1;
             }
-            if (num > 5)
+            else if (num >= numMoves)
             {
                 num = 0;
             }
-
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
             buffer.writeByte(MessageServer.MOVEINDEX);
             buffer.writeByte((byte) num);

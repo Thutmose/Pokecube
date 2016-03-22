@@ -183,7 +183,7 @@ public class PokecubePacketHandler
                                     NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
                                     int id = nbt.getInteger("id");
                                     String mess = nbt.getString("message");
-                                    Entity e = player.worldObj.getEntityByID(id);
+                                    Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id, true);
                                     if (e != null && e instanceof IPokemob)
                                     {
                                         ((IPokemob) e).displayMessageToOwner(mess);
@@ -444,7 +444,7 @@ public class PokecubePacketHandler
                                     if (buffer.readableBytes() == 4)
                                     {
                                         int id = buffer.readInt();
-                                        target = player.worldObj.getEntityByID(id);
+                                        target = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id, false);
                                         targetLocation = Vector3.getNewVector();
                                     }
                                     else if (buffer.readableBytes() == 24)
@@ -1005,10 +1005,10 @@ public class PokecubePacketHandler
             dat.writeBytes(arr);
             int id = dat.readInt();
             int id1 = dat.readInt();
+            Entity entity = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id, true);
+            if (!(entity instanceof IPokemob)) return;
 
-            if (!(player.worldObj.getEntityByID(id1) instanceof IPokemob)) return;
-
-            IPokemob pokemob = (IPokemob) player.worldObj.getEntityByID(id1);
+            IPokemob pokemob = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id1, true);
             if (pokemob != null)
             {
                 int currentMove = pokemob.getMoveIndex();

@@ -139,7 +139,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         else
         {
             Entity owner = this.getPokemonOwner();
-            if (owner instanceof EntityPlayer && !this.isDead)
+            if (owner instanceof EntityPlayerMP && !this.isDead)
             {
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setInteger("id", owner.getEntityId());

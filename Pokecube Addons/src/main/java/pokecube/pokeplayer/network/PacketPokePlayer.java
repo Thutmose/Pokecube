@@ -17,6 +17,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Utility;
@@ -219,8 +220,7 @@ public class PacketPokePlayer
                         Entity owner = player;
                         if (owner != null)
                         {
-                            Entity closest = owner.worldObj.getEntityByID(id);
-
+                            Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.worldObj, id, false);
                             if (closest != null)
                             {
                                 if (closest instanceof EntityLivingBase)

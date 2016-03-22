@@ -14,7 +14,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.network.EntityProvider;
 import pokecube.pokeplayer.block.BlockTransformer;
+import pokecube.pokeplayer.network.EntityProviderPokeplayer;
 import pokecube.pokeplayer.network.PacketPokePlayer.MessageClient;
 import pokecube.pokeplayer.network.PacketPokePlayer.MessageClient.MessageHandlerClient;
 import pokecube.pokeplayer.network.PacketPokePlayer.MessageServer;
@@ -56,6 +58,8 @@ public class PokePlayer
     public void postInit(FMLPostInitializationEvent e)
     {
         proxy.postInit();
+        PokecubeMod.core
+                .setEntityProvider(new EntityProviderPokeplayer((EntityProvider) PokecubeMod.core.getEntityProvider()));
     }
 
     @EventHandler

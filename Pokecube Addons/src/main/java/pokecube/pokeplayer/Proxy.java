@@ -19,6 +19,7 @@ public class Proxy
 
     void copyTransform(EntityLivingBase to, EntityPlayer from)
     {
+        to.setEntityId(from.getEntityId());
         to.posX = from.posX;
         to.posY = from.posY;
         to.posZ = from.posZ;

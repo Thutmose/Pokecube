@@ -1059,6 +1059,7 @@ public class MovesUtils implements IMoveConstants
 
         List<Entity> targets = source.allEntityLocationExcluding(distance, 0.5, dir, source, worldObj, attacker);
         double closest = 16;
+        Entity temp;
 
         if (targets != null) for (Entity e : targets)
         {
@@ -1066,6 +1067,9 @@ public class MovesUtils implements IMoveConstants
                     && (PokecubeMod.pokemobsDamagePlayers || !(e instanceof EntityPlayer))
                     && e != attacker.ridingEntity)
             {
+                temp = PokecubeMod.core.getEntityProvider().getEntity(worldObj, e.getEntityId(), true);
+                if (temp == attacker) continue;
+
                 if (ignoreAllies && e instanceof IPokemob)
                 {
                     if (attacker instanceof IPokemob)
@@ -1104,11 +1108,14 @@ public class MovesUtils implements IMoveConstants
         List<Entity> targets = source.allEntityLocationExcluding(16, 0.1, dest.subtract(source), source,
                 attacker.worldObj, attacker);
         List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
+        Entity temp;
         if (targets != null) for (Entity e : targets)
         {
             if (e instanceof EntityLivingBase && (PokecubeMod.pokemobsDamagePlayers || !(e instanceof EntityPlayer)))
             {
                 if (((IPokemob) attacker).getPokemonOwner() == e && !PokecubeMod.pokemobsDamageOwner) continue;
+                temp = PokecubeMod.core.getEntityProvider().getEntity(attacker.worldObj, e.getEntityId(), true);
+                if (temp == attacker) continue;
                 ret.add((EntityLivingBase) e);
             }
         }

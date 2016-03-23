@@ -27,6 +27,7 @@ public class PokeInfo
         this.originalHeight = 1.8f;
         this.originalWidth = 0.6f;
         ((Entity) pokemob).getEntityData().setBoolean("isPlayer", true);
+        ((Entity) pokemob).getEntityData().setString("playerID", player.getUniqueID().toString());
     }
 
     public void resetPlayer(EntityPlayer player)
@@ -56,8 +57,8 @@ public class PokeInfo
         updateFloating(player);
         updateFlying(player);
         updateSwimming(player);
-        
-        //TODO update things like hunger, maxHP, etc for creative mode.
+
+        // TODO update things like hunger, maxHP, etc for creative mode.
     }
 
     public void save(EntityPlayer player)

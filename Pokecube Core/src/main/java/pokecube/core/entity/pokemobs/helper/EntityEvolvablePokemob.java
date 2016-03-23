@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -36,7 +37,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public boolean traded    = false;
     String         evolution = "";
 
-    boolean evolving = false;
+    boolean        evolving  = false;
 
     public EntityEvolvablePokemob(World world)
     {
@@ -280,8 +281,10 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 {
                     ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
                     ((IPokemob) evolution).setEvolutionTicks(10);
-
                 }
+                String superEffective = StatCollector.translateToLocalFormatted("pokemob.evolve.success",
+                        this.getPokemonDisplayName(), ((IPokemob) evolution).getPokedexEntry().getName());
+                this.displayMessageToOwner("\u00a7a" + superEffective);
                 this.setDead();
                 this.setPokemonOwner(null);
             }

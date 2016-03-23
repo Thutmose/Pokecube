@@ -1,5 +1,7 @@
 package pokecube.pokeplayer;
 
+import java.util.UUID;
+
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -88,8 +90,6 @@ public class EventsHandler
         if (user.getEntityData().getBoolean("isPlayer") && !user.worldObj.isRemote)
         {
             Entity e = user.worldObj.getEntityByID(user.getEntityId());
-            System.out.println(evt.message);
-            System.out.println(e);
             if (e instanceof EntityPlayer)
             {
                 EntityPlayer owner = (EntityPlayer) e;
@@ -112,6 +112,18 @@ public class EventsHandler
     @SubscribeEvent
     public void PlayerJoinWorld(EntityJoinWorldEvent evt)
     {
+        if (evt.entity instanceof IPokemob)
+        {
+            if(evt.entity.getEntityData().getBoolean("isPlayer"))
+            {
+                UUID uuid = UUID.fromString(evt.entity.getEntityData().getString("playerID"));
+                EntityPlayer player = evt.world.getPlayerEntityByUUID(uuid);
+                IPokemob evo = (IPokemob) evt.entity;
+                proxy.setPokemob(player, evo);
+                evt.setCanceled(true);
+            }
+        }
+
         if (!(evt.entity instanceof EntityPlayer)) return;
         EntityPlayer player = (EntityPlayer) evt.entity;
         if (!player.worldObj.isRemote)

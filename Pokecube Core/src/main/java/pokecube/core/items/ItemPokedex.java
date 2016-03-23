@@ -94,7 +94,7 @@ public class ItemPokedex extends ItemTranslated
             return true;
         }
 
-        if (playerIn.isSneaking() && worldIn.isRemote)
+        if (playerIn.isSneaking() && !worldIn.isRemote)
         {
             playerIn.addChatMessage(
                     new ChatComponentText("There are " + Database.spawnables.size() + " Registered Spawns"));

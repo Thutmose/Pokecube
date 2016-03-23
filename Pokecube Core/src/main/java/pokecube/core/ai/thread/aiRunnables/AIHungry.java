@@ -50,7 +50,7 @@ public class AIHungry extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        if (world == null || pokemob.isAncient()) return false;
+        if (world == null || pokemob.isAncient() || entity.getAttackTarget()!=null) return false;
 
         hungrymob.setHungerCooldown(hungrymob.getHungerCooldown() - 1);
         hungrymob.setHungerTime(hungrymob.getHungerTime() + 1);

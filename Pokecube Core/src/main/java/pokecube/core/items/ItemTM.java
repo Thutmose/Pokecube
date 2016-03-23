@@ -118,7 +118,7 @@ public class ItemTM extends ItemPokemobUseable
     @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
-        if (!world.isRemote) return itemstack;
+        if (world.isRemote) return itemstack;
         return itemstack;
     }
 

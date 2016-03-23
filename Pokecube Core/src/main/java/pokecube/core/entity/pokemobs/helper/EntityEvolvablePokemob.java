@@ -157,6 +157,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public IPokemob changeForme(String forme)
     {
         PokedexEntry newEntry = getPokedexEntry().getForm(forme);
+        if (newEntry == getPokedexEntry()) return this;
         if (newEntry != null)
         {
             this.forme = forme;
@@ -207,7 +208,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             {
                 ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
                 ((IPokemob) evolution).setEvolutionTicks(10);
-                
+
             }
             this.setDead();
             this.setPokemonOwner(null);

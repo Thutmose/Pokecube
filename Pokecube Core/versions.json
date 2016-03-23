@@ -3,8 +3,8 @@
   "promos": {
     "1.8.8-latest": "2.1.4",
     "1.8.8-recommended": "2.1.4",
-    "1.8.9-latest": "2.2.9",
-    "1.8.9-recommended": "2.2.9"
+    "1.8.9-latest": "2.2.10",
+    "1.8.9-recommended": "2.2.10"
   },
   "1.8.9": {
     "2.2.9": "Fixes crash from using attack hotkey with no pokemob out.",

@@ -54,8 +54,12 @@ public class Skeleton
 
     public void applyPose()
     {
+        if (pose.lastPoseChange == pose.currentIndex) return;
+        pose.lastPoseChange = pose.currentIndex;
+        reset();
         root.deform();
         root.applyDeform();
+        applyChange();
     }
 
     public void applyChange()
@@ -72,8 +76,10 @@ public class Skeleton
     private void initPose()
     {
         System.out.println(pose.animationName + " " + pose.frames.size());
+
         SkeletonFrame frame = pose.frames.get(0);
         pose.reset();
+        pose.precalculateAnimation();
         for (Integer i : frame.positions.keySet())
         {
             Matrix4f trans = frame.positions.get(i);
@@ -196,14 +202,14 @@ public class Skeleton
             return id + " " + name + " " + parentId;
         }
 
-        //TODO get this properly applying parent deforms.
+        // TODO get this properly applying parent deforms.
         public void deform()
         {
-            SkeletonAnimation frame = skeleton.pose;
-            if (frame != null)
+            SkeletonAnimation animation = skeleton.pose;
+            if (animation != null)
             {
-                ArrayList<Matrix4f> precalc = this.animatedTransforms.get(frame.animationName);
-                Matrix4f animated = precalc.get(frame.currentIndex);
+                ArrayList<Matrix4f> precalc = this.animatedTransforms.get(animation.animationName);
+                Matrix4f animated = precalc.get(animation.currentIndex);
                 Matrix4f dAnimated = Matrix4f.mul(animated, this.restInverse, null);
                 Matrix4f.mul(deform, dAnimated, deform);
                 Matrix4f.invert(deform, deformInverse);

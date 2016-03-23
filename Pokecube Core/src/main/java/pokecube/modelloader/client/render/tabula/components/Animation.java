@@ -23,11 +23,11 @@ import org.w3c.dom.NamedNodeMap;
 @SideOnly(Side.CLIENT)
 public class Animation
 {
-    public String name;
-    public String identifier;
+    public String name = "";
+    public String identifier = "";
     public int    length = -1;
 
-    public boolean loops;
+    public boolean loops = true;
     
     private Set<String> checked = Sets.newHashSet();
 

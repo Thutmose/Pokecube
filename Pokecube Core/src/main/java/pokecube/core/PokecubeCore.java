@@ -731,7 +731,7 @@ public class PokecubeCore extends PokecubeMod
             p.setModId(p.getModId());
         }
         System.out.println(
-                "Loaded " + n + " Pokemob sounds and " + Pokedex.getInstance().getEntries().size() + " Pokemon");
+                "Loaded " + n + " Pokemob sounds, " + Pokedex.getInstance().getEntries().size() + " Pokemon and "+Database.allFormes.size()+" Formes");
     }
 
     private void removeAllMobs()

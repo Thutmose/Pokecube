@@ -21,12 +21,12 @@ public class AnimationComponent {
 
     public ArrayList<double[]> progressionCoords;
 
-    public String name;
+    public String name = "";
 
-    public int length;
-    public int startKey;
+    public int length = 0;
+    public int startKey = 0;
 
-    public boolean hidden;
+    public boolean hidden = false;
 
-    public String identifier;
+    public String identifier = "";
 }

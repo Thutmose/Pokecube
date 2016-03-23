@@ -206,7 +206,7 @@ public class PokemobPacketHandler
                                 EntityLiving mob = (EntityLiving) pokemob;
                                 mob.getJumpHelper().setJumping();
                             }
-                            else if(channel == MOVEUSE)
+                            else if (channel == MOVEUSE)
                             {
                                 handleMoveUse(pokemob, id);
                             }
@@ -274,7 +274,8 @@ public class PokemobPacketHandler
                                     }
 
                                     PokedexEntry megaEntry = Database.getEntry(forme);
-                                    if (megaEntry.getBaseName().equals(pokemob.getPokedexEntry().getBaseName()))
+                                    if (megaEntry != null
+                                            && megaEntry.getBaseName().equals(pokemob.getPokedexEntry().getBaseName()))
                                     {
                                         String old = pokemob.getPokemonDisplayName();
                                         if (pokemob.getPokedexEntry() == megaEntry)
@@ -421,7 +422,7 @@ public class PokemobPacketHandler
                     };
                     PokecubeCore.proxy.getMainThreadListener().addScheduledTask(toRun);
                 }
-                
+
                 private void handleMoveUse(IPokemob pokemob, int id1)
                 {
                     PacketBuffer dat = buffer;
@@ -449,7 +450,8 @@ public class PokemobPacketHandler
                             NBTTagCompound teletag = new NBTTagCompound();
                             PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(), teletag);
 
-                            PokecubeClientPacket packe = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST, teletag);
+                            PokecubeClientPacket packe = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST,
+                                    teletag);
                             PokecubePacketHandler.sendToClient(packe, player);
                         }
 
@@ -486,11 +488,9 @@ public class PokemobPacketHandler
                                     else pokemob.executeMove(closest, v.set(closest),
                                             closest.getDistanceToEntity((Entity) pokemob));
                                 }
-                                else if(buffer.isReadable(24))
+                                else if (buffer.isReadable(24))
                                 {
                                     v = Vector3.readFromBuff(buffer);
-//                                    pokemob.executeMove(null, v,
-//                                            (float) v.distToEntity((Entity) pokemob));
                                     pokemob.setPokemonAIState(IPokemob.NEWEXECUTEMOVE, true);
                                 }
                             }

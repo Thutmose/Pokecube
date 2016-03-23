@@ -29,16 +29,18 @@ public class AIGatherStuff extends AIBase
     Vector3            stuffLoc  = Vector3.getNewVector();
     final boolean[]    states    = { false, false };
     final int[]        cooldowns = { 0, 0 };
+    final AIStoreStuff storage;
     Vector3            seeking   = Vector3.getNewVector();
     Vector3            v         = Vector3.getNewVector();
     Vector3            v1        = Vector3.getNewVector();
 
-    public AIGatherStuff(EntityLiving entity, double distance)
+    public AIGatherStuff(EntityLiving entity, double distance, AIStoreStuff storage)
     {
         this.entity = entity;
         this.hungrymob = (IHungrymob) entity;
         this.pokemob = (IPokemob) entity;
         this.distance = distance;
+        this.storage = storage;
         this.setMutex(1);
     }
 
@@ -46,11 +48,16 @@ public class AIGatherStuff extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        if (world == null || pokemob.isAncient() || tameCheck()) return false;
-
-        int rate = pokemob.getPokemonAIState(IPokemob.TAMED) ? 10 : 100;
+        if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null) return false;
+        if (storage.cooldowns[1] > AIStoreStuff.COOLDOWN || storage.seeking.isEmpty()) return false;
+        int rate = pokemob.getPokemonAIState(IPokemob.TAMED) ? 20 : 200;
         if (pokemob.getHome() == null || entity.ticksExisted % rate != 0) return false;
 
+        if(cooldowns[0] < -2000)
+        {
+            cooldowns[0] = COOLDOWN;
+        }
+        
         if (stuffLoc.distToEntity(entity) > 32) stuffLoc.clear();
         if (cooldowns[0] > 0) return false;
         IInventory inventory = pokemob.getPokemobInventory();
@@ -94,32 +101,35 @@ public class AIGatherStuff extends AIBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
-        if (cooldowns[0]-- < 0 && !stuffLoc.isEmpty())
+        synchronized (stuffLoc)
         {
-            if (stuff != null)
+            if (cooldowns[0]-- < 0 && !stuffLoc.isEmpty())
             {
-                double close = entity.width * entity.width;
-                close = Math.max(close, 2);
-                if (stuff.getDistanceToEntity(entity) < close)
+                if (stuff != null)
                 {
-                    AIStoreStuff.addItemStackToInventory(stuff.getEntityItem(), pokemob.getPokemobInventory(), 2);
-                    stuff.setDead();
-                    reset();
+                    double close = entity.width * entity.width;
+                    close = Math.max(close, 2);
+                    if (stuff.getDistanceToEntity(entity) < close)
+                    {
+                        AIStoreStuff.addItemStackToInventory(stuff.getEntityItem(), pokemob.getPokemobInventory(), 2);
+                        stuff.setDead();
+                        reset();
+                    }
                 }
-            }
-            else
-            {
-                gatherStuff(true);
+                else
+                {
+                    gatherStuff(true);
+                }
             }
         }
     }
 
     private void findStuff()
     {
-        if (pokemob.getPokemonAIState(IPokemob.TAMED) && pokemob.getPokemonAIState(IPokemob.SITTING)) { return; }
+        if (pokemob.getHome() == null || pokemob.getPokemonAIState(IPokemob.TAMED) && pokemob.getPokemonAIState(IPokemob.SITTING)) { return; }
 
         block = false;
-        v.set(hungrymob).add(0, entity.height, 0);
+        v.set(pokemob.getHome()).add(0, entity.height, 0);
 
         List<Object> list = getEntitiesWithinDistance(entity, 16, EntityItem.class);
         EntityItem newTarget = null;
@@ -128,7 +138,7 @@ public class AIGatherStuff extends AIBase
         for (Object o : list)
         {
             EntityItem e = (EntityItem) o;
-            double dist = e.getDistanceSqToEntity(entity);
+            double dist = e.getDistanceSqToCenter(pokemob.getHome());
             v.set(e);
             if (dist < closest && Vector3.isVisibleEntityFromEntity(entity, e))
             {

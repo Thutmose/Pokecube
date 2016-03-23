@@ -26,29 +26,30 @@ import pokecube.modelloader.client.render.animation.TextureHelper;
 
 public class GuiAnimate extends GuiScreen
 {
-    int pokedexNb = 0;
+    int                    pokedexNb        = 0;
 
     protected GuiTextField anim;
     protected GuiTextField state;
     protected GuiTextField forme;
     protected GuiTextField info;
 
-    private float xRenderAngle     = 0;
-    private float yRenderAngle     = 0;
-    private float yHeadRenderAngle = 0;
-    private float xHeadRenderAngle = 0;
-    private int   mouseRotateControl;
-    int           prevX            = 0;
-    int           prevY            = 0;
-    float         scale            = 1;
-    int[]         shift            = { 0, 0 };
+    private float          xRenderAngle     = 0;
+    private float          yRenderAngle     = 0;
+    private float          yHeadRenderAngle = 0;
+    private float          xHeadRenderAngle = 0;
+    private int            mouseRotateControl;
+    int                    prevX            = 0;
+    int                    prevY            = 0;
+    float                  scale            = 1;
+    int[]                  shift            = { 0, 0 };
 
-    GuiButton groundButton;
-    boolean   ground = true;
-    
-    static String mob = "";
+    GuiButton              groundButton;
+    boolean                ground           = true;
+    boolean                shiny            = false;
 
-    List<String> components;
+    static String          mob              = "";
+
+    List<String>           components;
 
     @Override
     /** Adds the buttons (and other controls) to the screen in question. Called
@@ -77,6 +78,7 @@ public class GuiAnimate extends GuiScreen
         buttonList.add(new GuiButton(9, width / 2 - xOffset, yOffset - 80, 20, 20, "\u25c0"));
         buttonList.add(new GuiButton(10, width / 2 - xOffset + 20, yOffset - 100, 20, 20, "\u25bc"));
         buttonList.add(new GuiButton(11, width / 2 - xOffset, yOffset - 100, 20, 20, "\u25b2"));
+        buttonList.add(new GuiButton(12, width / 2 - xOffset, yOffset + 40, 40, 20, "normal"));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -106,6 +108,7 @@ public class GuiAnimate extends GuiScreen
         if (pokemob != null)
         {
             pokemob.specificSpawnInit();
+            pokemob.setShiny(shiny);
         }
         else
         {
@@ -225,10 +228,29 @@ public class GuiAnimate extends GuiScreen
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
         super.keyTyped(typedChar, keyCode);
-        anim.textboxKeyTyped(typedChar, keyCode);
-        state.textboxKeyTyped(typedChar, keyCode);
-        forme.textboxKeyTyped(typedChar, keyCode);
-        info.textboxKeyTyped(typedChar, keyCode);
+        boolean hit = anim.textboxKeyTyped(typedChar, keyCode);
+        hit = hit || state.textboxKeyTyped(typedChar, keyCode);
+        hit = hit || forme.textboxKeyTyped(typedChar, keyCode);
+        hit = hit || info.textboxKeyTyped(typedChar, keyCode);
+        if(!hit && keyCode==205)
+        {
+            PokedexEntry entry = null;
+            if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
+            int num = (entry = Pokedex.getInstance().getNext(entry, 1)).getPokedexNb();
+            if (num != pokedexNb) pokedexNb = num;
+            if (entry != null)
+            {
+                IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
+                if (pokemob == null)
+                {
+                    EventsHandlerClient.renderMobs.put(entry, pokemob = (IPokemob) PokecubeMod.core
+                            .createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+                    pokemob.specificSpawnInit();
+                }
+                forme.setText(pokemob.getPokedexEntry().getName());
+                info.setText("" + pokemob.getSpecialInfo());
+            }
+        }
     }
 
     @Override
@@ -317,6 +339,11 @@ public class GuiAnimate extends GuiScreen
         else if (button.id == 11)
         {
             shift[1] -= isShiftKeyDown() ? 10 : 1;
+        }
+        else if (button.id == 12)
+        {
+            shiny = !shiny;
+            button.displayString = shiny ? "shiny" : "normal";
         }
         if (entry != null)
         {

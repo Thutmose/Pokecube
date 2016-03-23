@@ -12,6 +12,8 @@ import static pokecube.core.PokecubeItems.firestone;
 import static pokecube.core.PokecubeItems.kingsrock;
 import static pokecube.core.PokecubeItems.leafstone;
 import static pokecube.core.PokecubeItems.luckyEgg;
+import static pokecube.core.PokecubeItems.megaring;
+import static pokecube.core.PokecubeItems.megastone;
 import static pokecube.core.PokecubeItems.moonstone;
 import static pokecube.core.PokecubeItems.ovalstone;
 import static pokecube.core.PokecubeItems.pc;
@@ -20,6 +22,7 @@ import static pokecube.core.PokecubeItems.pokemobEgg;
 import static pokecube.core.PokecubeItems.register;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 import static pokecube.core.PokecubeItems.repelBlock;
+import static pokecube.core.PokecubeItems.revive;
 import static pokecube.core.PokecubeItems.shinystone;
 import static pokecube.core.PokecubeItems.sunstone;
 import static pokecube.core.PokecubeItems.tableBlock;
@@ -41,8 +44,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.PokecubeItems;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.BlockRepel;
 import pokecube.core.blocks.TileEntityRepel;
 import pokecube.core.blocks.berries.BerryPlantManager;
@@ -163,20 +166,18 @@ public class ItemHandler extends Mod_Pokecube_Helper
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) for (int i = 0; i < 10; i++)
             registerItemTexture(pokedex, i, new ModelResourceLocation("pokecube:pokedex", "inventory"));
 
-        Item megaring = (new ItemMegaring()).setUnlocalizedName("megaring");
+        megaring = (new ItemMegaring()).setUnlocalizedName("megaring");
         megaring.setCreativeTab(creativeTabPokecube);
         register(megaring, "megaring");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(megaring, 0, new ModelResourceLocation("pokecube:megaring", "inventory"));
 
-        Item megastone = (new ItemMegastone()).setUnlocalizedName("megastone");
+        megastone = (new ItemMegastone()).setUnlocalizedName("megastone");
         megastone.setCreativeTab(creativeTabPokecube);
         register(megastone, "megastone");
         addToHoldables("megastone");
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(megastone, 0, new ModelResourceLocation("pokecube:megastone", "inventory"));
 
-        Item revive = (new ItemRevive()).setUnlocalizedName("revive");
+        revive = (new ItemRevive()).setUnlocalizedName("revive");
         revive.setCreativeTab(creativeTabPokecube);
         register(revive, "revive");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)

@@ -16,6 +16,7 @@ public class Material
     public final Vector3f diffuseColor;
     public final Vector3f specularColor;
     public final Vector3f emissiveColor;
+    public final float    emissiveMagnitude;
     public final float    ambientIntensity;
     public final float    shininess;
     public final float    transparency;
@@ -31,6 +32,7 @@ public class Material
         this.ambientIntensity = ambient;
         this.shininess = shiny;
         this.transparency = transparent;
+        this.emissiveMagnitude = Math.min(1, (float) (emissiveColor.length() / Math.sqrt(3)) / 0.8f);
     }
 
     boolean depth;
@@ -53,19 +55,17 @@ public class Material
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_EMISSION, makeBuffer(emissiveColor));
 
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-        if (emissiveColor.lengthSquared() < 1)
+        if (emissiveMagnitude != 0)
         {
-            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            oldLight[0] = OpenGlHelper.lastBrightnessX;
+            oldLight[1] = OpenGlHelper.lastBrightnessY;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240 * emissiveMagnitude,
+                    OpenGlHelper.lastBrightnessY);
         }
         else
         {
-            int i = 15728880;
-            GL11.glDisable(GL11.GL_LIGHTING);
-            int j = i % 65536;
-            int k = i / 65536;
-            oldLight[0] = OpenGlHelper.lastBrightnessX;
-            oldLight[1] = OpenGlHelper.lastBrightnessY;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
+            GL11.glEnable(GL11.GL_LIGHTING);
         }
     }
 
@@ -75,7 +75,7 @@ public class Material
         if (!colour_mat) GL11.glDisable(GL11.GL_COLOR_MATERIAL);
         if (!light) GL11.glDisable(GL11.GL_LIGHTING);
         else GL11.glEnable(GL11.GL_LIGHTING);
-        if (emissiveColor.lengthSquared() >= 1 && oldLight[0] != -1 && oldLight[0] != -1)
+        if (emissiveMagnitude != 0 && oldLight[0] != -1 && oldLight[1] != -1)
         {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, oldLight[0], oldLight[1]);
         }

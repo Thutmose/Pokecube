@@ -21,8 +21,8 @@ public class AIIdle extends AIBase
     private double             zPosition;
     private double             speed;
 
-    Vector3 v  = Vector3.getNewVector();
-    Vector3 v1 = Vector3.getNewVector();
+    Vector3                    v  = Vector3.getNewVector();
+    Vector3                    v1 = Vector3.getNewVector();
 
     public AIIdle(EntityLiving entity)
     {
@@ -39,7 +39,8 @@ public class AIIdle extends AIBase
         PathEntity current = null;
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
-        if (world == null || mob.getPokedexEntry().isStationary || mob.getPokemonAIState(IPokemob.EXECUTINGMOVE))
+        if (world == null || mob.getPokedexEntry().isStationary || mob.getPokemonAIState(IPokemob.EXECUTINGMOVE)
+                || entity.getAttackTarget() != null)
             return false;
         if ((current = entity.getNavigator().getPath()) != null && entity.getNavigator().noPath())
         {

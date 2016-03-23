@@ -747,6 +747,14 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             a = entry.width * scale;
             b = entry.height * scale;
             c = entry.length * scale;
+            if (a < 0.01 || b < 0.01 || c < 0.01)
+            {
+                float min = 0.01f / Math.min(a, Math.min(c, b));
+                scale *= min;
+                a = entry.width * scale;
+                b = entry.height * scale;
+                c = entry.length * scale;
+            }
         }
 
         this.width = a;

@@ -183,7 +183,7 @@ public class PokecubePacketHandler
                                     NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
                                     int id = nbt.getInteger("id");
                                     String mess = nbt.getString("message");
-                                    Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id, true);
+                                    Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id, false);
                                     if (e != null && e instanceof IPokemob)
                                     {
                                         ((IPokemob) e).displayMessageToOwner(mess);

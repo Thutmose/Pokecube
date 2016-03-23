@@ -15,10 +15,12 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.Ability;
+import pokecube.core.events.AttackEvent;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.utils.PokeType;
@@ -55,6 +57,7 @@ public interface IPokemob extends IMoveConstants
                 mob.addHappiness(-(current - mob.getPokedexEntry().getHappiness()));
             }
         }
+
         final int low;
         final int mid;
 
@@ -67,6 +70,7 @@ public interface IPokemob extends IMoveConstants
             this.high = high;
         }
     }
+
     public static class MovePacket
     {
         public IPokemob      attacker;
@@ -109,8 +113,8 @@ public interface IPokemob extends IMoveConstants
 
         public MovePacket(IPokemob attacker, Entity attacked, Move_Base move)
         {
-            this(attacker, attacked, move.name, move.getType(attacker), move.getPWR(), move.move.crit, move.move.statusChange,
-                    move.move.change);
+            this(attacker, attacked, move.name, move.getType(attacker), move.getPWR(), move.move.crit,
+                    move.move.statusChange, move.move.change);
         }
 
         public MovePacket(IPokemob attacker, Entity attacked, String attack, PokeType type, int PWR, int criticalLevel,
@@ -136,6 +140,8 @@ public interface IPokemob extends IMoveConstants
             this.attackerStatModification = move.move.attackerStatModification;
             this.attackedStatModProb = move.move.attackedStatModProb;
             this.attackerStatModProb = move.move.attackerStatModProb;
+
+            MinecraftForge.EVENT_BUS.post(new AttackEvent(this));
         }
 
         public Move_Base getMove()
@@ -144,59 +150,61 @@ public interface IPokemob extends IMoveConstants
         }
 
     }
+
     public static class PokemobMoveStats
     {
-        public static final int TYPE_CRIT = 2;
-        public Entity weapon1;
+        public static final int               TYPE_CRIT                  = 2;
+        public Entity                         weapon1;
 
-        public Entity weapon2;
+        public Entity                         weapon2;
 
-        public Entity infatuateTarget;
+        public Entity                         infatuateTarget;
 
-        public int     TOXIC_COUNTER      = 0;
-        public int     ROLLOUTCOUNTER     = 0;
-        public int     FURYCUTTERCOUNTER  = 0;
-        public int     DEFENSECURLCOUNTER = 0;
-        public boolean Exploding          = false;
+        public int                            TOXIC_COUNTER              = 0;
+        public int                            ROLLOUTCOUNTER             = 0;
+        public int                            FURYCUTTERCOUNTER          = 0;
+        public int                            DEFENSECURLCOUNTER         = 0;
+        public boolean                        Exploding                  = false;
 
-        public int SPECIALCOUNTER   = 0;
+        public int                            SPECIALCOUNTER             = 0;
         /** Used for cooldown of self stat raising moves */
-        public int SELFRAISECOUNTER = 0;
+        public int                            SELFRAISECOUNTER           = 0;
         /** Used for cooldown of crit chance moves */
-        public int SPECIALTYPE      = 0;
+        public int                            SPECIALTYPE                = 0;
 
         /** Used for cooldown of stat lowering moves */
-        public int TARGETLOWERCOUNTER = 0;
+        public int                            TARGETLOWERCOUNTER         = 0;
 
         /** Used for moves such as bide/counter/mirror coat */
-        public int PHYSICALDAMAGETAKENCOUNTER = 0;
-        public int SPECIALDAMAGETAKENCOUNTER  = 0;
+        public int                            PHYSICALDAMAGETAKENCOUNTER = 0;
+        public int                            SPECIALDAMAGETAKENCOUNTER  = 0;
 
         /** Number of times detect, protect or similar has worked. */
-        public int     BLOCKCOUNTER = 0;
-        public int     blockTimer   = 0;
-        public boolean blocked      = false;
+        public int                            BLOCKCOUNTER               = 0;
+        public int                            blockTimer                 = 0;
+        public boolean                        blocked                    = false;
 
-        public boolean biding = false;
+        public boolean                        biding                     = false;
 
-        public float substituteHP = 0;
+        public float                          substituteHP               = 0;
         /** Moves which have on-going effects, like leech seed, firespin, bind,
          * etc */
-        public HashMap<Move_Ongoing, Integer> ongoingEffects = new HashMap<Move_Ongoing, Integer>();
+        public HashMap<Move_Ongoing, Integer> ongoingEffects             = new HashMap<Move_Ongoing, Integer>();
 
-        public int changes = CHANGE_NONE;
+        public int                            changes                    = CHANGE_NONE;
 
         /** Time when this creeper was last in an active state (Messed up code
          * here, probably causes creeper animation to go weird) */
-        public int lastActiveTime;
+        public int                            lastActiveTime;
 
         /** The amount of time since the creeper was close enough to the player
          * to ignite */
-        public int timeSinceIgnited;
-        public int fuseTime = 30;
-        public int num      = 0;
-        public int newMoves = 0;
+        public int                            timeSinceIgnited;
+        public int                            fuseTime                   = 30;
+        public int                            num                        = 0;
+        public int                            newMoves                   = 0;
     }
+
     /*
      * Genders of pokemobs
      */
@@ -208,7 +216,7 @@ public interface IPokemob extends IMoveConstants
 
     byte SEXLEGENDARY = -2;
 
-    int TYPE_CRIT = 2;
+    int  TYPE_CRIT    = 2;
 
     /** Changes: {@link IMoveConstants#CHANGE_CONFUSED} for example. The set can
      * fail because the mob is immune against this change or because it already
@@ -711,13 +719,13 @@ public interface IPokemob extends IMoveConstants
     void setStatusTimer(short timer);
 
     void setTraded(boolean traded);
-    
+
     void setTransformedTo(Entity to);
-    
+
     void setType1(PokeType type1);
-    
+
     void setType2(PokeType type2);
-    
+
     /** Used by moves such as vine whip to set the pokemob as using something.
      * 
      * @param index

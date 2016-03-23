@@ -37,6 +37,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.database.Database;
+import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.handlers.Config;
@@ -139,6 +140,9 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         else
         {
             Entity owner = this.getPokemonOwner();
+            MoveMessageEvent event = new MoveMessageEvent(this, message);
+            MinecraftForge.EVENT_BUS.post(event);
+            message = event.message;
             if (owner instanceof EntityPlayerMP && !this.isDead)
             {
                 NBTTagCompound nbt = new NBTTagCompound();

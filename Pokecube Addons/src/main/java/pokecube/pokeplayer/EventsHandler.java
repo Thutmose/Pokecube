@@ -5,20 +5,24 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInvBasic;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import pokecube.core.entity.pokemobs.EntityPokemob;
+import pokecube.core.events.AttackEvent;
+import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemPokedex;
+import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.pokeplayer.network.PacketPokePlayer.MessageClient;
 
 public class EventsHandler
@@ -64,10 +68,37 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void PlayerLoggin(PlayerLoggedInEvent evt)
+    public void pokemobAttack(AttackEvent evt)
     {
-        if (!evt.player.worldObj.isRemote)
+        if (evt.moveInfo.attacked instanceof EntityPlayer)
         {
+            EntityPlayer player = (EntityPlayer) evt.moveInfo.attacked;
+            IPokemob pokemob = proxy.getPokemob(player);
+            if (pokemob != null)
+            {
+                evt.moveInfo.attacked = (Entity) pokemob;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void pokemobMoveMessage(MoveMessageEvent evt)
+    {
+        Entity user = (Entity) evt.sender;
+        if (user.getEntityData().getBoolean("isPlayer") && !user.worldObj.isRemote)
+        {
+            Entity e = user.worldObj.getEntityByID(user.getEntityId());
+            System.out.println(evt.message);
+            System.out.println(e);
+            if (e instanceof EntityPlayer)
+            {
+                EntityPlayer owner = (EntityPlayer) e;
+                NBTTagCompound nbt = new NBTTagCompound();
+                nbt.setInteger("id", owner.getEntityId());
+                nbt.setString("message", evt.message);
+                PokecubeClientPacket mess = new PokecubeClientPacket(PokecubeClientPacket.MOVEMESSAGE, nbt);
+                PokecubePacketHandler.sendToClient(mess, owner);
+            }
         }
     }
 

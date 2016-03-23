@@ -26,6 +26,7 @@ public class PokeInfo
         this.entry = pokemob.getPokedexEntry();
         this.originalHeight = 1.8f;
         this.originalWidth = 0.6f;
+        ((Entity) pokemob).getEntityData().setBoolean("isPlayer", true);
     }
 
     public void resetPlayer(EntityPlayer player)

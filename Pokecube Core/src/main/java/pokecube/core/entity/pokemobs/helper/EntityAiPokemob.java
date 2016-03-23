@@ -366,8 +366,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         // Either push pokemob around, or if sneaking, make it try to climb on
         // shoulder
-        if (isOwner && itemstack != null
-                && (itemstack.getItem() == Items.stick || itemstack.getItem() == torch))
+        if (isOwner && itemstack != null && (itemstack.getItem() == Items.stick || itemstack.getItem() == torch))
         {
             if (player.isSneaking())
             {
@@ -579,8 +578,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     {
                         dropItem();
                     }
-
-                    setHeldItem(itemstack.copy());
+                    ItemStack toSet = itemstack.copy();
+                    toSet.stackSize = 1;
+                    setHeldItem(toSet);
                     itemstack.stackSize--;
 
                     if (itemstack.stackSize <= 0)

@@ -286,8 +286,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 String superEffective = I18n.translateToLocalFormatted("pokemob.evolve.success",
                         this.getPokemonDisplayName(), ((IPokemob) evolution).getPokedexEntry().getName());
                 this.displayMessageToOwner("\u00a7a" + superEffective);
-                this.setDead();
                 this.setPokemonOwner(null);
+                this.setDead();
             }
             else
             {

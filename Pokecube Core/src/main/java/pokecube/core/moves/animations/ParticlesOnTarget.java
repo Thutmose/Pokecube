@@ -75,7 +75,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
             GlStateManager.disableTexture2D();
             Vector3 temp = Vector3.getNewVector();
             Random rand = new Random();
-            for (int i = 0; i < 500 * density; i++)
+            for (int i = 0; i < 250 * density; i++)
             {
                 GL11.glBegin(GL11.GL_LINE_LOOP);
                 temp.set(rand.nextGaussian(), rand.nextGaussian(), rand.nextGaussian());

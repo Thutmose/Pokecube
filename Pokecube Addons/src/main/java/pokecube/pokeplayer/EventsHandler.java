@@ -17,7 +17,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.AttackEvent;
 import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.interfaces.IPokemob;
@@ -41,7 +40,7 @@ public class EventsHandler
     public void interactEvent(PlayerInteractEvent event)
     {
         IPokemob pokemob = proxy.getPokemob(event.entityPlayer);
-        if (pokemob == null || !(pokemob instanceof EntityPokemob)) return;
+        if (pokemob == null) return;
         EntityPlayer player = event.entityPlayer;
         if (event.entityPlayer.getHeldItem() != null && event.entityPlayer.isSneaking()
                 && event.entityPlayer.getHeldItem().getItem() instanceof ItemPokedex)
@@ -114,7 +113,7 @@ public class EventsHandler
     {
         if (evt.entity instanceof IPokemob)
         {
-            if(evt.entity.getEntityData().getBoolean("isPlayer"))
+            if (evt.entity.getEntityData().getBoolean("isPlayer"))
             {
                 UUID uuid = UUID.fromString(evt.entity.getEntityData().getString("playerID"));
                 EntityPlayer player = evt.world.getPlayerEntityByUUID(uuid);

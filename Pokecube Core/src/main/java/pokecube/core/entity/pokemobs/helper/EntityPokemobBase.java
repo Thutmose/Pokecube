@@ -113,12 +113,13 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         despawntimer--;
         if (checks) return false;
 
-        boolean cull = PokecubeMod.core.getConfig().cull
-                && worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius) == null;
+        boolean cull = PokecubeMod.core.getConfig().cull && worldObj.isAnyPlayerWithinRangeAt(this.posX, this.posY,
+                this.posZ, PokecubeMod.core.getConfig().maxSpawnRadius);
 
-        if (!cull && !PokecubeMod.core.getConfig().cull)
+        if (!cull && !PokecubeMod.core.getConfig().cull && !worldObj.playerEntities.isEmpty())
         {
-            cull = worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius * 3) == null;
+            cull = worldObj.isAnyPlayerWithinRangeAt(this.posX, this.posY, this.posZ,
+                    PokecubeMod.core.getConfig().maxSpawnRadius * 3);
             if (cull && despawntimer < 0)
             {
                 despawntimer = 80;
@@ -130,7 +131,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             }
         }
 
-        return canDespawn || cull;
+        return (canDespawn || cull) && super.canDespawn();
     }
 
     @Override

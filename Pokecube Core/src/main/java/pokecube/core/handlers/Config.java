@@ -89,7 +89,7 @@ public class Config extends ConfigBase
     public boolean             pokemobsEatGravel     = false;
     @Configure(category = mobAI)
     /** Is there a warning before a wild pokémob attacks the player. */
-    public boolean             pokemobagresswarning  = false;
+    public boolean             pokemobagresswarning  = true;
     @Configure(category = mobAI)
     /** Distance to player needed to agress the player */
     public int                 mobAggroRadius        = 3;
@@ -102,7 +102,7 @@ public class Config extends ConfigBase
     public int                 maxPlayerDamage       = 10;
     @Configure(category = mobAI)
     /** Warning time before a wild pokémob attacks a player */
-    public int                 pokemobagressticks    = 100;
+    public int                 pokemobagressticks    = 50;
     @Configure(category = mobAI)
     /** Number of threads allowed for AI. */
     public int                 maxAIThreads          = 1;

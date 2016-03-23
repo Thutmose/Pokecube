@@ -21,8 +21,6 @@ import pokecube.pokeplayer.client.gui.GuiPokemob;
 
 public class ProxyClient extends Proxy
 {
-    static long time = Long.MIN_VALUE;
-
     @Override
     public IPokemob getPokemob(EntityPlayer player)
     {
@@ -84,7 +82,7 @@ public class ProxyClient extends Proxy
     public void mouseClickEvent(MouseEvent event)
     {
         IPokemob pokemob = getPokemob(Minecraft.getMinecraft().thePlayer);
-        if (pokemob != null && time < System.nanoTime() - 100000000 && event.button == 0 && event.buttonstate)
+        if (pokemob != null && event.button == 0 && event.buttonstate)
         {
             if (Minecraft.getMinecraft().thePlayer.getHeldItem() == null)
             {

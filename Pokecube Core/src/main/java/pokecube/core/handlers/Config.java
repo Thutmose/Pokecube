@@ -55,7 +55,7 @@ public class Config extends ConfigBase
     public static Config       instance;
 
     // Misc Settings
-    // @Configure(category = misc)
+    @Configure(category = misc)
     public String[]            defaultStarts         = {};
     @Configure(category = misc)
     public boolean             contributorStarters   = true;

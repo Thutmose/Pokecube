@@ -53,6 +53,7 @@ pokemob.info.happy4=Your Pokémob is happy
 pokemob.info.happy5=§aYour Pokémob is very happy
 pokemob.info.happy6=§aYour Pokémob is ecstatic
 
+pokemob.evolve.success=%1$s Evolved into %2$s
 pokemob.megaevolve.success=%1$s Mega-evolved into %2$s
 pokemob.megaevolve.revert=%1$s Reverted to %2$s
 pokemob.megaevolve.failed=%1$s failed to Mega Evolve.

@@ -125,10 +125,15 @@ import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
-@Mod( // @formatter:off
-        modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:Forge@"
-                + PokecubeMod.MINFORGEVERSION
-                + PokecubeMod.DEPSTRING, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, updateJSON = PokecubeMod.UPDATEURL, guiFactory = "pokecube.core.client.gui.config.ModGuiFactory") // @formatter:on
+@Mod( //@formatter:off
+        modid = PokecubeMod.ID, 
+        name = "Pokecube", 
+        version = PokecubeMod.VERSION, 
+        dependencies = "required-after:Forge@"+ PokecubeMod.MINFORGEVERSION+ PokecubeMod.DEPSTRING,
+        acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, 
+        updateJSON = PokecubeMod.UPDATEURL, 
+        guiFactory = "pokecube.core.client.gui.config.ModGuiFactory"
+        ) //@formatter:on
 public class PokecubeCore extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")

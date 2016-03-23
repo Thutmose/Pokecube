@@ -41,6 +41,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.database.Database;
+import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.handlers.Config;
@@ -89,18 +90,18 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     static final DataParameter<Integer> HAPPYDW           = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
 
-    static final DataParameter<String>  MOVESDW           = EntityDataManager.<String> createKey(EntityTameablePokemob.class,
-            DataSerializers.STRING);
-    static final DataParameter<String>  STATSDW           = EntityDataManager.<String> createKey(EntityTameablePokemob.class,
-            DataSerializers.STRING);
-    static final DataParameter<String>  NICKNAMEDW        = EntityDataManager.<String> createKey(EntityTameablePokemob.class,
-            DataSerializers.STRING);
+    static final DataParameter<String>  MOVESDW           = EntityDataManager
+            .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
+    static final DataParameter<String>  STATSDW           = EntityDataManager
+            .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
+    static final DataParameter<String>  NICKNAMEDW        = EntityDataManager
+            .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
 
-    static final DataParameter<Byte>    BOOMSTATEDW       = EntityDataManager.<Byte> createKey(EntityTameablePokemob.class,
-            DataSerializers.BYTE);
+    static final DataParameter<Byte>    BOOMSTATEDW       = EntityDataManager
+            .<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE);
 
-    static final DataParameter<Float>   DIRECTIONPITCHDW  = EntityDataManager.<Float> createKey(EntityTameablePokemob.class,
-            DataSerializers.FLOAT);
+    static final DataParameter<Float>   DIRECTIONPITCHDW  = EntityDataManager
+            .<Float> createKey(EntityTameablePokemob.class, DataSerializers.FLOAT);
 
     protected boolean                   looksWithInterest;
 
@@ -161,6 +162,9 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         else
         {
             Entity owner = this.getPokemonOwner();
+            MoveMessageEvent event = new MoveMessageEvent(this, message);
+            MinecraftForge.EVENT_BUS.post(event);
+            message = event.message;
             if (owner instanceof EntityPlayer && !this.isDead)
             {
                 NBTTagCompound nbt = new NBTTagCompound();
@@ -511,8 +515,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
     public void openGUI(EntityPlayer player)
     {
-        if (!this.worldObj.isRemote && (!this.isBeingRidden())
-                && this.getPokemonAIState(IMoveConstants.TAMED))
+        if (!this.worldObj.isRemote && (!this.isBeingRidden()) && this.getPokemonAIState(IMoveConstants.TAMED))
         {
             this.pokeChest.setCustomName(this.getName());
             player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, worldObj, getEntityId(), 0, 0);

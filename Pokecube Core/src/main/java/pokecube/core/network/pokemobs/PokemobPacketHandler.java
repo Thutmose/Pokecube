@@ -171,9 +171,9 @@ public class PokemobPacketHandler
                             IPokemob pokemob;
                             WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
                                     .worldServerForDimension(player.dimension);
-                            pokemob = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, id, true);
-                            if (pokemob == null) { return; }
-
+                            Entity entity = PokecubeMod.core.getEntityProvider().getEntity(world, id, true);
+                            if (entity == null || !(entity instanceof IPokemob)) { return; }
+                            pokemob = (IPokemob) entity;
                             if (channel == RETURN)
                             {
                                 Entity mob = (Entity) pokemob;
@@ -212,16 +212,16 @@ public class PokemobPacketHandler
                                     {
                                         pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
                                         megaEntry = pokemob.getPokedexEntry().baseForme;
-                                        String mess = I18n.translateToLocalFormatted(
-                                                "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());
+                                        String mess = I18n.translateToLocalFormatted("pokemob.megaevolve.revert", old,
+                                                megaEntry.getTranslatedName());
                                         player.addChatMessage(new TextComponentString(mess));
                                     }
                                     else
                                     {
                                         pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, true);
                                         pokemob.megaEvolve(megaEntry.getName());
-                                        String mess = I18n.translateToLocalFormatted(
-                                                "pokemob.megaevolve.success", old, megaEntry.getTranslatedName());
+                                        String mess = I18n.translateToLocalFormatted("pokemob.megaevolve.success", old,
+                                                megaEntry.getTranslatedName());
                                         player.addChatMessage(new TextComponentString(mess));
                                     }
                                 }
@@ -233,14 +233,14 @@ public class PokemobPacketHandler
                                         pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
                                         pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
                                         megaEntry = pokemob.getPokedexEntry().baseForme;
-                                        String mess = I18n.translateToLocalFormatted(
-                                                "pokemob.megaevolve.revert", old, megaEntry.getTranslatedName());
+                                        String mess = I18n.translateToLocalFormatted("pokemob.megaevolve.revert", old,
+                                                megaEntry.getTranslatedName());
                                         player.addChatMessage(new TextComponentString(mess));
                                     }
                                     else
                                     {
-                                        String mess = I18n.translateToLocalFormatted(
-                                                "pokemob.megaevolve.failed", pokemob.getPokemonDisplayName());
+                                        String mess = I18n.translateToLocalFormatted("pokemob.megaevolve.failed",
+                                                pokemob.getPokemonDisplayName());
                                         player.addChatMessage(new TextComponentString(mess));
                                     }
                                 }
@@ -397,7 +397,8 @@ public class PokemobPacketHandler
                             Entity owner = pokemob.getPokemonOwner();
                             if (owner != null)
                             {
-                                Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.worldObj, id, false);
+                                Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.worldObj, id,
+                                        false);
                                 if (closest instanceof IPokemob)
                                 {
                                     IPokemob target = (IPokemob) closest;
@@ -436,6 +437,7 @@ public class PokemobPacketHandler
                 return null;
             }
         }
+
         public static final byte RETURN      = 0;
         public static final byte NICKNAME    = 1;
         public static final byte MOVEUSE     = 2;

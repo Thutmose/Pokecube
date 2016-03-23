@@ -131,6 +131,7 @@ import thut.api.maths.Vector3;
         version = PokecubeMod.VERSION, 
         dependencies = "required-after:Forge@"+ PokecubeMod.MINFORGEVERSION+ PokecubeMod.DEPSTRING,
         acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, 
+        acceptableRemoteVersions=PokecubeMod.MINVERSION,
         updateJSON = PokecubeMod.UPDATEURL, 
         guiFactory = "pokecube.core.client.gui.config.ModGuiFactory"
         ) //@formatter:on

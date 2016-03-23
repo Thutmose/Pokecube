@@ -53,6 +53,7 @@ public abstract class PokecubeMod
 
     public final static String                  ID                         = "pokecube";
     public final static String                  VERSION                    = "@VERSION";
+    public final static String                  MINVERSION                 = "@MINVERSION";
     public final static String                  MCVERSIONS                 = "@MCVERSION";
     public final static String                  MINFORGEVERSION            = "@FORGEVERSION";
 

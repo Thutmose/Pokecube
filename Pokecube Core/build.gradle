@@ -68,6 +68,8 @@ minecraft {
     replaceIn "PokecubeMod.java"
     replace "@VERSION", project.version
     replaceIn "mcmod.info"
+    replace "@MINVERSION", "${version_mincompat}"
+    replaceIn "PokecubeMod.java"
     replace "@MCVERSION", "${version_mcsupport}"
     replaceIn "PokecubeMod.java"
     replace "@FORGEVERSION", "[${version_forge},)"

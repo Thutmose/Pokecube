@@ -56,6 +56,8 @@ public class PokeInfo
         updateFloating(player);
         updateFlying(player);
         updateSwimming(player);
+        
+        //TODO update things like hunger, maxHP, etc for creative mode.
     }
 
     public void save(EntityPlayer player)

@@ -26,7 +26,8 @@ import thut.api.maths.Vector3;
 
 public class GuiAsPokemob extends GuiDisplayPokecubeInfo
 {
-    public static int moveIndex = 0;
+    public static int     moveIndex = 0;
+    public static boolean useMove   = false;
 
     public GuiAsPokemob()
     {
@@ -57,6 +58,9 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
             super.pokemobAttack();
             return;
         }
+
+        if (!useMove) return;
+        useMove = false;
 
         EntityPlayer player = minecraft.thePlayer;
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));

@@ -4,12 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.pokeplayer.PokeInfo;
@@ -19,6 +21,8 @@ import pokecube.pokeplayer.client.gui.GuiPokemob;
 
 public class ProxyClient extends Proxy
 {
+    static long time = Long.MIN_VALUE;
+
     @Override
     public IPokemob getPokemob(EntityPlayer player)
     {
@@ -74,6 +78,21 @@ public class ProxyClient extends Proxy
         IPokemob pokemob = getPokemob(Minecraft.getMinecraft().thePlayer);
         if (pokemob == null) return;
         event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void mouseClickEvent(MouseEvent event)
+    {
+        IPokemob pokemob = getPokemob(Minecraft.getMinecraft().thePlayer);
+        if (pokemob != null && time < System.nanoTime() - 100000000 && event.button == 0 && event.buttonstate)
+        {
+            if (Minecraft.getMinecraft().thePlayer.getHeldItem() == null)
+            {
+                GuiAsPokemob.useMove = true;
+                GuiDisplayPokecubeInfo.instance().pokemobAttack();
+                event.setCanceled(true);
+            }
+        }
     }
 
     @Override

@@ -193,6 +193,8 @@ public class EntityAITrainer extends EntityAIBase
     @Override
     public void updateTask()
     {
+        if (trainer.getTarget() == null) return;
+
         double distance = trainer.getDistanceSqToEntity(trainer.getTarget());
         trainer.faceEntity(trainer.getTarget(), trainer.rotationPitch, trainer.rotationYaw);
         if (distance > 100 || trainer.cooldown > 0)

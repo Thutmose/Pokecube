@@ -93,12 +93,14 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 sell.stackSize += new Random().nextInt(amtRange[1] - amtRange[0] + 1);
             }
             ItemStack buy1 = new ItemStack(Items.emerald);
-            ItemStack buy2 = null;
             buy1.stackSize = (cost & 63);
+            ItemStack buy2 = null;
             if (cost > 64)
             {
                 buy2 = buy1.copy();
+                buy1.stackSize = 64;
                 buy2.stackSize = ((cost - 64) & 63);
+                if (cost - 64 >= 64) buy2.stackSize = 64;
             }
             else if (cost == 64)
             {
@@ -223,18 +225,20 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 ItemStack output = PokecubeItems.getStack(name);
                 if (output == null) continue;
                 added.add(name);
-                int cost = Config.instance.megaCost;
-                if (name.endsWith("orb")) cost = Config.instance.orbCost;
-                else if (name.endsWith("charm")) cost = Config.instance.shinyCost;
+                int size = Config.instance.megaCost;
+                if (name.endsWith("orb")) size = Config.instance.orbCost;
+                else if (name.endsWith("charm")) size = Config.instance.shinyCost;
                 ItemStack buy1 = new ItemStack(Items.emerald);
+                buy1.stackSize = (size & 63);
                 ItemStack buy2 = null;
-                buy1.stackSize = (cost & 63);
-                if (cost > 64)
+                if (size > 64)
                 {
                     buy2 = buy1.copy();
-                    buy2.stackSize = ((cost - 64) & 63);
+                    buy1.stackSize = 64;
+                    buy2.stackSize = ((size - 64) & 63);
+                    if (size - 64 >= 64) buy2.stackSize = 64;
                 }
-                else if (cost == 64)
+                else if (size == 64)
                 {
                     buy1.stackSize = 64;
                 }

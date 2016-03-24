@@ -69,24 +69,24 @@ public class EntityPokemartSeller extends EntityTrainer
                 ItemStack output = PokecubeItems.getStack(name);
                 if (output == null) continue;
                 added.add(name);
-                ItemStack in1 = new ItemStack(Items.emerald);
                 int size = Config.instance.megaCost;
                 if (name.endsWith("orb")) size = Config.instance.orbCost;
                 else if (name.endsWith("charm")) size = Config.instance.shinyCost;
-                in1.stackSize = (size & 63);
-                ItemStack in2 = null;
+                ItemStack buy1 = new ItemStack(Items.emerald);
+                buy1.stackSize = (size & 63);
+                ItemStack buy2 = null;
                 if (size > 64)
                 {
-                    in2 = in1.copy();
-                    in1.stackSize = 64;
-                    in2.stackSize = ((size - 64) & 63);
-                    if (size - 64 >= 64) in2.stackSize = 64;
+                    buy2 = buy1.copy();
+                    buy1.stackSize = 64;
+                    buy2.stackSize = ((size - 64) & 63);
+                    if (size - 64 >= 64) buy2.stackSize = 64;
                 }
                 else if (size == 64)
                 {
-                    in1.stackSize = 64;
+                    buy1.stackSize = 64;
                 }
-                itemList.add(new MerchantRecipe(in1, in2, output));
+                itemList.add(new MerchantRecipe(buy1, buy2, output));
             }
         }
         added.clear();

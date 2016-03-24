@@ -137,9 +137,10 @@ public class SettingsCommand extends CommandBase
             {
                 text += o;
             }
-            String mess = StatCollector.translateToLocalFormatted("pokecube.command.settings.check", args[0], text);
+            String mess;
             if (check)
             {
+                mess = StatCollector.translateToLocalFormatted("pokecube.command.settings.check", args[0], text);
                 CommandTools.sendMessage(sender, mess);
                 return;
             }
@@ -155,7 +156,17 @@ public class SettingsCommand extends CommandBase
                     CommandTools.sendError(sender, text);
                     return;
                 }
+                text = "";
                 o = field.get(PokecubeMod.core.getConfig());
+                if (o instanceof String[] || o instanceof int[])
+                {
+                    text += Arrays.toString((Object[]) o);
+                }
+                else
+                {
+                    text += o;
+                }
+                mess = StatCollector.translateToLocalFormatted("pokecube.command.settings.check", args[0], text);
                 CommandTools.sendMessage(sender, mess);
                 return;
             }

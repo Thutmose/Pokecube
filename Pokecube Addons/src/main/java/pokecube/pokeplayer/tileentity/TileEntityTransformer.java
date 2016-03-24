@@ -9,6 +9,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ITickable;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
@@ -16,11 +17,12 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.pokeplayer.PokePlayer;
 
-public class TileEntityTransformer extends TileEntityOwnable
+public class TileEntityTransformer extends TileEntityOwnable implements ITickable
 {
     ItemStack stack;
     int[]     nums;
-    boolean   random = false;
+    boolean   random   = false;
+    int       stepTick = 20;
 
     public ItemStack getStack(ItemStack stack)
     {
@@ -54,17 +56,32 @@ public class TileEntityTransformer extends TileEntityOwnable
 
     public void onStepped(EntityPlayer player)
     {
-        if (worldObj.isRemote) return;
-        boolean isPokemob = player.getEntityData().getBoolean("isPokemob");
-
+        if (worldObj.isRemote || stepTick > 0) return;
+        boolean isPokemob = PokePlayer.PROXY.getMap().get(player.getUniqueID()) != null;
         if ((stack != null || random) && !isPokemob)
         {
             IPokemob pokemob = getPokemob();
             if (pokemob != null) PokePlayer.PROXY.setPokemob(player, pokemob);
+            if (stack != null && pokemob != null)
+            {
+                stack = null;
+                stepTick = 50;
+            }
+            return;
         }
         else if (stack == null && !random && isPokemob)
         {
+            stepTick = 50;
+            IPokemob poke = PokePlayer.PROXY.getPokemob(player);
+            NBTTagCompound tag = ((Entity) poke).getEntityData();
+            poke.setPokemonNickname(tag.getString("oldNickname"));
+            tag.removeTag("oldNickname");
+            tag.removeTag("isPlayer");
+            tag.removeTag("playerID");
+            ItemStack pokemob = PokecubeManager.pokemobToItem(poke);
             PokePlayer.PROXY.setPokemob(player, null);
+            stack = pokemob;
+            return;
         }
     }
 
@@ -83,12 +100,10 @@ public class TileEntityTransformer extends TileEntityOwnable
                 num = numbers.get(worldObj.rand.nextInt(numbers.size()));
             }
             Entity entity = PokecubeMod.core.createEntityByPokedexNb(num, worldObj);
-
             if (entity != null)
             {
                 ((IPokemob) entity).specificSpawnInit();
             }
-
             return (IPokemob) entity;
         }
         IPokemob pokemob = PokecubeManager.itemToPokemob(stack, worldObj);
@@ -108,6 +123,7 @@ public class TileEntityTransformer extends TileEntityOwnable
         {
             nums = tagCompound.getIntArray("nums");
         }
+        stepTick = tagCompound.getInteger("stepTick");
         random = tagCompound.getBoolean("random");
     }
 
@@ -130,7 +146,14 @@ public class TileEntityTransformer extends TileEntityOwnable
         {
             tagCompound.setIntArray("nums", nums);
         }
+        tagCompound.setInteger("stepTick", stepTick);
         tagCompound.setBoolean("random", random);
+    }
+
+    @Override
+    public void update()
+    {
+        stepTick--;
     }
 
 }

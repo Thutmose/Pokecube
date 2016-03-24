@@ -20,14 +20,8 @@ public class ContainerPokemob extends Container
 	    final IPokemob e = PokePlayer.PROXY.getPokemob(player);
 	    final IInventory pokeInv;
 	    
-	    if(player.worldObj.isRemote)
-	    {
-	        pokeInv = new InventoryPlayerPokemob(PokePlayer.PROXY.playerMap.get(player.getUniqueID()).pokeInventory);
-	    }
-	    else
-	    {
-	        pokeInv = PokePlayer.PROXY.playerMap.get(player.getUniqueID()).pokeInventory;
-	    }
+        pokeInv = PokePlayer.PROXY.getMap().get(player.getUniqueID()).pokeInventory;
+	    
 	    IInventory playerInv = player.inventory;
 		this.pokemobInv = pokeInv;
 		byte b0 = 3;

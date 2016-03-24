@@ -2,14 +2,17 @@ package pokecube.pokeplayer;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
+import thut.api.entity.IHungrymob;
 
 public class PokeInfo
 {
@@ -33,6 +36,7 @@ public class PokeInfo
     public void resetPlayer(EntityPlayer player)
     {
         player.eyeHeight = player.getDefaultEyeHeight();
+        player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);
         float height = originalHeight;
         float width = originalWidth;
         player.setSize(width, height);
@@ -41,6 +45,11 @@ public class PokeInfo
 
     public void setPlayer(EntityPlayer player)
     {
+        pokemob.setPokemonOwner(player);
+        if (!((Entity) pokemob).getEntityData().hasKey("oldNickname"))
+            ((Entity) pokemob).getEntityData().setString("oldNickname", pokemob.getPokemonNickname());
+        pokemob.setPokemonNickname(player.getName());
+        pokemob.setSize(pokemob.getSize());
         float height = pokemob.getSize() * entry.height;
         float width = pokemob.getSize() * entry.width;
         player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
@@ -52,8 +61,13 @@ public class PokeInfo
     {
         EntityLivingBase poke = (EntityLivingBase) pokemob;
         poke.onUpdate();
+        player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(poke.getMaxHealth());
         player.setHealth(poke.getHealth());
         PokePlayer.PROXY.copyTransform((EntityLivingBase) pokemob, player);
+        int num = ((IHungrymob)poke).getHungerTime();
+        int max = PokecubeMod.core.getConfig().pokemobLifeSpan;
+        num = Math.round(((max - num) * 20) / (float)max);
+        player.getFoodStats().setFoodLevel(num);
         updateFloating(player);
         updateFlying(player);
         updateSwimming(player);

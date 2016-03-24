@@ -9,6 +9,7 @@ import com.google.common.base.Predicates;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -136,6 +137,19 @@ public class Tools
             }
         }
         return ret;
+    }
+
+    public static int countPokemon(World world, Vector3 location, double radius)
+    {
+        AxisAlignedBB box = location.getAABB();
+        List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
+                box.expand(radius, radius, radius));
+        int num = 0;
+        for (Object o : list)
+        {
+            if (o instanceof IPokemob) num++;
+        }
+        return num;
     }
 
     public static double getCatchRate(float hPmax, float hP, float catchRate, double cubeBonus, double statusBonus)
@@ -382,6 +396,37 @@ public class Tools
             erraticXp[i] = levelToXp(4, i);
             fluctuatingXp[i] = levelToXp(5, i);
         }
+    }
+
+    public static boolean isAnyPlayerInRange(double rangeHorizontal, double rangeVertical, Entity entity)
+    {
+        return isAnyPlayerInRange(rangeHorizontal, rangeVertical, entity.worldObj, Vector3.getNewVector().set(entity));
+    }
+
+    public static boolean isAnyPlayerInRange(double rangeHorizontal, double rangeVertical, World world,
+            Vector3 location)
+    {
+        double dhm = rangeHorizontal * rangeHorizontal;
+        double dvm = rangeVertical * rangeVertical;
+        for (int i = 0; i < world.playerEntities.size(); ++i)
+        {
+            EntityPlayer entityplayer = (EntityPlayer) world.playerEntities.get(i);
+            if (EntitySelectors.NOT_SPECTATING.apply(entityplayer))
+            {
+                double d0 = entityplayer.posX - location.x;
+                double d1 = entityplayer.posY - location.y;
+                double d2 = entityplayer.posZ - location.z;
+                double dh = d0 * d0 + d1 * d1;
+                double dv = d2 * d2;
+                if (dh < dhm && dv < dvm) { return true; }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnyPlayerInRange(double range, Entity entity)
+    {
+        return entity.worldObj.isAnyPlayerWithinRangeAt(entity.posX, entity.posY, entity.posZ, range);
     }
 
     public static boolean isSameStack(ItemStack a, ItemStack b)

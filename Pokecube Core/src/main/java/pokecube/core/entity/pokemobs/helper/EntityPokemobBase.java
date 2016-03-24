@@ -38,6 +38,7 @@ import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.Tools;
 import thut.api.entity.IMultibox;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
@@ -112,14 +113,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 || getAttackTarget() != null || this.hasCustomName() || isAncient() || isNoDespawnRequired();
         despawntimer--;
         if (checks) return false;
-
-        boolean cull = PokecubeMod.core.getConfig().cull && worldObj.isAnyPlayerWithinRangeAt(this.posX, this.posY,
-                this.posZ, PokecubeMod.core.getConfig().maxSpawnRadius);
+        boolean player = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius, this);
+        boolean cull = PokecubeMod.core.getConfig().cull && player;
 
         if (!cull && !PokecubeMod.core.getConfig().cull && !worldObj.playerEntities.isEmpty())
         {
-            cull = worldObj.isAnyPlayerWithinRangeAt(this.posX, this.posY, this.posZ,
-                    PokecubeMod.core.getConfig().maxSpawnRadius * 3);
+            cull = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius * 3, this);
             if (cull && despawntimer < 0)
             {
                 despawntimer = 80;

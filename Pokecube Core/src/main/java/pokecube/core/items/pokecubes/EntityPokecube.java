@@ -443,7 +443,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 motionY += 0.1;
             }
         }
-
         if (motionX == motionZ && motionZ == 0)
         {
             this.inGround = true;
@@ -478,6 +477,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         if (tilt > 0 || (targetEntity != null && targetEntity.isDead))
         {
             targetEntity = null;
+            if(!targetLocation.equals(Vector3.secondAxisNeg))
             targetLocation.clear();
         }
 
@@ -491,7 +491,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             target.set(targetLocation);
         }
 
-        if (!target.isEmpty())
+        if (!target.isEmpty() && target.y >= 0)
         {
             Vector3 here = Vector3.getNewVector().set(this);
             Vector3 dir = Vector3.getNewVector().set(target);

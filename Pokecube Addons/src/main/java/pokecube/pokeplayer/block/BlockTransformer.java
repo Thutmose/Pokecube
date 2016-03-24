@@ -42,12 +42,12 @@ public class BlockTransformer extends BlockPressurePlate implements ITileEntityP
     @Override
     public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
     {
-        super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
         TileEntity tile = worldIn.getTileEntity(pos);
         if (tile instanceof TileEntityTransformer && entityIn instanceof EntityPlayer)
         {
             ((TileEntityTransformer) tile).onStepped((EntityPlayer) entityIn);
         }
+        super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
     }
 
     @Override

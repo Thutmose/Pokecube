@@ -17,9 +17,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.EnumDifficulty;
@@ -510,22 +507,9 @@ public final class SpawnHandler
     {
         int ret = 0;
         if (!v.doChunksExist(world, 10)) return ret;
-        AxisAlignedBB box = v.getAABB();
-        List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(PokecubeMod.core.getConfig().maxSpawnRadius, PokecubeMod.core.getConfig().maxSpawnRadius,
-                        PokecubeMod.core.getConfig().maxSpawnRadius));
-        int num = 0;
-        boolean player = false;
-        for (Object o : list)
-        {
-            if (o instanceof IPokemob) num++;
-            if (o instanceof EntityPlayer)
-            {
-                EntityPlayer playerEntity = (EntityPlayer) o;
-                // Stops pokemobs building up at bottom of sea floor.
-                if (playerEntity.posY > v.y - 10 && playerEntity.posY < v.y + 10) player = true;
-            }
-        }
+        int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
+        int num = Tools.countPokemon(world, v, radius);
+        boolean player = Tools.isAnyPlayerInRange(radius, 10, world, v);
         if (num > MAX_DENSITY * MAXNUM || !player) return ret;
 
         if (v.y < 0 || !checkNoSpawnerInArea(world, v.intX(), v.intY(), v.intZ())) return ret;
@@ -628,10 +612,6 @@ public final class SpawnHandler
             float x = (float) point.x + 0.5F;
             float y = (float) point.y;
             float z = (float) point.z + 0.5F;
-
-            boolean playerNearCheck = world.getClosestPlayer(x, y, z,
-                    PokecubeMod.core.getConfig().minSpawnRadius) == null;
-            if (!playerNearCheck) continue;
 
             float var28 = x - world.getSpawnPoint().getX();
             float var29 = y - world.getSpawnPoint().getY();
@@ -737,7 +717,7 @@ public final class SpawnHandler
 
                     Vector3 v = this.v.set(player).add(dx, 0, dz);
 
-                    if (world.getClosestPlayer(v.x, v.y, v.z, 64) != null) return;
+                    if (world.getClosestPlayer(v.x, v.y, v.z, 96) != null) return;
 
                     v.add(0, 255 - player.posY, 0);
 

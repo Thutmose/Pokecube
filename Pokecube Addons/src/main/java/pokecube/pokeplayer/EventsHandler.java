@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInvBasic;
@@ -11,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -55,7 +57,7 @@ public class EventsHandler
         else if (event.action == Action.RIGHT_CLICK_AIR && event.entityPlayer.getHeldItem() != null)
         {
             ((Entity) pokemob).interactFirst(player);
-            proxy.playerMap.get(event.entityPlayer.getUniqueID()).save(player);
+            proxy.getMap().get(event.entityPlayer.getUniqueID()).save(player);
         }
     }
 
@@ -102,9 +104,19 @@ public class EventsHandler
     }
 
     @SubscribeEvent
+    public void PlayerDeath(LivingDeathEvent evt)
+    {
+        if (evt.entityLiving instanceof EntityPlayer)
+        {
+            IPokemob pokemob = proxy.getPokemob((EntityPlayer) evt.entityLiving);
+            if (pokemob != null) ((EntityLivingBase) pokemob).setHealth(10);
+        }
+    }
+
+    @SubscribeEvent
     public void PlayerLogout(PlayerLoggedOutEvent evt)
     {
-        PokeInfo info = proxy.playerMap.remove(evt.player.getUniqueID());
+        PokeInfo info = proxy.getMap().remove(evt.player.getUniqueID());
         if (info != null) info.save(evt.player);
     }
 
@@ -147,10 +159,19 @@ public class EventsHandler
         {
             if (event.player == player)
             {
-                proxy.getPokemob(player);
-                boolean pokemob = player.getEntityData().getBoolean("isPokemob");
-                PokeInfo info = proxy.playerMap.get(player.getUniqueID());
-                if (info == null) pokemob = false;
+                boolean pokemob;
+                PokeInfo info = proxy.getMap().get(player.getUniqueID());
+                if (info == null)
+                {
+                    proxy.getPokemob(player);
+                    info = proxy.getMap().get(player.getUniqueID());
+                    pokemob = info != null;
+                    pokemob = pokemob && player.getEntityData().getBoolean("isPokemob");
+                }
+                else
+                {
+                    pokemob = player.getEntityData().getBoolean("isPokemob");
+                }
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
                 MessageClient message = new MessageClient(buffer);
                 buffer.writeByte(MessageClient.SETPOKE);
@@ -185,10 +206,19 @@ public class EventsHandler
             {
                 for (EntityPlayer player1 : player.worldObj.playerEntities)
                 {
-                    proxy.getPokemob(player1);
-                    boolean pokemob = player1.getEntityData().getBoolean("isPokemob");
-                    PokeInfo info = proxy.playerMap.get(player1.getUniqueID());
-                    if (info == null) pokemob = false;
+                    boolean pokemob;
+                    PokeInfo info = proxy.getMap().get(player.getUniqueID());
+                    if (info == null)
+                    {
+                        proxy.getPokemob(player);
+                        info = proxy.getMap().get(player.getUniqueID());
+                        pokemob = info != null;
+                        pokemob = pokemob && player.getEntityData().getBoolean("isPokemob");
+                    }
+                    else
+                    {
+                        pokemob = player.getEntityData().getBoolean("isPokemob");
+                    }
                     PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
                     MessageClient message = new MessageClient(buffer);
                     buffer.writeByte(MessageClient.SETPOKE);

@@ -223,23 +223,22 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 ItemStack output = PokecubeItems.getStack(name);
                 if (output == null) continue;
                 added.add(name);
-                ItemStack in1 = new ItemStack(Items.emerald);
-                int size = Config.instance.megaCost;
-                if (name.endsWith("orb")) size = Config.instance.orbCost;
-                else if (name.endsWith("charm")) size = Config.instance.shinyCost;
-                in1.stackSize = (size & 63);
-                ItemStack in2 = null;
-                if (size > 64)
+                int cost = Config.instance.megaCost;
+                if (name.endsWith("orb")) cost = Config.instance.orbCost;
+                else if (name.endsWith("charm")) cost = Config.instance.shinyCost;
+                ItemStack buy1 = new ItemStack(Items.emerald);
+                ItemStack buy2 = null;
+                buy1.stackSize = (cost & 63);
+                if (cost > 64)
                 {
-                    in2 = in1.copy();
-                    in2.stackSize = ((size - 64) & 63);
-                    if (size - 64 > 64) in2.stackSize = 64;
+                    buy2 = buy1.copy();
+                    buy2.stackSize = ((cost - 64) & 63);
                 }
-                else if (size == 64)
+                else if (cost == 64)
                 {
-                    in1.stackSize = 64;
+                    buy1.stackSize = 64;
                 }
-                itemList.add(new MerchantRecipe(in1, in2, output));
+                itemList.add(new MerchantRecipe(buy1, buy2, output));
             }
         }
         added.clear();

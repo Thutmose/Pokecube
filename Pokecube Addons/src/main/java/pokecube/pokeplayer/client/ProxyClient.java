@@ -27,7 +27,7 @@ public class ProxyClient extends Proxy
         IPokemob ret = super.getPokemob(player);
         if (ret != null)
         {
-            PokeInfo info = playerMap.get(player.getUniqueID());
+            PokeInfo info = getMap().get(player.getUniqueID());
             info.setPlayer(player);
         }
         return ret;

@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -18,9 +19,10 @@ import pokecube.pokeplayer.inventory.ContainerPokemob;
 
 public class Proxy implements IGuiHandler
 {
-    public static final int    POKEMOBGUI = 0;
+    public static final int     POKEMOBGUI      = 0;
 
-    public Map<UUID, PokeInfo> playerMap  = Maps.newHashMap();
+    private Map<UUID, PokeInfo> playerMap       = Maps.newHashMap();
+    private Map<UUID, PokeInfo> playerMapClient = Maps.newHashMap();
 
     void copyTransform(EntityLivingBase to, EntityPlayer from)
     {
@@ -57,21 +59,23 @@ public class Proxy implements IGuiHandler
         }
     }
 
+    public Map<UUID, PokeInfo> getMap()
+    {
+        return FMLCommonHandler.instance().getEffectiveSide().isClient() ? playerMapClient : playerMap;
+    }
+
     public void savePokemob(EntityPlayer player)
     {
-        PokeInfo info = playerMap.get(player.getUniqueID());
+        PokeInfo info = getMap().get(player.getUniqueID());
         if (info != null) info.save(player);
     }
 
     private void setMapping(EntityPlayer player, IPokemob pokemob)
     {
         PokeInfo info = new PokeInfo(pokemob, player);
-        info.pokemob.setPokemonOwner(player);
-        info.pokemob.setPokemonNickname(player.getName());
-        info.pokemob.setSize(info.pokemob.getSize());
         info.setPlayer(player);
         copyTransform((EntityLivingBase) info.pokemob, player);
-        playerMap.put(player.getUniqueID(), info);
+        getMap().put(player.getUniqueID(), info);
         player.getEntityData().setBoolean("isPokemob", true);
         NBTTagCompound poketag = new NBTTagCompound();
         poketag.setInteger("pokenum", pokemob.getPokedexNb());
@@ -81,10 +85,11 @@ public class Proxy implements IGuiHandler
 
     private void removeMapping(EntityPlayer player)
     {
-        PokeInfo info = playerMap.remove(player.getUniqueID());
+        PokeInfo info = getMap().remove(player.getUniqueID());
         if (info != null)
         {
             info.resetPlayer(player);
+            System.out.println("Removed");
         }
         player.getEntityData().setBoolean("isPokemob", false);
         player.getEntityData().removeTag("Pokemob");
@@ -92,9 +97,9 @@ public class Proxy implements IGuiHandler
 
     public IPokemob getPokemob(EntityPlayer player)
     {
-        if (playerMap.containsKey(player.getUniqueID()))
+        if (getMap().containsKey(player.getUniqueID()))
         {
-            PokeInfo info = playerMap.get(player.getUniqueID());
+            PokeInfo info = getMap().get(player.getUniqueID());
             IPokemob ret = info.pokemob;
             return ret;
         }
@@ -113,6 +118,10 @@ public class Proxy implements IGuiHandler
             setMapping(player, pokemob);
             return pokemob;
         }
+        else
+        {
+            removeMapping(player);
+        }
         return null;
     }
 
@@ -120,7 +129,7 @@ public class Proxy implements IGuiHandler
     {
         if (getPokemob(player) != null)
         {
-            playerMap.get(player.getUniqueID()).onUpdate(player);
+            getMap().get(player.getUniqueID()).onUpdate(player);
         }
     }
 

@@ -72,11 +72,9 @@ public class PacketPokePlayer
                                     NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
                                     player.getEntityData().setTag("Pokemob", tag);
                                     PokePlayer.PROXY.getPokemob(player);
-                                    PokeInfo info = PokePlayer.PROXY.playerMap.get(player.getUniqueID());
+                                    PokeInfo info = PokePlayer.PROXY.getMap().get(player.getUniqueID());
                                     info.originalHeight = h;
                                     info.originalWidth = w;
-                                    info.pokemob.setPokemonOwner(player);
-                                    info.pokemob.setPokemonNickname(player.getName());
                                 }
                                 else
                                 {

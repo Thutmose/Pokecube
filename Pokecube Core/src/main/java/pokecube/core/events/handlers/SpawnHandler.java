@@ -513,22 +513,9 @@ public final class SpawnHandler
     {
         int ret = 0;
         if (!v.doChunksExist(world, 10)) return ret;
-        AxisAlignedBB box = v.getAABB();
-        List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(PokecubeMod.core.getConfig().maxSpawnRadius, PokecubeMod.core.getConfig().maxSpawnRadius,
-                        PokecubeMod.core.getConfig().maxSpawnRadius));
-        int num = 0;
-        boolean player = false;
-        for (Object o : list)
-        {
-            if (o instanceof IPokemob) num++;
-            if (o instanceof EntityPlayer)
-            {
-                EntityPlayer playerEntity = (EntityPlayer) o;
-                // Stops pokemobs building up at bottom of sea floor.
-                if (playerEntity.posY > v.y - 10 && playerEntity.posY < v.y + 10) player = true;
-            }
-        }
+        int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
+        int num = Tools.countPokemon(world, v, radius);
+        boolean player = Tools.isAnyPlayerInRange(radius, 10, world, v);
         if (num > MAX_DENSITY * MAXNUM || !player) return ret;
 
         if (v.y < 0 || !checkNoSpawnerInArea(world, v.intX(), v.intY(), v.intZ())) return ret;
@@ -631,9 +618,6 @@ public final class SpawnHandler
             float x = (float) point.x + 0.5F;
             float y = (float) point.y;
             float z = (float) point.z + 0.5F;
-            EntityPlayer player = world.func_184137_a(x, y, z, PokecubeMod.core.getConfig().minSpawnRadius, false);
-            boolean playerNearCheck = player == null;
-            if (!playerNearCheck) continue;
 
             float var28 = x - world.getSpawnPoint().getX();
             float var29 = y - world.getSpawnPoint().getY();
@@ -738,7 +722,7 @@ public final class SpawnHandler
                     int dz = rand.nextInt(200) - 100;
 
                     Vector3 v = this.v.set(player).add(dx, 0, dz);
-                    if (world.func_184137_a(v.x, v.y, v.z, 64, false) != null) return;
+                    if (world.func_184137_a(v.x, v.y, v.z, 96, false) != null) return;
 
                     v.add(0, 255 - player.posY, 0);
 

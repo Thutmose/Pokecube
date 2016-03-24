@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -32,6 +33,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
@@ -106,7 +108,11 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
         }
         if (getSexe() == SEXLEGENDARY && !transforms) return null;
-
+        if (isType(PokeType.ghost) && !getPokemonAIState(IMoveConstants.TAMED)) return null;
+        if (!(getOwner() instanceof EntityPlayer)
+                && !Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius,
+                        PokecubeMod.core.getConfig().maxSpawnRadius / 4, this))
+            return null;
         if (getLover() != null) { return lover = getLover(); }
 
         if ((getSexe() == MALE && !transforms) || males.size() > 0) { return null; }
@@ -141,7 +147,9 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             {
                 IPokemob entityanimal = (IPokemob) list.get(i);
                 EntityAnimal animal = (EntityAnimal) list.get(i);
-                if (entityanimal == this || entityanimal.getPokemonAIState(IMoveConstants.TAMED) != getPokemonAIState(IMoveConstants.TAMED)) continue;
+                if (entityanimal == this || entityanimal
+                        .getPokemonAIState(IMoveConstants.TAMED) != getPokemonAIState(IMoveConstants.TAMED))
+                    continue;
 
                 boolean validMate = canMate((EntityAnimal) entityanimal);
 

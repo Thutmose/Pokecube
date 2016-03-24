@@ -189,6 +189,8 @@ public abstract class PokecubeMod
     @SuppressWarnings("rawtypes")
     public abstract Class getEntityClassFromPokedexNumber(int pokedexNb);
 
+    public abstract IEntityProvider getEntityProvider();
+
     public abstract Configuration getPokecubeConfig(FMLPreInitializationEvent evt);
 
     public abstract Integer[] getStarters();
@@ -217,9 +219,7 @@ public abstract class PokecubeMod
     @SuppressWarnings("rawtypes")
     public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry);
 
-    public abstract void spawnParticle(String par1Str, Vector3 location, Vector3 velocity);
-
-    public abstract IEntityProvider getEntityProvider();
-
     public abstract void setEntityProvider(IEntityProvider provider);
+
+    public abstract void spawnParticle(String par1Str, Vector3 location, Vector3 velocity);
 }

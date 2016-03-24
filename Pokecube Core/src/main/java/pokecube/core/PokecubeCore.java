@@ -262,6 +262,8 @@ public class PokecubeCore extends PokecubeMod
 
     private Config             config;
 
+    IEntityProvider provider;
+
     public PokecubeCore()
     {
         new Tools();
@@ -332,6 +334,13 @@ public class PokecubeCore extends PokecubeMod
         {
             return null;
         }
+    }
+
+    @Override
+    public IEntityProvider getEntityProvider()
+    {
+        if (provider == null) provider = new EntityProvider(null);
+        return provider;
     }
 
     @Override
@@ -763,6 +772,12 @@ public class PokecubeCore extends PokecubeMod
     }
 
     @Override
+    public void setEntityProvider(IEntityProvider provider)
+    {
+        this.provider = provider;
+    }
+
+    @Override
     public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
     {
         getProxy().spawnParticle(par1Str, location, velocity);
@@ -788,21 +803,6 @@ public class PokecubeCore extends PokecubeMod
         WorldGenStartBuilding.building = false;
         if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
         AISaveHandler.clearInstance();
-    }
-
-    IEntityProvider provider;
-
-    @Override
-    public IEntityProvider getEntityProvider()
-    {
-        if (provider == null) provider = new EntityProvider(null);
-        return provider;
-    }
-
-    @Override
-    public void setEntityProvider(IEntityProvider provider)
-    {
-        this.provider = provider;
     }
 
 }

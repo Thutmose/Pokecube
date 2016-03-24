@@ -91,12 +91,6 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         }
     }
     
-    @Override
-    protected void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source)
-    {
-        dropFewItems(wasRecentlyHit, lootingModifier);
-    }
-
     public void dropItem()
     {
         ItemStack toDrop = this.getHeldItemMainhand();
@@ -105,6 +99,12 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         EntityItem drop = new EntityItem(this.worldObj, this.posX, this.posY + 0.5, this.posZ, toDrop);
         this.worldObj.spawnEntityInWorld(drop);
         this.setHeldItem(null);
+    }
+
+    @Override
+    protected void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source)
+    {
+        dropFewItems(wasRecentlyHit, lootingModifier);
     }
 
     @Override

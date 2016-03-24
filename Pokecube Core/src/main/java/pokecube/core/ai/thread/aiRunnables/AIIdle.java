@@ -119,7 +119,7 @@ public class AIIdle extends AIBase
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
         if (world == null || mob.getPokedexEntry().isStationary || mob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE)
-                || entity.getAttackTarget() != null)
+                || entity.getAttackTarget() != null || mob.getPokemonAIState(IMoveConstants.FOLLOWING))
             return false;
         if ((current = entity.getNavigator().getPath()) != null && entity.getNavigator().noPath())
         {

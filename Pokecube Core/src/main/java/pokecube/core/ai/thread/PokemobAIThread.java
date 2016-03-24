@@ -56,9 +56,11 @@ public class PokemobAIThread
             }
         }
     }
+
     public static class AIThread extends Thread
     {
         public static int threadCount = 0;
+
         public static void createThreads()
         {
             threadCount = Math.max(1, PokecubeMod.core.getConfig().maxAIThreads);
@@ -74,7 +76,7 @@ public class PokemobAIThread
             }
         }
 
-        final int         id;
+        final int id;
 
         public AIThread(final int number)
         {
@@ -202,10 +204,25 @@ public class PokemobAIThread
                 }
             });
             id = number;
-            this.setName("Pokemob AI Thread-" + id);
+            this.setName("Netty Server IO - Pokemob AI Thread-" + id);// TODO
+                                                                      // remove
+                                                                      // the
+                                                                      // Netty
+                                                                      // Server
+                                                                      // IO if
+                                                                      // there
+                                                                      // is ever
+                                                                      // a
+                                                                      // better
+                                                                      // way to
+                                                                      // specify
+                                                                      // server
+                                                                      // side
+                                                                      // only.
         }
 
     }
+
     /** Lock used to unsure that AI tasks run at the correct time. */
     private static final BitSet                          tickLock          = new BitSet();
     /** Lists of the AI stuff for each thread. */
@@ -215,29 +232,53 @@ public class PokemobAIThread
 
     /** Used for sorting the AI runnables for run order. */
     public static final Comparator<IAIRunnable>          aiComparator      = new Comparator<IAIRunnable>()
-    {
-        @Override
-        public int compare(IAIRunnable o1, IAIRunnable o2)
-        {
-            return o1.getPriority() - o2.getPriority();
-        }
-    };
+                                                                           {
+                                                                               @Override
+                                                                               public int compare(IAIRunnable o1,
+                                                                                       IAIRunnable o2)
+                                                                               {
+                                                                                   return o1.getPriority()
+                                                                                           - o2.getPriority();
+                                                                               }
+                                                                           };
 
     /** Sorts pokemobs by move order. */
     public static final Comparator<IPokemob>             pokemobComparator = new Comparator<IPokemob>()
-    {
-        @Override
-        public int compare(IPokemob o1, IPokemob o2)
-        {
-            int speed1 = Tools.getStat(o1.getBaseStats()[5], o1.getIVs()[5], o1.getEVs()[5], o1.getLevel(),
-                    o1.getModifiers()[5], o1.getNature().getStatsMod()[5]);
-            int speed2 = Tools.getStat(o2.getBaseStats()[5], o2.getIVs()[5], o2.getEVs()[5], o2.getLevel(),
-                    o2.getModifiers()[5], o2.getNature().getStatsMod()[5]);
-            // TODO include checks for mob's selected attack and include attack
-            // priority.
-            return speed2 - speed1;
-        }
-    };
+                                                                           {
+                                                                               @Override
+                                                                               public int compare(IPokemob o1,
+                                                                                       IPokemob o2)
+                                                                               {
+                                                                                   int speed1 = Tools.getStat(
+                                                                                           o1.getBaseStats()[5],
+                                                                                           o1.getIVs()[5],
+                                                                                           o1.getEVs()[5],
+                                                                                           o1.getLevel(),
+                                                                                           o1.getModifiers()[5],
+                                                                                           o1.getNature()
+                                                                                                   .getStatsMod()[5]);
+                                                                                   int speed2 = Tools.getStat(
+                                                                                           o2.getBaseStats()[5],
+                                                                                           o2.getIVs()[5],
+                                                                                           o2.getEVs()[5],
+                                                                                           o2.getLevel(),
+                                                                                           o2.getModifiers()[5],
+                                                                                           o2.getNature()
+                                                                                                   .getStatsMod()[5]);
+                                                                                   // TODO
+                                                                                   // include
+                                                                                   // checks
+                                                                                   // for
+                                                                                   // mob's
+                                                                                   // selected
+                                                                                   // attack
+                                                                                   // and
+                                                                                   // include
+                                                                                   // attack
+                                                                                   // priority.
+                                                                                   return speed2 - speed1;
+                                                                               }
+                                                                           };
 
     static
     {

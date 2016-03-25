@@ -340,6 +340,9 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             return;
         }
 
+        int num = Tools.countPokemon(worldObj, here, PokecubeMod.core.getConfig().maxSpawnRadius);
+        if ((getOwner() instanceof EntityPlayer) && num > PokecubeMod.core.getConfig().mobSpawnNumber * 1.25) return;
+
         if (worldObj.isAirBlock(new BlockPos(i, j, k)))
         {
             ItemStack eggItemStack = ItemPokemobEgg.getEggStack(pokedexNb);

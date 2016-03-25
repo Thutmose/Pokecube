@@ -538,7 +538,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         Collections.shuffle(moves);
         if(!worldObj.isRemote)
         {
-            String message = StatCollector.translateToLocalFormatted("pokemob.move.notify.learn",
+            String message = StatCollector.translateToLocalFormatted("pokemob.info.levelup",
                     getPokemonDisplayName(), level);
             displayMessageToOwner(message);
         }

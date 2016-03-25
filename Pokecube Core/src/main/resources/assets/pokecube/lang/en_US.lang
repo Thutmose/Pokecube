@@ -45,6 +45,8 @@ pokemob.action.denydamageblock=pokemobsDamageBlocks is disabled via configs
 pokemob.action.needsberries=Your Pokémob needs to eat more Berries to do that
 pokemob.action.denyrepel=Your Pokémob is too disgusted by repel to do that
 
+pokemob.info.levelup=%1$s has grown to level %2$s
+
 pokemob.info.happy0=§4Your Pokémob is very unhappy
 pokemob.info.happy1=§cYour Pokémob is unhappy
 pokemob.info.happy2=Your Pokémob is feeling fine

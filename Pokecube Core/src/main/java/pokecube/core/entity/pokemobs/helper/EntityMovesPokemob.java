@@ -536,6 +536,12 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         List<String> moves = Database.getLevelUpMoves(this.getPokedexNb(), level, oldLevel);
         Collections.shuffle(moves);
+        if(!worldObj.isRemote)
+        {
+            String message = StatCollector.translateToLocalFormatted("pokemob.move.notify.learn",
+                    getPokemonDisplayName(), level);
+            displayMessageToOwner(message);
+        }
         HappinessType.applyHappiness(this, HappinessType.LEVEL);
         if (moves != null)
         {

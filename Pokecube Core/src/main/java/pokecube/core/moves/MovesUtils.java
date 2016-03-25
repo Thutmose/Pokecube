@@ -733,7 +733,7 @@ public class MovesUtils implements IMoveConstants
         }
         if (status == STATUS_PAR && onMove)
         {
-            message = StatCollector.translateToLocalFormatted("pokemob.move.isparalyzed", mobDisplayName);
+            message = StatCollector.translateToLocalFormatted("pokemob.move.paralyzed", mobDisplayName);
         }
         else if (status == STATUS_PAR)
         {

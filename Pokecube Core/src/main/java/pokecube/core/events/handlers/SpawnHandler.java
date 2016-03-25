@@ -619,7 +619,9 @@ public final class SpawnHandler
             float distFromSpawnPoint = var28 * var28 + var29 * var29 + var30 * var30;
 
             if (!checkNoSpawnerInArea(world, (int) x, (int) y, (int) z)) continue;
-
+            float dist = PokecubeMod.core.getConfig().minSpawnRadius;
+            boolean player = Tools.isAnyPlayerInRange(dist, dist, world, point);
+            if (player) continue;
             if (distFromSpawnPoint >= 576.0F)
             {
                 EntityLiving entityliving = null;

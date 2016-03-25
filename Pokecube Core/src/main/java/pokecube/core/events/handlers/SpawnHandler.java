@@ -536,8 +536,19 @@ public final class SpawnHandler
             if (index >= entries.size()) return ret;
             PokedexEntry dbe = entries.get(index);
             float weight = dbe.getSpawnData().getWeight(b);
-            if (b > 256) weight *= 10;
-            if (Math.random() > weight) return ret;
+            if (b > 256)
+            {
+                boolean check = false;
+                for (int i = 0; i < 10; i++)
+                {
+                    if (Math.random() <= weight) check = true;
+                }
+                if (!check) return ret;
+            }
+            else
+            {
+                if (Math.random() > weight) return ret;
+            }
 
             if (!dbe.flys())
             {

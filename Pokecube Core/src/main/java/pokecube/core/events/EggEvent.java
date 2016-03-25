@@ -7,14 +7,21 @@ import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 
 public class EggEvent extends Event 
 {
-	@Cancelable
-	public static class Hatch extends EggEvent
-	{
-		public Hatch(Entity egg)
-		{
-			super((EntityPokemobEgg) egg);
-		}
-	}
+    public static class Hatch extends EggEvent
+    {
+        public Hatch(Entity egg)
+        {
+            super((EntityPokemobEgg) egg);
+        }
+    }
+    @Cancelable
+    public static class PreHatch extends EggEvent
+    {
+        public PreHatch(Entity egg)
+        {
+            super((EntityPokemobEgg) egg);
+        }
+    }
 	@Cancelable
 	public static class Lay extends EggEvent
 	{

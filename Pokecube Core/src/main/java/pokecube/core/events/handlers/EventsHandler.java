@@ -34,6 +34,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -72,6 +73,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
+import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -691,6 +693,19 @@ public class EventsHandler
             PokecubeSerializer.getInstance().save();
             double dt = (System.nanoTime() - time) / 1000000d;
             if (dt > 20) System.err.println("Took " + dt + "ms to save pokecube data");
+        }
+    }
+
+    @SubscribeEvent
+    public void checkHatch(EggEvent.PreHatch evt)
+    {
+        Vector3 location = Vector3.getNewVector().set(evt.egg);
+        World world = evt.egg.worldObj;
+        int num = Tools.countPokemon(world, location, PokecubeMod.core.getConfig().maxSpawnRadius);
+        float factor = 1.25f;
+        if (num > PokecubeMod.core.getConfig().mobSpawnNumber * factor)
+        {
+            evt.setCanceled(true);
         }
     }
 }

@@ -380,7 +380,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 return true;
             }
             Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
-//            look.y = 0.2;
+            // look.y = 0.2;
             this.motionX += look.x;
             this.motionY += look.y;
             this.motionZ += look.z;
@@ -1119,10 +1119,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         dimension = worldObj.provider.getDimensionId();
 
         boolean loaded = worldObj.isAreaLoaded(this.getPosition(), 8);
-        if (!loaded)
-        {
-            return;
-        }
+        if (!loaded) { return; }
 
         super.onUpdate();
 
@@ -1209,13 +1206,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 motionY -= 0.02;
             }
             PathEntity path = getNavigator().getPath();
-            if (path != null && getPokemonAIState(IDLE))
+            if (path != null)
             {
                 Vector3 end = Vector3.getNewVector().set(path.getFinalPathPoint());
                 double dhs = (here.x - end.x) * (here.x - end.x) + (here.z - end.z) * (here.z - end.z);
                 double dvs = (here.y - end.y) * (here.y - end.y);
-                System.out.println(dhs+" "+dvs);
-                if (dhs < 1 && dvs <= floatHeight * floatHeight)
+                double width = Math.max(1, getSize() * entry.length) / 4;
+                if (dhs < width * width && dvs <= floatHeight * floatHeight)
                 {
                     getNavigator().clearPathEntity();
                 }

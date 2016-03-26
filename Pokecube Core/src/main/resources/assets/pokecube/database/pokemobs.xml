@@ -1653,7 +1653,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="55" def="25" hp="10" spatk="35" spd="95" spdef="45"/>
             <EVYIELD spd="1"/>
-            <SIZES height="0.5" length="0.5" width="0.5"/>
+            <SIZES height="0.2" length="0.2" width="0.2"/>
             <TYPE type1="Ground"/>
             <ABILITY hidden="Sand Force" normal="Sand Veil, Arena Trap"/>
         </STATS>
@@ -19580,7 +19580,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="47" def="50" hp="50" spatk="57" spd="65" spdef="50"/>
             <EVYIELD spd="1"/>
-            <SIZES height="0.5" length="0.5" width="0.5"/>
+            <SIZES height="0.1" length="0.1" width="0.1"/>
             <TYPE type1="Bug" type2="Electric"/>
             <ABILITY hidden="Swarm" normal="Compoundeyes, Unnerve"/>
         </STATS>

@@ -34,20 +34,25 @@ import pokecube.core.utils.PokeType;
  * @author Manchou */
 public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 {
+    public static enum MountState
+    {
+        UP, NONE, DOWN
+    }
     private int       mountCounter       = 0;
     public float      landSpeedFactor    = 1;
     public float      waterSpeedFactor   = 0.25f;
     public float      airbornSpeedFactor = 0.02f;
     public float      speedFactor        = 1;
-    private float     hungerFactor       = 1;
 
+    private float     hungerFactor       = 1;
     public boolean    canUseSaddle       = false;
     private boolean   canFly             = false;
     private boolean   canSurf            = false;
-    private boolean   canDive            = false;
 
+    private boolean   canDive            = false;
     protected double  yOffset;
     public MountState state;
+
     public int        counterMount       = 0;
 
     protected boolean pokemobJumping;
@@ -638,10 +643,5 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
                 counterMount = 0;
             }
         }
-    }
-
-    public static enum MountState
-    {
-        UP, NONE, DOWN
     }
 }

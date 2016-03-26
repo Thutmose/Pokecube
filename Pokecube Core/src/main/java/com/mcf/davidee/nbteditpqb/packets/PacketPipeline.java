@@ -1,15 +1,14 @@
 package com.mcf.davidee.nbteditpqb.packets;
 
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

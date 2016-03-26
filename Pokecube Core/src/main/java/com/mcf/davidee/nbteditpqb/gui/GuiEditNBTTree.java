@@ -1,11 +1,7 @@
 package com.mcf.davidee.nbteditpqb.gui;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import java.io.IOException;
 
-import net.minecraft.util.BlockPos;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -14,7 +10,11 @@ import com.mcf.davidee.nbteditpqb.nbt.NBTTree;
 import com.mcf.davidee.nbteditpqb.packets.EntityNBTPacket;
 import com.mcf.davidee.nbteditpqb.packets.TileNBTPacket;
 
-import java.io.IOException;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 
 public class GuiEditNBTTree extends GuiScreen{
 

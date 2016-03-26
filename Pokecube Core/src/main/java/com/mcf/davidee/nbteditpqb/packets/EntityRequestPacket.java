@@ -1,14 +1,13 @@
 package com.mcf.davidee.nbteditpqb.packets;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-
 import static com.mcf.davidee.nbteditpqb.NBTEdit.SECTION_SIGN;
 
 import java.util.logging.Level;
 
 import com.mcf.davidee.nbteditpqb.NBTEdit;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

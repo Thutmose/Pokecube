@@ -410,7 +410,7 @@ public class Tools
         double dvm = rangeVertical * rangeVertical;
         for (int i = 0; i < world.playerEntities.size(); ++i)
         {
-            EntityPlayer entityplayer = (EntityPlayer) world.playerEntities.get(i);
+            EntityPlayer entityplayer = world.playerEntities.get(i);
             if (EntitySelectors.NOT_SPECTATING.apply(entityplayer))
             {
                 double d0 = entityplayer.posX - location.x;

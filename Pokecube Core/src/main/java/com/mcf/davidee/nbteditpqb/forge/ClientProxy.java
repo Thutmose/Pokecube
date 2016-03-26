@@ -2,6 +2,12 @@ package com.mcf.davidee.nbteditpqb.forge;
 
 import java.io.File;
 
+import org.lwjgl.opengl.GL11;
+
+import com.mcf.davidee.nbteditpqb.NBTEdit;
+import com.mcf.davidee.nbteditpqb.gui.GuiEditNBTTree;
+import com.mcf.davidee.nbteditpqb.nbt.SaveStates;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -17,13 +23,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
-
-import org.lwjgl.opengl.GL11;
-
-import com.mcf.davidee.nbteditpqb.NBTEdit;
-import com.mcf.davidee.nbteditpqb.gui.GuiEditNBTTree;
-import com.mcf.davidee.nbteditpqb.nbt.SaveStates;
-
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

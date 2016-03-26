@@ -42,22 +42,6 @@ public class TileEntityRepel extends TileEntity implements ITickable
     }
 
     @Override
-    public void validate()
-    {
-        super.validate();
-        addForbiddenSpawningCoord();
-    }
-
-    /** Writes a tile entity to NBT. */
-    @Override
-    public void writeToNBT(NBTTagCompound nbt)
-    {
-        super.writeToNBT(nbt);
-        nbt.setByte("distance", distance);
-        nbt.setBoolean("enabled", enabled);
-    }
-
-    @Override
     public void update()
     {
         if (worldObj.isRemote) return;
@@ -72,5 +56,21 @@ public class TileEntityRepel extends TileEntity implements ITickable
             enabled = true;
             addForbiddenSpawningCoord();
         }
+    }
+
+    @Override
+    public void validate()
+    {
+        super.validate();
+        addForbiddenSpawningCoord();
+    }
+
+    /** Writes a tile entity to NBT. */
+    @Override
+    public void writeToNBT(NBTTagCompound nbt)
+    {
+        super.writeToNBT(nbt);
+        nbt.setByte("distance", distance);
+        nbt.setBoolean("enabled", enabled);
     }
 }

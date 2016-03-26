@@ -27,6 +27,7 @@ import pokecube.core.items.ItemPokedex;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.pokeplayer.network.PacketPokePlayer.MessageClient;
+import thut.api.entity.IHungrymob;
 
 public class EventsHandler
 {
@@ -109,7 +110,11 @@ public class EventsHandler
         if (evt.entityLiving instanceof EntityPlayer)
         {
             IPokemob pokemob = proxy.getPokemob((EntityPlayer) evt.entityLiving);
-            if (pokemob != null) ((EntityLivingBase) pokemob).setHealth(10);
+            if (pokemob != null)
+            {
+                ((EntityLivingBase) pokemob).setHealth(10);
+                ((IHungrymob) pokemob).setHungerTime(0);
+            }
         }
     }
 

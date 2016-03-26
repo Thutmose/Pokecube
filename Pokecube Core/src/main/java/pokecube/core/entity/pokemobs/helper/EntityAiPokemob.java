@@ -378,8 +378,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
                 return true;
             }
-            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(5);
-            look.y = 0.2;
+            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
+//            look.y = 0.2;
             this.motionX += look.x;
             this.motionY += look.y;
             this.motionZ += look.z;
@@ -1116,6 +1116,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if (getPokedexEntry().floats() || getPokedexEntry().flys()) fallDistance = 0;
         dimension = worldObj.provider.getDimensionId();
+
+        boolean loaded = worldObj.isAreaLoaded(this.getPosition(), 8);
+        if (!loaded)
+        {
+            return;
+        }
+
         super.onUpdate();
 
         if (worldObj.isRemote)

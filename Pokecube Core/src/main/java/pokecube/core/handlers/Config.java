@@ -73,6 +73,8 @@ public class Config extends ConfigBase
     public String              defaultMobs           = "";
     @Configure(category = misc)
     protected boolean          tableRecipe           = true;
+    @Configure(category = misc)
+    public double              scalefactor            = 1;
 
     // AI Related settings
     @Configure(category = mobAI)
@@ -351,7 +353,7 @@ public class Config extends ConfigBase
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
     {
-        if (eventArgs.modID.equals("pokecube"))
+        if (eventArgs.getModID().equals("pokecube"))
         {
             populateSettings();
             applySettings();

@@ -79,8 +79,8 @@ public class GuiDisplayPokecubeInfo extends Gui
     {
         int w = PokecubeMod.core.getConfig().guiOffset[0];
         int h = PokecubeMod.core.getConfig().guiOffset[1];
-        w = Math.min(event.resolution.getScaledWidth() - 105, w);
-        h = Math.min(event.resolution.getScaledHeight() - 13, h);
+        w = Math.min(event.getResolution().getScaledWidth() - 105, w);
+        h = Math.min(event.getResolution().getScaledHeight() - 13, h);
 
         if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
         GL11.glPushMatrix();
@@ -311,7 +311,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         {
             if (minecraft.currentScreen == null
                     && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
-                    && event.type == ElementType.HOTBAR)
+                    && event.getType() == ElementType.HOTBAR)
                 draw(event);
         }
         catch (Throwable e)

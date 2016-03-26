@@ -82,18 +82,18 @@ public class RenderHandler
     @SubscribeEvent
     public void onToolTip(ItemTooltipEvent evt)
     {
-        EntityPlayer player = evt.entityPlayer;
-        ItemStack stack = evt.itemStack;
+        EntityPlayer player = evt.getEntityPlayer();
+        ItemStack stack = evt.getItemStack();
         if (stack != null && stack.hasTagCompound() && stack.getTagCompound().getBoolean("isapokebag"))
         {
-            evt.toolTip.add("PokeBag");
+            evt.getToolTip().add("PokeBag");
         }
         if (player == null || player.openContainer == null || stack == null) return;
         if (player.openContainer instanceof ContainerCloner && stack.getItem() instanceof ItemPokemobEgg)
         {
             if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))
             {
-                evt.toolTip.add("" + stack.getTagCompound().getLong("ivs") + ":"
+                evt.getToolTip().add("" + stack.getTagCompound().getLong("ivs") + ":"
                         + stack.getTagCompound().getFloat("size") + ":" + stack.getTagCompound().getByte("nature"));
             }
         }

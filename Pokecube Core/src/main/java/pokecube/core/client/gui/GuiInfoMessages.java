@@ -55,11 +55,11 @@ public class GuiInfoMessages
     public void draw(RenderGameOverlayEvent.Post event)
     {
         Minecraft minecraft = Minecraft.getMinecraft();
-        if (event.type == ElementType.CHAT && !(minecraft.currentScreen instanceof GuiChat)) return;
+        if (event.getType() == ElementType.CHAT && !(minecraft.currentScreen instanceof GuiChat)) return;
 
         int i = Mouse.getDWheel();
-        int w = (event.resolution.getScaledWidth() - 1);
-        int h = (event.resolution.getScaledHeight());
+        int w = (event.getResolution().getScaledWidth() - 1);
+        int h = (event.getResolution().getScaledHeight());
 
         int n = w;
         int m = h;
@@ -70,7 +70,7 @@ public class GuiInfoMessages
         minecraft.entityRenderer.setupOverlayRendering();
 
         int num = -1;
-        if (event.type == ElementType.CHAT)
+        if (event.getType() == ElementType.CHAT)
         {
             num = 7;
             offset += (int) (i != 0 ? Math.signum(i) : 0);
@@ -116,7 +116,7 @@ public class GuiInfoMessages
         try
         {
             if (!((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
-                    && (event.type == ElementType.HOTBAR || event.type == ElementType.CHAT))
+                    && (event.getType() == ElementType.HOTBAR || event.getType() == ElementType.CHAT))
             {
                 draw(event);
             }

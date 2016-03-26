@@ -170,7 +170,7 @@ public class MoveAnimationHelper
     @SubscribeEvent
     public void WorldUnloadEvent(Unload evt)
     {
-        if (evt.world.provider.getDimension() == 0 && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (evt.getWorld().provider.getDimension() == 0 && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             clear();
         }

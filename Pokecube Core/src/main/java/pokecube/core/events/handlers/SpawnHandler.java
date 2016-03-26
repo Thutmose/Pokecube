@@ -18,11 +18,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
@@ -542,8 +539,19 @@ public final class SpawnHandler
             if (index >= entries.size()) return ret;
             PokedexEntry dbe = entries.get(index);
             float weight = dbe.getSpawnData().getWeight(b);
-            if (b > 256) weight *= 10;
-            if (Math.random() > weight) return ret;
+            if (b > 256)
+            {
+                boolean check = false;
+                for (int i = 0; i < 10; i++)
+                {
+                    if (Math.random() <= weight) check = true;
+                }
+                if (!check) return ret;
+            }
+            else
+            {
+                if (Math.random() > weight) return ret;
+            }
 
             if (!dbe.flys())
             {

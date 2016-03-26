@@ -250,7 +250,7 @@ public class EventsHandlerClient
             IPokemob mount = (IPokemob) evt.getEntity().getRidingEntity();
             if (evt.getEntity().isInWater() && mount.canUseDive())
             {
-                evt.density = 0.05f;
+                evt.setDensity(0.05f);
                 evt.setCanceled(true);
             }
         }
@@ -382,9 +382,9 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void onPlayerRender(RenderPlayerEvent.Post event)
     {
-        if (addedLayers.contains(event.renderer)) { return; }
-        event.renderer.addLayer(new RenderHeldPokemobs(event.renderer));
-        addedLayers.add(event.renderer);
+        if (addedLayers.contains(event.getRenderer())) { return; }
+        event.getRenderer().addLayer(new RenderHeldPokemobs(event.getRenderer()));
+        addedLayers.add(event.getRenderer());
     }
 
     @SideOnly(Side.CLIENT)
@@ -393,9 +393,9 @@ public class EventsHandlerClient
     {
         try
         {
-            if ((event.gui instanceof GuiContainer))
+            if ((event.getGui() instanceof GuiContainer))
             {
-                GuiContainer gui = (GuiContainer) event.gui;
+                GuiContainer gui = (GuiContainer) event.getGui();
                 if (gui.mc.thePlayer == null || !GuiScreen.isAltKeyDown()) { return; }
 
                 List<Slot> slots = gui.inventorySlots.inventorySlots;
@@ -425,7 +425,7 @@ public class EventsHandlerClient
                         entity.rotationYawHead = 0;
                         pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
                         entity.onGround = true;
-                        renderMob(pokemob, event.renderPartialTicks);
+                        renderMob(pokemob, event.getRenderPartialTicks());
                         GL11.glPopMatrix();
                     }
                 }
@@ -442,14 +442,14 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void onRenderHotbar(RenderGameOverlayEvent.Post event)
     {
-        if (event.type == ElementType.HOTBAR)
+        if (event.getType() == ElementType.HOTBAR)
         {
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
             if (player == null || !GuiScreen.isAltKeyDown()
                     || Minecraft.getMinecraft().currentScreen != null) { return; }
 
-            int w = event.resolution.getScaledWidth();
-            int h = event.resolution.getScaledHeight();
+            int w = event.getResolution().getScaledWidth();
+            int h = event.getResolution().getScaledHeight();
 
             int i, j;
             i = -80;
@@ -481,14 +481,14 @@ public class EventsHandlerClient
                     entity.rotationYawHead = 0;
                     pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
                     entity.onGround = true;
-                    renderMob(pokemob, event.partialTicks);
+                    renderMob(pokemob, event.getPartialTicks());
                     GL11.glPopMatrix();
                 }
             }
             GL11.glPopMatrix();
         }
 
-        debug = event.type == ElementType.DEBUG;
+        debug = event.getType() == ElementType.DEBUG;
 
     }
 
@@ -525,12 +525,12 @@ public class EventsHandlerClient
         String msg = "Sub-Biome: " + BiomeDatabase.getReadableNameFromType(t.getBiome(v));
         // Until forge stops sending the same event, with the same list 8 times,
         // this is needed
-        for (String s : event.left)
+        for (String s : event.getLeft())
         {
             if (s != null && s.equals(msg)) return;
         }
         debug = false;
-        event.left.add("");
-        event.left.add(msg);
+        event.getLeft().add("");
+        event.getLeft().add(msg);
     }
 }

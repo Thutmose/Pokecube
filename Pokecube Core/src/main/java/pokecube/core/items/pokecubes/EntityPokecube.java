@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -451,7 +452,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 this.inGround = false;
                 this.ticksInGround = 0;
             }
-            if (tilt < 0 )//&& (targetEntity == null  targetLocation.isEmpty()))
+            if (tilt < 0)// && (targetEntity == null targetLocation.isEmpty()))
             {
                 if (PokecubeManager.isFilled(getEntityItem()))
                 {
@@ -497,17 +498,20 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     {
         if (!player.worldObj.isRemote)
         {
-            IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-            if ((pokemob != null && pokemob.getPokemonOwner() == player && !isReleasing()) || pokemob == null)
+            if (!isReleasing())
             {
-                this.setReleasing(true);
-                if (!player.inventory.addItemStackToInventory(getEntityItem()))
-                    this.entityDropItem(getEntityItem(), 0.5f);
-                this.setDead();
-            }
-            else if (!isReleasing() && pokemob != null)
-            {
-                sendOut();
+                IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+                if (pokemob != null) sendOut();
+                else
+                {
+                    EntityItem entityitem = player.dropPlayerItemWithRandomChoice(getEntityItem(), false);
+                    if (entityitem != null)
+                    {
+                        entityitem.setNoPickupDelay();
+                        entityitem.setOwner(player.getName());
+                    }
+                    this.setDead();
+                }
             }
         }
         return true;

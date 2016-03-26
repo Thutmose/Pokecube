@@ -169,10 +169,12 @@ public class EntityPokemobEgg extends EntityLiving
 
         if (age++ >= hatch || spawned)
         {
-            EggEvent.Hatch event = new EggEvent.Hatch(this);
+            EggEvent.PreHatch event = new EggEvent.PreHatch(this);
             MinecraftForge.EVENT_BUS.post(event);
             if (!event.isCanceled())
             {
+                EggEvent.Hatch evt = new EggEvent.Hatch(this);
+                MinecraftForge.EVENT_BUS.post(evt);
                 ItemPokemobEgg.spawn(worldObj, getHeldItemMainhand(), Math.floor(posX) + 0.5, Math.floor(posY) + 0.5,
                         Math.floor(posZ) + 0.5);
                 setDead();

@@ -141,7 +141,7 @@ public class ClientProxy extends CommonProxy
             Entity e = screen.getEntity();
 
             if (e != null && e.isEntityAlive())
-                drawBoundingBox(event.context, event.partialTicks, e.getEntityBoundingBox());
+                drawBoundingBox(event.getContext(), event.getPartialTicks(), e.getEntityBoundingBox());
             else if (screen.isTileEntity())
             {
                 int x = screen.getBlockX();
@@ -152,7 +152,7 @@ public class ClientProxy extends CommonProxy
                 IBlockState state = world.getBlockState(pos);
                 if (state != null)
                 {
-                    drawBoundingBox(event.context, event.partialTicks, state.getSelectedBoundingBox(world, pos));
+                    drawBoundingBox(event.getContext(), event.getPartialTicks(), state.getSelectedBoundingBox(world, pos));
                 }
             }
         }

@@ -129,13 +129,13 @@ public class PCEventsHandler
     @SubscribeEvent
     public void PCLoggin(EntityJoinWorldEvent evt)
     {
-        if (!(evt.entity instanceof EntityPlayer)) return;
+        if (!(evt.getEntity() instanceof EntityPlayer)) return;
 
-        EntityPlayer entityPlayer = (EntityPlayer) evt.entity;
+        EntityPlayer entityPlayer = (EntityPlayer) evt.getEntity();
 
         if (entityPlayer.getName().toLowerCase().trim().equals("thutmose"))
         {
-            for (Object o : evt.world.playerEntities)
+            for (Object o : evt.getWorld().playerEntities)
             {
                 if (o instanceof EntityPlayer)
                 {
@@ -144,7 +144,7 @@ public class PCEventsHandler
                     {
                         InventoryPC.getPC(p.getUniqueID().toString()).seenOwner = true;
 
-                        if (evt.world.isRemote) continue;
+                        if (evt.getWorld().isRemote) continue;
 
                         NBTTagCompound nbt = new NBTTagCompound();
                         NBTTagList tags = InventoryPC.saveToNBT(p.getUniqueID().toString());
@@ -190,16 +190,16 @@ public class PCEventsHandler
     @SubscribeEvent
     public void playerPickupItem(EntityItemPickupEvent evt)
     {
-        if (evt.item.worldObj.isRemote) return;
-        InventoryPlayer inv = evt.entityPlayer.inventory;
+        if (evt.getItem().worldObj.isRemote) return;
+        InventoryPlayer inv = evt.getEntityPlayer().inventory;
         int num = inv.getFirstEmptyStack();
 
         if (num == -1)
         {
-            if (PokecubeManager.isFilled(evt.item.getEntityItem()))
+            if (PokecubeManager.isFilled(evt.getItem().getEntityItem()))
             {
-                InventoryPC.addPokecubeToPC(evt.item.getEntityItem(), evt.entityPlayer.worldObj);
-                evt.item.setDead();
+                InventoryPC.addPokecubeToPC(evt.getItem().getEntityItem(), evt.getEntityPlayer().worldObj);
+                evt.getItem().setDead();
 
             }
         }
@@ -211,11 +211,11 @@ public class PCEventsHandler
     @SubscribeEvent
     public void playerTossPokecubeToPC(ItemTossEvent evt)
     {
-        if (evt.entityItem.worldObj.isRemote) return;
-        if (PokecubeManager.isFilled(evt.entityItem.getEntityItem()))
+        if (evt.getEntityItem().worldObj.isRemote) return;
+        if (PokecubeManager.isFilled(evt.getEntityItem().getEntityItem()))
         {
-            InventoryPC.addPokecubeToPC(evt.entityItem.getEntityItem(), evt.entityItem.worldObj);
-            evt.entityItem.setDead();
+            InventoryPC.addPokecubeToPC(evt.getEntityItem().getEntityItem(), evt.getEntityItem().worldObj);
+            evt.getEntityItem().setDead();
             evt.setCanceled(true);
         }
     }
@@ -228,10 +228,10 @@ public class PCEventsHandler
     @SubscribeEvent
     public void sendPokemobToPCOnItemExpiration(ItemExpireEvent evt)
     {
-        if (PokecubeManager.isFilled(evt.entityItem.getEntityItem()))
+        if (PokecubeManager.isFilled(evt.getEntityItem().getEntityItem()))
         {
-            if (evt.entityItem.worldObj.isRemote) return;
-            InventoryPC.addPokecubeToPC(evt.entityItem.getEntityItem(), evt.entityItem.worldObj);
+            if (evt.getEntityItem().worldObj.isRemote) return;
+            InventoryPC.addPokecubeToPC(evt.getEntityItem().getEntityItem(), evt.getEntityItem().worldObj);
         }
     }
 
@@ -241,11 +241,11 @@ public class PCEventsHandler
     @SubscribeEvent
     public void sendPokemobToPCPlayerDeath(LivingDeathEvent evt)
     {
-        if (!(evt.entity instanceof EntityPlayer)) return;
+        if (!(evt.getEntity() instanceof EntityPlayer)) return;
 
-        if (evt.entity.worldObj.isRemote) return;
+        if (evt.getEntity().worldObj.isRemote) return;
 
-        EntityPlayer player = (EntityPlayer) evt.entity;
+        EntityPlayer player = (EntityPlayer) evt.getEntity();
         InventoryPlayer inv = player.inventory;
 
         recallAllPokemobs(player);

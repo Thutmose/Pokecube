@@ -2,6 +2,7 @@ package pokecube.core.blocks;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 import pokecube.core.events.handlers.SpawnHandler;
 
 /**
@@ -9,9 +10,10 @@ import pokecube.core.events.handlers.SpawnHandler;
  * @author Manchou
  *
  */
-public class TileEntityRepel extends TileEntity
+public class TileEntityRepel extends TileEntity implements ITickable
 {
 	public byte distance = 10;
+    boolean     enabled  = true;
 	
     public TileEntityRepel() { }
     
@@ -33,6 +35,7 @@ public class TileEntityRepel extends TileEntity
     {
         super.readFromNBT(nbt);
         distance = nbt.getByte("distance");
+        enabled = nbt.getBoolean("enabled");
     }
 
     public boolean removeForbiddenSpawningCoord(){
@@ -53,5 +56,23 @@ public class TileEntityRepel extends TileEntity
     {
         super.writeToNBT(nbt);
         nbt.setByte("distance", distance);
+        nbt.setBoolean("enabled", enabled);
+    }
+
+    @Override
+    public void update()
+    {
+        if (worldObj.isRemote) return;
+        int power = worldObj.getStrongPower(getPos());
+        if (power != 0 && enabled)
+        {
+            enabled = false;
+            removeForbiddenSpawningCoord();
+        }
+        else if (power == 0 && !enabled)
+        {
+            enabled = true;
+            addForbiddenSpawningCoord();
+        }
     }
 }

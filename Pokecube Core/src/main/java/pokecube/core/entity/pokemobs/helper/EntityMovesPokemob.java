@@ -478,7 +478,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
         if (getPokemonOwner() != null && !this.isDead)
         {
-            String message = I18n.translateToLocalFormatted("pokemob.move.notify.learn", getPokemonDisplayName(),
+            String message = I18n.translateToLocalFormatted("pokemob.info.levelup", getPokemonDisplayName(),
                     MovesUtils.getTranslatedMove(moveName));
             displayMessageToOwner(message);
         }

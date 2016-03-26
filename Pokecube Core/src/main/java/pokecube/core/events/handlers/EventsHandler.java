@@ -34,6 +34,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -72,6 +73,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
+import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -261,17 +263,17 @@ public class EventsHandler
     @SubscribeEvent
     public void BreakBlock(BreakEvent evt)
     {
-        if (evt.state.getBlock() == Blocks.mob_spawner)
+        if (evt.getState().getBlock() == Blocks.mob_spawner)
         {
             ItemStack stack = PokecubeItems.getRandomSpawnerDrop();
             if (stack == null) return;
-            EntityItem item = new EntityItem(evt.world, evt.pos.getX() + 0.5, evt.pos.getY() + 0.5,
-                    evt.pos.getZ() + 0.5, stack);
-            evt.world.spawnEntityInWorld(item);
+            EntityItem item = new EntityItem(evt.getWorld(), evt.getPos().getX() + 0.5, evt.getPos().getY() + 0.5,
+                    evt.getPos().getZ() + 0.5, stack);
+            evt.getWorld().spawnEntityInWorld(item);
         }
-        if (evt.state.getBlock() == PokecubeItems.pokecenter)
+        if (evt.getState().getBlock() == PokecubeItems.pokecenter)
         {
-            int meta = evt.state.getBlock().getMetaFromState(evt.state);
+            int meta = evt.getState().getBlock().getMetaFromState(evt.getState());
             if (meta == 1 && !evt.getPlayer().capabilities.isCreativeMode) evt.setCanceled(true);
         }
     }
@@ -279,23 +281,23 @@ public class EventsHandler
     @SubscribeEvent
     public void clearNetherBridge(InitMapGenEvent evt)
     {
-        if (PokecubeMod.core.getConfig().deactivateMonsters && evt.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
+        if (PokecubeMod.core.getConfig().deactivateMonsters && evt.getType() == InitMapGenEvent.EventType.NETHER_BRIDGE)
         {
-            ((MapGenNetherBridge) evt.newGen).getSpawnList().clear();
+            ((MapGenNetherBridge) evt.getNewGen()).getSpawnList().clear();
         }
     }
 
     @SubscribeEvent
     public void EntityJoinWorld(EntityJoinWorldEvent evt)
     {
-        if (PokecubeMod.core.getConfig().disableMonsters && !(evt.entity instanceof IPokemob)
-                && evt.entity instanceof IMob
-                && !(evt.entity instanceof EntityDragon || evt.entity instanceof EntityDragonPart))
+        if (PokecubeMod.core.getConfig().disableMonsters && !(evt.getEntity() instanceof IPokemob)
+                && evt.getEntity() instanceof IMob
+                && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof EntityDragonPart))
         {
-            evt.entity.setDead();
-            Vector3 location = Vector3.getNewVector().set(evt.entity);
-            int num = getShadowPokemonNb(evt.entity);
-            Entity shadow = PokecubeMod.core.createEntityByPokedexNb(num, evt.world);
+            evt.getEntity().setDead();
+            Vector3 location = Vector3.getNewVector().set(evt.getEntity());
+            int num = getShadowPokemonNb(evt.getEntity());
+            Entity shadow = PokecubeMod.core.createEntityByPokedexNb(num, evt.getWorld());
             if (shadow == null)
             {
                 System.err.println(num);
@@ -306,20 +308,20 @@ public class EventsHandler
             ((IPokemob) shadow).setShadow(true);
             ((IPokemob) shadow).specificSpawnInit();
 
-            int exp = (int) (SpawnHandler.getSpawnXp(evt.world, location, ((IPokemob) shadow).getPokedexEntry())
+            int exp = (int) (SpawnHandler.getSpawnXp(evt.getWorld(), location, ((IPokemob) shadow).getPokedexEntry())
                     * 1.25);
             exp = Math.max(exp, 8000);
 
             ((IPokemob) shadow).setExp(exp, false, true);
 
             ((EntityLiving) shadow).setHealth(((EntityLiving) shadow).getMaxHealth());
-            evt.world.spawnEntityInWorld(shadow);
+            evt.getWorld().spawnEntityInWorld(shadow);
             evt.setCanceled(true);
         }
-        else if (evt.entity instanceof EntityCreeper)
+        else if (evt.getEntity() instanceof EntityCreeper)
         {
             EntityAIAvoidEntity<EntityPokemobBase> avoidAI;
-            EntityCreeper creeper = (EntityCreeper) evt.entity;
+            EntityCreeper creeper = (EntityCreeper) evt.getEntity();
             avoidAI = new EntityAIAvoidEntity<EntityPokemobBase>(creeper, EntityPokemobBase.class,
                     new Predicate<EntityPokemobBase>()
                     {
@@ -336,16 +338,16 @@ public class EventsHandler
     @SubscribeEvent
     public void explosionEvents(ExplosionEvent.Detonate evt)
     {
-        if (evt.explosion instanceof ExplosionCustom)
+        if (evt.getExplosion() instanceof ExplosionCustom)
         {
-            ExplosionCustom boom = (ExplosionCustom) evt.explosion;
+            ExplosionCustom boom = (ExplosionCustom) evt.getExplosion();
             if (!boom.meteor) return;
 
             List<BlockPos> blocks = Lists.newArrayList(boom.affectedBlockPositions);
 
             for (BlockPos p : blocks)
             {
-                TerrainManager.getInstance().getTerrain(evt.world, p).setBiome(p, BiomeType.METEOR.getType());
+                TerrainManager.getInstance().getTerrain(evt.getWorld(), p).setBiome(p, BiomeType.METEOR.getType());
             }
 
         }
@@ -354,32 +356,32 @@ public class EventsHandler
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent evt)
     {
-        if (evt.action == Action.LEFT_CLICK_BLOCK && evt.entityPlayer.getHeldItemMainhand() != null
-                && evt.entityPlayer.getHeldItemMainhand().getItem() == Items.stick)
+        if (evt.getAction() == Action.LEFT_CLICK_BLOCK && evt.getEntityPlayer().getHeldItemMainhand() != null
+                && evt.getEntityPlayer().getHeldItemMainhand().getItem() == Items.stick)
         {
-            TileEntity te = evt.world.getTileEntity(evt.pos);
+            TileEntity te = evt.getWorld().getTileEntity(evt.getPos());
             if (te instanceof TileEntityOwnable)
             {
-                IBlockState state = evt.world.getBlockState(evt.pos);
+                IBlockState state = evt.getWorld().getBlockState(evt.getPos());
                 TileEntityOwnable tile = (TileEntityOwnable) te;
-                if (tile.canEdit(evt.entity))
+                if (tile.canEdit(evt.getEntity()))
                 {
                     Block b = state.getBlock();
-                    b.dropBlockAsItem(evt.world, evt.pos, state, 0);
-                    evt.world.setBlockToAir(evt.pos);
+                    b.dropBlockAsItem(evt.getWorld(), evt.getPos(), state, 0);
+                    evt.getWorld().setBlockToAir(evt.getPos());
                 }
             }
         }
-        if (evt.entityPlayer.worldObj.isRemote && evt.entityPlayer.getHeldItemMainhand() != null
-                && evt.entityPlayer.getHeldItemMainhand().getItem() instanceof IPokecube)
+        if (evt.getEntityPlayer().worldObj.isRemote && evt.getEntityPlayer().getHeldItemMainhand() != null
+                && evt.getEntityPlayer().getHeldItemMainhand().getItem() instanceof IPokecube)
         {
             Block block = null;
-            if (evt.action == Action.RIGHT_CLICK_BLOCK)
+            if (evt.getAction() == Action.RIGHT_CLICK_BLOCK)
             {
-                block = evt.world.getBlockState(evt.pos).getBlock();
+                block = evt.getWorld().getBlockState(evt.getPos()).getBlock();
             }
 
-            Entity target = Tools.getPointedEntity(evt.entityPlayer, 32);
+            Entity target = Tools.getPointedEntity(evt.getEntityPlayer(), 32);
 
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(5));
             buffer.writeByte(PokecubeServerPacket.POKECUBEUSE);
@@ -390,15 +392,15 @@ public class EventsHandler
             else
             {
                 Vector3 temp = Vector3.getNewVector(), look = Vector3.getNewVector();
-                temp.set(evt.entityPlayer).addTo(0, evt.entityPlayer.getEyeHeight(), 0);
-                look.set(evt.entityPlayer.getLook(1));
-                Vector3 hit = Vector3.getNextSurfacePoint(evt.world, temp, look, 32);
+                temp.set(evt.getEntityPlayer()).addTo(0, evt.getEntityPlayer().getEyeHeight(), 0);
+                look.set(evt.getEntityPlayer().getLook(1));
+                Vector3 hit = Vector3.getNextSurfacePoint(evt.getWorld(), temp, look, 32);
                 if (hit != null) hit.writeToBuff(buffer);
             }
             PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
-            if (evt.action == Action.RIGHT_CLICK_AIR) PokecubePacketHandler.sendToServer(packet);
+            if (evt.getAction() == Action.RIGHT_CLICK_AIR) PokecubePacketHandler.sendToServer(packet);
 
-            if (evt.action != Action.RIGHT_CLICK_BLOCK)
+            if (evt.getAction() != Action.RIGHT_CLICK_BLOCK)
             {
                 evt.setCanceled(true);
                 evt.setResult(Result.DENY);
@@ -418,11 +420,11 @@ public class EventsHandler
 
                 if (block != null && !loop)
                 {
-                    IBlockState state = evt.world.getBlockState(evt.pos);
-                    boolean b = block.onBlockActivated(evt.world, evt.pos, state, evt.entityPlayer,
-                            evt.entityPlayer.getActiveHand(), evt.entityLiving.getActiveItemStack(), evt.face,
-                            (float) evt.localPos.xCoord, (float) evt.localPos.yCoord, (float) evt.localPos.zCoord);
-                    if (!b && !evt.entityPlayer.isSneaking())
+                    IBlockState state = evt.getWorld().getBlockState(evt.getPos());
+                    boolean b = block.onBlockActivated(evt.getWorld(), evt.getPos(), state, evt.getEntityPlayer(),
+                            evt.getEntityPlayer().getActiveHand(), evt.getEntityLiving().getActiveItemStack(), evt.getFace(),
+                            (float) evt.getLocalPos().xCoord, (float) evt.getLocalPos().yCoord, (float) evt.getLocalPos().zCoord);
+                    if (!b && !evt.getEntityPlayer().isSneaking())
                     {
                         PokecubePacketHandler.sendToServer(packet);
                     }
@@ -432,17 +434,17 @@ public class EventsHandler
                     PokecubePacketHandler.sendToServer(packet);
                 }
             }
-            if (evt.entityPlayer.getHeldItemMainhand() == null || evt.entityPlayer.getHeldItemMainhand().stackSize <= 0)
+            if (evt.getEntityPlayer().getHeldItemMainhand() == null || evt.getEntityPlayer().getHeldItemMainhand().stackSize <= 0)
             {
-                int current = evt.entityPlayer.inventory.currentItem;
-                evt.entityPlayer.inventory.mainInventory[current] = null;
-                evt.entityPlayer.inventory.markDirty();
+                int current = evt.getEntityPlayer().inventory.currentItem;
+                evt.getEntityPlayer().inventory.mainInventory[current] = null;
+                evt.getEntityPlayer().inventory.markDirty();
             }
         }
-        if (evt.entityPlayer.worldObj.isRemote || evt.entityPlayer.worldObj.rand.nextInt(10) != 0) return;
+        if (evt.getEntityPlayer().worldObj.isRemote || evt.getEntityPlayer().worldObj.rand.nextInt(10) != 0) return;
 
-        TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(evt.entityPlayer);
-        t.checkIndustrial(evt.entityPlayer.worldObj);
+        TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(evt.getEntityPlayer());
+        t.checkIndustrial(evt.getEntityPlayer().worldObj);
     }
 
     /** Applies the exp from lucky egg and exp share. TODO move this out of
@@ -491,24 +493,24 @@ public class EventsHandler
     @SubscribeEvent
     public void livingHurtEvent(LivingHurtEvent evt)
     {
-        if (evt.entityLiving instanceof EntityPlayer && evt.source == DamageSource.inWall)
+        if (evt.getEntityLiving() instanceof EntityPlayer && evt.getSource() == DamageSource.inWall)
         {
-            if (evt.entityLiving.getRidingEntity() instanceof IPokemob) evt.setCanceled(true);
+            if (evt.getEntityLiving().getRidingEntity() instanceof IPokemob) evt.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
     {
-        if (evt.target instanceof EntityLivingBase && evt.entityLiving instanceof EntityLiving)
+        if (evt.getTarget() instanceof EntityLivingBase && evt.getEntityLiving() instanceof EntityLiving)
         {
-            List<IPokemob> pokemon = getPokemobs(evt.target, 32);
+            List<IPokemob> pokemon = getPokemobs(evt.getTarget(), 32);
             if (pokemon.isEmpty()) return;
             double closest = 1000;
             IPokemob newtarget = null;
             for (IPokemob e : pokemon)
             {
-                double dist = ((Entity) e).getDistanceSqToEntity(evt.entityLiving);
+                double dist = ((Entity) e).getDistanceSqToEntity(evt.getEntityLiving());
                 if (dist < closest && !(e.getPokemonAIState(IMoveConstants.STAYING)
                         && e.getPokemonAIState(IMoveConstants.SITTING)))
                 {
@@ -518,13 +520,13 @@ public class EventsHandler
             }
             if (newtarget != null)
             {
-                ((EntityLiving) evt.entityLiving).setAttackTarget((EntityLivingBase) newtarget);
-                if (evt.entityLiving instanceof IPokemob)
+                ((EntityLiving) evt.getEntityLiving()).setAttackTarget((EntityLivingBase) newtarget);
+                if (evt.getEntityLiving() instanceof IPokemob)
                 {
-                    ((IPokemob) evt.entityLiving).setPokemonAIState(IMoveConstants.ANGRY, true);
-                    ((IPokemob) evt.entityLiving).setPokemonAIState(IMoveConstants.SITTING, false);
+                    ((IPokemob) evt.getEntityLiving()).setPokemonAIState(IMoveConstants.ANGRY, true);
+                    ((IPokemob) evt.getEntityLiving()).setPokemonAIState(IMoveConstants.SITTING, false);
                 }
-                ((EntityLiving) newtarget).setAttackTarget(evt.entityLiving);
+                ((EntityLiving) newtarget).setAttackTarget(evt.getEntityLiving());
                 newtarget.setPokemonAIState(IMoveConstants.ANGRY, true);
             }
         }
@@ -533,35 +535,35 @@ public class EventsHandler
     @SubscribeEvent
     public void livingUpdate(LivingUpdateEvent evt)
     {
-        if (evt.entity.worldObj.isRemote || evt.entity.isDead) return;
+        if (evt.getEntity().worldObj.isRemote || evt.getEntity().isDead) return;
 
-        if (evt.entityLiving instanceof EntityPlayer)
+        if (evt.getEntityLiving() instanceof EntityPlayer)
         {
-            EntityPlayer player = (EntityPlayer) evt.entityLiving;
+            EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
             if (player.getTeam() == null)
             {
                 player.worldObj.getScoreboard().addPlayerToTeam(player.getName(), "Trainers");
             }
         }
 
-        if (evt.entityLiving.worldObj.getTotalWorldTime() % 40 == 0)
+        if (evt.getEntityLiving().worldObj.getTotalWorldTime() % 40 == 0)
         {
-            TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(evt.entityLiving);
+            TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(evt.getEntityLiving());
             PokemobTerrainEffects effect = (PokemobTerrainEffects) terrain.geTerrainEffect("pokemobEffects");
             if (effect == null)
             {
                 terrain.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
             }
-            effect.doEffect(evt.entityLiving, false);
+            effect.doEffect(evt.getEntityLiving(), false);
         }
 
-        if (evt.entityLiving instanceof IPokemob && ((IPokemob) evt.entityLiving).getPokedexNb() == 213)
+        if (evt.getEntityLiving() instanceof IPokemob && ((IPokemob) evt.getEntityLiving()).getPokedexNb() == 213)
         {
-            IPokemob shuckle = (IPokemob) evt.entityLiving;
+            IPokemob shuckle = (IPokemob) evt.getEntityLiving();
 
-            if (evt.entityLiving.worldObj.isRemote) return;
+            if (evt.getEntityLiving().worldObj.isRemote) return;
 
-            ItemStack item = evt.entityLiving.getHeldItemMainhand();
+            ItemStack item = evt.getEntityLiving().getHeldItemMainhand();
             if (item == null) return;
             Item itemId = item.getItem();
             boolean berry = item.isItemEqual(BerryManager.getBerryItem("oran"));
@@ -679,19 +681,32 @@ public class EventsHandler
     @SubscribeEvent
     public void worldLoadEvent(Load evt)
     {
-        if (evt.world.isRemote) { return; }
-        PokecubeMod.getFakePlayer(evt.world);
+        if (evt.getWorld().isRemote) { return; }
+        PokecubeMod.getFakePlayer(evt.getWorld());
     }
 
     @SubscribeEvent
     public void WorldSave(WorldEvent.Save evt)
     {
-        if (FMLCommonHandler.instance().getSide() == Side.SERVER && evt.world.provider.getDimension() == 0)
+        if (FMLCommonHandler.instance().getSide() == Side.SERVER && evt.getWorld().provider.getDimension() == 0)
         {
             long time = System.nanoTime();
             PokecubeSerializer.getInstance().save();
             double dt = (System.nanoTime() - time) / 1000000d;
             if (dt > 20) System.err.println("Took " + dt + "ms to save pokecube data");
+        }
+    }
+
+    @SubscribeEvent
+    public void checkHatch(EggEvent.PreHatch evt)
+    {
+        Vector3 location = Vector3.getNewVector().set(evt.egg);
+        World world = evt.egg.worldObj;
+        int num = Tools.countPokemon(world, location, PokecubeMod.core.getConfig().maxSpawnRadius);
+        float factor = 1.25f;
+        if (num > PokecubeMod.core.getConfig().mobSpawnNumber * factor)
+        {
+            evt.setCanceled(true);
         }
     }
 }

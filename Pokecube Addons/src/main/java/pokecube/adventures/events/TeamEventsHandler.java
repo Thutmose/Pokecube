@@ -35,7 +35,7 @@ public class TeamEventsHandler
         // here as well
         if (player != null && player.getTeam() != null)
         {
-            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.pos, player.dimension);
+            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), player.dimension);
             if (!TeamManager.getInstance().isOwned(c)) return;
             if (!player.worldObj.isRemote)
             {
@@ -53,7 +53,7 @@ public class TeamEventsHandler
                 evt.setCanceled(true);
                 return;
             }
-            ChunkCoordinate block = new ChunkCoordinate(evt.pos, evt.world.provider.getDimension());
+            ChunkCoordinate block = new ChunkCoordinate(evt.getPos(), evt.getWorld().provider.getDimension());
             TeamManager.getInstance().unsetPublic(block);
         }
     }
@@ -64,44 +64,44 @@ public class TeamEventsHandler
     @SubscribeEvent
     public void placeEvent(PlayerInteractEvent evt)
     {
-        if (evt.action == Action.RIGHT_CLICK_BLOCK)
+        if (evt.getAction() == Action.RIGHT_CLICK_BLOCK)
         {
-            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.pos, evt.entityPlayer.dimension);
+            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
             String owner = TeamManager.getInstance().getLandOwner(c);
             if (owner == null) return;
 
             Block block = null;
-            IBlockState state = evt.world.getBlockState(evt.pos);
-            block = evt.world.getBlockState(evt.pos).getBlock();
+            IBlockState state = evt.getWorld().getBlockState(evt.getPos());
+            block = evt.getWorld().getBlockState(evt.getPos()).getBlock();
             boolean b = true;
-            String team = evt.world.getScoreboard().getPlayersTeam(evt.entityPlayer.getName()).getRegisteredName();
+            String team = evt.getWorld().getScoreboard().getPlayersTeam(evt.getEntityPlayer().getName()).getRegisteredName();
 
             if (owner.equals(team))
             {
                 // return;
             }
-            else if (block != null && evt.entityPlayer.getHeldItemMainhand() != null
-                    && evt.entityPlayer.getHeldItemMainhand().getItem() instanceof IPokecube)
+            else if (block != null && evt.getEntityPlayer().getHeldItemMainhand() != null
+                    && evt.getEntityPlayer().getHeldItemMainhand().getItem() instanceof IPokecube)
             {
-                b = block.onBlockActivated(evt.world, evt.pos, state, evt.entityPlayer, EnumHand.MAIN_HAND, null,
-                        evt.face, (float) evt.localPos.xCoord, (float) evt.localPos.yCoord,
-                        (float) evt.localPos.zCoord);
+                b = block.onBlockActivated(evt.getWorld(), evt.getPos(), state, evt.getEntityPlayer(), EnumHand.MAIN_HAND, null,
+                        evt.getFace(), (float) evt.getLocalPos().xCoord, (float) evt.getLocalPos().yCoord,
+                        (float) evt.getLocalPos().zCoord);
                 if (!b) { return; }
             }
-            if (!b && evt.entityPlayer.getHeldItemMainhand() == null) return;
+            if (!b && evt.getEntityPlayer().getHeldItemMainhand() == null) return;
 
-            ChunkCoordinate blockLoc = new ChunkCoordinate(evt.pos, evt.entityPlayer.dimension);
+            ChunkCoordinate blockLoc = new ChunkCoordinate(evt.getPos(), evt.getEntityPlayer().dimension);
             TeamManager.getInstance().isPublic(blockLoc);
             if (!team.equals(owner))
             {
                 if (!TeamManager.getInstance().isPublic(blockLoc))
                 {
-                    evt.entityPlayer.addChatMessage(
+                    evt.getEntityPlayer().addChatMessage(
                             new TextComponentString("You must be a member of Team " + owner + " to do that."));
-                    evt.useBlock = Result.DENY;
+                    evt.setUseBlock(Result.DENY);
                     evt.setCanceled(true);
                 }
-                evt.useItem = Result.DENY;
+                evt.setUseItem(Result.DENY);
             }
         }
     }
@@ -109,15 +109,15 @@ public class TeamEventsHandler
     @SubscribeEvent
     public void WorldLoadEvent(Load evt)
     {
-        if (evt.world.provider.getDimension() == 0 && !evt.world.isRemote)
+        if (evt.getWorld().provider.getDimension() == 0 && !evt.getWorld().isRemote)
         {
-            if (evt.world.getScoreboard().getTeam("Pokecube") == null)
+            if (evt.getWorld().getScoreboard().getTeam("Pokecube") == null)
             {
-                evt.world.getScoreboard().createTeam("Pokecube");
+                evt.getWorld().getScoreboard().createTeam("Pokecube");
             }
-            if (evt.world.getScoreboard().getTeam("Pokecube").getMembershipCollection().isEmpty())
+            if (evt.getWorld().getScoreboard().getTeam("Pokecube").getMembershipCollection().isEmpty())
             {
-                evt.world.getScoreboard().addPlayerToTeam("PokecubePlayer", "Pokecube");
+                evt.getWorld().getScoreboard().addPlayerToTeam("PokecubePlayer", "Pokecube");
             }
             PASaveHandler.getInstance().loadBag();
             PASaveHandler.getInstance().loadTeams();

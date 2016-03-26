@@ -130,8 +130,8 @@ public class RecipeHandler extends Mod_Pokecube_Helper
             GameRegistry.addShapelessRecipe(new ItemStack(PokecubeItems.getFilledCube(i), 1, 1),
                     PokecubeItems.getStack("revive"), new ItemStack(PokecubeItems.getFilledCube(i), 1, 32767));
         }
-        GameRegistry.addRecipe(new RecipePokeseals());
-        GameRegistry.addRecipe(new RecipeRevive());
+//        GameRegistry.addRecipe(new RecipePokeseals());
+//        GameRegistry.addRecipe(new RecipeRevive());
 
         RecipeSorter.register("pokecube:pokeseals", RecipePokeseals.class, Category.SHAPELESS,
                 "after:minecraft:shaped");

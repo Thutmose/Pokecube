@@ -109,23 +109,24 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             }
         }
     }
-    public static boolean theftEnabled = false;
 
-    private ItemStack[] inventory  = new ItemStack[2];
-    private ItemStack[] inventory2 = new ItemStack[1];
+    public static boolean                     theftEnabled = false;
 
-    public EntityPlayer player1;
+    private ItemStack[]                       inventory    = new ItemStack[2];
+    private ItemStack[]                       inventory2   = new ItemStack[1];
 
-    public EntityPlayer player2;
+    public EntityPlayer                       player1;
 
-    public HashMap<String, ArrayList<String>> moves = new HashMap<String, ArrayList<String>>();
+    public EntityPlayer                       player2;
 
-    public int time = 0;
-    public boolean       trade = true;
-    public int           renderpass;
-    boolean              init  = true;
+    public HashMap<String, ArrayList<String>> moves        = new HashMap<String, ArrayList<String>>();
 
-    private TileEntityPC pc;
+    public int                                time         = 0;
+    public boolean                            trade        = true;
+    public int                                renderpass;
+    boolean                                   init         = true;
+
+    private TileEntityPC                      pc;
 
     public TileEntityTradingTable()
     {
@@ -157,8 +158,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         {
             if (PokecubeManager.isFilled(inventory[0])
                     && (PokecubeManager.getOwner(inventory[0]).equals(player.getUniqueID().toString())
-            // || player.worldObj.isRemote
-            ))
+                    // || player.worldObj.isRemote
+                    ))
             {
                 if (player1 == null) player1 = player;
                 else
@@ -549,8 +550,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
     public void openGUI(EntityPlayer player)
     {
-        player.openGui(PokecubeMod.core, Config.GUITRADINGTABLE_ID, worldObj, getPos().getX(),
-                getPos().getY(), getPos().getZ());
+        player.openGui(PokecubeMod.core, Config.GUITRADINGTABLE_ID, worldObj, getPos().getX(), getPos().getY(),
+                getPos().getZ());
     }
 
     @Override

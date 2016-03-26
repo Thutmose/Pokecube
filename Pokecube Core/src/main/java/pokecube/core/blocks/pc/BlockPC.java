@@ -58,6 +58,14 @@ public class BlockPC extends Block implements ITileEntityProvider
         return new TileEntityPC();
     }
 
+    /** Gets the metadata of the item this Block can drop. This method is called
+     * when the block gets destroyed. It returns the metadata of the dropped
+     * item based on the old metadata of the block. */
+    public int damageDropped(IBlockState state)
+    {
+        return state.getValue(TOP)?8:0;
+    }
+
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
@@ -144,8 +152,7 @@ public class BlockPC extends Block implements ITileEntityProvider
             }
             else
             {
-                player.openGui(PokecubeMod.core, Config.GUIPC_ID, world, pos.getX(), pos.getY(),
-                        pos.getZ());
+                player.openGui(PokecubeMod.core, Config.GUIPC_ID, world, pos.getX(), pos.getY(), pos.getZ());
                 return true;
             }
         }

@@ -44,6 +44,7 @@ import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
@@ -619,12 +620,24 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 {
                     ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
                     MinecraftForge.EVENT_BUS.post(toss);
+                    added = toss.isCanceled();
                 }
                 else if (itemstack.getItem() != null && (owner.isDead
                         || !(added = ((EntityPlayer) owner).inventory.addItemStackToInventory(itemstack))))
                 {
                     ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
                     MinecraftForge.EVENT_BUS.post(toss);
+                    added = toss.isCanceled();
+                }
+                if (!added && owner instanceof EntityPlayerMP)
+                {
+                    EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
+                    Vector3 temp = Vector3.getNewVector().set(this);
+                    temp.moveEntity(entity);
+                    temp.clear().setVelocities(entity);
+                    entity.targetEntity = null;
+                    entity.targetLocation.clear();
+                    worldObj.spawnEntityInWorld(entity);
                 }
 
                 if (added && owner instanceof EntityPlayerMP)
@@ -656,7 +669,6 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                                 PokecubeMod.getFakePlayer());
                         MinecraftForge.EVENT_BUS.post(toss);
                         if (!toss.isCanceled()) entityDropItem(itemstack, 0F).setPickupDelay(1000);
-                        ;
                     }
                 }
             }

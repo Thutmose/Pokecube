@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -267,20 +268,22 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     @Override
     public boolean interact(EntityPlayer player)
     {
-
         if (!player.worldObj.isRemote)
         {
             IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-            if ((pokemob != null && pokemob.getPokemonOwner() == player && !isReleasing()) || pokemob == null)
+            if (!isReleasing())
             {
-                this.setReleasing(true);
-                if (!player.inventory.addItemStackToInventory(getEntityItem()))
-                    this.entityDropItem(getEntityItem(), 0.5f);
-                this.setDead();
-            }
-            else if (!isReleasing() && pokemob != null)
-            {
-                sendOut();
+                if (pokemob != null) sendOut();
+                else
+                {
+                    EntityItem entityitem = player.dropPlayerItemWithRandomChoice(getEntityItem(), false);
+                    if (entityitem != null)
+                    {
+                        entityitem.setNoPickupDelay();
+                        entityitem.setOwner(player.getName());
+                    }
+                    this.setDead();
+                }
             }
         }
 
@@ -477,8 +480,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         if (tilt > 0 || (targetEntity != null && targetEntity.isDead))
         {
             targetEntity = null;
-            if(!targetLocation.equals(Vector3.secondAxisNeg))
-            targetLocation.clear();
+            if (!targetLocation.equals(Vector3.secondAxisNeg)) targetLocation.clear();
         }
 
         Vector3 target = Vector3.getNewVector();

@@ -6,7 +6,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -53,17 +52,6 @@ public class BlockTransformer extends BlockPressurePlate implements ITileEntityP
     @Override
     protected void updateState(World worldIn, BlockPos pos, IBlockState state, int oldRedstoneStrength)
     {
-        TileEntity before = worldIn.getTileEntity(pos);
-        NBTTagCompound tag = new NBTTagCompound();
-        if (before != null)
-        {
-            before.writeToNBT(tag);
-        }
         super.updateState(worldIn, pos, state, oldRedstoneStrength);
-        TileEntity tile = worldIn.getTileEntity(pos);
-        if (before != null && tile != null)
-        {
-            tile.readFromNBT(tag);
-        }
     }
 }

@@ -73,6 +73,8 @@ public class Config extends ConfigBase
     public String              defaultMobs            = "";
     @Configure(category = misc)
     protected boolean          tableRecipe            = true;
+    @Configure(category = misc)
+    public double              scalefactor            = 1;
 
     // AI Related settings
     @Configure(category = mobAI)

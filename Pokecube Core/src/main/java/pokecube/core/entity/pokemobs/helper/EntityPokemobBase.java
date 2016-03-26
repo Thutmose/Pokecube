@@ -285,7 +285,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public float getSize()
     {
-        return scale;
+        return (float) (scale * PokecubeMod.core.getConfig().scalefactor);
     }
 
     @Override
@@ -738,22 +738,22 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void setSize(float size)
     {
-        scale = size;
+        if (isAncient()) scale = 2;
+        else scale = size;
         float a = 1, b = 1, c = 1;
         PokedexEntry entry = getPokedexEntry();
-        if (isAncient()) scale = 2;
         if (entry != null)
         {
-            a = entry.width * scale;
-            b = entry.height * scale;
-            c = entry.length * scale;
+            a = entry.width * getSize();
+            b = entry.height * getSize();
+            c = entry.length * getSize();
             if (a < 0.01 || b < 0.01 || c < 0.01)
             {
                 float min = 0.01f / Math.min(a, Math.min(c, b));
                 scale *= min;
-                a = entry.width * scale;
-                b = entry.height * scale;
-                c = entry.length * scale;
+                a = entry.width * getSize();
+                b = entry.height * getSize();
+                c = entry.length * getSize();
             }
         }
 
@@ -842,7 +842,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setInteger("PokeballId", getPokecubeId());
-        nbttagcompound.setFloat("scale", getSize());
+        nbttagcompound.setFloat("scale", (float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
         nbttagcompound.setInteger("PokemobUID", uid);
         nbttagcompound.setIntArray("flavours", flavourAmounts);
         if (corruptedSum == -123586) nbttagcompound.setInteger("checkSum", computeCheckSum());
@@ -859,7 +859,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
         PokecubeSerializer.getInstance().addPokemob(this);
         data.writeInt(pokedexNb);
-        data.writeFloat(getSize());
+        data.writeFloat((float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
         data.writeInt(pokecubeId);
         data.writeInt(uid);
         byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),

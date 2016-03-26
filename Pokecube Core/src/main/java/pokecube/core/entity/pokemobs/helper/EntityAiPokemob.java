@@ -16,6 +16,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.potion.Potion;
@@ -1206,6 +1207,18 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (down == null || getPokemonAIState(SITTING))
             {
                 motionY -= 0.02;
+            }
+            PathEntity path = getNavigator().getPath();
+            if (path != null && getPokemonAIState(IDLE))
+            {
+                Vector3 end = Vector3.getNewVector().set(path.getFinalPathPoint());
+                double dhs = (here.x - end.x) * (here.x - end.x) + (here.z - end.z) * (here.z - end.z);
+                double dvs = (here.y - end.y) * (here.y - end.y);
+                System.out.println(dhs+" "+dvs);
+                if (dhs < 1 && dvs <= floatHeight * floatHeight)
+                {
+                    getNavigator().clearPathEntity();
+                }
             }
             here.set(this);
         }

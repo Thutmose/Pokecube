@@ -279,6 +279,19 @@ public class EventsHandler
     }
 
     @SubscribeEvent
+    public void checkHatch(EggEvent.PreHatch evt)
+    {
+        Vector3 location = Vector3.getNewVector().set(evt.egg);
+        World world = evt.egg.worldObj;
+        int num = Tools.countPokemon(world, location, PokecubeMod.core.getConfig().maxSpawnRadius);
+        float factor = 1.25f;
+        if (num > PokecubeMod.core.getConfig().mobSpawnNumber * factor)
+        {
+            evt.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public void clearNetherBridge(InitMapGenEvent evt)
     {
         if (PokecubeMod.core.getConfig().deactivateMonsters && evt.getType() == InitMapGenEvent.EventType.NETHER_BRIDGE)
@@ -694,19 +707,6 @@ public class EventsHandler
             PokecubeSerializer.getInstance().save();
             double dt = (System.nanoTime() - time) / 1000000d;
             if (dt > 20) System.err.println("Took " + dt + "ms to save pokecube data");
-        }
-    }
-
-    @SubscribeEvent
-    public void checkHatch(EggEvent.PreHatch evt)
-    {
-        Vector3 location = Vector3.getNewVector().set(evt.egg);
-        World world = evt.egg.worldObj;
-        int num = Tools.countPokemon(world, location, PokecubeMod.core.getConfig().maxSpawnRadius);
-        float factor = 1.25f;
-        if (num > PokecubeMod.core.getConfig().mobSpawnNumber * factor)
-        {
-            evt.setCanceled(true);
         }
     }
 }

@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Sets;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -25,6 +26,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -53,6 +55,8 @@ import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.client.render.entity.RenderHeldPokemobs;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob;
+import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob.MountState;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -268,8 +272,37 @@ public class EventsHandlerClient
         eventTime = Keyboard.getEventNanoseconds();
         if (key == Keyboard.KEY_SPACE && player.getRidingEntity() instanceof IPokemob)
         {
-            MessageServer packet = new MessageServer(MessageServer.JUMP, player.getRidingEntity().getEntityId());
-            PokecubePacketHandler.sendToServer(packet);
+            boolean state = Keyboard.getEventKeyState();
+            MountState newState = state ? EntityMountablePokemob.MountState.UP : EntityMountablePokemob.MountState.NONE;
+            if (newState != ((EntityMountablePokemob) player.getRidingEntity()).state)
+            {
+                ((EntityMountablePokemob) player.getRidingEntity()).state = newState;
+                byte mess = (byte) EntityMountablePokemob.MountState.NONE.ordinal();
+                if (state) mess = (byte) EntityMountablePokemob.MountState.UP.ordinal();
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+                buffer.writeByte(MessageServer.MOUNTDIR);
+                buffer.writeInt(player.getRidingEntity().getEntityId());
+                buffer.writeByte(mess);
+                MessageServer packet = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(packet);
+            }
+        }
+        else if (key == Keyboard.KEY_LCONTROL && player.getRidingEntity() instanceof IPokemob)
+        {
+            boolean state = Keyboard.getEventKeyState();
+            MountState newState = state ? EntityMountablePokemob.MountState.DOWN : EntityMountablePokemob.MountState.NONE;
+            if (newState != ((EntityMountablePokemob) player.getRidingEntity()).state)
+            {
+                ((EntityMountablePokemob) player.getRidingEntity()).state = newState;
+                byte mess = (byte) EntityMountablePokemob.MountState.NONE.ordinal();
+                if (state) mess = (byte) EntityMountablePokemob.MountState.DOWN.ordinal();
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+                buffer.writeByte(MessageServer.MOUNTDIR);
+                buffer.writeInt(player.getRidingEntity().getEntityId());
+                buffer.writeByte(mess);
+                MessageServer packet = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(packet);
+            }
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.mobMegavolve))
         {

@@ -15,14 +15,6 @@ public class EggEvent extends Event
 		}
 	}
     @Cancelable
-    public static class PreHatch extends EggEvent
-    {
-        public PreHatch(Entity egg)
-        {
-            super((EntityPokemobEgg) egg);
-        }
-    }
-	@Cancelable
 	public static class Lay extends EggEvent
 	{
 		public Lay(Entity egg)
@@ -30,7 +22,6 @@ public class EggEvent extends Event
 			super((EntityPokemobEgg) egg);
 		}
 	}
-	
 	public static class Place extends EggEvent
 	{
 		public Place(Entity egg)
@@ -38,6 +29,15 @@ public class EggEvent extends Event
 			super((EntityPokemobEgg) egg);
 		}
 	}
+	
+	@Cancelable
+    public static class PreHatch extends EggEvent
+    {
+        public PreHatch(Entity egg)
+        {
+            super((EntityPokemobEgg) egg);
+        }
+    }
 
 	public final Entity placer;
 

@@ -22,19 +22,24 @@ import pokecube.core.utils.PokeType;
  * @author Manchou */
 public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 {
+    public static enum MountState
+    {
+        UP, NONE, DOWN
+    }
     private int       mountCounter       = 0;
     public float      landSpeedFactor    = 1;
     public float      waterSpeedFactor   = 0.25f;
     public float      airbornSpeedFactor = 0.02f;
     public float      speedFactor        = 1;
-    private float     hungerFactor       = 1;
 
+    private float     hungerFactor       = 1;
     public boolean    canUseSaddle       = false;
     private boolean   canFly             = false;
     private boolean   canSurf            = false;
-    private boolean   canDive            = false;
 
+    private boolean   canDive            = false;
     protected double  yOffset;
+    public MountState state;
 
     public int        counterMount       = 0;
 
@@ -158,6 +163,14 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         return false;
     }
 
+//    @Override
+//    public boolean processInteract(EntityPlayer player entityplayer)
+//    {
+//        if (entityplayer == ridingEntity && getPokemonAIState(SHOULDER)) { return false; }
+//
+//        return super.processInteract(EntityPlayer player);
+//    }
+
     public void initRidable()
     {
         if (isType(PokeType.water) || getPokedexEntry().mobType == Type.WATER || getPokedexEntry().shouldSurf
@@ -176,14 +189,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         }
     }
 
-//    @Override
-//    public boolean processInteract(EntityPlayer player entityplayer)
-//    {
-//        if (entityplayer == ridingEntity && getPokemonAIState(SHOULDER)) { return false; }
-//
-//        return super.processInteract(EntityPlayer player);
-//    }
-
     public boolean isPokemobJumping()
     {
         return this.pokemobJumping;
@@ -199,15 +204,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         }
         return (entry.height * getSize() + entry.width * getSize()) > rider.width
                 && Math.max(entry.width, entry.length) * getSize() > rider.width * 1.8;
-    }
-
-    /** Returns true if the entity is riding another entity, used by render to
-     * rotate the legs to be in 'sit' position for players. */
-    @Override
-    public boolean isRiding()
-    {
-        return super.isRiding();
-//        return ridingEntity != null || getFlag(2);
     }
 
 //    /** Called when a player mounts an entity. e.g. mounts a pig, mounts a
@@ -368,6 +364,15 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 //            new Exception().printStackTrace();
 //        }
 //    }
+
+    /** Returns true if the entity is riding another entity, used by render to
+     * rotate the legs to be in 'sit' position for players. */
+    @Override
+    public boolean isRiding()
+    {
+        return super.isRiding();
+//        return ridingEntity != null || getFlag(2);
+    }
 
     /** Moves the entity based on the specified heading. Args: strafe,
      * forward */

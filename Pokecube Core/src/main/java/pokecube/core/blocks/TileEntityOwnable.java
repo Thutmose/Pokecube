@@ -41,18 +41,6 @@ public class TileEntityOwnable extends TileEntity implements IOwnableTE
         this.placer = placer.getUniqueID();
     }
 
-    @Override
-    public void writeToNBT(NBTTagCompound tagCompound)
-    {
-        super.writeToNBT(tagCompound);
-        if (placer != null)
-        {
-            tagCompound.setBoolean("owned", true);
-            tagCompound.setLong("uuidMost", placer.getMostSignificantBits());
-            tagCompound.setLong("uuidLeast", placer.getLeastSignificantBits());
-        }
-    }
-    
     /**
      * Called from Chunk.setBlockIDWithMetadata and Chunk.fillChunk, determines if this tile entity should be re-created when the ID, or Metadata changes.
      * Use with caution as this will leave straggler TileEntities, or create conflicts with other TileEntities if not used properly.
@@ -67,5 +55,17 @@ public class TileEntityOwnable extends TileEntity implements IOwnableTE
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
     {
         return oldState.getBlock() != newSate.getBlock();
+    }
+    
+    @Override
+    public void writeToNBT(NBTTagCompound tagCompound)
+    {
+        super.writeToNBT(tagCompound);
+        if (placer != null)
+        {
+            tagCompound.setBoolean("owned", true);
+            tagCompound.setLong("uuidMost", placer.getMostSignificantBits());
+            tagCompound.setLong("uuidLeast", placer.getLeastSignificantBits());
+        }
     }
 }

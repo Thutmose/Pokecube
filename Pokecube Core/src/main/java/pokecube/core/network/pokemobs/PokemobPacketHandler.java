@@ -22,6 +22,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob;
+import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob.MountState;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -179,10 +181,18 @@ public class PokemobPacketHandler
                                 Entity mob = (Entity) pokemob;
                                 ((IPokemob) mob).returnToPokecube();
                             }
-                            else if (channel == JUMP)
+                            else if (channel == MOUNTDIR)
                             {
-                                EntityLiving mob = (EntityLiving) pokemob;
-                                mob.getJumpHelper().setJumping();
+                                EntityMountablePokemob mob = (EntityMountablePokemob) pokemob;
+                                byte mess = buffer.readByte();
+                                MountState state = MountState.values()[mess];
+                                mob.state = state;
+                            }
+                            else if (channel == SYNCPOS)
+                            {
+                                Vector3 v = Vector3.getNewVector().set(buffer.readFloat(), buffer.readFloat(),
+                                        buffer.readFloat());
+                                v.moveEntity((Entity) pokemob);
                             }
                             else if (channel == MOVEUSE)
                             {
@@ -446,9 +456,10 @@ public class PokemobPacketHandler
         public static final byte MOVEINDEX   = 5;
         public static final byte CHANGEFORM  = 6;
         public static final byte ALIVECHECK  = 7;
-        public static final byte JUMP        = 8;
+        public static final byte SYNCPOS     = 8;
         public static final byte STANCE      = 9;
         public static final byte COME        = 10;
+        public static final byte MOUNTDIR    = 11;
 
         PacketBuffer             buffer;;
 

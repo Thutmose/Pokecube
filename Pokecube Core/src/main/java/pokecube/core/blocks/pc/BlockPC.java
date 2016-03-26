@@ -54,18 +54,19 @@ public class BlockPC extends Block implements ITileEntityProvider
         return new BlockStateContainer(this, new IProperty[] { FACING, TOP });
     }
 
-    /** Gets the metadata of the item this Block can drop. This method is called
-     * when the block gets destroyed. It returns the metadata of the dropped
-     * item based on the old metadata of the block. */
-    public int damageDropped(IBlockState state)
-    {
-        return state.getValue(TOP)?8:0;
-    }
-
     @Override
     public TileEntity createNewTileEntity(World var1, int var2)
     {
         return new TileEntityPC();
+    }
+
+    /** Gets the metadata of the item this Block can drop. This method is called
+     * when the block gets destroyed. It returns the metadata of the dropped
+     * item based on the old metadata of the block. */
+    @Override
+    public int damageDropped(IBlockState state)
+    {
+        return state.getValue(TOP)?8:0;
     }
 
     @Override

@@ -742,10 +742,10 @@ public class PokedexEntryLoader
                 String keyString = key.toString();
                 String value = values.get(key);
                 if (keyString.equals("shoulder")) entry.canSitShoulder = Boolean.parseBoolean(value);
-                if (keyString.equals("fly")) entry.canSitShoulder = Boolean.parseBoolean(value);
-                if (keyString.equals("dive")) entry.canSitShoulder = Boolean.parseBoolean(value);
-                if (keyString.equals("surf")) entry.canSitShoulder = Boolean.parseBoolean(value);
-                if (keyString.equals("stationary")) entry.canSitShoulder = Boolean.parseBoolean(value);
+                if (keyString.equals("fly")) entry.shouldFly = Boolean.parseBoolean(value);
+                if (keyString.equals("dive")) entry.shouldDive = Boolean.parseBoolean(value);
+                if (keyString.equals("surf")) entry.shouldSurf = Boolean.parseBoolean(value);
+                if (keyString.equals("stationary")) entry.isStationary = Boolean.parseBoolean(value);
                 if (keyString.equals("dye"))
                 {
                     entry.dyeable = Boolean.parseBoolean(value.split("#")[0]);

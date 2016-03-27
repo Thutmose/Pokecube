@@ -5902,7 +5902,7 @@
             <EVOLVESTO>180</EVOLVESTO>
             <EXPYIELD>56</EXPYIELD>
             <FOODDROP>1:mutton</FOODDROP>
-            <COMMONDROP>1:wool:11</COMMONDROP>
+            <COMMONDROP>1:wool:4</COMMONDROP>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dye="TRUE#11" shoulder="FALSE"/>

@@ -38,6 +38,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     {
         UP, NONE, DOWN
     }
+
     private int       mountCounter       = 0;
     public float      landSpeedFactor    = 1;
     public float      waterSpeedFactor   = 0.25f;
@@ -344,7 +345,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             this.limbSwingAmount += (f4 - this.limbSwingAmount) * 0.4F;
             this.limbSwing += this.limbSwingAmount;
 
-            if (worldObj.isRemote)
+            if (worldObj.isRemote && this.riddenByEntity == PokecubeCore.getPlayer(null))
             {
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(15));
                 buffer.writeByte(MessageServer.SYNCPOS);

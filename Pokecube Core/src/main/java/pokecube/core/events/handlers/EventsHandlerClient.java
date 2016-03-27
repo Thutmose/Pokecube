@@ -218,10 +218,12 @@ public class EventsHandlerClient
 
     boolean                   debug       = false;
     long                      lastSetTime = 0;
+    static boolean            notifier    = false;
 
     public EventsHandlerClient()
     {
-        new UpdateNotifier();
+        if (!notifier) new UpdateNotifier();
+        notifier = true;
     }
 
     @SubscribeEvent
@@ -291,7 +293,8 @@ public class EventsHandlerClient
         else if (key == Keyboard.KEY_LCONTROL && player.ridingEntity instanceof IPokemob)
         {
             boolean state = Keyboard.getEventKeyState();
-            MountState newState = state ? EntityMountablePokemob.MountState.DOWN : EntityMountablePokemob.MountState.NONE;
+            MountState newState = state ? EntityMountablePokemob.MountState.DOWN
+                    : EntityMountablePokemob.MountState.NONE;
             if (newState != ((EntityMountablePokemob) player.ridingEntity).state)
             {
                 ((EntityMountablePokemob) player.ridingEntity).state = newState;

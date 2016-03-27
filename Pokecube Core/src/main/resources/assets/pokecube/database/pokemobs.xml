@@ -5336,7 +5336,7 @@
             <MASSKG>6.0</MASSKG>
             <EVOLVESTO>162</EVOLVESTO>
             <EXPYIELD>43</EXPYIELD>
-            <COMMONDROP>1:rotten_flesh</COMMONDROP>
+            <COMMONDROP>1:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5368,7 +5368,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>32.5</MASSKG>
             <EXPYIELD>145</EXPYIELD>
-            <COMMONDROP>2:rotten_flesh</COMMONDROP>
+            <COMMONDROP>2:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5836,6 +5836,7 @@
             <MASSKG>2.0</MASSKG>
             <EVOLVESTO>178</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
+            <FOODDROP>1:chicken</FOODDROP>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5868,6 +5869,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>15.0</MASSKG>
             <EXPYIELD>165</EXPYIELD>
+            <FOODDROP>1:chicken</FOODDROP>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5900,7 +5902,7 @@
             <EVOLVESTO>180</EVOLVESTO>
             <EXPYIELD>56</EXPYIELD>
             <FOODDROP>1:mutton</FOODDROP>
-            <COMMONDROP>1:wool</COMMONDROP>
+            <COMMONDROP>1:wool:11</COMMONDROP>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dye="TRUE#11" shoulder="FALSE"/>
@@ -13211,6 +13213,7 @@
             <MASSKG>20.0</MASSKG>
             <EVOLVESTO>400</EVOLVESTO>
             <EXPYIELD>50</EXPYIELD>
+            <COMMONDROP>1:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -19635,6 +19638,7 @@
             <MASSKG>18.8</MASSKG>
             <EVOLVESTO>598</EVOLVESTO>
             <EXPYIELD>61</EXPYIELD>
+            <COMMONDROP>1:iron_ingot 1:wheat_seeds</COMMONDROP>
             <FOODMATERIAL>light rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -19667,6 +19671,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>110.0</MASSKG>
             <EXPYIELD>171</EXPYIELD>
+            <COMMONDROP>3:iron_ingot 2:wheat_seeds</COMMONDROP>
             <FOODMATERIAL>light rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -20710,6 +20715,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>33.0</MASSKG>
             <EXPYIELD>169</EXPYIELD>
+            <COMMONDROP>1:iron_ingot</COMMONDROP>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>

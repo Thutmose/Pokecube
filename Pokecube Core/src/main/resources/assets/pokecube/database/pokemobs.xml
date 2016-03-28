@@ -245,7 +245,7 @@
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>31</GENDERRATIO>
             <BIOMESANYACCEPTABLE>lake 0.01</BIOMESANYACCEPTABLE>
-            <SPECIALCASES>starter day night</SPECIALCASES>
+            <SPECIALCASES>starter day night water+</SPECIALCASES>
             <BASESTATS atk="48" def="65" hp="44" spatk="50" spd="43" spdef="64"/>
             <EVYIELD def="1"/>
             <SIZES height="0.7" length="0.5" width="0.5"/>
@@ -1653,7 +1653,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="55" def="25" hp="10" spatk="35" spd="95" spdef="45"/>
             <EVYIELD spd="1"/>
-            <SIZES height="0.5" length="0.5" width="0.5"/>
+            <SIZES height="0.2" length="0.2" width="0.2"/>
             <TYPE type1="Ground"/>
             <ABILITY hidden="Sand Force" normal="Sand Veil, Arena Trap"/>
         </STATS>
@@ -1788,7 +1788,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BIOMESANYACCEPTABLE>river beach lake 0.15</BIOMESANYACCEPTABLE>
             <EXCLUDEDBIOMES>cold</EXCLUDEDBIOMES>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water+</SPECIALCASES>
             <BASESTATS atk="52" def="48" hp="50" spatk="65" spd="55" spdef="50"/>
             <EVYIELD spatk="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
@@ -2607,7 +2607,7 @@
             <HELDITEM>1:kingsrock:0:10</HELDITEM>
             <BIOMESALLNEEDED>beach cave 0.25; river cave 0.25; lake cave 0.25</BIOMESALLNEEDED>
             <BIOMESANYACCEPTABLE>beach river lake 0.3</BIOMESANYACCEPTABLE>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water+</SPECIALCASES>
             <BASESTATS atk="65" def="65" hp="90" spatk="40" spd="15" spdef="40"/>
             <EVYIELD hp="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
@@ -5250,7 +5250,7 @@
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>31</GENDERRATIO>
             <BIOMESANYACCEPTABLE>lake 0.01</BIOMESANYACCEPTABLE>
-            <SPECIALCASES>starter day night</SPECIALCASES>
+            <SPECIALCASES>starter day night water+</SPECIALCASES>
             <BASESTATS atk="65" def="64" hp="50" spatk="44" spd="43" spdef="48"/>
             <EVYIELD atk="1"/>
             <SIZES height="0.7" length="0.4" width="0.4"/>
@@ -5336,7 +5336,7 @@
             <MASSKG>6.0</MASSKG>
             <EVOLVESTO>162</EVOLVESTO>
             <EXPYIELD>43</EXPYIELD>
-            <COMMONDROP>1:rotten_flesh</COMMONDROP>
+            <COMMONDROP>1:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5368,7 +5368,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>32.5</MASSKG>
             <EXPYIELD>145</EXPYIELD>
-            <COMMONDROP>2:rotten_flesh</COMMONDROP>
+            <COMMONDROP>2:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5836,6 +5836,7 @@
             <MASSKG>2.0</MASSKG>
             <EVOLVESTO>178</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
+            <FOODDROP>1:chicken</FOODDROP>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5868,6 +5869,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>15.0</MASSKG>
             <EXPYIELD>165</EXPYIELD>
+            <FOODDROP>1:chicken</FOODDROP>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5900,7 +5902,7 @@
             <EVOLVESTO>180</EVOLVESTO>
             <EXPYIELD>56</EXPYIELD>
             <FOODDROP>1:mutton</FOODDROP>
-            <COMMONDROP>1:wool</COMMONDROP>
+            <COMMONDROP>1:wool:4</COMMONDROP>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dye="TRUE#11" shoulder="FALSE"/>
@@ -8884,7 +8886,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BIOMESANYACCEPTABLE>swamp lake river 0.4</BIOMESANYACCEPTABLE>
             <EXCLUDEDBIOMES>cold</EXCLUDEDBIOMES>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water+</SPECIALCASES>
             <BASESTATS atk="30" def="30" hp="40" spatk="40" spd="30" spdef="50"/>
             <EVYIELD spdef="1"/>
             <SIZES height="0.5" length="0.5" width="0.5"/>
@@ -9303,7 +9305,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BIOMESANYACCEPTABLE>wet lake 0.3</BIOMESANYACCEPTABLE>
             <EXCLUDEDBIOMES>cold</EXCLUDEDBIOMES>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water+</SPECIALCASES>
             <BASESTATS atk="30" def="32" hp="40" spatk="50" spd="65" spdef="52"/>
             <EVYIELD spd="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
@@ -13211,6 +13213,7 @@
             <MASSKG>20.0</MASSKG>
             <EVOLVESTO>400</EVOLVESTO>
             <EXPYIELD>50</EXPYIELD>
+            <COMMONDROP>1:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -19580,7 +19583,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="47" def="50" hp="50" spatk="57" spd="65" spdef="50"/>
             <EVYIELD spd="1"/>
-            <SIZES height="0.5" length="0.5" width="0.5"/>
+            <SIZES height="0.1" length="0.1" width="0.1"/>
             <TYPE type1="Bug" type2="Electric"/>
             <ABILITY hidden="Swarm" normal="Compoundeyes, Unnerve"/>
         </STATS>
@@ -19635,6 +19638,7 @@
             <MASSKG>18.8</MASSKG>
             <EVOLVESTO>598</EVOLVESTO>
             <EXPYIELD>61</EXPYIELD>
+            <COMMONDROP>1:iron_ingot 1:wheat_seeds</COMMONDROP>
             <FOODMATERIAL>light rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -19667,6 +19671,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>110.0</MASSKG>
             <EXPYIELD>171</EXPYIELD>
+            <COMMONDROP>3:iron_ingot 2:wheat_seeds</COMMONDROP>
             <FOODMATERIAL>light rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -20279,7 +20284,7 @@
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
             <BIOMESANYACCEPTABLE>swamp lake 0.4</BIOMESANYACCEPTABLE>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water+</SPECIALCASES>
             <BASESTATS atk="66" def="84" hp="109" spatk="81" spd="32" spdef="99"/>
             <EVYIELD hp="2"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
@@ -20710,6 +20715,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>33.0</MASSKG>
             <EXPYIELD>169</EXPYIELD>
+            <COMMONDROP>1:iron_ingot</COMMONDROP>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>

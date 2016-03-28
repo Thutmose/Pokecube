@@ -371,7 +371,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     public boolean isRiding()
     {
         return super.isRiding();
-//        return ridingEntity != null || getFlag(2);
     }
 
     /** Moves the entity based on the specified heading. Args: strafe,

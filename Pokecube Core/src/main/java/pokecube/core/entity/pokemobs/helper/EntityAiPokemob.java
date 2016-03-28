@@ -948,19 +948,24 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 motionY -= 0.02;
             }
+            here.set(this);
+        }
+
+        if ((entry.floats() || entry.flys()) && !getPokemonAIState(ANGRY))
+        {
+            float floatHeight = (float) entry.preferedHeight;
             PathEntity path = getNavigator().getPath();
             if (path != null)
             {
                 Vector3 end = Vector3.getNewVector().set(path.getFinalPathPoint());
                 double dhs = (here.x - end.x) * (here.x - end.x) + (here.z - end.z) * (here.z - end.z);
                 double dvs = (here.y - end.y) * (here.y - end.y);
-                double width = Math.max(1, getSize() * entry.length) / 4;
+                double width = Math.max(1, getSize() * entry.length / 4);
                 if (dhs < width * width && dvs <= floatHeight * floatHeight)
                 {
                     getNavigator().clearPathEntity();
                 }
             }
-            here.set(this);
         }
         canFloat = entry.mobType == Type.FLYING;
         if (canFloat && here.getBlock(worldObj, EnumFacing.DOWN)

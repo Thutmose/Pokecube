@@ -95,7 +95,6 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     protected float            prevTimePokemonIsShaking;
     protected Integer          pokedexNb         = 0;
     public float               length            = 1;
-    // protected int hungerTime;
     protected EntityLivingBase owner;
     private String             ownerName         = "";
     private UUID               original          = new UUID(1234, 4321);
@@ -226,7 +225,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public float getHomeDistance()
     {
-        return super.getMaximumHomeDistance();// func_110174_bM();
+        return super.getMaximumHomeDistance();
     }
 
     @SideOnly(Side.CLIENT)
@@ -297,7 +296,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
         try
         {
-            return super.getOwnerId();// .func_152113_b();//super.getOwnerName();
+            return super.getOwnerId();
         }
         catch (Exception e)
         {
@@ -487,7 +486,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         }
         if (!named && getPokedexEntry() != null)
         {
-            this.pokeChest.setCustomName(getName());// .func_110133_a(this.getName());
+            this.pokeChest.setCustomName(getName());
             named = true;
         }
         for (int i = 0; i < this.pokeChest.getSizeInventory(); i++)
@@ -546,19 +545,17 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         }
 
         this.initInventory();
-        // if (this.isChested())
+
+        NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
+
+        for (int i = 0; i < nbttaglist.tagCount(); ++i)
         {
-            NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
+            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+            int j = nbttagcompound1.getByte("Slot") & 255;
 
-            for (int i = 0; i < nbttaglist.tagCount(); ++i)
+            if (j >= 1 && j < this.pokeChest.getSizeInventory())
             {
-                NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-                int j = nbttagcompound1.getByte("Slot") & 255;
-
-                if (j >= 1 && j < this.pokeChest.getSizeInventory())
-                {
-                    this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
-                }
+                this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
             }
         }
 

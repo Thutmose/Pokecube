@@ -224,16 +224,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean handleWaterMovement()
     {
-        if (isInWater()) // (this.worldObj.handleMaterialAcceleration(this.boundingBox.contract(0.001D,
-                         // 0.001D, 0.001D), Material.water, this))
+        if (isInWater())
         {
-            // original code with the bounding box expand make the smaller mobs
-            // can't swim!
-            // if (this.worldObj.handleMaterialAcceleration(this.worldObj,
-            // this.boundingBox.expand(0.0D, -0.4000000059604645D,
-            // 0.0D).contract(0.001D, 0.001D, 0.001D), Material.water, this))
-            // {
-            if (!this.inWater) // && !this.firstUpdate)
+            if (!this.inWater)
             {
                 if (!swims())
                 {
@@ -632,12 +625,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void jump()
     {
-        // if(true)
-        // {
-        // super.jump();
-        // return;
-        // }
-
         if (worldObj.isRemote) return;
 
         if (!this.isInWater() && !this.isInLava())
@@ -677,10 +664,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
      * forward */
     public void moveEntityWithHeading(float f, float f1)
     {
-        // new Exception().printStackTrace();
         double d0;
-        if (this.riddenByEntity != null) // &&
-                                         // !getPokemonAIState(EXECUTINGMOVE))
+        if (this.riddenByEntity != null)
         {
             super.moveEntityWithHeading(f, f1);
             return;
@@ -1392,7 +1377,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!worldObj.isRemote)
         {
             setPokemonAIState(JUMPING, jump);
-            // super.setJumping(p_70637_1_);
         }
         else
         {

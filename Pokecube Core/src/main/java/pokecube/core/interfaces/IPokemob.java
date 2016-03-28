@@ -268,12 +268,6 @@ public interface IPokemob extends IMoveConstants
 
     IPokemob changeForme(String forme);
 
-    /** Computes and returns an integer with protected properties (pokedexNb,
-     * stats, moves...).
-     * 
-     * @return the checkSum for this mob */
-    int computeCheckSum();
-
     /** Displays a message in the console of the owner player (if this pokemob
      * is tamed).
      * 

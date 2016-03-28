@@ -245,7 +245,7 @@
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>31</GENDERRATIO>
             <BIOMESANYACCEPTABLE>lake 0.01</BIOMESANYACCEPTABLE>
-            <SPECIALCASES>starter day night</SPECIALCASES>
+            <SPECIALCASES>starter day night water+</SPECIALCASES>
             <BASESTATS atk="48" def="65" hp="44" spatk="50" spd="43" spdef="64"/>
             <EVYIELD def="1"/>
             <SIZES height="0.7" length="0.5" width="0.5"/>
@@ -1788,7 +1788,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BIOMESANYACCEPTABLE>river beach lake 0.15</BIOMESANYACCEPTABLE>
             <EXCLUDEDBIOMES>cold</EXCLUDEDBIOMES>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water+</SPECIALCASES>
             <BASESTATS atk="52" def="48" hp="50" spatk="65" spd="55" spdef="50"/>
             <EVYIELD spatk="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
@@ -2607,7 +2607,7 @@
             <HELDITEM>1:kingsrock:0:10</HELDITEM>
             <BIOMESALLNEEDED>beach cave 0.25; river cave 0.25; lake cave 0.25</BIOMESALLNEEDED>
             <BIOMESANYACCEPTABLE>beach river lake 0.3</BIOMESANYACCEPTABLE>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water+</SPECIALCASES>
             <BASESTATS atk="65" def="65" hp="90" spatk="40" spd="15" spdef="40"/>
             <EVYIELD hp="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
@@ -5250,7 +5250,7 @@
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>31</GENDERRATIO>
             <BIOMESANYACCEPTABLE>lake 0.01</BIOMESANYACCEPTABLE>
-            <SPECIALCASES>starter day night</SPECIALCASES>
+            <SPECIALCASES>starter day night water+</SPECIALCASES>
             <BASESTATS atk="65" def="64" hp="50" spatk="44" spd="43" spdef="48"/>
             <EVYIELD atk="1"/>
             <SIZES height="0.7" length="0.4" width="0.4"/>
@@ -8886,7 +8886,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BIOMESANYACCEPTABLE>swamp lake river 0.4</BIOMESANYACCEPTABLE>
             <EXCLUDEDBIOMES>cold</EXCLUDEDBIOMES>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water+</SPECIALCASES>
             <BASESTATS atk="30" def="30" hp="40" spatk="40" spd="30" spdef="50"/>
             <EVYIELD spdef="1"/>
             <SIZES height="0.5" length="0.5" width="0.5"/>
@@ -9305,7 +9305,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BIOMESANYACCEPTABLE>wet lake 0.3</BIOMESANYACCEPTABLE>
             <EXCLUDEDBIOMES>cold</EXCLUDEDBIOMES>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water+</SPECIALCASES>
             <BASESTATS atk="30" def="32" hp="40" spatk="50" spd="65" spdef="52"/>
             <EVYIELD spd="1"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>
@@ -20284,7 +20284,7 @@
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
             <BIOMESANYACCEPTABLE>swamp lake 0.4</BIOMESANYACCEPTABLE>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water+</SPECIALCASES>
             <BASESTATS atk="66" def="84" hp="109" spatk="81" spd="32" spdef="99"/>
             <EVYIELD hp="2"/>
             <SIZES height="1.0" length="1.0" width="1.0"/>

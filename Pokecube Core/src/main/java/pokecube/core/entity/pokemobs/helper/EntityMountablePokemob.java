@@ -254,6 +254,8 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             this.rotationYawHead = this.renderYawOffset = this.rotationYaw;
             strafe = ((EntityLivingBase) this.riddenByEntity).moveStrafing * 0.5F;
             forward = ((EntityLivingBase) this.riddenByEntity).moveForward;
+            this.riddenByEntity.onGround = true;
+            this.riddenByEntity.fallDistance = 0;
 
             if (forward <= 0.0F)
             {

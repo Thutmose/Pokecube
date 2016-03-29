@@ -264,6 +264,7 @@ public class GuiAnimate extends GuiScreen
             render.anim = anim.getText();
             render.overrideAnim = true;
         }
+        EventsHandlerClient.renderBlock = true;
         EventsHandlerClient.renderMob(pokemob, partialTicks, false);
         if ((o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
         {

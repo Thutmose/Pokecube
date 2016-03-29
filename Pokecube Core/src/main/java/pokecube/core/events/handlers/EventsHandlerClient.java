@@ -124,31 +124,31 @@ public class EventsHandlerClient
         }
     }
 
-    static long                                   eventTime  = 0;
+    static long                                   eventTime   = 0;
+    public static boolean                         renderBlock = false;
+    static long                                   counter     = 0;
 
-    static long                                   counter    = 0;
+    public static HashMap<PokedexEntry, IPokemob> renderMobs  = new HashMap<PokedexEntry, IPokemob>();
 
-    public static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
-
-    public static RingChecker                     checker    = new RingChecker()
-                                                             {
-                                                                 @Override
-                                                                 public boolean hasRing(EntityPlayer player)
-                                                                 {
-                                                                     for (int i = 0; i < player.inventory
-                                                                             .getSizeInventory(); i++)
-                                                                     {
-                                                                         ItemStack stack = player.inventory
-                                                                                 .getStackInSlot(i);
-                                                                         if (stack != null)
-                                                                         {
-                                                                             Item item = stack.getItem();
-                                                                             if (item instanceof ItemMegaring) { return true; }
-                                                                         }
-                                                                     }
-                                                                     return false;
-                                                                 }
-                                                             };
+    public static RingChecker                     checker     = new RingChecker()
+                                                              {
+                                                                  @Override
+                                                                  public boolean hasRing(EntityPlayer player)
+                                                                  {
+                                                                      for (int i = 0; i < player.inventory
+                                                                              .getSizeInventory(); i++)
+                                                                      {
+                                                                          ItemStack stack = player.inventory
+                                                                                  .getStackInSlot(i);
+                                                                          if (stack != null)
+                                                                          {
+                                                                              Item item = stack.getItem();
+                                                                              if (item instanceof ItemMegaring) { return true; }
+                                                                          }
+                                                                      }
+                                                                      return false;
+                                                                  }
+                                                              };
 
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
     {
@@ -212,23 +212,25 @@ public class EventsHandlerClient
         int k1 = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
         Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, -0.123456, 0, 0, 1.5F);
-        
-        BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.pushMatrix();
-        GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(-180.0F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.translate(0.5F, 1.125F, 0.5F);
-        float f7 = 1.0F;
-        GlStateManager.scale(-f7, -f7, f7);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-        blockrendererdispatcher.renderBlockBrightness(Blocks.glass.getDefaultState(), 1.0F);
-        GlStateManager.popMatrix();
-        GlStateManager.disableRescaleNormal();
-        
-        
-        
+
+        if (renderBlock)
+        {
+            BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+            GlStateManager.enableRescaleNormal();
+            GlStateManager.pushMatrix();
+            GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(-180.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.translate(0.5F, 1.125F, 0.5F);
+            float f7 = 1.0F;
+            GlStateManager.scale(-f7, -f7, f7);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+            blockrendererdispatcher.renderBlockBrightness(Blocks.glass.getDefaultState(), 1.0F);
+            GlStateManager.popMatrix();
+            GlStateManager.disableRescaleNormal();
+            renderBlock = false;
+        }
+
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
 

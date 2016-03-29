@@ -5537,7 +5537,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="60" def="40" hp="40" spatk="40" spd="30" spdef="40"/>
             <EVYIELD atk="1"/>
-            <SIZES height="0.5" length="0.5" width="0.5"/>
+            <SIZES height="0.2" length="0.5" width="0.5"/>
             <TYPE type1="Bug" type2="Poison"/>
             <ABILITY hidden="Sniper" normal="Swarm, Insomnia"/>
         </STATS>

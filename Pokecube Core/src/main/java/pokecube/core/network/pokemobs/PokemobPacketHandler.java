@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
+import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob;
@@ -30,7 +31,6 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Explode;
-import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokecubeSerializer;
@@ -398,10 +398,6 @@ public class PokemobPacketHandler
                         {
                             pokemob.executeMove(null, v.set(pokemob), 0);
                         }
-                        else if (Move_Utility.isUtilityMove(move.name) && (id1 == id || id == 0))
-                        {
-                            pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);
-                        }
                         else
                         {
                             Entity owner = pokemob.getPokemonOwner();
@@ -432,6 +428,8 @@ public class PokemobPacketHandler
                                 {
                                     v = Vector3.readFromBuff(buffer);
                                     pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);
+                                    if (!v.isEmpty())
+                                        ((PokemobAIUtilityMove) pokemob.getUtilityMoveAI()).destination = v;
                                 }
                             }
                         }

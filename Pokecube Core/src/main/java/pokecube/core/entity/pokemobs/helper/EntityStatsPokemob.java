@@ -122,16 +122,15 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         super.applyEntityAttributes();
         // Max Health - default 20.0D - min 0.0D - max Double.MAX_VALUE
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);// .setAttribute(20);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
         // Follow Range - default 32.0D - min 0.0D - max 2048.0D
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32);// .setAttribute(32.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32);
         // Knockback Resistance - default 0.0D - min 0.0D - max 1.0D
-        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(10);// .setAttribute(0.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(10);
         // Movement Speed - default 0.699D - min 0.0D - max Double.MAX_VALUE
         moveSpeed = 0.6f;
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);// .setAttribute(moveSpeed);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
         // Attack Damage - default 2.0D - min 0.0D - max Doubt.MAX_VALUE
-        // getEntityAttribute(SharedMonsterAttributes.attackDamage).setAttribute(2.0D);
     }
 
     @Override
@@ -469,8 +468,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         this.pokedexNb = nb;
         getPokedexEntry();
 
-        setEVs(PokecubeSerializer.noEVs); // JAVA STUPID AND BYTE GOES FROM -128
-                                          // -> 127
+        setEVs(PokecubeSerializer.noEVs);
         setIVs(new byte[] { Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand),
                 Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand) });
         if (this.isAncient())
@@ -621,10 +619,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
         setExp(nbttagcompound.getInteger(PokecubeSerializer.EXP), false, false);
         String movesString = nbttagcompound.getString(PokecubeSerializer.MOVES);
-        // isShadow = nbttagcompound.getBoolean("isShadow");
         isAncient = nbttagcompound.getBoolean("isAncient");
         wasShadow = nbttagcompound.getBoolean("wasShadow");
-        // this.setShadow(isShadow);
 
         byte[] rgbaBytes = new byte[4];
         // TODO remove the legacy colour support eventually.
@@ -765,7 +761,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
             if (lvlup.isCanceled()) return;
 
-            setLevel(newLvl);
+            updateHealth(newLvl);
 
             if (notifyLevelUp)
             {
@@ -790,13 +786,12 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     /** Handles health update.
      * 
      * @param level */
-    private void setLevel(int level)
+    private void updateHealth(int level)
     {
         float old = getMaxHealth();
         float maxHealth = Tools.getHP(getPokedexEntry().getStatHP(), getIVs()[0], getEVs()[0], level);
         float health = getHealth();
 
-        // actually we don't really set the level.
         if (maxHealth > old)
         {
             float damage = old - health;
@@ -814,8 +809,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
     private void setMaxHealth(float maxHealth)
     {
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(maxHealth);// .setAttribute(maxHealth);
-        // dataWatcher.set(28, maxHealth);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(maxHealth);
     }
 
     @Override

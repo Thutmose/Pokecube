@@ -17,7 +17,6 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
@@ -72,7 +71,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public HashMap<String, Matrix3> boxes             = new HashMap<String, Matrix3>();
     public HashMap<String, Vector3> offsets           = new HashMap<String, Vector3>();
 
-    int                             corruptedSum      = -123586;
     private float                   nextStepDistance;
 
     public EntityPokemobBase(World world)
@@ -149,23 +147,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // handle it.
     }
 
-    @Override
-    public int computeCheckSum()
-    {
-        int red = rgba[0];
-        int green = rgba[1];
-        int blue = rgba[2];
-        int checkSum = getExp() * getPokedexNb() + getPokecubeId() + ((int) getSize() * 1000)
-                + (shiny ? 1234 : 4321) * nature.ordinal() + red * green * blue;
-        String movesString = dataWatcher.get(MOVESDW);
-        checkSum += movesString.hashCode();
-        int[] IVs = PokecubeSerializer.byteArrayAsIntArray(ivs);
-        int IVEV = dataWatcher.get(EVS1DW) + dataWatcher.get(EVS2DV) + IVs[0] + IVs[1];
-        checkSum += IVEV;
-        // checkSum += getSexe();
-        return checkSum;
-    }
-
     /** Makes the entity despawn if requirements are reached */
     @Override
     protected void despawnEntity()
@@ -234,6 +215,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public EntityAIBase getGuardAI()
     {
         return guardAI;
+    }
+
+    @Override
+    public EntityAIBase getUtilityMoveAI()
+    {
+        return utilMoveAI;
     }
 
     @Override
@@ -555,12 +542,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void onLivingUpdate()
     {
-        if (corruptedSum != -123586)
-        {
-            // this.tasks.taskEntries.clear();
-            // this.targetTasks.taskEntries.clear();
-            // return;
-        }
         super.onLivingUpdate();
 
         if (uid == -1) this.uid = PokecubeSerializer.getInstance().getNextID();
@@ -603,12 +584,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             int num = rand.nextInt(unowns.length);
             changeForme(unowns[num]);
-        }
-
-        // TODO
-        if (corruptedSum != -123586)
-        {
-            // return;
         }
         Vector3 temp = Vector3.getNewVector().set(here);
         Vector3 temp1 = Vector3.getNewVector().setToVelocity(this);
@@ -655,24 +630,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         setSize(nbttagcompound.getFloat("scale"));
         uid = nbttagcompound.getInteger("PokemobUID");
         if (nbttagcompound.hasKey("flavours")) flavourAmounts = nbttagcompound.getIntArray("flavours");
-
-        int checkSum = nbttagcompound.getInteger("checkSum");
-
-        if (checkSum != computeCheckSum())
-        {
-            if (getPokemonOwner() != null && getPokemonOwner() instanceof EntityPlayer)
-            {
-                // ((EntityPlayer)getPokemonOwner()).addChatMessage(new
-                // TextComponentString("This Pokemon is Corrupted"));
-
-            }
-            // corruptedSum = checkSum;
-        }
-        else
-        {
-            corruptedSum = -123586;
-        }
-
         this.initRidable();
     }
 
@@ -826,7 +783,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void specificSpawnInit()
     {
-        corruptedSum = -123586;
         super.specificSpawnInit();
         this.setHealth(this.getMaxHealth());
     }
@@ -839,8 +795,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         nbttagcompound.setFloat("scale", (float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
         nbttagcompound.setInteger("PokemobUID", uid);
         nbttagcompound.setIntArray("flavours", flavourAmounts);
-        if (corruptedSum == -123586) nbttagcompound.setInteger("checkSum", computeCheckSum());
-        else nbttagcompound.setInteger("checkSum", corruptedSum);
     }
 
     /** Use this for anything that does not change or need to be updated. */

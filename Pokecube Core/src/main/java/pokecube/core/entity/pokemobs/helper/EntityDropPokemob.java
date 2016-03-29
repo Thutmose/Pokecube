@@ -110,7 +110,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     @Override
     protected Item getDropItem()
     {
-        return null;// Item.getItemById(itemIdCommonDrop);
+        return null;
     }
 
     @Override

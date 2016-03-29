@@ -203,6 +203,7 @@ public class Move_Utility extends Move_Basic
             }
             return;
         }
+        if (user.getPokemonAIState(IMoveConstants.ANGRY)) return;
         boolean used = false;
         boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).worldObj, location.intX(), location.intY(),
                 location.intZ());

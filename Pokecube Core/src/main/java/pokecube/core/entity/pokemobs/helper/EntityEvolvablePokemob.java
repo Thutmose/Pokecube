@@ -33,7 +33,6 @@ import pokecube.core.utils.Tools;
 /** @author Manchou */
 public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 {
-    // private int evolution;
     public boolean traded    = false;
     String         evolution = "";
 
@@ -124,7 +123,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     {
         if (this.getPokedexEntry().canEvolve() && !isDead)
         {
-            // new Exception().printStackTrace();
             boolean neededItem = false;
             PokedexEntry evol = null;
             if (evolution == null || evolution.isEmpty())

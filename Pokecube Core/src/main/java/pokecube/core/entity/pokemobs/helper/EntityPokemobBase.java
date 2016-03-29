@@ -209,6 +209,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
+    public EntityAIBase getUtilityMoveAI()
+    {
+        return utilMoveAI;
+    }
+
+    @Override
     protected String getHurtSound()
     {
         return getLivingSound();

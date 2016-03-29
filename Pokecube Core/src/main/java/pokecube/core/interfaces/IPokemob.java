@@ -364,6 +364,8 @@ public interface IPokemob extends IMoveConstants
     int getExplosionState();
 
     EntityAIBase getGuardAI();
+    
+    EntityAIBase getUtilityMoveAI();
 
     /** @return how happy is the pokemob, see {@link HappinessType} */
     int getHappiness();

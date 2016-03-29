@@ -2,7 +2,6 @@ package pokecube.core.ai.pokemob;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
@@ -24,7 +23,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
     final IPokemob     pokemon;
     final EntityLiving entity;
     final World        world;
-    Vector3            destination;
+    public Vector3     destination;
     double             speed;
     Vector3            v = Vector3.getNewVector(), v1 = Vector3.getNewVector();
 
@@ -55,12 +54,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
     @Override
     public void startExecuting()
     {
-        EntityLivingBase owner = null;
         pokemon.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, false);
-        if (pokemon.getPokemonAIState(IMoveConstants.TAMED))
-        {
-            owner = pokemon.getPokemonOwner();
-        }
 
         Move_Base move = MovesUtils.getMoveFromName(pokemon.getMove(pokemon.getMoveIndex()));
         if (move == null) { return; }
@@ -69,21 +63,6 @@ public class PokemobAIUtilityMove extends EntityAIBase
             ((Move_Utility) move).attack(pokemon, (Entity) pokemon, 0);
             return;
         }
-
-        Vector3 look;
-        Vector3 source;
-        if (owner == null)
-        {
-            look = v.set(entity.getLookVec());
-            source = v1.set(entity, false);
-        }
-        else
-        {
-            look = v.set(owner.getLookVec());
-            source = v1.set(owner, false);
-        }
-
-        destination = Vector3.findNextSolidBlock(world, source, look, 32);
         if (destination == null)
         {
 
@@ -120,7 +99,6 @@ public class PokemobAIUtilityMove extends EntityAIBase
         }
         if (dist < var1)
         {
-            // move.doWorldAction(pokemon, destination);
             move.attack(pokemon, destination, (float) destination.distToEntity(entity));
             entity.getNavigator().clearPathEntity();
             pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);

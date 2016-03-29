@@ -79,20 +79,21 @@ import thut.api.terrain.TerrainSegment;
 public abstract class EntityAiPokemob extends EntityMountablePokemob
 {
 
-    public GuardAI            guardAI;
+    public GuardAI              guardAI;
+    public PokemobAIUtilityMove utilMoveAI;
 
-    private int               lastHadTargetTime = 0;
+    private int                 lastHadTargetTime = 0;
 
-    private PokeNavigator     navi;
-    private PokemobMoveHelper mover;
-    boolean                   initAI            = true;
-    boolean                   popped            = false;
-    private PokemobAI         aiObject;
-    boolean                   isAFish           = false;
+    private PokeNavigator       navi;
+    private PokemobMoveHelper   mover;
+    boolean                     initAI            = true;
+    boolean                     popped            = false;
+    private PokemobAI           aiObject;
+    boolean                     isAFish           = false;
 
-    public TerrainSegment     currentTerrain    = null;
+    public TerrainSegment       currentTerrain    = null;
 
-    float                     moveF;
+    float                       moveF;
 
     public EntityAiPokemob(World world)
     {
@@ -306,7 +307,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
         this.tasks.addTask(5, guardAI);
-        this.tasks.addTask(5, new PokemobAIUtilityMove(this));
+        this.tasks.addTask(5, utilMoveAI = new PokemobAIUtilityMove(this));
 
         if (!entry.isStationary) this.tasks.addTask(6, new PokemobAIFollowOwner(this, 8.0F, 4.0F));
         this.tasks.addTask(8, new PokemobAILook(this, EntityPlayer.class, 8.0F, 1f));

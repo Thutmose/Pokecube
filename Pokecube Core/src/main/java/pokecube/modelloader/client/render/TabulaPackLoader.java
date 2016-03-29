@@ -584,10 +584,6 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 set.scale.set(1, 1, 1);
             }
-            if (set.shift.isEmpty())
-            {
-                set.shift.set(0, -1.5, 0);
-            }
         }
     }
 }

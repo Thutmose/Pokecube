@@ -13,15 +13,18 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -209,6 +212,23 @@ public class EventsHandlerClient
         int k1 = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
         Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, -0.123456, 0, 0, 1.5F);
+        
+        BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.pushMatrix();
+        GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(-180.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.translate(0.5F, 1.125F, 0.5F);
+        float f7 = 1.0F;
+        GlStateManager.scale(-f7, -f7, f7);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        blockrendererdispatcher.renderBlockBrightness(Blocks.glass.getDefaultState(), 1.0F);
+        GlStateManager.popMatrix();
+        GlStateManager.disableRescaleNormal();
+        
+        
+        
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
 

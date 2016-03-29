@@ -20,7 +20,7 @@
             <SPECIALCASES>starter day night</SPECIALCASES>
             <BASESTATS atk="49" def="49" hp="45" spatk="65" spd="45" spdef="65"/>
             <EVYIELD spatk="1"/>
-            <SIZES height="0.55" length="0.45" width="0.45"/>
+            <SIZES height="0.7" length="0.7" width="0.7"/>
             <TYPE type1="Grass" type2="Poison"/>
             <ABILITY hidden="Chlorophyll" normal="Overgrow"/>
         </STATS>
@@ -51,7 +51,7 @@
             <GENDERRATIO>31</GENDERRATIO>
             <BASESTATS atk="62" def="63" hp="60" spatk="80" spd="60" spdef="80"/>
             <EVYIELD spatk="1" spdef="1"/>
-            <SIZES height="0.9" length="0.8" width="0.8"/>
+            <SIZES height="1.0" length="1.0" width="1.0"/>
             <TYPE type1="Grass" type2="Poison"/>
             <ABILITY hidden="Chlorophyll" normal="Overgrow"/>
         </STATS>
@@ -81,7 +81,7 @@
             <GENDERRATIO>31</GENDERRATIO>
             <BASESTATS atk="82" def="83" hp="80" spatk="100" spd="80" spdef="100"/>
             <EVYIELD spatk="2" spdef="1"/>
-            <SIZES height="1.7" length="1.3" width="1.3"/>
+            <SIZES height="2.0" length="1.5" width="1.5"/>
             <TYPE type1="Grass" type2="Poison"/>
             <ABILITY hidden="Chlorophyll" normal="Overgrow"/>
             <MEGARULES forme="N___:I___"/>
@@ -104,7 +104,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>155.5</MASSKG>
             <BASESTATS atk="100" def="123" hp="80" spatk="122" spd="80" spdef="120"/>
-            <SIZES length="1.0" width="1.0"/>
+            <SIZES height="2.4" length="1.9" width="1.9"/>
             <TYPE type1="Grass" type2="Poison"/>
             <ABILITY normal="Thick Fat"/>
         </STATS>
@@ -129,7 +129,7 @@
             <SPECIALCASES>starter day night</SPECIALCASES>
             <BASESTATS atk="52" def="43" hp="39" spatk="60" spd="65" spdef="50"/>
             <EVYIELD spd="1"/>
-            <SIZES height="0.8" length="0.8" width="0.8"/>
+            <SIZES height="0.6" length="0.4" width="0.4"/>
             <TYPE type1="Fire"/>
             <ABILITY hidden="Solar Power" normal="Blaze"/>
         </STATS>
@@ -159,7 +159,7 @@
             <GENDERRATIO>31</GENDERRATIO>
             <BASESTATS atk="64" def="58" hp="58" spatk="80" spd="80" spdef="65"/>
             <EVYIELD spatk="1" spd="1"/>
-            <SIZES height="1.3" length="1.0" width="1.0"/>
+            <SIZES height="1.1" length="0.8" width="0.8"/>
             <TYPE type1="Fire"/>
             <ABILITY hidden="Solar Power" normal="Blaze"/>
         </STATS>
@@ -188,7 +188,7 @@
             <GENDERRATIO>31</GENDERRATIO>
             <BASESTATS atk="84" def="78" hp="78" spatk="109" spd="100" spdef="85"/>
             <EVYIELD spatk="3"/>
-            <SIZES height="1.9" length="1.7" width="1.7"/>
+            <SIZES height="1.7" length="1.7" width="1.7"/>
             <TYPE type1="Fire" type2="Flying"/>
             <ABILITY hidden="Solar Power" normal="Blaze"/>
             <MEGARULES forme="N___-Y:I___,N___-X:I___"/>
@@ -211,7 +211,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>110.5</MASSKG>
             <BASESTATS atk="130" def="111" hp="78" spatk="130" spd="100" spdef="85"/>
-            <SIZES length="1.0" width="1.0"/>
+            <SIZES height="1.7" length="1.7" width="1.7"/>
             <TYPE type1="Fire" type2="Dragon"/>
             <ABILITY normal="Tough Claws"/>
         </STATS>
@@ -223,7 +223,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>100.5</MASSKG>
             <BASESTATS atk="104" def="78" hp="78" spatk="159" spd="100" spdef="115"/>
-            <SIZES length="1.0" width="1.0"/>
+            <SIZES height="1.7" length="1.7" width="1.7"/>
             <TYPE type1="Fire" type2="Flying"/>
             <ABILITY normal="Drought"/>
         </STATS>
@@ -248,7 +248,7 @@
             <SPECIALCASES>starter day night water+</SPECIALCASES>
             <BASESTATS atk="48" def="65" hp="44" spatk="50" spd="43" spdef="64"/>
             <EVYIELD def="1"/>
-            <SIZES height="0.7" length="0.5" width="0.5"/>
+            <SIZES height="0.5" length="0.3" width="0.3"/>
             <TYPE type1="Water"/>
             <ABILITY hidden="Rain Dish" normal="Torrent"/>
         </STATS>
@@ -279,7 +279,7 @@
             <GENDERRATIO>31</GENDERRATIO>
             <BASESTATS atk="63" def="80" hp="59" spatk="65" spd="58" spdef="80"/>
             <EVYIELD def="1" spdef="1"/>
-            <SIZES height="1.2" length="0.7" width="0.7"/>
+            <SIZES height="1.0" length="0.7" width="0.7"/>
             <TYPE type1="Water"/>
             <ABILITY hidden="Rain Dish" normal="Torrent"/>
         </STATS>
@@ -309,7 +309,7 @@
             <GENDERRATIO>31</GENDERRATIO>
             <BASESTATS atk="83" def="100" hp="79" spatk="85" spd="78" spdef="105"/>
             <EVYIELD spdef="3"/>
-            <SIZES height="1.5" length="1.5" width="1.5"/>
+            <SIZES height="1.6" length="1.5" width="1.5"/>
             <TYPE type1="Water"/>
             <ABILITY hidden="Rain Dish" normal="Torrent"/>
             <MEGARULES forme="N___:I___"/>
@@ -332,7 +332,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>101.1</MASSKG>
             <BASESTATS atk="103" def="120" hp="79" spatk="135" spd="78" spdef="115"/>
-            <SIZES length="1.0" width="1.0"/>
+            <SIZES height="1.6" length="1.5" width="1.5"/>
             <TYPE type1="Water"/>
             <ABILITY normal="Mega Launcher"/>
         </STATS>
@@ -357,7 +357,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="30" def="35" hp="45" spatk="20" spd="45" spdef="20"/>
             <EVYIELD hp="1"/>
-            <SIZES height="0.5" length="0.5" width="0.5"/>
+            <SIZES height="0.2" length="0.3" width="0.3"/>
             <TYPE type1="Bug"/>
             <ABILITY hidden="Run Away" normal="Shield Dust"/>
         </STATS>
@@ -443,7 +443,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="35" def="30" hp="40" spatk="20" spd="50" spdef="20"/>
             <EVYIELD spd="1"/>
-            <SIZES height="0.5" length="0.5" width="0.5"/>
+            <SIZES height="0.2" length="0.3" width="0.3"/>
             <TYPE type1="Bug" type2="Poison"/>
             <ABILITY hidden="Run Away" normal="Shield Dust"/>
         </STATS>
@@ -540,7 +540,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="45" def="40" hp="40" spatk="35" spd="56" spdef="35"/>
             <EVYIELD spd="1"/>
-            <SIZES height="0.7" length="0.4" width="0.4"/>
+            <SIZES height="0.3" length="0.3" width="0.3"/>
             <TYPE type1="Normal" type2="Flying"/>
             <ABILITY hidden="Big Pecks" normal="Keen Eye, Tangled Feet"/>
         </STATS>
@@ -574,7 +574,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BASESTATS atk="60" def="55" hp="63" spatk="50" spd="71" spdef="50"/>
             <EVYIELD spd="2"/>
-            <SIZES height="1.3" length="1.0" width="1.0"/>
+            <SIZES height="1.1" length="1.0" width="1.0"/>
             <TYPE type1="Normal" type2="Flying"/>
             <ABILITY hidden="Big Pecks" normal="Keen Eye, Tangled Feet"/>
         </STATS>
@@ -607,7 +607,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BASESTATS atk="80" def="75" hp="83" spatk="70" spd="101" spdef="70"/>
             <EVYIELD spd="3"/>
-            <SIZES height="1.7" length="1.3" width="1.3"/>
+            <SIZES height="1.5" length="1.3" width="1.3"/>
             <TYPE type1="Normal" type2="Flying"/>
             <ABILITY hidden="Big Pecks" normal="Keen Eye, Tangled Feet"/>
             <MEGARULES forme="N___:I___"/>
@@ -719,7 +719,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="60" def="30" hp="40" spatk="31" spd="70" spdef="31"/>
             <EVYIELD spd="1"/>
-            <SIZES height="0.7" length="0.4" width="0.4"/>
+            <SIZES height="0.3" length="0.3" width="0.3"/>
             <TYPE type1="Normal" type2="Flying"/>
             <ABILITY hidden="Sniper" normal="Keen Eye"/>
         </STATS>
@@ -783,7 +783,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="60" def="44" hp="35" spatk="40" spd="55" spdef="54"/>
             <EVYIELD atk="1"/>
-            <SIZES height="0.6" length="2.0" width="2.0"/>
+            <SIZES height="0.6" length="2.0" width="0.6"/>
             <TYPE type1="Poison"/>
             <ABILITY hidden="Unnerve" normal="Intimidate, Shed Skin"/>
         </STATS>
@@ -813,7 +813,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <BASESTATS atk="85" def="69" hp="60" spatk="65" spd="80" spdef="79"/>
             <EVYIELD atk="2"/>
-            <SIZES height="1.3" length="3.5" width="3.5"/>
+            <SIZES height="1.3" length="3.5" width="1.3"/>
             <TYPE type1="Poison"/>
             <ABILITY hidden="Unnerve" normal="Intimidate, Shed Skin"/>
         </STATS>
@@ -909,7 +909,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="75" def="85" hp="50" spatk="20" spd="40" spdef="30"/>
             <EVYIELD def="1"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="0.6" length="0.6" width="0.6"/>
             <TYPE type1="Ground"/>
             <ABILITY hidden="Sand Rush" normal="Sand Veil"/>
         </STATS>

@@ -23231,7 +23231,7 @@
             <SPECIES>Plant</SPECIES>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>5</MASSKG>
-            <EVOLVESTO>712</EVOLVESTO>
+            <EVOLVESTO>gourgeistaverage</EVOLVESTO>
             <EXPYIELD>67</EXPYIELD>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
@@ -23260,6 +23260,7 @@
             <CAPTURERATE>190</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <EVOLVESTO>gourgeistlarge</EVOLVESTO>
             <MASSKG>7.5</MASSKG>
             <BASESTATS atk="66" def="70" hp="54" spatk="44" spd="46" spdef="55"/>
             <SIZES height="0.5" length="0.5" width="0.5"/>
@@ -23272,6 +23273,7 @@
             <CAPTURERATE>190</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <EVOLVESTO>gourgeistsmall</EVOLVESTO>
             <MASSKG>3.5</MASSKG>
             <BASESTATS atk="66" def="70" hp="44" spatk="44" spd="56" spdef="55"/>
             <SIZES height="0.3" length="0.3" width="0.3"/>
@@ -23284,6 +23286,7 @@
             <CAPTURERATE>190</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <EVOLVESTO>gourgeistsuper</EVOLVESTO>
             <MASSKG>15</MASSKG>
             <BASESTATS atk="66" def="70" hp="59" spatk="44" spd="41" spdef="55"/>
             <SIZES height="0.8" length="0.8" width="0.8"/>

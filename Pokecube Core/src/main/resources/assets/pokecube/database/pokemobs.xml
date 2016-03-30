@@ -4413,7 +4413,7 @@
             <SPECIES>Fox</SPECIES>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>6.5</MASSKG>
-            <EVOLVESTO>134 135 136 196 197 470 471 700</EVOLVESTO>
+            <EVOLVESTO>vaporeon jolteon flareon espeon umbreon leafeon glaceon sylveon</EVOLVESTO>
             <EXPYIELD>65</EXPYIELD>
             <FOODDROP>1:rabbit</FOODDROP>
             <COMMONDROP>2:rabbit_hide</COMMONDROP>

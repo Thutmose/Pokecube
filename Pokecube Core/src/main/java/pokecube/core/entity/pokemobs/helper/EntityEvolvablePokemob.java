@@ -131,7 +131,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 {
                     if (d.shouldEvolve(this, stack))
                     {
-                        evol = Database.getEntry(d.evolutionNb);
+                        evol = d.evolution;
                         if (!d.shouldEvolve(this, null) && stack == getHeldItem()) neededItem = true;
                         break;
                     }
@@ -234,7 +234,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         int num = dataWatcher.getWatchableObjectInt(EVOLNBDW);
         for (EvolutionData d : getPokedexEntry().getEvolutions())
         {
-            if (d.evolutionNb == num) return d.FX;
+            if (d.evolution.getPokedexNb() == num) return d.FX;
         }
 
         return ret;
@@ -273,7 +273,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 evolution.copyDataFromOld(this);
                 evolution.copyLocationAndAnglesFrom(this);
                 ((IPokemob) evolution).changeForme(forme);
-                worldObj.spawnEntityInWorld(evolution);
+                if (this.addedToChunk) worldObj.spawnEntityInWorld(evolution);
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))
                 {

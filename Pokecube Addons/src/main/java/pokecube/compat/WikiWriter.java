@@ -222,9 +222,9 @@ public class WikiWriter {
 	     	{
 	     		for(EvolutionData d: entry.evolutions)
 	     		{
-	     			if(Database.getEntry(d.evolutionNb)==null)
+	     			if(d.evolution==null)
 	     				continue;
-	     			String evoString = formatLink(pokemobDir, Database.getEntry(d.evolutionNb).getTranslatedName());
+	     			String evoString = formatLink(pokemobDir, d.evolution.getTranslatedName());
 	     			if(d.level>0)
 	     			{
 	     				evoString+= " at Level "+d.level;

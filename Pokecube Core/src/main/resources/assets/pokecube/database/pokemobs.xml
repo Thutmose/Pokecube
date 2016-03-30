@@ -12362,7 +12362,7 @@
             <GENDERRATIO>255</GENDERRATIO>
             <BASESTATS atk="75" def="100" hp="60" spatk="55" spd="50" spdef="80"/>
             <EVYIELD def="2"/>
-            <SIZES height="1.2" length="1.2" width="1.2"/>
+            <SIZES height="0.6" length="1.2" width="1.2"/>
             <TYPE type1="Steel" type2="Psychic"/>
             <ABILITY hidden="Light Metal" normal="Clear Body"/>
         </STATS>

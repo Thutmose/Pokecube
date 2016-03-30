@@ -51,45 +51,46 @@ public class PokedexEntry
 {
     public static class EvolutionData
     {
-        public final int evolutionNb;
-        public int       preEvolutionNb;
-        public int       level     = -1;
+        public final PokedexEntry evolution;
+        public PokedexEntry       preEvolution;
+        public int                level     = -1;
         // the item it must be holding, if null, any item is fine, or no items
         // is fine
-        public ItemStack item      = null;
+        public ItemStack          item      = null;
         // does it need to grow a level for the item to work
-        public boolean   itemLevel = false;
-        public boolean   dayOnly   = false;
-        public boolean   nightOnly = false;
-        public boolean   traded    = false;
-        public boolean   happy     = false;
-        public boolean   rainOnly  = false;
-        public String    biome     = "";
-        public String    move      = "";
+        public boolean            itemLevel = false;
+        public boolean            dayOnly   = false;
+        public boolean            nightOnly = false;
+        public boolean            traded    = false;
+        public boolean            happy     = false;
+        public boolean            rainOnly  = false;
+        public String             biome     = "";
+        public String             move      = "";
         // 1 for male, 2 for female, 0 for either;
-        public byte      gender    = 0;
+        public byte               gender    = 0;
 
-        public String    FX        = "";
+        public String             FX        = "";
 
-        private String   data;
+        private String            data;
 
-        private EvolutionData(int number)
+        private EvolutionData(PokedexEntry evol)
         {
-            this.evolutionNb = number;
+            evolution = evol;
         }
 
-        public EvolutionData(int number, String data, String FX)
+        public EvolutionData(PokedexEntry evol, String data, String FX)
         {
-            this(number);
+            this(evol);
             this.FX = FX;
             this.data = data;
         }
 
         public Entity getEvolution(World world)
         {
-            if (evolutionNb == 0) return null;
-
-            return PokecubeMod.core.createEntityByPokedexNb(evolutionNb, world);
+            if (evolution == null) return null;
+            Entity ret = PokecubeMod.core.createEntityByPokedexNb(evolution.getPokedexNb(), world);
+            ret = (Entity) ((IPokemob) ret).changeForme(evolution.getName());
+            return ret;
         }
 
         private void parse(String data)
@@ -729,7 +730,7 @@ public class PokedexEntry
         for (EvolutionData d : a.evolutions)
         {
             d.postInit();
-            PokedexEntry c = Pokedex.getInstance().getEntry(d.evolutionNb);
+            PokedexEntry c = d.evolution;
             if (c == null)
             {
                 continue;
@@ -1118,7 +1119,7 @@ public class PokedexEntry
             {
                 for (EvolutionData d : e.evolutions)
                 {
-                    if (d.evolutionNb == this.pokedexNb)
+                    if (d.evolution.getPokedexNb() == this.pokedexNb)
                     {
                         childNb = e.getChildNb();
                     }
@@ -1499,7 +1500,7 @@ public class PokedexEntry
         {
             d.postInit();
 
-            PokedexEntry temp = Pokedex.getInstance().getEntry(d.evolutionNb);
+            PokedexEntry temp = d.evolution;
 
             if (temp == null)
             {

@@ -131,7 +131,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 {
                     if (d.shouldEvolve(this, stack))
                     {
-                        evol = Database.getEntry(d.evolutionNb);
+                        evol = d.evolution;
                         if (!d.shouldEvolve(this, null) && stack == getHeldItemMainhand()) neededItem = true;
                         break;
                     }
@@ -234,9 +234,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         int num = dataWatcher.get(EVOLNBDW);
         for (EvolutionData d : getPokedexEntry().getEvolutions())
         {
-            if (d.evolutionNb == num) return d.FX;
+            if (d.evolution.getPokedexNb() == num) return d.FX;
         }
-
         return ret;
     }
 

@@ -513,14 +513,18 @@ public class PokedexEntryLoader
                 for (int i = 0; i < evols.length; i++)
                 {
                     String s1 = evols[i];
-                    int evolNum = Integer.parseInt(s1);
                     String s2 = evolFX[i];
-                    entry.addEvolution(new EvolutionData(evolNum, evolData[i], s2));
-                    if (entry.getPokedexNb() == evolNum)
+                    PokedexEntry evol;
+                    try
                     {
-                        System.err.println(
-                                "Problem in Evolution Data for " + entry + " it is trying to evolve into itself");
+                        int num = Integer.parseInt(s1);
+                        evol = Database.getEntry(num);
                     }
+                    catch (NumberFormatException e)
+                    {
+                        evol = Database.getEntry(s1);
+                    }
+                    if (evol != null) entry.addEvolution(new EvolutionData(evol, evolData[i], s2));
                 }
             }
         }

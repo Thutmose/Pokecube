@@ -741,7 +741,17 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
         int old = dataWatcher.getWatchableObjectInt(EXPDW);
         oldLevel = this.getLevel();
-        int lvl100xp = Tools.maxXPs[getExperienceMode()];
+        int lvl100xp = 20;
+        try
+        {
+            lvl100xp = Tools.maxXPs[getExperienceMode()];
+        }
+        catch (Exception e)
+        {
+            // TODO Auto-generated catch block
+            System.out.println(this);
+            e.printStackTrace();
+        }
         exp = Math.min(lvl100xp, exp);
 
         dataWatcher.updateObject(EXPDW, exp);

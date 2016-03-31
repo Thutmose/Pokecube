@@ -13622,7 +13622,7 @@
             <EXPYIELD>148</EXPYIELD>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
-            <EXPERIENCEMODE>Medium</EXPERIENCEMODE>
+            <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>254</GENDERRATIO>
             <BASESTATS atk="59" def="85" hp="60" spatk="79" spd="36" spdef="105"/>
             <EVYIELD spdef="2"/>

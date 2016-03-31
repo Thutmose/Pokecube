@@ -256,6 +256,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             forward = ((EntityLivingBase) this.riddenByEntity).moveForward;
             this.riddenByEntity.onGround = true;
             this.riddenByEntity.fallDistance = 0;
+            this.riddenByEntity.fall(0, 0);
 
             if (forward <= 0.0F)
             {

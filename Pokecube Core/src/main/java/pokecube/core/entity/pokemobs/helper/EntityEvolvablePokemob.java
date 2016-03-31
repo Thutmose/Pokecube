@@ -270,6 +270,13 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             if (newEntry.getPokedexNb() != getPokedexNb())
             {
                 evolution = PokecubeMod.core.createEntityByPokedexNb(newEntry.getPokedexNb(), worldObj);
+
+                if (evolution == null)
+                {
+                    System.err.println("No Entry for " + newEntry);
+                    return this;
+                }
+
                 evolution.copyDataFromOld(this);
                 evolution.copyLocationAndAnglesFrom(this);
                 ((IPokemob) evolution).changeForme(forme);

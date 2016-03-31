@@ -204,23 +204,8 @@ public class PokecubeCore extends PokecubeMod
         return getProxy().getWorld();
     }
 
-    @SuppressWarnings({ "rawtypes", "unused" })
     public static boolean isOnClientSide()
     {
-        if (!checked)
-        {
-            checked = true;
-            try
-            {
-                Class c = Class.forName("net.minecraft.server.dedicated.DedicatedServer");
-                server = true;
-            }
-            catch (ClassNotFoundException e)
-            {
-            }
-        }
-
-        if (server) return false;
         return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }
 

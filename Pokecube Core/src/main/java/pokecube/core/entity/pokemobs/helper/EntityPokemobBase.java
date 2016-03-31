@@ -759,7 +759,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             particle = getPokedexEntry().particleData[0];
             particleIntensity = Integer.parseInt(getPokedexEntry().particleData[1]);
-            particleIntensity = 100;
         }
 
         Calendar calendar = Calendar.getInstance();

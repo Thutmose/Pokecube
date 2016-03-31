@@ -41,6 +41,7 @@ import net.minecraft.item.Item;
 import net.minecraft.profiler.IPlayerUsage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
@@ -625,6 +626,34 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
     {
         if (velocity == null) velocity = Vector3.empty;
+        String[] args = par1Str.split(",");
+        if (args.length == 4)
+        {
+
+        }
+        else if (args.length == 2)
+        {
+            float offset = Float.parseFloat(args[1]);
+            location.y += offset;
+        }
+        if (par1Str.contains("smoke"))
+        {
+            if (par1Str.contains("large"))
+            {
+                Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.SMOKE_LARGE, location.x, location.y,
+                        location.z, 0, 0, 0, 0);
+                return;
+            }
+            Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, location.x, location.y,
+                    location.z, 0, 0, 0, 0);
+        }
+        if (par1Str.contains("flame"))
+        {
+            Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.FLAME, location.x, location.y, location.z,
+                    0, 0, 0, 0);
+            return;
+        }
+
         IParticle particle = ParticleFactory.makeParticle(par1Str, velocity);
         ParticleHandler.Instance().addParticle(location, particle);
     }

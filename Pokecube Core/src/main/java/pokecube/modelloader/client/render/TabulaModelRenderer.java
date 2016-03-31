@@ -128,8 +128,9 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RenderLivingBas
             shadowSize = entry.width * mob.getSize();
         }
 
-        GlStateManager.translate(set.shift.x, set.shift.y, set.shift.z);
         GlStateManager.scale(set.scale.x, set.scale.y, set.scale.z);
+        GlStateManager.translate(0, -1.5, 0);
+        GlStateManager.translate(set.shift.x, set.shift.y, set.shift.z);
 
         parser.render(model, entity);
 

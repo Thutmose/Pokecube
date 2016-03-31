@@ -76,8 +76,6 @@ minecraft {
     replaceIn "PokecubeMod.java"
     replace "@THUTCORE", "[${version_thutcore},)"
     replaceIn "PokecubeMod.java"
-    replace "@BAUBLES", "[${version_baubles},)"
-    replaceIn "PokecubeMod.java"
     
     makeObfSourceJar = false
 }

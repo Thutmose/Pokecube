@@ -60,6 +60,7 @@ public class ExtraDatabase
 
     public static void apply(String toApply)
     {
+        if (xmls == null) return;
         boolean bar = toApply == null;
 
         ProgressBar loading = null;

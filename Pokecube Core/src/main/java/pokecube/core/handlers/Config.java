@@ -161,7 +161,7 @@ public class Config extends ConfigBase
     @Configure(category = spawning)
     /** This is also the radius which mobs spawn in. Is only despawn radius if
      * cull is true */
-    public int                 maxSpawnRadius         = 32;
+    public int                 maxSpawnRadius         = 64;
     @Configure(category = spawning)
     /** closest distance to a player the pokemob can spawn. */
     public int                 minSpawnRadius         = 16;

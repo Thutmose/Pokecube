@@ -25,7 +25,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.PokecubeMod.Type;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
 
@@ -178,7 +177,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
     public void initRidable()
     {
-        if (isType(PokeType.water) || getPokedexEntry().mobType == Type.WATER || getPokedexEntry().shouldSurf
+        if (isType(PokeType.water) || getPokedexEntry().swims() || getPokedexEntry().shouldSurf
                 || getPokedexEntry().shouldDive)
         {
             this.setCanSurf(true);
@@ -187,7 +186,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         {
             this.setCanDive(true);
         }
-        if ((isType(PokeType.flying) && getPokedexEntry().shouldFly) || (getPokedexEntry().mobType == Type.FLYING)
+        if ((isType(PokeType.flying) && getPokedexEntry().shouldFly) || (getPokedexEntry().flys())
                 || getPokedexEntry().shouldFly)
         {
             this.setCanFly(true);
@@ -258,6 +257,8 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             this.riddenByEntity.fallDistance = 0;
             this.riddenByEntity.fall(0, 0);
 
+            if (canUseDive()) this.riddenByEntity.setAir(300);
+
             if (forward <= 0.0F)
             {
                 forward *= 0.25F;
@@ -279,18 +280,19 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             }
             boolean dive = false;
             boolean jump = false;
-            if ((this.canUseFly() || (dive = (this.canUseDive() && isInWater()))))
+            if ((dive = (this.canUseDive() && isInWater())) || this.canUseFly())
             {
                 motionY = state == MountState.UP ? 0.5 : state == MountState.DOWN ? -0.5 : 0;
+
                 if (dive)
                 {
                     this.riddenByEntity.setAir(300);
                     PotionEffect effect = ((EntityLivingBase) this.riddenByEntity)
                             .getActivePotionEffect(Potion.nightVision);
                     if (effect == null
-                            || effect.getDuration() < 200 && this.riddenByEntity.isInsideOfMaterial(Material.water))
+                            || effect.getDuration() < 220 && this.riddenByEntity.isInsideOfMaterial(Material.water))
                         ((EntityLivingBase) this.riddenByEntity)
-                                .addPotionEffect(new PotionEffect(Potion.nightVision.id, 500));
+                                .addPotionEffect(new PotionEffect(Potion.nightVision.id, 250));
                 }
             }
             else if (state == MountState.UP)

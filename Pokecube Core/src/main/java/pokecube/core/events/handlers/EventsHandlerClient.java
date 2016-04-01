@@ -279,7 +279,7 @@ public class EventsHandlerClient
             IPokemob mount = (IPokemob) evt.entity.ridingEntity;
             if (evt.entity.isInWater() && mount.canUseDive())
             {
-                evt.density = 0.05f;
+                evt.density = 0.005f;
                 evt.setCanceled(true);
             }
         }

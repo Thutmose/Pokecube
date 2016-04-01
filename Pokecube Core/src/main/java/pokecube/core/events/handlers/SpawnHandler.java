@@ -167,7 +167,7 @@ public final class SpawnHandler
         boolean water = dat == null ? false : dat.types[WATER];
         Material here = location.getBlockMaterial(worldObj);
         Material up = temp.set(location).addTo(0, entry.height, 0).getBlockMaterial(worldObj);
-        boolean inAir = entry.mobType == PokecubeMod.Type.FLOATING || entry.mobType == PokecubeMod.Type.FLYING;
+        boolean inAir = entry.floats() || entry.flys();
 
         if (water) { return location.getBlockMaterial(worldObj) == Material.water && (!up.blocksMovement()); }
         if (inAir && !temp.set(location).addTo(0, -1, 0).isSideSolid(worldObj,

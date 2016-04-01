@@ -3,7 +3,6 @@ package pokecube.core.ai.pokemob;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod.Type;
 
 /**
  * Swimming AI, needed to make water pokemon not float on top of the ocean sometimes.
@@ -20,7 +19,7 @@ public class PokemobAISwimming extends EntityAIBase {
 		this.theEntity = p_i1624_1_;
 		this.setMutexBits(4);
 		pokemob = (IPokemob) theEntity;
-		isWaterMob = pokemob.getPokedexEntry().mobType == Type.WATER;
+		isWaterMob = pokemob.getPokedexEntry().swims();
 	}
 
 	/**

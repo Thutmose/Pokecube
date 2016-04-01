@@ -763,7 +763,7 @@ public class PokedexEntry
     /** Mod which owns the pokemob, used for texture location. */
     private String                             modId;
     /** Movement type for this mob */
-    public PokecubeMod.Type                    mobType          = null;
+    protected PokecubeMod.Type                 mobType          = null;
     /** If the above is floating, how high does it try to float */
     public double                              preferedHeight   = 1.5;
     /** Offset between top of hitbox and where player sits */
@@ -1711,7 +1711,7 @@ public class PokedexEntry
 
     public boolean swims()
     {
-        return mobType == PokecubeMod.Type.WATER;
+        return mobType == PokecubeMod.Type.WATER || shouldDive;
     }
 
     @Override

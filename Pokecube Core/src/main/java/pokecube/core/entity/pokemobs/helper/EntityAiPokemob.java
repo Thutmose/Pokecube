@@ -65,7 +65,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.PokecubeMod.Type;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobTerrainEffects;
@@ -128,7 +127,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void fall(float f, float f1)
     {
         PokedexEntry entry = getPokedexEntry();
-        boolean canFloat = entry.mobType == Type.FLOATING || entry.mobType == Type.FLYING;
+        boolean canFloat = entry.floats() || entry.flys();
         if (!canFloat) super.fall(f, f1);
     }
 
@@ -675,8 +674,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             PokedexEntry entry = getPokedexEntry();
             int aiState = dataWatcher.getWatchableObjectInt(AIACTIONSTATESDW);
-            boolean isAbleToFly = entry.mobType == Type.FLOATING || entry.mobType == Type.FLYING;
-            boolean isWaterMob = entry.mobType == Type.WATER;
+            boolean isAbleToFly = entry.floats() || entry.flys();
+            boolean isWaterMob = entry.swims();
             boolean shouldGoDown = false;
             boolean shouldGoUp = false;
             PathPoint p = null;
@@ -1167,7 +1166,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             setPokemonAIState(EXITINGCUBE, false);
         }
-        boolean canFloat = entry.mobType == Type.FLOATING;
+        boolean canFloat = entry.floats();
 
         if (canFloat && !getAIState(INWATER, state))
         {
@@ -1211,7 +1210,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
 
-        canFloat = entry.mobType == Type.FLYING;
+        canFloat = entry.flys();
         if (canFloat && here.getBlock(worldObj, EnumFacing.DOWN).getMaterial().isLiquid())
         {
             if (motionY < -0.1) motionY = 0;

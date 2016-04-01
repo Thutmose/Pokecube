@@ -429,7 +429,7 @@ public class PokemobPacketHandler
                                     v = Vector3.readFromBuff(buffer);
                                     pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);
                                     if (!v.isEmpty())
-                                        ((PokemobAIUtilityMove) pokemob.getUtilityMoveAI()).destination = v;
+                                        ((PokemobAIUtilityMove) pokemob.getUtilityMoveAI()).destination = v.copy();
                                 }
                             }
                         }

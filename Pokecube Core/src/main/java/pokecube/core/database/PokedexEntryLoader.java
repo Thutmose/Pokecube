@@ -510,6 +510,7 @@ public class PokedexEntryLoader
             }
             else
             {
+                entry.evolutions.clear();
                 for (int i = 0; i < evols.length; i++)
                 {
                     String s1 = evols[i];
@@ -525,7 +526,7 @@ public class PokedexEntryLoader
                         evol = Database.getEntry(s1);
                     }
                     if (evol != null) entry.addEvolution(new EvolutionData(evol, evolData[i], s2));
-                    else System.out.println("No evolution "+s1+" for "+entry);
+                    else System.out.println("No evolution " + s1 + " for " + entry);
                 }
             }
         }
@@ -733,9 +734,21 @@ public class PokedexEntryLoader
     {
 
         // Items
-        if (xmlStats.commonDrop != null) entry.addItems(xmlStats.commonDrop, entry.commonDrops);
-        if (xmlStats.rareDrop != null) entry.addItems(xmlStats.rareDrop, entry.rareDrops);
-        if (xmlStats.heldItems != null) entry.addItems(xmlStats.heldItems, entry.heldItems);
+        if (xmlStats.commonDrop != null)
+        {
+            entry.commonDrops.clear();
+            entry.addItems(xmlStats.commonDrop, entry.commonDrops);
+        }
+        if (xmlStats.rareDrop != null)
+        {
+            entry.rareDrops.clear();
+            entry.addItems(xmlStats.rareDrop, entry.rareDrops);
+        }
+        if (xmlStats.heldItems != null)
+        {
+            entry.heldItems.clear();
+            entry.addItems(xmlStats.heldItems, entry.heldItems);
+        }
         if (xmlStats.foodDrop != null) entry.foodDrop = entry.parseStack(xmlStats.foodDrop);
 
         // Logics
@@ -782,6 +795,7 @@ public class PokedexEntryLoader
         if (xmlStats.foodMat != null)
         {
             String[] foods = xmlStats.foodMat.split(" ");
+            entry.foods = new boolean[] { false, false, false, false, false, true, false };
             for (String s1 : foods)
             {
                 if (s1.equalsIgnoreCase("light"))
@@ -816,6 +830,7 @@ public class PokedexEntryLoader
         if (xmlStats.activeTimes != null)
         {
             String[] times = xmlStats.activeTimes.split(" ");
+            entry.activeTimes.clear();
             for (String s1 : times)
             {
                 if (s1.equalsIgnoreCase("day"))
@@ -836,7 +851,7 @@ public class PokedexEntryLoader
                 }
             }
         }
-        InteractionLogic.initForEntry(entry, xmlStats.interactions);
+        if (xmlStats.interactions != null) InteractionLogic.initForEntry(entry, xmlStats.interactions);
 
         if (xmlStats.hatedMaterials != null)
         {
@@ -846,6 +861,7 @@ public class PokedexEntryLoader
         if (xmlStats.formeItems != null)
         {
             Map<QName, String> values = xmlStats.formeItems.values;
+            entry.formeItems.clear();
             for (QName key : values.keySet())
             {
                 String keyString = key.toString();
@@ -872,6 +888,7 @@ public class PokedexEntryLoader
         }
         if (xmlStats.megaRules != null)
         {
+            entry.megaRules.clear();
             Map<QName, String> values = xmlStats.megaRules.values;
             for (QName key : values.keySet())
             {

@@ -15,9 +15,7 @@ import net.minecraft.world.World;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.berries.ItemBerry;
 
-/**
- * @author Manchou
- */
+/** @author Manchou */
 public class BlockRepel extends Block implements ITileEntityProvider
 {
     public BlockRepel()
@@ -29,17 +27,17 @@ public class BlockRepel extends Block implements ITileEntityProvider
     {
         super(material);
     }
-    
-	@Override
-	public TileEntity createNewTileEntity(World var1, int var2) {
+
+    @Override
+    public TileEntity createNewTileEntity(World var1, int var2)
+    {
         TileEntityRepel tile = new TileEntityRepel();
-		return tile;
-	}
-	
-    /**
-     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
-     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
-     */
+        return tile;
+    }
+
+    /** Is this block (a) opaque and (b) a full 1m cube? This determines whether
+     * or not to render the shared face of two adjacent blocks and also whether
+     * the player can attach torches, redstone wire, etc to this block. */
     @Override
     public boolean isOpaqueCube()
     {
@@ -47,29 +45,31 @@ public class BlockRepel extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state,
-            EntityPlayer player, EnumFacing side, float f, float g, float t)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
+            float f, float g, float t)
     {
-    	
-    	TileEntity te = world.getTileEntity(pos);
-    	if(te instanceof TileEntityRepel && player.getHeldItem()!=null && player.getHeldItem().getItem() instanceof ItemBerry)
-    	{
-    		TileEntityRepel repel = (TileEntityRepel) te;
-    		repel.invalidate();
-    		repel.distance = (byte) Math.max(5, player.getHeldItem().getItemDamage());
-    		repel.validate();
-    	}
-    	if(te instanceof TileEntityRepel && player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemPokedex && !world.isRemote)
-    	{
-    		TileEntityRepel repel = (TileEntityRepel) te;
-    		player.addChatMessage(new ChatComponentText(""+repel.distance));
-    	}
-    	
-    	return true;
+
+        TileEntity te = world.getTileEntity(pos);
+        if (te instanceof TileEntityRepel && player.getHeldItem() != null
+                && player.getHeldItem().getItem() instanceof ItemBerry)
+        {
+            TileEntityRepel repel = (TileEntityRepel) te;
+            repel.invalidate();
+            repel.distance = (byte) Math.max(5, player.getHeldItem().getItemDamage());
+            if (!world.isRemote) player.addChatMessage(new ChatComponentText("" + repel.distance));
+            repel.validate();
+        }
+        if (te instanceof TileEntityRepel && player.getHeldItem() != null
+                && player.getHeldItem().getItem() instanceof ItemPokedex && !world.isRemote)
+        {
+            TileEntityRepel repel = (TileEntityRepel) te;
+            player.addChatMessage(new ChatComponentText("" + repel.distance));
+        }
+
+        return true;
     }
-    /**
-     * Returns the quantity of items to drop on block destruction.
-     */
+
+    /** Returns the quantity of items to drop on block destruction. */
     @Override
     public int quantityDropped(Random par1Random)
     {

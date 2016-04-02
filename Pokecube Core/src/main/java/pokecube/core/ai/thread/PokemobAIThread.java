@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
+import com.google.common.collect.Maps;
+
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -27,7 +26,7 @@ public class PokemobAIThread
      * threads.
      * 
      * @author Thutmose */
-    static class AIStuff
+    public static class AIStuff
     {
         public final EntityLiving       entity;
         final ArrayList<IAIRunnable>    aiTasks = new ArrayList<IAIRunnable>();
@@ -48,6 +47,45 @@ public class PokemobAIThread
             aiTasks.add(task);
         }
 
+        public void tick()
+        {
+            ArrayList list;
+            synchronized (aiTasks)
+            {
+                list = aiTasks;
+                if (list != null) for (IAIRunnable ai : (ArrayList<IAIRunnable>) list)
+                {
+                    try
+                    {
+                        if (canRun(ai, list))
+                        {
+                            ai.run();
+                        }
+                        else
+                        {
+                            ai.reset();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            list = aiLogic;
+            if (list != null) for (ILogicRunnable runnable : (ArrayList<ILogicRunnable>) list)
+            {
+                try
+                {
+                    runnable.doLogic();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         public void runServerThreadTasks(World world)
         {
             for (IAIRunnable ai : aiTasks)
@@ -59,7 +97,9 @@ public class PokemobAIThread
 
     public static class AIThread extends Thread
     {
-        public static int threadCount = 0;
+        public static int                        threadCount = 0;
+
+        public static HashMap<Integer, AIThread> threads     = Maps.newHashMap();
 
         public static void createThreads()
         {
@@ -69,16 +109,17 @@ public class PokemobAIThread
             System.out.println("Creating and starting Pokemob AI Threads.");
             for (int i = 0; i < threadCount; i++)
             {
-                AIThread thread = new AIThread(i);
+                AIThread thread = new AIThread(i, new Vector<AIStuff>());
                 aiStuffLists[i] = new Vector();
                 thread.setPriority(8);
                 thread.start();
             }
         }
 
-        final int id;
+        public final Vector<AIStuff> aiStuff;
+        final int                 id;
 
-        public AIThread(final int number)
+        public AIThread(final int number, final Vector<AIStuff> aiStuff)
         {
             super(new Runnable()
             {
@@ -103,86 +144,13 @@ public class PokemobAIThread
                         }
                         if (tick)
                         {
-                            System.currentTimeMillis();
-                            ArrayList toRemove = new ArrayList();
-                            Vector entities = aiStuffLists[id];
-                            ArrayList temp = new ArrayList(entities);
-                            for (Object o : temp)
+                            synchronized (aiStuff)
                             {
-                                List unloadedMobs;
-                                AIStuff stuff = (AIStuff) o;
-                                EntityLiving b = stuff.entity;
-                                if (b == null)
+                                for (AIStuff ai : aiStuff)
                                 {
-                                    toRemove.add(o);
-                                    continue;
+                                    ai.tick();
                                 }
-                                try
-                                {
-                                    unloadedMobs = new ArrayList(b.worldObj.unloadedEntityList);
-                                }
-                                catch (Exception e1)
-                                {
-                                    e1.printStackTrace();
-                                    unloadedMobs = new ArrayList();
-                                }
-                                ArrayList loadedMobs = new ArrayList(b.worldObj.loadedEntityList);
-                                if (b.isDead || (unloadedMobs.contains(b)) || (!loadedMobs.contains(b)))
-                                {
-                                    toRemove.add(b);
-                                    continue;
-                                }
-                                else
-                                {
-                                    boolean loaded = b.worldObj.isAreaLoaded(
-                                            new BlockPos(MathHelper.floor_double(b.posX),
-                                                    MathHelper.floor_double(b.posY), MathHelper.floor_double(b.posZ)),
-                                            32);
-                                    if (!loaded) continue;
-
-                                    if (b instanceof IPokemob)
-                                    {
-                                        IPokemob pokemob = (IPokemob) b;
-                                        int uid = pokemob.getPokemonUID();
-                                        if (uid % threadCount != id) continue;
-                                    }
-
-                                    ArrayList list = (ArrayList) stuff.aiTasks.clone();
-                                    if (list != null) for (IAIRunnable ai : (ArrayList<IAIRunnable>) list)
-                                    {
-                                        try
-                                        {
-                                            if (canRun(ai, list))
-                                            {
-                                                ai.run();
-                                            }
-                                            else
-                                            {
-                                                ai.reset();
-                                            }
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    list = stuff.aiLogic;
-                                    if (list != null) for (ILogicRunnable runnable : (ArrayList<ILogicRunnable>) list)
-                                    {
-                                        try
-                                        {
-                                            runnable.doLogic();
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-                            }
-                            for (Object o : toRemove)
-                            {
-                                removeEntity((EntityLiving) o);
+                                aiStuff.clear();
                             }
                             synchronized (tickLock)
                             {
@@ -204,21 +172,9 @@ public class PokemobAIThread
                 }
             });
             id = number;
-            this.setName("Netty Server IO - Pokemob AI Thread-" + id);// TODO
-                                                                      // remove
-                                                                      // the
-                                                                      // Netty
-                                                                      // Server
-                                                                      // IO if
-                                                                      // there
-                                                                      // is ever
-                                                                      // a
-                                                                      // better
-                                                                      // way to
-                                                                      // specify
-                                                                      // server
-                                                                      // side
-                                                                      // only.
+            this.aiStuff = aiStuff;
+            this.setName("Netty Server IO - Pokemob AI Thread-" + id);
+            threads.put(id, this);
         }
 
     }
@@ -285,60 +241,16 @@ public class PokemobAIThread
         AIThread.createThreads();
     }
 
-    /** Adds the AI task for the given entity.
+    /** Sets the AIStuff to tick on correct thread.
      * 
      * @param entity
      * @param task */
-    public static void addAI(EntityLiving entity, IAIRunnable task)
+    public static void scheduleAITick(AIStuff ai)
     {
-        IPokemob pokemob = (IPokemob) entity;
+        IPokemob pokemob = (IPokemob) ai.entity;
         int id = pokemob.getPokemonUID() % AIThread.threadCount;
-        Vector<AIStuff> list = aiStuffLists[id];
-        ArrayList<AIStuff> toCheck = new ArrayList(list);
-        AIStuff entityAI = null;
-        for (AIStuff aistuff : toCheck)
-        {
-            if (aistuff.entity == entity)
-            {
-                entityAI = aistuff;
-                break;
-            }
-        }
-        if (entityAI == null)
-        {
-            entityAI = new AIStuff(entity);
-            list.add(entityAI);
-        }
-        entityAI.addAITask(task);
-
-    }
-
-    /** Adds the custom logic runnable for the given entity
-     * 
-     * @param entity
-     * @param logic */
-    public static void addLogic(EntityLiving entity, ILogicRunnable logic)
-    {
-        IPokemob pokemob = (IPokemob) entity;
-        int id = pokemob.getPokemonUID() % AIThread.threadCount;
-        Vector list = aiStuffLists[id];
-        ArrayList toCheck = new ArrayList(list);
-        AIStuff entityAI = null;
-        for (Object o : toCheck)
-        {
-            AIStuff aistuff = (AIStuff) o;
-            if (aistuff.entity == entity)
-            {
-                entityAI = aistuff;
-                break;
-            }
-        }
-        if (entityAI == null)
-        {
-            entityAI = new AIStuff(entity);
-            list.add(entityAI);
-        }
-        entityAI.addAILogic(logic);
+        AIThread thread = AIThread.threads.get(id);
+        thread.aiStuff.add(ai);
     }
 
     /** Checks if task can run, given the tasks in tasks.
@@ -402,32 +314,6 @@ public class PokemobAIThread
             players.clear();
             players.addAll(evt.world.playerEntities);
             worldPlayers.put(evt.world.provider.getDimensionId(), players);
-        }
-        else try// At the end, apply all of the paths, targets, moves and
-                // states.
-        {
-            ArrayList<AIStuff> todo = new ArrayList();
-
-            for (Vector<AIStuff> v : aiStuffLists)
-            {
-                todo.addAll(v);
-                for (AIStuff stuff : todo)
-                {
-                    if (stuff.entity.isDead)
-                    {
-                        v.remove(stuff);
-                    }
-                    else
-                    {
-                        stuff.runServerThreadTasks(evt.world);
-                    }
-                }
-                todo.clear();
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
         }
     }
 

@@ -62,7 +62,6 @@ public class MovesUtils implements IMoveConstants
             {
                 ((EntityLivingBase) attacked).addPotionEffect(new PotionEffect(Potion.confusion.id, duration));
             }
-
         }
     }
 

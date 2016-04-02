@@ -93,41 +93,6 @@ public class Move_Utility extends Move_Basic
             super.attack(attacker, attacked, f);
             return;
         }
-        if ((attacker instanceof IPokemob && attacker.getPokemonAIState(IMoveConstants.TAMED)))
-        {
-            IPokemob a = (attacker);
-
-            boolean used = false;
-
-            EntityLivingBase owner = a.getPokemonOwner();
-
-            int number = countBerries(a, (EntityPlayer) owner);
-
-            int count = 1;
-
-            if (this.name == MOVE_FLASH)
-            {
-                owner.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5000));
-                used = true;
-                int level = a.getLevel();
-                count = (int) Math.max(1, Math.ceil(count * Math.pow((100 - level) / 100d, 3)));
-                consumeBerries(a, count);
-                return;
-            }
-
-            if (number <= 0) return;
-
-            if (used)
-            {
-                int level = a.getLevel();
-                count = (int) Math.max(1, Math.ceil(count * Math.pow((100 - level) / 100d, 3)));
-                consumeBerries(a, count);
-            }
-            else
-            {
-                CommandTools.sendError(owner, "pokemob.action.needsberries");
-            }
-        }
     }
 
     private int digHole(IPokemob digger, Vector3 v, boolean count)
@@ -206,6 +171,27 @@ public class Move_Utility extends Move_Basic
             return;
         }
         if (user.getPokemonAIState(IMoveConstants.ANGRY)) return;
+        if (this.name == MOVE_FLASH)
+        {
+            IPokemob a = (user);
+            boolean used = false;
+            EntityLivingBase owner = a.getPokemonOwner();
+            int number = countBerries(a, (EntityPlayer) owner);
+            int count = 10;
+            int level = a.getLevel();
+            count = (int) Math.max(1, Math.ceil(count * Math.pow((100 - level) / 100d, 3)));
+            used = count <= number;
+            if (used)
+            {
+                owner.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5000));
+                consumeBerries(a, count);
+            }
+            else
+            {
+                CommandTools.sendError(owner, "pokemob.action.needsberries");
+            }
+            return;
+        }
         boolean used = false;
         boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).worldObj, location.intX(), location.intY(),
                 location.intZ());

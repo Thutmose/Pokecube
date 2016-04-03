@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod.Type;
 import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 import thut.api.pathing.Paths;
@@ -178,8 +177,8 @@ public class PokeNavigator extends PathNavigate
     public PathEntity getPathToEntityLiving(Entity entity)
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
-        this.canFly = entry.mobType == Type.FLYING || entry.mobType == Type.FLOATING;
-        this.canDive = entry.mobType == Type.WATER;
+        this.canFly = entry.flys() || entry.floats();
+        this.canDive = entry.swims();
         return !this.canNavigate() ? null
                 : pathfinder.getPathEntityToEntity(this.theEntity, entity, this.getPathSearchRange());
     }
@@ -188,8 +187,8 @@ public class PokeNavigator extends PathNavigate
     public PathEntity getPathToPos(BlockPos pos)
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
-        this.canFly = entry.mobType == Type.FLYING || entry.mobType == Type.FLOATING;
-        this.canDive = entry.mobType == Type.WATER;
+        this.canFly = entry.flys() || entry.floats();
+        this.canDive = entry.swims();
         PathEntity current = currentPath;
         if (current != null && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {

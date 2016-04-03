@@ -94,7 +94,6 @@ public class Move_Teleport extends Move_Utility
             if (attacker.getPokemonAIState(IMoveConstants.TAMED)) attacker.returnToPokecube();
             else teleportRandomly((EntityLivingBase) attacker);
         }
-
         if (attacker instanceof IPokemob && attacker.getPokemonAIState(IMoveConstants.TAMED) && !angry)
         {
             if (target == null)
@@ -109,6 +108,18 @@ public class Move_Teleport extends Move_Utility
                     PokecubePacketHandler.sendToClient(packet, (EntityPlayer) attacker.getPokemonOwner());
                 }
             }
+        }
+    }
+
+    @Override
+    public void doWorldAction(IPokemob user, Vector3 location)
+    {
+        boolean angry = user.getPokemonAIState(IMoveConstants.ANGRY);
+        if (!angry && user.getPokemonOwner() instanceof EntityPlayer && ((EntityLivingBase) user).isServerWorld())
+        {
+            EventsHandler.recallAllPokemobsExcluding((EntityPlayer) user.getPokemonOwner(), (IPokemob) null);
+            PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.TELEPORTINDEX });
+            PokecubePacketHandler.sendToClient(packet, (EntityPlayer) user.getPokemonOwner());
         }
     }
 

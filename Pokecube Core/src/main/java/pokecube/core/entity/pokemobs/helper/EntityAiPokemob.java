@@ -45,6 +45,7 @@ import pokecube.core.ai.pokemob.PokemobAILook;
 import pokecube.core.ai.pokemob.PokemobAISwimming;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.ai.thread.PokemobAIThread;
+import pokecube.core.ai.thread.PokemobAIThread.AIStuff;
 import pokecube.core.ai.thread.aiRunnables.AIAttack;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
@@ -68,7 +69,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.PokecubeMod.Type;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobTerrainEffects;
@@ -84,6 +84,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     public GuardAI              guardAI;
     public PokemobAIUtilityMove utilMoveAI;
+    private AIStuff             aiStuff;
 
     private int                 lastHadTargetTime = 0;
 
@@ -131,7 +132,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void fall(float f, float f1)
     {
         PokedexEntry entry = getPokedexEntry();
-        boolean canFloat = entry.mobType == Type.FLOATING || entry.mobType == Type.FLYING;
+        boolean canFloat = entry.floats() || entry.flys();
         if (!canFloat) super.fall(f, f1);
     }
 
@@ -293,6 +294,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         initAI = false;
         navi = new PokeNavigator(this, worldObj);
         mover = new PokemobMoveHelper(this);
+        aiStuff = new AIStuff(this);
 
         float moveSpeed = 0.5f;
         float speedFactor = (float) (1 + Math.sqrt(entry.getStatVIT()) / (100F));
@@ -332,16 +334,16 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if (worldObj.isRemote) return;
 
-        PokemobAIThread.addAI(this, new AIAttack(this).setPriority(200));
-        PokemobAIThread.addAI(this, new AIMate(this).setPriority(300));
-        PokemobAIThread.addAI(this, new AIHungry(this, new EntityItem(worldObj), 16).setPriority(300));
+        aiStuff.addAITask(new AIAttack(this).setPriority(200));
+        aiStuff.addAITask(new AIMate(this).setPriority(300));
+        aiStuff.addAITask(new AIHungry(this, new EntityItem(worldObj), 16).setPriority(300));
         AIStoreStuff ai = new AIStoreStuff(this);
-        PokemobAIThread.addAI(this, ai.setPriority(350));
-        PokemobAIThread.addAI(this, new AIGatherStuff(this, 32, ai).setPriority(400));
-        PokemobAIThread.addAI(this, new AIIdle(this).setPriority(500));
-        PokemobAIThread.addAI(this, new AIFindTarget(this).setPriority(400));
+        aiStuff.addAITask(ai.setPriority(350));
+        aiStuff.addAITask(new AIGatherStuff(this, 32, ai).setPriority(400));
+        aiStuff.addAITask(new AIIdle(this).setPriority(500));
+        aiStuff.addAITask(new AIFindTarget(this).setPriority(400));
 
-        PokemobAIThread.addLogic(this, new LogicInLiquid(this));
+        aiStuff.addAILogic(new LogicInLiquid(this));
 
     }
 
@@ -426,8 +428,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             PokedexEntry entry = getPokedexEntry();
             int aiState = dataWatcher.get(AIACTIONSTATESDW);
-            boolean isAbleToFly = entry.mobType == Type.FLOATING || entry.mobType == Type.FLYING;
-            boolean isWaterMob = entry.mobType == Type.WATER;
+            boolean isAbleToFly = entry.floats() || entry.flys();
+            boolean isWaterMob = entry.swims();
             boolean shouldGoDown = false;
             boolean shouldGoUp = false;
             PathPoint p = null;
@@ -910,7 +912,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             setPokemonAIState(EXITINGCUBE, false);
         }
-        boolean canFloat = entry.mobType == Type.FLOATING;
+        boolean canFloat = entry.floats();
 
         if (canFloat && !getAIState(INWATER, state))
         {
@@ -953,7 +955,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
             }
         }
-        canFloat = entry.mobType == Type.FLYING;
+        canFloat = entry.flys();
         if (canFloat && here.getBlock(worldObj, EnumFacing.DOWN)
                 .getMaterial(here.offset(EnumFacing.DOWN).getBlockState(worldObj)).isLiquid())
         {
@@ -1448,6 +1450,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getNavigator().onUpdateNavigation();
         this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.startSection("mob tick");
+        //Run last tick's results from AI stuff
+        this.aiStuff.runServerThreadTasks(worldObj);
+        //Schedule AIStuff to tick for next tick.
+        PokemobAIThread.scheduleAITick(aiStuff);
         this.updateAITasks();
         this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.startSection("controls");

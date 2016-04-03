@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.PokecubeMod.Type;
 import pokecube.core.utils.PokeType;
 
 /** Handles the HM behaviour.
@@ -173,7 +172,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
     public void initRidable()
     {
-        if (isType(PokeType.water) || getPokedexEntry().mobType == Type.WATER || getPokedexEntry().shouldSurf
+        if (isType(PokeType.water) || getPokedexEntry().swims() || getPokedexEntry().shouldSurf
                 || getPokedexEntry().shouldDive)
         {
             this.setCanSurf(true);
@@ -182,7 +181,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         {
             this.setCanDive(true);
         }
-        if ((isType(PokeType.flying) && getPokedexEntry().shouldFly) || (getPokedexEntry().mobType == Type.FLYING)
+        if ((isType(PokeType.flying) && getPokedexEntry().shouldFly) || (getPokedexEntry().flys())
                 || getPokedexEntry().shouldFly)
         {
             this.setCanFly(true);

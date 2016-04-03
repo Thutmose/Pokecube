@@ -99,8 +99,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
         }
         if (dist < var1)
         {
-            // move.doWorldAction(pokemon, destination);
-            move.attack(pokemon, destination, (float) destination.distToEntity(entity));
+            move.doWorldAction(pokemon, destination);
             entity.getNavigator().clearPathEntity();
             pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);
             destination = null;

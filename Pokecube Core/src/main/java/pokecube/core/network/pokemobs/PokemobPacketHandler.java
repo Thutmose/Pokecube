@@ -408,7 +408,14 @@ public class PokemobPacketHandler
                                 if (closest instanceof IPokemob)
                                 {
                                     IPokemob target = (IPokemob) closest;
-                                    if (target.getPokemonOwnerName().equals(pokemob.getPokemonOwnerName())) { return; }
+                                    if (target.getPokemonOwnerName().equals(pokemob.getPokemonOwnerName()))
+                                    {
+                                        if (target == closest)
+                                        {
+                                            pokemob.executeMove(null, v.set(pokemob), 0);
+                                        }
+                                        return;
+                                    }
                                 }
 
                                 if (closest != null)

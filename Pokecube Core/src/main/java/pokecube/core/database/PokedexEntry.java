@@ -1074,9 +1074,10 @@ public class PokedexEntry
         return mobType == PokecubeMod.Type.FLYING;
     }
 
-    public Ability getAbility(int number)
+    public Ability getAbility(int number, IPokemob pokemob)
     {
-        if (number < abilities.size()) { return AbilityManager.getAbility(abilities.get(number)); }
+        if (number < 2) { return AbilityManager.getAbility(abilities.get(number)); }
+        if(number == 2) return getHiddenAbility(pokemob);
         return null;
     }
 
@@ -1211,7 +1212,7 @@ public class PokedexEntry
         if (abilitiesHidden.isEmpty()) return null;
         else if (abilitiesHidden.size() == 1) return AbilityManager.getAbility(abilitiesHidden.get(0));
         else if (abilitiesHidden.size() == 1) return pokemob.getSexe() == IPokemob.MALE
-                ? AbilityManager.getAbility(abilitiesHidden.get(1)) : AbilityManager.getAbility(abilitiesHidden.get(1));
+                ? AbilityManager.getAbility(abilitiesHidden.get(0)) : AbilityManager.getAbility(abilitiesHidden.get(1));
         return null;
 
     }

@@ -410,6 +410,10 @@ public class PokedexEntryLoader
                     {
                         entry.abilities.add(vars[i].trim());
                     }
+                    if (entry.abilities.size() == 1)
+                    {
+                        entry.abilities.add(entry.abilities.get(0));
+                    }
                 }
             }
         }

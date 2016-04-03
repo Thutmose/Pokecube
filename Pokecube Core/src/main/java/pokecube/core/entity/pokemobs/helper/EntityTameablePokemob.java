@@ -112,6 +112,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     protected AnimalChest      pokeChest;
 
     boolean                    returning         = false;
+    protected int              abilityIndex      = 0;
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -523,6 +524,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     {
         super.readEntityFromNBT(nbttagcompound);
         pokedexNb = nbttagcompound.getInteger(PokecubeSerializer.POKEDEXNB);
+        abilityIndex = nbttagcompound.getInteger("abilityIndex");
         this.setPokedexEntry(Database.getEntry(pokedexNb));
         this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
         dataWatcher.updateObject(5, nbttagcompound.getInteger("PokemobActionState"));
@@ -806,6 +808,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setInteger(PokecubeSerializer.POKEDEXNB, pokedexNb);
+        nbttagcompound.setInteger("abilityIndex", abilityIndex);
         nbttagcompound.setInteger("PokemobActionState", dataWatcher.getWatchableObjectInt(5));
         nbttagcompound.setInteger("hungerTime", getHungerTime());
         nbttagcompound.setInteger("specialInfo", getSpecialInfo());

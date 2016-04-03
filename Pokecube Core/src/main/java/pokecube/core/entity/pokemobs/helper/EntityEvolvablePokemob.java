@@ -280,6 +280,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 evolution.copyDataFromOld(this);
                 evolution.copyLocationAndAnglesFrom(this);
                 ((IPokemob) evolution).changeForme(forme);
+                ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
                 if (this.addedToChunk) worldObj.spawnEntityInWorld(evolution);
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))
@@ -297,6 +298,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             {
                 evolution = this;
                 ((IPokemob) evolution).changeForme(forme);
+                ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))
                 {

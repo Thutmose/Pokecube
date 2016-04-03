@@ -334,13 +334,13 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
 
         Random random = new Random();
-        int abilityNumber = random.nextInt(100) % 2;
-        if (getPokedexEntry().getAbility(abilityNumber) == null)
+        abilityIndex = random.nextInt(100) % 2;
+        if (getPokedexEntry().getAbility(abilityIndex, this) == null)
         {
-            if (abilityNumber != 0) abilityNumber = 0;
-            else abilityNumber = 1;
+            if (abilityIndex != 0) abilityIndex = 0;
+            else abilityIndex = 1;
         }
-        setAbility(getPokedexEntry().getAbility(abilityNumber));
+        setAbility(getPokedexEntry().getAbility(abilityIndex, this));
         if (getAbility() != null) getAbility().init(this);
 
         setSize(1 + scaleFactor * (float) (random).nextGaussian());

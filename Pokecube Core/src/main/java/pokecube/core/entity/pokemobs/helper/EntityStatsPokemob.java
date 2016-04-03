@@ -276,7 +276,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public Ability getAbility()
     {
-        if (getPokemonAIState(MEGAFORME)) return getPokedexEntry().getAbility(0);
+        if (getPokemonAIState(MEGAFORME)) return getPokedexEntry().getAbility(0, this);
         return ability;
     }
 
@@ -644,18 +644,17 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         if (nbttagcompound.hasKey("ability", 8))
             setAbility(AbilityManager.getAbility(nbttagcompound.getString("ability")));
         else if (nbttagcompound.hasKey("ability", 3))
-            setAbility(getPokedexEntry().getAbility(nbttagcompound.getInteger("ability")));
+            setAbility(getPokedexEntry().getAbility(nbttagcompound.getInteger("ability"), this));
 
         if (ability == null)
         {
-            Random random = new Random();
-            int abilityNumber = random.nextInt(100) % 2;
-            if (getPokedexEntry().getAbility(abilityNumber) == null)
+            int abilityNumber = abilityIndex;
+            if (getPokedexEntry().getAbility(abilityNumber, this) == null)
             {
                 if (abilityNumber != 0) abilityNumber = 0;
                 else abilityNumber = 1;
             }
-            setAbility(getPokedexEntry().getAbility(abilityNumber));
+            setAbility(getPokedexEntry().getAbility(abilityNumber, this));
         }
         if (ability != null) ability.init(this);
 
@@ -723,6 +722,13 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setAbility(Ability ability)
     {
         this.ability = ability;
+    }
+
+    @Override
+    public void setToHiddenAbility()
+    {
+        this.abilityIndex = 2;
+        this.setAbility(getPokedexEntry().getAbility(2, this));
     }
 
     @Override

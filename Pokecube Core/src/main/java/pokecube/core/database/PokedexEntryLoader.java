@@ -410,6 +410,10 @@ public class PokedexEntryLoader
                     {
                         entry.abilities.add(vars[i].trim());
                     }
+                    if (entry.abilities.size() == 1)
+                    {
+                        entry.abilities.add(entry.abilities.get(0));
+                    }
                 }
             }
         }
@@ -865,23 +869,36 @@ public class PokedexEntryLoader
             {
                 String keyString = key.toString();
                 String value = values.get(key);
-
                 if (keyString.equals("forme"))
                 {
-                    String[] vals = value.split(",");
-                    for (String val : vals)
+                    String[] args = value.split(",");
+                    for (String s : args)
                     {
-                        String[] args = val.split(":");
-                        PokedexEntry forme = Database.getEntry(args[0]);
-                        ItemStack stack = PokecubeItems.getStack(args[1]);
-                        if (stack == null || forme == null) System.err.println(
-                                "No stack " + args[1] + " for " + entry + " for forme " + forme + " (" + args[1] + ")");
-                        else
+                        String forme = "";
+                        String item = "";
+                        String[] args2 = s.split(":");
+                        for (String s1 : args2)
                         {
-                            entry.formeItems.put(stack, forme);
+                            String arg1 = s1.trim().substring(0, 1);
+                            String arg2 = s1.trim().substring(1);
+                            if (arg1.equals("N"))
+                            {
+                                forme = arg2;
+                            }
+                            else if (arg1.equals("I"))
+                            {
+                                item = arg2.replace("`", ":");
+                            }
+                        }
+
+                        PokedexEntry formeEntry = Database.getEntry(forme);
+                        if (!forme.isEmpty() && formeEntry != null)
+                        {
+                            ItemStack stack = PokecubeItems.getStack(item, false);
+                            PokecubeItems.addToHoldables(item);
+                            entry.formeItems.put(stack, formeEntry);
                         }
                     }
-
                 }
             }
         }

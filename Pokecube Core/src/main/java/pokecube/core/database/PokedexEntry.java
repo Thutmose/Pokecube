@@ -1084,9 +1084,10 @@ public class PokedexEntry
         return mobType == PokecubeMod.Type.FLYING;
     }
 
-    public Ability getAbility(int number)
+    public Ability getAbility(int number, IPokemob pokemob)
     {
-        if (number < abilities.size()) { return AbilityManager.getAbility(abilities.get(number)); }
+        if (number < 2) { return AbilityManager.getAbility(abilities.get(number)); }
+        if(number == 2) return getHiddenAbility(pokemob);
         return null;
     }
 

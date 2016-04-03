@@ -573,6 +573,8 @@ public interface IPokemob extends IMoveConstants
     void returnToPokecube();
 
     void setAbility(Ability ability);
+    
+    void setToHiddenAbility();
 
     void setAncient(boolean toSet);
 

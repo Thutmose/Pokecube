@@ -719,6 +719,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         this.ability = ability;
     }
 
+    //TODO some way to get this called naturally, so pokemobs can be obtained with hidden ability.
     @Override
     public void setToHiddenAbility()
     {

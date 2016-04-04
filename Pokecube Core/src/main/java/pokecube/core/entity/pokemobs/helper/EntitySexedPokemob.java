@@ -401,7 +401,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         int diff = 1 * PokecubeMod.core.getConfig().mateMultiplier;
         if (inLove > 0) diff = 1;
         setLoveTimer(getLoveTimer() + diff);
-        if (isInLove() && lover == null)
+        if (isInLove() && lover == null)//TODO check that this works right.
         {
             findLover();
         }

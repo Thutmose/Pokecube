@@ -14,7 +14,6 @@ import com.google.common.base.Predicate;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -505,10 +504,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         double dist = width * width + getLover().width * getLover().width;
         dist = Math.max(dist, 1);
         this.getNavigator().tryMoveToEntityLiving(getLover(), 1.5);
-        if (lover instanceof EntityLiving)
-        {
-            ((EntityLiving) lover).getNavigator().tryMoveToEntityLiving(this, 1.5);
-        }
         this.spawnBabyDelay++;
         if (this.spawnBabyDelay >= 50 && this.getDistanceSqToEntity(getLover()) < dist)
         {

@@ -505,7 +505,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         dist = Math.max(dist, 1);
         this.getNavigator().tryMoveToEntityLiving(getLover(), 1.5);
         this.spawnBabyDelay++;
-        if (this.spawnBabyDelay >= 50 && this.getDistanceSqToEntity(getLover()) < dist)
+        if (this.spawnBabyDelay >= 5 && this.getDistanceSqToEntity(getLover()) < dist)
         {
             mate((IBreedingMob) getLover());
             this.spawnBabyDelay = 0;

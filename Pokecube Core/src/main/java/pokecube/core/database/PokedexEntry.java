@@ -263,7 +263,7 @@ public class PokedexEntry
 
                 for (BiomeType b : BiomeType.values())
                 {
-                    if (b.name.equalsIgnoreCase(biome)) type = b.ordinal() + 256;
+                    if (b.name.equalsIgnoreCase(biome)) type = b.getType();
                 }
                 if (type == -1)
                 {

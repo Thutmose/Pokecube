@@ -33,10 +33,10 @@ public class Multitype extends Ability
         if (!entry.getName().contains("Arceus")) return;
 
         ItemStack held = ((EntityLivingBase) mob).getHeldItemMainhand();
-        if (held != null && held.getItem().getRegistryName().contains("pokecube")
-                && held.getItem().getRegistryName().contains("badge"))
+        if (held != null && held.getItem().getRegistryName().getResourceDomain().contains("pokecube")
+                && held.getItem().getRegistryName().getResourcePath().contains("badge"))
         {
-            String name = held.getItem().getRegistryName().split(":")[1];
+            String name = held.getItem().getRegistryName().getResourcePath();
             String typename = name.replace("badge", "");
             PokeType type = PokeType.getType(typename);
             if (type != PokeType.unknown)

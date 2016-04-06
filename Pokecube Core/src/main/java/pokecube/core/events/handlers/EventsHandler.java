@@ -48,7 +48,6 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
@@ -369,7 +368,11 @@ public class EventsHandler
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent evt)
     {
-        if (evt.getAction() == Action.LEFT_CLICK_BLOCK && evt.getEntityPlayer().getHeldItemMainhand() != null
+        boolean rightClickBlock = evt instanceof PlayerInteractEvent.RightClickBlock;
+        boolean leftClickBlock = evt instanceof PlayerInteractEvent.LeftClickBlock;
+        boolean rightClickAir = evt instanceof PlayerInteractEvent.RightClickItem;
+
+        if (leftClickBlock && evt.getEntityPlayer().getHeldItemMainhand() != null
                 && evt.getEntityPlayer().getHeldItemMainhand().getItem() == Items.stick)
         {
             TileEntity te = evt.getWorld().getTileEntity(evt.getPos());
@@ -389,7 +392,7 @@ public class EventsHandler
                 && evt.getEntityPlayer().getHeldItemMainhand().getItem() instanceof IPokecube)
         {
             Block block = null;
-            if (evt.getAction() == Action.RIGHT_CLICK_BLOCK)
+            if (rightClickBlock)
             {
                 block = evt.getWorld().getBlockState(evt.getPos()).getBlock();
             }
@@ -411,9 +414,8 @@ public class EventsHandler
                 if (hit != null) hit.writeToBuff(buffer);
             }
             PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
-            if (evt.getAction() == Action.RIGHT_CLICK_AIR) PokecubePacketHandler.sendToServer(packet);
-
-            if (evt.getAction() != Action.RIGHT_CLICK_BLOCK)
+            if (rightClickAir) PokecubePacketHandler.sendToServer(packet);
+            if (!rightClickBlock)
             {
                 evt.setCanceled(true);
                 evt.setResult(Result.DENY);
@@ -430,13 +432,14 @@ public class EventsHandler
                         break;
                     }
                 }
-
                 if (block != null && !loop)
                 {
+                    PlayerInteractEvent.RightClickBlock evt2 = (PlayerInteractEvent.RightClickBlock)evt;
                     IBlockState state = evt.getWorld().getBlockState(evt.getPos());
                     boolean b = block.onBlockActivated(evt.getWorld(), evt.getPos(), state, evt.getEntityPlayer(),
-                            evt.getEntityPlayer().getActiveHand(), evt.getEntityLiving().getActiveItemStack(), evt.getFace(),
-                            (float) evt.getLocalPos().xCoord, (float) evt.getLocalPos().yCoord, (float) evt.getLocalPos().zCoord);
+                            evt.getEntityPlayer().getActiveHand(), evt.getEntityLiving().getActiveItemStack(),
+                            evt.getFace(), (float) evt2.getHitVec().xCoord, (float) evt2.getHitVec().yCoord,
+                            (float) evt2.getHitVec().zCoord);
                     if (!b && !evt.getEntityPlayer().isSneaking())
                     {
                         PokecubePacketHandler.sendToServer(packet);
@@ -447,7 +450,8 @@ public class EventsHandler
                     PokecubePacketHandler.sendToServer(packet);
                 }
             }
-            if (evt.getEntityPlayer().getHeldItemMainhand() == null || evt.getEntityPlayer().getHeldItemMainhand().stackSize <= 0)
+            if (evt.getEntityPlayer().getHeldItemMainhand() == null
+                    || evt.getEntityPlayer().getHeldItemMainhand().stackSize <= 0)
             {
                 int current = evt.getEntityPlayer().inventory.currentItem;
                 evt.getEntityPlayer().inventory.mainInventory[current] = null;

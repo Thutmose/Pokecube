@@ -991,10 +991,10 @@ public class MovesAdder implements IMoveConstants
                 if(user==null || !(user instanceof EntityLivingBase))
                 return move.type;
                 ItemStack held = ((EntityLivingBase) user).getHeldItemMainhand();
-                if (held != null && held.getItem().getRegistryName().contains("pokecube")
-                        && held.getItem().getRegistryName().contains("badge"))
+                if (held != null && held.getItem().getRegistryName().getResourceDomain().contains("pokecube")
+                        && held.getItem().getRegistryName().getResourcePath().contains("badge"))
                 {
-                    String name = held.getItem().getRegistryName().split(":")[1];
+                    String name = held.getItem().getRegistryName().getResourcePath();
                     String typename = name.replace("badge", "");
                     PokeType type = PokeType.getType(typename);
                     if (type != PokeType.unknown)

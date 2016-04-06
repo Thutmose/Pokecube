@@ -31,7 +31,7 @@ public class HeldItemHandler
     private static double getMoveMultiplier(ItemStack held, PokeType move)
     {
         double ret = 1;
-        String name = held.getItem().getRegistryName().split(":")[1];
+        String name = held.getItem().getRegistryName().getResourcePath();
         String typename = name.replace("badge", "");
         PokeType type = PokeType.getType(typename);
         if (type == move) return 1.2;

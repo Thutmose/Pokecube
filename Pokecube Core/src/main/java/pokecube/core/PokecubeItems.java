@@ -440,7 +440,7 @@ public class PokecubeItems extends Items
             Item item = Item.getItemById(i);
             if (item != null)
             {
-                addGeneric(item.getRegistryName(), item);
+                addGeneric(item.getRegistryName().toString(), item);
             }
 
         }
@@ -621,7 +621,6 @@ public class PokecubeItems extends Items
      * @param o
      * @param name
      * @param clazz */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static void register(Object o, Class clazz, String name)
     {
         if (o instanceof Item)

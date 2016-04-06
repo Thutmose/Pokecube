@@ -12,46 +12,41 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 
-public class RecipePokeseals implements IRecipe {
+public class RecipePokeseals implements IRecipe
+{
     private ItemStack toCraft;
- //   private static final String __OBFID = "CL_00000083";
 
-    /**
-     * Returns an Item that is the result of this recipe
-     */
+    /** Returns an Item that is the result of this recipe */
     @Override
-	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_)
+    public ItemStack getCraftingResult(InventoryCrafting p_77572_1_)
     {
         return this.toCraft;
     }
 
     @Override
-	public ItemStack getRecipeOutput()
+    public ItemStack getRecipeOutput()
     {
         return this.toCraft;
     }
 
-    /**
-     * Returns the size of the recipe area
-     */
+    /** Returns the size of the recipe area */
     @Override
-	public int getRecipeSize()
+    public int getRecipeSize()
     {
         return 10;
     }
 
     @Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-		ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
-		return ret;
-	}
+    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    {
+        ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
+        return ret;
+    }
 
-	/**
-     * Used to check if a recipe matches current crafting inventory
-     */
+    /** Used to check if a recipe matches current crafting inventory */
     @SuppressWarnings({ "unused", "rawtypes" })
     @Override
-	public boolean matches(InventoryCrafting craft, World world)
+    public boolean matches(InventoryCrafting craft, World world)
     {
         this.toCraft = null;
         int cube = 0;
@@ -69,28 +64,22 @@ public class RecipePokeseals implements IRecipe {
 
             if (itemstack != null)
             {
-            	if (itemstack.getItem() == PokecubeItems.getEmptyCube(-2) && PokecubeManager.isFilled(itemstack) == false)
-            	{
-            		++cube;
-            	toCraft = itemstack.copy();
-            	}
-/*               if (itemstack.getItem() == Items.gunpowder)
+                if (itemstack.getItem() == PokecubeItems.getEmptyCube(-2)
+                        && PokecubeManager.isFilled(itemstack) == false)
                 {
-                    ++j;
+                    ++cube;
+                    toCraft = itemstack.copy();
                 }
-                else if (itemstack.getItem() == Items.firework_charge)
-                {
-                    ++l;
-                }
-*/                else if (itemstack.getItem() == Items.dye)
+                /*
+                 * if (itemstack.getItem() == Items.gunpowder) { ++j; } else if
+                 * (itemstack.getItem() == Items.firework_charge) { ++l; }
+                 */ else if (itemstack.getItem() == Items.dye)
                 {
                     ++addons;
                 }
-/*                else if (itemstack.getItem() == Items.paper)
-                {
-                    ++paper;
-                }
-*/                else if (itemstack.getItem() == Items.water_bucket)
+                /*
+                 * else if (itemstack.getItem() == Items.paper) { ++paper; }
+                 */ else if (itemstack.getItem() == Items.water_bucket)
                 {
                     ++addons;
                 }
@@ -112,10 +101,7 @@ public class RecipePokeseals implements IRecipe {
                 }
                 else
                 {
-                    if (itemstack.getItem() != Items.skull)
-                    {
-                        return false;
-                    }
+                    if (itemstack.getItem() != Items.skull) { return false; }
 
                     ++boomboomstuff;
                 }
@@ -124,59 +110,56 @@ public class RecipePokeseals implements IRecipe {
 
         sparklystuff += dye + boomboomstuff;
 
-       
-            NBTTagCompound nbttagcompound;
-            NBTTagCompound nbttagcompound1;
+        NBTTagCompound nbttagcompound;
+        NBTTagCompound nbttagcompound1;
 
-            if (cube == 1 && addons > 0)
+        if (cube == 1 && addons > 0)
+        {
+            toCraft = new ItemStack(PokecubeItems.getEmptyCube(-2), 1);
+            nbttagcompound = new NBTTagCompound();
+            nbttagcompound1 = new NBTTagCompound();
+            byte b0 = 0;
+            ArrayList arraylist = new ArrayList();
+
+            for (int l1 = 0; l1 < craft.getSizeInventory(); ++l1)
             {
-                toCraft = new ItemStack(PokecubeItems.getEmptyCube(-2), 1);
-                nbttagcompound = new NBTTagCompound();
-                nbttagcompound1 = new NBTTagCompound();
-                byte b0 = 0;
-                ArrayList arraylist = new ArrayList();
+                ItemStack itemstack2 = craft.getStackInSlot(l1);
 
-                for (int l1 = 0; l1 < craft.getSizeInventory(); ++l1)
+                if (itemstack2 != null)
                 {
-                    ItemStack itemstack2 = craft.getStackInSlot(l1);
-
-                    if (itemstack2 != null)
+                    if (itemstack2.getItem() == Items.coal)
                     {
-                       if (itemstack2.getItem() == Items.coal)
-                        {
-                            nbttagcompound1.setBoolean("Flames", true);
-                        }
-                       if (itemstack2.getItem() == Items.water_bucket)
-                        {
-                            nbttagcompound1.setBoolean("Bubbles", true);
-                        }
-                       if (itemstack2.getItem() == Item.getItemFromBlock(Blocks.leaves))
-                       {
-                       	nbttagcompound1.setBoolean("Leaves", true);
-                       }
-                       if (itemstack2.getItem() == Items.dye)
-                       {
-                       	nbttagcompound1.setInteger("dye", itemstack2.getItemDamage());
-                       }
-                       
+                        nbttagcompound1.setBoolean("Flames", true);
                     }
-                }
+                    if (itemstack2.getItem() == Items.water_bucket)
+                    {
+                        nbttagcompound1.setBoolean("Bubbles", true);
+                    }
+                    if (itemstack2.getItem() == Item.getItemFromBlock(Blocks.leaves))
+                    {
+                        nbttagcompound1.setBoolean("Leaves", true);
+                    }
+                    if (itemstack2.getItem() == Items.dye)
+                    {
+                        nbttagcompound1.setInteger("dye", itemstack2.getItemDamage());
+                    }
 
-                int[] aint1 = new int[arraylist.size()];
-
-                for (int l2 = 0; l2 < aint1.length; ++l2)
-                {
-                    aint1[l2] = ((Integer)arraylist.get(l2)).intValue();
                 }
-                
-   //             toCraft = ();
-                nbttagcompound.setTag("Explosion", nbttagcompound1);
-                this.toCraft.setTagCompound(nbttagcompound);
-                return true;
             }
-             else
+
+            int[] aint1 = new int[arraylist.size()];
+
+            for (int l2 = 0; l2 < aint1.length; ++l2)
             {
-                return false;
+                aint1[l2] = ((Integer) arraylist.get(l2)).intValue();
             }
-         }
+            nbttagcompound.setTag("Explosion", nbttagcompound1);
+            this.toCraft.setTagCompound(nbttagcompound);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

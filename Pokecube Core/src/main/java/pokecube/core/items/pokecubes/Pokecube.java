@@ -75,9 +75,7 @@ public class Pokecube extends Item implements IPokecube
         if (item.hasTagCompound())
         {
             NBTTagCompound nbttagcompound = PokecubeManager.getSealTag(item);
-
             displayInformation(nbttagcompound, list);
-
         }
     }
 
@@ -240,11 +238,9 @@ public class Pokecube extends Item implements IPokecube
 
         if (!PokecubeManager.isFilled(cube)) return true;
         cube.getTagCompound().setBoolean("delete", true);
-        // itemstack = new ItemStack(this);
         int current = player.inventory.currentItem;
         player.inventory.mainInventory[current] = null;
         player.inventory.markDirty();
-
         return true;
     }
 

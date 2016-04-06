@@ -10,11 +10,9 @@ import pokecube.core.interfaces.PokecubeMod;
 
 public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
 {
-
     @Override
     public ItemStack dispense(IBlockSource iblocksource, ItemStack itemstack)
     {
-
         FakePlayer player = PokecubeMod.getFakePlayer();
         player.worldObj = iblocksource.getWorld();
         player.posX = iblocksource.getX();
@@ -52,5 +50,4 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
         itemstack.splitStack(1);
         return itemstack;
     }
-
 }

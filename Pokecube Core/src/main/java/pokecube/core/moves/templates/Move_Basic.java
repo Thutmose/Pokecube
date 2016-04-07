@@ -242,7 +242,18 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             if (block.isAir(state, world, location.getPos()))
             {
                 if (location.offset(EnumFacing.DOWN).getBlockState(world).isNormalCube())
-                    location.setBlock(world, Blocks.snow_layer.getDefaultState());
+                {
+                    System.out.println(location+" "+location.getBlockState(world));
+                    try
+                    {
+                        world.setBlockState(location.getPos(), Blocks.snow_layer.getDefaultState(), 2);
+                    }
+                    catch (Exception e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
             }
             else if (block == Blocks.water && state.getValue(BlockLiquid.LEVEL) == 0)
             {

@@ -372,6 +372,8 @@ public class EventsHandler
         boolean leftClickBlock = evt instanceof PlayerInteractEvent.LeftClickBlock;
         boolean rightClickAir = evt instanceof PlayerInteractEvent.RightClickItem;
 
+        if (!(rightClickBlock || leftClickBlock || rightClickAir)) return;
+
         if (leftClickBlock && evt.getEntityPlayer().getHeldItemMainhand() != null
                 && evt.getEntityPlayer().getHeldItemMainhand().getItem() == Items.stick)
         {
@@ -434,7 +436,7 @@ public class EventsHandler
                 }
                 if (block != null && !loop)
                 {
-                    PlayerInteractEvent.RightClickBlock evt2 = (PlayerInteractEvent.RightClickBlock)evt;
+                    PlayerInteractEvent.RightClickBlock evt2 = (PlayerInteractEvent.RightClickBlock) evt;
                     IBlockState state = evt.getWorld().getBlockState(evt.getPos());
                     boolean b = block.onBlockActivated(evt.getWorld(), evt.getPos(), state, evt.getEntityPlayer(),
                             evt.getEntityPlayer().getActiveHand(), evt.getEntityLiving().getActiveItemStack(),

@@ -243,7 +243,6 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             {
                 if (location.offset(EnumFacing.DOWN).getBlockState(world).isNormalCube())
                 {
-                    System.out.println(location+" "+location.getBlockState(world));
                     try
                     {
                         world.setBlockState(location.getPos(), Blocks.snow_layer.getDefaultState(), 2);

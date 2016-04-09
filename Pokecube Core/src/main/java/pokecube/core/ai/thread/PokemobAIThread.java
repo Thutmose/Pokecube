@@ -88,6 +88,7 @@ public class PokemobAIThread
 
         public void runServerThreadTasks(World world)
         {
+            tick();
             for (IAIRunnable ai : aiTasks)
             {
                 ai.doMainThreadTick(world);
@@ -144,10 +145,10 @@ public class PokemobAIThread
                         {
                             synchronized (aiStuff)
                             {
-                                for (AIStuff ai : aiStuff)
-                                {
-                                    ai.tick();
-                                }
+//                                for (AIStuff ai : aiStuff)
+//                                {
+//                                    ai.tick();
+//                                }
                                 aiStuff.clear();
                             }
                             synchronized (tickLock)

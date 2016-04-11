@@ -405,8 +405,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         String texName = texture == null ? null : texture.getResourcePath();
         texName = this.getPokedexEntry().getTexture(texName, this.getSexe(), this.ticksExisted);
         texture = new ResourceLocation(domain, texName);
-        if (!shiny)
-            return texture;
+        if (!shiny) return texture;
         String args = texName.substring(0, texName.length() - 4);
         return new ResourceLocation(domain, args + "S.png");
     }
@@ -579,7 +578,16 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void onUpdate()
     {
         here.set(posX, posY, posZ);
-
+        boolean loaded = worldObj.isAreaLoaded(this.getPosition(), 8);
+        if (loaded && !(getPokemonAIState(STAYING) || getPokemonAIState(GUARDING)))
+        {
+            loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius, this);
+        }
+        if (!loaded)
+        {
+            despawnEntity();
+            return;
+        }
         if (getPokedexNb() == 201 && (this.forme == null || this.forme.isEmpty() || this.forme.equals("unown")))
         {
             int num = rand.nextInt(unowns.length);

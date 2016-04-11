@@ -71,7 +71,6 @@ import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -1105,13 +1104,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if (getPokedexEntry().floats() || getPokedexEntry().flys()) fallDistance = 0;
         dimension = worldObj.provider.getDimensionId();
-
-        boolean loaded = worldObj.isAreaLoaded(this.getPosition(), 8);
-        if (loaded && !(getPokemonAIState(STAYING) || getPokemonAIState(GUARDING)))
-        {
-            loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius, this);
-        }
-        if (!loaded) { return; }
         super.onUpdate();
         if (worldObj.isRemote)
         {
@@ -1457,9 +1449,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getNavigator().onUpdateNavigation();
         this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.startSection("mob tick");
-        //Run last tick's results from AI stuff
+        // Run last tick's results from AI stuff
         this.aiStuff.runServerThreadTasks(worldObj);
-        //Schedule AIStuff to tick for next tick.
+        // Schedule AIStuff to tick for next tick.
         PokemobAIThread.scheduleAITick(aiStuff);
         this.updateAITasks();
         this.worldObj.theProfiler.endSection();

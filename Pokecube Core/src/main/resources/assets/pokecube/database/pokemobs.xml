@@ -5633,7 +5633,7 @@
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
             <BIOMESANYACCEPTABLE>ocean 0.3</BIOMESANYACCEPTABLE>
-            <SPECIALCASES>day night</SPECIALCASES>
+            <SPECIALCASES>day night water</SPECIALCASES>
             <BASESTATS atk="38" def="38" hp="75" spatk="56" spd="67" spdef="56"/>
             <EVYIELD hp="1"/>
             <SIZES height="0.5" length="0.5" width="0.5"/>

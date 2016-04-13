@@ -579,7 +579,16 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void onUpdate()
     {
         here.set(posX, posY, posZ);
-
+        boolean loaded = worldObj.isAreaLoaded(this.getPosition(), 8);
+        if (loaded && !(getPokemonAIState(STAYING) || getPokemonAIState(GUARDING)))
+        {
+            loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius, this);
+        }
+        if (!loaded)
+        {
+            despawnEntity();
+            return;
+        }
         if (getPokedexNb() == 201 && (this.forme == null || this.forme.isEmpty() || this.forme.equals("unown")))
         {
             int num = rand.nextInt(unowns.length);

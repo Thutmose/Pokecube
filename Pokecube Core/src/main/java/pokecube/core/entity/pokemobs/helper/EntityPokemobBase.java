@@ -588,6 +588,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             despawnEntity();
             return;
         }
+        //TODO move this into database somehow.
         if (getPokedexNb() == 201 && (this.forme == null || this.forme.isEmpty() || this.forme.equals("unown")))
         {
             int num = rand.nextInt(unowns.length);

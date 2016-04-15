@@ -62,17 +62,18 @@ public class PokeInfo
         EntityLivingBase poke = (EntityLivingBase) pokemob;
         poke.onUpdate();
         player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(poke.getMaxHealth());
-        player.setHealth(poke.getHealth());
+        float health = poke.getHealth();
+        if(player.capabilities.isCreativeMode) health = poke.getMaxHealth();
+        player.setHealth(health);
         PokePlayer.PROXY.copyTransform((EntityLivingBase) pokemob, player);
         int num = ((IHungrymob)poke).getHungerTime();
         int max = PokecubeMod.core.getConfig().pokemobLifeSpan;
         num = Math.round(((max - num) * 20) / (float)max);
+        if(player.capabilities.isCreativeMode) num = 20;
         player.getFoodStats().setFoodLevel(num);
         updateFloating(player);
         updateFlying(player);
         updateSwimming(player);
-
-        // TODO update things like hunger, maxHP, etc for creative mode.
     }
 
     public void save(EntityPlayer player)

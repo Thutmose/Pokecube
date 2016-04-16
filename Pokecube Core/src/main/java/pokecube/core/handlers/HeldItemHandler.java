@@ -26,6 +26,7 @@ public class HeldItemHandler
         megaVariants.add("absolmega");
         megaVariants.add("blastoisemega");
         megaVariants.add("slowbromega");
+        megaVariants.add("banettemega");
     }
 
     private static double getMoveMultiplier(ItemStack held, PokeType move)

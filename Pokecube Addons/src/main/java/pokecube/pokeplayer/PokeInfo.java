@@ -61,6 +61,7 @@ public class PokeInfo
     {
         EntityLivingBase poke = (EntityLivingBase) pokemob;
         poke.onUpdate();
+        //TODO make sure this properly deals with creative mode stuff.
         player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(poke.getMaxHealth());
         float health = poke.getHealth();
         if(player.capabilities.isCreativeMode) health = poke.getMaxHealth();

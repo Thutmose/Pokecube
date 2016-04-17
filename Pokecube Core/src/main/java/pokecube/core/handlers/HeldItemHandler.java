@@ -27,6 +27,7 @@ public class HeldItemHandler
         megaVariants.add("blastoisemega");
         megaVariants.add("slowbromega");
         megaVariants.add("banettemega");
+        //TODO rest of the mega stone here.
     }
 
     private static double getMoveMultiplier(ItemStack held, PokeType move)

@@ -19,6 +19,7 @@ public class HeldItemHandler
         megaVariants.add("alphaorb");
         megaVariants.add("gardevoirmega");
         megaVariants.add("charizardmega-y");
+        megaVariants.add("charizardmega-x");
         megaVariants.add("scizormega");
         megaVariants.add("sceptilemega");
         megaVariants.add("salamencemega");
@@ -27,7 +28,7 @@ public class HeldItemHandler
         megaVariants.add("blastoisemega");
         megaVariants.add("slowbromega");
         megaVariants.add("banettemega");
-        //TODO rest of the mega stone here.
+        //TODO rest of the mega stoneS here.
     }
 
     private static double getMoveMultiplier(ItemStack held, PokeType move)

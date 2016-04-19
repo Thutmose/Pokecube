@@ -21,6 +21,11 @@
           "layer0": "pokecube:items/Charizardite_Y"
         }
       },
+      "charizardmega-x": {
+        "textures": {
+          "layer0": "pokecube:items/Charizardite_X"
+        }
+      },
       "scizormega": {
         "textures": {
           "layer0": "pokecube:items/Scizorite"

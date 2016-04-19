@@ -20,6 +20,8 @@ public class HeldItemHandler
         megaVariants.add("gardevoirmega");
         megaVariants.add("charizardmega-y");
         megaVariants.add("charizardmega-x");
+//        megaVariants.add("mewtwomega-y");
+//        megaVariants.add("mewtwomega-x");
         megaVariants.add("scizormega");
         megaVariants.add("sceptilemega");
         megaVariants.add("salamencemega");

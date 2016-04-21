@@ -38,7 +38,9 @@
       "salamencemega": {"textures": {"layer0": "pokecube:items/Salamencite"}},
       "sceptilemega": {"textures": {"layer0": "pokecube:items/Sceptilite"}},
       "scizormega": {"textures": {"layer0": "pokecube:items/Scizorite"}},
-      "slowbromega": {"textures": {"layer0": "pokecube:items/Slowbronite"}}
+      "slowbromega": {"textures": {"layer0": "pokecube:items/Slowbronite"}},
+      "tyranitarmega": {"textures": {"layer0": "pokecube:items/Tyranitarite"}},
+      "venusaurmega": {"textures": {"layer0": "pokecube:items/Venusaurite"}}
     }
   }
 }

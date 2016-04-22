@@ -36,18 +36,18 @@ public class EntityNBTPacket extends AbstractPacket {
 	}
 
 	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
-		ByteBufOutputStream bos = new ByteBufOutputStream(buffer);
-		bos.writeInt(entityID);
-		NBTHelper.nbtWrite(tag, bos);
-	}
-
-	@Override
 	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
 		ByteBufInputStream bis = new ByteBufInputStream(buffer);
 		entityID = bis.readInt();
 		DataInputStream dis = new DataInputStream(bis);
 		tag = NBTHelper.nbtRead(dis);
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
+		ByteBufOutputStream bos = new ByteBufOutputStream(buffer);
+		bos.writeInt(entityID);
+		NBTHelper.nbtWrite(tag, bos);
 	}
 
 	@Override

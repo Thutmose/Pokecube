@@ -17,13 +17,13 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.events.EggEvent;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.api.maths.Vector3;
@@ -35,10 +35,210 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
     private ItemStack[] inventory = new ItemStack[27];
 
-    int pokedexNb = 0;
+    int                 pokedexNb = 0;
 
-    HashSet<IPokemob> residents = new HashSet<IPokemob>();
-    int               time      = 0;
+    HashSet<IPokemob>   residents = new HashSet<IPokemob>();
+    int                 time      = 0;
+
+    public boolean addForbiddenSpawningCoord()
+    {
+        return SpawnHandler.addForbiddenSpawningCoord(getPos(), worldObj.provider.getDimensionId(), 10);
+    }
+
+    public void addResident(IPokemob resident)
+    {
+        residents.add(resident);
+    }
+
+    @Override
+    public void clear()
+    {
+
+    }
+
+    @Override
+    public void closeInventory(EntityPlayer player)
+    {
+    }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count)
+    {
+        if (this.inventory[index] != null)
+        {
+            ItemStack itemStack;
+
+            itemStack = inventory[index].splitStack(count);
+
+            if (inventory[index].stackSize <= 0) inventory[index] = null;
+
+            return itemStack;
+        }
+        return null;
+    }
+
+    @Override
+    public IChatComponent getDisplayName()
+    {
+        return null;
+    }
+
+    @Override
+    public int getField(int id)
+    {
+        return 0;
+    }
+
+    @Override
+    public int getFieldCount()
+    {
+        return 0;
+    }
+
+    @Override
+    public int getInventoryStackLimit()
+    {
+        return 64;
+    }
+
+    @Override
+    public String getName()
+    {
+        return null;
+    }
+
+    @Override
+    public int getSizeInventory()
+    {
+        return 27;
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int index)
+    {
+        return inventory[index];
+    }
+
+    @Override
+    public boolean hasCustomName()
+    {
+        return false;
+    }
+
+    public void init()
+    {
+        Vector3 here = Vector3.getNewVector().set(this);
+
+        TerrainSegment t = TerrainManager.getInstance().getTerrian(worldObj, here);
+        t.refresh(worldObj);
+        t.checkIndustrial(worldObj);
+        int b = t.getBiome(here);
+        // System.out.println("init");
+        if (SpawnHandler.spawns.containsKey(b))
+        {
+            ArrayList<PokedexEntry> entries = SpawnHandler.spawns.get(b);
+            if (entries.isEmpty())
+            {
+                SpawnHandler.spawns.remove(b);
+            }
+            Collections.shuffle(entries);
+            int index = 0;
+            while (pokedexNb == 0 && index < 2 * entries.size())
+            {
+                PokedexEntry dbe = entries.get((index++) % entries.size());
+                float weight = dbe.getSpawnData().getWeight(b);
+                if (Math.random() > weight) continue;
+                if (!(!SpawnHandler.canSpawn(t, dbe.getSpawnData(),
+                        here.set(this).offsetBy(EnumFacing.UP).offsetBy(EnumFacing.UP), worldObj)))
+                    continue;
+                if (!SpawnHandler.isPointValidForSpawn(worldObj, here, dbe)) continue;
+
+                pokedexNb = dbe.getPokedexNb();
+            }
+        }
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        pokedexNb = 0;
+        removeForbiddenSpawningCoord();
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int index, ItemStack stack)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer player)
+    {
+        return false;
+    }
+
+    @Override
+    public void openInventory(EntityPlayer player)
+    {
+    }
+
+    /** Reads a tile entity from NBT. */
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    {
+        super.readFromNBT(nbt);
+        pokedexNb = nbt.getInteger("pokedexNb");
+        time = nbt.getInteger("time");
+        NBTBase temp = nbt.getTag("Inventory");
+        if (temp instanceof NBTTagList)
+        {
+            NBTTagList tagList = (NBTTagList) temp;
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                byte slot = tag.getByte("Slot");
+
+                if (slot >= 0 && slot < inventory.length)
+                {
+                    inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+                }
+            }
+        }
+    }
+
+    public boolean removeForbiddenSpawningCoord()
+    {
+        return SpawnHandler.removeForbiddenSpawningCoord(getPos(), worldObj.provider.getDimensionId());
+    }
+
+    public void removeResident(IPokemob resident)
+    {
+        residents.remove(resident);
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int index)
+    {
+        if (inventory[index] != null)
+        {
+            ItemStack stack = inventory[index];
+            inventory[index] = null;
+            return stack;
+        }
+        return null;
+    }
+
+    @Override
+    public void setField(int id, int value)
+    {
+    }
+
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack)
+    {
+        inventory[index] = stack;
+    }
 
     @Override
     public void update()
@@ -51,7 +251,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         if (worldObj.isRemote || (worldObj.getDifficulty() == EnumDifficulty.PEACEFUL && power == 0)) return;
 
         if (worldObj.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(),
-                Mod_Pokecube_Helper.mobDespawnRadius) == null)
+                PokecubeMod.core.getConfig().maxSpawnRadius) == null)
             return;
 
         if (pokedexNb == 0 && time >= 200)
@@ -93,71 +293,12 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         }
     }
 
-    public void addResident(IPokemob resident)
-    {
-        residents.add(resident);
-    }
-
-    public void removeResident(IPokemob resident)
-    {
-        residents.remove(resident);
-    }
-
-    public void init()
-    {
-        Vector3 here = Vector3.getNewVector().set(this);
-
-        TerrainSegment t = TerrainManager.getInstance().getTerrian(worldObj, here);
-        t.refresh(worldObj);
-        t.checkIndustrial(worldObj);
-        int b = t.getBiome(here);
-        // System.out.println("init");
-        if (SpawnHandler.spawns.containsKey(b))
-        {
-            ArrayList<PokedexEntry> entries = SpawnHandler.spawns.get(b);
-            if (entries.isEmpty())
-            {
-                SpawnHandler.spawns.remove(b);
-            }
-            Collections.shuffle(entries);
-            int index = 0;
-            while (pokedexNb == 0 && index < 2 * entries.size())
-            {
-                PokedexEntry dbe = entries.get((index++) % entries.size());
-                float weight = dbe.getSpawnData().getWeight(b);
-                if (Math.random() > weight) continue;
-                if (!(!SpawnHandler.canSpawn(t, dbe.getSpawnData(),
-                        here.set(this).offsetBy(EnumFacing.UP).offsetBy(EnumFacing.UP), worldObj)))
-                    continue;
-                if (!SpawnHandler.isPointValidForSpawn(worldObj, here, dbe)) continue;
-
-                pokedexNb = dbe.getPokedexNb();
-            }
-        }
-    }
-
-    /** Reads a tile entity from NBT. */
     @Override
-    public void readFromNBT(NBTTagCompound nbt)
+    public void validate()
     {
-        super.readFromNBT(nbt);
-        pokedexNb = nbt.getInteger("pokedexNb");
-        time = nbt.getInteger("time");
-        NBTBase temp = nbt.getTag("Inventory");
-        if (temp instanceof NBTTagList)
-        {
-            NBTTagList tagList = (NBTTagList) temp;
-            for (int i = 0; i < tagList.tagCount(); i++)
-            {
-                NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                byte slot = tag.getByte("Slot");
+        super.validate();
 
-                if (slot >= 0 && slot < inventory.length)
-                {
-                    inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-                }
-            }
-        }
+        addForbiddenSpawningCoord();
     }
 
     /** Writes a tile entity to NBT. */
@@ -182,146 +323,5 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
             }
         }
         nbt.setTag("Inventory", itemList);
-    }
-
-    @Override
-    public void validate()
-    {
-        super.validate();
-
-        addForbiddenSpawningCoord();
-    }
-
-    @Override
-    public void invalidate()
-    {
-        super.invalidate();
-        pokedexNb = 0;
-        removeForbiddenSpawningCoord();
-    }
-
-    public boolean addForbiddenSpawningCoord()
-    {
-        return SpawnHandler.addForbiddenSpawningCoord(getPos(), worldObj.provider.getDimensionId(), 10);
-    }
-
-    public boolean removeForbiddenSpawningCoord()
-    {
-        return SpawnHandler.removeForbiddenSpawningCoord(getPos(), worldObj.provider.getDimensionId());
-    }
-
-    @Override
-    public String getName()
-    {
-        return null;
-    }
-
-    @Override
-    public boolean hasCustomName()
-    {
-        return false;
-    }
-
-    @Override
-    public IChatComponent getDisplayName()
-    {
-        return null;
-    }
-
-    @Override
-    public int getSizeInventory()
-    {
-        return 27;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index)
-    {
-        return inventory[index];
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    {
-        if (this.inventory[index] != null)
-        {
-            ItemStack itemStack;
-
-            itemStack = inventory[index].splitStack(count);
-
-            if (inventory[index].stackSize <= 0) inventory[index] = null;
-
-            return itemStack;
-        }
-        return null;
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index)
-    {
-        if (inventory[index] != null)
-        {
-            ItemStack stack = inventory[index];
-            inventory[index] = null;
-            return stack;
-        }
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
-    {
-        inventory[index] = stack;
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
-    {
-        return false;
-    }
-
-    @Override
-    public void openInventory(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
-    {
-        return true;
-    }
-
-    @Override
-    public int getField(int id)
-    {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value)
-    {
-    }
-
-    @Override
-    public int getFieldCount()
-    {
-        return 0;
-    }
-
-    @Override
-    public void clear()
-    {
-
     }
 }

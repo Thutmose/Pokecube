@@ -22,16 +22,6 @@ public class ArcSine extends PostfixMathCommand
 	
 	}
 	
-	@Override
-	public void run(Stack inStack)
-		throws ParseException 
-	{
-		checkStack(inStack);// check the stack
-		Object param = inStack.pop();
-		inStack.push(asin(param));//push the result on the inStack
-		return;
-	}
-
 	public Object asin(Object param)
 		throws ParseException
 	{
@@ -45,6 +35,16 @@ public class ArcSine extends PostfixMathCommand
 		}
 
 		throw new ParseException("Invalid parameter type");
+	}
+
+	@Override
+	public void run(Stack inStack)
+		throws ParseException 
+	{
+		checkStack(inStack);// check the stack
+		Object param = inStack.pop();
+		inStack.push(asin(param));//push the result on the inStack
+		return;
 	}
 	
 }

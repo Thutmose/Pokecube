@@ -42,6 +42,34 @@ public class ASTFunNode extends SimpleNode {
 	}
 	
 	/**
+	 * Returns the name of the node (operator symbol or function name).
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Returns the id number of the operator if the node is an operator.
+	 */
+	public Operator getOperator() {
+		return opID;
+	}
+	
+	/**
+	 * Returns the math command class associated with this node.
+	 */
+	public PostfixMathCommandI getPFMC() {
+		return pfmc;
+	}
+
+	/**
+	 * Returns true if node is an operator.
+	 */
+	public boolean isOperator() {
+		return (opID != null);
+	}
+
+	/**
 	 * Accept the visitor.
 	 */
 	@Override
@@ -49,7 +77,7 @@ public class ASTFunNode extends SimpleNode {
 	{
 		return visitor.visit(this, data);
 	}
-
+	
 	/**
 	 * Sets the function for a node. A name and function class must
 	 * be specified.
@@ -75,33 +103,5 @@ public class ASTFunNode extends SimpleNode {
 	@Override
 	public String toString() {
 		return "Function \"" + name + "\"";
-	}
-
-	/**
-	 * Returns the math command class associated with this node.
-	 */
-	public PostfixMathCommandI getPFMC() {
-		return pfmc;
-	}
-	
-	/**
-	 * Returns the name of the node (operator symbol or function name).
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Returns the id number of the operator if the node is an operator.
-	 */
-	public Operator getOperator() {
-		return opID;
-	}
-
-	/**
-	 * Returns true if node is an operator.
-	 */
-	public boolean isOperator() {
-		return (opID != null);
 	}
 }

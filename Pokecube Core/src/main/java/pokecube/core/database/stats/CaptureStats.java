@@ -9,6 +9,24 @@ import pokecube.core.utils.PokeType;
 
 public class CaptureStats {
 	
+	public static int getNumberUniqueCaught()
+	{
+		int count = 0;
+
+		for(HashMap<PokedexEntry, Integer> map: playerCaptures.values())
+		{
+			count += map.size();
+		}
+		return count;
+	}
+	public static int getNumberUniqueCaughtBy(String playerName)
+	{
+		int count = 0;
+		HashMap<PokedexEntry, Integer> map = playerCaptures.get(playerName);
+		if(map==null) return 0;
+		count += map.size();
+		return count;
+	}
 	public static int getTotalNumberCaught()
 	{
 		int count = 0;
@@ -17,18 +35,6 @@ public class CaptureStats {
 			for(Integer i: map.values())
 			{
 				count += i;
-			}
-		}
-		return count;
-	}
-	public static int getTotalOfPokemobCaught(PokedexEntry type)
-	{
-		int count = 0;
-		for(HashMap<PokedexEntry, Integer> map: playerCaptures.values())
-		{
-			if(map.containsKey(type))
-			{
-				count += map.get(type);
 			}
 		}
 		return count;
@@ -55,22 +61,16 @@ public class CaptureStats {
 		}
 		return count;
 	}
-	public static int getNumberUniqueCaught()
+	public static int getTotalOfPokemobCaught(PokedexEntry type)
 	{
 		int count = 0;
-
 		for(HashMap<PokedexEntry, Integer> map: playerCaptures.values())
 		{
-			count += map.size();
+			if(map.containsKey(type))
+			{
+				count += map.get(type);
+			}
 		}
-		return count;
-	}
-	public static int getNumberUniqueCaughtBy(String playerName)
-	{
-		int count = 0;
-		HashMap<PokedexEntry, Integer> map = playerCaptures.get(playerName);
-		if(map==null) return 0;
-		count += map.size();
 		return count;
 	}
 	public static int getTotalOfTypeCaught(PokeType type)

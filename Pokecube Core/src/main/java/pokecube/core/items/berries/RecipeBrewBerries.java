@@ -10,12 +10,10 @@ public class RecipeBrewBerries implements IBrewingRecipe
 {
 
 	@Override
-	public boolean isInput(ItemStack input)
+	public ItemStack getOutput(ItemStack input, ItemStack ingredient)
 	{
-		NBTTagCompound tag = input.getTagCompound();
-		if(tag.hasKey("pokebloc"))
-			return true;
-		return input.getItem() == Items.glass_bottle;
+		//TODO pokebloc things here.
+		return PokecubeItems.getStack("revive");
 	}
 
 	@Override
@@ -25,10 +23,12 @@ public class RecipeBrewBerries implements IBrewingRecipe
 	}
 
 	@Override
-	public ItemStack getOutput(ItemStack input, ItemStack ingredient)
+	public boolean isInput(ItemStack input)
 	{
-		//TODO pokebloc things here.
-		return PokecubeItems.getStack("revive");
+		NBTTagCompound tag = input.getTagCompound();
+		if(tag.hasKey("pokebloc"))
+			return true;
+		return input.getItem() == Items.glass_bottle;
 	}
 
 }

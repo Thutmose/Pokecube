@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import pokecube.adventures.items.bags.RecipeBag;
 import pokecube.core.PokecubeItems;
 
 public class RecipeHandler
@@ -13,8 +14,33 @@ public class RecipeHandler
 
     public static boolean tmRecipe = true;
 
+    private static void addLegendarySpawnerRecipes()
+    {
+        GameRegistry.addRecipe(getStack("registeelspawner"),
+                new Object[] { "RSR", "SRS", "RSR", 'S', Blocks.iron_block, 'R', Blocks.redstone_block });
+
+        GameRegistry.addRecipe(getStack("regicespawner"),
+                new Object[] { "III", "IGI", "III", 'I', Blocks.packed_ice, 'G', Blocks.gold_block });
+
+        GameRegistry.addRecipe(getStack("regirockspawner"),
+                new Object[] { "OSO", "OOO", "OSO", 'O', Blocks.obsidian, 'S', Blocks.stone });
+
+        GameRegistry.addRecipe(getStack("celebispawner"), new Object[] { "MMM", "SRS", "SIS", 'R', Items.redstone, 'S',
+                Blocks.log, 'M', Blocks.glass, 'I', Items.iron_ingot });
+
+        GameRegistry.addRecipe(getStack("hoohspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Items.feather, 'G',
+                Blocks.gold_block, 'I', Items.gold_ingot });
+
+        GameRegistry.addRecipe(getStack("kyogrespawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.ice, 'G',
+                Blocks.lapis_block, 'I', PokecubeItems.waterstone });
+
+        GameRegistry.addRecipe(getStack("groudonspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.coal_block,
+                'G', Blocks.redstone_block, 'I', PokecubeItems.firestone });
+    }
+
     public static void register()
     {
+        GameRegistry.addRecipe(new RecipeBag());
         if (tmRecipe) GameRegistry.addRecipe(getStack("tm"), new Object[] { "SS ", "SOS", "SRS", 'S', Items.iron_ingot,
                 'O', Blocks.glass_pane, 'R', Items.redstone });
 
@@ -44,7 +70,8 @@ public class RecipeHandler
         // Mega ring
         GameRegistry.addRecipe(getStack("megaring"),
                 new Object[] { " S ", "I I", " I ", 'S', getStack("megastone"), 'I', Items.iron_ingot });
-        GameRegistry.addRecipe(getStack("pokecubebag"),
+        ItemStack output = getStack("pokecubebag");
+        GameRegistry.addRecipe(output,
                 new Object[] { "CCC", "COC", "CCC", 'C', Blocks.wool, 'O', getStack("pctop").getItem() });
 
         // Mega Stone
@@ -58,49 +85,6 @@ public class RecipeHandler
         GameRegistry.addShapelessRecipe(new ItemStack(Items.emerald), shards1, shards1, shards1, shards1, shards1,
                 shards1, shards1, shards1, shards1);
         addLegendarySpawnerRecipes();
-        // PRIEST
-        // VillagerRegistry.instance().registerVillageTradeHandler(2, new
-        // VillagerRegistry.IVillageTradeHandler() {
-        // @Override
-        // public void manipulateTradesForVillager(EntityVillager villager,
-        // MerchantRecipeList recipeList, Random random) {
-        // int rand = random.nextInt(1);
-        // switch (rand) {
-        // case 0:
-        // recipeList.add(new MerchantRecipe(
-        // new ItemStack(Items.emerald, 20),
-        // getStack("exp_share")));
-        // break;
-        // default:
-        // break;
-        // }
-        // }
-        // });
 
-    }
-
-    private static void addLegendarySpawnerRecipes()
-    {
-
-        GameRegistry.addRecipe(getStack("registeelspawner"),
-                new Object[] { "RSR", "SRS", "RSR", 'S', Blocks.iron_block, 'R', Blocks.redstone_block });
-
-        GameRegistry.addRecipe(getStack("regicespawner"),
-                new Object[] { "III", "IGI", "III", 'I', Blocks.packed_ice, 'G', Blocks.gold_block });
-
-        GameRegistry.addRecipe(getStack("regirockspawner"),
-                new Object[] { "OSO", "OOO", "OSO", 'O', Blocks.obsidian, 'S', Blocks.stone });
-
-        GameRegistry.addRecipe(getStack("celebispawner"), new Object[] { "MMM", "SRS", "SIS", 'R', Items.redstone, 'S',
-                Blocks.log, 'M', Blocks.glass, 'I', Items.iron_ingot });
-
-        GameRegistry.addRecipe(getStack("hoohspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Items.feather, 'G',
-                Blocks.gold_block, 'I', Items.gold_ingot });
-
-        GameRegistry.addRecipe(getStack("kyogrespawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.ice, 'G',
-                Blocks.lapis_block, 'I', PokecubeItems.waterstone });
-
-        GameRegistry.addRecipe(getStack("groudonspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.coal_block,
-                'G', Blocks.redstone_block, 'I', PokecubeItems.firestone });
     }
 }

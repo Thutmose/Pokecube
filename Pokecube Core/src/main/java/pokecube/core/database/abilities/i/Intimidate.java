@@ -11,13 +11,6 @@ public class Intimidate extends Ability
 {
 
     @Override
-    public void onUpdate(IPokemob mob)
-    {
-        // TODO interface with spawn event to make lower levels not spawn.
-
-    }
-    
-    @Override
     public void onAgress(IPokemob mob, EntityLivingBase target)
     {
         if(target instanceof IPokemob)
@@ -25,6 +18,13 @@ public class Intimidate extends Ability
             IPokemob targ = (IPokemob) target;
             MovesUtils.handleStats2(targ, (Entity) mob, IMoveConstants.ATTACK, IMoveConstants.FALL);
         }
+    }
+    
+    @Override
+    public void onUpdate(IPokemob mob)
+    {
+        // TODO interface with spawn event to make lower levels not spawn.
+
     }
 
 }

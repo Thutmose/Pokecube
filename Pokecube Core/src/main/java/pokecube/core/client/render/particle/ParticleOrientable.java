@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.render.PTezzelator;
-import pokecube.core.utils.Vector4;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 
 public class ParticleOrientable extends ParticleBase
 {
@@ -21,17 +21,6 @@ public class ParticleOrientable extends ParticleBase
     {
         super(x, y);
         billboard = false;
-    }
-
-    public ParticleOrientable setOrientation(Vector4 orientation)
-    {
-        this.orientation = orientation;
-        return this;
-    }
-
-    public void setVelocity(Vector3 v)
-    {
-        velocity = v;
     }
 
     @Override
@@ -95,6 +84,18 @@ public class ParticleOrientable extends ParticleBase
         tez.vertex(0.0, 0.0 - size, 0.0).tex(u2, v2).color(red, green, blue, alpha).endVertex();
         tez.end();
         GL11.glPopMatrix();
+    }
+
+    public ParticleOrientable setOrientation(Vector4 orientation)
+    {
+        this.orientation = orientation;
+        return this;
+    }
+
+    @Override
+    public void setVelocity(Vector3 v)
+    {
+        velocity = v;
     }
 
 }

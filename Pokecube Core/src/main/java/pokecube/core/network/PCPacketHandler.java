@@ -14,7 +14,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
@@ -22,6 +21,7 @@ import pokecube.core.blocks.pc.SlotPC;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
+import pokecube.core.handlers.Config;
 import pokecube.core.utils.PCSaveHandler;
 import thut.api.maths.Vector3;
 
@@ -30,59 +30,8 @@ import thut.api.maths.Vector3;
  * @author Thutmose */
 public class PCPacketHandler
 {
-    public static byte TYPESETPUBLIC  = 0;
-    public static byte TYPEADDLAND    = 1;
-    public static byte TYPEREMOVELAND = 2;
-
     public static class MessageClient implements IMessage
     {
-        public static final byte ALLPC      = 1;
-        public static final byte PERSONALPC = 2;
-        public static final byte TRADE      = 3;
-
-        PacketBuffer buffer;
-
-        public MessageClient()
-        {
-        };
-
-        public MessageClient(byte[] data)
-        {
-            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
-        }
-
-        public MessageClient(PacketBuffer buffer)
-        {
-            this.buffer = buffer;
-        }
-
-        public MessageClient(byte channel, NBTTagCompound nbt)
-        {
-            this.buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeByte(channel);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
-        }
-
-        @Override
-        public void fromBytes(ByteBuf buf)
-        {
-            if (buffer == null)
-            {
-                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
-            }
-            buffer.writeBytes(buf);
-        }
-
-        @Override
-        public void toBytes(ByteBuf buf)
-        {
-            if (buffer == null)
-            {
-                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
-            }
-            buf.writeBytes(buffer);
-        }
-
         public static class MessageHandlerClient implements IMessageHandler<MessageClient, MessageServer>
         {
             public void handleClientSide(EntityPlayer player, PacketBuffer buffer)
@@ -137,35 +86,32 @@ public class PCPacketHandler
             }
 
         }
+        public static final byte ALLPC      = 1;
+        public static final byte PERSONALPC = 2;
 
-    }
+        public static final byte TRADE      = 3;
 
-    public static class MessageServer implements IMessage
-    {
-        public static final byte PC        = 1;
-        public static final byte PCRELEASE = 2;
-        public static final byte TRADE     = 3;
-        PacketBuffer             buffer;
+        PacketBuffer buffer;;
 
-        public MessageServer()
+        public MessageClient()
         {
-        };
-
-        public MessageServer(byte[] data)
-        {
-            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
         }
 
-        public MessageServer(PacketBuffer buffer)
-        {
-            this.buffer = buffer;
-        }
-
-        public MessageServer(byte channel, NBTTagCompound nbt)
+        public MessageClient(byte channel, NBTTagCompound nbt)
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
             buffer.writeNBTTagCompoundToBuffer(nbt);
+        }
+
+        public MessageClient(byte[] data)
+        {
+            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
+        }
+
+        public MessageClient(PacketBuffer buffer)
+        {
+            this.buffer = buffer;
         }
 
         @Override
@@ -173,7 +119,7 @@ public class PCPacketHandler
         {
             if (buffer == null)
             {
-                buffer = new PacketBuffer(Unpooled.buffer());
+                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
             }
             buffer.writeBytes(buf);
         }
@@ -188,6 +134,9 @@ public class PCPacketHandler
             buf.writeBytes(buffer);
         }
 
+    }
+    public static class MessageServer implements IMessage
+    {
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
         {
             public void handleServerSide(EntityPlayer player, PacketBuffer buffer)
@@ -242,7 +191,143 @@ public class PCPacketHandler
             }
 
         }
+        public static final byte PC        = 1;
+        public static final byte PCRELEASE = 2;
+        public static final byte TRADE     = 3;
 
+        PacketBuffer             buffer;;
+
+        public MessageServer()
+        {
+        }
+
+        public MessageServer(byte channel, NBTTagCompound nbt)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeByte(channel);
+            buffer.writeNBTTagCompoundToBuffer(nbt);
+        }
+
+        public MessageServer(byte[] data)
+        {
+            this.buffer = new PacketBuffer(Unpooled.copiedBuffer(data));
+        }
+
+        public MessageServer(PacketBuffer buffer)
+        {
+            this.buffer = buffer;
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer());
+            }
+            buffer.writeBytes(buf);
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer(buf.capacity()));
+            }
+            buf.writeBytes(buffer);
+        }
+
+    }
+    public static byte TYPESETPUBLIC  = 0;
+
+    public static byte TYPEADDLAND    = 1;
+
+    public static byte TYPEREMOVELAND = 2;
+
+    public static void handlePCPacket(byte[] packet, EntityPlayer player)
+    {
+        byte message = 0;
+        message = packet[0];
+        // System.out.println(message);
+        EntityPlayerMP sender = (EntityPlayerMP) player;
+        if (message == 9)
+        {
+            if (sender.openContainer instanceof ContainerPC)
+            {
+                ((ContainerPC) (sender.openContainer)).pcTile.setBoundOwner(player.getUniqueID().toString());
+                player.closeScreen();
+            }
+            return;
+        }
+        if (message == 5)
+        {
+            if (sender.openContainer instanceof ContainerPC)
+            {
+                ((ContainerPC) (sender.openContainer)).pcTile.toggleBound();
+                player.closeScreen();
+            }
+            return;
+        }
+        if (message == 10)
+        {
+            player.openGui(PokecubeCore.instance, Config.GUIPC_ID, PokecubeCore.getWorld(), 0, 0, 0);
+            return;
+        }
+        if (message == 11)
+        {
+            int num = packet[1];
+            byte[] string = new byte[num];
+            for (int i = 0; i < num; i++)
+            {
+                string[i] = packet[i + 2];
+            }
+            if (sender.openContainer instanceof ContainerPC)
+            {
+                ((ContainerPC) (sender.openContainer)).changeName(new String(string));
+            }
+            return;
+        }
+        if (message == 3)
+        {
+            if (sender.openContainer instanceof ContainerPC)
+            {
+                ((ContainerPC) (sender.openContainer)).inv.autoToPC = !((ContainerPC) (sender.openContainer)).inv.autoToPC;
+            }
+            return;
+        }
+        if (sender.openContainer instanceof ContainerPC)
+        {
+            if (message < 3)
+            {
+                byte dir = (byte) (message == 1 ? 1 : message == 2 ? -1 : 0);
+                ((ContainerPC) (sender.openContainer)).updateInventoryPages(dir, sender.inventory);
+            }
+            if (message == 5)
+            {
+                ((ContainerPC) (sender.openContainer)).pcTile.toggleBound();
+            }
+            if (message == 12)
+            {
+                ContainerPC cont = ((ContainerPC) (sender.openContainer));
+                for (int i = 0; i < 54; i++)
+                {
+                    int index = i + 36;
+                    SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
+                    slot.release = true;
+                }
+            }
+            if (message == 13)
+            {
+                ContainerPC cont = ((ContainerPC) (sender.openContainer));
+                for (int i = 0; i < 54; i++)
+                {
+                    int index = i + 36;
+                    SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
+                    slot.release = false;
+                }
+            }
+        }
     }
 
     public static void handleTradePacket(byte[] packet, EntityPlayer player)
@@ -288,7 +373,7 @@ public class PCPacketHandler
 
         if (!(player instanceof EntityPlayerMP))
         {
-            EntityPlayer sender = (EntityPlayer) player;
+            EntityPlayer sender = player;
             if (Integer.valueOf(args[0]) == 3)
             {
                 ArrayList<String> moves = new ArrayList<String>();
@@ -353,89 +438,16 @@ public class PCPacketHandler
         }
     }
 
-    public static void handlePCPacket(byte[] packet, EntityPlayer player)
+    public static MessageClient makeClientPacket(byte channel, byte[] data)
     {
-        byte message = 0;
-        message = packet[0];
-        // System.out.println(message);
-        EntityPlayerMP sender = (EntityPlayerMP) player;
-        if (message == 9)
+        byte[] packetData = new byte[data.length + 1];
+        packetData[0] = channel;
+
+        for (int i = 1; i < packetData.length; i++)
         {
-            if (sender.openContainer instanceof ContainerPC)
-            {
-                ((ContainerPC) (sender.openContainer)).pcTile.setBoundOwner(player.getUniqueID().toString());
-                player.closeScreen();
-            }
-            return;
+            packetData[i] = data[i - 1];
         }
-        if (message == 5)
-        {
-            if (sender.openContainer instanceof ContainerPC)
-            {
-                ((ContainerPC) (sender.openContainer)).pcTile.toggleBound();
-                player.closeScreen();
-            }
-            return;
-        }
-        if (message == 10)
-        {
-            player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUIPC_ID, PokecubeCore.getWorld(), 0, 0, 0);
-            return;
-        }
-        if (message == 11)
-        {
-            int num = packet[1];
-            byte[] string = new byte[num];
-            for (int i = 0; i < num; i++)
-            {
-                string[i] = packet[i + 2];
-            }
-            if (sender.openContainer instanceof ContainerPC)
-            {
-                ((ContainerPC) (sender.openContainer)).changeName(new String(string));
-            }
-            return;
-        }
-        if (message == 3)
-        {
-            if (sender.openContainer instanceof ContainerPC)
-            {
-                ((ContainerPC) (sender.openContainer)).inv.autoToPC = !((ContainerPC) (sender.openContainer)).inv.autoToPC;
-            }
-            return;
-        }
-        if (sender.openContainer instanceof ContainerPC)
-        {
-            if (message < 3)
-            {
-                byte dir = (byte) (message == 1 ? 1 : message == 2 ? -1 : 0);
-                ((ContainerPC) (sender.openContainer)).updateInventoryPages(dir, sender.inventory);
-            }
-            if (message == 5)
-            {
-                ((ContainerPC) (sender.openContainer)).pcTile.toggleBound();
-            }
-            if (message == 12)
-            {
-                ContainerPC cont = ((ContainerPC) (sender.openContainer));
-                for (int i = 0; i < 54; i++)
-                {
-                    int index = i + 36;
-                    SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
-                    slot.release = true;
-                }
-            }
-            if (message == 13)
-            {
-                ContainerPC cont = ((ContainerPC) (sender.openContainer));
-                for (int i = 0; i < 54; i++)
-                {
-                    int index = i + 36;
-                    SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
-                    slot.release = false;
-                }
-            }
-        }
+        return new MessageClient(packetData);
     }
 
     public static MessageServer makeServerPacket(byte channel, byte[] data)
@@ -448,18 +460,6 @@ public class PCPacketHandler
             packetData[i] = data[i - 1];
         }
         return new MessageServer(packetData);
-    }
-
-    public static MessageClient makeClientPacket(byte channel, byte[] data)
-    {
-        byte[] packetData = new byte[data.length + 1];
-        packetData[0] = channel;
-
-        for (int i = 1; i < packetData.length; i++)
-        {
-            packetData[i] = data[i - 1];
-        }
-        return new MessageClient(packetData);
     }
 
 }

@@ -37,88 +37,139 @@ public class WikiWriter {
     static String pokemobDir = "/Thutmose_I/pokecube-revival/wiki/pokemobs/";
     static String gifDir = "/Thutmose_I/pokecube-revival/wiki/gifs/";
     
-    static String formatLinkName(String link, String name)
-    {
-    	return "[["+link+"|"+name+"]]";
-    }
+    private static boolean gifCaptureState;
 	
+	private static int currentCaptureFrame;
+    
+    private static int currentPokemob = 1;
+    
+    private static int numberTaken = 1;
+//	private static final int NUM_CAPTURE_FRAMES = 30;
+//	private static final int NUM_POKEMOBS = 424;
+//	private static final int WINDOW_XPOS = 1;
+//	private static final int WINDOW_YPOS = 1;
+//	private static final int WINDOW_WIDTH = 200;
+//	private static final int WINDOW_HEIGHT = 200;
+    
+	static public void beginGifCapture()
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+		{
+			gifCaptureState = true;
+			openPokedex();
+			//setPokedexBeginning();
+			
+			System.out.println("Beginning gif capture...");
+		}
+	}	
+	
+	static public void doCapturePokemobGif()
+	{
+		if(gifCaptureState && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+		{
+			doCapturePokemobGifClient();
+		}
+	}
+	
+	static private void doCapturePokemobGifClient()
+	{
+		int h = Minecraft.getMinecraft().displayHeight;
+		int w = Minecraft.getMinecraft().displayWidth;
+		int x = w/2;//WINDOW_XPOS;
+		int y = h/2;//WINDOW_YPOS;
+		
+		int xb,yb;
+		
+		xb  = GuiGifCapture.x;
+		yb  = GuiGifCapture.y;
+		int width = 100 * w / xb;
+		int height = 60 *  h / yb;
+		
+		x += -3*w/32;//- w/4 - w/64 + w/128;
+		y += -3*w/32;//- h/4 - h/8 + h/32 + h/64;
+		if(GuiGifCapture.pokedexEntry!=null)
+			currentPokemob = GuiGifCapture.pokedexEntry.getPokedexNb();
+		else
+			return;
+		String pokename = Compat.CUSTOMSPAWNSFILE.replace("spawns.csv", new String("" + currentPokemob + "_"));
+		
+		GL11.glReadBuffer(GL11.GL_FRONT);
+		ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
+		GL11.glReadPixels(x, y, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+		
+		String currentFrameSuffix = new String();
+		
+		if(currentCaptureFrame < 10) currentFrameSuffix = "0";
+		
+		currentFrameSuffix += currentCaptureFrame + ".png";
+		
+		File file = new File(pokename + currentFrameSuffix);
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		
+		for(int i = 0; i < width; i++) 
+		{
+		    for(int j = 0; j < height; j++)
+		    {
+		        int k = (i + (width * j)) * 4;
+		        int r = buffer.get(k) & 0xFF;
+		        int g = buffer.get(k + 1) & 0xFF;
+		        int b = buffer.get(k + 2) & 0xFF;
+		        image.setRGB(i, height - (j + 1), (0xFF << 24) | (r << 16) | (g << 8) | b);
+		    }
+		}
+		   
+		try {
+		    ImageIO.write(image, "png", file);
+		    System.out.println("Attempting to write " + pokename + currentFrameSuffix);
+		} catch (IOException e) { e.printStackTrace(); }
+		
+		currentCaptureFrame++;
+		
+		if(currentCaptureFrame > 28)// NUM_CAPTURE_FRAMES)
+		{
+			currentCaptureFrame = 0;
+			numberTaken++;
+		//	cyclePokedex();
+			if(numberTaken > 0)//;//NUM_POKEMOBS)
+			{
+				currentPokemob = 1;
+				numberTaken = 1;
+				gifCaptureState = false;
+				
+				System.out.println("Gif capture complete!");
+			}
+		}
+	}
 	static String formatLink(String dir, String name)
 	{
 		return "[["+dir+name+"|"+name+"]]";
 	}
-    
-    static void writeWiki()
+	static String formatLinkName(String link, String name)
     {
-		int n = 0;
-		for(n = 1; n<750; n++)
-		{
-			PokedexEntry entry = Database.getEntry(n);
-			if(entry!=null)
-				outputPokemonWikiInfo2(entry);
-		}
-		writeWikiPokemobList();
-		writeWikiHome();
+    	return "[["+link+"|"+name+"]]";
     }
-    
-    static void writeWikiHome()
-    {
-		try {
-			String fileName = Compat.CUSTOMSPAWNSFILE.replace("spawns.csv", "Home.wiki");
-			fwriter = new FileWriter(fileName);
-	     	out = new PrintWriter(fwriter);
-	        
-	     	out.println("=Welcome to the Pokemob Wiki by Thutmose");
-
-	     	out.println("==List of Mobs");
-	     	out.println(formatLinkName("pokemobList", "List of Pokemobs"));
-
-	     	out.println("==List of Blocks");
-	     	
-	     	out.println("==List of Items");
-	     	
-			out.close();
-			fwriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-    
-	static void writeWikiPokemobList()
+	static public boolean isCapturingGif()
 	{
-		try {
-			String fileName = Compat.CUSTOMSPAWNSFILE.replace("spawns.csv", "pokemobList.wiki");
-			fwriter = new FileWriter(fileName);
-	     	out = new PrintWriter(fwriter);
-	        
-	     	out.println("=List of Pokemobs Currently in Pokecube");
-	     	int n = 0;
-	     	boolean ended = false;
-			int m = 0;
-			for(m = 1; m<750; m++)
-			{
-				PokedexEntry e = Database.getEntry(m);
-	     		if(e==null)
-	     			continue;
-	     		ended = false;
-	     		out.print("|="+formatLink(pokemobDir, e.getTranslatedName()));
-	     		if(n%4==3)
-	     		{
-	     			out.print("|\n");
-	     			ended = true;
-	     		}
-	     		n++;
-	     	}
-	     	if(!ended)
-	     	{
-     			out.print("|\n");
-	     	}
-	     	
-			out.close();
-			fwriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}	
+		return gifCaptureState;
+	}
+	
+	static private void openPokedex()
+	{
+		Minecraft.getMinecraft().thePlayer.openGui(
+				PokecubeCore.instance, 20, Minecraft.getMinecraft().thePlayer.worldObj, 0, 0, 0);
+	}
+	
+//	static private void setPokedexBeginning()
+//	{
+//		GuiGifCapture.pokedexEntry = Pokedex.getInstance().getEntry(1);
+//	}
+//	
+//	static private void cyclePokedex()
+//	{
+//		GuiGifCapture.pokedexEntry = Pokedex.getInstance().getNext(GuiGifCapture.pokedexEntry, 1);
+//		if(GuiGifCapture.pokedexEntry!=null)
+//			currentPokemob = GuiGifCapture.pokedexEntry.getPokedexNb();
+//	}
 	
 	static void outputPokemonWikiInfo2(PokedexEntry entry)
 	{
@@ -171,9 +222,9 @@ public class WikiWriter {
 	     	{
 	     		for(EvolutionData d: entry.evolutions)
 	     		{
-	     			if(Database.getEntry(d.evolutionNb)==null)
+	     			if(d.evolution==null)
 	     				continue;
-	     			String evoString = formatLink(pokemobDir, Database.getEntry(d.evolutionNb).getTranslatedName());
+	     			String evoString = formatLink(pokemobDir, d.evolution.getTranslatedName());
 	     			if(d.level>0)
 	     			{
 	     				evoString+= " at Level "+d.level;
@@ -340,132 +391,81 @@ public class WikiWriter {
 		}
 	}
 	
-	private static boolean gifCaptureState;
-	private static int currentCaptureFrame;
-	private static int currentPokemob = 1;
-	private static int numberTaken = 1;
-//	private static final int NUM_CAPTURE_FRAMES = 30;
-//	private static final int NUM_POKEMOBS = 424;
-//	private static final int WINDOW_XPOS = 1;
-//	private static final int WINDOW_YPOS = 1;
-//	private static final int WINDOW_WIDTH = 200;
-//	private static final int WINDOW_HEIGHT = 200;
-	
-	static private void openPokedex()
-	{
-		Minecraft.getMinecraft().thePlayer.openGui(
-				PokecubeCore.instance, 20, Minecraft.getMinecraft().thePlayer.worldObj, 0, 0, 0);
-	}
-	
-//	static private void setPokedexBeginning()
-//	{
-//		GuiGifCapture.pokedexEntry = Pokedex.getInstance().getEntry(1);
-//	}
-//	
-//	static private void cyclePokedex()
-//	{
-//		GuiGifCapture.pokedexEntry = Pokedex.getInstance().getNext(GuiGifCapture.pokedexEntry, 1);
-//		if(GuiGifCapture.pokedexEntry!=null)
-//			currentPokemob = GuiGifCapture.pokedexEntry.getPokedexNb();
-//	}
-	
-	static public void beginGifCapture()
-	{
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-		{
-			gifCaptureState = true;
-			openPokedex();
-			//setPokedexBeginning();
-			
-			System.out.println("Beginning gif capture...");
-		}
-	}
-	
-	static public boolean isCapturingGif()
-	{
-		return gifCaptureState;
-	}
-	
 	public static void setCaptureTarget(int number)
 	{
 		GuiGifCapture.pokedexEntry = Database.getEntry(number);
 	}
 	
-	static public void doCapturePokemobGif()
-	{
-		if(gifCaptureState && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+	static void writeWiki()
+    {
+		int n = 0;
+		for(n = 1; n<750; n++)
 		{
-			doCapturePokemobGifClient();
+			PokedexEntry entry = Database.getEntry(n);
+			if(entry!=null)
+				outputPokemonWikiInfo2(entry);
 		}
-	}
+		writeWikiPokemobList();
+		writeWikiHome();
+    }
 	
-	static private void doCapturePokemobGifClient()
-	{
-		int h = Minecraft.getMinecraft().displayHeight;
-		int w = Minecraft.getMinecraft().displayWidth;
-		int x = w/2;//WINDOW_XPOS;
-		int y = h/2;//WINDOW_YPOS;
-		
-		int xb,yb;
-		
-		xb  = GuiGifCapture.x;
-		yb  = GuiGifCapture.y;
-		int width = 100 * w / xb;
-		int height = 60 *  h / yb;
-		
-		x += -3*w/32;//- w/4 - w/64 + w/128;
-		y += -3*w/32;//- h/4 - h/8 + h/32 + h/64;
-		if(GuiGifCapture.pokedexEntry!=null)
-			currentPokemob = GuiGifCapture.pokedexEntry.getPokedexNb();
-		else
-			return;
-		String pokename = Compat.CUSTOMSPAWNSFILE.replace("spawns.csv", new String("" + currentPokemob + "_"));
-		
-		GL11.glReadBuffer(GL11.GL_FRONT);
-		ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
-		GL11.glReadPixels(x, y, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
-		
-		String currentFrameSuffix = new String();
-		
-		if(currentCaptureFrame < 10) currentFrameSuffix = "0";
-		
-		currentFrameSuffix += currentCaptureFrame + ".png";
-		
-		File file = new File(pokename + currentFrameSuffix);
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		
-		for(int i = 0; i < width; i++) 
-		{
-		    for(int j = 0; j < height; j++)
-		    {
-		        int k = (i + (width * j)) * 4;
-		        int r = buffer.get(k) & 0xFF;
-		        int g = buffer.get(k + 1) & 0xFF;
-		        int b = buffer.get(k + 2) & 0xFF;
-		        image.setRGB(i, height - (j + 1), (0xFF << 24) | (r << 16) | (g << 8) | b);
-		    }
-		}
-		   
+	static void writeWikiHome()
+    {
 		try {
-		    ImageIO.write(image, "png", file);
-		    System.out.println("Attempting to write " + pokename + currentFrameSuffix);
-		} catch (IOException e) { e.printStackTrace(); }
-		
-		currentCaptureFrame++;
-		
-		if(currentCaptureFrame > 28)// NUM_CAPTURE_FRAMES)
-		{
-			currentCaptureFrame = 0;
-			numberTaken++;
-		//	cyclePokedex();
-			if(numberTaken > 0)//;//NUM_POKEMOBS)
+			String fileName = Compat.CUSTOMSPAWNSFILE.replace("spawns.csv", "Home.wiki");
+			fwriter = new FileWriter(fileName);
+	     	out = new PrintWriter(fwriter);
+	        
+	     	out.println("=Welcome to the Pokemob Wiki by Thutmose");
+
+	     	out.println("==List of Mobs");
+	     	out.println(formatLinkName("pokemobList", "List of Pokemobs"));
+
+	     	out.println("==List of Blocks");
+	     	
+	     	out.println("==List of Items");
+	     	
+			out.close();
+			fwriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+	
+	static void writeWikiPokemobList()
+	{
+		try {
+			String fileName = Compat.CUSTOMSPAWNSFILE.replace("spawns.csv", "pokemobList.wiki");
+			fwriter = new FileWriter(fileName);
+	     	out = new PrintWriter(fwriter);
+	        
+	     	out.println("=List of Pokemobs Currently in Pokecube");
+	     	int n = 0;
+	     	boolean ended = false;
+			int m = 0;
+			for(m = 1; m<750; m++)
 			{
-				currentPokemob = 1;
-				numberTaken = 1;
-				gifCaptureState = false;
-				
-				System.out.println("Gif capture complete!");
-			}
+				PokedexEntry e = Database.getEntry(m);
+	     		if(e==null)
+	     			continue;
+	     		ended = false;
+	     		out.print("|="+formatLink(pokemobDir, e.getTranslatedName()));
+	     		if(n%4==3)
+	     		{
+	     			out.print("|\n");
+	     			ended = true;
+	     		}
+	     		n++;
+	     	}
+	     	if(!ended)
+	     	{
+     			out.print("|\n");
+	     	}
+	     	
+			out.close();
+			fwriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

@@ -34,48 +34,77 @@ public class JERCompat
     @JERPlugin
     public static IJERAPI JERAPI;
 
-    public void register()
+    public static final IMobRenderHook<EntityPokemob> POKEMOB = new IMobRenderHook<EntityPokemob>()
     {
-        registerMobs();
-        registerOres();
-        registerPlants();
-    }
-
-    private void registerPlants()
-    {
-        for (Integer i : BerryManager.berryCrops.keySet())
+        @Override
+        public IMobRenderHook.RenderInfo transform(IMobRenderHook.RenderInfo renderInfo, EntityPokemob pokemob)
         {
-            Block crop = BerryManager.berryCrops.get(i);
-            ItemStack berry = BerryManager.getBerryItem(BerryManager.berryNames.get(i));
-            JERAPI.getPlantRegistry().register(new ItemStack(crop), new PlantDrop(berry, 1, 1));
+            float mobScale = pokemob.getSize();
+            float size = Math.max(pokemob.getPokedexEntry().width * mobScale,
+                    Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
+            float zoom = (float) (1f / Math.sqrt(size));
+            renderInfo.scale = zoom;
+            GL11.glScalef(zoom, zoom, zoom);
+            return renderInfo;
         }
-    }
+    };
 
-    private void registerOres()
+    private DropItem[] getDrops(PokedexEntry entry)
     {
-        BiomeRestriction biomes = new BiomeRestriction(Type.WHITELIST, BiomeGenBase.desertHills, BiomeGenBase.desert,
-                BiomeGenBase.jungle, BiomeGenBase.jungleHills, BiomeGenBase.ocean);
-        Restriction restriction = new Restriction(biomes);
-        JERAPI.getWorldGenRegistry().register(PokecubeItems.getStack("fossilstone"),
-                new DistributionSquare(7, 5, 5, 45), restriction, true, getFossils());
-    }
+        boolean hasDrops = false;
+        ItemStack foodDrop = entry.getFoodDrop(0);
+        hasDrops = foodDrop != null;
+        hasDrops = hasDrops || !entry.rareDrops.isEmpty();
+        hasDrops = hasDrops || !entry.commonDrops.isEmpty();
+        hasDrops = hasDrops || !entry.heldItems.isEmpty();
+        if (!hasDrops) return null;
 
-    @SuppressWarnings("unchecked")
-    private void registerMobs()
-    {
-        for (PokedexEntry e : Database.allFormes)
+        ArrayList<DropItem> drops = new ArrayList<DropItem>();
+        DropItem drop = null;
+        if (foodDrop != null) drops.add(drop = new DropItem(foodDrop));
+        if (drop != null) drop.conditionals.add("food");
+        int totalRare = entry.rareDrops.size();
+        int totalCommon = entry.commonDrops.size();
+
+        if (totalCommon > 0)
         {
-            DropItem[] drops = getDrops(e);
-            if (drops == null) continue;
-            Entity poke = PokecubeMod.core.createEntityByPokedexNb(e.getPokedexNb(), null);
-            if (poke == null) continue;
-            ((IPokemob) poke).changeForme(e.getName());
-            ((IPokemob) poke).setShiny(false);
-            ((IPokemob) poke).setSize(1);
-            JERAPI.getMobRegistry().register((EntityLivingBase) poke, getLightLevel(e), getSpawns(e), drops);
-            JERAPI.getMobRegistry()
-                    .registerRenderHook(PokecubeMod.core.getEntityClassFromPokedexNumber(e.getPokedexNb()), POKEMOB);
+            for (ItemStack stack : entry.commonDrops.keySet())
+            {
+                if (stack == null) continue;
+                float chance = entry.commonDrops.get(stack) / 100f;
+                chance /= totalCommon;
+                drops.add(drop = new DropItem(stack, chance));
+            }
         }
+        if (totalRare > 0)
+        {
+            for (ItemStack stack : entry.rareDrops.keySet())
+            {
+                if (stack == null) continue;
+                float chance = (1 / 7f) * entry.rareDrops.get(stack) / 100f;
+                chance /= totalRare;
+                drops.add(drop = new DropItem(stack, chance));
+            }
+        }
+        for (ItemStack stack : entry.heldItems.keySet())
+        {
+            if (stack == null) continue;
+            float chance = entry.heldItems.get(stack) / 100f;
+            drops.add(drop = new DropItem(stack, chance));
+            drop.minDrop = drop.maxDrop;
+            drop.conditionals.add("held");
+        }
+        return drops.toArray(new DropItem[0]);
+    }
+
+    private DropItem[] getFossils()
+    {
+        ArrayList<DropItem> drops = new ArrayList<DropItem>();
+        for (ItemStack stack : PokecubeItems.fossils.keySet())
+        {
+            drops.add(new DropItem(stack, 0.5f / PokecubeItems.fossils.size()));
+        }
+        return drops.toArray(new DropItem[0]);
     }
 
     private LightLevel getLightLevel(PokedexEntry entry)
@@ -110,76 +139,47 @@ public class JERCompat
         return biomes.toArray(new String[0]);
     }
 
-    private DropItem[] getFossils()
+    public void register()
     {
-        ArrayList<DropItem> drops = new ArrayList<DropItem>();
-        for (ItemStack stack : PokecubeItems.fossils.keySet())
-        {
-            drops.add(new DropItem(stack, 0.5f / (float) PokecubeItems.fossils.size()));
-        }
-        return drops.toArray(new DropItem[0]);
+        registerMobs();
+        registerOres();
+        registerPlants();
     }
 
-    private DropItem[] getDrops(PokedexEntry entry)
+    @SuppressWarnings("unchecked")
+    private void registerMobs()
     {
-        boolean hasDrops = false;
-        ItemStack foodDrop = entry.getFoodDrop(0);
-        hasDrops = foodDrop != null;
-        hasDrops = hasDrops || !entry.rareDrops.isEmpty();
-        hasDrops = hasDrops || !entry.commonDrops.isEmpty();
-        hasDrops = hasDrops || !entry.heldItems.isEmpty();
-        if (!hasDrops) return null;
-
-        ArrayList<DropItem> drops = new ArrayList<DropItem>();
-        DropItem drop = null;
-        if (foodDrop != null) drops.add(drop = new DropItem(foodDrop));
-        if (drop != null) drop.conditionals.add("food");
-        int totalRare = entry.rareDrops.size();
-        int totalCommon = entry.commonDrops.size();
-
-        if (totalCommon > 0)
+        for (PokedexEntry e : Database.allFormes)
         {
-            for (ItemStack stack : entry.commonDrops.keySet())
-            {
-                if (stack == null) continue;
-                float chance = entry.commonDrops.get(stack) / 100f;
-                chance /= (float) totalCommon;
-                drops.add(drop = new DropItem(stack, chance));
-            }
+            DropItem[] drops = getDrops(e);
+            if (drops == null) continue;
+            Entity poke = PokecubeMod.core.createEntityByPokedexNb(e.getPokedexNb(), null);
+            if (poke == null) continue;
+            ((IPokemob) poke).changeForme(e.getName());
+            ((IPokemob) poke).setShiny(false);
+            ((IPokemob) poke).setSize(1);
+            JERAPI.getMobRegistry().register((EntityLivingBase) poke, getLightLevel(e), getSpawns(e), drops);
+            JERAPI.getMobRegistry()
+                    .registerRenderHook(PokecubeMod.core.getEntityClassFromPokedexNumber(e.getPokedexNb()), POKEMOB);
         }
-        if (totalRare > 0)
-        {
-            for (ItemStack stack : entry.rareDrops.keySet())
-            {
-                if (stack == null) continue;
-                float chance = (1 / 7f) * entry.rareDrops.get(stack) / 100f;
-                chance /= (float) totalRare;
-                drops.add(drop = new DropItem(stack, chance));
-            }
-        }
-        for (ItemStack stack : entry.heldItems.keySet())
-        {
-            if (stack == null) continue;
-            float chance = entry.heldItems.get(stack) / 100f;
-            drops.add(drop = new DropItem(stack, chance));
-            drop.minDrop = drop.maxDrop;
-            drop.conditionals.add("held");
-        }
-        return drops.toArray(new DropItem[0]);
     }
 
-    public static final IMobRenderHook<EntityPokemob> POKEMOB = new IMobRenderHook<EntityPokemob>()
+    private void registerOres()
     {
-        @Override
-        public IMobRenderHook.RenderInfo transform(IMobRenderHook.RenderInfo renderInfo, EntityPokemob pokemob)
+        BiomeRestriction biomes = new BiomeRestriction(Type.WHITELIST, BiomeGenBase.desertHills, BiomeGenBase.desert,
+                BiomeGenBase.jungle, BiomeGenBase.jungleHills, BiomeGenBase.ocean);
+        Restriction restriction = new Restriction(biomes);
+        JERAPI.getWorldGenRegistry().register(PokecubeItems.getStack("fossilstone"),
+                new DistributionSquare(7, 5, 5, 45), restriction, true, getFossils());
+    }
+
+    private void registerPlants()
+    {
+        for (Integer i : BerryManager.berryCrops.keySet())
         {
-            float mobScale = pokemob.getSize();
-            float size = Math.max(pokemob.getPokedexEntry().width * mobScale,
-                    Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
-            float zoom = (float) (1f / Math.sqrt(size));
-            renderInfo.scale = zoom;
-            GL11.glScalef(zoom, zoom, zoom);
-            return renderInfo;
+            Block crop = BerryManager.berryCrops.get(i);
+            ItemStack berry = BerryManager.getBerryItem(BerryManager.berryNames.get(i));
+            JERAPI.getPlantRegistry().register(new ItemStack(crop), new PlantDrop(berry, 1, 1));
         }
-    };
+    }
 }

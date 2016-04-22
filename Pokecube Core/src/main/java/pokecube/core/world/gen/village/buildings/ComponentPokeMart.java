@@ -1,27 +1,38 @@
 package pokecube.core.world.gen.village.buildings;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureVillagePieces.PieceWeight;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Start;
-import pokecube.core.ai.utils.GuardAI;
-import pokecube.core.handlers.ConfigHandler;
-import pokecube.core.utils.TimePeriod;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class ComponentPokeMart extends ComponentVillageBase
 {
+    public static Class<? extends EntityLiving> seller      = null;
+    public static Method                        setLocation = null;
+
+    public static ComponentPokeMart buildComponent(PieceWeight villagePiece, Start startPiece,
+            List<StructureComponent> pieces, Random random, int p1, int p2, int p3, EnumFacing facing, int p5)
+    {
+        StructureBoundingBox structureboundingbox = StructureBoundingBox.getComponentToAddBoundingBox(p1, p2, p3, 0, 0,
+                0, 9, 8, 9, facing);
+        return canVillageGoDeeper(structureboundingbox)
+                && StructureComponent.findIntersecting(pieces, structureboundingbox) == null
+                        ? new ComponentPokeMart(startPiece, p5, random, structureboundingbox, facing) : null;
+    }
 
     private int averageGroundLevel = -1;
-
+    boolean spawned = false;
     public ComponentPokeMart()
     {
 
@@ -33,19 +44,6 @@ public class ComponentPokeMart extends ComponentVillageBase
         super(par1ComponentVillageStartPiece, par2, par3Random, par4StructureBoundingBox, par5);
         this.coordBaseMode = par5;
         this.boundingBox = par4StructureBoundingBox;
-    }
-
-    public static ComponentPokeMart buildComponent(PieceWeight villagePiece, Start startPiece,
-            List<StructureComponent> pieces, Random random, int p1, int p2, int p3, EnumFacing facing, int p5)
-    {
-        // StructureBoundingBox structureboundingbox =
-        // StructureBoundingBox.getComponentToAddBoundingBox(par3, par4, par5,
-        // 9, 8, 9, par6);
-        StructureBoundingBox structureboundingbox = StructureBoundingBox.getComponentToAddBoundingBox(p1, p2, p3, 0, 0,
-                0, 9, 8, 9, facing);
-        return canVillageGoDeeper(structureboundingbox)
-                && StructureComponent.findIntersecting(pieces, structureboundingbox) == null
-                        ? new ComponentPokeMart(startPiece, p5, random, structureboundingbox, facing) : null;
     }
 
     @Override
@@ -143,19 +141,31 @@ public class ComponentPokeMart extends ComponentVillageBase
             }
         }
 
-        if (ConfigHandler.POKEMARTSELLER)
+        System.out.println(seller+" "+setLocation);
+        if (null != seller && PokecubeMod.core.getConfig().pokemartMerchant && !spawned)
         {
-
-            EntityVillager villager = this.spawnVillager(world, structureboundingbox, 4, 4, 7);
-
-            if (null != villager)
+            spawned = true;
+            int globalX = getXWithOffset(4, 6);
+            int globalY = getYWithOffset(3);
+            int globalZ = getZWithOffset(4, 6);
+            try
             {
-                int globalX = getXWithOffset(4, 7);
-                int globalY = getYWithOffset(1);
-                int globalZ = getZWithOffset(4, 7);
-                // villager.tasks.taskEntries.clear();//TODO villager stationary AI
-//                villager.tasks.addTask(2, new GuardAI(villager, new BlockPos(globalX, globalY, globalZ), 1.0f, 48.0f,
-//                        new TimePeriod(0.00, 1), false));
+                EntityLiving merchant = seller.getConstructor(new Class[] { World.class })
+                        .newInstance(new Object[] { world });
+                merchant.setPosition(globalX, globalY, globalZ);
+                world.spawnEntityInWorld(merchant);
+                
+                if(setLocation!=null)
+                {
+                    setLocation.invoke(merchant, Vector3.getNewVector().set(globalX, globalY, globalZ));
+                }
+                System.out.println(merchant+" "+setLocation);
+            }
+            catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException | NoSuchMethodException | SecurityException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
 

@@ -9,31 +9,107 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.PokecubeItems;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.events.EvolveEvent;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 
 /** @author Manchou */
 public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 {
-    // private int evolution;
     public boolean traded    = false;
     String         evolution = "";
+
+    boolean        evolving  = false;
 
     public EntityEvolvablePokemob(World world)
     {
         super(world);
+    }
+
+    @Override
+    public boolean canEvolve(ItemStack itemstack)
+    {
+        if (itemstack != null && itemstack.isItemEqual(PokecubeItems.getStack("Everstone"))) return false;
+
+        if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
+        {
+            if (evolution.isEmpty())
+            {
+                for (EvolutionData d : getPokedexEntry().getEvolutions())
+                {
+                    if (d.shouldEvolve(this, itemstack)) { return true; }
+                }
+            }
+            else
+            {
+                PokedexEntry e = Database.getEntry(evolution);
+                if (e != null && Pokedex.getInstance().getEntry(e.getPokedexNb()) != null) { return true; }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public IPokemob changeForme(String forme)
+    {
+        PokedexEntry newEntry = Database.getEntry(forme);
+        if (newEntry == getPokedexEntry() && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) return this;
+        if (newEntry != null)
+        {
+            this.forme = newEntry.getName();
+            this.setPokedexEntry(newEntry);
+            if (FMLCommonHandler.instance().getEffectiveSide() != Side.SERVER) { return this; }
+        }
+        else
+        {
+            newEntry = Database.getEntry(forme);
+            if (newEntry == getPokedexEntry())
+            {
+                newEntry = null;
+                return this;
+            }
+            else if (newEntry != null)
+            {
+                this.setPokedexEntry(newEntry);
+                this.forme = newEntry.getName();
+            }
+            else if (Database.getEntry(getPokedexEntry().getBaseName()) != null)
+            {
+                newEntry = Database.getEntry(getPokedexEntry().getBaseName()).getForm(forme);
+                if (newEntry != null)
+                {
+                    this.forme = newEntry.getName();
+                    this.setPokedexEntry(newEntry);
+                }
+            }
+        }
+        if (newEntry != null && worldObj != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        {
+            MessageClient message = new MessageClient(MessageClient.CHANGEFORME, getEntityId());
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setString("f", newEntry.getName());
+            message.buffer.writeNBTTagCompoundToBuffer(compound);
+            PokecubePacketHandler.sendToAllNear(message, here, dimension, 128);
+        }
+        return this;
     }
 
     @Override
@@ -47,7 +123,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     {
         if (this.getPokedexEntry().canEvolve() && !isDead)
         {
-            // new Exception().printStackTrace();
             boolean neededItem = false;
             PokedexEntry evol = null;
             if (evolution == null || evolution.isEmpty())
@@ -56,7 +131,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 {
                     if (d.shouldEvolve(this, stack))
                     {
-                        evol = Database.getEntry(d.evolutionNb);
+                        evol = d.evolution;
                         if (!d.shouldEvolve(this, null) && stack == getHeldItem()) neededItem = true;
                         break;
                     }
@@ -153,44 +228,38 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         return null;
     }
 
-    @Override
-    public IPokemob changeForme(String forme)
+    protected String getEvolFX()
     {
-        PokedexEntry newEntry = getPokedexEntry().getForm(forme);
-        if (newEntry == getPokedexEntry()) return this;
-        if (newEntry != null)
+        String ret = "";
+        int num = dataWatcher.getWatchableObjectInt(EVOLNBDW);
+        for (EvolutionData d : getPokedexEntry().getEvolutions())
         {
-            this.forme = forme;
-            this.setPokedexEntry(newEntry);
+            if (d.evolution.getPokedexNb() == num) return d.FX;
         }
-        else
-        {
-            newEntry = Database.getEntry(forme);
-            if (newEntry != null)
-            {
-                this.setPokedexEntry(newEntry);
-                this.forme = forme;
-            }
-            else if (Database.getEntry(getPokedexEntry().getBaseName()) != null)
-            {
-                newEntry = Database.getEntry(getPokedexEntry().getBaseName()).getForm(forme);
-                if (newEntry != null)
-                {
-                    this.forme = forme;
-                    this.setPokedexEntry(newEntry);
-                }
-            }
-        }
-        return this;
+
+        return ret;
+    }
+
+    /** @return the evolutionTicks */
+    @Override
+    public int getEvolutionTicks()
+    {
+        return dataWatcher.getWatchableObjectInt(EVOLTICKDW);
+    }
+
+    /** Returns whether the entity is in a server world */
+    @Override
+    public boolean isServerWorld()
+    {
+        return worldObj != null && super.isServerWorld();
     }
 
     @Override
     public IPokemob megaEvolve(String forme)
     {
-        PokedexEntry newEntry = getPokedexEntry().getForm(forme);
-
+        PokedexEntry newEntry = Database.getEntry(forme);
+        if (newEntry == getPokedexEntry()) return this;
         Entity evolution = this;
-
         if (newEntry == null)
         {
             newEntry = Database.getEntry(forme);
@@ -198,25 +267,49 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         if (newEntry != null)
         {
             setPokemonAIState(EVOLVING, true);
-            evolution = PokecubeMod.core.createEntityByPokedexNb(newEntry.getPokedexNb(), worldObj);
-            evolution.copyDataFromOld(this);
-            evolution.copyLocationAndAnglesFrom(this);
-            ((IPokemob) evolution).changeForme(forme);
-            worldObj.spawnEntityInWorld(evolution);
-            ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
-            if (getPokemonAIState(MEGAFORME))
+            if (newEntry.getPokedexNb() != getPokedexNb())
             {
-                ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
-                ((IPokemob) evolution).setEvolutionTicks(10);
+                evolution = PokecubeMod.core.createEntityByPokedexNb(newEntry.getPokedexNb(), worldObj);
 
+                if (evolution == null)
+                {
+                    System.err.println("No Entry for " + newEntry);
+                    return this;
+                }
+
+                evolution.copyDataFromOld(this);
+                evolution.copyLocationAndAnglesFrom(this);
+                ((IPokemob) evolution).changeForme(forme);
+                ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
+                if (this.addedToChunk) worldObj.spawnEntityInWorld(evolution);
+                ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
+                if (getPokemonAIState(MEGAFORME))
+                {
+                    ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
+                    ((IPokemob) evolution).setEvolutionTicks(10);
+                }
+                String superEffective = StatCollector.translateToLocalFormatted("pokemob.evolve.success",
+                        this.getPokemonDisplayName(), ((IPokemob) evolution).getPokedexEntry().getName());
+                this.displayMessageToOwner("\u00a7a" + superEffective);
+                this.setPokemonOwner(null);
+                this.setDead();
             }
-            this.setDead();
-            this.setPokemonOwner(null);
+            else
+            {
+                evolution = this;
+                ((IPokemob) evolution).changeForme(forme);
+                ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
+                ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
+                if (getPokemonAIState(MEGAFORME))
+                {
+                    ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
+                    ((IPokemob) evolution).setEvolutionTicks(10);
+
+                }
+            }
         }
         return (IPokemob) evolution;
     }
-
-    boolean evolving = false;
 
     @Override
     public void onLivingUpdate()
@@ -232,7 +325,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
             evolving = true;
             setEvolutionTicks(getEvolutionTicks() - 1);
-            if (this.getPokemonAIState(IPokemob.TAMED)) showEvolutionFX(getEvolFX());
+            if (this.getPokemonAIState(IMoveConstants.TAMED)) showEvolutionFX(getEvolFX());
         }
         else
         {
@@ -255,10 +348,17 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         {
             traded = false;
         }
-        if (!this.getPokemonAIState(IPokemob.TAMED) && this.canEvolve(getHeldItem()))
+        if (!this.getPokemonAIState(IMoveConstants.TAMED) && this.canEvolve(getHeldItem()))
         {
             this.evolve(false);
         }
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
+    {
+        super.readEntityFromNBT(nbttagcompound);
+        setTraded(nbttagcompound.getBoolean("traded"));
     }
 
     private void setEvol(int num)
@@ -266,16 +366,29 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         dataWatcher.updateObject(EVOLNBDW, Integer.valueOf(num));
     }
 
-    protected String getEvolFX()
+    @Override
+    /** These have been deprecated, now override evolve() to make a custom
+     * evolution occur.
+     * 
+     * @param evolution */
+    public void setEvolution(String evolution)
     {
-        String ret = "";
-        int num = dataWatcher.getWatchableObjectInt(EVOLNBDW);
-        for (EvolutionData d : getPokedexEntry().getEvolutions())
-        {
-            if (d.evolutionNb == num) return d.FX;
-        }
+        this.evolution = evolution;
+    }
 
-        return ret;
+    /** @param evolutionTicks
+     *            the evolutionTicks to set */
+    @Override
+    public void setEvolutionTicks(int evolutionTicks)
+    {
+        dataWatcher.updateObject(EVOLTICKDW, new Integer(evolutionTicks));
+    }
+
+    @Override
+    public void setTraded(boolean trade)
+    {
+        traded = trade;
+        setPokemonAIState(TRADED, trade);
     }
 
     public void showEvolutionFX(String effect)
@@ -300,65 +413,9 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     }
 
     @Override
-    public boolean canEvolve(ItemStack itemstack)
-    {
-        if (itemstack != null && itemstack.isItemEqual(PokecubeItems.getStack("Everstone"))) return false;
-
-        if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
-        {
-            if (evolution.isEmpty())
-            {
-                for (EvolutionData d : getPokedexEntry().getEvolutions())
-                {
-                    if (d.shouldEvolve(this, itemstack)) { return true; }
-                }
-            }
-            else
-            {
-                PokedexEntry e = Database.getEntry(evolution);
-                if (e != null && Pokedex.getInstance().getEntry(e.getPokedexNb()) != null) { return true; }
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    /** These have been deprecated, now override evolve() to make a custom
-     * evolution occur.
-     * 
-     * @param evolution */
-    public void setEvolution(String evolution)
-    {
-        this.evolution = evolution;
-    }
-
-    /** @param evolutionTicks
-     *            the evolutionTicks to set */
-    @Override
-    public void setEvolutionTicks(int evolutionTicks)
-    {
-        dataWatcher.updateObject(EVOLTICKDW, new Integer(evolutionTicks));
-    }
-
-    /** @return the evolutionTicks */
-    @Override
-    public int getEvolutionTicks()
-    {
-        return dataWatcher.getWatchableObjectInt(EVOLTICKDW);
-    }
-
-    @Override
     public boolean traded()
     {
         return getPokemonAIState(TRADED);
-    }
-
-    @Override
-    public void setTraded(boolean trade)
-    {
-        traded = trade;
-        setPokemonAIState(TRADED, trade);
     }
 
     @Override
@@ -366,12 +423,5 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setBoolean("traded", traded);
-    }
-
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
-    {
-        super.readEntityFromNBT(nbttagcompound);
-        setTraded(nbttagcompound.getBoolean("traded"));
     }
 }

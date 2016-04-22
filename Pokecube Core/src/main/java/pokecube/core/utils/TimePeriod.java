@@ -13,10 +13,35 @@ public final class TimePeriod
 {
 	public final static TimePeriod fullDay = new TimePeriod(0, 24000);
 	
+	/**
+	 * Returns <i>null</i> if not mergable
+	 */
+	public static TimePeriod merge(TimePeriod one, TimePeriod two)
+	{
+		if( null != one && null != two && one.overlaps(two) )
+		{
+			return new TimePeriod(Math.min(one.startTick, two.startTick), Math.max(one.endTick, two.endTick));
+		}
+		else
+		{
+			return null;
+		}
+	}
 	public final int startTick;
 	public final int endTick;
 	public final double startTime;
+	
 	public final double endTime;
+	
+	/**
+	 * 0.0/1.0 means sunrise. Noon is at 0.25, dusk at 0.5, midnight at 0.75.
+	 * 
+	 * The precision is limited to Minecraft's tick precision.
+	 */
+	public TimePeriod(double start, double end)
+	{
+		this((int)(start * 24000), (int)(end * 24000));
+	}
 	
 	public TimePeriod(int sTick, int eTick)
 	{
@@ -34,16 +59,6 @@ public final class TimePeriod
 		}
 		startTime = startTick / 24000.0;
 		endTime = endTick / 24000.0;
-	}
-	
-	/**
-	 * 0.0/1.0 means sunrise. Noon is at 0.25, dusk at 0.5, midnight at 0.75.
-	 * 
-	 * The precision is limited to Minecraft's tick precision.
-	 */
-	public TimePeriod(double start, double end)
-	{
-		this((int)(start * 24000), (int)(end * 24000));
 	}
 	
 	public TimePeriod(TimePeriod other)
@@ -64,16 +79,9 @@ public final class TimePeriod
 		}
 	}
 	
-	public boolean overlaps(TimePeriod other)
+	public boolean contains(double time)
 	{
-		if( null != other )
-		{
-			return (this.startTick < other.endTick && this.endTick > other.startTick);
-		}
-		else
-		{
-			return false;
-		}
+		return (time >= startTime && time <= endTime);
 	}
 	
 	public boolean contains(int time)
@@ -88,23 +96,15 @@ public final class TimePeriod
 		return (time >= startTick && time <= endTick);
 	}
 	
-	public boolean contains(double time)
+	public boolean overlaps(TimePeriod other)
 	{
-		return (time >= startTime && time <= endTime);
-	}
-	
-	/**
-	 * Returns <i>null</i> if not mergable
-	 */
-	public static TimePeriod merge(TimePeriod one, TimePeriod two)
-	{
-		if( null != one && null != two && one.overlaps(two) )
+		if( null != other )
 		{
-			return new TimePeriod(Math.min(one.startTick, two.startTick), Math.max(one.endTick, two.endTick));
+			return (this.startTick < other.endTick && this.endTick > other.startTick);
 		}
 		else
 		{
-			return null;
+			return false;
 		}
 	}
 	

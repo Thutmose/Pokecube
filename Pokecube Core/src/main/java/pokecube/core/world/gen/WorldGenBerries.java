@@ -41,6 +41,24 @@ public class WorldGenBerries implements IWorldGenerator
         }
     }
 
+    public void generateEnd(World world, Random rand, int chunkX, int chunkZ)
+    {
+        // ENIGMA BERRY//
+        if (rand.nextInt(9) == 0)
+        {
+            int randPosX = chunkX + rand.nextInt(15) + 1;
+            int randPosZ = chunkZ + rand.nextInt(15) + 1;
+            BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
+            if (world.getBiomeGenForCoords(pos) == (BiomeGenBase.sky))
+            {
+                if (world.getBlockState(pos.down()).getBlock() == Blocks.end_stone)
+                {
+                    placeCropAt(world, pos, "enigma");
+                }
+            }
+        }
+    }
+
     public void generateNether(World world, Random rand, int chunkX, int chunkZ)
     {
         // RAWST BERRY//
@@ -58,6 +76,110 @@ public class WorldGenBerries implements IWorldGenerator
                 }
             }
         }
+    }
+
+    public boolean generatePalmTree(World world, Random par2Random, BlockPos pos, IBlockState wood, IBlockState leaves)
+    {
+        int l = par2Random.nextInt(1) + 5;
+        BlockPos temp;
+        if (pos.getY() >= 1 && pos.getY() + l + 1 <= 256)
+        {
+            boolean stopped = false;
+            // Trunk
+            for (int i = 1; i < l; i++)
+            {
+                if (world.isAirBlock(temp = pos.up(i))) world.setBlockState(temp, wood);
+                else
+                {
+                    stopped = true;
+                    break;
+                }
+            }
+
+            if (!stopped)
+            {
+                int d = 0;
+                int d1 = 0;
+                for (int i = 0; i <= l / 1.5; i++)
+                {
+                    d = i / 3;
+                    temp = new BlockPos(pos.getX(), pos.getY() + l - d, pos.getZ() + i);
+
+                    if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
+                    else if (i != 0)
+                    {
+                        stopped = true;
+                        break;
+                    }
+                    if (d1 != d)
+                    {
+                        temp = new BlockPos(pos.getX(), pos.getY() + l - d, pos.getZ() + i - 1);
+                        if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
+                    }
+
+                    d1 = d;
+                }
+                d1 = 0;
+                for (int i = 0; i <= l / 1.5; i++)
+                {
+                    d = i / 3;
+                    temp = new BlockPos(pos.getX(), pos.getY() + l - d, pos.getZ() - i);
+                    if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
+                    else if (i != 0)
+                    {
+                        stopped = true;
+                        break;
+                    }
+                    if (d1 != d)
+                    {
+                        temp = new BlockPos(pos.getX(), pos.getY() + l - d, pos.getZ() - i + 1);
+                        if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
+                    }
+                    d1 = d;
+                }
+                d1 = 0;
+                for (int i = 0; i <= l / 1.5; i++)
+                {
+                    d = i / 3;
+                    temp = new BlockPos(pos.getX() + i, pos.getY() + l - d, pos.getZ());
+                    if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
+                    else if (i != 0)
+                    {
+                        stopped = true;
+                        break;
+                    }
+                    if (d1 != d)
+                    {
+                        temp = new BlockPos(pos.getX() + i - 1, pos.getY() + l - d, pos.getZ());
+                        if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
+                    }
+                    d1 = d;
+                }
+                d1 = 0;
+                for (int i = 0; i <= l / 1.5; i++)
+                {
+                    d = i / 3;
+                    temp = new BlockPos(pos.getX() - i, pos.getY() + l - d, pos.getZ());
+
+                    if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
+                    else if (i != 0)
+                    {
+                        stopped = true;
+                        break;
+                    }
+                    if (d1 != d)
+                    {
+                        temp = new BlockPos(pos.getX() - i + 1, pos.getY() + l - d, pos.getZ());
+                        if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
+                    }
+                    d1 = d;
+                }
+            }
+
+            return true;
+
+        }
+        return false;
     }
 
     public void generateSurface(World world, Random rand, int chunkX, int chunkZ)
@@ -348,37 +470,6 @@ public class WorldGenBerries implements IWorldGenerator
 
     }
 
-    public void generateEnd(World world, Random rand, int chunkX, int chunkZ)
-    {
-        // ENIGMA BERRY//
-        if (rand.nextInt(9) == 0)
-        {
-            int randPosX = chunkX + rand.nextInt(15) + 1;
-            int randPosZ = chunkZ + rand.nextInt(15) + 1;
-            BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
-            if (world.getBiomeGenForCoords(pos) == (BiomeGenBase.sky))
-            {
-                if (world.getBlockState(pos.down()).getBlock() == Blocks.end_stone)
-                {
-                    placeCropAt(world, pos, "enigma");
-                }
-            }
-        }
-    }
-
-    private void placeCropAt(World world, BlockPos pos, String berryName)
-    {
-        if (BerryManager.getBerryCrop(berryName) != null)
-        {
-            world.setBlockState(pos, BerryManager.getBerryCrop(berryName).getDefaultState());
-            world.setBlockState(pos.down(), Blocks.farmland.getDefaultState());
-        }
-        else
-        {
-            System.err.println("Null Berry " + berryName);
-        }
-    }
-
     public boolean generateTree(World par1World, Random par2Random, BlockPos pos, IBlockState wood, IBlockState leaves)
     {
         int l = par2Random.nextInt(1) + 6;
@@ -501,108 +592,17 @@ public class WorldGenBerries implements IWorldGenerator
         }
     }
 
-    public boolean generatePalmTree(World world, Random par2Random, BlockPos pos, IBlockState wood, IBlockState leaves)
+    private void placeCropAt(World world, BlockPos pos, String berryName)
     {
-        int l = par2Random.nextInt(1) + 5;
-        BlockPos temp;
-        if (pos.getY() >= 1 && pos.getY() + l + 1 <= 256)
+        if (BerryManager.getBerryCrop(berryName) != null)
         {
-            boolean stopped = false;
-            // Trunk
-            for (int i = 1; i < l; i++)
-            {
-                if (world.isAirBlock(temp = pos.up(i))) world.setBlockState(temp, wood);
-                else
-                {
-                    stopped = true;
-                    break;
-                }
-            }
-
-            if (!stopped)
-            {
-                int d = 0;
-                int d1 = 0;
-                for (int i = 0; i <= l / 1.5; i++)
-                {
-                    d = i / 3;
-                    temp = new BlockPos(pos.getX(), pos.getY() + l - d, pos.getZ() + i);
-
-                    if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
-                    else if (i != 0)
-                    {
-                        stopped = true;
-                        break;
-                    }
-                    if (d1 != d)
-                    {
-                        temp = new BlockPos(pos.getX(), pos.getY() + l - d, pos.getZ() + i - 1);
-                        if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
-                    }
-
-                    d1 = d;
-                }
-                d1 = 0;
-                for (int i = 0; i <= l / 1.5; i++)
-                {
-                    d = i / 3;
-                    temp = new BlockPos(pos.getX(), pos.getY() + l - d, pos.getZ() - i);
-                    if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
-                    else if (i != 0)
-                    {
-                        stopped = true;
-                        break;
-                    }
-                    if (d1 != d)
-                    {
-                        temp = new BlockPos(pos.getX(), pos.getY() + l - d, pos.getZ() - i + 1);
-                        if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
-                    }
-                    d1 = d;
-                }
-                d1 = 0;
-                for (int i = 0; i <= l / 1.5; i++)
-                {
-                    d = i / 3;
-                    temp = new BlockPos(pos.getX() + i, pos.getY() + l - d, pos.getZ());
-                    if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
-                    else if (i != 0)
-                    {
-                        stopped = true;
-                        break;
-                    }
-                    if (d1 != d)
-                    {
-                        temp = new BlockPos(pos.getX() + i - 1, pos.getY() + l - d, pos.getZ());
-                        if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
-                    }
-                    d1 = d;
-                }
-                d1 = 0;
-                for (int i = 0; i <= l / 1.5; i++)
-                {
-                    d = i / 3;
-                    temp = new BlockPos(pos.getX() - i, pos.getY() + l - d, pos.getZ());
-
-                    if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
-                    else if (i != 0)
-                    {
-                        stopped = true;
-                        break;
-                    }
-                    if (d1 != d)
-                    {
-                        temp = new BlockPos(pos.getX() - i + 1, pos.getY() + l - d, pos.getZ());
-                        if (world.isAirBlock(temp)) world.setBlockState(temp, leaves);
-                    }
-                    d1 = d;
-                }
-            }
-
-            return true;
-
+            world.setBlockState(pos, BerryManager.getBerryCrop(berryName).getDefaultState());
+            world.setBlockState(pos.down(), Blocks.farmland.getDefaultState());
         }
-        return false;
+        else
+        {
+            System.err.println("Null Berry " + berryName);
+        }
     }
 
 }

@@ -27,16 +27,6 @@ public class ArcTanH extends PostfixMathCommand
 		numberOfParameters = 1;
 	}
 
-	@Override
-	public void run(Stack inStack)
-		throws ParseException
-	{
-		checkStack(inStack);// check the stack
-		Object param = inStack.pop();
-		inStack.push(atanh(param));//push the result on the inStack
-		return;
-	}
-
 	public Object atanh(Object param)
 		throws ParseException
 	{
@@ -59,6 +49,16 @@ public class ArcTanH extends PostfixMathCommand
 		}
 
 		throw new ParseException("Invalid parameter type");
+	}
+
+	@Override
+	public void run(Stack inStack)
+		throws ParseException
+	{
+		checkStack(inStack);// check the stack
+		Object param = inStack.pop();
+		inStack.push(atanh(param));//push the result on the inStack
+		return;
 	}
 
 }

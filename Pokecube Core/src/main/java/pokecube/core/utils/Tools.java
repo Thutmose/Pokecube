@@ -9,7 +9,9 @@ import com.google.common.base.Predicates;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.MathHelper;
@@ -21,33 +23,150 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 
 public class Tools
 {
-    public Tools()
+    // cache these in tables, for easier lookup.
+    private static int[] erraticXp     = new int[101];
+
+    private static int[] fluctuatingXp = new int[101];
+
+    public static int[]  maxXPs        = { 800000, 1000000, 1059860, 1250000, 600000, 1640000 };
+
+    public static int computeCatchRate(IPokemob pokemob, double cubeBonus)
     {
-        initTables();
+        float HPmax = ((EntityLivingBase) pokemob).getMaxHealth();
+        Random rand = new Random();
+        float HP = ((EntityLivingBase) pokemob).getHealth();
+        float statusBonus = 1F;
+        byte status = pokemob.getStatus();
+        if (status == IMoveConstants.STATUS_FRZ || status == IMoveConstants.STATUS_SLP)
+        {
+            statusBonus = 2F;
+        }
+        else if (status != IMoveConstants.STATUS_NON)
+        {
+            statusBonus = 1.5F;
+        }
+        int catchRate = pokemob.getCatchRate();
+
+        double a = getCatchRate(HPmax, HP, catchRate, cubeBonus, statusBonus);
+
+        if (a > 255)
+        {
+            return 5;
+        }
+        else
+        {
+            double b = 1048560 / Math.sqrt(Math.sqrt(16711680 / a));
+            int n = 0;
+
+            if (rand.nextInt(65535) <= b)
+            {
+                n++;
+            }
+
+            if (rand.nextInt(65535) <= b)
+            {
+                n++;
+            }
+
+            if (rand.nextInt(65535) <= b)
+            {
+                n++;
+            }
+
+            if (rand.nextInt(65535) <= b)
+            {
+                n++;
+            }
+
+            return n;
+        }
     }
 
-    public static int serialize(float f, float g)
+    public static int computeCatchRate(IPokemob pokemob, int pokecubeId)
     {
-        float toSet = g;
-        if (toSet > f)
+        double cubeBonus = 0;
+        Item cube = PokecubeItems.getFilledCube(pokecubeId);
+        if (cube instanceof IPokecube)
         {
-            toSet = f;
+            cubeBonus = ((IPokecube) cube).getCaptureModifier(pokemob, pokecubeId);
+        }
+        return computeCatchRate(pokemob, cubeBonus);
+    }
+
+    public static int countPokemon(Vector3 location, World world, double distance, PokedexEntry pokemon)
+    {
+        int ret = 0;
+        List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class,
+                location.getAABB().expand(distance, distance, distance));
+        for (Object o : list)
+        {
+            if (o instanceof IPokemob)
+            {
+                IPokemob mob = (IPokemob) o;
+                if (mob.getPokedexEntry() == pokemon)
+                {
+                    ret++;
+                }
+            }
         }
 
-        if (toSet < 0)
+        return ret;
+    }
+
+    public static int countPokemon(Vector3 location, World world, double distance, PokeType type)
+    {
+        int ret = 0;
+        List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class,
+                location.getAABB().expand(distance, distance, distance));
+        for (Object o : list)
         {
-            toSet = 0;
+            if (o instanceof IPokemob)
+            {
+                IPokemob mob = (IPokemob) o;
+                if (mob.getPokedexEntry().isType(type))
+                {
+                    ret++;
+                }
+            }
         }
+        return ret;
+    }
 
-        float maxHealthFloat = f;
+    public static int countPokemon(World world, Vector3 location, double radius)
+    {
+        AxisAlignedBB box = location.getAABB();
+        List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
+                box.expand(radius, radius, radius));
+        int num = 0;
+        for (Object o : list)
+        {
+            if (o instanceof IPokemob) num++;
+        }
+        return num;
+    }
 
-        float value = (PokecubeMod.FULL_HEALTH * toSet) / maxHealthFloat;
-        return (int) (PokecubeMod.MAX_DAMAGE - value);
+    public static double getCatchRate(float hPmax, float hP, float catchRate, double cubeBonus, double statusBonus)
+    {
+        return ((3D * hPmax - 2D * hP) * catchRate * cubeBonus * statusBonus) / (3D * hPmax);
+    }
+
+    public static int getExp(float coef, int baseXP, int level)
+    {
+        // Increase exp gain if the density is set lower.
+        float multiplier = (float) (1.0F / Math.sqrt(PokecubeMod.MAX_DENSITY));
+        return MathHelper.floor_float(multiplier * coef * baseXP * level / 7F);
+    }
+
+    public static int getHealedPokemobSerialization()
+    {
+        return PokecubeMod.MAX_DAMAGE - PokecubeMod.FULL_HEALTH;
     }
 
     public static int getHealth(int maxHealth, int serialization)
@@ -68,11 +187,6 @@ public class Tools
         return health;
     }
 
-    public static int getHealedPokemobSerialization()
-    {
-        return PokecubeMod.MAX_DAMAGE - PokecubeMod.FULL_HEALTH;
-    }
-
     // ADDED + 128 for java usbytes
     public static int getHP(int BS, int IV, int EV, int level)
     {
@@ -80,6 +194,128 @@ public class Tools
 
         int EP = MathHelper.floor_double((EV + 128) / 4);
         return 10 + (MathHelper.floor_double((2 * BS) + IV + EP + 100) * level / 100);
+    }
+
+    private static int getLevelFromTable(int[] table, int exp)
+    {
+        int level = 0;
+        for (int i = 0; i < 100; i++)
+        {
+            if (table[i] <= exp && table[i + 1] > exp)
+            {
+                level = i;
+                break;
+            }
+        }
+
+        return level;
+    }
+
+    public static Entity getPointedEntity(Entity entity, double distance)
+    {
+        Vec3 vec3 = new Vec3(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+        double d0 = distance;
+        Vec3 vec31 = entity.getLook(0);
+        Vec3 vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
+        Entity pointedEntity = null;
+        float f = 1.0F;
+        List<Entity> list = entity.worldObj
+                .getEntitiesInAABBexcluding(
+                        entity, entity.getEntityBoundingBox()
+                                .addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand(f, f, f),
+                        Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
+                        {
+                            @Override
+                            public boolean apply(Entity p_apply_1_)
+                            {
+                                return p_apply_1_.canBeCollidedWith();
+                            }
+                        }));
+        double d2 = distance;
+
+        for (int j = 0; j < list.size(); ++j)
+        {
+            Entity entity1 = list.get(j);
+            float f1 = entity1.getCollisionBorderSize();
+            AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand(f1, f1, f1);
+            MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
+
+            if (axisalignedbb.isVecInside(vec3))
+            {
+                if (d2 >= 0.0D)
+                {
+                    pointedEntity = entity1;
+                    d2 = 0.0D;
+                }
+            }
+            else if (movingobjectposition != null)
+            {
+                double d3 = vec3.distanceTo(movingobjectposition.hitVec);
+
+                if (d3 < d2 || d2 == 0.0D)
+                {
+                    if (entity1 == entity.ridingEntity && !entity.canRiderInteract())
+                    {
+                        if (d2 == 0.0D)
+                        {
+                            pointedEntity = entity1;
+                        }
+                    }
+                    else
+                    {
+                        pointedEntity = entity1;
+                        d2 = d3;
+                    }
+                }
+            }
+        }
+        return pointedEntity;
+    }
+
+    public static int getPower(String move, IPokemob user, Entity target)
+    {
+        Move_Base attack = MovesUtils.getMoveFromName(move);
+        int pwr = attack.getPWR(user, target);
+        if (target instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) target;
+            pwr *= PokeType.getAttackEfficiency(attack.getType(user), mob.getType1(), mob.getType2());
+        }
+        return pwr;
+    }
+
+    public static byte getRandomIV(Random random)
+    {
+        return (byte) random.nextInt(32);
+    }
+
+    /** Can be {@link IPokemob#MALE}, {@link IPokemob#FEMALE} or
+     * {@link IPokemob#NOSEXE}
+     *
+     * @param baseValue
+     *            the sexe ratio of the Pokemon, 254=Only female, 255=no sexe,
+     *            0=Only male
+     * @param random
+     * @return the int gender */
+    public static byte getSexe(int baseValue, Random random)
+    {
+        if (baseValue == 255) { return IPokemob.NOSEXE; }
+
+        if (random.nextInt(255) >= baseValue)
+        {
+            return IPokemob.MALE;
+        }
+        else
+        {
+            return IPokemob.FEMALE;
+        }
+    }
+
+    public static int getStat(int oldStat, int mod)
+    {
+        int ret = (int) (oldStat * modifierToRatio((byte) mod, false));
+
+        return Math.max(5, ret);
     }
 
     public static int getStat(int BS, int IV, int EV, int level, int nature)
@@ -132,30 +368,70 @@ public class Tools
         return ret;
     }
 
-    public static int getStat(int oldStat, int mod)
+    public static int getType(String name)
     {
-        int ret = (int) (oldStat * modifierToRatio((byte) mod, false));
-
-        return Math.max(5, ret);
+        name = name.toLowerCase().trim();
+        if (name.equalsIgnoreCase("erratic")) return 4;
+        if (name.equalsIgnoreCase("fast")) return 0;
+        if (name.equalsIgnoreCase("medium fast")) return 1;
+        if (name.equalsIgnoreCase("medium slow")) return 2;
+        if (name.equalsIgnoreCase("slow")) return 3;
+        if (name.equalsIgnoreCase("fluctuating")) return 5;
+        return -1;
     }
 
-    public static double modifierToRatio(byte mod, boolean accuracy)
+    public static boolean hasMove(String move, IPokemob mob)
     {
-        double modifier = 1;
-        if (mod == 0) modifier = 1;
-        else if (mod == 1) modifier = !accuracy ? 1.5 : 4 / 3d;
-        else if (mod == 2) modifier = !accuracy ? 2 : 5 / 3d;
-        else if (mod == 3) modifier = !accuracy ? 2.5 : 2;
-        else if (mod == 4) modifier = !accuracy ? 3 : 7 / 3d;
-        else if (mod == 5) modifier = !accuracy ? 3.5 : 8 / 3d;
-        else if (mod == 6) modifier = !accuracy ? 4 : 3;
-        else if (mod == -1) modifier = !accuracy ? 2 / 3d : 3 / 4d;
-        else if (mod == -2) modifier = !accuracy ? 1 / 2d : 3 / 5d;
-        else if (mod == -3) modifier = !accuracy ? 2 / 5d : 3 / 6d;
-        else if (mod == -4) modifier = !accuracy ? 1 / 3d : 3 / 7d;
-        else if (mod == -5) modifier = !accuracy ? 2 / 7d : 3 / 8d;
-        else if (mod == -6) modifier = !accuracy ? 1 / 4d : 3 / 9d;
-        return modifier;
+        for (String s : mob.getMoves())
+        {
+            if (s != null && s.equalsIgnoreCase(move)) return true;
+        }
+        return false;
+    }
+
+    private static void initTables()
+    {
+        for (int i = 0; i < 101; i++)
+        {
+            erraticXp[i] = levelToXp(4, i);
+            fluctuatingXp[i] = levelToXp(5, i);
+        }
+    }
+
+    public static boolean isAnyPlayerInRange(double rangeHorizontal, double rangeVertical, Entity entity)
+    {
+        return isAnyPlayerInRange(rangeHorizontal, rangeVertical, entity.worldObj, Vector3.getNewVector().set(entity));
+    }
+
+    public static boolean isAnyPlayerInRange(double rangeHorizontal, double rangeVertical, World world,
+            Vector3 location)
+    {
+        double dhm = rangeHorizontal * rangeHorizontal;
+        double dvm = rangeVertical * rangeVertical;
+        for (int i = 0; i < world.playerEntities.size(); ++i)
+        {
+            EntityPlayer entityplayer = world.playerEntities.get(i);
+            if (EntitySelectors.NOT_SPECTATING.apply(entityplayer))
+            {
+                double d0 = entityplayer.posX - location.x;
+                double d1 = entityplayer.posY - location.y;
+                double d2 = entityplayer.posZ - location.z;
+                double dh = d0 * d0 + d1 * d1;
+                double dv = d2 * d2;
+                if (dh < dhm && dv < dvm) { return true; }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnyPlayerInRange(double range, Entity entity)
+    {
+        return entity.worldObj.isAnyPlayerWithinRangeAt(entity.posX, entity.posY, entity.posZ, range);
+    }
+
+    public static boolean isSameStack(ItemStack a, ItemStack b)
+    {
+        return ItemStack.areItemsEqual(a, b) && ItemStack.areItemStackTagsEqual(a, b);
     }
 
     public static int levelToXp(int type, int level)
@@ -228,23 +504,43 @@ public class Tools
         }
     }
 
-    // cache these in tables, for easier lookup.
-    private static int[] erraticXp     = new int[101];
-    private static int[] fluctuatingXp = new int[101];
-
-    public static int getType(String name)
+    public static double modifierToRatio(byte mod, boolean accuracy)
     {
-        name = name.toLowerCase().trim();
-        if (name.equalsIgnoreCase("erratic")) return 4;
-        if (name.equalsIgnoreCase("fast")) return 0;
-        if (name.equalsIgnoreCase("medium fast")) return 1;
-        if (name.equalsIgnoreCase("medium slow")) return 2;
-        if (name.equalsIgnoreCase("slow")) return 3;
-        if (name.equalsIgnoreCase("fluctuating")) return 5;
-        return -1;
+        double modifier = 1;
+        if (mod == 0) modifier = 1;
+        else if (mod == 1) modifier = !accuracy ? 1.5 : 4 / 3d;
+        else if (mod == 2) modifier = !accuracy ? 2 : 5 / 3d;
+        else if (mod == 3) modifier = !accuracy ? 2.5 : 2;
+        else if (mod == 4) modifier = !accuracy ? 3 : 7 / 3d;
+        else if (mod == 5) modifier = !accuracy ? 3.5 : 8 / 3d;
+        else if (mod == 6) modifier = !accuracy ? 4 : 3;
+        else if (mod == -1) modifier = !accuracy ? 2 / 3d : 3 / 4d;
+        else if (mod == -2) modifier = !accuracy ? 1 / 2d : 3 / 5d;
+        else if (mod == -3) modifier = !accuracy ? 2 / 5d : 3 / 6d;
+        else if (mod == -4) modifier = !accuracy ? 1 / 3d : 3 / 7d;
+        else if (mod == -5) modifier = !accuracy ? 2 / 7d : 3 / 8d;
+        else if (mod == -6) modifier = !accuracy ? 1 / 4d : 3 / 9d;
+        return modifier;
     }
 
-    public static int[] maxXPs = { 800000, 1000000, 1059860, 1250000, 600000, 1640000 };
+    public static int serialize(float f, float g)
+    {
+        float toSet = g;
+        if (toSet > f)
+        {
+            toSet = f;
+        }
+
+        if (toSet < 0)
+        {
+            toSet = 0;
+        }
+
+        float maxHealthFloat = f;
+
+        float value = (PokecubeMod.FULL_HEALTH * toSet) / maxHealthFloat;
+        return (int) (PokecubeMod.MAX_DAMAGE - value);
+    }
 
     public static int xpToLevel(int type, int exp)
     {
@@ -283,227 +579,8 @@ public class Tools
         return Math.min(level, 100);
     }
 
-    private static int getLevelFromTable(int[] table, int exp)
+    public Tools()
     {
-        int level = 0;
-        for (int i = 0; i < 100; i++)
-        {
-            if (table[i] <= exp && table[i + 1] > exp)
-            {
-                level = i;
-                break;
-            }
-        }
-
-        return level;
-    }
-
-    private static void initTables()
-    {
-        for (int i = 0; i < 101; i++)
-        {
-            erraticXp[i] = levelToXp(4, i);
-            fluctuatingXp[i] = levelToXp(5, i);
-        }
-    }
-
-    public static int getExp(float coef, int baseXP, int level)
-    {
-        // Increase exp gain if the density is set lower.
-        float multiplier = (float) (1.0F / Math.sqrt(PokecubeMod.MAX_DENSITY));
-        return MathHelper.floor_float(multiplier * coef * baseXP * level / 7F);
-    }
-
-    public static int computeCatchRate(IPokemob pokemob, int pokecubeId)
-    {
-        double cubeBonus = 0;
-        Item cube = PokecubeItems.getFilledCube(pokecubeId);
-        if (cube instanceof IPokecube)
-        {
-            cubeBonus = ((IPokecube) cube).getCaptureModifier(pokemob, pokecubeId);
-        }
-        return computeCatchRate(pokemob, cubeBonus);
-    }
-
-    public static int computeCatchRate(IPokemob pokemob, double cubeBonus)
-    {
-        float HPmax = ((EntityLivingBase) pokemob).getMaxHealth();
-        Random rand = new Random();
-        float HP = ((EntityLivingBase) pokemob).getHealth();
-        float statusBonus = 1F;
-        byte status = pokemob.getStatus();
-        if (status == IMoveConstants.STATUS_FRZ || status == IMoveConstants.STATUS_SLP)
-        {
-            statusBonus = 2F;
-        }
-        else if (status != IMoveConstants.STATUS_NON)
-        {
-            statusBonus = 1.5F;
-        }
-        int catchRate = pokemob.getCatchRate();
-
-        double a = getCatchRate(HPmax, HP, catchRate, cubeBonus, statusBonus);
-
-        if (a > 255)
-        {
-            return 5;
-        }
-        else
-        {
-            double b = 1048560 / Math.sqrt(Math.sqrt(16711680 / a));
-            int n = 0;
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            return n;
-        }
-    }
-
-    public static double getCatchRate(float hPmax, float hP, float catchRate, double cubeBonus, double statusBonus)
-    {
-        return ((3D * hPmax - 2D * hP) * catchRate * cubeBonus * statusBonus) / (3D * hPmax);
-    }
-
-    /** Can be {@link IPokemob#MALE}, {@link IPokemob#FEMALE} or
-     * {@link IPokemob#NOSEXE}
-     *
-     * @param baseValue
-     *            the sexe ratio of the Pokemon, 254=Only female, 255=no sexe,
-     *            0=Only male
-     * @param random
-     * @return the int gender */
-    public static byte getSexe(int baseValue, Random random)
-    {
-        if (baseValue == 255) { return IPokemob.NOSEXE; }
-
-        if (random.nextInt(255) >= baseValue)
-        {
-            return IPokemob.MALE;
-        }
-        else
-        {
-            return IPokemob.FEMALE;
-        }
-    }
-
-    public static byte getRandomIV(Random random)
-    {
-        return (byte) random.nextInt(32);
-    }
-
-    public static int countPokemon(Vector3 location, World world, double distance, PokedexEntry pokemon)
-    {
-        int ret = 0;
-        List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class,
-                location.getAABB().expand(distance, distance, distance));
-        for (Object o : list)
-        {
-            if (o instanceof IPokemob)
-            {
-                IPokemob mob = (IPokemob) o;
-                if (mob.getPokedexEntry() == pokemon)
-                {
-                    ret++;
-                }
-            }
-        }
-
-        return ret;
-    }
-
-    public static int countPokemon(Vector3 location, World world, double distance, PokeType type)
-    {
-        int ret = 0;
-        List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class,
-                location.getAABB().expand(distance, distance, distance));
-        for (Object o : list)
-        {
-            if (o instanceof IPokemob)
-            {
-                IPokemob mob = (IPokemob) o;
-                if (mob.getPokedexEntry().isType(type))
-                {
-                    ret++;
-                }
-            }
-        }
-        return ret;
-    }
-
-    public static Entity getPointedEntity(Entity entity, double distance)
-    {
-        Vec3 vec3 = new Vec3(entity.posX, entity.posY + (double) entity.getEyeHeight(), entity.posZ);
-        double d0 = distance;
-        Vec3 vec31 = entity.getLook(0);
-        Vec3 vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
-        Entity pointedEntity = null;
-        float f = 1.0F;
-        List<Entity> list = entity.worldObj.getEntitiesInAABBexcluding(entity,
-                entity.getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0)
-                        .expand((double) f, (double) f, (double) f),
-                Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
-                {
-                    public boolean apply(Entity p_apply_1_)
-                    {
-                        return p_apply_1_.canBeCollidedWith();
-                    }
-                }));
-        double d2 = distance;
-
-        for (int j = 0; j < list.size(); ++j)
-        {
-            Entity entity1 = (Entity) list.get(j);
-            float f1 = entity1.getCollisionBorderSize();
-            AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double) f1, (double) f1, (double) f1);
-            MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
-
-            if (axisalignedbb.isVecInside(vec3))
-            {
-                if (d2 >= 0.0D)
-                {
-                    pointedEntity = entity1;
-                    d2 = 0.0D;
-                }
-            }
-            else if (movingobjectposition != null)
-            {
-                double d3 = vec3.distanceTo(movingobjectposition.hitVec);
-
-                if (d3 < d2 || d2 == 0.0D)
-                {
-                    if (entity1 == entity.ridingEntity && !entity.canRiderInteract())
-                    {
-                        if (d2 == 0.0D)
-                        {
-                            pointedEntity = entity1;
-                        }
-                    }
-                    else
-                    {
-                        pointedEntity = entity1;
-                        d2 = d3;
-                    }
-                }
-            }
-        }
-        return pointedEntity;
+        initTables();
     }
 }

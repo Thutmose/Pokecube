@@ -35,6 +35,27 @@ public class Subtract extends PostfixMathCommand
 		return;
 	}
 	
+	public Complex sub(Complex c1, Complex c2)
+	{
+		return new Complex(c1.re() - c2.re(), c1.im() - c2.im());
+	}
+	
+
+	public Complex sub(Complex c, Number d)
+	{
+		return new Complex(c.re() - d.doubleValue(), c.im());
+	}
+	
+	public Complex sub(Number d, Complex c)
+	{
+		return new Complex(d.doubleValue() - c.re(), -c.im());
+	}
+	
+	public Double sub(Number d1, Number d2)
+	{
+		return new Double(d1.doubleValue() - d2.doubleValue());
+	}
+
 	public Object sub(Object param1, Object param2)
 		throws ParseException
 	{
@@ -61,26 +82,5 @@ public class Subtract extends PostfixMathCommand
 			}
 		} 
 		throw new ParseException("Invalid parameter type");
-	}
-	
-
-	public Double sub(Number d1, Number d2)
-	{
-		return new Double(d1.doubleValue() - d2.doubleValue());
-	}
-	
-	public Complex sub(Complex c1, Complex c2)
-	{
-		return new Complex(c1.re() - c2.re(), c1.im() - c2.im());
-	}
-	
-	public Complex sub(Complex c, Number d)
-	{
-		return new Complex(c.re() - d.doubleValue(), c.im());
-	}
-
-	public Complex sub(Number d, Complex c)
-	{
-		return new Complex(d.doubleValue() - c.re(), -c.im());
 	}
 }

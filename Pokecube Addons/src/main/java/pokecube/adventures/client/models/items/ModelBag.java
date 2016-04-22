@@ -8,16 +8,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class ModelBag extends ModelBase {
-    ResourceLocation texture = new ResourceLocation(
+    public static ModelBag model = new ModelBag();
+	ResourceLocation texture = new ResourceLocation(
             "pokecube_adventures:textures/Bag.png");
 	// fields
 	ModelRenderer Pack_pt1;
 	ModelRenderer Pack_pt2;
 	ModelRenderer Pack_pt3;
 	ModelRenderer Pack_pt4;
-	ModelRenderer Pack_pt5;
 
-	public static ModelBag model = new ModelBag();
+	ModelRenderer Pack_pt5;
 
 	public ModelBag() {
 		textureWidth = 64;

@@ -36,8 +36,23 @@ public class JEICompat implements IModPlugin
 {
     public static final String CLONER = "pokecube_adventures.cloner";
 
+    static boolean added = false;
+    public static List<Rectangle> getPCModuleAreas(GuiPC gui)
+    {
+        List<Rectangle> retList = Lists.newArrayList();
+        retList.add(new Rectangle(gui.guiLeft, gui.guiTop, gui.xSize + 50, 50));
+        return retList;
+    }
+
     IItemRegistry itemRegistry;
+
     IJeiHelpers   jeiHelpers;
+
+    @Override
+    public void onItemRegistryAvailable(IItemRegistry itemRegistry)
+    {
+        this.itemRegistry = itemRegistry;
+    }
 
     @Override
     public void onJeiHelpersAvailable(IJeiHelpers jeiHelpers)
@@ -46,13 +61,15 @@ public class JEICompat implements IModPlugin
     }
 
     @Override
-    public void onItemRegistryAvailable(IItemRegistry itemRegistry)
+    public void onRecipeRegistryAvailable(IRecipeRegistry recipeRegistry)
     {
-        this.itemRegistry = itemRegistry;
     }
 
-    static boolean added = false;
-
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
+    {
+    }
+    
     @Override
     public void register(IModRegistry registry)
     {
@@ -117,23 +134,6 @@ public class JEICompat implements IModPlugin
                 return getPCModuleAreas(guiContainer);
             }
         });
-    }
-
-    @Override
-    public void onRecipeRegistryAvailable(IRecipeRegistry recipeRegistry)
-    {
-    }
-
-    @Override
-    public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
-    {
-    }
-    
-    public static List<Rectangle> getPCModuleAreas(GuiPC gui)
-    {
-        List<Rectangle> retList = Lists.newArrayList();
-        retList.add(new Rectangle(gui.guiLeft, gui.guiTop, gui.xSize + 50, 50));
-        return retList;
     }
 
 }

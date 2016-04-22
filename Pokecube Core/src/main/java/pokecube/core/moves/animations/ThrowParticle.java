@@ -99,6 +99,7 @@ public class ThrowParticle extends MoveAnimationBase
         return duration;
     }
 
+    @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
         if (particle.equals("airbubble"))

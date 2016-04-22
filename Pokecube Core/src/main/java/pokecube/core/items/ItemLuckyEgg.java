@@ -4,6 +4,7 @@
 package pokecube.core.items;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
@@ -13,7 +14,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
-public class ItemLuckyEgg extends ItemTranslated
+public class ItemLuckyEgg extends Item
 {
 
     /** @param par1 */

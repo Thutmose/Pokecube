@@ -55,7 +55,7 @@ dependencies {
 }
 
 group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Pokecube Core"
+archivesBaseName = "pokecube"
 
 minecraft {
     version = "${version_minecraft}-${version_forge}"
@@ -64,11 +64,17 @@ minecraft {
     
     useDepAts = true
     
-    replace "@VERSION@", project.version
+    replace "@VERSION", project.version
     replaceIn "PokecubeMod.java"
-    replace "@VERSION@", project.version
+    replace "@VERSION", project.version
     replaceIn "mcmod.info"
-    replace "@MCVERSION@", "${version_mcsupport}"
+    replace "@MINVERSION", "${version_mincompat}"
+    replaceIn "PokecubeMod.java"
+    replace "@MCVERSION", "${version_mcsupport}"
+    replaceIn "PokecubeMod.java"
+    replace "@FORGEVERSION", "[${version_forge},)"
+    replaceIn "PokecubeMod.java"
+    replace "@THUTCORE", "[${version_thutcore},)"
     replaceIn "PokecubeMod.java"
     
     makeObfSourceJar = false
@@ -109,6 +115,8 @@ task srcJar(type: Jar) {
 }
 
 task deobfJar(type: Jar) {
+    version = "${version_minecraft}-${version}"
+    jar.baseName = "Pokecube Core"
     from sourceSets.main.output
     classifier = 'dev'
 }

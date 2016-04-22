@@ -28,6 +28,20 @@ public class PokemobAIDodge extends EntityAIBase
         this.setMutexBits(16);
     }
 
+    boolean shouldDodge()
+    {
+        boolean dodge = false;
+
+        if (!entity.onGround && !(dodger.getPokedexEntry().floats() || dodger.getPokedexEntry().flys())) return dodge;
+
+        byte[] mods = dodger.getModifiers();
+
+        double evasionMod = Tools.modifierToRatio(mods[7], true) / 30d;
+
+        dodge = Math.random() > (1 - evasionMod);
+        return dodge;
+    }
+
     @Override
     public boolean shouldExecute()
     {
@@ -36,7 +50,7 @@ public class PokemobAIDodge extends EntityAIBase
         {
             IPokemob target = (IPokemob) entity.getAttackTarget();
 
-            boolean shouldDodgeMove = target.getPokemonAIState(IPokemob.EXECUTINGMOVE);
+            boolean shouldDodgeMove = target.getPokemonAIState(IMoveConstants.EXECUTINGMOVE);
 
             if (shouldDodgeMove)
             {
@@ -64,7 +78,7 @@ public class PokemobAIDodge extends EntityAIBase
         Vector3 perp = target.subtractFrom(loc).rotateAboutLine(Vector3.secondAxis, Math.PI / 2, temp);
 
         if (Math.random() > 0.5) perp = perp.scalarMultBy(-1);
-        dodger.setPokemonAIState(IPokemob.DODGING, true);
+        dodger.setPokemonAIState(IMoveConstants.DODGING, true);
         perp = perp.normalize();
         if (perp.isNaN())
         {
@@ -74,19 +88,5 @@ public class PokemobAIDodge extends EntityAIBase
         perp.scalarMultBy(dodger.getPokedexEntry().width * dodger.getSize());
         perp.addVelocities(entity);
 
-    }
-
-    boolean shouldDodge()
-    {
-        boolean dodge = false;
-
-        if (!entity.onGround && !(dodger.getPokedexEntry().floats() || dodger.getPokedexEntry().flys())) return dodge;
-
-        byte[] mods = dodger.getModifiers();
-
-        double evasionMod = Tools.modifierToRatio(mods[7], true) / 30d;
-
-        dodge = Math.random() > (1 - evasionMod);
-        return dodge;
     }
 }

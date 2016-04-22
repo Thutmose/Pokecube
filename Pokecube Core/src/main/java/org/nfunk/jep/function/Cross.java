@@ -24,20 +24,6 @@ public class Cross extends PostfixMathCommand
 		numberOfParameters = 2;
 	}
 	
-	@Override
-	public void run(Stack inStack)
-		throws ParseException 
-	{
-		checkStack(inStack); // check the stack
-		
-		Object param2 = inStack.pop();
-		Object param1 = inStack.pop();
-		
-		inStack.push(cross(param1, param2));
-
-		return;
-	}
-	
 	public Object cross(Object param1, Object param2)
 		throws ParseException
 	{
@@ -47,7 +33,7 @@ public class Cross extends PostfixMathCommand
 		}
 		throw new ParseException("Cross: Invalid parameter type, both arguments must be vectors");
 	}
-
+	
 	public Object cross(Vector lhs,Vector rhs) throws ParseException
 	{
 		int len = lhs.size();
@@ -75,5 +61,19 @@ public class Cross extends PostfixMathCommand
 				mul.mul(lhs.elementAt(1),rhs.elementAt(0)));
 			
 		}
+	}
+
+	@Override
+	public void run(Stack inStack)
+		throws ParseException 
+	{
+		checkStack(inStack); // check the stack
+		
+		Object param2 = inStack.pop();
+		Object param1 = inStack.pop();
+		
+		inStack.push(cross(param1, param2));
+
+		return;
 	}
 }

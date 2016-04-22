@@ -21,9 +21,41 @@ import thut.api.maths.Vector3;
 
 public class TeamEventsHandler
 {
+    public static boolean shouldRenderVolume = false;
+
     Vector3               v                  = Vector3.getNewVector(), v1 = Vector3.getNewVector();
 
-    public static boolean shouldRenderVolume = false;
+    @SubscribeEvent
+    public void BreakBlock(BreakEvent evt)
+    {
+        EntityPlayer player = evt.getPlayer();
+        // TODO interface with
+        // forge permissions API
+        // here as well
+        if (player != null && player.getTeam() != null)
+        {
+            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.pos, player.dimension);
+            if (!TeamManager.getInstance().isOwned(c)) return;
+            if (!player.worldObj.isRemote)
+            {
+                UserListOpsEntry userentry = ((EntityPlayerMP) player).mcServer
+                        .getConfigurationManager().getOppedPlayers().getEntry(player.getGameProfile());
+
+                if (userentry != null
+                        || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) { return; }
+            }
+            if (TeamManager.getInstance().isOwned(c)
+                    && !TeamManager.getInstance().isTeamLand(c, player.getTeam().getRegisteredName()))
+            {
+                player.addChatMessage(new ChatComponentText("You may not remove blocks from land owned by Team "
+                        + TeamManager.getInstance().getLandOwner(c)));
+                evt.setCanceled(true);
+                return;
+            }
+            ChunkCoordinate block = new ChunkCoordinate(evt.pos, evt.world.provider.getDimensionId());
+            TeamManager.getInstance().unsetPublic(block);
+        }
+    }
 
     /** Uses player interact here to also prevent opening of inventories.
      * 
@@ -87,38 +119,6 @@ public class TeamEventsHandler
             }
             PASaveHandler.getInstance().loadBag();
             PASaveHandler.getInstance().loadTeams();
-        }
-    }
-
-    @SubscribeEvent
-    public void BreakBlock(BreakEvent evt)
-    {
-        EntityPlayer player = evt.getPlayer();
-        // TODO interface with
-        // forge permissions API
-        // here as well
-        if (player != null && player.getTeam() != null)
-        {
-            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.pos, player.dimension);
-            if (!TeamManager.getInstance().isOwned(c)) return;
-            if (!player.worldObj.isRemote)
-            {
-                UserListOpsEntry userentry = (UserListOpsEntry) ((EntityPlayerMP) player).mcServer
-                        .getConfigurationManager().getOppedPlayers().getEntry(player.getGameProfile());
-
-                if (userentry != null
-                        || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) { return; }
-            }
-            if (TeamManager.getInstance().isOwned(c)
-                    && !TeamManager.getInstance().isTeamLand(c, player.getTeam().getRegisteredName()))
-            {
-                player.addChatMessage(new ChatComponentText("You may not remove blocks from land owned by Team "
-                        + TeamManager.getInstance().getLandOwner(c)));
-                evt.setCanceled(true);
-                return;
-            }
-            ChunkCoordinate block = new ChunkCoordinate(evt.pos, evt.world.provider.getDimensionId());
-            TeamManager.getInstance().unsetPublic(block);
         }
     }
 

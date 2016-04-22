@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.PokecubeItems;
-import pokecube.core.handlers.ConfigHandler;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class WorldGenStartBuilding implements IWorldGenerator
@@ -20,86 +20,21 @@ public class WorldGenStartBuilding implements IWorldGenerator
 
     public static boolean building = false;
 
-    @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator,
-            IChunkProvider chunkProvider)
+    public static void fillWithBlocks(World world, Vector3 centre, Vector3 lower, Vector3 upper, Block block, int meta)
     {
-        if (building || !ConfigHandler.SPAWNBUILDING) return;
-
-        if (world.provider.getDimensionId() != 0) return;
-
-        int x = world.getSpawnPoint().getX() / 16;
-        int z = world.getSpawnPoint().getZ() / 16;
-
-        if (x != chunkX || z != chunkZ) return;
-        System.out.println("spawn building " + chunkX + " " + chunkZ);
-        building = true;
-        int y = getAverageHeight(world, chunkX * 16, chunkZ * 16) - 1;
-
-        Vector3 centre = Vector3.getNewVector().set(chunkX * 16, y - 1, chunkZ * 16);
-
-        makePokecenter(centre, world);
-
-        for (int i = 0; i < 9; i++)
-            for (int j = 3; j <= 6; j++)
-            {
-                BlockPos pos = new BlockPos(chunkX * 16 + i, y - 1 + j, chunkZ * 16 - 1);
-                world.setBlockToAir(pos);
-            }
-        int j = y + 1;
-        BlockPos pos = new BlockPos(chunkX * 16 + 4, j, chunkZ * 16 - 1);
-        if (world.isAirBlock(pos) && !world.isAirBlock(pos.down()))
-        {
-            world.setBlockState(pos, Blocks.stone_stairs.getStateFromMeta(2), 7);
-        }
-        else while (j > 1)
-        {
-            pos = new BlockPos(chunkX * 16 + 4, j, chunkZ * 16 - 1);
-            if (world.isAirBlock(pos))
-            {
-                world.setBlockState(pos, Blocks.ladder.getStateFromMeta(2));
-            }
-            else
-            {
-                break;
-            }
-            j--;
-        }
-        pos = new BlockPos(chunkX * 16 + 4, centre.y + 3, chunkZ * 16 + 4);
-        world.provider.setSpawnPoint(pos);
+        fillWithBlocks(world, centre, lower, upper, block.getStateFromMeta(meta));
     }
 
-    int getAverageHeight(World world, int x, int z)
+    public static void fillWithBlocks(World world, Vector3 centre, Vector3 lower, Vector3 upper, IBlockState state)
     {
-        int y = 0;
-        int minY = 255;
-        for (int i = 0; i < 9; i++)
-            for (int j = 0; j < 9; j++)
-            {
-                if (getMaxY(world, x, z) < minY) minY = getMaxY(world, x + i, z + j);
-            }
-
-        for (int i = 0; i < 9; i++)
-            for (int j = 0; j < 9; j++)
-                y += getMaxY(world, x + i, z + j);
-        y /= 81;
-        if ((minY < y - 5) && !(minY < y - 10)) y = minY;
-        return y;
-    }
-
-    int getMaxY(World world, int x, int z)
-    {
-        int y = 255;
-        Block id = Blocks.air;
-        BlockPos pos = new BlockPos(x, y, z);
-        while ((id.isAir(world, pos) || id == Blocks.snow || id.isLeaves(world, pos) || id.isWood(world, pos)) && y > 1)
-        {
-            y--;
-            pos = new BlockPos(x, y, z);
-            id = world.getBlockState(pos).getBlock();
-        }
-
-        return y;
+        int x, y, z;
+        Vector3 temp = Vector3.getNewVector();
+        for (x = lower.intX(); x <= upper.x; x++)
+            for (y = lower.intY(); y <= upper.y; y++)
+                for (z = lower.intZ(); z <= upper.z; z++)
+                {
+                    temp.set(centre).addTo(x, y, z).setBlock(world, state);
+                }
     }
 
     public static void makePokecenter(Vector3 centre, World world)
@@ -178,21 +113,86 @@ public class WorldGenStartBuilding implements IWorldGenerator
         ItemDoor.placeDoor(world, temp1.set(centre).addTo(4, 3, 0).getPos(), EnumFacing.SOUTH, Blocks.oak_door);
     }
 
-    public static void fillWithBlocks(World world, Vector3 centre, Vector3 lower, Vector3 upper, Block block, int meta)
+    @Override
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator,
+            IChunkProvider chunkProvider)
     {
-        fillWithBlocks(world, centre, lower, upper, block.getStateFromMeta(meta));
+        if (building || !PokecubeMod.core.getConfig().doSpawnBuilding) return;
+
+        if (world.provider.getDimensionId() != 0) return;
+
+        int x = world.getSpawnPoint().getX() / 16;
+        int z = world.getSpawnPoint().getZ() / 16;
+
+        if (x != chunkX || z != chunkZ) return;
+        System.out.println("spawn building " + chunkX + " " + chunkZ);
+        building = true;
+        int y = getAverageHeight(world, chunkX * 16, chunkZ * 16) - 1;
+
+        Vector3 centre = Vector3.getNewVector().set(chunkX * 16, y - 1, chunkZ * 16);
+
+        makePokecenter(centre, world);
+
+        for (int i = 0; i < 9; i++)
+            for (int j = 3; j <= 6; j++)
+            {
+                BlockPos pos = new BlockPos(chunkX * 16 + i, y - 1 + j, chunkZ * 16 - 1);
+                world.setBlockToAir(pos);
+            }
+        int j = y + 1;
+        BlockPos pos = new BlockPos(chunkX * 16 + 4, j, chunkZ * 16 - 1);
+        if (world.isAirBlock(pos) && !world.isAirBlock(pos.down()))
+        {
+            world.setBlockState(pos, Blocks.stone_stairs.getStateFromMeta(2), 7);
+        }
+        else while (j > 1)
+        {
+            pos = new BlockPos(chunkX * 16 + 4, j, chunkZ * 16 - 1);
+            if (world.isAirBlock(pos))
+            {
+                world.setBlockState(pos, Blocks.ladder.getStateFromMeta(2));
+            }
+            else
+            {
+                break;
+            }
+            j--;
+        }
+        pos = new BlockPos(chunkX * 16 + 4, centre.y + 3, chunkZ * 16 + 4);
+        world.provider.setSpawnPoint(pos);
     }
 
-    public static void fillWithBlocks(World world, Vector3 centre, Vector3 lower, Vector3 upper, IBlockState state)
+    int getAverageHeight(World world, int x, int z)
     {
-        int x, y, z;
-        Vector3 temp = Vector3.getNewVector();
-        for (x = lower.intX(); x <= upper.x; x++)
-            for (y = lower.intY(); y <= upper.y; y++)
-                for (z = lower.intZ(); z <= upper.z; z++)
-                {
-                    temp.set(centre).addTo(x, y, z).setBlock(world, state);
-                }
+        int y = 0;
+        int minY = 255;
+        for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
+            {
+                if (getMaxY(world, x, z) < minY) minY = getMaxY(world, x + i, z + j);
+            }
+
+        for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
+                y += getMaxY(world, x + i, z + j);
+        y /= 81;
+        if ((minY < y - 5) && !(minY < y - 10)) y = minY;
+        return y;
+    }
+
+    int getMaxY(World world, int x, int z)
+    {
+        int y = 255;
+        Block id = Blocks.air;
+        BlockPos pos = new BlockPos(x, y, z);
+        while ((id.isAir(world, pos) || id == Blocks.snow || id.isLeaves(world, pos) || id.isWood(world, pos)) && y > 1)
+        {
+            y--;
+            pos = new BlockPos(x, y, z);
+            id = world.getBlockState(pos).getBlock();
+        }
+
+        return y;
     }
 
 }

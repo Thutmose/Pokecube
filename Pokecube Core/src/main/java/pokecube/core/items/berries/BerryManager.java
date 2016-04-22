@@ -51,20 +51,6 @@ public class BerryManager implements IMoveConstants
         PokecubeItems.addToHoldables(name);
     }
 
-    public static Block getBerryCrop(String name)
-    {
-        for (Block berryCrop : berryCrops.values())
-        {
-            if (berryCrop.getUnlocalizedName().toLowerCase().contains(name.toLowerCase())) return berryCrop;
-        }
-        return null;
-    }
-
-    public static ItemStack getBerryItem(String name)
-    {
-        return PokecubeItems.getStack(name);
-    }
-
     public static boolean berryEffect(IPokemob pokemob, ItemStack berry)
     {
 
@@ -126,5 +112,19 @@ public class BerryManager implements IMoveConstants
         }
 
         return false;
+    }
+
+    public static Block getBerryCrop(String name)
+    {
+        for (Block berryCrop : berryCrops.values())
+        {
+            if (berryCrop.getUnlocalizedName().toLowerCase().contains(name.toLowerCase())) return berryCrop;
+        }
+        return null;
+    }
+
+    public static ItemStack getBerryItem(String name)
+    {
+        return PokecubeItems.getStack(name);
     }
 }

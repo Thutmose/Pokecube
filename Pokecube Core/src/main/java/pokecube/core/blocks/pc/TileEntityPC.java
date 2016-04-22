@@ -35,26 +35,27 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         super();
     }
 
-    /** Reads a tile entity from NBT. */
     @Override
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound)
+    public void clear()
     {
-        super.readFromNBT(par1NBTTagCompound);
-        this.bound = par1NBTTagCompound.getBoolean("bound");
-        boundId = par1NBTTagCompound.getString("boundID");
-        if (boundId == null || boundId.isEmpty())
-        {
-            boundId = new UUID(1234, 4321).toString();
-        }
     }
 
-    /** Writes a tile entity to NBT. */
     @Override
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+    public void closeInventory(EntityPlayer player)
     {
-        super.writeToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setBoolean("bound", bound);
-        par1NBTTagCompound.setString("boundID", boundId);
+    }
+
+    @Override
+    public ItemStack decrStackSize(int i, int j)
+    {
+        if (getPC() != null) { return getPC().decrStackSize(i, j); }
+        return null;
+    }
+
+    @Override
+    public String getComponentName()
+    {
+        return "pokecubepc";
     }
 
     /** Overriden in a sign to provide the text. */
@@ -65,6 +66,106 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         this.writeToNBT(nbttagcompound);
         return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+    }
+
+    @Override
+    public IChatComponent getDisplayName()
+    {
+        return null;
+    }
+
+    @Override
+    public int getField(int id)
+    {
+        return 0;
+    }
+
+    @Override
+    public int getFieldCount()
+    {
+        return 0;
+    }
+
+    @Override
+    public int getInventoryStackLimit()
+    {
+        if (getPC() != null) return getPC().getInventoryStackLimit();
+        return 0;
+    }
+
+    @Callback(doc = "Returns the items in the PC")
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getItemList(Context context, Arguments args) throws Exception
+    {
+        if (isBound())
+        {
+            InventoryPC inv = getPC();
+            ArrayList<Object> items = Lists.newArrayList();
+            for (int i = 0; i < inv.getSizeInventory(); i++)
+            {
+                ItemStack stack = inv.getStackInSlot(i);
+                if (stack != null) items.add(stack.getDisplayName());
+            }
+            return items.toArray();
+        }
+        throw new Exception("PC not bound");
+    }
+
+    @Override
+    public String getName()
+    {
+        if (getPC() != null) return getPC().getName();
+        return null;
+    }
+
+    public InventoryPC getPC()
+    {
+        if (bound) { return InventoryPC.getPC(boundId); }
+        return null;
+    }
+
+    @Override
+    public int getSizeInventory()
+    {
+        if (getPC() != null) return getPC().getSizeInventory();
+        return 0;
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int i)
+    {
+        if (getPC() != null) { return getPC().getStackInSlot(i); }
+        return null;
+    }
+
+    @Override
+    public boolean hasCustomName()
+    {
+        if (getPC() != null) return getPC().hasCustomName();
+        return false;
+    }
+
+    public boolean isBound()
+    {
+        return bound;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    {
+        if (getPC() != null)
+        {
+            // if(pc.getPage()!=box) return false;
+            return getPC().isItemValidForSlot(i, itemstack);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer entityplayer)
+    {
+        if (getPC() != null) return getPC().isUseableByPlayer(entityplayer);
+        return false;
     }
 
     /** Called when you receive a TileEntityData packet for the location this
@@ -84,24 +185,21 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
     }
 
     @Override
-    public int getSizeInventory()
+    public void openInventory(EntityPlayer player)
     {
-        if (getPC() != null) return getPC().getSizeInventory();
-        return 0;
     }
 
+    /** Reads a tile entity from NBT. */
     @Override
-    public ItemStack getStackInSlot(int i)
+    public void readFromNBT(NBTTagCompound par1NBTTagCompound)
     {
-        if (getPC() != null) { return getPC().getStackInSlot(i); }
-        return null;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int i, int j)
-    {
-        if (getPC() != null) { return getPC().decrStackSize(i, j); }
-        return null;
+        super.readFromNBT(par1NBTTagCompound);
+        this.bound = par1NBTTagCompound.getBoolean("bound");
+        boundId = par1NBTTagCompound.getString("boundID");
+        if (boundId == null || boundId.isEmpty())
+        {
+            boundId = new UUID(1234, 4321).toString();
+        }
     }
 
     @Override
@@ -109,59 +207,6 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
     {
         if (getPC() != null) { return getPC().removeStackFromSlot(i); }
         return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack)
-    {
-        if (getPC() != null)
-        {
-            getPC().setInventorySlotContents(i, itemstack);
-        }
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        if (getPC() != null) return getPC().getInventoryStackLimit();
-        return 0;
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer entityplayer)
-    {
-        if (getPC() != null) return getPC().isUseableByPlayer(entityplayer);
-        return false;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack)
-    {
-        if (getPC() != null)
-        {
-            // if(pc.getPage()!=box) return false;
-            return getPC().isItemValidForSlot(i, itemstack);
-        }
-        return false;
-    }
-
-    public void toggleBound()
-    {
-        TileEntity te = worldObj.getTileEntity(getPos().down());
-        this.bound = !this.bound;
-
-        if (te != null && te instanceof TileEntityPC) ((TileEntityPC) te).toggleBound();
-
-        if (bound)
-        {
-            UUID id = InventoryPC.defaultId;
-            boundId = id.toString();
-        }
-        else
-        {
-            boundId = "";
-        }
-        worldObj.markBlockForUpdate(getPos());
     }
 
     public void setBoundOwner(String uuid)
@@ -188,90 +233,45 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
 
     }
 
-    public boolean isBound()
-    {
-        return bound;
-    }
-
-    public InventoryPC getPC()
-    {
-        if (bound) { return InventoryPC.getPC(boundId); }
-        return null;
-    }
-
-    @Override
-    public String getName()
-    {
-        if (getPC() != null) return getPC().getName();
-        return null;
-    }
-
-    @Override
-    public boolean hasCustomName()
-    {
-        if (getPC() != null) return getPC().hasCustomName();
-        return false;
-    }
-
-    @Override
-    public void openInventory(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player)
-    {
-    }
-
-    @Override
-    public IChatComponent getDisplayName()
-    {
-        return null;
-    }
-
-    @Override
-    public int getField(int id)
-    {
-        return 0;
-    }
-
     @Override
     public void setField(int id, int value)
     {
     }
 
     @Override
-    public int getFieldCount()
+    public void setInventorySlotContents(int i, ItemStack itemstack)
     {
-        return 0;
-    }
-
-    @Override
-    public void clear()
-    {
-    }
-
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getItemList(Context context, Arguments args) throws Exception
-    {
-        if (isBound())
+        if (getPC() != null)
         {
-            InventoryPC inv = getPC();
-            ArrayList<Object> items = Lists.newArrayList();
-            for (int i = 0; i < inv.getSizeInventory(); i++)
-            {
-                ItemStack stack = inv.getStackInSlot(i);
-                if (stack != null) items.add(stack.getDisplayName());
-            }
-            return items.toArray();
+            getPC().setInventorySlotContents(i, itemstack);
         }
-        throw new Exception("PC not bound");
     }
 
-    @Override
-    public String getComponentName()
+    public void toggleBound()
     {
-        return "pokecubepc";
+        TileEntity te = worldObj.getTileEntity(getPos().down());
+        this.bound = !this.bound;
+
+        if (te != null && te instanceof TileEntityPC) ((TileEntityPC) te).toggleBound();
+
+        if (bound)
+        {
+            UUID id = InventoryPC.defaultId;
+            boundId = id.toString();
+        }
+        else
+        {
+            boundId = "";
+        }
+        worldObj.markBlockForUpdate(getPos());
+    }
+
+    /** Writes a tile entity to NBT. */
+    @Override
+    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+    {
+        super.writeToNBT(par1NBTTagCompound);
+        par1NBTTagCompound.setBoolean("bound", bound);
+        par1NBTTagCompound.setString("boundID", boundId);
     }
 }

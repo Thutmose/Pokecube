@@ -33,39 +33,10 @@ public class ParticleBase implements IParticle, IAnimatedParticle
         name = "";
     }
 
-    public void setVelocity(Vector3 v)
-    {
-        velocity = v;
-    }
-
-    @Override
-    public void setLifetime(int ticks)
-    {
-        duration = lifetime = ticks;
-    }
-
     @Override
     public int getDuration()
     {
         return duration;
-    }
-
-    @Override
-    public void setDuration(int duration)
-    {
-        this.duration = duration;
-    }
-
-    @Override
-    public long lastTick()
-    {
-        return lastTick;
-    }
-
-    @Override
-    public void setLastTick(long tick)
-    {
-        lastTick = tick;
     }
 
     @Override
@@ -75,6 +46,12 @@ public class ParticleBase implements IParticle, IAnimatedParticle
         {
             // velocity.freeVectorFromPool();
         }
+    }
+
+    @Override
+    public long lastTick()
+    {
+        return lastTick;
     }
 
     @Override
@@ -142,6 +119,24 @@ public class ParticleBase implements IParticle, IAnimatedParticle
     }
 
     @Override
+    public void setDuration(int duration)
+    {
+        this.duration = duration;
+    }
+
+    @Override
+    public void setLastTick(long tick)
+    {
+        lastTick = tick;
+    }
+
+    @Override
+    public void setLifetime(int ticks)
+    {
+        duration = lifetime = ticks;
+    }
+
+    @Override
     public void setSpeed(int speed)
     {
         animSpeed = speed;
@@ -151,5 +146,10 @@ public class ParticleBase implements IParticle, IAnimatedParticle
     public void setTex(int[][] textures)
     {
         tex = textures;
+    }
+
+    public void setVelocity(Vector3 v)
+    {
+        velocity = v;
     }
 }

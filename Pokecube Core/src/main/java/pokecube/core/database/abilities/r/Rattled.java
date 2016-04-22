@@ -10,6 +10,11 @@ import pokecube.core.utils.PokeType;
 
 public class Rattled extends Ability
 {
+    private boolean isCorrectType(PokeType type)
+    {
+        return type == PokeType.dark || type == PokeType.bug || type == PokeType.ghost;
+    }
+
     @Override
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
@@ -17,10 +22,5 @@ public class Rattled extends Ability
         {
             MovesUtils.handleStats2(mob, (Entity) mob, IMoveConstants.VIT, IMoveConstants.RAISE);
         }
-    }
-
-    private boolean isCorrectType(PokeType type)
-    {
-        return type == PokeType.dark || type == PokeType.bug || type == PokeType.ghost;
     }
 }

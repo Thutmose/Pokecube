@@ -17,12 +17,12 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 public class MouseOverPacket extends AbstractPacket {
 	
 	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
 
 	}
 
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
 
 	}
 

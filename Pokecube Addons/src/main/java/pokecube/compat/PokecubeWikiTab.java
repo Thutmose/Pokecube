@@ -29,9 +29,10 @@ public class PokecubeWikiTab extends BaseWikiTab
 	}
 
 	@Override
-	public ItemStack renderTabIcon(igwmod.gui.GuiWiki gui)
+	protected String getPageLocation(String pageEntry)
 	{
-		return PokecubeItems.getStack("pokecube");
+		if (pageEntry.contains("item/") || pageEntry.contains("block/")) return pageEntry;
+		return "pokecube:menu/" + pageEntry;
 	}
 
 	@Override
@@ -48,10 +49,9 @@ public class PokecubeWikiTab extends BaseWikiTab
 	}
 
 	@Override
-	protected String getPageLocation(String pageEntry)
+	public ItemStack renderTabIcon(igwmod.gui.GuiWiki gui)
 	{
-		if (pageEntry.contains("item/") || pageEntry.contains("block/")) return pageEntry;
-		return "pokecube:menu/" + pageEntry;
+		return PokecubeItems.getStack("pokecube");
 	}
 
 }

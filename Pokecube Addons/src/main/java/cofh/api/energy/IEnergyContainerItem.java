@@ -13,19 +13,6 @@ import net.minecraft.item.ItemStack;
 public interface IEnergyContainerItem {
 
 	/**
-	 * Adds energy to a container item. Returns the quantity of energy that was accepted. This should always return 0 if the item cannot be externally charged.
-	 *
-	 * @param container
-	 *            ItemStack to be charged.
-	 * @param maxReceive
-	 *            Maximum amount of energy to be sent into the item.
-	 * @param simulate
-	 *            If TRUE, the charge will only be simulated.
-	 * @return Amount of energy that was (or would have been, if simulated) received by the item.
-	 */
-	int receiveEnergy(ItemStack container, int maxReceive, boolean simulate);
-
-	/**
 	 * Removes energy from a container item. Returns the quantity of energy that was removed. This should always return 0 if the item cannot be externally
 	 * discharged.
 	 *
@@ -48,5 +35,18 @@ public interface IEnergyContainerItem {
 	 * Get the max amount of energy that can be stored in the container item.
 	 */
 	int getMaxEnergyStored(ItemStack container);
+
+	/**
+	 * Adds energy to a container item. Returns the quantity of energy that was accepted. This should always return 0 if the item cannot be externally charged.
+	 *
+	 * @param container
+	 *            ItemStack to be charged.
+	 * @param maxReceive
+	 *            Maximum amount of energy to be sent into the item.
+	 * @param simulate
+	 *            If TRUE, the charge will only be simulated.
+	 * @return Amount of energy that was (or would have been, if simulated) received by the item.
+	 */
+	int receiveEnergy(ItemStack container, int maxReceive, boolean simulate);
 
 }

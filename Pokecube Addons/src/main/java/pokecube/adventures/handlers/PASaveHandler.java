@@ -20,18 +20,9 @@ import pokecube.adventures.items.bags.InventoryBag;
 
 public class PASaveHandler
 {
-    private int lastId;
-
-    private ISaveHandler                   saveHandler;
     private static PASaveHandler           instance;
+
     private static PASaveHandler           clientInstance;
-    public HashMap<Integer, EntityTrainer> trainers = new HashMap<Integer, EntityTrainer>();
-
-    private PASaveHandler()
-    {
-        lastId = 0;
-    }
-
     public static PASaveHandler getInstance()
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
@@ -42,68 +33,12 @@ public class PASaveHandler
         if (clientInstance == null) clientInstance = new PASaveHandler();
         return clientInstance;
     }
+    private ISaveHandler                   saveHandler;
 
-    public void saveBag(String uuid)
+    public HashMap<Integer, EntityTrainer> trainers = new HashMap<Integer, EntityTrainer>();
+
+    private PASaveHandler()
     {
-
-        if (FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
-        try
-        {
-
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            File file = saveHandler.getMapFileFromName(uuid + File.separator + "BagInventory");
-
-            File dir = new File(file.getParentFile().getAbsolutePath());
-            if (file != null && !file.exists())
-            {
-                dir.mkdirs();
-            }
-            if (file != null)
-            {
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                writeBagToNBT(nbttagcompound, uuid);
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setTag("Data", nbttagcompound);
-                FileOutputStream fileoutputstream = new FileOutputStream(file);
-                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
-                fileoutputstream.close();
-            }
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveTeams()
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-
-        try
-        {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            File file = saveHandler.getMapFileFromName("PokecubeTeams");
-            if (file != null)
-            {
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                TeamManager.getInstance().saveToNBT(nbttagcompound, true);
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setTag("Data", nbttagcompound);
-                FileOutputStream fileoutputstream = new FileOutputStream(file);
-                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
-                fileoutputstream.close();
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
     public void loadBag()
@@ -208,6 +143,69 @@ public class PASaveHandler
         }
     }
 
+    public void saveBag(String uuid)
+    {
+
+        if (FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
+        try
+        {
+
+            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
+            saveHandler = world.getSaveHandler();
+            File file = saveHandler.getMapFileFromName(uuid + File.separator + "BagInventory");
+
+            File dir = new File(file.getParentFile().getAbsolutePath());
+            if (file != null && !file.exists())
+            {
+                dir.mkdirs();
+            }
+            if (file != null)
+            {
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                writeBagToNBT(nbttagcompound, uuid);
+                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                nbttagcompound1.setTag("Data", nbttagcompound);
+                FileOutputStream fileoutputstream = new FileOutputStream(file);
+                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
+                fileoutputstream.close();
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveTeams()
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
+
+        try
+        {
+            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
+            saveHandler = world.getSaveHandler();
+            File file = saveHandler.getMapFileFromName("PokecubeTeams");
+            if (file != null)
+            {
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                TeamManager.getInstance().saveToNBT(nbttagcompound, true);
+                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                nbttagcompound1.setTag("Data", nbttagcompound);
+                FileOutputStream fileoutputstream = new FileOutputStream(file);
+                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
+                fileoutputstream.close();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void writeBagToNBT(NBTTagCompound nbt)
     {
         NBTTagList tagsPC = InventoryBag.saveToNBT();
@@ -222,12 +220,6 @@ public class PASaveHandler
 
         nbt.setTag("PC", tagsPC);
 
-    }
-
-    public int getNewId()
-    {
-        lastId++;
-        return lastId;
     }
 
 }

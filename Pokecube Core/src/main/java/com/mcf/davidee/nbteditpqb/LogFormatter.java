@@ -13,7 +13,8 @@ public final class LogFormatter extends Formatter
 	
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
 
-	public String format(LogRecord record)
+	@Override
+    public String format(LogRecord record)
 	{
 		StringBuilder sb = new StringBuilder();
 		

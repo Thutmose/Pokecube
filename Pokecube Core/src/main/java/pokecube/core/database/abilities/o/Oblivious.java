@@ -9,9 +9,8 @@ public class Oblivious extends Ability
 {
 
     @Override
-    public void onUpdate(IPokemob mob)
+    public void onAgress(IPokemob mob, EntityLivingBase target)
     {
-        mob.getMoveStats().infatuateTarget = null;
     }
 
     @Override
@@ -22,8 +21,9 @@ public class Oblivious extends Ability
     }
 
     @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
+    public void onUpdate(IPokemob mob)
     {
+        mob.getMoveStats().infatuateTarget = null;
     }
 
 }

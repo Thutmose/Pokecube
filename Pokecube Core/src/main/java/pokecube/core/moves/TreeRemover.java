@@ -38,8 +38,8 @@ public class TreeRemover
         dirtTypes.add(Blocks.dirt);
     }
 
-    World   worldObj;
-    Vector3 centre;
+    World         worldObj;
+    Vector3       centre;
 
     List<Vector3> blocks  = new LinkedList<Vector3>();
     List<Vector3> checked = new LinkedList<Vector3>();
@@ -50,64 +50,16 @@ public class TreeRemover
         centre = pos;
     }
 
-    public int cut(boolean count)
-    {
-        cutGrass();
-        return cutTree(count);
-    }
-
     public void clear()
     {
         blocks.clear();
         checked.clear();
     }
 
-    public int cutTree(boolean count)
+    public int cut(boolean count)
     {
-        if (blocks.size() > 0 && count)
-        {
-            clear();
-        }
-        else if (blocks.size() > 0) { return cutPoints(count); }
-
-        Vector3 base = Vector3.getNewVector();
-        int ret = 0;
-        int k = -1;
-        Vector3 temp = Vector3.getNewVector();
-
-        for (int i = -3; i < 4; i++)
-            for (int j = -3; j < 4; j++)
-            {
-                if (woodTypes.contains(temp.set(centre).addTo(i, 0, j).getBlock(worldObj)))
-                {
-                    boolean valid = false;
-                    while (centre.intY() + k > 0)
-                    {
-                        if (woodTypes.contains(temp.set(centre).addTo(i, k, j).getBlock(worldObj)))
-                        {
-
-                        }
-                        else if (dirtTypes.contains(temp.set(centre).addTo(i, k, j).getBlock(worldObj)))
-                        {
-                            valid = true;
-                        }
-                        if (valid) break;
-                        k--;
-                    }
-                    if (valid)
-                    {
-                        base.set(temp).set(centre).addTo(i, k + 1, j);
-                    }
-
-                }
-            }
-
-        if (!base.isEmpty())
-        {
-            populateList(base);
-            ret = cutPoints(count);
-        }
-        return ret;
+        cutGrass();
+        return cutTree(count);
     }
 
     public void cutGrass()
@@ -125,26 +77,6 @@ public class TreeRemover
                 }
     }
 
-    private void populateList(Vector3 base)
-    {
-        blocks.add(base);
-        while (checked.size() < blocks.size())
-        {
-            List<Vector3> toAdd = new ArrayList<Vector3>();
-            for (Vector3 v : blocks)
-            {
-                if (!checked.contains(v))
-                {
-                    nextPoint(v, toAdd);
-                }
-            }
-            for (Vector3 v : toAdd)
-            {
-                if (!blocks.contains(v)) blocks.add(v);
-            }
-        }
-    }
-
     private int cutPoints(boolean count)
     {
         int ret = 0;
@@ -154,6 +86,56 @@ public class TreeRemover
             ret++;
         }
         return ret;
+    }
+
+    public int cutTree(boolean count)
+    {
+        if (blocks.size() > 0 && count)
+        {
+            clear();
+        }
+        else if (blocks.size() > 0) { return cutPoints(count); }
+        Vector3 base = findTreeBase();
+        int ret = 0;
+        if (!base.isEmpty())
+        {
+            populateList(base);
+            ret = cutPoints(count);
+        }
+        return ret;
+    }
+
+    private Vector3 findTreeBase()
+    {
+        Vector3 base = Vector3.getNewVector();
+        int k = -1;
+        Vector3 temp = Vector3.getNewVector();
+
+        if (woodTypes.contains(temp.set(centre).getBlock(worldObj)))
+        {
+            boolean valid = false;
+            while (centre.intY() + k > 0)
+            {
+                if (woodTypes.contains(temp.set(centre).addTo(0, k, 0).getBlock(worldObj)))
+                {
+                }
+                else if (dirtTypes.contains(temp.set(centre).addTo(0, k, 0).getBlock(worldObj)))
+                {
+                    valid = true;
+                }
+                else
+                {
+                    break;
+                }
+                if (valid) break;
+                k--;
+            }
+            if (valid)
+            {
+                base.set(temp).set(centre).addTo(0, k + 1, 0);
+            }
+        }
+        return base;
     }
 
     private boolean nextPoint(Vector3 prev, List<Vector3> tempList)
@@ -174,5 +156,25 @@ public class TreeRemover
                 }
         checked.add(prev);
         return ret;
+    }
+
+    private void populateList(Vector3 base)
+    {
+        blocks.add(base);
+        while (checked.size() < blocks.size())
+        {
+            List<Vector3> toAdd = new ArrayList<Vector3>();
+            for (Vector3 v : blocks)
+            {
+                if (!checked.contains(v))
+                {
+                    nextPoint(v, toAdd);
+                }
+            }
+            for (Vector3 v : toAdd)
+            {
+                if (!blocks.contains(v)) blocks.add(v);
+            }
+        }
     }
 }

@@ -45,6 +45,19 @@ public class AchievementCatch extends Achievement
         return StatCollector.translateToLocalFormatted("achievement.catch", getPokemobTranslatedName());
     }
     
+    protected String getPokemobTranslatedName()
+    {
+        if (pokedexNb > 0&&Pokedex.getInstance().getEntry(pokedexNb)!=null)
+        {
+            return Pokedex.getInstance().getEntry(pokedexNb).getTranslatedName();
+        }
+        else
+        {
+        	System.out.println("shouldn't happen");
+            return "AchievementCatch";    // should not happen
+        }
+    }
+
     @Override
 	public IChatComponent getStatName() {
 		if ("get1stPokemob".equals(statId)) {
@@ -58,19 +71,6 @@ public class AchievementCatch extends Achievement
 						new ChatComponentText(this.statId)));
 		return ichatcomponent;
 	}
-
-    protected String getPokemobTranslatedName()
-    {
-        if (pokedexNb > 0&&Pokedex.getInstance().getEntry(pokedexNb)!=null)
-        {
-            return Pokedex.getInstance().getEntry(pokedexNb).getTranslatedName();
-        }
-        else
-        {
-        	System.out.println("shouldn't happen");
-            return "AchievementCatch";    // should not happen
-        }
-    }
 
 
     @Override

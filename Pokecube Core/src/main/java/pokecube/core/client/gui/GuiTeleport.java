@@ -11,23 +11,40 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 
 public class GuiTeleport extends Gui
 {
-    protected FontRenderer     fontRenderer;
-    protected Minecraft        minecraft;
     protected static int       lightGrey = 0xDDDDDD;
     private static GuiTeleport instance;
+    public static GuiTeleport instance()
+    {
+        if (instance == null) new GuiTeleport();
+
+        if (instance.locations == null) instance.locations = PokecubeSerializer.getInstance()
+                .getTeleports(instance.minecraft.thePlayer.getUniqueID().toString());
+
+        return instance;
+    }
+    protected FontRenderer     fontRenderer;
+
+    protected Minecraft        minecraft;
+
+    public List<TeleDest> locations;
+
+    public int indexLocation = 0;
+
+    boolean state = false;
 
     /**
      *
@@ -39,44 +56,10 @@ public class GuiTeleport extends Gui
         instance = this;
     }
 
-    public List<TeleDest> locations;
-
-    public static GuiTeleport instance()
-    {
-        if (instance == null) new GuiTeleport();
-
-        if (instance.locations == null) instance.locations = PokecubeSerializer.getInstance()
-                .getTeleports(instance.minecraft.thePlayer.getUniqueID().toString());
-
-        return instance;
-    }
-
-    public void refresh()
-    {
-        instance.locations = PokecubeSerializer.getInstance()
-                .getTeleports(instance.minecraft.thePlayer.getUniqueID().toString());
-    }
-
-    @SubscribeEvent
-    public void onRenderHotbar(RenderGameOverlayEvent.Post event)
-    {
-        try
-        {
-            if (instance().state && minecraft.currentScreen == null
-                    && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
-                    && event.type == ElementType.HOTBAR)
-                draw(event);
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     private void draw(RenderGameOverlayEvent.Post event)
     {
-        int w = Mod_Pokecube_Helper.guiOffset[0];
-        int h = Mod_Pokecube_Helper.guiOffset[1];
+        int w = PokecubeMod.core.getConfig().guiOffset[0];
+        int h = PokecubeMod.core.getConfig().guiOffset[1];
         w = Math.min(event.resolution.getScaledWidth() - 105, w);
         h = Math.min(event.resolution.getScaledHeight() - 13, h);
         GlStateManager.pushMatrix();
@@ -95,7 +78,7 @@ public class GuiTeleport extends Gui
         int yOffset = 60;
         int dir = 1;
 
-        if (!Mod_Pokecube_Helper.guiDown)
+        if (!PokecubeMod.core.getConfig().guiDown)
         {
             IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             int moveCount = 0;
@@ -111,7 +94,7 @@ public class GuiTeleport extends Gui
         // bind texture
         minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
         this.drawTexturedModalRect(90 * xOffset + w, yOffset + h, 0, 0, 100, 13);
-        fontRenderer.drawString("Teleports", 2 + 90 * xOffset + w, 2 + yOffset + h, lightGrey);
+        fontRenderer.drawString(StatCollector.translateToLocal("gui.pokemob.teleport"), 2 + 90 * xOffset + w, 2 + yOffset + h, lightGrey);
         // ArrayList<Vector4> list = new ArrayList(locations.keySet());
 
         for (int k = 0; k < 1; k++)
@@ -142,7 +125,10 @@ public class GuiTeleport extends Gui
         GlStateManager.popMatrix();
     }
 
-    public int indexLocation = 0;
+    public boolean getState()
+    {
+        return instance().state;
+    }
 
     public void nextMove()
     {
@@ -152,21 +138,36 @@ public class GuiTeleport extends Gui
         else instance().indexLocation = 0;
     }
 
-    boolean state = false;
-
-    public void setState(boolean state)
+    @SubscribeEvent
+    public void onRenderHotbar(RenderGameOverlayEvent.Post event)
     {
-        instance().state = state;
-    }
-
-    public boolean getState()
-    {
-        return instance().state;
+        try
+        {
+            if (instance().state && minecraft.currentScreen == null
+                    && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
+                    && event.type == ElementType.HOTBAR)
+                draw(event);
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void previousMove()
     {
         instance().indexLocation--;
         if (instance().indexLocation < 0) instance().indexLocation = Math.max(0, instance().locations.size() - 1);
+    }
+
+    public void refresh()
+    {
+        instance.locations = PokecubeSerializer.getInstance()
+                .getTeleports(instance.minecraft.thePlayer.getUniqueID().toString());
+    }
+
+    public void setState(boolean state)
+    {
+        instance().state = state;
     }
 }

@@ -1,27 +1,15 @@
 package pokecube.adventures.events;
 
-import java.util.Set;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.google.common.collect.Sets;
-
-import baubles.common.container.InventoryBaubles;
-import baubles.common.lib.PlayerHandler;
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -30,14 +18,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.client.ClientProxy;
 import pokecube.adventures.client.render.item.BagRenderer;
-import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
-import pokecube.adventures.items.bags.ItemBag;
 import pokecube.adventures.network.PacketPokeAdv;
-import pokecube.adventures.network.PacketPokeAdv.MessageServer;
-import pokecube.core.client.ClientProxyPokecube;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
@@ -47,78 +29,10 @@ import thut.api.terrain.TerrainSegment;
 @SideOnly(Side.CLIENT)
 public class RenderHandler
 {
-
-    public static float       partialTicks = 0.0F;
-    // public static boolean BOTANIA = false;
-    private Set<RenderPlayer> addedLayers  = Sets.newHashSet();
+    public static float partialTicks = 0.0F;
 
     public RenderHandler()
     {
-    }
-
-    @SubscribeEvent
-    public void onPlayerRender(RenderPlayerEvent.Post event)
-    {
-        if (addedLayers.contains(event.renderer)) { return; }
-        event.renderer.addLayer(new BagRenderer(event.renderer));
-        addedLayers.add(event.renderer);
-    }
-
-    @SubscribeEvent
-    public void keyInput(KeyInputEvent evt)
-    {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        InventoryBaubles inv = PlayerHandler.getPlayerBaubles(player);
-        boolean bag = false;
-        for (int i = 0; i < inv.getSizeInventory(); i++)
-        {
-            ItemStack stack = inv.getStackInSlot(i);
-            if (stack != null)
-            {
-                Item item = stack.getItem();
-                if (item instanceof ItemBag)
-                {
-                    bag = true;
-                    break;
-                }
-            }
-        }
-        if (bag && Keyboard.getEventKey() == ClientProxy.bag.getKeyCode())
-        {
-            PacketPokeAdv.sendBagOpenPacket(false, Vector3.empty);
-        }
-
-        IPokemob entity = PlayerAsPokemobManager.getInstance().getTransformed(player);
-        if (entity != null && Keyboard.getEventKey() == ClientProxyPokecube.mobAttack.getKeyCode())
-        {
-            Vector3 here = Vector3.getNewVector().set(player, false);
-            Entity hit = here.firstEntityExcluding(16, Vector3.getNewVector().set(player.getLookVec()), player.worldObj,
-                    false, player);
-            if (hit != null)
-            {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-                buffer.writeByte(10);
-                buffer.writeInt(hit.getEntityId());
-                MessageServer message = new MessageServer(buffer);
-                PokecubeMod.packetPipeline.sendToServer(message);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onToolTip(ItemTooltipEvent evt)
-    {
-        EntityPlayer player = evt.entityPlayer;
-        ItemStack stack = evt.itemStack;
-        if (player == null || player.openContainer == null || stack == null) return;
-        if (player.openContainer instanceof ContainerCloner && stack.getItem() instanceof ItemPokemobEgg)
-        {
-            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))
-            {
-                evt.toolTip.add("" + stack.getTagCompound().getLong("ivs") + ":"
-                        + stack.getTagCompound().getFloat("size") + ":" + stack.getTagCompound().getByte("nature"));
-            }
-        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -162,6 +76,37 @@ public class RenderHandler
             renderDebugBoundingBox(v.getAABB().expand(0, 8, 8), rgba);
             renderDebugBoundingBox(v.getAABB().expand(8, 0, 8), rgba);
             GL11.glPopMatrix();
+        }
+    }
+
+    @SubscribeEvent
+    public void onToolTip(ItemTooltipEvent evt)
+    {
+        EntityPlayer player = evt.entityPlayer;
+        ItemStack stack = evt.itemStack;
+        if (stack != null && stack.hasTagCompound() && stack.getTagCompound().getBoolean("isapokebag"))
+        {
+            evt.toolTip.add("PokeBag");
+        }
+        if (player == null || player.openContainer == null || stack == null) return;
+        if (player.openContainer instanceof ContainerCloner && stack.getItem() instanceof ItemPokemobEgg)
+        {
+            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))
+            {
+                evt.toolTip.add("" + stack.getTagCompound().getLong("ivs") + ":"
+                        + stack.getTagCompound().getFloat("size") + ":" + stack.getTagCompound().getByte("nature"));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void keyInput(KeyInputEvent evt)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        boolean bag = BagRenderer.getChecker().isWearingBag(player);
+        if (bag && Keyboard.getEventKey() == ClientProxy.bag.getKeyCode())
+        {
+            PacketPokeAdv.sendBagOpenPacket(false, Vector3.empty);
         }
     }
 

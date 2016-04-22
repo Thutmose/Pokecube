@@ -22,31 +22,20 @@ public class Multiply extends PostfixMathCommand
 		numberOfParameters = -1;
 	}
 	
-	@Override
-	public void run(Stack stack) throws ParseException 
+	public Complex mul(Complex c1, Complex c2)
 	{
-		checkStack(stack); // check the stack
-
-		Object product = stack.pop();
-		Object param;
-        int i = 1;
-        
-        // repeat summation for each one of the current parameters
-        while (i < curNumberOfParameters) {
-        	// get the parameter from the stack
-            param = stack.pop();
-            
-            // multiply it with the product, order is important
-            // if matricies are used
-            product = mul(param,product);
-                
-            i++;
-        }
-        		
-		stack.push(product);
-
-		return;
+		return c1.mul(c2);
 	}
+	
+	public Complex mul(Complex c, Number d)
+	{
+		return c.mul(d.doubleValue());	
+	}
+	
+	public Double mul(Number d1, Number d2)
+	{
+		return new Double(d1.doubleValue()*d2.doubleValue());	
+	}	
 	
 	public Object mul(Object param1, Object param2)
 		throws ParseException
@@ -80,19 +69,14 @@ public class Multiply extends PostfixMathCommand
 		throw new ParseException("Invalid parameter type");
 	}
 	
-	public Double mul(Number d1, Number d2)
+	public Vector mul(Vector v, Complex c)
 	{
-		return new Double(d1.doubleValue()*d2.doubleValue());	
-	}	
-	
-	public Complex mul(Complex c1, Complex c2)
-	{
-		return c1.mul(c2);
-	}
-	
-	public Complex mul(Complex c, Number d)
-	{
-		return c.mul(d.doubleValue());	
+		Vector result = new Vector();
+
+		for (int i=0; i<v.size(); i++)
+			result.addElement(mul(c, (Number)v.elementAt(i)));
+		
+		return result;
 	}
 	
 	public Vector mul(Vector v, Number d)
@@ -105,13 +89,29 @@ public class Multiply extends PostfixMathCommand
 		return result;
 	}
 	
-	public Vector mul(Vector v, Complex c)
+	@Override
+	public void run(Stack stack) throws ParseException 
 	{
-		Vector result = new Vector();
+		checkStack(stack); // check the stack
 
-		for (int i=0; i<v.size(); i++)
-			result.addElement(mul(c, (Number)v.elementAt(i)));
-		
-		return result;
+		Object product = stack.pop();
+		Object param;
+        int i = 1;
+        
+        // repeat summation for each one of the current parameters
+        while (i < curNumberOfParameters) {
+        	// get the parameter from the stack
+            param = stack.pop();
+            
+            // multiply it with the product, order is important
+            // if matricies are used
+            product = mul(param,product);
+                
+            i++;
+        }
+        		
+		stack.push(product);
+
+		return;
 	}	
 }

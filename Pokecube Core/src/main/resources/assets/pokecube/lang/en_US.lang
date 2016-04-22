@@ -33,7 +33,7 @@ pokemob.stance.stand=STAND
 
 pokemob.agress=A wild %1$s has appeared
 
-pokemob.hungry.slow=Your pokémob is too hungry to move quickly
+pokemob.hungry.slow=Your Pokémob is too hungry to move quickly
 
 pokemob.command.attack=You tell %1$s to attack %2$s
 
@@ -41,13 +41,26 @@ pokemob.action.sendout=%1$s was sent out
 pokemob.action.return=%1$s has returned to the Pokécube
 pokemob.action.usemove=You tell %1$s to use %2$s
 pokemob.action.faint=%1$s has fainted
+pokemob.action.denydamageblock=pokemobsDamageBlocks is disabled via configs
+pokemob.action.needsberries=Your Pokémob needs to eat more Berries to do that
+pokemob.action.denyrepel=Your Pokémob is too disgusted by repel to do that
 
+pokemob.info.levelup=%1$s has grown to level %2$s
+
+pokemob.info.happy0=§4Your Pokémob is very unhappy
+pokemob.info.happy1=§cYour Pokémob is unhappy
+pokemob.info.happy2=Your Pokémob is feeling fine
+pokemob.info.happy3=Your Pokémob is content
+pokemob.info.happy4=Your Pokémob is happy
+pokemob.info.happy5=§aYour Pokémob is very happy
+pokemob.info.happy6=§aYour Pokémob is ecstatic
+
+pokemob.evolve.success=%1$s Evolved into %2$s
 pokemob.megaevolve.success=%1$s Mega-evolved into %2$s
 pokemob.megaevolve.revert=%1$s Reverted to %2$s
-pokemob.megaevolve.wrongstone=%1$s has the wrong megastone
-pokemob.megaevolve.nomega=%1$s cannot mega evolve
-pokemob.megaevolve.nostone=%1$s has no mega stone
-pokemob.megaevolve.nothappy=%1$s does not like you enough to mega evolve
+pokemob.megaevolve.failed=%1$s failed to Mega Evolve.
+
+pokemob.rename.deny=You cannot rename a traded Pokémob.
 
 ability.adaptability.name=Adaptability
 ability.aerilate.name=Aerilate
@@ -244,16 +257,25 @@ ability.zenmode.name=Zen Mode
 
 
 achievement.catch=Catch a %1$s
-achievement.get1stPokemob=Get 1st Pokemob
+achievement.get1stPokemob=Get 1st Pokémob
 achievement.get1stPokemob.desc=Get your starter
 gui.pokemob.choose1st=Choose your first Pokémob.
+gui.pokemob.choose1st.override=Start with Override Starter?
 gui.pokemob.select=Select
+gui.pokemob.accept=Accept
+gui.pokemob.deny=Deny
+gui.pokemob.teleport=Teleports
 gui.pokedex.village=Nearest Village
 
 pokecube.caught=%1$s has been caught!
 pokecube.missed=You missed the Pokémob!
-pokecube.denied=The Pokemob refuses to enter the cube!
+pokecube.denied=The Pokémob refuses to enter the cube!
 pokecube.noroom=There is not enough room for the Pokémob here.
+pokecube.badaim=I should probably aim more carefully
+
+pokecube.professor.deny=Professor: You have already recieved a Pokémob
+pokedex.setteleport=Pokécenter set as a Teleport Location
+pokedex.locationinfo=There are %1$s Registered Spawns\nThere are %2$s registered Pokémobs\n%3$s Spawn here
 
 pokemobEgg.name=Egg of %1$s
 
@@ -370,7 +392,7 @@ item.repeatcube.name=Repeatcube
 item.premiercube.name=Premiercube
 item.cherishcube.name=Cherishcube
 item.duskcube.name=Duskcube
-item.pokeseal.name=Pokeseal
+item.pokeseal.name=Pokéseal
 item.candy.name=Bad Candy
 item.emerald_shard.name=Emerald Shard
 item.tm0.name=Blank TM
@@ -384,6 +406,10 @@ tile.pc.top.name=PC Top
 tile.pc.autoon=Auto On
 tile.pc.autooff=Auto Off
 tile.pc.rename=Rename
+tile.pc.sentto=%1$s was sent to your PC
+tile.pc.title=%1$s's PC
+tile.pc.public=Public
+tile.pc.bound=Private bound
 
 item.pokecube.bubbles=Droplets
 item.pokecube.flames=Flames
@@ -401,13 +427,127 @@ item.megastone.name=Mega Stone
 item.revive.name=Revive
 
 item.shiny_charm.name=Shiny Charm
+
+item.absolmega.name=Absolite
+item.banettemega.name=Banettite
+item.blastoisemega.name=Blastoisinite
+item.charizardmega-x.name=Charizardite X
+item.charizardmega-y.name=Charizardite Y
+item.gallademega.name=Galladite
 item.gardevoirmega.name=Gardevoirite
+item.mewtwomega-x.name=Mewtwonite X
+item.mewtwomega-y.name=Mewtwonite Y
+item.sableyemega.name=Sablenite
+item.salamencemega.name=Salamencite
+item.sceptilemega.name=Sceptilite
+item.scizormega.name=Scizorite
+item.slowbromega.name=Slowbronite
+
+item.alphaorb.name=Alpha Orb
+item.omegaorb.name=Omega Orb
 
 item.silkyhair.name=Silky Hair
 
 item.modelreloader.name=Model Reloader
 
-entity.pokecube.pokecube:pokemobEgg.name=Pokemob Egg
+entity.pokecube.pokecube:pokemobEgg.name=Pokémob Egg
 
 igwtab.entry.Pokecubes=Pokécubes
 igwtab.entry.Controls=Key Controls
+
+#Config Options
+
+#Misc
+pokecube.config.misc=Misc Options
+pokecube.config.contributorStarters.tooltip=Do Contributors have the option to get their special starter
+pokecube.config.loginmessage.tooltip=Does the current version get displayed on first login
+pokecube.config.guiOnLogin.tooltip=Does the choose first gui showup from login
+pokecube.config.pvpExp.tooltip=Does defeating tamed Pokémobs give EXP
+pokecube.config.mysterygift.tooltip=Can players use the /pokecube gift command
+pokecube.config.defaultMobs.tooltip=the Mod ID of the mod to default to using the models from
+pokecube.config.tableRecipe.tooltip=does the healing table have recipes
+
+#AI
+pokecube.config.ai=Pokémob AI Options
+pokecube.config.mateMultiplier.tooltip=the number of ticks to increment for breeding at a time, increasing this number speeds up mating #I do not understand this, maybe rephrase?
+pokecube.config.breedingDelay.tooltip=Approximate number of ticks between breeding
+pokecube.config.eggHatchTime.tooltip=Twice the Average time to hatch eggs in ticks, actual hatch time is 100 + random.nextInt(eggHatchTime)
+pokecube.config.cull.tooltip=Do Pokémobs which leave maxSpawnRadius automatically despawn. does not affect tame or angry mobs
+pokecube.config.pokemobsEatGravel.tooltip=Can lithovore Pokémobs eat gravel
+pokecube.config.pokemobagresswarning.tooltip=Is there a warning before a Pokémob attacks the player
+pokecube.config.mobAggroRadius.tooltip=Player must get closer than this to the Pokémob for it to become agressive
+pokecube.config.pokemobLifeSpan.tooltip=Approximate number of ticks before Pokémob starts taking hunger damage
+pokecube.config.maxPlayerDamage.tooltip=Maximum amount of damage a Pokémob attack can deal to a player
+pokecube.config.pokemobagressticks.tooltip=Duration in ticks between the warning message and the Pokémob attacking
+pokecube.config.maxAIThreads.tooltip=Maximum number of threads for AI
+pokecube.config.pokemobsDamageOwner.tooltip=Can your own Pokémob hurt you if you get in the way of an attack
+pokecube.config.pokemobsDamagePlayers.tooltip=Can Pokémob attacks harm players
+pokecube.config.pokemobsDamageBlocks.tooltip=Can Pokémob attacks affect blocks
+pokecube.config.explosions.tooltip=Can Pokémobs explode
+pokecube.config.attackCooldown.tooltip=Related to delay time between attacks
+
+#World
+pokecube.config.generation=World Generation and Interaction
+pokecube.config.meteors.tooltip=Do meteors land naturally
+pokecube.config.meteorDistance.tooltip=Minimum distance between two natural meteors
+pokecube.config.doSpawnBuilding.tooltip=Should a spawn Pokécenter be generated
+pokecube.config.cave.tooltip=Blocks found on cave floors, delimited by ";"
+pokecube.config.surface.tooltip=Blocks found on the surface of the ground
+pokecube.config.rock.tooltip=Blocks to be defined as "rocks" for rocksmash and lithovores
+pokecube.config.trees.tooltip=Blocks defined to be logs for cut
+pokecube.config.plants.tooltip=Blocks defined as plants for cut
+pokecube.config.terrains.tooltip=Blocks defined as useless terrian blocks for dig
+pokecube.config.industrial.tooltip=Blocks to be defined as industrial blocks for industrial biomes (currently disabled, only redstone blocks work)
+
+#Spawning
+pokecube.config.spawning=Spawning Options
+pokecube.config.deactivateMonsters.tooltip=Do vanilla monsters not spawn
+pokecube.config.disableMonster.tooltip=Do vanilla monsters get replaced with shadow Pokémobs
+pokecube.config.deactivateAnimals.tooltip=Do vanilla Animals not spawn
+pokecube.config.pokemonSpawn.tooltip=Do Pokémobs spawn naturally
+pokecube.config.maxSpawnRadius.tooltip=Maximum distance from the player a Pokémob can spawn\nWild, not angry Pokémobs will despawn if they get more than 3x this distance from a player
+pokecube.config.minSpawnRaduis.tooltip=Minimum distance to a player a Pokémob can spawn
+pokecube.config.mobSpawnNumber.tooltip=Maximum number of Pokémobs within maxSpawnRadius of a player for spawning code to be run
+pokecube.config.mobDensityMultiplier.tooltip=mobSpawnNumber is multiplied by this value before being checked
+pokecube.config.levelCap.tooltip=Maximum level for wild Pokémobs
+pokecube.config.shouldCap.tooltip=Is the levelCap respected
+pokecube.config.spawnFunctions.tooltip=Functions for exp of wild Pokémobs based on coordinates, format is <world generator id>:<function>
+
+#Client
+pokecube.config.client=Client Only Options
+pokecube.config.guiOffset.tooltip=Offset of the GUI on the screen
+pokecube.config.guiDown.tooltip=Direction of the GUI, true shows moves below the name, false shows them above
+
+#Advanced
+pokecube.config.advanced=Advanced Options
+pokecube.config.mystLocs.tooltip=Additional URLs to check for mystergifts, used for servers
+pokecube.config.resetTags.tooltip=Resets some additional tags used for time sensitive items.
+pokecube.config.extraValues.tooltip=Some internal values used for Pokémob items
+
+#Database
+pokecube.config.database=Database Options
+pokecube.config.forceDatabase.tooltip=Will Pokécube overwrite the copy of the database with config with the one in the jar, set to false if you plan on changing the database
+pokecube.config.configDatabases.tooltip=Databases for Pokémob information Add additional databases by appending , <newfile>.  If you remove any of the strings here, things will break
+
+#Commands
+
+pokecube.command.noperms=Insufficient Permissions
+pokecube.command.invalidtab=Invalid Arguments, try TAB for options
+pokecube.command.invalidmissing=Invalid Arguments, Missing an Argument
+pokecube.command.reset=Reset Starter for %1$s
+pokecube.command.canchoose=You may choose a new starter
+pokecube.command.count=Found %1$s in range and %2$s out of range
+
+pokecube.command.giftdisabled=Mystery Gift is currently disabled via configs
+pokecube.command.giftdenyused=You have already used this code.
+pokecube.command.gift=Congratulations!
+pokecube.command.giftinvalid=The code %1$s is invalid!
+pokecube.command.giftneedcode=You need to enter a code!
+
+pokecube.command.makedeny=This command can only be used by command blocks
+pokecube.command.makeneedname=Missing mob name or number
+pokecube.command.makeinvalid=Invalid mob name or number
+
+pokecube.command.settings.check=§a%1$s§f is currently set to: §6%2$s
+pokecube.command.settings.invalid=Invalid option for %1$s
+pokecube.command.settings.error=Error while checking config field, please report this as a bug.

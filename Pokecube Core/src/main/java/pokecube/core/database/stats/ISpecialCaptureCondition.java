@@ -9,7 +9,7 @@ public interface ISpecialCaptureCondition
 {
 	public static final HashMap<Integer, ISpecialCaptureCondition> captureMap = new HashMap<Integer, ISpecialCaptureCondition>();
 	
-	boolean canCapture(Entity trainer, IPokemob pokemon);
-	
 	boolean canCapture(Entity trainer);
+	
+	boolean canCapture(Entity trainer, IPokemob pokemon);
 }

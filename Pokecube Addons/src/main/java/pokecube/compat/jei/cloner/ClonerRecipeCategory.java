@@ -39,9 +39,22 @@ public class ClonerRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public String getUid()
+    public void drawAnimations(Minecraft minecraft)
     {
-        return JEICompat.CLONER;
+
+    }
+
+    @Override
+    public void drawExtras(Minecraft minecraft)
+    {
+
+    }
+
+    @Override
+    @Nonnull
+    public IDrawable getBackground()
+    {
+        return background;
     }
 
     @Nonnull
@@ -52,22 +65,9 @@ public class ClonerRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    @Nonnull
-    public IDrawable getBackground()
+    public String getUid()
     {
-        return background;
-    }
-
-    @Override
-    public void drawExtras(Minecraft minecraft)
-    {
-
-    }
-
-    @Override
-    public void drawAnimations(Minecraft minecraft)
-    {
-
+        return JEICompat.CLONER;
     }
 
     @Override

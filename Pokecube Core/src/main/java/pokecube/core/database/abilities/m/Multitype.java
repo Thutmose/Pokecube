@@ -6,11 +6,24 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
-import pokecube.core.items.ItemTranslated;
 import pokecube.core.utils.PokeType;
 
 public class Multitype extends Ability
 {
+
+    @Override
+    public void onAgress(IPokemob mob, EntityLivingBase target)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onMoveUse(IPokemob mob, MovePacket move)
+    {
+        // TODO Auto-generated method stub
+
+    }
 
     @Override
     public void onUpdate(IPokemob mob)
@@ -20,7 +33,7 @@ public class Multitype extends Ability
         if (!entry.getName().contains("Arceus")) return;
 
         ItemStack held = ((EntityLivingBase) mob).getHeldItem();
-        if (held != null && held.getItem() instanceof ItemTranslated
+        if (held != null && held.getItem().getRegistryName().contains("pokecube")
                 && held.getItem().getRegistryName().contains("badge"))
         {
             String name = held.getItem().getRegistryName().split(":")[1];
@@ -37,20 +50,6 @@ public class Multitype extends Ability
             mob.changeForme(entry.getBaseName());
             return;
         }
-
-    }
-
-    @Override
-    public void onMoveUse(IPokemob mob, MovePacket move)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onAgress(IPokemob mob, EntityLivingBase target)
-    {
-        // TODO Auto-generated method stub
 
     }
 

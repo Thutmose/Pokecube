@@ -26,9 +26,31 @@ public class MoveEntry implements IMoveConstants
     public static int                         SPECIAL                  = -4;
     public static int                         FLEE                     = -3;
 
+    static
+    {
+        MoveEntry confusion = new MoveEntry("pokemob.status.confusion", -1);
+        confusion.type = PokeType.unknown;
+        confusion.category = PHYSICAL;
+        confusion.attackCategory = CATEGORY_CONTACT;
+        confusion.power = 40;
+        confusion.protect = false;
+        confusion.magiccoat = false;
+        confusion.snatch = false;
+        confusion.kingsrock = false;
+        confusion.notIntercepable = true;
+        confusion.multiTarget = false;
+    }
+    public static MoveEntry get(String name)
+    {
+        return movesNames.get(name);
+    }
+
+    public static Collection<MoveEntry> values()
+    {
+        return movesNames.values();
+    }
     public final String                       name;
     public final int                          index;
-
     public PokeType                           type;
     /** Distance, contact, etc. */
     public int                                attackCategory;
@@ -52,43 +74,21 @@ public class MoveEntry implements IMoveConstants
     public boolean                            snatch;
     public boolean                            kingsrock;
     public int                                crit;
+
     public float                              selfDamage               = 0;
+
     public int                                selfDamageType;
+
     /** Status, Special, Physical */
     public byte                               category                 = -1;
 
     public String                             animDefault              = "none";
-
-    static
-    {
-        MoveEntry confusion = new MoveEntry("pokemob.status.confusion", -1);
-        confusion.type = PokeType.unknown;
-        confusion.category = PHYSICAL;
-        confusion.attackCategory = CATEGORY_CONTACT;
-        confusion.power = 40;
-        confusion.protect = false;
-        confusion.magiccoat = false;
-        confusion.snatch = false;
-        confusion.kingsrock = false;
-        confusion.notIntercepable = true;
-        confusion.multiTarget = false;
-    }
 
     public MoveEntry(String name, int index)
     {
         this.name = name;
         this.index = index;
         movesNames.put(name, this);
-    }
-
-    public static MoveEntry get(String name)
-    {
-        return movesNames.get(name);
-    }
-
-    public static Collection<MoveEntry> values()
-    {
-        return movesNames.values();
     }
 
 }

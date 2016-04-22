@@ -21,6 +21,15 @@ public class Real extends PostfixMathCommand
 		numberOfParameters = 1;
 	}
 	
+	public Number re(Object param) throws ParseException {
+		if (param instanceof Complex)
+			return new Double(((Complex)param).re());
+		else if (param instanceof Number)
+			return ((Number)param);
+
+		throw new ParseException("Invalid parameter type");
+	}
+	
 	@Override
 	public void run(Stack inStack)
 		throws ParseException 
@@ -29,15 +38,6 @@ public class Real extends PostfixMathCommand
 		Object param = inStack.pop();
 		inStack.push(re(param));//push the result on the inStack
 		return;
-	}
-	
-	public Number re(Object param) throws ParseException {
-		if (param instanceof Complex)
-			return new Double(((Complex)param).re());
-		else if (param instanceof Number)
-			return ((Number)param);
-
-		throw new ParseException("Invalid parameter type");
 	}
 
 }

@@ -3,14 +3,35 @@ package pokecube.core.items;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
 
-public class ItemPokemobUseable extends ItemTranslated implements IPokemobUseable {
+public class ItemPokemobUseable extends Item implements IPokemobUseable {
 	
 	public ItemPokemobUseable() {
 		super();
+	}
+	
+	@Override
+	public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
+	{
+		if(stack.getItem() == PokecubeItems.berryJuice)
+		{
+			float health = mob.getHealth();
+			float maxHealth = mob.getMaxHealth();
+
+			if(health==maxHealth) return false;
+			
+			if(health + 20< maxHealth)
+				mob.setHealth(health + 20);
+			else
+				mob.setHealth(maxHealth);
+			stack.splitStack(1);
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -33,7 +54,7 @@ public class ItemPokemobUseable extends ItemTranslated implements IPokemobUseabl
 	{
 		return applyEffect(mob, stack);
 	}
-	
+
 	@Override
 	public boolean useByPokemob(EntityLivingBase mob, ItemStack stack)
 	{
@@ -53,26 +74,6 @@ public class ItemPokemobUseable extends ItemTranslated implements IPokemobUseabl
 			}
 		}
 		
-		return false;
-	}
-
-	@Override
-	public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
-	{
-		if(stack.getItem() == PokecubeItems.berryJuice)
-		{
-			float health = mob.getHealth();
-			float maxHealth = mob.getMaxHealth();
-
-			if(health==maxHealth) return false;
-			
-			if(health + 20< maxHealth)
-				mob.setHealth(health + 20);
-			else
-				mob.setHealth(maxHealth);
-			stack.splitStack(1);
-			return true;
-		}
 		return false;
 	}
 }

@@ -24,8 +24,6 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.network.PokecubePacketHandler;
@@ -44,6 +42,39 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
         this.setHardness(100);
         this.setResistance(100);
         this.setLightLevel(1f);
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World var1, int var2)
+    {
+        return new TileEntityPokecubeTable();
+    }
+
+    @Override
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
+    {
+        TileEntityPokecubeTable tileEntity = (TileEntityPokecubeTable) world.getTileEntity(pos);
+        OBJModel.OBJState retState = new OBJModel.OBJState(
+                tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) : tileEntity.visible, true);
+        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
+    }
+
+    @Override
+    public boolean isFullCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isVisuallyOpaque()
+    {
+        return false;
     }
 
     /** Called upon block activation (right click on the block.) */
@@ -89,45 +120,5 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
             }
         }
         return true;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public int getRenderType()
-    {
-        return super.getRenderType();// RenderPokecubeTable.ID;
-    }
-
-    @Override
-    public boolean isOpaqueCube()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isVisuallyOpaque()
-    {
-        return false;
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World var1, int var2)
-    {
-        return new TileEntityPokecubeTable();
-    }
-
-    @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
-    {
-        TileEntityPokecubeTable tileEntity = (TileEntityPokecubeTable) world.getTileEntity(pos);
-        OBJModel.OBJState retState = new OBJModel.OBJState(
-                tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) : tileEntity.visible, true);
-        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
     }
 }

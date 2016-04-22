@@ -35,15 +35,30 @@ package  org.nfunk.jep.type;
 
 public class Complex
 {
+	/**
+	 * Converts an [r,theta] pair to a complex number r * e^(i theta).
+	 * @param r The radius
+	 * @param theta The angle
+	 * @return The complex result.
+	 * @since 2.3.0.1
+	 */
+	public static Complex polarValueOf(Number r,Number theta)
+	{
+		double rad = r.doubleValue();
+		double ang = theta.doubleValue();
+		return new Complex(rad*Math.cos(ang), rad*Math.sin(ang));
+		
+	}
+	
 	/** the real component */
 	private double re;
-	
-	/** the imaginary component */
-	private double im;
 	
 
 //------------------------------------------------------------------------
 // Constructors
+
+	/** the imaginary component */
+	private double im;
 
 	/**
 	 * Default constructor.
@@ -54,6 +69,14 @@ public class Complex
 	}
 
 	/**
+	 * Copy constructor
+	 */
+	public Complex(Complex z) {
+		re = z.re;
+		im = z.im;
+	}
+	
+	/**
 	 * Constructor from a single double value. The complex number is
 	 * initialized with the real component equal to the parameter, and
 	 * the imaginary component equal to zero.
@@ -61,24 +84,6 @@ public class Complex
 	public Complex(double re_in) {
 		re = re_in;
 		im = 0;
-	}
-
-	/**
-	 * Construct from a Number. This constructor uses the doubleValue()
-	 * method of the parameter to initialize the real component of the
-	 * complex number. The imaginary component is initialized to zero.
-	 */
-	public Complex(Number re_in) {
-		re = re_in.doubleValue();
-		im = 0;
-	}
-	
-	/**
-	 * Copy constructor
-	 */
-	public Complex(Complex z) {
-		re = z.re;
-		im = z.im;
 	}
 
 	/**
@@ -91,135 +96,15 @@ public class Complex
 	}
 
 	/**
-	 * Returns the real component of this object
+	 * Construct from a Number. This constructor uses the doubleValue()
+	 * method of the parameter to initialize the real component of the
+	 * complex number. The imaginary component is initialized to zero.
 	 */
-	public double re() {
-		return re;	
+	public Complex(Number re_in) {
+		re = re_in.doubleValue();
+		im = 0;
 	}
 
-	/**
-	 * Returns the imaginary component of this object
-	 */
-	public double im() {
-		return im;
-	}
-	
-	/**
-	 * Copies the values from the parameter object to this object
-	 */
-	public void set(Complex z) {
-		re = z.re;
-		im = z.im;
-	}
-	
-	/**
-	 * Sets the real and imaginary values of the object.
-	 */
-	public void set(double re_in, double im_in) {
-		re = re_in;
-		im = im_in;
-	}
-
-	/**
-	 * Sets the real component of the object
-	 */
-	public void setRe(double re_in) {
-		re = re_in;
-	}
-
-	/**
-	 * Sets the imaginary component of the object
-	 */
-	public void setIm(double im_in) {
-		im = im_in;
-	}
-
-//------------------------------------------------------------------------
-// Various functions
-
-	/**
-	 * Compares this object with the Complex number given as parameter
-	 * <pre>b</pre>. The <pre>tolerance</pre> parameter is the radius
-	 * within which the <pre>b</pre> number must lie for the two
-	 * complex numbers to be considered equal.
-	 *
-	 * @return <pre>true</pre> if the complex number are considered equal,
-	 * <pre>false</pre> otherwise.
-	 */
-	public boolean equals(Complex b, double tolerance) {
-		double temp1 = (re - b.re);
-		double temp2 = (im - b.im);
-		
-		return (temp1*temp1 + temp2*temp2) <= tolerance*tolerance;
-	}
-	/**
-	 * Compares this object against the specified object. 
-	 * The result is true if and only if the argument is not null 
-	 * and is a Complex object that represents the same complex number. 
-	 * Equality follows the same pattern as Double aplies to each field:
-	 * <ul>
-     * <li>If d1 and d2 both represent Double.NaN, then the equals method returns true, even though Double.NaN==Double.NaN has the value false.
-     * <li>If d1 represents +0.0 while d2 represents -0.0, or vice versa, the equal test has the value false, even though +0.0==-0.0 has the value true.
-     * </ul>
-     * This definition allows hash tables to operate properly.
-
-	 * @since 2.3.0.2
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if(!(o instanceof Complex)) return false;
-		Complex c = (Complex) o;
-		return(Double.doubleToLongBits(this.re) == Double.doubleToLongBits(c.re) 
-			&& Double.doubleToLongBits(this.im) == Double.doubleToLongBits(c.im));
-	}
-	/**
-	 * Always override hashCode when you override equals.
-	 * Efective Java, Joshua Bloch, Sun Press
-	 */
-	@Override
-	public int hashCode() {
-		int result = 17;
-		long xl = Double.doubleToLongBits(this.re);
-		long yl = Double.doubleToLongBits(this.im);
-		int xi = (int)(xl^(xl>>32));
-		int yi = (int)(yl^(yl>>32));
-		result = 37*result+xi;
-		result = 37*result+yi;
-		return result;
-	}
-	/**
-	 * Returns the value of this complex number as a string in the format:
-	 * <pre>(real, imaginary)</pre>.
-	 */
-	@Override
-	public String toString() {
-		return "(" + re	+ ", " + im + ")";
-	}
-	
-	/**
-	 * Returns <tt>true</tt> if either the real or imaginary component of this
-	 * <tt>Complex</tt> is an infinite value.
-	 *
-	 * <p>
-	 * @return  <tt>true</tt> if either component of the <tt>Complex</tt> object is infinite; <tt>false</tt>, otherwise.
-	 * <p>
-	 **/
-	public boolean isInfinite() {
-		return (Double.isInfinite(re) || Double.isInfinite(im));
-	}
-
-	/**
-	 * Returns <tt>true</tt> if either the real or imaginary component of this
-	 * <tt>Complex</tt> is a Not-a-Number (<tt>NaN</tt>) value.
-	 *
-	 * <p>
-	 * @return  <tt>true</tt> if either component of the <tt>Complex</tt> object is <tt>NaN</tt>; <tt>false</tt>, otherwise.
-	 * <p>
-	 **/
-	public boolean isNaN() {
-		return (Double.isNaN(re) || Double.isNaN(im));
-	}
-	
 	/**
 	 * Returns the absolute value of the complex number.
 	 * <p>
@@ -241,34 +126,60 @@ public class Complex
 			return absIm*Math.sqrt(1 + temp*temp);
 		}
 	}
-
+	
 	/**
 	 * Returns the square of the absolute value (re*re+im*im).
 	 */
 	public double abs2() {
 		return re*re+im*im;	
 	}
+	
+	public Complex acos() {
+		Complex result;
+		double tempRe, tempIm;
+		
+		//  acos(z)  =  -i * log( z + i * sqrt(1 - z*z) )
 
-	/**
-	 * Returns the argument of this complex number (Math.atan2(re,im))
-	 */
-	public double arg() {
-		return Math.atan2(im,re);
+		tempRe =  1.0 - ( (re*re) - (im*im) );
+		tempIm =  0.0 - ( (re*im) + (im*re) );
+
+		result =  new Complex(tempRe, tempIm);
+		result = result.sqrt();
+		
+		tempRe = -result.im;
+		tempIm =  result.re;
+		
+		result.re = re + tempRe;
+		result.im = im + tempIm;
+		
+		tempRe = Math.log(result.abs());
+		tempIm = result.arg();
+		
+		result.re =   tempIm;
+		result.im = - tempRe;
+		
+		return result;
 	}
 
-	/**
-	 * Returns the negative value of this complex number.
-	 */
-	public Complex neg() {
-		return new Complex(-re,-im);
-	}
+	public Complex acosh() {
+		Complex result;
+		
+		//  acosh(z)  =  log(z + sqrt(z*z - 1))
 
-	/**
-	 * Multiply the complex number with a double value.
-	 * @return The result of the multiplication
-	 */
-	public Complex mul(double b) {
-		return new Complex(re*b, im*b);
+		result = new Complex(
+			((re*re) - (im*im)) - 1,
+			(re*im) + (im*re));
+
+		result = result.sqrt();
+		
+		result.re += re;
+		result.im += im;
+		
+		double temp = result.arg();
+		result.re = Math.log(result.abs());
+		result.im = temp;
+		
+		return result;
 	}
 
 	/**
@@ -280,23 +191,148 @@ public class Complex
 		return new Complex(re+b.re,im+b.im);
 	}
 
+//------------------------------------------------------------------------
+// Various functions
+
 	/**
-	 * Adds the complex number with another complex value.
-	 * @return The result of the addition
-	 * @since 2.3.0.1
+	 * Returns the argument of this complex number (Math.atan2(re,im))
 	 */
-	public Complex sub(Complex b) {
-		return new Complex(re-b.re,im-b.im);
+	public double arg() {
+		return Math.atan2(im,re);
 	}
-	/**
-	 * Multiply the complex number with another complex value.
-	 * @return The result of the multiplication
-	 */
-	public Complex mul(Complex b) {
-		return new Complex(re*b.re - im*b.im,
-						   im*b.re + re*b.im);
+	public Complex asin() {
+		Complex result;
+		double tempRe, tempIm;
+		
+		//  asin(z)  =  -i * log(i*z + sqrt(1 - z*z))
+
+		tempRe =  1.0 - ( (re*re) - (im*im) );
+		tempIm =  0.0 - ( (re*im) + (im*re) );
+
+		result =  new Complex(tempRe, tempIm);
+		result = result.sqrt();
+		
+		result.re += -im;
+		result.im +=  re;
+		
+		tempRe = Math.log(result.abs());
+		tempIm = result.arg();
+		
+		result.re =   tempIm;
+		result.im = - tempRe;
+		
+		return result;
+	}
+	public Complex asinh() {
+		Complex result;
+		//  asinh(z)  =  log(z + sqrt(z*z + 1))
+
+		result = new Complex(
+			((re*re) - (im*im)) + 1,
+			(re*im) + (im*re));
+
+		result = result.sqrt();
+		
+		result.re += re;
+		result.im += im;
+		
+		double temp = result.arg();
+		result.re = Math.log(result.abs());
+		result.im = temp;
+		
+		return result;
+	}
+	public Complex atan() {
+		// atan(z) = -i/2 * log((i-z)/(i+z))
+		
+		double tempRe, tempIm;
+		Complex result = new Complex(-re, 1.0 - im);
+		
+		tempRe = re;
+		tempIm = 1.0 + im;
+		
+		result = result.div(new Complex(tempRe, tempIm));
+		
+		tempRe = Math.log(result.abs());
+		tempIm = result.arg();
+		
+		result.re =  0.5*tempIm;
+		result.im = -0.5*tempRe;
+		
+		return result;
 	}
 	
+	public Complex atanh() {
+		//  atanh(z)  =  1/2 * log( (1+z)/(1-z) )
+		
+		double tempRe, tempIm;
+		Complex result = new Complex(1.0 + re, im);
+		
+		tempRe = 1.0 - re;
+		tempIm =     - im;
+		
+		result = result.div(new Complex(tempRe, tempIm));
+		
+		tempRe = Math.log(result.abs());
+		tempIm = result.arg();
+		
+		result.re = 0.5*tempRe;
+		result.im = 0.5*tempIm;
+		
+		return result;
+	}
+
+	/**
+	 * Returns the cosine of this complex number.
+	 */
+	public Complex cos() {
+		double izRe, izIm;
+		double temp1Re, temp1Im;
+		double temp2Re, temp2Im;
+		double scalar;
+		
+		//  cos(z)  =  ( exp(i*z) + exp(-i*z) ) / 2
+		izRe = -im;
+		izIm =  re;
+		
+		// first exp
+		scalar = Math.exp(izRe);
+		temp1Re = scalar * Math.cos(izIm);
+		temp1Im = scalar * Math.sin(izIm);
+		
+		// second exp
+		scalar = Math.exp(-izRe);
+		temp2Re = scalar * Math.cos(-izIm);
+		temp2Im = scalar * Math.sin(-izIm);
+		
+		temp1Re += temp2Re;
+		temp1Im += temp2Im;
+		
+		return new Complex(0.5*temp1Re, 0.5*temp1Im);
+	}
+	
+	public Complex cosh() {
+		double scalar;
+		double temp1Re, temp1Im;
+		double temp2Re, temp2Im;
+		//  cosh(z)  =  ( exp(z) + exp(-z) ) / 2
+		
+		// first exp
+		scalar = Math.exp(re);
+		temp1Re = scalar * Math.cos(im);
+		temp1Im = scalar * Math.sin(im);
+		
+		// second exp
+		scalar = Math.exp(-re);
+		temp2Re = scalar * Math.cos(-im);
+		temp2Im = scalar * Math.sin(-im);
+		
+		temp1Re += temp2Re;
+		temp1Im += temp2Im;
+		
+		return new Complex(0.5*temp1Re, 0.5*temp1Im);
+	}
+
 	/**
 	 * Returns the result of dividing this complex number by the parameter.
 	 */
@@ -319,6 +355,174 @@ public class Complex
 		}
 		
 		return new Complex(resRe, resIm);
+	}
+
+	/** Returns real part.
+	 * @since 2.3.0.1
+	 */
+	public double doubleValue() {
+		return re;
+	}
+
+	/**
+	 * Compares this object with the Complex number given as parameter
+	 * <pre>b</pre>. The <pre>tolerance</pre> parameter is the radius
+	 * within which the <pre>b</pre> number must lie for the two
+	 * complex numbers to be considered equal.
+	 *
+	 * @return <pre>true</pre> if the complex number are considered equal,
+	 * <pre>false</pre> otherwise.
+	 */
+	public boolean equals(Complex b, double tolerance) {
+		double temp1 = (re - b.re);
+		double temp2 = (im - b.im);
+		
+		return (temp1*temp1 + temp2*temp2) <= tolerance*tolerance;
+	}
+
+	/**
+	 * Compares this object against the specified object. 
+	 * The result is true if and only if the argument is not null 
+	 * and is a Complex object that represents the same complex number. 
+	 * Equality follows the same pattern as Double aplies to each field:
+	 * <ul>
+     * <li>If d1 and d2 both represent Double.NaN, then the equals method returns true, even though Double.NaN==Double.NaN has the value false.
+     * <li>If d1 represents +0.0 while d2 represents -0.0, or vice versa, the equal test has the value false, even though +0.0==-0.0 has the value true.
+     * </ul>
+     * This definition allows hash tables to operate properly.
+
+	 * @since 2.3.0.2
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if(!(o instanceof Complex)) return false;
+		Complex c = (Complex) o;
+		return(Double.doubleToLongBits(this.re) == Double.doubleToLongBits(c.re) 
+			&& Double.doubleToLongBits(this.im) == Double.doubleToLongBits(c.im));
+	}
+
+	/** Returns real part.
+	 * @since 2.3.0.1
+	 */
+	public float floatValue() {
+		return (float) re;
+	}
+
+	/**
+	 * Always override hashCode when you override equals.
+	 * Efective Java, Joshua Bloch, Sun Press
+	 */
+	@Override
+	public int hashCode() {
+		int result = 17;
+		long xl = Double.doubleToLongBits(this.re);
+		long yl = Double.doubleToLongBits(this.im);
+		int xi = (int)(xl^(xl>>32));
+		int yi = (int)(yl^(yl>>32));
+		result = 37*result+xi;
+		result = 37*result+yi;
+		return result;
+	}
+	/**
+	 * Returns the imaginary component of this object
+	 */
+	public double im() {
+		return im;
+	}
+	
+	/** Returns real part.
+	 * @since 2.3.0.1
+	 */
+	public int intValue() {
+		return (int) re;
+	}
+
+	/**
+	 * Returns <tt>true</tt> if either the real or imaginary component of this
+	 * <tt>Complex</tt> is an infinite value.
+	 *
+	 * <p>
+	 * @return  <tt>true</tt> if either component of the <tt>Complex</tt> object is infinite; <tt>false</tt>, otherwise.
+	 * <p>
+	 **/
+	public boolean isInfinite() {
+		return (Double.isInfinite(re) || Double.isInfinite(im));
+	}
+	
+	/**
+	 * Returns <tt>true</tt> if either the real or imaginary component of this
+	 * <tt>Complex</tt> is a Not-a-Number (<tt>NaN</tt>) value.
+	 *
+	 * <p>
+	 * @return  <tt>true</tt> if either component of the <tt>Complex</tt> object is <tt>NaN</tt>; <tt>false</tt>, otherwise.
+	 * <p>
+	 **/
+	public boolean isNaN() {
+		return (Double.isNaN(re) || Double.isNaN(im));
+	}
+
+	/**
+	 * Returns the logarithm of this complex number.
+	 */	
+	public Complex log() {
+		return new Complex(Math.log(abs()), arg());	
+	}
+	
+	/** Returns real part.
+	 * @since 2.3.0.1
+	 */
+	public long longValue() {
+		return (long) re;
+	}
+
+//------------------------------------------------------------------------
+// Trigonometric functions
+
+	/**
+	 * Multiply the complex number with another complex value.
+	 * @return The result of the multiplication
+	 */
+	public Complex mul(Complex b) {
+		return new Complex(re*b.re - im*b.im,
+						   im*b.re + re*b.im);
+	}
+
+	/**
+	 * Multiply the complex number with a double value.
+	 * @return The result of the multiplication
+	 */
+	public Complex mul(double b) {
+		return new Complex(re*b, im*b);
+	}
+
+
+	/**
+	 * Returns the negative value of this complex number.
+	 */
+	public Complex neg() {
+		return new Complex(-re,-im);
+	}
+	
+
+//------------------------------------------------------------------------
+// Inverse trigonometric functions
+	
+	/**
+	 * Returns the value of this complex number raised to the power of
+	 * a complex exponent
+	 */
+	public Complex power(Complex exponent) {
+		if (exponent.im == 0) return power(exponent.re);
+		
+		double temp1Re = Math.log(abs());
+		double temp1Im = arg();
+		
+		double temp2Re = (temp1Re*exponent.re) - (temp1Im*exponent.im);
+		double temp2Im = (temp1Re*exponent.im) + (temp1Im*exponent.re);
+
+		double scalar = Math.exp(temp2Re);
+		
+		return new Complex(scalar*Math.cos(temp2Im), scalar*Math.sin(temp2Im));
 	}
 
 	/**
@@ -364,32 +568,104 @@ public class Complex
 		
 		return new Complex(scalar*Math.cos(temp), scalar*Math.sin(temp));
 	}
-	
+
 	/**
-	 * Returns the value of this complex number raised to the power of
-	 * a complex exponent
+	 * Returns the real component of this object
 	 */
-	public Complex power(Complex exponent) {
-		if (exponent.im == 0) return power(exponent.re);
-		
-		double temp1Re = Math.log(abs());
-		double temp1Im = arg();
-		
-		double temp2Re = (temp1Re*exponent.re) - (temp1Im*exponent.im);
-		double temp2Im = (temp1Re*exponent.im) + (temp1Im*exponent.re);
+	public double re() {
+		return re;	
+	}
 
-		double scalar = Math.exp(temp2Re);
-		
-		return new Complex(scalar*Math.cos(temp2Im), scalar*Math.sin(temp2Im));
+
+//------------------------------------------------------------------------
+// Hyperbolic trigonometric functions
+
+	/**
+	 * Copies the values from the parameter object to this object
+	 */
+	public void set(Complex z) {
+		re = z.re;
+		im = z.im;
+	}
+
+
+	/**
+	 * Sets the real and imaginary values of the object.
+	 */
+	public void set(double re_in, double im_in) {
+		re = re_in;
+		im = im_in;
 	}
 
 	/**
-	 * Returns the logarithm of this complex number.
-	 */	
-	public Complex log() {
-		return new Complex(Math.log(abs()), arg());	
+	 * Sets the imaginary component of the object
+	 */
+	public void setIm(double im_in) {
+		im = im_in;
 	}
+
 	
+//------------------------------------------------------------------------
+// Inverse hyperbolic trigonometric functions
+
+	/**
+	 * Sets the real component of the object
+	 */
+	public void setRe(double re_in) {
+		re = re_in;
+	}
+
+	/**
+	 * Returns the sine of this complex number.
+	 */
+	public Complex sin() {
+		double izRe, izIm;
+		double temp1Re, temp1Im;
+		double temp2Re, temp2Im;
+		double scalar;
+		
+		//  sin(z)  =  ( exp(i*z) - exp(-i*z) ) / (2*i)
+		izRe = -im;
+		izIm =  re;
+		
+		// first exp
+		scalar = Math.exp(izRe);
+		temp1Re = scalar * Math.cos(izIm);
+		temp1Im = scalar * Math.sin(izIm);
+		
+		// second exp
+		scalar = Math.exp(-izRe);
+		temp2Re = scalar * Math.cos(-izIm);
+		temp2Im = scalar * Math.sin(-izIm);
+		
+		temp1Re -= temp2Re;
+		temp1Im -= temp2Im;
+		
+		return new Complex(0.5*temp1Im, -0.5*temp1Re);
+	}
+
+	public Complex sinh() {
+		double scalar;
+		double temp1Re, temp1Im;
+		double temp2Re, temp2Im;
+		//  sinh(z)  =  ( exp(z) - exp(-z) ) / 2
+		
+		// first exp
+		scalar = Math.exp(re);
+		temp1Re = scalar * Math.cos(im);
+		temp1Im = scalar * Math.sin(im);
+		
+		// second exp
+		scalar = Math.exp(-re);
+		temp2Re = scalar * Math.cos(-im);
+		temp2Im = scalar * Math.sin(-im);
+		
+		temp1Re -= temp2Re;
+		temp1Im -= temp2Im;
+		
+		return new Complex(0.5*temp1Re, 0.5*temp1Im);
+	}
+
 	/**
 	 * Calculates the square root of this object.
 	 * Adapted from Numerical Recipes in C - The Art of Scientific Computing
@@ -423,68 +699,14 @@ public class Complex
 		
 		return c;
 	}
-
-//------------------------------------------------------------------------
-// Trigonometric functions
-
 	/**
-	 * Returns the sine of this complex number.
+	 * Adds the complex number with another complex value.
+	 * @return The result of the addition
+	 * @since 2.3.0.1
 	 */
-	public Complex sin() {
-		double izRe, izIm;
-		double temp1Re, temp1Im;
-		double temp2Re, temp2Im;
-		double scalar;
-		
-		//  sin(z)  =  ( exp(i*z) - exp(-i*z) ) / (2*i)
-		izRe = -im;
-		izIm =  re;
-		
-		// first exp
-		scalar = Math.exp(izRe);
-		temp1Re = scalar * Math.cos(izIm);
-		temp1Im = scalar * Math.sin(izIm);
-		
-		// second exp
-		scalar = Math.exp(-izRe);
-		temp2Re = scalar * Math.cos(-izIm);
-		temp2Im = scalar * Math.sin(-izIm);
-		
-		temp1Re -= temp2Re;
-		temp1Im -= temp2Im;
-		
-		return new Complex(0.5*temp1Im, -0.5*temp1Re);
+	public Complex sub(Complex b) {
+		return new Complex(re-b.re,im-b.im);
 	}
-
-	/**
-	 * Returns the cosine of this complex number.
-	 */
-	public Complex cos() {
-		double izRe, izIm;
-		double temp1Re, temp1Im;
-		double temp2Re, temp2Im;
-		double scalar;
-		
-		//  cos(z)  =  ( exp(i*z) + exp(-i*z) ) / 2
-		izRe = -im;
-		izIm =  re;
-		
-		// first exp
-		scalar = Math.exp(izRe);
-		temp1Re = scalar * Math.cos(izIm);
-		temp1Im = scalar * Math.sin(izIm);
-		
-		// second exp
-		scalar = Math.exp(-izRe);
-		temp2Re = scalar * Math.cos(-izIm);
-		temp2Im = scalar * Math.sin(-izIm);
-		
-		temp1Re += temp2Re;
-		temp1Im += temp2Im;
-		
-		return new Complex(0.5*temp1Re, 0.5*temp1Im);
-	}
-
 
 	/**
 	 * Returns the tangent of this complex number.
@@ -537,130 +759,6 @@ public class Complex
 		
 		return sinResult.div(cosResult);
 	}
-	
-
-//------------------------------------------------------------------------
-// Inverse trigonometric functions
-	
-	public Complex asin() {
-		Complex result;
-		double tempRe, tempIm;
-		
-		//  asin(z)  =  -i * log(i*z + sqrt(1 - z*z))
-
-		tempRe =  1.0 - ( (re*re) - (im*im) );
-		tempIm =  0.0 - ( (re*im) + (im*re) );
-
-		result =  new Complex(tempRe, tempIm);
-		result = result.sqrt();
-		
-		result.re += -im;
-		result.im +=  re;
-		
-		tempRe = Math.log(result.abs());
-		tempIm = result.arg();
-		
-		result.re =   tempIm;
-		result.im = - tempRe;
-		
-		return result;
-	}
-
-	public Complex acos() {
-		Complex result;
-		double tempRe, tempIm;
-		
-		//  acos(z)  =  -i * log( z + i * sqrt(1 - z*z) )
-
-		tempRe =  1.0 - ( (re*re) - (im*im) );
-		tempIm =  0.0 - ( (re*im) + (im*re) );
-
-		result =  new Complex(tempRe, tempIm);
-		result = result.sqrt();
-		
-		tempRe = -result.im;
-		tempIm =  result.re;
-		
-		result.re = re + tempRe;
-		result.im = im + tempIm;
-		
-		tempRe = Math.log(result.abs());
-		tempIm = result.arg();
-		
-		result.re =   tempIm;
-		result.im = - tempRe;
-		
-		return result;
-	}
-
-	public Complex atan() {
-		// atan(z) = -i/2 * log((i-z)/(i+z))
-		
-		double tempRe, tempIm;
-		Complex result = new Complex(-re, 1.0 - im);
-		
-		tempRe = re;
-		tempIm = 1.0 + im;
-		
-		result = result.div(new Complex(tempRe, tempIm));
-		
-		tempRe = Math.log(result.abs());
-		tempIm = result.arg();
-		
-		result.re =  0.5*tempIm;
-		result.im = -0.5*tempRe;
-		
-		return result;
-	}
-
-
-//------------------------------------------------------------------------
-// Hyperbolic trigonometric functions
-
-	public Complex sinh() {
-		double scalar;
-		double temp1Re, temp1Im;
-		double temp2Re, temp2Im;
-		//  sinh(z)  =  ( exp(z) - exp(-z) ) / 2
-		
-		// first exp
-		scalar = Math.exp(re);
-		temp1Re = scalar * Math.cos(im);
-		temp1Im = scalar * Math.sin(im);
-		
-		// second exp
-		scalar = Math.exp(-re);
-		temp2Re = scalar * Math.cos(-im);
-		temp2Im = scalar * Math.sin(-im);
-		
-		temp1Re -= temp2Re;
-		temp1Im -= temp2Im;
-		
-		return new Complex(0.5*temp1Re, 0.5*temp1Im);
-	}
-
-
-	public Complex cosh() {
-		double scalar;
-		double temp1Re, temp1Im;
-		double temp2Re, temp2Im;
-		//  cosh(z)  =  ( exp(z) + exp(-z) ) / 2
-		
-		// first exp
-		scalar = Math.exp(re);
-		temp1Re = scalar * Math.cos(im);
-		temp1Im = scalar * Math.sin(im);
-		
-		// second exp
-		scalar = Math.exp(-re);
-		temp2Re = scalar * Math.cos(-im);
-		temp2Im = scalar * Math.sin(-im);
-		
-		temp1Re += temp2Re;
-		temp1Im += temp2Im;
-		
-		return new Complex(0.5*temp1Re, 0.5*temp1Im);
-	}
 
 	public Complex tanh() {
 		double scalar;
@@ -698,111 +796,13 @@ public class Complex
 		return sinRes.div(cosRes);
 	}
 
-	
-//------------------------------------------------------------------------
-// Inverse hyperbolic trigonometric functions
-
-	public Complex asinh() {
-		Complex result;
-		//  asinh(z)  =  log(z + sqrt(z*z + 1))
-
-		result = new Complex(
-			((re*re) - (im*im)) + 1,
-			(re*im) + (im*re));
-
-		result = result.sqrt();
-		
-		result.re += re;
-		result.im += im;
-		
-		double temp = result.arg();
-		result.re = Math.log(result.abs());
-		result.im = temp;
-		
-		return result;
-	}
-
-	public Complex acosh() {
-		Complex result;
-		
-		//  acosh(z)  =  log(z + sqrt(z*z - 1))
-
-		result = new Complex(
-			((re*re) - (im*im)) - 1,
-			(re*im) + (im*re));
-
-		result = result.sqrt();
-		
-		result.re += re;
-		result.im += im;
-		
-		double temp = result.arg();
-		result.re = Math.log(result.abs());
-		result.im = temp;
-		
-		return result;
-	}
-
-	public Complex atanh() {
-		//  atanh(z)  =  1/2 * log( (1+z)/(1-z) )
-		
-		double tempRe, tempIm;
-		Complex result = new Complex(1.0 + re, im);
-		
-		tempRe = 1.0 - re;
-		tempIm =     - im;
-		
-		result = result.div(new Complex(tempRe, tempIm));
-		
-		tempRe = Math.log(result.abs());
-		tempIm = result.arg();
-		
-		result.re = 0.5*tempRe;
-		result.im = 0.5*tempIm;
-		
-		return result;
-	}
-
 	/**
-	 * Converts an [r,theta] pair to a complex number r * e^(i theta).
-	 * @param r The radius
-	 * @param theta The angle
-	 * @return The complex result.
-	 * @since 2.3.0.1
+	 * Returns the value of this complex number as a string in the format:
+	 * <pre>(real, imaginary)</pre>.
 	 */
-	public static Complex polarValueOf(Number r,Number theta)
-	{
-		double rad = r.doubleValue();
-		double ang = theta.doubleValue();
-		return new Complex(rad*Math.cos(ang), rad*Math.sin(ang));
-		
-	}
-	/** Returns real part.
-	 * @since 2.3.0.1
-	 */
-	public double doubleValue() {
-		return re;
-	}
-
-	/** Returns real part.
-	 * @since 2.3.0.1
-	 */
-	public float floatValue() {
-		return (float) re;
-	}
-
-	/** Returns real part.
-	 * @since 2.3.0.1
-	 */
-	public int intValue() {
-		return (int) re;
-	}
-
-	/** Returns real part.
-	 * @since 2.3.0.1
-	 */
-	public long longValue() {
-		return (long) re;
+	@Override
+	public String toString() {
+		return "(" + re	+ ", " + im + ")";
 	}
 
 }

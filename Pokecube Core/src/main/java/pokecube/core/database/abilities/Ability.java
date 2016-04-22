@@ -7,31 +7,6 @@ import pokecube.core.interfaces.IPokemob.MovePacket;
 
 public abstract class Ability
 {
-    /** Called during the pokemob's update tick.
-     * 
-     * @param mob */
-    public void onUpdate(IPokemob mob)
-    {
-    }
-
-    /** Called whenever a move is used.
-     * 
-     * @param mob
-     * @param move */
-    public void onMoveUse(IPokemob mob, MovePacket move)
-    {
-    }
-
-    /** Calls when the pokemob first agresses the target. This is called by the
-     * agressor, so mob is the pokemob doing the agression. Target is the
-     * agressed mob.
-     * 
-     * @param mob
-     * @param target */
-    public void onAgress(IPokemob mob, EntityLivingBase target)
-    {
-    }
-
     /** Called for the attacked target right before damage is dealt, after other
      * calculations are done.
      * 
@@ -42,6 +17,18 @@ public abstract class Ability
     public int beforeDamage(IPokemob mob, MovePacket move, int damage)
     {
         return damage;
+    }
+
+    /** Called when the pokemob is set to dead. */
+    public void destroy()
+    {
+    }
+
+    public String getName()
+    {
+        String translated = StatCollector.translateToLocal("ability." + toString() + ".name").trim();
+        if (translated.contains(".")) { return toString(); }
+        return translated;
     }
 
     /** Inits the Ability, if args isn't null, it will usually have the Pokemob
@@ -56,8 +43,28 @@ public abstract class Ability
         return this;
     }
 
-    /** Called when the pokemob is set to dead. */
-    public void destroy()
+    /** Calls when the pokemob first agresses the target. This is called by the
+     * agressor, so mob is the pokemob doing the agression. Target is the
+     * agressed mob.
+     * 
+     * @param mob
+     * @param target */
+    public void onAgress(IPokemob mob, EntityLivingBase target)
+    {
+    }
+
+    /** Called whenever a move is used.
+     * 
+     * @param mob
+     * @param move */
+    public void onMoveUse(IPokemob mob, MovePacket move)
+    {
+    }
+
+    /** Called during the pokemob's update tick.
+     * 
+     * @param mob */
+    public void onUpdate(IPokemob mob)
     {
     }
 
@@ -65,12 +72,5 @@ public abstract class Ability
     public String toString()
     {
         return AbilityManager.getNameForAbility(this);
-    }
-
-    public String getName()
-    {
-        String translated = StatCollector.translateToLocal("ability." + toString() + ".name").trim();
-        if (translated.contains(".")) { return toString(); }
-        return translated;
     }
 }

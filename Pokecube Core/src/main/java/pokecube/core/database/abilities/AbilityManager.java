@@ -18,103 +18,6 @@ import pokecube.core.interfaces.IPokemob;
 @SuppressWarnings("unchecked")
 public class AbilityManager
 {
-    private static HashMap<String, Class<? extends Ability>>  nameMap  = Maps.newHashMap();
-    private static HashMap<Class<? extends Ability>, String>  nameMap2 = Maps.newHashMap();
-    private static HashMap<Class<? extends Ability>, Integer> idMap    = Maps.newHashMap();
-    private static HashMap<Integer, Class<? extends Ability>> idMap2   = Maps.newHashMap();
-    static int                                                nextID   = 0;
-
-    public static Ability makeAbility(Object val, Object... args)
-    {
-        Class<? extends Ability> abil = null;
-        if (val instanceof String) abil = nameMap.get(val);
-        else if (val instanceof Class) abil = (Class<? extends Ability>) val;
-        else abil = idMap2.get(val);
-        if (abil == null) return null;
-        Ability ret = null;
-        try
-        {
-            ret = abil.newInstance().init(args);
-            ret.init(args);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return ret;
-    }
-
-    public static Ability getAbility(String name, Object... args)
-    {
-        if (name == null) return null;
-        return makeAbility(name.toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""), args);
-    }
-
-    public static Ability getAbility(Integer id, Object... args)
-    {
-        return makeAbility(id, args);
-    }
-
-    public static void addAbility(Class<? extends Ability> ability, String name)
-    {
-        name = name.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
-        nameMap.put(name, ability);
-        nameMap2.put(ability, name);
-        idMap.put(ability, nextID);
-        idMap2.put(nextID, ability);
-        nextID++;
-    }
-
-    public static int getIdForAbility(Ability ability)
-    {
-        return idMap.get(ability.getClass());
-    }
-
-    public static String getNameForAbility(Ability ability)
-    {
-        return nameMap2.get(ability.getClass());
-    }
-
-    public static void addAbility(Class<? extends Ability> ability)
-    {
-        addAbility(ability, ability.getSimpleName());
-    }
-
-    public static boolean hasAbility(String abilityName, IPokemob pokemob)
-    {
-        Ability ability = pokemob.getAbility();
-        if (ability == null) { return false; }
-        return ability.toString()
-                .equalsIgnoreCase(abilityName.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""));
-    }
-
-    public static boolean abilityExists(String name)
-    {
-        if (name == null) return false;
-        name = name.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
-        return nameMap.containsKey(name);
-    }
-
-    static
-    {
-        List<Class<?>> foundClasses;
-        try
-        {
-            foundClasses = ClassFinder.find(AbilityManager.class.getPackage().getName());
-            for (Class<?> candidateClass : foundClasses)
-            {
-                if (Ability.class.isAssignableFrom(candidateClass) && candidateClass != Ability.class)
-                {
-                    addAbility((Class<? extends Ability>) candidateClass);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     public static class ClassFinder
     {
 
@@ -203,5 +106,102 @@ public class AbilityManager
             return classes;
         }
 
+    }
+    private static HashMap<String, Class<? extends Ability>>  nameMap  = Maps.newHashMap();
+    private static HashMap<Class<? extends Ability>, String>  nameMap2 = Maps.newHashMap();
+    private static HashMap<Class<? extends Ability>, Integer> idMap    = Maps.newHashMap();
+    private static HashMap<Integer, Class<? extends Ability>> idMap2   = Maps.newHashMap();
+
+    static int                                                nextID   = 0;
+
+    static
+    {
+        List<Class<?>> foundClasses;
+        try
+        {
+            foundClasses = ClassFinder.find(AbilityManager.class.getPackage().getName());
+            for (Class<?> candidateClass : foundClasses)
+            {
+                if (Ability.class.isAssignableFrom(candidateClass) && candidateClass != Ability.class)
+                {
+                    addAbility((Class<? extends Ability>) candidateClass);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean abilityExists(String name)
+    {
+        if (name == null) return false;
+        name = name.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
+        return nameMap.containsKey(name);
+    }
+
+    public static void addAbility(Class<? extends Ability> ability)
+    {
+        addAbility(ability, ability.getSimpleName());
+    }
+
+    public static void addAbility(Class<? extends Ability> ability, String name)
+    {
+        name = name.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
+        nameMap.put(name, ability);
+        nameMap2.put(ability, name);
+        idMap.put(ability, nextID);
+        idMap2.put(nextID, ability);
+        nextID++;
+    }
+
+    public static Ability getAbility(Integer id, Object... args)
+    {
+        return makeAbility(id, args);
+    }
+
+    public static Ability getAbility(String name, Object... args)
+    {
+        if (name == null) return null;
+        return makeAbility(name.toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""), args);
+    }
+
+    public static int getIdForAbility(Ability ability)
+    {
+        return idMap.get(ability.getClass());
+    }
+
+    public static String getNameForAbility(Ability ability)
+    {
+        return nameMap2.get(ability.getClass());
+    }
+
+    public static boolean hasAbility(String abilityName, IPokemob pokemob)
+    {
+        Ability ability = pokemob.getAbility();
+        if (ability == null) { return false; }
+        return ability.toString()
+                .equalsIgnoreCase(abilityName.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""));
+    }
+
+    public static Ability makeAbility(Object val, Object... args)
+    {
+        Class<? extends Ability> abil = null;
+        if (val instanceof String) abil = nameMap.get(val);
+        else if (val instanceof Class) abil = (Class<? extends Ability>) val;
+        else abil = idMap2.get(val);
+        if (abil == null) return null;
+        Ability ret = null;
+        try
+        {
+            ret = abil.newInstance().init(args);
+            ret.init(args);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return ret;
     }
 }

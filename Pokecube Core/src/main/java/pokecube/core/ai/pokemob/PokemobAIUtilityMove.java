@@ -2,7 +2,6 @@ package pokecube.core.ai.pokemob;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
@@ -24,7 +23,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
     final IPokemob     pokemon;
     final EntityLiving entity;
     final World        world;
-    Vector3            destination;
+    public Vector3     destination;
     double             speed;
     Vector3            v = Vector3.getNewVector(), v1 = Vector3.getNewVector();
 
@@ -37,30 +36,25 @@ public class PokemobAIUtilityMove extends EntityAIBase
         speed = pokemon.getMovementSpeed();
     }
 
-    @Override
-    public boolean shouldExecute()
-    {
-        return pokemon.getPokemonAIState(IPokemob.NEWEXECUTEMOVE) && entity.getAttackTarget() == null;
-    }
-
     /** Returns whether an in-progress EntityAIBase should continue executing */
     @Override
     public boolean continueExecuting()
     {
-        return destination != null && !pokemon.getPokemonAIState(IPokemob.NEWEXECUTEMOVE)
-                && pokemon.getPokemonAIState(IPokemob.EXECUTINGMOVE);
+        return destination != null && !pokemon.getPokemonAIState(IMoveConstants.NEWEXECUTEMOVE)
+                && pokemon.getPokemonAIState(IMoveConstants.EXECUTINGMOVE);
+    }
+
+    @Override
+    public boolean shouldExecute()
+    {
+        return pokemon.getPokemonAIState(IMoveConstants.NEWEXECUTEMOVE) && entity.getAttackTarget() == null;
     }
 
     /** Execute a one shot task or start executing a continuous task */
     @Override
     public void startExecuting()
     {
-        EntityLivingBase owner = null;
-        pokemon.setPokemonAIState(IPokemob.NEWEXECUTEMOVE, false);
-        if (pokemon.getPokemonAIState(IPokemob.TAMED))
-        {
-            owner = pokemon.getPokemonOwner();
-        }
+        pokemon.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, false);
 
         Move_Base move = MovesUtils.getMoveFromName(pokemon.getMove(pokemon.getMoveIndex()));
         if (move == null) { return; }
@@ -69,28 +63,13 @@ public class PokemobAIUtilityMove extends EntityAIBase
             ((Move_Utility) move).attack(pokemon, (Entity) pokemon, 0);
             return;
         }
-
-        Vector3 look;
-        Vector3 source;
-        if (owner == null)
-        {
-            look = v.set(entity.getLookVec());
-            source = v1.set(entity, false);
-        }
-        else
-        {
-            look = v.set(owner.getLookVec());
-            source = v1.set(owner, false);
-        }
-
-        destination = Vector3.findNextSolidBlock(world, source, look, 32);
         if (destination == null)
         {
 
         }
         else
         {
-            pokemon.setPokemonAIState(IPokemob.EXECUTINGMOVE, true);
+            pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, true);
             entity.getNavigator().tryMoveToXYZ(destination.x, destination.y, destination.z, speed);
         }
     }
@@ -102,8 +81,8 @@ public class PokemobAIUtilityMove extends EntityAIBase
 
         if (destination == null)
         {
-            if (pokemon.getPokemonAIState(IPokemob.EXECUTINGMOVE))
-                pokemon.setPokemonAIState(IPokemob.EXECUTINGMOVE, false);
+            if (pokemon.getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
+                pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);
             return;
         }
         entity.getLookHelper().setLookPosition(destination.x, destination.y, destination.z, 10,
@@ -120,10 +99,9 @@ public class PokemobAIUtilityMove extends EntityAIBase
         }
         if (dist < var1)
         {
-            // move.doWorldAction(pokemon, destination);
-            move.attack(pokemon, destination, (float) destination.distToEntity(entity));
+            move.doWorldAction(pokemon, destination);
             entity.getNavigator().clearPathEntity();
-            pokemon.setPokemonAIState(IPokemob.EXECUTINGMOVE, false);
+            pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);
             destination = null;
         }
     }

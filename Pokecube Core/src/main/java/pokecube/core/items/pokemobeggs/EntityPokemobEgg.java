@@ -14,8 +14,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.events.EggEvent;
-import pokecube.core.handlers.ConfigHandler;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -34,7 +34,7 @@ public class EntityPokemobEgg extends EntityLiving
     {
         super(world);
         this.setSize(0.35f, 0.35f);
-        hatch = 1000 + worldObj.rand.nextInt(ConfigHandler.EGGHATCHTIME);
+        hatch = 1000 + worldObj.rand.nextInt(PokecubeMod.core.getConfig().eggHatchTime);
     }
 
     /** @param world
@@ -65,15 +65,6 @@ public class EntityPokemobEgg extends EntityLiving
         this.setCurrentItemOrArmor(0, itemstack);
         this.setPosition(d, d1, d2);
         delayBeforeCanPickup = 20;
-    }
-
-    public void incubateEgg()
-    {
-        if(ticksExisted!=lastIncubate)
-        {
-            lastIncubate = ticksExisted;
-            age++;
-        }
     }
 
     @Override
@@ -112,6 +103,53 @@ public class EntityPokemobEgg extends EntityLiving
         }
     }
 
+    /** returns the bounding box for this entity */
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox()
+    {
+        return getEntityBoundingBox();
+    }
+
+    public Entity getEggOwner()
+    {
+        IPokemob pokemob = getPokemob();
+        if (pokemob != null) return pokemob.getPokemonOwner();
+        return null;
+    }
+
+    /** Called when a user uses the creative pick block button on this entity.
+     *
+     * @param target
+     *            The full target the player is looking at
+     * @return A ItemStack to add to the player's inventory, Null if nothing
+     *         should be added. */
+    @Override
+    public ItemStack getPickedResult(MovingObjectPosition target)
+    {
+        return getHeldItem().copy();
+    }
+
+    /** Returns a generic pokemob instance with the data of the one in the egg,
+     * this is not to be used for spawning into the world.
+     * 
+     * @return */
+    public IPokemob getPokemob()
+    {
+        IPokemob pokemob = ItemPokemobEgg.getFakePokemob(worldObj, here, getHeldItem());
+        if (pokemob == null) return null;
+        ((Entity) pokemob).worldObj = worldObj;
+        return pokemob;
+    }
+
+    public void incubateEgg()
+    {
+        if(ticksExisted!=lastIncubate)
+        {
+            lastIncubate = ticksExisted;
+            age++;
+        }
+    }
+
     @Override
     public void onUpdate()
     {
@@ -131,10 +169,12 @@ public class EntityPokemobEgg extends EntityLiving
 
         if (age++ >= hatch || spawned)
         {
-            EggEvent.Hatch event = new EggEvent.Hatch(this);
+            EggEvent.PreHatch event = new EggEvent.PreHatch(this);
             MinecraftForge.EVENT_BUS.post(event);
             if (!event.isCanceled())
             {
+                EggEvent.Hatch evt = new EggEvent.Hatch(this);
+                MinecraftForge.EVENT_BUS.post(evt);
                 ItemPokemobEgg.spawn(worldObj, getHeldItem(), Math.floor(posX) + 0.5, Math.floor(posY) + 0.5,
                         Math.floor(posZ) + 0.5);
                 setDead();
@@ -148,35 +188,6 @@ public class EntityPokemobEgg extends EntityLiving
         }
     }
 
-    /** Returns a generic pokemob instance with the data of the one in the egg,
-     * this is not to be used for spawning into the world.
-     * 
-     * @return */
-    public IPokemob getPokemob()
-    {
-        IPokemob pokemob = ItemPokemobEgg.getFakePokemob(worldObj, here, getHeldItem());
-        if (pokemob == null) return null;
-        ((Entity) pokemob).worldObj = worldObj;
-        return pokemob;
-    }
-
-    public Entity getEggOwner()
-    {
-        IPokemob pokemob = getPokemob();
-        if (pokemob != null) return pokemob.getPokemonOwner();
-        return null;
-    }
-
-    @Override
-    /** (abstract) Protected helper method to write subclass entity data to
-     * NBT. */
-    public void writeEntityToNBT(NBTTagCompound nbt)
-    {
-        super.writeEntityToNBT(nbt);
-        nbt.setInteger("age", age);
-        nbt.setInteger("hatchtime", hatch);
-    }
-
     @Override
     /** (abstract) Protected helper method to read subclass entity data from
      * NBT. */
@@ -187,21 +198,13 @@ public class EntityPokemobEgg extends EntityLiving
         hatch = nbt.getInteger("hatchtime");
     }
 
-    /** returns the bounding box for this entity */
     @Override
-    public AxisAlignedBB getCollisionBoundingBox()
+    /** (abstract) Protected helper method to write subclass entity data to
+     * NBT. */
+    public void writeEntityToNBT(NBTTagCompound nbt)
     {
-        return getEntityBoundingBox();
-    }
-
-    /** Called when a user uses the creative pick block button on this entity.
-     *
-     * @param target
-     *            The full target the player is looking at
-     * @return A ItemStack to add to the player's inventory, Null if nothing
-     *         should be added. */
-    public ItemStack getPickedResult(MovingObjectPosition target)
-    {
-        return getHeldItem().copy();
+        super.writeEntityToNBT(nbt);
+        nbt.setInteger("age", age);
+        nbt.setInteger("hatchtime", hatch);
     }
 }

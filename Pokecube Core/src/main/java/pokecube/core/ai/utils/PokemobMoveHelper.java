@@ -6,7 +6,6 @@ import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.util.MathHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class PokemobMoveHelper extends EntityMoveHelper
@@ -25,16 +24,10 @@ public class PokemobMoveHelper extends EntityMoveHelper
     public PokemobMoveHelper(EntityLiving entity)
     {
     	super(entity);
-        this.entity = (EntityLiving) entity;
+        this.entity = entity;
         this.posX = entity.posX;
         this.posY = entity.posY;
         this.posZ = entity.posZ;
-    }
-
-    @Override
-	public boolean isUpdating()
-    {
-        return this.update;
     }
 
     @Override
@@ -43,17 +36,32 @@ public class PokemobMoveHelper extends EntityMoveHelper
         return this.speed;
     }
 
+    @Override
+	public boolean isUpdating()
+    {
+        return this.update;
+    }
+
     /**
-     * Sets the speed and location to move to
+     * Limits the given angle to a upper and lower limit.
      */
     @Override
-	public void setMoveTo(double p_75642_1_, double p_75642_3_, double p_75642_5_, double p_75642_7_)
+    public float limitAngle(float old, float newAngle, float target)
     {
-        this.posX = p_75642_1_;
-        this.posY = p_75642_3_;
-        this.posZ = p_75642_5_;
-        this.speed = p_75642_7_;
-        this.update = true;
+        float f3 = MathHelper.wrapAngleTo180_float(newAngle - old);
+        target = Math.max(target, Math.abs(f3));
+
+        if (f3 > target)
+        {
+            f3 = target;
+        }
+
+        if (f3 < -target)
+        {
+            f3 = -target;
+        }
+
+        return old + f3;
     }
 
     @Override
@@ -65,9 +73,8 @@ public class PokemobMoveHelper extends EntityMoveHelper
         {
         	pos.set(entity);
         	PokedexEntry entry = ((IPokemob)entity).getPokedexEntry();
-        	boolean water = entry.mobType == PokecubeMod.Type.WATER && entity.isInWater();
-        	boolean air = entry.mobType == PokecubeMod.Type.FLOATING
-        			|| entry.mobType == PokecubeMod.Type.FLYING;
+        	boolean water = entry.swims() && entity.isInWater();
+        	boolean air = entry.flys() || entry.floats();
         	
             this.update = false;
             double i = (this.entity.posY + this.entity.stepHeight);
@@ -116,23 +123,15 @@ public class PokemobMoveHelper extends EntityMoveHelper
     }
 
     /**
-     * Limits the given angle to a upper and lower limit.
+     * Sets the speed and location to move to
      */
-    public float limitAngle(float old, float newAngle, float target)
+    @Override
+	public void setMoveTo(double p_75642_1_, double p_75642_3_, double p_75642_5_, double p_75642_7_)
     {
-        float f3 = MathHelper.wrapAngleTo180_float(newAngle - old);
-        target = Math.max(target, Math.abs(f3));
-
-        if (f3 > target)
-        {
-            f3 = target;
-        }
-
-        if (f3 < -target)
-        {
-            f3 = -target;
-        }
-
-        return old + f3;
+        this.posX = p_75642_1_;
+        this.posY = p_75642_3_;
+        this.posZ = p_75642_5_;
+        this.speed = p_75642_7_;
+        this.update = true;
     }
 }

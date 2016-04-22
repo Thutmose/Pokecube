@@ -7,7 +7,9 @@ import thut.api.maths.Vector3;
 
 public class ChunkCoordinate extends BlockPos {
 
-	public int dim;
+	public static ChunkCoordinate getChunkCoordFromWorldCoord(BlockPos pos, int dimension) {
+		return getChunkCoordFromWorldCoord(pos.getX(), pos.getY(), pos.getZ(), dimension);
+	}
 	
 	public static ChunkCoordinate getChunkCoordFromWorldCoord(int x, int y, int z, int dim)
 	{
@@ -17,7 +19,13 @@ public class ChunkCoordinate extends BlockPos {
 	        return new ChunkCoordinate(i, j, k, dim);
 	}
 	
-	public ChunkCoordinate(int p_i1354_1_, int p_i1354_2_, int p_i1354_3_, int dim) {
+	public int dim;
+
+	public ChunkCoordinate(BlockPos pos, int dimension) {
+		this(pos.getX(), pos.getY(), pos.getZ(), dimension);
+	}
+
+    public ChunkCoordinate(int p_i1354_1_, int p_i1354_2_, int p_i1354_3_, int dim) {
 		super(p_i1354_1_, p_i1354_2_, p_i1354_3_);
 		this.dim = dim;
 	}
@@ -27,11 +35,7 @@ public class ChunkCoordinate extends BlockPos {
 		this.dim = dim;
 	}
 
-    public ChunkCoordinate(BlockPos pos, int dimension) {
-		this(pos.getX(), pos.getY(), pos.getZ(), dimension);
-	}
-
-	@Override
+    @Override
 	public boolean equals(Object p_equals_1_)
     {
         if (!(p_equals_1_ instanceof ChunkCoordinate))
@@ -47,14 +51,6 @@ public class ChunkCoordinate extends BlockPos {
             		&& this.dim == BlockPos.dim;
         }
     }
-
-    public void writeToBuffer(ByteBuf buffer)
-    {
-    	buffer.writeInt(getX());
-    	buffer.writeInt(getY());
-    	buffer.writeInt(getZ());
-    	buffer.writeInt(dim);
-    }
     
     @Override
 	public int hashCode()
@@ -62,7 +58,11 @@ public class ChunkCoordinate extends BlockPos {
         return this.getX() + this.getZ() << 8 + this.getY() << 16 + this.dim << 24;
     }
 
-	public static ChunkCoordinate getChunkCoordFromWorldCoord(BlockPos pos, int dimension) {
-		return getChunkCoordFromWorldCoord(pos.getX(), pos.getY(), pos.getZ(), dimension);
-	}
+	public void writeToBuffer(ByteBuf buffer)
+    {
+    	buffer.writeInt(getX());
+    	buffer.writeInt(getY());
+    	buffer.writeInt(getZ());
+    	buffer.writeInt(dim);
+    }
 }

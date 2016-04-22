@@ -26,6 +26,42 @@ import thut.api.maths.Vector3;
 public class MoveAnimationHelper
 {
 
+    public static class MoveAnimation
+    {
+        public final Entity    attacker;
+        public final Entity    targetEnt;
+        public final Vector3   targetLoc;
+        public final Vector3   sourceStart;
+        public final Move_Base move;
+        public int             duration;
+        public long            lastDrop;
+        final MovePacketInfo   info;
+
+        public MoveAnimation(Entity attacker, Entity targetEnt, Vector3 targetLoc, Move_Base move, int time)
+        {
+            this.attacker = attacker;
+            this.targetEnt = targetEnt;
+            this.targetLoc = targetLoc;
+            this.sourceStart = Vector3.getNewVector().set(attacker).addTo(0, attacker.getEyeHeight(), 0);
+            this.move = move;
+            info = new MovePacketInfo(move, attacker, targetEnt, sourceStart, targetLoc);
+            duration = time;
+        }
+
+        public void render(double partialTick)
+        {
+            if (move.getAnimation() != null)
+            {
+                info.currentTick = move.getAnimation().getDuration() - duration;
+                move.getAnimation().clientAnimation(info, Minecraft.getMinecraft().renderGlobal, (float) partialTick);
+            }
+            else
+            {
+                throw (new NullPointerException("Who Registered null animation for " + move.name));
+            }
+        }
+    }
+
     private static MoveAnimationHelper instance;
 
     public static MoveAnimationHelper Instance()
@@ -49,6 +85,11 @@ public class MoveAnimationHelper
             this.moves.put(attacker, moves);
         }
         moves.add(move);
+    }
+
+    public void clear()
+    {
+        moves.clear();
     }
 
     @SideOnly(Side.CLIENT)
@@ -134,46 +175,5 @@ public class MoveAnimationHelper
             clear();
         }
 
-    }
-
-    public void clear()
-    {
-        moves.clear();
-    }
-
-    public static class MoveAnimation
-    {
-        public final Entity    attacker;
-        public final Entity    targetEnt;
-        public final Vector3   targetLoc;
-        public final Vector3   sourceStart;
-        public final Move_Base move;
-        public int             duration;
-        public long            lastDrop;
-        final MovePacketInfo   info;
-
-        public MoveAnimation(Entity attacker, Entity targetEnt, Vector3 targetLoc, Move_Base move, int time)
-        {
-            this.attacker = attacker;
-            this.targetEnt = targetEnt;
-            this.targetLoc = targetLoc;
-            this.sourceStart = Vector3.getNewVector().set(attacker).addTo(0, attacker.getEyeHeight(), 0);
-            this.move = move;
-            info = new MovePacketInfo(move, attacker, targetEnt, sourceStart, targetLoc);
-            duration = time;
-        }
-
-        public void render(double partialTick)
-        {
-            if (move.animation != null)
-            {
-                info.currentTick = move.animation.getDuration() - duration;
-                move.animation.clientAnimation(info, Minecraft.getMinecraft().renderGlobal, (float) partialTick);
-            }
-            else
-            {
-                throw (new NullPointerException("Who Registered null animation for " + move.name));
-            }
-        }
     }
 }

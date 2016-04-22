@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -34,32 +35,72 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.modelloader.client.render.animation.AnimationLoader;
+import pokecube.modelloader.client.render.AnimationLoader;
+import pokecube.modelloader.common.ExtraDatabase;
 import pokecube.modelloader.items.ItemModelReloader;
 
 @Mod(modid = ModPokecubeML.ID, name = "Pokecube Model Loader", version = "0.1.0", acceptedMinecraftVersions = PokecubeMod.MCVERSIONS)
 public class ModPokecubeML
 {
     /** The id of your mod */
-    public final static String ID = "pokecube_ml";
+    public final static String        ID                      = "pokecube_ml";
 
     @Instance(ID)
-    public static ModPokecubeML instance;
+    public static ModPokecubeML       instance;
 
-    public static ArrayList<String>         addedPokemon;
-    public static Map<PokedexEntry, String> textureProviders = Maps.newHashMap();
+    public static boolean             checkResourcesForModels = true;
 
-    public static boolean info    = false;
-    public static boolean preload = true;
+    public static ArrayList<String>   addedPokemon            = Lists.newArrayList();
+    public static Map<String, String> textureProviders        = Maps.newHashMap();
+
+    public static boolean             info                    = false;
+    public static boolean             preload                 = true;
 
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
-    public static CommonProxy proxy;
-    public static File        configDir;
+    public static CommonProxy         proxy;
+    public static File                configDir;
+
+    boolean                           postInit                = false;
 
     private void doMetastuff()
     {
         ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
         meta.parent = PokecubeMod.ID;
+    }
+    
+    @EventHandler
+    public void init(FMLInitializationEvent evt)
+    {
+        proxy.init();
+        if (info)
+        {
+            for (PokedexEntry e : Database.allFormes)
+            {
+                System.out.println(e.getName());
+            }
+        }
+
+        for (String s : addedPokemon)
+        {
+            registerMob(s);
+        }
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void loadModels(ModelBakeEvent e)
+    {
+        if (!postInit) return;
+        System.out.println("Loading Pokemob Models");
+        AnimationLoader.load();
+    }
+
+    @EventHandler
+    private void postInit(FMLPostInitializationEvent evt)
+    {
+        proxy.postInit();
+        postInit = true;
     }
 
     /** This function is called by Forge at initialization.
@@ -68,31 +109,46 @@ public class ModPokecubeML
     @EventHandler
     public void preInit(FMLPreInitializationEvent evt)
     {
-        Configuration config = PokecubeMod.core.getPokecubeConfig(evt);
         proxy.registerModelProvider(ID, this);
         proxy.preInit();
         doMetastuff();
-        config.load();
-        String[] pokemon = config.getStringList("pokemon", Configuration.CATEGORY_GENERAL, new String[] { "Zubat" },
-                "extra Pokemobs to register on load");
-        info = config.getBoolean("printAll", Configuration.CATEGORY_GENERAL, info,
-                "will print all pokemon names to console on load");
-        preload = config.getBoolean("preloadModels", Configuration.CATEGORY_GENERAL, preload,
-                "Will load all of the models when refreshed, if this is false, it will only load the model when it is first seen in game.");
-        String[] files = config.getStringList("packs", Configuration.CATEGORY_GENERAL,
-                new String[] { "Pokecube_Resources", "Gen_1", "Gen_2", "Gen_3", "Gen_4", "Gen_5", "Gen_6" },
-                "Resource Packs to add models");
-        config.save();
         configDir = evt.getModConfigurationDirectory();
-        ArrayList<String> toAdd = Lists.newArrayList(pokemon);
+
+        Configuration config = PokecubeMod.core.getPokecubeConfig(evt);
+        config.load();
+        checkResourcesForModels = config.getBoolean("checkForResourcepacks", "General", true,
+                "Disabling this will prevent Pokecube from checking resource packs for models, it might speed up loading times.");
+        config.save();
+
+        try
+        {
+            if (checkResourcesForModels)
+            {
+                processResources();
+            }
+        }
+        catch (Exception e)
+        {
+        }
+
+        GameRegistry.registerItem(
+                new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),
+                "modelreloader");
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    private void processResources()
+    {
+        ArrayList<String> toAdd = Lists.newArrayList();
 
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
 
         String modelDir = "assets/pokecube_ml/models/pokemobs/";
-        for (String file : files)
+
+        ArrayList<File> files = Lists.newArrayList(resourceDir.listFiles());
+        for (File pack : files)
         {
-            File pack = new File(resourceDir, file + ".zip");
-            if (pack.exists())
+            if (pack.exists() && !pack.isDirectory())
             {
                 try
                 {
@@ -106,6 +162,7 @@ public class ModPokecubeML
                         if (s.contains(modelDir))
                         {
                             String name = s.replace(modelDir, "").split("\\.")[0];
+                            if (name.trim().isEmpty()) continue;
                             boolean has = false;
                             for (String s1 : toAdd)
                             {
@@ -117,6 +174,7 @@ public class ModPokecubeML
                             }
                             if (!has)
                             {
+                                System.out.println("Adding " + name);
                                 toAdd.add(name);
                             }
                         }
@@ -134,58 +192,57 @@ public class ModPokecubeML
                 // System.err.println("No Resource Pack " + pack);
             }
         }
-
         addedPokemon = toAdd;
-
-        GameRegistry.registerItem(
-                new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),
-                "modelreloader");
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @EventHandler
-    public void init(FMLInitializationEvent evt)
+    private void registerMob(String mob)
     {
-        proxy.init();
-        if (info)
+        PokedexEntry e;
+        if ((e = Database.getEntry(mob)) != null && e.baseForme == null)
         {
-            for (PokedexEntry e : Database.allFormes)
+            if (textureProviders.containsKey(e.getName()))
             {
-                System.out.println(e.getName());
+                e.setModId(textureProviders.get(e.getName()));
             }
-        }
-
-        for (String s : addedPokemon)
-        {
-            PokedexEntry e;
-            if ((e = Database.getEntry(s)) != null)
+            else
             {
-                PokecubeMod.core.registerPokemon(true, this, s);
-                if (textureProviders.containsKey(e))
+                e.setModId(ID);
+            }
+            if (e.baseForme == null) PokecubeMod.core.registerPokemon(true, this, e);
+        }
+        else
+        {
+            ArrayList<String> list = Lists.newArrayList();
+            ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
+            try
+            {
+                proxy.fileAsList(this, xml, list);
+                if (!list.isEmpty())
                 {
-                    e.setModId(textureProviders.get(e));
+                    ExtraDatabase.addXML(mob, list);
+                    ExtraDatabase.apply(mob);
                 }
             }
+            catch (Exception e1)
+            {
+                e1.printStackTrace();
+            }
+            if ((e = Database.getEntry(mob)) != null)
+            {
+                if (textureProviders.containsKey(e.getName()))
+                {
+                    e.setModId(textureProviders.get(e.getName()));
+                }
+                else
+                {
+                    e.setModId(ID);
+                }
+                if (e.baseForme == null) PokecubeMod.core.registerPokemon(true, this, e);
+            }
+            else
+            {
+                System.err.println("Failed to register " + mob);
+            }
         }
-        proxy.registerRenderInformation();
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-    }
-
-    @EventHandler
-    private void postInit(FMLPostInitializationEvent evt)
-    {
-        proxy.postInit();
-        postInit = true;
-    }
-
-    boolean postInit = false;
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void loadModels(ModelBakeEvent e)
-    {
-        if (!postInit) return;
-        System.out.println("Loading Pokemob Models");
-        AnimationLoader.load();
     }
 }

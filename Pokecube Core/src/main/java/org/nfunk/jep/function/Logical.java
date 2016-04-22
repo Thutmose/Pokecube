@@ -16,9 +16,9 @@ import org.nfunk.jep.ParseException;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class Logical extends PostfixMathCommand
 {
-	int id;
 	public static final int AND = 0;
 	public static final int OR = 1;
+	int id;
 	public Logical(int id_in)
 	{
 		id = id_in;

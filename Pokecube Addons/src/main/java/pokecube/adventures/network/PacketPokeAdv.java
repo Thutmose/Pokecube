@@ -4,7 +4,6 @@ import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -16,16 +15,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
+import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
-import pokecube.adventures.handlers.PASaveHandler;
-import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.ItemTarget;
 import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
@@ -33,68 +29,8 @@ import thut.api.terrain.BiomeType;
 
 public class PacketPokeAdv
 {
-    public static byte TYPESETPUBLIC  = 0;
-    public static byte TYPEADDLAND    = 1;
-    public static byte TYPEREMOVELAND = 2;
-
-    public static void sendBagOpenPacket(boolean fromPC, Vector3 loc)
-    {
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-        buf.writeByte(7);
-        buf.writeBoolean(true);
-        loc.writeToBuff(buf);
-        MessageServer packet = new MessageServer(buf);
-        PokecubePacketHandler.sendToServer(packet);
-    }
-
     public static class MessageClient implements IMessage
     {
-        PacketBuffer             buffer;
-        public static final byte MESSAGEGUIAFA = 11;
-
-        public MessageClient()
-        {
-        };
-
-        public MessageClient(byte[] data)
-        {
-            this.buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeBytes(data);
-        }
-
-        public MessageClient(PacketBuffer buffer)
-        {
-            this.buffer = buffer;
-        }
-
-        public MessageClient(byte channel, NBTTagCompound nbt)
-        {
-            this.buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeByte(channel);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
-            // System.out.println(buffer.array().length);
-        }
-
-        @Override
-        public void fromBytes(ByteBuf buf)
-        {
-            if (buffer == null)
-            {
-                buffer = new PacketBuffer(Unpooled.buffer());
-            }
-            buffer.writeBytes(buf);
-        }
-
-        @Override
-        public void toBytes(ByteBuf buf)
-        {
-            if (buffer == null)
-            {
-                buffer = new PacketBuffer(Unpooled.buffer());
-            }
-            buf.writeBytes(buffer);
-        }
-
         public static class MessageHandlerClient implements IMessageHandler<MessageClient, MessageServer>
         {
             public void handleClientSide(EntityPlayer player, PacketBuffer buffer)
@@ -162,19 +98,6 @@ public class PacketPokeAdv
                         e.printStackTrace();
                     }
                 }
-                if (channel == 8) // Player transforming packets
-                {
-                    try
-                    {
-                        NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
-                        String name = tag.getString("playername");
-                        PlayerAsPokemobManager.getInstance().setData(name, tag);
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
                 if (channel == 9)
                 {
                     Vector3 v = Vector3.readFromBuff(buffer);
@@ -206,35 +129,31 @@ public class PacketPokeAdv
             }
 
         }
-
-    }
-
-    public static class MessageServer implements IMessage
-    {
         public static final byte MESSAGEGUIAFA = 11;
-        PacketBuffer             buffer;
 
-        public MessageServer()
-        {
-        };
+        PacketBuffer             buffer;;
 
-        public MessageServer(byte[] data)
+        public MessageClient()
         {
-            this.buffer = new PacketBuffer(Unpooled.buffer());
-            buffer.writeBytes(data);
         }
 
-        public MessageServer(PacketBuffer buffer)
-        {
-            this.buffer = buffer;
-        }
-
-        public MessageServer(byte channel, NBTTagCompound nbt)
+        public MessageClient(byte channel, NBTTagCompound nbt)
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
             buffer.writeNBTTagCompoundToBuffer(nbt);
             // System.out.println(buffer.array().length);
+        }
+
+        public MessageClient(byte[] data)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeBytes(data);
+        }
+
+        public MessageClient(PacketBuffer buffer)
+        {
+            this.buffer = buffer;
         }
 
         @Override
@@ -257,6 +176,9 @@ public class PacketPokeAdv
             buf.writeBytes(buffer);
         }
 
+    }
+    public static class MessageServer implements IMessage
+    {
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
         {
             public IMessage handleServerSide(EntityPlayer player, PacketBuffer buffer)
@@ -280,15 +202,10 @@ public class PacketPokeAdv
                 }
                 if (channel == 7)
                 {
-                    boolean pc = buffer.readBoolean();// TODO see when bag vs pc
-                                                      // packets were used
+                    boolean pc = buffer.readBoolean();
                     Vector3 v = Vector3.readFromBuff(buffer);
                     if (pc) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, v.intX(),
                             v.intY(), v.intZ());
-                    // else player.openGui(PokecubeAdv.instance,
-                    // PokecubeAdv.GUIPC_ID, player.worldObj, v.intX(),
-                    // v.intY(),
-                    // v.intZ());
                 }
                 if (channel == 9)
                 {
@@ -307,20 +224,6 @@ public class PacketPokeAdv
                     catch (Exception e)
                     {
                         e.printStackTrace();
-                    }
-                }
-                if (channel == 10)
-                {
-                    IPokemob pokemob = PlayerAsPokemobManager.getInstance().getTransformed(player);
-                    if (pokemob != null)
-                    {
-                        int id = buffer.readInt();
-                        Entity hit = player.worldObj.getEntityByID(id);
-                        if (hit != null)
-                        {
-                            String moveName = pokemob.getMove(pokemob.getMoveIndex());
-                            MovesUtils.doAttack(moveName, pokemob, hit, 0);
-                        }
                     }
                 }
                 if (channel == MESSAGEGUIAFA && player.openContainer instanceof ContainerAFA)
@@ -353,8 +256,59 @@ public class PacketPokeAdv
             }
 
         }
+        public static final byte MESSAGEGUIAFA = 11;
+
+        PacketBuffer             buffer;;
+
+        public MessageServer()
+        {
+        }
+
+        public MessageServer(byte channel, NBTTagCompound nbt)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeByte(channel);
+            buffer.writeNBTTagCompoundToBuffer(nbt);
+            // System.out.println(buffer.array().length);
+        }
+
+        public MessageServer(byte[] data)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeBytes(data);
+        }
+
+        public MessageServer(PacketBuffer buffer)
+        {
+            this.buffer = buffer;
+        }
+
+        @Override
+        public void fromBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer());
+            }
+            buffer.writeBytes(buf);
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf)
+        {
+            if (buffer == null)
+            {
+                buffer = new PacketBuffer(Unpooled.buffer());
+            }
+            buf.writeBytes(buffer);
+        }
 
     }
+    public static byte TYPESETPUBLIC  = 0;
+
+    public static byte TYPEADDLAND    = 1;
+
+    public static byte TYPEREMOVELAND = 2;
 
     public static void handleTrainerEditPacket(PacketBuffer buffer, EntityPlayer player)
     {
@@ -395,14 +349,14 @@ public class PacketPokeAdv
             type = new String(string);
             int id = buffer.readInt();
             ret.writeInt(id);
-            PASaveHandler.getInstance().trainers.get(id).name = name;
-            PASaveHandler.getInstance().trainers.get(id).type = TypeTrainer.getTrainer(type);
-            PASaveHandler.getInstance().trainers.get(id).setTypes();
+            EntityTrainer trainer = (EntityTrainer) player.worldObj.getEntityByID(id);
+            trainer.name = name;
+            trainer.type = TypeTrainer.getTrainer(type);
+            trainer.setTypes();
             for (int index = 0; index < 6; index++)
             {
-                PASaveHandler.getInstance().trainers.get(id).setPokemob(numbers[index], levels[index], index);
+                trainer.setPokemob(numbers[index], levels[index], index);
             }
-
             if (!player.worldObj.isRemote)
             {
                 MessageClient mes = new MessageClient(ret.array());
@@ -414,6 +368,18 @@ public class PacketPokeAdv
         {
             e.printStackTrace();
         }
+    }
+
+    public static MessageClient makeClientPacket(byte channel, byte[] data)
+    {
+        byte[] packetData = new byte[data.length + 1];
+        packetData[0] = channel;
+
+        for (int i = 1; i < packetData.length; i++)
+        {
+            packetData[i] = data[i - 1];
+        }
+        return new MessageClient(packetData);
     }
 
     public static MessageServer makeServerPacket(byte channel, byte[] data)
@@ -428,16 +394,14 @@ public class PacketPokeAdv
         return new MessageServer(packetData);
     }
 
-    public static MessageClient makeClientPacket(byte channel, byte[] data)
+    public static void sendBagOpenPacket(boolean fromPC, Vector3 loc)
     {
-        byte[] packetData = new byte[data.length + 1];
-        packetData[0] = channel;
-
-        for (int i = 1; i < packetData.length; i++)
-        {
-            packetData[i] = data[i - 1];
-        }
-        return new MessageClient(packetData);
+        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+        buf.writeByte(7);
+        buf.writeBoolean(true);
+        loc.writeToBuff(buf);
+        MessageServer packet = new MessageServer(buf);
+        PokecubePacketHandler.sendToServer(packet);
     }
 
 }

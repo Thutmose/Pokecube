@@ -39,7 +39,37 @@ public class PokemobAILook extends EntityAIBase
         this.setMutexBits(2);
     }
 
+    /** Returns whether an in-progress EntityAIBase should continue executing */
+    @Override
+    public boolean continueExecuting()
+    {
+        if (idle) return this.idleTime >= 0;
+        return !this.closestEntity.isEntityAlive() ? false
+                : (this.theWatcher.getDistanceSqToEntity(
+                        this.closestEntity) > this.maxDistanceForPlayer * this.maxDistanceForPlayer ? false
+                                : this.lookTime > 0);
+    }
+
+    /**
+     * Determine if this AI Task is interruptible by a higher (= lower value) priority task. All vanilla AITask have
+     * this value set to true.
+     */
+    @Override
+    public boolean isInterruptible()
+    {
+        return true;
+    }
+
+    /** Resets the task */
+    @Override
+    public void resetTask()
+    {
+        this.closestEntity = null;
+        idle = false;
+    }
+
     /** Returns whether the EntityAIBase should begin execution. */
+    @Override
     public boolean shouldExecute()
     {
         if (this.theWatcher.getRNG().nextFloat() >= this.chance)
@@ -62,31 +92,21 @@ public class PokemobAILook extends EntityAIBase
             if (this.watchedClass == EntityPlayer.class)
             {
                 this.closestEntity = this.theWatcher.worldObj.getClosestPlayerToEntity(this.theWatcher,
-                        (double) this.maxDistanceForPlayer);
+                        this.maxDistanceForPlayer);
             }
             else
             {
                 this.closestEntity = this.theWatcher.worldObj.findNearestEntityWithinAABB(
                         this.watchedClass, this.theWatcher.getEntityBoundingBox()
-                                .expand((double) this.maxDistanceForPlayer, 3.0D, (double) this.maxDistanceForPlayer),
+                                .expand(this.maxDistanceForPlayer, 3.0D, this.maxDistanceForPlayer),
                         this.theWatcher);
             }
 
             return this.closestEntity != null;
         }
     }
-
-    /** Returns whether an in-progress EntityAIBase should continue executing */
-    public boolean continueExecuting()
-    {
-        if (idle) return this.idleTime >= 0;
-        return !this.closestEntity.isEntityAlive() ? false
-                : (this.theWatcher.getDistanceSqToEntity(
-                        this.closestEntity) > (double) (this.maxDistanceForPlayer * this.maxDistanceForPlayer) ? false
-                                : this.lookTime > 0);
-    }
-
     /** Execute a one shot task or start executing a continuous task */
+    @Override
     public void startExecuting()
     {
         if (idle)
@@ -98,35 +118,21 @@ public class PokemobAILook extends EntityAIBase
         }
         else this.lookTime = 40 + this.theWatcher.getRNG().nextInt(40);
     }
-
-    /** Resets the task */
-    public void resetTask()
-    {
-        this.closestEntity = null;
-        idle = false;
-    }
-    /**
-     * Determine if this AI Task is interruptible by a higher (= lower value) priority task. All vanilla AITask have
-     * this value set to true.
-     */
-    public boolean isInterruptible()
-    {
-        return true;
-    }
     /** Updates the task */
+    @Override
     public void updateTask()
     {
         if (idle)
         {
             --this.idleTime;
             this.theWatcher.getLookHelper().setLookPosition(this.theWatcher.posX + this.lookX,
-                    this.theWatcher.posY + (double) this.theWatcher.getEyeHeight(), this.theWatcher.posZ + this.lookZ,
-                    10.0F, (float) this.theWatcher.getVerticalFaceSpeed());
+                    this.theWatcher.posY + this.theWatcher.getEyeHeight(), this.theWatcher.posZ + this.lookZ,
+                    10.0F, this.theWatcher.getVerticalFaceSpeed());
             return;
         }
         this.theWatcher.getLookHelper().setLookPosition(this.closestEntity.posX,
-                this.closestEntity.posY + (double) this.closestEntity.getEyeHeight(), this.closestEntity.posZ, 10.0F,
-                (float) this.theWatcher.getVerticalFaceSpeed());
+                this.closestEntity.posY + this.closestEntity.getEyeHeight(), this.closestEntity.posZ, 10.0F,
+                this.theWatcher.getVerticalFaceSpeed());
         --this.lookTime;
     }
 

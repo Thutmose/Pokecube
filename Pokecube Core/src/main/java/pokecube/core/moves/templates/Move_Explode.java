@@ -8,11 +8,16 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IWorldAccess;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
-import pokecube.core.Mod_Pokecube_Helper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Pokedex;
+import pokecube.core.interfaces.IMoveAnimation;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.maths.ExplosionCustom;
@@ -31,19 +36,11 @@ public class Move_Explode extends Move_Ongoing
     }
 
     @Override
-    public void attack(IPokemob attacker, Vector3 attacked, float f)
-    {
-        attack(attacker, (Entity) attacker, f);
-    }
-
-    @Override
     public void attack(IPokemob attacker, Entity attacked, float f)
     {
         if (attacker instanceof EntityLiving)
         {
-            EntityLiving voltorb = (EntityLiving) attacker; // typically Voltorb
-                                                            // or Electrode but
-                                                            // can be other
+            EntityLiving voltorb = (EntityLiving) attacker;
             IPokemob pokemob = attacker;
             int i = pokemob.getExplosionState();
             if (i <= 0 && f < 3F || i > 0 && f < 7F)
@@ -53,7 +50,11 @@ public class Move_Explode extends Move_Ongoing
                     voltorb.worldObj.playSoundAtEntity(voltorb, "game.tnt.primed", 1.0F, 0.5F);
                 }
                 pokemob.setExplosionState(1);
-                ((IPokemob) attacker).addOngoingEffect(this);
+                if (PokecubeMod.core.getConfig().explosions) attacker.addOngoingEffect(this);
+                else
+                {
+                    super.attack(attacker, attacked, f);
+                }
             }
             else
             {
@@ -69,6 +70,17 @@ public class Move_Explode extends Move_Ongoing
         }
     }
 
+    @Override
+    public void attack(IPokemob attacker, Vector3 attacked, float f)
+    {
+        if (PokecubeMod.core.getConfig().explosions) attack(attacker, (Entity) attacker, f);
+        else
+        {
+            super.attack(attacker, attacked, f);
+        }
+    }
+
+    @Override
     public void doOngoingEffect(EntityLiving mob)
     {
         if (!(mob instanceof IPokemob)) return;
@@ -80,19 +92,20 @@ public class Move_Explode extends Move_Ongoing
             float f1 = getPWR() * Tools.getStats(pokemob)[1] / 1000f;
 
             if (pokemob.isType(normal)) f1 *= 1.5f;
-            ExplosionCustom.MAX_RADIUS = 250;
 
             Explosion boom = MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);
             ExplosionEvent.Start evt = new ExplosionEvent.Start(mob.worldObj, boom);
             MinecraftForge.EVENT_BUS.post(evt);
             if (!evt.isCanceled())
             {
-                ((ExplosionCustom) boom).doExplosion();
+                if (PokecubeMod.core.getConfig().explosions) ((ExplosionCustom) boom).doExplosion();
+
                 mob.setHealth(0);
                 mob.onDeath(DamageSource.generic);
                 if (attacked instanceof IPokemob && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
                 {
-                    if (!(((IPokemob) attacked).getPokemonAIState(IPokemob.TAMED) && !Mod_Pokecube_Helper.pvpExp))
+                    if (!(((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED)
+                            && !PokecubeMod.core.getConfig().pvpExp))
                     {
                         // voltorb's enemy wins XP and EVs even if it didn't
                         // attack
@@ -122,9 +135,43 @@ public class Move_Explode extends Move_Ongoing
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public IMoveAnimation getAnimation()
+    {
+        return new IMoveAnimation()
+        {
+            @Override
+            public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
+            {
+                EntityLivingBase voltorb = (EntityLivingBase) info.attacker;
+                Explosion explosion = new Explosion(voltorb.worldObj, voltorb, voltorb.posX, voltorb.posY, voltorb.posZ,
+                        10, false, true);
+                explosion.doExplosionB(true);
+            }
+
+            @Override
+            public int getDuration()
+            {
+                return 0;
+            }
+
+            @Override
+            public void setDuration(int duration)
+            {
+            }
+        };
+    }
+
+    @Override
     public int getDuration()
     {
         return 4;
+    }
+
+    @Override
+    public boolean onSource()
+    {
+        return true;
     }
 
     @Override
@@ -134,8 +181,9 @@ public class Move_Explode extends Move_Ongoing
     }
 
     @Override
-    public boolean onSource()
+    public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
     {
-        return true;
+        EntityLivingBase voltorb = (EntityLivingBase) attacker;
+        voltorb.attackEntityFrom(DamageSource.generic, voltorb.getMaxHealth());
     }
 }

@@ -11,6 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.common.collect.Maps;
 
+import net.minecraftforge.fml.common.ProgressManager;
+import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntryLoader;
@@ -18,7 +20,27 @@ import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
 
 public class ExtraDatabase
 {
-    static HashMap<String, String> xmls;
+    @XmlRootElement(name = "details")
+    public static class XMLDetails
+    {
+        @XmlElement(name = "RIDDENOFFSET")
+        float  offset = -1;
+        @XmlElement(name = "PARTICLEEFFECTS")
+        String particles;
+    }
+
+    @XmlRootElement(name = "ModelAnimator")
+    public static class XMLFile
+    {
+        @XmlElement(name = "details")
+        XMLDetails      details;
+        @XmlElement(name = "Pokemon")
+        XMLPokedexEntry entry;
+    }
+
+    static HashMap<String, String>          xmls;
+
+    static HashMap<String, XMLPokedexEntry> entries = Maps.newHashMap();
 
     public static void addXML(String name, ArrayList<String> xml)
     {
@@ -33,15 +55,31 @@ public class ExtraDatabase
 
     public static void apply()
     {
+        apply(null);
+    }
+
+    public static void apply(String toApply)
+    {
+        if (xmls == null) return;
+        boolean bar = toApply == null;
+
+        ProgressBar loading = null;
+        if (bar)
+        {
+            loading = ProgressManager.push("XML Overrides", xmls.size());
+        }
+
         if (xmls != null) for (String s : xmls.keySet())
         {
+            if (toApply != null && !toApply.equalsIgnoreCase(s)) continue;
+
             PokedexEntry entry = Database.getEntry(s);
+            if (bar) loading.step(entry.getName());
             try
             {
                 JAXBContext jaxbContext = JAXBContext.newInstance(XMLFile.class);
                 Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
                 XMLFile file = (XMLFile) unmarshaller.unmarshal(new StringReader(xmls.get(s)));
-
                 if (entry == null && file.entry != null)
                 {
                     String name = file.entry.name;
@@ -49,10 +87,7 @@ public class ExtraDatabase
                     entry = new PokedexEntry(number, name);
                     PokedexEntryLoader.updateEntry(file.entry, true);
                 }
-                if (file.entry != null)
-                {
-                    PokedexEntryLoader.updateEntry(file.entry, false);
-                }
+                if (file.entry != null) PokedexEntryLoader.addOverrideEntry(file.entry);
 
                 if (entry != null && file.details != null)
                 {
@@ -65,36 +100,20 @@ public class ExtraDatabase
                 e.printStackTrace();
             }
         }
+        if (bar)
+        {
+            ProgressManager.pop(loading);
+        }
     }
 
     public static void cleanup()
     {
         xmls = null;
+        entries = null;
     }
 
-    @XmlRootElement(name = "ModelAnimator")
-    public static class XMLFile
+    public static XMLPokedexEntry getEntry(String name)
     {
-        @XmlElement(name = "model")
-        XMLModel        model;
-        @XmlElement(name = "details")
-        XMLDetails      details;
-        @XmlElement(name = "Pokemon")
-        XMLPokedexEntry entry;
-    }
-
-    @XmlRootElement(name = "model")
-    public static class XMLModel
-    {
-
-    }
-
-    @XmlRootElement(name = "details")
-    public static class XMLDetails
-    {
-        @XmlElement(name = "RIDDENOFFSET")
-        float  offset = -1;
-        @XmlElement(name = "PARTICLEEFFECTS")
-        String particles;
+        return entries.get(name);
     }
 }

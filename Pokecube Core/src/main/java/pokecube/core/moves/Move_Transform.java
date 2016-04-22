@@ -8,18 +8,43 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.IWorldAccess;
-import pokecube.core.interfaces.IBreedingMob;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.templates.Move_Basic;
+import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
 public class Move_Transform extends Move_Basic
 {
+
+    public static class Animation implements IMoveAnimation
+    {
+
+        @Override
+        public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
+        {
+            if (info.attacker == null) return;
+
+            ((IPokemob) info.attacker).setTransformedTo(info.attacked);
+        }
+
+        @Override
+        public int getDuration()
+        {
+            return 0;
+        }
+
+        @Override
+        public void setDuration(int arg0)
+        {
+
+        }
+
+    }
 
     /** @param name
      * @param type
@@ -40,7 +65,7 @@ public class Move_Transform extends Move_Basic
     public void attack(IPokemob attacker, Entity attacked, float f)
     {
         if (!(attacker instanceof IPokemob)) return;
-        if (((IPokemob) attacker).getTransformedTo() == null && attacked instanceof EntityLivingBase)
+        if (attacker.getTransformedTo() == null && attacked instanceof EntityLivingBase)
         {
             if (MovesUtils.contactAttack(attacker, attacked, f))
             {
@@ -58,7 +83,7 @@ public class Move_Transform extends Move_Basic
                     }
 
                 }
-                ((IPokemob) attacker).setTransformedTo(attacked);
+                attacker.setTransformedTo(attacked);
                 Vector3 v = Vector3.getNewVector().set(attacked);
                 notifyClient((Entity) attacker, v, attacked);
             }
@@ -85,30 +110,5 @@ public class Move_Transform extends Move_Basic
                 }
             }
         }
-    }
-
-    public static class Animation implements IMoveAnimation
-    {
-
-        @Override
-        public void clientAnimation(MovePacketInfo info, IWorldAccess world, float partialTick)
-        {
-            if (info.attacker == null) return;
-
-            ((IPokemob) info.attacker).setTransformedTo(info.attacked);
-        }
-
-        @Override
-        public int getDuration()
-        {
-            return 0;
-        }
-
-        @Override
-        public void setDuration(int arg0)
-        {
-
-        }
-
     }
 }

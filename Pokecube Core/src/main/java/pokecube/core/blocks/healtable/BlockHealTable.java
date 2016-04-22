@@ -22,8 +22,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
+import pokecube.core.handlers.Config;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 
@@ -40,28 +40,6 @@ public class BlockHealTable extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
-            float hitX, float hitY, float hitZ)
-    {
-        TileEntity tile_entity = world.getTileEntity(pos);
-
-        if (tile_entity == null || player.isSneaking())
-        {
-            if (player.capabilities.isCreativeMode && !world.isRemote)
-            {
-                state = state.cycleProperty(FIXED);
-                player.addChatMessage(new ChatComponentText("Set Block to "
-                        + ((Boolean) state.getValue(BlockHealTable.FIXED) ? "Breakable" : "Unbreakable")));
-                world.setBlockState(pos, state);
-            }
-            return false;
-        }
-        player.openGui(PokecubeCore.instance, Mod_Pokecube_Helper.GUIPOKECENTER_ID, world, pos.getX(), pos.getY(),
-                pos.getZ());
-        return true;
-    }
-
-    @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
         dropItems(world, pos);
@@ -71,6 +49,18 @@ public class BlockHealTable extends Block implements ITileEntityProvider
             PokecubeSerializer.getInstance().removeChunks(world, v.set(pos));
         }
         super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    protected BlockState createBlockState()
+    {
+        return new BlockState(this, new IProperty[] { FIXED });
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World var1, int var2)
+    {
+        return new TileHealTable();
     }
 
     private void dropItems(World world, BlockPos pos)
@@ -109,6 +99,40 @@ public class BlockHealTable extends Block implements ITileEntityProvider
         }
     }
 
+    /** Convert the BlockState into the correct metadata value */
+    @Override
+    public int getMetaFromState(IBlockState state)
+    {
+        return !((Boolean) state.getValue(BlockHealTable.FIXED)) ? 0 : 1;
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty(FIXED, meta == 0 ? Boolean.FALSE : Boolean.TRUE);
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side,
+            float hitX, float hitY, float hitZ)
+    {
+        TileEntity tile_entity = world.getTileEntity(pos);
+
+        if (tile_entity == null || player.isSneaking())
+        {
+            if (player.capabilities.isCreativeMode && !world.isRemote)
+            {
+                state = state.cycleProperty(FIXED);
+                player.addChatMessage(new ChatComponentText("Set Block to "
+                        + (state.getValue(BlockHealTable.FIXED) ? "Breakable" : "Unbreakable")));
+                world.setBlockState(pos, state);
+            }
+            return false;
+        }
+        player.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, world, pos.getX(), pos.getY(), pos.getZ());
+        return true;
+    }
+
     @Override
     /** Called when a block is placed using its ItemBlock. Args: World, X, Y, Z,
      * side, hitX, hitY, hitZ, block metadata */
@@ -121,28 +145,5 @@ public class BlockHealTable extends Block implements ITileEntityProvider
         Vector3 v = Vector3.getNewVector();
         PokecubeSerializer.getInstance().addChunks(world, v.set(pos), centre.getChunkCoordIntPair());
         return getStateFromMeta(meta);
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World var1, int var2)
-    {
-        return new TileHealTable();
-    }
-
-    protected BlockState createBlockState()
-    {
-        return new BlockState(this, new IProperty[] { FIXED });
-    }
-
-    /** Convert the BlockState into the correct metadata value */
-    public int getMetaFromState(IBlockState state)
-    {
-        return !((Boolean) state.getValue(BlockHealTable.FIXED)) ? 0 : 1;
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(FIXED, meta == 0 ? Boolean.FALSE : Boolean.TRUE);
     }
 }

@@ -1,10 +1,12 @@
 package pokecube.core.items.revive;
 
-import pokecube.core.items.ItemTranslated;
+import net.minecraft.item.Item;
 
-public class ItemRevive extends ItemTranslated {
-	public ItemRevive() {
-		super();
-		this.setHasSubtypes(true);
-	}
+public class ItemRevive extends Item
+{
+    public ItemRevive()
+    {
+        super();
+        this.setHasSubtypes(true);
+    }
 }

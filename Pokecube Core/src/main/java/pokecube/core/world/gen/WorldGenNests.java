@@ -8,8 +8,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeItems;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class WorldGenNests implements IWorldGenerator {
 
@@ -18,26 +18,30 @@ public class WorldGenNests implements IWorldGenerator {
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator,
 			IChunkProvider chunkProvider) {
-		if (!Mod_Pokecube_Helper.nests)
+		if (!PokecubeMod.core.getConfig().nests)
 			return;
-		Mod_Pokecube_Helper.nestsPerChunk = 1;
+		PokecubeMod.core.getConfig().nestsPerChunk = 1;
 		if(random.nextDouble() < 0.9)
 			return;
 		
 		
 		switch (world.provider.getDimensionId()) {
 		case -1:
-			for(int i = 0; i<Mod_Pokecube_Helper.nestsPerChunk; i++)
+			for(int i = 0; i<PokecubeMod.core.getConfig().nestsPerChunk; i++)
 			generateNether(world, random, chunkX, chunkZ);
 			break;
 		case 0:
-			for(int i = 0; i<Mod_Pokecube_Helper.nestsPerChunk; i++)
+			for(int i = 0; i<PokecubeMod.core.getConfig().nestsPerChunk; i++)
 				generateSurface(world, random, chunkX, chunkZ);
 			break;
 		case 1:
 			generateEnd();
 			break;
 		}
+	}
+
+	public void generateEnd() {
+		// we're not going to generate in the end yet
 	}
 
 	public void generateNether(World world, Random rand, int chunkX, int chunkZ) {
@@ -59,7 +63,7 @@ public class WorldGenNests implements IWorldGenerator {
 					{
 						continue;
 					}
-					if(Mod_Pokecube_Helper.getTerrain().contains(b))
+					if(PokecubeMod.core.getConfig().getTerrain().contains(b))
 					{
 						world.setBlockState(pos, PokecubeItems.getBlock("pokemobNest").getDefaultState());
 						return;
@@ -90,7 +94,7 @@ public class WorldGenNests implements IWorldGenerator {
 					{
 						continue;
 					}
-					if(Mod_Pokecube_Helper.getTerrain().contains(b))
+					if(PokecubeMod.core.getConfig().getTerrain().contains(b))
 					{
 						world.setBlockState(pos, PokecubeItems.getBlock("pokemobNest").getDefaultState());
 						return;
@@ -99,9 +103,5 @@ public class WorldGenNests implements IWorldGenerator {
 			}
 		}
 
-	}
-
-	public void generateEnd() {
-		// we're not going to generate in the end yet
 	}
 }

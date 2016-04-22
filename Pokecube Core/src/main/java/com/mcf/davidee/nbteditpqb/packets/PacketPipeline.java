@@ -22,7 +22,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
 
 /**
  * Packet pipeline class. Directs all registered packet data to be handled by the packets themselves.
@@ -35,9 +34,43 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
     private EnumMap<Side, FMLEmbeddedChannel> channels;
     private List<Class<? extends AbstractPacket>> packets;
     
-	public PacketPipeline() {
+    public PacketPipeline() {
     	packets = Arrays.asList(MouseOverPacket.class, EntityRequestPacket.class, TileRequestPacket.class, 
     			EntityNBTPacket.class, TileNBTPacket.class, TileNBTUpdatePacket.class);
+    }
+
+    // In line decoding and handling of the packet
+    @Override
+    protected void decode(ChannelHandlerContext ctx, FMLProxyPacket msg, List<Object> out) throws Exception {
+        ByteBuf payload = msg.payload();
+        byte discriminator = payload.readByte();
+        Class<? extends AbstractPacket> clazz = this.packets.get(discriminator);
+
+        AbstractPacket pkt = clazz.newInstance();
+        pkt.decodeInto(ctx, payload.slice());
+
+        //FMLCommonHandler.instance().getEffectiveSide() doesn't take in to account Netty's new "Epoll" Thread name.
+        Side side;
+        Thread thr = Thread.currentThread();
+        if (FMLCommonHandler.instance().getSide() == Side.SERVER) side = Side.SERVER;
+        else if (thr.getName().equals("Server thread") || thr.getName().startsWith("Netty Server IO") || thr.getName().startsWith("Netty Epoll Server IO")) {
+            side = Side.SERVER;
+        } else side = Side.CLIENT;
+
+        //switch (FMLCommonHandler.instance().getEffectiveSide()) {
+        switch (side) {
+            case CLIENT:
+                pkt.handleClientSide(this.getClientPlayer());
+                break;
+            case SERVER:
+                INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
+                pkt.handleServerSide(((NetHandlerPlayServer) netHandler).playerEntity);
+                break;
+            default:
+            	break;
+        }
+
+        out.add(pkt);
     }
 
     // In line encoding of the packet, including discriminator setting
@@ -53,51 +86,14 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
         out.add(proxyPacket);
     }
 
-    // In line decoding and handling of the packet
-    @Override
-    protected void decode(ChannelHandlerContext ctx, FMLProxyPacket msg, List<Object> out) throws Exception {
-        ByteBuf payload = msg.payload();
-        byte discriminator = payload.readByte();
-        Class<? extends AbstractPacket> clazz = this.packets.get(discriminator);
-
-        AbstractPacket pkt = clazz.newInstance();
-        pkt.decodeInto(ctx, payload.slice());
-
-        switch (FMLCommonHandler.instance().getEffectiveSide()) {
-            case CLIENT:
-                pkt.handleClientSide(PokecubeCore.getPlayer(null));
-                break;
-            case SERVER:
-                INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-                pkt.handleServerSide(((NetHandlerPlayServer) netHandler).playerEntity);
-                break;
-            default:
-            	break;
-        }
-
-        out.add(pkt);
-    }
-
-    // Method to call from FMLInitializationEvent
-    public void initialize() {
-        this.channels = NetworkRegistry.INSTANCE.newChannel("NBTEDIT", this);
-    }
-
     @SideOnly(Side.CLIENT)
     private EntityPlayer getClientPlayer() {
         return Minecraft.getMinecraft().thePlayer;
     }
 
-    /**
-     * Send this message to everyone.
-     * <p/>
-     * Adapted from CPW's code in cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
-     *
-     * @param message The message to send
-     */
-    public void sendToAll(AbstractPacket message) {
-        this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-        this.channels.get(Side.SERVER).writeAndFlush(message);
+    // Method to call from FMLInitializationEvent
+    public void initialize() {
+        this.channels = NetworkRegistry.INSTANCE.newChannel("NBTEDIT", this);
     }
 
     /**
@@ -111,6 +107,18 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
     public void sendTo(AbstractPacket message, EntityPlayerMP player) {
         this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
         this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+        this.channels.get(Side.SERVER).writeAndFlush(message);
+    }
+
+    /**
+     * Send this message to everyone.
+     * <p/>
+     * Adapted from CPW's code in cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
+     *
+     * @param message The message to send
+     */
+    public void sendToAll(AbstractPacket message) {
+        this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
         this.channels.get(Side.SERVER).writeAndFlush(message);
     }
 

@@ -8,10 +8,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.client.ItemTextureHandler;
+import pokecube.core.handlers.HeldItemHandler;
 
 public class ItemMegastone extends Item
 {
@@ -20,12 +19,6 @@ public class ItemMegastone extends Item
         super();
         this.setMaxStackSize(1);
         this.setHasSubtypes(true);
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
-    {
-        return itemstack;
     }
 
     /** allows items to add custom lines of information to the mouseover
@@ -42,24 +35,6 @@ public class ItemMegastone extends Item
     }
 
     @Override
-    /** returns a list of items with the same ID, but different meta (eg: dye
-     * returns 16 items) */
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
-    {
-        ItemStack stack;
-        subItems.add(new ItemStack(itemIn));
-        int n = 0;
-        for (String s : ItemTextureHandler.megaVariants)
-        {
-            if (n++ == 0) continue;
-            stack = new ItemStack(itemIn);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("pokemon", s);
-            subItems.add(stack);
-        }
-    }
-
     public String getItemStackDisplayName(ItemStack stack)
     {
         String name = ("" + StatCollector.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name"))
@@ -85,5 +60,24 @@ public class ItemMegastone extends Item
     public boolean getShareTag()
     {
         return true;
+    }
+
+    @Override
+    /** returns a list of items with the same ID, but different meta (eg: dye
+     * returns 16 items) */
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
+    {
+        ItemStack stack;
+        subItems.add(new ItemStack(itemIn));
+        int n = 0;
+        for (String s : HeldItemHandler.megaVariants)
+        {
+            if (n++ == 0) continue;
+            stack = new ItemStack(itemIn);
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setString("pokemon", s);
+            subItems.add(stack);
+        }
     }
 }

@@ -11960,6 +11960,16 @@
                 lvl_48="BLIZZARD" lvl_5="DOUBLETEAM" lvl_54="HAIL" lvl_61="SHEERCOLD"/>
         </MOVES>
     </Pokemon>
+    <Pokemon name="Glalie Mega" number="362">
+        <STATS>
+            <MASSKG>350.2</MASSKG>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <BASESTATS atk="120" def="80" hp="80" spatk="120" spd="80" spdef="100"/>
+            <SIZES height="2.1" length="2.1" width="2.1"/>
+            <TYPE type1="Ice"/>
+            <ABILITY normal="Refrigerate"/>
+        </STATS>
+    </Pokemon>
     <Pokemon name="Spheal" number="363">
         <STATS>
             <EVOLUTIONMODE>L32</EVOLUTIONMODE>

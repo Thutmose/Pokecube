@@ -1,4 +1,4 @@
-#Pokecube translation
+﻿#Pokecube translation
 
 ##Move Messages
 
@@ -25,7 +25,7 @@ pokemob.move.stat6=Precisão
 pokemob.move.stat7=Evasão
 
 pokemob.move.notify.learn=%1$s aprendeu %2$s
-pokemob.move.terraindamage=%1$s sofreu danos pela %2$s
+pokemob.move.terraindamage=%1$s sofreu danos por %2$s
 
 pokemob.move.missed=Não acertou %1$s!
 

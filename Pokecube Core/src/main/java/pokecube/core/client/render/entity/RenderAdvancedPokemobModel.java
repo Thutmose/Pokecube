@@ -70,8 +70,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glTranslated(d0, d1, d2);
         if ((partialTick != GuiPokedex.POKEDEX_RENDER))
         {
-            RenderPokemob.renderEvolution((IPokemob) entity, yaw);
-            RenderPokemob.renderExitCube((IPokemob) entity, yaw);
+            RenderPokemob.renderEvolution((IPokemob) entity, partialTick);
+            RenderPokemob.renderExitCube((IPokemob) entity, partialTick);
         }
         GL11.glPopMatrix();
         GL11.glPushMatrix();

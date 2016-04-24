@@ -7,14 +7,19 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
+import java.awt.Color;
 import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,7 +30,6 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.client.gui.GuiPokedex;
-import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -43,7 +47,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 
     public static void renderEvolution(IPokemob pokemob, float par2)
     {
-        PTezzelator tez = PTezzelator.instance;
         float f1 = 0, f2 = 0;
 
         boolean evolving = pokemob.getEvolutionTicks() > 0;
@@ -52,6 +55,8 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         {
             f1 = (pokemob.getEvolutionTicks() + par2) / 200.0F;
             f2 = 0.0F;
+            Tessellator tessellator = Tessellator.getInstance();
+            WorldRenderer worldrenderer = tessellator.getWorldRenderer();
             RenderHelper.disableStandardItemLighting();
 
             if (f1 > 0.8F)
@@ -68,32 +73,38 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             GL11.glEnable(GL11.GL_CULL_FACE);
             GL11.glDepthMask(false);
             GL11.glPushMatrix();
-            GL11.glTranslatef(0.0F, 1.0F, 0.0F);
+            GL11.glTranslatef(0.0F, pokemob.getPokedexEntry().height * pokemob.getSize() / 2, 0.0F);
 
             int color1 = pokemob.getType1().colour;
             int color2 = pokemob.getType2().colour;
 
+            Color col1 = new Color(color1);
+            Color col2 = new Color(color2);
+
+            float scale = 0.5f * pokemob.getPokedexEntry().length;
             for (int i = 0; i < (f1 + f1 * f1) / 2.0F * 60.0F; ++i)
             {
-                GL11.glRotatef(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(random.nextFloat() * 360.0F + f1 * 90.0F, 0.0F, 0.0F, 1.0F);
-                tez.begin(6);
-                float f3 = random.nextFloat() * 20.0F + 5.0F + f2 * 10.0F;
-                float f4 = random.nextFloat() * 2.0F + 1.0F + f2 * 2.0F;
-                tez.color(color1, (int) (255.0F * (1.0F - f2)));
-                tez.vertex(0.0D, 0.0D, 0.0D);
-                tez.color(color2, 0);
-                tez.vertex(-0.866D * f4, f3, -0.5F * f4);
-                tez.vertex(0.866D * f4, f3, -0.5F * f4);
-                tez.vertex(0.0D, f3, 1.0F * f4);
-                tez.vertex(-0.866D * f4, f3, -0.5F * f4);
-                tez.end();
+                GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
+                GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(random.nextFloat() * 360.0F + f1 * 90.0F, 0.0F, 0.0F, 1.0F);
+                float f4 = random.nextFloat() * 20.0F * scale + 5.0F * scale + f2 * 10.0F;
+                float f3 = random.nextFloat() * 2.0F * scale + 1.0F * scale + f2 * 2.0F;
+                worldrenderer.begin(6, DefaultVertexFormats.POSITION_COLOR);
+                worldrenderer.pos(0.0D, 0.0D, 0.0D)
+                        .color(col1.getRed(), col1.getGreen(), col1.getBlue(), (int) (255.0F * (1.0F - f1))).endVertex();
+                worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+                worldrenderer.pos(0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+                worldrenderer.pos(0.0D, (double) f4, (double) (1.0F * f3))
+                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+                worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+                tessellator.draw();
             }
-
             GL11.glPopMatrix();
             GL11.glDepthMask(true);
             GL11.glDisable(GL11.GL_CULL_FACE);
@@ -158,12 +169,12 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 
         }
         int ticks = ((Entity) pokemob).ticksExisted;
-        if (ticks > 10) return;
+        if (ticks > 20) return;
 
         float f1 = ((float) ticks * 5 + partialTick) / 200.0F;
         float f2 = 0.0F;
-
-        PTezzelator tez = PTezzelator.instance;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         RenderHelper.disableStandardItemLighting();
 
         if (f1 > 0.8F)
@@ -180,30 +191,37 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glDepthMask(false);
         GL11.glPushMatrix();
-        GL11.glTranslatef(0.0F, 1.0F, 0.0F);
+        GL11.glTranslatef(0.0F, pokemob.getPokedexEntry().height * pokemob.getSize() / 2, 0.0F);
 
         int color1 = pokemob.getType1().colour;
         int color2 = pokemob.getType2().colour;
 
+        Color col1 = new Color(color1);
+        Color col2 = new Color(color2);
+
+        float scale = 0.5f * pokemob.getPokedexEntry().length;
         for (int i = 0; i < (f1 + f1 * f1) / 2.0F * 60.0F; ++i)
         {
-            GL11.glRotatef(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-            GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glRotatef(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-            GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(random.nextFloat() * 360.0F + f1 * 90.0F, 0.0F, 0.0F, 1.0F);
-            tez.begin(6);
-            float f3 = random.nextFloat() * 20.0F + 5.0F + f2 * 10.0F;
-            float f4 = random.nextFloat() * 2.0F + 1.0F + f2 * 2.0F;
-            tez.color(color1, (int) (255.0F * (1.0F - f2)));
-            tez.vertex(0.0D, 0.0D, 0.0D);
-            tez.color(color2, 0);
-            tez.vertex(-0.866D * f4, f3, -0.5F * f4);
-            tez.vertex(0.866D * f4, f3, -0.5F * f4);
-            tez.vertex(0.0D, f3, 1.0F * f4);
-            tez.vertex(-0.866D * f4, f3, -0.5F * f4);
-            tez.end();
+            GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
+            GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(random.nextFloat() * 360.0F + f1 * 90.0F, 0.0F, 0.0F, 1.0F);
+            float f4 = random.nextFloat() * 20.0F * scale + 5.0F * scale + f2 * 10.0F;
+            float f3 = random.nextFloat() * 2.0F * scale + 1.0F * scale + f2 * 2.0F;
+            worldrenderer.begin(6, DefaultVertexFormats.POSITION_COLOR);
+            worldrenderer.pos(0.0D, 0.0D, 0.0D)
+                    .color(col1.getRed(), col1.getGreen(), col1.getBlue(), (int) (255.0F * (1.0F - f1))).endVertex();
+            worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            worldrenderer.pos(0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            worldrenderer.pos(0.0D, (double) f4, (double) (1.0F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            tessellator.draw();
         }
 
         GL11.glPopMatrix();
@@ -252,7 +270,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         GL11.glColor4f(var7, var7, var7, 0.5F);
         var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
         GL11.glScalef(var7, var7, var7);
-        
+
         IMobColourable colour = (IMobColourable) entity;
         int[] col = colour.getRGBA();
         int[] bak = col.clone();

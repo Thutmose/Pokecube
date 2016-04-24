@@ -33,6 +33,7 @@
       "charizardmega-y": {"textures": {"layer0": "pokecube:items/Charizardite_Y"}},
       "gallademega": {"textures": {"layer0": "pokecube:items/Galladite"}},
       "gardevoirmega": {"textures": {"layer0": "pokecube:items/Gardevoirite"}},
+      "glaliemega": {"textures": {"layer0": "pokecube:items/Glalitite"}},
       "mewtwomega-x": {"textures": {"layer0": "pokecube:items/Mewtwonite_X"}},
       "mewtwomega-y": {"textures": {"layer0": "pokecube:items/Mewtwonite_Y"}},
       "sableyemega": {"textures": {"layer0": "pokecube:items/Sablenite"}},

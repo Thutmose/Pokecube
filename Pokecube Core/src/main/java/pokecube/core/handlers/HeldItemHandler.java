@@ -17,19 +17,20 @@ public class HeldItemHandler
         megaVariants.add("shiny_charm");
         megaVariants.add("omegaorb");
         megaVariants.add("alphaorb");
-        megaVariants.add("gardevoirmega");
+        megaVariants.add("absolmega");
+        megaVariants.add("banettemega");
+        megaVariants.add("blastoisemega");
         megaVariants.add("charizardmega-y");
         megaVariants.add("charizardmega-x");
+        megaVariants.add("gallademega");
+        megaVariants.add("gardevoirmega");
 //        megaVariants.add("mewtwomega-y");
 //        megaVariants.add("mewtwomega-x");
-        megaVariants.add("scizormega");
-        megaVariants.add("sceptilemega");
+        megaVariants.add("sableyemega");
         megaVariants.add("salamencemega");
-        megaVariants.add("gallademega");
-        megaVariants.add("absolmega");
-        megaVariants.add("blastoisemega");
+        megaVariants.add("sceptilemega");
+        megaVariants.add("scizormega");
         megaVariants.add("slowbromega");
-        megaVariants.add("banettemega");
         //TODO rest of the mega stoneS here.
     }
 

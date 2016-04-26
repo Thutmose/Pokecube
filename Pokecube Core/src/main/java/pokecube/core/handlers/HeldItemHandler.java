@@ -18,12 +18,15 @@ public class HeldItemHandler
         megaVariants.add("omegaorb");
         megaVariants.add("alphaorb");
         megaVariants.add("absolmega");
+        megaVariants.add("alakazammega");
         megaVariants.add("banettemega");
         megaVariants.add("blastoisemega");
         megaVariants.add("charizardmega-y");
         megaVariants.add("charizardmega-x");
         megaVariants.add("gallademega");
         megaVariants.add("gardevoirmega");
+        megaVariants.add("gengarmega");
+        megaVariants.add("glaliemega");
 //        megaVariants.add("mewtwomega-y");
 //        megaVariants.add("mewtwomega-x");
         megaVariants.add("sableyemega");
@@ -31,6 +34,7 @@ public class HeldItemHandler
         megaVariants.add("sceptilemega");
         megaVariants.add("scizormega");
         megaVariants.add("slowbromega");
+        megaVariants.add("steelixmega");
         //TODO rest of the mega stoneS here.
     }
 

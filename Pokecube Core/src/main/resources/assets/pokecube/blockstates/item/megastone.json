@@ -27,12 +27,14 @@
         }
       },
       "absolmega": {"textures": {"layer0": "pokecube:items/Absolite"}},
+      "alakazammega": {"textures": {"layer0": "pokecube:items/Alakazite"}},
       "banettemega": {"textures": {"layer0": "pokecube:items/Banettite"}},
       "blastoisemega": {"textures": {"layer0": "pokecube:items/Blastoisinite"}},
       "charizardmega-x": {"textures": {"layer0": "pokecube:items/Charizardite_X"}},
       "charizardmega-y": {"textures": {"layer0": "pokecube:items/Charizardite_Y"}},
       "gallademega": {"textures": {"layer0": "pokecube:items/Galladite"}},
       "gardevoirmega": {"textures": {"layer0": "pokecube:items/Gardevoirite"}},
+      "gengarmega": {"textures": {"layer0": "pokecube:items/Gengarite"}},
       "glaliemega": {"textures": {"layer0": "pokecube:items/Glalitite"}},
       "mewtwomega-x": {"textures": {"layer0": "pokecube:items/Mewtwonite_X"}},
       "mewtwomega-y": {"textures": {"layer0": "pokecube:items/Mewtwonite_Y"}},
@@ -41,6 +43,7 @@
       "sceptilemega": {"textures": {"layer0": "pokecube:items/Sceptilite"}},
       "scizormega": {"textures": {"layer0": "pokecube:items/Scizorite"}},
       "slowbromega": {"textures": {"layer0": "pokecube:items/Slowbronite"}},
+      "steelixmega": {"textures": {"layer0": "pokecube:items/Steelixite"}},
       "tyranitarmega": {"textures": {"layer0": "pokecube:items/Tyranitarite"}},
       "venusaurmega": {"textures": {"layer0": "pokecube:items/Venusaurite"}}
     }

@@ -26,8 +26,14 @@
           "layer0": "pokecube:items/OmegaOrb"
         }
       },
+      "aerodactylmega": {"textures": {"layer0": "pokecube:items/Aerodactylite"}},
+      "abomasnowmega": {"textures": {"layer0": "pokecube:items/Abomasite"}},
       "absolmega": {"textures": {"layer0": "pokecube:items/Absolite"}},
+      "aggronmega": {"textures": {"layer0": "pokecube:items/Aggronite"}},
       "alakazammega": {"textures": {"layer0": "pokecube:items/Alakazite"}},
+      "altariamega": {"textures": {"layer0": "pokecube:items/Altarianite"}},
+      "ampharosmega": {"textures": {"layer0": "pokecube:items/Ampharosite"}},
+      "audinomega": {"textures": {"layer0": "pokecube:items/Audinite"}},
       "banettemega": {"textures": {"layer0": "pokecube:items/Banettite"}},
       "blastoisemega": {"textures": {"layer0": "pokecube:items/Blastoisinite"}},
       "charizardmega-x": {"textures": {"layer0": "pokecube:items/Charizardite_X"}},

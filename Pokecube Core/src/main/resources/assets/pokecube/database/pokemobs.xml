@@ -3681,7 +3681,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="85" def="95" hp="80" spatk="30" spd="25" spdef="30"/>
             <EVYIELD def="1"/>
-            <SIZES height="1.0" length="1.0" width="1.0"/>
+            <SIZES height="0.5" length="1.0" width="0.8"/>
             <TYPE type1="Ground" type2="Rock"/>
             <ABILITY hidden="Reckless" normal="Lightningrod, Rock Head"/>
         </STATS>

@@ -25,6 +25,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
      */
     protected ResourceLocation getEntityTexture(EntityLiving villager)
     {
+        //TODO make sure this properly uses steve texture if texture is missing.
     	if(villager instanceof EntityTrainer)
     	{
     		TypeTrainer type = ((EntityTrainer)villager).getType();

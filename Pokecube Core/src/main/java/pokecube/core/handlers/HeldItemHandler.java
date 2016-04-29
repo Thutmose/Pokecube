@@ -20,6 +20,7 @@ public class HeldItemHandler
         megaVariants.add("absolmega");
         megaVariants.add("alakazammega");
         megaVariants.add("banettemega");
+        megaVariants.add("beedrillmega");
         megaVariants.add("blastoisemega");
         megaVariants.add("charizardmega-y");
         megaVariants.add("charizardmega-x");
@@ -29,6 +30,7 @@ public class HeldItemHandler
         megaVariants.add("glaliemega");
 //        megaVariants.add("mewtwomega-y");
 //        megaVariants.add("mewtwomega-x");
+        megaVariants.add("pidgeotmega");
         megaVariants.add("sableyemega");
         megaVariants.add("salamencemega");
         megaVariants.add("sceptilemega");

@@ -46,6 +46,7 @@
       "glaliemega": {"textures": {"layer0": "pokecube:items/Glalitite"}},
       "mewtwomega-x": {"textures": {"layer0": "pokecube:items/Mewtwonite_X"}},
       "mewtwomega-y": {"textures": {"layer0": "pokecube:items/Mewtwonite_Y"}},
+      "pidgeotmega": {"textures": {"layer0": "pokecube:items/Pidgeotite"}},
       "sableyemega": {"textures": {"layer0": "pokecube:items/Sablenite"}},
       "salamencemega": {"textures": {"layer0": "pokecube:items/Salamencite"}},
       "sceptilemega": {"textures": {"layer0": "pokecube:items/Sceptilite"}},

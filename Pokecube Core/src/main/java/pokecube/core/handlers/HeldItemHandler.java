@@ -37,6 +37,7 @@ public class HeldItemHandler
         megaVariants.add("scizormega");
         megaVariants.add("slowbromega");
         megaVariants.add("steelixmega");
+        megaVariants.add("venusaurmega");
         //TODO rest of the mega stoneS here.
     }
 

@@ -28,8 +28,8 @@ public class HeldItemHandler
         megaVariants.add("gardevoirmega");
         megaVariants.add("gengarmega");
         megaVariants.add("glaliemega");
-//        megaVariants.add("mewtwomega-y");
-//        megaVariants.add("mewtwomega-x");
+        megaVariants.add("mewtwomega-y");
+        megaVariants.add("mewtwomega-x");
         megaVariants.add("pidgeotmega");
         megaVariants.add("sableyemega");
         megaVariants.add("salamencemega");

@@ -45,6 +45,8 @@ pokemob.action.denydamageblock=pokemobsDamageBlocks is disabled via configs
 pokemob.action.needsberries=Your Pokémob needs to eat more Berries to do that
 pokemob.action.denyrepel=Your Pokémob is too disgusted by repel to do that
 
+pokemob.info.levelup=%1$s has grown to level %2$s
+
 pokemob.info.happy0=§4Your Pokémob is very unhappy
 pokemob.info.happy1=§cYour Pokémob is unhappy
 pokemob.info.happy2=Your Pokémob is feeling fine
@@ -426,15 +428,28 @@ item.revive.name=Revive
 
 item.shiny_charm.name=Shiny Charm
 
-item.gardevoirmega.name=Gardevoirite
-item.charizardmega-y.name=Charizardite Y
-item.scizormega.name=Scizorite
-item.sceptilemega.name=Sceptilite
-item.salamencemega.name=Salamencite
-item.gallademega.name=Galladite
 item.absolmega.name=Absolite
+item.alakazammega.name=Alakazite
+item.banettemega.name=Banettite
+item.beedrillmega.name=Beedrillite
 item.blastoisemega.name=Blastoisinite
+item.charizardmega-x.name=Charizardite X
+item.charizardmega-y.name=Charizardite Y
+item.gallademega.name=Galladite
+item.gardevoirmega.name=Gardevoirite
+item.gengarmega.name=Gengarite
+item.glaliemega.name=Glalitite
+item.mewtwomega-x.name=Mewtwonite X
+item.mewtwomega-y.name=Mewtwonite Y
+item.pidgeotmega.name=Pidgeotite
+item.sableyemega.name=Sablenite
+item.salamencemega.name=Salamencite
+item.sceptilemega.name=Sceptilite
+item.scizormega.name=Scizorite
 item.slowbromega.name=Slowbronite
+item.steelixmega.name=Steelixite
+item.tyranitarmega.name=Tyranitarite
+item.venusaurmega.name=Venusaurite
 
 item.alphaorb.name=Alpha Orb
 item.omegaorb.name=Omega Orb

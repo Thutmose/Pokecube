@@ -1,4 +1,4 @@
-#Pokecube translation
+﻿#Pokecube translation
 
 type.normal=Normal
 type.fighting=Luta
@@ -17,12 +17,13 @@ type.psychic=Psíquico
 type.ice=Gelo
 type.dragon=Dragão
 type.dark=Sombrio
+type.fairy=Fada
 
 pokemob.status.curse=%1$s sofreu danos por causa da maldição
 pokemob.status.flinch=%1$s hesitou
 pokemob.status.confuse.remove=%1$s se livrou da confusão
 pokemob.status.confusion=%1$s se machucou pela confusão
-pokemob.status.infatuate=%1$s está não pode se mover por causa da paixão
+pokemob.status.infatuate=%1$s não pode se mover por causa da paixão
 
 pokemob.stance.guard=PROTEGER
 pokemob.stance.stay=FICAR
@@ -40,13 +41,26 @@ pokemob.action.sendout=%1$s saiu do PokéCubo
 pokemob.action.return=%1$s retornou ao PokéCubo
 pokemob.action.usemove=Você manda %1$s usar %2$s
 pokemob.action.faint=%1$s desmaiou
+pokemob.action.denydamageblock=Danos aos blocos por Pokémob está desativado nas configurações
+pokemob.action.needsberries=Pokémob precisa comer mais Bagas para fazer isso
+pokemob.action.denyrepel=Devido ao repelente, Pokémob está com muito desgosto para fazer isso
 
+pokemob.info.levelup=%1$s cresceu para o nível %2$s
+
+pokemob.info.happy0=§4Pokémob está muito infeliz
+pokemob.info.happy1=§cPokémob está infeliz
+pokemob.info.happy2=Pokémob está se sentindo bem
+pokemob.info.happy3=Pokémob está contente
+pokemob.info.happy4=Pokémob está feliz
+pokemob.info.happy5=§aPokémob está muito feliz
+pokemob.info.happy6=§aPokémob está extático
+
+pokemob.evolve.success=%1$s Evoluiu em %2$s
 pokemob.megaevolve.success=%1$s Megaevoluiu em %2$s
-pokemob.megaevolve.revert=%1$s reverteu para %2$s
-pokemob.megaevolve.wrongstone=%1$s tem a Megapedra errada
-pokemob.megaevolve.nomega=%1$s não pode Megaevoluir
-pokemob.megaevolve.nostone=%1$s não tem nenhuma Megapedra
-pokemob.megaevolve.nothappy=%1$s não gosta de você o suficiente para Megaevoluir
+pokemob.megaevolve.revert=%1$s Reverteu para %2$s
+pokemob.megaevolve.failed=%1$s falhou em Megaevoluir.
+
+pokemob.rename.deny=Você não pode renomear Pokémobs trocado.
 
 ability.adaptability.name=Adaptabilidade (Adaptability)
 ability.aerilate.name=Aerear (Aerilate)
@@ -245,13 +259,22 @@ achievement.catch=Capturar %1$s
 achievement.get1stPokemob=Pegue seu primeiro Pokémob
 achievement.get1stPokemob.desc=Pegue o seu Inicial
 gui.pokemob.choose1st=Escolha seu primeiro Pokémob
+gui.pokemob.choose1st.override=Começar com Inicial Sobreposto?
 gui.pokemob.select=Selecionar
+gui.pokemob.accept=Aceitar
+gui.pokemob.deny=Negar
+gui.pokemob.teleport=Teletransportes
 gui.pokedex.village=Vila mais Próxima
 
 pokecube.caught=%1$s foi capturado!
 pokecube.missed=Pokémob escapou!
 pokecube.denied=Pokémob se recusou a entrar no cubo!
 pokecube.noroom=Não há espaço suficiente para mais nenhum Pokémob aqui.
+pokecube.badaim=Eu provavelmente deveria mirar mais cuidadosamente
+
+pokecube.professor.deny=Professor: Você já recebeu um Pokémob
+pokedex.setteleport=Pokécentro marcado como Local para Teletransporte
+pokedex.locationinfo=Há %1$s Gerações Registradas\nHá %2$s Pokémobs registrados\n%3$s é gerado aqui
 
 pokemobEgg.name=Ovo de %1$s
 
@@ -287,7 +310,7 @@ item.persimBerry.name=Baga de Persim
 item.lumBerry.name=Baga de Lum
 item.lumBerry.desc=Cura qualquer condição de estado
 item.sitrusBerry.name=Baga de Sitrus
-item.sitrusBerry.desc=Restaura 25% do HP máximo
+item.sitrusBerry.desc=Restaura 25% do máximo dos Pontos de Vida
 item.nanabBerry.name=Baga de Nanab
 item.pinapBerry.name=Baga de Pinap
 item.cornnBerry.name=Baga de Cornn
@@ -344,7 +367,7 @@ item.badgefairy.name=Insígnia Fada
 
 item.pokedex.name=Pokédex
 tile.pokecenter.name=Pokécentro
-tile.pokecenter.heal=Restaurador
+tile.pokecenter.heal=Restaurar
 tile.pokemobNest.name=Ninho
 
 tile.repel.name=Repelente
@@ -370,7 +393,7 @@ item.cherishcube.name=Cubo Carinho (Cherish Cube)
 item.duskcube.name=Cubo Crepúsculo (Dusk Cube)
 item.pokeseal.name=Poké Selo (Poké Seal)
 item.candy.name=Doce Ruim
-item.emerald_shard.name=Caco de Esmeralda
+item.emerald_shard.name=Fragmento de Esmeralda
 item.tm0.name=TM em Branco
 
 tile.tradingtable.name=Mesa de Troca
@@ -382,6 +405,10 @@ tile.pc.top.name=Topo PC
 tile.pc.autoon=Auto: On
 tile.pc.autooff=Auto: Off
 tile.pc.rename=Renomear
+tile.pc.sentto=%1$s foi para o PC
+tile.pc.title=PC de %1$s
+tile.pc.public=Público
+tile.pc.bound=Limite Privado
 
 item.pokecube.bubbles=Gotículas
 item.pokecube.flames=Chamas
@@ -398,9 +425,128 @@ item.megaring.name=Mega-Anel
 item.megastone.name=Megapedra
 item.revive.name=Reviver
 
+item.shiny_charm.name=Amuleto Brilhante
+
+item.absolmega.name=Absolita
+item.banettemega.name=Banettita
+item.blastoisemega.name=Blastoisinita
+item.charizardmega-x.name=Charizardita X
+item.charizardmega-y.name=Charizardita Y
+item.gallademega.name=Galladita
+item.gardevoirmega.name=Gardevoirita
+item.mewtwomega-x.name=Mewtwonita X
+item.mewtwomega-y.name=Mewtwonita Y
+item.sableyemega.name=Sablenita
+item.salamencemega.name=Salamencita
+item.sceptilemega.name=Sceptilita
+item.scizormega.name=Scizorita
+item.slowbromega.name=Slowbronita
+
+item.alphaorb.name=Esfera Alfa
+item.omegaorb.name=Esfera Ômega
+
 item.silkyhair.name=Cabelo Sedoso (Silky Hair)
+
+entity.pokecube.pokecube:pokemobEgg.name=Ovo de Pokémob
 
 item.modelreloader.name=Recarregador de Modelos (Model Reloader)
 
 igwtab.entry.Pokecubes=PokéCubos
 igwtab.entry.Controls=Controles
+
+#Config Options
+
+#Misc
+pokecube.config.misc=Opções Diversas
+pokecube.config.contributorStarters.tooltip=Contribuidores têm a opção de obter iniciais especiais
+pokecube.config.loginmessage.tooltip=A versão atual é exibida na primeira vez que se entra
+pokecube.config.guiOnLogin.tooltip=A primeira Interface de escolha aparece ao entrar
+pokecube.config.pvpExp.tooltip=Derrotar Pokémobs domesticados fornece EXP
+pokecube.config.mysterygift.tooltip=Jogadores podem usar o comando /pokecube gift
+pokecube.config.defaultMobs.tooltip=Mudar IDs do Mod para padrão para usar modelos de Pacotes de Recursos
+pokecube.config.tableRecipe.tooltip=A mesa de restauração tem receita
+
+#AI
+pokecube.config.ai=Opções de AI de Pokémob
+pokecube.config.mateMultiplier.tooltip=O número de ticks para incrementar para reproduzir de uma vez, aumentando este número, a velocidade de acasalamento aumenta #Eu não entendo isto, talvez refazer a frase?
+pokecube.config.breedingDelay.tooltip=Aproximar número de ticks de reprodução
+pokecube.config.eggHatchTime.tooltip=Duplica o tempo médio para chocar ovos em ticks, o tempo atual para chocar é 100 + random.nextInt(eggHatchTime)
+pokecube.config.cull.tooltip=Pokémobs que deixam o Raio Máximo de Geração automaticamente desaparecem. Não afeta mobs domesticados ou irritados
+pokecube.config.pokemobsEatGravel.tooltip=Pokémobs "litôvoros" (comedores de rocha) comer cascalho
+pokecube.config.pokemobagresswarning.tooltip=Há um aviso antes de um Pokémob attacar o jogador
+pokecube.config.mobAggroRadius.tooltip=Jogador deve chegar mais perto que isto do Pokémob para ele ficar agressivo
+pokecube.config.pokemobLifeSpan.tooltip=Número aproximado de ticks antes do Pokémob começar a levar dano por fome
+pokecube.config.maxPlayerDamage.tooltip=Quantidade máxima de dano que um ataque de Pokémob pode fazer a um jogador
+pokecube.config.pokemobagressticks.tooltip=Duração em ticks entre a mensagem de aviso e o ataque do Pokémob agressor
+pokecube.config.maxAIThreads.tooltip=Número máximo de tarefas por AI
+pokecube.config.pokemobsDamageOwner.tooltip=Seu próprio Pokémob te machuca se você ficar no trajeto de um ataque
+pokecube.config.pokemobsDamagePlayers.tooltip=Ataques de Pokémob machucam jogadores
+pokecube.config.pokemobsDamageBlocks.tooltip=Ataques de Pokémob podem afetar blocos
+pokecube.config.explosions.tooltip=Pokémobs podem explodir
+pokecube.config.attackCooldown.tooltip=Relacionado ao tempo de atraso entre ataques
+
+#World
+pokecube.config.generation=Geração do Mundo e Interação
+pokecube.config.meteors.tooltip=Meteoros aterrissam naturalmente
+pokecube.config.meteorDistance.tooltip=Distância mínima entre dois meteoros naturais
+pokecube.config.doSpawnBuilding.tooltip=Um PokéCentro deve ser gerado perto do ponto de geração do jogador
+pokecube.config.cave.tooltip=Blocos encontrados nos pisos das cavernas, delimitado por ";"
+pokecube.config.surface.tooltip=Blocos encontrados na superfície do solo
+pokecube.config.rock.tooltip=Blocos a serem definidos como "rochas" para Esmagamento de Rocha e "litôvoros" (comedores de rocha)
+pokecube.config.trees.tooltip=Blocos definidos como madeira para cortar
+pokecube.config.plants.tooltip=Blocos definidos como plantas para cortar
+pokecube.config.terrains.tooltip=Blocos definidos como blocos de terreno inúteis para cavar
+pokecube.config.industrial.tooltip=Blocos a serem definidos como blocos industriais para biomas industriais (atualmente desabilitado, somente blocos de redstone funcionam)
+
+#Spawning
+pokecube.config.spawning=Opções de Gerações de Mobs
+pokecube.config.deactivateMonsters.tooltip=Monstros vanilla não são gerados
+pokecube.config.disableMonster.tooltip=Monstros vanilla são substituídos por Pokémobs das sombras
+pokecube.config.deactivateAnimals.tooltip=Animais vanilla não são gerados
+pokecube.config.pokemonSpawn.tooltip=Pokémobs são gerados naturalmente
+pokecube.config.maxSpawnRadius.tooltip=Distância máxima de um jogador para que um Pokémob possa ser gerado\nSelvagem, Pokémobs não irritados irão desaparecer se ficarem mais que 3x a distância de um jogador
+pokecube.config.minSpawnRaduis.tooltip=Distância mínima de um jogador para um Pokémob poder ser gerado
+pokecube.config.mobSpawnNumber.tooltip=Número máximo de Pokémobs dentro do raio máximo de geração de mobs de um jogador para o código de geração ser executado
+pokecube.config.mobDensityMultiplier.tooltip=O número de gerações de mobs é multiplicado por este valor antes de ser verificado
+pokecube.config.levelCap.tooltip=Nível máximo para Pokémobs selvagens
+pokecube.config.shouldCap.tooltip=O limite de nível é respeitado
+pokecube.config.spawnFunctions.tooltip=Funções para experiência de Pokémobs selvagens baseado nas coordenadas, o formato é <id gerador do mundo>:<função>
+
+#Client
+pokecube.config.client=Opções Somente Cliente
+pokecube.config.guiOffset.tooltip=Deslocamento da Interface na tela
+pokecube.config.guiDown.tooltip=Direção da Interface, verdadeiro mostra movimentos abaixo do nome, falso mostra acima
+
+#Advanced
+pokecube.config.advanced=Opções Avançadas
+pokecube.config.mystLocs.tooltip=URLs adicionais para checar por Presentes Misteriosos, usado em servidores
+pokecube.config.resetTags.tooltip=Reseta algumas etiquetas adicionais usadas para itens sensíveis ao tempo.
+pokecube.config.extraValues.tooltip=Alguns valores internos usados para itens de Pokémob
+
+#Database
+pokecube.config.database=Database Options
+pokecube.config.forceDatabase.tooltip=Pokécube irá sobrescrever a cópia da base de dados configurada com aquela que está no jar, defina falso caso você planeje mudar a base de dados
+pokecube.config.configDatabases.tooltip=Base de dados para informação de Pokémob Adicione bases de dados adicionais anexando , <novoarquivo>.  Se você remover quaisquer das strings daqui, as coisas irão quebrar
+
+#Commands
+
+pokecube.command.noperms=Permissões Insuficientes
+pokecube.command.invalidtab=Argumentos Inválidos, tente TAB para opções
+pokecube.command.invalidmissing=Argumentos Inválidos, Argumento Faltando
+pokecube.command.reset=Resetar Inicial para %1$s
+pokecube.command.canchoose=Você pode escolher um novo inicial
+pokecube.command.count=Encontrou %1$s nas proximidades e %2$s fora das proximidades
+
+pokecube.command.giftdisabled=Presente Misterioso está atualmente desabilitado nas configurações
+pokecube.command.giftdenyused=Você já usou este código.
+pokecube.command.gift=Parabéns!
+pokecube.command.giftinvalid=O código %1$s é inválido!
+pokecube.command.giftneedcode=Você precisa inserir um código!
+
+pokecube.command.makedeny=Este comando só pode ser usado em Blocos de Comando
+pokecube.command.makeneedname=Nome ou número de mob inexistente
+pokecube.command.makeinvalid=Nome ou número de mob inválido
+
+pokecube.command.settings.check=§a%1$s§f está atualmente definido para: §6%2$s
+pokecube.command.settings.invalid=Opção inválida para %1$s
+pokecube.command.settings.error=Erro durante a checagem de um campo da configuração, por favor informe isto como um bug.

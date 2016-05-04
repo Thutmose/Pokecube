@@ -43,6 +43,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -258,6 +259,26 @@ public class EventsHandler
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         PokemobAIThread aiTicker = new PokemobAIThread();
         MinecraftForge.EVENT_BUS.register(aiTicker);
+    }
+
+    @SubscribeEvent
+    public void travelToDimension(EntityTravelToDimensionEvent evt)
+    {
+        Entity entity = evt.entity;
+        if (entity.worldObj.isRemote) return;
+
+        ArrayList<?> list = new ArrayList<Object>(entity.worldObj.loadedEntityList);
+        for (Object o : list)
+        {
+            if (o instanceof IPokemob)
+            {
+                IPokemob mob = (IPokemob) o;
+                boolean stay = mob.getPokemonAIState(IMoveConstants.STAYING);
+                boolean guard = mob.getPokemonAIState(IMoveConstants.GUARDING);
+                if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay && !guard)
+                    mob.returnToPokecube();
+            }
+        }
     }
 
     @SubscribeEvent

@@ -17,15 +17,27 @@ public class HeldItemHandler
         megaVariants.add("shiny_charm");
         megaVariants.add("omegaorb");
         megaVariants.add("alphaorb");
-        megaVariants.add("gardevoirmega");
-        megaVariants.add("charizardmega-y");
-        megaVariants.add("scizormega");
-        megaVariants.add("sceptilemega");
-        megaVariants.add("salamencemega");
-        megaVariants.add("gallademega");
         megaVariants.add("absolmega");
+        megaVariants.add("alakazammega");
+        megaVariants.add("banettemega");
+        megaVariants.add("beedrillmega");
         megaVariants.add("blastoisemega");
+        megaVariants.add("charizardmega-y");
+        megaVariants.add("charizardmega-x");
+        megaVariants.add("gallademega");
+        megaVariants.add("gardevoirmega");
+        megaVariants.add("gengarmega");
+        megaVariants.add("glaliemega");
+        megaVariants.add("mewtwomega-y");
+        megaVariants.add("mewtwomega-x");
+        megaVariants.add("pidgeotmega");
+        megaVariants.add("sableyemega");
+        megaVariants.add("salamencemega");
+        megaVariants.add("sceptilemega");
+        megaVariants.add("scizormega");
         megaVariants.add("slowbromega");
+        megaVariants.add("steelixmega");
+        megaVariants.add("venusaurmega");
     }
 
     private static double getMoveMultiplier(ItemStack held, PokeType move)

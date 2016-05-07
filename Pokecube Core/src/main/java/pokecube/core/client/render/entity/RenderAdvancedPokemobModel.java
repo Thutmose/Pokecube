@@ -61,9 +61,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             toRender = (T) mob.getTransformedTo();
         }
         model = (IModelRenderer<T>) getRenderer(modelName, entity);
-
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(entity, this, d0, d1, d2))) return;
-
         GL11.glPushMatrix();
         this.preRenderCallback(entity, partialTick);
         GL11.glPushMatrix();

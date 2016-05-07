@@ -24,7 +24,7 @@ public class RenderPokemobs extends RenderPokemob
     private static Map<String, ModelBase> statusModels = new HashMap<String, ModelBase>();
     public static Map<String, Render>     renderMap    = new HashMap<String, Render>();
 
-    private static RenderPokemobs instance;
+    private static RenderPokemobs         instance;
 
     public static void addCustomRenderer(String name, Render renderer)
     {
@@ -171,6 +171,7 @@ public class RenderPokemobs extends RenderPokemob
     public Render getRenderer(PokedexEntry entry)
     {
         String nbm = entry.getName() + entry.getModId();
+        if (entry.getModId() == null && entry.baseForme != null) entry.setModId(entry.baseForme.getModId());
         Render ret;
         if ((ret = renderMap.get(nbm)) == null)
         {

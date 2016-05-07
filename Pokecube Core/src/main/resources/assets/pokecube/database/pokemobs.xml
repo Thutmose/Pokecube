@@ -21339,6 +21339,7 @@
                 lvl_7="DOUBLEKICK" lvl_73="CLOSECOMBAT"/>
         </MOVES>
     </Pokemon>
+    <Pokemon name="Keldeo Resolute" number="647"/>
     <Pokemon name="Meloetta Aria" number="648">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
@@ -21404,6 +21405,10 @@
             <SIZES height="1.5" length="1.5" width="1.5"/>
             <TYPE type1="Bug" type2="Steel"/>
             <ABILITY normal="Download"/>
+            <FORMEITEMS forme="NGenesectBDrive:Icoal"/>
+            <FORMEITEMS forme="NGenesectCDrive:Iice"/>
+            <FORMEITEMS forme="NGenesectDDrive:Ilapis"/>
+            <FORMEITEMS forme="NGenesectSDrive:Iredstone"/>
         </STATS>
         <MOVES>
             <MISC moves="HONECLAWS, TOXIC, HIDDENPOWER, ICEBEAM, BLIZZARD, HYPERBEAM, LIGHTSCREEN, PROTECT, FRUSTRATION, SOLARBEAM, THUNDERBOLT, THUNDER, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, FLAMETHROWER, AERIALACE, FACADE, FLAMECHARGE, REST, ROUND, ENERGYBALL, CHARGEBEAM, EXPLOSION, SHADOWCLAW, GIGAIMPACT, ROCKPOLISH, FLASH, THUNDERWAVE, STRUGGLEBUG, XSCISSOR, INFESTATION, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, FLASHCANNON, SECRETPOWER, DARKPULSE, CONFIDE, FLY"/>
@@ -21416,6 +21421,10 @@
                 lvl_7="FURYCUTTER" lvl_73="HYPERBEAM" lvl_77="SELFDESTRUCT"/>
         </MOVES>
     </Pokemon>
+    <Pokemon name="GenesectBDrive" number="649"/>
+    <Pokemon name="GenesectCDrive" number="649"/>
+    <Pokemon name="GenesectDDrive" number="649"/>
+    <Pokemon name="GenesectSDrive" number="649"/>
     <Pokemon name="Chespin" number="650">
         <STATS>
             <EVOLUTIONMODE>L16</EVOLUTIONMODE>

@@ -772,7 +772,7 @@ public class PokedexEntry
      * if the mob can be dyed */
     public boolean                             dyeable          = false;
     /** Default value of specialInfo, used to determine default colour of
-     * recolourable parts */
+     * recolourable parts *///TODO make this have different values for shiny.
     public int                                 defaultSpecial   = 0;
     /** Can it megaevolve */
     public boolean                             hasMegaForm      = false;

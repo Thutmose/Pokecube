@@ -22,6 +22,7 @@ public class HeldItemHandler
         megaVariants.add("banettemega");
         megaVariants.add("beedrillmega");
         megaVariants.add("blastoisemega");
+        megaVariants.add("blazikenmega");
         megaVariants.add("charizardmega-y");
         megaVariants.add("charizardmega-x");
         megaVariants.add("gallademega");

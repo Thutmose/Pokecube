@@ -106,9 +106,9 @@ public class BlockBerryCrop extends BlockCrops {
         {
             i = 7;
         }
-        if(i==7)
+        if(i>=7)
         {
-        	i = 1;
+            i = 1;
         	if(!trees.contains(berryIndex))
         	{
 	        	Block fruit = BerryManager.berryFruits.get(berryIndex);
@@ -135,8 +135,8 @@ public class BlockBerryCrop extends BlockCrops {
     			}
     			if(leaf!=null && log!=null)
     			{
+    		        worldIn.setBlockState(pos, state.withProperty(AGE, Integer.valueOf(i)), 2);
     				growTree(worldIn, pos, log, leaf);
-    				
     				return;
     			}
         	}

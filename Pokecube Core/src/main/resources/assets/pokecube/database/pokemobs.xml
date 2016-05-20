@@ -3441,7 +3441,7 @@
     </Pokemon>
     <Pokemon name="Cubone" number="104">
         <STATS>
-            <EVOLUTIONMODE>Ileafstone</EVOLUTIONMODE>
+            <EVOLUTIONMODE>L28</EVOLUTIONMODE>
             <CAPTURERATE>190</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Lonely</SPECIES>

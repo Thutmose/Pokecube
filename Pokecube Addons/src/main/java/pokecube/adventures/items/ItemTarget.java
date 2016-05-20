@@ -183,20 +183,23 @@ public class ItemTarget extends Item
             return true;
         }
 
-        if (meta == 1 && block instanceof BlockWarpPad && !world.isRemote)
+        if (meta == 1 && !world.isRemote)
         {
 
-            TileEntityWarpPad pad = (TileEntityWarpPad) hit.getTileEntity(world);
-            if (entityplayer.isSneaking() && stack.hasTagCompound() && pad.canEdit(entityplayer))
+            if (block instanceof BlockWarpPad && entityplayer.isSneaking() && stack.hasTagCompound())
             {
-                pad.link = new Vector4(stack.getTagCompound().getCompoundTag("link"));
-                entityplayer.addChatMessage(new ChatComponentText("linked pad to " + pad.link));
+                TileEntityWarpPad pad = (TileEntityWarpPad) hit.getTileEntity(world);
+                if (pad.canEdit(entityplayer))
+                {
+                    pad.link = new Vector4(stack.getTagCompound().getCompoundTag("link"));
+                    entityplayer.addChatMessage(new ChatComponentText("linked pad to " + pad.link));
+                }
             }
             else
             {
                 if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
                 NBTTagCompound linkTag = new NBTTagCompound();
-                Vector4 link = new Vector4(hit.x, hit.y + 1, hit.z, entityplayer.dimension);
+                Vector4 link = new Vector4(hit.x + 0.5, hit.y + 1, hit.z + 0.5, entityplayer.dimension);
                 link.writeToNBT(linkTag);
                 stack.getTagCompound().setTag("link", linkTag);
                 entityplayer.addChatMessage(new ChatComponentText("Saved location " + link));
@@ -204,7 +207,6 @@ public class ItemTarget extends Item
         }
         if (meta == 2 && !world.isRemote)
         {
-
             if (entityplayer.isSneaking())
             {
 

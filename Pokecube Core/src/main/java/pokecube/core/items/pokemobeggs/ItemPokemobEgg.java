@@ -554,7 +554,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         Block i = worldIn.getBlockState(pos).getBlock();
         BlockPos newPos = pos.offset(side);
         double d = 0.0D;
-
+        System.out.println("Test");
         if (side == EnumFacing.UP && i instanceof BlockFence)
         {
             d = 0.5D;

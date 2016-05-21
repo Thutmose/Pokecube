@@ -35,6 +35,7 @@ import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubeBlocks;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubes;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -80,6 +81,7 @@ import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.megastuff.ItemMegastone;
+import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.Pokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -333,6 +335,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         {
             registerItemTexture(pokemobEgg, 0, new ModelResourceLocation("pokecube:pokemobEgg", "inventory"));
         }
+        BlockDispenser.dispenseBehaviorRegistry.putObject(pokemobEgg, new DispenserBehaviorPokecube());
         pokedex = (new ItemPokedex()).setUnlocalizedName("pokedex");
         pokedex.setCreativeTab(creativeTabPokecube);
         register(pokedex, "pokedex");

@@ -144,10 +144,11 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
             TeleDest d = new TeleDest(link);
             Vector3 loc = d.getLoc();
             int dim = d.getDim();
-            if (stepper instanceof EntityPlayer) {
+            if (stepper instanceof EntityPlayer)
+            {
                 Transporter.teleportEntity(stepper, loc, dim, false);
             }
-            else if(dim == d.getDim())
+            else if (dim == d.getDim())
             {
                 stepper.setPositionAndUpdate(loc.x, loc.y, loc.z);
             }

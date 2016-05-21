@@ -764,7 +764,7 @@
     </Pokemon>
     <Pokemon name="Ekans" number="23">
         <STATS>
-            <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
+            <EVOLUTIONMODE>L22</EVOLUTIONMODE>
             <CAPTURERATE>255</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Snake</SPECIES>

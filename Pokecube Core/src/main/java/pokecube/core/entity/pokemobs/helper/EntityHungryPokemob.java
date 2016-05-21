@@ -27,13 +27,13 @@ import thut.api.maths.Vector3;
 public abstract class EntityHungryPokemob extends EntityAiPokemob
 {
 
-    public static int HUNGERDELAY = 6000;
-    boolean           sleepy      = false;
-    Vector3           sizes       = Vector3.getNewVector();
+    public static int HUNGERDELAY    = 6000;
+    boolean           sleepy         = false;
+    Vector3           sizes          = Vector3.getNewVector();
 
-    protected int hungerCooldown = 0;
+    protected int     hungerCooldown = 0;
 
-    int fleeingTick;
+    int               fleeingTick;
 
     public EntityHungryPokemob(World world)
     {
@@ -253,8 +253,8 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         float light = this.getBrightness(0);
         List<TimePeriod> active = getPokedexEntry().activeTimes();
         if (this.hasHome() && this.getPosition().distanceSq(getHome()) > 10) return false;
-        
-        //TODO refine timing
+
+        // TODO refine timing
         for (TimePeriod p : active)
         {
             if (p.contains(18000)) { return light < 0.1; }
@@ -331,6 +331,9 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         }
         boolean ownedSleepCheck = getPokemonAIState(IMoveConstants.TAMED)
                 && !(getPokemonAIState((byte) (STAYING)) || getPokemonAIState((byte) (SITTING)));
+
+        if (ownedSleepCheck) setPokemonAIState(SLEEPING, false);
+
         if (sleepy && hungerTime < 0.85 * PokecubeMod.core.getConfig().pokemobLifeSpan)
         {
             if (!isGoodSleepingSpot(c))

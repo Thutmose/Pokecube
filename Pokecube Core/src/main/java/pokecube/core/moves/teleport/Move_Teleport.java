@@ -32,8 +32,7 @@ public class Move_Teleport extends Move_Utility
         double var5;
         Vector3 v = SpawnHandler.getRandomSpawningPointNearEntity(toTeleport.worldObj, toTeleport, 64);
         Vector3 v2 = Vector3.getNextSurfacePoint2(toTeleport.worldObj, v, Vector3.secondAxisNeg, 64);
-        if(v2!=null)
-            v.y = v2.y + 1;
+        if (v2 != null) v.y = v2.y + 1;
         var1 = v.x;
         var3 = v.y;
         var5 = v.z;
@@ -50,11 +49,10 @@ public class Move_Teleport extends Move_Utility
         Vector3 loc = d.getLoc();
         int dim = d.getDim();
 
-        World dest = FMLCommonHandler.instance().getMinecraftServerInstance()
-                .worldServerForDimension(dim);
+        World dest = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
 
-        TelDestination link = new TelDestination(dest, loc.getAABB(), loc.x, loc.y, loc.z,
-                loc.intX(), loc.intY(), loc.intZ());
+        TelDestination link = new TelDestination(dest, loc.getAABB(), loc.x, loc.y, loc.z, loc.intX(), loc.intY(),
+                loc.intZ());
         Transporter.teleportEntity(toTeleport, link);
         for (num = 0; num < var30; ++num)
         {
@@ -83,10 +81,9 @@ public class Move_Teleport extends Move_Utility
     }
 
     @Override
-    public void attack(IPokemob attacker, Entity attacked, float f)
+    public boolean doAttack(IPokemob attacker, Entity attacked, float f)
     {
-        Entity target = ((EntityCreature) attacker).getAttackTarget();
-        boolean angry = attacker.getPokemonAIState(IMoveConstants.ANGRY);
+        doWorldAction(attacker, null);
         ((EntityCreature) attacker).setAttackTarget(null);
         attacker.setPokemonAIState(IMoveConstants.ANGRY, false);
 
@@ -102,21 +99,7 @@ public class Move_Teleport extends Move_Utility
         {
             ((IPokemob) attacked).setPokemonAIState(IMoveConstants.ANGRY, false);
         }
-        if (attacker instanceof IPokemob && attacker.getPokemonAIState(IMoveConstants.TAMED) && !angry)
-        {
-            if (target == null)
-            {
-                if (attacker.getPokemonOwner() instanceof EntityPlayer && ((EntityLivingBase) attacker).isServerWorld())
-                {
-                    EventsHandler.recallAllPokemobsExcluding((EntityPlayer) attacker.getPokemonOwner(),
-                            (IPokemob) null);
-
-                    PokecubeClientPacket packet = new PokecubeClientPacket(
-                            new byte[] { PokecubeClientPacket.TELEPORTINDEX });
-                    PokecubePacketHandler.sendToClient(packet, (EntityPlayer) attacker.getPokemonOwner());
-                }
-            }
-        }
+        return true;
     }
 
     @Override

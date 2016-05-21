@@ -8,6 +8,7 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -28,14 +29,14 @@ import thut.api.maths.Vector4;
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityWarpPad extends TileEntityOwnable implements SimpleComponent, IEnergyReceiver
 {
-    public static double    MAXRANGE    = 64;
-    public static int       COOLDOWN    = 20;
+    public static double    MAXRANGE = 64;
+    public static int       COOLDOWN = 20;
     public Vector4          link;
     private Vector3         linkPos;
     public Vector3          here;
-    boolean                 noEnergy    = false;
+    boolean                 noEnergy = false;
 
-    protected EnergyStorage storage     = new EnergyStorage(32000);
+    protected EnergyStorage storage  = new EnergyStorage(32000);
 
     public TileEntityWarpPad()
     {
@@ -143,7 +144,17 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
             TeleDest d = new TeleDest(link);
             Vector3 loc = d.getLoc();
             int dim = d.getDim();
-            Transporter.teleportEntity(stepper, loc, dim, false);
+            if (stepper instanceof EntityPlayer) {
+                Transporter.teleportEntity(stepper, loc, dim, false);
+            }
+            else if(dim == d.getDim())
+            {
+                stepper.setPositionAndUpdate(loc.x, loc.y, loc.z);
+            }
+            else
+            {
+                return;
+            }
             worldObj.playSoundEffect(loc.x, loc.y, loc.z, "mob.endermen.portal", 1.0F, 1.0F);
             buff = new PacketBuffer(Unpooled.buffer());
             buff.writeByte(9);

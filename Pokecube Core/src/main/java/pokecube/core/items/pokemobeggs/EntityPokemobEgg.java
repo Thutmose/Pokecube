@@ -5,11 +5,16 @@ package pokecube.core.items.pokemobeggs;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -185,6 +190,17 @@ public class EntityPokemobEgg extends EntityLiving
             IPokemob mob = getPokemob();
             if (mob == null) this.setDead();
             else((EntityLiving) getPokemob()).playLivingSound();
+        }
+        if(here.getBlock(worldObj, EnumFacing.DOWN)==Blocks.hopper)
+        {
+            TileEntity te = here.getTileEntity(worldObj, EnumFacing.DOWN);
+            TileEntityHopper hopper = (TileEntityHopper) te;
+            EntityItem item = new EntityItem(worldObj, posX, posY, posZ, getHeldItem());
+            boolean added = TileEntityHopper.putDropInInventoryAllSlots(hopper, item);
+            if(added)
+            {
+                this.setDead();
+            }
         }
     }
 

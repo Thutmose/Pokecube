@@ -267,6 +267,17 @@ public class EventsHandlerClient
                 }
             }
         }
+        if (PokecubeMod.core.getConfig().autoRecallPokemobs)
+        {
+            IPokemob[] pokemobs = GuiDisplayPokecubeInfo.instance().getPokemobsToDisplay();
+            for (IPokemob mob : pokemobs)
+            {
+                if (event.player.getDistanceToEntity((Entity) mob) > PokecubeMod.core.getConfig().autoRecallDistance)
+                {
+                    mob.returnToPokecube();
+                }
+            }
+        }
     }
 
     @SideOnly(Side.CLIENT)

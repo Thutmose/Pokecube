@@ -295,6 +295,7 @@ public final class SpawnHandler
                 int x = j % (distance) - distance / 2;
                 int z = (j / distance) % (distance) - distance / 2;
                 int y = 10 - world.rand.nextInt(20);
+                y = Math.max(1, y);
                 temp.set(ret).addTo(x, y, z);
                 if (temp.isClearOfBlocks(world)) { return temp; }
             }

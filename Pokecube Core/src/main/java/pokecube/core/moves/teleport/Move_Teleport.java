@@ -6,6 +6,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
@@ -13,7 +15,11 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.utils.PokecubeSerializer.TeleDest;
+import thut.api.entity.Transporter;
+import thut.api.entity.Transporter.TelDestination;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 
 public class Move_Teleport extends Move_Utility
 {
@@ -24,7 +30,10 @@ public class Move_Teleport extends Move_Utility
         double var1;
         double var3;
         double var5;
-        Vector3 v = SpawnHandler.getRandomSpawningPointNearEntity(toTeleport.worldObj, toTeleport, 32);
+        Vector3 v = SpawnHandler.getRandomSpawningPointNearEntity(toTeleport.worldObj, toTeleport, 64);
+        Vector3 v2 = Vector3.getNextSurfacePoint2(toTeleport.worldObj, v, Vector3.secondAxisNeg, 64);
+        if(v2!=null)
+            v.y = v2.y + 1;
         var1 = v.x;
         var3 = v.y;
         var5 = v.z;
@@ -34,12 +43,19 @@ public class Move_Teleport extends Move_Utility
     /** Teleport the entity */
     protected static boolean teleportTo(EntityLivingBase toTeleport, double par1, double par3, double par5)
     {
-
         short var30 = 128;
         int num;
 
-        toTeleport.setPosition(par1, par3, par5);
+        TeleDest d = new TeleDest(new Vector4(par1, par3, par5, toTeleport.dimension));
+        Vector3 loc = d.getLoc();
+        int dim = d.getDim();
 
+        World dest = FMLCommonHandler.instance().getMinecraftServerInstance()
+                .worldServerForDimension(dim);
+
+        TelDestination link = new TelDestination(dest, loc.getAABB(), loc.x, loc.y, loc.z,
+                loc.intX(), loc.intY(), loc.intZ());
+        Transporter.teleportEntity(toTeleport, link);
         for (num = 0; num < var30; ++num)
         {
             double var19 = num / (var30 - 1.0D);
@@ -86,11 +102,6 @@ public class Move_Teleport extends Move_Utility
         {
             ((IPokemob) attacked).setPokemonAIState(IMoveConstants.ANGRY, false);
         }
-        if (attacker instanceof IPokemob && angry)
-        {
-            if (attacker.getPokemonAIState(IMoveConstants.TAMED)) attacker.returnToPokecube();
-            else teleportRandomly((EntityLivingBase) attacker);
-        }
         if (attacker instanceof IPokemob && attacker.getPokemonAIState(IMoveConstants.TAMED) && !angry)
         {
             if (target == null)
@@ -117,6 +128,11 @@ public class Move_Teleport extends Move_Utility
             EventsHandler.recallAllPokemobsExcluding((EntityPlayer) user.getPokemonOwner(), (IPokemob) null);
             PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.TELEPORTINDEX });
             PokecubePacketHandler.sendToClient(packet, (EntityPlayer) user.getPokemonOwner());
+        }
+        if (angry)
+        {
+            if (!user.getPokemonAIState(IMoveConstants.TAMED)) teleportRandomly((EntityLivingBase) user);
+            user.setPokemonAIState(IMoveConstants.ANGRY, false);
         }
     }
 }

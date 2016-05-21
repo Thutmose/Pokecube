@@ -118,7 +118,6 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         long lastStepped = stepper.getEntityData().getLong("lastWarpPadUse");
         boolean tele = link != null && !link.isEmpty() && lastStepped + COOLDOWN <= time
                 && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);
-        System.out.println(time+" "+lastStepped+" "+tele);
         if (tele && Config.instance.warpPadEnergy && !noEnergy)
         {
             int energy = (int) (distSq);

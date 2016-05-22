@@ -18,7 +18,9 @@ public class HeldItemHandler
         megaVariants.add("omegaorb");
         megaVariants.add("alphaorb");
         megaVariants.add("absolmega");
+        megaVariants.add("aggronmega");
         megaVariants.add("alakazammega");
+        megaVariants.add("ampharosmega");
         megaVariants.add("banettemega");
         megaVariants.add("beedrillmega");
         megaVariants.add("blastoisemega");

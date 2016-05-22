@@ -12826,6 +12826,7 @@
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <INTERACTIONLOGIC>F:diamond_hoe`deoxysattack</INTERACTIONLOGIC>
             <GENDERRATIO>255</GENDERRATIO>
             <BIOMESANYACCEPTABLE>meteor 0.0001:1:1</BIOMESANYACCEPTABLE>
             <SPECIALCASES>legendary day night</SPECIALCASES>
@@ -12854,6 +12855,7 @@
             <EXPYIELD>270</EXPYIELD>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <INTERACTIONLOGIC>F:diamond_hoe`deoxysdefense</INTERACTIONLOGIC>
             <BASESTATS atk="180" def="20" hp="50" spatk="180" spd="150" spdef="20"/>
             <EVYIELD atk="2" spatk="1"/>
             <SIZES height="1.7" length="0.8" width="0.8"/>
@@ -12870,6 +12872,7 @@
             <EXPYIELD>270</EXPYIELD>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <INTERACTIONLOGIC>F:diamond_hoe`deoxysspeed</INTERACTIONLOGIC>
             <BASESTATS atk="70" def="160" hp="50" spatk="70" spd="90" spdef="160"/>
             <EVYIELD def="2" spdef="1"/>
             <SIZES height="1.7" length="0.8" width="0.8"/>
@@ -12886,6 +12889,7 @@
             <EXPYIELD>270</EXPYIELD>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <INTERACTIONLOGIC>F:diamond_hoe`deoxys</INTERACTIONLOGIC>
             <BASESTATS atk="95" def="90" hp="50" spatk="95" spd="180" spdef="90"/>
             <EVYIELD spd="3"/>
             <SIZES height="1.7" length="0.8" width="0.8"/>

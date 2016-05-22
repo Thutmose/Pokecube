@@ -1064,6 +1064,14 @@ public class PokedexEntryLoader
             System.out.println(xmlEntry + ", " + entry + ": " + e + " " + init);
         }
         if (moves != null) initMoves(entry, moves);
-        checkBaseForme(entry);
+        try
+        {
+            checkBaseForme(entry);
+        }
+        catch (Exception e)
+        {
+            System.out.println(entry+" "+name);
+            e.printStackTrace();
+        }
     }
 }

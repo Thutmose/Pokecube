@@ -888,7 +888,8 @@ public class MovesUtils implements IMoveConstants
             if (diff[i] != 0)
             {
                 if (!attacked) displayStatsMessage(mob, target, 0, i, diff[i]);
-                else displayStatsMessage((IPokemob) target, (Entity) mob, 0, i, diff[i]);
+                else if (target instanceof IPokemob)
+                    displayStatsMessage((IPokemob) target, (Entity) mob, 0, i, diff[i]);
             }
         }
         return ret;

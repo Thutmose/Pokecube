@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.util.FakePlayer;
+import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
 
 public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
@@ -49,7 +50,15 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
         player.rotationPitch = pitch;
         player.rotationYawHead = yaw;
 
-        itemstack.useItemRightClick(iblocksource.getWorld(), player, EnumHand.MAIN_HAND);
+
+        if (itemstack.getItem() == PokecubeItems.pokemobEgg)
+        {
+            itemstack.onItemUse(player, iblocksource.getWorld(), iblocksource.getBlockPos().offset(dir), EnumHand.MAIN_HAND, dir, 0.5f, 0.5f, 0.5f);
+        }
+        else
+        {
+            itemstack.useItemRightClick(iblocksource.getWorld(), player, EnumHand.MAIN_HAND);
+        }
         itemstack.splitStack(1);
         return itemstack;
     }

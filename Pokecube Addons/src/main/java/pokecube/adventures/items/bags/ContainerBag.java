@@ -5,7 +5,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.handlers.PASaveHandler;
@@ -318,10 +320,27 @@ public class ContainerBag extends Container {
     
     public void updateInventoryPages(int dir, InventoryPlayer invent)
 	{
-		if(!(PokecubeCore.isOnClientSide()&&FMLClientHandler.instance().getServer()!=null))
-		{
-			inv.setPage((inv.getPage()==0)&&(dir==-1)?InventoryBag.PAGECOUNT-1:(inv.getPage()+dir)%InventoryBag.PAGECOUNT);
-		}
+        boolean dedicated = false;
+
+        try
+        {
+            dedicated = FMLCommonHandler.instance().getMinecraftServerInstance() instanceof DedicatedServer;
+        }
+        catch (Throwable e)
+        {
+
+        }
+
+        if (dedicated)
+        {
+            inv.setPage((inv.getPage() == 0) && (dir == -1) ? InventoryBag.PAGECOUNT - 1
+                    : (inv.getPage() + dir) % InventoryBag.PAGECOUNT);
+        }
+        else if (!(PokecubeCore.isOnClientSide() && FMLClientHandler.instance().getServer() != null))
+        {
+            inv.setPage((inv.getPage() == 0) && (dir == -1) ? InventoryBag.PAGECOUNT - 1
+                    : (inv.getPage() + dir) % InventoryBag.PAGECOUNT);
+        }
 		
 		bindInventories();
 	}

@@ -3,12 +3,14 @@ package pokecube.modelloader.common;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraftforge.fml.common.ProgressManager;
@@ -35,7 +37,7 @@ public class ExtraDatabase
         @XmlElement(name = "details")
         XMLDetails      details;
         @XmlElement(name = "Pokemon")
-        XMLPokedexEntry entry;
+        List<XMLPokedexEntry> entries = Lists.newArrayList();
     }
 
     static HashMap<String, String>          xmls;
@@ -79,19 +81,29 @@ public class ExtraDatabase
                 JAXBContext jaxbContext = JAXBContext.newInstance(XMLFile.class);
                 Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
                 XMLFile file = (XMLFile) unmarshaller.unmarshal(new StringReader(xmls.get(s)));
-                if (entry == null && file.entry != null)
+                for(XMLPokedexEntry fileEntry: file.entries)
                 {
-                    String name = file.entry.name;
-                    int number = file.entry.number;
-                    entry = new PokedexEntry(number, name);
-                    PokedexEntryLoader.updateEntry(file.entry, true);
-                }
-                if (file.entry != null) PokedexEntryLoader.addOverrideEntry(file.entry);
-
-                if (entry != null && file.details != null)
-                {
-                    if (file.details.offset != -1) entry.mountedOffset = file.details.offset;
-                    if (file.details.particles != null) entry.particleData = file.details.particles.split(":");
+                    if (entry == null && fileEntry != null)
+                    {
+                        String name = fileEntry.name;
+                        int number = fileEntry.number;
+                        entry = new PokedexEntry(number, name);
+                        PokedexEntryLoader.updateEntry(fileEntry, true);
+                    }
+                    else if(entry!=null && fileEntry!=null && !entry.getName().equals(fileEntry.name))
+                    {
+                        String name = fileEntry.name;
+                        int number = fileEntry.number;
+                        entry = new PokedexEntry(number, name);
+                        PokedexEntryLoader.updateEntry(fileEntry, true);
+                    }
+                    if (fileEntry != null) PokedexEntryLoader.addOverrideEntry(fileEntry);
+    
+                    if (entry != null && file.details != null)
+                    {
+                        if (file.details.offset != -1) entry.mountedOffset = file.details.offset;
+                        if (file.details.particles != null) entry.particleData = file.details.particles.split(":");
+                    }
                 }
             }
             catch (Exception e)

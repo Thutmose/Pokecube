@@ -4,6 +4,7 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -154,9 +155,18 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
 
             Vector3 loc = d.getLoc();
             int dim = d.getDim();
-
-            Transporter.teleportEntity(stepper, loc, dim, false);
-
+            if (stepper instanceof EntityPlayer)
+            {
+                Transporter.teleportEntity(stepper, loc, dim, false);
+            }
+            else if (dim == d.getDim())
+            {
+                stepper.setPositionAndUpdate(loc.x, loc.y, loc.z);
+            }
+            else
+            {
+                return;
+            }
             worldObj.playSound(loc.x, loc.y, loc.z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0F,
                     1.0F, false);
             buff = new PacketBuffer(Unpooled.buffer());

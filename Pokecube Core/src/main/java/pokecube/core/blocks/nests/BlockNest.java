@@ -28,6 +28,21 @@ public class BlockNest extends Block implements ITileEntityProvider
     }
 
     @Override
+    public boolean canRenderInLayer(EnumWorldBlockLayer layer)
+    {
+        return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass)
+    {
+        IBlockState state2 = worldIn.getBlockState(pos.down());
+        if (state2 != null && state2.getBlock().getMaterial().isSolid() && state2.getBlock()
+                .isNormalCube()) { return state2.getBlock().colorMultiplier(worldIn, pos, renderPass); }
+        return 16777215;
+    }
+
+    @Override
     public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
     {
         return new TileEntityNest();
@@ -60,21 +75,6 @@ public class BlockNest extends Block implements ITileEntityProvider
     public int getRenderColor(IBlockState state)
     {
         return 16777215;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass)
-    {
-        IBlockState state2 = worldIn.getBlockState(pos.down());
-        if (state2 != null && state2.getBlock().getMaterial().isSolid() && state2.getBlock()
-                .isNormalCube()) { return state2.getBlock().colorMultiplier(worldIn, pos, renderPass); }
-        return 16777215;
-    }
-
-    @Override
-    public boolean canRenderInLayer(EnumWorldBlockLayer layer)
-    {
-        return true;
     }
 
     @Override

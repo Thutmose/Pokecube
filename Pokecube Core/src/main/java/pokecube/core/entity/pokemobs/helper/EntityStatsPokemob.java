@@ -719,14 +719,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         this.ability = ability;
     }
 
-    //TODO some way to get this called naturally, so pokemobs can be obtained with hidden ability.
-    @Override
-    public void setToHiddenAbility()
-    {
-        this.abilityIndex = 2;
-        this.setAbility(getPokedexEntry().getAbility(2, this));
-    }
-
     @Override
     public void setAncient(boolean ancient)
     {
@@ -793,30 +785,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setIVs(byte[] ivs)
     {
         this.ivs = ivs;
-    }
-
-    /** Handles health update.
-     * 
-     * @param level */
-    private void updateHealth(int level)
-    {
-        float old = getMaxHealth();
-        float maxHealth = Tools.getHP(getPokedexEntry().getStatHP(), getIVs()[0], getEVs()[0], level);
-        float health = getHealth();
-
-        if (maxHealth > old)
-        {
-            float damage = old - health;
-            health = maxHealth - damage;
-
-            if (health > maxHealth)
-            {
-                health = maxHealth;
-            }
-        }
-
-        setMaxHealth(maxHealth);
-        setHealth(health);
     }
 
     private void setMaxHealth(float maxHealth)
@@ -964,6 +932,14 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         dataWatcher.updateObject(STATSDW, sta);
     }
 
+    //TODO some way to get this called naturally, so pokemobs can be obtained with hidden ability.
+    @Override
+    public void setToHiddenAbility()
+    {
+        this.abilityIndex = 2;
+        this.setAbility(getPokedexEntry().getAbility(2, this));
+    }
+
     @Override
     public void setType1(PokeType type1)
     {
@@ -974,6 +950,30 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setType2(PokeType type2)
     {
         this.type2 = type2;
+    }
+
+    /** Handles health update.
+     * 
+     * @param level */
+    private void updateHealth(int level)
+    {
+        float old = getMaxHealth();
+        float maxHealth = Tools.getHP(getPokedexEntry().getStatHP(), getIVs()[0], getEVs()[0], level);
+        float health = getHealth();
+
+        if (maxHealth > old)
+        {
+            float damage = old - health;
+            health = maxHealth - damage;
+
+            if (health > maxHealth)
+            {
+                health = maxHealth;
+            }
+        }
+
+        setMaxHealth(maxHealth);
+        setHealth(health);
     }
 
     @Override

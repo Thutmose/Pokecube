@@ -262,26 +262,6 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void travelToDimension(EntityTravelToDimensionEvent evt)
-    {
-        Entity entity = evt.entity;
-        if (entity.worldObj.isRemote) return;
-
-        ArrayList<?> list = new ArrayList<Object>(entity.worldObj.loadedEntityList);
-        for (Object o : list)
-        {
-            if (o instanceof IPokemob)
-            {
-                IPokemob mob = (IPokemob) o;
-                boolean stay = mob.getPokemonAIState(IMoveConstants.STAYING);
-                boolean guard = mob.getPokemonAIState(IMoveConstants.GUARDING);
-                if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay && !guard)
-                    mob.returnToPokecube();
-            }
-        }
-    }
-
-    @SubscribeEvent
     public void BreakBlock(BreakEvent evt)
     {
         if (evt.state.getBlock() == Blocks.mob_spawner)
@@ -708,6 +688,26 @@ public class EventsHandler
         if (evt.phase == Phase.END && evt.side != Side.CLIENT)
         {
             PokecubeCore.instance.spawner.tick(evt.world);
+        }
+    }
+
+    @SubscribeEvent
+    public void travelToDimension(EntityTravelToDimensionEvent evt)
+    {
+        Entity entity = evt.entity;
+        if (entity.worldObj.isRemote) return;
+
+        ArrayList<?> list = new ArrayList<Object>(entity.worldObj.loadedEntityList);
+        for (Object o : list)
+        {
+            if (o instanceof IPokemob)
+            {
+                IPokemob mob = (IPokemob) o;
+                boolean stay = mob.getPokemonAIState(IMoveConstants.STAYING);
+                boolean guard = mob.getPokemonAIState(IMoveConstants.GUARDING);
+                if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay && !guard)
+                    mob.returnToPokecube();
+            }
         }
     }
 

@@ -209,12 +209,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public EntityAIBase getUtilityMoveAI()
-    {
-        return utilMoveAI;
-    }
-
-    @Override
     protected String getHurtSound()
     {
         return getLivingSound();
@@ -298,6 +292,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public Entity getTransformedTo()
     {
         return transformedTo;
+    }
+
+    @Override
+    public EntityAIBase getUtilityMoveAI()
+    {
+        return utilMoveAI;
     }
 
     @Override

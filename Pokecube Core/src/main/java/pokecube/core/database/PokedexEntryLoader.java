@@ -518,7 +518,7 @@ public class PokedexEntryLoader
                 for (int i = 0; i < evols.length; i++)
                 {
                     String s1 = evols[i];
-                    String s2 = evolFX[i];
+                    String s2 = evolFX[i%evolFX.length];
                     PokedexEntry evol;
                     try
                     {

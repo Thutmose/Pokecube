@@ -47,6 +47,14 @@ public class PokemobAIThread
             aiTasks.add(task);
         }
 
+        public void runServerThreadTasks(World world)
+        {
+            for (IAIRunnable ai : aiTasks)
+            {
+                ai.doMainThreadTick(world);
+            }
+        }
+
         public void tick()
         {
             ArrayList list;
@@ -83,14 +91,6 @@ public class PokemobAIThread
                 {
                     e.printStackTrace();
                 }
-            }
-        }
-
-        public void runServerThreadTasks(World world)
-        {
-            for (IAIRunnable ai : aiTasks)
-            {
-                ai.doMainThreadTick(world);
             }
         }
     }
@@ -241,18 +241,6 @@ public class PokemobAIThread
         AIThread.createThreads();
     }
 
-    /** Sets the AIStuff to tick on correct thread.
-     * 
-     * @param entity
-     * @param task */
-    public static void scheduleAITick(AIStuff ai)
-    {
-        IPokemob pokemob = (IPokemob) ai.entity;
-        int id = pokemob.getPokemonUID() % AIThread.threadCount;
-        AIThread thread = AIThread.threads.get(id);
-        thread.aiStuff.add(ai);
-    }
-
     /** Checks if task can run, given the tasks in tasks.
      * 
      * @param task
@@ -298,6 +286,18 @@ public class PokemobAIThread
                 break;
             }
         }
+    }
+
+    /** Sets the AIStuff to tick on correct thread.
+     * 
+     * @param entity
+     * @param task */
+    public static void scheduleAITick(AIStuff ai)
+    {
+        IPokemob pokemob = (IPokemob) ai.entity;
+        int id = pokemob.getPokemonUID() % AIThread.threadCount;
+        AIThread thread = AIThread.threads.get(id);
+        thread.aiStuff.add(ai);
     }
 
     @SubscribeEvent

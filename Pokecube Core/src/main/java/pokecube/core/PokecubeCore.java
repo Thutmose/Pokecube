@@ -48,7 +48,7 @@ import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -695,14 +695,14 @@ public class PokecubeCore extends PokecubeMod
 
     private void removeAllMobs()
     {
-        BiomeGenBase[] biomes;
-        ArrayList<BiomeGenBase> biomelist = new ArrayList<BiomeGenBase>();
-        for (ResourceLocation key : BiomeGenBase.biomeRegistry.getKeys())
+        Biome[] biomes;
+        ArrayList<Biome> biomelist = new ArrayList<Biome>();
+        for (ResourceLocation key : Biome.REGISTRY.getKeys())
         {
-            BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(key);
+            Biome b = Biome.REGISTRY.getObject(key);
             if (b != null) biomelist.add(b);
         }
-        biomes = biomelist.toArray(new BiomeGenBase[0]);
+        biomes = biomelist.toArray(new Biome[0]);
 
         if (config.deactivateAnimals)
         {

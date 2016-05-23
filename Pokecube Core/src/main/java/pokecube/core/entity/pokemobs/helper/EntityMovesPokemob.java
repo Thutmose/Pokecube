@@ -298,7 +298,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public int getExplosionState()
     {
-        return dataWatcher.get(BOOMSTATEDW);
+        return dataManager.get(BOOMSTATEDW);
     }
 
     public int getLastAttackTick()
@@ -359,7 +359,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public int getMoveIndex()
     {
-        int value = dataWatcher.get(STATUSMOVEINDEXDW);
+        int value = dataManager.get(STATUSMOVEINDEXDW);
 
         return (value >> 8) & 0xff;
     }
@@ -372,7 +372,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             IPokemob to = (IPokemob) transformedTo;
             if (to.getTransformedTo() != this) return to.getMoves();
         }
-        String movesString = dataWatcher.get(MOVESDW);
+        String movesString = dataManager.get(MOVESDW);
         String[] moves = new String[4];
 
         if (movesString != null && movesString.length() > 2)
@@ -406,7 +406,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public byte getStatus()
     {
-        int value = dataWatcher.get(STATUSMOVEINDEXDW);
+        int value = dataManager.get(STATUSMOVEINDEXDW);
 
         return (byte) (value & 0xff);
     }
@@ -414,7 +414,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public short getStatusTimer()
     {
-        int value = dataWatcher.get(STATUSMOVEINDEXDW);
+        int value = dataManager.get(STATUSMOVEINDEXDW);
 
         return (short) ((value >> 16) & 0xffff);
     }
@@ -455,10 +455,10 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void healStatus()
     {
-        int value = dataWatcher.get(STATUSMOVEINDEXDW);
+        int value = dataManager.get(STATUSMOVEINDEXDW);
         value = value >> 8;
         value = (value << 8) | STATUS_NON;
-        dataWatcher.set(STATUSMOVEINDEXDW, value);
+        dataManager.set(STATUSMOVEINDEXDW, value);
     }
 
     @Override
@@ -730,7 +730,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
             if (i > 0 && moveInfo.timeSinceIgnited == 0 && worldObj.isRemote)
             {
-                playSound(SoundEvents.entity_creeper_primed, 1.0F, 0.5F);
+                playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
             }
             moveInfo.timeSinceIgnited += i;
 
@@ -766,7 +766,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         this.setPokemonAIState(LEARNINGMOVE, nbttagcompound.getBoolean("newMoves"));
         moveInfo.newMoves = nbttagcompound.getInteger("numberMoves");
         String movesString = nbttagcompound.getString(PokecubeSerializer.MOVES);
-        dataWatcher.set(MOVESDW, movesString);
+        dataManager.set(MOVESDW, movesString);
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -788,7 +788,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public void setExplosionState(int i)
     {
         if (i >= 0) moveInfo.Exploding = true;
-        dataWatcher.set(BOOMSTATEDW, Byte.valueOf((byte) i));
+        dataManager.set(BOOMSTATEDW, Byte.valueOf((byte) i));
     }
 
     public void setHasAttacked(String move)
@@ -846,10 +846,10 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         }
         else
         {
-            int value = dataWatcher.get(STATUSMOVEINDEXDW);
+            int value = dataManager.get(STATUSMOVEINDEXDW);
             int toSet = moveIndex << 8;
             value = (value & 0xffff00ff) | toSet;
-            dataWatcher.set(STATUSMOVEINDEXDW, value);
+            dataManager.set(STATUSMOVEINDEXDW, value);
         }
     }
 
@@ -869,7 +869,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                 }
             }
         }
-        dataWatcher.set(MOVESDW, movesString);
+        dataManager.set(MOVESDW, movesString);
     }
 
     @Override
@@ -884,10 +884,10 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                 || getType2() == PokeType.poison || getType1() == PokeType.steel || getType2() == PokeType.steel))
             return false;
 
-        int value = dataWatcher.get(STATUSMOVEINDEXDW);
+        int value = dataManager.get(STATUSMOVEINDEXDW);
         value = value >> 8;
         value = (value << 8) | status;
-        dataWatcher.set(STATUSMOVEINDEXDW, value);
+        dataManager.set(STATUSMOVEINDEXDW, value);
         setStatusTimer((short) 100);
         return true;
     }
@@ -895,13 +895,13 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void setStatusTimer(short timer)
     {
-        int value = dataWatcher.get(STATUSMOVEINDEXDW);
+        int value = dataManager.get(STATUSMOVEINDEXDW);
 
         timer = (short) Math.max(0, timer);
 
         int toSet = (timer) << 16;
         value = (value & 0x0000ffff) | toSet;
-        dataWatcher.set(STATUSMOVEINDEXDW, value);
+        dataManager.set(STATUSMOVEINDEXDW, value);
     }
 
     @Override
@@ -1052,7 +1052,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         nbttagcompound.setByte(PokecubeSerializer.STATUS, getStatus());
         nbttagcompound.setBoolean("newMoves", getPokemonAIState(LEARNINGMOVE));
         nbttagcompound.setInteger("numberMoves", moveInfo.newMoves);
-        String movesString = dataWatcher.get(MOVESDW);
+        String movesString = dataManager.get(MOVESDW);
         nbttagcompound.setString(PokecubeSerializer.MOVES, movesString);
     }
 

@@ -5,7 +5,7 @@ import java.util.Random;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.Path;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
@@ -106,7 +106,7 @@ public class AIIdle extends AIBase
         // if (true) return;
 
         mob.setPokemonAIState(IMoveConstants.IDLE, true);
-        PathEntity path = this.entity.getNavigator().getPathToXYZ(this.xPosition, this.yPosition, this.zPosition);
+        Path path = this.entity.getNavigator().getPathToXYZ(this.xPosition, this.yPosition, this.zPosition);
         addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
         // System.out.println("should run");
         mob.setPokemonAIState(IMoveConstants.IDLE, false);
@@ -115,7 +115,7 @@ public class AIIdle extends AIBase
     @Override
     public boolean shouldRun()
     {
-        PathEntity current = null;
+        Path current = null;
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
         if (world == null || mob.getPokedexEntry().isStationary || mob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE)

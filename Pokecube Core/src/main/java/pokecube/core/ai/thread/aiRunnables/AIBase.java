@@ -12,7 +12,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -140,12 +140,12 @@ public abstract class AIBase implements IAIRunnable
      * @author Thutmose */
     public static class PathInfo implements IRunnable
     {
-        public final PathEntity path;
+        public final Path path;
         public final int        pather;
         public final int        dim;
         public final double     speed;
 
-        public PathInfo(int _pather, int dimension, PathEntity _path, double _speed)
+        public PathInfo(int _pather, int dimension, Path _path, double _speed)
         {
             path = _path;
             pather = _pather;
@@ -245,7 +245,7 @@ public abstract class AIBase implements IAIRunnable
 
     protected Vector<IRunnable> toRun    = new Vector<IRunnable>();
 
-    protected void addEntityPath(Entity entity, PathEntity path, double speed)
+    protected void addEntityPath(Entity entity, Path path, double speed)
     {
         toRun.add(new PathInfo(entity.getEntityId(), entity.dimension, path, speed));
     }
@@ -256,7 +256,7 @@ public abstract class AIBase implements IAIRunnable
      * @param dim
      * @param path
      * @param speed */
-    protected void addEntityPath(int id, int dim, PathEntity path, double speed)
+    protected void addEntityPath(int id, int dim, Path path, double speed)
     {
         toRun.add(new PathInfo(id, dim, path, speed));
     }

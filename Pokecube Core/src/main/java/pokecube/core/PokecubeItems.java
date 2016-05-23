@@ -153,8 +153,8 @@ public class PokecubeItems extends Items
         if (cubes[1] instanceof Item) items[1] = (Item) cubes[1];
         else if (cubes[1] instanceof Block) items[1] = Item.getItemFromBlock((Block) cubes[1]);
 
-        BlockDispenser.dispenseBehaviorRegistry.putObject(items[0], new DispenserBehaviorPokecube());
-        BlockDispenser.dispenseBehaviorRegistry.putObject(items[1], new DispenserBehaviorPokecube());
+        BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(items[0], new DispenserBehaviorPokecube());
+        BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(items[1], new DispenserBehaviorPokecube());
 
         if (defaultRenderer) cubeIds.add(id);
 
@@ -362,7 +362,7 @@ public class PokecubeItems extends Items
 
     public static Item getItem(String name)
     {
-        Item item = Item.itemRegistry.getObject(new ResourceLocation(name));
+        Item item = Item.REGISTRY.getObject(new ResourceLocation(name));
         if (item != null) return item;
 
         return items.get(name.toLowerCase().trim());
@@ -449,12 +449,12 @@ public class PokecubeItems extends Items
         {
             if (grasses.contains(b)) continue;
 
-            if (b.getMaterial(b.getDefaultState()) == Material.grass) grasses.add(b);
-            if (b.getMaterial(b.getDefaultState()) == Blocks.red_flower.getMaterial(b.getDefaultState()))
+            if (b.getMaterial(b.getDefaultState()) == Material.GRASS) grasses.add(b);
+            if (b.getMaterial(b.getDefaultState()) == Blocks.RED_FLOWER.getMaterial(b.getDefaultState()))
                 grasses.add(b);
-            if (b.getMaterial(b.getDefaultState()) == Blocks.tallgrass.getMaterial(b.getDefaultState()))
+            if (b.getMaterial(b.getDefaultState()) == Blocks.TALLGRASS.getMaterial(b.getDefaultState()))
                 PokecubeItems.grasses.add(b);
-            if (b.getMaterial(b.getDefaultState()) == Blocks.wheat.getMaterial(b.getDefaultState()))
+            if (b.getMaterial(b.getDefaultState()) == Blocks.WHEAT.getMaterial(b.getDefaultState()))
                 PokecubeItems.grasses.add(b);
         }
         postInitFossils();
@@ -471,21 +471,21 @@ public class PokecubeItems extends Items
 
     private static void initVanillaHeldItems()
     {
-        addGeneric("ice", Blocks.packed_ice);
-        addGeneric("mossStone", Blocks.mossy_cobblestone);
+        addGeneric("ice", Blocks.PACKED_ICE);
+        addGeneric("mossStone", Blocks.MOSSY_COBBLESTONE);
 
-        addGeneric("razorfang", Items.iron_pickaxe);
-        addGeneric("protector", Items.iron_chestplate);
-        addGeneric("razorclaw", Items.iron_axe);
+        addGeneric("razorfang", Items.IRON_PICKAXE);
+        addGeneric("protector", Items.IRON_CHESTPLATE);
+        addGeneric("razorclaw", Items.IRON_AXE);
 
-        addGeneric("reapercloth", Blocks.carpet);
-        addGeneric("dragonscale", Items.emerald);
-        addGeneric("prismscale", Items.diamond);
+        addGeneric("reapercloth", Blocks.CARPET);
+        addGeneric("dragonscale", Items.EMERALD);
+        addGeneric("prismscale", Items.DIAMOND);
 
-        addGeneric("metalcoat", Items.iron_chestplate);
+        addGeneric("metalcoat", Items.IRON_CHESTPLATE);
 
-        addGeneric("electirizer", Items.redstone);
-        addGeneric("magmarizer", Items.flint_and_steel);
+        addGeneric("electirizer", Items.REDSTONE);
+        addGeneric("magmarizer", Items.FLINT_AND_STEEL);
 
         addToEvos("ice");
         addToEvos("mossStone");

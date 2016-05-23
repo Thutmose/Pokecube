@@ -143,7 +143,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             FontRenderer fontrenderer = getFontRendererFromRenderManager();
 
-            if (((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED) && renderManager.livingPlayer.equals(((IPokemob) entityliving).getPokemonOwner()))
+            if (((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED) && renderManager.renderViewEntity.equals(((IPokemob) entityliving).getPokemonOwner()))
             {
                 fontrenderer = getFontRendererFromRenderManager();
                 String s = (int)health + "/" + (int)maxHealth;
@@ -157,7 +157,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
           if (((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED))// && ))
           {
           	String n;// = ((IPokemob) entityliving).getDisplayName();
-          	int colour = renderManager.livingPlayer.equals(((IPokemob) entityliving).getPokemonOwner())?0xFFFFFF:0xAAAAAA;
+          	int colour = renderManager.renderViewEntity.equals(((IPokemob) entityliving).getPokemonOwner())?0xFFFFFF:0xAAAAAA;
           	int dx = 00;
           	if((entityliving.hasCustomName())){
           		n = entityliving.getCustomNameTag();

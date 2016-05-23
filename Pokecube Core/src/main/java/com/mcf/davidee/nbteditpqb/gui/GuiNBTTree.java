@@ -516,7 +516,7 @@ public class GuiNBTTree extends Gui
                         button.reset();
                         NBTEdit.getSaveStates().save();
                         mc.getSoundHandler()
-                                .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
+                                .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                         return;
                     }
                     if (button.inBounds(mx, my))
@@ -555,7 +555,7 @@ public class GuiNBTTree extends Gui
     protected void overlayBackground(int par1, int par2, int par3, int par4)
     {
         PTezzelator tez = PTezzelator.instance;
-        mc.renderEngine.bindTexture(optionsBackground);
+        mc.renderEngine.bindTexture(OPTIONS_BACKGROUND);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         float var6 = 32.0F;
         tez.begin();
@@ -657,7 +657,7 @@ public class GuiNBTTree extends Gui
             else button.save.tag.setTag(name, base.copy());
             button.saved();
             NBTEdit.getSaveStates().save();
-            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
+            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
         else
         { // Paste into
@@ -682,7 +682,7 @@ public class GuiNBTTree extends Gui
                     tree = new NBTTree((NBTTagCompound) nbt);
                     initGUI();
                     mc.getSoundHandler()
-                            .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
+                            .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 }
                 else if (canAddToParent(focused.getObject().getNBT(), nbt))
                 {
@@ -701,7 +701,7 @@ public class GuiNBTTree extends Gui
                     setFocused(node);
                     initGUI(true);
                     mc.getSoundHandler()
-                            .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
+                            .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 }
             }
         }

@@ -764,7 +764,7 @@
     </Pokemon>
     <Pokemon name="Ekans" number="23">
         <STATS>
-            <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
+            <EVOLUTIONMODE>L22</EVOLUTIONMODE>
             <CAPTURERATE>255</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Snake</SPECIES>
@@ -1606,7 +1606,7 @@
             <CAPTURERATE>75</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Insecta</SPECIES>
-            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>12.5</MASSKG>
             <EXPYIELD>158</EXPYIELD>
             <COMMONDROP>2:spider_eye</COMMONDROP>
@@ -3441,7 +3441,7 @@
     </Pokemon>
     <Pokemon name="Cubone" number="104">
         <STATS>
-            <EVOLUTIONMODE>Ileafstone</EVOLUTIONMODE>
+            <EVOLUTIONMODE>L28</EVOLUTIONMODE>
             <CAPTURERATE>190</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Lonely</SPECIES>
@@ -4972,6 +4972,7 @@
             <SIZES height="2.0" length="1.0" width="1.0"/>
             <TYPE type1="Psychic"/>
             <ABILITY hidden="Unnerve" normal="Pressure"/>
+            <MEGARULES forme="N___-Y:I___,N___-X:I___"/>
         </STATS>
         <MOVES>
             <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HAIL, BULKUP, HIDDENPOWER, SUNNYDAY, TAUNT, ICEBEAM, BLIZZARD, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, SOLARBEAM, THUNDERBOLT, THUNDER, EARTHQUAKE, RETURN, PSYCHIC, SHADOWBALL, BRICKBREAK, DOUBLETEAM, REFLECT, FLAMETHROWER, SANDSTORM, FIREBLAST, ROCKTOMB, AERIALACE, TORMENT, FACADE, REST, LOWSWEEP, ROUND, FOCUSBLAST, ENERGYBALL, FLING, CHARGEBEAM, INCINERATE, WILLOWISP, EMBARGO, GIGAIMPACT, FLASH, STONEEDGE, THUNDERWAVE, PSYCHUP, BULLDOZE, ROCKSLIDE, POISONJAB, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, ROCKSMASH, SECRETPOWER, POWERUPPUNCH, CONFIDE, STRENGTH, DIVE"/>
@@ -8607,7 +8608,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>102</MASSKG>
             <BASESTATS atk="110" def="90" hp="100" spatk="85" spd="60" spdef="90"/>
-            <SIZES height="1.9" length="1.0" width="1.0"/>
+            <SIZES height="1.9" length="1.9" width="1.9"/>
             <TYPE type1="Water" type2="Ground"/>
             <ABILITY normal="Swift Swim"/>
         </STATS>
@@ -12825,6 +12826,7 @@
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <INTERACTIONLOGIC>F:diamond_hoe`deoxysattack</INTERACTIONLOGIC>
             <GENDERRATIO>255</GENDERRATIO>
             <BIOMESANYACCEPTABLE>meteor 0.0001:1:1</BIOMESANYACCEPTABLE>
             <SPECIALCASES>legendary day night</SPECIALCASES>
@@ -12853,6 +12855,7 @@
             <EXPYIELD>270</EXPYIELD>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <INTERACTIONLOGIC>F:diamond_hoe`deoxysdefense</INTERACTIONLOGIC>
             <BASESTATS atk="180" def="20" hp="50" spatk="180" spd="150" spdef="20"/>
             <EVYIELD atk="2" spatk="1"/>
             <SIZES height="1.7" length="0.8" width="0.8"/>
@@ -12869,6 +12872,7 @@
             <EXPYIELD>270</EXPYIELD>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <INTERACTIONLOGIC>F:diamond_hoe`deoxysspeed</INTERACTIONLOGIC>
             <BASESTATS atk="70" def="160" hp="50" spatk="70" spd="90" spdef="160"/>
             <EVYIELD def="2" spdef="1"/>
             <SIZES height="1.7" length="0.8" width="0.8"/>
@@ -12885,6 +12889,7 @@
             <EXPYIELD>270</EXPYIELD>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
+            <INTERACTIONLOGIC>F:diamond_hoe`deoxys</INTERACTIONLOGIC>
             <BASESTATS atk="95" def="90" hp="50" spatk="95" spd="180" spdef="90"/>
             <EVYIELD spd="3"/>
             <SIZES height="1.7" length="0.8" width="0.8"/>
@@ -15799,7 +15804,7 @@
             <BASESTATS atk="50" def="77" hp="50" spatk="95" spd="91" spdef="77"/>
             <EVYIELD spatk="1" spd="1"/>
             <SIZES height="0.3" length="0.3" width="0.3"/>
-            <TYPE type1="Electric" type2="Water"/>
+            <TYPE type1="Electric" type2="Ghost"/>
             <ABILITY normal="Levitate"/>
         </STATS>
         <MOVES>
@@ -21339,6 +21344,7 @@
                 lvl_7="DOUBLEKICK" lvl_73="CLOSECOMBAT"/>
         </MOVES>
     </Pokemon>
+    <Pokemon name="Keldeo Resolute" number="647"/>
     <Pokemon name="Meloetta Aria" number="648">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
@@ -21404,6 +21410,10 @@
             <SIZES height="1.5" length="1.5" width="1.5"/>
             <TYPE type1="Bug" type2="Steel"/>
             <ABILITY normal="Download"/>
+            <FORMEITEMS forme="NGenesectBDrive:Icoal"/>
+            <FORMEITEMS forme="NGenesectCDrive:Iice"/>
+            <FORMEITEMS forme="NGenesectDDrive:Ilapis"/>
+            <FORMEITEMS forme="NGenesectSDrive:Iredstone"/>
         </STATS>
         <MOVES>
             <MISC moves="HONECLAWS, TOXIC, HIDDENPOWER, ICEBEAM, BLIZZARD, HYPERBEAM, LIGHTSCREEN, PROTECT, FRUSTRATION, SOLARBEAM, THUNDERBOLT, THUNDER, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, FLAMETHROWER, AERIALACE, FACADE, FLAMECHARGE, REST, ROUND, ENERGYBALL, CHARGEBEAM, EXPLOSION, SHADOWCLAW, GIGAIMPACT, ROCKPOLISH, FLASH, THUNDERWAVE, STRUGGLEBUG, XSCISSOR, INFESTATION, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, FLASHCANNON, SECRETPOWER, DARKPULSE, CONFIDE, FLY"/>
@@ -21416,6 +21426,10 @@
                 lvl_7="FURYCUTTER" lvl_73="HYPERBEAM" lvl_77="SELFDESTRUCT"/>
         </MOVES>
     </Pokemon>
+    <Pokemon name="GenesectBDrive" number="649"/>
+    <Pokemon name="GenesectCDrive" number="649"/>
+    <Pokemon name="GenesectDDrive" number="649"/>
+    <Pokemon name="GenesectSDrive" number="649"/>
     <Pokemon name="Chespin" number="650">
         <STATS>
             <EVOLUTIONMODE>L16</EVOLUTIONMODE>

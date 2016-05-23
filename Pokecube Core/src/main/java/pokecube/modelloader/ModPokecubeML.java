@@ -131,9 +131,8 @@ public class ModPokecubeML
         {
         }
 
-        GameRegistry.registerItem(
-                new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),
-                "modelreloader");
+        GameRegistry.register(
+                new ItemModelReloader().setUnlocalizedName("modelreloader").setRegistryName(ID, "modelreloader").setCreativeTab(CreativeTabs.TOOLS));
         MinecraftForge.EVENT_BUS.register(this);
     }
 

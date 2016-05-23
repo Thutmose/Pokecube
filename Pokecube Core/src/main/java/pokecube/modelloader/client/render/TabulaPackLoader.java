@@ -201,7 +201,7 @@ public class TabulaPackLoader extends AnimationLoader
         {
             if (shearableIdents.contains(part))
             {
-                boolean shearable = ((IShearable) entity).isShearable(new ItemStack(Items.shears), entity.worldObj,
+                boolean shearable = ((IShearable) entity).isShearable(new ItemStack(Items.SHEARS), entity.worldObj,
                         entity.getPosition());
                 return !shearable;
             }

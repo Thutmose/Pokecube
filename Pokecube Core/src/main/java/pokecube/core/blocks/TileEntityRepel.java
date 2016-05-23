@@ -63,16 +63,19 @@ public class TileEntityRepel extends TileEntity implements ITickable
     public void validate() {
     	super.validate();
     	addForbiddenSpawningCoord();
+    	enabled = true;
     }
 
     /**
      * Writes a tile entity to NBT.
+     * @return 
      */
     @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
         nbt.setByte("distance", distance);
         nbt.setBoolean("enabled", enabled);
+        return nbt;
     }
 }

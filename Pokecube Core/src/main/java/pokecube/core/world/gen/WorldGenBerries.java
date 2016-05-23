@@ -9,7 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -23,7 +23,7 @@ import thut.api.terrain.BiomeDatabase;
 public class WorldGenBerries implements IWorldGenerator
 {
 
-    Block grassBlock = Blocks.grass;
+    Block grassBlock = Blocks.GRASS;
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
@@ -53,7 +53,7 @@ public class WorldGenBerries implements IWorldGenerator
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             if (world.getBiomeGenForCoords(pos) == (BiomeDatabase.getBiome("sky")))
             {
-                if (world.getBlockState(pos.down()).getBlock() == Blocks.end_stone)
+                if (world.getBlockState(pos.down()).getBlock() == Blocks.END_STONE)
                 {
                     placeCropAt(world, pos, "enigma");
                 }
@@ -72,7 +72,7 @@ public class WorldGenBerries implements IWorldGenerator
 
             if (world.getBiomeGenForCoords(pos) == (BiomeDatabase.getBiome("hell")))
             {
-                if (world.getBlockState(pos).getBlock() == Blocks.netherrack)
+                if (world.getBlockState(pos).getBlock() == Blocks.NETHERRACK)
                 {
                     placeCropAt(world, pos.up(), "rawst");
                 }
@@ -193,7 +193,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.COLD))
             {
@@ -213,7 +213,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.PLAINS) && !contains(b, Type.SAVANNA))
             {
@@ -233,7 +233,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.FOREST) && !contains(b, Type.CONIFEROUS))
             {
@@ -254,7 +254,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.SWAMP))
             {
@@ -273,7 +273,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.FOREST) && contains(b, Type.HILLS) && !contains(b, Type.CONIFEROUS))
             {
@@ -291,7 +291,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.PLAINS) && !contains(b, Type.SAVANNA))
             {
@@ -309,7 +309,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.JUNGLE) && !contains(b, Type.HILLS))
             {
@@ -327,7 +327,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.FOREST) && !contains(b, Type.CONIFEROUS))
             {
@@ -345,7 +345,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.MOUNTAIN) && contains(b, Type.HILLS))
             {
@@ -364,7 +364,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.FOREST) && contains(b, Type.CONIFEROUS))
             {
@@ -384,7 +384,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.JUNGLE) && !contains(b, Type.HILLS))
             {
@@ -402,7 +402,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.JUNGLE) && !contains(b, Type.HILLS))
             {
@@ -422,7 +422,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.SWAMP))
             {
@@ -441,7 +441,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.MOUNTAIN) && contains(b, Type.HILLS))
             {
@@ -459,7 +459,7 @@ public class WorldGenBerries implements IWorldGenerator
             int randPosZ = chunkZ + rand.nextInt(15) + 1;
             BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 0, randPosZ));
             Vector3 v = Vector3.getNewVector().set(pos);
-            BiomeGenBase b = v.getBiome(world);
+            Biome b = v.getBiome(world);
 
             if (contains(b, Type.JUNGLE) && contains(b, Type.HILLS))
             {
@@ -511,7 +511,7 @@ public class WorldGenBerries implements IWorldGenerator
                             Block block = par1World.getBlockState(temp).getBlock();
 
                             if (!par1World.isAirBlock(temp) && !block.isLeaves(leaves, par1World, temp)
-                                    && block != Blocks.grass && block != Blocks.dirt && !block.isWood(par1World, temp))
+                                    && block != Blocks.GRASS && block != Blocks.DIRT && !block.isWood(par1World, temp))
                             {
                                 flag = false;
                             }
@@ -603,7 +603,7 @@ public class WorldGenBerries implements IWorldGenerator
         if (BerryManager.getBerryCrop(berryName) != null)
         {
             world.setBlockState(pos, BerryManager.getBerryCrop(berryName).getDefaultState());
-            world.setBlockState(pos.down(), Blocks.farmland.getDefaultState());
+            world.setBlockState(pos.down(), Blocks.FARMLAND.getDefaultState());
         }
         else
         {

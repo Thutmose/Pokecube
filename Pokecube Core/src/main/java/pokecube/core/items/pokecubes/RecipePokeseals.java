@@ -82,7 +82,7 @@ public class RecipePokeseals implements IRecipe {
                 {
                     ++l;
                 }
-*/                else if (itemstack.getItem() == Items.dye)
+*/                else if (itemstack.getItem() == Items.DYE)
                 {
                     ++addons;
                 }
@@ -90,29 +90,29 @@ public class RecipePokeseals implements IRecipe {
                 {
                     ++paper;
                 }
-*/                else if (itemstack.getItem() == Items.water_bucket)
+*/                else if (itemstack.getItem() == Items.WATER_BUCKET)
                 {
                     ++addons;
                 }
-                else if (itemstack.getItem() == Items.coal)
+                else if (itemstack.getItem() == Items.COAL)
                 {
                     ++addons;
                 }
-                else if (itemstack.getItem() == Item.getItemFromBlock(Blocks.leaves))
+                else if (itemstack.getItem() == Item.getItemFromBlock(Blocks.LEAVES))
                 {
                     ++addons;
                 }
-                else if (itemstack.getItem() == Items.feather)
+                else if (itemstack.getItem() == Items.FEATHER)
                 {
                     ++boomboomstuff;
                 }
-                else if (itemstack.getItem() == Items.gold_nugget)
+                else if (itemstack.getItem() == Items.GOLD_NUGGET)
                 {
                     ++boomboomstuff;
                 }
                 else
                 {
-                    if (itemstack.getItem() != Items.skull)
+                    if (itemstack.getItem() != Items.SKULL)
                     {
                         return false;
                     }
@@ -142,19 +142,19 @@ public class RecipePokeseals implements IRecipe {
 
                     if (itemstack2 != null)
                     {
-                       if (itemstack2.getItem() == Items.coal)
+                       if (itemstack2.getItem() == Items.COAL)
                         {
                             nbttagcompound1.setBoolean("Flames", true);
                         }
-                       if (itemstack2.getItem() == Items.water_bucket)
+                       if (itemstack2.getItem() == Items.WATER_BUCKET)
                         {
                             nbttagcompound1.setBoolean("Bubbles", true);
                         }
-                       if (itemstack2.getItem() == Item.getItemFromBlock(Blocks.leaves))
+                       if (itemstack2.getItem() == Item.getItemFromBlock(Blocks.LEAVES))
                        {
                        	nbttagcompound1.setBoolean("Leaves", true);
                        }
-                       if (itemstack2.getItem() == Items.dye)
+                       if (itemstack2.getItem() == Items.DYE)
                        {
                        	nbttagcompound1.setInteger("dye", itemstack2.getItemDamage());
                        }

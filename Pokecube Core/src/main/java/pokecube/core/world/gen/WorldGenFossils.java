@@ -4,7 +4,7 @@ import java.util.Random;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
@@ -27,7 +27,7 @@ public class WorldGenFossils implements IWorldGenerator
             int randPosX = chunkX * 16 + random.nextInt(16);
             int randPosY = random.nextInt(40) + 5;
             int randPosZ = chunkZ * 16 + random.nextInt(16);
-            BiomeGenBase bgb = world.getBiomeGenForCoords(new BlockPos(randPosX, 0, randPosZ));
+            Biome bgb = world.getBiomeGenForCoords(new BlockPos(randPosX, 0, randPosZ));
             if (bgb == BiomeDatabase.getBiome("desertHills") || bgb == BiomeDatabase.getBiome("desert")
                     || bgb == BiomeDatabase.getBiome("jungle") || bgb == BiomeDatabase.getBiome("jungleHills")
                     || bgb == BiomeDatabase.getBiome("ocean"))

@@ -67,7 +67,7 @@ public class WorldGenNests implements IWorldGenerator
                     Block b = state.getBlock();
                     Block bUp = stateUp.getBlock();
                     boolean validUp = bUp.isAir(state, world, pos.up());
-                    validUp = validUp || (stateUp.getMaterial().isReplaceable() && stateUp.getMaterial() != Material.lava);
+                    validUp = validUp || (stateUp.getMaterial().isReplaceable() && stateUp.getMaterial() != Material.LAVA);
                     if (!validUp)
                     {
                         continue;
@@ -104,7 +104,7 @@ public class WorldGenNests implements IWorldGenerator
                     Block b = state.getBlock();
                     Block bUp = stateUp.getBlock();
                     boolean validUp = bUp.isAir(state, world, pos.up());
-                    validUp = validUp || (stateUp.getMaterial().isReplaceable() && stateUp.getMaterial() != Material.lava);
+                    validUp = validUp || (stateUp.getMaterial().isReplaceable() && stateUp.getMaterial() != Material.LAVA);
                     if (!validUp)
                     {
                         continue;

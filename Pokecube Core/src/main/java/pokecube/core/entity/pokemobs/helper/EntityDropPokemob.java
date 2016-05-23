@@ -55,12 +55,12 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         if (!getPokemonAIState(IMoveConstants.TAMED) && food != null)
         {
             if (isBurning())
-            {
-                if (food.getItem() == Items.chicken) dropItem(Items.cooked_chicken, j);
-                else if (food.getItem() == Items.potato) dropItem(Items.baked_potato, j);
-                else if (food.getItem() == Items.beef) dropItem(Items.cooked_beef, j);
-                else if (food.getItem() == Items.fish) dropItem(Items.cooked_fish, j);
-                else if (food.getItem() == Items.porkchop) dropItem(Items.cooked_porkchop, j);
+            {//TODO move this over to a method for mapping to allow configs.
+                if (food.getItem() == Items.CHICKEN) dropItem(Items.COOKED_CHICKEN, j);
+                else if (food.getItem() == Items.POTATO) dropItem(Items.BAKED_POTATO, j);
+                else if (food.getItem() == Items.BEEF) dropItem(Items.COOKED_BEEF, j);
+                else if (food.getItem() == Items.FISH) dropItem(Items.COOKED_FISH, j);
+                else if (food.getItem() == Items.PORKCHOP) dropItem(Items.COOKED_PORKCHOP, j);
                 else dropItem(food.getItem(), j);
             }
             else

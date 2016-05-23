@@ -17,7 +17,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.AnimalChest;
-import net.minecraft.inventory.IInvBasic;
+import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -61,7 +61,7 @@ import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
-public abstract class EntityTameablePokemob extends EntityTameable implements IPokemob, IMob, IInvBasic, IHungrymob,
+public abstract class EntityTameablePokemob extends EntityTameable implements IPokemob, IMob, IInventoryChangedListener, IHungrymob,
         IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob
 {
     public static int                   EXITCUBEDURATION  = 40;
@@ -184,36 +184,36 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         super.entityInit();
 
         // From EntityStatsPokemob
-        dataWatcher.register(STATSDW, "0,0,0,0,0,0");// Stats
+        dataManager.register(STATSDW, "0,0,0,0,0,0");// Stats
 
-        dataWatcher.register(STATMODDW, new Integer(1717986918));
-        dataWatcher.register(EXPDW, new Integer(0));// exp for level 1
-        dataWatcher.register(HUNGERDW, new Integer(0));// Hunger time
+        dataManager.register(STATMODDW, new Integer(1717986918));
+        dataManager.register(EXPDW, new Integer(0));// exp for level 1
+        dataManager.register(HUNGERDW, new Integer(0));// Hunger time
         // // for sheared status
-        dataWatcher.register(NICKNAMEDW, "");// nickname
-        dataWatcher.register(EVS1DW, new Integer(1));// evs
-        dataWatcher.register(EVS2DV, new Integer(1));// evs
-        dataWatcher.register(HAPPYDW, new Integer(0));// Happiness
+        dataManager.register(NICKNAMEDW, "");// nickname
+        dataManager.register(EVS1DW, new Integer(1));// evs
+        dataManager.register(EVS2DV, new Integer(1));// evs
+        dataManager.register(HAPPYDW, new Integer(0));// Happiness
 
         // From EntityAiPokemob
-        this.dataWatcher.register(DIRECTIONPITCHDW, Float.valueOf(0));
-        this.dataWatcher.register(ATTACKTARGETIDDW, Integer.valueOf(-1));
-        this.dataWatcher.register(AIACTIONSTATESDW, Integer.valueOf(0));
+        this.dataManager.register(DIRECTIONPITCHDW, Float.valueOf(0));
+        this.dataManager.register(ATTACKTARGETIDDW, Integer.valueOf(-1));
+        this.dataManager.register(AIACTIONSTATESDW, Integer.valueOf(0));
 
         // from EntityEvolvablePokemob
-        dataWatcher.register(EVOLNBDW, new Integer(0));// current evolution nb
-        dataWatcher.register(EVOLTICKDW, new Integer(0));// evolution tick
+        dataManager.register(EVOLNBDW, new Integer(0));// current evolution nb
+        dataManager.register(EVOLTICKDW, new Integer(0));// evolution tick
 
         // From EntityMovesPokemb
-        dataWatcher.register(BOOMSTATEDW, Byte.valueOf((byte) -1));
-        dataWatcher.register(STATUSMOVEINDEXDW, Integer.valueOf(0));
-        dataWatcher.register(MOVESDW, "");// moves
+        dataManager.register(BOOMSTATEDW, Byte.valueOf((byte) -1));
+        dataManager.register(STATUSMOVEINDEXDW, Integer.valueOf(0));
+        dataManager.register(MOVESDW, "");// moves
 
-        dataWatcher.register(SPECIALINFO, Integer.valueOf(0));
+        dataManager.register(SPECIALINFO, Integer.valueOf(0));
 
     }
 
-    /** Used to get the state without continually looking up in datawatcher.
+    /** Used to get the state without continually looking up in dataManager.
      * 
      * @param state
      * @param array
@@ -352,7 +352,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public int getSpecialInfo()
     {
-        return dataWatcher.get(SPECIALINFO);
+        return dataManager.get(SPECIALINFO);
     }
 
     protected void handleArmourAndSaddle()
@@ -422,7 +422,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     {
         /** Checks if the pokedex entry has shears listed, if so, then apply to
          * any mod shears as well. */
-        ItemStack key = new ItemStack(Items.shears);
+        ItemStack key = new ItemStack(Items.SHEARS);
         if (getPokedexEntry().interact(key))
         {
             long last = getEntityData().getLong("lastSheared");
@@ -455,7 +455,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
     {
-        ItemStack key = new ItemStack(Items.shears);
+        ItemStack key = new ItemStack(Items.SHEARS);
         if (getPokedexEntry().interact(key))
         {
             ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
@@ -475,7 +475,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                     ret.add(toAdd);
                 }
             }
-            this.playSound(SoundEvents.entity_sheep_shear, 1.0F, 1.0F);
+            this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
             return ret;
         }
         return null;
@@ -540,7 +540,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         abilityIndex = nbttagcompound.getInteger("abilityIndex");
         this.setPokedexEntry(Database.getEntry(pokedexNb));
         this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
-        dataWatcher.set(AIACTIONSTATESDW, nbttagcompound.getInteger("PokemobActionState"));
+        dataManager.set(AIACTIONSTATESDW, nbttagcompound.getInteger("PokemobActionState"));
         setHungerTime(nbttagcompound.getInteger("hungerTime"));
         int[] home = nbttagcompound.getIntArray("homeLocation");
         if (home.length == 4)
@@ -580,7 +580,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         {
             itemstack = ItemStack.loadItemStackFromNBT(nbttagcompound.getCompoundTag("SaddleItem"));
 
-            if (itemstack != null && itemstack.getItem() == Items.saddle)
+            if (itemstack != null && itemstack.getItem() == Items.SADDLE)
             {
                 this.pokeChest.setInventorySlotContents(0, itemstack);
             }
@@ -783,7 +783,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public void setSpecialInfo(int info)
     {
-        this.dataWatcher.set(SPECIALINFO, Integer.valueOf(info));
+        this.dataManager.set(SPECIALINFO, Integer.valueOf(info));
     }
 
     @Override
@@ -799,7 +799,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setInteger(PokecubeSerializer.POKEDEXNB, pokedexNb);
         nbttagcompound.setInteger("abilityIndex", abilityIndex);
-        nbttagcompound.setInteger("PokemobActionState", dataWatcher.get(AIACTIONSTATESDW));
+        nbttagcompound.setInteger("PokemobActionState", dataManager.get(AIACTIONSTATESDW));
         nbttagcompound.setInteger("hungerTime", getHungerTime());
         nbttagcompound.setInteger("specialInfo", getSpecialInfo());
         nbttagcompound.setIntArray("homeLocation",

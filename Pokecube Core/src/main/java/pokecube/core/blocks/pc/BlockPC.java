@@ -39,7 +39,7 @@ public class BlockPC extends Block implements ITileEntityProvider
 
     public BlockPC()
     {
-        super(Material.glass);
+        super(Material.GLASS);
         this.setLightOpacity(0);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TOP,
                 Boolean.valueOf(false)));

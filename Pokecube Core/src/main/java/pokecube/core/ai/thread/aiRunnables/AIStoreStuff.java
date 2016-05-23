@@ -11,7 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ReportedException;
@@ -220,7 +220,7 @@ public class AIStoreStuff extends AIBase
             // If too far away, path to the nest for items.
             if (!empty && seeking.distToEntity(entity) > 3)
             {
-                PathEntity path = this.entity.getNavigator().getPathToPos(seeking.getPos());
+                Path path = this.entity.getNavigator().getPathToPos(seeking.getPos());
                 addEntityPath(entity.getEntityId(), entity.dimension, path, entity.getAIMoveSpeed());
                 return;
             }

@@ -58,7 +58,7 @@ public class TileEntityOwnable extends TileEntity implements IOwnableTE
     }
     
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
         if (placer != null)
@@ -67,5 +67,6 @@ public class TileEntityOwnable extends TileEntity implements IOwnableTE
             tagCompound.setLong("uuidMost", placer.getMostSignificantBits());
             tagCompound.setLong("uuidLeast", placer.getLeastSignificantBits());
         }
+        return tagCompound;
     }
 }

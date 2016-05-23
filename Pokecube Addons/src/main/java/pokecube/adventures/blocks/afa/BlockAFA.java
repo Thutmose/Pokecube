@@ -23,7 +23,7 @@ public final class BlockAFA extends Block implements ITileEntityProvider
 
     public BlockAFA()
     {
-        super(Material.iron);
+        super(Material.IRON);
         this.setLightOpacity(0);
         this.setHardness(10);
         this.setResistance(10);

@@ -38,7 +38,7 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
 
     public BlockLegendSpawner()
     {
-        super(Material.rock);
+        super(Material.ROCK);
         this.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         this.setHardness(10);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE, Integer.valueOf(0)));

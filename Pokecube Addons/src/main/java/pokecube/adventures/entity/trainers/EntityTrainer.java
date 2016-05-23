@@ -99,7 +99,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             {
                 sell.stackSize += new Random().nextInt(amtRange[1] - amtRange[0] + 1);
             }
-            ItemStack buy1 = new ItemStack(Items.emerald);
+            ItemStack buy1 = new ItemStack(Items.EMERALD);
             buy1.stackSize = (cost & 63);
             ItemStack buy2 = null;
             if (cost > 64)
@@ -248,7 +248,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 int size = Config.instance.megaCost;
                 if (name.endsWith("orb")) size = Config.instance.orbCost;
                 else if (name.endsWith("charm")) size = Config.instance.shinyCost;
-                ItemStack buy1 = new ItemStack(Items.emerald);
+                ItemStack buy1 = new ItemStack(Items.EMERALD);
                 buy1.stackSize = (size & 63);
                 ItemStack buy2 = null;
                 if (size > 64)
@@ -276,7 +276,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             if (added.contains(name)) continue;
             added.add(name);
             ItemStack tm = PokecubeItems.getStack("tm");
-            ItemStack in = new ItemStack(Items.emerald);
+            ItemStack in = new ItemStack(Items.EMERALD);
             in.stackSize = Config.instance.tmCost;
             ItemTM.addMoveToStack(name, tm);
             itemList.add(new MerchantRecipe(in, tm));
@@ -297,7 +297,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             ItemStack badge = PokecubeItems.getStack("badge" + type);
             if (badge != null)
             {
-                ItemStack in1 = new ItemStack(Items.emerald);
+                ItemStack in1 = new ItemStack(Items.EMERALD);
                 int size = Config.instance.badgeCost;
                 in1.stackSize = (size & 63);
                 ItemStack in2 = null;
@@ -386,13 +386,13 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     protected void entityInit()
     {
         super.entityInit();
-        this.dataWatcher.register(AIACTIONSTATESDW, 0);// more action states
+        this.dataManager.register(AIACTIONSTATESDW, 0);// more action states
     }
 
     public boolean getAIState(int state)
     {
 
-        return (dataWatcher.get(AIACTIONSTATESDW) & state) != 0;
+        return (dataManager.get(AIACTIONSTATESDW) & state) != 0;
     }
 
     @Override
@@ -531,7 +531,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             String text = I18n.translateToLocal("pokecube.trainer.defeat");
             ITextComponent message;
             ITextComponent name = getDisplayName();
-            name.getChatStyle().setColor(TextFormatting.RED);
+            name.getStyle().setColor(TextFormatting.RED);
             text = TextFormatting.RED + text;
             message = name.appendSibling(ITextComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
             target.addChatMessage(message);
@@ -631,11 +631,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 // }
                 player.addChatMessage(new TextComponentString(message));
             }
-            else if (!worldObj.isRemote && player.isSneaking() && player.getHeldItemMainhand().getItem() == Items.stick)
+            else if (!worldObj.isRemote && player.isSneaking() && player.getHeldItemMainhand().getItem() == Items.STICK)
             {
                 throwCubeAt(player);
             }
-            else if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Items.stick)
+            else if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Items.STICK)
                 setTarget(player);
 
             if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemTrainer)
@@ -647,10 +647,10 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         {
             if (player.getHeldItemMainhand() != null && friendlyCooldown <= 0)
             {
-                if (player.getHeldItemMainhand().getItem() == Item.itemRegistry
+                if (player.getHeldItemMainhand().getItem() == Item.REGISTRY
                         .getObject(new ResourceLocation("minecraft:emerald")))
                 {
-                    Item item = Item.itemRegistry.getObject(new ResourceLocation("minecraft:emerald"));
+                    Item item = Item.REGISTRY.getObject(new ResourceLocation("minecraft:emerald"));
                     player.inventory.clearMatchingItems(item, 0, 1, null);
                     setTrainerTarget(null);
                     for (IPokemob pokemob : currentPokemobs)
@@ -695,7 +695,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             this.itemList = new MerchantRecipeList(nbttagcompound);
         }
         if (nbt.hasKey("trades")) trades = nbt.getBoolean("trades");
-        dataWatcher.set(AIACTIONSTATESDW, nbt.getInteger("aiState"));
+        dataManager.set(AIACTIONSTATESDW, nbt.getInteger("aiState"));
         randomize = nbt.getBoolean("randomTeam");
         type = TypeTrainer.getTrainer(nbt.getString("type"));
         if (nbt.hasKey("outPokemob"))
@@ -742,7 +742,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     public void setAIState(int state, boolean flag)
     {
-        int byte0 = dataWatcher.get(AIACTIONSTATESDW);
+        int byte0 = dataManager.get(AIACTIONSTATESDW);
 
         Integer toSet;
         if (flag)
@@ -753,7 +753,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         {
             toSet = Integer.valueOf((byte0 & -state - 1));
         }
-        dataWatcher.set(AIACTIONSTATESDW, toSet);
+        dataManager.set(AIACTIONSTATESDW, toSet);
     }
 
     @Override
@@ -838,7 +838,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             String text = I18n.translateToLocal("pokecube.trainer.agress");
             ITextComponent message;
             ITextComponent name = getDisplayName();
-            name.getChatStyle().setColor(TextFormatting.RED);
+            name.getStyle().setColor(TextFormatting.RED);
             text = TextFormatting.RED + text;
             message = name.appendSibling(ITextComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
             target.addChatMessage(message);
@@ -919,7 +919,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     {
         trade(recipe);
         this.livingSoundTime = -this.getTalkInterval();
-        this.playSound(SoundEvents.entity_villager_yes, this.getSoundVolume(), this.getSoundPitch());
+        this.playSound(SoundEvents.ENTITY_VILLAGER_YES, this.getSoundVolume(), this.getSoundPitch());
         int i = 3 + this.rand.nextInt(4);
         if (recipe.getRewardsExp())
         {
@@ -936,11 +936,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
             if (stack != null)
             {
-                this.playSound(SoundEvents.entity_villager_yes, this.getSoundVolume(), this.getSoundPitch());
+                this.playSound(SoundEvents.ENTITY_VILLAGER_YES, this.getSoundVolume(), this.getSoundPitch());
             }
             else
             {
-                this.playSound(SoundEvents.entity_villager_no, this.getSoundVolume(), this.getSoundPitch());
+                this.playSound(SoundEvents.ENTITY_VILLAGER_NO, this.getSoundVolume(), this.getSoundPitch());
             }
         }
     }
@@ -971,7 +971,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         nbt.setString("name", name);
         nbt.setString("type", type.name);
         if (outID != null) nbt.setString("outPokemob", outID.toString());
-        nbt.setInteger("aiState", dataWatcher.get(AIACTIONSTATESDW));
+        nbt.setInteger("aiState", dataManager.get(AIACTIONSTATESDW));
         nbt.setInteger("cooldown", globalCooldown);
         nbt.setIntArray("cooldowns", attackCooldown);
         nbt.setInteger("friendly", friendlyCooldown);

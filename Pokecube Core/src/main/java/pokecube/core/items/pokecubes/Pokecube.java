@@ -89,12 +89,12 @@ public class Pokecube extends Item implements IPokecube
     {
         double x = 1;
         Entity entity = (Entity) mob;
-        if (entity.worldObj.getBlockState(entity.getPosition()).getBlock() == Blocks.water
+        if (entity.worldObj.getBlockState(entity.getPosition()).getBlock() == Blocks.WATER
                 && mob.getType1() == PokeType.water)
         {
             x = 3.5;
         }
-        if (entity.worldObj.getBlockState(entity.getPosition()).getBlock() == Blocks.water
+        if (entity.worldObj.getBlockState(entity.getPosition()).getBlock() == Blocks.WATER
                 && mob.getType2() == PokeType.water)
         {
             x = 3.5;
@@ -230,7 +230,7 @@ public class Pokecube extends Item implements IPokecube
 
             if (!world.isRemote)
             {
-                player.playSound(SoundEvents.entity_egg_throw, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+                player.playSound(SoundEvents.ENTITY_EGG_THROW, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
                 world.spawnEntityInWorld(entity);
             }
         }

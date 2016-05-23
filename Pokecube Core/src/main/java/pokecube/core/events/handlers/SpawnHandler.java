@@ -25,7 +25,7 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -105,17 +105,17 @@ public final class SpawnHandler
         SpawnData spawn = entry.getSpawnData();
         if (spawn == null) return;
 
-        for (ResourceLocation key : BiomeGenBase.biomeRegistry.getKeys())
+        for (ResourceLocation key : Biome.REGISTRY.getKeys())
         {
-            BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(key);
+            Biome b = Biome.REGISTRY.getObject(key);
             if (b == null) continue;
-            ArrayList<PokedexEntry> entries = spawns.get(BiomeGenBase.getIdForBiome(b));
+            ArrayList<PokedexEntry> entries = spawns.get(Biome.getIdForBiome(b));
             if (entries == null)
             {
                 entries = new ArrayList<PokedexEntry>();
-                spawns.put(BiomeGenBase.getIdForBiome(b), entries);
+                spawns.put(Biome.getIdForBiome(b), entries);
             }
-            if (spawn.isValid(BiomeGenBase.getIdForBiome(b)))
+            if (spawn.isValid(Biome.getIdForBiome(b)))
             {
                 entries.add(entry);
             }
@@ -136,11 +136,11 @@ public final class SpawnHandler
         }
     }
 
-    public static void addSpawn(PokedexEntry entry, BiomeGenBase b)
+    public static void addSpawn(PokedexEntry entry, Biome b)
     {
         SpawnData spawn = entry.getSpawnData();
         if (spawn == null) return;
-        int id = BiomeGenBase.getIdForBiome(b);
+        int id = Biome.getIdForBiome(b);
         ArrayList<PokedexEntry> entries = spawns.get(id);
         if (entries == null)
         {
@@ -172,7 +172,7 @@ public final class SpawnHandler
         Material up = temp.set(location).addTo(0, entry.height, 0).getBlockMaterial(worldObj);
         boolean inAir = entry.floats() || entry.flys();
 
-        if (water) { return location.getBlockMaterial(worldObj) == Material.water && (!up.blocksMovement()); }
+        if (water) { return location.getBlockMaterial(worldObj) == Material.WATER && (!up.blocksMovement()); }
         if (inAir && !temp.set(location).addTo(0, -1, 0).isSideSolid(worldObj,
                 EnumFacing.UP)) { return !here.blocksMovement() && !here.isLiquid() && !up.blocksMovement()
                         && !up.isLiquid(); }
@@ -732,7 +732,7 @@ public final class SpawnHandler
                     int dz = rand.nextInt(200) - 100;
 
                     Vector3 v = this.v.set(player).add(dx, 0, dz);
-                    if (world.func_184137_a(v.x, v.y, v.z, 96, false) != null) return;
+                    if (world.getClosestPlayer(v.x, v.y, v.z, 96, false) != null) return;
 
                     v.add(0, 255 - player.posY, 0);
 

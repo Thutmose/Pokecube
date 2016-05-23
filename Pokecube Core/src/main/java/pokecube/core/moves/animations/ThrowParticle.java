@@ -108,7 +108,7 @@ public class ThrowParticle extends MoveAnimationBase
         }
         else if (particle.equals("aurora"))
         {
-            int rand = ItemDye.dyeColors[new Random(time / 10).nextInt(ItemDye.dyeColors.length)];
+            int rand = ItemDye.DYE_COLORS[new Random(time / 10).nextInt(ItemDye.DYE_COLORS.length)];
             rgba = 0x61000000 + rand;
         }
         else if (particle.equals("iceshard"))

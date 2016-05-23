@@ -56,7 +56,7 @@ public class BlockBerryCrop extends BlockCrops {
 	 * Gets passed in the blockID of the block below and supposed to return true if its allowed to grow on the type of blockID passed in. Args: blockID
 	 */
 	protected boolean canThisPlantGrowOnThisBlockID(Block par1) {
-		return par1 == Blocks.farmland;
+		return par1 == Blocks.FARMLAND;
 	}
 	
 	@Override

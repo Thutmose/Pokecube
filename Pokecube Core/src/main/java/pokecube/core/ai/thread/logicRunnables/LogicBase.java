@@ -25,7 +25,7 @@ public abstract class LogicBase implements ILogicRunnable, IMoveConstants
 
     protected void setPokemobAIState(int state, boolean value)
     {
-        pokemob.setPokemonAIState(state, value);// Datawatcher says it is
+        pokemob.setPokemonAIState(state, value);// dataManager says it is
                                                 // threadsafe, if this doesn't
                                                 // work, will use what AIBase
                                                 // uses.

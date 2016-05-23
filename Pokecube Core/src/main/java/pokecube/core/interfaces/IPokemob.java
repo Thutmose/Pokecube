@@ -365,8 +365,6 @@ public interface IPokemob extends IMoveConstants
 
     EntityAIBase getGuardAI();
     
-    EntityAIBase getUtilityMoveAI();
-
     /** @return how happy is the pokemob, see {@link HappinessType} */
     int getHappiness();
 
@@ -514,6 +512,8 @@ public interface IPokemob extends IMoveConstants
      * @return the byte type */
     PokeType getType2();
 
+    EntityAIBase getUtilityMoveAI();
+
     Entity getWeapon(int index);
 
     double getWeight();
@@ -574,8 +574,6 @@ public interface IPokemob extends IMoveConstants
 
     void setAbility(Ability ability);
     
-    void setToHiddenAbility();
-
     void setAncient(boolean toSet);
 
     void setDirectionPitch(float pitch);
@@ -715,6 +713,8 @@ public interface IPokemob extends IMoveConstants
      * @param timer
      *            the initial value to set */
     void setStatusTimer(short timer);
+
+    void setToHiddenAbility();
 
     void setTraded(boolean traded);
 

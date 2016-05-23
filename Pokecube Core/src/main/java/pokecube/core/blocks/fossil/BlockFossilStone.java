@@ -15,7 +15,7 @@ public class BlockFossilStone extends Block
 {
     public BlockFossilStone()
     {
-        super(Material.rock);
+        super(Material.ROCK);
     }
 
     /** This returns a complete list of items dropped from this block.

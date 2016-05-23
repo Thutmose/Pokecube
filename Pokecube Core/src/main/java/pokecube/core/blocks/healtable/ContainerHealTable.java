@@ -119,7 +119,7 @@ public class ContainerHealTable extends Container
     	            	//InventoryPC.addPokecubeToPC(itemstack);
     	            }
     	            else
-    	            	player.dropPlayerItemWithRandomChoice(var3, true);
+    	            	player.dropItem(var3, true);
     	            if(player instanceof EntityPlayerMP)
     	            {
     		    		((EntityPlayerMP)player).sendContainerToPlayer(player.inventoryContainer);

@@ -48,7 +48,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
     @Override
     public float limitAngle(float old, float newAngle, float target)
     {
-        float f3 = MathHelper.wrapAngleTo180_float(newAngle - old);
+        float f3 = MathHelper.wrapDegrees(newAngle - old);
         target = Math.max(target, Math.abs(f3));
 
         if (f3 > target)

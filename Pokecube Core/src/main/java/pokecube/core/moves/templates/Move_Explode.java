@@ -48,7 +48,7 @@ public class Move_Explode extends Move_Ongoing
             {
                 if (pokemob.getMoveStats().timeSinceIgnited == 0)
                 {
-                    voltorb.playSound(SoundEvents.entity_creeper_primed, 1.0F, 0.5F);
+                    voltorb.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
                 }
                 pokemob.setExplosionState(1);
                 if (PokecubeMod.core.getConfig().explosions) attacker.addOngoingEffect(this);

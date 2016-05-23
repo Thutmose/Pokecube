@@ -89,48 +89,48 @@ public class Mod_Pokecube_Helper
 
     static void initLists()
     {
-        getCaveBlocks().add(Blocks.stone);
-        getCaveBlocks().add(Blocks.dirt);
-        getCaveBlocks().add(Blocks.gravel);
-        getCaveBlocks().add(Blocks.iron_ore);
-        getCaveBlocks().add(Blocks.coal_ore);
-        getCaveBlocks().add(Blocks.diamond_ore);
-        getCaveBlocks().add(Blocks.redstone_ore);
-        getCaveBlocks().add(Blocks.gold_ore);
-        getCaveBlocks().add(Blocks.gravel);
-        getCaveBlocks().add(Blocks.netherrack);
-        getCaveBlocks().add(Blocks.nether_brick);
+        getCaveBlocks().add(Blocks.STONE);
+        getCaveBlocks().add(Blocks.DIRT);
+        getCaveBlocks().add(Blocks.GRAVEL);
+        getCaveBlocks().add(Blocks.IRON_ORE);
+        getCaveBlocks().add(Blocks.COAL_ORE);
+        getCaveBlocks().add(Blocks.DIAMOND_ORE);
+        getCaveBlocks().add(Blocks.REDSTONE_ORE);
+        getCaveBlocks().add(Blocks.GOLD_ORE);
+        getCaveBlocks().add(Blocks.GRAVEL);
+        getCaveBlocks().add(Blocks.NETHERRACK);
+        getCaveBlocks().add(Blocks.NETHER_BRICK);
 
-        getRocks().add(Blocks.stone);
-        getRocks().add(Blocks.iron_ore);
-        getRocks().add(Blocks.coal_ore);
-        getRocks().add(Blocks.diamond_ore);
-        getRocks().add(Blocks.redstone_ore);
-        getRocks().add(Blocks.emerald_ore);
-        getRocks().add(Blocks.lapis_ore);
-        getRocks().add(Blocks.quartz_ore);
-        getRocks().add(Blocks.gold_ore);
-        getRocks().add(Blocks.mossy_cobblestone);
-        getRocks().add(Blocks.cobblestone);
-        getRocks().add(Blocks.netherrack);
+        getRocks().add(Blocks.STONE);
+        getRocks().add(Blocks.IRON_ORE);
+        getRocks().add(Blocks.COAL_ORE);
+        getRocks().add(Blocks.DIAMOND_ORE);
+        getRocks().add(Blocks.REDSTONE_ORE);
+        getRocks().add(Blocks.EMERALD_ORE);
+        getRocks().add(Blocks.LAPIS_ORE);
+        getRocks().add(Blocks.QUARTZ_ORE);
+        getRocks().add(Blocks.GOLD_ORE);
+        getRocks().add(Blocks.MOSSY_COBBLESTONE);
+        getRocks().add(Blocks.COBBLESTONE);
+        getRocks().add(Blocks.NETHERRACK);
 
-        getSurfaceBlocks().add(Blocks.stone);
-        getSurfaceBlocks().add(Blocks.sand);
-        getSurfaceBlocks().add(Blocks.dirt);
-        getSurfaceBlocks().add(Blocks.gravel);
-        getSurfaceBlocks().add(Blocks.netherrack);
-        getSurfaceBlocks().add(Blocks.grass);
-        getSurfaceBlocks().add(Blocks.leaves);
-        getSurfaceBlocks().add(Blocks.hardened_clay);
-        getSurfaceBlocks().add(Blocks.stained_hardened_clay);
-        getSurfaceBlocks().add(Blocks.mycelium);
+        getSurfaceBlocks().add(Blocks.STONE);
+        getSurfaceBlocks().add(Blocks.SAND);
+        getSurfaceBlocks().add(Blocks.DIRT);
+        getSurfaceBlocks().add(Blocks.GRAVEL);
+        getSurfaceBlocks().add(Blocks.NETHERRACK);
+        getSurfaceBlocks().add(Blocks.GRASS);
+        getSurfaceBlocks().add(Blocks.LEAVES);
+        getSurfaceBlocks().add(Blocks.HARDENED_CLAY);
+        getSurfaceBlocks().add(Blocks.STAINED_HARDENED_CLAY);
+        getSurfaceBlocks().add(Blocks.MYCELIUM);
 
-        getTerrain().add(Blocks.dirt);
-        getTerrain().add(Blocks.grass);
-        getTerrain().add(Blocks.stone);
-        getTerrain().add(Blocks.sand);
-        getTerrain().add(Blocks.gravel);
-        getTerrain().add(Blocks.netherrack);
+        getTerrain().add(Blocks.DIRT);
+        getTerrain().add(Blocks.GRASS);
+        getTerrain().add(Blocks.STONE);
+        getTerrain().add(Blocks.SAND);
+        getTerrain().add(Blocks.GRAVEL);
+        getTerrain().add(Blocks.NETHERRACK);
     }
 
     public static void initLoots()
@@ -330,10 +330,10 @@ public class Mod_Pokecube_Helper
             {
                 if (getCaveBlocks().contains(b)) continue;
 
-                if (BlockMatcher.forBlock(Blocks.stone).apply(b.getDefaultState())) getCaveBlocks().add(b);
-                else if (BlockMatcher.forBlock(Blocks.netherrack).apply(b.getDefaultState())) getCaveBlocks().add(b);
-                else if (BlockMatcher.forBlock(Blocks.dirt).apply(b.getDefaultState())) getCaveBlocks().add(b);
-                else if (BlockMatcher.forBlock(Blocks.sand).apply(b.getDefaultState())) getCaveBlocks().add(b);
+                if (BlockMatcher.forBlock(Blocks.STONE).apply(b.getDefaultState())) getCaveBlocks().add(b);
+                else if (BlockMatcher.forBlock(Blocks.NETHERRACK).apply(b.getDefaultState())) getCaveBlocks().add(b);
+                else if (BlockMatcher.forBlock(Blocks.DIRT).apply(b.getDefaultState())) getCaveBlocks().add(b);
+                else if (BlockMatcher.forBlock(Blocks.SAND).apply(b.getDefaultState())) getCaveBlocks().add(b);
             }
             catch (Exception e)
             {
@@ -341,7 +341,7 @@ public class Mod_Pokecube_Helper
         }
         for (Block b : getCaveBlocks())
         {
-            if (b.getMaterial(b.getDefaultState()) == Material.rock && !getRocks().contains(b)) getRocks().add(b);
+            if (b.getMaterial(b.getDefaultState()) == Material.ROCK && !getRocks().contains(b)) getRocks().add(b);
             if (!getSurfaceBlocks().contains(b)) getSurfaceBlocks().add(b);
         }
 

@@ -22,7 +22,7 @@ public class BlockRepel extends Block implements ITileEntityProvider
 {
     public BlockRepel()
     {
-        this(Material.cloth);
+        this(Material.CLOTH);
     }
 
     public BlockRepel(Material material)

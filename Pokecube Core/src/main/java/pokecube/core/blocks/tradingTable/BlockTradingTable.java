@@ -42,7 +42,7 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
 
     public BlockTradingTable()
     {
-        super(Material.cloth);
+        super(Material.CLOTH);
         // this.setBlockBounds(0, 0, 0, 1, 0.75f, 1);
         this.setCreativeTab(PokecubeMod.creativeTabPokecube);
         this.setDefaultState(

@@ -183,8 +183,8 @@ public class EntityTrader extends EntityVillager
         String s = "Trader";
 
         TextComponentString TextComponentString = new TextComponentString(s);
-        TextComponentString.getChatStyle().setChatHoverEvent(this.getHoverEvent());
-        TextComponentString.getChatStyle().setInsertion(this.getUniqueID().toString());
+        TextComponentString.getStyle().setHoverEvent(this.getHoverEvent());
+        TextComponentString.getStyle().setInsertion(this.getUniqueID().toString());
         return TextComponentString;
 
     }
@@ -212,7 +212,7 @@ public class EntityTrader extends EntityVillager
     @Override
     public boolean processInteract(EntityPlayer p, EnumHand hand, ItemStack itemstack)
     {
-        boolean flag = itemstack != null && itemstack.getItem() == Items.spawn_egg;
+        boolean flag = itemstack != null && itemstack.getItem() == Items.SPAWN_EGG;
         System.out.println("Test");
         if (!flag && this.isEntityAlive() && !this.isChild() && !p.isSneaking())
         {

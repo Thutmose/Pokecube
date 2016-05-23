@@ -71,8 +71,8 @@ public class EntityNBTPacket extends AbstractPacket {
 					GameType type = player.interactionManager.getGameType();
 					if (preGameType != type)
 						player.setGameType(type);
-					player.playerNetServerHandler.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
-					player.playerNetServerHandler.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
+					player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
+					player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
 					player.sendPlayerAbilities();
 				}
 				sendMessageToPlayer(player, "Your changes have been saved");

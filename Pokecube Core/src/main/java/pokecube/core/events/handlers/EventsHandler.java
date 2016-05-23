@@ -261,29 +261,9 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void travelToDimension(EntityTravelToDimensionEvent evt)
-    {
-        Entity entity = evt.getEntity();
-        if (entity.worldObj.isRemote) return;
-
-        ArrayList<?> list = new ArrayList<Object>(entity.worldObj.loadedEntityList);
-        for (Object o : list)
-        {
-            if (o instanceof IPokemob)
-            {
-                IPokemob mob = (IPokemob) o;
-                boolean stay = mob.getPokemonAIState(IMoveConstants.STAYING);
-                boolean guard = mob.getPokemonAIState(IMoveConstants.GUARDING);
-                if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay && !guard)
-                    mob.returnToPokecube();
-            }
-        }
-    }
-
-    @SubscribeEvent
     public void BreakBlock(BreakEvent evt)
     {
-        if (evt.getState().getBlock() == Blocks.mob_spawner)
+        if (evt.getState().getBlock() == Blocks.MOB_SPAWNER)
         {
             ItemStack stack = PokecubeItems.getRandomSpawnerDrop();
             if (stack == null) return;
@@ -396,7 +376,7 @@ public class EventsHandler
         if (!(rightClickBlock || leftClickBlock || rightClickAir)) return;
 
         if (leftClickBlock && evt.getEntityPlayer().getHeldItemMainhand() != null
-                && evt.getEntityPlayer().getHeldItemMainhand().getItem() == Items.stick)
+                && evt.getEntityPlayer().getHeldItemMainhand().getItem() == Items.STICK)
         {
             TileEntity te = evt.getWorld().getTileEntity(evt.getPos());
             if (te instanceof TileEntityOwnable)
@@ -715,6 +695,26 @@ public class EventsHandler
         if (evt.phase == Phase.END && evt.side != Side.CLIENT)
         {
             PokecubeCore.instance.spawner.tick(evt.world);
+        }
+    }
+
+    @SubscribeEvent
+    public void travelToDimension(EntityTravelToDimensionEvent evt)
+    {
+        Entity entity = evt.getEntity();
+        if (entity.worldObj.isRemote) return;
+
+        ArrayList<?> list = new ArrayList<Object>(entity.worldObj.loadedEntityList);
+        for (Object o : list)
+        {
+            if (o instanceof IPokemob)
+            {
+                IPokemob mob = (IPokemob) o;
+                boolean stay = mob.getPokemonAIState(IMoveConstants.STAYING);
+                boolean guard = mob.getPokemonAIState(IMoveConstants.GUARDING);
+                if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay && !guard)
+                    mob.returnToPokecube();
+            }
         }
     }
 

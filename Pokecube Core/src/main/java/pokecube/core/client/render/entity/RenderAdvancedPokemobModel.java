@@ -294,7 +294,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             {
                 String n;
                 // Your pokemob has white name, other's has gray name.
-                int colour = renderManager.livingPlayer.equals(((IPokemob) entityliving).getPokemonOwner()) ? 0xFFFFFF
+                int colour = renderManager.renderViewEntity.equals(((IPokemob) entityliving).getPokemonOwner()) ? 0xFFFFFF
                         : 0xAAAAAA;
                 if ((entityliving.hasCustomName()))
                 {

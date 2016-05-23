@@ -94,16 +94,16 @@ public abstract class PokecubeMod
     public static BitSet                        registered                 = new BitSet();
 
     public static CreativeTabs                  creativeTabPokecube        = new CreativeTabPokecube(
-            CreativeTabs.creativeTabArray.length, "Pokecube");
+            CreativeTabs.CREATIVE_TAB_ARRAY.length, "Pokecube");
 
     public static CreativeTabs                  creativeTabPokecubes       = new CreativeTabPokecubes(
-            CreativeTabs.creativeTabArray.length, "Pokecubes");
+            CreativeTabs.CREATIVE_TAB_ARRAY.length, "Pokecubes");
 
     public static CreativeTabs                  creativeTabPokecubeBerries = new CreativeTabPokecubeBerries(
-            CreativeTabs.creativeTabArray.length, "Berries");
+            CreativeTabs.CREATIVE_TAB_ARRAY.length, "Berries");
 
     public static CreativeTabs                  creativeTabPokecubeBlocks  = new CreativeTabPokecubeBlocks(
-            CreativeTabs.creativeTabArray.length, "Pokecube Blocks");
+            CreativeTabs.CREATIVE_TAB_ARRAY.length, "Pokecube Blocks");
 
     @SuppressWarnings("rawtypes")
     public static HashMap                       pokemobEggs                = new HashMap();

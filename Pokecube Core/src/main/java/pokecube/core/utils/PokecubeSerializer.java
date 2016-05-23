@@ -23,7 +23,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -228,7 +228,7 @@ public class PokecubeSerializer
     private HashMap<String, Integer>                             teleportIndex;
     private ArrayList<Vector3>                                   meteors;
 
-    public HashMap<Integer, HashMap<Vector3, ChunkCoordIntPair>> chunks;
+    public HashMap<Integer, HashMap<Vector3, ChunkPos>> chunks;
     private HashMap<Vector3, Ticket>                             tickets;
     private int    lastId = 0;
 
@@ -250,19 +250,19 @@ public class PokecubeSerializer
         teleportOptions = new HashMap<String, ArrayList<TeleDest>>();
         teleportIndex = new HashMap<String, Integer>();
         meteors = new ArrayList<Vector3>();
-        chunks = new HashMap<Integer, HashMap<Vector3, ChunkCoordIntPair>>();
+        chunks = new HashMap<Integer, HashMap<Vector3, ChunkPos>>();
         tickets = new HashMap<Vector3, Ticket>();
         loadData();
     }
 
-    public void addChunks(World world, Vector3 location, ChunkCoordIntPair centre)
+    public void addChunks(World world, Vector3 location, ChunkPos centre)
     {
         Integer dimension = world.provider.getDimension();
 
-        HashMap<Vector3, ChunkCoordIntPair> map = this.chunks.get(dimension);
+        HashMap<Vector3, ChunkPos> map = this.chunks.get(dimension);
         if (map == null)
         {
-            map = new HashMap<Vector3, ChunkCoordIntPair>();
+            map = new HashMap<Vector3, ChunkPos>();
         }
 
         boolean found = false;
@@ -290,7 +290,7 @@ public class PokecubeSerializer
                 for (int i = -1; i < 2; i++)
                     for (int j = -1; j < 2; j++)
                     {
-                        ChunkCoordIntPair chunk = new ChunkCoordIntPair(centre.chunkXPos + i, centre.chunkZPos + j);
+                        ChunkPos chunk = new ChunkPos(centre.chunkXPos + i, centre.chunkZPos + j);
                         ForgeChunkManager.forceChunk(ticket, chunk);
                     }
                 this.tickets.put(location, ticket);
@@ -505,18 +505,18 @@ public class PokecubeSerializer
             for (int i = 0; i < tagListChunks.tagCount(); i++)
             {
                 NBTTagCompound tag = tagListChunks.getCompoundTagAt(i);
-                HashMap<Vector3, ChunkCoordIntPair> map = new HashMap<Vector3, ChunkCoordIntPair>();
+                HashMap<Vector3, ChunkPos> map = new HashMap<Vector3, ChunkPos>();
                 int dimId = tag.getInteger("dimenson");
                 NBTTagList chunksList = (NBTTagList) tag.getTag(CHUNKS);
                 for (int j = 0; j < chunksList.tagCount(); j++)
                 {
                     NBTTagCompound nbt = chunksList.getCompoundTagAt(j);
                     Vector3 v = Vector3.readFromNBT(nbt, CHUNKS);
-                    ChunkCoordIntPair array;
+                    ChunkPos array;
                     int[] c = nbt.getIntArray(CHUNKS);
                     if (c.length > 1)
                     {
-                        array = new ChunkCoordIntPair(c[0], c[1]);
+                        array = new ChunkPos(c[0], c[1]);
                         map.put(v, array);
                     }
                 }
@@ -555,14 +555,14 @@ public class PokecubeSerializer
     public void reloadChunk(List<Ticket> tickets, World world)
     {
         Integer dim = world.provider.getDimension();
-        HashMap<Vector3, ChunkCoordIntPair> map = this.chunks.get(dim);
+        HashMap<Vector3, ChunkPos> map = this.chunks.get(dim);
         Iterator<Ticket> next = tickets.iterator();
         if (map != null)
         {
             List<Vector3> toRemove = new ArrayList<Vector3>();
             for (Vector3 v : map.keySet())
             {
-                ChunkCoordIntPair centre = world.getChunkFromBlockCoords(v.getPos()).getChunkCoordIntPair();
+                ChunkPos centre = world.getChunkFromBlockCoords(v.getPos()).getChunkCoordIntPair();
                 Block block = v.getBlock(world);
                 if (next.hasNext() && block instanceof BlockHealTable)
                 {
@@ -580,7 +580,7 @@ public class PokecubeSerializer
                     for (int i = -1; i < 2; i++)
                         for (int j = -1; j < 2; j++)
                         {
-                            ChunkCoordIntPair chunk = new ChunkCoordIntPair(centre.chunkXPos + i, centre.chunkZPos + j);
+                            ChunkPos chunk = new ChunkPos(centre.chunkXPos + i, centre.chunkZPos + j);
                             ForgeChunkManager.forceChunk(ticket, chunk);
                         }
 
@@ -616,7 +616,7 @@ public class PokecubeSerializer
     {
         Integer dimension = world.provider.getDimension();
 
-        HashMap<Vector3, ChunkCoordIntPair> map = this.chunks.get(dimension);
+        HashMap<Vector3, ChunkPos> map = this.chunks.get(dimension);
         if (map == null) { return; }
 
         for (Vector3 v : map.keySet())

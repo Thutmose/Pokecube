@@ -57,9 +57,9 @@ public class Move_Teleport extends Move_Utility
             toTeleport.worldObj.spawnParticle(EnumParticleTypes.PORTAL, var24, var26, var28, var21, var22, var23);
         }
 
-        toTeleport.worldObj.playSound(par1, par3, par5, SoundEvents.entity_endermen_teleport, SoundCategory.HOSTILE,
+        toTeleport.worldObj.playSound(par1, par3, par5, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.HOSTILE,
                 1.0F, 1.0F, false);
-        toTeleport.playSound(SoundEvents.entity_endermen_teleport, 1.0F, 1.0F);
+        toTeleport.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
         return true;
 
     }

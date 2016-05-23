@@ -31,7 +31,7 @@ public class ContainerPokemob extends Container
 			@Override
 			public boolean isItemValid(ItemStack stack)
 			{
-				return super.isItemValid(stack) && stack.getItem() == Items.saddle && !this.getHasStack();
+				return super.isItemValid(stack) && stack.getItem() == Items.SADDLE && !this.getHasStack();
 			}
 		});
 		this.addSlotToContainer(new Slot(pokeInv, 1, 8, 36)

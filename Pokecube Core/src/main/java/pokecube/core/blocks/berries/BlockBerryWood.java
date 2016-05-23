@@ -100,7 +100,7 @@ public class BlockBerryWood extends Block implements IMetaBlock
 
 	public BlockBerryWood(int par1, String[] names)
 	{
-		super(Material.wood);
+		super(Material.WOOD);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, EnumType.PECHA));
 		woodType = names;
 		setCreativeTab(PokecubeMod.creativeTabPokecubeBerries);

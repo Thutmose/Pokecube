@@ -188,7 +188,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
         boolean transforms = false;
         boolean otherTransforms = false;
-        String movesString = dataWatcher.get(MOVESDW);
+        String movesString = dataManager.get(MOVESDW);
         String[] moves = new String[5];
 
         if (movesString != null && movesString.length() > 2)

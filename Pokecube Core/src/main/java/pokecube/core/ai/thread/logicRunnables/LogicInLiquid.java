@@ -37,8 +37,8 @@ public class LogicInLiquid extends LogicBase
             Matrix3 box = boxes.get(s);
             Vector3 offset = offsets.get(s);
             if (offset == null) offset = Vector3.empty;
-            lava = lava || box.isInMaterial(world, here, offset, Material.lava);
-            water = water || box.isInMaterial(world, here, offset, Material.water);
+            lava = lava || box.isInMaterial(world, here, offset, Material.LAVA);
+            water = water || box.isInMaterial(world, here, offset, Material.WATER);
         }
         setPokemobAIState(INLAVA, lava);
         setPokemobAIState(INWATER, water);

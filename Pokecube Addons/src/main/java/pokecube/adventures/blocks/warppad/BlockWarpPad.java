@@ -18,7 +18,7 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
 
     public BlockWarpPad()
     {
-        super(Material.rock);
+        super(Material.ROCK);
         this.setHardness(10);
         this.setCreativeTab(PokecubeMod.creativeTabPokecube);
     }
@@ -47,7 +47,7 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
     @Override
     /** Called whenever an entity is walking on top of this block. Args: world,
      * x, y, z, entity */
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity entity)
+    public void onEntityWalk(World world, BlockPos pos, Entity entity)
     {
         Vector3 loc = Vector3.getNewVector().set(pos);
         TileEntityWarpPad pad = (TileEntityWarpPad) loc.getTileEntity(world);

@@ -114,7 +114,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void addHappiness(int toAdd)
     {
         this.bonusHappiness += toAdd;
-        this.dataWatcher.set(HAPPYDW, Integer.valueOf(bonusHappiness));
+        this.dataManager.set(HAPPYDW, Integer.valueOf(bonusHappiness));
     }
 
     @Override
@@ -310,7 +310,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public int[] getBaseStats()
     {
         int[] stats = new int[6];
-        String[] sta = dataWatcher.get(STATSDW).split(",");
+        String[] sta = dataManager.get(STATSDW).split(",");
         for (int i = 0; i < 6; i++)
         {
             stats[i] = Integer.parseInt(sta[i].trim());
@@ -338,7 +338,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public byte[] getEVs()
     {
-        int[] ints = new int[] { dataWatcher.get(EVS1DW), dataWatcher.get(EVS2DV) };
+        int[] ints = new int[] { dataManager.get(EVS1DW), dataManager.get(EVS2DV) };
         byte[] evs = PokecubeSerializer.intArrayAsByteArray(ints);
         return evs;
     }
@@ -346,7 +346,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public int getExp()
     {
-        return dataWatcher.get(EXPDW);
+        return dataManager.get(EXPDW);
     }
 
     @Override
@@ -358,7 +358,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public int getHappiness()
     {
-        bonusHappiness = dataWatcher.get(HAPPYDW);
+        bonusHappiness = dataManager.get(HAPPYDW);
         bonusHappiness = Math.max(bonusHappiness, -getPokedexEntry().getHappiness());
         bonusHappiness = Math.min(bonusHappiness, 255 - getPokedexEntry().getHappiness());
         return bonusHappiness + getPokedexEntry().getHappiness();
@@ -379,7 +379,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public byte[] getModifiers()
     {
-        return PokecubeSerializer.intAsModifierArray(dataWatcher.get(STATMODDW));
+        return PokecubeSerializer.intAsModifierArray(dataManager.get(STATMODDW));
     }
 
     @Override
@@ -440,7 +440,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public String getPokemonNickname()
     {
-        return dataWatcher.get(NICKNAMEDW);
+        return dataManager.get(NICKNAMEDW);
     }
 
     @Override
@@ -725,13 +725,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public void setToHiddenAbility()
-    {
-        this.abilityIndex = 2;
-        this.setAbility(getPokedexEntry().getAbility(2, this));
-    }
-
-    @Override
     public void setAncient(boolean ancient)
     {
         isAncient = ancient;
@@ -741,8 +734,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setEVs(byte[] evs)
     {
         int[] ints = PokecubeSerializer.byteArrayAsIntArray(evs);
-        dataWatcher.set(EVS1DW, ints[0]);
-        dataWatcher.set(EVS2DV, ints[1]);
+        dataManager.set(EVS1DW, ints[0]);
+        dataManager.set(EVS2DV, ints[1]);
     }
 
     @Override
@@ -750,12 +743,12 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         if (this.isDead) return;
 
-        int old = dataWatcher.get(EXPDW);
+        int old = dataManager.get(EXPDW);
         oldLevel = this.getLevel();
         int lvl100xp = Tools.maxXPs[getExperienceMode()];
         exp = Math.min(lvl100xp, exp);
 
-        dataWatcher.set(EXPDW, exp);
+        dataManager.set(EXPDW, exp);
         int newLvl = Tools.xpToLevel(getExperienceMode(), exp);
         int oldLvl = Tools.xpToLevel(getExperienceMode(), old);
 
@@ -789,30 +782,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         this.ivs = ivs;
     }
 
-    /** Handles health update.
-     * 
-     * @param level */
-    private void updateHealth(int level)
-    {
-        float old = getMaxHealth();
-        float maxHealth = Tools.getHP(getPokedexEntry().getStatHP(), getIVs()[0], getEVs()[0], level);
-        float health = getHealth();
-
-        if (maxHealth > old)
-        {
-            float damage = old - health;
-            health = maxHealth - damage;
-
-            if (health > maxHealth)
-            {
-                health = maxHealth;
-            }
-        }
-
-        setMaxHealth(maxHealth);
-        setHealth(health);
-    }
-
     private void setMaxHealth(float maxHealth)
     {
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(maxHealth);
@@ -821,7 +790,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void setModifiers(byte[] modifiers)
     {
-        dataWatcher.set(STATMODDW, PokecubeSerializer.modifierArrayAsInt(modifiers));
+        dataManager.set(STATMODDW, PokecubeSerializer.modifierArrayAsInt(modifiers));
     }
 
     @Override
@@ -864,11 +833,11 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             if (getPokedexEntry().getTranslatedName().equals(nickname))
             {
-                dataWatcher.set(NICKNAMEDW, "");
+                dataManager.set(NICKNAMEDW, "");
             }
             else
             {
-                dataWatcher.set(NICKNAMEDW, nickname);
+                dataManager.set(NICKNAMEDW, nickname);
             }
         }
     }
@@ -955,7 +924,14 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setStats(int[] stats)
     {
         String sta = stats[0] + "," + stats[1] + "," + stats[2] + "," + stats[3] + "," + stats[4] + "," + stats[5];
-        dataWatcher.set(STATSDW, sta);
+        dataManager.set(STATSDW, sta);
+    }
+
+    @Override
+    public void setToHiddenAbility()
+    {
+        this.abilityIndex = 2;
+        this.setAbility(getPokedexEntry().getAbility(2, this));
     }
 
     @Override
@@ -968,6 +944,30 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setType2(PokeType type2)
     {
         this.type2 = type2;
+    }
+
+    /** Handles health update.
+     * 
+     * @param level */
+    private void updateHealth(int level)
+    {
+        float old = getMaxHealth();
+        float maxHealth = Tools.getHP(getPokedexEntry().getStatHP(), getIVs()[0], getEVs()[0], level);
+        float health = getHealth();
+
+        if (maxHealth > old)
+        {
+            float damage = old - health;
+            health = maxHealth - damage;
+
+            if (health > maxHealth)
+            {
+                health = maxHealth;
+            }
+        }
+
+        setMaxHealth(maxHealth);
+        setHealth(health);
     }
 
     @Override

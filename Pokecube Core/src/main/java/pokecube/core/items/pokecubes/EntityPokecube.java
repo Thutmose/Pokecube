@@ -270,7 +270,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     public ItemStack getEntityItem()
     {
         ItemStack itemstack = (ItemStack) ((Optional<?>) this.getDataManager().get(ITEM)).orNull();
-        return itemstack == null ? new ItemStack(Blocks.stone) : itemstack;
+        return itemstack == null ? new ItemStack(Blocks.STONE) : itemstack;
     }
 
     public Entity getReleased()
@@ -292,9 +292,9 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 || entityplayer.getUniqueID().toString() == PokecubeManager.getOwner(getEntityItem()))
         {
             if (shootingEntity == entityplayer
-                    && entityplayer.inventory.addItemStackToInventory(new ItemStack(Items.arrow, 1)))
+                    && entityplayer.inventory.addItemStackToInventory(new ItemStack(Items.ARROW, 1)))
             {
-                playSound(SoundEvents.entity_egg_throw, 0.2F,
+                playSound(SoundEvents.ENTITY_EGG_THROW, 0.2F,
                         (((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F));
                 entityplayer.onItemPickup(this, 1);
                 setDead();
@@ -419,7 +419,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         IBlockState state = worldObj.getBlockState(pos);
 
         Block block = state.getBlock();
-        if (state.getMaterial() != Material.air)
+        if (state.getMaterial() != Material.AIR)
         {
             AxisAlignedBB axisalignedbb = block.getCollisionBoundingBox(state, worldObj, pos);
 
@@ -504,7 +504,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 if (pokemob != null) sendOut();
                 else
                 {
-                    EntityItem entityitem = player.dropPlayerItemWithRandomChoice(getEntityItem(), false);
+                    EntityItem entityitem = player.dropItem(getEntityItem(), false);
                     if (entityitem != null)
                     {
                         entityitem.setNoPickupDelay();

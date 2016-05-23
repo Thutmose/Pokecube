@@ -68,7 +68,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
 
     /** Overriden in a sign to provide the text. */
     @Override
-    public Packet<?> getDescriptionPacket()
+    public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         if (worldObj.isRemote) return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
@@ -237,7 +237,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
         NBTTagList itemList = new NBTTagList();
@@ -256,5 +256,6 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         }
 
         tagCompound.setTag("Inventory", itemList);
+        return tagCompound;
     }
 }

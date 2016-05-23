@@ -159,7 +159,7 @@ public class TrainerSpawnHandler
             TypeTrainer ttype;
             Material m = v.getBlockMaterial(w);
 
-            if (m == Material.air && v.offset(EnumFacing.DOWN).getBlockMaterial(w) == Material.air)
+            if (m == Material.AIR && v.offset(EnumFacing.DOWN).getBlockMaterial(w) == Material.AIR)
             {
                 v = v.getTopBlockPos(w).offsetBy(EnumFacing.UP);
             }

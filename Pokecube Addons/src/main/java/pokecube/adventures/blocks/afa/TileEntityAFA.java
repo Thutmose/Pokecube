@@ -13,7 +13,6 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -170,7 +169,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
 
     /** Overriden in a sign to provide the text. */
     @Override
-    public Packet<?> getDescriptionPacket()
+    public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
@@ -459,15 +458,15 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
                         if (energy < needed)
                         {
                             worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(),
-                                    SoundEvents.block_note_basedrum, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                                    SoundEvents.BLOCK_NOTE_BASEDRUM, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                             return;
                         }
                     }
                     evt.pokemob.setShiny(true);
                     worldObj.playSound(evt.entity.posX, evt.entity.posY, evt.entity.posZ,
-                            SoundEvents.entity_endermen_teleport, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                            SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                     worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(),
-                            SoundEvents.entity_endermen_teleport, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                            SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                 }
             }
         }
@@ -519,7 +518,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
         NBTTagList itemList = new NBTTagList();
@@ -540,6 +539,6 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         nbt.setTag("Inventory", itemList);
         nbt.setInteger("distance", distance);
         nbt.setBoolean("noEnergy", noEnergy);
-        storage.writeToNBT(nbt);
+        return storage.writeToNBT(nbt);
     }
 }

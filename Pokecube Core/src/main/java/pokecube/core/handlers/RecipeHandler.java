@@ -49,78 +49,78 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         Item premiercube = getEmptyCube(12);
         Item snagcube = getEmptyCube(99);
 
-        GameRegistry.addShapelessRecipe(new ItemStack(Items.pumpkin_pie),
-                new Object[] { Blocks.pumpkin, Items.sugar, luckyEgg });
-        GameRegistry.addRecipe(new ItemStack(Items.cake, 1), new Object[] { "AAA", "BEB", "CCC", 'A', Items.milk_bucket,
-                'B', Items.sugar, 'C', Items.wheat, 'E', luckyEgg });
+        GameRegistry.addShapelessRecipe(new ItemStack(Items.PUMPKIN_PIE),
+                new Object[] { Blocks.PUMPKIN, Items.SUGAR, luckyEgg });
+        GameRegistry.addRecipe(new ItemStack(Items.CAKE, 1), new Object[] { "AAA", "BEB", "CCC", 'A', Items.MILK_BUCKET,
+                'B', Items.SUGAR, 'C', Items.WHEAT, 'E', luckyEgg });
 
         if (PokecubeMod.core.getConfig().tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SMS", 'R',
-                Items.redstone, 'S', Blocks.stone, 'M', Items.milk_bucket, 'I', Items.iron_ingot });
+                Items.REDSTONE, 'S', Blocks.STONE, 'M', Items.MILK_BUCKET, 'I', Items.IRON_INGOT });
         if (PokecubeMod.core.getConfig().tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SES", 'R',
-                Items.redstone, 'S', Blocks.stone, 'E', luckyEgg, 'I', Items.iron_ingot });
+                Items.REDSTONE, 'S', Blocks.STONE, 'E', luckyEgg, 'I', Items.IRON_INGOT });
         GameRegistry.addRecipe(new ItemStack(pokedex),
-                new Object[] { "PRR", "RBR", "RRR", 'P', pokecube, 'R', Items.redstone, 'B', Items.book });
+                new Object[] { "PRR", "RBR", "RRR", 'P', pokecube, 'R', Items.REDSTONE, 'B', Items.BOOK });
 
-        GameRegistry.addRecipe(new ItemStack(Items.saddle),
-                new Object[] { " L ", "L L", "I I", 'L', Items.leather, 'I', Items.iron_ingot });
+        GameRegistry.addRecipe(new ItemStack(Items.SADDLE),
+                new Object[] { " L ", "L L", "I I", 'L', Items.LEATHER, 'I', Items.IRON_INGOT });
 
-        ItemStack charcoal = new ItemStack(Items.coal, 1, 1);
-        ItemStack red = new ItemStack(Items.dye, 1, 1);
-        ItemStack green = new ItemStack(Items.dye, 1, 2);
-        ItemStack lapis = new ItemStack(Items.dye, 1, 4);
-        ItemStack sand = new ItemStack(Blocks.sand, 1, 1);
+        ItemStack charcoal = new ItemStack(Items.COAL, 1, 1);
+        ItemStack red = new ItemStack(Items.DYE, 1, 1);
+        ItemStack green = new ItemStack(Items.DYE, 1, 2);
+        ItemStack lapis = new ItemStack(Items.DYE, 1, 4);
+        ItemStack sand = new ItemStack(Blocks.SAND, 1, 1);
 
-        GameRegistry.addRecipe(new ItemStack(pokecube, 6), new Object[] { "RRR", "CBC", "III", 'R', Items.redstone, 'C',
-                Items.coal, 'B', Blocks.stone_button, 'I', Items.iron_ingot });
-        GameRegistry.addRecipe(new ItemStack(pokecube, 6), new Object[] { "RRR", "CBC", "III", 'R', Items.redstone, 'C',
-                charcoal, 'B', Blocks.stone_button, 'I', Items.iron_ingot });
-        GameRegistry.addRecipe(new ItemStack(greatcube, 4), new Object[] { "RAR", "CBC", "III", 'R', Items.redstone,
-                'C', Items.coal, 'A', lapis, 'B', Blocks.stone_button, 'I', Items.iron_ingot });
-        GameRegistry.addRecipe(new ItemStack(greatcube, 4), new Object[] { "RAR", "CBC", "III", 'R', Items.redstone,
-                'C', charcoal, 'A', lapis, 'B', Blocks.stone_button, 'I', Items.iron_ingot });
-        GameRegistry.addRecipe(new ItemStack(ultracube, 3), new Object[] { "GFG", "CBC", "III", 'F', Items.flint, 'C',
-                Items.coal, 'G', Items.gold_ingot, 'B', Blocks.stone_button, 'I', Items.iron_ingot });
-        GameRegistry.addRecipe(new ItemStack(ultracube, 3), new Object[] { "GFG", "CBC", "III", 'F', Items.flint, 'C',
-                charcoal, 'G', Items.gold_ingot, 'B', Blocks.stone_button, 'I', Items.iron_ingot });
-        GameRegistry.addRecipe(new ItemStack(snagcube, 3), new Object[] { "GFG", "CBC", "III", 'F', Items.iron_ingot,
-                'C', Items.ghast_tear, 'G', Items.iron_ingot, 'B', Blocks.stone_button, 'I', Items.iron_ingot });
+        GameRegistry.addRecipe(new ItemStack(pokecube, 6), new Object[] { "RRR", "CBC", "III", 'R', Items.REDSTONE, 'C',
+                Items.COAL, 'B', Blocks.STONE_BUTTON, 'I', Items.IRON_INGOT });
+        GameRegistry.addRecipe(new ItemStack(pokecube, 6), new Object[] { "RRR", "CBC", "III", 'R', Items.REDSTONE, 'C',
+                charcoal, 'B', Blocks.STONE_BUTTON, 'I', Items.IRON_INGOT });
+        GameRegistry.addRecipe(new ItemStack(greatcube, 4), new Object[] { "RAR", "CBC", "III", 'R', Items.REDSTONE,
+                'C', Items.COAL, 'A', lapis, 'B', Blocks.STONE_BUTTON, 'I', Items.IRON_INGOT });
+        GameRegistry.addRecipe(new ItemStack(greatcube, 4), new Object[] { "RAR", "CBC", "III", 'R', Items.REDSTONE,
+                'C', charcoal, 'A', lapis, 'B', Blocks.STONE_BUTTON, 'I', Items.IRON_INGOT });
+        GameRegistry.addRecipe(new ItemStack(ultracube, 3), new Object[] { "GFG", "CBC", "III", 'F', Items.FLINT, 'C',
+                Items.COAL, 'G', Items.GOLD_INGOT, 'B', Blocks.STONE_BUTTON, 'I', Items.IRON_INGOT });
+        GameRegistry.addRecipe(new ItemStack(ultracube, 3), new Object[] { "GFG", "CBC", "III", 'F', Items.FLINT, 'C',
+                charcoal, 'G', Items.GOLD_INGOT, 'B', Blocks.STONE_BUTTON, 'I', Items.IRON_INGOT });
+        GameRegistry.addRecipe(new ItemStack(snagcube, 3), new Object[] { "GFG", "CBC", "III", 'F', Items.IRON_INGOT,
+                'C', Items.GHAST_TEAR, 'G', Items.IRON_INGOT, 'B', Blocks.STONE_BUTTON, 'I', Items.IRON_INGOT });
         GameRegistry.addRecipe(new ItemStack(duskcube, 1),
-                new Object[] { "CDC", "DPD", "CDC", 'C', Items.coal, 'D', green, 'P', premiercube });
+                new Object[] { "CDC", "DPD", "CDC", 'C', Items.COAL, 'D', green, 'P', premiercube });
         GameRegistry.addRecipe(new ItemStack(quickcube, 1),
-                new Object[] { "GLG", "LPL", "GLG", 'G', Items.gold_ingot, 'L', lapis, 'P', premiercube });
+                new Object[] { "GLG", "LPL", "GLG", 'G', Items.GOLD_INGOT, 'L', lapis, 'P', premiercube });
         GameRegistry.addRecipe(new ItemStack(timercube, 1),
-                new Object[] { "CRC", "CPC", "QQQ", 'C', Items.coal, 'R', sand, 'P', premiercube, 'Q', Items.quartz });
+                new Object[] { "CRC", "CPC", "QQQ", 'C', Items.COAL, 'R', sand, 'P', premiercube, 'Q', Items.QUARTZ });
         GameRegistry.addRecipe(new ItemStack(netcube, 1),
-                new Object[] { "SSS", "SPS", "SSS", 'S', Items.string, 'P', premiercube });
+                new Object[] { "SSS", "SPS", "SSS", 'S', Items.STRING, 'P', premiercube });
         GameRegistry.addRecipe(new ItemStack(nestcube, 1),
-                new Object[] { "TGT", "GPG", "TTT", 'T', Blocks.tallgrass, 'P', premiercube, 'G', Items.gold_ingot });
+                new Object[] { "TGT", "GPG", "TTT", 'T', Blocks.TALLGRASS, 'P', premiercube, 'G', Items.GOLD_INGOT });
         GameRegistry.addRecipe(new ItemStack(divecube, 1),
-                new Object[] { "BBB", "LPL", "BBB", 'B', Items.water_bucket, 'P', premiercube, 'L', lapis });
+                new Object[] { "BBB", "LPL", "BBB", 'B', Items.WATER_BUCKET, 'P', premiercube, 'L', lapis });
         GameRegistry.addRecipe(new ItemStack(nestcube, 1),
-                new Object[] { "TGT", "GPG", "TTT", 'T', Blocks.tallgrass, 'P', premiercube, 'G', Items.gold_ingot });
-        GameRegistry.addRecipe(new ItemStack(repeatcube, 1), new Object[] { "RRR", "CPC", "III", 'R', Items.redstone,
-                'P', premiercube, 'C', Items.coal, 'I', Items.iron_ingot });
+                new Object[] { "TGT", "GPG", "TTT", 'T', Blocks.TALLGRASS, 'P', premiercube, 'G', Items.GOLD_INGOT });
+        GameRegistry.addRecipe(new ItemStack(repeatcube, 1), new Object[] { "RRR", "CPC", "III", 'R', Items.REDSTONE,
+                'P', premiercube, 'C', Items.COAL, 'I', Items.IRON_INGOT });
         GameRegistry.addRecipe(new ItemStack(premiercube, 2),
-                new Object[] { "III", "CBC", "III", 'B', Blocks.stone_button, 'C', Items.coal, 'I', Items.iron_ingot });
-        GameRegistry.addRecipe(new ItemStack(pokeseal, 2), new Object[] { "GGG", "RBR", "LLL", 'G', Blocks.glass, 'R',
-                red, 'B', Blocks.stone_button, 'L', lapis });
+                new Object[] { "III", "CBC", "III", 'B', Blocks.STONE_BUTTON, 'C', Items.COAL, 'I', Items.IRON_INGOT });
+        GameRegistry.addRecipe(new ItemStack(pokeseal, 2), new Object[] { "GGG", "RBR", "LLL", 'G', Blocks.GLASS, 'R',
+                red, 'B', Blocks.STONE_BUTTON, 'L', lapis });
 
         GameRegistry.addRecipe(new ItemStack(waterstone),
-                new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.stone, 'W', Items.water_bucket });
+                new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.STONE, 'W', Items.WATER_BUCKET });
         GameRegistry.addRecipe(new ItemStack(firestone),
-                new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.stone, 'W', Blocks.torch });
+                new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.STONE, 'W', Blocks.TORCH });
         GameRegistry.addRecipe(new ItemStack(leafstone),
-                new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.stone, 'W', Blocks.sapling });
+                new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.STONE, 'W', Blocks.SAPLING });
         GameRegistry.addRecipe(new ItemStack(thunderstone),
-                new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.stone, 'W', Items.redstone });
+                new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.STONE, 'W', Items.REDSTONE });
         GameRegistry.addRecipe(new ItemStack(everstone),
-                new Object[] { "SSS", "SOS", "SSS", 'S', Blocks.stone, 'O', Blocks.obsidian });
+                new Object[] { "SSS", "SOS", "SSS", 'S', Blocks.STONE, 'O', Blocks.OBSIDIAN });
         GameRegistry.addRecipe(new ItemStack(duskstone),
-                new Object[] { "SSS", "STS", "SSS", 'S', Blocks.soul_sand, 'T', Blocks.torch });
+                new Object[] { "SSS", "STS", "SSS", 'S', Blocks.SOUL_SAND, 'T', Blocks.TORCH });
         GameRegistry.addRecipe(new ItemStack(dawnstone),
-                new Object[] { "QQQ", "QTQ", "QQQ", 'Q', new ItemStack(Items.dye, 1, 4), 'T', Blocks.torch });
+                new Object[] { "QQQ", "QTQ", "QQQ", 'Q', new ItemStack(Items.DYE, 1, 4), 'T', Blocks.TORCH });
         GameRegistry.addRecipe(new ItemStack(shinystone),
-                new Object[] { "QQQ", "QGQ", "QQQ", 'Q', Items.quartz, 'G', Items.glowstone_dust });
+                new Object[] { "QQQ", "QGQ", "QQQ", 'Q', Items.QUARTZ, 'G', Items.GLOWSTONE_DUST });
 
         GameRegistry.addRecipe(new ItemStack(repelBlock), new Object[] { "JR", "RJ", 'J',
                 BerryManager.getBerryItem("jaboca"), 'R', BerryManager.getBerryItem("rowap"), });
@@ -139,18 +139,18 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         
 
         // TOP
-        GameRegistry.addRecipe(getStack("pctop"), new Object[] { "MMM", "SRS", "SIS", 'R', Items.redstone, 'S',
-                Blocks.iron_block, 'M', Blocks.glass, 'I', Items.iron_ingot });
+        GameRegistry.addRecipe(getStack("pctop"), new Object[] { "MMM", "SRS", "SIS", 'R', Items.REDSTONE, 'S',
+                Blocks.IRON_BLOCK, 'M', Blocks.GLASS, 'I', Items.IRON_INGOT });
         // BASE
-        GameRegistry.addRecipe(getStack("pcbase"), new Object[] { "III", "SRS", "SSS", 'R', Items.redstone, 'S',
-                Blocks.iron_block, 'I', Items.iron_ingot });
+        GameRegistry.addRecipe(getStack("pcbase"), new Object[] { "III", "SRS", "SSS", 'R', Items.REDSTONE, 'S',
+                Blocks.IRON_BLOCK, 'I', Items.IRON_INGOT });
 
         // Trading Table
-        GameRegistry.addRecipe(getStack("tradingtable"), new Object[] { "III", "SRS", "SMS", 'R', Items.redstone, 'S',
-                Blocks.stone, 'M', Items.emerald, 'I', Items.iron_ingot });
+        GameRegistry.addRecipe(getStack("tradingtable"), new Object[] { "III", "SRS", "SMS", 'R', Items.REDSTONE, 'S',
+                Blocks.STONE, 'M', Items.EMERALD, 'I', Items.IRON_INGOT });
 
-        PokecubeItems.addSpecificItemStack("dubiousdisc", new ItemStack(Items.record_cat));
-        PokecubeItems.addSpecificItemStack("upgrade", new ItemStack(Items.record_11));
+        PokecubeItems.addSpecificItemStack("dubiousdisc", new ItemStack(Items.RECORD_CAT));
+        PokecubeItems.addSpecificItemStack("upgrade", new ItemStack(Items.RECORD_11));
 
         BrewingRecipeRegistry.addRecipe(new RecipeBrewBerries());
     }

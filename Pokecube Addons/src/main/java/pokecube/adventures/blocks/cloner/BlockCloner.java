@@ -23,7 +23,7 @@ public class BlockCloner extends Block implements ITileEntityProvider
 
     public BlockCloner()
     {
-        super(Material.iron);
+        super(Material.IRON);
         this.setLightOpacity(0);
         this.setHardness(10);
         this.setResistance(10);

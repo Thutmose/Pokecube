@@ -38,7 +38,7 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
 
     public BlockPokecubeTable()
     {
-        super(Material.wood);
+        super(Material.WOOD);
         this.setLightOpacity(0);
         this.setHardness(100);
         this.setResistance(100);

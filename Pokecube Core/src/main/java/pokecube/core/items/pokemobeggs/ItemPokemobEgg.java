@@ -338,7 +338,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         }
 
         Vector3 location = Vector3.getNewVector().set(mob);
-        EntityPlayer player = ((Entity) mob).worldObj.func_184137_a(location.x, location.y, location.z, 2, false);
+        EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 2, false);
         EntityLivingBase owner = player;
         AxisAlignedBB box = location.getAABB().expand(4, 4, 4);
         if (owner == null)

@@ -12,7 +12,7 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -63,15 +63,15 @@ public class PokemobAIHurt extends EntityAIBase
     private boolean canEasilyReach(EntityLivingBase p_75295_1_)
     {
         this.targetSearchDelay = 10 + this.taskOwner.getRNG().nextInt(5);
-        PathEntity pathentity = this.taskOwner.getNavigator().getPathToEntityLiving(p_75295_1_);
+        Path path = this.taskOwner.getNavigator().getPathToEntityLiving(p_75295_1_);
 
-        if (pathentity == null)
+        if (path == null)
         {
             return false;
         }
         else
         {
-            PathPoint pathpoint = pathentity.getFinalPathPoint();
+            PathPoint pathpoint = path.getFinalPathPoint();
 
             if (pathpoint == null)
             {

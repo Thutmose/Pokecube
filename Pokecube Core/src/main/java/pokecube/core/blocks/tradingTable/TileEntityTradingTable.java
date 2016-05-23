@@ -293,7 +293,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
     /** Overriden in a sign to provide the text. */
     @Override
-    public Packet<?> getDescriptionPacket()
+    public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
@@ -731,7 +731,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             return true;
         }
 
-        if (!(a.getItem() == Items.emerald || b.getItem() == Items.emerald)) return false;
+        if (!(a.getItem() == Items.EMERALD || b.getItem() == Items.EMERALD)) return false;
 
         int index = PokecubeManager.isFilled(a) ? 0 : 1;
 
@@ -750,7 +750,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
         NBTTagList itemList = new NBTTagList();
@@ -773,5 +773,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         }
         tagCompound.setBoolean("trade", trade);
         tagCompound.setTag("Inventory", itemList);
+        return tagCompound;
     }
 }

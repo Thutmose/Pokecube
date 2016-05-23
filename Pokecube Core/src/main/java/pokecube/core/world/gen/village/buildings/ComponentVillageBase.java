@@ -87,7 +87,7 @@ public abstract class ComponentVillageBase extends House1
         int l1 = this.getZWithOffset(par4, par6);
 
         IBlockState oldState = par2.getStateFromMeta(par6);
-        IBlockState newState = super.func_175847_a(oldState);
+        IBlockState newState = super.getBiomeSpecificBlockState(oldState);
 
         BlockPos pos = new BlockPos(j1, k1, l1);
         IBlockState state = par1World.getBlockState(pos);
@@ -115,7 +115,7 @@ public abstract class ComponentVillageBase extends House1
         IBlockState state1 = placeBlock.getDefaultState();
         IBlockState state2 = replaceBlock.getDefaultState();
 
-        super.func_175805_a(world, structBB, rnd, chance, minX, minY, minZ, maxX, maxY, maxZ, state1, state2, false);
+        super.fillWithBlocksRandomly(world, structBB, rnd, chance, minX, minY, minZ, maxX, maxY, maxZ, state1, state2, false);
 
     }
 
@@ -124,7 +124,7 @@ public abstract class ComponentVillageBase extends House1
             boolean alwaysReplace)
     {
         IBlockState oldState = placeBlockID.getStateFromMeta(placeBlockMeta);
-        IBlockState newState = super.func_175847_a(oldState);
+        IBlockState newState = super.getBiomeSpecificBlockState(oldState);
 
         super.fillWithBlocks(par1World, par2StructureBoundingBox, minX, minY, minZ, maxX, maxY, maxZ, newState,
                 newState, alwaysReplace);
@@ -221,7 +221,7 @@ public abstract class ComponentVillageBase extends House1
 
     protected void placeAir(World world, int posX, int posY, int posZ, StructureBoundingBox structBB)
     {
-        placeBlockAtCurrentPosition(world, Blocks.air, 0, posX, posY, posZ, structBB);
+        placeBlockAtCurrentPosition(world, Blocks.AIR, 0, posX, posY, posZ, structBB);
     }
 
     protected void placeBlock(World world, Block block, int metadata, int posX, int posY, int posZ,
@@ -240,7 +240,7 @@ public abstract class ComponentVillageBase extends House1
         int l1 = this.getZWithOffset(par4, par6);
 
         IBlockState oldState = par2.getStateFromMeta(par3);
-        IBlockState newState = super.func_175847_a(oldState);
+        IBlockState newState = super.getBiomeSpecificBlockState(oldState);
 
         if (par7StructureBoundingBox.isVecInside(new Vec3i(j1, k1, l1)))
         {
@@ -252,8 +252,8 @@ public abstract class ComponentVillageBase extends House1
     /** Warning: Sets the position *below* this one to air! */
     protected void placeTorch(World world, StructureBoundingBox structBB, int posX, int posY, int posZ, EnumFacing dir)
     {
-        placeBlock(world, Blocks.stone, 0, posX, posY - 1, posZ, structBB);
-        placeBlock(world, Blocks.torch, dir.ordinal(), posX, posY, posZ, structBB);
+        placeBlock(world, Blocks.STONE, 0, posX, posY - 1, posZ, structBB);
+        placeBlock(world, Blocks.TORCH, dir.ordinal(), posX, posY, posZ, structBB);
         placeAir(world, posX, posY - 1, posZ, structBB);
     }
 

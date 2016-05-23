@@ -31,7 +31,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import pokecube.core.PokecubeCore;
@@ -126,12 +126,12 @@ public class GuiPokedex extends GuiScreen
             pokedexEntry = Pokedex.getInstance().getFirstEntry();
         }
 
-        for (ResourceLocation key : BiomeGenBase.biomeRegistry.getKeys())
+        for (ResourceLocation key : Biome.REGISTRY.getKeys())
         {
-            BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(key);
+            Biome b = Biome.REGISTRY.getObject(key);
             if (b != null)
             {
-                int id = BiomeGenBase.getIdForBiome(b);
+                int id = Biome.getIdForBiome(b);
                 biomes.add(id);
             }
         }

@@ -12,7 +12,7 @@ import net.minecraft.village.MerchantRecipeList;
 public abstract class VillageHandlerBase
 {
 	// Common trade goods
-	protected ItemStack emerald = new ItemStack(Items.emerald, 1);
+	protected ItemStack emerald = new ItemStack(Items.EMERALD, 1);
 	
 	// Bunch of helper methods
 	protected void addRandomTrade(MerchantRecipeList list, ItemStack src, ItemStack dst, double chance, Random rnd)

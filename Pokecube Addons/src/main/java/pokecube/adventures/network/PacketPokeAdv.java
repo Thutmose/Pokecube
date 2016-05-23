@@ -110,7 +110,7 @@ public class PacketPokeAdv
                                 v.y + rand.nextDouble() * 2.0D, v.z + 0.5, rand.nextGaussian(), 0.0D,
                                 rand.nextGaussian());
                     }
-                    player.worldObj.playSound(v.x, v.y, v.z, SoundEvents.entity_endermen_teleport, SoundCategory.BLOCKS,
+                    player.worldObj.playSound(v.x, v.y, v.z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS,
                             1, 1, false);
                 }
                 if (channel == MESSAGEGUIAFA && player.openContainer instanceof ContainerAFA)

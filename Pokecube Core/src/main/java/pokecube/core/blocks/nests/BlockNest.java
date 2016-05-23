@@ -20,7 +20,7 @@ public class BlockNest extends Block implements ITileEntityProvider
 
     public BlockNest()
     {
-        super(Material.leaves);
+        super(Material.LEAVES);
         setLightOpacity(2);
     }
 

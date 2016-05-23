@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
@@ -84,9 +84,9 @@ public class ContainerCloner extends Container
     {
         super.detectAndSendChanges();
 
-        for (int i = 0; i < this.crafters.size(); ++i)
+        for (int i = 0; i < this.listeners.size(); ++i)
         {
-            ICrafting icrafting = this.crafters.get(i);
+            IContainerListener icrafting = this.listeners.get(i);
             if (energy != tile.getField(0))
             {
                 icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
@@ -146,7 +146,7 @@ public class ContainerCloner extends Container
                     egg = item.copy();
                     continue;
                 }
-                else if (item.getItem() == Items.nether_star)
+                else if (item.getItem() == Items.NETHER_STAR)
                 {
                     if (star != null)
                     {

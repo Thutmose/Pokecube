@@ -7,7 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -55,7 +54,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
 
     /** Overriden in a sign to provide the text. */
     @Override
-    public Packet<?> getDescriptionPacket()
+    public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
@@ -126,7 +125,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
 
             if (!tele)
             {
-                worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.block_note_basedrum,
+                worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.BLOCK_NOTE_BASEDRUM,
                         SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                 lastStepped = time;
             }
@@ -136,7 +135,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         {
             TileEntity te = linkPos.getTileEntity(getWorld(), EnumFacing.DOWN);
 
-            worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.entity_endermen_teleport,
+            worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.ENTITY_ENDERMEN_TELEPORT,
                     SoundCategory.BLOCKS, 1.0F, 1.0F, false);
 
             PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
@@ -158,7 +157,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
 
             Transporter.teleportEntity(stepper, loc, dim, false);
 
-            worldObj.playSound(loc.x, loc.y, loc.z, SoundEvents.entity_endermen_teleport, SoundCategory.BLOCKS, 1.0F,
+            worldObj.playSound(loc.x, loc.y, loc.z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0F,
                     1.0F, false);
             buff = new PacketBuffer(Unpooled.buffer());
             buff.writeByte(9);
@@ -212,7 +211,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
     // }
 
     @Override
-    public void writeToNBT(NBTTagCompound tagCompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
         if (link != null)
@@ -222,6 +221,6 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
             tagCompound.setTag("link", linkTag);
         }
         tagCompound.setBoolean("noEnergy", noEnergy);
-        storage.writeToNBT(tagCompound);
+        return storage.writeToNBT(tagCompound);
     }
 }

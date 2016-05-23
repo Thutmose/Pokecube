@@ -10,7 +10,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IMoveConstants;
@@ -131,12 +131,12 @@ public class AIGatherStuff extends AIBase
                 if (stuff != null)
                 {
                     stuffLoc.set(stuff);
-                    PathEntity path = entity.getNavigator().getPathToXYZ(stuffLoc.x, stuffLoc.y, stuffLoc.z);
+                    Path path = entity.getNavigator().getPathToXYZ(stuffLoc.x, stuffLoc.y, stuffLoc.z);
                     addEntityPath(entity.getEntityId(), entity.dimension, path, entity.getAIMoveSpeed());
                 }
                 else
                 {
-                    PathEntity path = entity.getNavigator().getPathToXYZ(stuffLoc.x, stuffLoc.y, stuffLoc.z);
+                    Path path = entity.getNavigator().getPathToXYZ(stuffLoc.x, stuffLoc.y, stuffLoc.z);
                     addEntityPath(entity.getEntityId(), entity.dimension, path, entity.getAIMoveSpeed());
                 }
             }
@@ -157,8 +157,8 @@ public class AIGatherStuff extends AIBase
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                 IBlockState state = stuffLoc.getBlockState(world);
                 Block plant = stuffLoc.getBlock(world);
-                TickHandler.addBlockChange(stuffLoc, entity.dimension, Blocks.air);
-                if (state.getMaterial() != Material.grass)
+                TickHandler.addBlockChange(stuffLoc, entity.dimension, Blocks.AIR);
+                if (state.getMaterial() != Material.GRASS)
                 {
                     for (ItemStack stack : plant.getDrops(world, stuffLoc.getPos(), stuffLoc.getBlockState(world), 0))
                         toRun.addElement(new InventoryChange(entity, 2, stack, true));

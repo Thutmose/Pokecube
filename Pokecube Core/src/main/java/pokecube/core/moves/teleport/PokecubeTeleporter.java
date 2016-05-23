@@ -36,7 +36,7 @@ public class PokecubeTeleporter extends Teleporter
                     for (int j = -1; j <= 1; j++)
                     {
                         Vector3 v1 = temp.set(v).addTo(i, -entity.height, j);
-                        v1.setBlock(world, Blocks.obsidian);
+                        v1.setBlock(world, Blocks.OBSIDIAN);
                     }
             }
         }

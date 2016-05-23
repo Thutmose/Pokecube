@@ -283,7 +283,7 @@ public class LegendaryConditions
                     for (int k = -5; k <= 5; k++)
                     {
 
-                        if (location.add(i, -1, k).getBlockState(trainer.worldObj).getMaterial() == Material.air)
+                        if (location.add(i, -1, k).getBlockState(trainer.worldObj).getMaterial() == Material.AIR)
                         {
                             String message = "msg.nohoohhere.txt";
                             message = I18n.translateToLocal(message);
@@ -617,13 +617,13 @@ public class LegendaryConditions
                 locations.add(location.add(0, -2, 0));
                 locations.add(location.add(-1, -1, 0));
                 locations.add(location.add(1, -1, 0));
-                check = isBlock(world, locations, Blocks.obsidian);
+                check = isBlock(world, locations, Blocks.OBSIDIAN);
                 if (check)
                 {
                     locations.clear();
                     locations.add(location.add(-1, 0, 0));
                     locations.add(location.add(1, 0, 0));
-                    check = isBlock(world, locations, Blocks.hardened_clay);
+                    check = isBlock(world, locations, Blocks.HARDENED_CLAY);
                 }
                 else
                 {
@@ -632,13 +632,13 @@ public class LegendaryConditions
                     locations.add(location.add(0, -2, 0));
                     locations.add(location.add(0, -1, 1));
                     locations.add(location.add(0, -1, -1));
-                    check = isBlock(world, locations, Blocks.obsidian);
+                    check = isBlock(world, locations, Blocks.OBSIDIAN);
                     if (check)
                     {
                         locations.clear();
                         locations.add(location.add(0, 0, 1));
                         locations.add(location.add(0, 0, -1));
-                        check = isBlock(world, locations, Blocks.hardened_clay);
+                        check = isBlock(world, locations, Blocks.HARDENED_CLAY);
                     }
 
                 }
@@ -717,15 +717,15 @@ public class LegendaryConditions
                 locations.add(location.add(0, -2, 0));
                 locations.add(location.add(-1, -1, 0));
                 locations.add(location.add(1, -1, 0));
-                check = isBlock(world, locations, Blocks.ice) || isBlock(world, locations, Blocks.packed_ice);
+                check = isBlock(world, locations, Blocks.ICE) || isBlock(world, locations, Blocks.PACKED_ICE);
                 if (check)
                 {
                     Block b = location.add(0, -1, 1).getBlock(world);
-                    check = b == Blocks.ice || b == Blocks.packed_ice;
+                    check = b == Blocks.ICE || b == Blocks.PACKED_ICE;
                     if (!check)
                     {
                         b = location.add(0, -1, -1).getBlock(world);
-                        check = b == Blocks.ice || b == Blocks.packed_ice;
+                        check = b == Blocks.ICE || b == Blocks.PACKED_ICE;
                     }
                 }
                 else
@@ -735,15 +735,15 @@ public class LegendaryConditions
                     locations.add(location.add(0, -2, 0));
                     locations.add(location.add(0, -1, 1));
                     locations.add(location.add(0, -1, -1));
-                    check = isBlock(world, locations, Blocks.ice) || isBlock(world, locations, Blocks.packed_ice);
+                    check = isBlock(world, locations, Blocks.ICE) || isBlock(world, locations, Blocks.PACKED_ICE);
                     if (check)
                     {
                         Block b = location.add(1, -1, 0).getBlock(world);
-                        check = b == Blocks.ice || b == Blocks.packed_ice;
+                        check = b == Blocks.ICE || b == Blocks.PACKED_ICE;
                         if (!check)
                         {
                             b = location.add(-1, -1, 0).getBlock(world);
-                            check = b == Blocks.ice || b == Blocks.packed_ice;
+                            check = b == Blocks.ICE || b == Blocks.PACKED_ICE;
                         }
                     }
                 }
@@ -821,7 +821,7 @@ public class LegendaryConditions
                 locations.add(location.add(0, -1, 0));
                 locations.add(location.add(0, -2, 0));
 
-                check = isBlock(world, locations, Blocks.iron_block);
+                check = isBlock(world, locations, Blocks.IRON_BLOCK);
                 if (!check)
                 {
                     locations.clear();
@@ -830,7 +830,7 @@ public class LegendaryConditions
                     locations.add(location.add(0, -1, 0));
                     locations.add(location.add(0, -2, 0));
 
-                    check = isBlock(world, locations, Blocks.iron_block);
+                    check = isBlock(world, locations, Blocks.IRON_BLOCK);
                 }
                 if (!check)
                 {
@@ -857,7 +857,7 @@ public class LegendaryConditions
                 locations.add(location.add(0, -1, 0));
                 locations.add(location.add(0, -2, 0));
 
-                check = isBlock(world, locations, Blocks.iron_block);
+                check = isBlock(world, locations, Blocks.IRON_BLOCK);
                 if (!check)
                 {
                     locations.clear();
@@ -866,7 +866,7 @@ public class LegendaryConditions
                     locations.add(location.add(0, -1, 0));
                     locations.add(location.add(0, -2, 0));
 
-                    check = isBlock(world, locations, Blocks.iron_block);
+                    check = isBlock(world, locations, Blocks.IRON_BLOCK);
                     if (check)
                     {
                         for (Vector3 v : locations)

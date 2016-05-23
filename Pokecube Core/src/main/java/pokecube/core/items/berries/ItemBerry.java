@@ -132,7 +132,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
     {
         Block i = worldIn.getBlockState(pos).getBlock();
         int index = stack.getItemDamage();
-        if (i == Blocks.farmland)
+        if (i == Blocks.FARMLAND)
         {
             worldIn.setBlockState(pos.up(), BerryManager.berryCrops.get(index).getStateFromMeta(0), 3);
 

@@ -28,7 +28,7 @@ public class RecipeBrewBerries implements IBrewingRecipe
 		NBTTagCompound tag = input.getTagCompound();
 		if(tag.hasKey("pokebloc"))
 			return true;
-		return input.getItem() == Items.glass_bottle;
+		return input.getItem() == Items.GLASS_BOTTLE;
 	}
 
 }

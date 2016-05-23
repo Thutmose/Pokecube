@@ -146,6 +146,8 @@ public class EventsHandlerClient
                                                                  }
                                                              };
 
+    static boolean            notifier    = false;
+
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
     {
         if (!itemStack.hasTagCompound()) return null;
@@ -214,10 +216,8 @@ public class EventsHandlerClient
     }
 
     private Set<RenderPlayer> addedLayers = Sets.newHashSet();
-
     boolean                   debug       = false;
     long                      lastSetTime = 0;
-    static boolean            notifier    = false;
 
     public EventsHandlerClient()
     {

@@ -218,12 +218,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public EntityAIBase getUtilityMoveAI()
-    {
-        return utilMoveAI;
-    }
-
-    @Override
     protected SoundEvent getHurtSound()
     {
         return getAmbientSound();
@@ -301,6 +295,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public Entity getTransformedTo()
     {
         return transformedTo;
+    }
+
+    @Override
+    public EntityAIBase getUtilityMoveAI()
+    {
+        return utilMoveAI;
     }
 
     @Override
@@ -487,14 +487,14 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 double d16 = this.posY;
                 double d17 = this.posZ;
 
-                if (block1 != Blocks.ladder)
+                if (block1 != Blocks.LADDER)
                 {
                     d16 = 0.0D;
                 }
 
                 if (block1 != null && this.onGround)
                 {
-                    block1.onEntityCollidedWithBlock(this.worldObj, blockpos, this);
+                    block1.onEntityCollidedWithBlock(this.worldObj, blockpos, state, this);
                 }
 
                 this.distanceWalkedModified = (float) (this.distanceWalkedModified
@@ -502,7 +502,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 this.distanceWalkedOnStepModified = (float) (this.distanceWalkedOnStepModified
                         + MathHelper.sqrt_double(d15 * d15 + d16 * d16 + d17 * d17) * 0.6D);
 
-                if (this.distanceWalkedOnStepModified > this.nextStepDistance && state.getMaterial() != Material.air)
+                if (this.distanceWalkedOnStepModified > this.nextStepDistance && state.getMaterial() != Material.AIR)
                 {
                     this.nextStepDistance = (int) this.distanceWalkedOnStepModified + 1;
 

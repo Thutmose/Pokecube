@@ -245,7 +245,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 {
                     try
                     {
-                        world.setBlockState(location.getPos(), Blocks.snow_layer.getDefaultState(), 2);
+                        world.setBlockState(location.getPos(), Blocks.SNOW_LAYER.getDefaultState(), 2);
                     }
                     catch (Exception e)
                     {
@@ -254,14 +254,14 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                     }
                 }
             }
-            else if (block == Blocks.water && state.getValue(BlockLiquid.LEVEL) == 0)
+            else if (block == Blocks.WATER && state.getValue(BlockLiquid.LEVEL) == 0)
             {
-                location.setBlock(world, Blocks.ice.getDefaultState());
+                location.setBlock(world, Blocks.ICE.getDefaultState());
             }
             else if (block.isReplaceable(world, location.getPos()))
             {
                 if (location.offset(EnumFacing.DOWN).getBlockState(world).isNormalCube())
-                    location.setBlock(world, Blocks.snow_layer.getDefaultState());
+                    location.setBlock(world, Blocks.SNOW_LAYER.getDefaultState());
             }
         }
         int strong = 100;
@@ -270,13 +270,13 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
                     .addTo(location);
             IBlockState nextState = nextBlock.getBlockState(world);
-            if (block == Blocks.lava)
+            if (block == Blocks.LAVA)
             {
-                location.setBlock(world, Blocks.obsidian);
+                location.setBlock(world, Blocks.OBSIDIAN);
             }
-            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.lava)
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.LAVA)
             {
-                nextBlock.setBlock(world, Blocks.obsidian);
+                nextBlock.setBlock(world, Blocks.OBSIDIAN);
             }
         }
         if (getType(attacker) == PokeType.electric && getPWR() >= strong)
@@ -284,13 +284,13 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
                     .addTo(location);
             IBlockState nextState = nextBlock.getBlockState(world);
-            if (block == Blocks.sand)
+            if (block == Blocks.SAND)
             {
-                location.setBlock(world, Blocks.glass);
+                location.setBlock(world, Blocks.GLASS);
             }
-            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.sand)
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.SAND)
             {
-                nextBlock.setBlock(world, Blocks.glass);
+                nextBlock.setBlock(world, Blocks.GLASS);
             }
         }
         if (getType(attacker) == PokeType.fire && getPWR() >= strong)
@@ -298,13 +298,13 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
                     .addTo(location);
             IBlockState nextState = nextBlock.getBlockState(world);
-            if (block == Blocks.obsidian)
+            if (block == Blocks.OBSIDIAN)
             {
-                location.setBlock(world, Blocks.lava);
+                location.setBlock(world, Blocks.LAVA);
             }
-            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.obsidian)
+            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.OBSIDIAN)
             {
-                nextBlock.setBlock(world, Blocks.lava);
+                nextBlock.setBlock(world, Blocks.LAVA);
             }
         }
     }

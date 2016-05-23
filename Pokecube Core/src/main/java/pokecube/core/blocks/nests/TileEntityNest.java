@@ -250,7 +250,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
         if (worldObj.isRemote || (worldObj.getDifficulty() == EnumDifficulty.PEACEFUL && power == 0)) return;
 
-        if (worldObj.func_184137_a(getPos().getX(), getPos().getY(), getPos().getZ(),
+        if (worldObj.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(),
                 PokecubeMod.core.getConfig().maxSpawnRadius, false) == null)
             return;
 
@@ -301,9 +301,10 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         addForbiddenSpawningCoord();
     }
 
-    /** Writes a tile entity to NBT. */
+    /** Writes a tile entity to NBT. 
+     * @return */
     @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
         nbt.setInteger("pokedexNb", pokedexNb);
@@ -323,5 +324,6 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
             }
         }
         nbt.setTag("Inventory", itemList);
+        return nbt;
     }
 }

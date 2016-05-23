@@ -17,25 +17,25 @@ public class TreeRemover
 
     static
     {
-        woodTypes.add(Blocks.log);
-        woodTypes.add(Blocks.log2);
+        woodTypes.add(Blocks.LOG);
+        woodTypes.add(Blocks.LOG2);
 
-        plantTypes.add(Blocks.double_plant);
-        plantTypes.add(Blocks.tallgrass);
-        plantTypes.add(Blocks.carrots);
-        plantTypes.add(Blocks.cocoa);
-        plantTypes.add(Blocks.wheat);
-        plantTypes.add(Blocks.potatoes);
-        plantTypes.add(Blocks.reeds);
-        plantTypes.add(Blocks.leaves);
-        plantTypes.add(Blocks.vine);
-        plantTypes.add(Blocks.cactus);
-        plantTypes.add(Blocks.melon_block);
-        plantTypes.add(Blocks.red_flower);
-        plantTypes.add(Blocks.yellow_flower);
-        plantTypes.add(Blocks.pumpkin);
+        plantTypes.add(Blocks.DOUBLE_PLANT);
+        plantTypes.add(Blocks.TALLGRASS);
+        plantTypes.add(Blocks.CARROTS);
+        plantTypes.add(Blocks.COCOA);
+        plantTypes.add(Blocks.WHEAT);
+        plantTypes.add(Blocks.POTATOES);
+        plantTypes.add(Blocks.REEDS);
+        plantTypes.add(Blocks.LEAVES);
+        plantTypes.add(Blocks.VINE);
+        plantTypes.add(Blocks.CACTUS);
+        plantTypes.add(Blocks.MELON_BLOCK);
+        plantTypes.add(Blocks.RED_FLOWER);
+        plantTypes.add(Blocks.YELLOW_FLOWER);
+        plantTypes.add(Blocks.PUMPKIN);
 
-        dirtTypes.add(Blocks.dirt);
+        dirtTypes.add(Blocks.DIRT);
     }
 
     World         worldObj;

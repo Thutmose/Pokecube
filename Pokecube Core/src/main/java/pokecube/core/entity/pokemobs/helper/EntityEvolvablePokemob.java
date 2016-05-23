@@ -231,7 +231,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     protected String getEvolFX()
     {
         String ret = "";
-        int num = dataWatcher.get(EVOLNBDW);
+        int num = dataManager.get(EVOLNBDW);
         for (EvolutionData d : getPokedexEntry().getEvolutions())
         {
             if (d.evolution.getPokedexNb() == num) return d.FX;
@@ -243,7 +243,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public int getEvolutionTicks()
     {
-        return dataWatcher.get(EVOLTICKDW);
+        return dataManager.get(EVOLTICKDW);
     }
 
     /** Returns whether the entity is in a server world */
@@ -356,7 +356,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 
     private void setEvol(int num)
     {
-        dataWatcher.set(EVOLNBDW, Integer.valueOf(num));
+        dataManager.set(EVOLNBDW, Integer.valueOf(num));
     }
 
     @Override
@@ -374,7 +374,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public void setEvolutionTicks(int evolutionTicks)
     {
-        dataWatcher.set(EVOLTICKDW, new Integer(evolutionTicks));
+        dataManager.set(EVOLTICKDW, new Integer(evolutionTicks));
     }
 
     @Override

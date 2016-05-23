@@ -1922,7 +1922,7 @@ public class MovesAdder implements IMoveConstants
                 if (!super.doAttack(attacker, attacked, f)) return false;
                 attacked.worldObj.setBlockState(
                         new BlockPos((int) attacked.posX, (int) attacked.posY + 1, (int) attacked.posZ),
-                        Blocks.flowing_water.getStateFromMeta(1), 3);
+                        Blocks.FLOWING_WATER.getStateFromMeta(1), 3);
                 return true;
             }
             // @Override TODO make an IMoveAnimation for this.

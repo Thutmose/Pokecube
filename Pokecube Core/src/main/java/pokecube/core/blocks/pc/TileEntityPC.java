@@ -53,7 +53,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
 
     /** Overriden in a sign to provide the text. */
     @Override
-    public Packet<?> getDescriptionPacket()
+    public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         this.writeToNBT(nbttagcompound);
@@ -259,12 +259,14 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
 //        worldObj.markBlockForUpdate(getPos());
     }
 
-    /** Writes a tile entity to NBT. */
+    /** Writes a tile entity to NBT. 
+     * @return */
     @Override
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
         super.writeToNBT(par1NBTTagCompound);
         par1NBTTagCompound.setBoolean("bound", bound);
         par1NBTTagCompound.setString("boundID", boundId);
+        return par1NBTTagCompound;
     }
 }

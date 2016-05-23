@@ -18,7 +18,6 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
@@ -314,15 +313,15 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             {
                 domeFossilIndex = i;
             }
-            else if (stack.getItem() == Item.getItemFromBlock(Blocks.iron_block))
+            else if (stack.getItem() == Item.getItemFromBlock(Blocks.IRON_BLOCK))
             {
                 ironBlockIndex = i;
             }
-            else if (stack.getItem() == Item.getItemFromBlock(Blocks.redstone_block))
+            else if (stack.getItem() == Item.getItemFromBlock(Blocks.REDSTONE_BLOCK))
             {
                 redstoneBlockIndex = i;
             }
-            else if (stack.getItem() == Item.getItemFromBlock(Blocks.diamond_block))
+            else if (stack.getItem() == Item.getItemFromBlock(Blocks.DIAMOND_BLOCK))
             {
                 diamondBlockIndex = i;
             }
@@ -492,7 +491,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
 
     /** Overriden in a sign to provide the text. */
     @Override
-    public Packet<?> getDescriptionPacket()
+    public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
@@ -770,7 +769,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
         NBTTagList itemList = new NBTTagList();
@@ -787,7 +786,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             }
         }
         nbt.setTag("Inventory", itemList);
-        storage.writeToNBT(nbt);
+        return storage.writeToNBT(nbt);
     }
 
 }

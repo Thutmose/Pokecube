@@ -53,7 +53,7 @@ public class SMDModelRenderer<T extends EntityLiving> extends RenderLivingBase<T
             EntityLivingBase entitylivingbase1 = (EntityLivingBase) entity.getRidingEntity();
             f2 = this.interpolateRotation(entitylivingbase1.prevRenderYawOffset, entitylivingbase1.renderYawOffset,
                     partialTick);
-            f4 = MathHelper.wrapAngleTo180_float(f3 - f2);
+            f4 = MathHelper.wrapDegrees(f3 - f2);
 
             if (f4 < -85.0F)
             {

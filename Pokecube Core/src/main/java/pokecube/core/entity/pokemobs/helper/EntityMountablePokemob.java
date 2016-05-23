@@ -225,7 +225,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 //    {
 //        if (isBeingRidden())
 //        {
-//            this.getNavigator().clearPathEntity();
+//            this.getNavigator().clearPathHeap();
 //            this.prevRotationYaw = this.rotationYaw = this.riddenByEntity.rotationYaw;
 //            this.rotationPitch = this.riddenByEntity.rotationPitch * 0.5F;
 //            this.setRotation(this.rotationYaw, this.rotationPitch);
@@ -389,7 +389,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         if (this.isInWater() && (!(this.canUseSurf())))
         {
             d0 = this.posY;
-            this.moveFlying(par1, par2, 0.04F);
+            this.moveRelative(par1, par2, 0.04F);
             this.moveEntity(this.motionX, this.motionY, this.motionZ);
             this.motionX *= 0.800000011920929D;
             this.motionY *= 0.800000011920929D;
@@ -405,7 +405,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         else if (this.isInLava())
         {
             d0 = this.posY;
-            this.moveFlying(par1, par2, 0.02F);
+            this.moveRelative(par1, par2, 0.02F);
             this.moveEntity(this.motionX, this.motionY, this.motionZ);
             this.motionX *= 0.5D;
             this.motionY *= 0.5D;
@@ -455,7 +455,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
                 f4 = this.jumpMovementFactor;
             }
 
-            this.moveFlying(par1, par2, f4);
+            this.moveRelative(par1, par2, f4);
             f2 = 0.91F;
 
             if (this.onGround)
@@ -629,11 +629,9 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     /** main AI tick function, replaces updateEntityActionState */// TODO move
                                                                   // this over
                                                                   // to an AI
-                                                                  // class
-    @Override
+                  
     protected void updateAITick()
     {
-        super.updateAITick();
         if (!getPokedexEntry().canSitShoulder || !getPokemonAIState(IMoveConstants.TAMED)) return;
 
         if (counterMount++ > 50000)

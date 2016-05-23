@@ -194,11 +194,11 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         if (getPokedexEntry().hatedMaterial != null)
         {
             String material = getPokedexEntry().hatedMaterial[0];
-            if (material.equalsIgnoreCase("water") && state.getMaterial() == Material.water) { return 100; }
+            if (material.equalsIgnoreCase("water") && state.getMaterial() == Material.WATER) { return 100; }
         }
 
-        if (state.getMaterial() == Material.water) return water ? 1 : air ? 100 : 40;
-        if (block == Blocks.gravel) return water ? 40 : 5;
+        if (state.getMaterial() == Material.WATER) return water ? 1 : air ? 100 : 40;
+        if (block == Blocks.GRAVEL) return water ? 40 : 5;
 
         return water ? 40 : 20;
     }

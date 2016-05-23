@@ -23,7 +23,7 @@ public class ContainerTradingTable extends Container
     protected static boolean isItemValid(ItemStack itemstack)
     {
         return (!PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound() && PokecubeItems.getCubeId(itemstack) == 14)
-        		|| (itemstack.getItem()==Items.emerald&&itemstack.stackSize==64)
+        		|| (itemstack.getItem()==Items.EMERALD&&itemstack.stackSize==64)
         		|| (itemstack.getItem() instanceof IPokecube&&itemstack.stackSize==1);
     }
 	

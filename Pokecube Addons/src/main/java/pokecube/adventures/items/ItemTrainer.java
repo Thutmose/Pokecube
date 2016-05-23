@@ -125,7 +125,7 @@ public class ItemTrainer extends Item
             if (!item) for (int i = 0; i < player.inventory.getSizeInventory(); i++)
             {
                 ItemStack stack = player.inventory.getStackInSlot(i);
-                if (stack != null && stack.getItem() == Item.getItemFromBlock(Blocks.emerald_block))
+                if (stack != null && stack.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK))
                 {
                     item = true;
                     player.inventory.decrStackSize(i, 1);

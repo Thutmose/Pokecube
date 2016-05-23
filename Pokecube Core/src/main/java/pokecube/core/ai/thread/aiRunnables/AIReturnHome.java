@@ -2,7 +2,7 @@ package pokecube.core.ai.thread.aiRunnables;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -37,7 +37,7 @@ public class AIReturnHome extends AIBase
     @Override
     public void run()
     {
-        PathEntity path = entity.getNavigator().getPathToPos(mob.getHome());
+        Path path = entity.getNavigator().getPathToPos(mob.getHome());
         if (path != null) addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
     }
 

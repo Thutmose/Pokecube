@@ -6,8 +6,9 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.init.Blocks;
-import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
+import net.minecraft.pathfinding.PathHeap;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
@@ -26,8 +27,8 @@ public class PokeNavigator extends PathNavigate
 {
     private final EntityLiving       theEntity;
     private final World              worldObj;
-    /** The PathEntity being followed. */
-    private PathEntity               currentPath;
+    /** The Path being followed. */
+    private Path                     currentPath;
     private double                   speed;
     Vector3                          v               = Vector3.getNewVector();
     Vector3                          v1              = Vector3.getNewVector();
@@ -79,7 +80,7 @@ public class PokeNavigator extends PathNavigate
         return this.theEntity.onGround || this.canSwim && this.isInLiquid() || this.canFly;
     }
 
-    /** sets active PathEntity to null */
+    /** sets active PathHeap to null */
     @Override
     public synchronized void clearPathEntity()
     {
@@ -115,9 +116,9 @@ public class PokeNavigator extends PathNavigate
         return index;
     }
 
-    /** gets the actively used PathEntity */
+    /** gets the actively used PathHeap */
     @Override
-    public PathEntity getPath()
+    public Path getPath()
     {
         return this.currentPath;
     }
@@ -144,7 +145,7 @@ public class PokeNavigator extends PathNavigate
 
             do
             {
-                if (block != Blocks.flowing_water && block != Blocks.water) { return i; }
+                if (block != Blocks.FLOWING_WATER && block != Blocks.WATER) { return i; }
 
                 ++i;
                 block = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.theEntity.posX), i,
@@ -174,30 +175,45 @@ public class PokeNavigator extends PathNavigate
 
     /** Returns the path to the given EntityLiving */
     @Override
-    public PathEntity getPathToEntityLiving(Entity entity)
+    public Path getPathToEntityLiving(Entity entity)
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
         this.canFly = entry.flys() || entry.floats();
         this.canDive = entry.swims();
-        return !this.canNavigate() ? null
-                : pathfinder.getPathEntityToEntity(this.theEntity, entity, this.getPathSearchRange());
+
+        Path ret = null;
+
+        if (this.canNavigate())
+        {
+            PathPoint[] points = pathfinder.getPathHeapToEntity(this.theEntity, entity,
+                    this.getPathSearchRange()).pathPoints;
+            ret = new Path(points);
+        }
+        return ret;
     }
 
     @Override
-    public PathEntity getPathToPos(BlockPos pos)
+    public Path getPathToPos(BlockPos pos)
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
         this.canFly = entry.flys() || entry.floats();
         this.canDive = entry.swims();
-        PathEntity current = currentPath;
+        Path current = currentPath;
         if (current != null && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {
             Vector3 p = v.set(current.getFinalPathPoint());
             Vector3 v = v1.set(pos);
             if (p.distToSq(v) <= 1) { return current; }
         }
-        return pathfinder.getEntityPathToXYZ(this.theEntity, pos.getX(), pos.getY(), pos.getZ(),
-                this.getPathSearchRange());
+        Path ret = null;
+
+        if (this.canNavigate())
+        {
+            PathPoint[] points = pathfinder.getEntityPathToXYZ(this.theEntity, pos.getX(), pos.getY(), pos.getZ(),
+                    this.getPathSearchRange()).pathPoints;
+            ret = new Path(points);
+        }
+        return ret;
 
     }
 
@@ -403,7 +419,7 @@ public class PokeNavigator extends PathNavigate
     /** sets the active path data if path is 100% unique compared to old path,
      * checks to adjust path for sun avoiding ents and stores end coords */
     @Override
-    public boolean setPath(PathEntity path, double speed)
+    public boolean setPath(Path path, double speed)
     {
 
         if (path == currentPath) return true;
@@ -451,16 +467,16 @@ public class PokeNavigator extends PathNavigate
     @Override
     public boolean tryMoveToEntityLiving(Entity entity, double speed)
     {
-        PathEntity pathentity = this.getPathToEntityLiving(entity);
-        return pathentity != null ? this.setPath(pathentity, speed) : false;
+        Path PathHeap = this.getPathToEntityLiving(entity);
+        return PathHeap != null ? this.setPath(PathHeap, speed) : false;
     }
 
     /** Try to find and set a path to XYZ. Returns true if successful. */
     @Override
     public boolean tryMoveToXYZ(double x, double y, double z, double speed)
     {
-        PathEntity pathentity = this.getPathToXYZ(MathHelper.floor_double(x), ((int) y), MathHelper.floor_double(z));
-        return this.setPath(pathentity, speed);
+        Path PathHeap = this.getPathToXYZ(MathHelper.floor_double(x), ((int) y), MathHelper.floor_double(z));
+        return this.setPath(PathHeap, speed);
     }
 
 }

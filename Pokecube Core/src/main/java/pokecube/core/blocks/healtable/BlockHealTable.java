@@ -34,10 +34,10 @@ public class BlockHealTable extends Block implements ITileEntityProvider
 
     public BlockHealTable()
     {
-        super(Material.cloth);
+        super(Material.CLOTH);
         setHardness(20);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FIXED, Boolean.FALSE));
-        this.setCreativeTab(CreativeTabs.tabBlock);
+        this.setCreativeTab(CreativeTabs.REDSTONE);
     }
 
     @Override

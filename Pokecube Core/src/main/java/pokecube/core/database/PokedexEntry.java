@@ -27,7 +27,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.core.PokecubeItems;
@@ -49,6 +50,7 @@ import thut.api.terrain.TerrainSegment;
 /** @author Manchou */
 public class PokedexEntry
 {
+
     public static class EvolutionData
     {
         public final PokedexEntry evolution;
@@ -85,12 +87,112 @@ public class PokedexEntry
             this.data = data;
         }
 
+        private boolean checkNormal(IPokemob mob, String biome)
+        {
+            int type = -1;
+            for (BiomeType b : BiomeType.values())
+            {
+                if (b.name.replaceAll(" ", "").equalsIgnoreCase(biome)) type = b.getType() + 256;
+            }
+            if (type == -1)
+            {
+                for (ResourceLocation key : Biome.REGISTRY.getKeys())
+                {
+                    Biome b = Biome.REGISTRY.getObject(key);
+                    if (b != null)
+                    {
+                        if (b.getBiomeName().replaceAll(" ", "").equalsIgnoreCase(biome))
+                        {
+                            type = Biome.getIdForBiome(b);
+                        }
+                    }
+                }
+            }
+            Vector3 v = Vector3.getNewVector().set(mob);
+            World world = ((EntityLiving) mob).worldObj;
+            if (type == -1)
+            {
+                Biome b = v.getBiome(world);
+                for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
+                {
+                    if (t.toString().equalsIgnoreCase(biome)) { return BiomeDictionary.isBiomeOfType(b, t); }
+                }
+            }
+            else
+            {
+                TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity((Entity) mob);
+                int tb = t.getBiome(v);
+                int vb = v.getBiomeID(world);
+                if (tb == type || vb == type) return true;
+            }
+            return false;
+        }
+
+        private boolean checkPerType(IPokemob mob, String biome)
+        {
+            String[] args = biome.split("\'");
+            List<BiomeDictionary.Type> neededTypes = Lists.newArrayList();
+            List<BiomeDictionary.Type> bannedTypes = Lists.newArrayList();
+            for (String s : args)
+            {
+                String name = s.substring(1);
+                if (s.startsWith("B"))
+                {
+                    for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
+                    {
+                        if (t.toString().equalsIgnoreCase(name))
+                        {
+                            bannedTypes.add(t);
+                        }
+                    }
+                }
+                else if (s.startsWith("W"))
+                {
+                    for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
+                    {
+                        if (t.toString().equalsIgnoreCase(name))
+                        {
+                            neededTypes.add(t);
+                        }
+                    }
+                }
+            }
+            Vector3 v = Vector3.getNewVector().set(mob);
+            World world = ((EntityLiving) mob).worldObj;
+            Biome b = v.getBiome(world);
+            boolean correctType = true;
+            boolean bannedType = false;
+            for (BiomeDictionary.Type t : neededTypes)
+            {
+                correctType = correctType && BiomeDictionary.isBiomeOfType(b, t);
+            }
+            for (BiomeDictionary.Type t : bannedTypes)
+            {
+                bannedType = bannedType || BiomeDictionary.isBiomeOfType(b, t);
+            }
+            return correctType && !bannedType;
+        }
+
         public Entity getEvolution(World world)
         {
             if (evolution == null) return null;
             Entity ret = PokecubeMod.core.createEntityByPokedexNb(evolution.getPokedexNb(), world);
             ret = (Entity) ((IPokemob) ret).changeForme(evolution.getName());
             return ret;
+        }
+
+        public boolean isInBiome(IPokemob mob)
+        {
+            String[] biomes = biome.split(",");
+            for (String biome : biomes)
+            {
+                if (biome.startsWith("T"))
+                {
+                    if (checkPerType(mob, biome.substring(1))) return true;
+                }
+                else if (checkNormal(mob, biome)) return true;
+            }
+            return false;
         }
 
         private void parse(String data)
@@ -169,7 +271,6 @@ public class PokedexEntry
                     Thread.dumpStack();
                 }
             }
-
             if (!itemName.isEmpty())
             {
                 item = PokecubeItems.getStack(itemName);
@@ -218,9 +319,8 @@ public class PokedexEntry
                     correctItem = mobs.isItemEqual(item);
                 }
             }
-            if (mob instanceof EntityLiving && ((EntityLiving) mob).getHeldItemMainhand() != null
-                    && ((EntityLiving) mob).getHeldItemMainhand()
-                            .isItemEqual(PokecubeItems.getStack("everstone"))) { return false; }
+            if (mob instanceof EntityLiving && ((EntityLiving) mob).getHeldItemMainhand() != null && ((EntityLiving) mob)
+                    .getHeldItemMainhand().isItemEqual(PokecubeItems.getStack("everstone"))) { return false; }
             if (mobs != null && mobs.isItemEqual(PokecubeItems.getStack("everstone"))) { return false; }
             ret = ret && correctItem;
             boolean correctLevel = mob.getLevel() >= level;
@@ -259,25 +359,7 @@ public class PokedexEntry
             }
             if (ret && !biome.isEmpty())
             {
-                int type = -1;
-
-                for (BiomeType b : BiomeType.values())
-                {
-                    if (b.name.equalsIgnoreCase(biome)) type = b.getType();
-                }
-                if (type == -1)
-                {
-                    for (ResourceLocation key : BiomeGenBase.biomeRegistry.getKeys())
-                    {
-                        BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(key);
-                        if (b != null)
-                            if (b.getBiomeName().equalsIgnoreCase(biome)) type = BiomeGenBase.getIdForBiome(b);
-                    }
-                }
-                TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity((Entity) mob);
-                Vector3 v = Vector3.getNewVector().set(mob);
-                World world = ((EntityLiving) mob).worldObj;
-                ret = ret && (t.getBiome(v) == type || BiomeGenBase.getIdForBiome(v.getBiome(world)) == type);
+                ret = ret && isInBiome(mob);
             }
             return ret;
         }
@@ -422,7 +504,7 @@ public class PokedexEntry
                 }
                 else if (!player.inventory.addItemStackToInventory(result))
                 {
-                    player.dropPlayerItemWithRandomChoice(result, false);
+                    player.dropItem(result, false);
                 }
                 if (player != pokemob.getPokemonOwner())
                 {
@@ -449,7 +531,7 @@ public class PokedexEntry
         public static class TypeEntry
         {
             ArrayList<Type>             biomes   = new ArrayList<Type>();
-            ArrayList<BiomeGenBase>     valid    = new ArrayList<BiomeGenBase>();
+            ArrayList<Biome>     valid    = new ArrayList<Biome>();
             HashSet<Integer>            types    = new HashSet<Integer>();
             public ArrayList<BiomeType> biome2   = new ArrayList<BiomeType>();
             float                       weight;
@@ -460,7 +542,7 @@ public class PokedexEntry
             {
             };
 
-            public boolean isValid(BiomeGenBase b)
+            public boolean isValid(Biome b)
             {
                 boolean ret = biomes.size() > 0;
 
@@ -482,7 +564,7 @@ public class PokedexEntry
                 if (types.contains(BiomeType.ALL.getType())) return true;
 
                 if (types.contains(biome)) return true;
-                else if (biome < 256 && !biomes.isEmpty()) return isValid(BiomeGenBase.getBiome(biome));
+                else if (biome < 256 && !biomes.isEmpty()) return isValid(Biome.getBiome(biome));
 
                 for (BiomeType t : biome2)
                 {
@@ -535,10 +617,10 @@ public class PokedexEntry
         {
         }
 
-        public TypeEntry addBiome(BiomeGenBase biome, float weight)
+        public TypeEntry addBiome(Biome biome, float weight)
         {
             TypeEntry ent = new TypeEntry();
-            int id = BiomeGenBase.getIdForBiome(biome);
+            int id = Biome.getIdForBiome(biome);
             ent.weight = weight;
             ent.valid.add(biome);
             ent.types.add(id);
@@ -547,9 +629,9 @@ public class PokedexEntry
             return ent;
         }
 
-        private void addBiomeIfValid(BiomeGenBase biome)
+        private void addBiomeIfValid(Biome biome)
         {
-            int id = BiomeGenBase.getIdForBiome(biome);
+            int id = Biome.getIdForBiome(biome);
             biomeTypes.add(id);
             for (TypeEntry t : anyTypes)
             {
@@ -648,7 +730,7 @@ public class PokedexEntry
         {
             if (b < 256) for (Type t : noTypes)
             {
-                if (BiomeDatabase.contains(BiomeGenBase.getBiome(b), t)) return false;
+                if (BiomeDatabase.contains(Biome.getBiome(b), t)) return false;
             }
 
             for (TypeEntry t : anyTypes)
@@ -669,11 +751,11 @@ public class PokedexEntry
             biomeTypes.clear();
             biomes.clear();
 
-            for (ResourceLocation key : BiomeGenBase.biomeRegistry.getKeys())
+            for (ResourceLocation key : Biome.REGISTRY.getKeys())
             {
-                BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(key);
+                Biome b = Biome.REGISTRY.getObject(key);
                 if (b == null) continue;
-                int id = BiomeGenBase.getIdForBiome(b);
+                int id = Biome.getIdForBiome(b);
                 if (isValidInit(id))
                 {
                     addBiomeIfValid(b);

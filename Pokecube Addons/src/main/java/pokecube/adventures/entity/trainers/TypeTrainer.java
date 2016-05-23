@@ -14,7 +14,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Pokedex;
@@ -51,9 +51,9 @@ public class TypeTrainer
             trainers.add(type);
             biomes.put(biome, trainers);
         }
-        else for (ResourceLocation key : BiomeGenBase.biomeRegistry.getKeys())
+        else for (ResourceLocation key : Biome.REGISTRY.getKeys())
         {
-            BiomeGenBase b = BiomeGenBase.biomeRegistry.getObject(key);
+            Biome b = Biome.REGISTRY.getObject(key);
             if (b == null) continue;
             if (biomes.containsKey(b.getBiomeName()))
             {
@@ -177,7 +177,7 @@ public class TypeTrainer
     /** 1 = male, 2 = female, 3 = both */
     public byte               genders     = 1;
 
-    public Material           material    = Material.air;
+    public Material           material    = Material.AIR;
 
     private ResourceLocation  texture;
 
@@ -291,7 +291,7 @@ public class TypeTrainer
                 num++;
             }
         }
-        if (loot[0] == null) loot[0] = new ItemStack(Items.emerald);
+        if (loot[0] == null) loot[0] = new ItemStack(Items.EMERALD);
     }
 
     public void initTrainerItems(EntityTrainer trainer)
@@ -312,8 +312,8 @@ public class TypeTrainer
 
     public boolean validMaterial(Material m)
     {
-        if (this.material == Material.water) return m == Material.water;
-        if (this.material == Material.air) { return m == material
+        if (this.material == Material.WATER) return m == Material.WATER;
+        if (this.material == Material.AIR) { return m == material
                 || !m.isLiquid() && !m.isSolid() && m.isReplaceable(); }
 
         return false;

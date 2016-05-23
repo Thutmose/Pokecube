@@ -59,7 +59,6 @@ import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.events.EggEvent;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.Config;
@@ -347,13 +346,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean interact(EntityPlayer player)
     {
-
-        if(isServerWorld())for (EvolutionData d : getPokedexEntry().getEvolutions())
-        {
-            System.out.println(d.evolution+" "+d.isInBiome(this)+" "+d.shouldEvolve(this));
-        }
-        
-        
         ItemStack itemstack = player.inventory.getCurrentItem();
         ItemStack key = new ItemStack(Items.shears);
         // Check shearable interaction.

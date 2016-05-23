@@ -8608,7 +8608,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>102</MASSKG>
             <BASESTATS atk="110" def="90" hp="100" spatk="85" spd="60" spdef="90"/>
-            <SIZES height="1.9" length="1.0" width="1.0"/>
+            <SIZES height="1.9" length="1.9" width="1.9"/>
             <TYPE type1="Water" type2="Ground"/>
             <ABILITY normal="Swift Swim"/>
         </STATS>

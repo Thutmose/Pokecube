@@ -606,11 +606,27 @@ public class PokecubeItems extends Items
     {
         if (o instanceof Block)
         {
-            register(o, ((Block) o).getUnlocalizedName().substring(5));
+            if(((Block) o).getRegistryName()!=null)
+            {
+                GameRegistry.register((Block)o);
+                addGeneric(((Block) o).getRegistryName().getResourceDomain(), o);
+            }
+            else
+            {
+                register(o, ((Block) o).getUnlocalizedName().substring(5));
+            }
         }
         if (o instanceof Item)
         {
-            register(o, ((Item) o).getUnlocalizedName().substring(5));
+            if(((Item) o).getRegistryName()!=null)
+            {
+                GameRegistry.register((Item)o);
+                addGeneric(((Item) o).getRegistryName().getResourceDomain(), o);
+            }
+            else
+            {
+                register(o, ((Item) o).getUnlocalizedName().substring(5));
+            }
         }
     }
 

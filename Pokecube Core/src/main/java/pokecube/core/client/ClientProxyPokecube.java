@@ -61,7 +61,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.CommonProxyPokecube;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.blocks.berries.BerryPlantManager;
 import pokecube.core.blocks.berries.BlockBerryLeaves;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
@@ -99,6 +98,7 @@ import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.maths.Vector3;
@@ -487,17 +487,17 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:nanabWood"));
         registerItemTexture(Item.getItemFromBlock(log1), 1,
                 new ModelResourceLocation("pokecube:nanabWood", "inventory"));
-
-        for (String ident : BerryPlantManager.cropsToRegister.keySet())
-        {
-            Block crop = BerryPlantManager.cropsToRegister.get(ident);
-            map = (new StateMap.Builder()).ignore(new IProperty[] { BlockCrops.AGE }).withSuffix("").build();
-            registerItemTexture(Item.getItemFromBlock(crop), 0, new ModelResourceLocation(ident, "inventory"));
-            ModelLoader.setCustomStateMapper(crop, map);
-        }
-
-        ItemTextureHandler.registerMegaStoneItemModels();
-
+        
+        Block crop = BerryManager.berryCrop;
+        map = (new StateMap.Builder()).withName(BerryManager.type).ignore(new IProperty[] { BlockCrops.AGE }).withSuffix("Crop").build();
+        ModelLoader.setCustomStateMapper(crop, map);
+        
+        map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("Fruit")
+                .build();
+        ModelLoader.setCustomStateMapper(BerryManager.berryFruit, map);
+        
+        MegaStoneTextureHandler.registerItemModels();
+        BerryTextureHandler.registerItemModels();
     }
 
     @Override

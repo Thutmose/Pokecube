@@ -10,7 +10,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import pokecube.core.PokecubeItems;
 import pokecube.core.handlers.HeldItemHandler;
 
-public class ItemTextureHandler
+public class MegaStoneTextureHandler
 {
     public static class MegaStone implements ItemMeshDefinition
     {
@@ -40,7 +40,7 @@ public class ItemTextureHandler
                 new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"), variant));
     }
 
-    public static void registerMegaStoneItemModels()
+    public static void registerItemModels()
     {
         ModelLoader.setCustomMeshDefinition(PokecubeItems.megastone, new MegaStone());
         for (String s : HeldItemHandler.megaVariants)

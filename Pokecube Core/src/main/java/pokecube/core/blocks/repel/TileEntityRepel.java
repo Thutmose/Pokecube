@@ -1,4 +1,4 @@
-package pokecube.core.blocks;
+package pokecube.core.blocks.repel;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

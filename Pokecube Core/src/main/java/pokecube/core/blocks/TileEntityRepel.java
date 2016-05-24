@@ -63,6 +63,7 @@ public class TileEntityRepel extends TileEntity implements ITickable
     {
         super.validate();
         addForbiddenSpawningCoord();
+        enabled = true;
     }
 
     /** Writes a tile entity to NBT. */

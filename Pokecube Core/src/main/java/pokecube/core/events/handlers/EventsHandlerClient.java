@@ -150,7 +150,7 @@ public class EventsHandlerClient
                                                                   }
                                                               };
 
-    static boolean            notifier    = false;
+    static boolean                                notifier    = false;
 
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
     {
@@ -251,11 +251,11 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void clientTick(TickEvent.PlayerTickEvent event)
     {
-        if (!PokecubeMod.core.getConfig().autoSelectMoves || event.phase == Phase.START
-                || lastSetTime >= System.currentTimeMillis())
+        if (!(PokecubeMod.core.getConfig().autoSelectMoves || PokecubeMod.core.getConfig().autoRecallPokemobs)
+                || event.phase == Phase.START || lastSetTime >= System.currentTimeMillis())
             return;
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
-        if (pokemob != null)
+        if (pokemob != null && PokecubeMod.core.getConfig().autoSelectMoves)
         {
             Entity target = ((EntityLiving) pokemob).getAttackTarget();
             if (target != null && !pokemob.getPokemonAIState(IMoveConstants.MATING))

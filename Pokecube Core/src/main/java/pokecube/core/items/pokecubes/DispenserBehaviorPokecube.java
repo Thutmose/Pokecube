@@ -55,7 +55,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
         {
             itemstack.useItemRightClick(iblocksource.getWorld(), player);
         }
-        // itemstack.splitStack(1);
+        itemstack.splitStack(1);
         return itemstack;
     }
 }

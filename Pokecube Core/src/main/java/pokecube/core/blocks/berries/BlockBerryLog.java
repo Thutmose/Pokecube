@@ -12,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.berries.BlockBerryWood.EnumType;
@@ -90,14 +91,14 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 		EnumType type = EnumType.byMetadata(logShift);
 		PropertyEnum<EnumType> property = shift == 0 ? VARIANT0 : VARIANT4;
 		state = state.withProperty(property, type);
-		this.setDefaultState(state.withProperty(LOG_AXIS, BlockLog.EnumAxis.Y));
+		this.setDefaultState(state.withProperty(AXIS, EnumFacing.Axis.Y));
 		setCreativeTab(PokecubeMod.creativeTabPokecubeBerries);
 	}
 
 	@Override
     protected BlockStateContainer createBlockState()
 	{//TODO find out where the bug with this is.
-		return new BlockStateContainer(this, new IProperty[] { currentlyConstructing == 0 ? VARIANT0 : VARIANT4, LOG_AXIS });
+		return new BlockStateContainer(this, new IProperty[] { currentlyConstructing == 0 ? VARIANT0 : VARIANT4, AXIS });
 	}
 
 	@Override
@@ -120,7 +121,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 		byte b0 = 0;
 		int i = b0 | state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata() - shift;
 
-		switch (SwitchEnumAxis.AXIS_LOOKUP[state.getValue(LOG_AXIS).ordinal()])
+		switch (SwitchEnumAxis.AXIS_LOOKUP[state.getValue(AXIS).ordinal()])
 		{
 		case 1:
 			i |= 4;
@@ -144,7 +145,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 			int num = type.getMetadata() - shift;
 			if(num >= 0 && num < 4)
 			{
-				return getStateFromMeta(num+shift).withProperty(LOG_AXIS, BlockLog.EnumAxis.Y);
+				return getStateFromMeta(num+shift).withProperty(AXIS, EnumFacing.Axis.Y);
 			}
 		}
 		return null;

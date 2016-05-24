@@ -8,7 +8,6 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.init.Blocks;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.pathfinding.PathHeap;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
@@ -185,9 +184,7 @@ public class PokeNavigator extends PathNavigate
 
         if (this.canNavigate())
         {
-            PathPoint[] points = pathfinder.getPathHeapToEntity(this.theEntity, entity,
-                    this.getPathSearchRange()).pathPoints;
-            ret = new Path(points);
+            ret = pathfinder.getPathHeapToEntity(this.theEntity, entity, this.getPathSearchRange());
         }
         return ret;
     }
@@ -209,9 +206,8 @@ public class PokeNavigator extends PathNavigate
 
         if (this.canNavigate())
         {
-            PathPoint[] points = pathfinder.getEntityPathToXYZ(this.theEntity, pos.getX(), pos.getY(), pos.getZ(),
-                    this.getPathSearchRange()).pathPoints;
-            ret = new Path(points);
+            ret = pathfinder.getEntityPathToXYZ(this.theEntity, pos.getX(), pos.getY(), pos.getZ(),
+                    this.getPathSearchRange());
         }
         return ret;
 
@@ -317,14 +313,17 @@ public class PokeNavigator extends PathNavigate
         this.currentPath.setCurrentPathIndex(getNextPoint());
 
         if (!((canFly || canSwim && theEntity.isInWater()) && !theEntity.onGround))
+        {
             for (int j = this.currentPath.getCurrentPathIndex(); j < this.currentPath.getCurrentPathLength(); ++j)
             {
-            if (this.currentPath.getPathPointFromIndex(j).yCoord != (int) vec3.yCoord)
-            {
-            i = j;
-            break;
+                if (this.currentPath.getPathPointFromIndex(j) == null) break;
+                if (this.currentPath.getPathPointFromIndex(j).yCoord != (int) vec3.yCoord)
+                {
+                    i = j;
+                    break;
+                }
             }
-            }
+        }
 
         int k;
 

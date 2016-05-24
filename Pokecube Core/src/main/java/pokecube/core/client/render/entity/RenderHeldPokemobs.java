@@ -24,7 +24,7 @@ public class RenderHeldPokemobs implements LayerRenderer<EntityPlayer>
             float scale)
     {
         // TODO make this work for multiple passengers
-        if (!player.isBeingRidden() && !(player.getPassengers().get(0) instanceof IPokemob)) return;
+        if (!player.isBeingRidden() || !(player.getPassengers().get(0) instanceof IPokemob)) return;
 
         EntityLivingBase entity = (EntityLivingBase) player.getPassengers().get(0);
 

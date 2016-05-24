@@ -196,6 +196,10 @@ public class Config extends ConfigBase
     public boolean             guiDown               = true;
     @Configure(category = client)
     public boolean             autoSelectMoves       = false;
+    @Configure(category = client)
+    public boolean             autoRecallPokemobs     = false;
+    @Configure(category = client)
+    public int                 autoRecallDistance     = 32;
 
     @Configure(category = advanced)
     String[]                   mystLocs              = {};

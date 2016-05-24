@@ -1,4 +1,4 @@
-package pokecube.core.blocks;
+package pokecube.core.blocks.repel;
 
 import java.util.Random;
 

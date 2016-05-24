@@ -228,11 +228,11 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void clientTick(TickEvent.PlayerTickEvent event)
     {
-        if (!PokecubeMod.core.getConfig().autoSelectMoves || event.phase == Phase.START
-                || lastSetTime >= System.currentTimeMillis())
+        if (!(PokecubeMod.core.getConfig().autoSelectMoves || PokecubeMod.core.getConfig().autoRecallPokemobs)
+                || event.phase == Phase.START || lastSetTime >= System.currentTimeMillis())
             return;
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
-        if (pokemob != null)
+        if (pokemob != null && PokecubeMod.core.getConfig().autoSelectMoves)
         {
             Entity target = ((EntityLiving) pokemob).getAttackTarget();
             if (target != null && !pokemob.getPokemonAIState(IMoveConstants.MATING))
@@ -241,6 +241,17 @@ public class EventsHandlerClient
                 {
                     setMostDamagingMove(pokemob, target);
                     lastSetTime = System.currentTimeMillis() + 1000;
+                }
+            }
+        }
+        if (PokecubeMod.core.getConfig().autoRecallPokemobs)
+        {
+            IPokemob[] pokemobs = GuiDisplayPokecubeInfo.instance().getPokemobsToDisplay();
+            for (IPokemob mob : pokemobs)
+            {
+                if (event.player.getDistanceToEntity((Entity) mob) > PokecubeMod.core.getConfig().autoRecallDistance)
+                {
+                    mob.returnToPokecube();
                 }
             }
         }

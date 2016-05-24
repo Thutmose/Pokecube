@@ -1,0 +1,25 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+	    "transform":"forge:default-block"
+	},
+	"variants": {
+	    "type": {
+           "cheri": { "model": "pokecube:cheriFruit" },
+           "chesto": { "model": "pokecube:chestoFruit" },
+           "pecha": { "model": "pokecube:pechaFruit" },
+           "rawst": { "model": "pokecube:rawstFruit" },
+           "aspear": { "model": "pokecube:aspearFruit" },
+           "leppa": { "model": "pokecube:leppaFruit" },
+           "oran": { "model": "pokecube:oranFruit" },
+           "persim": { "model": "pokecube:persimFruit" },
+           "lum": { "model": "pokecube:lumFruit" },
+           "sitrus": { "model": "pokecube:sitrusFruit" },
+           "nanab": { "model": "pokecube:nanabFruit" },
+           "cornn": { "model": "pokecube:cornnFruit" },
+           "enigma": { "model": "pokecube:engimaFruit" },
+           "jaboca": { "model": "pokecube:jabocaFruit" },
+           "rowap": { "model": "pokecube:rowapFruit" }
+        }
+    }
+}

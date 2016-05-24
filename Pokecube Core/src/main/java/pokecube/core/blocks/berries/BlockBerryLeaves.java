@@ -7,6 +7,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.BlockPlanks.EnumType;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -22,9 +23,10 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.blocks.berries.TileEntityBerries.Type;
 import pokecube.core.interfaces.PokecubeMod;
 
-public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
+public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock, ITileEntityProvider
 {
     public static final PropertyEnum<BlockBerryWood.EnumType> VARIANT4 = PropertyEnum
             .create("variant", BlockBerryWood.EnumType.class, new Predicate<BlockBerryWood.EnumType>()
@@ -66,6 +68,12 @@ public class BlockBerryLeaves extends BlockLeaves implements IMetaBlock
     {
         IProperty<?> prop = (BlockBerryLog.currentlyConstructing == 0 ? VARIANT0 : VARIANT4);
         return new BlockState(this, new IProperty[] { prop, CHECK_DECAY, DECAYABLE });
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta)
+    {
+        return new TileEntityBerries(Type.LEAF);
     }
 
     @Override

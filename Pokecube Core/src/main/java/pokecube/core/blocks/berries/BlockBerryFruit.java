@@ -3,35 +3,40 @@ package pokecube.core.blocks.berries;
 import java.util.Random;
 
 import net.minecraft.block.BlockBush;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
+import pokecube.core.blocks.berries.TileEntityBerries.Type;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.items.berries.BerryManager;
 
 /** @author Oracion
  * @author Manchou */
-public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
+public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITileEntityProvider
 {
-
     public static int renderID;
     public int        berryIndex = 0;
     String            berryName  = "";
 
-    public BlockBerryFruit(int par1)
+    public BlockBerryFruit()
     {
         super();
         this.setCreativeTab(null);
         this.setTickRandomly(true);
         float var3 = 0.4F;
         this.setBlockBounds(0.5F - var3, 0F, 0.5F - var3, 0.5F + var3, 0.7F, 0.5F + var3);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(BerryManager.type, "cheri"));
     }
 
     /** Can this block stay at this position. Similar to canPlaceBlockAt except
@@ -42,6 +47,12 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
         if (BlockBerryCrop.trees.contains(
                 berryIndex)) { return worldIn.getBlockState(pos.up()).getBlock().isLeaves(worldIn, pos.up()); }
         return worldIn.getBlockState(pos.down()).getBlock() instanceof BlockBerryCrop;
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta)
+    {
+        return new TileEntityBerries(Type.FRUIT);
     }
 
     @Override
@@ -72,8 +83,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
             double d0 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
             double d1 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
             double d2 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
-            EntityItem entityitem = new EntityItem(p_149642_1_, p_149642_2_ + d0, p_149642_3_ + d1,
-                    p_149642_4_ + d2, p_149642_5_);
+            EntityItem entityitem = new EntityItem(p_149642_1_, p_149642_2_ + d0, p_149642_3_ + d1, p_149642_4_ + d2,
+                    p_149642_5_);
             p_149642_1_.spawnEntityInWorld(entityitem);
         }
     }
@@ -86,7 +97,10 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
     @Override
     public ItemStack getBerryStack(IBlockAccess world, int x, int y, int z)
     {
-        return BerryManager.getBerryItem(berryName);
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(new BlockPos(x, y, z));
+        return BerryManager.getBerryItem(BerryManager.berryNames.get(tile.getBerryId()));
+
+        // return BerryManager.getBerryItem(berryName);
     }
 
     /** Returns the ID of the items to drop on destruction. */
@@ -105,7 +119,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
      *         should be added. */
     public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
     {
-        return BerryManager.getBerryItem(berryName);
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        return BerryManager.getBerryItem(tile.getBerryId());
     }
 
     /** Returns the quantity of items to drop on block destruction. */
@@ -138,5 +153,27 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock
         {
             super.setBlockBoundsBasedOnState(worldIn, pos);
         }
+    }
+
+    /** Convert the BlockState into the correct metadata value */
+    public int getMetaFromState(IBlockState state)
+    {
+        return 0;
+    }
+
+    @Override
+    /** Get the actual Block state of this Block at the given position. This
+     * applies properties not visible in the metadata, such as fence
+     * connections. */
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
+        return state.withProperty(BerryManager.type, BerryManager.berryNames.get(tile.getBerryId()));
+    }
+
+    @Override
+    protected BlockState createBlockState()
+    {
+        return new BlockState(this, new IProperty[] { BerryManager.type });
     }
 }

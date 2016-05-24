@@ -3,19 +3,14 @@
  */
 package pokecube.core.items.berries;
 
-import static pokecube.core.PokecubeItems.registerItemTexture;
-
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -24,28 +19,51 @@ import pokecube.core.interfaces.IPokemob;
  * @author Manchou */
 public class BerryManager implements IMoveConstants
 {
+    public static final IProperty<String> type          = new IProperty<String>()
+                                                        {
+                                                            @Override
+                                                            public String getName()
+                                                            {
+                                                                return "type";
+                                                            }
 
+                                                            @Override
+                                                            public Collection<String> getAllowedValues()
+                                                            {
+                                                                return BerryManager.berryNames.values();
+                                                            }
+
+                                                            @Override
+                                                            public Class<String> getValueClass()
+                                                            {
+                                                                return String.class;
+                                                            }
+
+                                                            @Override
+                                                            public String getName(String value)
+                                                            {
+                                                                return value;
+                                                            }
+                                                        };
+
+    public static Block                   berryFruit;
+    public static Block                   berryCrop;
+    public static Block                   berryLog;
+    public static Block                   berryLeaf;
     /** Map of berry id -> block of crop */
-    public static Map<Integer, Block>  berryCrops    = new HashMap<Integer, Block>();
+    public static Map<Integer, Block>     berryCrops    = new HashMap<Integer, Block>();
     /** Map of berry id -> block of fruit */
-    public static Map<Integer, Block>  berryFruits   = new HashMap<Integer, Block>();
+    public static Map<Integer, Block>     berryFruits   = new HashMap<Integer, Block>();
     /** Map of berry id -> name of berry */
-    public static Map<Integer, String> berryNames    = new HashMap<Integer, String>();
+    public static Map<Integer, String>    berryNames    = new HashMap<Integer, String>();
     /** Map of berry id -> flavours of berry, see {@link IMoveConstants.SPICY}
      * for the indecies of the array */
-    public static Map<Integer, int[]>  berryFlavours = new HashMap<Integer, int[]>();
+    public static Map<Integer, int[]>     berryFlavours = new HashMap<Integer, int[]>();
 
     public static void addBerry(String name, int id, int spicy, int dry, int sweet, int bitter, int sour)
     {
         berryNames.put(id, name);
         berryFlavours.put(id, new int[] { spicy, dry, sweet, bitter, sour });
-
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            ModelBakery.registerItemVariants(PokecubeItems.berries, new ResourceLocation("pokecube:" + name + "Berry"));
-            registerItemTexture(PokecubeItems.berries, id,
-                    new ModelResourceLocation("pokecube:" + name + "Berry", "inventory"));
-        }
         PokecubeItems.addSpecificItemStack(name + "berry", new ItemStack(PokecubeItems.berries, 1, id));
         PokecubeItems.addSpecificItemStack(name, new ItemStack(PokecubeItems.berries, 1, id));
         PokecubeItems.addToHoldables(name);
@@ -121,6 +139,11 @@ public class BerryManager implements IMoveConstants
             if (berryCrop.getUnlocalizedName().toLowerCase().contains(name.toLowerCase())) return berryCrop;
         }
         return null;
+    }
+
+    public static ItemStack getBerryItem(int id)
+    {
+        return getBerryItem(berryNames.get(id));
     }
 
     public static ItemStack getBerryItem(String name)

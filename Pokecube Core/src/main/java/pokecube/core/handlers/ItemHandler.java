@@ -49,11 +49,13 @@ import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.blocks.berries.BerryPlantManager;
+import pokecube.core.blocks.berries.BlockBerryCrop;
+import pokecube.core.blocks.berries.BlockBerryFruit;
 import pokecube.core.blocks.berries.BlockBerryLeaves;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.berries.ItemBlockMeta;
+import pokecube.core.blocks.berries.TileEntityBerries;
 import pokecube.core.blocks.fossil.BlockFossilStone;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.blocks.nests.BlockNest;
@@ -104,10 +106,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
     {
         berries = new ItemBerry().setCreativeTab(PokecubeMod.creativeTabPokecubeBerries).setUnlocalizedName("berry");
         register(berries, "berry");
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            registerItemTexture(PokecubeItems.berries, 0, new ModelResourceLocation("pokecube:berry", "inventory"));
-        }
+        GameRegistry.registerTileEntity(TileEntityBerries.class, "pokecube:berries");
         BerryManager.addBerry("cheri", 1, 10, 0, 0, 0, 0);// Cures Paralysis
         BerryManager.addBerry("chesto", 2, 0, 10, 0, 0, 0);// Cures sleep
         BerryManager.addBerry("pecha", 3, 0, 0, 10, 0, 0);// Cures poison
@@ -139,26 +138,18 @@ public class ItemHandler extends Mod_Pokecube_Helper
                                                             // hit by a special
                                                             // move
 
-        BerryPlantManager.addBerry("cheri", 1);// Cures Paralysis
-        BerryPlantManager.addBerry("chesto", 2);// Cures sleep
-        BerryPlantManager.addBerry("pecha", 3);// Cures poison
-        BerryPlantManager.addBerry("rawst", 4);// Cures burn
-        BerryPlantManager.addBerry("aspear", 5);// Cures freeze
-        BerryPlantManager.addBerry("leppa", 6);// Restores 10PP
-        BerryPlantManager.addBerry("oran", 7);// Restores 10HP
-        BerryPlantManager.addBerry("persim", 8);// Cures confusion
-        BerryPlantManager.addBerry("lum", 9);// Cures any status ailment
-        BerryPlantManager.addBerry("sitrus", 10);// Restores 1/4 HP
-        BerryPlantManager.addBerry("nanab", 18);// Pokeblock ingredient
-        BerryPlantManager.addBerry("pinap", 20);// Pokeblock ingredient
-        BerryPlantManager.addBerry("cornn", 27);// Pokeblock ingredient
-        BerryPlantManager.addBerry("enigma", 60);// Restores 1/4 of HP
-        BerryPlantManager.addBerry("jaboca", 63);// 4th gen. Causes recoil
-                                                 // damage on foe if holder is
-                                                 // hit by a physical move
-        BerryPlantManager.addBerry("rowap", 64);// 4th gen. Causes recoil damage
-                                                // on foe if holder is hit by a
-                                                // special move
+        BerryManager.berryCrop = new BlockBerryCrop().setRegistryName("pokecube", "berrycrop")
+                .setUnlocalizedName("berrycrop");
+        register(BerryManager.berryCrop);
+        BerryManager.berryFruit = new BlockBerryFruit().setRegistryName("pokecube", "berryfruit")
+                .setUnlocalizedName("berryfruit");
+        register(BerryManager.berryFruit);
+        TreeRemover.plantTypes.add(BerryManager.berryFruit);
+
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            registerItemTexture(PokecubeItems.berries, 0, new ModelResourceLocation("pokecube:berry", "inventory"));
+        }
 
         String[] names = { "pecha", "oran", "leppa", "sitrus" };
         BlockBerryLog.currentlyConstructing = 0;

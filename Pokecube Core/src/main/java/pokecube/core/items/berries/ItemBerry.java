@@ -16,6 +16,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.blocks.berries.TileEntityBerries;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
@@ -132,9 +133,9 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
         int index = stack.getItemDamage();
         if (i == Blocks.farmland)
         {
-            worldIn.setBlockState(pos.up(), BerryManager.berryCrops.get(index).getStateFromMeta(0), 3);
-
-            stack.stackSize--;
+            worldIn.setBlockState(pos.up(), BerryManager.berryCrop.getStateFromMeta(0));
+            TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos.up());
+            tile.setBerryId(index);
         }
         return true;
     }

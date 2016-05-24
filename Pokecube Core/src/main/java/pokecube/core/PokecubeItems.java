@@ -44,6 +44,7 @@ public class PokecubeItems extends Items
         }
 
     }
+
     static HashMap<String, ItemStack>         itemstacks     = new HashMap<String, ItemStack>();
     static HashMap<String, Item>              items          = new HashMap<String, Item>();
 
@@ -111,7 +112,7 @@ public class PokecubeItems extends Items
 
     public static Block                       tradingtable;
 
-    public static boolean resetTimeTags = false;
+    public static boolean                     resetTimeTags  = false;
 
     /** Registers a pokecube id, the Object[] is an array with the item or block
      * assosicated with the unfilled and filled cubes. example: Object cubes =
@@ -389,6 +390,11 @@ public class PokecubeItems extends Items
 
     public static ItemStack getStack(String name, boolean stacktrace)
     {
+        if (name == null)
+        {
+            if (stacktrace) Thread.dumpStack();
+            return null;
+        }
         name = name.toLowerCase().trim();
         if (itemstacks.get(name) != null) return itemstacks.get(name).copy();
 
@@ -602,11 +608,25 @@ public class PokecubeItems extends Items
     {
         if (o instanceof Block)
         {
-            register(o, ((Block) o).getUnlocalizedName().substring(5));
+            if (((Block) o).getRegistryName() != null)
+            {
+                register(o, ((Block) o).getRegistryName());
+            }
+            else
+            {
+                register(o, ((Block) o).getUnlocalizedName().substring(5));
+            }
         }
         if (o instanceof Item)
         {
-            register(o, ((Item) o).getUnlocalizedName().substring(5));
+            if (((Item) o).getRegistryName() != null)
+            {
+                register(o, ((Item) o).getRegistryName());
+            }
+            else
+            {
+                register(o, ((Item) o).getUnlocalizedName().substring(5));
+            }
         }
     }
 

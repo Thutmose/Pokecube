@@ -2,6 +2,7 @@ package pokecube.adventures.client;
 
 import static pokecube.adventures.handlers.BlockHandler.afa;
 import static pokecube.adventures.handlers.BlockHandler.cloner;
+import static pokecube.adventures.handlers.BlockHandler.siphon;
 import static pokecube.adventures.handlers.BlockHandler.warppad;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 
@@ -159,6 +160,9 @@ public class ClientProxy extends CommonProxy
 
         registerItemTexture(Item.getItemFromBlock(warppad), 0,
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));
+
+        registerItemTexture(Item.getItemFromBlock(siphon), 0,
+                new ModelResourceLocation("pokecube_adventures:siphon", "inventory"));
 
         StateMap map = (new StateMap.Builder()).withName(LegendaryConditions.spawner1.TYPE).withSuffix("_spawner")
                 .build();

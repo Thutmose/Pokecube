@@ -144,6 +144,27 @@ public class Config extends ConfigBase
     public String              terrains              = "";
     @Configure(category = world)
     public String              industrial            = "";
+    @Configure(category = world)
+    public boolean             useConfigForBerryLocations = false;
+    @Configure(category = world)
+    public String[]                   berryLocations             = { // @formatter:off
+                                                            "cheri:TWplains,Bsavanna'Svillage", 
+                                                            "chesto:TWforest,Bconiferous",
+                                                            "pecha:TWforest,Bconiferous",
+                                                            "rawst:TWmountain,Whills'TWnether'Scave",
+                                                            "aspear:TWforest,Bconiferous",
+                                                            "leppa:TWplains,Bsavanna",
+                                                            "oran:TWforest,Whills,Bconiferous'Sall",
+                                                            "persim:TWswamp",
+                                                            "lum:TWjungle,Bhills",
+                                                            "sitrus:TWjungle,Whills",
+                                                            "nanab:TWjungle,Bhills'TWbeach,Bcold'TWocean,Bcold",
+                                                            "pinap:TWjungle",
+                                                            "cornn:TWswamp",
+                                                            "enigma:TWend",
+                                                            "jaboca:TWmountain,Whills",
+                                                            "rowap:TWforest,Wconiferous",
+                                                         };// @formatter:on
 
     // Mob Spawning settings
     @Configure(category = spawning)
@@ -232,9 +253,11 @@ public class Config extends ConfigBase
         super(null);
     }
 
+    private static Config defaults = null;
+
     public Config(File path)
     {
-        super(path, new Config());
+        super(path,defaults = new Config());
         instance = this;
         MinecraftForge.EVENT_BUS.register(this);
         populateSettings();
@@ -245,6 +268,7 @@ public class Config extends ConfigBase
     @Override
     public void applySettings()
     {
+        if(!useConfigForBerryLocations) berryLocations = defaults.berryLocations;
         SpawnHandler.MAX_DENSITY = mobDensityMultiplier;
         SpawnHandler.MAXNUM = mobSpawnNumber;
         if (breedingDelay < 600) breedingDelay = 1000;

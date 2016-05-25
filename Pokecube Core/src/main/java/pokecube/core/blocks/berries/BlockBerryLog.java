@@ -84,7 +84,6 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 	{
 		super();
 		woodType = names;
-		BlockBerryCrop.logs.add(this);
 		shift = logShift;
 
 		IBlockState state = this.blockState.getBaseState();

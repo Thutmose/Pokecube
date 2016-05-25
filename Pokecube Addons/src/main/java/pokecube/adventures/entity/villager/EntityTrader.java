@@ -9,7 +9,6 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +26,7 @@ import net.minecraft.world.World;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.core.PokecubeItems;
-import pokecube.core.items.vitamins.VitaminManager;
+import pokecube.core.items.vitamins.ItemVitamin;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
 
@@ -70,10 +69,9 @@ public class EntityTrader extends EntityVillager
         trade.stackSize = 1;
         list.add(new MerchantRecipe(emeralds.copy(), trade.copy()));
         emeralds.stackSize = 4;
-        for (Item vitamin : VitaminManager.vitaminItems.values())
+        for (String s: ItemVitamin.vitamins)
         {
-            trade = new ItemStack(vitamin);
-            list.add(new MerchantRecipe(emeralds.copy(), trade.copy()));
+            list.add(new MerchantRecipe(emeralds.copy(), PokecubeItems.getStack(s)));
         }
     }
 

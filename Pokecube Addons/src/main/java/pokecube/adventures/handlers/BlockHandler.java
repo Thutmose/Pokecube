@@ -9,6 +9,8 @@ import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.cloner.BlockCloner;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.blocks.legendary.BlockLegendSpawner;
+import pokecube.adventures.blocks.rf.BlockSiphon;
+import pokecube.adventures.blocks.rf.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.core.PokecubeItems;
@@ -20,6 +22,7 @@ public class BlockHandler
     public static Block warppad;
     public static Block cloner;
     public static Block afa;
+    public static Block siphon;
 
     public static void registerBlocks()
     {
@@ -37,6 +40,11 @@ public class BlockHandler
         afa.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         PokecubeItems.register(afa, "afa");
         GameRegistry.registerTileEntity(TileEntityAFA.class, "afa");
+        
+        siphon = new BlockSiphon().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
+                .setUnlocalizedName("pokesiphon");
+        PokecubeItems.register(siphon, "pokesiphon");
+        GameRegistry.registerTileEntity(TileEntitySiphon.class, "pokesiphon");
 
         LegendaryConditions.spawner1 = new BlockLegendSpawner();
         LegendaryConditions.spawner1.setUnlocalizedName("legendSpawner");

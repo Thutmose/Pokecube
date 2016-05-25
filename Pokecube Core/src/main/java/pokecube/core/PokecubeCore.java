@@ -76,6 +76,7 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.utils.AISaveHandler;
+import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.commands.Commands;
 import pokecube.core.commands.GiftCommand;
@@ -754,6 +755,7 @@ public class PokecubeCore extends PokecubeMod
     public void serverStop(FMLServerStoppingEvent event)
     {
         PokemobAIThread.clear();
+        BerryGenManager.berryLocations.clear();
     }
 
     @Override

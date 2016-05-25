@@ -2,6 +2,8 @@ package pokecube.core.ai.thread.aiRunnables;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
@@ -10,7 +12,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
+import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -23,6 +27,29 @@ import thut.api.maths.Vector3;
 
 public class AIHungry extends AIBase
 {
+
+    private static class GenBerries implements IRunnable
+    {
+        final IPokemob pokemob;
+
+        public GenBerries(IPokemob mob)
+        {
+            pokemob = mob;
+        }
+
+        @Override
+        public boolean run(World world)
+        {
+            ItemStack stack = BerryGenManager.getRandomBerryForBiome(world, ((Entity) pokemob).getPosition());
+            if (stack != null)
+            {
+                AIStoreStuff.addItemStackToInventory(stack, pokemob.getPokemobInventory(), 2);
+                ((IHungrymob) pokemob).eat(new EntityItem(world, 0, 0, 0, stack));
+            }
+            return true;
+        }
+
+    }
 
     final EntityLiving entity;
     // final World worldObj;
@@ -48,8 +75,7 @@ public class AIHungry extends AIBase
 
     protected void eatBerry(Block block, double distance)
     {
-        ItemStack fruit = ((IBerryFruitBlock) block).getBerryStack(world, foodLoc.intX(), foodLoc.intY(),
-                foodLoc.intZ());
+        ItemStack fruit = ((IBerryFruitBlock) block).getBerryStack(world, foodLoc.getPos());
 
         if (fruit == null)
         {
@@ -90,7 +116,7 @@ public class AIHungry extends AIBase
         }
     }
 
-    protected void eatPlant(Block plant, double dist)
+    protected void eatPlant(Block plant, Vector3 location, double dist)
     {
         double diff = 2;
         diff = Math.max(diff, entity.width);
@@ -100,8 +126,8 @@ public class AIHungry extends AIBase
             berry.setEntityItemStack(new ItemStack(plant));
             hungrymob.eat(berry);
             TickHandler.addBlockChange(foodLoc, entity.dimension,
-                    plant.getMaterial(plant.getDefaultState()) == Material.GRASS ? Blocks.DIRT : Blocks.AIR);
-            if (plant.getMaterial(plant.getDefaultState()) != Material.GRASS)
+                    location.getBlockState(world).getMaterial() == Material.GRASS ? Blocks.DIRT : Blocks.AIR);
+            if (location.getBlockState(world).getMaterial() != Material.GRASS)
             {
                 for (ItemStack stack : plant.getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0))
                     toRun.addElement(new InventoryChange(entity, 2, stack, true));
@@ -155,7 +181,7 @@ public class AIHungry extends AIBase
         }
     }
 
-    protected void eatRocks(Block rock, double dist)
+    protected void eatRocks(Block rock, Vector3 location, double dist)
     {
         double diff = 2;
         diff = Math.max(diff, entity.width);
@@ -171,7 +197,7 @@ public class AIHungry extends AIBase
                 {
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.AIR);
                 }
-                else if (rock.getMaterial(rock.getDefaultState()) == Material.ROCK)
+                else if (location.getBlockState(world).getMaterial() == Material.ROCK)
                 {
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.COBBLESTONE);
                 }
@@ -189,7 +215,8 @@ public class AIHungry extends AIBase
             block = false;
             v.set(hungrymob).add(0, entity.height, 0);
 
-            Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeMod.core.getConfig().getRocks());
+            Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
+                    PokecubeMod.core.getConfig().getRocks());
             if (temp != null)
             {
                 block = true;
@@ -248,9 +275,11 @@ public class AIHungry extends AIBase
         if (hungrymob.isLithotroph())
         {
             Block b = v.getBlock(world, EnumFacing.DOWN);
+            IBlockState state = v.offset(EnumFacing.DOWN).getBlockState(world);
             if (!PokecubeMod.core.getConfig().getRocks().contains(b) || b == Blocks.GRAVEL)
             {
-                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeMod.core.getConfig().getRocks());
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
+                        PokecubeMod.core.getConfig().getRocks());
                 if (temp != null)
                 {
                     block = true;
@@ -271,7 +300,7 @@ public class AIHungry extends AIBase
                     {
                         TickHandler.addBlockChange(v, entity.dimension, Blocks.AIR);
                     }
-                    else if (b.getMaterial(b.getDefaultState()) == Material.ROCK)
+                    else if (state.getMaterial() == Material.ROCK)
                     {
                         TickHandler.addBlockChange(v, entity.dimension, Blocks.COBBLESTONE);
                     }
@@ -368,15 +397,6 @@ public class AIHungry extends AIBase
 
         if (foodLoc.isEmpty())
         {
-            if (!block && hungrymob.eatsBerries())
-            {
-                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
-                if (temp != null)
-                {
-                    block = true;
-                    foodLoc.set(temp);
-                }
-            }
             if (!block && hungrymob.isHerbivore())
             {
                 Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
@@ -399,6 +419,24 @@ public class AIHungry extends AIBase
                 {
                     block = true;
                     foodLoc.set(temp);
+                }
+            }
+            if (!block && hungrymob.eatsBerries())
+            {
+                if (pokemob.getPokemonAIState(IMoveConstants.TAMED))
+                {
+                    Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
+                    if (temp != null)
+                    {
+                        block = true;
+                        foodLoc.set(temp);
+                    }
+                }
+                else
+                {
+                    hungrymob.setHungerCooldown(10);
+                    toRun.add(new GenBerries(pokemob));
+                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                 }
             }
         }
@@ -438,11 +476,12 @@ public class AIHungry extends AIBase
             {
                 if (PokecubeItems.grasses.contains(b))
                 {
-                    eatPlant(b, d);
+                    eatPlant(b, foodLoc, d);
                 }
-                else if ((PokecubeMod.core.getConfig().getRocks().contains(b) || b == Blocks.GRAVEL) && hungrymob.isLithotroph())
+                else if ((PokecubeMod.core.getConfig().getRocks().contains(b) || b == Blocks.GRAVEL)
+                        && hungrymob.isLithotroph())
                 {
-                    eatRocks(b, d);
+                    eatRocks(b, foodLoc, d);
                 }
             }
             else
@@ -456,7 +495,7 @@ public class AIHungry extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        if (world == null || pokemob.isAncient() || entity.getAttackTarget()!=null) return false;
+        if (world == null || pokemob.isAncient() || entity.getAttackTarget() != null) return false;
 
         hungrymob.setHungerCooldown(hungrymob.getHungerCooldown() - 1);
         hungrymob.setHungerTime(hungrymob.getHungerTime() + 1);

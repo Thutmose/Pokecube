@@ -17,7 +17,6 @@ public class ItemMegastone extends Item
     public ItemMegastone()
     {
         super();
-        this.setMaxStackSize(1);
         this.setHasSubtypes(true);
     }
 

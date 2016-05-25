@@ -1,6 +1,6 @@
 package pokecube.core.blocks.berries;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -18,36 +18,16 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.event.terraingen.TerrainGen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.TileEntityBerries.Type;
 import pokecube.core.items.berries.BerryManager;
-import pokecube.core.world.gen.WorldGenBerries;
 
 /** @author Oracion
  * @author Manchou */
 public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
 {
-
-    static ArrayList<Integer>                 trees  = new ArrayList<Integer>();
-    public static ArrayList<BlockBerryLeaves> leaves = new ArrayList<BlockBerryLeaves>();
-
-    public static ArrayList<BlockBerryLog>    logs   = new ArrayList<BlockBerryLog>();
-    static
-    {
-        trees.add(3);
-        trees.add(6);
-        trees.add(7);
-        trees.add(10);
-        trees.add(18);
-        trees.add(60);
-    }
-    int    berryIndex = 0;
-
-    String berryName  = "";
-
     public BlockBerryCrop()
     {
         super();
@@ -79,13 +59,6 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
     }
 
     @Override
-    /** Get the damage value that this Block should drop */
-    public int damageDropped(IBlockState state)
-    {//TODO find location senstive version of this.
-        return berryIndex;
-    }
-
-    @Override
     /**
      * Get the actual Block state of this Block at the given position. This applies properties not visible in the
      * metadata, such as fence connections.
@@ -97,21 +70,38 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
         if(name==null) name = "cheri";
         return state.withProperty(BerryManager.type, name);
     }
-
-    public String getBerryName()
+    @Override
+    /**
+     * This returns a complete list of items dropped from this block.
+     *
+     * @param world The current world
+     * @param pos Block position in world
+     * @param state Current state
+     * @param fortune Breakers fortune level
+     * @return A ArrayList containing all items this block drops
+     */
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
     {
-        return berryName;
+        List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
+
+        Random rand = world instanceof World ? ((World)world).rand : RANDOM;
+
+        int count = quantityDropped(state, fortune, rand);
+        for(int i = 0; i < count; i++)
+        {
+            TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+            ItemStack stack = BerryManager.getBerryItem(BerryManager.berryNames.get(tile.getBerryId()));
+            if (stack != null)
+            {
+                ret.add(stack);
+            }
+        }
+        return ret;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public Item getItem(World worldIn, BlockPos pos)
-    {
-        return PokecubeItems.berries;
-    }
-
-    @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune)
     {
         return PokecubeItems.berries;
     }
@@ -136,47 +126,11 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
         tile.growCrop();
     }
 
-    /** Attempts to grow a sapling into a tree */
-    public void growTree(World par1World, BlockPos pos, IBlockState wood, IBlockState leaves)
-    {
-        if (!TerrainGen.saplingGrowTree(par1World, par1World.rand, pos)) return;
-
-        WorldGenBerries object = new WorldGenBerries();
-
-        par1World.setBlockState(pos, wood);
-
-        if (isPalm())
-        {
-            object.generatePalmTree(par1World, par1World.rand, pos, wood, leaves);
-        }
-        else
-        {
-            object.generateTree(par1World, par1World.rand, pos, wood, leaves);
-        }
-    }
-
-    private boolean isPalm()
-    {
-        boolean ret = false;
-        ret = ret || berryIndex == 18;
-        return ret;
-    }
-
     /** Returns the quantity of items to drop on block destruction. */
     @Override
     public int quantityDropped(Random par1Random)
     {
         return 1;
-    }
-
-    public void setBerry(String berryName)
-    {
-        this.berryName = berryName;
-    }
-
-    public void setBerryIndex(int berryId)
-    {
-        this.berryIndex = berryId;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package pokecube.adventures.entity.trainers;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
@@ -24,7 +23,6 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.vitamins.ItemVitamin;
-import pokecube.core.items.vitamins.VitaminManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
@@ -54,11 +52,11 @@ public class EntityPokemartSeller extends EntityTrainer
             added.add(trade);
             itemList.add(trade.getTrade());
         }
-        for (Map.Entry<Integer, ItemVitamin> entry : VitaminManager.vitaminItems.entrySet())
+        for (String s: ItemVitamin.vitamins)
         {
             ItemStack in = new ItemStack(Items.emerald);
             in.stackSize = Config.instance.vitaminCost;
-            itemList.add(new MerchantRecipe(in, new ItemStack(entry.getValue())));
+            itemList.add(new MerchantRecipe(in, PokecubeItems.getStack(s)));
         }
         num = HeldItemHandler.megaVariants.size();
         for (int i = 0; i < num; i++)

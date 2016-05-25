@@ -4,12 +4,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-/**
- * have blocks which are to be eaten by pokemon as berries implement this interface.
+/** have blocks which are to be eaten by pokemon as berries implement this
+ * interface.
  * 
- * @author Thutmose
- *
- */
-public interface IBerryFruitBlock {
-	public ItemStack getBerryStack(IBlockAccess world, BlockPos pos);
+ * @author Thutmose */
+public interface IBerryFruitBlock
+{
+    public ItemStack getBerryStack(IBlockAccess world, BlockPos pos);
 }

@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "transform": "forge:default-tool"
+  },
+  "variants": {
+    "type": {
+      "hpup": {"textures": {"layer0": "pokecube:items/hpup"}},
+      "protein": {"textures": {"layer0": "pokecube:items/protein"}},
+      "iron": {"textures": {"layer0": "pokecube:items/iron"}},
+      "calcium": {"textures": {"layer0": "pokecube:items/calcium"}},
+      "zinc": {"textures": {"layer0": "pokecube:items/zinc"}},
+      "carbos": {"textures": {"layer0": "pokecube:items/carbos"}}
+    }
+  }
+}

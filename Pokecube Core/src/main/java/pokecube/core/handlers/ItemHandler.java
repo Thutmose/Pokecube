@@ -52,7 +52,6 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BlockBerryCrop;
 import pokecube.core.blocks.berries.BlockBerryFruit;
 import pokecube.core.blocks.berries.BlockBerryLeaf;
-import pokecube.core.blocks.berries.BlockBerryLeaves;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.berries.ItemBlockMeta;
@@ -90,7 +89,7 @@ import pokecube.core.items.pokecubes.Pokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.items.revive.ItemRevive;
-import pokecube.core.items.vitamins.VitaminManager;
+import pokecube.core.items.vitamins.ItemVitamin;
 import pokecube.core.moves.TreeRemover;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -100,8 +99,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
     public static Block log0;
     public static Block log1;
     public static Block plank0;
-    public static Block leaf0;
-    public static Block leaf1;
 
     private static void addBerries()
     {
@@ -160,24 +157,18 @@ public class ItemHandler extends Mod_Pokecube_Helper
         BlockBerryLog.currentlyConstructing = 0;
         log0 = new BlockBerryLog(0, names).setHardness(2.0F).setStepSound(Block.soundTypeWood)
                 .setUnlocalizedName("log0");
-        leaf0 = new BlockBerryLeaves(0, names).setHardness(0.2F).setLightOpacity(1).setStepSound(Block.soundTypeGrass)
-                .setUnlocalizedName("leaves0");
         plank0 = new BlockBerryWood(0, names).setHardness(2.0F).setResistance(5.0F).setStepSound(Block.soundTypeWood)
                 .setUnlocalizedName("wood0");
 
         register(log0, ItemBlockMeta.class, "pokecube_log0");
         register(plank0, ItemBlockMeta.class, "pokecube_plank0");
-        register(leaf0, ItemBlockMeta.class, "pokecube_leaf0");
 
         names = new String[] { "enigma", "nanab" };
         BlockBerryLog.currentlyConstructing = 4;
         log1 = new BlockBerryLog(4, names).setHardness(2.0F).setStepSound(Block.soundTypeWood)
                 .setUnlocalizedName("log1");
-        leaf1 = new BlockBerryLeaves(4, names).setHardness(0.2F).setLightOpacity(1).setStepSound(Block.soundTypeGrass)
-                .setUnlocalizedName("leaves1");
 
         register(log1, ItemBlockMeta.class, "pokecube_log1");
-        register(leaf1, ItemBlockMeta.class, "pokecube_leaf1");
 
         for (int i = 0; i < 4; i++)
             GameRegistry.addShapelessRecipe(new ItemStack(plank0, 4, i), new ItemStack(log0, 1, i));
@@ -190,12 +181,10 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         OreDictionary.registerOre("plankWood", new ItemStack(plank0, 1, OreDictionary.WILDCARD_VALUE));
 
-        OreDictionary.registerOre("treeLeaves", new ItemStack(leaf1, 1, OreDictionary.WILDCARD_VALUE));
+        OreDictionary.registerOre("treeLeaves", new ItemStack(BerryManager.berryLeaf, 1, OreDictionary.WILDCARD_VALUE));
 
         TreeRemover.woodTypes.add(log1);
         TreeRemover.woodTypes.add(log0);
-        TreeRemover.plantTypes.add(leaf0);
-        TreeRemover.plantTypes.add(leaf1);
 
     }
 
@@ -657,12 +646,16 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addVitamins()
     {
-        VitaminManager.addVitamin("carbos", 1);
-        VitaminManager.addVitamin("zinc", 2);
-        VitaminManager.addVitamin("protein", 3);
-        VitaminManager.addVitamin("calcium", 4);
-        VitaminManager.addVitamin("hpup", 5);
-        VitaminManager.addVitamin("iron", 6);
+        Item vitamins = (new ItemVitamin()).setUnlocalizedName("vitamins");
+        vitamins.setCreativeTab(creativeTabPokecube);
+        register(vitamins, "vitamins");
 
+        for (String s : ItemVitamin.vitamins)
+        {
+            ItemStack stack = new ItemStack(vitamins);
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setString("vitamin", s);
+            PokecubeItems.addSpecificItemStack(s, stack);
+        }
     }
 }

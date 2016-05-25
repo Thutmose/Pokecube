@@ -64,11 +64,13 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     }
     
     @SideOnly(Side.CLIENT)
+    @Override
     public EnumWorldBlockLayer getBlockLayer()
     {
         return EnumWorldBlockLayer.CUTOUT_MIPPED;
     }
 
+    @Override
     public boolean isVisuallyOpaque()
     {
         return false;

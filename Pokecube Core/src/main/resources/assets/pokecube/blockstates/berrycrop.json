@@ -16,6 +16,7 @@
            "lum": { "model": "pokecube:lumCrop" },
            "sitrus": { "model": "pokecube:sitrusCrop" },
            "nanab": { "model": "pokecube:nanabCrop" },
+           "pinap": { "model": "pokecube:pinapCrop" },
            "cornn": { "model": "pokecube:cornnCrop" },
            "enigma": { "model": "pokecube:engimaCrop" },
            "jaboca": { "model": "pokecube:jabocaCrop" },

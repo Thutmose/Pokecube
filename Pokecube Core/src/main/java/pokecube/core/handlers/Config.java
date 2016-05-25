@@ -34,13 +34,13 @@ import thut.core.common.config.Configure;
 
 public class Config extends ConfigBase
 {
-    public static final String spawning               = "spawning";
-    public static final String database               = "database";
-    public static final String world                  = "generation";
-    public static final String mobAI                  = "ai";
-    public static final String misc                   = "misc";
-    public static final String client                 = "client";
-    public static final String advanced               = "advanced";
+    public static final String spawning                   = "spawning";
+    public static final String database                   = "database";
+    public static final String world                      = "generation";
+    public static final String mobAI                      = "ai";
+    public static final String misc                       = "misc";
+    public static final String client                     = "client";
+    public static final String advanced                   = "advanced";
 
     public static int          GUICHOOSEFIRSTPOKEMOB_ID;
     public static int          GUIDISPLAYPOKECUBEINFO_ID;
@@ -56,187 +56,210 @@ public class Config extends ConfigBase
 
     // Misc Settings
     @Configure(category = misc)
-    public String[]            defaultStarts          = {};
+    public String[]            defaultStarts              = {};
     @Configure(category = misc)
-    public boolean             contributorStarters    = true;
+    public boolean             contributorStarters        = true;
     @Configure(category = misc)
-    public boolean             loginmessage           = true;
+    public boolean             loginmessage               = true;
     @Configure(category = misc)
     /** is there a choose first gui on login */
-    public boolean             guiOnLogin             = true;
+    public boolean             guiOnLogin                 = true;
     @Configure(category = misc)
     /** does defeating a tame pokemob give exp */
-    public boolean             pvpExp                 = false;
+    public boolean             pvpExp                     = false;
     @Configure(category = misc)
-    public boolean             mysterygift            = true;
+    public boolean             mysterygift                = true;
     @Configure(category = misc)
-    public String              defaultMobs            = "";
+    public String              defaultMobs                = "";
     @Configure(category = misc)
-    protected boolean          tableRecipe            = true;
+    protected boolean          tableRecipe                = true;
     @Configure(category = misc)
-    public double              scalefactor            = 1;
+    public double              scalefactor                = 1;
 
     // AI Related settings
     @Configure(category = mobAI)
-    public int                 mateMultiplier         = 1;
+    public int                 mateMultiplier             = 1;
     @Configure(category = mobAI)
-    public int                 breedingDelay          = 4000;
+    public int                 breedingDelay              = 4000;
     @Configure(category = mobAI)
-    public int                 eggHatchTime           = 10000;
+    public int                 eggHatchTime               = 10000;
     @Configure(category = mobAI)
     /** do wild pokemobs which leave despawnRadius despawn immediately */
-    public boolean             cull                   = false;
+    public boolean             cull                       = false;
     @Configure(category = mobAI)
     /** Will lithovores eat gravel */
-    public boolean             pokemobsEatGravel      = false;
+    public boolean             pokemobsEatGravel          = false;
     @Configure(category = mobAI)
     /** Is there a warning before a wild pokémob attacks the player. */
-    public boolean             pokemobagresswarning   = true;
+    public boolean             pokemobagresswarning       = true;
     @Configure(category = mobAI)
     /** Distance to player needed to agress the player */
-    public int                 mobAggroRadius         = 3;
+    public int                 mobAggroRadius             = 3;
     @Configure(category = mobAI)
     /** Approximate number of ticks before pokémob starts taking hunger
      * damage */
-    public int                 pokemobLifeSpan        = 8000;
+    public int                 pokemobLifeSpan            = 8000;
     @Configure(category = mobAI)
     /** Capped damage to players by pokémobs */
-    public int                 maxPlayerDamage        = 10;
+    public int                 maxPlayerDamage            = 10;
     @Configure(category = mobAI)
     /** Warning time before a wild pokémob attacks a player */
-    public int                 pokemobagressticks     = 50;
+    public int                 pokemobagressticks         = 50;
     @Configure(category = mobAI)
     /** Number of threads allowed for AI. */
-    public int                 maxAIThreads           = 1;
+    public int                 maxAIThreads               = 1;
     @Configure(category = mobAI)
-    public boolean             pokemobsDamageOwner    = false;
+    public boolean             pokemobsDamageOwner        = false;
     @Configure(category = mobAI)
-    public boolean             pokemobsDamagePlayers  = true;
+    public boolean             pokemobsDamagePlayers      = true;
     @Configure(category = mobAI)
-    public boolean             pokemobsDamageBlocks   = false;
+    public boolean             pokemobsDamageBlocks       = false;
     @Configure(category = mobAI)
     /** Do explosions occur and cause damage */
-    public boolean             explosions             = true;
+    public boolean             explosions                 = true;
     @Configure(category = mobAI)
-    public int                 attackCooldown         = 20;
+    public int                 attackCooldown             = 20;
 
     // World Gen and World effect settings
     @Configure(category = world)
     /** do meteors fall. */
-    public boolean             meteors                = true;
+    public boolean             meteors                    = true;
     @Configure(category = world)
-    public int                 meteorDistance         = 3000;
+    public int                 meteorDistance             = 3000;
     @Configure(category = world)
-    public boolean             doSpawnBuilding        = true;
+    public boolean             doSpawnBuilding            = true;
     @Configure(category = world)
-    public boolean             pokemartMerchant       = true;
+    public boolean             pokemartMerchant           = true;
     @Configure(category = world)
-    public String              cave                   = "";
+    public String              cave                       = "";
     @Configure(category = world)
-    public String              surface                = "";
+    public String              surface                    = "";
     @Configure(category = world)
-    public String              rock                   = "";
+    public String              rock                       = "";
     @Configure(category = world)
-    public String              trees                  = "";
+    public String              trees                      = "";
     @Configure(category = world)
-    public String              plants                 = "";
+    public String              plants                     = "";
     @Configure(category = world)
-    public String              terrains               = "";
+    public String              terrains                   = "";
     @Configure(category = world)
-    public String              industrial             = "";
+    public String              industrial                 = "";
+    @Configure(category = world)
+    public boolean             useConfigForBerryLocations = false;
+    @Configure(category = world)
+    public String[]            berryLocations             = { // @formatter:off
+                                                            "cheri:TWplains,Bsavanna'Svillage", 
+                                                            "chesto:TWforest,Bconiferous",
+                                                            "pecha:TWforest,Bconiferous",
+                                                            "rawst:TWmountain,Whills'TWnether'Scave",
+                                                            "aspear:TWforest,Bconiferous",
+                                                            "leppa:TWplains,Bsavanna",
+                                                            "oran:TWforest,Whills,Bconiferous'Sall",
+                                                            "persim:TWswamp",
+                                                            "lum:TWjungle,Bhills",
+                                                            "sitrus:TWjungle,Whills",
+                                                            "nanab:TWjungle,Bhills'TWbeach,Bcold'TWocean,Bcold",
+                                                            "pinap:TWjungle",
+                                                            "cornn:TWswamp",
+                                                            "enigma:TWend",
+                                                            "jaboca:TWmountain,Whills",
+                                                            "rowap:TWforest,Wconiferous",
+                                                         };// @formatter:on
 
     // Mob Spawning settings
     @Configure(category = spawning)
     /** Do monsters not spawn. */
-    public boolean             deactivateMonsters     = false;
+    public boolean             deactivateMonsters         = false;
     @Configure(category = spawning)
     /** do monster spawns get swapped with shadow pokemobs */
-    public boolean             disableMonsters        = false;
+    public boolean             disableMonsters            = false;
     @Configure(category = spawning)
     /** do animals not spawn */
-    public boolean             deactivateAnimals      = false;
+    public boolean             deactivateAnimals          = false;
     @Configure(category = spawning)
     /** do Pokemobs spawn */
-    public boolean             pokemonSpawn           = true;
+    public boolean             pokemonSpawn               = true;
     @Configure(category = spawning)
     /** This is also the radius which mobs spawn in. Is only despawn radius if
      * cull is true */
-    public int                 maxSpawnRadius         = 64;
+    public int                 maxSpawnRadius             = 64;
     @Configure(category = spawning)
     /** closest distance to a player the pokemob can spawn. */
-    public int                 minSpawnRadius         = 16;
+    public int                 minSpawnRadius             = 16;
     @Configure(category = spawning)
     /** Minimum level legendaries can spawn at. */
-    public int                 minLegendLevel         = 1;
+    public int                 minLegendLevel             = 1;
     @Configure(category = spawning)
     /** Will nests spawn */
-    public boolean             nests                  = false;
+    public boolean             nests                      = false;
     @Configure(category = spawning)
     /** number of nests per chunk */
-    public int                 nestsPerChunk          = 1;
+    public int                 nestsPerChunk              = 1;
     @Configure(category = spawning)
     /** To be used for nest retrogen. */
-    public boolean             refreshNests           = false;
+    public boolean             refreshNests               = false;
     @Configure(category = spawning)
-    public int                 mobSpawnNumber         = 10;
+    public int                 mobSpawnNumber             = 10;
     @Configure(category = spawning)
-    public double              mobDensityMultiplier   = 1;
+    public double              mobDensityMultiplier       = 1;
     @Configure(category = spawning)
-    public int                 levelCap               = 50;
+    public int                 levelCap                   = 50;
     @Configure(category = spawning)
-    public boolean             shouldCap              = true;
+    public boolean             shouldCap                  = true;
     @Configure(category = spawning)
-    String[]                   spawnFunctions         = { "0:(10^6)*(sin(x*10^-3)^8 + sin(y*10^-3)^8)", "1:10+r/130;r",
-            "2:(10^6)*(sin(x*0.5*10^-3)^8 + sin(y*0.5*10^-3)^8)" };
+    String[]                   spawnFunctions             = { "0:(10^6)*(sin(x*10^-3)^8 + sin(y*10^-3)^8)",
+            "1:10+r/130;r", "2:(10^6)*(sin(x*0.5*10^-3)^8 + sin(y*0.5*10^-3)^8)" };
 
     // Gui/client settings
     @Configure(category = client)
-    public int[]               guiOffset              = { 0, 0 };
+    public int[]               guiOffset                  = { 0, 0 };
     @Configure(category = client)
-    public boolean             guiDown                = true;
+    public boolean             guiDown                    = true;
     @Configure(category = client)
-    public boolean             autoSelectMoves        = false;
+    public boolean             autoSelectMoves            = false;
     @Configure(category = client)
-    public boolean             moveAnimationCallLists = true;
+    public boolean             moveAnimationCallLists     = true;
     @Configure(category = client)
-    public boolean             autoRecallPokemobs     = false;
+    public boolean             autoRecallPokemobs         = false;
     @Configure(category = client)
-    public int                 autoRecallDistance     = 32;
+    public int                 autoRecallDistance         = 32;
 
     @Configure(category = advanced)
-    String[]                   mystLocs               = {};
+    String[]                   mystLocs                   = {};
     @Configure(category = advanced)
-    boolean                    resetTags              = false;
+    boolean                    resetTags                  = false;
     @Configure(category = advanced)
-    String[]                   extraValues            = { "3", "4.5" };
+    String[]                   extraValues                = { "3", "4.5" };
 
     @Configure(category = database)
-    boolean                    forceDatabase          = true;
+    boolean                    forceDatabase              = true;
     @Configure(category = database)
-    String[]                   configDatabases        = { "pokemobs", "moves" };
+    String[]                   configDatabases            = { "pokemobs", "moves" };
 
     /** List of blocks to be considered for the floor of a cave. */
-    private List<Block>        caveBlocks             = new ArrayList<Block>();
+    private List<Block>        caveBlocks                 = new ArrayList<Block>();
 
     /** List of blocks to be considered for the surface. */
-    private List<Block>        surfaceBlocks          = new ArrayList<Block>();
+    private List<Block>        surfaceBlocks              = new ArrayList<Block>();
 
     /** List of blocks to be considered to be rocks for the purpose of rocksmash
      * and lithovore eating */
-    private List<Block>        rocks                  = new ArrayList<Block>();
+    private List<Block>        rocks                      = new ArrayList<Block>();
 
     /** List of blocks to be considered to be generic terrain, for dig to reduce
      * drop rates for */
-    private List<Block>        terrain                = new ArrayList<Block>();
+    private List<Block>        terrain                    = new ArrayList<Block>();
 
     private Config()
     {
         super(null);
     }
 
+    private static Config defaults = null;
+
     public Config(File path)
     {
-        super(path, new Config());
+        super(path, defaults = new Config());
         instance = this;
         MinecraftForge.EVENT_BUS.register(this);
         populateSettings();
@@ -247,6 +270,7 @@ public class Config extends ConfigBase
     @Override
     public void applySettings()
     {
+        if (!useConfigForBerryLocations) berryLocations = defaults.berryLocations;
         SpawnHandler.MAX_DENSITY = mobDensityMultiplier;
         SpawnHandler.MAXNUM = mobSpawnNumber;
         if (breedingDelay < 600) breedingDelay = 1000;

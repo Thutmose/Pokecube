@@ -6,8 +6,6 @@ package pokecube.core.client;
 import static pokecube.core.PokecubeItems.pc;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 import static pokecube.core.PokecubeItems.tradingtable;
-import static pokecube.core.handlers.ItemHandler.leaf0;
-import static pokecube.core.handlers.ItemHandler.leaf1;
 import static pokecube.core.handlers.ItemHandler.log0;
 import static pokecube.core.handlers.ItemHandler.log1;
 import static pokecube.core.handlers.ItemHandler.plank0;
@@ -20,7 +18,6 @@ import org.lwjgl.input.Keyboard;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
-import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -61,7 +58,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.CommonProxyPokecube;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.blocks.berries.BlockBerryLeaves;
+import pokecube.core.blocks.berries.BlockBerryLeaf;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.healtable.TileHealTable;
@@ -423,13 +420,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":tradingtable", "inventory"));
 
-        ModelLoader.setCustomStateMapper(leaf0,
-                (new StateMap.Builder()).withName(BlockBerryLeaves.VARIANT0).withSuffix("Leaves")
-                        .ignore(new IProperty[] { BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE }).build());
-        ModelLoader.setCustomStateMapper(leaf1,
-                (new StateMap.Builder()).withName(BlockBerryLeaves.VARIANT4).withSuffix("Leaves")
-                        .ignore(new IProperty[] { BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE }).build());
-
         ModelLoader.setCustomStateMapper(log0,
                 (new StateMap.Builder()).withName(BlockBerryLog.VARIANT0).withSuffix("Wood").build());
         ModelLoader.setCustomStateMapper(log1,
@@ -457,19 +447,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         registerItemTexture(Item.getItemFromBlock(plank0), 5,
                 new ModelResourceLocation("pokecube:nanabPlank", "inventory"));
 
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf0), new ResourceLocation("pokecube:pechaLeaves"));
-        registerItemTexture(Item.getItemFromBlock(leaf0), 0,
-                new ModelResourceLocation("pokecube:pechaLeaves", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf0), new ResourceLocation("pokecube:oranLeaves"));
-        registerItemTexture(Item.getItemFromBlock(leaf0), 1,
-                new ModelResourceLocation("pokecube:oranLeaves", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf0), new ResourceLocation("pokecube:leppaLeaves"));
-        registerItemTexture(Item.getItemFromBlock(leaf0), 2,
-                new ModelResourceLocation("pokecube:leppaLeaves", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf0), new ResourceLocation("pokecube:sitrusLeaves"));
-        registerItemTexture(Item.getItemFromBlock(leaf0), 3,
-                new ModelResourceLocation("pokecube:sitrusLeaves", "inventory"));
-
         ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:pechaWood"));
         registerItemTexture(Item.getItemFromBlock(log0), 0,
                 new ModelResourceLocation("pokecube:pechaWood", "inventory"));
@@ -483,13 +460,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         registerItemTexture(Item.getItemFromBlock(log0), 3,
                 new ModelResourceLocation("pokecube:sitrusWood", "inventory"));
 
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf1), new ResourceLocation("pokecube:enigmaLeaves"));
-        registerItemTexture(Item.getItemFromBlock(leaf1), 0,
-                new ModelResourceLocation("pokecube:enigmaLeaves", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(leaf1), new ResourceLocation("pokecube:nanabLeaves"));
-        registerItemTexture(Item.getItemFromBlock(leaf1), 1,
-                new ModelResourceLocation("pokecube:nanabLeaves", "inventory"));
-
         ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:enigmaWood"));
         registerItemTexture(Item.getItemFromBlock(log1), 0,
                 new ModelResourceLocation("pokecube:enigmaWood", "inventory"));
@@ -498,19 +468,19 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 new ModelResourceLocation("pokecube:nanabWood", "inventory"));
 
         Block crop = BerryManager.berryCrop;
-        map = (new StateMap.Builder()).withName(BerryManager.type).ignore(new IProperty[] { BlockCrops.AGE }).withSuffix("Crop").build();
+        map = (new StateMap.Builder()).withName(BerryManager.type).ignore(new IProperty[] { BlockCrops.AGE })
+                .withSuffix("Crop").build();
         ModelLoader.setCustomStateMapper(crop, map);
 
-        map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("Fruit")
-                .build();
+        map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("Fruit").build();
         ModelLoader.setCustomStateMapper(BerryManager.berryFruit, map);
-        
-        map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("Leaf")
-                .build();
+
+        map = (new StateMap.Builder()).ignore(new IProperty[] { BlockBerryLeaf.CHECK_DECAY, BlockBerryLeaf.DECAYABLE }).build();
         ModelLoader.setCustomStateMapper(BerryManager.berryLeaf, map);
-        
+
         MegaStoneTextureHandler.registerItemModels();
         BerryTextureHandler.registerItemModels();
+        VitaminTextureHandler.registerItemModels();
     }
 
     @Override

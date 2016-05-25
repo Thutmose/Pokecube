@@ -26,10 +26,6 @@ import pokecube.core.items.berries.BerryManager;
  * @author Manchou */
 public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITileEntityProvider
 {
-    public static int renderID;
-    public int        berryIndex = 0;
-    String            berryName  = "";
-
     public BlockBerryFruit()
     {
         super();
@@ -58,14 +54,6 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
         return new TileEntityBerries(Type.FRUIT);
-    }
-
-    @Override
-    /** Determines the damage on the item the block drops. Used in cloth and
-     * wood. */
-    public int damageDropped(IBlockState state)
-    {
-        return berryIndex;
     }
     
     @Override
@@ -133,12 +121,6 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         if(name==null) name = "cheri";
         return state.withProperty(BerryManager.type, name);
     }
-
-    public String getBerryName()
-    {
-        return berryName;
-    }
-
     @Override
     public ItemStack getBerryStack(IBlockAccess world, BlockPos pos)
     {
@@ -180,20 +162,11 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         return i;
     }
 
-    public void setBerry(String berryName)
-    {
-        this.berryName = berryName;
-    }
-
-    public void setBerryIndex(int berryId)
-    {
-        this.berryIndex = berryId;
-    }
-
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
     {
-        if (BlockBerryCrop.trees.contains(berryIndex))
+        TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
+        if (TileEntityBerries.trees.containsKey(tile.getBerryId()))
         {
             float f = 0.15F;
             this.setBlockBounds(0.5F - f, 1 - f * 3.0F, 0.5F - f, 0.5F + f, 1, 0.5F + f);

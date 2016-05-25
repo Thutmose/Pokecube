@@ -6,12 +6,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
@@ -40,8 +37,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.compat.ai.AIElectricalInterferance;
-import pokecube.compat.blocks.rf.BlockSiphon;
-import pokecube.compat.blocks.rf.TileEntitySiphon;
 import pokecube.compat.galacticraft.GCCompat;
 import pokecube.compat.pneumaticcraft.AIThermalInteferance;
 import pokecube.compat.thaumcraft.ThaumcraftCompat;
@@ -258,16 +253,6 @@ public class Compat
         doMetastuff();
         MinecraftForge.EVENT_BUS.register(this);
         setSpawnsFile(evt);
-
-        Block b = new BlockSiphon().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
-                .setUnlocalizedName("pokesiphon");
-        PokecubeItems.register(b, "pokesiphon");
-        GameRegistry.registerTileEntity(TileEntitySiphon.class, "pokesiphon");
-        if (evt.getSide() == Side.CLIENT)
-        {
-            PokecubeItems.registerItemTexture(Item.getItemFromBlock(b), 0,
-                    new ModelResourceLocation("pokecube_compat:pokesiphon", "inventory"));
-        }
 
         Database.addSpawnData(CUSTOMSPAWNSFILE);
     }

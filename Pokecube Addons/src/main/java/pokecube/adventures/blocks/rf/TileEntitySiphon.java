@@ -1,4 +1,4 @@
-package pokecube.compat.blocks.rf;
+package pokecube.adventures.blocks.rf;
 
 import java.util.List;
 import java.util.Map;

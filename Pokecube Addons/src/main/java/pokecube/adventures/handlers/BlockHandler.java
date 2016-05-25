@@ -44,7 +44,7 @@ public class BlockHandler
         siphon = new BlockSiphon().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
                 .setUnlocalizedName("pokesiphon");
         PokecubeItems.register(siphon, "pokesiphon");
-        GameRegistry.registerTileEntity(TileEntitySiphon.class, "pokesiphon");
+        GameRegistry.registerTileEntity(TileEntitySiphon.class, "pokecube_adventures:pokesiphon");
 
         LegendaryConditions.spawner1 = new BlockLegendSpawner();
         LegendaryConditions.spawner1.setUnlocalizedName("legendSpawner");

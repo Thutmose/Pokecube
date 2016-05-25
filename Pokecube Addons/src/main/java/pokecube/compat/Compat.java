@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
@@ -35,7 +38,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.blocks.rf.BlockSiphon;
+import pokecube.adventures.blocks.rf.TileEntitySiphon;
+import pokecube.adventures.handlers.BlockHandler;
 import pokecube.compat.ai.AIElectricalInterferance;
 import pokecube.compat.galacticraft.GCCompat;
 import pokecube.compat.pneumaticcraft.AIThermalInteferance;
@@ -232,6 +239,7 @@ public class Compat
     {
         GameRegistry.addRecipe(new ShapedOreRecipe(PokecubeItems.getBlock("pokesiphon"), new Object[] { "RrR", "rCr",
                 "RrR", 'R', Blocks.redstone_block, 'C', PokecubeItems.getBlock("afa"), 'r', Items.redstone }));
+        GameRegistry.addRecipe(new ShapelessOreRecipe(BlockHandler.siphon, siphon));
     }
 
     @SubscribeEvent
@@ -246,14 +254,22 @@ public class Compat
             WikiWriter.writeWiki();
         }
     }
-
+    Block siphon;
     @EventHandler
     public void preInit(FMLPreInitializationEvent evt)
     {
         doMetastuff();
         MinecraftForge.EVENT_BUS.register(this);
         setSpawnsFile(evt);
-
+        Block b = siphon = new BlockSiphon().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
+                .setUnlocalizedName("pokesiphon");
+        PokecubeItems.register(b, "pokesiphon");
+        GameRegistry.registerTileEntity(TileEntitySiphon.class, "pokesiphon");
+        if (evt.getSide() == Side.CLIENT)
+        {
+            PokecubeItems.registerItemTexture(Item.getItemFromBlock(b), 0,
+                    new ModelResourceLocation("pokecube_compat:pokesiphon", "inventory"));
+        }
         Database.addSpawnData(CUSTOMSPAWNSFILE);
     }
 

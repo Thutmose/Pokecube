@@ -1,5 +1,6 @@
 package pokecube.core.blocks.berries;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.BlockBush;
@@ -44,9 +45,13 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     @Override
     public boolean canBlockStay(World worldIn, BlockPos pos, IBlockState state)
     {
-        if (BlockBerryCrop.trees.contains(
-                berryIndex)) { return worldIn.getBlockState(pos.up()).getBlock().isLeaves(worldIn, pos.up()); }
-        return worldIn.getBlockState(pos.down()).getBlock() instanceof BlockBerryCrop;
+        return worldIn.getBlockState(pos.down()).getBlock() instanceof BlockBerryCrop || worldIn.getBlockState(pos.up()).getBlock().isLeaves(worldIn, pos.up());
+    }
+
+    @Override
+    protected BlockState createBlockState()
+    {
+        return new BlockState(this, new IProperty[] { BerryManager.type });
     }
 
     @Override
@@ -61,6 +66,34 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     public int damageDropped(IBlockState state)
     {
         return berryIndex;
+    }
+    
+    @Override
+    /**
+     * This returns a complete list of items dropped from this block.
+     *
+     * @param world The current world
+     * @param pos Block position in world
+     * @param state Current state
+     * @param fortune Breakers fortune level
+     * @return A ArrayList containing all items this block drops
+     */
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    {
+        List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
+
+        Random rand = world instanceof World ? ((World)world).rand : RANDOM;
+
+        int count = quantityDropped(state, fortune, rand);
+        for(int i = 0; i < count; i++)
+        {
+            Item item = this.getItemDropped(state, rand, fortune);
+            if (item != null)
+            {
+                ret.add(getBerryStack(world, pos));
+            }
+        }
+        return ret;
     }
 
     /** Spawns EntityItem in the world for the given ItemStack if the world is
@@ -89,18 +122,28 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         }
     }
 
+    @Override
+    /** Get the actual Block state of this Block at the given position. This
+     * applies properties not visible in the metadata, such as fence
+     * connections. */
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
+        String name = BerryManager.berryNames.get(tile.getBerryId());
+        if(name==null) name = "cheri";
+        return state.withProperty(BerryManager.type, name);
+    }
+
     public String getBerryName()
     {
         return berryName;
     }
 
     @Override
-    public ItemStack getBerryStack(IBlockAccess world, int x, int y, int z)
+    public ItemStack getBerryStack(IBlockAccess world, BlockPos pos)
     {
-        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(new BlockPos(x, y, z));
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
         return BerryManager.getBerryItem(BerryManager.berryNames.get(tile.getBerryId()));
-
-        // return BerryManager.getBerryItem(berryName);
     }
 
     /** Returns the ID of the items to drop on destruction. */
@@ -108,6 +151,12 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     public Item getItemDropped(IBlockState state, Random p_149650_2_, int p_149650_3_)
     {
         return PokecubeItems.berries;
+    }
+
+    /** Convert the BlockState into the correct metadata value */
+    public int getMetaFromState(IBlockState state)
+    {
+        return 0;
     }
 
     @Override
@@ -153,27 +202,5 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         {
             super.setBlockBoundsBasedOnState(worldIn, pos);
         }
-    }
-
-    /** Convert the BlockState into the correct metadata value */
-    public int getMetaFromState(IBlockState state)
-    {
-        return 0;
-    }
-
-    @Override
-    /** Get the actual Block state of this Block at the given position. This
-     * applies properties not visible in the metadata, such as fence
-     * connections. */
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
-    {
-        TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
-        return state.withProperty(BerryManager.type, BerryManager.berryNames.get(tile.getBerryId()));
-    }
-
-    @Override
-    protected BlockState createBlockState()
-    {
-        return new BlockState(this, new IProperty[] { BerryManager.type });
     }
 }

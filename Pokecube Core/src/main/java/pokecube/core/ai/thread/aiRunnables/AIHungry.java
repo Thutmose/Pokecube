@@ -48,8 +48,7 @@ public class AIHungry extends AIBase
 
     protected void eatBerry(Block block, double distance)
     {
-        ItemStack fruit = ((IBerryFruitBlock) block).getBerryStack(world, foodLoc.intX(), foodLoc.intY(),
-                foodLoc.intZ());
+        ItemStack fruit = ((IBerryFruitBlock) block).getBerryStack(world, foodLoc.getPos());
 
         if (fruit == null)
         {
@@ -368,15 +367,6 @@ public class AIHungry extends AIBase
 
         if (foodLoc.isEmpty())
         {
-            if (!block && hungrymob.eatsBerries())
-            {
-                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
-                if (temp != null)
-                {
-                    block = true;
-                    foodLoc.set(temp);
-                }
-            }
             if (!block && hungrymob.isHerbivore())
             {
                 Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
@@ -395,6 +385,15 @@ public class AIHungry extends AIBase
                     setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                     return;
                 }
+                if (temp != null)
+                {
+                    block = true;
+                    foodLoc.set(temp);
+                }
+            }
+            if (!block && hungrymob.eatsBerries())
+            {
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
                 if (temp != null)
                 {
                     block = true;

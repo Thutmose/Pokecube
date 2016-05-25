@@ -51,6 +51,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BlockBerryCrop;
 import pokecube.core.blocks.berries.BlockBerryFruit;
+import pokecube.core.blocks.berries.BlockBerryLeaf;
 import pokecube.core.blocks.berries.BlockBerryLeaves;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
@@ -138,12 +139,16 @@ public class ItemHandler extends Mod_Pokecube_Helper
                                                             // hit by a special
                                                             // move
 
+        BerryManager.registerTrees();
         BerryManager.berryCrop = new BlockBerryCrop().setRegistryName("pokecube", "berrycrop")
                 .setUnlocalizedName("berrycrop");
         register(BerryManager.berryCrop);
         BerryManager.berryFruit = new BlockBerryFruit().setRegistryName("pokecube", "berryfruit")
                 .setUnlocalizedName("berryfruit");
         register(BerryManager.berryFruit);
+        BerryManager.berryLeaf = new BlockBerryLeaf().setRegistryName("pokecube", "berryleaf")
+                .setUnlocalizedName("berryleaf");
+        register(BerryManager.berryLeaf);
         TreeRemover.plantTypes.add(BerryManager.berryFruit);
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)

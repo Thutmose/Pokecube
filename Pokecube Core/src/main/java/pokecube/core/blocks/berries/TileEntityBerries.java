@@ -1,5 +1,9 @@
 package pokecube.core.blocks.berries;
 
+import java.util.HashMap;
+
+import com.google.common.collect.Maps;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.state.IBlockState;
@@ -15,15 +19,22 @@ import pokecube.core.items.berries.BerryManager;
 
 public class TileEntityBerries extends TileEntity implements ITickable
 {
+    public static interface TreeGrower
+    {
+        void growTree(World world, BlockPos cropPos, int berryId);
+    }
+
     public static enum Type
     {
         CROP, FRUIT, LOG, LEAF
     }
 
-    private Type type;
+    public static HashMap<Integer, TreeGrower> trees = Maps.newHashMap();
 
-    private int  berryId;
-    private int  stage = 0;
+    private Type                               type;
+
+    private int                                berryId;
+    private int                                stage = 0;
 
     public TileEntityBerries()
     {
@@ -42,12 +53,40 @@ public class TileEntityBerries extends TileEntity implements ITickable
 
             if (i <= 7)
             {
-                if (worldObj.rand.nextInt((int) (50.0F) + 1) == 0)
+                if (worldObj.rand.nextInt((int) (250.0F) + 1) == 0)
                 {
                     growCrop();
                 }
             }
         }
+    }
+
+    private void doLeafTick()
+    {
+        if (worldObj.getLightFromNeighbors(pos.down()) >= 9)
+        {
+            if (worldObj.rand.nextInt((int) (500.0F) + 1) == 0
+                    && worldObj.getBlockState(pos.down()).getBlock().isAir(worldObj, pos.down()))
+            {
+                placeBerry();
+            }
+        }
+    }
+
+    public int getBerryId()
+    {
+        return berryId;
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
 
     public void growCrop()
@@ -56,45 +95,41 @@ public class TileEntityBerries extends TileEntity implements ITickable
         if (stage > 7) stage = 7;
         if (stage == 7 && worldObj.getBlockState(pos.up()).getBlock().isAir(worldObj, pos.up()))
         {
-            stage = 1;
-            Block fruit = BerryManager.berryFruit;
-            worldObj.setBlockState(pos.up(), fruit.getDefaultState());
-            TileEntityBerries tile = (TileEntityBerries) worldObj.getTileEntity(pos.up());
-            tile.setBerryId(berryId);
+            TreeGrower grower = null;
+            if ((grower = trees.get(berryId)) != null)
+            {
+                grower.growTree(worldObj, getPos(), berryId);
+                return;
+            }
+            else
+            {
+                stage = 1;
+                Block fruit = BerryManager.berryFruit;
+                worldObj.setBlockState(pos.up(), fruit.getDefaultState());
+                TileEntityBerries tile = (TileEntityBerries) worldObj.getTileEntity(pos.up());
+                tile.setBerryId(berryId);
+            }
         }
         worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(BlockCrops.AGE, Integer.valueOf(stage)),
                 2);
     }
 
-    public void growTree()
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
-
+        if (worldObj.isRemote)
+        {
+            NBTTagCompound nbt = pkt.getNbtCompound();
+            readFromNBT(nbt);
+        }
     }
 
     public void placeBerry()
     {
-
-    }
-
-    private void doLeafTick()
-    {
-
-    }
-
-    public boolean isTree()
-    {
-        return false;
-    }
-
-    public int getBerryId()
-    {
-        return berryId;
-    }
-
-    public void setBerryId(int id)
-    {
-        berryId = id;
-        System.out.println("id set to " + id);
+        Block fruit = BerryManager.berryFruit;
+        worldObj.setBlockState(pos.down(), fruit.getDefaultState());
+        TileEntityBerries tile = (TileEntityBerries) worldObj.getTileEntity(pos.down());
+        if (tile != null) tile.setBerryId(berryId);
     }
 
     /** Reads a tile entity from NBT. */
@@ -105,6 +140,17 @@ public class TileEntityBerries extends TileEntity implements ITickable
         berryId = nbt.getInteger("berry");
         stage = nbt.getInteger("stage");
         type = Type.valueOf(nbt.getString("type"));
+    }
+
+    public void setBerryId(int id)
+    {
+        berryId = id;
+    }
+
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
+    {
+        return oldState.getBlock() != newSate.getBlock();
     }
 
     @Override
@@ -131,12 +177,6 @@ public class TileEntityBerries extends TileEntity implements ITickable
         }
     }
 
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
-    {
-        return oldState.getBlock() != newSate.getBlock();
-    }
-
     /** Writes a tile entity to NBT. */
     @Override
     public void writeToNBT(NBTTagCompound nbt)
@@ -145,26 +185,5 @@ public class TileEntityBerries extends TileEntity implements ITickable
         nbt.setInteger("berry", berryId);
         nbt.setInteger("stage", stage);
         nbt.setString("type", type.toString());
-    }
-
-    /** Overriden in a sign to provide the text. */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-    {
-        if (worldObj.isRemote)
-        {
-            NBTTagCompound nbt = pkt.getNbtCompound();
-            readFromNBT(nbt);
-        }
     }
 }

@@ -500,10 +500,14 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         Block crop = BerryManager.berryCrop;
         map = (new StateMap.Builder()).withName(BerryManager.type).ignore(new IProperty[] { BlockCrops.AGE }).withSuffix("Crop").build();
         ModelLoader.setCustomStateMapper(crop, map);
-        
+
         map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("Fruit")
                 .build();
         ModelLoader.setCustomStateMapper(BerryManager.berryFruit, map);
+        
+        map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("Leaf")
+                .build();
+        ModelLoader.setCustomStateMapper(BerryManager.berryLeaf, map);
         
         MegaStoneTextureHandler.registerItemModels();
         BerryTextureHandler.registerItemModels();

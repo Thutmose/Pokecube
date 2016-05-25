@@ -162,7 +162,7 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));
         
         registerItemTexture(Item.getItemFromBlock(siphon), 0,
-                new ModelResourceLocation("pokecube_adventures:siphon", "inventory"));
+                new ModelResourceLocation("pokecube_adventures:pokesiphon", "inventory"));
 
         StateMap map = (new StateMap.Builder()).withName(LegendaryConditions.spawner1.TYPE).withSuffix("_spawner")
                 .build();

@@ -9,8 +9,6 @@ import java.lang.reflect.Method;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
@@ -37,7 +35,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.rf.BlockSiphon;
@@ -237,8 +234,6 @@ public class Compat
     @EventHandler
     public void postInit(FMLPostInitializationEvent evt)
     {
-        GameRegistry.addRecipe(new ShapedOreRecipe(PokecubeItems.getBlock("pokesiphon"), new Object[] { "RrR", "rCr",
-                "RrR", 'R', Blocks.redstone_block, 'C', PokecubeItems.getBlock("afa"), 'r', Items.redstone }));
         GameRegistry.addRecipe(new ShapelessOreRecipe(BlockHandler.siphon, siphon));
     }
 

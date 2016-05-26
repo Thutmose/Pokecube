@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import pokecube.adventures.items.bags.RecipeBag;
 import pokecube.core.PokecubeItems;
 
@@ -77,6 +78,10 @@ public class RecipeHandler
         // Mega Stone
         GameRegistry.addRecipe(getStack("megastone"),
                 new Object[] { " D ", "DOD", " D ", 'O', Items.ender_eye, 'D', Items.diamond });
+        
+        // RF Siphon
+        GameRegistry.addRecipe(new ShapedOreRecipe(PokecubeItems.getBlock("pokesiphon"), new Object[] { "RrR", "rCr",
+                "RrR", 'R', Blocks.redstone_block, 'C', PokecubeItems.getBlock("afa"), 'r', Items.redstone }));
 
         ItemStack shards18 = getStack("emerald_shard");
         ItemStack shards1 = getStack("emerald_shard");

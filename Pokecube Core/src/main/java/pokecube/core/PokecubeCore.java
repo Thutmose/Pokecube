@@ -114,7 +114,6 @@ import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer.Message
 import pokecube.core.utils.PCSaveHandler;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
-import pokecube.core.world.gen.WorldGenBerries;
 import pokecube.core.world.gen.WorldGenFossils;
 import pokecube.core.world.gen.WorldGenNests;
 import pokecube.core.world.gen.WorldGenStartBuilding;
@@ -400,7 +399,6 @@ public class PokecubeCore extends PokecubeMod
         }
         GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
         // TODO figure out good spawn weights, Also config for these
-        GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
         helper.initAllBlocks();

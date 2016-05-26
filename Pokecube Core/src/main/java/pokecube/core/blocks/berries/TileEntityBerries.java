@@ -1,6 +1,7 @@
 package pokecube.core.blocks.berries;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import com.google.common.collect.Maps;
 
@@ -53,7 +54,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
 
             if (i <= 7)
             {
-                if (worldObj.rand.nextInt((int) (250.0F) + 1) == 0)
+                if (new Random().nextInt(250) == 0)
                 {
                     growCrop();
                 }
@@ -65,7 +66,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
     {
         if (worldObj.getLightFromNeighbors(pos.down()) >= 9)
         {
-            if (worldObj.rand.nextInt((int) (500.0F) + 1) == 0
+            if (new Random().nextInt(5000) == 0
                     && worldObj.getBlockState(pos.down()).getBlock().isAir(worldObj, pos.down()))
             {
                 placeBerry();

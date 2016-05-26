@@ -43,12 +43,7 @@ public class AIHungry extends AIBase
             if (stack != null)
             {
                 AIStoreStuff.addItemStackToInventory(stack, pokemob.getPokemobInventory(), 2);
-                System.out.println(stack.getDisplayName()+" for "+pokemob);
                 ((IHungrymob) pokemob).eat(new EntityItem(world, 0, 0, 0, stack));
-            }
-            else
-            {
-                System.out.println("none for "+pokemob);
             }
             return true;
         }
@@ -437,7 +432,6 @@ public class AIHungry extends AIBase
                 }
                 else
                 {
-                    System.out.println(pokemob.getPokemonDisplayName()+" Finding Berry Magically");
                     hungrymob.setHungerCooldown(10);
                     toRun.add(new GenBerries(pokemob));
                     setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);

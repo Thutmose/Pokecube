@@ -487,6 +487,11 @@ public class PokecubeItems extends Items
         addGeneric("electirizer", Items.REDSTONE);
         addGeneric("magmarizer", Items.FLINT_AND_STEEL);
 
+        PokecubeItems.addSpecificItemStack("dubiousdisc", new ItemStack(Items.RECORD_CAT));
+        PokecubeItems.addSpecificItemStack("upgrade", new ItemStack(Items.RECORD_11));
+        addToHoldables("dubiousdisc");
+        addToHoldables("upgrade");
+
         addToEvos("ice");
         addToEvos("mossStone");
         addToEvos("razorfang");

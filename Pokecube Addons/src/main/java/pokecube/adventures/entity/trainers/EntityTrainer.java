@@ -712,6 +712,20 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         friendlyCooldown = nbt.getInteger("friendly");
 
         setTypes();
+        checkTradeIntegrity();
+    }
+
+    private void checkTradeIntegrity()
+    {
+        List<MerchantRecipe> toRemove = Lists.newArrayList();
+        for (MerchantRecipe r : itemList)
+        {
+            if (r.getItemToSell() == null || r.getItemToSell().getItem() == null)
+            {
+                toRemove.add(r);
+            }
+        }
+        itemList.removeAll(toRemove);
     }
 
     @Override

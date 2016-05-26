@@ -149,9 +149,6 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         GameRegistry.addRecipe(getStack("tradingtable"), new Object[] { "III", "SRS", "SMS", 'R', Items.REDSTONE, 'S',
                 Blocks.STONE, 'M', Items.EMERALD, 'I', Items.IRON_INGOT });
 
-        PokecubeItems.addSpecificItemStack("dubiousdisc", new ItemStack(Items.RECORD_CAT));
-        PokecubeItems.addSpecificItemStack("upgrade", new ItemStack(Items.RECORD_11));
-
         BrewingRecipeRegistry.addRecipe(new RecipeBrewBerries());
     }
 }

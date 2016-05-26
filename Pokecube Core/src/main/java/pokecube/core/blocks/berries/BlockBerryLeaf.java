@@ -11,6 +11,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -53,16 +55,14 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     {
         return EnumType.OAK;
     }
-    
+
     @Override
-    /**
-     * Get the Item that this Block should drop when harvested.
-     */
+    /** Get the Item that this Block should drop when harvested. */
     public Item getItemDropped(IBlockState state, Random rand, int fortune)
     {
         return null;
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     public BlockRenderLayer getBlockLayer()
@@ -82,10 +82,51 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
         List<ItemStack> ret = Lists.newArrayList();
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
         String berry = BerryManager.berryNames.get(tile.getBerryId());
-        ItemStack stack = new ItemStack(this);
-        stack.setTagCompound(new NBTTagCompound());
-        stack.getTagCompound().setString("berry", berry);
+        ItemStack stack = BerryManager.getBerryItem(berry);
+        ret.add(stack);
         return ret;
+    }
+
+    @Override
+    public java.util.List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    {
+        java.util.List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
+        Random rand = world instanceof World ? ((World) world).rand : new Random();
+        int chance = this.getSaplingDropChance(state);
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        String berry = BerryManager.berryNames.get(tile.getBerryId());
+        if (fortune > 0)
+        {
+            chance -= 2 << fortune;
+            if (chance < 10) chance = 10;
+        }
+
+        if (rand.nextInt(chance) == 0) ret.add(BerryManager.getBerryItem(berry));
+
+        chance = 200;
+        if (fortune > 0)
+        {
+            chance -= 10 << fortune;
+            if (chance < 40) chance = 40;
+        }
+
+        this.captureDrops(true);
+        ret.addAll(this.captureDrops(false));
+        return ret;
+    }
+
+    @Override
+    /** Called when a user uses the creative pick block button on this block
+     *
+     * @param target
+     *            The full target the player is looking at
+     * @return A ItemStack to add to the player's inventory, Null if nothing
+     *         should be added. */
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
+            EntityPlayer player)
+    {
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        return BerryManager.getBerryItem(tile.getBerryId());
     }
 
     @Override

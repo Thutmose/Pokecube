@@ -4529,7 +4529,7 @@
     </Pokemon>
     <Pokemon name="Porygon" number="137">
         <STATS>
-            <EVOLUTIONMODE>X:Idubiousdisc</EVOLUTIONMODE>
+            <EVOLUTIONMODE>X:Iupgrade</EVOLUTIONMODE>
             <CAPTURERATE>45</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Virtual</SPECIES>
@@ -7695,7 +7695,7 @@
     </Pokemon>
     <Pokemon name="Porygon2" number="233">
         <STATS>
-            <EVOLUTIONMODE>X:Iupgrade</EVOLUTIONMODE>
+            <EVOLUTIONMODE>X:Idubiousdisc</EVOLUTIONMODE>
             <CAPTURERATE>45</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Virtual</SPECIES>

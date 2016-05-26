@@ -79,11 +79,11 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
     {
         List<ItemStack> ret = Lists.newArrayList();
-        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
-        String berry = BerryManager.berryNames.get(tile.getBerryId());
-        ItemStack stack = new ItemStack(this);
-        stack.setTagCompound(new NBTTagCompound());
-        stack.getTagCompound().setString("berry", berry);
+//        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+//        String berry = BerryManager.berryNames.get(tile.getBerryId());
+//        ItemStack stack = new ItemStack(this);
+//        stack.setTagCompound(new NBTTagCompound());
+//        stack.getTagCompound().setString("berry", berry);
         return ret;
     }
 

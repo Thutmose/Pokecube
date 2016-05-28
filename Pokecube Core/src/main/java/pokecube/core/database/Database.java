@@ -1028,6 +1028,7 @@ public class Database implements IMoveConstants
             }
             if (e.abilities.isEmpty() && e.baseForme != null) e.abilities.addAll(e.baseForme.abilities);
             if (e.type2 == null) e.type2 = PokeType.unknown;
+            if (e.baseForme != null) e.evolutionMode = e.baseForme.evolutionMode;
             if (!Pokedex.getInstance().getEntries().contains(e.getPokedexNb()))
             {
                 if (e.baseForme != null && Pokedex.getInstance().getEntries().contains(e.baseForme.getPokedexNb()))

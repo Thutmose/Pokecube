@@ -703,7 +703,8 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public void setHome(int x, int y, int z, int distance)
     {
-        setHomePosAndDistance(new BlockPos(x, y, z), distance);
+        BlockPos pos = new BlockPos(x, y, z);
+        setHomePosAndDistance(pos, distance);
     }
 
     @Override

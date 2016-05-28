@@ -172,7 +172,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         }
         else
         {
-            super.setBlockBoundsBasedOnState(worldIn, pos);
+            float var3 = 0.2F;
+            this.setBlockBounds(0.5F - var3, 0F, 0.5F - var3, 0.5F + var3, 0.5F, 0.5F + var3);
         }
     }
 }

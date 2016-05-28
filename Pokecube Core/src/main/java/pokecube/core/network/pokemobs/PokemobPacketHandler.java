@@ -352,9 +352,14 @@ public class PokemobPacketHandler
                                 else if (type == 2)
                                 {
                                     pokemob.setPokemonAIState(IMoveConstants.GUARDING, false);
-                                    if (pokemob.getGuardAI() != null)
-                                        ((GuardAI) pokemob.getGuardAI()).setTimePeriod(TimePeriod.fullDay);
                                     pokemob.setPokemonAIState(IMoveConstants.STAYING, true);
+                                    Vector3 mid = Vector3.getNewVector().set(pokemob);
+                                    pokemob.setHome(mid.intX(), mid.intY(), mid.intZ(), 16);
+                                    if (pokemob.getGuardAI() != null)
+                                    {
+                                        ((GuardAI) pokemob.getGuardAI()).setTimePeriod(TimePeriod.fullDay);
+                                        ((GuardAI) pokemob.getGuardAI()).setPos(mid.getPos());
+                                    }
                                 }
                                 else if (type == 3)
                                 {
@@ -415,7 +420,7 @@ public class PokemobPacketHandler
                                     IPokemob target = (IPokemob) closest;
                                     if (target.getPokemonOwnerName().equals(pokemob.getPokemonOwnerName()))
                                     {
-                                        if(target == closest)
+                                        if (target == closest)
                                         {
                                             pokemob.executeMove(null, v.set(pokemob), 0);
                                         }

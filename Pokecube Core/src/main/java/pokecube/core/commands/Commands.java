@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
@@ -21,6 +22,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -403,6 +405,61 @@ public class Commands implements ICommand
         return false;
     }
 
+    private boolean doSetHasStarter(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
+    {
+        if (args[0].equalsIgnoreCase("denystarter") && args.length == 2)
+        {
+            WorldServer world = (WorldServer) cSender.getEntityWorld();
+            EntityPlayer player = null;
+
+            int num = 1;
+            int index = 0;
+            String name = null;
+
+            if (targets != null)
+            {
+                num = targets.length;
+            }
+            else
+            {
+                name = args[1];
+                player = world.getPlayerEntityByName(name);
+            }
+
+            for (int i = 0; i < num; i++)
+                if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+                {
+                    if (targets != null)
+                    {
+                        player = targets[index];
+                    }
+                    if (player != null)
+                    {
+                        PokecubeSerializer.getInstance().setHasStarter(player, true);
+                        NBTTagCompound nbt = new NBTTagCompound();
+                        StatsCollector.writeToNBT(nbt);
+                        nbt.setBoolean("playerhasstarter", PokecubeSerializer.getInstance().hasStarter(player));
+                        PokecubeSerializer.getInstance().writeToNBT2(nbt);
+                        nbt.setBoolean("hasSerializer", true);
+                        boolean offline = !FMLCommonHandler.instance().getMinecraftServerInstance()
+                                .isServerInOnlineMode();
+                        nbt.setBoolean("serveroffline", offline);
+                        PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
+                        PokecubePacketHandler.sendToClient(packet, player);
+                        cSender.addChatMessage(new ChatComponentText(StatCollector
+                                .translateToLocalFormatted("pokecube.command.denystarter", player.getName())));
+                    }
+                }
+                else
+                {
+                    CommandTools.sendNoPermissions(cSender);
+                    return false;
+                }
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public List<String> getCommandAliases()
     {
@@ -480,6 +537,7 @@ public class Commands implements ICommand
         message |= doDebug(cSender, args, isOp, targets);
         message |= doReset(cSender, args, isOp, targets);
         message |= doMeteor(cSender, args, isOp, targets);
+        message |= doSetHasStarter(cSender, args, isOp, targets);
         if (!message)
         {
             CommandTools.sendBadArgumentsTryTab(cSender);

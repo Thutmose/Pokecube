@@ -390,7 +390,7 @@ public class PokedexEntry
 
         protected static void initForEntry(PokedexEntry entry, String fromDatabase)
         {
-            if (fromDatabase == null)
+            if (fromDatabase == null || fromDatabase.isEmpty())
             {
                 initForEntry(entry);
                 return;
@@ -931,7 +931,7 @@ public class PokedexEntry
     protected Map<Integer, int[]>              childNumbers     = new HashMap<Integer, int[]>();
 
     /** Interactions with items from when player right clicks. */
-    private InteractionLogic                   interactionLogic = new InteractionLogic();
+    protected InteractionLogic                 interactionLogic = new InteractionLogic();
 
     /** Pokemobs with these entries will be hunted. */
     private List<PokedexEntry>                 prey             = new ArrayList<PokedexEntry>();

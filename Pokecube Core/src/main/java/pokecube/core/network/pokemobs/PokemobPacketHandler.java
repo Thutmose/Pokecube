@@ -393,7 +393,6 @@ public class PokemobPacketHandler
 
                         Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
                         boolean teleport = dat.readBoolean();
-System.out.println(teleport);
                         if (teleport)
                         {
                             NBTTagCompound teletag = new NBTTagCompound();

@@ -343,6 +343,6 @@ public class Move_Utility extends Move_Basic
     private void doFortuneDrop(Vector3 location, World world, int fortune)
     {
         location.getBlock(world).dropBlockAsItem(world, location.getPos(), location.getBlockState(world), fortune);
-        location.breakBlock(world, fortune, false);
+        location.breakBlock(world, false);
     }
 }

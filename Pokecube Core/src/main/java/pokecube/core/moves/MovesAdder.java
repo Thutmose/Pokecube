@@ -939,7 +939,6 @@ public class MovesAdder implements IMoveConstants
             @Override
             public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
             {
-                System.out.println("Test " + finalAttackStrength);
                 if (finalAttackStrength > 0)
                 {
                     MovesUtils.handleStats2(attacker, attacked, SPATACK, HARSH);

@@ -42,7 +42,6 @@ public class VitaminTextureHandler
     {
         ModelLoader.setCustomMeshDefinition(ItemVitamin.instance, new MeshDefinition());
         System.out.println(ItemVitamin.instance+" "+ItemVitamin.vitamins);
-        Thread.dumpStack();
         for (String s : ItemVitamin.vitamins)
         {
             registerItemVariant("type=" + s);

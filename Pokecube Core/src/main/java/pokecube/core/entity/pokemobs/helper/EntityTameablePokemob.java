@@ -613,35 +613,34 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
             if (owner instanceof EntityPlayer && !isShadow())
             {
                 ItemStack itemstack = PokecubeManager.pokemobToItem(this);
-
-                boolean added = false;
-                if (((EntityPlayer) owner).inventory.getFirstEmptyStack() == -1)
+                EntityPlayer player = (EntityPlayer) owner;
+                boolean noRoom = false;
+                if (player.inventory.getFirstEmptyStack() == -1)
+                {
+                    noRoom = true;
+                }
+                if (noRoom)
+                {
+                    ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
+                    MinecraftForge.EVENT_BUS.post(toss);
+                    noRoom = toss.isCanceled();
+                    if (noRoom)
+                    {
+                        EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
+                        Vector3 temp = Vector3.getNewVector().set(this);
+                        temp.moveEntity(entity);
+                        temp.clear().setVelocities(entity);
+                        entity.targetEntity = null;
+                        entity.targetLocation.clear();
+                        worldObj.spawnEntityInWorld(entity);
+                    }
+                }
+                boolean added = player.inventory.addItemStackToInventory(itemstack);
+                if (!added)
                 {
                     ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
                     MinecraftForge.EVENT_BUS.post(toss);
                     added = toss.isCanceled();
-                }
-                else if (itemstack.getItem() != null && (owner.isDead
-                        || !(added = ((EntityPlayer) owner).inventory.addItemStackToInventory(itemstack))))
-                {
-                    ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
-                    MinecraftForge.EVENT_BUS.post(toss);
-                    added = toss.isCanceled();
-                }
-                if (!added && owner instanceof EntityPlayerMP)
-                {
-                    EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
-                    Vector3 temp = Vector3.getNewVector().set(this);
-                    temp.moveEntity(entity);
-                    temp.clear().setVelocities(entity);
-                    entity.targetEntity = null;
-                    entity.targetLocation.clear();
-                    worldObj.spawnEntityInWorld(entity);
-                }
-
-                if (added && owner instanceof EntityPlayerMP)
-                {
-                    ((EntityPlayerMP) owner).sendContainerToPlayer(((EntityPlayerMP) owner).inventoryContainer);
                 }
                 if (!owner.isSneaking() && !isDead)
                     ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);

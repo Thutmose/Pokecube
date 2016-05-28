@@ -337,6 +337,11 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             mob.setNature(Nature.values()[nbt.getByte("nature")]);
             mob.setSize(nbt.getFloat("size"));
         }
+        
+        if(nbt.hasKey("gender"))
+        {
+            mob.setSexe(nbt.getByte("gender"));
+        }
 
         Vector3 location = Vector3.getNewVector().set(mob);
         EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 2);
@@ -554,7 +559,6 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         Block i = worldIn.getBlockState(pos).getBlock();
         BlockPos newPos = pos.offset(side);
         double d = 0.0D;
-        System.out.println("Test");
         if (side == EnumFacing.UP && i instanceof BlockFence)
         {
             d = 0.5D;

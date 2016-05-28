@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.commands.CommandTools;
@@ -319,7 +320,7 @@ public class Move_Utility extends Move_Basic
                     {
                         if (!count)
                         {
-                            if (!silky) temp.breakBlock(((Entity) digger).worldObj, fortune, true);
+                            if (!silky) doFortuneDrop(temp, ((Entity) digger).worldObj, fortune);
                             else
                             {
                                 if (block.canSilkHarvest(player.worldObj, temp.getPos(), state, player))
@@ -329,7 +330,7 @@ public class Move_Utility extends Move_Basic
                                 }
                                 else
                                 {
-                                    temp.breakBlock(((Entity) digger).worldObj, fortune, true);
+                                    doFortuneDrop(temp, ((Entity) digger).worldObj, fortune);
                                 }
                             }
                         }
@@ -337,5 +338,11 @@ public class Move_Utility extends Move_Basic
                     }
                 }
         return ret;
+    }
+
+    private void doFortuneDrop(Vector3 location, World world, int fortune)
+    {
+        location.getBlock(world).dropBlockAsItem(world, location.getPos(), location.getBlockState(world), fortune);
+        location.breakBlock(world, fortune, false);
     }
 }

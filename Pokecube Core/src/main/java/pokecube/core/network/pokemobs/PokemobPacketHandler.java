@@ -393,7 +393,7 @@ public class PokemobPacketHandler
 
                         Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
                         boolean teleport = dat.readBoolean();
-
+System.out.println(teleport);
                         if (teleport)
                         {
                             NBTTagCompound teletag = new NBTTagCompound();
@@ -428,7 +428,7 @@ public class PokemobPacketHandler
                                     }
                                 }
 
-                                if (closest != null)
+                                if (closest != null || teleport)
                                 {
                                     if (closest instanceof EntityLivingBase)
                                     {
@@ -437,6 +437,11 @@ public class PokemobPacketHandler
                                         {
                                             ((EntityLiving) closest).setAttackTarget((EntityLivingBase) pokemob);
                                         }
+                                    }
+                                    else if(closest==null)
+                                    {
+                                        pokemob.executeMove(closest, v.set(pokemob),
+                                                0);
                                     }
                                     else pokemob.executeMove(closest, v.set(closest),
                                             closest.getDistanceToEntity((Entity) pokemob));

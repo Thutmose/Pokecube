@@ -35,6 +35,7 @@ public class ContainerBag extends Container
         // System.out.println(ConfigHandler.ONLYPOKECUBES);
 
         boolean valid = PokecubeItems.isValidHeldItem(itemstack) || itemstack.getItem() instanceof IPokemobUseable;
+        valid |= PokecubeItems.getFossilNumber(itemstack) != 0;
         boolean cube = PokecubeItems.getEmptyCube(itemstack) == itemstack.getItem()
                 && !PokecubeManager.isFilled(itemstack);
 

@@ -39,7 +39,10 @@ public class Pickup extends Ability
                 if(item!=null && item.getItem() == PokecubeItems.berries)
                 {
                     items = Lists.newArrayList(BerryManager.berryNames.keySet());
-                    item.setItemDamage((int) items.get(poke.getRNG().nextInt(items.size())));
+                    int index = poke.getRNG().nextInt(items.size());
+                    Object o = items.get(index);
+                    int num = (int) o;
+                    item.setItemDamage(num);
                 }
                 if (item != null) poke.setCurrentItemOrArmor(0, item.copy());
             }

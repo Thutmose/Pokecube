@@ -1,5 +1,6 @@
 package pokecube.core.blocks.berries;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.BlockBush;
@@ -59,7 +60,6 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)
     {
-
         Random rand = worldIn instanceof World ? ((World) worldIn).rand : RANDOM;
 
         int count = 1 + rand.nextInt(2);
@@ -87,6 +87,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
             if (worldIn.rand.nextFloat() <= chance)
             {
                 ItemStack stack = getBerryStack(worldIn, pos);
+                int count = quantityDropped(state, fortune, worldIn.rand);
+                stack.stackSize = count;
                 if (worldIn.getGameRules().getBoolean("doTileDrops") && stack != null)
                 {
                     if (captureDrops.get())
@@ -105,6 +107,18 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
                 }
             }
         }
+    }
+
+    @Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    {
+        List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
+        Random rand = world instanceof World ? ((World) world).rand : RANDOM;
+        int count = quantityDropped(state, fortune, rand);
+        ItemStack stack = getBerryStack(world, pos);
+        stack.stackSize = count;
+        ret.add(stack);
+        return ret;
     }
 
     @Override

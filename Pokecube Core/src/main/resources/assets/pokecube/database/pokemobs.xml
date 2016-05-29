@@ -15890,6 +15890,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>lake 0.001:1:1</BIOMESANYACCEPTABLE>
             <SPECIALCASES>legendary day night</SPECIALCASES>
             <BASESTATS atk="75" def="130" hp="75" spatk="75" spd="95" spdef="130"/>
             <EVYIELD def="2" spdef="1"/>
@@ -15919,6 +15920,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>lake 0.001:1:1</BIOMESANYACCEPTABLE>
             <SPECIALCASES>legendary day night</SPECIALCASES>
             <BASESTATS atk="105" def="105" hp="80" spatk="105" spd="80" spdef="105"/>
             <EVYIELD atk="1" spatk="1" spdef="1"/>
@@ -15949,6 +15951,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
+            <BIOMESANYACCEPTABLE>lake 0.001:1:1</BIOMESANYACCEPTABLE>
             <SPECIALCASES>legendary day night</SPECIALCASES>
             <BASESTATS atk="125" def="70" hp="75" spatk="125" spd="115" spdef="70"/>
             <EVYIELD atk="2" spatk="1"/>

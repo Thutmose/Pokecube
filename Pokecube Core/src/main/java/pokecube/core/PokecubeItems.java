@@ -292,7 +292,7 @@ public class PokecubeItems extends Items
      * @return */
     public static int getCubeId(ItemStack stack)
     {
-        for (Integer i : pokecubes.keySet())
+        if (stack != null) for (Integer i : pokecubes.keySet())
         {
             Item[] cubes = pokecubes.get(i);
             for (Item cube : cubes)

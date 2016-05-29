@@ -54,7 +54,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
 
             if (i <= 7)
             {
-                if (new Random().nextInt(250) == 0)
+                if (new Random().nextInt(2500) == 0)
                 {
                     growCrop();
                 }

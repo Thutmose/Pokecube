@@ -60,59 +60,57 @@ import thut.api.pathing.IPathingMob;
 public abstract class EntityTameablePokemob extends EntityTameable implements IPokemob, IMob, IInvBasic, IHungrymob,
         IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob
 {
-    public static int          EXITCUBEDURATION  = 40;
+    public static int     EXITCUBEDURATION  = 40;
 
-    static final int           AIACTIONSTATESDW  = 5;
-    static final int           DIRECTIONPITCHDW  = 10;
-    static final int           STATSDW           = 11;
-    static final int           ATTACKTARGETIDDW  = 13;
-    static final int           STATMODDW         = 18;
-    static final int           BOOMSTATEDW       = 19;
-    static final int           EXPDW             = 20;
-    static final int           HUNGERDW          = 21;
-    static final int           NICKNAMEDW        = 22;
-    static final int           STATUSMOVEINDEXDW = 23;
+    static final int      AIACTIONSTATESDW  = 5;
+    static final int      DIRECTIONPITCHDW  = 10;
+    static final int      STATSDW           = 11;
+    static final int      ATTACKTARGETIDDW  = 13;
+    static final int      STATMODDW         = 18;
+    static final int      BOOMSTATEDW       = 19;
+    static final int      EXPDW             = 20;
+    static final int      HUNGERDW          = 21;
+    static final int      NICKNAMEDW        = 22;
+    static final int      STATUSMOVEINDEXDW = 23;
 
-    static final int           EVS1DW            = 24;
-    static final int           EVS2DV            = 25;
+    static final int      EVS1DW            = 24;
+    static final int      EVS2DV            = 25;
 
-    static final int           SPECIALINFO       = 26;
-    static final int           EVOLNBDW          = 27;
-    static final int           EVOLTICKDW        = 28;
-    static final int           HAPPYDW           = 29;
-    static final int           MOVESDW           = 30;
+    static final int      SPECIALINFO       = 26;
+    static final int      EVOLNBDW          = 27;
+    static final int      EVOLTICKDW        = 28;
+    static final int      HAPPYDW           = 29;
+    static final int      MOVESDW           = 30;
 
-    protected boolean          looksWithInterest;
+    protected boolean     looksWithInterest;
 
-    protected float            field_25048_b;
+    protected float       field_25048_b;
 
-    protected float            field_25054_c;
-    protected boolean          isPokemonShaking;
+    protected float       field_25054_c;
+    protected boolean     isPokemonShaking;
 
-    protected boolean          field_25052_g;
+    protected boolean     field_25052_g;
 
-    protected float            timePokemonIsShaking;
-    protected float            prevTimePokemonIsShaking;
-    protected Integer          pokedexNb         = 0;
-    public float               length            = 1;
-    protected EntityLivingBase owner;
-    private String             ownerName         = "";
-    private UUID               original          = new UUID(1234, 4321);
-    protected Vector3          here              = Vector3.getNewVector();
+    protected float       timePokemonIsShaking;
+    protected float       prevTimePokemonIsShaking;
+    protected Integer     pokedexNb         = 0;
+    public float          length            = 1;
+    private UUID          original          = new UUID(1234, 4321);
+    protected Vector3     here              = Vector3.getNewVector();
 
-    protected Vector3          vec               = Vector3.getNewVector();
+    protected Vector3     vec               = Vector3.getNewVector();
 
-    protected Vector3          v1                = Vector3.getNewVector();
-    protected Vector3          v2                = Vector3.getNewVector();
-    protected Vector3          vBak              = Vector3.getNewVector();
-    boolean                    named             = false;
+    protected Vector3     v1                = Vector3.getNewVector();
+    protected Vector3     v2                = Vector3.getNewVector();
+    protected Vector3     vBak              = Vector3.getNewVector();
+    boolean               named             = false;
 
-    boolean                    initHome          = true;
+    boolean               initHome          = true;
 
-    protected AnimalChest      pokeChest;
+    protected AnimalChest pokeChest;
 
-    boolean                    returning         = false;
-    protected int              abilityIndex      = 0;
+    boolean               returning         = false;
+    protected int         abilityIndex      = 0;
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -245,36 +243,31 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public EntityLivingBase getOwner()
     {
-        if (!this.getPokemonAIState(IMoveConstants.TAMED)) return null;
-        if (owner == null)
+        if (!this.getPokemonAIState(IMoveConstants.TAMED) || super.getOwnerId() == null || super.getOwnerId().isEmpty())
+            return null;
+        List<Object> entities = null;
+        entities = new ArrayList<Object>(worldObj.loadedEntityList);
+        try
         {
-            List<Object> entities = null;
-            entities = new ArrayList<Object>(worldObj.loadedEntityList);
+            UUID uuid = UUID.fromString(super.getOwnerId());
+            EntityLivingBase o;
+            if ((o = worldObj.getPlayerEntityByUUID(uuid)) != null) return o;
+        }
+        catch (Exception e)
+        {
 
-            if (!ownerName.isEmpty())
-            {
-                owner = worldObj.getPlayerEntityByName(ownerName);
-                return owner;
-            }
-
-            for (Object o : entities)
-            {
-                if (o instanceof EntityLivingBase)
-                {
-                    EntityLivingBase e = (EntityLivingBase) o;
-                    String owneruuid = super.getOwnerId();
-
-                    if (e.getUniqueID().toString().equals(owneruuid))
-                    {
-                        owner = e;
-                        ownerName = owner.getName();
-                        return owner;
-                    }
-                }
-            }
         }
 
-        return owner;
+        for (Object o : entities)
+        {
+            if (o instanceof EntityLivingBase)
+            {
+                EntityLivingBase e = (EntityLivingBase) o;
+                String owneruuid = super.getOwnerId();
+                if (e.getUniqueID().toString().equals(owneruuid)) { return e; }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -286,15 +279,12 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public EntityLivingBase getPokemonOwner()
     {
-        if (owner == null) return getOwner();
-        return owner;
+        return getOwner();
     }
 
     @Override
     public String getPokemonOwnerName()
     {
-        if (!ownerName.isEmpty()) { return ownerName; }
-
         try
         {
             return super.getOwnerId();
@@ -624,7 +614,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                     ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
                     MinecraftForge.EVENT_BUS.post(toss);
                     noRoom = toss.isCanceled();
-                    if (noRoom)
+                    if (!noRoom)
                     {
                         EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
                         Vector3 temp = Vector3.getNewVector().set(this);
@@ -633,19 +623,37 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                         entity.targetEntity = null;
                         entity.targetLocation.clear();
                         worldObj.spawnEntityInWorld(entity);
+                        noRoom = true;
                     }
                 }
-                boolean added = player.inventory.addItemStackToInventory(itemstack);
-                if (!added)
+                if (!noRoom)
                 {
-                    ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
-                    MinecraftForge.EVENT_BUS.post(toss);
-                    added = toss.isCanceled();
+                    boolean added = player.inventory.addItemStackToInventory(itemstack);
+                    if (!added)
+                    {
+                        ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F),
+                                PokecubeMod.getFakePlayer());
+                        MinecraftForge.EVENT_BUS.post(toss);
+                        added = toss.isCanceled();
+                        if (!added)
+                        {
+                            // EntityPokecube entity = new
+                            // EntityPokecube(worldObj, (EntityLivingBase)
+                            // owner, itemstack);
+                            // Vector3 temp = Vector3.getNewVector().set(this);
+                            // temp.moveEntity(entity);
+                            // temp.clear().setVelocities(entity);
+                            // entity.targetEntity = null;
+                            // entity.targetLocation.clear();
+                            // worldObj.spawnEntityInWorld(entity);
+                        }
+                    }
                 }
                 if (!owner.isSneaking() && !isDead)
                     ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
                 String mess = StatCollector.translateToLocalFormatted("pokemob.action.return", getPokemonDisplayName());
                 displayMessageToOwner(mess);
+
             }
             else if (getPokemonOwnerName() != null && !getPokemonOwnerName().isEmpty())
             {
@@ -724,20 +732,15 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         if (e == null)
         {
             super.setOwnerId("");
-            owner = null;
-            ownerName = "";
             this.setPokemonAIState(IMoveConstants.TAMED, false);
             return;
         }
-
-        owner = e;
 
         boolean uuidorName = this.getPokemonOwnerName().equalsIgnoreCase(e.getUniqueID().toString())
                 || getPokemonOwnerName().equalsIgnoreCase(e.getName());
 
         if (e instanceof EntityPlayer && !uuidorName)
         {
-            ownerName = e.getName();
             this.setPokemonAIState(IMoveConstants.TAMED, true);
             super.setOwnerId(e.getUniqueID().toString());
 

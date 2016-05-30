@@ -116,6 +116,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         Random rand = world instanceof World ? ((World) world).rand : RANDOM;
         int count = quantityDropped(state, fortune, rand);
         ItemStack stack = getBerryStack(world, pos);
+        if (stack == null) return ret;
         stack.stackSize = count;
         ret.add(stack);
         return ret;
@@ -128,7 +129,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
         TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
-        String name = BerryManager.berryNames.get(tile.getBerryId());
+        String name = tile == null ? "cheri" : BerryManager.berryNames.get(tile.getBerryId());
         if (name == null) name = "cheri";
         return state.withProperty(BerryManager.type, name);
     }
@@ -164,6 +165,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
     {
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        if (tile == null) return BerryManager.getBerryItem(1);
         return BerryManager.getBerryItem(tile.getBerryId());
     }
 
@@ -179,7 +181,9 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
     {
         TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
-        if (TileEntityBerries.trees.containsKey(tile.getBerryId()))
+        int id = 1;
+        if (tile != null) id = tile.getBerryId();
+        if (TileEntityBerries.trees.containsKey(id))
         {
             float f = 0.15F;
             this.setBlockBounds(0.5F - f, 1 - f * 3.0F, 0.5F - f, 0.5F + f, 1, 0.5F + f);

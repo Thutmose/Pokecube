@@ -26,6 +26,8 @@ import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokecubes.EntityPokecube;
+import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokecubeSerializer;
@@ -313,10 +315,42 @@ public class Commands implements ICommand
                     boolean isStaying = mob.getPokemonAIState(IMoveConstants.STAYING);
                     boolean isGuarding = mob.getPokemonAIState(IMoveConstants.GUARDING);
 
-                    if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == player || allall)
-                            && (named || all || (stay == isStaying && guard == isGuarding))
-                            && (named == specificName.equalsIgnoreCase(mob.getPokemonDisplayName())))
+                    if (!allall && mob.getPokemonOwner() == player)
+                    {
+                        if (named && specificName.equalsIgnoreCase(mob.getPokemonDisplayName()) || stay && isStaying
+                                || guard && isGuarding || all)
+                        {
+                            mob.returnToPokecube();
+                        }
+                    }
+                    else if (allall && mob.getPokemonAIState(IMoveConstants.TAMED))
+                    {
                         mob.returnToPokecube();
+                    }
+                }
+                if (o instanceof EntityPokecube)
+                {
+                    IPokemob mob = PokecubeManager.itemToPokemob(((EntityPokecube) o).getEntityItem(), world);
+                    if (mob != null)
+                    {
+                        boolean isStaying = mob.getPokemonAIState(IMoveConstants.STAYING);
+                        boolean isGuarding = mob.getPokemonAIState(IMoveConstants.GUARDING);
+
+                        if (!allall && mob.getPokemonOwner() == player)
+                        {
+                            if (named && specificName.equalsIgnoreCase(mob.getPokemonDisplayName()) || stay && isStaying
+                                    || guard && isGuarding || all)
+                            {
+                                mob.returnToPokecube();
+                                ((EntityPokecube) o).setDead();
+                            }
+                        }
+                        else if (allall && mob.getPokemonAIState(IMoveConstants.TAMED))
+                        {
+                            mob.returnToPokecube();
+                            ((EntityPokecube) o).setDead();
+                        }
+                    }
                 }
             }
             return true;

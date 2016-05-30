@@ -79,6 +79,7 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     {
         List<ItemStack> ret = Lists.newArrayList();
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        if(tile == null) return ret;
         String berry = BerryManager.berryNames.get(tile.getBerryId());
         ItemStack stack = BerryManager.getBerryItem(berry);
         ret.add(stack);
@@ -92,6 +93,7 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
         Random rand = world instanceof World ? ((World) world).rand : new Random();
         int chance = this.getSaplingDropChance(state);
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        if(tile==null) return ret;
         String berry = BerryManager.berryNames.get(tile.getBerryId());
         if (fortune > 0)
         {
@@ -123,6 +125,7 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
     {
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        if(tile == null) return BerryManager.getBerryItem(1);
         return BerryManager.getBerryItem(tile.getBerryId());
     }
 

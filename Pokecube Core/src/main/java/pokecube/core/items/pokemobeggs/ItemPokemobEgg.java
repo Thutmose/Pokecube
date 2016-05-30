@@ -337,6 +337,11 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             mob.setSize(nbt.getFloat("size"));
         }
 
+        if (nbt.hasKey("gender"))
+        {
+            mob.setSexe(nbt.getByte("gender"));
+        }
+
         Vector3 location = Vector3.getNewVector().set(mob);
         EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 2, false);
         EntityLivingBase owner = player;

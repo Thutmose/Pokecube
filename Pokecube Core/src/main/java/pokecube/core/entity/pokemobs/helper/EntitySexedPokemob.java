@@ -14,10 +14,12 @@ import com.google.common.base.Predicate;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -395,6 +397,18 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     {
         super.onEntityUpdate();
 
+        if (getPokemonAIState(MATING) && ticksExisted%10==0)
+        {
+            double d0 = this.rand.nextGaussian() * 0.02D;
+            double d1 = this.rand.nextGaussian() * 0.02D;
+            double d2 = this.rand.nextGaussian() * 0.02D;
+            this.worldObj.spawnParticle(EnumParticleTypes.HEART,
+                    this.posX + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width,
+                    this.posY + 0.5D + (double) (this.rand.nextFloat() * this.height),
+                    this.posZ + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, d0, d1, d2,
+                    new int[0]);
+        }
+
         if (!isServerWorld()) return;
 
         int diff = 1 * PokecubeMod.core.getConfig().mateMultiplier;
@@ -505,9 +519,20 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         dist = Math.max(dist, 1);
         this.getNavigator().tryMoveToEntityLiving(getLover(), 1.5);
         this.spawnBabyDelay++;
-        if (this.spawnBabyDelay >= 50 && this.getDistanceSqToEntity(getLover()) < dist)
+        this.setPokemonAIState(MATING, true);
+        if (getLover() instanceof IPokemob)
         {
+            ((IPokemob) getLover()).setPokemonAIState(MATING, true);
+        }
+        if(getLover() instanceof EntityLiving)
+        {
+            ((EntityLiving)getLover()).getNavigator().tryMoveToEntityLiving(this, 1.5);
+        }
+        if (this.spawnBabyDelay >= 50)
+        {
+            if (getLover() instanceof IPokemob) ((IPokemob) getLover()).setPokemonAIState(MATING, false);
             mate((IBreedingMob) getLover());
+            this.setPokemonAIState(MATING, false);
             this.spawnBabyDelay = 0;
         }
     }

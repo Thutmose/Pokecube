@@ -55,59 +55,68 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     {
         return new TileEntityBerries(Type.FRUIT);
     }
-    
+
     @Override
-    /**
-     * This returns a complete list of items dropped from this block.
-     *
-     * @param world The current world
-     * @param pos Block position in world
-     * @param state Current state
-     * @param fortune Breakers fortune level
-     * @return A ArrayList containing all items this block drops
-     */
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)
+    {
+
+        Random rand = worldIn instanceof World ? ((World) worldIn).rand : RANDOM;
+
+        int count = 1 + rand.nextInt(2);
+        for (int i = 0; i < count; i++)
+        {
+            Item item = this.getItemDropped(state, rand, 0);
+            if (item != null)
+            {
+                dropBlockAsItemWithChance(worldIn, pos, state, 1, 0);
+            }
+        }
+    }
+
+    @Override
+    /** Spawns EntityItem in the world for the given ItemStack if the world is
+     * not remote. */
+    public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune)
+    {
+        if (!worldIn.isRemote && !worldIn.restoringBlockSnapshots)
+        {
+            java.util.List<ItemStack> items = getDrops(worldIn, pos, state, fortune);
+            chance = net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(items, worldIn, pos, state, fortune,
+                    chance, false, harvesters.get());
+
+            if (worldIn.rand.nextFloat() <= chance)
+            {
+                ItemStack stack = getBerryStack(worldIn, pos);
+                if (worldIn.getGameRules().getBoolean("doTileDrops") && stack != null)
+                {
+                    if (captureDrops.get())
+                    {
+                        capturedDrops.get().add(stack);
+                        return;
+                    }
+                    float f = 0.5F;
+                    double d0 = (double) (worldIn.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+                    double d1 = (double) (worldIn.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+                    double d2 = (double) (worldIn.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+                    EntityItem entityitem = new EntityItem(worldIn, (double) pos.getX() + d0, (double) pos.getY() + d1,
+                            (double) pos.getZ() + d2, stack);
+                    entityitem.setDefaultPickupDelay();
+                    worldIn.spawnEntityInWorld(entityitem);
+                }
+            }
+        }
+    }
+
+    @Override
     public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
     {
         List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
-
-        Random rand = world instanceof World ? ((World)world).rand : RANDOM;
-
+        Random rand = world instanceof World ? ((World) world).rand : RANDOM;
         int count = quantityDropped(state, fortune, rand);
-        for(int i = 0; i < count; i++)
-        {
-            Item item = this.getItemDropped(state, rand, fortune);
-            if (item != null)
-            {
-                ret.add(getBerryStack(world, pos));
-            }
-        }
+        ItemStack stack = getBerryStack(world, pos);
+        stack.stackSize = count;
+        ret.add(stack);
         return ret;
-    }
-
-    /** Spawns EntityItem in the world for the given ItemStack if the world is
-     * not remote. */
-    protected void dropBlockAsItem(World p_149642_1_, int p_149642_2_, int p_149642_3_, int p_149642_4_,
-            ItemStack p_149642_5_)
-    {
-        if (!p_149642_1_.isRemote && p_149642_1_.getGameRules().getBoolean("doTileDrops")
-                && !p_149642_1_.restoringBlockSnapshots) // do not drop items
-                                                         // while restoring
-                                                         // blockstates,
-                                                         // prevents item dupe
-        {
-            if (captureDrops.get())
-            {
-                capturedDrops.get().add(p_149642_5_);
-                return;
-            }
-            float f = 0.7F;
-            double d0 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
-            double d1 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
-            double d2 = p_149642_1_.rand.nextFloat() * f + (1.0F - f) * 0.5D;
-            EntityItem entityitem = new EntityItem(p_149642_1_, p_149642_2_ + d0, p_149642_3_ + d1, p_149642_4_ + d2,
-                    p_149642_5_);
-            p_149642_1_.spawnEntityInWorld(entityitem);
-        }
     }
 
     @Override
@@ -126,6 +135,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     public ItemStack getBerryStack(IBlockAccess world, BlockPos pos)
     {
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        if (tile == null) return null;
         return BerryManager.getBerryItem(BerryManager.berryNames.get(tile.getBerryId()));
     }
 

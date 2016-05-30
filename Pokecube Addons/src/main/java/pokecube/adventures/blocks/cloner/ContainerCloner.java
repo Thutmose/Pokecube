@@ -166,10 +166,9 @@ public class ContainerCloner extends Container
                 pokenb = entry.getChildNb();
                 if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
                 egg.getTagCompound().setInteger("pokemobNumber", pokenb);
-
                 IPokemob mob = PokecubeManager.itemToPokemob(cube, worldObj);
                 if (mob.isShiny() && egg.hasTagCompound()) egg.getTagCompound().setBoolean("shiny", true);
-
+                egg.getTagCompound().setByte("gender", mob.getSexe());
                 egg.stackSize = 1;
                 tile.setInventorySlotContents(9, egg);
                 return;

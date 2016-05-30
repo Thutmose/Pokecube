@@ -319,8 +319,9 @@ public class PokedexEntry
                     correctItem = mobs.isItemEqual(item);
                 }
             }
-            if (mob instanceof EntityLiving && ((EntityLiving) mob).getHeldItemMainhand() != null && ((EntityLiving) mob)
-                    .getHeldItemMainhand().isItemEqual(PokecubeItems.getStack("everstone"))) { return false; }
+            if (mob instanceof EntityLiving && ((EntityLiving) mob).getHeldItemMainhand() != null
+                    && ((EntityLiving) mob).getHeldItemMainhand()
+                            .isItemEqual(PokecubeItems.getStack("everstone"))) { return false; }
             if (mobs != null && mobs.isItemEqual(PokecubeItems.getStack("everstone"))) { return false; }
             ret = ret && correctItem;
             boolean correctLevel = mob.getLevel() >= level;
@@ -531,7 +532,7 @@ public class PokedexEntry
         public static class TypeEntry
         {
             ArrayList<Type>             biomes   = new ArrayList<Type>();
-            ArrayList<Biome>     valid    = new ArrayList<Biome>();
+            ArrayList<Biome>            valid    = new ArrayList<Biome>();
             HashSet<Integer>            types    = new HashSet<Integer>();
             public ArrayList<BiomeType> biome2   = new ArrayList<BiomeType>();
             float                       weight;
@@ -912,7 +913,7 @@ public class PokedexEntry
     protected Map<Integer, int[]>              childNumbers     = new HashMap<Integer, int[]>();
 
     /** Interactions with items from when player right clicks. */
-    private InteractionLogic                   interactionLogic = new InteractionLogic();
+    protected InteractionLogic                 interactionLogic = new InteractionLogic();
 
     /** Pokemobs with these entries will be hunted. */
     private List<PokedexEntry>                 prey             = new ArrayList<PokedexEntry>();
@@ -1169,7 +1170,7 @@ public class PokedexEntry
     public Ability getAbility(int number, IPokemob pokemob)
     {
         if (number < 2) { return AbilityManager.getAbility(abilities.get(number)); }
-        if(number == 2) return getHiddenAbility(pokemob);
+        if (number == 2) return getHiddenAbility(pokemob);
         return null;
     }
 

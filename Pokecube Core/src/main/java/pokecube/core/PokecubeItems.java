@@ -292,7 +292,7 @@ public class PokecubeItems extends Items
      * @return */
     public static int getCubeId(ItemStack stack)
     {
-        for (Integer i : pokecubes.keySet())
+        if (stack != null) for (Integer i : pokecubes.keySet())
         {
             Item[] cubes = pokecubes.get(i);
             for (Item cube : cubes)
@@ -611,9 +611,9 @@ public class PokecubeItems extends Items
     {
         if (o instanceof Block)
         {
-            if(((Block) o).getRegistryName()!=null)
+            if (((Block) o).getRegistryName() != null)
             {
-                GameRegistry.register((Block)o);
+                GameRegistry.register((Block) o);
                 addGeneric(((Block) o).getRegistryName().getResourceDomain(), o);
             }
             else
@@ -623,9 +623,9 @@ public class PokecubeItems extends Items
         }
         if (o instanceof Item)
         {
-            if(((Item) o).getRegistryName()!=null)
+            if (((Item) o).getRegistryName() != null)
             {
-                GameRegistry.register((Item)o);
+                GameRegistry.register((Item) o);
                 addGeneric(((Item) o).getRegistryName().getResourceDomain(), o);
             }
             else

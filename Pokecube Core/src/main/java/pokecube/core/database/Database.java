@@ -23,6 +23,7 @@ import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.TypeEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -1027,6 +1028,22 @@ public class Database implements IMoveConstants
                 e.type2 = e.baseForme.type2;
             }
             if (e.type2 == null) e.type2 = PokeType.unknown;
+            if (e.baseForme != null) e.evolutionMode = e.baseForme.evolutionMode;
+            if(e.interactionLogic.stacks.isEmpty())
+            {
+                if(e.baseForme!=null)
+                {
+                    if(e.baseForme.interactionLogic.stacks.isEmpty())
+                    {
+                        InteractionLogic.initForEntry(e);
+                    }
+                    e.interactionLogic.stacks = e.baseForme.interactionLogic.stacks;
+                }
+                else
+                {
+                    InteractionLogic.initForEntry(e);
+                }
+            }
             if (!Pokedex.getInstance().getEntries().contains(e.getPokedexNb()))
             {
                 if (e.baseForme != null && Pokedex.getInstance().getEntries().contains(e.baseForme.getPokedexNb()))

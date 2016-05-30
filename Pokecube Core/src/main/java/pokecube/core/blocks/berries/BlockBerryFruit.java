@@ -87,6 +87,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
             if (worldIn.rand.nextFloat() <= chance)
             {
                 ItemStack stack = getBerryStack(worldIn, pos);
+                if (stack == null) return;
                 int count = quantityDropped(state, fortune, worldIn.rand);
                 stack.stackSize = count;
                 if (worldIn.getGameRules().getBoolean("doTileDrops") && stack != null)

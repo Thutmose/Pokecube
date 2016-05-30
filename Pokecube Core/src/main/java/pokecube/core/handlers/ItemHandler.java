@@ -136,7 +136,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
                                                             // hit by a special
                                                             // move
 
-        BerryManager.registerTrees();
         BerryManager.berryCrop = new BlockBerryCrop().setRegistryName("pokecube", "berrycrop")
                 .setUnlocalizedName("berrycrop");
         register(BerryManager.berryCrop);
@@ -185,6 +184,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         TreeRemover.woodTypes.add(log1);
         TreeRemover.woodTypes.add(log0);
+        BerryManager.registerTrees();
 
     }
 

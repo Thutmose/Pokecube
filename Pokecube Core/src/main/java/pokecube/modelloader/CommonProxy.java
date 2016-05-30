@@ -14,8 +14,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -34,6 +37,7 @@ import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.common.ExtraDatabase;
 
 /** This class actually does nothing on server side. But its implementation on
@@ -47,6 +51,7 @@ public class CommonProxy implements IGuiHandler
         Set<ZippedLoc> jarlocs     = Sets.newHashSet();
         Set<File>      directFiles = Sets.newHashSet();
     }
+
     private static class ZippedLoc
     {
         File    file;
@@ -71,6 +76,7 @@ public class CommonProxy implements IGuiHandler
             return zip.getInputStream(entry);
         }
     }
+
     public static HashMap<String, Object>            modelProviders = Maps.newHashMap();
     public static HashMap<String, ArrayList<String>> modModels      = Maps.newHashMap();
     public static final String                       MODELPATH      = "models/pokemobs/";
@@ -308,7 +314,21 @@ public class CommonProxy implements IGuiHandler
         }
 
         ProgressBar bar = ProgressManager.push("Model Locations", mobProviders.size());
-        for (String modId : mobProviders.keySet())
+
+        List<String> modList = Lists.newArrayList(mobProviders.keySet());
+        // Sort to prioritise default mod
+        Collections.sort(modList, new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                if (o1.equals(PokecubeMod.defaultMod)) return Integer.MAX_VALUE;
+                else if (o2.equals(PokecubeMod.defaultMod)) return Integer.MIN_VALUE;
+                return o1.compareTo(o2);
+            }
+        });
+
+        for (String modId : modList)
         {
             bar.step(modId);
             Object mod = mobProviders.get(modId);

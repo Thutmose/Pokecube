@@ -6,6 +6,7 @@ package pokecube.core.items.pokemobeggs;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import com.google.common.base.Predicate;
 
@@ -103,6 +104,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         nbt.setByteArray("colour", getColour(((IMobColourable) father).getRGBA(), ((IMobColourable) mother).getRGBA()));
         nbt.setFloat("size", getSize(father.getSize(), mother.getSize()));
         nbt.setByte("nature", getNature(mother.getNature(), father.getNature()));
+        nbt.setString("motherOT", mother.getOriginalOwnerUUID().toString());
 
         int chance = 4096;
         if (mother.isShiny()) chance = chance / 2;
@@ -258,11 +260,10 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         }
         else
         {
-            ret = (byte) (rand.nextGaussian() > 0 ? nature.ordinal() : nature2.ordinal());
+            int num = rand.nextInt(5);
+            ret = (byte) (num * 6);
         }
-
         return ret;
-
     }
 
     public static int getNumber(ItemStack stack)
@@ -337,10 +338,16 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             mob.setNature(Nature.values()[nbt.getByte("nature")]);
             mob.setSize(nbt.getFloat("size"));
         }
-        
-        if(nbt.hasKey("gender"))
+
+        if (nbt.hasKey("gender"))
         {
             mob.setSexe(nbt.getByte("gender"));
+        }
+
+        if (nbt.hasKey("motherOT"))
+        {
+            UUID ot = UUID.fromString(nbt.getString("motherOT"));
+            mob.setOriginalOwnerUUID(ot);
         }
 
         Vector3 location = Vector3.getNewVector().set(mob);

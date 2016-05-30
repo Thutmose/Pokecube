@@ -271,7 +271,13 @@ public class PokemobPacketHandler
                             }
                             else if (channel == NICKNAME)
                             {
-
+                                byte[] string = new byte[buffer.readByte() + 1];
+                                for (int i = 0; i < string.length; i++)
+                                {
+                                    string[i] = buffer.readByte();
+                                }
+                                String name = ChatAllowedCharacters.filterAllowedCharacters(new String(string));
+                                if (pokemob.getPokemonDisplayName().equals(name)) return;
                                 boolean OT = pokemob.getPokemonOwnerName() == null
                                         || (PokecubeMod.fakeUUID.equals(pokemob.getOriginalOwnerUUID()))
                                         || (pokemob.getPokemonOwnerName()
@@ -291,12 +297,6 @@ public class PokemobPacketHandler
                                 }
                                 else
                                 {
-                                    byte[] string = new byte[buffer.readByte() + 1];
-                                    for (int i = 0; i < string.length; i++)
-                                    {
-                                        string[i] = buffer.readByte();
-                                    }
-                                    String name = ChatAllowedCharacters.filterAllowedCharacters(new String(string));
                                     pokemob.setPokemonNickname(name);
                                 }
                             }
@@ -437,10 +437,9 @@ public class PokemobPacketHandler
                                             ((EntityLiving) closest).setAttackTarget((EntityLivingBase) pokemob);
                                         }
                                     }
-                                    else if(closest==null)
+                                    else if (closest == null)
                                     {
-                                        pokemob.executeMove(closest, v.set(pokemob),
-                                                0);
+                                        pokemob.executeMove(closest, v.set(pokemob), 0);
                                     }
                                     else pokemob.executeMove(closest, v.set(closest),
                                             closest.getDistanceToEntity((Entity) pokemob));

@@ -285,7 +285,7 @@ public class EventsHandler
         Vector3 location = Vector3.getNewVector().set(evt.egg);
         World world = evt.egg.worldObj;
         int num = Tools.countPokemon(world, location, PokecubeMod.core.getConfig().maxSpawnRadius);
-        float factor = 1.25f;
+        float factor = 2f;
         if (num > PokecubeMod.core.getConfig().mobSpawnNumber * factor)
         {
             evt.setCanceled(true);

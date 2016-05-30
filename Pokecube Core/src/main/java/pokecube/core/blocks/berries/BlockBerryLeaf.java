@@ -74,6 +74,14 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
         return false;
     }
 
+    /**
+     * Used to determine ambient occlusion and culling when rebuilding chunks for render
+     */
+    public boolean isOpaqueCube()
+    {
+        return false;
+    }
+
     @Override
     public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
     {

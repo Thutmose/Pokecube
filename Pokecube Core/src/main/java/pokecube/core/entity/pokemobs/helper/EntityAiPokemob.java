@@ -417,7 +417,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (player.getHeldItem().getItem() == Items.dye)
             {
                 setSpecialInfo(player.getHeldItem().getItemDamage());
-                System.out.println(getSpecialInfo());
                 player.getHeldItem().stackSize--;
                 return true;
             }
@@ -538,6 +537,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         message = "pokemob.info.happy6";
                     }
                     CommandTools.sendMessage(player, message);
+                    return true;
                 }
                 // Check if gold apple for breeding.
                 if (itemstack.getItem() == Items.golden_apple)
@@ -589,7 +589,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
             }
             // Open Gui
-            if (!PokecubeCore.isOnClientSide() && isOwner && itemstack == null)
+            if (!PokecubeCore.isOnClientSide() && isOwner)
             {
                 openGUI(player);
                 return true;

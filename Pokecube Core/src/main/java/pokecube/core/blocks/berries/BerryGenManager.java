@@ -39,10 +39,23 @@ public class BerryGenManager
 
     public static class GenericGrower implements TreeGrower
     {
+        final IBlockState wood;
+
+        public GenericGrower(IBlockState trunk)
+        {
+            if (trunk == null)
+            {
+                wood = Blocks.LOG.getDefaultState();
+            }
+            else
+            {
+                wood = trunk;
+            }
+        }
+
         @Override
         public void growTree(World world, BlockPos pos, int berryId)
         {
-            IBlockState wood = Blocks.LOG.getDefaultState();
             int l = world.rand.nextInt(1) + 6;
             boolean flag = true;
             BlockPos temp;
@@ -165,13 +178,25 @@ public class BerryGenManager
 
     public static class PalmGrower implements TreeGrower
     {
+        final IBlockState wood;
+
+        public PalmGrower(IBlockState trunk)
+        {
+            if (trunk == null)
+            {
+                wood = Blocks.LOG.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.JUNGLE);
+            }
+            else
+            {
+                wood = trunk;
+            }
+        }
+
         @Override
         public void growTree(World world, BlockPos pos, int berryId)
         {
             int l = world.rand.nextInt(1) + 5;
             BlockPos temp;
-            IBlockState wood = Blocks.LOG.getDefaultState().withProperty(BlockOldLog.VARIANT,
-                    BlockPlanks.EnumType.JUNGLE);
             if (pos.getY() >= 1 && pos.getY() + l + 1 <= 256)
             {
                 boolean stopped = false;
@@ -367,7 +392,8 @@ public class BerryGenManager
             {
                 Biome b1 = Biome.REGISTRY.getObject(key);
                 {
-                    if (b1 != null) if (b1.getBiomeName().replaceAll(" ", "").equalsIgnoreCase(biome)) type = Biome.getIdForBiome(b1);
+                    if (b1 != null) if (b1.getBiomeName().replaceAll(" ", "").equalsIgnoreCase(biome))
+                        type = Biome.getIdForBiome(b1);
                 }
             }
         }

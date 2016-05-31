@@ -1295,7 +1295,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 }
             }
             // Open Gui
-            if (!PokecubeCore.isOnClientSide() && isOwner && itemstack == null)
+            if (!PokecubeCore.isOnClientSide() && isOwner)
             {
                 openGUI(player);
                 return true;

@@ -257,7 +257,8 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         }
         else
         {
-            ret = (byte) (rand.nextGaussian() > 0 ? nature.ordinal() : nature2.ordinal());
+            int num = rand.nextInt(5);
+            ret = (byte) (num * 6);
         }
 
         return ret;

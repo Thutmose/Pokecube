@@ -61,8 +61,8 @@ import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
-public abstract class EntityTameablePokemob extends EntityTameable implements IPokemob, IMob, IInventoryChangedListener, IHungrymob,
-        IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob
+public abstract class EntityTameablePokemob extends EntityTameable implements IPokemob, IMob, IInventoryChangedListener,
+        IHungrymob, IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob
 {
     public static int                   EXITCUBEDURATION  = 40;
 
@@ -117,8 +117,6 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     protected float                     prevTimePokemonIsShaking;
     protected Integer                   pokedexNb         = 0;
     public float                        length            = 1;
-    protected EntityLivingBase          owner;
-    private String                      ownerName         = "";
     private UUID                        original          = new UUID(1234, 4321);
     protected Vector3                   here              = Vector3.getNewVector();
 
@@ -134,7 +132,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     protected AnimalChest               pokeChest;
 
     boolean                             returning         = false;
-    protected int              abilityIndex      = 0;
+    protected int                       abilityIndex      = 0;
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -261,34 +259,30 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
         UUID ownerID = super.getOwnerId();
         if (ownerID == null) return null;
-        if (owner == null)
+        try
         {
-            List<Object> entities = null;
-            entities = new ArrayList<Object>(worldObj.loadedEntityList);
+            EntityLivingBase o;
+            if ((o = worldObj.getPlayerEntityByUUID(ownerID)) != null) return o;
+        }
+        catch (Exception e)
+        {
 
-            if (!ownerName.isEmpty())
+        }
+
+        List<Object> entities = null;
+        entities = new ArrayList<Object>(worldObj.loadedEntityList);
+
+        for (Object o : entities)
+        {
+            if (o instanceof EntityLivingBase)
             {
-                owner = worldObj.getPlayerEntityByName(ownerName);
-                return owner;
-            }
+                EntityLivingBase e = (EntityLivingBase) o;
 
-            for (Object o : entities)
-            {
-                if (o instanceof EntityLivingBase)
-                {
-                    EntityLivingBase e = (EntityLivingBase) o;
-
-                    if (e.getUniqueID().equals(ownerID))
-                    {
-                        owner = e;
-                        ownerName = owner.getName();
-                        return owner;
-                    }
-                }
+                if (e.getUniqueID().equals(ownerID)) { return e; }
             }
         }
 
-        return owner;
+        return null;
     }
 
     @Override
@@ -300,15 +294,12 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public EntityLivingBase getPokemonOwner()
     {
-        if (owner == null) return getOwner();
-        return owner;
+        return getOwner();
     }
 
     @Override
     public String getPokemonOwnerName()
     {
-        if (!ownerName.isEmpty()) { return ownerName; }
-
         try
         {
             return super.getOwnerId().toString();
@@ -738,20 +729,15 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         if (e == null)
         {
             super.setOwnerId(null);
-            owner = null;
-            ownerName = "";
             this.setPokemonAIState(IMoveConstants.TAMED, false);
             return;
         }
-
-        owner = e;
 
         boolean uuidorName = this.getPokemonOwnerName().equalsIgnoreCase(e.getUniqueID().toString())
                 || getPokemonOwnerName().equalsIgnoreCase(e.getName());
 
         if (e instanceof EntityPlayer && !uuidorName)
         {
-            ownerName = e.getName();
             this.setPokemonAIState(IMoveConstants.TAMED, true);
             super.setOwnerId(e.getUniqueID());
 

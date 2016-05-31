@@ -179,6 +179,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         TreeRemover.woodTypes.add(log1);
         TreeRemover.woodTypes.add(log0);
+        BerryManager.registerTrees();
 
     }
 

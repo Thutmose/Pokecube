@@ -266,7 +266,13 @@ public class PokemobPacketHandler
                             }
                             else if (channel == NICKNAME)
                             {
-
+                                byte[] string = new byte[buffer.readByte() + 1];
+                                for (int i = 0; i < string.length; i++)
+                                {
+                                    string[i] = buffer.readByte();
+                                }
+                                String name = ChatAllowedCharacters.filterAllowedCharacters(new String(string));
+                                if (pokemob.getPokemonDisplayName().equals(name)) return;
                                 boolean OT = pokemob.getPokemonOwnerName() == null
                                         || (PokecubeMod.fakeUUID.equals(pokemob.getOriginalOwnerUUID()))
                                         || (pokemob.getPokemonOwnerName()
@@ -286,12 +292,6 @@ public class PokemobPacketHandler
                                 }
                                 else
                                 {
-                                    byte[] string = new byte[buffer.readByte() + 1];
-                                    for (int i = 0; i < string.length; i++)
-                                    {
-                                        string[i] = buffer.readByte();
-                                    }
-                                    String name = ChatAllowedCharacters.filterAllowedCharacters(new String(string));
                                     pokemob.setPokemonNickname(name);
                                 }
                             }

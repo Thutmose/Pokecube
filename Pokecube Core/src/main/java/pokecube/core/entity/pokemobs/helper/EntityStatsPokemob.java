@@ -811,9 +811,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void setPokemonNickname(String nickname)
     {
-        if (PokecubeCore.isOnClientSide() && nickname != getPokemonNickname())
+        if (PokecubeCore.isOnClientSide())
         {
-            try
+            if (!nickname.equals(getPokemonNickname())) try
             {
                 byte[] string = nickname.getBytes();
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6 + string.length));

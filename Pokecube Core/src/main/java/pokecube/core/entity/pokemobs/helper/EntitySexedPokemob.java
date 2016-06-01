@@ -335,14 +335,14 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         List<EntityPokemob> near = worldObj.getEntitiesWithinAABB(EntityPokemob.class,
                 new AxisAlignedBB(i - 8, j - 8, k - 8, i + 8, j + 8, k + 8));
 
-        if (near.size() >= 5)
+        if (near.size() >= 5 && getOwner() == null)
         {
             if (PokecubeMod.debug) System.out.println("Too many pokemobs nearby, aborting Lay");
             return;
         }
 
         int num = Tools.countPokemon(worldObj, here, PokecubeMod.core.getConfig().maxSpawnRadius);
-        if ((getOwner() instanceof EntityPlayer) && num > PokecubeMod.core.getConfig().mobSpawnNumber * 1.25) return;
+        if ((getOwner() instanceof EntityPlayer) && num > PokecubeMod.core.getConfig().mobSpawnNumber * 2) return;
 
         if (worldObj.isAirBlock(new BlockPos(i, j, k)))
         {

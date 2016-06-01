@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
@@ -463,6 +464,12 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             }
             mob.specificSpawnInit();
             world.spawnEntityInWorld(entity);
+            if (mob.getPokemonOwner() != null)
+            {
+                EntityLivingBase owner = mob.getPokemonOwner();
+                String message = StatCollector.translateToLocalFormatted("pokemob.hatch", mob.getPokemonDisplayName());
+                owner.addChatMessage(new ChatComponentText(message));
+            }
             entity.setCurrentItemOrArmor(0, null);
             entity.playLivingSound();
         }

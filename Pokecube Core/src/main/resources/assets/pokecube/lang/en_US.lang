@@ -62,6 +62,8 @@ pokemob.megaevolve.failed=%1$s failed to Mega Evolve.
 
 pokemob.rename.deny=You cannot rename a traded Pokémob.
 
+pokemob.hatch=%1$s Hatched from the egg
+
 ability.adaptability.name=Adaptability
 ability.aerilate.name=Aerilate
 ability.aftermath.name=Aftermath

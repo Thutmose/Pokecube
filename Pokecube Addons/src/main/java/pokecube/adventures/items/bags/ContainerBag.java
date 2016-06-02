@@ -1,16 +1,17 @@
 package pokecube.adventures.items.bags;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.handlers.PASaveHandler;
+import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
@@ -32,33 +33,23 @@ public class ContainerBag extends Container
      * @return true if the id is a filled pokecube one, false otherwise */
     public static boolean isItemValid(ItemStack itemstack)
     {
-        // System.out.println(ConfigHandler.ONLYPOKECUBES);
-
         boolean valid = PokecubeItems.isValidHeldItem(itemstack) || itemstack.getItem() instanceof IPokemobUseable;
         valid |= PokecubeItems.getFossilNumber(itemstack) != 0;
         boolean cube = PokecubeItems.getEmptyCube(itemstack) == itemstack.getItem()
                 && !PokecubeManager.isFilled(itemstack);
-
         return valid || cube;
     }
 
-    public final InventoryBag    inv;
+    public final InventoryBag    invBag;
     public final InventoryPlayer invPlayer;
-
-    public boolean               release    = false;
-
-    public boolean[]             toRelease  = new boolean[54];
-
-    int                          releaseNum = 0;
 
     public ContainerBag(InventoryPlayer ivplay)
     {
         super();
         xOffset = 0;
         yOffset = 0;
-        inv = InventoryBag.getBag(ivplay.player.getUniqueID().toString());
+        invBag = InventoryBag.getBag(ivplay.player.getUniqueID().toString());
         invPlayer = ivplay;
-
         bindInventories();
     }
 
@@ -70,13 +61,12 @@ public class ContainerBag extends Container
     {
         par1Slot.slotNumber = this.inventorySlots.size();
         this.inventorySlots.add(par1Slot);
-        this.inventoryItemStacks.add(inv.getStackInSlot(par1Slot.getSlotIndex()));
+        this.inventoryItemStacks.add(invBag.getStackInSlot(par1Slot.getSlotIndex()));
         return par1Slot;
     }
 
     protected void bindInventories()
     {
-        // System.out.println("bind");
         clearSlots();
         bindPlayerInventory();
         bindPCInventory();
@@ -88,7 +78,7 @@ public class ContainerBag extends Container
         {
             for (int j = 0; j < 9; j++)
             {
-                addSlotToContainer(new SlotBag(inv, +j + i * 9, 8 + j * 18 + xOffset, 18 + i * 18 + yOffset));
+                addSlotToContainer(new SlotBag(invBag, +j + i * 9, 8 + j * 18 + xOffset, 18 + i * 18 + yOffset));
             }
         }
         // int k = 0;
@@ -126,7 +116,7 @@ public class ContainerBag extends Container
 
     public void changeName(String name)
     {
-        inv.boxes[inv.getPage()] = name;
+        invBag.boxes[invBag.getPage()] = name;
 
         if (PokecubeCore.isOnClientSide())
         {
@@ -168,43 +158,19 @@ public class ContainerBag extends Container
     @SideOnly(Side.CLIENT)
     public String getPage()
     {
-        return inv.boxes[inv.getPage()];
+        return invBag.boxes[invBag.getPage()];
     }
 
     @SideOnly(Side.CLIENT)
     public String getPageNb()
     {
-        return Integer.toString(inv.getPage() + 1);
+        return Integer.toString(invBag.getPage() + 1);
     }
 
     @Override
     public Slot getSlot(int par1)
     {
         return this.inventorySlots.get(par1);
-    }
-
-    public void gotoInventoryPage(int page)
-    {
-        if (page - 1 == inv.getPage()) return;
-
-        inv.setPage(page - 1);
-
-        if (PokecubeCore.isOnClientSide())
-        {
-            boolean toReopen = true;
-            if (FMLClientHandler.instance().getServer() == null)
-            {
-                toReopen = inv.opened[inv.getPage()];
-            }
-            if (toReopen)
-            {
-                inv.opened[inv.getPage()] = true;
-                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 6, new byte[] { 10 });
-                PokecubePacketHandler.sendToServer(packet);
-                return;
-            }
-        }
-        bindInventories();
     }
 
     @Override
@@ -281,8 +247,6 @@ public class ContainerBag extends Container
                 }
             }
 
-            // release = gpc.getReleaseState();
-
             if (itemstack != null && isItemValid(itemstack))
             {
                 return null;
@@ -305,31 +269,21 @@ public class ContainerBag extends Container
         return stack;
     }
 
-    public void updateInventoryPages(int dir, InventoryPlayer invent)
+    public void updateInventoryPages(int page)
     {
-
-        boolean dedicated = false;
-
-        try
+        if (page < 0) page = InventoryBag.PAGECOUNT - 1;
+        if (page > InventoryBag.PAGECOUNT - 1) page = 0;
+        invBag.setPage(page);
+        if (!invPlayer.player.isServerWorld())
         {
-            dedicated = FMLCommonHandler.instance().getMinecraftServerInstance() instanceof DedicatedServer;
-        }
-        catch (Throwable e)
-        {
+            MessageServer packet;
+            PacketBuffer buf = new PacketBuffer(Unpooled.buffer(1));
+            buf.writeByte(6);
+            buf.writeInt(page);
+            packet = new MessageServer(buf);
+            PokecubePacketHandler.sendToServer(packet);
 
         }
-
-        if (dedicated)
-        {
-            inv.setPage((inv.getPage() == 0) && (dir == -1) ? InventoryBag.PAGECOUNT - 1
-                    : (inv.getPage() + dir) % InventoryBag.PAGECOUNT);
-        }
-        else if (!(PokecubeCore.isOnClientSide() && FMLClientHandler.instance().getServer() != null))
-        {
-            inv.setPage((inv.getPage() == 0) && (dir == -1) ? InventoryBag.PAGECOUNT - 1
-                    : (inv.getPage() + dir) % InventoryBag.PAGECOUNT);
-        }
-
         bindInventories();
     }
 

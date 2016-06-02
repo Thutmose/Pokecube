@@ -129,6 +129,7 @@ public class PacketPokeAdv
             }
 
         }
+
         public static final byte MESSAGEGUIAFA = 11;
 
         PacketBuffer             buffer;;
@@ -177,6 +178,7 @@ public class PacketPokeAdv
         }
 
     }
+
     public static class MessageServer implements IMessage
     {
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
@@ -195,17 +197,12 @@ public class PacketPokeAdv
                 }
                 if (channel == 6)
                 {
-                    byte m = message[0];
-
-                    byte dir = (byte) (m == 1 ? 1 : m == 2 ? -1 : 0);
-                    ((ContainerBag) (player.openContainer)).updateInventoryPages(dir, player.inventory);
+                    int m = buffer.readInt();
+                    ((ContainerBag) (player.openContainer)).updateInventoryPages(m);
                 }
                 if (channel == 7)
                 {
-                    boolean pc = buffer.readBoolean();
-                    Vector3 v = Vector3.readFromBuff(buffer);
-                    if (pc) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, v.intX(),
-                            v.intY(), v.intZ());
+                    player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, 0, 0, 0);
                 }
                 if (channel == 9)
                 {
@@ -234,7 +231,7 @@ public class PacketPokeAdv
                     {
                         int id = buffer.readInt();
                         int val = buffer.readInt();
-                        System.out.println(id+" "+ val);
+                        System.out.println(id + " " + val);
                         tile.setField(id, val);
                     }
                     PacketBuffer retBuf = new PacketBuffer(Unpooled.buffer(5));
@@ -256,6 +253,7 @@ public class PacketPokeAdv
             }
 
         }
+
         public static final byte MESSAGEGUIAFA = 11;
 
         PacketBuffer             buffer;;
@@ -304,6 +302,7 @@ public class PacketPokeAdv
         }
 
     }
+
     public static byte TYPESETPUBLIC  = 0;
 
     public static byte TYPEADDLAND    = 1;
@@ -394,12 +393,10 @@ public class PacketPokeAdv
         return new MessageServer(packetData);
     }
 
-    public static void sendBagOpenPacket(boolean fromPC, Vector3 loc)
+    public static void sendBagOpenPacket(boolean fromPC)
     {
         PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
         buf.writeByte(7);
-        buf.writeBoolean(true);
-        loc.writeToBuff(buf);
         MessageServer packet = new MessageServer(buf);
         PokecubePacketHandler.sendToServer(packet);
     }

@@ -1450,16 +1450,9 @@ public class PokedexEntry
         return sexeRatio;
     }
 
-    /** @return the sound */
-    public String getSound()
-    {
-        return sound;
-    }
-
     public SoundEvent getSoundEvent()
     {
-        if (event == null) event = new SoundEvent(new ResourceLocation(sound));
-        return event;
+        return SoundEvent.REGISTRY.getObject(new ResourceLocation(sound));
     }
 
     public SpawnData getSpawnData()
@@ -1793,6 +1786,7 @@ public class PokedexEntry
     public void setSound(String sound)
     {
         this.sound = sound;
+        SoundEvent.registerSound(sound);
     }
 
     public void setSpawnData(SpawnData data)

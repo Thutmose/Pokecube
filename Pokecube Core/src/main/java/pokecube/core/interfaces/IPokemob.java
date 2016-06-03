@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
@@ -476,7 +477,7 @@ public interface IPokemob extends IMoveConstants
 
     float getSize();
 
-    String getSound();
+    SoundEvent getSound();
 
     /** Currently used for mareep colour, can be used for other things if needed
      * 

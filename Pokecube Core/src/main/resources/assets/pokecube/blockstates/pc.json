@@ -2,16 +2,21 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "#pc_base": "pokecube:blocks/pc_base",
-            "#pc_top": "pokecube:blocks/pc_top"
+            "#tradingtable": "pokecube:blocks/tradingtable"
         },
-        "model": "pokecube:pc.obj"
+        "model": "pokecube:tradingtable.obj"
      },
     "variants": {
-        "top=true": [{}],
-        "top=false": [{}],
         "inventory": [{
             "transform": "forge:default-block"
-        }]
+        }],
+        "top=true,facing=north":{"model": "pokecube:tradingtable.obj"},
+        "top=true,facing=south":{"model": "pokecube:tradingtable.obj", "y": 180},
+        "top=true,facing=east":{"model": "pokecube:tradingtable.obj", "y": 90},
+        "top=true,facing=west":{"model": "pokecube:tradingtable.obj", "y": 270},
+        "top=false,facing=north":{"model": "pokecube:tradingtable.obj"},
+        "top=false,facing=south":{"model": "pokecube:tradingtable.obj", "y": 180},
+        "top=false,facing=east":{"model": "pokecube:tradingtable.obj", "y": 90},
+        "top=false,facing=west":{"model": "pokecube:tradingtable.obj", "y": 270}
     }
 }

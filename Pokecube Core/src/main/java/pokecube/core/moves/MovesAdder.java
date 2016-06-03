@@ -15,7 +15,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorldEventListener;
@@ -1985,7 +1984,7 @@ public class MovesAdder implements IMoveConstants
             @Override
             protected void finalAttack(IPokemob attacker, Entity attacked, float f)
             {
-                sound = new SoundEvent(new ResourceLocation(attacker.getSound()));
+                sound = attacker.getSound();
                 super.finalAttack(attacker, attacked, f);
             }
         });
@@ -2017,7 +2016,7 @@ public class MovesAdder implements IMoveConstants
             @Override
             protected void finalAttack(IPokemob attacker, Entity attacked, float f)
             {
-                sound = new SoundEvent(new ResourceLocation(attacker.getSound()));
+                sound = attacker.getSound();
                 super.finalAttack(attacker, attacked, f);
             }
         });// setAnimtion(new ParticlesOnSource("note")));

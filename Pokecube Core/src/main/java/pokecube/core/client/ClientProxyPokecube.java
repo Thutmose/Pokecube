@@ -3,7 +3,6 @@
  */
 package pokecube.core.client;
 
-import static pokecube.core.PokecubeItems.pc;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 import static pokecube.core.PokecubeItems.tradingtable;
 import static pokecube.core.handlers.ItemHandler.log0;
@@ -58,10 +57,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.CommonProxyPokecube;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.blocks.berries.BlockBerryLeaf;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.healtable.TileHealTable;
-import pokecube.core.blocks.pc.BlockPC;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.TileEntityPC;
 import pokecube.core.blocks.pokecubeTable.TileEntityPokecubeTable;
@@ -386,16 +385,16 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:emerald_shard"));
         PokecubeItems.registerItemTexture(tm, 19, new ModelResourceLocation("pokecube:emerald_shard", "inventory"));
 
-        StateMap map = (new StateMap.Builder()).ignore(new IProperty[] { BlockPC.FACING }).build();
-        ModelLoader.setCustomStateMapper(pc, map);
+        OBJLoader.INSTANCE.addDomain(PokecubeMod.ID.toLowerCase());
+        StateMap map = (new StateMap.Builder()).build();
+//        ModelLoader.setCustomStateMapper(pc, map);
 
-        map = (new StateMap.Builder()).ignore(new IProperty[] { BlockTradingTable.FACING, BlockTradingTable.TMC })
+        map = (new StateMap.Builder()).ignore(new IProperty[] { BlockTradingTable.TMC })
                 .build();
         ModelLoader.setCustomStateMapper(tradingtable, map);
         registerItemTexture(Item.getItemFromBlock(tradingtable), 0,
                 new ModelResourceLocation("pokecube:tradingtable", "inventory"));
 
-        OBJLoader.INSTANCE.addDomain(PokecubeMod.ID.toLowerCase());
         Item item2 = Item.getItemFromBlock(PokecubeItems.tableBlock);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":pokecube_table", "inventory"));
@@ -464,6 +463,9 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("Fruit")
                 .build();
         ModelLoader.setCustomStateMapper(BerryManager.berryFruit, map);
+        
+        map = (new StateMap.Builder()).ignore(new IProperty[] { BerryManager.type, BlockBerryLeaf.CHECK_DECAY, BlockBerryLeaf.DECAYABLE }).build();
+        ModelLoader.setCustomStateMapper(BerryManager.berryLeaf, map);
         
         MegaStoneTextureHandler.registerItemModels();
         BerryTextureHandler.registerItemModels();

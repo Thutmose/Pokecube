@@ -51,7 +51,7 @@ public class BlockPC extends Block implements ITileEntityProvider
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] { FACING, TOP });
+        return new BlockStateContainer(this, new IProperty[] { TOP, FACING });
     }
 
     @Override
@@ -72,6 +72,9 @@ public class BlockPC extends Block implements ITileEntityProvider
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
+        if(true) return super.getExtendedState(state, world, pos);
+        
+        
         List<String> visible = Lists.newArrayList();
         if ((state.getValue(TOP)))
         {

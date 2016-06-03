@@ -15,7 +15,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
 import scala.actors.threadpool.Arrays;
@@ -71,10 +71,11 @@ public class SettingsCommand extends CommandBase
             {
                 text += o;
             }
-            String mess = I18n.translateToLocalFormatted("pokecube.command.settings.check", args[0], text);
+            ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.check", "", args[0],
+                    text);
             if (check)
             {
-                CommandTools.sendMessage(sender, mess);
+                sender.addChatMessage(mess);
                 return;
             }
             else
@@ -85,12 +86,13 @@ public class SettingsCommand extends CommandBase
                 }
                 catch (Exception e)
                 {
-                    text = I18n.translateToLocalFormatted("pokecube.command.settings.invalid", args[0]);
+                    mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.invalid", "red", args[0]);
+                    sender.addChatMessage(mess);
                     CommandTools.sendError(sender, text);
                     return;
                 }
                 o = field.get(PokecubeMod.core.getConfig());
-                CommandTools.sendMessage(sender, mess);
+                sender.addChatMessage(mess);
                 return;
             }
         }
@@ -127,7 +129,8 @@ public class SettingsCommand extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+            BlockPos pos)
     {
         List<String> ret = new ArrayList<String>();
         if (args.length == 1)

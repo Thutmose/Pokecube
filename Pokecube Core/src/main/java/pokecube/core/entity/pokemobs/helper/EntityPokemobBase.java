@@ -272,10 +272,10 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         return (float) (scale * PokecubeMod.core.getConfig().scalefactor);
     }
 
-    @Override // TODO remove this
-    public String getSound()
+    @Override
+    public SoundEvent getSound()
     {
-        return getPokedexEntry().getSound();
+        return getPokedexEntry().getSoundEvent();
     }
 
     @Override

@@ -10,6 +10,14 @@
         "normal": [{}],
         "inventory": [{
             "transform": "forge:default-block"
-        }]
+        }],
+        "facing": {
+            "down": {"model": "pokecube:tradingtable.obj", "x": 90},
+            "up": {"model": "pokecube:tradingtable.obj", "x": 270},
+            "north": {"model": "pokecube:tradingtable.obj"},
+            "south": {"model": "pokecube:tradingtable.obj", "y": 180},
+            "west": {"model": "pokecube:tradingtable.obj", "y": 270},
+            "east": {"model": "pokecube:tradingtable.obj", "y": 90}
+        }
     }
 }

@@ -440,8 +440,7 @@ public class PokecubeCore extends PokecubeMod
                 p.setSound(p.getModId() + ":mobs." + p.getName());
             }
             p.updateMoves();
-            // Refreshes the forme's modIds
-            // p.setModId(p.getModId());
+            
         }
         System.out.println("Loaded " + n + " Pokemob sounds, " + Pokedex.getInstance().getEntries().size()
                 + " Pokemon and " + Database.allFormes.size() + " Formes");

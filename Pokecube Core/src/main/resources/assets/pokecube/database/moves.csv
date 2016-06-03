@@ -313,7 +313,7 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 312,Aromatherapy ,Grass ,Status ,Smart ,5,_,_,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 313,Fake Tears ,Dark ,Status ,Smart ,20,_,100.00%,III ,none;0,Spatk;-2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 314,Air Cutter ,Flying ,Special ,Cool ,25,60,95.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-315,Overheat ,Fire ,Special ,Beauty ,5,130,90.00%,III ,none;0,none;0`spatk;-2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
+315,Overheat ,Fire ,Special ,Beauty ,5,130,90.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 316,Odor Sleuth ,Normal ,Status ,Smart ,40,_,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 317,Rock Tomb ,Rock ,Physical_Distance,Smart ,15,60,95.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
 318,Silver Wind ,Bug ,Special ,Beauty ,5,60,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
@@ -352,7 +352,7 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 351,Shock Wave ,Electric ,Special ,Cool ,20,60,_,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 352,Water Pulse ,Water ,Special ,Beauty ,20,60,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 353,Doom Desire ,Steel ,Special ,Cool ,5,140,100.00%,III ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-354,Psycho Boost ,Psychic ,Special ,Smart ,5,140,90.00%,III ,none;0,none;0`spatk;-2,none;0,0;0,FALSE;TRUE,TRUE,FALSE,FALSE,FALSE,1,0,none
+354,Psycho Boost ,Psychic ,Special ,Smart ,5,140,90.00%,III ,none;0,none;0,none;0,0;0,FALSE;TRUE,TRUE,FALSE,FALSE,FALSE,1,0,none
 355,Roost ,Flying ,Self,Cool ,10,_,_,IV ,none;0,none;0,none;0,0;50%,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 356,Gravity ,Psychic ,Status ,Beauty ,5,_,_,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 357,Miracle Eye ,Psychic ,Status ,Cute ,40,_,_,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
@@ -432,10 +432,10 @@ Number,Name,Type,Category,Unused,PP,Power,Accuracy,unused,Status;Chance,Stat;amo
 431,Rock Climb ,Normal ,Physical ,Cool ,20,90,85.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 432,Defog ,Flying ,Status ,Beauty ,15,_,_,IV ,none;0,Eva;-1,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 433,Trick Room ,Psychic ,Status ,Cute ,5,_,_,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
-434,Draco Meteor ,Dragon ,Special ,Smart ,5,130,90.00%,IV ,none;0,none;0`spatk;-2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
+434,Draco Meteor ,Dragon ,Special ,Smart ,5,130,90.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
 435,Discharge ,Electric ,Special ,Cool ,15,80,100.00%,IV ,Par;30,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
 436,Lava Plume ,Fire ,Special ,Tough ,15,80,100.00%,IV ,Brn;30,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
-437,Leaf Storm ,Grass ,Special ,Cute ,5,130,90.00%,IV ,none;0,none;0`spatk;-2,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
+437,Leaf Storm ,Grass ,Special ,Cute ,5,130,90.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,flow
 438,Power Whip ,Grass ,Physical ,Beauty ,10,120,85.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none
 439,Rock Wrecker ,Rock ,Physical_Distance,Tough ,5,150,90.00%,IV ,none;0,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,throw
 440,Cross Poison ,Poison ,Physical ,Cool ,20,70,100.00%,IV ,Psn;10,none;0,none;0,0;0,FALSE;FALSE,TRUE,FALSE,FALSE,FALSE,1,0,none

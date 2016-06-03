@@ -1452,7 +1452,11 @@ public class PokedexEntry
 
     public SoundEvent getSoundEvent()
     {
-        return SoundEvent.REGISTRY.getObject(new ResourceLocation(sound));
+        if(event==null)
+        {
+            event = new SoundEvent(new ResourceLocation(getModId(), sound));
+        }
+        return event;
     }
 
     public SpawnData getSpawnData()
@@ -1786,7 +1790,6 @@ public class PokedexEntry
     public void setSound(String sound)
     {
         this.sound = sound;
-        SoundEvent.registerSound(sound);
     }
 
     public void setSpawnData(SpawnData data)

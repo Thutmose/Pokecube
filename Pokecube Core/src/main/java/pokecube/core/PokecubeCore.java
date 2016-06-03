@@ -125,16 +125,10 @@ import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
-@Mod( //@formatter:off
-        modid = PokecubeMod.ID, 
-        name = "Pokecube", 
-        version = PokecubeMod.VERSION, 
-        dependencies = "required-after:Forge@"+ PokecubeMod.MINFORGEVERSION+ PokecubeMod.DEPSTRING,
-        acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, 
-        acceptableRemoteVersions=PokecubeMod.MINVERSION,
-        updateJSON = PokecubeMod.UPDATEURL, 
-        guiFactory = "pokecube.core.client.gui.config.ModGuiFactory"
-        ) //@formatter:on
+@Mod( // @formatter:off
+        modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:Forge@"
+                + PokecubeMod.MINFORGEVERSION
+                + PokecubeMod.DEPSTRING, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, acceptableRemoteVersions = PokecubeMod.MINVERSION, updateJSON = PokecubeMod.UPDATEURL, guiFactory = "pokecube.core.client.gui.config.ModGuiFactory") // @formatter:on
 public class PokecubeCore extends PokecubeMod
 {
     @SidedProxy(clientSide = "pokecube.core.client.ClientProxyPokecube", serverSide = "pokecube.core.CommonProxyPokecube")
@@ -209,7 +203,7 @@ public class PokecubeCore extends PokecubeMod
         return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }
 
-    //TODO This should be called on world load, to allow refreshing biome ids
+    // TODO This should be called on world load, to allow refreshing biome ids
     public static void registerSpawns()
     {
         int n = 0;
@@ -247,7 +241,7 @@ public class PokecubeCore extends PokecubeMod
 
     private Config             config;
 
-    IEntityProvider provider;
+    IEntityProvider            provider;
 
     public PokecubeCore()
     {
@@ -426,24 +420,14 @@ public class PokecubeCore extends PokecubeMod
 
     private void postInitPokemobs()
     {
-        int n = 0;
         for (Integer i : Pokedex.getInstance().getEntries())
         {
             PokedexEntry p = Pokedex.getInstance().getEntry(i);
-            if (p.getPokedexNb() < 722)
-            {
-                p.setSound(ID + ":mobs." + p.getName());
-                n++;
-            }
-            else
-            {
-                p.setSound(p.getModId() + ":mobs." + p.getName());
-            }
+            p.setSound("mobs." + p.getName());
             p.updateMoves();
-            
         }
-        System.out.println("Loaded " + n + " Pokemob sounds, " + Pokedex.getInstance().getEntries().size()
-                + " Pokemon and " + Database.allFormes.size() + " Formes");
+        System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
+                + Database.allFormes.size() + " Formes");
     }
 
     @EventHandler

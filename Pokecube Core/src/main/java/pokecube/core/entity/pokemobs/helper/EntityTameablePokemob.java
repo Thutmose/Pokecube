@@ -26,7 +26,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
@@ -40,6 +39,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
@@ -662,7 +662,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 }
                 if (!owner.isSneaking() && !isDead)
                     ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
-                IChatComponent mess = new ChatComponentTranslation("pokemob.action.return", getPokemonDisplayName());
+                IChatComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.return", "green", getPokemonDisplayName());
                 displayMessageToOwner(mess);
 
             }

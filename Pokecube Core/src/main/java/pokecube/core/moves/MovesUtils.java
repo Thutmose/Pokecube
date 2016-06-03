@@ -24,8 +24,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.MoveEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -457,7 +455,7 @@ public class MovesUtils implements IMoveConstants
                 }
                 else if (attacker.getPokemonAIState(IMoveConstants.ANGRY))
                 {
-                    message = StatCollector.translateToLocalFormatted("pokemob.move.missed", "");
+                    message = "pokemob.move.missed";
                     text = CommandTools.makeTranslatedMessage(message, "red");
                     attacker.displayMessageToOwner(text);
                 }
@@ -543,22 +541,22 @@ public class MovesUtils implements IMoveConstants
             ((IPokemob) attacked).displayMessageToOwner(text);
             return;
         }
-        String translatedAttack = getTranslatedMove(attack);
+        String attackName = getUnlocalizedMove(attack);
         text = CommandTools.makeTranslatedMessage("pokemob.move.used", "green",
-                ((IPokemob) attacker).getPokemonDisplayName(), translatedAttack);
+                ((IPokemob) attacker).getPokemonDisplayName(), attackName);
         ((IPokemob) attacker).displayMessageToOwner(text);
         if (attacker == attacked) return;
 
         if (attacked instanceof IPokemob)
         {
             text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red",
-                    ((IPokemob) attacker).getPokemonDisplayName(), translatedAttack);
+                    ((IPokemob) attacker).getPokemonDisplayName(), attackName);
             ((IPokemob) attacked).displayMessageToOwner(text);
         }
         else if (attacked instanceof EntityPlayer && !attacked.worldObj.isRemote)
         {
             text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red",
-                    ((IPokemob) attacked).getPokemonDisplayName());
+                    ((IPokemob) attacked).getPokemonDisplayName(), attackName);
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));
             buffer.writeByte(PokecubeClientPacket.MOVEMESSAGE);
             buffer.writeInt(attacked.getEntityId());
@@ -888,11 +886,14 @@ public class MovesUtils implements IMoveConstants
         return ret;
     }
 
-    public static String getTranslatedMove(String attack)
+    public static String getUnlocalizedMove(String attack)
     {
+        return "pokemob.move." + attack;
+    }
 
+    public static String getLocalizedMove(String attack)
+    {
         String PREFIX = "pokemob.move.";
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) return PREFIX + attack;
         String translatedAttack = StatCollector.translateToLocal(PREFIX + attack);
         if (translatedAttack == null || translatedAttack.startsWith(PREFIX))
         {

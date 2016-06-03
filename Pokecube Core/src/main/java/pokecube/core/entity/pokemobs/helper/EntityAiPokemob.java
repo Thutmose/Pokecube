@@ -21,7 +21,6 @@ import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -996,7 +995,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!PokecubeCore.isOnClientSide())// && getPokemonAIState(TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
-            IChatComponent mess = new ChatComponentTranslation("\u00a7c" +"pokemob.action.faint", getPokemonDisplayName());
+            IChatComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.faint", "red", getPokemonDisplayName());
             displayMessageToOwner( mess);
             returnToPokecube();
         }

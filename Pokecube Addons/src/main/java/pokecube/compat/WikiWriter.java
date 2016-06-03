@@ -276,7 +276,7 @@ public class WikiWriter {
 	     		{
 	     			for(String s: newMoves)
 	     			{
-		    	     	out.println("|="+(i==1?"-":i)+"|="+MovesUtils.getTranslatedMove(s)+"|");
+		    	     	out.println("|="+(i==1?"-":i)+"|="+MovesUtils.getLocalizedMove(s)+"|");
 		    	     	for(String s1:moves)
 		    	     	{
 		    	     		if(s1.equalsIgnoreCase(s))
@@ -295,7 +295,7 @@ public class WikiWriter {
 		     	for(String s: moves)
 		     	{
 		     		ended = false;
-		     		out.print("|="+MovesUtils.getTranslatedMove(s));
+		     		out.print("|="+MovesUtils.getLocalizedMove(s));
 		     		if(n%4==3)
 		     		{
 		     			out.print("|\n");

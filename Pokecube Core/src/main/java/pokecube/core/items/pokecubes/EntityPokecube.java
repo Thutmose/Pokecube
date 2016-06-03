@@ -19,12 +19,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,6 +30,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.events.SpawnEvent.SendOut;
@@ -362,10 +360,9 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 mobStack = PokecubeManager.pokemobToItem(mob);
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
                 {
-                    String message = StatCollector.translateToLocalFormatted("pokecube.caught",
+                    IChatComponent mess = CommandTools.makeTranslatedMessage("pokecube.caught", "green",
                             PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNumber));
-                    ((EntityPlayer) shootingEntity).addChatMessage(new ChatComponentText("\u00a7d" + message));
-
+                    ((EntityPlayer) shootingEntity).addChatMessage(mess);
                     worldObj.playSoundAtEntity(shootingEntity, PokecubeMod.ID + ":pokecube_caught", 0.5F, 1.0F);
                 }
                 setDead();
@@ -410,8 +407,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
 
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
                 {
-                    ((EntityPlayer) shootingEntity).addChatMessage(
-                            new ChatComponentText("\u00a7d" + StatCollector.translateToLocal("pokecube.missed")));
+                    IChatComponent mess = CommandTools.makeTranslatedMessage("pokecube.missed", "red");
+                    ((EntityPlayer) shootingEntity).addChatMessage(mess);
                     ((EntityCreature) entity1).setAttackTarget(shootingEntity);
                 }
             }
@@ -570,7 +567,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             Entity owner = entity1.getPokemonOwner();
             if (owner instanceof EntityPlayer)
             {
-                IChatComponent mess = new ChatComponentTranslation("pokemob.action.sendout",
+                IChatComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.sendout", "green",
                         entity1.getPokemonDisplayName());
                 entity1.displayMessageToOwner(mess);
             }

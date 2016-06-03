@@ -22,7 +22,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -348,7 +349,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
-                String mess = StatCollector.translateToLocalFormatted("pokemob.command.attack",
+                IChatComponent mess = new ChatComponentTranslation("pokemob.command.attack",
                         pokemob.getPokemonDisplayName(), target.getName());
                 pokemob.displayMessageToOwner(mess);
                 attack = true;
@@ -383,7 +384,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
                 if (move != null && (target != null || v != null))
                 {
-                    String mess = StatCollector.translateToLocalFormatted("pokemob.action.usemove",
+                    IChatComponent mess = new ChatComponentTranslation("pokemob.action.usemove",
                             pokemob.getPokemonDisplayName(), MovesUtils.getTranslatedMove(move.getName()));
                     pokemob.displayMessageToOwner(mess);
                 }

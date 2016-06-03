@@ -3,10 +3,12 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -21,10 +23,12 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -125,7 +129,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     }
 
     @Override
-    public void displayMessageToOwner(String message)
+    public void displayMessageToOwner(IChatComponent message)
     {
         if (!this.isServerWorld())
         {
@@ -141,13 +145,20 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
             Entity owner = this.getPokemonOwner();
             MoveMessageEvent event = new MoveMessageEvent(this, message);
             MinecraftForge.EVENT_BUS.post(event);
-            message = event.message;
             if (owner instanceof EntityPlayerMP && !this.isDead)
             {
-                NBTTagCompound nbt = new NBTTagCompound();
-                nbt.setInteger("id", owner.getEntityId());
-                nbt.setString("message", message);
-                PokecubeClientPacket mess = new PokecubeClientPacket(PokecubeClientPacket.MOVEMESSAGE, nbt);
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));
+                buffer.writeByte(PokecubeClientPacket.MOVEMESSAGE);
+                buffer.writeInt(getEntityId());
+                try
+                {
+                    buffer.writeChatComponent(event.message);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+                PokecubeClientPacket mess = new PokecubeClientPacket(buffer);
                 PokecubePacketHandler.sendToClient(mess, (EntityPlayer) owner);
             }
         }
@@ -651,7 +662,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 }
                 if (!owner.isSneaking() && !isDead)
                     ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
-                String mess = StatCollector.translateToLocalFormatted("pokemob.action.return", getPokemonDisplayName());
+                IChatComponent mess = new ChatComponentTranslation("pokemob.action.return", getPokemonDisplayName());
                 displayMessageToOwner(mess);
 
             }

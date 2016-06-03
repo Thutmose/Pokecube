@@ -20,8 +20,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -196,9 +197,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
         if ((statusChange & CHANGE_FLINCH) != 0)
         {
-            String message = StatCollector.translateToLocalFormatted("pokemob.status.flinch", getPokemonDisplayName());
-            displayMessageToOwner("\u00a7c" + message);
-
+            IChatComponent mess = new ChatComponentTranslation("\u00a7c" + "pokemob.status.flinch",
+                    getPokemonDisplayName());
+            displayMessageToOwner(mess);
             removeChanges(CHANGE_FLINCH);
             return;
         }
@@ -208,9 +209,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             if (Math.random() > 0.75)
             {
                 removeChanges(CHANGE_CONFUSED);
-                String message = StatCollector.translateToLocalFormatted("pokemob.status.confuse.remove",
+                IChatComponent mess = new ChatComponentTranslation("\u00a7a" + "pokemob.status.confuse.remove",
                         getPokemonDisplayName());
-                displayMessageToOwner("\u00a7a" + message);
+                displayMessageToOwner(mess);
             }
             else if (Math.random() > 0.5)
             {
@@ -227,9 +228,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             }
             else if (Math.random() > 0.5)
             {
-                String message = StatCollector.translateToLocalFormatted("pokemob.status.infatuate",
+                IChatComponent mess = new ChatComponentTranslation("\u00a7c" + "pokemob.status.infatuate",
                         getPokemonDisplayName());
-                displayMessageToOwner("\u00a7c" + message);
+                displayMessageToOwner(mess);
                 return;
             }
         }
@@ -478,9 +479,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
         if (getPokemonOwner() != null && !this.isDead)
         {
-            String message = StatCollector.translateToLocalFormatted("pokemob.move.notify.learn",
-                    getPokemonDisplayName(), MovesUtils.getTranslatedMove(moveName));
-            displayMessageToOwner(message);
+            IChatComponent mess = new ChatComponentTranslation("pokemob.move.notify.learn", getPokemonDisplayName(),
+                    MovesUtils.getTranslatedMove(moveName));
+            displayMessageToOwner(mess);
         }
         if (moves[0] == null)
         {
@@ -514,9 +515,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                     }
                     for (String s : moves)
                     {
-                        String message = StatCollector.translateToLocalFormatted("pokemob.move.notify.learn",
-                                getPokemonDisplayName(), MovesUtils.getTranslatedMove(s));
-                        displayMessageToOwner(message);
+                        IChatComponent mess = new ChatComponentTranslation("pokemob.move.notify.learn",
+                                getPokemonDisplayName(), s);
+                        displayMessageToOwner(mess);
                         moveInfo.newMoves++;
                     }
                     setPokemonAIState(LEARNINGMOVE, true);
@@ -536,11 +537,10 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         List<String> moves = Database.getLevelUpMoves(this.getPokedexNb(), level, oldLevel);
         Collections.shuffle(moves);
-        if(!worldObj.isRemote)
+        if (!worldObj.isRemote)
         {
-            String message = StatCollector.translateToLocalFormatted("pokemob.info.levelup",
-                    getPokemonDisplayName(), level);
-            displayMessageToOwner(message);
+            IChatComponent mess = new ChatComponentTranslation("pokemob.info.levelup", getPokemonDisplayName(), level);
+            displayMessageToOwner(mess);
         }
         HappinessType.applyHappiness(this, HappinessType.LEVEL);
         if (moves != null)
@@ -559,9 +559,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                     }
                     for (String s : moves)
                     {
-                        String message = StatCollector.translateToLocalFormatted("pokemob.move.notify.learn",
+                        IChatComponent mess = new ChatComponentTranslation("pokemob.move.notify.learn",
                                 getPokemonDisplayName(), MovesUtils.getTranslatedMove(s));
-                        displayMessageToOwner(message);
+                        displayMessageToOwner(mess);
                         moveInfo.newMoves++;
                     }
                     setPokemonAIState(LEARNINGMOVE, true);
@@ -635,13 +635,18 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         {
             float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, move.getMove().move.category,
                     move.PWR, move);
-            attacker.displayMessageToOwner("\u00a7c" + "Move Absorbed by substitute");
-            displayMessageToOwner("\u00a7a" + "move absorbed by substitute");
+
+            IChatComponent mess = new ChatComponentTranslation("\u00a7a" + "pokemob.substitute.absorb");
+            displayMessageToOwner(mess);
+            mess = new ChatComponentTranslation("\u00a7c" + "pokemob.substitute.absorb");
+            attacker.displayMessageToOwner(mess);
             moveInfo.substituteHP -= damage;
             if (moveInfo.substituteHP < 0)
             {
-                attacker.displayMessageToOwner("\u00a7a" + "substitute broke");
-                displayMessageToOwner("\u00a7c" + "substitute broke");
+                mess = new ChatComponentTranslation("\u00a7c" + "pokemob.substitute.break", getPokemonDisplayName());
+                displayMessageToOwner(mess);
+                mess = new ChatComponentTranslation("\u00a7a" + "pokemob.substitute.break", getPokemonDisplayName());
+                attacker.displayMessageToOwner(mess);
             }
             move.failed = true;
             move.PWR = 0;
@@ -982,9 +987,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
             if ((statusChange & CHANGE_CURSE) != 0)
             {
-                String message = StatCollector.translateToLocalFormatted("pokemob.status.curse",
+                IChatComponent mess = new ChatComponentTranslation("\u00a7c" + "pokemob.status.curse",
                         getPokemonDisplayName());
-                displayMessageToOwner("\u00a7c" + message);
+                displayMessageToOwner(mess);
                 setHealth(getHealth() - getMaxHealth() * 0.25f);
             }
 

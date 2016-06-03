@@ -20,7 +20,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
@@ -568,7 +570,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             Entity owner = entity1.getPokemonOwner();
             if (owner instanceof EntityPlayer)
             {
-                String mess = StatCollector.translateToLocalFormatted("pokemob.action.sendout",
+                IChatComponent mess = new ChatComponentTranslation("pokemob.action.sendout",
                         entity1.getPokemonDisplayName());
                 entity1.displayMessageToOwner(mess);
             }

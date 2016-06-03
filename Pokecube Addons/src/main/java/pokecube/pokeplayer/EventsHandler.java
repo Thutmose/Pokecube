@@ -1,5 +1,6 @@
 package pokecube.pokeplayer;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import io.netty.buffer.Unpooled;
@@ -8,7 +9,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInvBasic;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -95,11 +95,20 @@ public class EventsHandler
             if (e instanceof EntityPlayer)
             {
                 EntityPlayer owner = (EntityPlayer) e;
-                NBTTagCompound nbt = new NBTTagCompound();
-                nbt.setInteger("id", owner.getEntityId());
-                nbt.setString("message", evt.message);
-                PokecubeClientPacket mess = new PokecubeClientPacket(PokecubeClientPacket.MOVEMESSAGE, nbt);
-                PokecubePacketHandler.sendToClient(mess, owner);
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));
+                buffer.writeByte(PokecubeClientPacket.MOVEMESSAGE);
+                buffer.writeInt(owner.getEntityId());
+                try
+                {
+                    buffer.writeChatComponent(evt.message);
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+                PokecubeClientPacket mess = new PokecubeClientPacket(buffer);
+                PokecubePacketHandler.sendToClient(mess, (EntityPlayer) owner);
+
             }
         }
     }

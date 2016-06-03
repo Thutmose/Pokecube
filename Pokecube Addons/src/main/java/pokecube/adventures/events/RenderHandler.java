@@ -106,7 +106,7 @@ public class RenderHandler
         boolean bag = BagRenderer.getChecker().isWearingBag(player);
         if (bag && Keyboard.getEventKey() == ClientProxy.bag.getKeyCode())
         {
-            PacketPokeAdv.sendBagOpenPacket(false);
+            PacketPokeAdv.sendBagOpenPacket();
         }
     }
 

@@ -393,7 +393,7 @@ public class PacketPokeAdv
         return new MessageServer(packetData);
     }
 
-    public static void sendBagOpenPacket(boolean fromPC)
+    public static void sendBagOpenPacket()
     {
         PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
         buf.writeByte(7);

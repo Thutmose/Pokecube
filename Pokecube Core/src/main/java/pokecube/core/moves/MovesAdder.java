@@ -14,9 +14,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.IWorldAccess;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.render.PTezzelator;
@@ -1953,10 +1954,10 @@ public class MovesAdder implements IMoveConstants
                 super.postAttack(attacker, attacked, f, finalAttackStrength);
                 if (attacked instanceof IPokemob)
                 {
-                    String doesntAffect = StatCollector.translateToLocalFormatted("pokemob.move.doesnt.affect",
-                            ((IPokemob) attacked).getPokemonDisplayName());
-                    attacker.displayMessageToOwner("\u00a7a" + doesntAffect);
-                    ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + doesntAffect);
+                    IChatComponent text = new ChatComponentTranslation("\u00a7a"+"pokemob.move.doesnt.affect", ((IPokemob) attacked).getPokemonDisplayName());
+                    attacker.displayMessageToOwner(text);
+                    text = new ChatComponentTranslation("\u00a7c"+"pokemob.move.doesnt.affect", ((IPokemob) attacked).getPokemonDisplayName());
+                    ((IPokemob) attacked).displayMessageToOwner(text);
                 }
             }
         });// setAnimtion(new ParticlesOnSource("splash")));

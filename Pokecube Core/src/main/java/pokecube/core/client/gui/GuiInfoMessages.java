@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,11 +20,11 @@ public class GuiInfoMessages
 {
     private static GuiInfoMessages instance;
 
-    public static void addMessage(String message)
+    public static void addMessage(IChatComponent message)
     {
-        instance.messages.add(message);
+        instance.messages.add(message.getFormattedText());
         instance.time = Minecraft.getMinecraft().thePlayer.ticksExisted;
-        instance.recent.add(message);
+        instance.recent.add(message.getFormattedText());
         if (instance.messages.size() > 100)
         {
             instance.messages.remove(0);

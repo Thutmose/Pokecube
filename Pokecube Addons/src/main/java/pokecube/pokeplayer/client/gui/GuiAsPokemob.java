@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.StatCollector;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiTeleport;
@@ -122,9 +121,9 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
             {
                 if (move != null && (target != null || v != null))
                 {
-                    String mess = StatCollector.translateToLocalFormatted("pokemob.action.usemove",
-                            pokemob.getPokemonDisplayName(), MovesUtils.getTranslatedMove(move.getName()));
-                    pokemob.displayMessageToOwner(mess);
+//                    String mess = StatCollector.translateToLocalFormatted("pokemob.action.usemove",
+//                            pokemob.getPokemonDisplayName(), MovesUtils.getTranslatedMove(move.getName()));
+//                    pokemob.displayMessageToOwner(mess);//TODO move message
                 }
                 buffer.writeBoolean(false);
             }

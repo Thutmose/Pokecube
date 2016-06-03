@@ -1469,7 +1469,7 @@ public class PokedexEntry
     /** @return the sound */
     public String getSound()
     {
-        return sound;
+        return getModId() + ":" + sound;
     }
 
     public SpawnData getSpawnData()

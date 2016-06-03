@@ -426,24 +426,13 @@ public class PokecubeCore extends PokecubeMod
     {
         registerSpawns();
         SpawnHandler.sortSpawnables();
-        int n = 0;
         for (Integer i : Pokedex.getInstance().getEntries())
         {
             PokedexEntry p = Pokedex.getInstance().getEntry(i);
-            if (p.getPokedexNb() < 722)
-            {
-                p.setSound(ID + ":mobs." + p.getName());
-                n++;
-            }
-            else
-            {
-                p.setSound(p.getModId() + ":mobs." + p.getName());
-            }
+            p.setSound("mobs." + p.getName());
             p.updateMoves();
-            // Refreshes the forme's modIds
-            // p.setModId(p.getModId());
         }
-        System.out.println("Loaded " + n + " Pokemob sounds, " + Pokedex.getInstance().getEntries().size()
+        System.out.println("Loaded " + Pokedex.getInstance().getEntries().size()
                 + " Pokemon and " + Database.allFormes.size() + " Formes");
     }
 

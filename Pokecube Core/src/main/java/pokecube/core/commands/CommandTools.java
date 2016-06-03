@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -62,5 +63,31 @@ public class CommandTools
     public static void sendNoPermissions(ICommandSender sender)
     {
         sender.addChatMessage(makeError("pokecube.command.noperms"));
+    }
+
+    public static ITextComponent makeTranslatedMessage(String key, String formatting, String... args)
+    {
+        ITextComponent message = null;
+        if (formatting == null) formatting = "";
+        String argString = "";
+        int num = 1;
+        if (args != null) for (String s : args)
+        {
+            argString = argString + "{\"translate\":\"" + s + "\"}";
+            num++;
+            if (num <= args.length) argString = argString + ",";
+        }
+        if (argString.isEmpty()) argString = "\"\"";
+        String text = "{\"translate\":\"" + key + "\",\"with\":[" + argString + "],\"color\":\""+formatting+"\"}";
+        text = "[" + text + "]";
+        try
+        {
+            message = ITextComponent.Serializer.jsonToComponent(text);
+        }
+        catch (Exception e)
+        {
+            message = new TextComponentString(TextFormatting.RED + "message error");
+        }
+        return message;
     }
 }

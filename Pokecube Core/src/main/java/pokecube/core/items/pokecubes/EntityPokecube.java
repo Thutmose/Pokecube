@@ -31,8 +31,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
@@ -40,6 +39,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.events.SpawnEvent.SendOut;
@@ -349,10 +349,9 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 mobStack = PokecubeManager.pokemobToItem(mob);
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
                 {
-                    String message = I18n.translateToLocalFormatted("pokecube.caught",
+                    ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.caught", "green",
                             PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNumber));
-                    ((EntityPlayer) shootingEntity).addChatMessage(new TextComponentString("\u00a7d" + message));
-
+                    ((EntityPlayer) shootingEntity).addChatMessage(mess);
                     shootingEntity.playSound(new SoundEvent(new ResourceLocation(PokecubeMod.ID + ":pokecube_caught")),
                             0.5F, 1.0F);
                 }
@@ -398,8 +397,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
 
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
                 {
-                    ((EntityPlayer) shootingEntity).addChatMessage(
-                            new TextComponentString("\u00a7d" + I18n.translateToLocal("pokecube.missed")));
+                    ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.missed", "red");
+                    ((EntityPlayer) shootingEntity).addChatMessage(mess);
                     ((EntityCreature) entity1).setAttackTarget(shootingEntity);
                 }
             }
@@ -421,7 +420,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         Block block = state.getBlock();
         if (state.getMaterial() != Material.AIR)
         {
-            AxisAlignedBB axisalignedbb = block.getCollisionBoundingBox(state, worldObj, pos);
+            AxisAlignedBB axisalignedbb = state.getBoundingBox(worldObj, pos);
 
             if (axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
             {
@@ -580,7 +579,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             Entity owner = entity1.getPokemonOwner();
             if (owner instanceof EntityPlayer)
             {
-                String mess = I18n.translateToLocalFormatted("pokemob.action.sendout", entity1.getPokemonDisplayName());
+                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.sendout", "green",
+                        entity1.getPokemonDisplayName());
                 entity1.displayMessageToOwner(mess);
             }
 

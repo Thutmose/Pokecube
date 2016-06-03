@@ -11,11 +11,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import pokecube.core.client.Resources;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.interfaces.IMoveConstants;
@@ -128,11 +128,11 @@ public class GuiPokemob extends GuiContainer
             byte type = 4;
             if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
             {
-                guibutton.displayString = I18n.translateToLocal("pokemob.stance.stand");
+                guibutton.displayString = I18n.format("pokemob.stance.stand");
             }
             else
             {
-                guibutton.displayString = I18n.translateToLocal("pokemob.stance.sit");
+                guibutton.displayString = I18n.format("pokemob.stance.sit");
             }
             if (type != 0)
             {
@@ -185,23 +185,23 @@ public class GuiPokemob extends GuiContainer
         GuiButton guibutton = buttonList.get(1);
         if (!(pokemob.getPokemonAIState(IMoveConstants.GUARDING) || pokemob.getPokemonAIState(IMoveConstants.STAYING)))
         {
-            guibutton.displayString = I18n.translateToLocal("pokemob.stance.follow");
+            guibutton.displayString = I18n.format("pokemob.stance.follow");
         }
         else if (pokemob.getPokemonAIState(IMoveConstants.GUARDING))
         {
-            guibutton.displayString = I18n.translateToLocal("pokemob.stance.guard");
+            guibutton.displayString = I18n.format("pokemob.stance.guard");
         }
         else if (pokemob.getPokemonAIState(IMoveConstants.STAYING))
         {
-            guibutton.displayString = I18n.translateToLocal("pokemob.stance.stay");
+            guibutton.displayString = I18n.format("pokemob.stance.stay");
         }
         if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
         {
-            b.displayString = I18n.translateToLocal("pokemob.stance.sit");
+            b.displayString = I18n.format("pokemob.stance.sit");
         }
         else
         {
-            b.displayString = I18n.translateToLocal("pokemob.stance.stand");
+            b.displayString = I18n.format("pokemob.stance.stand");
         }
     }
 
@@ -215,25 +215,25 @@ public class GuiPokemob extends GuiContainer
         String prev;
         if (pokemob.getPokemonAIState(IMoveConstants.GUARDING))
         {
-            prev = I18n.translateToLocal("pokemob.stance.guard");// "GUARD";
+            prev = I18n.format("pokemob.stance.guard");// "GUARD";
         }
         else if (pokemob.getPokemonAIState(IMoveConstants.STAYING))
         {
-            prev = I18n.translateToLocal("pokemob.stance.stay");// "STAY";
+            prev = I18n.format("pokemob.stance.stay");// "STAY";
         }
         else
         {
-            prev = I18n.translateToLocal("pokemob.stance.follow");// "FOLLOW";
+            prev = I18n.format("pokemob.stance.follow");// "FOLLOW";
         }
 
         String next;
         if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
         {
-            next = I18n.translateToLocal("pokemob.stance.sit");// "SIT";
+            next = I18n.format("pokemob.stance.sit");// "SIT";
         }
         else
         {
-            next = I18n.translateToLocal("pokemob.stance.stand");// "STAND";
+            next = I18n.format("pokemob.stance.stand");// "STAND";
         }
         buttonList.add(new GuiButton(2, width / 2 - xOffset + 50, height / 2 - yOffset, 40, 20, next));
         buttonList.add(stance = new Button(1, width / 2 - xOffset + 2, height / 2 - yOffset, 40, 20, prev));

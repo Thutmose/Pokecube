@@ -22,7 +22,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
-@SuppressWarnings("deprecation")
 public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
 {
     public static class ModelPokecube extends ModelBase

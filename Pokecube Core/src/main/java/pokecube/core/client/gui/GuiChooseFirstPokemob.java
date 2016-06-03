@@ -23,10 +23,10 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.PokecubeItems;
@@ -212,7 +212,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
         if (!options)
         {
-            drawCenteredString(fontRendererObj, I18n.translateToLocal("gui.pokemob.choose1st.override"),
+            drawCenteredString(fontRendererObj, I18n.format("gui.pokemob.choose1st.override"),
                     (width / 2), 17, 0xffffff);
             return;
         }
@@ -231,7 +231,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         int k1 = i1 / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
 
-        drawCenteredString(fontRendererObj, I18n.translateToLocal("gui.pokemob.choose1st"), (width / 2), 17,
+        drawCenteredString(fontRendererObj, I18n.format("gui.pokemob.choose1st"), (width / 2), 17,
                 0xffffff);
 
         drawCenteredString(fontRendererObj, pokedexEntry.getTranslatedName(), (width / 2), 45, 0xffffff);
@@ -319,20 +319,20 @@ public class GuiChooseFirstPokemob extends GuiScreen
         int yOffset = 110;
         if (starters.length > 1)
         {
-            String next = I18n.translateToLocal("tile.pc.next");
+            String next = I18n.format("tile.pc.next");
             buttonList.add(this.next = new GuiButton(1, width / 2 - xOffset + 65, height / 2 - yOffset, 50, 20, next));
-            String prev = I18n.translateToLocal("tile.pc.previous");
+            String prev = I18n.format("tile.pc.previous");
             buttonList.add(this.prev = new GuiButton(2, width / 2 - xOffset - 115, height / 2 - yOffset, 50, 20, prev));
         }
 
-        String choose = I18n.translateToLocal("gui.pokemob.select");
+        String choose = I18n.format("gui.pokemob.select");
         buttonList.add(
                 this.choose = new GuiButton(3, width / 2 - xOffset - 25, height / 2 - yOffset + 160, 50, 20, choose));
 
         buttonList.add(this.accept = new GuiButton(4, width / 2 - xOffset + 64, height / 2 - yOffset + 30, 50, 20,
-                I18n.translateToLocal("gui.pokemob.accept")));
+                I18n.format("gui.pokemob.accept")));
         buttonList.add(this.deny = new GuiButton(5, width / 2 - xOffset - 115, height / 2 - yOffset + 30, 50, 20,
-                I18n.translateToLocal("gui.pokemob.deny")));
+                I18n.format("gui.pokemob.deny")));
 
         if (options)
         {

@@ -25,6 +25,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -456,6 +457,12 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             }
             mob.specificSpawnInit();
             world.spawnEntityInWorld(entity);
+            if (mob.getPokemonOwner() != null)
+            {
+                EntityLivingBase owner = mob.getPokemonOwner();
+                String message = I18n.translateToLocalFormatted("pokemob.hatch", mob.getPokemonDisplayName());
+                owner.addChatMessage(new TextComponentString(message));
+            }
             entity.setHeldItem(EnumHand.MAIN_HAND, null);
             entity.playLivingSound();
         }

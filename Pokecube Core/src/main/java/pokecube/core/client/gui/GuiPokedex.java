@@ -24,12 +24,12 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -266,7 +266,7 @@ public class GuiPokedex extends GuiScreen
                 GL11.glRotated(angle, 0, 0, 1);
                 drawString(fontRendererObj, "--->", 0, 0, 0xFF0000);
                 GL11.glPopMatrix();
-                String mess = I18n.translateToLocal("gui.pokedex.village");
+                String mess = I18n.format("gui.pokedex.village");
                 int width = fontRendererObj.getStringWidth(mess);
                 drawString(fontRendererObj, mess, xOffset - width / 2 + 60, yOffset + 85, 0x78C850);
                 mess = ((int) v.set(closestVillage).distToEntity(entityPlayer)) + "";
@@ -407,7 +407,7 @@ public class GuiPokedex extends GuiScreen
         drawString(fontRendererObj, "Moves", xOffset + 16, yOffset + 24, 0xFFFFFF);
         for (n = 0; n < Math.min(names.size(), 5); n++)
         {
-            drawString(fontRendererObj, MovesUtils.getTranslatedMove(names.get(n + index)), xOffset + 18,
+            drawString(fontRendererObj, MovesUtils.getLocalizedMove(names.get(n + index)), xOffset + 18,
                     yOffset + 40 + n * 10, 0xFF0000);
             drawString(fontRendererObj, levels.get(n + index), xOffset + 92, yOffset + 40 + n * 10, 0xFF0000);
         }
@@ -435,7 +435,7 @@ public class GuiPokedex extends GuiScreen
         drawString(fontRendererObj, "Possible Mates", xOffset + 16, yOffset + 24, 0xFFFFFF);
         for (n = 0; n < Math.min(names.size(), 5); n++)
         {
-            drawString(fontRendererObj, MovesUtils.getTranslatedMove(names.get(n + index)), xOffset + 18,
+            drawString(fontRendererObj, MovesUtils.getLocalizedMove(names.get(n + index)), xOffset + 18,
                     yOffset + 40 + n * 10, 0xFF0000);
         }
         if (pokemob != null)
@@ -563,7 +563,7 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getTranslatedMove(move.getName()), xOffset + 14, yOffset + 99,
+            drawString(fontRendererObj, MovesUtils.getLocalizedMove(move.getName()), xOffset + 14, yOffset + 99,
                     move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 99, 0xffffff);
         }
@@ -580,7 +580,7 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getTranslatedMove(move.getName()), xOffset + 14, yOffset + 113,
+            drawString(fontRendererObj, MovesUtils.getLocalizedMove(move.getName()), xOffset + 14, yOffset + 113,
                     move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 113, 0xffffff);
         }
@@ -597,7 +597,7 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getTranslatedMove(move.getName()), xOffset + 14, yOffset + 127,
+            drawString(fontRendererObj, MovesUtils.getLocalizedMove(move.getName()), xOffset + 14, yOffset + 127,
                     move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 127, 0xffffff);
         }
@@ -614,7 +614,7 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getTranslatedMove(move.getName()), xOffset + 14, yOffset + 141,
+            drawString(fontRendererObj, MovesUtils.getLocalizedMove(move.getName()), xOffset + 14, yOffset + 141,
                     move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 141, 0xffffff);
         }
@@ -631,7 +631,7 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getTranslatedMove(move.getName()), xOffset + 14, yOffset + 155,
+            drawString(fontRendererObj, MovesUtils.getLocalizedMove(move.getName()), xOffset + 14, yOffset + 155,
                     move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 155, 0xffffff);
         }

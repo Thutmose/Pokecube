@@ -9,13 +9,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -281,9 +282,9 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     ((IPokemob) evolution).setEvolutionTicks(10);
 
                 }
-                String superEffective = I18n.translateToLocalFormatted("pokemob.evolve.success",
+                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
                         this.getPokemonDisplayName(), ((IPokemob) evolution).getPokedexEntry().getName());
-                this.displayMessageToOwner("\u00a7a" + superEffective);
+                this.displayMessageToOwner(mess);
                 this.setPokemonOwner(null);
                 this.setDead();
             }

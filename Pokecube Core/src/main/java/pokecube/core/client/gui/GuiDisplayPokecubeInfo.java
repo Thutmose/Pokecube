@@ -22,7 +22,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -30,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -175,7 +176,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                     Color moveColor = new Color(move.getType(pokemob).colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);
-                    fontRenderer.drawString(MovesUtils.getTranslatedMove(move.getName()), 5 + 0 + w,
+                    fontRenderer.drawString(MovesUtils.getLocalizedMove(move.getName()), 5 + 0 + w,
                             index * 12 + 14 + h, // white.getRGB());
                             move.getType(pokemob).colour);
                     GL11.glPopMatrix();
@@ -350,8 +351,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
-                String mess = I18n.translateToLocalFormatted("pokemob.command.attack", pokemob.getPokemonDisplayName(),
-                        target.getName());
+                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.command.attack","",
+                        pokemob.getPokemonDisplayName(), target.getName());
                 pokemob.displayMessageToOwner(mess);
                 attack = true;
             }
@@ -385,8 +386,8 @@ public class GuiDisplayPokecubeInfo extends Gui
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
                 if (move != null && (target != null || v != null))
                 {
-                    String mess = I18n.translateToLocalFormatted("pokemob.action.usemove",
-                            pokemob.getPokemonDisplayName(), MovesUtils.getTranslatedMove(move.getName()));
+                    ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.usemove","",
+                            pokemob.getPokemonDisplayName(), MovesUtils.getUnlocalizedMove(move.getName()));
                     pokemob.displayMessageToOwner(mess);
                 }
             }

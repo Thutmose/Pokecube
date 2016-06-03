@@ -13,12 +13,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BerryGenManager.GenericGrower;
 import pokecube.core.blocks.berries.BerryGenManager.PalmGrower;
+import pokecube.core.blocks.berries.BlockBerryLog;
+import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.berries.TileEntityBerries;
+import pokecube.core.handlers.ItemHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 
@@ -166,11 +167,17 @@ public class BerryManager implements IMoveConstants
     
     public static void registerTrees()
     {
-        TileEntityBerries.trees.put(3, new GenericGrower());
-        TileEntityBerries.trees.put(6, new GenericGrower());
-        TileEntityBerries.trees.put(7, new GenericGrower());
-        TileEntityBerries.trees.put(10, new GenericGrower());
-        TileEntityBerries.trees.put(60, new GenericGrower());
-        TileEntityBerries.trees.put(18, new PalmGrower());
+        TileEntityBerries.trees.put(3, new GenericGrower(ItemHandler.log0.getDefaultState()
+                .withProperty(BlockBerryLog.VARIANT0, BlockBerryWood.EnumType.PECHA)));
+        TileEntityBerries.trees.put(6, new GenericGrower(ItemHandler.log0.getDefaultState()
+                .withProperty(BlockBerryLog.VARIANT0, BlockBerryWood.EnumType.LEPPA)));
+        TileEntityBerries.trees.put(7, new GenericGrower(ItemHandler.log0.getDefaultState()
+                .withProperty(BlockBerryLog.VARIANT0, BlockBerryWood.EnumType.ORAN)));
+        TileEntityBerries.trees.put(10, new GenericGrower(ItemHandler.log0.getDefaultState()
+                .withProperty(BlockBerryLog.VARIANT0, BlockBerryWood.EnumType.SITRUS)));
+        TileEntityBerries.trees.put(60, new GenericGrower(ItemHandler.log1.getDefaultState()
+                .withProperty(BlockBerryLog.VARIANT4, BlockBerryWood.EnumType.ENIGMA)));
+        TileEntityBerries.trees.put(18, new PalmGrower(ItemHandler.log1.getDefaultState()
+                .withProperty(BlockBerryLog.VARIANT4, BlockBerryWood.EnumType.NANAB)));
     }
 }

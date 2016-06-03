@@ -346,7 +346,7 @@ public class Mod_Pokecube_Helper
         }
         for (Block b : getCaveBlocks())
         {
-            if (b.getMaterial(b.getDefaultState()) == Material.ROCK && !getRocks().contains(b)) getRocks().add(b);
+            if (b.getDefaultState().getMaterial() == Material.ROCK && !getRocks().contains(b)) getRocks().add(b);
             if (!getSurfaceBlocks().contains(b)) getSurfaceBlocks().add(b);
         }
 

@@ -29,7 +29,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -742,8 +742,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!PokecubeCore.isOnClientSide())
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
-            String mess = I18n.translateToLocalFormatted("pokemob.action.faint", getPokemonDisplayName());
-            displayMessageToOwner("\u00a7c" + mess);
+            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.faint", "red", getPokemonDisplayName());
+            displayMessageToOwner( mess);
             returnToPokecube();
         }
         if (!getPokemonAIState(IMoveConstants.TAMED))
@@ -924,10 +924,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
             Vector3 down = Vector3.getNextSurfacePoint(worldObj, here.set(this), Vector3.secondAxisNeg, floatHeight);
             if (down != null) here.set(down);
-
-            Block b;
-            if (!(b = here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) && !getAIState(SLEEPING, state)
-                    || b.getMaterial(here.getBlockState(worldObj)).isLiquid())
+            if (!(here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) && !getAIState(SLEEPING, state)
+                    || here.getBlockState(worldObj).getMaterial().isLiquid())
             {
                 motionY += 0.01;
             }
@@ -956,8 +954,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
         canFloat = entry.flys();
-        if (canFloat && here.getBlock(worldObj, EnumFacing.DOWN)
-                .getMaterial(here.offset(EnumFacing.DOWN).getBlockState(worldObj)).isLiquid())
+        if (canFloat && here.offset(EnumFacing.DOWN).getBlockState(worldObj).getMaterial().isLiquid())
         {
             if (motionY < -0.1) motionY = 0;
             motionY += 0.05;

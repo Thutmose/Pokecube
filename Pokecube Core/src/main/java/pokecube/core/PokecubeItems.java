@@ -449,12 +449,12 @@ public class PokecubeItems extends Items
         {
             if (grasses.contains(b)) continue;
 
-            if (b.getMaterial(b.getDefaultState()) == Material.GRASS) grasses.add(b);
-            if (b.getMaterial(b.getDefaultState()) == Blocks.RED_FLOWER.getMaterial(b.getDefaultState()))
+            if (b.getDefaultState().getMaterial() == Material.GRASS) grasses.add(b);
+            if (b.getDefaultState().getMaterial() == Blocks.RED_FLOWER.getDefaultState().getMaterial())
                 grasses.add(b);
-            if (b.getMaterial(b.getDefaultState()) == Blocks.TALLGRASS.getMaterial(b.getDefaultState()))
+            if (b.getDefaultState().getMaterial() == Blocks.TALLGRASS.getDefaultState().getMaterial())
                 PokecubeItems.grasses.add(b);
-            if (b.getMaterial(b.getDefaultState()) == Blocks.WHEAT.getMaterial(b.getDefaultState()))
+            if (b.getDefaultState().getMaterial() == Blocks.WHEAT.getDefaultState().getMaterial())
                 PokecubeItems.grasses.add(b);
         }
         postInitFossils();

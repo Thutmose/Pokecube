@@ -30,7 +30,7 @@ public class ItemTM extends ItemPokemobUseable
             nbt.setString("move", move.trim());
             stack.setTagCompound(nbt);
             stack.setItemDamage(attack.getType(null).ordinal());
-            stack.setStackDisplayName(MovesUtils.getTranslatedMove(move.trim()));
+            stack.setStackDisplayName(MovesUtils.getLocalizedMove(move.trim()));
         }
     }
 

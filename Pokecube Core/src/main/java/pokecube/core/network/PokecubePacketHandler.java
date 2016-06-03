@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -180,17 +181,17 @@ public class PokecubePacketHandler
                             {
                                 try
                                 {
-                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-                                    int id = nbt.getInteger("id");
-                                    String mess = nbt.getString("message");
-                                    Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id, false);
+                                    int id = buffer.readInt();
+                                    ITextComponent component = buffer.readTextComponent();
+                                    Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id,
+                                            false);
                                     if (e != null && e instanceof IPokemob)
                                     {
-                                        ((IPokemob) e).displayMessageToOwner(mess);
+                                        ((IPokemob) e).displayMessageToOwner(component);
                                     }
                                     else if (e instanceof EntityPlayer)
                                     {
-                                        pokecube.core.client.gui.GuiInfoMessages.addMessage(mess);
+                                        pokecube.core.client.gui.GuiInfoMessages.addMessage(component);
                                     }
                                 }
                                 catch (IOException e)
@@ -446,7 +447,8 @@ public class PokecubePacketHandler
                                     if (buffer.readableBytes() == 4)
                                     {
                                         int id = buffer.readInt();
-                                        target = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id, true);
+                                        target = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id,
+                                                true);
                                         targetLocation = Vector3.getNewVector();
                                     }
                                     else if (buffer.readableBytes() == 24)

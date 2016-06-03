@@ -17,10 +17,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.client.render.PTezzelator;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.MoveEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
@@ -1955,10 +1956,10 @@ public class MovesAdder implements IMoveConstants
                 super.postAttack(attacker, attacked, f, finalAttackStrength);
                 if (attacked instanceof IPokemob)
                 {
-                    String doesntAffect = I18n.translateToLocalFormatted("pokemob.move.doesnt.affect",
-                            ((IPokemob) attacked).getPokemonDisplayName());
-                    attacker.displayMessageToOwner("\u00a7a" + doesntAffect);
-                    ((IPokemob) attacked).displayMessageToOwner("\u00a7c" + doesntAffect);
+                    ITextComponent text = CommandTools.makeTranslatedMessage("pokemob.move.doesnt.affect", "red", ((IPokemob) attacked).getPokemonDisplayName());
+                    attacker.displayMessageToOwner(text);
+                    text = CommandTools.makeTranslatedMessage("pokemob.move.doesnt.affect", "green", ((IPokemob) attacked).getPokemonDisplayName());
+                    ((IPokemob) attacked).displayMessageToOwner(text);
                 }
             }
         });// setAnimtion(new ParticlesOnSource("splash")));

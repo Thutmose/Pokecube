@@ -19,7 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.interfaces.IPokecube;
 
-@SuppressWarnings({ "rawtypes", "deprecation" })
+@SuppressWarnings({ "rawtypes"})
 public class RenderTradingTable extends TileEntitySpecialRenderer
 {
     public void renderItem(double x, double y, double z, ItemStack item, int time)

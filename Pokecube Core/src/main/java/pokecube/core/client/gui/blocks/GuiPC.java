@@ -7,11 +7,11 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.ContainerPC;
@@ -31,8 +31,8 @@ public class GuiPC extends GuiContainer
     GuiTextField    textFieldBoxName;
     GuiTextField    textFieldSearch;
 
-    String          autoOn   = I18n.translateToLocal("tile.pc.autoon");
-    String          autoOff  = I18n.translateToLocal("tile.pc.autooff");
+    String          autoOn   = I18n.format("tile.pc.autoon");
+    String          autoOff  = I18n.format("tile.pc.autooff");
 
     private String  boxName  = "1";
     private boolean toRename = false;
@@ -190,7 +190,7 @@ public class GuiPC extends GuiContainer
 
         String name = cont.pcTile.getName();
         String pcTitle = bound ? name
-                : I18n.translateToLocalFormatted("tile.pc.title", cont.inv.seenOwner ? "Thutmose" : "Someone");
+                : I18n.format("tile.pc.title", cont.inv.seenOwner ? "Thutmose" : "Someone");
         fontRendererObj.drawString(cont.getPage(), xSize / 2 - fontRendererObj.getStringWidth(cont.getPage()) / 3 - 60,
                 13, 4210752);
         fontRendererObj.drawString(pcTitle, xSize / 2 - fontRendererObj.getStringWidth(pcTitle) / 3 - 60, 4, 4210752);
@@ -266,19 +266,19 @@ public class GuiPC extends GuiContainer
         buttonList.clear();
         int xOffset = 0;
         int yOffset = -11;
-        String next = I18n.translateToLocal("tile.pc.next");
+        String next = I18n.format("tile.pc.next");
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 15, height / 2 - yOffset, 50, 20, next));
-        String prev = I18n.translateToLocal("tile.pc.previous");
+        String prev = I18n.format("tile.pc.previous");
         buttonList.add(new GuiButton(2, width / 2 - xOffset - 65, height / 2 - yOffset, 50, 20, prev));
 
         if (!bound)
         {
-            String auto = I18n.translateToLocal("tile.pc.autoon");
+            String auto = I18n.format("tile.pc.autoon");
             buttonList.add(new GuiButton(3, width / 2 - xOffset - 137, height / 2 - yOffset - 105, 50, 20, auto));
         }
         if (!bound)
         {
-            String rename = I18n.translateToLocal("tile.pc.rename");
+            String rename = I18n.format("tile.pc.rename");
             buttonList.add(new GuiButton(4, width / 2 - xOffset - 137, height / 2 - yOffset - 125, 50, 20, rename));
         }
         if (cont.pcTile != null)

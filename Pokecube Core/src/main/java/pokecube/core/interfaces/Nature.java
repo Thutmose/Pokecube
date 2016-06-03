@@ -1,11 +1,10 @@
 package pokecube.core.interfaces;
 
-import net.minecraft.util.text.translation.I18n;
 import pokecube.core.items.berries.BerryManager;
 
 public enum Nature
 {
-   // @formatter:off
+   //@formatter:off
     HARDY   (new byte[]{0,0,0,0,0,0}),
     LONELY  (new byte[]{0,1,-1,0,0,0}),
     BRAVE   (new byte[]{0,1,0,0,0,-1}),
@@ -37,10 +36,11 @@ public enum Nature
     {
         int ret = 0;
         int[] flavours = BerryManager.berryFlavours.get(berryIndex);
-        if(type.goodFlavour == type.badFlavour || flavours == null) return ret;
+        if (type.goodFlavour == type.badFlavour || flavours == null) return ret;
         ret = flavours[type.goodFlavour] - flavours[type.badFlavour];
         return ret;
     }
+
     /** Returns the prefered berry for this nature, if it returns -1, it likes
      * all berries equally.
      * 
@@ -53,13 +53,13 @@ public enum Nature
         byte bad = type.badFlavour;
         if (good == bad) { return ret; }
         if (type.favourteBerry != -1) return type.favourteBerry;
-        
+
         int max = 0;
         int current;
-        for(Integer i:BerryManager.berryFlavours.keySet())
+        for (Integer i : BerryManager.berryFlavours.keySet())
         {
             current = getBerryWeight(i, type);
-            if(current>max)
+            if (current > max)
             {
                 ret = i;
                 max = current;
@@ -68,21 +68,14 @@ public enum Nature
         type.favourteBerry = ret;
         return ret;
     }
-    public static String getTranslatedName(Nature type)
-    {
-        String translated = I18n.translateToLocal("nature." + type);
 
-        if (translated == null || translated.startsWith("nature.")) { return type.toString(); }
-
-        return translated;
-    }
     final byte[] stats;
 
-    final byte badFlavour;
+    final byte   badFlavour;
 
-    final byte goodFlavour;
+    final byte   goodFlavour;
 
-    int favourteBerry = -1;
+    int          favourteBerry = -1;
 
     private Nature(byte[] stats)
     {
@@ -103,7 +96,7 @@ public enum Nature
         goodFlavour = good;
         badFlavour = bad;
     }
-    
+
     public byte[] getStatsMod()
     {
         return stats;

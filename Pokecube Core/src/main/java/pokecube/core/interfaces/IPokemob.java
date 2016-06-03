@@ -15,6 +15,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -272,7 +273,7 @@ public interface IPokemob extends IMoveConstants
      * is tamed).
      * 
      * @param message */
-    void displayMessageToOwner(String message);
+    void displayMessageToOwner(ITextComponent message);
 
     void eat(Entity eaten);
 

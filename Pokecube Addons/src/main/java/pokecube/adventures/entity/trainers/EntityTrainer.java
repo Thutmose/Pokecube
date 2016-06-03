@@ -717,6 +717,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     private void checkTradeIntegrity()
     {
+        if(itemList==null) return;
         List<MerchantRecipe> toRemove = Lists.newArrayList();
         for (MerchantRecipe r : itemList)
         {

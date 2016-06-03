@@ -2,21 +2,24 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "#tradingtable": "pokecube:blocks/tradingtable"
-        },
-        "model": "pokecube:tradingtable.obj"
+            "#pc_top": "pokecube:blocks/pc_top",
+            "#pc_base": "pokecube:blocks/pc_base"
+        }
      },
     "variants": {
-        "inventory": [{
-            "transform": "forge:default-block"
-        }],
-        "top=true,facing=north":{"model": "pokecube:tradingtable.obj"},
-        "top=true,facing=south":{"model": "pokecube:tradingtable.obj", "y": 180},
-        "top=true,facing=east":{"model": "pokecube:tradingtable.obj", "y": 90},
-        "top=true,facing=west":{"model": "pokecube:tradingtable.obj", "y": 270},
-        "top=false,facing=north":{"model": "pokecube:tradingtable.obj"},
-        "top=false,facing=south":{"model": "pokecube:tradingtable.obj", "y": 180},
-        "top=false,facing=east":{"model": "pokecube:tradingtable.obj", "y": 90},
-        "top=false,facing=west":{"model": "pokecube:tradingtable.obj", "y": 270}
+        "top":{
+            "true": {
+                "model": "pokecube:pc_top.obj"
+            },
+            "false": {
+                "model": "pokecube:pc_base.obj"
+            }
+        },
+        "facing":{
+            "east":  { "y":180 },
+            "west":  { "y":0 },
+            "north": { "y":90 },
+            "south": {  "y":270 }
+        }
     }
 }

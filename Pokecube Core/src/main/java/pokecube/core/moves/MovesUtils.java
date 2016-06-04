@@ -555,8 +555,8 @@ public class MovesUtils implements IMoveConstants
         }
         else if (attacked instanceof EntityPlayer && !attacked.worldObj.isRemote)
         {
-            text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red",
-                    ((IPokemob) attacked).getPokemonDisplayName(), attackName);
+            text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red", attacker.getPokemonDisplayName(),
+                    attackName);
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));
             buffer.writeByte(PokecubeClientPacket.MOVEMESSAGE);
             buffer.writeInt(attacked.getEntityId());
@@ -657,8 +657,7 @@ public class MovesUtils implements IMoveConstants
             }
             else if (attacked instanceof EntityPlayer)
             {
-                text = CommandTools.makeTranslatedMessage(message, "red",
-                        ((IPokemob) attacked).getPokemonDisplayName());
+                text = CommandTools.makeTranslatedMessage(message, "red", attacker.getPokemonDisplayName());
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));
                 buffer.writeByte(PokecubeClientPacket.MOVEMESSAGE);
                 buffer.writeInt(attacked.getEntityId());

@@ -52,6 +52,7 @@ public class Database implements IMoveConstants
     public static HashMap<Integer, PokedexEntry>           data             = new HashMap<Integer, PokedexEntry>();
     public static HashMap<String, PokedexEntry>            data2            = new HashMap<String, PokedexEntry>();
     public static HashSet<PokedexEntry>                    allFormes        = new HashSet<PokedexEntry>();
+    public static HashMap<Integer, PokedexEntry>           baseFormes       = new HashMap<Integer, PokedexEntry>();
     public static HashMap<String, ArrayList<PokedexEntry>> mobReplacements  = new HashMap<String, ArrayList<PokedexEntry>>();
 
     public static List<PokedexEntry>                       spawnables       = new ArrayList<PokedexEntry>();
@@ -950,9 +951,9 @@ public class Database implements IMoveConstants
     {
         PokedexEntryLoader.postInit();
         loadSpawns();
-        ProgressBar bar = ProgressManager.push("Removal Checking", data.size());
+        ProgressBar bar = ProgressManager.push("Removal Checking", baseFormes.size());
         List<PokedexEntry> toRemove = new ArrayList<PokedexEntry>();
-        for (PokedexEntry p : data.values())
+        for (PokedexEntry p : baseFormes.values())
         {
             bar.step(p.getName());
             if (!Pokedex.getInstance().getEntries().contains(p.getPokedexNb()))
@@ -966,10 +967,95 @@ public class Database implements IMoveConstants
         {
             bar.step(p.getName());
             data.remove(p.pokedexNb);
+            baseFormes.remove(p.pokedexNb);
             spawnables.remove(p);
         }
         ProgressManager.pop(bar);
         System.err.println("Removed " + toRemove.size() + " Missing Pokemon");
+
+        bar = ProgressManager.push("Base Formes", allFormes.size());
+        toRemove.clear();
+        for (PokedexEntry e : allFormes)
+        {
+            bar.step(e.getName());
+            PokedexEntry base = baseFormes.get(e.pokedexNb);
+
+            if (base == null)
+            {
+                toRemove.add(e);
+                continue;
+            }
+
+            if (base != e)
+            {
+                base.copyToForm(e);
+                if (e.height == -1)
+                {
+                    e.height = base.height;
+                    e.width = base.width;
+                    e.length = base.length;
+                    e.childNumbers = base.childNumbers;
+                    e.species = base.species;
+                    e.mobType = base.mobType;
+                    e.catchRate = base.catchRate;
+                    e.mass = base.mass;
+                    e.foodDrop = base.foodDrop;
+                    e.commonDrops = base.commonDrops;
+                    e.rareDrops = base.rareDrops;
+                    System.err.println("Error with " + e);
+                }
+                if (e.species == null)
+                {
+                    e.childNumbers = base.childNumbers;
+                    e.species = base.species;
+                    System.err.println(e + " Has no Species");
+                }
+                if (e.type1 == null)
+                {
+                    e.type1 = base.type1;
+                    e.type2 = base.type2;
+                }
+                if (e.abilities.isEmpty() && base != null) e.abilities.addAll(base.abilities);
+            }
+            else
+            {
+                e.baseForme = e;
+            }
+            if (e.mobType == null)
+            {
+                e.mobType = PokecubeMod.Type.NORMAL;
+                System.err.println(e + " Has no Mob Type");
+            }
+            if (e.type2 == null) e.type2 = PokeType.unknown;
+            if (e.interactionLogic.stacks.isEmpty())
+            {
+                if (e.baseForme != null)
+                {
+                    if (e.baseForme.interactionLogic.stacks.isEmpty())
+                    {
+                        InteractionLogic.initForEntry(e);
+                    }
+                    e.interactionLogic.stacks = e.baseForme.interactionLogic.stacks;
+                }
+                else
+                {
+                    InteractionLogic.initForEntry(e);
+                }
+            }
+            if (!Pokedex.getInstance().getEntries().contains(e.getPokedexNb()))
+            {
+                if (e.baseForme != null && Pokedex.getInstance().getEntries().contains(e.baseForme.getPokedexNb()))
+                {
+                    continue;
+                }
+                toRemove.add(e);
+                baseFormes.remove(e.getPokedexNb());
+            }
+        }
+        System.out.println(toRemove.size() + " Pokemon Formes Removed");
+        allFormes.removeAll(toRemove);
+        ProgressManager.pop(bar);
+
         bar = ProgressManager.push("Relations", data.size());
         for (PokedexEntry p : data.values())
         {
@@ -991,72 +1077,6 @@ public class Database implements IMoveConstants
             p.getChildNb();
         }
         ProgressManager.pop(bar);
-        toRemove.clear();
-        for (PokedexEntry e : allFormes)
-        {
-            if (e.height == -1 && e.baseForme != null)
-            {
-                e.height = e.baseForme.height;
-                e.width = e.baseForme.width;
-                e.length = e.baseForme.length;
-                e.childNumbers = e.baseForme.childNumbers;
-                e.species = e.baseForme.species;
-                e.mobType = e.baseForme.mobType;
-                e.catchRate = e.baseForme.catchRate;
-                e.mass = e.baseForme.mass;
-                e.foodDrop = e.baseForme.foodDrop;
-                e.commonDrops = e.baseForme.commonDrops;
-                e.rareDrops = e.baseForme.rareDrops;
-                Thread.dumpStack();
-            }
-            if (e.mobType == null)
-            {
-                e.mobType = PokecubeMod.Type.NORMAL;
-                System.out.println(e + " Has no Mob Type");
-                Thread.dumpStack();
-            }
-            if (e.species == null && e.baseForme != null)
-            {
-                e.childNumbers = e.baseForme.childNumbers;
-                e.species = e.baseForme.species;
-                System.out.println(e + " Has no Species");
-                Thread.dumpStack();
-            }
-            if (e.type1 == null && e.baseForme != null)
-            {
-                e.type1 = e.baseForme.type1;
-                e.type2 = e.baseForme.type2;
-            }
-            if (e.abilities.isEmpty() && e.baseForme != null) e.abilities.addAll(e.baseForme.abilities);
-            if (e.type2 == null) e.type2 = PokeType.unknown;
-            if (e.baseForme != null) e.evolutionMode = e.baseForme.evolutionMode;
-            if(e.interactionLogic.stacks.isEmpty())
-            {
-                if(e.baseForme!=null)
-                {
-                    if(e.baseForme.interactionLogic.stacks.isEmpty())
-                    {
-                        InteractionLogic.initForEntry(e);
-                    }
-                    e.interactionLogic.stacks = e.baseForme.interactionLogic.stacks;
-                }
-                else
-                {
-                    InteractionLogic.initForEntry(e);
-                }
-            }
-            if (!Pokedex.getInstance().getEntries().contains(e.getPokedexNb()))
-            {
-                if (e.baseForme != null && Pokedex.getInstance().getEntries().contains(e.baseForme.getPokedexNb()))
-                {
-                    continue;
-                }
-                toRemove.add(e);
-            }
-        }
-
-        System.out.println(toRemove.size() + " Pokemon Formes Removed");
-        allFormes.removeAll(toRemove);
 
         for (PokedexEntry e : allFormes)
         {

@@ -35,7 +35,7 @@ public class ExtraDatabase
     public static class XMLFile
     {
         @XmlElement(name = "details")
-        XMLDetails      details;
+        XMLDetails            details;
         @XmlElement(name = "Pokemon")
         List<XMLPokedexEntry> entries = Lists.newArrayList();
     }
@@ -82,24 +82,34 @@ public class ExtraDatabase
                 JAXBContext jaxbContext = JAXBContext.newInstance(XMLFile.class);
                 Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
                 XMLFile file = (XMLFile) unmarshaller.unmarshal(new StringReader(xmls.get(s)));
-                for(XMLPokedexEntry fileEntry: file.entries)
+                for (XMLPokedexEntry fileEntry : file.entries)
                 {
                     if (entry == null && fileEntry != null)
                     {
                         String name = fileEntry.name;
                         int number = fileEntry.number;
                         entry = new PokedexEntry(number, name);
+                        if (fileEntry.base)
+                        {
+                            Database.baseFormes.put(number, entry);
+                            Database.addEntry(entry);
+                        }
                         PokedexEntryLoader.updateEntry(fileEntry, true);
                     }
-                    else if(entry!=null && fileEntry!=null && !entry.getName().equals(fileEntry.name))
+                    else if (entry != null && fileEntry != null && !entry.getName().equals(fileEntry.name))
                     {
                         String name = fileEntry.name;
                         int number = fileEntry.number;
                         entry = new PokedexEntry(number, name);
+                        if (fileEntry.base)
+                        {
+                            Database.baseFormes.put(number, entry);
+                            Database.addEntry(entry);
+                        }
                         PokedexEntryLoader.updateEntry(fileEntry, true);
                     }
                     if (fileEntry != null) PokedexEntryLoader.addOverrideEntry(fileEntry);
-    
+
                     if (entry != null && file.details != null)
                     {
                         if (file.details.offset != -1) entry.mountedOffset = file.details.offset;

@@ -962,13 +962,6 @@ public class PokedexEntry
                 .printStackTrace();
     }
 
-    private PokedexEntry(int nb, String name, List<String> moves, Map<Integer, ArrayList<String>> lvlUpMoves2)
-    {
-        this(nb, name);
-        this.lvlUpMoves = lvlUpMoves2;
-        this.possibleMoves = moves;
-    }
-
     public List<TimePeriod> activeTimes()
     {
         if (activeTimes.isEmpty())
@@ -990,38 +983,6 @@ public class PokedexEntry
         this.baseXP = baseXP;
         this.evolutionMode = evolutionMode;
         this.sexeRatio = sexRatio;
-    }
-
-    public void addEVXP(String name, int HP_EV, int ATT_EV, int DEF_EV, int ATTSPE_EV, int DEFSPE_EV, int VIT_EV,
-            int baseXP, int evolutionMode, int sexRatio)
-    {
-        if (!this.hasEVXP)
-        {
-            this.setEVXP(HP_EV, ATT_EV, DEF_EV, ATTSPE_EV, DEFSPE_EV, VIT_EV, baseXP, evolutionMode, sexRatio);
-            if (!hasForm(name)) addForm(this);
-            for (PokedexEntry dbe : forms.values())
-            {
-                dbe.setEVXP(HP_EV, ATT_EV, DEF_EV, ATTSPE_EV, DEFSPE_EV, VIT_EV, baseXP, evolutionMode, sexRatio);
-            }
-        }
-        else
-        {
-            if (hasForm(name))
-            {
-                getForm(name).setEVXP(HP_EV, ATT_EV, DEF_EV, ATTSPE_EV, DEFSPE_EV, VIT_EV, baseXP, evolutionMode,
-                        sexRatio);
-            }
-            else
-            {
-                PokedexEntry form = new PokedexEntry(pokedexNb, name);
-                this.copyToForm(form);
-                form.setEVXP(HP_EV, ATT_EV, DEF_EV, ATTSPE_EV, DEFSPE_EV, VIT_EV, baseXP, evolutionMode, sexRatio);
-                System.out.println("Adding EVs for " + form);
-                this.addForm(form);
-            }
-            // System.err.println("Attempted to add EV gain for an unknown form
-            // of "+this.name+" with the name "+name);
-        }
     }
 
     protected void addForm(PokedexEntry form)
@@ -1070,28 +1031,6 @@ public class PokedexEntry
     private void addRelation(PokedexEntry toAdd)
     {
         if (!related.contains(toAdd) && toAdd != null) related.add(toAdd);
-    }
-
-    public void addStats(String name, int HP, int ATT, int DEF, int ATTSPE, int DEFSPE, int VIT, int catchRate,
-            PokeType pokeType, PokeType pokeType2)
-    {
-        if (!this.hasStats)
-        {
-            this.setBaseStats(HP, ATT, DEF, ATTSPE, DEFSPE, VIT, catchRate, pokeType, pokeType2);
-            addForm(this);
-        }
-        else
-        {
-            PokedexEntry form = getForm(name);
-            if (form == null)
-            {
-                form = new PokedexEntry(pokedexNb, name, possibleMoves, lvlUpMoves);
-                this.copyToForm(form);
-                addForm(form);
-                // System.out.println("new form for " + this + " as " + form);
-            }
-            form.setBaseStats(HP, ATT, DEF, ATTSPE, DEFSPE, VIT, catchRate, pokeType, pokeType2);
-        }
     }
 
     public boolean areRelated(PokedexEntry toTest)
@@ -1452,7 +1391,7 @@ public class PokedexEntry
 
     public SoundEvent getSoundEvent()
     {
-        if(event==null)
+        if (event == null)
         {
             event = new SoundEvent(new ResourceLocation(getModId(), sound));
         }
@@ -1745,36 +1684,6 @@ public class PokedexEntry
             toAdd.stackSize = count;
         }
         return toAdd;
-    }
-
-    private void setBaseStats(int HP, int ATT, int DEF, int ATTSPE, int DEFSPE, int VIT, int catchRate,
-            PokeType pokeType, PokeType pokeType2)
-    {
-        this.hasStats = true;
-        this.catchRate = catchRate;
-        this.type1 = pokeType;
-        this.type2 = pokeType2;
-        this.stats = new int[] { HP, ATT, DEF, ATTSPE, DEFSPE, VIT };
-    }
-
-    protected void setBaseStats(int[] stats, PokeType pokeType, PokeType pokeType2, int catchRate)
-    {
-        this.hasStats = true;
-        this.catchRate = catchRate;
-        this.type1 = pokeType;
-        this.type2 = pokeType2;
-        this.stats = stats;
-    }
-
-    private void setEVXP(int HP_EV, int ATT_EV, int DEF_EV, int ATTSPE_EV, int DEFSPE_EV, int VIT_EV, int baseXP,
-            int evolutionMode, int sexeRatio)
-    {
-        this.hasEVXP = true;
-        this.evs = new byte[] { (byte) HP_EV, (byte) ATT_EV, (byte) DEF_EV, (byte) ATTSPE_EV, (byte) DEFSPE_EV,
-                (byte) VIT_EV };
-        this.baseXP = baseXP;
-        this.sexeRatio = sexeRatio;
-        this.evolutionMode = evolutionMode;
     }
 
     /** Sets the Mod which declares this mob.

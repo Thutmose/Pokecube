@@ -452,7 +452,6 @@ public class MovesUtils implements IMoveConstants
                     attacked = ((EntityLiving) attacker).getAttackTarget();
                     String name = attacked.getName();
                     text = CommandTools.makeTranslatedMessage(message, "red", name);
-                    ((IPokemob) attacked).displayMessageToOwner(text);
                     attacker.displayMessageToOwner(text);
                 }
                 else if (attacker.getPokemonAIState(IMoveConstants.ANGRY))
@@ -545,7 +544,7 @@ public class MovesUtils implements IMoveConstants
         }
         String attackName = getUnlocalizedMove(attack);
         text = CommandTools.makeTranslatedMessage("pokemob.move.used", "green",
-                ((IPokemob) attacker).getPokemonDisplayName(), attackName);
+                attacker.getPokemonDisplayName(), attackName);
         ((IPokemob) attacker).displayMessageToOwner(text);
         if (attacker == attacked) return;
 

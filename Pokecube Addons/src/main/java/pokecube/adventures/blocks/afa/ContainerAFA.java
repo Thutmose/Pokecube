@@ -2,6 +2,7 @@ package pokecube.adventures.blocks.afa;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -70,62 +71,63 @@ public class ContainerAFA extends Container
         this.inventorySlots.clear();
     }
 
-//    @Override //TODO see of this was needed
-//    public ItemStack slotClick(int i, int j, int flag, EntityPlayer entityplayer)
-//    {
-//        if (i == -999) return null;
-//        if (flag != 0 && flag != 5)
-//        {
-//            ItemStack itemstack = null;
-//            Slot slot = inventorySlots.get(i);
-//
-//            if (slot != null && slot.getHasStack())
-//            {
-//                ItemStack itemstack1 = slot.getStack();
-//                itemstack = itemstack1.copy();
-//
-//                if (i < 6)
-//                {
-//                    if (!mergeItemStack(itemstack1, 1, 37, true)) { return null; }
-//                }
-//                else
-//                {
-//                    if (itemstack != null && !tile.isItemValidForSlot(36, itemstack1)) { return null; }
-//
-//                    if (!mergeItemStack(itemstack1, 0, 1, false)) { return null; }
-//                }
-//
-//                if (itemstack1.stackSize == 0)
-//                {
-//                    slot.putStack(null);
-//                }
-//                else
-//                {
-//                    slot.onSlotChanged();
-//                }
-//
-//                if (itemstack1.stackSize != itemstack.stackSize)
-//                {
-//                    // slot.onPickupFromSlot(itemstack1);
-//                }
-//                else
-//                {
-//                    return null;
-//                }
-//            }
-//
-//            if (itemstack != null)
-//            {
-//                return itemstack;
-//            }
-//            else
-//            {
-//                return null;
-//            }
-//        }
-//        else
-//        {
-//            return super.slotClick(i, j, flag, entityplayer);
-//        }
-//    }
+    @Override
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
+    {
+        if (slotId < 0)
+            return null;
+        if (clickTypeIn != ClickType.PICKUP && clickTypeIn != ClickType.PICKUP_ALL)
+        {
+            ItemStack itemstack = null;
+            Slot slot = inventorySlots.get(slotId);
+
+            if (slot != null && slot.getHasStack())
+            {
+                ItemStack itemstack1 = slot.getStack();
+                itemstack = itemstack1.copy();
+
+                if (slotId < 6)
+                {
+                    if (!mergeItemStack(itemstack1, 1, 37, true)) { return null; }
+                }
+                else
+                {
+                    if (itemstack != null && !tile.isItemValidForSlot(36, itemstack1)) { return null; }
+
+                    if (!mergeItemStack(itemstack1, 0, 1, false)) { return null; }
+                }
+
+                if (itemstack1.stackSize == 0)
+                {
+                    slot.putStack(null);
+                }
+                else
+                {
+                    slot.onSlotChanged();
+                }
+
+                if (itemstack1.stackSize != itemstack.stackSize)
+                {
+                    // slot.onPickupFromSlot(itemstack1);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            if (itemstack != null)
+            {
+                return itemstack;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        else
+        {
+            return super.slotClick(slotId, dragType, clickTypeIn, player);
+        }
+    }
 }

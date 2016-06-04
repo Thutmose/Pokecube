@@ -3,6 +3,7 @@ package pokecube.core.blocks.tradingTable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -104,75 +105,73 @@ public class ContainerTradingTable extends Container
 		        	if(this.getSlot(i)!=null)
 		            this.getSlot(i).putStack(par1ArrayOfItemStack[i]);
 		        }
-		    }
-//    @Override//TODO Slot click
-//    public ItemStack slotClick(int i, int j, int flag,
-//            EntityPlayer entityplayer)
-//    {
-//    	if (i == -999)
-//    		return null;
-////	    	LoggerPokecube.logMessage("i="+i+" | j="+j+" | flag="+flag);
-//        if (flag != 0 && flag != 5)
-//        {
-//            ItemStack itemstack = null;
-//            Slot slot = inventorySlots.get(i);
-//
-//            if (slot != null && slot.getHasStack())
-//            {
-//                ItemStack itemstack1 = slot.getStack();
-//                itemstack = itemstack1.copy();
-//
-//                if (i < 6)
-//                {
-//                    if (!mergeItemStack(itemstack1, 2, 38, true))
-//                    {
-//                        return null;
-//                    }
-//                }
-//                else
-//                {
-//                    if (itemstack != null && !tile.isItemValidForSlot(0,itemstack1))
-//                    {
-//                        return null;
-//                    }
-//
-//                    if (!mergeItemStack(itemstack1, 0, 2, false))
-//                    {
-//                        return null;
-//                    }
-//                }
-//
-//                if (itemstack1.stackSize == 0)
-//                {
-//                    slot.putStack(null);
-//                }
-//                else
-//                {
-//                    slot.onSlotChanged();
-//                }
-//
-//                if (itemstack1.stackSize != itemstack.stackSize)
-//                {
-////						slot.onPickupFromSlot(itemstack1);
-//                }
-//                else
-//                {
-//                    return null;
-//                }
-//            }
-//
-//            if (itemstack != null && isItemValid(itemstack))
-//            {
-//                return itemstack;
-//            }
-//            else
-//            {
-//                return null;
-//            }
-//        }
-//        else
-//        {
-//            return super.slotClick(i, j, flag, entityplayer);
-//        }
-//    }
+    }
+
+    @Override
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
+    {
+        if (slotId < 0) return null;
+        if (clickTypeIn != ClickType.PICKUP && clickTypeIn != ClickType.PICKUP_ALL)
+        {
+            ItemStack itemstack = null;
+            Slot slot = inventorySlots.get(slotId);
+
+            if (slot != null && slot.getHasStack())
+            {
+                ItemStack itemstack1 = slot.getStack();
+                itemstack = itemstack1.copy();
+
+                if (slotId < 6)
+                {
+                    if (!mergeItemStack(itemstack1, 2, 38, true))
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    if (itemstack != null && !tile.isItemValidForSlot(0,itemstack1))
+                    {
+                        return null;
+                    }
+
+                    if (!mergeItemStack(itemstack1, 0, 2, false))
+                    {
+                        return null;
+                    }
+                }
+
+                if (itemstack1.stackSize == 0)
+                {
+                    slot.putStack(null);
+                }
+                else
+                {
+                    slot.onSlotChanged();
+                }
+
+                if (itemstack1.stackSize != itemstack.stackSize)
+                {
+//						slot.onPickupFromSlot(itemstack1);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            if (itemstack != null && isItemValid(itemstack))
+            {
+                return itemstack;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        else
+        {
+            return super.slotClick(slotId, dragType, clickTypeIn, player);
+        }
+    }
 }

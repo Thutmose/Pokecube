@@ -3,6 +3,7 @@ package pokecube.core.blocks.healtable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -21,11 +22,6 @@ public class ContainerHealTable extends Container
     protected static boolean isItemValid(ItemStack itemstack)
     {
     	return PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound();
-//        int itemId = itemstack.itemID;
-//        return (itemId == mod_Pokecube.pokecubeFilled.blockID
-//                || itemId == mod_Pokecube.greatcubeFilled.blockID
-//                || itemId == mod_Pokecube.ultracubeFilled.blockID
-//                || itemId == mod_Pokecube.mastercubeFilled.blockID);
     }
     protected TileHealTable tile_entity;
 
@@ -161,74 +157,72 @@ public class ContainerHealTable extends Container
         // return stack;
     }
 
-//    @Override//TODO slot click
-//    public ItemStack slotClick(int i, int j, int flag,
-//            EntityPlayer entityplayer)
-//    {
-//    	if (i < 0)
-//    		return null;
-////    	System.out.println("i="+i+" | j="+j+" | flag="+flag);
-//        if (flag != 0 && flag != 5)
-//        {
-//            ItemStack itemstack = null;
-//            Slot slot = inventorySlots.get(i);
-//
-//            if (slot != null && slot.getHasStack())
-//            {
-//                ItemStack itemstack1 = slot.getStack();
-//                itemstack = itemstack1.copy();
-//
-//                if (i < 6)
-//                {
-//                    if (!mergeItemStack(itemstack1, 6, 42, true))
-//                    {
-//                        return null;
-//                    }
-//                }
-//                else
-//                {
-//                    if (itemstack != null && !isItemValid(itemstack1))
-//                    {
-//                        return null;
-//                    }
-//
-//                    if (!mergeItemStack(itemstack1, 0, 6, false))
-//                    {
-//                        return null;
-//                    }
-//                }
-//
-//                if (itemstack1.stackSize == 0)
-//                {
-//                    slot.putStack(null);
-//                }
-//                else
-//                {
-//                    slot.onSlotChanged();
-//                }
-//
-//                if (itemstack1.stackSize != itemstack.stackSize)
-//                {
-////					slot.onPickupFromSlot(itemstack1);
-//                }
-//                else
-//                {
-//                    return null;
-//                }
-//            }
-//
-//            if (itemstack != null && isItemValid(itemstack))
-//            {
-//                return itemstack;
-//            }
-//            else
-//            {
-//                return null;
-//            }
-//        }
-//        else
-//        {
-//            return super.slotClick(i, j, flag, entityplayer);
-//        }
-//    }
+    @Override
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
+    {
+    	if (slotId < 0)
+    		return null;
+        if (clickTypeIn != ClickType.PICKUP && clickTypeIn != ClickType.PICKUP_ALL)
+        {
+            ItemStack itemstack = null;
+            Slot slot = inventorySlots.get(slotId);
+
+            if (slot != null && slot.getHasStack())
+            {
+                ItemStack itemstack1 = slot.getStack();
+                itemstack = itemstack1.copy();
+
+                if (slotId < 6)
+                {
+                    if (!mergeItemStack(itemstack1, 6, 42, true))
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    if (itemstack != null && !isItemValid(itemstack1))
+                    {
+                        return null;
+                    }
+
+                    if (!mergeItemStack(itemstack1, 0, 6, false))
+                    {
+                        return null;
+                    }
+                }
+
+                if (itemstack1.stackSize == 0)
+                {
+                    slot.putStack(null);
+                }
+                else
+                {
+                    slot.onSlotChanged();
+                }
+
+                if (itemstack1.stackSize != itemstack.stackSize)
+                {
+//					slot.onPickupFromSlot(itemstack1);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            if (itemstack != null && isItemValid(itemstack))
+            {
+                return itemstack;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        else
+        {
+            return super.slotClick(slotId, dragType, clickTypeIn, player);
+        }
+    }
 }

@@ -450,7 +450,6 @@ public class MovesUtils implements IMoveConstants
                     attacked = ((EntityLiving) attacker).getAttackTarget();
                     String name = attacked.getName();
                     text = CommandTools.makeTranslatedMessage(message, "red", name);
-                    ((IPokemob) attacked).displayMessageToOwner(text);
                     attacker.displayMessageToOwner(text);
                 }
                 else if (attacker.getPokemonAIState(IMoveConstants.ANGRY))

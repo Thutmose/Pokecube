@@ -11,8 +11,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -31,6 +34,7 @@ import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.common.ExtraDatabase;
 
 /** This class actually does nothing on server side. But its implementation on
@@ -44,6 +48,7 @@ public class CommonProxy implements IGuiHandler
         Set<ZippedLoc> jarlocs     = Sets.newHashSet();
         Set<File>      directFiles = Sets.newHashSet();
     }
+
     private static class ZippedLoc
     {
         File    file;
@@ -68,6 +73,7 @@ public class CommonProxy implements IGuiHandler
             return zip.getInputStream(entry);
         }
     }
+
     public static HashMap<String, Object>            modelProviders = Maps.newHashMap();
     public static HashMap<String, ArrayList<String>> modModels      = Maps.newHashMap();
     public static final String                       MODELPATH      = "models/pokemobs/";
@@ -78,7 +84,7 @@ public class CommonProxy implements IGuiHandler
 
     private static final char                        SLASH          = '/';
 
-    private HashMap<String, XMLLocs>                 xmlFiles       = Maps.newHashMap();
+    HashMap<String, XMLLocs>                         xmlFiles       = Maps.newHashMap();
 
     private HashMap<String, Object>                  mobProviders   = Maps.newHashMap();
 
@@ -283,12 +289,12 @@ public class CommonProxy implements IGuiHandler
             Thread.dumpStack();
             return;
         }
-        ArrayList<PokedexEntry> entries = Lists.newArrayList();
+        ArrayList<String> entries = Lists.newArrayList();
         for (PokedexEntry entry : Database.allFormes)
         {
-            entries.add(entry);
+            entries.add(entry.getName());
         }
-        PokedexEntry[] entryArr = entries.toArray(new PokedexEntry[0]);
+        String[] entryArr = entries.toArray(new String[0]);
         boolean[] has = new boolean[entryArr.length];
         for (int i = 0; i < has.length; i++)
         {
@@ -297,15 +303,29 @@ public class CommonProxy implements IGuiHandler
                 Thread.dumpStack();
                 continue;
             }
-            if (toAdd.contains(entryArr[i].getName()))
+            if (toAdd.contains(entryArr[i]))
             {
                 has[i] = true;
-                ModPokecubeML.textureProviders.put(entryArr[i].getName(), ModPokecubeML.ID);
+                ModPokecubeML.textureProviders.put(entryArr[i], ModPokecubeML.ID);
             }
         }
 
         ProgressBar bar = ProgressManager.push("Model Locations", mobProviders.size());
-        for (String modId : mobProviders.keySet())
+
+        List<String> modList = Lists.newArrayList(mobProviders.keySet());
+        // Sort to prioritise default mod
+        Collections.sort(modList, new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                if (o1.equals(PokecubeMod.defaultMod)) return Integer.MAX_VALUE;
+                else if (o2.equals(PokecubeMod.defaultMod)) return Integer.MIN_VALUE;
+                return o1.compareTo(o2);
+            }
+        });
+
+        for (String modId : modList)
         {
             bar.step(modId);
             Object mod = mobProviders.get(modId);
@@ -319,18 +339,18 @@ public class CommonProxy implements IGuiHandler
                     bar2.step("skip");
                     continue;
                 }
-                PokedexEntry entry = entryArr[i];
-                bar2.step(entry.getName());
-                toAdd.add(entry.getName());
-                ModPokecubeML.textureProviders.put(entry.getName(), modId);
+                String entry = entryArr[i];
+                bar2.step(entry);
+                toAdd.add(entry);
+                ModPokecubeML.textureProviders.put(entry, modId);
                 ArrayList<String> list = Lists.newArrayList();
-                ResourceLocation xml = new ResourceLocation(modId, MODELPATH + entry.getName() + ".xml");
+                ResourceLocation xml = new ResourceLocation(modId, MODELPATH + entry + ".xml");
                 try
                 {
                     fileAsList(mod, xml, list);
                     if (!list.isEmpty())
                     {
-                        ExtraDatabase.addXML(entry.getName(), list);
+                        ExtraDatabase.addXMLEntry(modId, entry, list);
                     }
                 }
                 catch (Exception e)
@@ -358,7 +378,7 @@ public class CommonProxy implements IGuiHandler
         modelProviders.put(ModPokecubeML.ID, ModPokecubeML.instance);
     }
 
-    private boolean[] providesModels(String modid, Object mod, PokedexEntry... entry)
+    boolean[] providesModels(String modid, Object mod, String... entry)
     {
         ResourceLocation[] tex;
         boolean[] ret = new boolean[entry.length];
@@ -390,12 +410,12 @@ public class CommonProxy implements IGuiHandler
         // implementation
     }
 
-    private ResourceLocation[] toLocations(String modid, String ext, PokedexEntry... entries)
+    private ResourceLocation[] toLocations(String modid, String ext, String... entries)
     {
         ResourceLocation[] ret = new ResourceLocation[entries.length];
         for (int i = 0; i < entries.length; i++)
         {
-            ret[i] = new ResourceLocation(modid, MODELPATH + entries[i].getName() + ext);
+            ret[i] = new ResourceLocation(modid, MODELPATH + entries[i] + ext);
         }
         return ret;
     }

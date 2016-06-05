@@ -2,13 +2,14 @@ package pokecube.core.database;
 
 import java.io.File;
 import java.io.FileReader;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -23,6 +24,7 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
@@ -32,6 +34,7 @@ import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.MegaRule;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.TypeEntry;
+import pokecube.core.database.PokedexEntryLoader.StatsNode.Stats;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
@@ -61,7 +64,7 @@ public class PokedexEntryLoader
             boolean rule = false;
             if (stack != null)
             {
-                rightStack = Tools.isSameStack(stack, ((EntityLivingBase) mobIn).getHeldItemMainhand());
+                rightStack = Tools.isSameStack(stack, ((EntityLivingBase) mobIn).getHeldItem(EnumHand.MAIN_HAND));
                 rule = true;
             }
             if (moveName != null && !moveName.isEmpty())
@@ -164,18 +167,18 @@ public class PokedexEntryLoader
         @XmlElement(name = "ABILITY")
         Stats         abilities;
         @XmlElement(name = "MASSKG")
-        float         mass;
+        float         mass           = -1;
         @XmlElement(name = "CAPTURERATE")
-        int           captureRate;
+        int           captureRate    = -1;
         @XmlElement(name = "EXPYIELD")
-        int           baseExp;
+        int           baseExp        = -1;
         @XmlElement(name = "BASEFRIENDSHIP")
-        int           baseFriendship;
+        int           baseFriendship = -1;
         @XmlElement(name = "EXPERIENCEMODE")
         String        expMode;
 
         @XmlElement(name = "GENDERRATIO")
-        int           genderRatio;
+        int           genderRatio    = -1;
         // MISC
         @XmlElement(name = "LOGIC")
         Stats         logics;
@@ -224,15 +227,91 @@ public class PokedexEntryLoader
         {
             return name + " " + number + " " + stats + " " + moves;
         }
+
+        void mergeMissingFrom(XMLPokedexEntry other)
+        {
+            if (moves == null && other.moves != null)
+            {
+                moves = other.moves;
+            }
+            else if (other.moves != null)
+            {
+                if (moves.lvlupMoves == null)
+                {
+                    moves.lvlupMoves = other.moves.lvlupMoves;
+                }
+                if (moves.misc == null)
+                {
+                    moves.misc = other.moves.misc;
+                }
+            }
+            if (stats == null && other.stats != null)
+            {
+                stats = other.stats;
+            }
+            else if (other.stats != null)
+            {
+                // Copy everything which is missing
+                for (Field f : StatsNode.class.getDeclaredFields())
+                {
+                    try
+                    {
+                        Object ours = f.get(stats);
+                        Object theirs = f.get(other.stats);
+                        boolean isNumber = !(ours instanceof String || ours instanceof Stats);
+                        if (isNumber)
+                        {
+                            if (ours instanceof Float)
+                            {
+                                isNumber = (float) ours == -1;
+                            }
+                            else if (ours instanceof Integer)
+                            {
+                                isNumber = (int) ours == -1;
+                            }
+                        }
+                        if (ours == null)
+                        {
+                            f.set(stats, theirs);
+                        }
+                        else if (isNumber)
+                        {
+                            f.set(stats, theirs);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
-    static XMLDatabase              database;
+    static XMLDatabase          database;
 
-    static HashSet<XMLPokedexEntry> overrides = Sets.newHashSet();
+    static Set<XMLPokedexEntry> entries = Sets.newHashSet();
 
-    public static void addOverrideEntry(XMLPokedexEntry entry)
+    public static void addOverrideEntry(XMLPokedexEntry entry, boolean overwrite)
     {
-        overrides.add(entry);
+        for (XMLPokedexEntry e : entries)
+        {
+            if (e.name.equals(entry.name))
+            {
+                if (overwrite)
+                {
+                    entries.remove(e);
+                    entries.add(entry);
+                    entry.mergeMissingFrom(e);
+                    return;
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+        entries.add(entry);
     }
 
     private static void initMoves(PokedexEntry entry, Moves xmlMoves)
@@ -458,18 +537,25 @@ public class PokedexEntryLoader
         if (database == null)
         {
             database = loadDatabase(file);
+            entries.addAll(database.pokemon);
         }
         else if (create)
         {
             XMLDatabase toAdd = loadDatabase(file);
-            if (toAdd != null) database.pokemon.addAll(toAdd.pokemon);
+            if (toAdd != null)
+            {
+                for (XMLPokedexEntry e : toAdd.pokemon)
+                {
+                    addOverrideEntry(e, true);
+                }
+            }
             else throw new NullPointerException(file + " Contains no database");
         }
         bar.step("Done");
         ProgressManager.pop(bar);
 
-        bar = ProgressManager.push("Loading Pokemon", database.pokemon.size());
-        for (XMLPokedexEntry xmlEntry : database.pokemon)
+        bar = ProgressManager.push("Loading Pokemon", entries.size());
+        for (XMLPokedexEntry xmlEntry : entries)
         {
             String name = xmlEntry.name;
             bar.step(name);
@@ -512,7 +598,7 @@ public class PokedexEntryLoader
                 for (int i = 0; i < evols.length; i++)
                 {
                     String s1 = evols[i];
-                    String s2 = evolFX[i];
+                    String s2 = evolFX[i % evolFX.length];
                     PokedexEntry evol;
                     try
                     {
@@ -524,6 +610,7 @@ public class PokedexEntryLoader
                         evol = Database.getEntry(s1);
                     }
                     if (evol != null) entry.addEvolution(new EvolutionData(evol, evolData[i], s2));
+                    else System.out.println("No evolution " + s1 + " for " + entry);
                 }
             }
         }
@@ -982,14 +1069,6 @@ public class PokedexEntryLoader
                 e.printStackTrace();
             }
         }
-        ProgressManager.pop(bar);
-        bar = ProgressManager.push("Overrides", overrides.size());
-        for (XMLPokedexEntry entry : overrides)
-        {
-            bar.step(entry.name);
-            updateEntry(entry, false);
-        }
-        ProgressManager.pop(bar);
     }
 
     private static boolean processWeights(String val, TypeEntry entry)
@@ -1040,8 +1119,10 @@ public class PokedexEntryLoader
         Moves moves = xmlEntry.moves;
         if (stats != null) try
         {
-            if (init) initStats(entry, stats);
-            else
+            // if (init)
+            initStats(entry, stats);
+            // else
+            if (!init)
             {
                 postIniStats(entry, stats);
                 parseSpawns(entry, stats);

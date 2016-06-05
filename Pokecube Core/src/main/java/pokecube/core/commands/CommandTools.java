@@ -8,7 +8,6 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandTools
@@ -31,10 +30,7 @@ public class CommandTools
 
     public static IChatComponent makeError(String text)
     {
-        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal(text);
-        IChatComponent message;
-        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-        return message;
+        return makeTranslatedMessage(text, "red:italic");
     }
 
     public static void sendBadArgumentsMissingArg(ICommandSender sender)
@@ -54,9 +50,7 @@ public class CommandTools
 
     public static void sendMessage(ICommandSender sender, String text)
     {
-        text = StatCollector.translateToLocal(text);
-        IChatComponent message;
-        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+        IChatComponent message = makeTranslatedMessage(text, null);
         sender.addChatMessage(message);
     }
 
@@ -78,7 +72,7 @@ public class CommandTools
             if (num <= args.length) argString = argString + ",";
         }
         if (argString.isEmpty()) argString = "\"\"";
-        String text = "{\"translate\":\"" + key + "\",\"with\":[" + argString + "],\"color\":\""+formatting+"\"}";
+        String text = "{\"translate\":\"" + key + "\",\"with\":[" + argString + "],\"color\":\"" + formatting + "\"}";
         text = "[" + text + "]";
         try
         {

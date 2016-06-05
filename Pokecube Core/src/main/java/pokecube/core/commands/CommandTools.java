@@ -72,7 +72,41 @@ public class CommandTools
             if (num <= args.length) argString = argString + ",";
         }
         if (argString.isEmpty()) argString = "\"\"";
-        String text = "{\"translate\":\"" + key + "\",\"with\":[" + argString + "],\"color\":\"" + formatting + "\"}";
+
+        String format = "";
+        if (!formatting.isEmpty())
+        {
+            String[] args2 = formatting.split(":");
+            format = ",\"color\":\"" + args2[0] + "\"";
+            if (args2.length > 1)
+            {
+                for (int i = 1; i < args2.length; i++)
+                {
+                    String arg = args2[i];
+                    if (arg.equalsIgnoreCase("italic"))
+                    {
+                        format = format + ",\"italic\":true";
+                    }
+                    if (arg.equalsIgnoreCase("bold"))
+                    {
+                        format = format + ",\"bold\":true";
+                    }
+                    if (arg.equalsIgnoreCase("underlined"))
+                    {
+                        format = format + ",\"underlined\":true";
+                    }
+                    if (arg.equalsIgnoreCase("strikethrough"))
+                    {
+                        format = format + ",\"strikethrough\":true";
+                    }
+                    if (arg.equalsIgnoreCase("obfuscated"))
+                    {
+                        format = format + ",\"obfuscated\":true";
+                    }
+                }
+            }
+        }
+        String text = "{\"translate\":\"" + key + "\",\"with\":[" + argString + "]" + format + "}";
         text = "[" + text + "]";
         try
         {

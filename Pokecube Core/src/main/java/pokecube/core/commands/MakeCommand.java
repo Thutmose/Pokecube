@@ -169,7 +169,8 @@ public class MakeCommand extends CommandBase
                         }
                         if (entry == null)
                         {
-
+                            CommandTools.sendError(sender, "pokecube.command.makeinvalid");
+                            return;
                         }
 
                         mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(),

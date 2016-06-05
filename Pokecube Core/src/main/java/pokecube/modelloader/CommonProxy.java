@@ -87,9 +87,9 @@ public class CommonProxy implements IGuiHandler
 
     private static final char                        SLASH          = '/';
 
-    private HashMap<String, XMLLocs>                 xmlFiles       = Maps.newHashMap();
+    HashMap<String, XMLLocs>                         xmlFiles       = Maps.newHashMap();
 
-    private HashMap<String, Object>                  mobProviders   = Maps.newHashMap();
+    HashMap<String, Object>                          mobProviders   = Maps.newHashMap();
 
     private void addXML(ResourceLocation xml, Object location)
     {
@@ -292,12 +292,12 @@ public class CommonProxy implements IGuiHandler
             Thread.dumpStack();
             return;
         }
-        ArrayList<PokedexEntry> entries = Lists.newArrayList();
+        ArrayList<String> entries = Lists.newArrayList();
         for (PokedexEntry entry : Database.allFormes)
         {
-            entries.add(entry);
+            entries.add(entry.getName());
         }
-        PokedexEntry[] entryArr = entries.toArray(new PokedexEntry[0]);
+        String[] entryArr = entries.toArray(new String[0]);
         boolean[] has = new boolean[entryArr.length];
         for (int i = 0; i < has.length; i++)
         {
@@ -306,10 +306,10 @@ public class CommonProxy implements IGuiHandler
                 Thread.dumpStack();
                 continue;
             }
-            if (toAdd.contains(entryArr[i].getName()))
+            if (toAdd.contains(entryArr[i]))
             {
                 has[i] = true;
-                ModPokecubeML.textureProviders.put(entryArr[i].getName(), ModPokecubeML.ID);
+                ModPokecubeML.textureProviders.put(entryArr[i], ModPokecubeML.ID);
             }
         }
 
@@ -342,18 +342,18 @@ public class CommonProxy implements IGuiHandler
                     bar2.step("skip");
                     continue;
                 }
-                PokedexEntry entry = entryArr[i];
-                bar2.step(entry.getName());
-                toAdd.add(entry.getName());
-                ModPokecubeML.textureProviders.put(entry.getName(), modId);
+                String entry = entryArr[i];
+                bar2.step(entry);
+                toAdd.add(entry);
+                ModPokecubeML.textureProviders.put(entry, modId);
                 ArrayList<String> list = Lists.newArrayList();
-                ResourceLocation xml = new ResourceLocation(modId, MODELPATH + entry.getName() + ".xml");
+                ResourceLocation xml = new ResourceLocation(modId, MODELPATH + entry + ".xml");
                 try
                 {
                     fileAsList(mod, xml, list);
                     if (!list.isEmpty())
                     {
-                        ExtraDatabase.addXMLEntry(modId, entry.getName(), list);
+                        ExtraDatabase.addXMLEntry(modId, entry, list);
                     }
                 }
                 catch (Exception e)
@@ -380,7 +380,7 @@ public class CommonProxy implements IGuiHandler
         modelProviders.put(ModPokecubeML.ID, ModPokecubeML.instance);
     }
 
-    private boolean[] providesModels(String modid, Object mod, PokedexEntry... entry)
+    boolean[] providesModels(String modid, Object mod, String... entry)
     {
         ResourceLocation[] tex;
         boolean[] ret = new boolean[entry.length];
@@ -412,12 +412,12 @@ public class CommonProxy implements IGuiHandler
         // implementation
     }
 
-    private ResourceLocation[] toLocations(String modid, String ext, PokedexEntry... entries)
+    private ResourceLocation[] toLocations(String modid, String ext, String... entries)
     {
         ResourceLocation[] ret = new ResourceLocation[entries.length];
         for (int i = 0; i < entries.length; i++)
         {
-            ret[i] = new ResourceLocation(modid, MODELPATH + entries[i].getName() + ext);
+            ret[i] = new ResourceLocation(modid, MODELPATH + entries[i] + ext);
         }
         return ret;
     }

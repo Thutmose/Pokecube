@@ -79,6 +79,7 @@ public class ModPokecubeML
                 System.out.println(e.getName());
             }
         }
+        proxy.providesModels(ID, this, addedPokemon.toArray(new String[0]));
         for (String s : addedPokemon)
         {
             loadMob(s);
@@ -201,6 +202,8 @@ public class ModPokecubeML
 
     private void loadMob(String mob)
     {
+        if (textureProviders.containsKey(mob) && !textureProviders.get(mob).equals(ID)) return;
+
         ArrayList<String> list = Lists.newArrayList();
         ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
         try
@@ -212,7 +215,7 @@ public class ModPokecubeML
             }
             else
             {
-                System.err.println("Failed to aquire XML for "+mob);
+                System.err.println("Failed to aquire XML for " + mob);
             }
         }
         catch (Exception e1)

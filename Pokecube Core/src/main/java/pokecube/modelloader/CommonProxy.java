@@ -353,7 +353,7 @@ public class CommonProxy implements IGuiHandler
                     fileAsList(mod, xml, list);
                     if (!list.isEmpty())
                     {
-                        ExtraDatabase.addXML(entry.getName(), list);
+                        ExtraDatabase.addXMLEntry(modId, entry.getName(), list);
                     }
                 }
                 catch (Exception e)
@@ -364,7 +364,6 @@ public class CommonProxy implements IGuiHandler
             ProgressManager.pop(bar2);
         }
         ProgressManager.pop(bar);
-        ExtraDatabase.apply();
     }
 
     public void populateModels()

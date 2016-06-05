@@ -67,7 +67,7 @@ public class ModPokecubeML
         ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
         meta.parent = PokecubeMod.ID;
     }
-    
+
     @EventHandler
     public void init(FMLInitializationEvent evt)
     {
@@ -79,7 +79,11 @@ public class ModPokecubeML
                 System.out.println(e.getName());
             }
         }
-
+        for (String s : addedPokemon)
+        {
+            loadMob(s);
+        }
+        ExtraDatabase.apply();
         for (String s : addedPokemon)
         {
             registerMob(s);
@@ -195,6 +199,28 @@ public class ModPokecubeML
         addedPokemon = toAdd;
     }
 
+    private void loadMob(String mob)
+    {
+        ArrayList<String> list = Lists.newArrayList();
+        ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
+        try
+        {
+            proxy.fileAsList(this, xml, list);
+            if (!list.isEmpty())
+            {
+                ExtraDatabase.addXMLEntry(ID, mob, list);
+            }
+            else
+            {
+                System.err.println("Failed to aquire XML for "+mob);
+            }
+        }
+        catch (Exception e1)
+        {
+            e1.printStackTrace();
+        }
+    }
+
     private void registerMob(String mob)
     {
         PokedexEntry e;
@@ -212,37 +238,7 @@ public class ModPokecubeML
         }
         else
         {
-            ArrayList<String> list = Lists.newArrayList();
-            ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
-            try
-            {
-                proxy.fileAsList(this, xml, list);
-                if (!list.isEmpty())
-                {
-                    ExtraDatabase.addXML(mob, list);
-                    ExtraDatabase.apply(mob);
-                }
-            }
-            catch (Exception e1)
-            {
-                e1.printStackTrace();
-            }
-            if ((e = Database.getEntry(mob)) != null)
-            {
-                if (textureProviders.containsKey(e.getName()))
-                {
-                    e.setModId(textureProviders.get(e.getName()));
-                }
-                else
-                {
-                    e.setModId(ID);
-                }
-                if (e.baseForme == null) PokecubeMod.core.registerPokemon(true, this, e);
-            }
-            else
-            {
-                System.err.println("Failed to register " + mob);
-            }
+            System.err.println("Failed to register " + mob);
         }
     }
 }

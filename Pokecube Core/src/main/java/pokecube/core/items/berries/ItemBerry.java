@@ -3,6 +3,7 @@ package pokecube.core.items.berries;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,7 +15,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -41,47 +41,47 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean bool)
     {
         String info = "";
-        list.add(I18n.translateToLocal("item.berry.desc"));
+        list.add(I18n.format("item.berry.desc"));
         switch (stack.getItemDamage())
         {
         case 1:
-            info = I18n.translateToLocal("item.cheriBerry.desc");
+            info = I18n.format("item.cheriBerry.desc");
             list.add(info);
             return;
         case 2:
-            info = I18n.translateToLocal("item.chestoBerry.desc");
+            info = I18n.format("item.chestoBerry.desc");
             list.add(info);
             return;
         case 3:
-            info = I18n.translateToLocal("item.pechaBerry.desc");
+            info = I18n.format("item.pechaBerry.desc");
             list.add(info);
             return;
         case 4:
-            info = I18n.translateToLocal("item.rawstBerry.desc");
+            info = I18n.format("item.rawstBerry.desc");
             list.add(info);
             return;
         case 5:
-            info = I18n.translateToLocal("item.aspearBerry.desc");
+            info = I18n.format("item.aspearBerry.desc");
             list.add(info);
             return;
         case 7:
-            info = I18n.translateToLocal("item.oranBerry.desc");
+            info = I18n.format("item.oranBerry.desc");
             list.add(info);
             return;
         case 9:
-            info = I18n.translateToLocal("item.lumBerry.desc");
+            info = I18n.format("item.lumBerry.desc");
             list.add(info);
             return;
         case 10:
-            info = I18n.translateToLocal("item.sitrusBerry.desc");
+            info = I18n.format("item.sitrusBerry.desc");
             list.add(info);
             return;
         case 63:
-            info = I18n.translateToLocal("item.jabocaBerry.desc");
+            info = I18n.format("item.jabocaBerry.desc");
             list.add(info);
             return;
         case 64:
-            info = I18n.translateToLocal("item.rowapBerry.desc");
+            info = I18n.format("item.rowapBerry.desc");
             list.add(info);
             return;
         }

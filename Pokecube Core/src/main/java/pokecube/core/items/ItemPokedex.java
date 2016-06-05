@@ -13,7 +13,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
@@ -82,9 +82,8 @@ public class ItemPokedex extends Item
             int b = t.getBiome(hit);
             String biomeList = SpawnHandler.spawnLists.get(b) != null ? SpawnHandler.spawnLists.get(b).toString()
                     : "Nothing";
-            String message = I18n.translateToLocalFormatted("pokedex.locationinfo", Database.spawnables.size(),
-                    Pokedex.getInstance().getEntries().size(), biomeList);
-            CommandTools.sendMessage(playerIn, message);
+            playerIn.addChatMessage(new TextComponentTranslation("pokedex.locationinfo", Database.spawnables.size(),
+                    Pokedex.getInstance().getEntries().size(), biomeList));
         }
 
         if (!playerIn.isSneaking()) showGui(playerIn);

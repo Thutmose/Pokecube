@@ -10557,7 +10557,7 @@
                 lvl_56="TAUNT" lvl_62="NIGHTSLASH" lvl_8="FOCUSENERGY"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Sharpedo Mega" number="15">
+    <Pokemon name="Sharpedo Mega" number="319">
         <STATS>
             <BASESTATS atk="170" def="70" hp="70" spatk="110" spd="65" spdef="105"/>
             <SIZES height="2.5" length="2.5" width="2.5"/>
@@ -10699,7 +10699,7 @@
                 lvl_59="FISSURE" lvl_8="FOCUSENERGY"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Camerupt Mega" number="15">
+    <Pokemon name="Camerupt Mega" number="323">
         <STATS>
             <BASESTATS atk="120" def="100" hp="70" spatk="145" spd="105" spdef="20"/>
             <SIZES height="2.5" length="2.5" width="2.5"/>
@@ -12598,10 +12598,10 @@
                 lvl_61="HEALINGWISH" lvl_7="CHARM"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Latias Mega" number="15">
+    <Pokemon name="Latias Mega" number="380">
         <STATS>
             <BASESTATS atk="100" def="120" hp="80" spatk="140" spd="150" spdef="110"/>
-            <SIZES height="1,4" length="1.8" width="1.8"/>
+            <SIZES height="1.4" length="1.8" width="1.8"/>
             <MASSKG>52</MASSKG>
             <ABILITY normal="Levitate"/>
         </STATS>
@@ -12640,7 +12640,7 @@
                 lvl_51="PSYCHIC" lvl_56="DRAGONPULSE" lvl_61="MEMENTO" lvl_7="DRAGONDANCE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Latios Mega" number="15">
+    <Pokemon name="Latios Mega" number="381">
         <STATS>
             <BASESTATS atk="130" def="100" hp="80" spatk="160" spd="120" spdef="110"/>
             <SIZES height="1.5" length="2.3" width="2.3"/>

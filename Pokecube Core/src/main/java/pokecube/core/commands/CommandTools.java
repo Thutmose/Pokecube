@@ -8,7 +8,6 @@ import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandTools
@@ -31,10 +30,7 @@ public class CommandTools
 
     public static ITextComponent makeError(String text)
     {
-        text = TextFormatting.RED + "" + TextFormatting.ITALIC + I18n.translateToLocal(text);
-        ITextComponent message;
-        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-        return message;
+        return makeTranslatedMessage(text, "red:italic");
     }
 
     public static void sendBadArgumentsMissingArg(ICommandSender sender)
@@ -54,9 +50,7 @@ public class CommandTools
 
     public static void sendMessage(ICommandSender sender, String text)
     {
-        text = I18n.translateToLocal(text);
-        ITextComponent message;
-        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+        ITextComponent message = makeTranslatedMessage(text, null);
         sender.addChatMessage(message);
     }
 
@@ -78,7 +72,43 @@ public class CommandTools
             if (num <= args.length) argString = argString + ",";
         }
         if (argString.isEmpty()) argString = "\"\"";
-        String text = "{\"translate\":\"" + key + "\",\"with\":[" + argString + "],\"color\":\""+formatting+"\"}";
+
+        String format = "";
+        if (!formatting.isEmpty())
+        {
+            String[] args2 = formatting.split(":");
+            format = ",\"color\":\"" + args2[0] + "\"";
+            if (args.length > 1)
+            {
+                for (int i = 1; i < args.length; i++)
+                {
+                    String arg = args2[i];
+                    if (arg.equalsIgnoreCase("italic"))
+                    {
+                        format = format + ",\"italic\":true";
+                    }
+                    if (arg.equalsIgnoreCase("bold"))
+                    {
+                        format = format + ",\"bold\":true";
+                    }
+                    if (arg.equalsIgnoreCase("underlined"))
+                    {
+                        format = format + ",\"underlined\":true";
+                    }
+                    if (arg.equalsIgnoreCase("strikethrough"))
+                    {
+                        format = format + ",\"strikethrough\":true";
+                    }
+                    if (arg.equalsIgnoreCase("obfuscated"))
+                    {
+                        format = format + ",\"obfuscated\":true";
+                    }
+                }
+            }
+        }
+
+        String text = "{\"translate\":\"" + key + "\",\"with\":[" + argString + "]" + format + "}";
+
         text = "[" + text + "]";
         try
         {

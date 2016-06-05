@@ -2,6 +2,7 @@ package pokecube.core.items.pokecubes;
 
 import java.util.List;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +14,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -37,21 +37,21 @@ public class Pokecube extends Item implements IPokecube
 
         if (flag2)
         {
-            list.add(I18n.translateToLocal("item.pokecube.flames"));
+            list.add(I18n.format("item.pokecube.flames"));
         }
 
         boolean flag3 = nbt.getBoolean("Bubbles");
 
         if (flag3)
         {
-            list.add(I18n.translateToLocal("item.pokecube.bubbles"));
+            list.add(I18n.format("item.pokecube.bubbles"));
         }
 
         boolean flag4 = nbt.getBoolean("Leaves");
 
         if (flag4)
         {
-            list.add(I18n.translateToLocal("item.pokecube.leaves"));
+            list.add(I18n.format("item.pokecube.leaves"));
         }
 
         boolean flag5 = nbt.hasKey("dye");

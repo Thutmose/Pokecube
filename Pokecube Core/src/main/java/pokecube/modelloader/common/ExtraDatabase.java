@@ -89,7 +89,15 @@ public class ExtraDatabase
             AddedXML old = xmls.get(xml.name);
             if (old != null)
             {
-                add = Config.instance.modIdComparator.compare(old.modId, xml.modId) < 0;
+                try
+                {
+                    add = Config.instance.modIdComparator.compare(old.modId, xml.modId) < 0;
+                }
+                catch (Exception e)
+                {
+                    System.out.println(old+" "+xml);
+                    add = false;
+                }
             }
             if (add)
             {

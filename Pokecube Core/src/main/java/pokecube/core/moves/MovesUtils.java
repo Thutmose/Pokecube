@@ -552,7 +552,7 @@ public class MovesUtils implements IMoveConstants
                     ((IPokemob) attacker).getPokemonDisplayName(), attackName);
             ((IPokemob) attacked).displayMessageToOwner(text);
         }
-        else if (attacked instanceof EntityPlayer && !attacked.worldObj.isRemote)
+        else if (attacked instanceof EntityPlayer && !attacked.worldObj.isRemote && attacker != null)
         {
             text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red", attacker.getPokemonDisplayName(),
                     attackName);
@@ -654,7 +654,7 @@ public class MovesUtils implements IMoveConstants
                         ((IPokemob) attacked).getPokemonDisplayName());
                 ((IPokemob) attacked).displayMessageToOwner(text);
             }
-            else if (attacked instanceof EntityPlayer)
+            else if (attacked instanceof EntityPlayer && attacker != null)
             {
                 text = CommandTools.makeTranslatedMessage(message, "red", attacker.getPokemonDisplayName());
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));

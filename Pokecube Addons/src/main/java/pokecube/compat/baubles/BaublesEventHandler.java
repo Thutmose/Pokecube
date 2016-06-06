@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.client.render.item.BagRenderer;
-import pokecube.core.client.render.entity.RingRenderer;
 import pokecube.core.events.handlers.EventsHandlerClient.RingChecker;
 import pokecube.core.items.megastuff.ItemMegaring;
 

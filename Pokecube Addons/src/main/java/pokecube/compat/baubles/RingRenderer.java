@@ -1,4 +1,4 @@
-package pokecube.core.client.render.entity;
+package pokecube.compat.baubles;
 
 import org.lwjgl.opengl.GL11;
 
@@ -15,7 +15,7 @@ import pokecube.core.items.megastuff.ItemMegaring;
 
 public class RingRenderer implements LayerRenderer<EntityPlayer>
 {
-    private ModelRing ring = new ModelRing();
+    private ModelRing                     ring = new ModelRing();
 
     private final RendererLivingEntity<?> livingEntityRenderer;
 
@@ -53,7 +53,7 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
 
             if (player.isSneaking())
             {
-                GlStateManager.translate(0.0F, 0.203125F, 0.0F);
+                GlStateManager.translate(0.0F, 0.203125F, -0.07F);
             }
             if (thin) GlStateManager.scale(0.75, 1, 0.75);
             else
@@ -72,7 +72,7 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
 
             if (player.isSneaking())
             {
-                GlStateManager.translate(0.0F, 0.203125F, 0.0F);
+                GlStateManager.translate(0.0F, 0.203125F, -0.07F);
             }
             if (thin)
             {

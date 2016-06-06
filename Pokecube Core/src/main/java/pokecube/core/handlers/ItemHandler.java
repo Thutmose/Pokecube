@@ -509,10 +509,10 @@ public class ItemHandler extends Mod_Pokecube_Helper
                     PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
                     v.set(evt.caught).moveEntity(cube);
                     ((Entity) evt.caught).setDead();
-                    cube.setVelocity(0, 0.1, 0);
+                    cube.motionX = cube.motionZ = 0;
+                    cube.motionY = 0.1;
                     cube.worldObj.spawnEntityInWorld(cube.copy());
                     evt.pokecube.setDead();
-                    System.out.println(cube.tilt);
                 }
                 evt.setCanceled(true);
             }
@@ -541,13 +541,15 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 // has been traded to or hatched.
                 double rate = has > 0 ? 3 : 1;
                 cube.tilt = Tools.computeCatchRate(mob, rate);
-                cube.time = cube.tilt * 4;
+                cube.time = cube.tilt * 20;
                 evt.caught.setPokecubeId(PokecubeItems.getCubeId(evt.filledCube));
                 cube.setEntityItemStack(PokecubeManager.pokemobToItem(evt.caught));
                 PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
-                v.set(evt.caught).moveEntity(cube);
+                v.set(evt.pokecube).moveEntity(cube);
+                v.moveEntity((Entity) mob);
                 ((Entity) evt.caught).setDead();
-                cube.setVelocity(0, 0.1, 0);
+                cube.motionX = cube.motionZ = 0;
+                cube.motionY = 0.1;
                 cube.worldObj.spawnEntityInWorld(cube.copy());
                 evt.setCanceled(true);
                 evt.pokecube.setDead();

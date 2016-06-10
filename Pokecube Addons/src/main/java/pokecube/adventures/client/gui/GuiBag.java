@@ -8,11 +8,11 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.adventures.items.bags.InventoryBag;
@@ -150,12 +150,12 @@ public class GuiBag extends GuiContainer
         buttonList.clear();
         int xOffset = 0;
         int yOffset = -11;
-        String next = StatCollector.translateToLocal("tile.pc.next");
+        String next = I18n.format("tile.pc.next");
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 15, height / 2 - yOffset, 50, 20, next));
-        String prev = StatCollector.translateToLocal("tile.pc.previous");
+        String prev = I18n.format("tile.pc.previous");
         buttonList.add(new GuiButton(2, width / 2 - xOffset - 65, height / 2 - yOffset, 50, 20, prev));
 
-        String rename = StatCollector.translateToLocal("tile.pc.rename");
+        String rename = I18n.format("tile.pc.rename");
         buttonList.add(new GuiButton(3, width / 2 - xOffset - 137, height / 2 - yOffset - 125, 50, 20, rename));
 
         textFieldSelectedBox = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 13, height / 2 - yOffset + 5,

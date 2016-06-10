@@ -95,7 +95,7 @@ public class ExtraDatabase
                 }
                 catch (Exception e)
                 {
-                    System.out.println(old+" "+xml);
+                    System.out.println(old + " " + xml);
                     add = false;
                 }
             }
@@ -145,15 +145,22 @@ public class ExtraDatabase
                 }
                 else if (entry != null && fileEntry != null && !entry.getName().equals(fileEntry.name))
                 {
-                    String name = fileEntry.name;
-                    int number = fileEntry.number;
-                    entry = new PokedexEntry(number, name);
-                    if (fileEntry.base)
+                    if (Database.getEntry(fileEntry.name) != null)
                     {
-                        Database.baseFormes.put(number, entry);
-                        Database.addEntry(entry);
+                        entry = Database.getEntry(fileEntry.name);
                     }
-                    PokedexEntryLoader.updateEntry(fileEntry, true);
+                    else
+                    {
+                        String name = fileEntry.name;
+                        int number = fileEntry.number;
+                        entry = new PokedexEntry(number, name);
+                        if (fileEntry.base)
+                        {
+                            Database.baseFormes.put(number, entry);
+                            Database.addEntry(entry);
+                        }
+                        PokedexEntryLoader.updateEntry(fileEntry, true);
+                    }
                 }
                 if (fileEntry != null) PokedexEntryLoader.addOverrideEntry(fileEntry, true);
 

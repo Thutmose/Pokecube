@@ -742,8 +742,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!PokecubeCore.isOnClientSide())
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
-            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.faint", "red", getPokemonDisplayName());
-            displayMessageToOwner( mess);
+            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.faint", "red",
+                    getPokemonDisplayName());
+            displayMessageToOwner(mess);
             returnToPokecube();
         }
         if (!getPokemonAIState(IMoveConstants.TAMED))
@@ -1052,6 +1053,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
     {
+        if (hand == EnumHand.OFF_HAND) return false;
+
         ItemStack itemstack = player.inventory.getCurrentItem();
         ItemStack key = new ItemStack(Items.SHEARS);
         // Check shearable interaction.
@@ -1447,9 +1450,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getNavigator().onUpdateNavigation();
         this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.startSection("mob tick");
-        //Run last tick's results from AI stuff
+        // Run last tick's results from AI stuff
         this.aiStuff.runServerThreadTasks(worldObj);
-        //Schedule AIStuff to tick for next tick.
+        // Schedule AIStuff to tick for next tick.
         PokemobAIThread.scheduleAITick(aiStuff);
         this.updateAITasks();
         this.updateAITick();

@@ -3,10 +3,14 @@ package pokecube.adventures.client.gui;
 import static pokecube.core.utils.PokeType.flying;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import com.google.common.collect.Lists;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
@@ -16,12 +20,13 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.translation.I18n;
 import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -69,6 +74,8 @@ public class GuiTrainerEdit extends GuiScreen
 
     String                      T              = "true";
 
+    boolean                     stationary     = false;
+
     public GuiTrainerEdit(EntityTrainer trainer)
     {
         this.trainer = trainer;
@@ -79,13 +86,52 @@ public class GuiTrainerEdit extends GuiScreen
     {
         if (guibutton.id == 1)
         {
-            trainer.setAIState(EntityTrainer.STATIONARY, !trainer.getAIState(EntityTrainer.STATIONARY));
-            guibutton.displayString = trainer.getAIState(EntityTrainer.STATIONARY) ? T : F;
+            stationary = !stationary;
+            guibutton.displayString = stationary ? F : T;
+            sendChooseToServer();
+            System.out.println(stationary);
         }
-        if (guibutton.id == 2)
+        else if (guibutton.id == 2)
         {
             sendChooseToServer();
-            mc.thePlayer.addChatMessage(new TextComponentString(I18n.translateToLocal("gui.trainer.saved")));
+            mc.thePlayer.addChatComponentMessage(new TextComponentString(I18n.format("gui.trainer.saved")));
+        }
+        else
+        {
+            List<String> types = Lists.newArrayList();
+            types.addAll(TypeTrainer.typeMap.keySet());
+            Collections.sort(types);
+            int index = -1;
+            for (int i = 0; i < types.size(); i++)
+            {
+                if (types.get(i).equalsIgnoreCase(textFieldType.getText()))
+                {
+                    index = i;
+                }
+            }
+            if (guibutton.id == 3)
+            {
+                if (index <= 0)
+                {
+                    index = types.size() - 1;
+                }
+                else
+                {
+                    index--;
+                }
+            }
+            else
+            {
+                if (index >= types.size() - 1)
+                {
+                    index = 0;
+                }
+                else
+                {
+                    index++;
+                }
+            }
+            textFieldType.setText(types.get(index));
         }
     }
 
@@ -97,7 +143,7 @@ public class GuiTrainerEdit extends GuiScreen
         int x1 = width / 2;
         int y1 = height / 2;
 
-        String info = I18n.translateToLocal("gui.trainer.stationary");
+        String info = I18n.format("gui.trainer.stationary");
         int l = fontRendererObj.getStringWidth(info);
         this.fontRendererObj.drawString(info, x1 + 90 - l / 2, y1 + 10, 0xffffff);
 
@@ -203,10 +249,16 @@ public class GuiTrainerEdit extends GuiScreen
         textFieldName = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 20 + yOffset, 100, 10);
         textFieldType = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 40 + yOffset, 100, 10);
 
-        String next = trainer.getAIState(EntityTrainer.STATIONARY) ? T : F;
-        ;
+        String next = (stationary = trainer.getAIState(EntityTrainer.STATIONARY)) ? F : T;
+
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 80, height / 2 - yOffset, 50, 20, next));
         buttonList.add(new GuiButton(2, width / 2 - xOffset + 80, height / 2 - yOffset + 20, 50, 20, "Save"));
+
+        next = I18n.format("tile.pc.next");
+        String prev = I18n.format("tile.pc.previous");
+        // Cycle Trainer Type buttons
+        buttonList.add(new GuiButton(3, width / 2 - xOffset - 90, height / 2 - yOffset - 60, 50, 20, prev));
+        buttonList.add(new GuiButton(4, width / 2 - xOffset + 80, height / 2 - yOffset - 60, 50, 20, next));
 
         textfieldPokedexNb0 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 60 + yOffset,
                 30, 10);
@@ -450,7 +502,7 @@ public class GuiTrainerEdit extends GuiScreen
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
             GL11.glPushMatrix();
             GL11.glTranslatef(j + 42, k + 36, 50F);
-            float zoom = 25f / size;// (float)(23F / Math.sqrt(size + 0.6));
+            float zoom = 15f / size;// (float)(23F / Math.sqrt(size + 0.6));
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
             float f5 = ((k + 75) - 50) - 100;
@@ -512,6 +564,7 @@ public class GuiTrainerEdit extends GuiScreen
             buff.writeInt(textFieldType.getText().length());
             buff.writeBytes(textFieldType.getText().getBytes());
             buff.writeInt(trainer.getEntityId());
+            buff.writeBoolean(stationary);
         }
         catch (NumberFormatException e)
         {

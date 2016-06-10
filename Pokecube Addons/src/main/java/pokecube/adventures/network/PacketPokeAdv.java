@@ -321,6 +321,7 @@ public class PacketPokeAdv
         String type = "";
         try
         {
+
             PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
             ret.writeByte(3);
             for (int i = 0; i < 6; i++)
@@ -330,7 +331,6 @@ public class PacketPokeAdv
 
                 ret.writeInt(numbers[i]);
                 ret.writeInt(levels[i]);
-
             }
             int num = buffer.readInt();
             ret.writeInt(num);
@@ -353,6 +353,9 @@ public class PacketPokeAdv
             int id = buffer.readInt();
             ret.writeInt(id);
             EntityTrainer trainer = (EntityTrainer) player.worldObj.getEntityByID(id);
+            boolean stationary = buffer.readBoolean();
+            ret.writeBoolean(stationary);
+            trainer.setAIState(EntityTrainer.STATIONARY, stationary);
             trainer.name = name;
             trainer.type = TypeTrainer.getTrainer(type);
             trainer.setTypes();
@@ -360,13 +363,11 @@ public class PacketPokeAdv
             {
                 trainer.setPokemob(numbers[index], levels[index], index);
             }
-
             if (!player.worldObj.isRemote)
             {
                 MessageClient mes = new MessageClient(ret.array());
                 PokecubePacketHandler.sendToClient(mes, player);
             }
-
         }
         catch (Exception e)
         {

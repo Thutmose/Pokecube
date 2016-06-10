@@ -1,5 +1,6 @@
 package pokecube.adventures.entity.trainers;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
@@ -15,6 +18,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Pokedex;
@@ -207,18 +212,13 @@ public class TypeTrainer
         this.material = material;
     }
 
+    @SideOnly(Side.CLIENT)
     public ResourceLocation getTexture(EntityTrainer trainer)
     {
         if (texture == null && (genders == 1 || genders == 2))
         {
-            try
-            {
-                texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + name + ".png");
-            }
-            catch (Exception e)
-            {
-            }
-
+            texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + name + ".png");
+            if (!texExists(texture)) texture = null;
             if (genders == 2 && texture == null)
             {
                 texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + "female.png");
@@ -234,10 +234,12 @@ public class TypeTrainer
             if (femaleTexture == null)
             {
                 femaleTexture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + name + "female.png");
+                if (!texExists(femaleTexture)) femaleTexture = null;
             }
             if (texture == null)
             {
                 texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + name + ".png");
+                if (!texExists(texture)) texture = null;
             }
             if (femaleTexture == null)
             {
@@ -252,6 +254,21 @@ public class TypeTrainer
         return texture;
     }
 
+    @SideOnly(Side.CLIENT)
+    private boolean texExists(ResourceLocation texture)
+    {
+        try
+        {
+            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(texture);
+            InputStream stream = res.getInputStream();
+            stream.close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
     private void initLoot()
     {
         if (loot[0] != null) return;

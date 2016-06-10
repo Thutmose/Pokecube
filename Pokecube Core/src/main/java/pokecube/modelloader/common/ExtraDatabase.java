@@ -89,7 +89,15 @@ public class ExtraDatabase
             AddedXML old = xmls.get(xml.name);
             if (old != null)
             {
-                add = Config.instance.modIdComparator.compare(old.modId, xml.modId) < 0;
+                try
+                {
+                    add = Config.instance.modIdComparator.compare(old.modId, xml.modId) < 0;
+                }
+                catch (Exception e)
+                {
+                    System.out.println(old + " " + xml);
+                    add = false;
+                }
             }
             if (add)
             {
@@ -137,15 +145,22 @@ public class ExtraDatabase
                 }
                 else if (entry != null && fileEntry != null && !entry.getName().equals(fileEntry.name))
                 {
-                    String name = fileEntry.name;
-                    int number = fileEntry.number;
-                    entry = new PokedexEntry(number, name);
-                    if (fileEntry.base)
+                    if (Database.getEntry(fileEntry.name) != null)
                     {
-                        Database.baseFormes.put(number, entry);
-                        Database.addEntry(entry);
+                        entry = Database.getEntry(fileEntry.name);
                     }
-                    PokedexEntryLoader.updateEntry(fileEntry, true);
+                    else
+                    {
+                        String name = fileEntry.name;
+                        int number = fileEntry.number;
+                        entry = new PokedexEntry(number, name);
+                        if (fileEntry.base)
+                        {
+                            Database.baseFormes.put(number, entry);
+                            Database.addEntry(entry);
+                        }
+                        PokedexEntryLoader.updateEntry(fileEntry, true);
+                    }
                 }
                 if (fileEntry != null) PokedexEntryLoader.addOverrideEntry(fileEntry, true);
 

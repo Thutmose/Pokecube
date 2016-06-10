@@ -207,7 +207,6 @@ public class ModPokecubeML
         ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
         try
         {
-            System.out.println(proxy.xmlFiles.get(xml.toString()));
             proxy.fileAsList(this, xml, list);
             if (!list.isEmpty())
             {

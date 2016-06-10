@@ -43,8 +43,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
@@ -528,12 +528,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         if (defeater != null)
         {
-            String text = I18n.translateToLocal("pokecube.trainer.defeat");
+            ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat");
             ITextComponent message;
             ITextComponent name = getDisplayName();
             name.getStyle().setColor(TextFormatting.RED);
-            text = TextFormatting.RED + text;
-            message = name.appendSibling(ITextComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
+            message = name.appendSibling(text);
             target.addChatMessage(message);
         }
     }
@@ -593,6 +592,24 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     @Override
     public void onUpdate()
     {
+        if (getNavigator().getPath() != null && getAIState(STATIONARY))
+        {
+            if (guardAI.capability.getPos().distanceSq(0, 0, 0) == 0)
+            {
+                setStationary(false);
+                return;
+            }
+            Vector3 loc = Vector3.getNewVector().set(getNavigator().getPath().getFinalPathPoint());
+            double d = (guardAI.capability.getPos().getX() - loc.x) * (guardAI.capability.getPos().getX() - loc.x)
+                    + (guardAI.capability.getPos().getZ() - loc.z) * (guardAI.capability.getPos().getZ() - loc.z);
+            double d1 = guardAI.capability.getRoamDistance() * guardAI.capability.getRoamDistance();
+            if (d > d1)
+            {
+                getNavigator().clearPathEntity();
+                getNavigator().tryMoveToXYZ(guardAI.capability.getPos().getX() + 0.5,
+                        guardAI.capability.getPos().getY(), guardAI.capability.getPos().getZ() + 0.5, 0.5);
+            }
+        }
         super.onUpdate();
     }
 
@@ -717,7 +734,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     private void checkTradeIntegrity()
     {
-        if(itemList==null) return;
+        if (itemList == null) return;
         List<MerchantRecipe> toRemove = Lists.newArrayList();
         for (MerchantRecipe r : itemList)
         {
@@ -850,12 +867,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         if (target != null && target != this.target)
         {
             cooldown = 100;
-            String text = I18n.translateToLocal("pokecube.trainer.agress");
+            ITextComponent text = new TextComponentTranslation("pokecube.trainer.agress");
             ITextComponent message;
             ITextComponent name = getDisplayName();
             name.getStyle().setColor(TextFormatting.RED);
-            text = TextFormatting.RED + text;
-            message = name.appendSibling(ITextComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
+            message = name.appendSibling(text);
             target.addChatMessage(message);
         }
         this.target = target;
@@ -903,7 +919,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             }
             if (i != null && attackCooldown[j] < 30) { return; }
         }
-        if (globalCooldown > 0 && outID == null && outMob == null)
+        if (globalCooldown > 0 && outID == null && outMob == null && !getAIState(THROWING))
         {
             globalCooldown = 0;
             onDefeated(target);

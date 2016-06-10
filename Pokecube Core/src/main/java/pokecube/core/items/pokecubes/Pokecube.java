@@ -176,9 +176,9 @@ public class Pokecube extends Item implements IPokecube
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
-        return new ActionResult<ItemStack>(
-                throwPokecube(world, player, itemstack, null, null) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL,
-                itemstack);
+        return new ActionResult<ItemStack>(hand == EnumHand.MAIN_HAND
+                ? throwPokecube(world, player, itemstack, null, null) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL
+                : EnumActionResult.FAIL, itemstack);
     }
 
     public double quick(IPokemob mob, int id)

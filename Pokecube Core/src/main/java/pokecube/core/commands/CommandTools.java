@@ -78,9 +78,9 @@ public class CommandTools
         {
             String[] args2 = formatting.split(":");
             format = ",\"color\":\"" + args2[0] + "\"";
-            if (args.length > 1)
+            if (args2.length > 1)
             {
-                for (int i = 1; i < args.length; i++)
+                for (int i = 1; i < args2.length; i++)
                 {
                     String arg = args2[i];
                     if (arg.equalsIgnoreCase("italic"))
@@ -106,9 +106,7 @@ public class CommandTools
                 }
             }
         }
-
         String text = "{\"translate\":\"" + key + "\",\"with\":[" + argString + "]" + format + "}";
-
         text = "[" + text + "]";
         try
         {

@@ -761,8 +761,17 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     public void setPokemonOwnerByName(String s)
     {
         EntityPlayer player = PokecubeCore.getPlayer(s);
-        this.setPokemonOwner(player);
-        super.setOwnerId(player.getUniqueID());
+        if(player!=null)
+        {
+            this.setPokemonOwner(player);
+            super.setOwnerId(player.getUniqueID());
+        }
+        else
+        {
+            setPokemonOwner(null);
+            super.setOwnerId(null)
+            ;
+        }
     }
 
     /** make a sheep sheared if set to true */

@@ -38,8 +38,8 @@ public class TeamEventsHandler
             if (!TeamManager.getInstance().isOwned(c)) return;
             if (!player.worldObj.isRemote)
             {
-                UserListOpsEntry userentry = ((EntityPlayerMP) player).mcServer
-                        .getConfigurationManager().getOppedPlayers().getEntry(player.getGameProfile());
+                UserListOpsEntry userentry = ((EntityPlayerMP) player).mcServer.getConfigurationManager()
+                        .getOppedPlayers().getEntry(player.getGameProfile());
 
                 if (userentry != null
                         || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) { return; }

@@ -66,13 +66,10 @@ public class GuiPC extends GuiContainer
             // }
             if (guibutton.id == 5)
             {
-                // cont.pcTile.toggleBound();
-                // mc.thePlayer.closeScreen();
                 return;
             }
             if (guibutton.id == 9)
             {
-                // mc.thePlayer.closeScreen();
                 return;
             }
 

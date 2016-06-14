@@ -22,11 +22,12 @@ public class ItemBag extends Item
     {
         return armorType == 1;
     }
-    
+
     @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
-        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, 0, 0, 0);
+        if (!world.isRemote) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj,
+                InventoryBag.getBag(player).getPage() + 1, 0, 0);
         return itemstack;
     }
 }

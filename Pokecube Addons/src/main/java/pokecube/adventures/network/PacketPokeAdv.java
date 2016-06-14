@@ -20,6 +20,7 @@ import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.ItemTarget;
 import pokecube.adventures.items.bags.ContainerBag;
+import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.network.PokecubePacketHandler;
@@ -197,12 +198,13 @@ public class PacketPokeAdv
                 }
                 if (channel == 6)
                 {
-                    int m = buffer.readInt();
-                    ((ContainerBag) (player.openContainer)).updateInventoryPages(m);
+                    int m = buffer.readByte();
+                    ((ContainerBag) (player.openContainer)).gotoInventoryPage(m);
                 }
                 if (channel == 7)
                 {
-                    player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, 0, 0, 0);
+                    player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj,
+                            InventoryBag.getBag(player).getPage() + 1, 0, 0);
                 }
                 if (channel == 9)
                 {

@@ -66,6 +66,8 @@ public class PCPacketHandler
                             PCSaveHandler.getInstance().seenPCCreator = tag.getBoolean("pcCreator");
                         }
                         InventoryPC.loadFromNBT(list, true);
+                        tag = list.getCompoundTagAt(0).getCompoundTag("boxes");
+                        InventoryPC.blank.setPage(tag.getInteger("page"));
                     }
                     catch (Exception e)
                     {
@@ -86,12 +88,13 @@ public class PCPacketHandler
             }
 
         }
+
         public static final byte ALLPC      = 1;
         public static final byte PERSONALPC = 2;
 
         public static final byte TRADE      = 3;
 
-        PacketBuffer buffer;;
+        PacketBuffer             buffer;;
 
         public MessageClient()
         {
@@ -135,6 +138,7 @@ public class PCPacketHandler
         }
 
     }
+
     public static class MessageServer implements IMessage
     {
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
@@ -191,6 +195,7 @@ public class PCPacketHandler
             }
 
         }
+
         public static final byte PC        = 1;
         public static final byte PCRELEASE = 2;
         public static final byte TRADE     = 3;
@@ -239,6 +244,7 @@ public class PCPacketHandler
         }
 
     }
+
     public static byte TYPESETPUBLIC  = 0;
 
     public static byte TYPEADDLAND    = 1;

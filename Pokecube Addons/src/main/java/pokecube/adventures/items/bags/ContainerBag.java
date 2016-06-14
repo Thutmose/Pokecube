@@ -1,17 +1,12 @@
 package pokecube.adventures.items.bags;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.adventures.handlers.PASaveHandler;
-import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
@@ -48,7 +43,7 @@ public class ContainerBag extends Container
         super();
         xOffset = 0;
         yOffset = 0;
-        invBag = InventoryBag.getBag(ivplay.player.getUniqueID().toString());
+        invBag = InventoryBag.getBag(ivplay.player);
         invPlayer = ivplay;
         bindInventories();
     }
@@ -68,17 +63,19 @@ public class ContainerBag extends Container
     protected void bindInventories()
     {
         clearSlots();
-        bindPlayerInventory();
         bindPCInventory();
+        bindPlayerInventory();
     }
 
     protected void bindPCInventory()
     {
+        int n = 0;
+        n = invBag.getPage() * 54;
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 9; j++)
             {
-                addSlotToContainer(new SlotBag(invBag, +j + i * 9, 8 + j * 18 + xOffset, 18 + i * 18 + yOffset));
+                addSlotToContainer(new SlotBag(invBag, n + j + i * 9, 8 + j * 18 + xOffset, 18 + i * 18 + yOffset));
             }
         }
         // int k = 0;
@@ -140,21 +137,6 @@ public class ContainerBag extends Container
         this.inventorySlots.clear();
     }
 
-    public ItemStack clientSlotClick(int i, int j, int flag, EntityPlayer player)
-    {
-        ItemStack itemstack = invPlayer.getItemStack();
-        Slot slot = inventorySlots.get(i);
-        ItemStack inSlot = slot.getStack();
-        if (flag == 0 || flag == 5)
-        {
-            invPlayer.setItemStack(inSlot != null ? inSlot.copy() : null);
-            inSlot = itemstack;
-            return inSlot;
-        }
-
-        return inSlot;
-    }
-
     @SideOnly(Side.CLIENT)
     public String getPage()
     {
@@ -170,14 +152,21 @@ public class ContainerBag extends Container
     @Override
     public Slot getSlot(int par1)
     {
-        return this.inventorySlots.get(par1);
+        return super.getSlot(par1);
+    }
+
+    public void gotoInventoryPage(int page)
+    {
+        if (page - 1 == invBag.getPage()) return;
+        invBag.setPage(page - 1);
+        bindInventories();
     }
 
     @Override
     public void onContainerClosed(EntityPlayer player)
     {
-        PASaveHandler.getInstance().saveBag(player.getUniqueID().toString());
         super.onContainerClosed(player);
+        invBag.closeInventory(player);
     }
 
     /** args: slotID, itemStack to put in slot */
@@ -202,88 +191,41 @@ public class ContainerBag extends Container
     @Override
     public ItemStack slotClick(int i, int j, int flag, EntityPlayer entityplayer)
     {
-        // if(true)
-        // return super.slotClick(i, j, flag, entityplayer);
-        //
-        if (i < 0) return null;
-        if (PokecubeCore.isOnClientSide() && FMLClientHandler.instance()
-                .getServer() != null) { return clientSlotClick(i, j, flag, entityplayer); }
-        if (flag != 0 && flag != 5)
-        {
-            ItemStack itemstack = null;
-            Slot slot = inventorySlots.get(i);
-
-            if (slot != null && slot.getHasStack())
-            {
-                ItemStack itemstack1 = slot.getStack();
-                itemstack = itemstack1.copy();
-                if (!ContainerBag.isItemValid(itemstack1)) return null;
-
-                if (i > 35)
-                {
-                    if (!mergeItemStack(itemstack1, 0, 36, false)) { return null; }
-                }
-                else
-                {
-                    if (!mergeItemStack(itemstack1, 36, 89, false)) { return null; }
-                }
-
-                if (itemstack1.stackSize == 0)
-                {
-                    slot.putStack(null);
-                }
-                else
-                {
-                    slot.onSlotChanged();
-                }
-
-                if (itemstack1.stackSize != itemstack.stackSize)
-                {
-                    slot.onPickupFromSlot(entityplayer, itemstack1);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-            if (itemstack != null && isItemValid(itemstack))
-            {
-                return null;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        else
-        {
-            return super.slotClick(i, j, flag, entityplayer);
-        }
+        return super.slotClick(i, j, flag, entityplayer);
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slot)
+    public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack stack = null;
-        return stack;
+        ItemStack itemstack = null;
+        Slot slot = (Slot) this.inventorySlots.get(index);
+        int numRows = 6;
+        if (slot != null && slot.getHasStack())
+        {
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
+            if (index < numRows * 9)
+            {
+                if (!this.mergeItemStack(itemstack1, numRows * 9, this.inventorySlots.size(), true)) { return null; }
+            }
+            else if (!this.mergeItemStack(itemstack1, 0, numRows * 9, false)) { return null; }
+
+            if (itemstack1.stackSize == 0)
+            {
+                slot.putStack((ItemStack) null);
+            }
+            else
+            {
+                slot.onSlotChanged();
+            }
+        }
+        return itemstack;
     }
 
-    public void updateInventoryPages(int page)
+    public void updateInventoryPages(int dir, InventoryPlayer invent)
     {
-        if (page < 0) page = InventoryBag.PAGECOUNT - 1;
-        if (page > InventoryBag.PAGECOUNT - 1) page = 0;
-        invBag.setPage(page);
-        if (!invPlayer.player.isServerWorld())
-        {
-            MessageServer packet;
-            PacketBuffer buf = new PacketBuffer(Unpooled.buffer(1));
-            buf.writeByte(6);
-            buf.writeInt(page);
-            packet = new MessageServer(buf);
-            PokecubePacketHandler.sendToServer(packet);
-
-        }
+        invBag.setPage((invBag.getPage() == 0) && (dir == -1) ? InventoryBag.PAGECOUNT - 1
+                : (invBag.getPage() + dir) % InventoryBag.PAGECOUNT);
         bindInventories();
     }
 

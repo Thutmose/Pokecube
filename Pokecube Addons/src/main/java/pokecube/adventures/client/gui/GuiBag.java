@@ -15,8 +15,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.items.bags.ContainerBag;
-import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
+import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.network.PokecubePacketHandler;
 import thut.api.maths.Vector3;
 
@@ -70,9 +70,14 @@ public class GuiBag extends GuiContainer
             }
             else
             {
-                int dir = guibutton.id == 2 ? -1 : guibutton.id == 1 ? 1 : 0;
-                int page = cont.invBag.getPage() + dir;
-                cont.updateInventoryPages(page);
+                PacketBuffer buf = new PacketBuffer(Unpooled.buffer(1));
+                buf.writeByte(6);
+                byte mess = (byte) (guibutton.id == 2 ? -1 : guibutton.id == 1 ? 1 : 0);
+                cont.updateInventoryPages(mess, mc.thePlayer.inventory);
+                buf.writeByte(cont.invBag.getPage() + 1);
+                packet = new MessageServer(buf);
+                PokecubePacketHandler.sendToServer(packet);
+                textFieldSelectedBox.setText(cont.getPageNb());
             }
         }
     }
@@ -112,7 +117,7 @@ public class GuiBag extends GuiContainer
         for (int i = 0; i < 54; i++)
             if (!textFieldSearch.getText().isEmpty())
             {
-                ItemStack stack = cont.invBag.getStackInSlot(i);
+                ItemStack stack = cont.invBag.getStackInSlot(i + 54 * cont.invBag.getPage());
                 // if(stack!=null)
                 int x = (i % 9) * 18 + width / 2 - 80;
                 int y = (i / 9) * 18 + height / 2 - 96;
@@ -203,8 +208,8 @@ public class GuiBag extends GuiContainer
                 e.printStackTrace();
             }
 
-            number = Math.max(0, Math.min(number - 1, InventoryBag.PAGECOUNT - 1));
-            cont.updateInventoryPages(number);
+            number = Math.max(1, Math.min(number, InventoryPC.PAGECOUNT));
+            cont.gotoInventoryPage(number);
 
             if (toRename && box != boxName)
             {
@@ -218,11 +223,6 @@ public class GuiBag extends GuiContainer
         }
 
     }
-
-    // public boolean getReleaseState(){
-
-    /// return release;
-    // }
 
     /** Fired when a key is typed. This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). */

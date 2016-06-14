@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.handlers.TeamManager;
@@ -42,6 +43,13 @@ public class PAEventsHandler
         packet = new MessageClient((byte) 7, nbt);
         PokecubePacketHandler.sendToClient(packet, entityPlayer);
 
+    }
+    
+
+    @SubscribeEvent
+    public void PlayerLoggin(PlayerLoggedOutEvent evt)
+    {
+        
     }
 
     @SubscribeEvent

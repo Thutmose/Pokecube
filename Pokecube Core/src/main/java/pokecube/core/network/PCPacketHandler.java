@@ -67,7 +67,7 @@ public class PCPacketHandler
                         }
                         InventoryPC.loadFromNBT(list, true);
                         tag = list.getCompoundTagAt(0).getCompoundTag("boxes");
-                        InventoryPC.blank.setPage(tag.getInteger("page"));
+                        InventoryPC.getPC(player).setPage(tag.getInteger("page"));
                     }
                     catch (Exception e)
                     {

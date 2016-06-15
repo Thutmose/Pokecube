@@ -112,7 +112,7 @@ public class InventoryPC implements IInventory
 
     public static InventoryPC getPC(Entity player)
     {// TODO Sync box names/numbers to blank
-        if (player.worldObj.isRemote) return blank == null ? blank = new InventoryPC("blank") : blank;
+        if (player == null || player.worldObj.isRemote) return blank == null ? blank = new InventoryPC("blank") : blank;
         return getPC(player.getUniqueID().toString());
     }
 

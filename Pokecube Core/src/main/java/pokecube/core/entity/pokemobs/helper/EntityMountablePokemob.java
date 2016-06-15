@@ -15,6 +15,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
@@ -58,6 +59,8 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     protected boolean pokemobJumping;
 
     protected float   jumpPower;
+
+    private int       lastMessage        = 0;
 
     public EntityMountablePokemob(World world)
     {
@@ -327,6 +330,17 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             this.stepHeight = 1.0F;
             this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
 
+            if (!worldObj.isAreaLoaded(getPosition(), 32, false))
+            {
+                motionX = motionZ = 0;
+                strafe = forward = 0;
+                if (lastMessage < ticksExisted - 20)
+                {
+                    lastMessage = ticksExisted;
+                    this.riddenByEntity.addChatMessage(new ChatComponentTranslation("pokemob.areanotloaded"));
+                }
+            }
+
             this.setAIMoveSpeed(
                     (float) this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
             this.moveEntityWithHeading2(strafe, forward);
@@ -352,12 +366,15 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
             if (worldObj.isRemote && this.riddenByEntity == PokecubeCore.getPlayer(null))
             {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(15));
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(27));
                 buffer.writeByte(MessageServer.SYNCPOS);
                 buffer.writeInt(getEntityId());
                 buffer.writeFloat((float) posX);
                 buffer.writeFloat((float) posY);
                 buffer.writeFloat((float) posZ);
+                buffer.writeFloat((float) motionX);
+                buffer.writeFloat((float) motionY);
+                buffer.writeFloat((float) motionZ);
                 MessageServer message = new MessageServer(buffer);
                 PokecubeMod.packetPipeline.sendToServer(message);
             }

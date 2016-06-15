@@ -192,6 +192,9 @@ public class PokemobPacketHandler
                                 Vector3 v = Vector3.getNewVector().set(buffer.readFloat(), buffer.readFloat(),
                                         buffer.readFloat());
                                 v.moveEntity((Entity) pokemob);
+                                ((Entity)pokemob).motionX = buffer.readFloat();
+                                ((Entity)pokemob).motionY = buffer.readFloat();
+                                ((Entity)pokemob).motionZ = buffer.readFloat();
                                 if (((Entity) pokemob).riddenByEntity != null)
                                 {
                                     ((Entity) pokemob).riddenByEntity.onGround = true;

@@ -1,18 +1,13 @@
 package pokecube.adventures.items.bags;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.adventures.handlers.PASaveHandler;
-import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
@@ -34,32 +29,23 @@ public class ContainerBag extends Container
      * @return true if the id is a filled pokecube one, false otherwise */
     public static boolean isItemValid(ItemStack itemstack)
     {
-        // System.out.println(ConfigHandler.ONLYPOKECUBES);
-
         boolean valid = PokecubeItems.isValidHeldItem(itemstack) || itemstack.getItem() instanceof IPokemobUseable;
+        valid |= PokecubeItems.getFossilNumber(itemstack) != 0;
         boolean cube = PokecubeItems.getEmptyCube(itemstack) == itemstack.getItem()
                 && !PokecubeManager.isFilled(itemstack);
-
         return valid || cube;
     }
 
     public final InventoryBag    invBag;
     public final InventoryPlayer invPlayer;
 
-    public boolean               release    = false;
-
-    public boolean[]             toRelease  = new boolean[54];
-
-    int                          releaseNum = 0;
-
     public ContainerBag(InventoryPlayer ivplay)
     {
         super();
         xOffset = 0;
         yOffset = 0;
-        invBag = InventoryBag.getBag(ivplay.player.getUniqueID().toString());
+        invBag = InventoryBag.getBag(ivplay.player);
         invPlayer = ivplay;
-
         bindInventories();
     }
 
@@ -77,19 +63,20 @@ public class ContainerBag extends Container
 
     protected void bindInventories()
     {
-        // System.out.println("bind");
         clearSlots();
-        bindPlayerInventory();
         bindPCInventory();
+        bindPlayerInventory();
     }
 
     protected void bindPCInventory()
     {
+        int n = 0;
+        n = invBag.getPage() * 54;
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 9; j++)
             {
-                addSlotToContainer(new SlotBag(invBag, +j + i * 9, 8 + j * 18 + xOffset, 18 + i * 18 + yOffset));
+                addSlotToContainer(new SlotBag(invBag, n + j + i * 9, 8 + j * 18 + xOffset, 18 + i * 18 + yOffset));
             }
         }
         // int k = 0;
@@ -151,24 +138,14 @@ public class ContainerBag extends Container
         this.inventorySlots.clear();
     }
 
-    public ItemStack clientSlotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
-    {
-        ItemStack itemstack = invPlayer.getItemStack();
-        Slot slot = inventorySlots.get(slotId);
-        ItemStack inSlot = slot.getStack();
-        if (clickTypeIn != ClickType.PICKUP && clickTypeIn != ClickType.PICKUP_ALL)
-        {
-            invPlayer.setItemStack(inSlot != null ? inSlot.copy() : null);
-            inSlot = itemstack;
-            return inSlot;
-        }
-
-        return inSlot;
-    }
-
     @SideOnly(Side.CLIENT)
     public String getPage()
     {
+        if (invBag.getPage() < 0)
+        {
+            Thread.dumpStack();
+            invBag.setPage(0);
+        }
         return invBag.boxes[invBag.getPage()];
     }
 
@@ -184,11 +161,18 @@ public class ContainerBag extends Container
         return this.inventorySlots.get(par1);
     }
 
+    public void gotoInventoryPage(int page)
+    {
+        if (page - 1 == invBag.getPage()) return;
+        invBag.setPage(page - 1);
+        bindInventories();
+    }
+
     @Override
     public void onContainerClosed(EntityPlayer player)
     {
-        PASaveHandler.getInstance().saveBag(player.getUniqueID().toString());
         super.onContainerClosed(player);
+        invBag.closeInventory(player);
     }
 
     /** args: slotID, itemStack to put in slot */
@@ -213,88 +197,44 @@ public class ContainerBag extends Container
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
-        if (slotId < 0)
-            return null;
-        if (PokecubeCore.isOnClientSide() && FMLClientHandler.instance()
-                .getServer() != null) { return clientSlotClick(slotId, dragType, clickTypeIn, player); }
-        if (clickTypeIn != ClickType.PICKUP && clickTypeIn != ClickType.PICKUP_ALL)
-        {
-            ItemStack itemstack = null;
-            Slot slot = inventorySlots.get(slotId);
-
-            if (slot != null && slot.getHasStack())
-            {
-                ItemStack itemstack1 = slot.getStack();
-                itemstack = itemstack1.copy();
-                if (!ContainerBag.isItemValid(itemstack1)) return null;
-
-                if (slotId > 35)
-                {
-                    if (!mergeItemStack(itemstack1, 0, 36, false)) { return null; }
-                }
-                else
-                {
-                    if (!mergeItemStack(itemstack1, 36, 89, false)) { return null; }
-                }
-
-                if (itemstack1.stackSize == 0)
-                {
-                    slot.putStack(null);
-                }
-                else
-                {
-                    slot.onSlotChanged();
-                }
-
-                if (itemstack1.stackSize != itemstack.stackSize)
-                {
-                    slot.onPickupFromSlot(player, itemstack1);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-            // release = gpc.getReleaseState();
-
-            if (itemstack != null && isItemValid(itemstack))
-            {
-                return null;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        else
-        {
-            return super.slotClick(slotId, dragType, clickTypeIn, player);
-        }
+        return super.slotClick(slotId, dragType, clickTypeIn, player);
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slot)
+    public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack stack = null;
-        return stack;
+        ItemStack itemstack = null;
+        Slot slot = (Slot) this.inventorySlots.get(index);
+
+        if (slot != null && slot.getHasStack())
+        {
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
+
+            int numRows = 6;
+
+            if (index < numRows * 9)
+            {
+                if (!this.mergeItemStack(itemstack1, numRows * 9, this.inventorySlots.size(), true)) { return null; }
+            }
+            else if (!this.mergeItemStack(itemstack1, 0, numRows * 9, false)) { return null; }
+
+            if (itemstack1.stackSize == 0)
+            {
+                slot.putStack((ItemStack) null);
+            }
+            else
+            {
+                slot.onSlotChanged();
+            }
+        }
+        return itemstack;
     }
 
-    public void updateInventoryPages(int page)
+    public void updateInventoryPages(int dir, InventoryPlayer invent)
     {
-        if (page < 0) page = InventoryBag.PAGECOUNT - 1;
-        if (page > InventoryBag.PAGECOUNT - 1) page = 0;
-        invBag.setPage(page);
-        if (!invPlayer.player.isServerWorld())
-        {
-            MessageServer packet;
-            PacketBuffer buf = new PacketBuffer(Unpooled.buffer(1));
-            buf.writeByte(6);
-            buf.writeInt(page);
-            packet = new MessageServer(buf);
-            PokecubePacketHandler.sendToServer(packet);
-
-        }
+        invBag.setPage((invBag.getPage() == 0) && (dir == -1) ? InventoryBag.PAGECOUNT - 1
+                : (invBag.getPage() + dir) % InventoryBag.PAGECOUNT);
         bindInventories();
     }
 

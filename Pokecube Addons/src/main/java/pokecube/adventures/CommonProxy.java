@@ -43,18 +43,19 @@ public class CommonProxy implements IGuiHandler
         if (guiID == PokecubeAdv.GUIBAG_ID)
         {
             ContainerBag cont = new ContainerBag(player.inventory);
+            cont.gotoInventoryPage(x);
             return cont;
         }
         if (guiID == PokecubeAdv.GUICLONER_ID)
         {
-            BlockPos pos = new BlockPos(x,y,z);
+            BlockPos pos = new BlockPos(x, y, z);
             TileEntityCloner tile = (TileEntityCloner) world.getTileEntity(pos);
             ContainerCloner cont = new ContainerCloner(player.inventory, tile);
             return cont;
         }
         if (guiID == PokecubeAdv.GUIAFA_ID)
         {
-            BlockPos pos = new BlockPos(x,y,z);
+            BlockPos pos = new BlockPos(x, y, z);
             TileEntityAFA tile = (TileEntityAFA) world.getTileEntity(pos);
             ContainerAFA cont = new ContainerAFA(tile, player.inventory);
             return cont;

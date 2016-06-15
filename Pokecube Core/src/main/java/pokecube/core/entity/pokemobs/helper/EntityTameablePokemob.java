@@ -761,7 +761,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     public void setPokemonOwnerByName(String s)
     {
         EntityPlayer player = PokecubeCore.getPlayer(s);
-        if(player!=null)
+        if (player != null)
         {
             this.setPokemonOwner(player);
             super.setOwnerId(player.getUniqueID());
@@ -769,8 +769,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         else
         {
             setPokemonOwner(null);
-            super.setOwnerId(null)
-            ;
+            super.setOwnerId(null);
         }
     }
 

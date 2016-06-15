@@ -28,6 +28,8 @@ import pokecube.core.utils.Tools;
 public class InventoryPC implements IInventory
 {
     public static HashMap<String, InventoryPC> map       = new HashMap<String, InventoryPC>();
+    // blank PC for client use.
+    public static InventoryPC                  blank     = new InventoryPC("blank");
     public static UUID                         defaultId = new UUID(1234, 4321);
     public static int                          PAGECOUNT = 32;
 
@@ -108,7 +110,8 @@ public class InventoryPC implements IInventory
     }
 
     public static InventoryPC getPC(Entity player)
-    {
+    {// TODO Sync box names/numbers to blank
+        if (player == null || player.worldObj.isRemote) return blank == null ? blank = new InventoryPC("blank") : blank;
         return getPC(player.getUniqueID().toString());
     }
 

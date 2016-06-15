@@ -78,6 +78,7 @@ public class ClientProxy extends CommonProxy
         else if (guiID == PokecubeAdv.GUIBAG_ID)
         {
             ContainerBag cont = new ContainerBag(player.inventory);
+            cont.gotoInventoryPage(x);
             return new GuiBag(cont, Vector3.getNewVector().set(x, y, z));
         }
         else if (guiID == PokecubeAdv.GUICLONER_ID)

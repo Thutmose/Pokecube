@@ -3,17 +3,27 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
 
 /** Handles the HM behaviour.
@@ -25,6 +35,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     {
         UP, NONE, DOWN
     }
+
     private int       mountCounter       = 0;
     public float      landSpeedFactor    = 1;
     public float      waterSpeedFactor   = 0.25f;
@@ -45,6 +56,8 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     protected boolean pokemobJumping;
 
     protected float   jumpPower;
+
+    private int       lastMessage        = 0;
 
     public EntityMountablePokemob(World world)
     {
@@ -83,27 +96,28 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
     public boolean checkHunger()
     {
-//        if (this.riddenByEntity instanceof EntityPlayer
-//                && !((EntityPlayer) this.riddenByEntity).capabilities.isCreativeMode)
-//        {
-//            int hunger = getHungerTime();
-//            if (hunger < 0.85 * PokecubeMod.core.getConfig().pokemobLifeSpan)
-//            {
-//                hungerFactor = 1;
-//                return true;
-//            }
-//            else
-//            {
-//                if (this.ticksExisted % 20 == 0 && !worldObj.isRemote)
-//                {
-//                    String mess = I18n.translateToLocal("pokemob.hungry.slow");
-//                    ((EntityPlayer) this.riddenByEntity).addChatMessage(new TextComponentString(mess));
-//                }
-//                hungerFactor = 0.01f;
-//                return false;
-//            }
-//
-//        }//TODO riding
+        // if (this.riddenByEntity instanceof EntityPlayer
+        // && !((EntityPlayer) this.riddenByEntity).capabilities.isCreativeMode)
+        // {
+        // int hunger = getHungerTime();
+        // if (hunger < 0.85 * PokecubeMod.core.getConfig().pokemobLifeSpan)
+        // {
+        // hungerFactor = 1;
+        // return true;
+        // }
+        // else
+        // {
+        // if (this.ticksExisted % 20 == 0 && !worldObj.isRemote)
+        // {
+        // String mess = I18n.translateToLocal("pokemob.hungry.slow");
+        // ((EntityPlayer) this.riddenByEntity).addChatMessage(new
+        // TextComponentString(mess));
+        // }
+        // hungerFactor = 0.01f;
+        // return false;
+        // }
+        //
+        // }//TODO riding
         hungerFactor = 1;
         return false;
     }
@@ -132,13 +146,13 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
         }
 
-//        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
-//                && ridingEntity == PokecubeCore.getProxy().getPlayer(null))
-//        {
-//            ret = -ridingEntity.height + 0.25;
-//            this.onGround = true;
-//            return ret;
-//        }
+        // if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
+        // && ridingEntity == PokecubeCore.getProxy().getPlayer(null))
+        // {
+        // ret = -ridingEntity.height + 0.25;
+        // this.onGround = true;
+        // return ret;
+        // }
 
         return ret;// - 1.6F;
     }
@@ -153,22 +167,13 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
      * @return if the use worked */
     protected boolean handleHmAndSaddle(EntityPlayer entityplayer, ItemStack itemstack)
     {
-//        if ((riddenByEntity != null && riddenByEntity != entityplayer)) return false;
         if (isRidable(entityplayer))
         {
-//            if (!worldObj.isRemote) entityplayer.mountEntity(this);
+            if (!worldObj.isRemote) entityplayer.startRiding(this);
             return true;
         }
         return false;
     }
-
-//    @Override
-//    public boolean processInteract(EntityPlayer player entityplayer)
-//    {
-//        if (entityplayer == ridingEntity && getPokemonAIState(SHOULDER)) { return false; }
-//
-//        return super.processInteract(EntityPlayer player);
-//    }
 
     public void initRidable()
     {
@@ -205,164 +210,166 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
                 && Math.max(entry.width, entry.length) * getSize() > rider.width * 1.8;
     }
 
-//    /** Called when a player mounts an entity. e.g. mounts a pig, mounts a
-//     * boat. */
-//    @Override
-//    public void mountEntity(Entity entityIn)
-//    {
-//        if (entityIn == null)
-//        {
-//            mountCounter = 5;
-//            motionX = motionY = motionZ = 0;
-//        }
-//        super.mountEntity(entityIn);
-//    }
+    /** Moves the entity based on the specified heading. Args: strafe,
+     * forward */
+    @Override
+    public void moveEntityWithHeading(float strafe, float forward)
+    {
+        if (this.isBeingRidden())
+        {
+            Entity riddenByEntity = null;
+            for (Entity e : getRecursivePassengersByType(EntityPlayer.class))
+            {
+                if (riddenByEntity == null) riddenByEntity = e;
+                if (e == getOwner())
+                {
+                    riddenByEntity = e;
+                }
+            }
+            if (riddenByEntity == null)
+            {
+                Thread.dumpStack();
+                return;
+            }
 
-//    /** Moves the entity based on the specified heading. Args: strafe,
-//     * forward */
-//    @Override
-//    public void moveEntityWithHeading(float par1, float forward)
-//    {
-//        if (isBeingRidden())
-//        {
-//            this.getNavigator().clearPathHeap();
-//            this.prevRotationYaw = this.rotationYaw = this.riddenByEntity.rotationYaw;
-//            this.rotationPitch = this.riddenByEntity.rotationPitch * 0.5F;
-//            this.setRotation(this.rotationYaw, this.rotationPitch);
-//            this.rotationYawHead = this.renderYawOffset = this.rotationYaw;
-//            par1 = ((EntityLivingBase) this.riddenByEntity).moveStrafing * 0.5F;
-//            forward = ((EntityLivingBase) this.riddenByEntity).moveForward;
-//
-//            if (forward <= 0.0F)
-//            {
-//                forward *= 0.25F;
-//            }
-//
-//            if (onGround && !isInWater() && forward > 0)
-//            {
-//                forward = landSpeedFactor;
-//            }
-//            if (isInWater())
-//            {
-//                forward = forward > 0 ? waterSpeedFactor : 0;
-//                if (this.canUseSurf() && !this.canUseDive() && this.riddenByEntity.isInWater()) this.motionY = 0;
-//            }
-//            if (!this.onGround && this.canUseFly())
-//            {
-//                forward = forward > 0 ? airbornSpeedFactor : 0;
-//                this.jumpPower = 0.0F;
-//            }
-//            if (this.canUseFly())
-//            {
-//                if (rotationPitch < -15 && forward > 0)
-//                {
-//                    this.motionX *= Math.cos((rotationPitch * 2) * Math.PI / 180);
-//                    this.motionZ *= Math.cos((rotationPitch * 2) * Math.PI / 180);
-//                    this.motionY = 0.5 * -Math.sin((rotationPitch * 2) * Math.PI / 180);
-//                }
-//                else if (rotationPitch > 15 && forward > 0)
-//                {
-//                    this.motionX *= Math.cos((rotationPitch * 2) * Math.PI / 180);
-//                    this.motionZ *= Math.cos((rotationPitch * 2) * Math.PI / 180);
-//                    this.motionY = 0.5 * -Math.sin((rotationPitch * 2) * Math.PI / 180);
-//                }
-//                else
-//                {
-//                    this.motionY = 0;
-//                }
-//                this.riddenByEntity.onGround = true;
-//                this.riddenByEntity.fallDistance = 0;
-//                this.fallDistance = 0;
-//            }
-//
-//            if (this.canUseDive() && isInWater())
-//            {
-//                if (rotationPitch < -15 && forward > 0)
-//                {
-//                    this.motionX *= Math.cos((rotationPitch * 2) * Math.PI / 180);
-//                    this.motionZ *= Math.cos((rotationPitch * 2) * Math.PI / 180);
-//                    this.motionY = 0.5 * -Math.sin((rotationPitch * 2) * Math.PI / 180);
-//                }
-//                else if (rotationPitch > 15 && forward > 0)
-//                {
-//                    this.motionX *= Math.cos((rotationPitch * 2) * Math.PI / 180);
-//                    this.motionZ *= Math.cos((rotationPitch * 2) * Math.PI / 180);
-//                    this.motionY = 0.5 * -Math.sin((rotationPitch * 2) * Math.PI / 180);
-//                }
-//                else
-//                {
-//                    this.motionY = 0;
-//                }
-//                this.riddenByEntity.setAir(300);
-//                PotionEffect effect = ((EntityLivingBase) this.riddenByEntity)
-//                        .getActivePotionEffect(Potion.nightVision);
-//                if (effect == null
-//                        || effect.getDuration() < 200 && this.riddenByEntity.isInsideOfMaterial(Material.water))
-//                    ((EntityLivingBase) this.riddenByEntity)
-//                            .addPotionEffect(new PotionEffect(Potion.nightVision.id, 500));
-//            }
-//
-//            if (this.jumpPower > 0.0F && !this.isPokemobJumping() && this.onGround)
-//            {
-//                this.motionY = 1 * (double) this.jumpPower;
-//
-//                if (this.isPotionActive(Potion.jump))
-//                {
-//                    this.motionY += (this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F;
-//                }
-//
-//                this.setPokemobJumping(true);
-//                this.isAirBorne = true;
-//
-//                if (forward > 0.0F)
-//                {
-//                    float f2 = MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F);
-//                    float f3 = MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F);
-//                    this.motionX += -0.4F * f2 * this.jumpPower;
-//                    this.motionZ += 0.4F * f3 * this.jumpPower;
-//                    this.playSound("mob.horse.jump", 0.4F, 1.0F);
-//                }
-//
-//                this.jumpPower = 0.0F;
-//            }
-//
-//            this.stepHeight = 1.0F;
-//            this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
-//
-//            // if (!this.worldObj.isRemote)
-//            {
-//                this.setAIMoveSpeed(
-//                        (float) this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
-//                this.moveEntityWithHeading2(par1, forward);
-//            }
-//
-//            if (this.onGround || isInWater())
-//            {
-//                this.jumpPower = 0.0F;
-//                this.setPokemobJumping(false);
-//            }
-//
-//            this.prevLimbSwingAmount = this.limbSwingAmount;
-//            double d0 = this.posX - this.prevPosX;
-//            double d1 = this.posZ - this.prevPosZ;
-//            float f4 = MathHelper.sqrt_double(d0 * d0 + d1 * d1) * 4.0F;
-//
-//            if (f4 > 1.0F)
-//            {
-//                f4 = 1.0F;
-//            }
-//
-//            this.limbSwingAmount += (f4 - this.limbSwingAmount) * 0.4F;
-//            this.limbSwing += this.limbSwingAmount;
-//        }
-//        else
-//        {
-//            this.stepHeight = 0.5F;
-//            this.jumpMovementFactor = 0.02F;
-//            super.moveEntityWithHeading(par1, forward);
-//            new Exception().printStackTrace();
-//        }
-//    }
+            this.getNavigator().clearPathEntity();
+            this.prevRotationYaw = this.rotationYaw = riddenByEntity.rotationYaw;
+            this.rotationPitch = riddenByEntity.rotationPitch * 0.5F;
+            this.setRotation(this.rotationYaw, this.rotationPitch);
+            this.rotationYawHead = this.renderYawOffset = this.rotationYaw;
+            strafe = ((EntityLivingBase) riddenByEntity).moveStrafing * 0.5F;
+            forward = ((EntityLivingBase) riddenByEntity).moveForward;
+            riddenByEntity.onGround = true;
+            riddenByEntity.fallDistance = 0;
+            riddenByEntity.fall(0, 0);
+
+            if (canUseDive()) riddenByEntity.setAir(300);
+
+            if (forward <= 0.0F)
+            {
+                forward *= 0.25F;
+            }
+
+            if (onGround && !isInWater() && forward > 0)
+            {
+                forward = landSpeedFactor;
+            }
+            if (isInWater())
+            {
+                forward = forward > 0 ? waterSpeedFactor : 0;
+                if (this.canUseSurf() && !this.canUseDive() && riddenByEntity.isInWater()) this.motionY = 0;
+            }
+            if (!this.onGround && this.canUseFly())
+            {
+                forward = forward > 0 ? airbornSpeedFactor : 0;
+                this.jumpPower = 0.0F;
+            }
+            boolean dive = false;
+            boolean jump = false;
+            if ((dive = (this.canUseDive() && isInWater())) || this.canUseFly())
+            {
+                motionY = state == MountState.UP ? 0.5 : state == MountState.DOWN ? -0.5 : 0;
+
+                if (dive)
+                {
+                    riddenByEntity.setAir(300);
+                    PotionEffect effect = ((EntityLivingBase) riddenByEntity)
+                            .getActivePotionEffect(Potion.getPotionFromResourceLocation("night_vision"));
+                    if (effect == null
+                            || effect.getDuration() < 220 && riddenByEntity.isInsideOfMaterial(Material.WATER))
+                        ((EntityLivingBase) riddenByEntity).addPotionEffect(
+                                new PotionEffect(Potion.getPotionFromResourceLocation("night_vision"), 250));
+                }
+            }
+            else if (state == MountState.UP)
+            {
+                jump = state == MountState.UP;
+            }
+
+            if (jump && !this.isPokemobJumping() && this.onGround)
+            {
+                this.motionY = 0.5 + this.jumpPower;
+
+                if (this.isPotionActive(Potion.getPotionFromResourceLocation("jump_boost")))
+                {
+                    this.motionY += (this.getActivePotionEffect(Potion.getPotionFromResourceLocation("jump_boost")).getAmplifier() + 1) * 0.1F;
+                }
+
+                this.setPokemobJumping(true);
+                this.isAirBorne = true;
+
+                if (forward > 0.0F)
+                {
+                    float f2 = MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F);
+                    float f3 = MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F);
+                    this.motionX += -0.4F * f2 * this.jumpPower;
+                    this.motionZ += 0.4F * f3 * this.jumpPower;
+                    this.playSound(SoundEvents.ENTITY_HORSE_JUMP, 0.4F, 1.0F);
+                }
+
+                this.jumpPower = 0.0F;
+            }
+
+            this.stepHeight = 1.0F;
+            this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
+
+            if (!worldObj.isAreaLoaded(getPosition(), 32, false))
+            {
+                motionX = motionZ = 0;
+                strafe = forward = 0;
+                if (lastMessage < ticksExisted - 20)
+                {
+                    lastMessage = ticksExisted;
+                    riddenByEntity.addChatMessage(new TextComponentTranslation("pokemob.areanotloaded"));
+                }
+            }
+
+            this.setAIMoveSpeed(
+                    (float) this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
+            this.moveEntityWithHeading2(strafe, forward);
+
+            if (this.onGround || isInWater())
+            {
+                this.jumpPower = 0.0F;
+                this.setPokemobJumping(false);
+            }
+
+            this.prevLimbSwingAmount = this.limbSwingAmount;
+            double d0 = this.posX - this.prevPosX;
+            double d1 = this.posZ - this.prevPosZ;
+            float f4 = MathHelper.sqrt_double(d0 * d0 + d1 * d1) * 4.0F;
+
+            if (f4 > 1.0F)
+            {
+                f4 = 1.0F;
+            }
+
+            this.limbSwingAmount += (f4 - this.limbSwingAmount) * 0.4F;
+            this.limbSwing += this.limbSwingAmount;
+
+            if (worldObj.isRemote && riddenByEntity == PokecubeCore.getPlayer(null))
+            {
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(27));
+                buffer.writeByte(MessageServer.SYNCPOS);
+                buffer.writeInt(getEntityId());
+                buffer.writeFloat((float) posX);
+                buffer.writeFloat((float) posY);
+                buffer.writeFloat((float) posZ);
+                buffer.writeFloat((float) motionX);
+                buffer.writeFloat((float) motionY);
+                buffer.writeFloat((float) motionZ);
+                MessageServer message = new MessageServer(buffer);
+                PokecubeMod.packetPipeline.sendToServer(message);
+            }
+        }
+        else
+        {
+            this.stepHeight = 0.5F;
+            this.jumpMovementFactor = 0.02F;
+            super.moveEntityWithHeading(strafe, forward);
+            new Exception().printStackTrace();
+        }
+    }
 
     /** Returns true if the entity is riding another entity, used by render to
      * rotate the legs to be in 'sit' position for players. */
@@ -629,7 +636,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     /** main AI tick function, replaces updateEntityActionState */// TODO move
                                                                   // this over
                                                                   // to an AI
-                  
+
     protected void updateAITick()
     {
         if (!getPokedexEntry().canSitShoulder || !getPokemonAIState(IMoveConstants.TAMED)) return;

@@ -27,9 +27,11 @@ public class ItemBag extends Item
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
+            EnumHand hand)
     {
-        player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, 0, 0, 0);
+        if (!world.isRemote) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj,
+                InventoryBag.getBag(player).getPage() + 1, 0, 0);
         return super.onItemRightClick(itemstack, world, player, hand);
     }
 }

@@ -755,9 +755,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         super.onDeathUpdate();
     }
 
-    /////////////////////////// Interaction
-    /////////////////////////// logic/////////////////////////////////////////////////////
-
     @Override
     public void onLivingUpdate()
     {
@@ -1050,6 +1047,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         popped = true;
     }
 
+    /////////////////////////// Interaction
+    /////////////////////////// logic/////////////////////////////////////////////////////
+    
     @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
     {

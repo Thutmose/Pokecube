@@ -8,16 +8,16 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.items.bags.ContainerBag;
-import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
+import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.network.PokecubePacketHandler;
 import thut.api.maths.Vector3;
 
@@ -32,6 +32,7 @@ public class GuiBag extends GuiContainer
 
     private String  boxName  = "1";
     private boolean toRename = false;
+    Vector3         loc;
 
     private Slot    theSlot;
 
@@ -43,7 +44,7 @@ public class GuiBag extends GuiContainer
         this.ySize = 229;
         page = cont.getPageNb();
         boxName = cont.getPage();
-        // release = cont.release;
+        loc = pcLoc;
     }
 
     @Override
@@ -70,9 +71,10 @@ public class GuiBag extends GuiContainer
             }
             else
             {
-                int dir = guibutton.id == 2 ? -1 : guibutton.id == 1 ? 1 : 0;
-                int page = cont.invBag.getPage() + dir;
-                cont.updateInventoryPages(page);
+                cont.updateInventoryPages((byte) (guibutton.id == 2 ? -1 : guibutton.id == 1 ? 1 : 0),
+                        mc.thePlayer.inventory);
+
+                textFieldSelectedBox.setText(cont.getPageNb());
             }
         }
     }
@@ -112,7 +114,7 @@ public class GuiBag extends GuiContainer
         for (int i = 0; i < 54; i++)
             if (!textFieldSearch.getText().isEmpty())
             {
-                ItemStack stack = cont.invBag.getStackInSlot(i);
+                ItemStack stack = cont.invBag.getStackInSlot(i + 54 * cont.invBag.getPage());
                 // if(stack!=null)
                 int x = (i % 9) * 18 + width / 2 - 80;
                 int y = (i / 9) * 18 + height / 2 - 96;
@@ -150,12 +152,12 @@ public class GuiBag extends GuiContainer
         buttonList.clear();
         int xOffset = 0;
         int yOffset = -11;
-        String next = I18n.translateToLocal("tile.pc.next");
+        String next = I18n.format("tile.pc.next");
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 15, height / 2 - yOffset, 50, 20, next));
-        String prev = I18n.translateToLocal("tile.pc.previous");
+        String prev = I18n.format("tile.pc.previous");
         buttonList.add(new GuiButton(2, width / 2 - xOffset - 65, height / 2 - yOffset, 50, 20, prev));
 
-        String rename = I18n.translateToLocal("tile.pc.rename");
+        String rename = I18n.format("tile.pc.rename");
         buttonList.add(new GuiButton(3, width / 2 - xOffset - 137, height / 2 - yOffset - 125, 50, 20, rename));
 
         textFieldSelectedBox = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 13, height / 2 - yOffset + 5,
@@ -203,12 +205,11 @@ public class GuiBag extends GuiContainer
                 e.printStackTrace();
             }
 
-            number = Math.max(0, Math.min(number - 1, InventoryBag.PAGECOUNT - 1));
-            cont.updateInventoryPages(number);
+            number = Math.max(1, Math.min(number, InventoryPC.PAGECOUNT));
+            cont.gotoInventoryPage(number);
 
             if (toRename && box != boxName)
             {
-
                 if (toRename)
                 {
                     box = textFieldBoxName.getText();
@@ -219,6 +220,11 @@ public class GuiBag extends GuiContainer
         }
 
     }
+
+    // public boolean getReleaseState(){
+
+    /// return release;
+    // }
 
     /** Fired when a key is typed. This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). */

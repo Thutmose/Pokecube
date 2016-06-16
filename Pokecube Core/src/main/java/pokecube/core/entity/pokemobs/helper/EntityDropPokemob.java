@@ -4,9 +4,9 @@
 package pokecube.core.entity.pokemobs.helper;
 
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
@@ -55,18 +55,11 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         if (!getPokemonAIState(IMoveConstants.TAMED) && food != null)
         {
             if (isBurning())
-            {//TODO move this over to a method for mapping to allow configs.
-                if (food.getItem() == Items.CHICKEN) dropItem(Items.COOKED_CHICKEN, j);
-                else if (food.getItem() == Items.POTATO) dropItem(Items.BAKED_POTATO, j);
-                else if (food.getItem() == Items.BEEF) dropItem(Items.COOKED_BEEF, j);
-                else if (food.getItem() == Items.FISH) dropItem(Items.COOKED_FISH, j);
-                else if (food.getItem() == Items.PORKCHOP) dropItem(Items.COOKED_PORKCHOP, j);
-                else dropItem(food.getItem(), j);
-            }
-            else
             {
-                dropItem(food.getItem(), j);
+                ItemStack newDrop = FurnaceRecipes.instance().getSmeltingResult(food);
+                if (newDrop != null) food = newDrop.copy();
             }
+            dropItem(food.getItem(), j);
         }
 
         if (getPokemonAIState(IMoveConstants.TAMED)) return;
@@ -90,7 +83,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
             if (rand.nextInt(15) == 0) entityDropItem(food, 0.5f);
         }
     }
-    
+
     public void dropItem()
     {
         ItemStack toDrop = this.getHeldItemMainhand();

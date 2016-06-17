@@ -59,7 +59,6 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)
     {
-
         Random rand = worldIn instanceof World ? ((World) worldIn).rand : RANDOM;
 
         int count = 1 + rand.nextInt(2);

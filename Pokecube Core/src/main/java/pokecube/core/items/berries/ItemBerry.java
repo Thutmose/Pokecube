@@ -138,6 +138,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
             worldIn.setBlockState(pos.up(), BerryManager.berryCrop.getDefaultState());
             TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos.up());
             tile.setBerryId(index);
+            stack.splitStack(1);
         }
         return EnumActionResult.SUCCESS;
     }

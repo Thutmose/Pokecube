@@ -76,6 +76,14 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     }
 
     @Override
+    /** Used to determine ambient occlusion and culling when rebuilding chunks
+     * for render */
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
     public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
     {
         List<ItemStack> ret = Lists.newArrayList();
@@ -93,6 +101,9 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
         Random rand = world instanceof World ? ((World) world).rand : new Random();
         int chance = this.getSaplingDropChance(state);
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+
+        if (tile == null) { return ret; }
+
         String berry = BerryManager.berryNames.get(tile.getBerryId());
         if (fortune > 0)
         {

@@ -12,7 +12,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.berries.BlockBerryWood.EnumType;
@@ -20,163 +19,180 @@ import pokecube.core.interfaces.PokecubeMod;
 
 public class BlockBerryLog extends BlockLog implements IMetaBlock
 {
-	static final class SwitchEnumAxis
-	{
-		static final int[] AXIS_LOOKUP = new int[BlockLog.EnumAxis.values().length];
+    static final class SwitchEnumAxis
+    {
+        static final int[] AXIS_LOOKUP = new int[BlockLog.EnumAxis.values().length];
 
-		static
-		{
-			try
-			{
-				AXIS_LOOKUP[BlockLog.EnumAxis.X.ordinal()] = 1;
-			}
-			catch (NoSuchFieldError var3)
-			{
-				;
-			}
+        static
+        {
+            try
+            {
+                AXIS_LOOKUP[BlockLog.EnumAxis.X.ordinal()] = 1;
+            }
+            catch (NoSuchFieldError var3)
+            {
+                ;
+            }
 
-			try
-			{
-				AXIS_LOOKUP[BlockLog.EnumAxis.Z.ordinal()] = 2;
-			}
-			catch (NoSuchFieldError var2)
-			{
-				;
-			}
+            try
+            {
+                AXIS_LOOKUP[BlockLog.EnumAxis.Z.ordinal()] = 2;
+            }
+            catch (NoSuchFieldError var2)
+            {
+                ;
+            }
 
-			try
-			{
-				AXIS_LOOKUP[BlockLog.EnumAxis.NONE.ordinal()] = 3;
-			}
-			catch (NoSuchFieldError var1)
-			{
-				;
-			}
-		}
-	}
-	public static final PropertyEnum<BlockBerryWood.EnumType>	VARIANT4				= PropertyEnum.create("variant",
-			BlockBerryWood.EnumType.class, new Predicate<BlockBerryWood.EnumType>()
-			{
-				@Override
-                public boolean apply(BlockBerryWood.EnumType type)
-				{
-					return type.getMetadata() >= 4;
-				}
-			});
-	public static final PropertyEnum<BlockBerryWood.EnumType>	VARIANT0				= PropertyEnum.create("variant",
-			BlockBerryWood.EnumType.class, new Predicate<BlockBerryWood.EnumType>()
-			{
-				@Override
-                public boolean apply(BlockBerryWood.EnumType type)
-				{
-					return type.getMetadata() < 4;
-				}
-			});
-	public static int					currentlyConstructing	= 0;
-	public final String[]				woodType;
+            try
+            {
+                AXIS_LOOKUP[BlockLog.EnumAxis.NONE.ordinal()] = 3;
+            }
+            catch (NoSuchFieldError var1)
+            {
+                ;
+            }
+        }
+    }
 
-	public final int					shift;
+    public static final PropertyEnum<BlockBerryWood.EnumType> VARIANT4              = PropertyEnum.create("variant",
+            BlockBerryWood.EnumType.class, new Predicate<BlockBerryWood.EnumType>()
+                                                                                            {
+                                                                                                @Override
+                                                                                                public boolean apply(
+                                                                                                        BlockBerryWood.EnumType type)
+                                                                                                {
+                                                                                                    return type
+                                                                                                            .getMetadata() >= 4;
+                                                                                                }
+                                                                                            });
+    public static final PropertyEnum<BlockBerryWood.EnumType> VARIANT0              = PropertyEnum.create("variant",
+            BlockBerryWood.EnumType.class, new Predicate<BlockBerryWood.EnumType>()
+                                                                                            {
+                                                                                                @Override
+                                                                                                public boolean apply(
+                                                                                                        BlockBerryWood.EnumType type)
+                                                                                                {
+                                                                                                    return type
+                                                                                                            .getMetadata() < 4;
+                                                                                                }
+                                                                                            });
+    public static int                                         currentlyConstructing = 0;
+    public final String[]                                     woodType;
 
-	/** @param logShift
-	 *            0 or 4, depending on first or second one.
-	 * @param names */
-	public BlockBerryLog(int logShift, String[] names)
-	{
-		super();
-		woodType = names;
-		shift = logShift;
+    public final int                                          shift;
 
-		IBlockState state = this.blockState.getBaseState();
-		EnumType type = EnumType.byMetadata(logShift);
-		PropertyEnum<EnumType> property = shift == 0 ? VARIANT0 : VARIANT4;
-		state = state.withProperty(property, type);
-		this.setDefaultState(state.withProperty(AXIS, EnumFacing.Axis.Y));
-		setCreativeTab(PokecubeMod.creativeTabPokecubeBerries);
-	}
+    /** @param logShift
+     *            0 or 4, depending on first or second one.
+     * @param names */
+    public BlockBerryLog(int logShift, String[] names)
+    {
+        super();
+        woodType = names;
+        shift = logShift;
 
-	@Override
+        IBlockState state = this.blockState.getBaseState();
+        EnumType type = EnumType.byMetadata(logShift);
+        PropertyEnum<EnumType> property = shift == 0 ? VARIANT0 : VARIANT4;
+        state = state.withProperty(property, type);
+        this.setDefaultState(state.withProperty(BlockLog.LOG_AXIS, EnumAxis.Y));
+        setCreativeTab(PokecubeMod.creativeTabPokecubeBerries);
+    }
+
+    @Override
     protected BlockStateContainer createBlockState()
-	{//TODO find out where the bug with this is.
-		return new BlockStateContainer(this, new IProperty[] { currentlyConstructing == 0 ? VARIANT0 : VARIANT4, AXIS });
-	}
+    {// TODO find out where the bug with this is.
+        return new BlockStateContainer(this,
+                new IProperty[] { currentlyConstructing == 0 ? VARIANT0 : VARIANT4, BlockLog.LOG_AXIS });
+    }
 
-	@Override
+    @Override
     protected ItemStack createStackedBlock(IBlockState state)
-	{
-		return new ItemStack(Item.getItemFromBlock(this), 1,
-				state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata() - shift);
-	}
+    {
+        return new ItemStack(Item.getItemFromBlock(this), 1,
+                state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata() - shift);
+    }
 
-	/** Get the damage value that this Block should drop */
-	@Override
+    /** Get the damage value that this Block should drop */
+    @Override
     public int damageDropped(IBlockState state)
-	{
-		return state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata() - shift;
-	}
+    {
+        return state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata() - shift;
+    }
 
-	@Override
+    @Override
     public int getMetaFromState(IBlockState state)
-	{
-		byte b0 = 0;
-		int i = b0 | state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata() - shift;
+    {
+        byte b0 = 0;
+        int i = b0 | state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata() - shift;
 
-		switch (SwitchEnumAxis.AXIS_LOOKUP[state.getValue(AXIS).ordinal()])
-		{
-		case 1:
-			i |= 4;
-			break;
-		case 2:
-			i |= 8;
-			break;
-		case 3:
-			i |= 12;
-		}
+        switch (SwitchEnumAxis.AXIS_LOOKUP[state.getValue(BlockLog.LOG_AXIS).ordinal()])
+        {
+        case 1:
+            i |= 4;
+            break;
+        case 2:
+            i |= 8;
+            break;
+        case 3:
+            i |= 12;
+        }
 
-		return i;
-	}
-	
-	public IBlockState getStateForTree(String berryName)
-	{
-		BlockBerryWood.EnumType type = BlockBerryWood.EnumType.valueOf(berryName.toUpperCase());
-		
-		if(type!=null)
-		{
-			int num = type.getMetadata() - shift;
-			if(num >= 0 && num < 4)
-			{
-				return getStateFromMeta(num+shift).withProperty(AXIS, EnumFacing.Axis.Y);
-			}
-		}
-		return null;
-	}
-	
-    /**
-     * Convert the given metadata into a BlockState for this Block
-     */
+        return i;
+    }
+
+    public IBlockState getStateForTree(String berryName)
+    {
+        BlockBerryWood.EnumType type = BlockBerryWood.EnumType.valueOf(berryName.toUpperCase());
+
+        if (type != null)
+        {
+            int num = type.getMetadata() - shift;
+            if (num >= 0
+                    && num < 4) { return getStateFromMeta(num + shift).withProperty(BlockLog.LOG_AXIS, EnumAxis.Y); }
+        }
+        return null;
+    }
+
+    /** Convert the given metadata into a BlockState for this Block */
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-    	IBlockState state = super.getStateFromMeta(meta);
-    	IProperty<EnumType> property = (shift == 0 ? VARIANT0 : VARIANT4);
+        IBlockState state = getDefaultState();
+        switch (meta & 12)
+        {
+        case 0:
+            state = state.withProperty(LOG_AXIS, BlockLog.EnumAxis.Y);
+            break;
+        case 4:
+            state = state.withProperty(LOG_AXIS, BlockLog.EnumAxis.X);
+            break;
+        case 8:
+            state = state.withProperty(LOG_AXIS, BlockLog.EnumAxis.Z);
+            break;
+        default:
+            state = state.withProperty(LOG_AXIS, BlockLog.EnumAxis.NONE);
+        }
+
+        IProperty<EnumType> property = (shift == 0 ? VARIANT0 : VARIANT4);
         return state.withProperty(property, EnumType.byMetadata((meta & 3) + shift));
     }
 
-	@Override
+    @Override
     @SideOnly(Side.CLIENT)
 
-	/** returns a list of blocks with the same ID, but different meta (eg: wood
-	 * returns 4 blocks) */
-	public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
-	{
-		for (int i = 0; i < woodType.length; i++)
-		{
-			par3List.add(new ItemStack(par1, 1, i));
-		}
-	}
+    /** returns a list of blocks with the same ID, but different meta (eg: wood
+     * returns 4 blocks) */
+    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
+    {
+        for (int i = 0; i < woodType.length; i++)
+        {
+            par3List.add(new ItemStack(par1, 1, i));
+        }
+    }
 
-	@Override
-	public String getUnlocalizedName(ItemStack stack)
-	{
-		return "tile." + woodType[stack.getItemDamage() % woodType.length] + "Log";
-	}
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        return "tile." + woodType[stack.getItemDamage() % woodType.length] + "Log";
+    }
 }

@@ -23,8 +23,11 @@ import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
+import pokecube.core.database.Database;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.ChunkCoordinate;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 
@@ -319,48 +322,73 @@ public class PacketPokeAdv
         String type = "";
         try
         {
-            PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
-            ret.writeByte(3);
             for (int i = 0; i < 6; i++)
             {
                 numbers[i] = buffer.readInt();
                 levels[i] = buffer.readInt();
-
-                ret.writeInt(numbers[i]);
-                ret.writeInt(levels[i]);
             }
-            int num = buffer.readInt();
-            ret.writeInt(num);
-            byte[] string = new byte[num];
-            for (int n = 0; n < num; n++)
+            int num1 = buffer.readInt();
+            byte[] string1 = new byte[num1];
+            for (int n = 0; n < num1; n++)
             {
-                string[n] = buffer.readByte();
-                ret.writeByte(string[n]);
+                string1[n] = buffer.readByte();
             }
-            name = new String(string);
-            num = buffer.readInt();
-            ret.writeInt(num);
-            string = new byte[num];
-            for (int n = 0; n < num; n++)
+            name = new String(string1);
+            int num2 = buffer.readInt();
+            byte[] string2 = new byte[num2];
+            for (int n = 0; n < num2; n++)
             {
-                string[n] = buffer.readByte();
-                ret.writeByte(string[n]);
+                string2[n] = buffer.readByte();
             }
-            type = new String(string);
+            type = new String(string2);
             int id = buffer.readInt();
-            ret.writeInt(id);
             EntityTrainer trainer = (EntityTrainer) player.worldObj.getEntityByID(id);
             boolean stationary = buffer.readBoolean();
-            ret.writeBoolean(stationary);
+            boolean male = buffer.readBoolean();
+            boolean reset = buffer.readBoolean();
+            trainer.male = male;
             trainer.name = name;
             trainer.type = TypeTrainer.getTrainer(type);
             trainer.setTypes();
-            for (int index = 0; index < 6; index++)
+            if (!reset)
             {
-                trainer.setPokemob(numbers[index], levels[index], index);
+                for (int index = 0; index < 6; index++)
+                {
+                    trainer.setPokemob(numbers[index], levels[index], index);
+                }
             }
             if (!player.worldObj.isRemote)
             {
+                if (reset)
+                {
+                    int maxXp = SpawnHandler.getSpawnXp(trainer.worldObj, Vector3.getNewVector().set(trainer),
+                            Database.getEntry(1));
+                    trainer.initTrainer(trainer.type, Tools.xpToLevel(0, maxXp));
+                    numbers = trainer.pokenumbers;
+                    levels = trainer.pokelevels;
+                }
+                PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
+                ret.writeByte(3);
+                for (int i = 0; i < 6; i++)
+                {
+                    ret.writeInt(numbers[i]);
+                    ret.writeInt(levels[i]);
+                }
+                ret.writeInt(num1);
+                for (int n = 0; n < num1; n++)
+                {
+                    ret.writeByte(string1[n]);
+                }
+                ret.writeInt(num2);
+                string1 = new byte[num2];
+                for (int n = 0; n < num2; n++)
+                {
+                    ret.writeByte(string2[n]);
+                }
+                ret.writeInt(id);
+                ret.writeBoolean(stationary);
+                ret.writeBoolean(male);
+                ret.writeBoolean(false);// No reset on client.
                 if (stationary)
                 {
                     trainer.setStationary(true);
@@ -368,7 +396,6 @@ public class PacketPokeAdv
                 MessageClient mes = new MessageClient(ret.array());
                 PokecubePacketHandler.sendToClient(mes, player);
             }
-
         }
         catch (Exception e)
         {

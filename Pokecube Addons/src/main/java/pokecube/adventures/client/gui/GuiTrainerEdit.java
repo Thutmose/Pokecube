@@ -76,6 +76,7 @@ public class GuiTrainerEdit extends GuiScreen
     String                      T              = "true";
 
     boolean                     stationary     = false;
+    boolean                     resetTeam      = false;
 
     public GuiTrainerEdit(EntityTrainer trainer)
     {
@@ -96,6 +97,33 @@ public class GuiTrainerEdit extends GuiScreen
             sendChooseToServer();
             mc.thePlayer.addChatComponentMessage(
                     new ChatComponentText(StatCollector.translateToLocal("gui.trainer.saved")));
+        }
+        else if (guibutton.id == 5)
+        {
+            trainer.male = !trainer.male;
+            guibutton.displayString = trainer.male ? "\u2642" : "\u2640";
+            sendChooseToServer();
+        }
+        else if (guibutton.id == 6)
+        {
+            resetTeam = true;
+            sendChooseToServer();
+            resetTeam = false;
+            int[] numbers = trainer.pokenumbers;
+            int[] levels = trainer.pokelevels;
+
+            textfieldPokedexNb0.setText(numbers[0] + "");
+            textfieldLevel0.setText(levels[0] + "");
+            textfieldPokedexNb1.setText(numbers[1] + "");
+            textfieldLevel1.setText(levels[1] + "");
+            textfieldPokedexNb2.setText(numbers[2] + "");
+            textfieldLevel2.setText(levels[2] + "");
+            textfieldPokedexNb3.setText(numbers[3] + "");
+            textfieldLevel3.setText(levels[3] + "");
+            textfieldPokedexNb4.setText(numbers[4] + "");
+            textfieldLevel4.setText(levels[4] + "");
+            textfieldPokedexNb5.setText(numbers[5] + "");
+            textfieldLevel5.setText(levels[5] + "");
         }
         else
         {
@@ -260,6 +288,9 @@ public class GuiTrainerEdit extends GuiScreen
         // Cycle Trainer Type buttons
         buttonList.add(new GuiButton(3, width / 2 - xOffset - 90, height / 2 - yOffset - 70, 50, 20, prev));
         buttonList.add(new GuiButton(4, width / 2 - xOffset + 80, height / 2 - yOffset - 70, 50, 20, next));
+        String gender = trainer.male ? "\u2642" : "\u2640";
+        buttonList.add(new GuiButton(5, width / 2 - xOffset - 90, height / 2 - yOffset - 90, 20, 20, gender));
+        buttonList.add(new GuiButton(6, width / 2 - xOffset + 80, height / 2 - yOffset - 90, 50, 20, "Reset"));
 
         textfieldPokedexNb0 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 60 + yOffset,
                 30, 10);
@@ -565,6 +596,8 @@ public class GuiTrainerEdit extends GuiScreen
             buff.writeBytes(textFieldType.getText().getBytes());
             buff.writeInt(trainer.getEntityId());
             buff.writeBoolean(stationary);
+            buff.writeBoolean(trainer.male);
+            buff.writeBoolean(resetTeam);
         }
         catch (NumberFormatException e)
         {

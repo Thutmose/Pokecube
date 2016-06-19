@@ -44,6 +44,7 @@ pokemob.action.faint=%1$s has fainted
 pokemob.action.denydamageblock=pokemobsDamageBlocks is disabled via configs
 pokemob.action.needsberries=Your Pokémob needs to eat more Berries to do that
 pokemob.action.denyrepel=Your Pokémob is too disgusted by repel to do that
+pokemob.areanotloaded=Warning, Unloaded area.
 
 pokemob.info.levelup=%1$s has grown to level %2$s
 
@@ -257,7 +258,6 @@ ability.wonderguard.name=Wonder Guard
 ability.wonderskin.name=Wonder Skin
 ability.zenmode.name=Zen Mode
 
-
 achievement.catch=Catch a %1$s
 achievement.get1stPokemob=Get 1st Pokémob
 achievement.get1stPokemob.desc=Get your starter
@@ -416,12 +416,13 @@ tile.pc.bound=Private bound
 item.pokecube.bubbles=Droplets
 item.pokecube.flames=Flames
 
-item.HelixFossil.name=Helix Fossil
-item.DomeFossil.name=Dome Fossil
-item.LileepFossil.name=Root Fossil
-item.AnorithFossil.name=Claw Fossil
-item.CranidosFossil.name=Skull Fossil
-item.ShieldonFossil.name=Armor Fossil
+item.omanyte.name=Helix Fossil
+item.kabuto.name=Dome Fossil
+item.aerodactyl.name=Old Amber
+item.lileep.name=Root Fossil
+item.anorith.name=Claw Fossil
+item.cranidos.name=Skull Fossil
+item.shieldon.name=Armor Fossil
 tile.fossilstone.name=Fossil Stone
 
 item.megaring.name=Mega Ring

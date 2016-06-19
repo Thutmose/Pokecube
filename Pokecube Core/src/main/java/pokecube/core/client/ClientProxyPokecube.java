@@ -77,6 +77,10 @@ import pokecube.core.client.gui.blocks.GuiHealTable;
 import pokecube.core.client.gui.blocks.GuiPC;
 import pokecube.core.client.gui.blocks.GuiTMCreator;
 import pokecube.core.client.gui.blocks.GuiTradingTable;
+import pokecube.core.client.items.BerryTextureHandler;
+import pokecube.core.client.items.FossilTextureHandler;
+import pokecube.core.client.items.MegaStoneTextureHandler;
+import pokecube.core.client.items.VitaminTextureHandler;
 import pokecube.core.client.models.ModelPokemobEgg;
 import pokecube.core.client.render.blocks.RenderPokecubeTable;
 import pokecube.core.client.render.blocks.RenderTradingTable;
@@ -470,6 +474,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         MegaStoneTextureHandler.registerItemModels();
         BerryTextureHandler.registerItemModels();
         VitaminTextureHandler.registerItemModels();
+        FossilTextureHandler.registerItemModels();
     }
 
     @Override

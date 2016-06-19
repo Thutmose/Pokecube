@@ -74,6 +74,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.ItemFossil;
 import pokecube.core.items.ItemLuckyEgg;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.ItemPokemobUseableFood;
@@ -192,63 +193,15 @@ public class ItemHandler extends Mod_Pokecube_Helper
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(Item.getItemFromBlock(fossilStone), 0,
                     new ModelResourceLocation("pokecube:fossilstone", "inventory"));
-
-        Item fossilLileep = (new Item().setUnlocalizedName("LileepFossil"));
-        PokecubeItems.register(fossilLileep, "fossilLileep");
-        fossilLileep.setCreativeTab(PokecubeMod.creativeTabPokecube);
-        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilLileep"), "lileep");
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        PokecubeItems.fossil = new ItemFossil().setRegistryName(PokecubeCore.ID, "fossil");
+        PokecubeItems.register(PokecubeItems.fossil);
+        for (String s : HeldItemHandler.fossilVariants)
         {
-            PokecubeItems.registerItemTexture(fossilLileep, 0,
-                    new ModelResourceLocation("pokecube:fossilLileep", "inventory"));
-        }
-
-        Item fossilAnorith = (new Item().setUnlocalizedName("AnorithFossil"));
-        PokecubeItems.register(fossilAnorith, "fossilAnorith");
-        fossilAnorith.setCreativeTab(PokecubeMod.creativeTabPokecube);
-        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilAnorith"), "anorith");
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            PokecubeItems.registerItemTexture(fossilAnorith, 0,
-                    new ModelResourceLocation("pokecube:fossilAnorith", "inventory"));
-        }
-
-        Item fossilCranidos = (new Item().setUnlocalizedName("CranidosFossil"));
-        PokecubeItems.register(fossilCranidos, "fossilCranidos");
-        fossilCranidos.setCreativeTab(PokecubeMod.creativeTabPokecube);
-        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilCranidos"), "cranidos");
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            PokecubeItems.registerItemTexture(fossilCranidos, 0,
-                    new ModelResourceLocation("pokecube:fossilCranidos", "inventory"));
-        }
-
-        Item fossilShieldon = (new Item().setUnlocalizedName("ShieldonFossil"));
-        PokecubeItems.register(fossilShieldon, "fossilShieldon");
-        fossilShieldon.setCreativeTab(PokecubeMod.creativeTabPokecube);
-        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilShieldon"), "shieldon");
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            PokecubeItems.registerItemTexture(fossilShieldon, 0,
-                    new ModelResourceLocation("pokecube:fossilShieldon", "inventory"));
-        }
-
-        Item dome = (new Item().setUnlocalizedName("DomeFossil"));
-        PokecubeItems.register(dome, "fossilDome");
-        dome.setCreativeTab(PokecubeMod.creativeTabPokecube);
-        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilDome"), "kabuto");
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            PokecubeItems.registerItemTexture(dome, 0, new ModelResourceLocation("pokecube:fossilDome", "inventory"));
-        }
-
-        Item helix = (new Item().setUnlocalizedName("HelixFossil"));
-        PokecubeItems.register(helix, "fossilHelix");
-        helix.setCreativeTab(PokecubeMod.creativeTabPokecube);
-        PokecubeItems.registerFossil(PokecubeItems.getStack("fossilHelix"), "omanyte");
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            PokecubeItems.registerItemTexture(helix, 0, new ModelResourceLocation("pokecube:fossilHelix", "inventory"));
+            ItemStack stack = new ItemStack(PokecubeItems.fossil);
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setString("pokemon", s);
+            PokecubeItems.addSpecificItemStack(s, stack);
+            PokecubeItems.registerFossil(stack, s);
         }
     }
 

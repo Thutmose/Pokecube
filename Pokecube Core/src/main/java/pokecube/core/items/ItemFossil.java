@@ -1,4 +1,4 @@
-package pokecube.core.items.megastuff;
+package pokecube.core.items;
 
 import java.util.List;
 
@@ -10,14 +10,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.HeldItemHandler;
 
-public class ItemMegastone extends Item
+public class ItemFossil extends Item
 {
-    public ItemMegastone()
+    public ItemFossil()
     {
         super();
-        this.setMaxStackSize(1);
+        this.setCreativeTab(PokecubeCore.creativeTabPokecube);
         this.setHasSubtypes(true);
     }
 
@@ -37,11 +38,12 @@ public class ItemMegastone extends Item
     @Override
     public String getItemStackDisplayName(ItemStack stack)
     {
-        String name = ("" + I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name")).trim();
+        String name = ("" + I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name"))
+                .trim();
         if (stack.hasTagCompound())
         {
             NBTTagCompound tag = stack.getTagCompound();
-            String variant = "megastone";
+            String variant = "fossil";
             if (tag != null)
             {
                 String stackname = tag.getString("pokemon");
@@ -68,8 +70,7 @@ public class ItemMegastone extends Item
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
         ItemStack stack;
-        subItems.add(new ItemStack(itemIn));
-        for (String s : HeldItemHandler.megaVariants)
+        for (String s : HeldItemHandler.fossilVariants)
         {
             stack = new ItemStack(itemIn);
             stack.setTagCompound(new NBTTagCompound());

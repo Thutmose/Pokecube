@@ -101,7 +101,7 @@ public class GuiPC extends GuiContainer
                     cont.toRelease = new boolean[54];
                     for (int i = 0; i < 54; i++)
                     {
-                        int index = i + 36;
+                        int index = i;
                         SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
                         slot.release = false;
                     }
@@ -113,7 +113,7 @@ public class GuiPC extends GuiContainer
                 {
                     for (int i = 0; i < 54; i++)
                     {
-                        int index = i + 36;
+                        int index = i;
                         SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
                         slot.release = true;
                     }

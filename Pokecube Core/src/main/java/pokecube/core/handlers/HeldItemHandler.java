@@ -9,7 +9,8 @@ import pokecube.core.utils.PokeType;
 
 public class HeldItemHandler
 {
-    public static ArrayList<String> megaVariants = new ArrayList<>();
+    public static ArrayList<String> megaVariants   = new ArrayList<>();
+    public static ArrayList<String> fossilVariants = new ArrayList<>();
 
     static
     {
@@ -45,6 +46,14 @@ public class HeldItemHandler
         megaVariants.add("steelixmega");
         megaVariants.add("swampertmega");
         megaVariants.add("venusaurmega");
+        // TODO rest of the mega stoneS here.
+
+        fossilVariants.add("omanyte");
+        fossilVariants.add("kabuto");
+        fossilVariants.add("lileep");
+        fossilVariants.add("anorith");
+        fossilVariants.add("cranidos");
+        fossilVariants.add("shieldon");
     }
 
     private static double getMoveMultiplier(ItemStack held, PokeType move)

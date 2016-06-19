@@ -1,0 +1,18 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "transform": "forge:default-tool"
+  },
+  "variants": {
+    "type": {
+      "omanyte": {"textures": {"layer0": "pokecube:items/fossilHelix"}},
+      "kabuto": {"textures": {"layer0": "pokecube:items/fossilDome"}},
+      "aerodactyl": {"textures": {"layer0": "pokecube:items/old_Amber"}},
+      "lileep": {"textures": {"layer0": "pokecube:items/fossilLileep"}},
+      "anorith": {"textures": {"layer0": "pokecube:items/fossilAnorith"}},
+      "cranidos": {"textures": {"layer0": "pokecube:items/fossilCranidos"}},
+      "shieldon": {"textures": {"layer0": "pokecube:items/fossilShieldon"}}
+    }
+  }
+}

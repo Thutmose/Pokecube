@@ -176,7 +176,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         super.readFromNBT(tagCompound);
         NBTTagList tagList = (NBTTagList) tagCompound.getTag("Inventory");
         // ticks = tagCompound.getInteger("time");
-        for (int i = 0; i < tagList.tagCount(); i++)
+        if (tagList != null) for (int i = 0; i < tagList.tagCount(); i++)
         {
             NBTTagCompound tag = tagList.getCompoundTagAt(i);
             byte slot = tag.getByte("Slot");

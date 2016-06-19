@@ -50,6 +50,7 @@ public class HeldItemHandler
 
         fossilVariants.add("omanyte");
         fossilVariants.add("kabuto");
+        fossilVariants.add("aerodactyl");
         fossilVariants.add("lileep");
         fossilVariants.add("anorith");
         fossilVariants.add("cranidos");

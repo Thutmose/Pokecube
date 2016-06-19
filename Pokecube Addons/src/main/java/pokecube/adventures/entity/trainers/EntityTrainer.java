@@ -848,7 +848,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     public void setStationary(Vector3 location)
     {
-        System.out.println(location);
         this.location = location;
         if (location == null)
         {

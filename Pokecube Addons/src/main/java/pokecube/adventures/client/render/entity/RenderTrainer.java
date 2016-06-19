@@ -5,6 +5,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
@@ -19,16 +20,33 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
     private static Map<TypeTrainer, ResourceLocation> males   = Maps.newHashMap();
     private static Map<TypeTrainer, ResourceLocation> females = Maps.newHashMap();
 
+    private ModelBiped                                male;
+    private ModelBiped                                female;
+
     public RenderTrainer(RenderManager manager)
     {
         super(manager, new ModelBiped(0.0F), 0.5f);
+        male = new ModelPlayer(0, false);
+        female = new ModelPlayer(0, true);
     }
 
-    @SuppressWarnings("unchecked")
+    public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
+    {
+        if (((EntityTrainer) entity).male)
+        {
+            mainModel = male;
+        }
+        else
+        {
+            mainModel = female;
+        }
+        super.doRender(entity, x, y, z, entityYaw, partialTicks);
+    }
+
     @Override
     /** Returns the location of an entity's texture. Doesn't seem to be called
      * unless you call Render.bindEntityTexture. */
-    protected ResourceLocation getEntityTexture(EntityLiving villager)
+    protected ResourceLocation getEntityTexture(T villager)
     {
         ResourceLocation texture = null;
 

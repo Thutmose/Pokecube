@@ -1,4 +1,4 @@
-package pokecube.core.client;
+package pokecube.core.client.items;
 
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -7,20 +7,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
-import pokecube.core.items.vitamins.ItemVitamin;
+import pokecube.core.PokecubeItems;
+import pokecube.core.handlers.HeldItemHandler;
 
-public class VitaminTextureHandler
+public class MegaStoneTextureHandler
 {
-    public static class MeshDefinition implements ItemMeshDefinition
+    public static class MegaStone implements ItemMeshDefinition
     {
         @Override
         public ModelResourceLocation getModelLocation(ItemStack stack)
         {
             NBTTagCompound tag = stack.getTagCompound();
-            String variant = "vitamin";
+            String variant = "megastone";
             if (tag != null)
             {
-                String stackname = tag.getString("vitamin");
+                String stackname = tag.getString("pokemon");
                 variant = stackname.toLowerCase();
             }
             return getLocation(variant);
@@ -29,20 +30,20 @@ public class VitaminTextureHandler
 
     public static ModelResourceLocation getLocation(String name)
     {
-        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/vitamins"), "type=" + name.toLowerCase());
+        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"),
+                "type=" + name.toLowerCase());
     }
 
     private static void registerItemVariant(String variant)
     {
-        ModelBakery.registerItemVariants(ItemVitamin.instance,
-                new ModelResourceLocation(new ResourceLocation("pokecube", "item/vitamins"), variant));
+        ModelBakery.registerItemVariants(PokecubeItems.megastone,
+                new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"), variant));
     }
 
     public static void registerItemModels()
     {
-        ModelLoader.setCustomMeshDefinition(ItemVitamin.instance, new MeshDefinition());
-        System.out.println(ItemVitamin.instance+" "+ItemVitamin.vitamins);
-        for (String s : ItemVitamin.vitamins)
+        ModelLoader.setCustomMeshDefinition(PokecubeItems.megastone, new MegaStone());
+        for (String s : HeldItemHandler.megaVariants)
         {
             registerItemVariant("type=" + s);
         }

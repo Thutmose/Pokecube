@@ -27,6 +27,7 @@ import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
+import pokecube.core.utils.Tools;
 
 public class PokecubeItems extends Items
 {
@@ -101,6 +102,7 @@ public class PokecubeItems extends Items
     public static Item                        berries;
     public static Item                        megastone;
     public static Item                        megaring;
+    public static Item                        fossil;
 
     public static Item                        revive;
     public static Block                       pokecenter;
@@ -351,7 +353,7 @@ public class PokecubeItems extends Items
         int ret = 0;
         for (ItemStack s : fossils.keySet())
         {
-            if (s.isItemEqual(fossil))
+            if (Tools.isSameStack(s, fossil))
             {
                 ret = fossils.get(s);
                 break;

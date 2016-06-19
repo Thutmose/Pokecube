@@ -230,9 +230,14 @@ public class ContainerPC extends Container
     }
 
     @Override
-    public ItemStack slotClick(int i, int j, int flag, EntityPlayer entityplayer)
+    public ItemStack slotClick(int slot, int j, int flag, EntityPlayer entityplayer)
     {
-        return super.slotClick(i, j, flag, entityplayer);
+        if (release)
+        {
+            if (slot < 54 && slot >= 0) toRelease[slot] = !toRelease[slot];
+            return null;
+        }
+        return super.slotClick(slot, j, flag, entityplayer);
     }
 
     @Override

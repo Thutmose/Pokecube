@@ -1,4 +1,4 @@
-package pokecube.core.client;
+package pokecube.core.client.items;
 
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelBakery;

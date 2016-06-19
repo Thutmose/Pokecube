@@ -1,4 +1,4 @@
-package pokecube.core.client;
+package pokecube.core.client.items;
 
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -10,7 +10,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import pokecube.core.PokecubeItems;
 import pokecube.core.handlers.HeldItemHandler;
 
-public class MegaStoneTextureHandler
+public class FossilTextureHandler
 {
     public static class MegaStone implements ItemMeshDefinition
     {
@@ -18,7 +18,7 @@ public class MegaStoneTextureHandler
         public ModelResourceLocation getModelLocation(ItemStack stack)
         {
             NBTTagCompound tag = stack.getTagCompound();
-            String variant = "megastone";
+            String variant = "fossil";
             if (tag != null)
             {
                 String stackname = tag.getString("pokemon");
@@ -30,20 +30,19 @@ public class MegaStoneTextureHandler
 
     public static ModelResourceLocation getLocation(String name)
     {
-        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"),
-                "type=" + name.toLowerCase());
+        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/fossil"), "type=" + name.toLowerCase());
     }
 
     private static void registerItemVariant(String variant)
     {
-        ModelBakery.registerItemVariants(PokecubeItems.megastone,
-                new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"), variant));
+        ModelBakery.registerItemVariants(PokecubeItems.fossil,
+                new ModelResourceLocation(new ResourceLocation("pokecube", "item/fossil"), variant));
     }
 
     public static void registerItemModels()
     {
-        ModelLoader.setCustomMeshDefinition(PokecubeItems.megastone, new MegaStone());
-        for (String s : HeldItemHandler.megaVariants)
+        ModelLoader.setCustomMeshDefinition(PokecubeItems.fossil, new MegaStone());
+        for (String s : HeldItemHandler.fossilVariants)
         {
             registerItemVariant("type=" + s);
         }

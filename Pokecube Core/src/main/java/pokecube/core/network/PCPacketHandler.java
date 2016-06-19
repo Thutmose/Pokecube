@@ -318,7 +318,7 @@ public class PCPacketHandler
                 ContainerPC cont = ((ContainerPC) (sender.openContainer));
                 for (int i = 0; i < 54; i++)
                 {
-                    int index = i + 36;
+                    int index = i;
                     SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
                     slot.release = true;
                 }
@@ -328,7 +328,7 @@ public class PCPacketHandler
                 ContainerPC cont = ((ContainerPC) (sender.openContainer));
                 for (int i = 0; i < 54; i++)
                 {
-                    int index = i + 36;
+                    int index = i;
                     SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
                     slot.release = false;
                 }

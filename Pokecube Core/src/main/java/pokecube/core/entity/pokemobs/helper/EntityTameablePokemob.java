@@ -479,7 +479,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     public void onUpdate()
     {
         super.onUpdate();
-
+        portalCounter = -1000;//TODO replace this with actual dupe fix for nether portals.
         if (initHome)
         {
             initHome = false;

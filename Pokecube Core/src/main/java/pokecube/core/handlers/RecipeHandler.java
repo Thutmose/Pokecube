@@ -24,7 +24,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.RecipeBrewBerries;
@@ -54,10 +53,11 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         GameRegistry.addRecipe(new ItemStack(Items.CAKE, 1), new Object[] { "AAA", "BEB", "CCC", 'A', Items.MILK_BUCKET,
                 'B', Items.SUGAR, 'C', Items.WHEAT, 'E', luckyEgg });
 
-        if (PokecubeMod.core.getConfig().tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SMS", 'R',
-                Items.REDSTONE, 'S', Blocks.STONE, 'M', Items.MILK_BUCKET, 'I', Items.IRON_INGOT });
-        if (PokecubeMod.core.getConfig().tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SES", 'R',
-                Items.REDSTONE, 'S', Blocks.STONE, 'E', luckyEgg, 'I', Items.IRON_INGOT });
+        if (PokecubeMod.core.getConfig().tableRecipe)
+            GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SMS", 'R', Items.REDSTONE,
+                    'S', Blocks.STONE, 'M', Items.MILK_BUCKET, 'I', Items.IRON_INGOT });
+        if (PokecubeMod.core.getConfig().tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] {
+                "III", "SRS", "SES", 'R', Items.REDSTONE, 'S', Blocks.STONE, 'E', luckyEgg, 'I', Items.IRON_INGOT });
         GameRegistry.addRecipe(new ItemStack(pokedex),
                 new Object[] { "PRR", "RBR", "RRR", 'P', pokecube, 'R', Items.REDSTONE, 'B', Items.BOOK });
 
@@ -125,18 +125,12 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         GameRegistry.addRecipe(new ItemStack(repelBlock), new Object[] { "JR", "RJ", 'J',
                 BerryManager.getBerryItem("jaboca"), 'R', BerryManager.getBerryItem("rowap"), });
 
-        for (Integer i : PokecubeItems.pokecubes.keySet())
-        {
-            GameRegistry.addShapelessRecipe(new ItemStack(PokecubeItems.getFilledCube(i), 1, 1),
-                    PokecubeItems.getStack("revive"), new ItemStack(PokecubeItems.getFilledCube(i), 1, 32767));
-        }
-//        GameRegistry.addRecipe(new RecipePokeseals());
-//        GameRegistry.addRecipe(new RecipeRevive());
+        GameRegistry.addRecipe(new RecipePokeseals());
+        GameRegistry.addRecipe(new RecipeRevive());
 
         RecipeSorter.register("pokecube:pokeseals", RecipePokeseals.class, Category.SHAPELESS,
                 "after:minecraft:shaped");
         RecipeSorter.register("pokecube:revive", RecipeRevive.class, Category.SHAPELESS, "after:minecraft:shaped");
-        
 
         // TOP
         GameRegistry.addRecipe(getStack("pctop"), new Object[] { "MMM", "SRS", "SIS", 'R', Items.REDSTONE, 'S',

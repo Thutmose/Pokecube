@@ -3,6 +3,8 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
+import java.util.UUID;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,7 +66,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (e != null && Pokedex.getInstance().getEntry(e.getPokedexNb()) != null) { return true; }
             }
         }
-
         return false;
     }
 
@@ -270,17 +271,23 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             if (newEntry.getPokedexNb() != getPokedexNb())
             {
                 evolution = PokecubeMod.core.createEntityByPokedexNb(newEntry.getPokedexNb(), worldObj);
+
+                if (evolution == null)
+                {
+                    System.err.println("No Entry for " + newEntry);
+                    return this;
+                }
                 evolution.copyDataFromOld(this);
                 evolution.copyLocationAndAnglesFrom(this);
+                evolution.setUniqueId(UUID.randomUUID());
                 ((IPokemob) evolution).changeForme(forme);
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
-                worldObj.spawnEntityInWorld(evolution);
+                if (this.addedToChunk) worldObj.spawnEntityInWorld(evolution);
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))
                 {
                     ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
                     ((IPokemob) evolution).setEvolutionTicks(10);
-
                 }
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
                         this.getPokemonDisplayName(), ((IPokemob) evolution).getPokedexEntry().getName());
@@ -298,7 +305,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 {
                     ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
                     ((IPokemob) evolution).setEvolutionTicks(10);
-
                 }
             }
         }

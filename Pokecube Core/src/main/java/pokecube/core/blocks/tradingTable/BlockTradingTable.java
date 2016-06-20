@@ -27,11 +27,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokecubes.PokecubeManager;
 
 public class BlockTradingTable extends Block implements ITileEntityProvider
 {
@@ -87,6 +90,13 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
 
         if (!(tile_entity instanceof IInventory)) { return; }
 
+        if (tile_entity instanceof TileEntityTradingTable)
+        {
+            TileEntityTradingTable table = (TileEntityTradingTable) tile_entity;
+            if (table.player1 != null) table.player1.closeScreen();
+            if (table.player2 != null) table.player2.closeScreen();
+        }
+
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
@@ -107,6 +117,16 @@ public class BlockTradingTable extends Block implements ITileEntityProvider
                 if (item.hasTagCompound())
                 {
                     entity_item.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
+                }
+                if (PokecubeManager.isFilled(item))
+                {
+                    ItemTossEvent toss = new ItemTossEvent(entity_item, PokecubeMod.getFakePlayer());
+                    MinecraftForge.EVENT_BUS.post(toss);
+                    boolean toPC = toss.isCanceled();
+                    if (toPC)
+                    {
+                        continue;
+                    }
                 }
 
                 float factor = 0.5F;

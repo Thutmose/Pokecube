@@ -411,6 +411,7 @@ public class PCPacketHandler
                 int z = Integer.valueOf(args[3].trim());
                 TileEntityTradingTable tile = (TileEntityTradingTable) sender.worldObj
                         .getTileEntity(new BlockPos(x, y, z));
+                if (tile == null) return;
                 tile.addPlayer(null);
 
                 mes = 9 + "," + x + "," + y + "," + z + "," + player.getEntityId() + ",0";

@@ -64,7 +64,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (e != null && Pokedex.getInstance().getEntry(e.getPokedexNb()) != null) { return true; }
             }
         }
-
         return false;
     }
 

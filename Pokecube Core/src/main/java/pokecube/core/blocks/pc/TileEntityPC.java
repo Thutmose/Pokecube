@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -23,13 +22,8 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.core.blocks.TileEntityOwnable;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityPC extends TileEntityOwnable implements IInventory, SimpleComponent
+public class TileEntityPC extends TileEntityOwnable implements IInventory//, SimpleComponent
 {
-
-    public void writeToNBT_OpenComputers(NBTTagCompound nbt)
-    {
-        super.writeToNBT(nbt);
-    }
     private boolean     bound   = false;
     private String      boundId = "";
     public List<String> visible = new ArrayList<String>();
@@ -56,7 +50,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         return null;
     }
 
-    @Override
+//  @Override //TODO re-add SimpleComponent when it is fixed.
     public String getComponentName()
     {
         return "pokecubepc";

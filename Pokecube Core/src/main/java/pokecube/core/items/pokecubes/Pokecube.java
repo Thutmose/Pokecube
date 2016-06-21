@@ -177,7 +177,7 @@ public class Pokecube extends Item implements IPokecube
             EnumHand hand)
     {
         return new ActionResult<ItemStack>(hand == EnumHand.MAIN_HAND
-                ? throwPokecube(world, player, itemstack, null, null) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL
+                ? throwPokecube(world, player, itemstack, null, player) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL
                 : EnumActionResult.FAIL, itemstack);
     }
 
@@ -211,6 +211,8 @@ public class Pokecube extends Item implements IPokecube
         ItemStack stack = ItemStack.copyItemStack(cube);
         stack.stackSize = 1;
         entity = new EntityPokecube(world, player, stack);
+        boolean rightclick = target == player;
+        if (rightclick) target = null;
 
         if (target instanceof EntityLivingBase || PokecubeManager.isFilled(cube) || player.isSneaking()
                 || (player instanceof FakePlayer))
@@ -234,8 +236,9 @@ public class Pokecube extends Item implements IPokecube
                 world.spawnEntityInWorld(entity);
             }
         }
-        else
+        else if (!rightclick)
         {
+            Thread.dumpStack();
             CommandTools.sendError(player, "pokecube.badaim");
             return false;
         }

@@ -12,7 +12,6 @@ import com.google.common.collect.Lists;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -55,13 +54,8 @@ import pokecube.core.network.PokecubePacketHandler;
 import thut.api.maths.Vector3;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, SimpleComponent
+public class TileEntityTradingTable extends TileEntityOwnable implements IInventory//, SimpleComponent
 {
-
-    public void writeToNBT_OpenComputers(NBTTagCompound nbt)
-    {
-        super.writeToNBT(nbt);
-    }
     private static class TMCConverter
     {
         final TileEntityTradingTable toConvert;
@@ -294,7 +288,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         return null;
     }
 
-    @Override
+//  @Override //TODO re-add SimpleComponent when it is fixed.
     public String getComponentName()
     {
         return "tradingtable";

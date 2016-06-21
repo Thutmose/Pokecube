@@ -6,7 +6,6 @@ import io.netty.buffer.Unpooled;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -29,13 +28,8 @@ import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyReceiver, SimpleComponent
+public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyReceiver//, SimpleComponent
 {
-
-    public void writeToNBT_OpenComputers(NBTTagCompound nbt)
-    {
-        super.writeToNBT(nbt);
-    }
     public static double    MAXRANGE    = 64;
     public static int       COOLDOWN    = 1000;
     public Vector4          link;
@@ -56,7 +50,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         return facing == EnumFacing.DOWN;
     }
 
-    @Override
+//  @Override //TODO re-add SimpleComponent when it is fixed.
     public String getComponentName()
     {
         return "warppad";

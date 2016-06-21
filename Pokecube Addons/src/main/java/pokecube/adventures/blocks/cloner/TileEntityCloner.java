@@ -11,7 +11,6 @@ import cofh.api.energy.IEnergyReceiver;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -44,13 +43,8 @@ import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.Tools;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityCloner extends TileEntity implements IInventory, ITickable, IEnergyReceiver, SimpleComponent
+public class TileEntityCloner extends TileEntity implements IInventory, ITickable, IEnergyReceiver//, SimpleComponent
 {
-
-    public void writeToNBT_OpenComputers(NBTTagCompound nbt)
-    {
-        super.writeToNBT(nbt);
-    }
     public static class CraftMatrix extends InventoryCrafting
     {
         /** Class containing the callbacks for the events on_GUIClosed and
@@ -496,7 +490,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         return null;
     }
 
-    @Override
+//  @Override //TODO re-add SimpleComponent when it is fixed.
     public String getComponentName()
     {
         return "splicer";

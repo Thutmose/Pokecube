@@ -12,7 +12,6 @@ import cofh.api.energy.IEnergyReceiver;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -30,13 +29,8 @@ import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyProvider, SimpleComponent
+public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyProvider//, SimpleComponent
 {
-
-    public void writeToNBT_OpenComputers(NBTTagCompound nbt)
-    {
-        super.writeToNBT(nbt);
-    }
     AxisAlignedBB box;
     public JEP    parser    = new JEP();
     int           lastInput = 0;
@@ -69,7 +63,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
         return ret;
     }
 
-    @Override
+//  @Override //TODO re-add SimpleComponent when it is fixed.
     public String getComponentName()
     {
         return "pokesiphon";

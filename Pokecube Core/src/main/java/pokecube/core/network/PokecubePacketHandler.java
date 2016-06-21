@@ -443,7 +443,6 @@ public class PokecubePacketHandler
                                     long time = player.getEntityData().getLong("lastThrow");
                                     if (time == player.worldObj.getTotalWorldTime()) return;
                                     player.getEntityData().setLong("lastThrow", player.worldObj.getTotalWorldTime());
-
                                     if (buffer.readableBytes() == 4)
                                     {
                                         int id = buffer.readInt();

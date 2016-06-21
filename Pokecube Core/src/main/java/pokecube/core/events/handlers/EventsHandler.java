@@ -30,6 +30,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -392,14 +393,9 @@ public class EventsHandler
             }
         }
         if (evt.getEntityPlayer().worldObj.isRemote && evt.getEntityPlayer().getHeldItemMainhand() != null
-                && evt.getEntityPlayer().getHeldItemMainhand().getItem() instanceof IPokecube)
+                && evt.getEntityPlayer().getHeldItemMainhand().getItem() instanceof IPokecube
+                && evt.getHand() == EnumHand.MAIN_HAND)
         {
-            Block block = null;
-            if (rightClickBlock)
-            {
-                block = evt.getWorld().getBlockState(evt.getPos()).getBlock();
-            }
-
             Entity target = Tools.getPointedEntity(evt.getEntityPlayer(), 32);
 
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(5));
@@ -416,42 +412,18 @@ public class EventsHandler
                 Vector3 hit = Vector3.getNextSurfacePoint(evt.getWorld(), temp, look, 32);
                 if (hit != null) hit.writeToBuff(buffer);
             }
-            PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
-            if (rightClickAir) PokecubePacketHandler.sendToServer(packet);
+            if (rightClickAir && !evt.getEntityPlayer().isSneaking())
+            {
+//                System.out.println("Test");
+                PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
+                PokecubePacketHandler.sendToServer(packet);
+                evt.setCanceled(true);
+                evt.setResult(Result.DENY);
+            }
             if (!rightClickBlock)
             {
                 evt.setCanceled(true);
                 evt.setResult(Result.DENY);
-            }
-            else
-            {
-                StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-                boolean loop = false;
-                for (int i = 2; i < trace.length; i++)
-                {
-                    if (trace[i].getClassName().equals("pokecube.core.events.handlers.EventsHandler"))
-                    {
-                        loop = true;
-                        break;
-                    }
-                }
-                if (block != null && !loop)
-                {
-                    PlayerInteractEvent.RightClickBlock evt2 = (PlayerInteractEvent.RightClickBlock) evt;
-                    IBlockState state = evt.getWorld().getBlockState(evt.getPos());
-                    boolean b = block.onBlockActivated(evt.getWorld(), evt.getPos(), state, evt.getEntityPlayer(),
-                            evt.getEntityPlayer().getActiveHand(), evt.getEntityLiving().getActiveItemStack(),
-                            evt.getFace(), (float) evt2.getHitVec().xCoord, (float) evt2.getHitVec().yCoord,
-                            (float) evt2.getHitVec().zCoord);
-                    if (!b && !evt.getEntityPlayer().isSneaking())
-                    {
-                        PokecubePacketHandler.sendToServer(packet);
-                    }
-                }
-                else
-                {
-                    PokecubePacketHandler.sendToServer(packet);
-                }
             }
             if (evt.getEntityPlayer().getHeldItemMainhand() == null
                     || evt.getEntityPlayer().getHeldItemMainhand().stackSize <= 0)

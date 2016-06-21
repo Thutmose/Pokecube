@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IItemRegistry;
-import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
@@ -45,8 +44,6 @@ public class JEICompat implements IModPlugin
 
     IItemRegistry itemRegistry;
 
-    IJeiHelpers   jeiHelpers;
-
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
     {
@@ -58,7 +55,7 @@ public class JEICompat implements IModPlugin
         if (added) return;
         
         added = true;
-        IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
+        IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
         registry.addRecipeCategories(new ClonerRecipeCategory(guiHelper));
         registry.addRecipeHandlers(new ClonerRecipeHandler());
         registry.addRecipeClickArea(GuiCloner.class, 88, 32, 28, 23, CLONER);

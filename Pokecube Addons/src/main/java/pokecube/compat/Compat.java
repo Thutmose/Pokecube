@@ -119,12 +119,12 @@ public class Compat
         }
     }
 
-//    GCCompat gccompat;
+    // GCCompat gccompat;
 
     public Compat()
     {
-//        gccompat = new GCCompat();
-//        MinecraftForge.EVENT_BUS.register(gccompat);
+        // gccompat = new GCCompat();
+        // MinecraftForge.EVENT_BUS.register(gccompat);
     }
 
     // @Optional.Method(modid = "PneumaticCraft")
@@ -144,7 +144,8 @@ public class Compat
     public void AS_DLCompat(FMLPostInitializationEvent evt)
     {
         System.out.println("DynamicLights Compat");
-//        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.DynamicLightsCompat());
+        // MinecraftForge.EVENT_BUS.register(new
+        // pokecube.compat.atomicstryker.DynamicLightsCompat());
     }
 
     @Optional.Method(modid = "AS_Ruins")
@@ -152,7 +153,7 @@ public class Compat
     public void AS_RuinsCompat(FMLPostInitializationEvent evt)
     {
         System.out.println("AS_Ruins Compat");
-//        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
     }
 
     @SideOnly(Side.CLIENT)
@@ -202,7 +203,7 @@ public class Compat
     @SubscribeEvent
     public void postPostInit(PostPostInit evt)
     {
-//        gccompat.register();
+        // gccompat.register();
     }
 
     @EventHandler
@@ -222,20 +223,20 @@ public class Compat
         pokecube.compat.reccomplex.ReComplexCompat.register();
     }
 
-//    @Optional.Method(modid = "Thaumcraft")
-//    @EventHandler
-//    public void Thaumcraft_Compat(FMLPreInitializationEvent evt)
-//    {
-//        System.out.println("Thaumcraft Compat");
-//
-//        ThaumcraftCompat tccompat;
-//        ThaumiumPokecube thaumiumpokecube;
-//        thaumiumpokecube = new ThaumiumPokecube();
-//        thaumiumpokecube.addThaumiumPokecube();
-//
-//        tccompat = new ThaumcraftCompat();
-//        MinecraftForge.EVENT_BUS.register(tccompat);
-//    }
+    // @Optional.Method(modid = "Thaumcraft")
+    // @EventHandler
+    // public void Thaumcraft_Compat(FMLPreInitializationEvent evt)
+    // {
+    // System.out.println("Thaumcraft Compat");
+    //
+    // ThaumcraftCompat tccompat;
+    // ThaumiumPokecube thaumiumpokecube;
+    // thaumiumpokecube = new ThaumiumPokecube();
+    // thaumiumpokecube.addThaumiumPokecube();
+    //
+    // tccompat = new ThaumcraftCompat();
+    // MinecraftForge.EVENT_BUS.register(tccompat);
+    // }
 
     @SideOnly(Side.CLIENT)
     @Optional.Method(modid = "Waila")

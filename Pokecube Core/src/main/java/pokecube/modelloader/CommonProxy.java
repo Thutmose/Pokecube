@@ -86,7 +86,7 @@ public class CommonProxy implements IGuiHandler
 
     HashMap<String, XMLLocs>                         xmlFiles       = Maps.newHashMap();
 
-    private HashMap<String, Object>                  mobProviders   = Maps.newHashMap();
+    HashMap<String, Object>                          mobProviders   = Maps.newHashMap();
 
     private void addXML(ResourceLocation xml, Object location)
     {
@@ -361,7 +361,6 @@ public class CommonProxy implements IGuiHandler
             ProgressManager.pop(bar2);
         }
         ProgressManager.pop(bar);
-        ExtraDatabase.apply();
     }
 
     public void populateModels()

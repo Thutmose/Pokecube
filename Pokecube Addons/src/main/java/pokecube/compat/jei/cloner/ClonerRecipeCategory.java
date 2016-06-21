@@ -8,16 +8,14 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
-import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import mezz.jei.util.Log;
 import mezz.jei.util.Translator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import pokecube.compat.jei.JEICompat;
 
-public class ClonerRecipeCategory implements IRecipeCategory
+public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper>
 {
 
     private static final int craftOutputSlot = 0;
@@ -71,7 +69,7 @@ public class ClonerRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull IRecipeWrapper recipeWrapper)
+    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull ClonerRecipeWrapper recipeWrapper)
     {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         
@@ -101,18 +99,6 @@ public class ClonerRecipeCategory implements IRecipeCategory
                 craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());
                 
             }
-        }
-        else if (recipeWrapper instanceof IShapedCraftingRecipeWrapper)
-        {
-            IShapedCraftingRecipeWrapper wrapper = (IShapedCraftingRecipeWrapper) recipeWrapper;
-            craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs(), wrapper.getWidth(), wrapper.getHeight());
-            craftingGridHelper.setOutput(guiItemStacks, wrapper.getOutputs());
-        }
-        else if (recipeWrapper instanceof ICraftingRecipeWrapper)
-        {
-            ICraftingRecipeWrapper wrapper = (ICraftingRecipeWrapper) recipeWrapper;
-            craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());
-            craftingGridHelper.setOutput(guiItemStacks, wrapper.getOutputs());
         }
         else
         {

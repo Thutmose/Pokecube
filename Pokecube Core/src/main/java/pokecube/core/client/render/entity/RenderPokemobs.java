@@ -129,7 +129,6 @@ public class RenderPokemobs extends RenderPokemob
             this.shadowSize = entry.width * mob.getSize();
             // System.out.println(nbm+" "+renderMap.get(nbm));
             Render render = getRenderer(mob.getPokedexEntry());
-
             if (render == instance)
             {
                 String nbm = entry.getName() + entry.getModId();

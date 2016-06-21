@@ -143,7 +143,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
             if (evol != null)
             {
-
                 EvolveEvent evt = new EvolveEvent.Pre(this, evol.getName());
                 MinecraftForge.EVENT_BUS.post(evt);
                 if (evt.isCanceled()) return null;

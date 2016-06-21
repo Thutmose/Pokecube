@@ -126,11 +126,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     }
 
     @Override
-    public void fall(float f, float f1)
+    public void fall(float distance, float damageMultiplier)
     {
         PokedexEntry entry = getPokedexEntry();
         boolean canFloat = entry.floats() || entry.flys();
-        if (!canFloat) super.fall(f, f1);
+        distance = distance / 2;
+        if (!canFloat) super.fall(distance, damageMultiplier);
     }
 
     ////////////////// Things which happen every tick///////////////////////////

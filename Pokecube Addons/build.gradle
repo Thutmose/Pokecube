@@ -80,7 +80,7 @@ minecraft {
     mappings = "${version_mappings}"
     runDir = "run"
     
-    useDepAts = true
+  //  useDepAts = true
     
     replace "@VERSION", project.version
     replaceIn "PokecubeAdv.java"

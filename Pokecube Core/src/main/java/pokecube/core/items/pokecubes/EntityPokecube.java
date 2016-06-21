@@ -91,20 +91,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         this.enablePersistence();
     }
 
-    public EntityPokecube(World world, EntityLivingBase shootingEntity, Entity target, ItemStack entityItem)
-    {
-        this(world);
-        this.setEntityItemStack(entityItem);
-        if (shootingEntity != null) shooter = shootingEntity.getPersistentID();
-
-        Vector3 start = Vector3.getNewVector().set(shootingEntity, false);
-        start.moveEntity(this);
-        Vector3 dir = Vector3.getNewVector().set(target, false).subtract(start).normalize();
-        setVelocity(speed, dir);
-        this.shootingEntity = shootingEntity;
-        if (PokecubeManager.isFilled(entityItem)) tilt = -2;
-    }
-
     public EntityPokecube(World world, EntityLivingBase shootingEntity, ItemStack entityItem)
     {
         this(world);
@@ -406,6 +392,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             setDead();
             return;
         }
+
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F)
         {
             float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
@@ -432,7 +419,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 motionY += 0.1;
             }
         }
-
         if (motionX == motionZ && motionZ == 0)
         {
             this.inGround = true;
@@ -451,7 +437,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 this.inGround = false;
                 this.ticksInGround = 0;
             }
-            if (tilt < 0)// && (targetEntity == null targetLocation.isEmpty()))
+            if (tilt < 0 && !(targetEntity == null && targetLocation.isEmpty()))
             {
                 if (PokecubeManager.isFilled(getEntityItem()))
                 {
@@ -467,7 +453,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         if (tilt > 0 || (targetEntity != null && targetEntity.isDead))
         {
             targetEntity = null;
-            targetLocation.clear();
+            if (!targetLocation.equals(Vector3.secondAxisNeg)) targetLocation.clear();
         }
 
         Vector3 target = Vector3.getNewVector();
@@ -480,7 +466,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             target.set(targetLocation);
         }
 
-        if (!target.isEmpty())
+        if (!target.isEmpty() && target.y >= 0)
         {
             Vector3 here = Vector3.getNewVector().set(this);
             Vector3 dir = Vector3.getNewVector().set(target);
@@ -557,7 +543,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     {
         if (worldObj.isRemote || isReleasing()) { return null; }
         IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-
         if (entity1 != null)
         {
             Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);

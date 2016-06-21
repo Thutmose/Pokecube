@@ -176,9 +176,10 @@ public class Pokecube extends Item implements IPokecube
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
-        return new ActionResult<ItemStack>(hand == EnumHand.MAIN_HAND
-                ? throwPokecube(world, player, itemstack, null, player) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL
-                : EnumActionResult.FAIL, itemstack);
+        return new ActionResult<ItemStack>(
+                hand == EnumHand.MAIN_HAND ? throwPokecube(world, player, itemstack, null, player)
+                        ? EnumActionResult.SUCCESS : EnumActionResult.FAIL : EnumActionResult.FAIL,
+                itemstack);
     }
 
     public double quick(IPokemob mob, int id)
@@ -218,6 +219,10 @@ public class Pokecube extends Item implements IPokecube
                 || (player instanceof FakePlayer))
         {
             entity.targetEntity = (EntityLivingBase) target;
+            if (target == null && targetLocation == null && PokecubeManager.isFilled(cube))
+            {
+                targetLocation = Vector3.secondAxisNeg;
+            }
             entity.targetLocation.set(targetLocation);
             if (player.isSneaking())
             {

@@ -1,6 +1,3 @@
-/**
- *
- */
 package pokecube.modelloader;
 
 import java.io.BufferedReader;

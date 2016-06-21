@@ -13,7 +13,6 @@ import java.util.zip.ZipFile;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,6 +31,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
@@ -137,7 +137,7 @@ public class ModPokecubeML
         }
 
         GameRegistry.registerItem(
-                new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),
+                new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(PokecubeCore.creativeTabPokecube),
                 "modelreloader");
         MinecraftForge.EVENT_BUS.register(this);
     }

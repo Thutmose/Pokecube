@@ -1280,6 +1280,7 @@ public class PokedexEntry
      * @return the modId */
     public String getModId()
     {
+        if (modId == null && baseForme != null) modId = baseForme.modId;
         return modId;
     }
 

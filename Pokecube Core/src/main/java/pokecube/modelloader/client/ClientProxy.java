@@ -15,8 +15,6 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.b3d.B3DLoader;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
@@ -24,7 +22,6 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.CommonProxy;
-import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.gui.GuiAnimate;
 import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.client.render.TabulaPackLoader;
@@ -161,8 +158,6 @@ public class ClientProxy extends CommonProxy
     public void preInit()
     {
         super.preInit();
-        OBJLoader.instance.addDomain(ModPokecubeML.ID);
-        B3DLoader.instance.addDomain(ModPokecubeML.ID);
     }
 
     @Override

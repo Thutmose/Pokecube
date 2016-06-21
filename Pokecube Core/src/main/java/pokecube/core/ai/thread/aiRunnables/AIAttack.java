@@ -6,9 +6,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.IChatComponent;
 import pokecube.core.ai.thread.IAICombat;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -130,9 +130,9 @@ public class AIAttack extends AIBase implements IAICombat
                     && ((EntityPlayer) entityTarget).getAITarget() != attacker)
             {
                 delayTime = PokecubeMod.core.getConfig().pokemobagressticks;
-                String missed = StatCollector.translateToLocalFormatted("pokemob.agress",
+                IChatComponent message = CommandTools.makeTranslatedMessage("pokemob.agress", "red",
                         ((IPokemob) attacker).getPokemonDisplayName());
-                entityTarget.addChatMessage(new ChatComponentText("\u00a7c" + missed));
+                entityTarget.addChatMessage(message);
             }
             else
             {

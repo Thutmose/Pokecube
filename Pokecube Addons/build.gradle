@@ -62,9 +62,9 @@ repositories {
 }
 
 dependencies {
-  //  compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
-  //  deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
-  //  deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
+    compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
+    deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
+    deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
   //  deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
   //  deobfCompile name: 'pokecube', version: "${version_pokecube}", ext: 'jar'
   //  deobfCompile name: 'thaumcraft', version: "${version_thaumcraft}", ext: 'jar'

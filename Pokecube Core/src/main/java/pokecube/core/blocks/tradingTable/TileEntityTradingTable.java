@@ -9,6 +9,10 @@ import java.util.UUID;
 
 import com.google.common.collect.Lists;
 
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -20,11 +24,11 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -51,8 +55,13 @@ import pokecube.core.network.PokecubePacketHandler;
 import thut.api.maths.Vector3;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityTradingTable extends TileEntityOwnable implements IInventory//, SimpleComponent
+public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, SimpleComponent
 {
+
+    public void writeToNBT_OpenComputers(NBTTagCompound nbt)
+    {
+        super.writeToNBT(nbt);
+    }
     private static class TMCConverter
     {
         final TileEntityTradingTable toConvert;
@@ -221,28 +230,28 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         trade();
     }
 
-//    @Callback//TODO OC
-//    @Optional.Method(modid = "OpenComputers")
-//    public Object[] applyMove(Context context, Arguments args) throws Exception
-//    {
-//        if (hasPC() && pc.isBound())
-//        {
-//            InventoryPC inv = pc.getPC();
-//            ArrayList<String> moves = getMoves(inv);
-//            String move = args.checkString(0);
-//            for (String s : moves)
-//            {
-//                if (s.equalsIgnoreCase(move))
-//                {
-//                    addMoveToTM(s);
-//                    return new Object[] {};
-//                }
-//            }
-//            throw new Exception("requested move not found");
-//        }
-//        if (!hasPC()) throw new Exception("no connected PC");
-//        else throw new Exception("connected PC is not bound to a player");
-//    }
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] applyMove(Context context, Arguments args) throws Exception
+    {
+        if (hasPC() && pc.isBound())
+        {
+            InventoryPC inv = pc.getPC();
+            ArrayList<String> moves = getMoves(inv);
+            String move = args.checkString(0);
+            for (String s : moves)
+            {
+                if (s.equalsIgnoreCase(move))
+                {
+                    addMoveToTM(s);
+                    return new Object[] {};
+                }
+            }
+            throw new Exception("requested move not found");
+        }
+        if (!hasPC()) throw new Exception("no connected PC");
+        else throw new Exception("connected PC is not bound to a player");
+    }
 
     @Override
     public void clear()
@@ -285,11 +294,11 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         return null;
     }
 
-//    @Override//TODO OC
-//    public String getComponentName()
-//    {
-//        return "tradingtable";
-//    }
+    @Override
+    public String getComponentName()
+    {
+        return "tradingtable";
+    }
 
     /** Overriden in a sign to provide the text. */
     @Override
@@ -409,19 +418,19 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         return moves.get(playerName);
     }
 
-//    @CALLBACK//TODO OC
-//    @OPTIONAL.METHOD(MODID = "OPENCOMPUTERS")
-//    PUBLIC OBJECT[] GETMOVESLIST(CONTEXT CONTEXT, ARGUMENTS ARGS) THROWS EXCEPTION
-//    {
-//        IF (HASPC() && PC.ISBOUND())
-//        {
-//            INVENTORYPC INV = PC.GETPC();
-//            ARRAYLIST<STRING> MOVES = GETMOVES(INV);
-//            RETURN MOVES.TOARRAY();
-//        }
-//        IF (!HASPC()) THROW NEW EXCEPTION("NO CONNECTED PC");
-//        ELSE THROW NEW EXCEPTION("CONNECTED PC IS NOT BOUND TO A PLAYER");
-//    }
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getMovesList(Context context, Arguments args) throws Exception
+    {
+        if (hasPC() && pc.isBound())
+        {
+            InventoryPC inv = pc.getPC();
+            ArrayList<String> moves = getMoves(inv);
+            return moves.toArray();
+        }
+        if (!hasPC()) throw new Exception("no connected PC");
+        else throw new Exception("connected PC is not bound to a player");
+    }
 
     @Override
     public String getName()

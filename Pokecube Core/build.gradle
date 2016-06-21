@@ -46,9 +46,9 @@ repositories {
 }
 
 dependencies {
-   // compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
-   // deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
-  //  deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
+    compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
+    deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
+    deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
     //deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
     
   //  compile "igwmod:IGW-Mod-1.8.9:1.2.4-4:userdev"
@@ -62,7 +62,7 @@ minecraft {
     mappings = "${version_mappings}"
     runDir = "run"
     
-    useDepAts = true
+   // useDepAts = true
     
     replace "@VERSION", project.version
     replaceIn "PokecubeMod.java"

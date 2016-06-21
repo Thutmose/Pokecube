@@ -65,8 +65,8 @@ public class TileEntityBerries extends TileEntity implements ITickable
     {
         if (worldObj.getLightFromNeighbors(pos.down()) >= 9)
         {
-            if (new Random().nextInt(5000) == 0
-                    && worldObj.getBlockState(pos.down()).getBlock().isAir(worldObj.getBlockState(pos.down()),worldObj, pos.down()))
+            if (new Random().nextInt(5000) == 0 && worldObj.getBlockState(pos.down()).getBlock()
+                    .isAir(worldObj.getBlockState(pos.down()), worldObj, pos.down()))
             {
                 placeBerry();
             }
@@ -92,7 +92,8 @@ public class TileEntityBerries extends TileEntity implements ITickable
     {
         stage++;
         if (stage > 7) stage = 7;
-        if (stage == 7 && worldObj.getBlockState(pos.up()).getBlock().isAir(worldObj.getBlockState(pos.up()),worldObj, pos.up()))
+        if (stage == 7 && worldObj.getBlockState(pos.up()).getBlock().isAir(worldObj.getBlockState(pos.up()), worldObj,
+                pos.up()))
         {
             TreeGrower grower = null;
             if ((grower = trees.get(berryId)) != null)
@@ -187,5 +188,12 @@ public class TileEntityBerries extends TileEntity implements ITickable
         nbt.setInteger("stage", stage);
         nbt.setString("type", type.toString());
         return nbt;
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+        return writeToNBT(nbt);
     }
 }

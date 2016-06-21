@@ -4,21 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.collect.Lists;
+
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.core.blocks.TileEntityOwnable;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityPC extends TileEntityOwnable implements IInventory//, SimpleComponent
+public class TileEntityPC extends TileEntityOwnable implements IInventory, SimpleComponent
 {
+
+    public void writeToNBT_OpenComputers(NBTTagCompound nbt)
+    {
+        super.writeToNBT(nbt);
+    }
     private boolean     bound   = false;
     private String      boundId = "";
     public List<String> visible = new ArrayList<String>();
@@ -45,11 +56,11 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
         return null;
     }
 
-//    @Override//TODO OC
-//    public String getComponentName()
-//    {
-//        return "pokecubepc";
-//    }
+    @Override
+    public String getComponentName()
+    {
+        return "pokecubepc";
+    }
 
     /** Overriden in a sign to provide the text. */
     @Override
@@ -85,23 +96,23 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
         return 0;
     }
 
-//    @Callback(doc="Returns the items in the PC")//TODO OC
-//    @Optional.Method(modid = "OpenComputers")
-//    public Object[] getItemList(Context context, Arguments args) throws Exception
-//    {
-//        if (isBound())
-//        {
-//            InventoryPC inv = getPC();
-//            ArrayList<Object> items = Lists.newArrayList();
-//            for (int i = 0; i < inv.getSizeInventory(); i++)
-//            {
-//                ItemStack stack = inv.getStackInSlot(i);
-//                if (stack != null) items.add(stack.getDisplayName());
-//            }
-//            return items.toArray();
-//        }
-//        throw new Exception("PC not bound");
-//    }
+    @Callback(doc = "Returns the items in the PC")
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getItemList(Context context, Arguments args) throws Exception
+    {
+        if (isBound())
+        {
+            InventoryPC inv = getPC();
+            ArrayList<Object> items = Lists.newArrayList();
+            for (int i = 0; i < inv.getSizeInventory(); i++)
+            {
+                ItemStack stack = inv.getStackInSlot(i);
+                if (stack != null) items.add(stack.getDisplayName());
+            }
+            return items.toArray();
+        }
+        throw new Exception("PC not bound");
+    }
 
     @Override
     public String getName()
@@ -221,7 +232,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
             boundId = uuid;
         }
 
-//        worldObj.markBlockForUpdate(getPos());
+        // worldObj.markBlockForUpdate(getPos());
 
     }
 
@@ -255,11 +266,12 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
         {
             boundId = "";
         }
-//        worldObj.upda
-//        worldObj.markBlockForUpdate(getPos());
+        // worldObj.upda
+        // worldObj.markBlockForUpdate(getPos());
     }
 
-    /** Writes a tile entity to NBT. 
+    /** Writes a tile entity to NBT.
+     * 
      * @return */
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound par1NBTTagCompound)

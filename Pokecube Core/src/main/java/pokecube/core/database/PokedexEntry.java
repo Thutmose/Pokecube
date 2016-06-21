@@ -1391,6 +1391,10 @@ public class PokedexEntry
 
     public SoundEvent getSoundEvent()
     {
+        if (sound == null)
+        {
+            sound = "mobs." + getName();
+        }
         if (event == null)
         {
             event = new SoundEvent(new ResourceLocation(getModId(), sound));

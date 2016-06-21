@@ -9,6 +9,10 @@ import com.google.common.collect.Maps;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -16,6 +20,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.core.database.PokedexEntry;
@@ -25,8 +30,13 @@ import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyProvider//, SimpleComponent, 
+public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyProvider, SimpleComponent
 {
+
+    public void writeToNBT_OpenComputers(NBTTagCompound nbt)
+    {
+        super.writeToNBT(nbt);
+    }
     AxisAlignedBB box;
     public JEP    parser    = new JEP();
     int           lastInput = 0;
@@ -59,11 +69,11 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
         return ret;
     }
 
-//    @Override
-//    public String getComponentName()
-//    {
-//        return "pokesiphon";
-//    }
+    @Override
+    public String getComponentName()
+    {
+        return "pokesiphon";
+    }
 
     public int getEnergyGain(int level, int spAtk, int atk, PokedexEntry entry)
     {
@@ -157,12 +167,12 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
         return PokecubeAdv.conf.maxOutput;
     }
 
-//    @Callback
-//    @Optional.Method(modid = "OpenComputers")
-//    public Object[] getPower(Context context, Arguments args)
-//    {
-//        return new Object[] { lastInput };
-//    }
+    @Callback
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getPower(Context context, Arguments args)
+    {
+        return new Object[] { lastInput };
+    }
 
     private void initParser()
     {

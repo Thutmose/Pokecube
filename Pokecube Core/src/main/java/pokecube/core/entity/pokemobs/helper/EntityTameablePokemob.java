@@ -624,8 +624,8 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 {
                     ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
                     MinecraftForge.EVENT_BUS.post(toss);
-                    noRoom = toss.isCanceled();
-                    if (!noRoom)
+                    noRoom = !toss.isCanceled();
+                    if (noRoom)
                     {
                         EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
                         Vector3 temp = Vector3.getNewVector().set(this);
@@ -634,10 +634,9 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                         entity.targetEntity = null;
                         entity.targetLocation.clear();
                         worldObj.spawnEntityInWorld(entity);
-                        noRoom = true;
                     }
                 }
-                if (!noRoom)
+                else
                 {
                     boolean added = player.inventory.addItemStackToInventory(itemstack);
                     if (!added)
@@ -646,23 +645,12 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                                 PokecubeMod.getFakePlayer());
                         MinecraftForge.EVENT_BUS.post(toss);
                         added = toss.isCanceled();
-                        if (!added)
-                        {
-                            // EntityPokecube entity = new
-                            // EntityPokecube(worldObj, (EntityLivingBase)
-                            // owner, itemstack);
-                            // Vector3 temp = Vector3.getNewVector().set(this);
-                            // temp.moveEntity(entity);
-                            // temp.clear().setVelocities(entity);
-                            // entity.targetEntity = null;
-                            // entity.targetLocation.clear();
-                            // worldObj.spawnEntityInWorld(entity);
-                        }
                     }
                 }
                 if (!owner.isSneaking() && !isDead)
                     ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
-                IChatComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.return", "green", getPokemonDisplayName());
+                IChatComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.return", "green",
+                        getPokemonDisplayName());
                 displayMessageToOwner(mess);
 
             }
@@ -673,7 +661,16 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                     ItemStack itemstack = PokecubeManager.pokemobToItem(this);
                     ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
                     MinecraftForge.EVENT_BUS.post(toss);
-                    if (!toss.isCanceled()) entityDropItem(itemstack, 0F);
+                    if (!toss.isCanceled())
+                    {
+                        EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
+                        Vector3 temp = Vector3.getNewVector().set(this);
+                        temp.moveEntity(entity);
+                        temp.clear().setVelocities(entity);
+                        entity.targetEntity = null;
+                        entity.targetLocation.clear();
+                        worldObj.spawnEntityInWorld(entity);
+                    }
                 }
                 else
                 {
@@ -685,7 +682,16 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                         ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F),
                                 PokecubeMod.getFakePlayer());
                         MinecraftForge.EVENT_BUS.post(toss);
-                        if (!toss.isCanceled()) entityDropItem(itemstack, 0F).setPickupDelay(1000);
+                        if (!toss.isCanceled())
+                        {
+                            EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
+                            Vector3 temp = Vector3.getNewVector().set(this);
+                            temp.moveEntity(entity);
+                            temp.clear().setVelocities(entity);
+                            entity.targetEntity = null;
+                            entity.targetLocation.clear();
+                            worldObj.spawnEntityInWorld(entity);
+                        }
                     }
                 }
             }

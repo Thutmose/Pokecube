@@ -58,12 +58,6 @@ public class TMCommand extends CommandBase
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
-    {
-        return true;
-    }
-
-    @Override
     public List<String> getCommandAliases()
     {
         return this.aliases;

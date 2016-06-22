@@ -111,7 +111,7 @@ public class SettingsCommand extends CommandBase
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
-
+        boolean op = CommandTools.isOp(sender);
         if (args.length == 0)
         {
             CommandTools.sendBadArgumentsTryTab(sender);
@@ -146,6 +146,11 @@ public class SettingsCommand extends CommandBase
             }
             else
             {
+                if (!op)
+                {
+                    CommandTools.sendNoPermissions(sender);
+                    return;
+                }
                 try
                 {
                     PokecubeMod.core.getConfig().updateField(field, args[1]);

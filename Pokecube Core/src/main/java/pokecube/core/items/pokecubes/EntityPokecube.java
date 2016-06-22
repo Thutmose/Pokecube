@@ -270,9 +270,9 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     {
         if (!player.worldObj.isRemote)
         {
-            IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
             if (!isReleasing())
             {
+                IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
                 if (pokemob != null) sendOut();
                 else
                 {
@@ -316,7 +316,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     @Override
     public void onUpdate()
     {
-
         super.onUpdate();
         boolean releasing = isReleasing();
 

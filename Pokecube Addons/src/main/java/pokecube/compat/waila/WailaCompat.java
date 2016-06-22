@@ -137,7 +137,7 @@ public class WailaCompat implements IWailaEntityProvider
             PokedexEntry entry = pokemob.getPokedexEntry();
             if(entry.getBaseName() != entry.getName())
             {
-                arg1.add(entry.getTranslatedName());
+                arg1.add(entry.getUnlocalizedName());
             }
         }
         return arg1;

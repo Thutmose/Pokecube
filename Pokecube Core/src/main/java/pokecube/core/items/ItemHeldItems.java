@@ -1,6 +1,9 @@
-package pokecube.core.items.megastuff;
+package pokecube.core.items;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,14 +12,32 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.PokecubeCore;
 
-public class ItemMegastone extends Item
+public class ItemHeldItems extends Item
 {
-    public ItemMegastone()
+    public static ArrayList<String> variants = Lists.newArrayList();
+
+    static
+    {
+        variants.add("waterstone");
+        variants.add("firestone");
+        variants.add("leafstone");
+        variants.add("thunderstone");
+        variants.add("moonstone");
+        variants.add("sunstone");
+        variants.add("shinystone");
+        variants.add("ovalstone");
+        variants.add("everstone");
+        variants.add("duskstone");
+        variants.add("dawnstone");
+        variants.add("kingsrock");
+    }
+
+    public ItemHeldItems()
     {
         super();
-        this.setMaxStackSize(1);
+        this.setCreativeTab(PokecubeCore.creativeTabPokecube);
         this.setHasSubtypes(true);
     }
 
@@ -26,9 +47,9 @@ public class ItemMegastone extends Item
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean bool)
     {
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("pokemon"))
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("type"))
         {
-            String s = stack.getTagCompound().getString("pokemon");
+            String s = stack.getTagCompound().getString("type");
             list.add(s);
         }
     }
@@ -36,17 +57,17 @@ public class ItemMegastone extends Item
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        String name = super.getUnlocalizedName(stack);
+        String name = super.getUnlocalizedName();
         if (stack.hasTagCompound())
         {
             NBTTagCompound tag = stack.getTagCompound();
-            String variant = "megastone";
+            String variant = "???";
             if (tag != null)
             {
-                String stackname = tag.getString("pokemon");
+                String stackname = tag.getString("type");
                 variant = stackname.toLowerCase();
             }
-            name = "item." + variant + ".name";
+            name = "item." + variant;
         }
         return name;
     }
@@ -66,12 +87,11 @@ public class ItemMegastone extends Item
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
         ItemStack stack;
-        subItems.add(new ItemStack(itemIn));
-        for (String s : HeldItemHandler.megaVariants)
+        for (String s : variants)
         {
             stack = new ItemStack(itemIn);
             stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("pokemon", s);
+            stack.getTagCompound().setString("type", s);
             subItems.add(stack);
         }
     }

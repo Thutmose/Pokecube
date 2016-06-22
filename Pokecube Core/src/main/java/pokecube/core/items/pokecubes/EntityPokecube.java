@@ -373,7 +373,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 if (ret == false)
                 {
                     System.err.println(String.format("The pokemob %1$s spawn from pokecube has failed. ",
-                            entity1.getPokemonDisplayName()));
+                            entity1.getPokemonDisplayName().getFormattedText()));
                 }
 
                 entity1.setPokemonAIState(IMoveConstants.ANGRY, true);
@@ -565,7 +565,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             if (owner instanceof EntityPlayer)
             {
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.sendout", "green",
-                        entity1.getPokemonDisplayName());
+                        entity1.getPokemonDisplayName().getFormattedText());
                 entity1.displayMessageToOwner(mess);
             }
 

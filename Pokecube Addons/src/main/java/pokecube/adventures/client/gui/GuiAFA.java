@@ -22,7 +22,7 @@ public class GuiAFA extends GuiContainer
     private static final ResourceLocation guiTexture = new ResourceLocation(
             "pokecube_adventures:textures/gui/afaGui.png");
 
-    long last = 0;
+    long                                  last       = 0;
 
     public GuiAFA(InventoryPlayer inventory, TileEntityAFA tile)
     {
@@ -180,7 +180,7 @@ public class GuiAFA extends GuiContainer
             mess = "r:" + distance;
             this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 26, 4210752);
             if (cloner.ability != null && cloner.getStackInSlot(0) != null)
-                this.fontRendererObj.drawString("" + cloner.ability.getName(), 48, 6, 4210752);
+                this.fontRendererObj.drawString("" + I18n.format(cloner.ability.getName()), 48, 6, 4210752);
         }
     }
 
@@ -216,7 +216,7 @@ public class GuiAFA extends GuiContainer
         // Position Buttons
         buttonList.add(new GuiButton(9, width / 2 - xOffset - 52, height / 2 - yOffset - 65, 20, 20, "\u25c0"));
         buttonList.add(new GuiButton(10, width / 2 - xOffset - 52, height / 2 - yOffset - 45, 20, 20, "\u25b6"));
-        //Reset Button
+        // Reset Button
         buttonList.add(new GuiButton(11, width / 2 - xOffset - 72, height / 2 - yOffset - 45, 20, 20, "X"));
     }
 

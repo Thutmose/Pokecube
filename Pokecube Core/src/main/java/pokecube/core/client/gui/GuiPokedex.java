@@ -320,7 +320,7 @@ public class GuiPokedex extends GuiScreen
             }
             String numbers = "";// "+dbe.getSpawnData().global[0];
             if (!entityPlayer.capabilities.isCreativeMode) numbers = "";
-            drawString(fontRendererObj, dbe.getTranslatedName() + numbers, xOffset + 18, yO + n * 10, 0xFF0000);
+            drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()) + numbers, xOffset + 18, yO + n * 10, 0xFF0000);
             String time = "";
             boolean cave = dbe.getSpawnData().types[CAVE];
 
@@ -427,7 +427,7 @@ public class GuiPokedex extends GuiScreen
         {
             for (PokedexEntry p : pokedexEntry.related)
             {
-                if (p != null) names.add(p.getTranslatedName());
+                if (p != null) names.add(I18n.format(p.getUnlocalizedName()));
             }
         }
         index = Math.max(0, Math.min(index, names.size() - 5));
@@ -443,7 +443,7 @@ public class GuiPokedex extends GuiScreen
             Ability ability = pokemob.getAbility();
             if (ability != null)
             {
-                drawString(fontRendererObj, ability.getName(), xOffset + 14, yOffset + 99, 0xFFFFFF);
+                drawString(fontRendererObj, I18n.format(ability.getName()), xOffset + 14, yOffset + 99, 0xFFFFFF);
             }
         }
     }
@@ -510,7 +510,7 @@ public class GuiPokedex extends GuiScreen
 
         if (pokedexEntry != null)
         {
-            drawCenteredString(fontRendererObj, pokedexEntry.getTranslatedName(), xOffset - 65, yOffset + 30, 0xffffff);
+            drawCenteredString(fontRendererObj, I18n.format(pokedexEntry.getUnlocalizedName()), xOffset - 65, yOffset + 30, 0xffffff);
             drawCenteredString(fontRendererObj, "#" + pokedexEntry.getPokedexNb(), xOffset - 25, yOffset + 15,
                     0xffffff);
 
@@ -813,7 +813,7 @@ public class GuiPokedex extends GuiScreen
             nicknameTextField.setVisible(true);
             if (canEditPokemob())
             {
-                nicknameTextField.setText(pokemob.getPokemonDisplayName());
+                nicknameTextField.setText(pokemob.getPokemonDisplayName().getFormattedText());
             }
             nicknameTextField.setEnabled(true);
         }
@@ -1029,7 +1029,7 @@ public class GuiPokedex extends GuiScreen
 
         if (canEditPokemob() && page == 0)
         {
-            nicknameTextField.setText(pokemob.getPokemonDisplayName());
+            nicknameTextField.setText(pokemob.getPokemonDisplayName().getFormattedText());
             nicknameTextField.setEnabled(true);
         }
 
@@ -1187,7 +1187,7 @@ public class GuiPokedex extends GuiScreen
         {
             if (canEditPokemob())
             {
-                nicknameTextField.setText(pokemob.getPokemonDisplayName());
+                nicknameTextField.setText(pokemob.getPokemonDisplayName().getFormattedText());
                 nicknameTextField.setEnabled(true);
             }
             else

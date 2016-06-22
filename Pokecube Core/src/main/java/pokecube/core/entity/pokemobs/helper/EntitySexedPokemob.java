@@ -269,8 +269,8 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
                     @Override
                     public int compare(IPokemob o1, IPokemob o2)
                     {
-                        if (o2.getLevel() == o1.getLevel())
-                            return (o1.getPokemonDisplayName().compareTo(o2.getPokemonDisplayName()));
+                        if (o2.getLevel() == o1.getLevel()) return (o1.getPokemonDisplayName().getFormattedText()
+                                .compareTo(o2.getPokemonDisplayName().getFormattedText()));
                         return o2.getLevel() - o1.getLevel();
                     }
                 });
@@ -397,7 +397,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     {
         super.onEntityUpdate();
 
-        if (getPokemonAIState(MATING) && ticksExisted%10==0)
+        if (getPokemonAIState(MATING) && ticksExisted % 10 == 0)
         {
             double d0 = this.rand.nextGaussian() * 0.02D;
             double d1 = this.rand.nextGaussian() * 0.02D;
@@ -524,9 +524,9 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         {
             ((IPokemob) getLover()).setPokemonAIState(MATING, true);
         }
-        if(getLover() instanceof EntityLiving)
+        if (getLover() instanceof EntityLiving)
         {
-            ((EntityLiving)getLover()).getNavigator().tryMoveToEntityLiving(this, 1.5);
+            ((EntityLiving) getLover()).getNavigator().tryMoveToEntityLiving(this, 1.5);
         }
         if (this.spawnBabyDelay >= 50)
         {

@@ -279,7 +279,7 @@ pokecube.professor.deny=Professor: You have already recieved a Pokémob
 pokedex.setteleport=Pokécenter set as a Teleport Location
 pokedex.locationinfo=There are %1$s Registered Spawns\nThere are %2$s registered Pokémobs\n%3$s Spawn here
 
-pokemobEgg.name=Egg of %1$s
+pokemobEgg.name=Pokemob Egg
 
 item.waterstone.name=Water Stone
 item.firestone.name=Fire Stone

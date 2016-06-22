@@ -200,7 +200,7 @@ public class GuiAnimate extends GuiScreen
         }
         entry = pokemob.getPokedexEntry();
         mob = entry.getName();
-        fontRendererObj.drawString(pokemob.getPokemonDisplayName(), xOffset, 10, 0xFFFFFF);
+        fontRendererObj.drawString(pokemob.getPokemonDisplayName().getFormattedText(), xOffset, 10, 0xFFFFFF);
         float zLevel = 800;
         GL11.glPushMatrix();
         GlStateManager.translate(xOffset + shift[0], yOffset + shift[1], zLevel);

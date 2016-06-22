@@ -199,7 +199,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if ((statusChange & CHANGE_FLINCH) != 0)
         {
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.status.flinch", "red",
-                    getPokemonDisplayName());
+                    getPokemonDisplayName().getFormattedText());
             displayMessageToOwner(mess);
             removeChanges(CHANGE_FLINCH);
             return;
@@ -211,7 +211,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             {
                 removeChanges(CHANGE_CONFUSED);
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.status.confuse.remove", "green",
-                        getPokemonDisplayName());
+                        getPokemonDisplayName().getFormattedText());
                 displayMessageToOwner(mess);
             }
             else if (Math.random() > 0.5)
@@ -230,7 +230,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             else if (Math.random() > 0.5)
             {
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.status.infatuate", "red",
-                        getPokemonDisplayName());
+                        getPokemonDisplayName().getFormattedText());
                 displayMessageToOwner(mess);
                 return;
             }
@@ -481,7 +481,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (getPokemonOwner() != null && !this.isDead)
         {
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.move.notify.learn", "",
-                    getPokemonDisplayName(), MovesUtils.getUnlocalizedMove(moveName));
+                    getPokemonDisplayName().getFormattedText(), MovesUtils.getUnlocalizedMove(moveName));
             displayMessageToOwner(mess);
         }
         if (moves[0] == null)
@@ -541,7 +541,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (!worldObj.isRemote)
         {
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.info.levelup", "",
-                    getPokemonDisplayName(), level + "");
+                    getPokemonDisplayName().getFormattedText(), level + "");
             displayMessageToOwner(mess);
         }
         HappinessType.applyHappiness(this, HappinessType.LEVEL);
@@ -991,7 +991,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             if ((statusChange & CHANGE_CURSE) != 0)
             {
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.status.curse", "red",
-                        getPokemonDisplayName());
+                        getPokemonDisplayName().getFormattedText());
                 displayMessageToOwner(mess);
                 setHealth(getHealth() - getMaxHealth() * 0.25f);
             }

@@ -40,14 +40,14 @@ public class AchievementCatch extends Achievement
     public String getDescription()
     {
         if ("get1stPokemob".equals(statId)) { return I18n.format("achievement." + statId + ".desc"); }
-        return I18n.format("achievement.catch", getPokemobTranslatedName());
+        return I18n.format("achievement.catch", I18n.format(getPokemobTranslatedName()));
     }
 
     protected String getPokemobTranslatedName()
     {
         if (pokedexNb > 0 && Pokedex.getInstance().getEntry(pokedexNb) != null)
         {
-            return Pokedex.getInstance().getEntry(pokedexNb).getTranslatedName();
+            return Pokedex.getInstance().getEntry(pokedexNb).getUnlocalizedName();
         }
         else
         {

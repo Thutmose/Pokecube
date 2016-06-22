@@ -77,7 +77,7 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
                     }
                     if (nearest != null)
                     {
-                        System.out.println("Found a bait " + pokemob.getPokemonDisplayName());
+                        System.out.println("Found a bait " + pokemob.getPokemonDisplayName().getFormattedText());
                         leapTarget = nearest;
                         return true;
                     }

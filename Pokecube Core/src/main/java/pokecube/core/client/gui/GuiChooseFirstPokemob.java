@@ -234,7 +234,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         drawCenteredString(fontRendererObj, I18n.format("gui.pokemob.choose1st"), (width / 2), 17,
                 0xffffff);
 
-        drawCenteredString(fontRendererObj, pokedexEntry.getTranslatedName(), (width / 2), 45, 0xffffff);
+        drawCenteredString(fontRendererObj, I18n.format(pokedexEntry.getUnlocalizedName()), (width / 2), 45, 0xffffff);
 
         int n = 0;
         int m = 0;

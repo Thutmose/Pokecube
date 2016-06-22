@@ -20,6 +20,8 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -423,18 +425,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public String getPokemonDisplayName()
+    public ITextComponent getPokemonDisplayName()
     {
-        if (this.isAncient())
-            return "Ancient " + Database.getEntry(getPokedexEntry().getBaseName()).getTranslatedName();
-        else if (getPokemonNickname() == null || getPokemonNickname().isEmpty())
-        {
-            return getPokedexEntry().getTranslatedName();
-        }
-        else
-        {
-            return getPokemonNickname();
-        }
+        return new TextComponentTranslation(this.getName());
     }
 
     @Override
@@ -831,7 +824,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         }
         else
         {
-            if (getPokedexEntry().getTranslatedName().equals(nickname))
+            if (getPokedexEntry().getUnlocalizedName().equals(nickname))
             {
                 dataManager.set(NICKNAMEDW, "");
             }

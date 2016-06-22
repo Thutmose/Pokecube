@@ -7,8 +7,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.legendary.BlockLegendSpawner;
 import pokecube.core.database.Database;
@@ -93,8 +92,7 @@ public class LegendaryConditions
                 if (pokemon != null && !trainer.worldObj.isRemote)
                 {
                     String message = "msg.nosuicunetrust.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
                 return false;
@@ -124,8 +122,7 @@ public class LegendaryConditions
                 if (pokemon != null && !trainer.worldObj.isRemote)
                 {
                     String message = "msg.noenteitrust.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
                 return false;
@@ -157,8 +154,7 @@ public class LegendaryConditions
                 if (pokemon != null && !trainer.worldObj.isRemote)
                 {
                     String message = "msg.noraikoutrust.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
                 return false;
@@ -200,8 +196,7 @@ public class LegendaryConditions
                 else
                 {
                     String message = "msg.nocelebihere.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
             }
@@ -239,8 +234,7 @@ public class LegendaryConditions
                 if (!(raikou && entei && suicune))
                 {
                     String message = "msg.nohoohtrust.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
                 int biomeId = v.getBiomeID(trainer.worldObj);
@@ -255,8 +249,7 @@ public class LegendaryConditions
                 else
                 {
                     String message = "msg.nohoohhere.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
 
@@ -269,8 +262,7 @@ public class LegendaryConditions
                 if (location.y < 150)
                 {
                     String message = "msg.nohoohhere.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
 
@@ -286,8 +278,7 @@ public class LegendaryConditions
                         if (location.add(i, -1, k).getBlockState(trainer.worldObj).getMaterial() == Material.AIR)
                         {
                             String message = "msg.nohoohhere.txt";
-                            message = I18n.translateToLocal(message);
-                            trainer.addChatMessage(new TextComponentString(message));
+                            trainer.addChatMessage(new TextComponentTranslation(message));
                             return false;
                         }
                     }
@@ -329,14 +320,12 @@ public class LegendaryConditions
                     if (captureFactor < 0.75)
                     {
                         String message = "msg.nocelebitrust.txt";
-                        message = I18n.translateToLocal(message);
-                        trainer.addChatMessage(new TextComponentString(message));
+                        trainer.addChatMessage(new TextComponentTranslation(message));
                     }
                     else if (count1 < count2)
                     {
                         String message = "msg.celebiangry.txt";
-                        message = I18n.translateToLocal(message);
-                        trainer.addChatMessage(new TextComponentString(message));
+                        trainer.addChatMessage(new TextComponentTranslation(message));
                     }
                 }
                 return false;
@@ -401,8 +390,7 @@ public class LegendaryConditions
                 if (!(articuno && moltres && zapdos))
                 {
                     String message = "msg.nolugiatrust.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
 
@@ -443,8 +431,7 @@ public class LegendaryConditions
                 else
                 {
                     String message = "msg.nokyogrehere.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
             }
@@ -482,8 +469,7 @@ public class LegendaryConditions
                 else
                 {
                     String message = "msg.nogroudonhere.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
             }
@@ -524,8 +510,7 @@ public class LegendaryConditions
                 if (pokemon != null && !trainer.worldObj.isRemote)
                 {
                     String message = "msg.nokyogretrust.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                 }
                 return false;
             }
@@ -554,8 +539,7 @@ public class LegendaryConditions
                 if (pokemon != null && !trainer.worldObj.isRemote)
                 {
                     String message = "msg.nogroudontrust.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                 }
                 return false;
             }
@@ -600,8 +584,7 @@ public class LegendaryConditions
                         trainer.worldObj);
                 if (relicanth && wailord && biome) { return true; }
                 String message = "msg.noregirockhere.txt";
-                message = I18n.translateToLocal(message);
-                trainer.addChatMessage(new TextComponentString(message));
+                trainer.addChatMessage(new TextComponentTranslation(message));
                 return false;
 
             }
@@ -646,8 +629,7 @@ public class LegendaryConditions
                 if (!check)
                 {
                     String message = "msg.reginotlookright.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
                 return canSpawn(trainer);
@@ -699,8 +681,7 @@ public class LegendaryConditions
                 if (relicanth && wailord && SpawnHandler.canSpawn(t, Database.getEntry("regice").getSpawnData(), v,
                         trainer.worldObj)) { return true; }
                 String message = "msg.noregicehere.txt";
-                message = I18n.translateToLocal(message);
-                trainer.addChatMessage(new TextComponentString(message));
+                trainer.addChatMessage(new TextComponentTranslation(message));
                 return false;
 
             }
@@ -751,8 +732,7 @@ public class LegendaryConditions
                 if (!check)
                 {
                     String message = "msg.reginotlookright.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
                 return canSpawn(trainer);
@@ -802,8 +782,7 @@ public class LegendaryConditions
                         trainer.worldObj)) { return true; }
 
                 String message = "msg.noregisteelhere.txt";
-                message = I18n.translateToLocal(message);
-                trainer.addChatMessage(new TextComponentString(message));
+                trainer.addChatMessage(new TextComponentTranslation(message));
                 return false;
 
             }
@@ -835,8 +814,7 @@ public class LegendaryConditions
                 if (!check)
                 {
                     String message = "msg.reginotlookright.txt";
-                    message = I18n.translateToLocal(message);
-                    trainer.addChatMessage(new TextComponentString(message));
+                    trainer.addChatMessage(new TextComponentTranslation(message));
                     return false;
                 }
                 return canSpawn(trainer);

@@ -1,9 +1,5 @@
 package pokecube.core.blocks.pc;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -21,11 +17,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
@@ -34,8 +25,6 @@ public class BlockPC extends Block implements ITileEntityProvider
 {
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final PropertyBool      TOP    = PropertyBool.create("top");
-    private ExtendedBlockState            state  = new ExtendedBlockState(this, new IProperty[0],
-            new IUnlistedProperty[] { OBJModel.OBJProperty.INSTANCE });
 
     public BlockPC()
     {
@@ -66,30 +55,13 @@ public class BlockPC extends Block implements ITileEntityProvider
     @Override
     public int damageDropped(IBlockState state)
     {
-        return state.getValue(TOP)?8:0;
+        return state.getValue(TOP) ? 8 : 0;
     }
 
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
-        if(true) return super.getExtendedState(state, world, pos);
-        
-        
-        List<String> visible = Lists.newArrayList();
-        if ((state.getValue(TOP)))
-        {
-            visible.add("pc_top");
-        }
-        else
-        {
-            visible.add("pc_base");
-        }
-        EnumFacing facing = state.getValue(FACING);
-        facing = facing.rotateYCCW();
-
-        TRSRTransformation transform = new TRSRTransformation(facing);
-        OBJModel.OBJState retState = new OBJModel.OBJState(visible, true, transform);
-        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.INSTANCE, retState);
+        return super.getExtendedState(state, world, pos);
     }
 
     @Override
@@ -178,7 +150,7 @@ public class BlockPC extends Block implements ITileEntityProvider
             TileEntityOwnable tile = (TileEntityOwnable) te;
             tile.setPlacer(placer);
         }
-        System.out.println(meta+" "+placer.getHorizontalFacing());
+        System.out.println(meta + " " + placer.getHorizontalFacing());
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()).withProperty(TOP,
                 ((meta & 8) > 0));
     }

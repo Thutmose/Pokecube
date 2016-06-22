@@ -26,12 +26,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
-import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
@@ -460,7 +458,7 @@ public class ItemPokemobEgg extends Item
             if (mob.getPokemonOwner() != null)
             {
                 EntityLivingBase owner = mob.getPokemonOwner();
-                owner.addChatMessage(new TextComponentTranslation("pokemob.hatch", mob.getPokemonDisplayName()));
+                owner.addChatMessage(new TextComponentTranslation("pokemob.hatch", mob.getPokemonDisplayName().getFormattedText()));
             }
             entity.setHeldItem(EnumHand.MAIN_HAND, null);
             entity.playLivingSound();
@@ -492,31 +490,10 @@ public class ItemPokemobEgg extends Item
         return entity != null;
     }
 
-    // @Override
-    // @SideOnly(Side.CLIENT)//TODO see if this acuallt did anything
-    // public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
-    // {
-
-    // }
-
     @Override
-    public String getItemStackDisplayName(ItemStack par1ItemStack)
+    public String getUnlocalizedName(ItemStack stack)
     {
-        int pokedexNb = getNumber(par1ItemStack);
-        String s = null;
-        String entityName = PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNb);
-        PokedexEntry entry = Pokedex.getInstance().getEntry(pokedexNb);
-
-        if (entry != null)
-        {
-            entityName = entry.getTranslatedName();
-            s = I18n.translateToLocalFormatted("pokemobEgg.name", entityName).trim();
-        }
-        else
-        {
-            s = "Pokemob Egg";
-        }
-
+        String s = "pokemobEgg";
         return s;
     }
 

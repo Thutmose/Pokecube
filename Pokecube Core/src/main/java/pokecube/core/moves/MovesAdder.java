@@ -1955,9 +1955,9 @@ public class MovesAdder implements IMoveConstants
                 super.postAttack(attacker, attacked, f, finalAttackStrength);
                 if (attacked instanceof IPokemob)
                 {
-                    ITextComponent text = CommandTools.makeTranslatedMessage("pokemob.move.doesnt.affect", "red", ((IPokemob) attacked).getPokemonDisplayName());
+                    ITextComponent text = CommandTools.makeTranslatedMessage("pokemob.move.doesnt.affect", "red", ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
                     attacker.displayMessageToOwner(text);
-                    text = CommandTools.makeTranslatedMessage("pokemob.move.doesnt.affect", "green", ((IPokemob) attacked).getPokemonDisplayName());
+                    text = CommandTools.makeTranslatedMessage("pokemob.move.doesnt.affect", "green", ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
                     ((IPokemob) attacked).displayMessageToOwner(text);
                 }
             }

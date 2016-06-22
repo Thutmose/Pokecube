@@ -26,6 +26,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -233,7 +235,18 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public String getName()
     {
-        return this.getPokedexEntry().getTranslatedName();
+        return this.getPokemonNickname().isEmpty() ? this.getPokedexEntry().getUnlocalizedName()
+                : this.getPokemonNickname();
+    }
+
+    @Override
+    public ITextComponent getDisplayName()
+    {
+        TextComponentTranslation textcomponentstring = new TextComponentTranslation(
+                this.getPokedexEntry().getUnlocalizedName());
+        textcomponentstring.getStyle().setHoverEvent(this.getHoverEvent());
+        textcomponentstring.getStyle().setInsertion(this.getCachedUniqueIdString());
+        return textcomponentstring;
     }
 
     @Override

@@ -12,8 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
@@ -88,7 +87,6 @@ public class InventoryPC implements IInventory
             return;
         }
         InventoryPC pc = getPC(uuid);
-        String message = I18n.translateToLocalFormatted("tile.pc.sentto", mob.getDisplayName());
 
         if (pc == null) { return; }
 
@@ -96,8 +94,8 @@ public class InventoryPC implements IInventory
         {
             ItemStack stack = mob;
             heal(stack);
-            if (PokecubeCore.proxy.getPlayer(uuid) != null)
-                PokecubeCore.proxy.getPlayer(uuid).addChatMessage(new TextComponentString(message));
+            if (PokecubeCore.proxy.getPlayer(uuid) != null) PokecubeCore.proxy.getPlayer(uuid)
+                    .addChatMessage(new TextComponentTranslation("tile.pc.sentto", mob.getDisplayName()));
         }
         pc.addItem(mob.copy());
         PCSaveHandler.getInstance().savePC(uuid);
@@ -479,8 +477,8 @@ public class InventoryPC implements IInventory
         {
             name = player.getName() + "'s";
         }
-        else if (name.equals("Public")) { return I18n.translateToLocalFormatted("tile.pc.public"); }
-        return I18n.translateToLocalFormatted("tile.pc.title", name);
+        else if (name.equals("Public")) { return "tile.pc.public"; }
+        return "tile.pc.title";
     }
 
     public int getPage()

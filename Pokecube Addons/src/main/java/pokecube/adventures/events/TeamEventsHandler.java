@@ -1,14 +1,20 @@
 package pokecube.adventures.events;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
@@ -100,6 +106,30 @@ public class TeamEventsHandler
                 evt.setCanceled(true);
             }
             evt.setUseItem(Result.DENY);
+        }
+    }
+
+    @SubscribeEvent
+    public void ExplosionEvent(ExplosionEvent.Detonate evt)
+    {
+        if (!TeamManager.denyBlasts) return;
+        int dimension = evt.getWorld().provider.getDimension();
+        List<BlockPos> toRemove = Lists.newArrayList();
+        for (BlockPos pos : evt.getAffectedBlocks())
+        {
+            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(pos, dimension);
+            String owner = TeamManager.getInstance().getLandOwner(c);
+            if (evt.getExplosion().getExplosivePlacedBy() instanceof EntityPlayer)
+            {
+                String team = evt.getWorld().getScoreboard()
+                        .getPlayersTeam(evt.getExplosion().getExplosivePlacedBy().getName()).getRegisteredName();
+                if (owner.equals(team))
+                {
+                    owner = null;
+                }
+            }
+            if (owner != null) continue;
+            toRemove.add(pos);
         }
     }
 

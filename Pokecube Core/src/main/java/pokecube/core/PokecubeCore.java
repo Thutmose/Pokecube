@@ -352,7 +352,7 @@ public class PokecubeCore extends PokecubeMod
     {
         PokedexEntry entry = Pokedex.getInstance().getEntry(nb);
 
-        if (entry != null) { return Pokedex.getInstance().getEntry(nb).getTranslatedName(); }
+        if (entry != null) { return Pokedex.getInstance().getEntry(nb).getUnlocalizedName(); }
 
         return "" + nb;
     }

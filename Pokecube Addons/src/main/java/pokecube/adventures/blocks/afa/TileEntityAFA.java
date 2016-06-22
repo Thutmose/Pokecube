@@ -157,7 +157,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
     {
         if (ability != null)
         {
-            String arg = ability.getName();
+            String arg = ability.toString();
             return new Object[] { arg };
         }
         throw new Exception("no ability");

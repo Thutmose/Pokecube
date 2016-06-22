@@ -25,12 +25,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
@@ -459,7 +457,7 @@ public class PokedexEntry
                 name = info.split("#")[0];
                 damage = Integer.parseInt(info.split("#")[1]);
             }
-            Item item = GameRegistry.findItem(modid, name);
+            Item item = Item.REGISTRY.getObject(new ResourceLocation(modid, name));
             if (item != null) ret = new ItemStack(item, 1, damage);
             else new NullPointerException("Errored Item for " + info);
             return ret;
@@ -1466,12 +1464,10 @@ public class PokedexEntry
         return ret;
     }
 
-    /** @return the name in the language of player */
-    public String getTranslatedName()
+    /** @return the name to be fed to the language formatter */
+    public String getUnlocalizedName()
     {
-        String translated = I18n.translateToLocal("pkmn." + name + ".name").trim();
-        if (translated.contains(".")) { return name; }
-
+        String translated = "pkmn." + name + ".name";
         return translated;
     }
 

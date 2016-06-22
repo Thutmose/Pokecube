@@ -11,7 +11,7 @@ import java.util.Map;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
@@ -41,41 +41,24 @@ public class Config extends ConfigBase
     @Configure(category = world)
     String[]                           structureBiomes    = {
             // @formatter:off
-			"meteorsite:"+BiomeType.METEOR.name,
-			"smallfortruins:"+BiomeType.RUIN.name,
-			"VillageForgeLarge:"+BiomeType.INDUSTRIAL.name,
-			"VillageGuardTower:"+BiomeType.VILLAGE.name,
-			"VillageInn:"+BiomeType.VILLAGE.name,
-			"VillageHouseRich:"+BiomeType.VILLAGE.name,
-			"VillageHouseRich1:"+BiomeType.VILLAGE.name,
-			"villagewoodmill:"+BiomeType.INDUSTRIAL.name,
-			"ClayMound:mound",
-			"BigPyramid:"+BiomeType.RUIN.name,
-			"DesertFort:"+BiomeType.VILLAGE.name,
-			"DesertHut:"+BiomeType.VILLAGE.name,
-			"DesertWatchtower:"+BiomeType.RUIN.name,
-			"ElvenPond:"+BiomeType.LAKE.name,
-			"ForestBeacon:"+BiomeType.RUIN.name,
-			"HillAltarHouse:"+BiomeType.RUIN.name,
-			"JokerTower:"+BiomeType.RUIN.name,
-			"OldWatchtower:"+BiomeType.RUIN.name,
-			"PeacefulCrypt:"+BiomeType.RUIN.name,
-			"PirateHideout:"+BiomeType.VILLAGE.name,
-			"ShrineSmallAir:"+BiomeType.RUIN.name,
-			"ShrineSmallEarth:"+BiomeType.RUIN.name,
-			"ShrineSmallWater:"+BiomeType.RUIN.name,
-			"ShrineSmallFire:"+BiomeType.RUIN.name,
-			"SmallAbandonedMine:"+BiomeType.RUIN.name,
-			"SmallFortRuins:"+BiomeType.RUIN.name,
-			"SmallPyramid:"+BiomeType.RUIN.name,
-			"SmallWoodenCottage:"+BiomeType.VILLAGE.name,
-			"SmallWoodenCottage1:"+BiomeType.VILLAGE.name,
-			"SmallWoodenCottage2:"+BiomeType.VILLAGE.name,
-			"TribalJungleHead:"+BiomeType.RUIN.name,
-			"TemplePyramid:"+BiomeType.RUIN.name,
-			"veldtbath:"+BiomeType.VILLAGE.name,
-			"powerplant:"+BiomeType.INDUSTRIAL.name
-		    // @formatter:on
+            "meteorsite:" + BiomeType.METEOR.name, "smallfortruins:" + BiomeType.RUIN.name,
+            "VillageForgeLarge:" + BiomeType.INDUSTRIAL.name, "VillageGuardTower:" + BiomeType.VILLAGE.name,
+            "VillageInn:" + BiomeType.VILLAGE.name, "VillageHouseRich:" + BiomeType.VILLAGE.name,
+            "VillageHouseRich1:" + BiomeType.VILLAGE.name, "villagewoodmill:" + BiomeType.INDUSTRIAL.name,
+            "ClayMound:mound", "BigPyramid:" + BiomeType.RUIN.name, "DesertFort:" + BiomeType.VILLAGE.name,
+            "DesertHut:" + BiomeType.VILLAGE.name, "DesertWatchtower:" + BiomeType.RUIN.name,
+            "ElvenPond:" + BiomeType.LAKE.name, "ForestBeacon:" + BiomeType.RUIN.name,
+            "HillAltarHouse:" + BiomeType.RUIN.name, "JokerTower:" + BiomeType.RUIN.name,
+            "OldWatchtower:" + BiomeType.RUIN.name, "PeacefulCrypt:" + BiomeType.RUIN.name,
+            "PirateHideout:" + BiomeType.VILLAGE.name, "ShrineSmallAir:" + BiomeType.RUIN.name,
+            "ShrineSmallEarth:" + BiomeType.RUIN.name, "ShrineSmallWater:" + BiomeType.RUIN.name,
+            "ShrineSmallFire:" + BiomeType.RUIN.name, "SmallAbandonedMine:" + BiomeType.RUIN.name,
+            "SmallFortRuins:" + BiomeType.RUIN.name, "SmallPyramid:" + BiomeType.RUIN.name,
+            "SmallWoodenCottage:" + BiomeType.VILLAGE.name, "SmallWoodenCottage1:" + BiomeType.VILLAGE.name,
+            "SmallWoodenCottage2:" + BiomeType.VILLAGE.name, "TribalJungleHead:" + BiomeType.RUIN.name,
+            "TemplePyramid:" + BiomeType.RUIN.name, "veldtbath:" + BiomeType.VILLAGE.name,
+            "powerplant:" + BiomeType.INDUSTRIAL.name
+            // @formatter:on
     };
 
     @Configure(category = machines)
@@ -91,15 +74,9 @@ public class Config extends ConfigBase
     @Configure(category = machines)
     String[]                           ranchables         = {
             // @formatter:off
-			"arceus:nether_star:100000",
-			"chinchou:glowstone_dust:500",
-			"lanturn:glowstone_dust,2:500",
-			"lotad:waterlily:100",
-			"tangela:vine:100",
-			"bulbasaur:vine:100",
-			"octillery:dye:100",
-			"camerupt::lava:1000"
-		    // @formatter:on
+            "arceus:nether_star:100000", "chinchou:glowstone_dust:500", "lanturn:glowstone_dust,2:500",
+            "lotad:waterlily:100", "tangela:vine:100", "bulbasaur:vine:100", "octillery:dye:100", "camerupt::lava:1000"
+            // @formatter:on
     };
     @Configure(category = spawning)
     String[]                           biomeLevels        = { "mound:5-10" };
@@ -133,6 +110,8 @@ public class Config extends ConfigBase
 
     @Configure(category = teams)
     private int                        teamLandPerPlayer  = 125;
+    @Configure(category = teams)
+    private boolean                    denyExplosions     = false;
 
     @Configure(category = misc)
     protected boolean                  tmRecipe           = true;
@@ -168,6 +147,7 @@ public class Config extends ConfigBase
         }
         TileEntityWarpPad.MAXRANGE = warpPadRange;
         TeamManager.maxLandCount = teamLandPerPlayer;
+        TeamManager.denyBlasts = denyExplosions;
         TileEntityTradingTable.theftEnabled = theft;
         TrainerSpawnHandler.trainerBox = trainerBox;
         RecipeHandler.tmRecipe = tmRecipe;
@@ -192,7 +172,7 @@ public class Config extends ConfigBase
 
     protected FluidStack getFluid(String toParse)
     {
-        return FluidRegistry.getFluidStack(toParse, FluidContainerRegistry.BUCKET_VOLUME);
+        return FluidRegistry.getFluidStack(toParse, Fluid.BUCKET_VOLUME);
     }
 
     private void parseBiomes()

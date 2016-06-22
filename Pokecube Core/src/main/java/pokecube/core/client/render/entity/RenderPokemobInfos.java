@@ -164,7 +164,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
           		fontrenderer.drawString(n, length - dx - fontrenderer.getStringWidth(n), offset-8, colour);
           		}else{
           			
-          			n = ((IPokemob) entityliving).getPokemonDisplayName();
+          			n = ((IPokemob) entityliving).getPokemonDisplayName().getFormattedText();
           			
           			if(n.length() == 8)
           			 fontrenderer.drawString(n, length - (int)( fontrenderer.getStringWidth(n)*1.45), offset-8, colour);

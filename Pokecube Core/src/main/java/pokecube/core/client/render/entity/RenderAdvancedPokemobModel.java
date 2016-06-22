@@ -302,7 +302,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
                 }
                 else
                 {
-                    n = ((IPokemob) entityliving).getPokemonDisplayName();
+                    n = ((IPokemob) entityliving).getPokemonDisplayName().getFormattedText();
                 }
 
                 int n1 = length - fontrenderer.getStringWidth(n) / 2;

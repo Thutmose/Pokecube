@@ -564,7 +564,7 @@ public class EventsHandler
             {
                 if (shuckle.getPokemonOwner() != null)
                 {
-                    String message = "A sweet smell is coming from " + shuckle.getPokemonDisplayName();
+                    String message = "A sweet smell is coming from " + shuckle.getPokemonDisplayName().getFormattedText();
                     ((EntityPlayer) shuckle.getPokemonOwner()).addChatMessage(new TextComponentString(message));
                 }
                 shuckle.setHeldItem(new ItemStack(PokecubeItems.berryJuice));
@@ -578,7 +578,7 @@ public class EventsHandler
 
                 if (shuckle.getPokemonOwner() != null)
                 {
-                    String message = "The smell coming from " + shuckle.getPokemonDisplayName() + " has changed";
+                    String message = "The smell coming from " + shuckle.getPokemonDisplayName().getFormattedText() + " has changed";
                     ((EntityPlayer) shuckle.getPokemonOwner()).addChatMessage(new TextComponentString(message));
                 }
                 shuckle.setHeldItem(candy);

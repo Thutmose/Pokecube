@@ -132,7 +132,7 @@ public class AIAttack extends AIBase implements IAICombat
             {
                 delayTime = PokecubeMod.core.getConfig().pokemobagressticks;
                 ITextComponent message = CommandTools.makeTranslatedMessage("pokemob.agress", "red",
-                        ((IPokemob) attacker).getPokemonDisplayName());
+                        ((IPokemob) attacker).getPokemonDisplayName().getFormattedText());
                 entityTarget.addChatMessage(message);
             }
             else

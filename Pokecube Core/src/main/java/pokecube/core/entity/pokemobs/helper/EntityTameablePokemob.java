@@ -657,7 +657,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 if (!owner.isSneaking() && !isDead)
                     ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.return", "green",
-                        getPokemonDisplayName());
+                        getPokemonDisplayName().getFormattedText());
                 displayMessageToOwner(mess);
             }
             else if (getPokemonOwnerName() != null && !getPokemonOwnerName().isEmpty())

@@ -451,7 +451,7 @@ public interface IPokemob extends IMoveConstants
      * Pokemob translated name.
      *
      * @return the name to display */
-    String getPokemonDisplayName();
+    ITextComponent getPokemonDisplayName();
 
     /** @return the String nickname */
     String getPokemonNickname();

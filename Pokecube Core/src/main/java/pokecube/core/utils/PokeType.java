@@ -1,6 +1,8 @@
 package pokecube.core.utils;
 
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public enum PokeType
 {
@@ -23,21 +25,17 @@ public enum PokeType
     ice			( 	0x97D8D8, "ice"),
     dragon		(	0x6F37F8, "dragon"),
     dark		( 	0x6F5747, "dark"),
-    fairy		( 	0xE6A5E6, "fairy");
-    private static float     o         = 0;                                                                                                                       // ineffective
-    private static float     n         = 1F;                                                                                                                      // normal
+    fairy		( 	0xE6A5E6, "fairy");                                                                                                                                          
 
-    private static float     v         = 2F;                                                                                                                      // very
-
-    // public static final PokeType[] TYPES = { unknown,
-    // normal, fighting, flying, poison, ground,
-    // rock, bug, ghost, steel, fire, water, grass,
-    // electric, psychic, ice, dragon, dark, fairy };
-
-    // effective
+    // @formatter:on
+    private static float     o         = 0;
+    // ineffective
+    private static float     n         = 1F;
+    // normal
+    private static float     v         = 2F;
+    // very effective
     private static float     x         = 0.5F;                                                                                                                    // not
-    // very
-                                                                                                                                                                  // effective
+    // not very effective
  // @formatter:off
     private static float[][] typeTable =
     {
@@ -75,13 +73,16 @@ public enum PokeType
 
         return multiplier;
     }
-                                                                                                                                                                  public static String getName(PokeType type)
+
+    public static String getName(PokeType type)
     {
         return type.name;
     }
-                                                                                                                                                                  public static String getTranslatedName(PokeType type)
+
+    @SideOnly(Side.CLIENT)
+    public static String getTranslatedName(PokeType type)
     {
-        String translated = I18n.translateToLocal("type." + getName(type));
+        String translated = I18n.format("type." + getName(type));
 
         if (translated == null || translated.startsWith("type.")) { return getName(type); }
 

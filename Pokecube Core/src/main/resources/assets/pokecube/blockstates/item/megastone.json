@@ -2,7 +2,7 @@
   "forge_marker": 1,
   "defaults": {
     "model": "builtin/generated",
-    "transform": "forge:default-tool"
+    "transform": "forge:default-item"
   },
   "variants": {
     "type": {

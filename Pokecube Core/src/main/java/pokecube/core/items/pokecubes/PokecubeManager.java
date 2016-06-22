@@ -138,7 +138,7 @@ public class PokecubeManager
         int status = pokemob.getStatus();
         setStatus(itemStack, pokemob.getStatus());
 
-        String itemName = pokemob.getPokemonDisplayName();
+        String itemName = pokemob.getPokemonDisplayName().getFormattedText();
         if (status == IMoveConstants.STATUS_BRN) itemName += " (BRN)";
         else if (status == IMoveConstants.STATUS_FRZ) itemName += " (FRZ)";
         else if (status == IMoveConstants.STATUS_PAR) itemName += " (PAR)";

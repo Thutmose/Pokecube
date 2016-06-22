@@ -41,7 +41,7 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
             TileEntityWarpPad pad = (TileEntityWarpPad) te;
             pad.setPlacer(placer);
         }
-        return this.getStateFromMeta(meta);
+        return super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
     }
 
     @Override

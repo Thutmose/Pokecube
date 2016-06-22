@@ -39,7 +39,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public boolean traded    = false;
     String         evolution = "";
 
-    boolean evolving = false;
+    boolean        evolving  = false;
 
     public EntityEvolvablePokemob(World world)
     {
@@ -49,7 +49,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public boolean canEvolve(ItemStack itemstack)
     {
-        if (itemstack != null && itemstack.isItemEqual(PokecubeItems.getStack("Everstone"))) return false;
+        if (itemstack != null && Tools.isSameStack(itemstack, PokecubeItems.getStack("everstone"))) return false;
 
         if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
         {
@@ -290,7 +290,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     ((IPokemob) evolution).setEvolutionTicks(10);
                 }
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
-                        this.getPokemonDisplayName(), ((IPokemob) evolution).getPokedexEntry().getName());
+                        this.getPokemonDisplayName().getFormattedText(), ((IPokemob) evolution).getPokedexEntry().getName());
                 this.displayMessageToOwner(mess);
                 this.setPokemonOwner(null);
                 this.setDead();
@@ -344,7 +344,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public void onUpdate()
     {
         super.onUpdate();
-        if (getHeldItemMainhand() != null && getHeldItemMainhand().getItem() == PokecubeItems.everstone)
+        if (getHeldItemMainhand() != null
+                && Tools.isSameStack(getHeldItemMainhand(), PokecubeItems.getStack("everstone")))
         {
             traded = false;
         }

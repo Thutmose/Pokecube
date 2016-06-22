@@ -3,8 +3,10 @@ package pokecube.adventures.comands;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -15,6 +17,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.utils.ChunkCoordinate;
@@ -41,7 +46,8 @@ public class TeamCommands implements ICommand
         options.add("land");
     }
 
-    private List<String> aliases;
+    private List<String>               aliases;
+    private Map<EntityPlayer, Boolean> claimers = Maps.newHashMap();
 
     public TeamCommands()
     {
@@ -49,6 +55,44 @@ public class TeamCommands implements ICommand
         this.aliases.add("poketeam");
         this.aliases.add("pteam");
         this.aliases.add("pokeTeam");
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SubscribeEvent
+    public void livingUpdate(LivingUpdateEvent evt)
+    {
+        if (evt.getEntity().worldObj.isRemote || evt.getEntity().isDead || claimers.isEmpty()) return;
+
+        if (evt.getEntityLiving() instanceof EntityPlayer && claimers.containsKey(evt.getEntityLiving()))
+        {
+            boolean all = claimers.get(evt.getEntityLiving());
+            ScorePlayerTeam team = null;
+            team = evt.getEntityLiving().worldObj.getScoreboard().getPlayersTeam(evt.getEntityLiving().getName());
+            int num = all ? 16 : 1;
+            int n = 0;
+            for (int i = 0; i < num; i++)
+            {
+                int x = MathHelper.floor_double(evt.getEntityLiving().getPosition().getX() / 16f);
+                int y = MathHelper.floor_double(evt.getEntityLiving().getPosition().getY() / 16f) + i;
+                if (all) y = i;
+                int z = MathHelper.floor_double(evt.getEntityLiving().getPosition().getZ() / 16f);
+                int dim = evt.getEntityLiving().getEntityWorld().provider.getDimension();
+                if (y < 0 || y > 15) return;
+                String owner = TeamManager.getInstance().getLandOwner(new ChunkCoordinate(x, y, z, dim));
+                if (owner != null)
+                {
+                    if (owner.equals(team.getRegisteredName())) continue;
+                    continue;
+                }
+                n++;
+                TeamManager.getInstance().addTeamLand(team.getRegisteredName(), new ChunkCoordinate(x, y, z, dim));
+            }
+            if (n > 0)
+            {
+                evt.getEntityLiving().addChatMessage(
+                        new TextComponentString("Claimed This land for Team" + team.getRegisteredName()));
+            }
+        }
     }
 
     @Override
@@ -83,12 +127,31 @@ public class TeamCommands implements ICommand
                 }
             }
             String arg1 = args[0];
+            if (isOp && arg1.equalsIgnoreCase("autoclaim") && sender instanceof EntityPlayer)
+            {
+                boolean all = false;
+                if (args.length > 1)
+                {
+                    all = args[1].equalsIgnoreCase("all");
+                }
+                if (claimers.containsKey(sender))
+                {
+                    claimers.remove(sender);
+                    sender.addChatMessage(new TextComponentString("Set Autoclaiming off"));
+                }
+                else
+                {
+                    claimers.put((EntityPlayer) sender, all);
+                    sender.addChatMessage(new TextComponentString("Set Autoclaiming on"));
+                }
+            }
             if (arg1.equalsIgnoreCase("claim") && team != null)
             {
                 if (!TeamManager.getInstance().isAdmin(sender.getName(), team)
                         || team.getRegisteredName().equalsIgnoreCase("Trainers"))
                 {
-                    sender.addChatMessage(new TextComponentString("You are not Authorized to claim land for your team"));
+                    sender.addChatMessage(
+                            new TextComponentString("You are not Authorized to claim land for your team"));
                     return;
                 }
                 int teamCount = team.getMembershipCollection().size();
@@ -96,6 +159,7 @@ public class TeamCommands implements ICommand
                 int count = TeamManager.getInstance().countLand(team.getRegisteredName());
 
                 boolean up = false;
+                boolean all = false;
                 int num = 1;
 
                 if (args.length > 2)
@@ -106,6 +170,12 @@ public class TeamCommands implements ICommand
                         {
                             num = Integer.parseInt(args[2]);
                             up = args[1].equalsIgnoreCase("up");
+                        }
+                        if (args[1].equalsIgnoreCase("all"))
+                        {
+                            all = true;
+                            up = true;
+                            num = 16;
                         }
                     }
                     catch (NumberFormatException e)
@@ -123,6 +193,7 @@ public class TeamCommands implements ICommand
 
                         int x = MathHelper.floor_double(sender.getPosition().getX() / 16f);
                         int y = MathHelper.floor_double(sender.getPosition().getY() / 16f) + i * dir;
+                        if (all) y = i * dir;
                         int z = MathHelper.floor_double(sender.getPosition().getZ() / 16f);
                         int dim = sender.getEntityWorld().provider.getDimension();
                         if (y < 0 || y > 15) return;
@@ -227,7 +298,8 @@ public class TeamCommands implements ICommand
                     }
                     if (TeamManager.getInstance().hasInvite(sender.getName(), teamname) || isOp)
                         TeamManager.getInstance().addToTeam((EntityPlayer) sender, teamname);
-                    else sender.addChatMessage(new TextComponentString("You do not have an invite for Team " + teamname));
+                    else sender
+                            .addChatMessage(new TextComponentString("You do not have an invite for Team " + teamname));
 
                 }
                 return;
@@ -388,7 +460,8 @@ public class TeamCommands implements ICommand
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+            BlockPos pos)
     {
         if (args.length == 1)
         {

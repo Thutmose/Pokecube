@@ -10,7 +10,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
@@ -92,10 +91,9 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack stack)
+    public String getUnlocalizedName(ItemStack stack)
     {
-        String name = ("" + I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name"))
-                .trim();
+        String name = super.getUnlocalizedName(stack);
         if (stack.hasTagCompound())
         {
             NBTTagCompound tag = stack.getTagCompound();
@@ -105,8 +103,7 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
                 String stackname = tag.getString("vitamin");
                 variant = stackname.toLowerCase();
             }
-            variant = ("" + I18n.translateToLocal("item." + variant + ".name")).trim();
-            if (!variant.contains(".name")) name = variant;
+            name = "item." + variant + ".name";
         }
         return name;
     }

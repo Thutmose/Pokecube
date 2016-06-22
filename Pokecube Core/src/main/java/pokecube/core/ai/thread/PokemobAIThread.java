@@ -29,8 +29,8 @@ public class PokemobAIThread
     public static class AIStuff
     {
         public final EntityLiving       entity;
-        final ArrayList<IAIRunnable>    aiTasks = new ArrayList<IAIRunnable>();
-        final ArrayList<ILogicRunnable> aiLogic = new ArrayList<ILogicRunnable>();
+        public final ArrayList<IAIRunnable>    aiTasks = new ArrayList<IAIRunnable>();
+        public final ArrayList<ILogicRunnable> aiLogic = new ArrayList<ILogicRunnable>();
 
         public AIStuff(EntityLiving entity_)
         {

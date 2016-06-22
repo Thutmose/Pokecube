@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
@@ -36,10 +35,9 @@ public class ItemFossil extends Item
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack stack)
+    public String getUnlocalizedName(ItemStack stack)
     {
-        String name = ("" + I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name"))
-                .trim();
+        String name = super.getUnlocalizedName();
         if (stack.hasTagCompound())
         {
             NBTTagCompound tag = stack.getTagCompound();
@@ -49,8 +47,7 @@ public class ItemFossil extends Item
                 String stackname = tag.getString("pokemon");
                 variant = stackname.toLowerCase();
             }
-            variant = ("" + I18n.translateToLocal("item." + variant + ".name")).trim();
-            if (!variant.contains(".name")) name = variant;
+            name = "item." + variant;
         }
         return name;
     }

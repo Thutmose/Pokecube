@@ -1,5 +1,6 @@
 package pokecube.core;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.ObjectArrays;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
@@ -81,19 +83,8 @@ public class PokecubeItems extends Items
 
     /** List of grass blocks for pokemobs to eat. */
     public static HashSet<Block>              grasses        = new HashSet<Block>();
-    public static Item                        waterstone;
 
-    public static Item                        firestone;
-    public static Item                        thunderstone;
-    public static Item                        leafstone;
-    public static Item                        moonstone;
-    public static Item                        sunstone;
-    public static Item                        shinystone;
-    public static Item                        ovalstone;
-    public static Item                        everstone;
-    public static Item                        duskstone;
-    public static Item                        dawnstone;
-    public static Item                        kingsrock;
+    public static Item                        held;
     public static Item                        luckyEgg;
     public static Item                        pokemobEgg;
     public static Item                        pokedex;
@@ -451,8 +442,7 @@ public class PokecubeItems extends Items
             if (grasses.contains(b)) continue;
 
             if (b.getDefaultState().getMaterial() == Material.GRASS) grasses.add(b);
-            if (b.getDefaultState().getMaterial() == Blocks.RED_FLOWER.getDefaultState().getMaterial())
-                grasses.add(b);
+            if (b.getDefaultState().getMaterial() == Blocks.RED_FLOWER.getDefaultState().getMaterial()) grasses.add(b);
             if (b.getDefaultState().getMaterial() == Blocks.TALLGRASS.getDefaultState().getMaterial())
                 PokecubeItems.grasses.add(b);
             if (b.getDefaultState().getMaterial() == Blocks.WHEAT.getDefaultState().getMaterial())
@@ -598,7 +588,7 @@ public class PokecubeItems extends Items
      * 
      * @param o
      * @param clazz */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static void register(Block o, Class clazz)
     {
         register(o, clazz, o.getUnlocalizedName().substring(5));
@@ -643,15 +633,37 @@ public class PokecubeItems extends Items
      * @param o
      * @param name
      * @param clazz */
-    public static void register(Object o, Class clazz, String name)
+    public static void register(Object o, Class<? extends ItemBlock> clazz, String name)
     {
         if (o instanceof Item)
         {
-            GameRegistry.registerItem((Item) o, name);
+            if (((Item) o).getRegistryName() == null) ((Item) o).setRegistryName(name);
+            GameRegistry.register((Item) o);
         }
         if (o instanceof Block)
         {
-            GameRegistry.registerBlock((Block) o, clazz == null ? ItemBlock.class : clazz, name);
+            Block block = (Block) o;
+            if (clazz != null)
+            {
+                ItemBlock i = null;
+                if (clazz != null)
+                {
+                    Class<?>[] ctorArgClasses = new Class<?>[1];
+                    ctorArgClasses[0] = Block.class;
+                    try
+                    {
+                        Constructor<? extends ItemBlock> itemCtor = clazz.getConstructor(ctorArgClasses);
+                        i = itemCtor.newInstance(ObjectArrays.concat(block, new Object[0]));
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+                // block registration has to happen first
+                GameRegistry.register(block.getRegistryName() == null ? block.setRegistryName(name) : block);
+                if (i != null) GameRegistry.register(i.setRegistryName(name));
+            }
         }
         addGeneric(name, o);
     }

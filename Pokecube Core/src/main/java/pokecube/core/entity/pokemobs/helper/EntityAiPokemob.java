@@ -744,7 +744,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.faint", "red",
-                    getPokemonDisplayName());
+                    getPokemonDisplayName().getFormattedText());
             displayMessageToOwner(mess);
             returnToPokecube();
         }

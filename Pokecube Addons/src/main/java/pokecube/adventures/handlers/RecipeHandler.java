@@ -33,10 +33,10 @@ public class RecipeHandler
                 Blocks.GOLD_BLOCK, 'I', Items.GOLD_INGOT });
 
         GameRegistry.addRecipe(getStack("kyogrespawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.ICE, 'G',
-                Blocks.LAPIS_BLOCK, 'I', PokecubeItems.waterstone });
+                Blocks.LAPIS_BLOCK, 'I', PokecubeItems.getStack("waterstone") });
 
         GameRegistry.addRecipe(getStack("groudonspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.COAL_BLOCK,
-                'G', Blocks.REDSTONE_BLOCK, 'I', PokecubeItems.firestone });
+                'G', Blocks.REDSTONE_BLOCK, 'I', PokecubeItems.getStack("firestone") });
     }
 
     public static void register()

@@ -223,32 +223,32 @@ public class PokemobPacketHandler
                                 if (megaEntry != null
                                         && megaEntry.getPokedexNb() == pokemob.getPokedexEntry().getPokedexNb())
                                 {
-                                    String old = pokemob.getPokemonDisplayName();
+                                    String old = pokemob.getPokemonDisplayName().getFormattedText();
                                     if (pokemob.getPokedexEntry() == megaEntry)
                                     {
                                         pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
                                         megaEntry = pokemob.getPokedexEntry().baseForme;
                                         player.addChatMessage(new TextComponentTranslation("pokemob.megaevolve.revert",
-                                                old, megaEntry.getTranslatedName()));
+                                                old, new TextComponentTranslation(megaEntry.getUnlocalizedName())));
                                     }
                                     else
                                     {
                                         pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, true);
                                         pokemob.megaEvolve(megaEntry.getName());
                                         player.addChatMessage(new TextComponentTranslation("pokemob.megaevolve.success",
-                                                old, megaEntry.getTranslatedName()));
+                                                old, new TextComponentTranslation(megaEntry.getUnlocalizedName())));
                                     }
                                 }
                                 else
                                 {
                                     if (pokemob.getPokemonAIState(IMoveConstants.MEGAFORME))
                                     {
-                                        String old = pokemob.getPokemonDisplayName();
+                                        String old = pokemob.getPokemonDisplayName().getFormattedText();
                                         pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
                                         pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
                                         megaEntry = pokemob.getPokedexEntry().baseForme;
                                         player.addChatMessage(new TextComponentTranslation("pokemob.megaevolve.revert",
-                                                old, megaEntry.getTranslatedName()));
+                                                old, new TextComponentTranslation(megaEntry.getUnlocalizedName())));
                                     }
                                     else
                                     {

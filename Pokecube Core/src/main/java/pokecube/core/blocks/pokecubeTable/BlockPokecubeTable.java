@@ -2,14 +2,11 @@ package pokecube.core.blocks.pokecubeTable;
 
 import java.util.ArrayList;
 
-import com.google.common.collect.Lists;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,10 +18,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.network.PokecubePacketHandler;
@@ -33,8 +26,8 @@ import pokecube.core.utils.PokecubeSerializer;
 
 public class BlockPokecubeTable extends Block implements ITileEntityProvider
 {
-    private ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[0],
-            new IUnlistedProperty[] { OBJModel.OBJProperty.INSTANCE });
+//    private ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[0],
+//            new IUnlistedProperty[] { OBJModel.OBJProperty.INSTANCE });
 
     public BlockPokecubeTable()
     {
@@ -54,10 +47,12 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
-        TileEntityPokecubeTable tileEntity = (TileEntityPokecubeTable) world.getTileEntity(pos);
-        OBJModel.OBJState retState = new OBJModel.OBJState(
-                tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) : tileEntity.visible, true);
-        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.INSTANCE, retState);
+        // TileEntityPokecubeTable tileEntity = (TileEntityPokecubeTable)
+        // world.getTileEntity(pos);
+        // OBJModel.OBJState retState = new OBJModel.OBJState(
+        // tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) :
+        // tileEntity.visible, true);
+        return super.getExtendedState(state, world, pos);
     }
 
     @Override

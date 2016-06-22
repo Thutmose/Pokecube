@@ -121,6 +121,13 @@ public class GeneralCommands implements ICommand
                 }
                 else
                 {
+                    if(!isOp)
+                    {
+                        text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
+                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                        sender.addChatMessage(message);
+                        return;
+                    }
                     try
                     {
                         Config.instance.updateField(field, args[2]);

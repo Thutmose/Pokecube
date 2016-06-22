@@ -29,6 +29,7 @@ import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
+import pokecube.core.utils.Tools;
 
 public class PokecubeItems extends Items
 {
@@ -510,7 +511,7 @@ public class PokecubeItems extends Items
         if (stack == null) return false;
         for (ItemStack s : evoItems)
         {
-            if (s != null && s.isItemEqual(stack)) return true;
+            if (s != null && Tools.isSameStack(s, stack)) return true;
         }
         return ret;
     }
@@ -521,11 +522,11 @@ public class PokecubeItems extends Items
         if (stack == null) return false;
         for (ItemStack s : heldItems)
         {
-            if (s != null && s.isItemEqual(stack)) return true;
+            if (s != null && Tools.isSameStack(s, stack)) return true;
         }
         for (ItemStack s : evoItems)
         {
-            if (s != null && s.isItemEqual(stack)) return true;
+            if (s != null && Tools.isSameStack(s, stack)) return true;
         }
         return ret;
     }

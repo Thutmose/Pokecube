@@ -504,7 +504,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setString("type", s);
             PokecubeItems.addSpecificItemStack(s, stack);
-            PokecubeItems.addToHoldables(s);
             PokecubeItems.addToEvos(s);
         }
 

@@ -56,7 +56,7 @@ public class MakeCommand extends CommandBase
         }
         boolean isOp = CommandTools.isOp(sender);
 
-        boolean deobfuscated = PokecubeMod.isDeobfuscated();
+        boolean deobfuscated = PokecubeMod.isDeobfuscated() || server.isDedicatedServer();
         boolean commandBlock = !(sender instanceof EntityPlayer);
 
         if (deobfuscated || commandBlock)

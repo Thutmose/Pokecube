@@ -200,6 +200,10 @@ public final class SpawnHandler
             biome2 = BiomeType.VILLAGE.getType();
         }
 
+        int count = Tools.countPokemon(world, v, PokecubeCore.core.getConfig().maxSpawnRadius);
+        if (count > PokecubeCore.core.getConfig().mobSpawnNumber * PokecubeCore.core.getConfig().mobDensityMultiplier)
+            return false;
+
         if ((data.getWeight(BiomeType.ALL.getType())) > 0) return true;
 
         int b = biome2;

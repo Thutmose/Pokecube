@@ -314,13 +314,12 @@ public class PokedexEntry
             {
                 if (mobs != null)
                 {
-                    correctItem = mobs.isItemEqual(item);
+                    correctItem = Tools.isSameStack(mobs, item);
                 }
             }
-            if (mob instanceof EntityLiving && ((EntityLiving) mob).getHeldItemMainhand() != null
-                    && ((EntityLiving) mob).getHeldItemMainhand()
-                            .isItemEqual(PokecubeItems.getStack("everstone"))) { return false; }
-            if (mobs != null && mobs.isItemEqual(PokecubeItems.getStack("everstone"))) { return false; }
+            if (mob instanceof EntityLiving && ((EntityLiving) mob).getHeldItemMainhand() != null && Tools.isSameStack(
+                    ((EntityLiving) mob).getHeldItemMainhand(), PokecubeItems.getStack("everstone"))) { return false; }
+            if (mobs != null && Tools.isSameStack(mobs, PokecubeItems.getStack("everstone"))) { return false; }
             ret = ret && correctItem;
             boolean correctLevel = mob.getLevel() >= level;
             ret = ret && correctLevel;

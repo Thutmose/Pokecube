@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
@@ -24,14 +25,15 @@ import pokecube.core.items.berries.BerryManager;
  * @author Manchou */
 public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
 {
+    protected static final AxisAlignedBB BUSH_AABB = new AxisAlignedBB(0.3D, 0.0D, 0.3D, 0.7D, 1D, 0.7D);
+
     public BlockBerryCrop()
     {
         super();
         this.setTickRandomly(true);
         disableStats();
-        float var3 = 0.3F;
-//        this.setBlockBounds(0.5F - var3, -0.05F, 0.5F - var3, 0.5F + var3, 1F, 0.5F + var3);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(AGE, Integer.valueOf(0)).withProperty(BerryManager.type, "cheri"));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(AGE, Integer.valueOf(0))
+                .withProperty(BerryManager.type, "cheri"));
     }
 
     /** Gets passed in the blockID of the block below and supposed to return
@@ -45,7 +47,7 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {AGE, BerryManager.type});
+        return new BlockStateContainer(this, new IProperty[] { AGE, BerryManager.type });
     }
 
     @Override
@@ -55,35 +57,37 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
     }
 
     @Override
-    /**
-     * Get the actual Block state of this Block at the given position. This applies properties not visible in the
-     * metadata, such as fence connections.
-     */
+    /** Get the actual Block state of this Block at the given position. This
+     * applies properties not visible in the metadata, such as fence
+     * connections. */
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
         TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
         String name = BerryManager.berryNames.get(tile.getBerryId());
-        if(name==null) name = "cheri";
+        if (name == null) name = "cheri";
         return state.withProperty(BerryManager.type, name);
     }
+
     @Override
-    /**
-     * This returns a complete list of items dropped from this block.
+    /** This returns a complete list of items dropped from this block.
      *
-     * @param world The current world
-     * @param pos Block position in world
-     * @param state Current state
-     * @param fortune Breakers fortune level
-     * @return A ArrayList containing all items this block drops
-     */
+     * @param world
+     *            The current world
+     * @param pos
+     *            Block position in world
+     * @param state
+     *            Current state
+     * @param fortune
+     *            Breakers fortune level
+     * @return A ArrayList containing all items this block drops */
     public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
     {
         List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
 
-        Random rand = world instanceof World ? ((World)world).rand : RANDOM;
+        Random rand = world instanceof World ? ((World) world).rand : RANDOM;
 
         int count = quantityDropped(state, fortune, rand);
-        for(int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
             ItemStack stack = BerryManager.getBerryItem(BerryManager.berryNames.get(tile.getBerryId()));
@@ -128,4 +132,8 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
     {
     }
 
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        return BUSH_AABB;
+    }
 }

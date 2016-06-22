@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
@@ -26,13 +27,13 @@ import pokecube.core.items.berries.BerryManager;
  * @author Manchou */
 public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITileEntityProvider
 {
+    protected static final AxisAlignedBB BUSH2_AABB = new AxisAlignedBB(0.35D, 0.55D, 0.35D, 0.65D, 1D, 0.65D);
+
     public BlockBerryFruit()
     {
         super();
         this.setCreativeTab(null);
         this.setTickRandomly(true);
-        float var3 = 0.4F;
-//        this.setBlockBounds(0.5F - var3, 0F, 0.5F - var3, 0.5F + var3, 0.7F, 0.5F + var3);
         this.setDefaultState(this.blockState.getBaseState().withProperty(BerryManager.type, "cheri"));
     }
 
@@ -41,7 +42,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     @Override
     public boolean canBlockStay(World worldIn, BlockPos pos, IBlockState state)
     {
-        return worldIn.getBlockState(pos.down()).getBlock() instanceof BlockBerryCrop || worldIn.getBlockState(pos.up()).getBlock().isLeaves(worldIn.getBlockState(pos.up()), worldIn, pos.up());
+        return worldIn.getBlockState(pos.down()).getBlock() instanceof BlockBerryCrop || worldIn.getBlockState(pos.up())
+                .getBlock().isLeaves(worldIn.getBlockState(pos.up()), worldIn, pos.up());
     }
 
     @Override
@@ -113,7 +115,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         Random rand = world instanceof World ? ((World) world).rand : RANDOM;
         int count = quantityDropped(state, fortune, rand);
         ItemStack stack = getBerryStack(world, pos);
-        if(stack==null) return ret;
+        if (stack == null) return ret;
         stack.stackSize = count;
         ret.add(stack);
         return ret;
@@ -127,7 +129,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     {
         TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
         String name = BerryManager.berryNames.get(tile.getBerryId());
-        if(name==null) name = "cheri";
+        if (name == null) name = "cheri";
         return state.withProperty(BerryManager.type, name);
     }
 
@@ -174,18 +176,13 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         return i;
     }
 
-//    @Override
-//    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
-//    {
-//        TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
-//        if (TileEntityBerries.trees.containsKey(tile.getBerryId()))
-//        {
-//            float f = 0.15F;
-//            this.setBlockBounds(0.5F - f, 1 - f * 3.0F, 0.5F - f, 0.5F + f, 1, 0.5F + f);
-//        }
-//        else
-//        {
-//            super.setBlockBoundsBasedOnState(worldIn, pos);
-//        }
-//    }
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        TileEntityBerries tile = (TileEntityBerries) source.getTileEntity(pos);
+        if (TileEntityBerries.trees.containsKey(tile.getBerryId()))
+        {
+            return BUSH2_AABB;
+        }
+        else return BUSH_AABB;
+    }
 }

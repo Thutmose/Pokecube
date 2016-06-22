@@ -44,7 +44,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
@@ -528,12 +527,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         if (defeater != null)
         {
-            ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat");
-            ITextComponent message;
-            ITextComponent name = getDisplayName();
-            name.getStyle().setColor(TextFormatting.RED);
-            message = name.appendSibling(text);
-            target.addChatMessage(message);
+            ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
+            target.addChatMessage(text);
         }
     }
 
@@ -866,12 +861,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         if (target != null && target != this.target)
         {
             cooldown = 100;
-            ITextComponent text = new TextComponentTranslation("pokecube.trainer.agress");
-            ITextComponent message;
-            ITextComponent name = getDisplayName();
-            name.getStyle().setColor(TextFormatting.RED);
-            message = name.appendSibling(text);
-            target.addChatMessage(message);
+            ITextComponent text = new TextComponentTranslation("pokecube.trainer.agress", getDisplayName());
+            target.addChatMessage(text);
         }
         this.target = target;
     }
@@ -910,6 +901,10 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 attackCooldown[j] = battleCooldown;
                 globalCooldown = 1000;
                 pokecubes[j] = null;
+
+                ITextComponent text = new TextComponentTranslation("pokecube.trainer.toss", getDisplayName(), i.getDisplayName());
+                target.addChatMessage(text);
+                
                 for (int k = j + 1; k < 6; k++)
                 {
                     attackCooldown[k] = 20;

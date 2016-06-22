@@ -542,4 +542,11 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         nbt.setBoolean("noEnergy", noEnergy);
         return storage.writeToNBT(nbt);
     }
+
+    @Override
+    public NBTTagCompound getUpdateTag()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+        return writeToNBT(nbt);
+    }
 }

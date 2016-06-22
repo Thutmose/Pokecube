@@ -100,7 +100,8 @@ public final class BlockAFA extends Block implements ITileEntityProvider
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        playerIn.openGui(PokecubeAdv.instance, PokecubeAdv.GUIAFA_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        if (hand == EnumHand.MAIN_HAND)
+            playerIn.openGui(PokecubeAdv.instance, PokecubeAdv.GUIAFA_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 

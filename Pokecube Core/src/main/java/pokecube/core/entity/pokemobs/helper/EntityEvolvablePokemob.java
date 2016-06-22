@@ -47,7 +47,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public boolean canEvolve(ItemStack itemstack)
     {
-        if (itemstack != null && itemstack.isItemEqual(PokecubeItems.getStack("Everstone"))) return false;
+        if (itemstack != null && Tools.isSameStack(itemstack, PokecubeItems.getStack("everstone"))) return false;
 
         if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
         {
@@ -343,7 +343,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public void onUpdate()
     {
         super.onUpdate();
-        if (getHeldItem() != null && getHeldItem().getItem() == PokecubeItems.everstone)
+        if (getHeldItem() != null && Tools.isSameStack(getHeldItem(), PokecubeItems.getStack("everstone")))
         {
             traded = false;
         }

@@ -306,12 +306,12 @@ public class PokedexEntry
             {
                 if (mobs != null)
                 {
-                    correctItem = mobs.isItemEqual(item);
+                    correctItem = Tools.isSameStack(mobs, item);
                 }
             }
-            if (mob instanceof EntityLiving && ((EntityLiving) mob).getHeldItem() != null && ((EntityLiving) mob)
-                    .getHeldItem().isItemEqual(PokecubeItems.getStack("everstone"))) { return false; }
-            if (mobs != null && mobs.isItemEqual(PokecubeItems.getStack("everstone"))) { return false; }
+            if (mob instanceof EntityLiving && ((EntityLiving) mob).getHeldItem() != null && Tools.isSameStack(
+                    ((EntityLiving) mob).getHeldItem(), PokecubeItems.getStack("everstone"))) { return false; }
+            if (mobs != null && Tools.isSameStack(mobs, PokecubeItems.getStack("everstone"))) { return false; }
             ret = ret && correctItem;
             boolean correctLevel = mob.getLevel() >= level;
             ret = ret && correctLevel;
@@ -1091,7 +1091,7 @@ public class PokedexEntry
         if (e.stats == null) e.stats = stats.clone();
         if (evs == null)
         {
-            System.out.println(this + " " + this.baseForme+" "+e);
+            System.out.println(this + " " + this.baseForme + " " + e);
             Thread.dumpStack();
         }
         if (e.evs == null) e.evs = evs.clone();

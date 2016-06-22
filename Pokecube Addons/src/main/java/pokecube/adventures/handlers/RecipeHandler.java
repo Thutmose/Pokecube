@@ -33,10 +33,10 @@ public class RecipeHandler
                 Blocks.gold_block, 'I', Items.gold_ingot });
 
         GameRegistry.addRecipe(getStack("kyogrespawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.ice, 'G',
-                Blocks.lapis_block, 'I', PokecubeItems.waterstone });
+                Blocks.lapis_block, 'I', PokecubeItems.getStack("waterstone") });
 
         GameRegistry.addRecipe(getStack("groudonspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.coal_block,
-                'G', Blocks.redstone_block, 'I', PokecubeItems.firestone });
+                'G', Blocks.redstone_block, 'I', PokecubeItems.getStack("firestone") });
     }
 
     public static void register()
@@ -78,7 +78,7 @@ public class RecipeHandler
         // Mega Stone
         GameRegistry.addRecipe(getStack("megastone"),
                 new Object[] { " D ", "DOD", " D ", 'O', Items.ender_eye, 'D', Items.diamond });
-        
+
         // RF Siphon
         GameRegistry.addRecipe(new ShapedOreRecipe(PokecubeItems.getBlock("pokesiphon"), new Object[] { "RrR", "rCr",
                 "RrR", 'R', Blocks.redstone_block, 'C', PokecubeItems.getBlock("afa"), 'r', Items.redstone }));

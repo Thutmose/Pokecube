@@ -43,6 +43,7 @@ import pokecube.adventures.client.gui.GuiTrainerEdit;
 import pokecube.adventures.client.render.blocks.RenderAFA;
 import pokecube.adventures.client.render.entity.RenderTarget;
 import pokecube.adventures.client.render.entity.RenderTrainer;
+import pokecube.adventures.client.render.item.BadgeTextureHandler;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.events.RenderHandler;
@@ -161,7 +162,7 @@ public class ClientProxy extends CommonProxy
 
         registerItemTexture(Item.getItemFromBlock(warppad), 0,
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));
-        
+
         registerItemTexture(Item.getItemFromBlock(siphon), 0,
                 new ModelResourceLocation("pokecube_adventures:pokesiphon", "inventory"));
 
@@ -203,6 +204,7 @@ public class ClientProxy extends CommonProxy
         });
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
+        BadgeTextureHandler.registerItemModels();
     }
 
 }

@@ -50,14 +50,9 @@ public class TileEntityBerries extends TileEntity implements ITickable
     {
         if (worldObj.getLightFromNeighbors(pos.up()) >= 9)
         {
-            int i = worldObj.getBlockState(pos).getValue(BlockCrops.AGE).intValue();
-
-            if (i <= 7)
+            if (new Random().nextInt(2500) == 0)
             {
-                if (new Random().nextInt(2500) == 0)
-                {
-                    growCrop();
-                }
+                growCrop();
             }
         }
     }
@@ -94,7 +89,8 @@ public class TileEntityBerries extends TileEntity implements ITickable
     {
         stage++;
         if (stage > 7) stage = 7;
-        if (stage == 7 && worldObj.getBlockState(pos.up()).getBlock().isAir(worldObj, pos.up()))
+        BlockPos up = pos.up();
+        if (stage == 7 && worldObj.getBlockState(up).getBlock().isAir(worldObj, up))
         {
             TreeGrower grower = null;
             if ((grower = trees.get(berryId)) != null)
@@ -106,8 +102,8 @@ public class TileEntityBerries extends TileEntity implements ITickable
             {
                 stage = 1;
                 Block fruit = BerryManager.berryFruit;
-                worldObj.setBlockState(pos.up(), fruit.getDefaultState());
-                TileEntityBerries tile = (TileEntityBerries) worldObj.getTileEntity(pos.up());
+                worldObj.setBlockState(up, fruit.getDefaultState());
+                TileEntityBerries tile = (TileEntityBerries) worldObj.getTileEntity(up);
                 tile.setBerryId(berryId);
             }
         }

@@ -82,19 +82,8 @@ public class PokecubeItems extends Items
 
     /** List of grass blocks for pokemobs to eat. */
     public static HashSet<Block>              grasses        = new HashSet<Block>();
-    public static Item                        waterstone;
 
-    public static Item                        firestone;
-    public static Item                        thunderstone;
-    public static Item                        leafstone;
-    public static Item                        moonstone;
-    public static Item                        sunstone;
-    public static Item                        shinystone;
-    public static Item                        ovalstone;
-    public static Item                        everstone;
-    public static Item                        duskstone;
-    public static Item                        dawnstone;
-    public static Item                        kingsrock;
+    public static Item                        held;
     public static Item                        luckyEgg;
     public static Item                        pokemobEgg;
     public static Item                        pokedex;
@@ -523,7 +512,7 @@ public class PokecubeItems extends Items
         if (stack == null) return false;
         for (ItemStack s : evoItems)
         {
-            if (s != null && s.isItemEqual(stack)) return true;
+            if (s != null && Tools.isSameStack(s, stack)) return true;
         }
         return ret;
     }
@@ -534,11 +523,11 @@ public class PokecubeItems extends Items
         if (stack == null) return false;
         for (ItemStack s : heldItems)
         {
-            if (s != null && s.isItemEqual(stack)) return true;
+            if (s != null && Tools.isSameStack(s, stack)) return true;
         }
         for (ItemStack s : evoItems)
         {
-            if (s != null && s.isItemEqual(stack)) return true;
+            if (s != null && Tools.isSameStack(s, stack)) return true;
         }
         return ret;
     }

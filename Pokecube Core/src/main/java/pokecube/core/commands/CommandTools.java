@@ -59,13 +59,13 @@ public class CommandTools
         sender.addChatMessage(makeError("pokecube.command.noperms"));
     }
 
-    public static IChatComponent makeTranslatedMessage(String key, String formatting, String... args)
+    public static IChatComponent makeTranslatedMessage(String key, String formatting, Object... args)
     {
         IChatComponent message = null;
         if (formatting == null) formatting = "";
         String argString = "";
         int num = 1;
-        if (args != null) for (String s : args)
+        if (args != null) for (Object s : args)
         {
             argString = argString + "{\"translate\":\"" + s + "\"}";
             num++;

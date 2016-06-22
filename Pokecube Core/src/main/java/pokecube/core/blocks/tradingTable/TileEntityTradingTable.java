@@ -53,6 +53,7 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PCPacketHandler;
 import pokecube.core.network.PCPacketHandler.MessageClient;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
@@ -677,9 +678,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             }
 
             boolean mon1everstone = PokecubeManager.getHeldItem(poke1) != null
-                    && PokecubeManager.getHeldItem(poke1).getItem() == PokecubeItems.everstone;
+                    && Tools.isSameStack(PokecubeManager.getHeldItem(poke1), PokecubeItems.getStack("everstone"));
             boolean mon2everstone = PokecubeManager.getHeldItem(poke2) != null
-                    && PokecubeManager.getHeldItem(poke2).getItem() == PokecubeItems.everstone;
+                    && Tools.isSameStack(PokecubeManager.getHeldItem(poke2), PokecubeItems.getStack("everstone"));
 
             if (!mon1everstone) mon1.setTraded(true);
             if (!mon2everstone) mon2.setTraded(true);

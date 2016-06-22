@@ -36,7 +36,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.MerchantRecipe;
@@ -581,12 +580,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         if (defeater != null)
         {
-            IChatComponent text = new ChatComponentTranslation("pokecube.trainer.defeat");
-            IChatComponent message;
-            IChatComponent name = getDisplayName();
-            name.getChatStyle().setColor(EnumChatFormatting.RED);
-            message = name.appendSibling(text);
-            target.addChatMessage(message);
+            IChatComponent text = new ChatComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
+            target.addChatMessage(text);
         }
     }
 
@@ -853,12 +848,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         if (target != null && target != this.target)
         {
             cooldown = 100;
-            IChatComponent text = new ChatComponentTranslation("pokecube.trainer.agress");
-            IChatComponent message;
-            IChatComponent name = getDisplayName();
-            name.getChatStyle().setColor(EnumChatFormatting.RED);
-            message = name.appendSibling(text);
-            target.addChatMessage(message);
+            IChatComponent text = new ChatComponentTranslation("pokecube.trainer.agress", getDisplayName());
+            target.addChatMessage(text);
         }
         this.target = target;
     }

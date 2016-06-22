@@ -133,6 +133,8 @@ public class Config extends ConfigBase
 
     @Configure(category = teams)
     private int                        teamLandPerPlayer  = 125;
+    @Configure(category = teams)
+    private boolean                    denyExplosions     = false;
 
     @Configure(category = misc)
     protected boolean                  tmRecipe           = true;
@@ -169,6 +171,7 @@ public class Config extends ConfigBase
 
         TileEntityWarpPad.MAXRANGE = warpPadRange;
         TeamManager.maxLandCount = teamLandPerPlayer;
+        TeamManager.denyBlasts = denyExplosions;
         TileEntityTradingTable.theftEnabled = theft;
         TrainerSpawnHandler.trainerBox = trainerBox;
         RecipeHandler.tmRecipe = tmRecipe;

@@ -45,7 +45,7 @@ public class SettingsCommand extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-
+        boolean op = CommandTools.isOp(sender);
         if (args.length == 0)
         {
             CommandTools.sendBadArgumentsTryTab(sender);
@@ -80,6 +80,11 @@ public class SettingsCommand extends CommandBase
             }
             else
             {
+                if (!op)
+                {
+                    CommandTools.sendNoPermissions(sender);
+                    return;
+                }
                 try
                 {
                     PokecubeMod.core.getConfig().updateField(field, args[1]);
@@ -91,7 +96,18 @@ public class SettingsCommand extends CommandBase
                     CommandTools.sendError(sender, text);
                     return;
                 }
+                text = "";
                 o = field.get(PokecubeMod.core.getConfig());
+                if (o instanceof String[] || o instanceof int[])
+                {
+                    text += Arrays.toString((Object[]) o);
+                }
+                else
+                {
+                    text += o;
+                }
+                mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.check", "", args[0],
+                        text);
                 sender.addChatMessage(mess);
                 return;
             }

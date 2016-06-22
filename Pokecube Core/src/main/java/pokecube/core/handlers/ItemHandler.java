@@ -264,10 +264,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(pokemobEgg, 0, new ModelResourceLocation("pokecube:pokemobEgg", "inventory"));
         OreDictionary.registerOre("egg", new ItemStack(pokemobEgg, 1, OreDictionary.WILDCARD_VALUE));
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            registerItemTexture(pokemobEgg, 0, new ModelResourceLocation("pokecube:pokemobEgg", "inventory"));
-        }
+        
         pokedex = (new ItemPokedex()).setUnlocalizedName("pokedex");
         pokedex.setCreativeTab(creativeTabPokecube);
         register(pokedex, "pokedex");

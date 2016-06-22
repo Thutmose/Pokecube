@@ -24,6 +24,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -34,6 +35,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
@@ -91,6 +93,7 @@ import pokecube.core.client.render.particle.IParticle;
 import pokecube.core.client.render.particle.ParticleFactory;
 import pokecube.core.client.render.particle.ParticleHandler;
 import pokecube.core.database.Database;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.handlers.EventsHandlerClient;
@@ -100,40 +103,42 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.api.maths.Vector3;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ClientProxyPokecube extends CommonProxyPokecube
 {
-    private static BitSet models = new BitSet();
-    static boolean        init   = true;
-    static boolean        first  = true;
+    private static BitSet            models      = new BitSet();
+    static boolean                   init        = true;
+    static boolean                   first       = true;
 
-    public static KeyBinding nextMob;
+    public static KeyBinding         nextMob;
 
-    public static KeyBinding nextMove;
+    public static KeyBinding         nextMove;
 
-    public static KeyBinding previousMob;
+    public static KeyBinding         previousMob;
 
-    public static KeyBinding previousMove;
+    public static KeyBinding         previousMove;
 
-    public static KeyBinding mobBack;
+    public static KeyBinding         mobBack;
 
-    public static KeyBinding mobAttack;
+    public static KeyBinding         mobAttack;
 
-    public static KeyBinding mobStance;
+    public static KeyBinding         mobStance;
 
-    public static KeyBinding mobMegavolve;
+    public static KeyBinding         mobMegavolve;
 
-    public static KeyBinding mobMove1;
+    public static KeyBinding         mobMove1;
 
-    public static KeyBinding mobMove2;
+    public static KeyBinding         mobMove2;
 
-    public static KeyBinding mobMove3;
+    public static KeyBinding         mobMove3;
 
-    public static KeyBinding mobMove4;
+    public static KeyBinding         mobMove4;
     private HashMap<Integer, Object> cubeRenders = new HashMap<Integer, Object>();
+
     public ClientProxyPokecube()
     {
         if (first) instance = this;
@@ -142,6 +147,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         MinecraftForge.EVENT_BUS.register(hndlr);
         MinecraftForge.EVENT_BUS.register(this);
     }
+
     @Override
     public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
@@ -228,6 +234,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         }
         return null;
     }
+
     @Override
     public String getFolderName()
     {
@@ -235,6 +242,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             return FMLClientHandler.instance().getClient().theWorld.provider.getSaveFolder();
         return "";
     }
+
     @Override
     public IThreadListener getMainThreadListener()
     {
@@ -247,6 +255,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             return super.getMainThreadListener();
         }
     }
+
     @Override
     public ISnooperInfo getMinecraftInstance()
     {
@@ -259,6 +268,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             return super.getMinecraftInstance();
         }
     }
+
     @Override
     public EntityPlayer getPlayer(String playerName)
     {
@@ -293,6 +303,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             return super.getWorld();
         }
     }
+
     @Override
     public void initClient()
     {
@@ -308,12 +319,41 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
             TileHealTable.noSound = true;
         }
+
+        Thread.dumpStack();
+        Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor()
+        {
+            @Override
+            public int getColorFromItemstack(ItemStack stack, int tintIndex)
+            {
+                int damage = ItemPokemobEgg.getNumber(stack);
+                PokedexEntry entry = Database.getEntry(damage);
+                System.out.println(entry);
+                if (entry != null)
+                {
+                    int colour = entry.getType1().colour;
+                    if (tintIndex == 0)
+                    {
+                        return colour;
+                    }
+                    else
+                    {
+                        colour = entry.getType2().colour;
+                        return colour;
+                    }
+                }
+                return 0xffff00;
+
+            }
+        }, PokecubeItems.pokemobEgg);
     }
+
     @Override
     public boolean isOnClientSide()
     {
         return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }
+
     @Override
     public boolean isSoundPlaying(Vector3 location)
     {
@@ -391,10 +431,9 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
         OBJLoader.INSTANCE.addDomain(PokecubeMod.ID.toLowerCase());
         StateMap map = (new StateMap.Builder()).build();
-//        ModelLoader.setCustomStateMapper(pc, map);
+        // ModelLoader.setCustomStateMapper(pc, map);
 
-        map = (new StateMap.Builder()).ignore(new IProperty[] { BlockTradingTable.TMC })
-                .build();
+        map = (new StateMap.Builder()).ignore(new IProperty[] { BlockTradingTable.TMC }).build();
         ModelLoader.setCustomStateMapper(tradingtable, map);
         registerItemTexture(Item.getItemFromBlock(tradingtable), 0,
                 new ModelResourceLocation("pokecube:tradingtable", "inventory"));
@@ -459,18 +498,20 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:nanabWood"));
         registerItemTexture(Item.getItemFromBlock(log1), 1,
                 new ModelResourceLocation("pokecube:nanabWood", "inventory"));
-        
+
         Block crop = BerryManager.berryCrop;
-        map = (new StateMap.Builder()).withName(BerryManager.type).ignore(new IProperty[] { BlockCrops.AGE }).withSuffix("Crop").build();
+        map = (new StateMap.Builder()).withName(BerryManager.type).ignore(new IProperty[] { BlockCrops.AGE })
+                .withSuffix("Crop").build();
         ModelLoader.setCustomStateMapper(crop, map);
-        
-        map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("Fruit")
-                .build();
+
+        map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("Fruit").build();
         ModelLoader.setCustomStateMapper(BerryManager.berryFruit, map);
-        
-        map = (new StateMap.Builder()).ignore(new IProperty[] { BerryManager.type, BlockBerryLeaf.CHECK_DECAY, BlockBerryLeaf.DECAYABLE }).build();
+
+        map = (new StateMap.Builder())
+                .ignore(new IProperty[] { BerryManager.type, BlockBerryLeaf.CHECK_DECAY, BlockBerryLeaf.DECAYABLE })
+                .build();
         ModelLoader.setCustomStateMapper(BerryManager.berryLeaf, map);
-        
+
         MegaStoneTextureHandler.registerItemModels();
         BerryTextureHandler.registerItemModels();
         VitaminTextureHandler.registerItemModels();

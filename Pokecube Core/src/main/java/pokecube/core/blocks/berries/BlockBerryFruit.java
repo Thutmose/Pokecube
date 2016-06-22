@@ -113,6 +113,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         Random rand = world instanceof World ? ((World) world).rand : RANDOM;
         int count = quantityDropped(state, fortune, rand);
         ItemStack stack = getBerryStack(world, pos);
+        if(stack==null) return ret;
         stack.stackSize = count;
         ret.add(stack);
         return ret;

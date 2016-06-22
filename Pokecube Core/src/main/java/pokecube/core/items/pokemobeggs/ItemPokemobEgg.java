@@ -16,7 +16,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemMonsterPlacer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EntitySelectors;
@@ -45,7 +45,7 @@ import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
-public class ItemPokemobEgg extends ItemMonsterPlacer
+public class ItemPokemobEgg extends Item
 {
     static HashMap<PokedexEntry, IPokemob> fakeMobs = new HashMap<PokedexEntry, IPokemob>();
 
@@ -496,42 +496,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
     // @SideOnly(Side.CLIENT)//TODO see if this acuallt did anything
     // public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
     // {
-    // int damage = getNumber(par1ItemStack);
-    // EntityEggInfo entityegginfo = (EntityEggInfo)
-    // PokecubeMod.pokemobEggs.get(Integer.valueOf(damage));
-    //
-    // PokedexEntry entry = Database.getEntry(damage);
-    //
-    // if (entry != null)
-    // {
-    // int colour = entry.getType1().colour;
-    //
-    // if (par2 == 0)
-    // {
-    // return colour;
-    // }
-    // else
-    // {
-    // colour = entry.getType2().colour;
-    // return colour;
-    // }
-    // }
-    //
-    // if (entityegginfo != null)
-    // {
-    // if (par2 == 0)
-    // {
-    // return entityegginfo.primaryColor;
-    // }
-    // else
-    // {
-    // return entityegginfo.secondaryColor;
-    // }
-    // }
-    // else
-    // {
-    // return 0xffffff;
-    // }
+
     // }
 
     @Override

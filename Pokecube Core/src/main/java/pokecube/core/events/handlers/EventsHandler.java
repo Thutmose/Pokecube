@@ -309,27 +309,27 @@ public class EventsHandler
                 && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof EntityDragonPart))
         {
             evt.getEntity().setDead();
-            Vector3 location = Vector3.getNewVector().set(evt.getEntity());
-            int num = getShadowPokemonNb(evt.getEntity());
-            Entity shadow = PokecubeMod.core.createEntityByPokedexNb(num, evt.getWorld());
-            if (shadow == null)
-            {
-                System.err.println(num);
-                return;
-            }
-
-            location.moveEntity(shadow);
-            ((IPokemob) shadow).setShadow(true);
-            ((IPokemob) shadow).specificSpawnInit();
-
-            int exp = (int) (SpawnHandler.getSpawnXp(evt.getWorld(), location, ((IPokemob) shadow).getPokedexEntry())
-                    * 1.25);
-            exp = Math.max(exp, 8000);
-
-            ((IPokemob) shadow).setExp(exp, false, true);
-
-            ((EntityLiving) shadow).setHealth(((EntityLiving) shadow).getMaxHealth());
-            evt.getWorld().spawnEntityInWorld(shadow);
+//            Vector3 location = Vector3.getNewVector().set(evt.getEntity());
+//            int num = getShadowPokemonNb(evt.getEntity());
+//            Entity shadow = PokecubeMod.core.createEntityByPokedexNb(num, evt.getWorld());
+//            if (shadow == null)
+//            {
+//                System.err.println(num);
+//                return;
+//            }
+//
+//            location.moveEntity(shadow);
+//            ((IPokemob) shadow).setShadow(true);
+//            ((IPokemob) shadow).specificSpawnInit();
+//
+//            int exp = (int) (SpawnHandler.getSpawnXp(evt.getWorld(), location, ((IPokemob) shadow).getPokedexEntry())
+//                    * 1.25);
+//            exp = Math.max(exp, 8000);
+//
+//            ((IPokemob) shadow).setExp(exp, false, true);
+//
+//            ((EntityLiving) shadow).setHealth(((EntityLiving) shadow).getMaxHealth());
+//            evt.getWorld().spawnEntityInWorld(shadow);
             evt.setCanceled(true);
         }
         else if (evt.getEntity() instanceof EntityCreeper)

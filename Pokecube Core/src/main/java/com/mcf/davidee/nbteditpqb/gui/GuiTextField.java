@@ -51,6 +51,106 @@ public class GuiTextField extends Gui{
 	}
 
 	/**
+	 * Increments the cursor counter
+	 */
+	public void updateCursorCounter()
+	{
+		++this.cursorCounter;
+	}
+
+	/**
+	 * Sets the text of the textbox.
+	 */
+	public void setText(String par1Str)
+	{
+		if (par1Str.length() > this.maxStringLength)
+		{
+			this.text = par1Str.substring(0, this.maxStringLength);
+		}
+		else
+		{
+			this.text = par1Str;
+		}
+
+		this.setCursorPositionEnd();
+	}
+
+	/**
+	 * Returns the text beign edited on the textbox.
+	 */
+	public String getText()
+	{
+		return this.text;
+	}
+
+	/**
+	 * @return returns the text between the cursor and selectionEnd
+	 */
+	public String getSelectedtext()
+	{
+		int var1 = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
+		int var2 = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+		return this.text.substring(var1, var2);
+	}
+
+	/**
+	 * replaces selected text, or inserts text at the position on the cursor
+	 */
+	public void writeText(String par1Str)
+	{
+		String var2 = "";
+		String var3 = CharacterFilter.filerAllowedCharacters(par1Str,allowSection);
+		int var4 = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
+		int var5 = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+		int var6 = this.maxStringLength - this.text.length() - (var4 - this.selectionEnd);
+
+		if (this.text.length() > 0)
+		{
+			var2 = var2 + this.text.substring(0, var4);
+		}
+
+		int var8;
+
+		if (var6 < var3.length())
+		{
+			var2 = var2 + var3.substring(0, var6);
+			var8 = var6;
+		}
+		else
+		{
+			var2 = var2 + var3;
+			var8 = var3.length();
+		}
+
+		if (this.text.length() > 0 && var5 < this.text.length())
+		{
+			var2 = var2 + this.text.substring(var5);
+		}
+
+		this.text = var2;
+		this.moveCursorBy(var4 - this.selectionEnd + var8);
+	}
+
+	/**
+	 * Deletes the specified number of words starting at the cursor position. Negative numbers will delete words left of
+	 * the cursor.
+	 */
+	public void deleteWords(int par1)
+	{
+		if (this.text.length() != 0)
+		{
+			if (this.selectionEnd != this.cursorPosition)
+			{
+				this.writeText("");
+			}
+			else
+			{
+				this.deleteFromCursor(this.getNthWordFromCursor(par1) - this.cursorPosition);
+			}
+		}
+	}
+
+	/**
 	 * delete the selected text, otherwsie deletes characters from either side of the cursor. params: delete num
 	 */
 	public void deleteFromCursor(int par1)
@@ -89,132 +189,20 @@ public class GuiTextField extends Gui{
 	}
 
 	/**
-	 * Deletes the specified number of words starting at the cursor position. Negative numbers will delete words left of
-	 * the cursor.
+	 * see @getNthNextWordFromPos() params: N, position
 	 */
-	public void deleteWords(int par1)
+	public int getNthWordFromCursor(int par1)
 	{
-		if (this.text.length() != 0)
-		{
-			if (this.selectionEnd != this.cursorPosition)
-			{
-				this.writeText("");
-			}
-			else
-			{
-				this.deleteFromCursor(this.getNthWordFromCursor(par1) - this.cursorPosition);
-			}
-		}
+		return this.getNthWordFromPos(par1, this.getCursorPosition());
 	}
 
 	/**
-	  * draws the vertical line cursor in the textbox
-	  */
-	 private void drawCursorVertical(int par1, int par2, int par3, int par4)
-	 {
-		 int var5;
-
-		 if (par1 < par3)
-		 {
-			 var5 = par1;
-			 par1 = par3;
-			 par3 = var5;
-		 }
-
-		 if (par2 < par4)
-		 {
-			 var5 = par2;
-			 par2 = par4;
-			 par4 = var5;
-		 }
-
-		 PTezzelator tez = PTezzelator.instance;
-		 GL11.glColor4f(0.0F, 0.0F, 255.0F, 255.0F);
-		 GlStateManager.disableTexture2D();
-		 GlStateManager.enableColorLogic();
-		 GlStateManager.colorLogicOp(GL11.GL_OR_REVERSE);
-		 tez.begin();
-		 tez.vertex(par1, par4, 0.0D);
-		 tez.vertex(par3, par4, 0.0D);
-		 tez.vertex(par3, par2, 0.0D);
-		 tez.vertex(par1, par2, 0.0D);
-		 tez.end();
-		 GlStateManager.disableColorLogic();
-		 GlStateManager.enableTexture2D();
-	 }
-
-	/**
-	  * Draws the textbox
-	  */
-	 public void drawTextBox()
-	 {
-		 String textToDisplay = text.replace(NBTStringHelper.SECTION_SIGN, '?');
-		 if (this.getVisible())
-		 {
-			 if (this.getEnableBackgroundDrawing())
-			 {
-				 drawRect(this.xPos - 1, this.yPos - 1, this.xPos + this.width + 1, this.yPos + this.height + 1, -6250336);
-				 drawRect(this.xPos, this.yPos, this.xPos + this.width, this.yPos + this.height, -16777216);
-			 }
-
-			 int var1 = this.isEnabled ? this.enabledColor : this.disabledColor;
-			 int var2 = this.cursorPosition - this.field_73816_n;
-			 int var3 = this.selectionEnd - this.field_73816_n;
-			 String var4 = this.fontRenderer.trimStringToWidth(textToDisplay.substring(this.field_73816_n), this.getWidth());
-			 boolean var5 = var2 >= 0 && var2 <= var4.length();
-			 boolean var6 = this.isFocused && this.cursorCounter / 6 % 2 == 0 && var5;
-			 int var7 = this.enableBackgroundDrawing ? this.xPos + 4 : this.xPos;
-			 int var8 = this.enableBackgroundDrawing ? this.yPos + (this.height - 8) / 2 : this.yPos;
-			 int var9 = var7;
-
-			 if (var3 > var4.length())
-			 {
-				 var3 = var4.length();
-			 }
-
-			 if (var4.length() > 0)
-			 {
-				 String var10 = var5 ? var4.substring(0, var2) : var4;
-				 var9 = this.fontRenderer.drawStringWithShadow(var10, var7, var8, var1);
-			 }
-
-			 boolean var13 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
-			 int var11 = var9;
-
-			 if (!var5)
-			 {
-				 var11 = var2 > 0 ? var7 + this.width : var7;
-			 }
-			 else if (var13)
-			 {
-				 var11 = var9 - 1;
-				 --var9;
-			 }
-
-			 if (var4.length() > 0 && var5 && var2 < var4.length())
-			 {
-				 this.fontRenderer.drawStringWithShadow(var4.substring(var2), var9, var8, var1);
-			 }
-
-			 if (var6)
-			 {
-				 if (var13)
-				 {
-					 Gui.drawRect(var11, var8 - 1, var11 + 1, var8 + 1 + this.fontRenderer.FONT_HEIGHT, -3092272);
-				 }
-				 else
-				 {
-					 this.fontRenderer.drawStringWithShadow("_", var11, var8, var1);
-				 }
-			 }
-
-			 if (var3 != var2)
-			 {
-				 int var12 = var7 + this.fontRenderer.getStringWidth(var4.substring(0, var3));
-				 this.drawCursorVertical(var11, var8 - 1, var12 - 1, var8 + 1 + this.fontRenderer.FONT_HEIGHT);
-			 }
-		 }
-	 }
+	 * gets the position of the nth word. N may be negative, then it looks backwards. params: N, position
+	 */
+	public int getNthWordFromPos(int par1, int par2)
+	{
+		return this.func_73798_a(par1, this.getCursorPosition(), true);
+	}
 
 	public int func_73798_a(int par1, int par2, boolean par3)
 	{
@@ -258,131 +246,7 @@ public class GuiTextField extends Gui{
 		return var4;
 	}
 
-	public void func_82265_c(boolean par1)
-	 {
-		 this.isEnabled = par1;
-	 }
-
-	public void func_82266_h(int par1)
-	 {
-		 this.disabledColor = par1;
-	 }
-
 	/**
-	  * returns the current position of the cursor
-	  */
-	 public int getCursorPosition()
-	 {
-		 return this.cursorPosition;
-	 }
-
-	/**
-	  * get enable drawing background and outline
-	  */
-	 public boolean getEnableBackgroundDrawing()
-	 {
-		 return this.enableBackgroundDrawing;
-	 }
-
-	/**
-	  * returns the maximum number of character that can be contained in this textbox
-	  */
-	 public int getMaxStringLength()
-	 {
-		 return this.maxStringLength;
-	 }
-
-	/**
-	 * see @getNthNextWordFromPos() params: N, position
-	 */
-	public int getNthWordFromCursor(int par1)
-	{
-		return this.getNthWordFromPos(par1, this.getCursorPosition());
-	}
-
-	/**
-	 * gets the position of the nth word. N may be negative, then it looks backwards. params: N, position
-	 */
-	public int getNthWordFromPos(int par1, int par2)
-	{
-		return this.func_73798_a(par1, this.getCursorPosition(), true);
-	}
-
-	 /**
-	 * @return returns the text between the cursor and selectionEnd
-	 */
-	public String getSelectedtext()
-	{
-		int var1 = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-		int var2 = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
-		return this.text.substring(var1, var2);
-	}
-
-	 /**
-	  * the side of the selection that is not the cursor, maye be the same as the cursor
-	  */
-	 public int getSelectionEnd()
-	 {
-		 return this.selectionEnd;
-	 }
-
-	 /**
-	 * Returns the text beign edited on the textbox.
-	 */
-	public String getText()
-	{
-		return this.text;
-	}
-
-	 /**
-	  * @return {@code true} if this textbox is visible
-	  */
-	 public boolean getVisible()
-	 {
-		 return this.visible;
-	 }
-
-	 /**
-	  * returns the width of the textbox depending on if the the box is enabled
-	  */
-	 public int getWidth()
-	 {
-		 return this.getEnableBackgroundDrawing() ? this.width - 8 : this.width;
-	 }
-
-	 /**
-	  * getter for the focused field
-	  */
-	 public boolean isFocused()
-	 {
-		 return this.isFocused;
-	 }
-
-	 /**
-	  * Args: x, y, buttonClicked
-	  */
-	 public void mouseClicked(int par1, int par2, int par3)
-	 {
-		 String displayString = text.replace(NBTStringHelper.SECTION_SIGN, '?');
-		 boolean var4 = par1 >= this.xPos && par1 < this.xPos + this.width && par2 >= this.yPos && par2 < this.yPos + this.height;
-
-		 this.setFocused(this.isEnabled && var4);
-
-		 if (this.isFocused && par3 == 0)
-		 {
-			 int var5 = par1 - this.xPos;
-
-			 if (this.enableBackgroundDrawing)
-			 {
-				 var5 -= 4;
-			 }
-
-			 String var6 = this.fontRenderer.trimStringToWidth(displayString.substring(this.field_73816_n), this.getWidth());
-			 this.setCursorPosition(this.fontRenderer.trimStringToWidth(var6, var5).length() + this.field_73816_n);
-		 }
-	 }
-
-	 /**
 	 * Moves the text cursor by a specified number of characters and clears the selection
 	 */
 	 public void moveCursorBy(int par1)
@@ -390,7 +254,7 @@ public class GuiTextField extends Gui{
 		this.setCursorPosition(this.selectionEnd + par1);
 	}
 
-	 /**
+	/**
 	 * sets the position of the cursor to the provided index
 	 */
 	 public void setCursorPosition(int par1)
@@ -412,14 +276,6 @@ public class GuiTextField extends Gui{
 	}
 
 	 /**
-	  * sets the cursors position to after the text
-	  */
-	 public void setCursorPositionEnd()
-	 {
-		 this.setCursorPosition(this.text.length());
-	 }
-
-	 /**
 	  * sets the cursors position to the beginning
 	  */
 	 public void setCursorPositionZero()
@@ -428,124 +284,11 @@ public class GuiTextField extends Gui{
 	 }
 
 	 /**
-	  * enable drawing background and outline
+	  * sets the cursors position to after the text
 	  */
-	 public void setEnableBackgroundDrawing(boolean par1)
+	 public void setCursorPositionEnd()
 	 {
-		 this.enableBackgroundDrawing = par1;
-	 }
-
-	 /**
-	  * setter for the focused field
-	  */
-	 public void setFocused(boolean par1)
-	 {
-		 if (par1 && !this.isFocused)
-		 {
-			 this.cursorCounter = 0;
-		 }
-
-		 this.isFocused = par1;
-	 }
-
-	 public void setMaxStringLength(int par1)
-	 {
-		 this.maxStringLength = par1;
-
-		 if (this.text.length() > par1)
-		 {
-			 this.text = this.text.substring(0, par1);
-		 }
-	 }
-
-	 /**
-	  * Sets the position of the selection anchor (i.e. position the selection was started at)
-	  */
-	 public void setSelectionPos(int par1)
-	 {
-		 String displayString = text.replace(NBTStringHelper.SECTION_SIGN, '?');
-		 int var2 = displayString.length();
-
-		 if (par1 > var2)
-		 {
-			 par1 = var2;
-		 }
-
-		 if (par1 < 0)
-		 {
-			 par1 = 0;
-		 }
-
-		 this.selectionEnd = par1;
-
-		 if (this.fontRenderer != null)
-		 {
-			 if (this.field_73816_n > var2)
-			 {
-				 this.field_73816_n = var2;
-			 }
-
-			 int var3 = this.getWidth();
-			 String var4 = this.fontRenderer.trimStringToWidth(displayString.substring(this.field_73816_n), var3);
-			 int var5 = var4.length() + this.field_73816_n;
-
-			 if (par1 == this.field_73816_n)
-			 {
-				 this.field_73816_n -= this.fontRenderer.trimStringToWidth(displayString, var3, true).length();
-			 }
-
-			 if (par1 > var5)
-			 {
-				 this.field_73816_n += par1 - var5;
-			 }
-			 else if (par1 <= this.field_73816_n)
-			 {
-				 this.field_73816_n -= this.field_73816_n - par1;
-			 }
-
-			 if (this.field_73816_n < 0)
-			 {
-				 this.field_73816_n = 0;
-			 }
-
-			 if (this.field_73816_n > var2)
-			 {
-				 this.field_73816_n = var2;
-			 }
-		 }
-	 }
-
-	 /**
-	 * Sets the text of the textbox.
-	 */
-	public void setText(String par1Str)
-	{
-		if (par1Str.length() > this.maxStringLength)
-		{
-			this.text = par1Str.substring(0, this.maxStringLength);
-		}
-		else
-		{
-			this.text = par1Str;
-		}
-
-		this.setCursorPositionEnd();
-	}
-
-	 /**
-	  * Sets the text colour for this textbox (disabled text will not use this colour)
-	  */
-	 public void setTextColor(int par1)
-	 {
-		 this.enabledColor = par1;
-	 }
-
-	 /**
-	  * Sets whether or not this textbox is visible
-	  */
-	 public void setVisible(boolean par1)
-	 {
-		 this.visible = par1;
+		 this.setCursorPosition(this.text.length());
 	 }
 
 	 /**
@@ -681,51 +424,308 @@ public class GuiTextField extends Gui{
 		 }
 	 }
 
+	 /**
+	  * Args: x, y, buttonClicked
+	  */
+	 public void mouseClicked(int par1, int par2, int par3)
+	 {
+		 String displayString = text.replace(NBTStringHelper.SECTION_SIGN, '?');
+		 boolean var4 = par1 >= this.xPos && par1 < this.xPos + this.width && par2 >= this.yPos && par2 < this.yPos + this.height;
+
+		 this.setFocused(this.isEnabled && var4);
+
+		 if (this.isFocused && par3 == 0)
+		 {
+			 int var5 = par1 - this.xPos;
+
+			 if (this.enableBackgroundDrawing)
+			 {
+				 var5 -= 4;
+			 }
+
+			 String var6 = this.fontRenderer.trimStringToWidth(displayString.substring(this.field_73816_n), this.getWidth());
+			 this.setCursorPosition(this.fontRenderer.trimStringToWidth(var6, var5).length() + this.field_73816_n);
+		 }
+	 }
+
+	 /**
+	  * Draws the textbox
+	  */
+	 public void drawTextBox()
+	 {
+		 String textToDisplay = text.replace(NBTStringHelper.SECTION_SIGN, '?');
+		 if (this.getVisible())
+		 {
+			 if (this.getEnableBackgroundDrawing())
+			 {
+				 drawRect(this.xPos - 1, this.yPos - 1, this.xPos + this.width + 1, this.yPos + this.height + 1, -6250336);
+				 drawRect(this.xPos, this.yPos, this.xPos + this.width, this.yPos + this.height, -16777216);
+			 }
+
+			 int var1 = this.isEnabled ? this.enabledColor : this.disabledColor;
+			 int var2 = this.cursorPosition - this.field_73816_n;
+			 int var3 = this.selectionEnd - this.field_73816_n;
+			 String var4 = this.fontRenderer.trimStringToWidth(textToDisplay.substring(this.field_73816_n), this.getWidth());
+			 boolean var5 = var2 >= 0 && var2 <= var4.length();
+			 boolean var6 = this.isFocused && this.cursorCounter / 6 % 2 == 0 && var5;
+			 int var7 = this.enableBackgroundDrawing ? this.xPos + 4 : this.xPos;
+			 int var8 = this.enableBackgroundDrawing ? this.yPos + (this.height - 8) / 2 : this.yPos;
+			 int var9 = var7;
+
+			 if (var3 > var4.length())
+			 {
+				 var3 = var4.length();
+			 }
+
+			 if (var4.length() > 0)
+			 {
+				 String var10 = var5 ? var4.substring(0, var2) : var4;
+				 var9 = this.fontRenderer.drawStringWithShadow(var10, var7, var8, var1);
+			 }
+
+			 boolean var13 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
+			 int var11 = var9;
+
+			 if (!var5)
+			 {
+				 var11 = var2 > 0 ? var7 + this.width : var7;
+			 }
+			 else if (var13)
+			 {
+				 var11 = var9 - 1;
+				 --var9;
+			 }
+
+			 if (var4.length() > 0 && var5 && var2 < var4.length())
+			 {
+				 this.fontRenderer.drawStringWithShadow(var4.substring(var2), var9, var8, var1);
+			 }
+
+			 if (var6)
+			 {
+				 if (var13)
+				 {
+					 Gui.drawRect(var11, var8 - 1, var11 + 1, var8 + 1 + this.fontRenderer.FONT_HEIGHT, -3092272);
+				 }
+				 else
+				 {
+					 this.fontRenderer.drawStringWithShadow("_", var11, var8, var1);
+				 }
+			 }
+
+			 if (var3 != var2)
+			 {
+				 int var12 = var7 + this.fontRenderer.getStringWidth(var4.substring(0, var3));
+				 this.drawCursorVertical(var11, var8 - 1, var12 - 1, var8 + 1 + this.fontRenderer.FONT_HEIGHT);
+			 }
+		 }
+	 }
+
+	 /**
+	  * draws the vertical line cursor in the textbox
+	  */
+	 private void drawCursorVertical(int par1, int par2, int par3, int par4)
+	 {
+		 int var5;
+
+		 if (par1 < par3)
+		 {
+			 var5 = par1;
+			 par1 = par3;
+			 par3 = var5;
+		 }
+
+		 if (par2 < par4)
+		 {
+			 var5 = par2;
+			 par2 = par4;
+			 par4 = var5;
+		 }
+
+		 PTezzelator tez = PTezzelator.instance;
+		 GL11.glColor4f(0.0F, 0.0F, 255.0F, 255.0F);
+		 GlStateManager.disableTexture2D();
+		 GlStateManager.enableColorLogic();
+		 GlStateManager.colorLogicOp(GL11.GL_OR_REVERSE);
+		 tez.begin();
+		 tez.vertex((double)par1, (double)par4, 0.0D);
+		 tez.vertex((double)par3, (double)par4, 0.0D);
+		 tez.vertex((double)par3, (double)par2, 0.0D);
+		 tez.vertex((double) par1, (double) par2, 0.0D);
+		 tez.end();
+		 GlStateManager.disableColorLogic();
+		 GlStateManager.enableTexture2D();
+	 }
+
+	 public void setMaxStringLength(int par1)
+	 {
+		 this.maxStringLength = par1;
+
+		 if (this.text.length() > par1)
+		 {
+			 this.text = this.text.substring(0, par1);
+		 }
+	 }
+
+	 /**
+	  * returns the maximum number of character that can be contained in this textbox
+	  */
+	 public int getMaxStringLength()
+	 {
+		 return this.maxStringLength;
+	 }
+
+	 /**
+	  * returns the current position of the cursor
+	  */
+	 public int getCursorPosition()
+	 {
+		 return this.cursorPosition;
+	 }
+
+	 /**
+	  * get enable drawing background and outline
+	  */
+	 public boolean getEnableBackgroundDrawing()
+	 {
+		 return this.enableBackgroundDrawing;
+	 }
+
+	 /**
+	  * enable drawing background and outline
+	  */
+	 public void setEnableBackgroundDrawing(boolean par1)
+	 {
+		 this.enableBackgroundDrawing = par1;
+	 }
+
+	 /**
+	  * Sets the text colour for this textbox (disabled text will not use this colour)
+	  */
+	 public void setTextColor(int par1)
+	 {
+		 this.enabledColor = par1;
+	 }
+
+	 public void func_82266_h(int par1)
+	 {
+		 this.disabledColor = par1;
+	 }
+
+	 /**
+	  * setter for the focused field
+	  */
+	 public void setFocused(boolean par1)
+	 {
+		 if (par1 && !this.isFocused)
+		 {
+			 this.cursorCounter = 0;
+		 }
+
+		 this.isFocused = par1;
+	 }
+
+	 /**
+	  * getter for the focused field
+	  */
+	 public boolean isFocused()
+	 {
+		 return this.isFocused;
+	 }
+
+	 public void func_82265_c(boolean par1)
+	 {
+		 this.isEnabled = par1;
+	 }
+
+	 /**
+	  * the side of the selection that is not the cursor, maye be the same as the cursor
+	  */
+	 public int getSelectionEnd()
+	 {
+		 return this.selectionEnd;
+	 }
+
+	 /**
+	  * returns the width of the textbox depending on if the the box is enabled
+	  */
+	 public int getWidth()
+	 {
+		 return this.getEnableBackgroundDrawing() ? this.width - 8 : this.width;
+	 }
+
+	 /**
+	  * Sets the position of the selection anchor (i.e. position the selection was started at)
+	  */
+	 public void setSelectionPos(int par1)
+	 {
+		 String displayString = text.replace(NBTStringHelper.SECTION_SIGN, '?');
+		 int var2 = displayString.length();
+
+		 if (par1 > var2)
+		 {
+			 par1 = var2;
+		 }
+
+		 if (par1 < 0)
+		 {
+			 par1 = 0;
+		 }
+
+		 this.selectionEnd = par1;
+
+		 if (this.fontRenderer != null)
+		 {
+			 if (this.field_73816_n > var2)
+			 {
+				 this.field_73816_n = var2;
+			 }
+
+			 int var3 = this.getWidth();
+			 String var4 = this.fontRenderer.trimStringToWidth(displayString.substring(this.field_73816_n), var3);
+			 int var5 = var4.length() + this.field_73816_n;
+
+			 if (par1 == this.field_73816_n)
+			 {
+				 this.field_73816_n -= this.fontRenderer.trimStringToWidth(displayString, var3, true).length();
+			 }
+
+			 if (par1 > var5)
+			 {
+				 this.field_73816_n += par1 - var5;
+			 }
+			 else if (par1 <= this.field_73816_n)
+			 {
+				 this.field_73816_n -= this.field_73816_n - par1;
+			 }
+
+			 if (this.field_73816_n < 0)
+			 {
+				 this.field_73816_n = 0;
+			 }
+
+			 if (this.field_73816_n > var2)
+			 {
+				 this.field_73816_n = var2;
+			 }
+		 }
+	 }
+
 	
 
 	 /**
-	 * Increments the cursor counter
-	 */
-	public void updateCursorCounter()
-	{
-		++this.cursorCounter;
-	}
+	  * @return {@code true} if this textbox is visible
+	  */
+	 public boolean getVisible()
+	 {
+		 return this.visible;
+	 }
 
 	 /**
-	 * replaces selected text, or inserts text at the position on the cursor
-	 */
-	public void writeText(String par1Str)
-	{
-		String var2 = "";
-		String var3 = CharacterFilter.filerAllowedCharacters(par1Str,allowSection);
-		int var4 = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-		int var5 = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
-		int var6 = this.maxStringLength - this.text.length() - (var4 - this.selectionEnd);
-
-		if (this.text.length() > 0)
-		{
-			var2 = var2 + this.text.substring(0, var4);
-		}
-
-		int var8;
-
-		if (var6 < var3.length())
-		{
-			var2 = var2 + var3.substring(0, var6);
-			var8 = var6;
-		}
-		else
-		{
-			var2 = var2 + var3;
-			var8 = var3.length();
-		}
-
-		if (this.text.length() > 0 && var5 < this.text.length())
-		{
-			var2 = var2 + this.text.substring(var5);
-		}
-
-		this.text = var2;
-		this.moveCursorBy(var4 - this.selectionEnd + var8);
-	}
+	  * Sets whether or not this textbox is visible
+	  */
+	 public void setVisible(boolean par1)
+	 {
+		 this.visible = par1;
+	 }
 }

@@ -10,6 +10,49 @@ public class ParseHelper {
 			throw new NumberFormatException("Not a valid byte");
 		}
 	}
+	public static short parseShort(String s) throws NumberFormatException{
+		try {
+			return Short.parseShort(s);
+		}
+		catch(NumberFormatException e){
+			throw new NumberFormatException("Not a valid short");
+		}
+	}
+
+	public static int parseInt(String s) throws NumberFormatException{
+		try {
+			return Integer.parseInt(s);
+		}
+		catch(NumberFormatException e){
+			throw new NumberFormatException("Not a valid int");
+		}
+	}
+	public static long parseLong(String s) throws NumberFormatException{
+		try {
+			return Long.parseLong(s);
+		}
+		catch(NumberFormatException e){
+			throw new NumberFormatException("Not a valid long");
+		}
+	}
+
+	public static float parseFloat(String s) throws NumberFormatException{
+		try {
+			return Float.parseFloat(s);
+		}
+		catch(NumberFormatException e){
+			throw new NumberFormatException("Not a valid float");
+		}
+	}
+	public static double parseDouble(String s) throws NumberFormatException{
+		try {
+			return Double.parseDouble(s);
+		}
+		catch(NumberFormatException e){
+			throw new NumberFormatException("Not a valid double");
+		}
+	}
+
 	public static byte[] parseByteArray(String s) throws NumberFormatException{
 		try {
 			String[] input = s.split(" ");
@@ -22,32 +65,6 @@ public class ParseHelper {
 			throw new NumberFormatException("Not a valid byte array");
 		}
 	}
-
-	public static double parseDouble(String s) throws NumberFormatException{
-		try {
-			return Double.parseDouble(s);
-		}
-		catch(NumberFormatException e){
-			throw new NumberFormatException("Not a valid double");
-		}
-	}
-	public static float parseFloat(String s) throws NumberFormatException{
-		try {
-			return Float.parseFloat(s);
-		}
-		catch(NumberFormatException e){
-			throw new NumberFormatException("Not a valid float");
-		}
-	}
-
-	public static int parseInt(String s) throws NumberFormatException{
-		try {
-			return Integer.parseInt(s);
-		}
-		catch(NumberFormatException e){
-			throw new NumberFormatException("Not a valid int");
-		}
-	}
 	public static int[] parseIntArray(String s) throws NumberFormatException{
 		try {
 			String[] input = s.split(" ");
@@ -58,23 +75,6 @@ public class ParseHelper {
 		}
 		catch(NumberFormatException e){
 			throw new NumberFormatException("Not a valid int array");
-		}
-	}
-
-	public static long parseLong(String s) throws NumberFormatException{
-		try {
-			return Long.parseLong(s);
-		}
-		catch(NumberFormatException e){
-			throw new NumberFormatException("Not a valid long");
-		}
-	}
-	public static short parseShort(String s) throws NumberFormatException{
-		try {
-			return Short.parseShort(s);
-		}
-		catch(NumberFormatException e){
-			throw new NumberFormatException("Not a valid short");
 		}
 	}
 	

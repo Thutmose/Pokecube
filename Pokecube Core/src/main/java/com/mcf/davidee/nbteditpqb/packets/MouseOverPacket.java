@@ -12,16 +12,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 
 public class MouseOverPacket extends AbstractPacket {
 	
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
 
 	}
 
 	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
 
 	}
 
@@ -32,7 +33,7 @@ public class MouseOverPacket extends AbstractPacket {
 		if (pos != null)
 			if (pos.entityHit != null)
 				packet = new EntityRequestPacket(pos.entityHit.getEntityId());
-			else if (pos.typeOfHit == RayTraceResult.Type.BLOCK)
+			else if (pos.typeOfHit == Type.BLOCK)
 				packet = new TileRequestPacket(pos.getBlockPos());
 		if (packet == null) 
 			sendMessageToPlayer(player, SECTION_SIGN + "cError - No tile or entity selected");

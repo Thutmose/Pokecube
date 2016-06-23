@@ -26,13 +26,13 @@ public class EntityRequestPacket extends AbstractPacket {
 	}
 
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
-		entityID = buffer.readInt();
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
+		buffer.writeInt(entityID);
 	}
 
 	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
-		buffer.writeInt(entityID);
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
+		entityID = buffer.readInt();
 	}
 	
 	@Override

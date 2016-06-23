@@ -21,6 +21,45 @@ public class NBTStringHelper {
 
 	public static final char SECTION_SIGN = '\u00A7';
 
+	public static String getButtonName(byte id){
+		switch(id){
+		case 1 :
+			return "Byte";
+		case 2: 
+			return "Short";
+		case 3:
+			return "Int";
+		case 4:
+			return "Long";
+		case 5:
+			return "Float";
+		case 6:
+			return "Double";
+		case 7: 
+			return "Byte[]";
+		case 8:
+			return "String";
+		case 9:
+			return "List";
+		case 10:
+			return "Compound";
+		case 11:
+			return "Int[]";
+		case 12:
+			return "Edit";
+		case 13:
+			return "Delete";
+		case 14:
+			return "Copy";
+		case 15:
+			return "Cut";
+		case 16:
+			return "Paste";
+		default:
+			return "Unknown";
+		}
+	}
+
 	public static String getNBTName(NamedNBT namedNBT){
 		String name = namedNBT.getName();
 		NBTBase obj = namedNBT.getNBT();
@@ -95,45 +134,6 @@ public class NBTStringHelper {
 			return base.toString();
 		default:
 			return "?";
-		}
-	}
-
-	public static String getButtonName(byte id){
-		switch(id){
-		case 1 :
-			return "Byte";
-		case 2: 
-			return "Short";
-		case 3:
-			return "Int";
-		case 4:
-			return "Long";
-		case 5:
-			return "Float";
-		case 6:
-			return "Double";
-		case 7: 
-			return "Byte[]";
-		case 8:
-			return "String";
-		case 9:
-			return "List";
-		case 10:
-			return "Compound";
-		case 11:
-			return "Int[]";
-		case 12:
-			return "Edit";
-		case 13:
-			return "Delete";
-		case 14:
-			return "Copy";
-		case 15:
-			return "Cut";
-		case 16:
-			return "Paste";
-		default:
-			return "Unknown";
 		}
 	}
 }

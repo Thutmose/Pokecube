@@ -6,19 +6,19 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 
 public class CommonProxy {
-	public File getMinecraftDirectory(){
-		return new File(".");
+	public void registerInformation(){
+		
 	}
 
-	public void openEditGUI(BlockPos pos, NBTTagCompound tag) {
-		
+	public File getMinecraftDirectory(){
+		return new File(".");
 	}
 	
 	public void openEditGUI(int entityID, NBTTagCompound tag) {
 		
 	}
 	
-	public void registerInformation(){
+	public void openEditGUI(BlockPos pos, NBTTagCompound tag) {
 		
 	}
 }

@@ -38,14 +38,6 @@ public class GuiSaveSlotButton extends Gui {
 	}
 
 
-	public void backSpace(){
-		if (save.name.length() > 0){
-			save.name = save.name.substring(0,save.name.length()-1);
-			text = (save.tag.hasNoTags() ? "Save " : "Load ") + save.name;
-			updatePosition();
-		}
-	}
-	
 	public void draw(int mx, int my){
 
 		int textColor = ((inBounds(mx,my))) ? 16777120 : 0xffffff;
@@ -61,30 +53,7 @@ public class GuiSaveSlotButton extends Gui {
 			drawCenteredString(mc.fontRendererObj, "x", x-GAP-X_SIZE/2, y + 6, textColor);
 		}
 	}
-
-	public boolean inBounds(int mx, int my){
-		return mx >= x && my >= y && mx < x + width && my < y + HEIGHT;
-	}
-	public boolean inBoundsOfX(int mx, int my){
-		int buttonX = leftBoundOfX();
-		int buttonY = topBoundOfX();
-		return xVisible && mx >= buttonX && my >= buttonY && mx < buttonX + X_SIZE && my < buttonY + X_SIZE;
-	}
-
-	public void keyTyped(char c, int key) {
-		if (key == Keyboard.KEY_BACK){
-			backSpace();
-		}
-		if (Character.isDigit(c) || Character.isLetter(c)){
-			save.name += c;
-			text = (save.tag.hasNoTags() ? "Save " : "Load ") + save.name;
-			updatePosition();
-		}
-	}
-	private int leftBoundOfX(){
-		return x - X_SIZE - GAP;
-	}
-
+	
 	private void renderVanillaButton(int x, int y, int u, int v, int width, int height){
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.renderEngine.bindTexture(TEXTURE);
@@ -97,6 +66,30 @@ public class GuiSaveSlotButton extends Gui {
 		this.drawTexturedModalRect(x, y+height/2, u, v+20-height/2, width/2, height/2);
 		//Bottom Right
 		this.drawTexturedModalRect(x+width/2, y+height/2, u + 200-width/2, v+20-height/2, width/2, height/2);
+	}
+
+	private int leftBoundOfX(){
+		return x - X_SIZE - GAP;
+	}
+	private int topBoundOfX(){
+		return y + (HEIGHT-X_SIZE)/2;
+	}
+
+	public boolean inBoundsOfX(int mx, int my){
+		int buttonX = leftBoundOfX();
+		int buttonY = topBoundOfX();
+		return xVisible && mx >= buttonX && my >= buttonY && mx < buttonX + X_SIZE && my < buttonY + X_SIZE;
+	}
+	public boolean inBounds(int mx, int my){
+		return mx >= x && my >= y && mx < x + width && my < y + HEIGHT;
+	}
+
+	private void updatePosition(){
+		width = mc.fontRendererObj.getStringWidth(text)+24;
+		if (width % 2 == 1)
+			++width;
+		width = MathHelper.clamp_int(width, MIN_WIDTH, MAX_WIDTH);
+		x = rightX - width;
 	}
 
 	public void reset(){
@@ -114,30 +107,37 @@ public class GuiSaveSlotButton extends Gui {
 	}
 
 
+	public void keyTyped(char c, int key) {
+		if (key == Keyboard.KEY_BACK){
+			backSpace();
+		}
+		if (Character.isDigit(c) || Character.isLetter(c)){
+			save.name += c;
+			text = (save.tag.hasNoTags() ? "Save " : "Load ") + save.name;
+			updatePosition();
+		}
+	}
+
+
+	public void backSpace(){
+		if (save.name.length() > 0){
+			save.name = save.name.substring(0,save.name.length()-1);
+			text = (save.tag.hasNoTags() ? "Save " : "Load ") + save.name;
+			updatePosition();
+		}
+	}
+
 	public void startEditing(){
 		tickCount = 0;
 	}
-
 
 	public void stopEditing() {
 		tickCount = -1;
 	}
 
-	private int topBoundOfX(){
-		return y + (HEIGHT-X_SIZE)/2;
-	}
 
 	public void update() {
 		++tickCount;
-	}
-
-
-	private void updatePosition(){
-		width = mc.fontRendererObj.getStringWidth(text)+24;
-		if (width % 2 == 1)
-			++width;
-		width = MathHelper.clamp_int(width, MIN_WIDTH, MAX_WIDTH);
-		x = rightX - width;
 	}
 
 }

@@ -120,7 +120,7 @@ public class ComponentPokeMart extends ComponentVillageBase
         this.fillWithMetaBlocks(world, structureboundingbox, 6, 3, 2, 6, 4, 4, Blocks.BOOKSHELF, 0, false);// Bookselves
 
         // DOOR
-        this.placeDoorCurrentPosition(world, structureboundingbox, random, 4, 3, 0, coordBaseMode.rotateY());//TODO 1.10 changes this.
+        this.placeDoorCurrentPosition(world, structureboundingbox, random, 4, 3, 0, coordBaseMode.rotateY());
 
         // Stairs
         Vector3 here = toAbsolute(4, 2, -1);

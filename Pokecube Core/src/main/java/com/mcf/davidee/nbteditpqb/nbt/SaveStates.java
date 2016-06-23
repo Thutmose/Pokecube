@@ -13,39 +13,14 @@ import net.minecraft.nbt.NBTTagCompound;
 // need to add some scrollbar (use GuiLib!).
 public class SaveStates {
 
-	public static final class SaveState{
-		public String name;
-		public NBTTagCompound tag;
-
-		public SaveState(String name){
-			this.name = name;
-			this.tag = new NBTTagCompound();
-		}
-	}
 	private File file;
-
 	private SaveState[] tags;
-	
+
 	public SaveStates(File file){
 		this.file = file;
 		tags = new SaveState[7];
 		for (int i =0; i < 7; ++i)
 			tags[i] = new SaveState("Slot " + (i+1));
-	}
-	
-	public SaveState getSaveState(int index){
-		return tags[index];
-	}
-	
-	public void load(){
-		try {
-			read();
-			NBTEdit.log(Level.FINE,"NBTEdit save loaded successfully.");
-		}
-		catch(IOException e){
-			NBTEdit.log(Level.WARNING, "Unable to read NBTEdit save.");
-			NBTEdit.throwing("SaveStates", "load", e);
-		}
 	}
 	
 	public void read() throws IOException{
@@ -61,6 +36,15 @@ public class SaveStates {
 		}
 	}
 	
+	public void write() throws IOException{
+		NBTTagCompound root = new NBTTagCompound();
+		for (int i = 0; i <7; ++i){
+			root.setTag("slot" + (i+1), tags[i].tag);
+			root.setString("slot" + (i+1)+"Name", tags[i].name);
+		}
+		CompressedStreamTools.write(root, file);
+	}
+	
 	public void save(){
 		try {
 			write();
@@ -71,13 +55,29 @@ public class SaveStates {
 			NBTEdit.throwing("SaveStates", "save", e);
 		}
 	}
-
-	public void write() throws IOException{
-		NBTTagCompound root = new NBTTagCompound();
-		for (int i = 0; i <7; ++i){
-			root.setTag("slot" + (i+1), tags[i].tag);
-			root.setString("slot" + (i+1)+"Name", tags[i].name);
+	
+	public void load(){
+		try {
+			read();
+			NBTEdit.log(Level.FINE,"NBTEdit save loaded successfully.");
 		}
-		CompressedStreamTools.write(root, file);
+		catch(IOException e){
+			NBTEdit.log(Level.WARNING, "Unable to read NBTEdit save.");
+			NBTEdit.throwing("SaveStates", "load", e);
+		}
+	}
+	
+	public SaveState getSaveState(int index){
+		return tags[index];
+	}
+
+	public static final class SaveState{
+		public String name;
+		public NBTTagCompound tag;
+
+		public SaveState(String name){
+			this.name = name;
+			this.tag = new NBTTagCompound();
+		}
 	}
 }

@@ -33,16 +33,16 @@ public class GuiCharacterButton extends Gui{
 		}
 	}
 	
-	public byte getId(){
-		return id;
+	public void setEnabled(boolean aFlag){
+		enabled = aFlag;
 	}
 	
 	public boolean inBounds(int mx, int my){
 		return enabled && mx >= x && my >= y && mx < x + WIDTH && my < y + HEIGHT;
 	}
 	
-	public void setEnabled(boolean aFlag){
-		enabled = aFlag;
+	public byte getId(){
+		return id;
 	}
 }
  

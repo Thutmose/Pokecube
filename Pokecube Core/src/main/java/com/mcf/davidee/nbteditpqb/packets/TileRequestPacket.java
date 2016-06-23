@@ -25,15 +25,15 @@ public class TileRequestPacket extends AbstractPacket {
 	}
 
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
-		pos = new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt());
-	}
-
-	@Override
 	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
 		buffer.writeInt(pos.getX());
 		buffer.writeInt(pos.getY());
 		buffer.writeInt(pos.getZ());
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
+		pos = new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt());
 	}
 
 	@Override

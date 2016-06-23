@@ -10,13 +10,6 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityHelper {
 	
-	public static Set<Field> asSet(Field[] a, Field[] b){
-		HashSet<Field> s = new HashSet<>();
-		Collections.addAll(s, a);
-		Collections.addAll(s, b);
-		return s;
-	}
-	
 	public static <T extends TileEntity> void copyData(T from, T into) throws Exception{
 		Class<?> clazz = from.getClass();
 		Set<Field> fields = asSet(clazz.getFields(),clazz.getDeclaredFields());
@@ -27,6 +20,13 @@ public class TileEntityHelper {
 			modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 			field.set(into, field.get(from));
 		}
+	}
+	
+	public static Set<Field> asSet(Field[] a, Field[] b){
+		HashSet<Field> s = new HashSet<>();
+		Collections.addAll(s, a);
+		Collections.addAll(s, b);
+		return s;
 	}
 	
 }

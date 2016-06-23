@@ -268,7 +268,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
         megastone = (new ItemMegastone()).setUnlocalizedName("megastone");
         megastone.setCreativeTab(creativeTabPokecube);
         register(megastone, "megastone");
-        addToHoldables("megastone");
 
         for (String s : HeldItemHandler.megaVariants)
         {
@@ -276,6 +275,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setString("pokemon", s);
             PokecubeItems.addSpecificItemStack(s, stack);
+            PokecubeItems.addToHoldables(s);
         }
 
         revive = (new ItemRevive()).setUnlocalizedName("revive");

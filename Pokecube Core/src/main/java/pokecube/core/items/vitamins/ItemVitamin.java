@@ -103,7 +103,7 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
                 String stackname = tag.getString("vitamin");
                 variant = stackname.toLowerCase();
             }
-            name = "item." + variant + ".name";
+            name = "item." + variant;
         }
         return name;
     }

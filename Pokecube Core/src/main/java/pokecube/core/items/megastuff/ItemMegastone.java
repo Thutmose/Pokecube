@@ -46,7 +46,7 @@ public class ItemMegastone extends Item
                 String stackname = tag.getString("pokemon");
                 variant = stackname.toLowerCase();
             }
-            name = "item." + variant + ".name";
+            name = "item." + variant;
         }
         return name;
     }

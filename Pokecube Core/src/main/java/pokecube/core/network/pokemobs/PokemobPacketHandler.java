@@ -220,6 +220,7 @@ public class PokemobPacketHandler
                             {
                                 if (pokemob.getPokemonAIState(IMoveConstants.EVOLVING)) return;
                                 PokedexEntry megaEntry = pokemob.getPokedexEntry().getEvo(pokemob);
+                                
                                 if (megaEntry != null
                                         && megaEntry.getPokedexNb() == pokemob.getPokedexEntry().getPokedexNb())
                                 {

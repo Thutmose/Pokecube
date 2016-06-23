@@ -24,7 +24,6 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
@@ -64,7 +63,7 @@ public class PokedexEntryLoader
             boolean rule = false;
             if (stack != null)
             {
-                rightStack = Tools.isSameStack(stack, ((EntityLivingBase) mobIn).getHeldItem(EnumHand.MAIN_HAND));
+                rightStack = Tools.isSameStack(stack, ((EntityLivingBase) mobIn).getHeldItemMainhand());
                 rule = true;
             }
             if (moveName != null && !moveName.isEmpty())

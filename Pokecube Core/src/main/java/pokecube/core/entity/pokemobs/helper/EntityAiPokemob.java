@@ -1278,7 +1278,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 if (canBeHeld(itemstack))
                 {
                     ItemStack heldItem = getHeldItemMainhand();
-
                     if (heldItem != null)
                     {
                         dropItem();

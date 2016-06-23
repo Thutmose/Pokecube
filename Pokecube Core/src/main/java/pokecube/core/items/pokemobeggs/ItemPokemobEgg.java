@@ -11,6 +11,7 @@ import com.google.common.base.Predicate;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -28,8 +29,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
+import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
@@ -495,6 +499,18 @@ public class ItemPokemobEgg extends Item
     {
         String s = "pokemobEgg";
         return s;
+    }
+    
+    /**
+     * allows items to add custom lines of information to the mouseover description
+     */
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    {
+        int pokedexNb = getNumber(stack);
+        PokedexEntry entry = Pokedex.getInstance().getEntry(pokedexNb);
+        tooltip.add(1, I18n.format("pokemobEggnamed.name", I18n.format(entry.getUnlocalizedName())));
     }
 
     /** Callback for item usage. If the item does something special on right

@@ -320,8 +320,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
             TileHealTable.noSound = true;
         }
-
-        Thread.dumpStack();
         Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor()
         {
             @Override
@@ -329,7 +327,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             {
                 int damage = ItemPokemobEgg.getNumber(stack);
                 PokedexEntry entry = Database.getEntry(damage);
-                System.out.println(entry);
                 if (entry != null)
                 {
                     int colour = entry.getType1().colour;

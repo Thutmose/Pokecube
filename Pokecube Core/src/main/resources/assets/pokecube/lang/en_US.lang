@@ -280,6 +280,7 @@ pokedex.setteleport=Pokécenter set as a Teleport Location
 pokedex.locationinfo=There are %1$s Registered Spawns\nThere are %2$s registered Pokémobs\n%3$s Spawn here
 
 pokemobEgg.name=Pokemob Egg
+pokemobEggnamed.name=Egg of %1$s
 
 item.waterstone.name=Water Stone
 item.firestone.name=Fire Stone

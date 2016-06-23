@@ -520,13 +520,43 @@ public class PokecubeItems extends Items
     {
         boolean ret = false;
         if (stack == null) return false;
+        boolean hasANull = false;
         for (ItemStack s : heldItems)
         {
             if (s != null && Tools.isSameStack(s, stack)) return true;
+            else hasANull = true;
         }
+        while (hasANull)
+        {
+            for (ItemStack s : heldItems)
+            {
+                hasANull = false;
+                if (s == null)
+                {
+                    heldItems.remove(s);
+                    hasANull = true;
+                    break;
+                }
+            }
+        }
+        hasANull = false;
         for (ItemStack s : evoItems)
         {
             if (s != null && Tools.isSameStack(s, stack)) return true;
+            else hasANull = true;
+        }
+        while (hasANull)
+        {
+            for (ItemStack s : heldItems)
+            {
+                hasANull = false;
+                if (s == null)
+                {
+                    heldItems.remove(s);
+                    hasANull = true;
+                    break;
+                }
+            }
         }
         return ret;
     }

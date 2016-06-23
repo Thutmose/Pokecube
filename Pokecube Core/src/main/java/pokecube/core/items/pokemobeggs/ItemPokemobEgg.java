@@ -547,17 +547,15 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         String s = null;
         String entityName = PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNb);
         PokedexEntry entry = Pokedex.getInstance().getEntry(pokedexNb);
-
         if (entry != null)
         {
             entityName = entry.getTranslatedName();
-            s = StatCollector.translateToLocalFormatted("pokemobEgg.name", entityName).trim();
+            s = StatCollector.translateToLocalFormatted("pokemobEgg.name", entityName);
         }
         else
         {
             s = "Pokemob Egg";
         }
-
         return s;
     }
 

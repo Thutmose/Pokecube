@@ -116,7 +116,7 @@ public class ComponentPokeCentre extends ComponentVillageBase {
         this.placeBlockAtCurrentPosition(world, PokecubeItems.pokecenter, 1, 4, 3, 7, structureboundingbox);//healingTable
         this.placeBlockAtCurrentPosition(world, Blocks.REDSTONE_TORCH, 0, 4, 2, 7, structureboundingbox);//healingTable
         //DOOR
-        this.placeDoorCurrentPosition(world, structureboundingbox, random, 4, 3, 0, coordBaseMode.rotateY());
+        this.func_189927_a(world, structureboundingbox, random, 4, 3, 0, coordBaseMode.rotateY());
         
         //Stairs
         Vector3 here = toAbsolute(4, 2, -1);

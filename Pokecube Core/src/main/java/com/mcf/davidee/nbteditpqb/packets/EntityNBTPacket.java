@@ -19,7 +19,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.network.play.server.SPacketUpdateHealth;
-import net.minecraft.world.WorldSettings.GameType;
+import net.minecraft.world.GameType;
 
 public class EntityNBTPacket extends AbstractPacket {
 	

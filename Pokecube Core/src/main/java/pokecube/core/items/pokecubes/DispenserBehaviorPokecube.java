@@ -3,12 +3,14 @@ package pokecube.core.items.pokecubes;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.IPosition;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.util.FakePlayer;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
+import thut.api.maths.Vector3;
 
 public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
 {
@@ -22,26 +24,29 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
         player.posX = iblocksource.getX();
         player.posY = iblocksource.getY() - player.getEyeHeight();
         player.posZ = iblocksource.getZ();
-        EnumFacing dir = BlockDispenser.getFacing(iblocksource.getBlockMetadata());//TODO 1.10 changes this.
+        Vector3 loc = Vector3.getNewVector().set(iblocksource.getX(), iblocksource.getY(), iblocksource.getZ());
+        IPosition dir = BlockDispenser.getDispensePosition(iblocksource);
+        Vector3 facing = Vector3.getNewVector().set(dir.getX(), dir.getY(), dir.getZ());
         float yaw = 0;
         float pitch = 0;
-        if (dir == EnumFacing.NORTH)
+        // TODO properly find angles from vector.
+        if (dir.getZ() < 0)
         {
             yaw = 180;
         }
-        if (dir == EnumFacing.EAST)
+        if (dir.getX() > 0)
         {
             yaw = -90;
         }
-        if (dir == EnumFacing.WEST)
+        if (dir.getX() < 0)
         {
             yaw = 90;
         }
-        if (dir == EnumFacing.UP)
+        if (dir.getY() > 0)
         {
             pitch = -90;
         }
-        if (dir == EnumFacing.DOWN)
+        if (dir.getY() < 0)
         {
             pitch = 90;
         }
@@ -50,10 +55,11 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
         player.rotationPitch = pitch;
         player.rotationYawHead = yaw;
 
-
         if (itemstack.getItem() == PokecubeItems.pokemobEgg)
         {
-            itemstack.onItemUse(player, iblocksource.getWorld(), iblocksource.getBlockPos().offset(dir), EnumHand.MAIN_HAND, dir, 0.5f, 0.5f, 0.5f);
+            //TODO dir to enumfacing for this.
+            itemstack.onItemUse(player, iblocksource.getWorld(), loc.addTo(facing).getPos(), EnumHand.MAIN_HAND,
+                    EnumFacing.UP, 0.5f, 0.5f, 0.5f);
         }
         else
         {

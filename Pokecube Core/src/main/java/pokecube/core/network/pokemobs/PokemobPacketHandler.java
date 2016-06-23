@@ -274,7 +274,7 @@ public class PokemobPacketHandler
                                     string[i] = buffer.readByte();
                                 }
                                 String name = ChatAllowedCharacters.filterAllowedCharacters(new String(string));
-                                if (pokemob.getPokemonDisplayName().equals(name)) return;
+                                if (pokemob.getPokemonDisplayName().getFormattedText().equals(name)) return;
                                 boolean OT = pokemob.getPokemonOwnerName() == null
                                         || (PokecubeMod.fakeUUID.equals(pokemob.getOriginalOwnerUUID()))
                                         || (pokemob.getPokemonOwnerName()

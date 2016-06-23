@@ -247,6 +247,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 int size = Config.instance.megaCost;
                 if (name.endsWith("orb")) size = Config.instance.orbCost;
                 else if (name.endsWith("charm")) size = Config.instance.shinyCost;
+                if (size == -1) continue;
                 ItemStack buy1 = new ItemStack(Items.EMERALD);
                 buy1.stackSize = (size & 63);
                 ItemStack buy2 = null;
@@ -277,6 +278,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             ItemStack tm = PokecubeItems.getStack("tm");
             ItemStack in = new ItemStack(Items.EMERALD);
             in.stackSize = Config.instance.tmCost;
+            if (in.stackSize == -1) continue;
             ItemTM.addMoveToStack(name, tm);
             itemList.add(new MerchantRecipe(in, tm));
         }
@@ -298,6 +300,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             {
                 ItemStack in1 = new ItemStack(Items.EMERALD);
                 int size = Config.instance.badgeCost;
+                if (size == -1) return;
                 in1.stackSize = (size & 63);
                 ItemStack in2 = null;
                 if (size > 64)

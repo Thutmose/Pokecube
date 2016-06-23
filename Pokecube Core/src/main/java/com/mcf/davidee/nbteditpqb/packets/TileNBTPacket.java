@@ -34,20 +34,20 @@ public class TileNBTPacket extends AbstractPacket {
 	}
 
 	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
+		ByteBufInputStream bis = new ByteBufInputStream(buffer);
+		pos = new BlockPos(bis.readInt(), bis.readInt(), bis.readInt());
+		DataInputStream dis = new DataInputStream(bis);
+		tag = NBTHelper.nbtRead(dis);
+	}
+
+	@Override
 	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
 		ByteBufOutputStream bos = new ByteBufOutputStream(buffer);
 		bos.writeInt(pos.getX());
 		bos.writeInt(pos.getY());
 		bos.writeInt(pos.getZ());
 		NBTHelper.nbtWrite(tag, bos);
-	}
-
-	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
-		ByteBufInputStream bis = new ByteBufInputStream(buffer);
-		pos = new BlockPos(bis.readInt(), bis.readInt(), bis.readInt());
-		DataInputStream dis = new DataInputStream(bis);
-		tag = NBTHelper.nbtRead(dis);
 	}
 
 	@Override

@@ -122,7 +122,7 @@ public class RenderHandler
         int red = ((rgba >> 16) & 255);
         int green = ((rgba >> 8) & 255);
         int blue = (rgba & 255);
-        RenderGlobal.drawOutlinedBoundingBox(box, red, green, blue, alpha);
+        RenderGlobal.func_189694_a(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, red, green, blue, alpha);
         GlStateManager.enableTexture2D();
         GlStateManager.enableLighting();
         GlStateManager.enableCull();

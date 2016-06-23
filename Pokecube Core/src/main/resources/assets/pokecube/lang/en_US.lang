@@ -277,7 +277,9 @@ pokecube.badaim=I should probably aim more carefully
 
 pokecube.professor.deny=Professor: You have already recieved a Pokémob
 pokedex.setteleport=Pokécenter set as a Teleport Location
-pokedex.locationinfo=There are %1$s Registered Spawns\nThere are %2$s registered Pokémobs\n%3$s Spawn here
+pokedex.locationinfo1=There are %1$s Registered Spawns
+pokedex.locationinfo2=There are %1$s registered Pokémobs
+pokedex.locationinfo3=%1$s Spawn here
 
 pokemobEgg.name=Pokemob Egg
 pokemobEggnamed.name=Egg of %1$s

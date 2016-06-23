@@ -122,7 +122,7 @@ public class RenderHandler
         int red = ((rgba >> 16) & 255);
         int green = ((rgba >> 8) & 255);
         int blue = (rgba & 255);
-        RenderGlobal.drawOutlinedBoundingBox(box, red, green, blue, alpha);
+        RenderGlobal.drawOutlinedBoundingBox(box, red, green, blue, alpha);//TODO 1.10 changes this.
         GlStateManager.enableTexture2D();
         GlStateManager.enableLighting();
         GlStateManager.enableCull();

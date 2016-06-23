@@ -22,7 +22,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
         player.posX = iblocksource.getX();
         player.posY = iblocksource.getY() - player.getEyeHeight();
         player.posZ = iblocksource.getZ();
-        EnumFacing dir = BlockDispenser.getFacing(iblocksource.getBlockMetadata());
+        EnumFacing dir = BlockDispenser.getFacing(iblocksource.getBlockMetadata());//TODO 1.10 changes this.
         float yaw = 0;
         float pitch = 0;
         if (dir == EnumFacing.NORTH)

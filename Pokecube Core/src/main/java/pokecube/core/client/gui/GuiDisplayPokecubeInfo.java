@@ -386,7 +386,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                 if (move != null && (target != null || v != null))
                 {
                     ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.usemove", "",
-                            pokemob.getPokemonDisplayName(), MovesUtils.getUnlocalizedMove(move.getName()));
+                            pokemob.getPokemonDisplayName().getFormattedText(), MovesUtils.getUnlocalizedMove(move.getName()));
                     pokemob.displayMessageToOwner(mess);
                 }
             }

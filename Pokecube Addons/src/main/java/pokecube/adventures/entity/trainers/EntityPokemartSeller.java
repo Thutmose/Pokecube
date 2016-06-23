@@ -51,10 +51,11 @@ public class EntityPokemartSeller extends EntityTrainer
             added.add(trade);
             itemList.add(trade.getTrade());
         }
-        for (String s: ItemVitamin.vitamins)
+        for (String s : ItemVitamin.vitamins)
         {
             ItemStack in = new ItemStack(Items.EMERALD);
             in.stackSize = Config.instance.vitaminCost;
+            if (in.stackSize == -1) continue;
             itemList.add(new MerchantRecipe(in, PokecubeItems.getStack(s)));
         }
         num = HeldItemHandler.megaVariants.size();
@@ -71,6 +72,7 @@ public class EntityPokemartSeller extends EntityTrainer
                 if (name.endsWith("orb")) size = Config.instance.orbCost;
                 else if (name.endsWith("charm")) size = Config.instance.shinyCost;
                 in1.stackSize = (size & 63);
+                if (in1.stackSize == -1) continue;
                 ItemStack in2 = null;
                 if (size > 64)
                 {
@@ -99,6 +101,7 @@ public class EntityPokemartSeller extends EntityTrainer
             ItemStack tm = PokecubeItems.getStack("tm");
             ItemStack in = new ItemStack(Items.EMERALD);
             in.stackSize = Config.instance.tmCost;
+            if (in.stackSize == -1) continue;
             ItemTM.addMoveToStack(name, tm);
             itemList.add(new MerchantRecipe(in, tm));
         }
@@ -112,6 +115,7 @@ public class EntityPokemartSeller extends EntityTrainer
                 ItemStack in1 = new ItemStack(Items.EMERALD);
                 int size = Config.instance.badgeCost;
                 in1.stackSize = ((size / 2) & 63);
+                if (in1.stackSize == -1) return;
                 if (size / 2 == 64) in1.stackSize = 64;
                 itemList.add(new MerchantRecipe(badge, in1));
             }

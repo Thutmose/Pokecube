@@ -28,7 +28,8 @@ import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyReceiver//, SimpleComponent
+public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyReceiver// ,
+                                                                                   // SimpleComponent
 {
     public static double    MAXRANGE    = 64;
     public static int       COOLDOWN    = 1000;
@@ -50,7 +51,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         return facing == EnumFacing.DOWN;
     }
 
-//  @Override //TODO re-add SimpleComponent when it is fixed.
+    // @Override //TODO re-add SimpleComponent when it is fixed.
     public String getComponentName()
     {
         return "warppad";
@@ -108,7 +109,6 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
     public void onStepped(Entity stepper)
     {
         if (worldObj.isRemote || link == null) return;
-
         if (here == null) here = Vector3.getNewVector().set(this);
         if (linkPos == null)
         {
@@ -132,7 +132,6 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
                 lastStepped = time;
             }
         }
-
         if (tele)
         {
             TileEntity te = linkPos.getTileEntity(getWorld(), EnumFacing.DOWN);

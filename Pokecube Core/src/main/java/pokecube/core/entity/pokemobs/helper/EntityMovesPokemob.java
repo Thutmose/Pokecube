@@ -517,7 +517,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                     for (String s : moves)
                     {
                         ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.move.notify.learn", "",
-                                getPokemonDisplayName(), s);
+                                getPokemonDisplayName().getFormattedText(), s);
                         displayMessageToOwner(mess);
                         moveInfo.newMoves++;
                     }
@@ -562,7 +562,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                     for (String s : moves)
                     {
                         ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.move.notify.learn", "",
-                                getPokemonDisplayName(), MovesUtils.getUnlocalizedMove(s));
+                                getPokemonDisplayName().getFormattedText(), MovesUtils.getUnlocalizedMove(s));
                         displayMessageToOwner(mess);
                         moveInfo.newMoves++;
                     }

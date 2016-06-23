@@ -49,8 +49,7 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
      * x, y, z, entity */
     public void onEntityWalk(World world, BlockPos pos, Entity entity)
     {
-        Vector3 loc = Vector3.getNewVector().set(pos);
-        TileEntityWarpPad pad = (TileEntityWarpPad) loc.getTileEntity(world);
+        TileEntityWarpPad pad = (TileEntityWarpPad) world.getTileEntity(pos);
         if (!world.isRemote) pad.onStepped(entity);
     }
 

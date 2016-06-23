@@ -160,6 +160,7 @@ public class Config extends ConfigBase
             int num = Integer.parseInt(args[1]);
             String[] nums = args[2].split("-");
             int cost = Integer.parseInt(args[3]);
+            if (cost == -1) continue;
             int min, max;
             min = Integer.parseInt(nums[0]);
             if (nums.length > 1) max = Integer.parseInt(nums[1]);

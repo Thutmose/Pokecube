@@ -1395,8 +1395,9 @@ public class PokedexEntry
         }
         if (event == null)
         {
-            event = new SoundEvent(new ResourceLocation(getModId(), sound));
+            SoundEvent.registerSound(getModId() + ":" + sound);
         }
+        event = SoundEvent.REGISTRY.getObject(new ResourceLocation(getModId(), sound));
         return event;
     }
 

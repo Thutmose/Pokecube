@@ -425,6 +425,7 @@ public class PokecubeCore extends PokecubeMod
         {
             PokedexEntry p = Pokedex.getInstance().getEntry(i);
             p.setSound("mobs." + p.getName());
+            p.getSoundEvent();
             p.updateMoves();
         }
         System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "

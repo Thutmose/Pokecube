@@ -902,9 +902,10 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 globalCooldown = 1000;
                 pokecubes[j] = null;
 
-                ITextComponent text = new TextComponentTranslation("pokecube.trainer.toss", getDisplayName(), i.getDisplayName());
+                ITextComponent text = new TextComponentTranslation("pokecube.trainer.toss", getDisplayName(),
+                        i.getDisplayName());
                 target.addChatMessage(text);
-                
+
                 for (int k = j + 1; k < 6; k++)
                 {
                     attackCooldown[k] = 20;
@@ -987,6 +988,17 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         if (this.itemList != null)
         {
+            List<MerchantRecipe> toRemove = Lists.newArrayList();
+            for (MerchantRecipe o : itemList)
+            {
+                if (o != null)
+                {
+                    if (o.getItemToSell() == null || o.getItemToSell().getItem() == null)
+                    {
+                        toRemove.add(o);
+                    }
+                }
+            }
             nbt.setTag("Offers", this.itemList.getRecipiesAsTags());
         }
         nbt.setBoolean("trades", trades);

@@ -43,11 +43,16 @@ repositories {
         name = "IGW"
         url = "http://maven.k-4u.nl/"
     }
+    maven { // TOP
+        name 'tterrag maven'
+        url "http://maven.tterrag.com/"
+    }
 }
 
 dependencies {
     compile "li.cil.oc:OpenComputers:MC${version_oc}:api"
     deobfCompile "mezz.jei:jei_${version_jei}"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe:${version_top}"
     //deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
     //deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
     

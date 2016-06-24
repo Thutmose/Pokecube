@@ -4,7 +4,6 @@
 package pokecube.core.client;
 
 import static pokecube.core.PokecubeItems.registerItemTexture;
-import static pokecube.core.PokecubeItems.tradingtable;
 import static pokecube.core.handlers.ItemHandler.log0;
 import static pokecube.core.handlers.ItemHandler.log1;
 import static pokecube.core.handlers.ItemHandler.plank0;
@@ -428,13 +427,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         PokecubeItems.registerItemTexture(tm, 19, new ModelResourceLocation("pokecube:emerald_shard", "inventory"));
 
         OBJLoader.INSTANCE.addDomain(PokecubeMod.ID.toLowerCase());
-        StateMap map = (new StateMap.Builder()).build();
-        // ModelLoader.setCustomStateMapper(pc, map);
-
-        map = (new StateMap.Builder()).ignore(new IProperty[] { BlockTradingTable.TMC }).build();
-        ModelLoader.setCustomStateMapper(tradingtable, map);
-        registerItemTexture(Item.getItemFromBlock(tradingtable), 0,
-                new ModelResourceLocation("pokecube:tradingtable", "inventory"));
 
         Item item2 = Item.getItemFromBlock(PokecubeItems.tableBlock);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
@@ -449,6 +441,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         item2 = Item.getItemFromBlock(PokecubeItems.getBlock("tradingtable"));
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeMod.ID + ":tradingtable", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item2, 8,
+                new ModelResourceLocation(PokecubeMod.ID + ":tmc", "inventory"));
 
         ModelLoader.setCustomStateMapper(log0,
                 (new StateMap.Builder()).withName(BlockBerryLog.VARIANT0).withSuffix("Wood").build());
@@ -498,7 +492,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 new ModelResourceLocation("pokecube:nanabWood", "inventory"));
 
         Block crop = BerryManager.berryCrop;
-        map = (new StateMap.Builder()).withName(BerryManager.type).ignore(new IProperty[] { BlockCrops.AGE })
+        StateMap map = (new StateMap.Builder()).withName(BerryManager.type).ignore(new IProperty[] { BlockCrops.AGE })
                 .withSuffix("Crop").build();
         ModelLoader.setCustomStateMapper(crop, map);
 

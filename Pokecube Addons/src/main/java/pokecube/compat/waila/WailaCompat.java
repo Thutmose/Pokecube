@@ -28,48 +28,54 @@ public class WailaCompat implements IWailaEntityProvider
 {
     public static class TTRenderString implements IWailaTooltipRenderer
     {
-        
-        public TTRenderString(){
+
+        public TTRenderString()
+        {
         }
-        
+
         @Override
-        public void draw(String[] params, IWailaCommonAccessor accessor) {
-            
+        public void draw(String[] params, IWailaCommonAccessor accessor)
+        {
+
             String total = "";
             String name = params[0];
             total += name;
             int i = Integer.parseInt(params[1]);
             DisplayUtil.drawString(name, 0, 0, i, true);
-            if(params.length == 4)
+            if (params.length == 4)
             {
                 name += " ";
                 total += " ";
                 int l = Minecraft.getMinecraft().fontRendererObj.getStringWidth(name);
                 name = params[2];
-                total += name +" ";
+                total += name + " ";
                 i = Integer.parseInt(params[3]);
                 DisplayUtil.drawString(name, l, 0, i, true);
             }
             Entity entity = accessor.getEntity();
-            if(entity instanceof IPokemob)
+            if (entity instanceof IPokemob)
             {
                 IPokemob pokemob = (IPokemob) entity;
                 int l = Minecraft.getMinecraft().fontRendererObj.getStringWidth(total);
-                int caught = CaptureStats.getTotalNumberOfPokemobCaughtBy(accessor.getPlayer().getUniqueID().toString(), pokemob.getPokedexEntry());
-                int hatched = EggStats.getTotalNumberOfPokemobHatchedBy(accessor.getPlayer().getUniqueID().toString(), pokemob.getPokedexEntry());
+                int caught = CaptureStats.getTotalNumberOfPokemobCaughtBy(accessor.getPlayer().getUniqueID().toString(),
+                        pokemob.getPokedexEntry());
+                int hatched = EggStats.getTotalNumberOfPokemobHatchedBy(accessor.getPlayer().getUniqueID().toString(),
+                        pokemob.getPokedexEntry());
                 int number = caught + hatched;
-                int killed = KillStats.getTotalNumberOfPokemobKilledBy(accessor.getPlayer().getUniqueID().toString(), pokemob.getPokedexEntry());
-                DisplayUtil.drawString(number+"", l, 0, PokeType.grass.colour, true);
-                l += Minecraft.getMinecraft().fontRendererObj.getStringWidth(number+"");
+                int killed = KillStats.getTotalNumberOfPokemobKilledBy(accessor.getPlayer().getUniqueID().toString(),
+                        pokemob.getPokedexEntry());
+                DisplayUtil.drawString(number + "", l, 0, PokeType.grass.colour, true);
+                l += Minecraft.getMinecraft().fontRendererObj.getStringWidth(number + "");
                 DisplayUtil.drawString("/", l, 0, PokeType.normal.colour, true);
                 l += Minecraft.getMinecraft().fontRendererObj.getStringWidth("/");
-                DisplayUtil.drawString(killed+"", l, 0, PokeType.fighting.colour, true);
+                DisplayUtil.drawString(killed + "", l, 0, PokeType.fighting.colour, true);
             }
         }
 
         @Override
-        public Dimension getSize(String[] params, IWailaCommonAccessor accessor) {
-            return new Dimension(DisplayUtil.getDisplayWidth(""),  8);
+        public Dimension getSize(String[] params, IWailaCommonAccessor accessor)
+        {
+            return new Dimension(DisplayUtil.getDisplayWidth(""), 8);
         }
     }
 
@@ -78,7 +84,8 @@ public class WailaCompat implements IWailaEntityProvider
         ModuleRegistrar.instance().registerBodyProvider(this, EntityPokemob.class);
         ModuleRegistrar.instance().registerTailProvider(this, EntityPokemob.class);
         ModuleRegistrar.instance().registerNBTProvider(this, EntityPokemob.class);
-//        ModuleRegistrar.instance().registerOverrideEntityProvider(this, EntityPokemob.class);
+        // ModuleRegistrar.instance().registerOverrideEntityProvider(this,
+        // EntityPokemob.class);
         ModuleRegistrar.instance().registerTooltipRenderer("pokecube", new TTRenderString());
     }
 
@@ -92,25 +99,26 @@ public class WailaCompat implements IWailaEntityProvider
     public List<String> getWailaBody(Entity arg0, List<String> arg1, IWailaEntityAccessor arg2,
             IWailaConfigHandler arg3)
     {
-        if(arg0 instanceof IPokemob)
+        if (arg0 instanceof IPokemob)
         {
             IPokemob pokemob = (IPokemob) arg0;
-            
+
             String test = "";
             PokeType type = pokemob.getType1();
-            if(pokemob.getType2() == PokeType.unknown)
+            if (pokemob.getType2() == PokeType.unknown)
             {
-                test = SpecialChars.getRenderString("pokecube", PokeType.getTranslatedName(type), type.colour+"");
+                test = SpecialChars.getRenderString("pokecube", PokeType.getTranslatedName(type), type.colour + "");
             }
             else
             {
                 PokeType type2 = pokemob.getType2();
-                test = SpecialChars.getRenderString("pokecube", PokeType.getTranslatedName(type), type.colour+"", PokeType.getTranslatedName(type2), type2.colour+"");
+                test = SpecialChars.getRenderString("pokecube", PokeType.getTranslatedName(type), type.colour + "",
+                        PokeType.getTranslatedName(type2), type2.colour + "");
             }
 
             arg1.add(test);
         }
-        
+
         return arg1;
     }
 
@@ -126,18 +134,18 @@ public class WailaCompat implements IWailaEntityProvider
     {
         return arg0.getEntity();
     }
-    
+
     @Override
     public List<String> getWailaTail(Entity arg0, List<String> arg1, IWailaEntityAccessor arg2,
             IWailaConfigHandler arg3)
     {
-        if(arg0 instanceof IPokemob)
+        if (arg0 instanceof IPokemob)
         {
             IPokemob pokemob = (IPokemob) arg0;
             PokedexEntry entry = pokemob.getPokedexEntry();
-            if(entry.getBaseName() != entry.getName())
+            if (entry.getBaseName() != entry.getName())
             {
-                arg1.add(entry.getUnlocalizedName());
+                arg1.add(entry.getName());
             }
         }
         return arg1;

@@ -150,7 +150,6 @@ public class BlockPC extends Block implements ITileEntityProvider
             TileEntityOwnable tile = (TileEntityOwnable) te;
             tile.setPlacer(placer);
         }
-        System.out.println(meta + " " + placer.getHorizontalFacing());
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()).withProperty(TOP,
                 ((meta & 8) > 0));
     }

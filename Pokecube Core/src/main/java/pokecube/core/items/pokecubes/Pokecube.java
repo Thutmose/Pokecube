@@ -182,6 +182,8 @@ public class Pokecube extends Item implements IPokecube
                 itemstack);
     }
 
+    
+
     public double quick(IPokemob mob, int id)
     {
         double x = 1;

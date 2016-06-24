@@ -84,8 +84,11 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public int                 eggHatchTime               = 10000;
     @Configure(category = mobAI)
-    /** do wild pokemobs which leave despawnRadius despawn immediately */
+    /** do wild pokemobs which leave cullDistance despawn immediately */
     public boolean             cull                       = false;
+    @Configure(category = mobAI)
+    /** distance for culling */
+    public int                 cullDistance               = 96;
     @Configure(category = mobAI)
     /** Will lithovores eat gravel */
     public boolean             pokemobsEatGravel          = false;

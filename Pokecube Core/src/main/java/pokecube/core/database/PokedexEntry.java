@@ -1699,6 +1699,7 @@ public class PokedexEntry
     /** @param sound */
     public void setSound(String sound)
     {
+        if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 1);
         this.sound = sound;
     }
 

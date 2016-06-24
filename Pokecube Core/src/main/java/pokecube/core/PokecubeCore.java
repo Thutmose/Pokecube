@@ -687,7 +687,7 @@ public class PokecubeCore extends PokecubeMod
             if (b != null) biomelist.add(b);
         }
         biomes = biomelist.toArray(new Biome[0]);
-
+//TODO find a way to find all vanilla mobs.
         if (config.deactivateAnimals)
         {
             EntityRegistry.removeSpawn(EntityRabbit.class, EnumCreatureType.CREATURE, biomes);

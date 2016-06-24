@@ -627,7 +627,7 @@ public class MovesUtils implements IMoveConstants
             {
                 String colour = fell ? "green" : "red";
                 text = CommandTools.makeTranslatedMessage(message, colour,
-                        ((IPokemob) attacked).getPokemonDisplayName().getFormattedText(), statName);
+                        ((IPokemob) attacker).getPokemonDisplayName().getFormattedText(), statName);
                 attacker.displayMessageToOwner(text);
             }
         }

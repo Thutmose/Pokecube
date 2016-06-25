@@ -214,20 +214,24 @@ public class Pokecube extends Item implements IPokecube
             boolean filled = PokecubeManager.isFilled(stack);
 
             if (!filled && !(target instanceof IPokemob)) target = null;
-
+            boolean used = false;
             if (target != null)
             {
-                throwPokecubeAt(worldIn, player, stack, targetLocation, target);
+                used = throwPokecubeAt(worldIn, player, stack, targetLocation, target);
             }
             else if (filled || player.isSneaking())
             {
                 float power = (getMaxItemUseDuration(stack) - timeLeft) / (float) 100;
                 power = Math.min(1, power);
-                throwPokecube(worldIn, player, stack, direction, power);
+                used = throwPokecube(worldIn, player, stack, direction, power);
             }
             else
             {
                 CommandTools.sendError(player, "pokecube.badaim");
+            }
+            if(used)
+            {
+                stack.splitStack(1);
             }
         }
     }

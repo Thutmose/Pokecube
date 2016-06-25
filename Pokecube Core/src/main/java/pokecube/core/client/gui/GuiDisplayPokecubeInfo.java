@@ -169,14 +169,13 @@ public class GuiDisplayPokecubeInfo extends Gui
                     if (currentMoveIndex == index) GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
                     else GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     // bind texture
-
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
                     this.drawTexturedModalRect(0 + w, 13 + 12 * index + h, 0, 13 + h1, 91, 12);
                     GL11.glPushMatrix();// TODO find out why both needed
                     Color moveColor = new Color(move.getType(pokemob).colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);
-                    fontRenderer.drawString(MovesUtils.getLocalizedMove(move.getName()), 5 + 0 + w, index * 12 + 14 + h, // white.getRGB());
+                    fontRenderer.drawString(MovesUtils.getLocalizedMove(move.getName()), 5 + 0 + w, index * 12 + 14 + h,
                             move.getType(pokemob).colour);
                     GL11.glPopMatrix();
                 }
@@ -290,8 +289,14 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (pokemob != null)
         {
             int index = (pokemob.getMoveIndex() + i);
-            if (index == 4) index = 5;
-            if (index > 5) index = 0;
+
+            int max = 0;
+            for (max = 0; max < 4; max++)
+            {
+                if (pokemob.getMove(max) == null) break;
+            }
+            if (index >= 5) index = 0;
+            if (index >= max) index = 5;
             pokemob.setMoveIndex(index);
         }
     }
@@ -386,7 +391,8 @@ public class GuiDisplayPokecubeInfo extends Gui
                 if (move != null && (target != null || v != null))
                 {
                     ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.usemove", "",
-                            pokemob.getPokemonDisplayName().getFormattedText(), MovesUtils.getUnlocalizedMove(move.getName()));
+                            pokemob.getPokemonDisplayName().getFormattedText(),
+                            MovesUtils.getUnlocalizedMove(move.getName()));
                     pokemob.displayMessageToOwner(mess);
                 }
             }

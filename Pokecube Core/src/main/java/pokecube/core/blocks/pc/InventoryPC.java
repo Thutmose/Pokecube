@@ -28,7 +28,7 @@ public class InventoryPC implements IInventory
 {
     public static HashMap<String, InventoryPC> map       = new HashMap<String, InventoryPC>();
     // blank PC for client use.
-    public static InventoryPC                  blank     = new InventoryPC("blank");
+    public static InventoryPC                  blank;
     public static UUID                         defaultId = new UUID(1234, 4321);
     public static int                          PAGECOUNT = 32;
 
@@ -207,7 +207,6 @@ public class InventoryPC implements IInventory
                     if (load == null) continue tags;
                     load.autoToPC = boxes.getBoolean("autoSend");
                     load.seenOwner = boxes.getBoolean("seenOwner");
-                    // System.out.println(map.get(uuid).seenOwner);
                     load.setPage(boxes.getInteger("page"));
                 }
                 if (boxes.getString("name" + k) != null)

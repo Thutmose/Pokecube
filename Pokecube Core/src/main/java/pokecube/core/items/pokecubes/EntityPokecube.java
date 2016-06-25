@@ -342,7 +342,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                     ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.caught", "green",
                             PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNumber));
                     ((EntityPlayer) shootingEntity).addChatMessage(mess);
-                    worldObj.playSound(null, getPosition(), CAUGHT_EVENT, SoundCategory.VOICE, 1, 1);
+                    worldObj.playSound(null, getPosition(), CAUGHT_EVENT, SoundCategory.PLAYERS, 1, 1);
                 }
                 setDead();
             }

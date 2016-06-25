@@ -47,6 +47,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.StarterEvent;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -910,6 +911,8 @@ public class PokecubePacketHandler
 
                 PokecubeSerializer.getInstance().readFromNBT(nbt);
                 PokecubeSerializer.getInstance().setHasStarter(player, nbt.getBoolean("playerhasstarter"));
+                PokecubeCore.registerSpawns();
+                SpawnHandler.sortSpawnables();
             }
             else if (nbt.getBoolean("hasTerrain"))
             {

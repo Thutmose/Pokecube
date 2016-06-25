@@ -364,7 +364,6 @@ public class PokecubeItems extends Items
     public static ItemStack getRandomMeteorDrop()
     {
         if (meteorDrops.size() == 0) return null;
-
         Collections.shuffle(meteorDrops);
         return meteorDrops.get(0);
     }
@@ -383,6 +382,7 @@ public class PokecubeItems extends Items
 
     public static ItemStack getStack(String name, boolean stacktrace)
     {
+        if (name == null) return null;
         name = name.toLowerCase().trim();
         if (itemstacks.get(name) != null) return itemstacks.get(name).copy();
 

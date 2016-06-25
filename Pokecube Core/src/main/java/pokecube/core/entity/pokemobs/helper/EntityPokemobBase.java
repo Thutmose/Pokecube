@@ -587,9 +587,10 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         here.set(posX, posY, posZ);
         boolean loaded = worldObj.isAreaLoaded(this.getPosition(), 8);
-        if (loaded && !(getPokemonAIState(STAYING) || getPokemonAIState(GUARDING)))
+        if (loaded && !(getPokemonAIState(STAYING) || getPokemonAIState(GUARDING) || getPokemonAIState(ANGRY)
+                || getAttackTarget() != null))
         {
-            loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius, this);
+            loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().aiDisableDistance, this);
         }
         if (!loaded)
         {

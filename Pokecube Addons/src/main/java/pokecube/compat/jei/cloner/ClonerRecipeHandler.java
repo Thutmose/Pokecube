@@ -47,6 +47,6 @@ public class ClonerRecipeHandler implements IRecipeHandler<ClonerRecipe> {
     public String getRecipeCategoryUid(ClonerRecipe recipe)
     {
         // TODO Auto-generated method stub
-        return null;
+        return JEICompat.CLONER;
     }
 }

@@ -150,6 +150,14 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     }
 
     @Override
+    public Entity changeDimension(int dimensionIn)
+    {
+        returning = true;
+        Entity ret = super.changeDimension(dimensionIn);
+        return ret;
+    }
+
+    @Override
     public void displayMessageToOwner(ITextComponent message)
     {
         if (!this.isServerWorld())

@@ -223,6 +223,15 @@ public class Compat
         pokecube.compat.reccomplex.ReComplexCompat.register();
     }
 
+    @SideOnly(Side.CLIENT)
+    @Optional.Method(modid = "theoneprobe")
+    @EventHandler
+    public void TheOneProbe_Compat(FMLPostInitializationEvent evt)
+    {
+        System.out.println("TheOneProbe Compat");
+        new pokecube.compat.top.TheOneProbeCompat();
+    }
+
     // @Optional.Method(modid = "Thaumcraft")
     // @EventHandler
     // public void Thaumcraft_Compat(FMLPreInitializationEvent evt)

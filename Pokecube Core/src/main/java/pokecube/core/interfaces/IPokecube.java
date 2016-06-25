@@ -2,6 +2,8 @@ package pokecube.core.interfaces;
 
 import java.util.HashMap;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -44,7 +46,7 @@ public interface IPokecube
      * @return */
     double getCaptureModifier(IPokemob mob, int pokecubeId);
 
-    /** Called when the pokecube is attempted to be thrown.
+    /** Used to throw the pokecube at a specific target
      * 
      * @param world
      * @param player
@@ -52,5 +54,16 @@ public interface IPokecube
      * @param targetLocation
      * @param target
      * @return */
-    boolean throwPokecube(World world, EntityPlayer player, ItemStack cube, Vector3 targetLocation, Entity target);
+    boolean throwPokecubeAt(World world, EntityPlayer player, ItemStack cube, @Nullable Vector3 targetLocation,
+            @Nullable Entity target);
+
+    /** Used for throwing cubes out into the air without a specific target.
+     * 
+     * @param world
+     * @param player
+     * @param cube
+     * @param direction
+     * @param power
+     * @return */
+    boolean throwPokecube(World world, EntityPlayer player, ItemStack cube, Vector3 direction, float power);
 }

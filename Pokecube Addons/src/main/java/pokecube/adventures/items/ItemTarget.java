@@ -186,20 +186,22 @@ public class ItemTarget extends Item
             return EnumActionResult.SUCCESS;
         }
 
-        if (meta == 1 && block instanceof BlockWarpPad && !worldIn.isRemote)
+        if (meta == 1 && !worldIn.isRemote)
         {
-
-            TileEntityWarpPad pad = (TileEntityWarpPad) hit.getTileEntity(worldIn);
-            if (playerIn.isSneaking() && stack.hasTagCompound() && pad.canEdit(playerIn))
+            if (block instanceof BlockWarpPad && playerIn.isSneaking() && stack.hasTagCompound())
             {
-                pad.link = new Vector4(stack.getTagCompound().getCompoundTag("link"));
-                playerIn.addChatMessage(new TextComponentString("linked pad to " + pad.link));
+                TileEntityWarpPad pad = (TileEntityWarpPad) hit.getTileEntity(worldIn);
+                if (pad.canEdit(playerIn))
+                {
+                    pad.link = new Vector4(stack.getTagCompound().getCompoundTag("link"));
+                    playerIn.addChatMessage(new TextComponentString("linked pad to " + pad.link));
+                }
             }
             else
             {
                 if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
                 NBTTagCompound linkTag = new NBTTagCompound();
-                Vector4 link = new Vector4(hit.x, hit.y + 1, hit.z, playerIn.dimension);
+                Vector4 link = new Vector4(hit.x + 0.5, hit.y + 1, hit.z + 0.5, playerIn.dimension);
                 link.writeToNBT(linkTag);
                 stack.getTagCompound().setTag("link", linkTag);
                 playerIn.addChatMessage(new TextComponentString("Saved location " + link));

@@ -2,12 +2,15 @@ package pokecube.core.items.pokecubes;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,6 +28,7 @@ import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public class Pokecube extends Item implements IPokecube
@@ -176,10 +180,70 @@ public class Pokecube extends Item implements IPokecube
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
-        return new ActionResult<ItemStack>(
-                hand == EnumHand.MAIN_HAND ? throwPokecube(world, player, itemstack, null, player)
-                        ? EnumActionResult.SUCCESS : EnumActionResult.FAIL : EnumActionResult.FAIL,
-                itemstack);
+        player.setActiveHand(hand);
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+    }
+
+    @Override
+    /** returns the action that specifies what animation to play when the items
+     * is being used */
+    public EnumAction getItemUseAction(ItemStack stack)
+    {
+        return EnumAction.BOW;
+    }
+
+    @Override
+    /** How long it takes to use or consume an item */
+    public int getMaxItemUseDuration(ItemStack stack)
+    {
+        return 2000;
+    }
+
+    @Override
+    /** Called when the player stops using an Item (stops holding the right
+     * mouse button). */
+    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
+    {
+        if (entityLiving instanceof EntityPlayer && !worldIn.isRemote)
+        {
+            EntityPlayer player = (EntityPlayer) entityLiving;
+            Entity target = Tools.getPointedEntity(player, 32);
+            Vector3 direction;
+            Vector3 targetLocation = Vector3.getNextSurfacePoint(worldIn, Vector3.getNewVector().set(player),
+                    direction = Vector3.getNewVector().set(player.getLook(0)), 32);
+            boolean filled = PokecubeManager.isFilled(stack);
+
+            if (!filled && !(target instanceof IPokemob)) target = null;
+
+            if (target != null)
+            {
+                throwPokecubeAt(worldIn, player, stack, targetLocation, target);
+            }
+            else if (filled || player.isSneaking())
+            {
+                float power = (getMaxItemUseDuration(stack) - timeLeft) / (float) 100;
+                power = Math.min(1, power);
+                throwPokecube(worldIn, player, stack, direction, power);
+            }
+            else
+            {
+                CommandTools.sendError(player, "pokecube.badaim");
+            }
+        }
+    }
+
+    /** Called when the player finishes using this Item (E.g. finishes eating.).
+     * Not called when the player stops using the Item before the action is
+     * complete. */
+    @Nullable
+    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
+    {
+        return stack;
+    }
+
+    public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
+    {
+
     }
 
     public double quick(IPokemob mob, int id)
@@ -203,7 +267,40 @@ public class Pokecube extends Item implements IPokecube
     }
 
     @Override
-    public boolean throwPokecube(World world, EntityPlayer player, ItemStack cube, Vector3 targetLocation,
+    public boolean throwPokecube(World world, EntityPlayer player, ItemStack cube, Vector3 direction, float power)
+    {
+        EntityPokecube entity = null;
+        int id = PokecubeItems.getCubeId(cube.getItem());
+        if (id < 0) return false;
+        ItemStack stack = ItemStack.copyItemStack(cube);
+        stack.stackSize = 1;
+        entity = new EntityPokecube(world, player, stack);
+        Vector3 temp = Vector3.getNewVector().set(player).add(0, player.getEyeHeight(), 0);
+        Vector3 temp1 = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1.5);
+        temp.addTo(temp1).moveEntity(entity);
+        temp.set(direction.scalarMultBy(power * 10)).setVelocities(entity);
+        entity.targetEntity = null;
+        entity.targetLocation.clear();
+
+        if (PokecubeManager.isFilled(stack) && !player.isSneaking())
+        {
+            entity.targetLocation.y = -1;
+        }
+
+        if (!world.isRemote)
+        {
+            player.playSound(SoundEvents.ENTITY_EGG_THROW, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+            world.spawnEntityInWorld(entity);
+        }
+        if (!PokecubeManager.isFilled(cube)) return true;
+        int current = player.inventory.currentItem;
+        player.inventory.mainInventory[current] = null;
+        player.inventory.markDirty();
+        return true;
+    }
+
+    @Override
+    public boolean throwPokecubeAt(World world, EntityPlayer player, ItemStack cube, Vector3 targetLocation,
             Entity target)
     {
         EntityPokecube entity = null;
@@ -241,20 +338,12 @@ public class Pokecube extends Item implements IPokecube
                 world.spawnEntityInWorld(entity);
             }
         }
-        else if (!rightclick)
-        {
-            Thread.dumpStack();
-            CommandTools.sendError(player, "pokecube.badaim");
-            return false;
-        }
+        else if (!rightclick) { return false; }
 
         if (!PokecubeManager.isFilled(cube)) return true;
-        cube.getTagCompound().setBoolean("delete", true);
-        // itemstack = new ItemStack(this);
         int current = player.inventory.currentItem;
         player.inventory.mainInventory[current] = null;
         player.inventory.markDirty();
-
         return true;
     }
 

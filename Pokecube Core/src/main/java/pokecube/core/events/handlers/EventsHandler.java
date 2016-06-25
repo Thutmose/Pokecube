@@ -8,7 +8,6 @@ import java.util.Random;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -26,11 +25,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -56,7 +53,6 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -76,7 +72,6 @@ import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
@@ -85,7 +80,6 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -309,27 +303,30 @@ public class EventsHandler
                 && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof EntityDragonPart))
         {
             evt.getEntity().setDead();
-//            Vector3 location = Vector3.getNewVector().set(evt.getEntity());
-//            int num = getShadowPokemonNb(evt.getEntity());
-//            Entity shadow = PokecubeMod.core.createEntityByPokedexNb(num, evt.getWorld());
-//            if (shadow == null)
-//            {
-//                System.err.println(num);
-//                return;
-//            }
-//
-//            location.moveEntity(shadow);
-//            ((IPokemob) shadow).setShadow(true);
-//            ((IPokemob) shadow).specificSpawnInit();
-//
-//            int exp = (int) (SpawnHandler.getSpawnXp(evt.getWorld(), location, ((IPokemob) shadow).getPokedexEntry())
-//                    * 1.25);
-//            exp = Math.max(exp, 8000);
-//
-//            ((IPokemob) shadow).setExp(exp, false, true);
-//
-//            ((EntityLiving) shadow).setHealth(((EntityLiving) shadow).getMaxHealth());
-//            evt.getWorld().spawnEntityInWorld(shadow);
+            // Vector3 location = Vector3.getNewVector().set(evt.getEntity());
+            // int num = getShadowPokemonNb(evt.getEntity());
+            // Entity shadow = PokecubeMod.core.createEntityByPokedexNb(num,
+            // evt.getWorld());
+            // if (shadow == null)
+            // {
+            // System.err.println(num);
+            // return;
+            // }
+            //
+            // location.moveEntity(shadow);
+            // ((IPokemob) shadow).setShadow(true);
+            // ((IPokemob) shadow).specificSpawnInit();
+            //
+            // int exp = (int) (SpawnHandler.getSpawnXp(evt.getWorld(),
+            // location, ((IPokemob) shadow).getPokedexEntry())
+            // * 1.25);
+            // exp = Math.max(exp, 8000);
+            //
+            // ((IPokemob) shadow).setExp(exp, false, true);
+            //
+            // ((EntityLiving) shadow).setHealth(((EntityLiving)
+            // shadow).getMaxHealth());
+            // evt.getWorld().spawnEntityInWorld(shadow);
             evt.setCanceled(true);
         }
         else if (evt.getEntity() instanceof EntityCreeper)
@@ -390,47 +387,6 @@ public class EventsHandler
                     b.dropBlockAsItem(evt.getWorld(), evt.getPos(), state, 0);
                     evt.getWorld().setBlockToAir(evt.getPos());
                 }
-            }
-        }
-        if (evt.getEntityPlayer().worldObj.isRemote && evt.getEntityPlayer().getHeldItemMainhand() != null
-                && evt.getEntityPlayer().getHeldItemMainhand().getItem() instanceof IPokecube
-                && evt.getHand() == EnumHand.MAIN_HAND)
-        {
-            Entity target = Tools.getPointedEntity(evt.getEntityPlayer(), 32);
-
-            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(5));
-            buffer.writeByte(PokecubeServerPacket.POKECUBEUSE);
-            if (target != null)
-            {
-                buffer.writeInt(target.getEntityId());
-            }
-            else
-            {
-                Vector3 temp = Vector3.getNewVector(), look = Vector3.getNewVector();
-                temp.set(evt.getEntityPlayer()).addTo(0, evt.getEntityPlayer().getEyeHeight(), 0);
-                look.set(evt.getEntityPlayer().getLook(1));
-                Vector3 hit = Vector3.getNextSurfacePoint(evt.getWorld(), temp, look, 32);
-                if (hit != null) hit.writeToBuff(buffer);
-            }
-            if (rightClickAir && !evt.getEntityPlayer().isSneaking())
-            {
-//                System.out.println("Test");
-                PokecubeServerPacket packet = new PokecubeServerPacket(buffer);
-                PokecubePacketHandler.sendToServer(packet);
-                evt.setCanceled(true);
-                evt.setResult(Result.DENY);
-            }
-            if (!rightClickBlock)
-            {
-                evt.setCanceled(true);
-                evt.setResult(Result.DENY);
-            }
-            if (evt.getEntityPlayer().getHeldItemMainhand() == null
-                    || evt.getEntityPlayer().getHeldItemMainhand().stackSize <= 0)
-            {
-                int current = evt.getEntityPlayer().inventory.currentItem;
-                evt.getEntityPlayer().inventory.mainInventory[current] = null;
-                evt.getEntityPlayer().inventory.markDirty();
             }
         }
         if (evt.getEntityPlayer().worldObj.isRemote || evt.getEntityPlayer().worldObj.rand.nextInt(10) != 0) return;
@@ -564,7 +520,8 @@ public class EventsHandler
             {
                 if (shuckle.getPokemonOwner() != null)
                 {
-                    String message = "A sweet smell is coming from " + shuckle.getPokemonDisplayName().getFormattedText();
+                    String message = "A sweet smell is coming from "
+                            + shuckle.getPokemonDisplayName().getFormattedText();
                     ((EntityPlayer) shuckle.getPokemonOwner()).addChatMessage(new TextComponentString(message));
                 }
                 shuckle.setHeldItem(new ItemStack(PokecubeItems.berryJuice));
@@ -578,7 +535,8 @@ public class EventsHandler
 
                 if (shuckle.getPokemonOwner() != null)
                 {
-                    String message = "The smell coming from " + shuckle.getPokemonDisplayName().getFormattedText() + " has changed";
+                    String message = "The smell coming from " + shuckle.getPokemonDisplayName().getFormattedText()
+                            + " has changed";
                     ((EntityPlayer) shuckle.getPokemonOwner()).addChatMessage(new TextComponentString(message));
                 }
                 shuckle.setHeldItem(candy);

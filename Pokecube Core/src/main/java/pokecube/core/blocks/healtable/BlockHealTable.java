@@ -7,6 +7,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -22,21 +23,23 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import pokecube.core.PokecubeCore;
+import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.handlers.Config;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 
 public class BlockHealTable extends Block implements ITileEntityProvider
 {
-    public static final PropertyBool FIXED = PropertyBool.create("fixed");
+    public static final PropertyBool      FIXED  = PropertyBool.create("fixed");
+    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public BlockHealTable()
     {
         super(Material.CLOTH);
         setHardness(20);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FIXED, Boolean.FALSE));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(FIXED,
+                Boolean.FALSE));
         this.setCreativeTab(CreativeTabs.REDSTONE);
     }
 
@@ -55,7 +58,7 @@ public class BlockHealTable extends Block implements ITileEntityProvider
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] { FIXED });
+        return new BlockStateContainer(this, new IProperty[] { FIXED, FACING });
     }
 
     @Override
@@ -104,13 +107,21 @@ public class BlockHealTable extends Block implements ITileEntityProvider
     @Override
     public int getMetaFromState(IBlockState state)
     {
-        return !((Boolean) state.getValue(BlockHealTable.FIXED)) ? 0 : 1;
+        int ret = state.getValue(FACING).getIndex();
+        if ((state.getValue(FIXED))) ret += 8;
+        return ret;
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(FIXED, meta == 0 ? Boolean.FALSE : Boolean.TRUE);
+        EnumFacing enumfacing = EnumFacing.getFront(meta & 7);
+        boolean top = (meta & 8) > 0;
+        if (enumfacing.getAxis() == EnumFacing.Axis.Y)
+        {
+            enumfacing = EnumFacing.NORTH;
+        }
+        return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(FIXED, Boolean.valueOf(top));
     }
 
     @Override
@@ -140,11 +151,13 @@ public class BlockHealTable extends Block implements ITileEntityProvider
     public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
             int meta, EntityLivingBase placer)
     {
-        if (world.isRemote || meta == 1) return getStateFromMeta(meta);
-
-        Chunk centre = world.getChunkFromBlockCoords(pos);
-        Vector3 v = Vector3.getNewVector();
-        PokecubeSerializer.getInstance().addChunks(world, v.set(pos), centre.getChunkCoordIntPair());
-        return getStateFromMeta(meta);
+        TileEntity te = world.getTileEntity(pos);
+        if (te instanceof TileEntityOwnable)
+        {
+            TileEntityOwnable tile = (TileEntityOwnable) te;
+            tile.setPlacer(placer);
+        }
+        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite())
+                .withProperty(FIXED, ((meta & 8) > 0));
     }
 }

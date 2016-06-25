@@ -11,13 +11,19 @@
         "inventory": [{
             "transform": "forge:default-block"
         }],
-        "facing": {
-            "down": {"model": "pokecube:tradingtable.obj", "x": 90},
-            "up": {"model": "pokecube:tradingtable.obj", "x": 270},
-            "north": {"model": "pokecube:tradingtable.obj"},
-            "south": {"model": "pokecube:tradingtable.obj", "y": 180},
-            "west": {"model": "pokecube:tradingtable.obj", "y": 270},
-            "east": {"model": "pokecube:tradingtable.obj", "y": 90}
+        "tmc":{
+            "true": {
+                "model": "pokecube:tradingtable.obj"
+            },
+            "false": {
+                "model": "pokecube:tradingtable.obj"
+            }
+        },
+        "facing":{
+            "east":  { "y":0 },
+            "west":  { "y":180 },
+            "north": { "y":270 },
+            "south": {  "y":90 }
         }
     }
 }

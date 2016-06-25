@@ -42,7 +42,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                          if (mob.getPokemobTeam() != pokemob
                                                                  .getPokemobTeam()) { return true; }
                                                      }
-                                                     else if (PokecubeMod.pokemobsDamagePlayers && input instanceof EntityLivingBase)
+                                                     else if (PokecubeMod.pokemobsDamagePlayers
+                                                             && input instanceof EntityLivingBase)
                                                      {
                                                          EntityLivingBase mob = (EntityLivingBase) input;
 
@@ -150,8 +151,8 @@ public class AIFindTarget extends AIBase implements IAICombat
             }
         }
 
-        if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING) && hungryMob.isCarnivore()
-                && pokemob.getPokemonAIState(IMoveConstants.HUNTING))
+        if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING)
+                && hungryMob.isCarnivore() && pokemob.getPokemonAIState(IMoveConstants.HUNTING))
         {
             List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
             if (!list.isEmpty())
@@ -223,9 +224,24 @@ public class AIFindTarget extends AIBase implements IAICombat
             return false;
         }
 
-        if (ret && !pokemob.getPokemonAIState(IMoveConstants.TAMED) && entity.getRNG().nextInt(200) == 0)
+        boolean tame = pokemob.getPokemonAIState(IMoveConstants.TAMED);
+        if (tame && entity.getAttackTarget() != null)
         {
-            EntityPlayer player = getClosestVulnerablePlayerToEntity(entity, PokecubeMod.core.getConfig().mobAggroRadius);
+            Entity owner = pokemob.getPokemonOwner();
+            boolean stayOrGuard = pokemob.getPokemonAIState(IMoveConstants.GUARDING)
+                    || pokemob.getPokemonAIState(IPokemob.STAYING);
+            if (owner != null && !stayOrGuard
+                    && owner.getDistanceToEntity(entity) > PokecubeCore.core.getConfig().chaseDistance)
+            {
+                setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
+                addTargetInfo(entity, null);
+                return false;
+            }
+        }
+        if (ret && !tame && entity.getRNG().nextInt(200) == 0)
+        {
+            EntityPlayer player = getClosestVulnerablePlayerToEntity(entity,
+                    PokecubeMod.core.getConfig().mobAggroRadius);
 
             if (player != null)
             {

@@ -122,6 +122,8 @@ public class Config extends ConfigBase
     public boolean             explosions                 = true;
     @Configure(category = mobAI)
     public int                 attackCooldown             = 20;
+    @Configure(category = mobAI)
+    public int                 chaseDistance              = 32;
 
     // World Gen and World effect settings
     @Configure(category = world)

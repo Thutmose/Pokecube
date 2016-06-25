@@ -104,6 +104,9 @@ public class GuiPokedex extends GuiScreen
 
     int                                           prevY              = 0;
 
+    String                                        oldName            = "";
+    boolean                                       nicknameChange     = false;
+
     /**
      *
      */
@@ -320,7 +323,8 @@ public class GuiPokedex extends GuiScreen
             }
             String numbers = "";// "+dbe.getSpawnData().global[0];
             if (!entityPlayer.capabilities.isCreativeMode) numbers = "";
-            drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()) + numbers, xOffset + 18, yO + n * 10, 0xFF0000);
+            drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()) + numbers, xOffset + 18, yO + n * 10,
+                    0xFF0000);
             String time = "";
             boolean cave = dbe.getSpawnData().types[CAVE];
 
@@ -510,7 +514,8 @@ public class GuiPokedex extends GuiScreen
 
         if (pokedexEntry != null)
         {
-            drawCenteredString(fontRendererObj, I18n.format(pokedexEntry.getUnlocalizedName()), xOffset - 65, yOffset + 30, 0xffffff);
+            drawCenteredString(fontRendererObj, I18n.format(pokedexEntry.getUnlocalizedName()), xOffset - 65,
+                    yOffset + 30, 0xffffff);
             drawCenteredString(fontRendererObj, "#" + pokedexEntry.getPokedexNb(), xOffset - 25, yOffset + 15,
                     0xffffff);
 
@@ -954,7 +959,6 @@ public class GuiPokedex extends GuiScreen
     {
         int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-
         this.handleMouseMove(x, y, Mouse.getEventButton());
         super.handleMouseInput();
     }
@@ -1029,7 +1033,9 @@ public class GuiPokedex extends GuiScreen
 
         if (canEditPokemob() && page == 0)
         {
-            nicknameTextField.setText(pokemob.getPokemonDisplayName().getFormattedText());
+            String name = pokemob.getPokemonDisplayName().getUnformattedComponentText().trim();
+            nicknameTextField.setText(name);
+            oldName = nicknameTextField.getText();
             nicknameTextField.setEnabled(true);
         }
 
@@ -1073,7 +1079,7 @@ public class GuiPokedex extends GuiScreen
             nicknameTextField.setEnabled(true);
             nicknameTextField.setFocused(true);
 
-            if (page == 4 && (par2 == ClientProxyPokecube.nextMove.getKeyCode()
+            if ((par2 == ClientProxyPokecube.nextMove.getKeyCode()
                     || par2 == ClientProxyPokecube.previousMove.getKeyCode()))
             {
                 GuiTeleport.instance().nextMove();
@@ -1090,7 +1096,7 @@ public class GuiPokedex extends GuiScreen
                 nicknameTextField.setEnabled(true);
 
             }
-            else if (page == 4 && par2 == 28 && index == 0 || index == 4)
+            else if (par2 == 28 && index == 0 || index == 4)
             {
 
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
@@ -1148,16 +1154,17 @@ public class GuiPokedex extends GuiScreen
             {
                 handleGuiButton(12);
             }
-            else if (!b && par2 != 54 && par2 != 58 && par2 != 42 && page != 4)
+            else if (par2 != 54 && par2 != 58 && par2 != 42 && page == 0 && !b)
             {
                 mc.displayGuiScreen(null);
                 mc.setIngameFocus();
 
-                if (canEditPokemob() && page == 0 && !pokemob.getPokemonNickname().equals(nicknameTextField.getText()))
+                String nickname = nicknameTextField.getText();
+                if (canEditPokemob() && page == 0 && !oldName.equals(nickname))
                 {
-                    String nickname = nicknameTextField.getText();
                     pokemob.setPokemonNickname(nickname);
                 }
+                return;
             }
 
             super.keyTyped(par1, par2);
@@ -1185,15 +1192,16 @@ public class GuiPokedex extends GuiScreen
 
         if (page == 0)
         {
-            if (canEditPokemob())
-            {
-                nicknameTextField.setText(pokemob.getPokemonDisplayName().getFormattedText());
-                nicknameTextField.setEnabled(true);
-            }
-            else
+            if (!canEditPokemob())
             {
                 nicknameTextField.setText("");
                 nicknameTextField.setEnabled(false);
+            }
+            else
+            {
+                nicknameTextField.setEnabled(true);
+                String name = pokemob.getPokemonDisplayName().getUnformattedComponentText().trim();
+                nicknameTextField.setText(name);
             }
         }
     }

@@ -90,8 +90,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         {
             phase = getPhase(entity, partialTick);
         }
-        if (!model.hasPhase(phase)) 
-            phase = "idle";
+        if (!model.hasPhase(phase)) phase = "idle";
         model.setPhase(phase);
         model.doRender(toRender, d0, d1, d2, yaw, partialTick);
         model.renderStatus(toRender, d0, d1, d2, yaw, partialTick);
@@ -184,9 +183,9 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    protected void renderHp(T entityliving, double d, double d1, double d2, float f, float f1)
+    protected void renderHp(T entityliving, double d, double d1, double d2, float f, float partialTick)
     {
-        if (RenderPokemobInfos.shouldShow(entityliving))
+        if (partialTick <= 1 && RenderPokemobInfos.shouldShow(entityliving))
         {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
@@ -294,8 +293,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderLi
             {
                 String n;
                 // Your pokemob has white name, other's has gray name.
-                int colour = renderManager.renderViewEntity.equals(((IPokemob) entityliving).getPokemonOwner()) ? 0xFFFFFF
-                        : 0xAAAAAA;
+                int colour = renderManager.renderViewEntity.equals(((IPokemob) entityliving).getPokemonOwner())
+                        ? 0xFFFFFF : 0xAAAAAA;
                 if ((entityliving.hasCustomName()))
                 {
                     n = entityliving.getCustomNameTag();

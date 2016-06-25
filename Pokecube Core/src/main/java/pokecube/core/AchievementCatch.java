@@ -3,7 +3,6 @@
  */
 package pokecube.core;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.stats.Achievement;
@@ -18,17 +17,6 @@ import pokecube.core.database.Pokedex;
 public class AchievementCatch extends Achievement
 {
     int pokedexNb;
-
-    public AchievementCatch(int par1, String par2Str, int par3, int par4, Block block, Achievement par6Achievement)
-    {
-        super(par2Str, par2Str, par3, par4, block, par6Achievement);// super(2000+par1,
-                                                                    // par2Str,
-                                                                    // par3,
-                                                                    // par4,
-                                                                    // block,
-                                                                    // par6Achievement);
-        pokedexNb = par1;
-    }
 
     public AchievementCatch(int par1, String par2Str, int par3, int par4, Item item, Achievement par6Achievement)
     {

@@ -5,10 +5,7 @@ package pokecube.core.database;
 
 import java.util.HashSet;
 
-/**
- * @author Manchou
- *
- */
+/** @author Manchou */
 public class Pokedex
 {
     private static Pokedex instance;
@@ -33,13 +30,14 @@ public class Pokedex
     }
 
     public HashSet<Integer> getEntries()
-	{
-		return entries;
-	}
+    {
+        return entries;
+    }
 
     public PokedexEntry getEntry(Integer pokedexNb)
     {
-        return Database.getEntry(pokedexNb);
+        PokedexEntry ret = Database.getEntry(pokedexNb);
+        return ret.baseForme != null ? ret.baseForme : ret;
     }
 
     public PokedexEntry getFirstEntry()
@@ -52,10 +50,7 @@ public class Pokedex
             pokedexNb += 1;
             returned = getEntry(pokedexNb);
 
-            if (returned != null)
-            {
-                return returned;
-            }
+            if (returned != null) { return returned; }
         }
         while (pokedexNb < 1500);
 
@@ -72,10 +67,7 @@ public class Pokedex
             pokedexNb -= 1;
             returned = getEntry(pokedexNb);
 
-            if (returned != null)
-            {
-                return returned;
-            }
+            if (returned != null) { return returned; }
         }
         while (pokedexNb > 00);
 
@@ -84,7 +76,7 @@ public class Pokedex
 
     public PokedexEntry getNext(PokedexEntry pokedexEntry, int i)
     {
-        int pokedexNb = pokedexEntry!=null?pokedexEntry.pokedexNb:0;
+        int pokedexNb = pokedexEntry != null ? pokedexEntry.pokedexNb : 0;
         PokedexEntry returned = null;
 
         do
@@ -98,14 +90,12 @@ public class Pokedex
 
             returned = getEntry(pokedexNb);
 
-            if (returned != null)
-            {
-                return returned;
-            }
+            if (returned != null) { return returned; }
         }
         while (pokedexNb < 1500);
 
-     //   if(pokedexEntry==null||returned == null) System.err.println("Null Entry "+pokedexEntry+" "+returned);
+        // if(pokedexEntry==null||returned == null) System.err.println("Null
+        // Entry "+pokedexEntry+" "+returned);
         return pokedexEntry;
     }
 
@@ -125,22 +115,16 @@ public class Pokedex
 
             returned = getEntry(pokedexNb);
 
-            if (returned != null)
-            {
-                return returned;
-            }
+            if (returned != null) { return returned; }
         }
         while (pokedexNb > 0);
 
         return pokedexEntry;
     }
 
-	public void registerPokemon(PokedexEntry entry)
+    public void registerPokemon(PokedexEntry entry)
     {
-        if (entry == null || entry.pokedexNb == 0)
-        {
-            return;
-        }
+        if (entry == null || entry.pokedexNb == 0) { return; }
         getEntries().add(entry.pokedexNb);
     }
 }

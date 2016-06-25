@@ -29,7 +29,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -50,7 +49,6 @@ import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
@@ -65,7 +63,6 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
 import thut.api.entity.Transporter;
-import thut.api.entity.Transporter.TelDestination;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.api.terrain.TerrainManager;
@@ -433,48 +430,6 @@ public class PokecubePacketHandler
                             {
                                 handleStatsPacketServer(message, player);
                             }
-                            else if (channel == POKECUBEUSE)
-                            {
-                                if (player.getHeldItemMainhand() != null
-                                        && player.getHeldItemMainhand().getItem() instanceof IPokecube)
-                                {
-                                    Vector3 targetLocation = null;
-                                    Entity target = null;
-                                    long time = player.getEntityData().getLong("lastThrow");
-                                    if (time == player.worldObj.getTotalWorldTime()) return;
-                                    player.getEntityData().setLong("lastThrow", player.worldObj.getTotalWorldTime());
-                                    if (buffer.readableBytes() == 4)
-                                    {
-                                        int id = buffer.readInt();
-                                        target = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id,
-                                                true);
-                                        targetLocation = Vector3.getNewVector();
-                                    }
-                                    else if (buffer.readableBytes() == 24)
-                                    {
-                                        targetLocation = Vector3.readFromBuff(buffer);
-                                    }
-
-                                    if (target != null && target instanceof IPokemob) targetLocation.set(target);
-
-                                    boolean used = ((IPokecube) player.getHeldItemMainhand().getItem()).throwPokecube(
-                                            player.worldObj, player, player.getHeldItemMainhand(), targetLocation,
-                                            target);
-                                    if (player.getHeldItemMainhand() != null
-                                            && !(!PokecubeManager.isFilled(player.getHeldItemMainhand())
-                                                    && player.capabilities.isCreativeMode)
-                                            && used)
-                                    {
-                                        player.getHeldItemMainhand().stackSize--;
-                                        if (player.getHeldItemMainhand().stackSize == 0)
-                                        {
-                                            int current = player.inventory.currentItem;
-                                            player.inventory.mainInventory[current] = null;
-                                            player.inventory.markDirty();
-                                        }
-                                    }
-                                }
-                            }
                             else if (channel == TELEPORT)
                             {
                                 int index = message[0];
@@ -485,13 +440,6 @@ public class PokecubePacketHandler
 
                                 Vector3 loc = d.getLoc();
                                 int dim = d.getDim();
-
-                                World dest = FMLCommonHandler.instance().getMinecraftServerInstance()
-                                        .worldServerForDimension(dim);
-
-                                TelDestination link = new TelDestination(dest, loc.getAABB(), loc.x, loc.y, loc.z,
-                                        loc.intX(), loc.intY(), loc.intZ());
-                                Transporter.teleportEntity(player, link);
                                 Transporter.teleportEntity(player, loc, dim, false);
                             }
                         }
@@ -514,7 +462,6 @@ public class PokecubePacketHandler
         public static final byte POKEMOBSPAWNER = 4;
         public static final byte POKEDEX        = 5;
         public static final byte STATS          = 6;
-        public static final byte POKECUBEUSE    = 7;
 
         public static final byte TELEPORT       = 9;
 

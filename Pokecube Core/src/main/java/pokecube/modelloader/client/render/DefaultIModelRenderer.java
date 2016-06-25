@@ -26,7 +26,6 @@ import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.core.client.render.animation.AnimationHelper;
-import thut.core.client.render.mca.McaModel;
 import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.model.IModel;
@@ -140,7 +139,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         name = model.name;
         this.texture = model.texture;
         if (model.model.getResourcePath().contains(".x3d")) this.model = new X3dModel(model.model);
-        if (model.model.getResourcePath().contains(".mca")) this.model = new McaModel(model.model);
+//        if (model.model.getResourcePath().contains(".mca")) this.model = new McaModel(model.model);
 
         if (this.model == null) { return; }
 

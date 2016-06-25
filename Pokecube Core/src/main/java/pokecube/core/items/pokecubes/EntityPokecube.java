@@ -26,6 +26,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -60,6 +61,9 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             .<Integer> createKey(EntityPokecube.class, DataSerializers.VARINT);
     static final DataParameter<Boolean>                     RELEASING      = EntityDataManager
             .<Boolean> createKey(EntityPokecube.class, DataSerializers.BOOLEAN);
+
+    public static final SoundEvent                          CAUGHT_EVENT   = new SoundEvent(
+            new ResourceLocation(PokecubeMod.ID + ":pokecube_caught"));
 
     public int                                              time           = 0;
     public int                                              tilt           = -1;
@@ -280,7 +284,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             if (shootingEntity == entityplayer
                     && entityplayer.inventory.addItemStackToInventory(new ItemStack(Items.ARROW, 1)))
             {
-                playSound(SoundEvents.ENTITY_EGG_THROW, 0.2F,
+                entityplayer.playSound(SoundEvents.ENTITY_EGG_THROW, 0.2F,
                         (((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F));
                 entityplayer.onItemPickup(this, 1);
                 setDead();
@@ -338,8 +342,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                     ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.caught", "green",
                             PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNumber));
                     ((EntityPlayer) shootingEntity).addChatMessage(mess);
-                    shootingEntity.playSound(new SoundEvent(new ResourceLocation(PokecubeMod.ID + ":pokecube_caught")),
-                            0.5F, 1.0F);
+                    worldObj.playSound(null, getPosition(), CAUGHT_EVENT, SoundCategory.VOICE, 1, 1);
                 }
                 setDead();
             }

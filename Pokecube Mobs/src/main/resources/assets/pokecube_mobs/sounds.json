@@ -715,5 +715,6 @@
 //"mobs.Noivern": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Noivern","stream": false}]},
 "mobs.Xerneas": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Xerneas","stream": false}]},
 "mobs.Yveltal": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Yveltal","stream": false}]},
-"mobs.Zygarde": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Zygarde","stream": false}]}
+"mobs.Zygarde": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Zygarde","stream": false}]},
+"mobs.Diancie": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Diancie","stream": false}]}
 }

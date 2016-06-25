@@ -16,37 +16,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList.EntityEggInfo;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.monster.EntityBlaze;
-import net.minecraft.entity.monster.EntityCaveSpider;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntityMagmaCube;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySilverfish;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityMooshroom;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntitySquid;
-import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
@@ -402,12 +378,12 @@ public class PokecubeCore extends PokecubeMod
         proxy.registerKeyBindings();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
         helper.postInit();
+        removeAllMobs();
     }
 
     @EventHandler
     private void postInit(FMLPostInitializationEvent evt)
     {
-        removeAllMobs();
         PokecubeItems.init();
         Database.postInit();
         StarterInfo.processStarterInfo(config.defaultStarts);
@@ -428,6 +404,9 @@ public class PokecubeCore extends PokecubeMod
             p.getSoundEvent();
             p.updateMoves();
         }
+        SoundEvent.registerSound(PokecubeMod.ID + ":pokecube_caught");
+        SoundEvent.registerSound(PokecubeMod.ID + ":pokecenter");
+        SoundEvent.registerSound(PokecubeMod.ID + ":pokecenterloop");
         System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
                 + Database.allFormes.size() + " Formes");
     }
@@ -687,38 +666,23 @@ public class PokecubeCore extends PokecubeMod
             if (b != null) biomelist.add(b);
         }
         biomes = biomelist.toArray(new Biome[0]);
-//TODO find a way to find all vanilla mobs.
         if (config.deactivateAnimals)
         {
-            EntityRegistry.removeSpawn(EntityRabbit.class, EnumCreatureType.CREATURE, biomes);
-            EntityRegistry.removeSpawn(EntityChicken.class, EnumCreatureType.CREATURE, biomes);
-            EntityRegistry.removeSpawn(EntityCow.class, EnumCreatureType.CREATURE, biomes);
-            EntityRegistry.removeSpawn(EntityPig.class, EnumCreatureType.CREATURE, biomes);
-            EntityRegistry.removeSpawn(EntitySheep.class, EnumCreatureType.CREATURE, biomes);
-            EntityRegistry.removeSpawn(EntityOcelot.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntityWolf.class, EnumCreatureType.CREATURE, biomes);
-            EntityRegistry.removeSpawn(EntityRabbit.class, EnumCreatureType.CREATURE, biomes);
-            EntityRegistry.removeSpawn(EntitySquid.class, EnumCreatureType.WATER_CREATURE, biomes);
-            EntityRegistry.removeSpawn(EntityBat.class, EnumCreatureType.AMBIENT, biomes);
-            EntityRegistry.removeSpawn(EntityHorse.class, EnumCreatureType.CREATURE, biomes);
-            EntityRegistry.removeSpawn(EntityMooshroom.class, EnumCreatureType.CREATURE, biomes);
+            for (Biome biome : biomes)
+            {
+                List<?> spawns = biome.getSpawnableList(EnumCreatureType.CREATURE);
+                spawns.clear();
+                spawns = biome.getSpawnableList(EnumCreatureType.AMBIENT);
+                spawns.clear();
+            }
         }
         if (config.deactivateMonsters)
         {
-            EntityRegistry.removeSpawn(EntityBlaze.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntityCreeper.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntityEnderman.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntitySilverfish.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntitySkeleton.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntityWitch.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntitySpider.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntityCaveSpider.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntityZombie.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntityPigZombie.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntityDragon.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntitySlime.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntityMagmaCube.class, EnumCreatureType.MONSTER, biomes);
-            EntityRegistry.removeSpawn(EntityGhast.class, EnumCreatureType.MONSTER, biomes);
+            for (Biome biome : biomes)
+            {
+                List<?> spawns = biome.getSpawnableList(EnumCreatureType.MONSTER);
+                spawns.clear();
+            }
         }
     }
 

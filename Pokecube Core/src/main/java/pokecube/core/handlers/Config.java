@@ -124,6 +124,8 @@ public class Config extends ConfigBase
     public int                 attackCooldown             = 20;
     @Configure(category = mobAI)
     public int                 chaseDistance              = 32;
+    @Configure(category = mobAI)
+    public int                 aiDisableDistance          = 32;
 
     // World Gen and World effect settings
     @Configure(category = world)

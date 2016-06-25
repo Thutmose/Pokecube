@@ -57,7 +57,7 @@ public class ContainerPC extends Container
         InventoryPC temp = pc != null
                 ? pc.getPC() != null ? pc.getPC() : InventoryPC.getPC(ivplay.player.getUniqueID().toString())
                 : InventoryPC.getPC(ivplay.player.getUniqueID().toString());
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) inv = new InventoryPC(temp);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) inv = InventoryPC.getPC(ivplay.player);
         else inv = temp;
         invPlayer = ivplay;
         pcTile = pc;

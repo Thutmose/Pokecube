@@ -739,6 +739,13 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             if (r.getItemToSell() == null || r.getItemToSell().getItem() == null)
             {
                 toRemove.add(r);
+                continue;
+            }
+            boolean hasBuy = r.getItemToBuy() != null && r.getItemToBuy().getItem()!=null;
+            hasBuy = hasBuy || (r.getSecondItemToBuy() != null && r.getSecondItemToBuy().getItem()!=null);
+            if(!hasBuy)
+            {
+                toRemove.add(r);
             }
         }
         itemList.removeAll(toRemove);
@@ -991,17 +998,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         if (this.itemList != null)
         {
-            List<MerchantRecipe> toRemove = Lists.newArrayList();
-            for (MerchantRecipe o : itemList)
-            {
-                if (o != null)
-                {
-                    if (o.getItemToSell() == null || o.getItemToSell().getItem() == null)
-                    {
-                        toRemove.add(o);
-                    }
-                }
-            }
+            checkTradeIntegrity();
             nbt.setTag("Offers", this.itemList.getRecipiesAsTags());
         }
         nbt.setBoolean("trades", trades);

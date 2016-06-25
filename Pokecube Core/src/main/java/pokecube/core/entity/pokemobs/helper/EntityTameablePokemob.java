@@ -615,6 +615,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
             if (getHealth() > 0 && evtrec.isCanceled()) { return; }
 
             Entity owner = getPokemonOwner();
+
             if (getPokemonAIState(MEGAFORME))
             {
                 this.setPokemonAIState(MEGAFORME, false);

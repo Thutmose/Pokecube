@@ -462,7 +462,8 @@ public class ItemPokemobEgg extends Item
             if (mob.getPokemonOwner() != null)
             {
                 EntityLivingBase owner = mob.getPokemonOwner();
-                owner.addChatMessage(new TextComponentTranslation("pokemob.hatch", mob.getPokemonDisplayName().getFormattedText()));
+                owner.addChatMessage(
+                        new TextComponentTranslation("pokemob.hatch", mob.getPokemonDisplayName().getFormattedText()));
             }
             entity.setHeldItem(EnumHand.MAIN_HAND, null);
             entity.playLivingSound();
@@ -500,17 +501,16 @@ public class ItemPokemobEgg extends Item
         String s = "pokemobEgg";
         return s;
     }
-    
-    /**
-     * allows items to add custom lines of information to the mouseover description
-     */
+
+    /** allows items to add custom lines of information to the mouseover
+     * description */
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
         int pokedexNb = getNumber(stack);
         PokedexEntry entry = Pokedex.getInstance().getEntry(pokedexNb);
-        tooltip.add(1, I18n.format("pokemobEggnamed.name", I18n.format(entry.getUnlocalizedName())));
+        if (entry != null) tooltip.add(1, I18n.format("pokemobEggnamed.name", I18n.format(entry.getUnlocalizedName())));
     }
 
     /** Callback for item usage. If the item does something special on right

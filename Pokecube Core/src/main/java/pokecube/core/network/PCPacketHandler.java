@@ -68,6 +68,11 @@ public class PCPacketHandler
                         InventoryPC.loadFromNBT(list, true);
                         tag = list.getCompoundTagAt(0).getCompoundTag("boxes");
                         InventoryPC.getPC(player).setPage(tag.getInteger("page"));
+                        InventoryPC.getPC(player).autoToPC = tag.getBoolean("autoSend");
+                        InventoryPC.getPC(player).seenOwner = tag.getBoolean("seenOwner");
+                        
+                        System.out.println(InventoryPC.getPC(player).seenOwner+" "+InventoryPC.getPC(player).autoToPC);
+                        System.out.println(""+(InventoryPC.getPC(player) == InventoryPC.blank));
                     }
                     catch (Exception e)
                     {
@@ -299,6 +304,7 @@ public class PCPacketHandler
             if (sender.openContainer instanceof ContainerPC)
             {
                 ((ContainerPC) (sender.openContainer)).inv.autoToPC = !((ContainerPC) (sender.openContainer)).inv.autoToPC;
+                System.out.println(((ContainerPC) (sender.openContainer)).inv.autoToPC + "");
             }
             return;
         }

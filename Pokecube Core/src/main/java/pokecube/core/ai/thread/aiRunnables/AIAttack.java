@@ -268,14 +268,15 @@ public class AIAttack extends AIBase implements IAICombat
             }
         }
 
+        boolean shouldPath = false;
         if (delayTime < -20)
         {
+            shouldPath = true;
             applyDelay(distanced);
             addTargetInfo(attacker, entityTarget);
             ((IPokemob) attacker).setPokemonAIState(IMoveConstants.ANGRY, true);
             targetLoc.set(entityTarget);
         }
-        boolean shouldPath = true;
         boolean delay = false;
         if ((inRange || self))
         {
@@ -328,7 +329,7 @@ public class AIAttack extends AIBase implements IAICombat
             path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
             if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
         }
-        else
+        else if(targetLoc.isEmpty())
         {
             addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
         }

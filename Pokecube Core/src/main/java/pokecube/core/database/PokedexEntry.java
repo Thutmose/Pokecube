@@ -1392,6 +1392,7 @@ public class PokedexEntry
         if (sound == null)
         {
             sound = "mobs." + getName();
+            if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 2);
         }
         if (event == null)
         {
@@ -1699,7 +1700,7 @@ public class PokedexEntry
     /** @param sound */
     public void setSound(String sound)
     {
-        if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 1);
+        if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 2);
         this.sound = sound;
     }
 

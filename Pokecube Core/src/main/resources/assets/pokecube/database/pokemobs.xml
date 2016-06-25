@@ -7596,7 +7596,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>49.5</MASSKG>
             <BASESTATS atk="90" def="90" hp="75" spatk="140" spd="115" spdef="90"/>
-            <SIZES height="1.9" length="1.7" width="0.6"/>
+            <SIZES height="1.9" length="1.7" width="1.2"/>
             <TYPE type1="Dark" type2="Fire"/>
             <ABILITY normal="Solar Power"/>
         </STATS>

@@ -278,7 +278,7 @@ public class Commands implements ICommand
 
                     if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == player || allall)
                             && (named || all || (stay == isStaying && guard == isGuarding))
-                            && (named == specificName.equalsIgnoreCase(mob.getPokemonDisplayName().getFormattedText())))
+                            && (named == specificName.equalsIgnoreCase(mob.getPokemonDisplayName().getUnformattedComponentText())))
                         mob.returnToPokecube();
                 }
             }

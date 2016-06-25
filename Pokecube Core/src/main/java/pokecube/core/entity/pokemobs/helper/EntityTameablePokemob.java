@@ -513,7 +513,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     {
         if (!this.worldObj.isRemote && (!this.isBeingRidden()) && this.getPokemonAIState(IMoveConstants.TAMED))
         {
-            this.pokeChest.setCustomName(this.getName());
+            this.pokeChest.setCustomName(this.getDisplayName().getFormattedText());
             player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, worldObj, getEntityId(), 0, 0);
         }
     }

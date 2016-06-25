@@ -436,7 +436,7 @@
 "mobs.Bronzor": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Bronzor","stream": false}]},
 "mobs.Bronzong": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Bronzong","stream": false}]},
 "mobs.Bonsly": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Bonsly","stream": false}]},
-"mobs.Mimejr.": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Mimejr.","stream": false}]},
+"mobs.Mimejr": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Mimejr","stream": false}]},
 "mobs.Happiny": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Happiny","stream": false}]},
 "mobs.Chatot": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Chatot","stream": false}]},
 "mobs.Spiritomb": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Spiritomb","stream": false}]},
@@ -671,8 +671,8 @@
 //"mobs.Florges": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Florges","stream": false}]},
 //"mobs.Skiddo": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Skiddo","stream": false}]},
 //"mobs.Gogoat": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Gogoat","stream": false}]},
-//"mobs.Pancham": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Pancham","stream": false}]},
-//"mobs.Pangoro": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Pangoro","stream": false}]},
+"mobs.Pancham": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Pancham","stream": false}]},
+"mobs.Pangoro": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Pangoro","stream": false}]},
 //"mobs.Furfrou": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Furfrou","stream": false}]},
 //"mobs.Espurr": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Espurr","stream": false}]},
 //"mobs.Meowstic": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Meowstic","stream": false}]},
@@ -699,7 +699,7 @@
 //"mobs.Aurorus": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Aurorus","stream": false}]},
 "mobs.Sylveon": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Sylveon","stream": false}]},
 //"mobs.Hawlucha": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Hawlucha","stream": false}]},
-//"mobs.Dedenne": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Dedenne","stream": false}]},
+"mobs.Dedenne": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Dedenne","stream": false}]},
 "mobs.Carbink": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Carbink","stream": false}]},
 "mobs.Goomy": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Goomy","stream": false}]},
 "mobs.Sliggoo": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Sliggoo","stream": false}]},
@@ -715,5 +715,5 @@
 //"mobs.Noivern": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Noivern","stream": false}]},
 "mobs.Xerneas": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Xerneas","stream": false}]},
 "mobs.Yveltal": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Yveltal","stream": false}]}
-//"mobs.Zygarde": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Zygarde","stream": false}]}
+"mobs.Zygarde": {"category": "hostile","sounds": [{"name": "pokecube_mobs:mobs/Zygarde","stream": false}]}
 }

@@ -37,6 +37,7 @@ public class Pokedex
     public PokedexEntry getEntry(Integer pokedexNb)
     {
         PokedexEntry ret = Database.getEntry(pokedexNb);
+        if (ret == null) return ret;
         return ret.baseForme != null ? ret.baseForme : ret;
     }
 

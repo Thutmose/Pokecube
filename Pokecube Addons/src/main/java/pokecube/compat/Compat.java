@@ -242,7 +242,6 @@ public class Compat
         pokecube.compat.reccomplex.ReComplexCompat.register();
     }
 
-    @SideOnly(Side.CLIENT)
     @Optional.Method(modid = "theoneprobe")
     @EventHandler
     public void TheOneProbe_Compat(FMLPostInitializationEvent evt)

@@ -278,6 +278,12 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             attack = getMove(getMoveIndex());
         }
         Move_Base move = MovesUtils.getMoveFromName(attack);
+        if (move == null || move.move == null)
+        {
+            System.err.println("SOMEONE USING NULL MOVE " + attack);
+            Thread.dumpStack();
+            return;
+        }
         if (!move.move.notIntercepable) MovesUtils.doAttack(attack, this, targetLocation, f);
         else MovesUtils.doAttack(attack, this, target, f);
     }

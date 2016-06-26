@@ -70,9 +70,6 @@ public class PCPacketHandler
                         InventoryPC.getPC(player).setPage(tag.getInteger("page"));
                         InventoryPC.getPC(player).autoToPC = tag.getBoolean("autoSend");
                         InventoryPC.getPC(player).seenOwner = tag.getBoolean("seenOwner");
-                        
-                        System.out.println(InventoryPC.getPC(player).seenOwner+" "+InventoryPC.getPC(player).autoToPC);
-                        System.out.println(""+(InventoryPC.getPC(player) == InventoryPC.blank));
                     }
                     catch (Exception e)
                     {

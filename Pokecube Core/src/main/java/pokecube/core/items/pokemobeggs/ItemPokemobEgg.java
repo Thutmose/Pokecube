@@ -287,15 +287,13 @@ public class ItemPokemobEgg extends Item
     public static float getSize(float fatherSize, float motherSize)
     {
         float ret = 1;
-
         ret = (fatherSize + motherSize) * 0.5f * (1 + 0.075f * (float) (new Random()).nextGaussian());
-
+        ret = Math.min(Math.max(0.1f, ret), 2);
         return ret;
     }
 
     private static void initPokemobGenetics(IPokemob mob, NBTTagCompound nbt)
     {
-
         boolean fixedShiny = nbt.getBoolean("shiny");
 
         String moveString = nbt.getString("moves");

@@ -1211,41 +1211,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                     return true;
                 }
-                // Check if it is stew for happiness test. Report if yes.
-                else if (itemstack.isItemEqual(new ItemStack(Items.MUSHROOM_STEW)))
-                {
-                    int happiness = getHappiness();
-                    String message = "";
-                    if (happiness == 0)
-                    {
-                        message = "pokemob.info.happy0";
-                    }
-                    if (happiness > 0)
-                    {
-                        message = "pokemob.info.happy1";
-                    }
-                    if (happiness > 49)
-                    {
-                        message = "pokemob.info.happy2";
-                    }
-                    if (happiness > 99)
-                    {
-                        message = "pokemob.info.happy3";
-                    }
-                    if (happiness > 149)
-                    {
-                        message = "pokemob.info.happy4";
-                    }
-                    if (happiness > 199)
-                    {
-                        message = "pokemob.info.happy5";
-                    }
-                    if (happiness > 254)
-                    {
-                        message = "pokemob.info.happy6";
-                    }
-                    CommandTools.sendMessage(player, message);
-                }
+
                 // Check if gold apple for breeding.
                 if (itemstack.getItem() == Items.GOLDEN_APPLE)
                 {

@@ -1,6 +1,5 @@
-package pokecube.adventures.items.bags;
+package pokecube.core.items.megastuff;
 
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
@@ -8,7 +7,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class RecipeBag implements IRecipe
+public class RecipeRings implements IRecipe
 {
     private ItemStack output;
 
@@ -16,29 +15,19 @@ public class RecipeBag implements IRecipe
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
         output = null;
-        boolean armour = false;
-        boolean bag = false;
+        boolean ring = false;
         boolean dye = false;
         ItemStack dyeStack = null;
-        ItemStack armourStack = null;
-        ItemStack bagStack = null;
-        int n = 0;
+        ItemStack ringStack = null;
         for (int i = 0; i < inv.getSizeInventory(); i++)
         {
             ItemStack stack = inv.getStackInSlot(i);
             if (stack != null)
             {
-                n++;
-                if (stack.getItem().isValidArmor(stack, EntityEquipmentSlot.CHEST, null)
-                        && !(stack.getItem() instanceof ItemBag))
+                if (stack.getItem() instanceof ItemMegaring)
                 {
-                    armour = true;
-                    armourStack = stack;
-                }
-                else if (stack.getItem() instanceof ItemBag)
-                {
-                    bag = true;
-                    bagStack = stack;
+                    ring = true;
+                    ringStack = stack;
                 }
                 else if (stack.getItem() instanceof ItemDye)
                 {
@@ -47,21 +36,10 @@ public class RecipeBag implements IRecipe
                 }
             }
         }
-        if (n != 2 || !(bag && armour))
+        if (dye && ring)
         {
-            if (dye && bag)
-            {
-                output = bagStack.copy();
-                if (!output.hasTagCompound()) output.setTagCompound(new NBTTagCompound());
-                output.getTagCompound().setInteger("dyeColour", dyeStack.getItemDamage());
-            }
-            return output != null;
-        }
-        output = armourStack.copy();
-        if (!output.hasTagCompound()) output.setTagCompound(new NBTTagCompound());
-        output.getTagCompound().setBoolean("isapokebag", true);
-        if (dye)
-        {
+            output = ringStack.copy();
+            if (!output.hasTagCompound()) output.setTagCompound(new NBTTagCompound());
             output.getTagCompound().setInteger("dyeColour", dyeStack.getItemDamage());
         }
         return output != null;

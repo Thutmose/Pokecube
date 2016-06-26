@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
-import pokecube.core.client.models.ModelRing;
+import pokecube.adventures.client.models.items.ModelRing;
 import pokecube.core.items.megastuff.ItemMegaring;
 
 public class RingRenderer implements LayerRenderer<EntityPlayer>
@@ -61,6 +61,7 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
                 GlStateManager.scale(0.85, 1, 0.85);
                 GL11.glTranslated(0.02, 0, 0.01);
             }
+            ring.stack = inv.getStackInSlot(2);
             ring.render(player, f, f1, partialTicks, f3, f4, 0.0625f);
             GlStateManager.popMatrix();
         }
@@ -80,6 +81,7 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
                 GL11.glTranslated(0.02, 0, 0.01);
             }
             else GlStateManager.scale(0.85, 1, 0.85);
+            ring.stack = inv.getStackInSlot(1);
             ring.render(player, f, f1, partialTicks, f3, f4, 0.0625f);
 
             GlStateManager.popMatrix();

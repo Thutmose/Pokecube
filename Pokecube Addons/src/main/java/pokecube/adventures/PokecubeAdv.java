@@ -45,14 +45,7 @@ import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
 import thut.api.maths.Vector3;
 
 @Mod( // @formatter:off
-    modid = PokecubeAdv.ID, 
-    name = "Pokecube Adventures", 
-    version = PokecubeAdv.version, 
-    dependencies = PokecubeAdv.DEPSTRING, 
-    guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", 
-    updateJSON = PokecubeAdv.UPDATEURL, 
-    acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS
-    )// @formatter:on
+        modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = PokecubeAdv.DEPSTRING, guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS) // @formatter:on
 public class PokecubeAdv
 {
     public static final String ID                 = "pokecube_adventures";
@@ -98,8 +91,6 @@ public class PokecubeAdv
     public void load(FMLInitializationEvent evt)
     {
         proxy.initClient();
-
-        ItemHandler.postInitItems();
 
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
@@ -169,6 +160,7 @@ public class PokecubeAdv
         ItemHandler.registerItems();
         setTrainerConfig(e);
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(new ItemHandler());
         proxy.preinit();
     }
 

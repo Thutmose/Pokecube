@@ -482,8 +482,43 @@ public class GuiPokedex_redo extends GuiScreen
             Ability ability = pokemob.getAbility();
             if (ability != null)
             {
-                drawString(fontRendererObj, I18n.format(ability.getName()), xOffset + 19, yOffset + 99, 0xFFFFFF);
+                drawString(fontRendererObj, "AB: "+I18n.format(ability.getName()), xOffset + 19, yOffset + 99, 0xFFFFFF);
             }
+            int happiness = pokemob.getHappiness();
+            String message = "";
+            if (happiness == 0)
+            {
+                message = "pokemob.info.happy0";
+            }
+            if (happiness > 0)
+            {
+                message = "pokemob.info.happy1";
+            }
+            if (happiness > 49)
+            {
+                message = "pokemob.info.happy2";
+            }
+            if (happiness > 99)
+            {
+                message = "pokemob.info.happy3";
+            }
+            if (happiness > 149)
+            {
+                message = "pokemob.info.happy4";
+            }
+            if (happiness > 199)
+            {
+                message = "pokemob.info.happy5";
+            }
+            if (happiness > 254)
+            {
+                message = "pokemob.info.happy6";
+            }
+            message = I18n.format(message);
+            fontRendererObj.drawSplitString(message, xOffset + 19, yOffset + 145, 100, 0xFFFFFF);
+
+            message = "Size: "+pokemob.getSize();
+            fontRendererObj.drawSplitString(message, xOffset + 19, yOffset + 122, 100, 0xFFFFFF);
         }
     }
 

@@ -742,13 +742,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             if (!hasBuy)
             {
                 toRemove.add(r);
-                continue;
-            }
-            boolean hasBuy = r.getItemToBuy() != null && r.getItemToBuy().getItem()!=null;
-            hasBuy = hasBuy || (r.getSecondItemToBuy() != null && r.getSecondItemToBuy().getItem()!=null);
-            if(!hasBuy)
-            {
-                toRemove.add(r);
             }
         }
         itemList.removeAll(toRemove);

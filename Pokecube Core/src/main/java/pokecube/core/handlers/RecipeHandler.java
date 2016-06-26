@@ -119,13 +119,13 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         GameRegistry.addRecipe(new ItemStack(repelBlock), new Object[] { "JR", "RJ", 'J',
                 BerryManager.getBerryItem("jaboca"), 'R', BerryManager.getBerryItem("rowap"), });
 
+        RecipeSorter.register("pokecube:rings", RecipeRings.class, Category.SHAPELESS, "after:minecraft:shapeless");
+        RecipeSorter.register("pokecube:pokeseals", RecipePokeseals.class, Category.SHAPELESS,
+                "after:minecraft:shapeless");
+        RecipeSorter.register("pokecube:revive", RecipeRevive.class, Category.SHAPELESS, "after:minecraft:shaped");
         GameRegistry.addRecipe(new RecipeRings());
         GameRegistry.addRecipe(new RecipePokeseals());
         GameRegistry.addRecipe(new RecipeRevive());
-
-        RecipeSorter.register("pokecube:pokeseals", RecipePokeseals.class, Category.SHAPELESS,
-                "after:minecraft:shaped");
-        RecipeSorter.register("pokecube:revive", RecipeRevive.class, Category.SHAPELESS, "after:minecraft:shaped");
 
         // TOP
         GameRegistry.addRecipe(getStack("pctop"), new Object[] { "MMM", "SRS", "SIS", 'R', Items.REDSTONE, 'S',

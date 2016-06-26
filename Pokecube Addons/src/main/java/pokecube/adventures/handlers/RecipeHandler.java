@@ -6,6 +6,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.RecipeSorter.Category;
 import pokecube.adventures.items.bags.RecipeBag;
 import pokecube.core.PokecubeItems;
 
@@ -41,6 +43,7 @@ public class RecipeHandler
 
     public static void register()
     {
+        RecipeSorter.register("pokecube_adventures:bag", RecipeBag.class, Category.SHAPELESS, "after:minecraft:shapeless");
         GameRegistry.addRecipe(new RecipeBag());
         if (tmRecipe) GameRegistry.addRecipe(getStack("tm"), new Object[] { "SS ", "SOS", "SRS", 'S', Items.IRON_INGOT,
                 'O', Blocks.GLASS_PANE, 'R', Items.REDSTONE });

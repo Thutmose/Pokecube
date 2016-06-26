@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,6 +49,14 @@ public class BagRenderer implements LayerRenderer<EntityPlayer>
             int brightness = player.getBrightnessForRender(partialTicks);
             // First pass of render
             GL11.glPushMatrix();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableRescaleNormal();
+            GlStateManager.alphaFunc(516, 0.1F);
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                    GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+                    GlStateManager.DestFactor.ZERO);
+            GlStateManager.pushMatrix();
             GL11.glPushMatrix();
             GL11.glRotated(90, 1, 0, 0);
             GL11.glRotated(180, 0, 0, 1);
@@ -73,6 +82,10 @@ public class BagRenderer implements LayerRenderer<EntityPlayer>
             model2.renderAll();
             GL11.glColor3f(1, 1, 1);
             GL11.glPopMatrix();
+            GlStateManager.cullFace(GlStateManager.CullFace.BACK);
+            GlStateManager.popMatrix();
+            GlStateManager.disableRescaleNormal();
+            GlStateManager.disableBlend();
             GL11.glPopMatrix();
         }
     }

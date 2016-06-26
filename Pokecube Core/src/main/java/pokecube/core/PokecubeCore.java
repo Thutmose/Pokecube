@@ -674,6 +674,8 @@ public class PokecubeCore extends PokecubeMod
                 spawns.clear();
                 spawns = biome.getSpawnableList(EnumCreatureType.AMBIENT);
                 spawns.clear();
+                spawns = biome.getSpawnableList(EnumCreatureType.WATER_CREATURE);
+                spawns.clear();
             }
         }
         if (config.deactivateMonsters)

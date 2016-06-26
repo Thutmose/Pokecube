@@ -14,14 +14,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.Database;
-import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -278,7 +280,8 @@ public class Commands implements ICommand
 
                     if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == player || allall)
                             && (named || all || (stay == isStaying && guard == isGuarding))
-                            && (named == specificName.equalsIgnoreCase(mob.getPokemonDisplayName().getUnformattedComponentText())))
+                            && (named == specificName
+                                    .equalsIgnoreCase(mob.getPokemonDisplayName().getUnformattedComponentText())))
                         mob.returnToPokecube();
                 }
             }
@@ -368,6 +371,61 @@ public class Commands implements ICommand
         return false;
     }
 
+    private boolean doSetHasStarter(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
+    {
+        if (args[0].equalsIgnoreCase("denystarter") && args.length == 2)
+        {
+            WorldServer world = (WorldServer) cSender.getEntityWorld();
+            EntityPlayer player = null;
+
+            int num = 1;
+            int index = 0;
+            String name = null;
+
+            if (targets != null)
+            {
+                num = targets.length;
+            }
+            else
+            {
+                name = args[1];
+                player = world.getPlayerEntityByName(name);
+            }
+
+            for (int i = 0; i < num; i++)
+                if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+                {
+                    if (targets != null)
+                    {
+                        player = targets[index];
+                    }
+                    if (player != null)
+                    {
+                        PokecubeSerializer.getInstance().setHasStarter(player, true);
+                        NBTTagCompound nbt = new NBTTagCompound();
+                        StatsCollector.writeToNBT(nbt);
+                        nbt.setBoolean("playerhasstarter", PokecubeSerializer.getInstance().hasStarter(player));
+                        PokecubeSerializer.getInstance().writeToNBT2(nbt);
+                        nbt.setBoolean("hasSerializer", true);
+                        boolean offline = !FMLCommonHandler.instance().getMinecraftServerInstance()
+                                .isServerInOnlineMode();
+                        nbt.setBoolean("serveroffline", offline);
+                        PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
+                        PokecubePacketHandler.sendToClient(packet, player);
+                        cSender.addChatMessage(
+                                new TextComponentTranslation("pokecube.command.denystarter", player.getName()));
+                    }
+                }
+                else
+                {
+                    CommandTools.sendNoPermissions(cSender);
+                    return false;
+                }
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
@@ -388,27 +446,12 @@ public class Commands implements ICommand
             }
         }
         boolean isOp = CommandTools.isOp(sender);
-
-        if (args[0].equalsIgnoreCase("gif") && args.length > 1 && sender instanceof EntityPlayer)
-        {
-            String name = args[1];
-            PokedexEntry entry = Database.getEntry(name);
-            if (entry != null)
-            {
-                ByteBuf buffer = Unpooled.buffer(5);
-                buffer.writeByte(PokecubeClientPacket.WIKIWRITE);
-                buffer.writeInt(entry.getPokedexNb());
-                PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
-                PokecubePacketHandler.sendToClient(packet, (EntityPlayer) sender);
-            }
-
-            return;
-        }
         boolean message = false;
         message |= doRecall(sender, args, isOp, targets);
         message |= doDebug(sender, args, isOp, targets);
         message |= doReset(sender, args, isOp, targets);
         message |= doMeteor(sender, args, isOp, targets);
+        message |= doSetHasStarter(sender, args, isOp, targets);
         if (!message)
         {
             CommandTools.sendBadArgumentsTryTab(sender);

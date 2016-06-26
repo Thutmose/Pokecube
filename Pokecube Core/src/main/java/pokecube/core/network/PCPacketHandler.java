@@ -266,7 +266,7 @@ public class PCPacketHandler
         {
             if (sender.openContainer instanceof ContainerPC)
             {
-                ((ContainerPC) (sender.openContainer)).pcTile.setBoundOwner(player.getUniqueID().toString());
+                ((ContainerPC) (sender.openContainer)).pcTile.setBoundOwner(player);
                 player.closeScreen();
             }
             return;

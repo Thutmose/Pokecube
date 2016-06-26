@@ -20,13 +20,18 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.core.blocks.TileEntityOwnable;
+import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import thut.api.maths.Vector3;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityPC extends TileEntityOwnable implements IInventory//, SimpleComponent
+public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
+                                                                         // SimpleComponent
 {
-    private boolean     bound   = false;
-    private String      boundId = "";
-    public List<String> visible = new ArrayList<String>();
+    private boolean     bound     = false;
+    private String      boundId   = "";
+    private String      boundName = "";
+    public List<String> visible   = new ArrayList<String>();
 
     public TileEntityPC()
     {
@@ -50,7 +55,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
         return null;
     }
 
-//  @Override //TODO re-add SimpleComponent when it is fixed.
+    // @Override //TODO re-add SimpleComponent when it is fixed.
     public String getComponentName()
     {
         return "pokecubepc";
@@ -111,7 +116,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
     @Override
     public String getName()
     {
-        if (getPC() != null) return getPC().getName();
+        if (getPC() != null) { return boundName; }
         return null;
     }
 
@@ -150,11 +155,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack)
     {
-        if (getPC() != null)
-        {
-            // if(pc.getPage()!=box) return false;
-            return getPC().isItemValidForSlot(i, itemstack);
-        }
+        if (getPC() != null) { return getPC().isItemValidForSlot(i, itemstack); }
         return false;
     }
 
@@ -193,9 +194,11 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
         super.readFromNBT(par1NBTTagCompound);
         this.bound = par1NBTTagCompound.getBoolean("bound");
         boundId = par1NBTTagCompound.getString("boundID");
+        boundName = par1NBTTagCompound.getString("boundName");
         if (boundId == null || boundId.isEmpty())
         {
             boundId = new UUID(1234, 4321).toString();
+            boundName = "Public Box";
         }
     }
 
@@ -206,12 +209,13 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
         return null;
     }
 
-    public void setBoundOwner(String uuid)
+    public void setBoundOwner(EntityPlayer player)
     {
+        String uuid = player.getUniqueID().toString();
         UUID id = InventoryPC.defaultId;
 
         TileEntity te = worldObj.getTileEntity(getPos().down());
-        if (te != null && te instanceof TileEntityPC) ((TileEntityPC) te).setBoundOwner(uuid);
+        if (te != null && te instanceof TileEntityPC) ((TileEntityPC) te).setBoundOwner(player);
 
         boolean canEdit = boundId.isEmpty() || boundId.equals(id.toString());
         if (!canEdit)
@@ -224,10 +228,18 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
         else
         {
             boundId = uuid;
+            id = UUID.fromString(uuid);
+            if (player != null)
+            {
+                boundName = player.getDisplayNameString();
+            }
         }
-
-        // worldObj.markBlockForUpdate(getPos());
-
+        if (!worldObj.isRemote)
+        {
+            PokecubeClientPacket packet = new PokecubeClientPacket(this);
+            PokecubePacketHandler.sendToAllNear(packet, Vector3.getNewVector().set(this),
+                    worldObj.provider.getDimension(), 64);
+        }
     }
 
     @Override
@@ -255,13 +267,19 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
         {
             UUID id = InventoryPC.defaultId;
             boundId = id.toString();
+            boundName = "Public";
         }
         else
         {
             boundId = "";
+            boundName = "";
         }
-        // worldObj.upda
-        // worldObj.markBlockForUpdate(getPos());
+        if (!worldObj.isRemote)
+        {
+            PokecubeClientPacket packet = new PokecubeClientPacket(this);
+            PokecubePacketHandler.sendToAllNear(packet, Vector3.getNewVector().set(this),
+                    worldObj.provider.getDimension(), 64);
+        }
     }
 
     /** Writes a tile entity to NBT.
@@ -273,6 +291,14 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory//, Sim
         super.writeToNBT(par1NBTTagCompound);
         par1NBTTagCompound.setBoolean("bound", bound);
         par1NBTTagCompound.setString("boundID", boundId);
+        par1NBTTagCompound.setString("boundName", boundName);
         return par1NBTTagCompound;
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+        return writeToNBT(nbt);
     }
 }

@@ -202,8 +202,12 @@ public class Config extends ConfigBase
     @Configure(category = spawning)
     public boolean             shouldCap                  = true;
     @Configure(category = spawning)
-    String[]                   spawnFunctions             = { "0:(10^6)*(sin(x*10^-3)^8 + sin(y*10^-3)^8)",
-            "1:10+r/130;r", "2:(10^6)*(sin(x*0.5*10^-3)^8 + sin(y*0.5*10^-3)^8)" };
+    String[]                   spawnLevelFunctions        = { "0:abs((25)*(sin(x*10^-3)^3 + sin(y*10^-3)^3))",
+            "1:1+r/1300;r", "2:(25)*(sin(x*0.5*10^-3)^4 + sin(y*0.5*10^-3)^4)" };
+    @Configure(category = spawning)
+    public boolean             expFunction                = false;
+    @Configure(category = spawning)
+    public int                 levelVariance              = 5;
 
     // Gui/client settings
     @Configure(category = client)
@@ -273,7 +277,8 @@ public class Config extends ConfigBase
         SpawnHandler.doSpawns = pokemonSpawn;
         SpawnHandler.lvlCap = shouldCap;
         SpawnHandler.capLevel = levelCap;
-        SpawnHandler.loadFunctionsFromStrings(spawnFunctions);
+        SpawnHandler.expFunction = expFunction;
+        SpawnHandler.loadFunctionsFromStrings(spawnLevelFunctions);
 
         PokecubeSerializer.MeteorDistance = meteorDistance * meteorDistance;
 

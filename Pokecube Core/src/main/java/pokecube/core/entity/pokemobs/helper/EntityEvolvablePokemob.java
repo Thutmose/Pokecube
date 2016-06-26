@@ -127,6 +127,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         {
             boolean neededItem = false;
             PokedexEntry evol = null;
+            EvolutionData data = null;
             if (evolution == null || evolution.isEmpty())
             {
                 for (EvolutionData d : getPokedexEntry().getEvolutions())
@@ -135,6 +136,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     {
                         evol = d.evolution;
                         if (!d.shouldEvolve(this, null) && stack == getHeldItemMainhand()) neededItem = true;
+                        data = d;
                         break;
                     }
                 }
@@ -174,8 +176,9 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 
                     EntityPlayer player = null;
                     if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
-                    ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
-                    evo.levelUp(evo.getLevel());
+                    if (showAnimation) ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
+                    else((EntityMovesPokemob) evo).oldLevel = data.level;
+//                    evo.levelUp(evo.getLevel());
                     this.setDead();
                     if (player != null && !player.worldObj.isRemote && !isShadow())
                     {
@@ -209,7 +212,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                                     IPokemob poke = (IPokemob) pokemon;
                                     poke.setPokecubeId(cubeId);
                                     poke.setPokemonOwner(player);
-                                    poke.setExp(Tools.levelToXp(poke.getExperienceMode(), 20), false, false);
+                                    poke.setExp(Tools.levelToXp(poke.getExperienceMode(), 20), true, false);
                                     ((EntityLivingBase) poke).setHealth(((EntityLivingBase) poke).getMaxHealth());
                                     ItemStack shedinja = PokecubeManager.pokemobToItem(poke);
                                     player.addStat(PokecubeMod.get1stPokemob, 0);
@@ -290,7 +293,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     ((IPokemob) evolution).setEvolutionTicks(10);
                 }
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
-                        this.getPokemonDisplayName().getFormattedText(), ((IPokemob) evolution).getPokedexEntry().getName());
+                        this.getPokemonDisplayName().getFormattedText(),
+                        ((IPokemob) evolution).getPokedexEntry().getName());
                 this.displayMessageToOwner(mess);
                 this.setPokemonOwner(null);
                 this.setDead();

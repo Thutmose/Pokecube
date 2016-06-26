@@ -545,7 +545,7 @@ public interface IPokemob extends IMoveConstants
      * 
      * @param level
      *            the new level */
-    void levelUp(int level);
+    IPokemob levelUp(int level);
 
     IPokemob megaEvolve(String forme);
 
@@ -607,7 +607,7 @@ public interface IPokemob extends IMoveConstants
      *            earning
      * @param newlySpawned
      *            true if called by a spawner, false otherwise */
-    void setExp(int exp, boolean notifyLevelUp, boolean newlySpawned);
+    IPokemob setExp(int exp, boolean notifyLevelUp, boolean newlySpawned);
 
     void setExplosionState(int i);
 

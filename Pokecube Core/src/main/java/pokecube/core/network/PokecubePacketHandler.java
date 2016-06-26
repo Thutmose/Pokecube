@@ -23,7 +23,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -248,10 +250,20 @@ public class PokecubePacketHandler
                                     e.printStackTrace();
                                 }
                             }
-                            else if (channel == WIKIWRITE)
+                            else if (channel == TILEUPDATE)
                             {
-                                int number = buffer.readInt();
-                                System.out.println(number);
+                                try
+                                {
+                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
+                                    BlockPos pos = new BlockPos(nbt.getInteger("x"), nbt.getInteger("y"),
+                                            nbt.getInteger("z"));
+                                    TileEntity tile = player.worldObj.getTileEntity(pos);
+                                    tile.readFromNBT(nbt);
+                                }
+                                catch (IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     };
@@ -282,7 +294,7 @@ public class PokecubePacketHandler
 
         public static final byte CHANGEFORME    = 14;
 
-        public static final byte WIKIWRITE      = 15;
+        public static final byte TILEUPDATE     = 15;
 
         PacketBuffer             buffer;;
 
@@ -305,6 +317,15 @@ public class PokecubePacketHandler
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte((byte) channel);
+            buffer.writeNBTTagCompoundToBuffer(nbt);
+        }
+
+        public PokecubeClientPacket(TileEntity tile)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeByte(TILEUPDATE);
+            NBTTagCompound nbt = new NBTTagCompound();
+            tile.writeToNBT(nbt);
             buffer.writeNBTTagCompoundToBuffer(nbt);
         }
 

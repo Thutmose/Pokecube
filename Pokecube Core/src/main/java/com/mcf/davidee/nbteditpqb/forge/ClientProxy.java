@@ -144,8 +144,8 @@ public class ClientProxy extends CommonProxy
                 Block b = world.getBlockState(pos).getBlock();
                 if (b != null)
                 {
-//                    b.setBlockBoundsBasedOnState(world, pos);
-                    drawBoundingBox(event.getContext(), event.getPartialTicks(), b.getSelectedBoundingBox(world.getBlockState(pos), world, pos));
+                    drawBoundingBox(event.getContext(), event.getPartialTicks(),
+                            b.getSelectedBoundingBox(world.getBlockState(pos), world, pos));
                 }
             }
         }

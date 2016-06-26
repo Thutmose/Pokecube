@@ -382,6 +382,7 @@ tile.pokemobSpawnerGrass.name=Pokémob spawner grass
 tile.pokecube_table.name=Pokécube Table
 tile.pc.next=Next
 tile.pc.previous=Previous
+tile.pc.public=Public PC
 
 item.pokecube.name=Pokécube
 item.greatcube.name=Greatcube
@@ -413,7 +414,7 @@ tile.pc.autooff=Auto Off
 tile.pc.rename=Rename
 tile.pc.sentto=%1$s was sent to your PC
 tile.pc.title=%1$s's PC
-tile.pc.public=Public
+tile.pc.public=Public PC
 tile.pc.bound=Private bound
 
 item.pokecube.bubbles=Droplets
@@ -449,6 +450,8 @@ item.gallademega.name=Galladite
 item.gardevoirmega.name=Gardevoirite
 item.gengarmega.name=Gengarite
 item.glaliemega.name=Glalitite
+item.houndoommega.name=Houndoominite
+item.lucariomega.name=Lucarionite
 item.mawilemega.name=Mawilite
 item.mewtwomega-x.name=Mewtwonite X
 item.mewtwomega-y.name=Mewtwonite Y

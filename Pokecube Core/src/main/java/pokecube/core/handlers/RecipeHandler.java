@@ -20,6 +20,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.RecipeBrewBerries;
+import pokecube.core.items.megastuff.RecipeRings;
 import pokecube.core.items.pokecubes.RecipePokeseals;
 import pokecube.core.items.revive.RecipeRevive;
 
@@ -118,6 +119,7 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         GameRegistry.addRecipe(new ItemStack(repelBlock), new Object[] { "JR", "RJ", 'J',
                 BerryManager.getBerryItem("jaboca"), 'R', BerryManager.getBerryItem("rowap"), });
 
+        GameRegistry.addRecipe(new RecipeRings());
         GameRegistry.addRecipe(new RecipePokeseals());
         GameRegistry.addRecipe(new RecipeRevive());
 

@@ -20,9 +20,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.core.blocks.TileEntityOwnable;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
-import thut.api.maths.Vector3;
+import thut.api.network.PacketHandler;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
@@ -236,9 +234,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
         }
         if (!worldObj.isRemote)
         {
-            PokecubeClientPacket packet = new PokecubeClientPacket(this);
-            PokecubePacketHandler.sendToAllNear(packet, Vector3.getNewVector().set(this),
-                    worldObj.provider.getDimension(), 64);
+            PacketHandler.sendTileUpdate(this);
         }
     }
 
@@ -276,9 +272,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
         }
         if (!worldObj.isRemote)
         {
-            PokecubeClientPacket packet = new PokecubeClientPacket(this);
-            PokecubePacketHandler.sendToAllNear(packet, Vector3.getNewVector().set(this),
-                    worldObj.provider.getDimension(), 64);
+            PacketHandler.sendTileUpdate(this);
         }
     }
 

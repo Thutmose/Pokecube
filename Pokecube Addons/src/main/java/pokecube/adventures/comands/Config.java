@@ -60,6 +60,10 @@ public class Config extends ConfigBase
             "powerplant:" + BiomeType.INDUSTRIAL.name
             // @formatter:on
     };
+    @Configure(category = world)
+    public boolean                     exp_shareLoot      = true;
+    @Configure(category = world)
+    public boolean                     HMLoot             = true;
 
     @Configure(category = machines)
     public int                         maxOutput          = 256;

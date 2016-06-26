@@ -146,6 +146,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public TypeTrainer                  type;
     public Vector3                      location         = null;
     public String                       name             = "";
+    public String                       playerName       = "";
     public UUID                         outID;
     public IPokemob                     outMob;
     public boolean                      male             = true;
@@ -639,11 +640,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 {
                     if (i != null) message += i.getDisplayName() + " ";
                 }
-                // for (int i = 0; i < 5; i++)
-                // {
-                // ItemStack item = getEquipmentInSlot(i);
-                // if (item != null) message += item.getDisplayName() + " ";
-                // }
                 player.addChatMessage(new TextComponentString(message));
             }
             else if (!worldObj.isRemote && player.isSneaking() && player.getHeldItemMainhand().getItem() == Items.STICK)
@@ -741,9 +737,9 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 toRemove.add(r);
                 continue;
             }
-            boolean hasBuy = r.getItemToBuy() != null && r.getItemToBuy().getItem()!=null;
-            hasBuy = hasBuy || (r.getSecondItemToBuy() != null && r.getSecondItemToBuy().getItem()!=null);
-            if(!hasBuy)
+            boolean hasBuy = r.getItemToBuy() != null && r.getItemToBuy().getItem() != null;
+            hasBuy = hasBuy || (r.getSecondItemToBuy() != null && r.getSecondItemToBuy().getItem() != null);
+            if (!hasBuy)
             {
                 toRemove.add(r);
             }

@@ -4,7 +4,6 @@
 package pokecube.core;
 
 import static pokecube.core.PokecubeCore.getWorld;
-import static pokecube.core.PokecubeItems.getItem;
 import static pokecube.core.PokecubeItems.removeFromHoldables;
 import static pokecube.core.handlers.Config.GUICHOOSEFIRSTPOKEMOB_ID;
 import static pokecube.core.handlers.Config.GUIDISPLAYPOKECUBEINFO_ID;
@@ -15,7 +14,6 @@ import static pokecube.core.handlers.Config.GUIPOKEDEX_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBSPAWNER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOB_ID;
 import static pokecube.core.handlers.Config.GUITRADINGTABLE_ID;
-import static pokecube.core.interfaces.PokecubeMod.HMs;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,13 +22,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.handlers.RecipeHandler;
-import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.ItemTM;
 import pokecube.core.moves.TreeRemover;
 import thut.api.maths.ExplosionCustom;
 
@@ -136,54 +131,6 @@ public class Mod_Pokecube_Helper
         getTerrain().add(Blocks.SAND);
         getTerrain().add(Blocks.GRAVEL);
         getTerrain().add(Blocks.NETHERRACK);
-    }
-
-    public static void initLoots()
-    {
-        ItemStack cut = new ItemStack(getItem("tm"));
-        ItemTM.addMoveToStack(IMoveNames.MOVE_CUT, cut);
-        HMs.add(cut);
-        ItemStack flash = new ItemStack(getItem("tm"));
-        ItemTM.addMoveToStack(IMoveNames.MOVE_FLASH, flash);
-        HMs.add(flash);
-        ItemStack dig = new ItemStack(getItem("tm"));
-        ItemTM.addMoveToStack(IMoveNames.MOVE_DIG, dig);
-        HMs.add(dig);
-        ItemStack rockSmash = new ItemStack(getItem("tm"));
-        ItemTM.addMoveToStack(IMoveNames.MOVE_ROCKSMASH, rockSmash);
-        HMs.add(rockSmash);
-        // TODO loot tables
-        // WeightedRandomChestContent cutContent = new
-        // WeightedRandomChestContent(cut, 1, 1, 20);
-        // ChestGenHooks.addItem(ChestGenHooks.PYRAMID_JUNGLE_CHEST,
-        // cutContent);
-        //
-        // WeightedRandomChestContent flashContent = new
-        // WeightedRandomChestContent(flash, 1, 1, 20);
-        // ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, flashContent);
-        //
-        // WeightedRandomChestContent digContent = new
-        // WeightedRandomChestContent(dig, 1, 1, 20);
-        // ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, digContent);
-        //
-        // WeightedRandomChestContent smashContent = new
-        // WeightedRandomChestContent(rockSmash, 1, 1, 20);
-        // ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR,
-        // smashContent);
-        //
-        // // TODO do this for each stone, instead of just one.
-        // ItemStack stone = new ItemStack(getItem("megastone"));
-        // WeightedRandomChestContent stoneContent = new
-        // WeightedRandomChestContent(stone, 1, 1, 20);
-        // ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH,
-        // stoneContent);
-        // ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, stoneContent);
-        //
-        // ItemStack ring = new ItemStack(getItem("megaring"));
-        // WeightedRandomChestContent ringContent = new
-        // WeightedRandomChestContent(ring, 1, 1, 5);
-        // ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, ringContent);
-        // ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, ringContent);
     }
 
     public void addItems()
@@ -377,8 +324,6 @@ public class Mod_Pokecube_Helper
                 }
             }
         }
-
         removeFromHoldables("tm");
-        initLoots();
     }
 }

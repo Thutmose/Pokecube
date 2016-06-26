@@ -12,7 +12,6 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.stats.Achievement;
 import net.minecraft.world.World;
@@ -107,11 +106,6 @@ public abstract class PokecubeMod
 
     @SuppressWarnings("rawtypes")
     public static HashMap                       pokemobEggs                = new HashMap();
-
-    // Contains TMs for cut, flash, etc. These are not infinite uses, as they
-    // can be copied by teaching to a pokemob, then
-    // placing it in the PC.
-    public static ArrayList<ItemStack>          HMs                        = new ArrayList<ItemStack>();
 
     // Achievements
     public static AchievementPage               achievementPagePokecube;

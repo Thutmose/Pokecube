@@ -216,6 +216,7 @@ public class MakeCommand extends CommandBase
                         else
                         {
                             EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(owner);
+                            System.out.println(p+" "+owner);
                             if (p != null) owner = p.getUniqueID().toString();
                         }
 

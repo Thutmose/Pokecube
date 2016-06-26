@@ -40,6 +40,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
+import thut.api.network.PacketHandler;
 
 @Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
         @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
@@ -409,6 +410,10 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         }
         distance = Math.max(0, distance);
         refreshAbility();
+        if (!worldObj.isRemote)
+        {
+            PacketHandler.sendTileUpdate(this);
+        }
     }
 
     @Callback(doc = "function(scale:number, dx:number, dy:number, dz:number)- Sets the parameters for the hologram.")
@@ -419,7 +424,10 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         shift[0] = args.checkInteger(1);
         shift[1] = args.checkInteger(2);
         shift[2] = args.checkInteger(3);
-        // worldObj.markBlockForUpdate(getPos());//TODO update sending
+        if (!worldObj.isRemote)
+        {
+            PacketHandler.sendTileUpdate(this);
+        }
         return new Object[0];
     }
 
@@ -436,7 +444,10 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
     public Object[] setRange(Context context, Arguments args)
     {
         distance = args.checkInteger(0);
-        // worldObj.markBlockForUpdate(getPos());//TODO update sending
+        if (!worldObj.isRemote)
+        {
+            PacketHandler.sendTileUpdate(this);
+        }
         return new Object[] { distance };
     }
 

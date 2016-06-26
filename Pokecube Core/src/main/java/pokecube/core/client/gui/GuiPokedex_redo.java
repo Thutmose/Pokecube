@@ -592,9 +592,9 @@ public class GuiPokedex_redo extends GuiScreen
             try
             {
                 drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType1()), xOffset - 88,
-                        yOffset + 138, pokedexEntry.getType1().colour);
+                        yOffset + 137, pokedexEntry.getType1().colour);
                 drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType2()), xOffset - 44,
-                        yOffset + 138, pokedexEntry.getType2().colour);
+                        yOffset + 137, pokedexEntry.getType2().colour);
             }
             catch (Exception e)
             {

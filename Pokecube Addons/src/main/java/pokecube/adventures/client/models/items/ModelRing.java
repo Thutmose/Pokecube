@@ -1,4 +1,6 @@
-package pokecube.core.client.models;
+package pokecube.adventures.client.models.items;
+
+import java.awt.Color;
 
 import org.lwjgl.opengl.GL11;
 
@@ -6,23 +8,28 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class ModelRing extends ModelBase
 {
-    ResourceLocation texture = new ResourceLocation("pokecube_adventures", "textures/megaring.png");
-    //fields
-      ModelRenderer Shape2;
-      ModelRenderer Shape1;
-      ModelRenderer Shape3;
-      ModelRenderer Shape4;
-      ModelRenderer Shape5;
-    
+    ResourceLocation texture_1 = new ResourceLocation("pokecube_adventures", "textures/megaring_1.png");
+    ResourceLocation texture_2 = new ResourceLocation("pokecube_adventures", "textures/megaring_2.png");
+    // fields
+    ModelRenderer    Shape2;
+    ModelRenderer    Shape1;
+    ModelRenderer    Shape3;
+    ModelRenderer    Shape4;
+    ModelRenderer    Shape5;
+
+    public ItemStack stack;
+
     public ModelRing()
     {
-      textureWidth = 64;
-      textureHeight = 32;
-      
+        textureWidth = 64;
+        textureHeight = 32;
+
         Shape2 = new ModelRenderer(this, 0, 11);
         Shape2.addBox(0F, 0F, 0F, 1, 1, 1);
         Shape2.setRotationPoint(8.4F, 9F, -0.4333333F);
@@ -54,37 +61,47 @@ public class ModelRing extends ModelBase
         Shape5.mirror = true;
         setRotation(Shape5, 0F, 0F, 0F);
     }
-    
+
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-      super.render(entity, f, f1, f2, f3, f4, f5);
-      Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
-      GL11.glPushMatrix();
-      GL11.glRotated(90, 0, 1, 0);
-      GL11.glTranslated(-0.275, -0.5, 0);
-      
-      setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-      Shape2.render(f5);
-      Shape1.render(f5);
-      Shape3.render(f5);
-      Shape4.render(f5);
-      Shape5.render(f5);
-      
-      GL11.glPopMatrix();
+        super.render(entity, f, f1, f2, f3, f4, f5);
+        if (stack == null) return;
+        Minecraft.getMinecraft().getTextureManager().bindTexture(texture_1);
+        GL11.glPushMatrix();
+        GL11.glRotated(90, 0, 1, 0);
+        GL11.glTranslated(-0.275, -0.5, 0);
+        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+        Shape2.render(f5);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(texture_2);
+        EnumDyeColor ret = EnumDyeColor.GRAY;
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
+        {
+            int damage = stack.getTagCompound().getInteger("dyeColour");
+            ret = EnumDyeColor.byDyeDamage(damage);
+        }
+        Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
+        GL11.glColor3f(colour.getRed() / 255f, colour.getGreen() / 255f, colour.getBlue() / 255f);
+        Shape1.render(f5);
+        Shape3.render(f5);
+        Shape4.render(f5);
+        Shape5.render(f5);
+        GL11.glColor3f(1f, 1f, 1f);
+
+        GL11.glPopMatrix();
     }
-    
+
     private void setRotation(ModelRenderer model, float x, float y, float z)
     {
-      model.rotateAngleX = x;
-      model.rotateAngleY = y;
-      model.rotateAngleZ = z;
+        model.rotateAngleX = x;
+        model.rotateAngleY = y;
+        model.rotateAngleZ = z;
     }
 
     @Override
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity e)
     {
-      super.setRotationAngles(f, f1, f2, f3, f4, f5, e);
+        super.setRotationAngles(f, f1, f2, f3, f4, f5, e);
     }
 
-  }
+}

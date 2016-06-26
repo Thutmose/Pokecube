@@ -216,6 +216,7 @@ public class Compat
     boolean                   bagRender    = false;
     private Set<RenderPlayer> addedBaubles = Sets.newHashSet();
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void addBaubleRender(RenderPlayerEvent.Post event)
     {

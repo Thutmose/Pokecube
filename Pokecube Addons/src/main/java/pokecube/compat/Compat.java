@@ -4,9 +4,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
+import com.google.common.collect.Sets;
+
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
 import net.minecraftforge.common.ForgeVersion.Status;
@@ -29,6 +34,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.compat.ai.AIElectricalInterferance;
 import pokecube.core.database.Database;
 import pokecube.core.events.PostPostInit;
@@ -162,6 +168,7 @@ public class Compat
     public void BaublesCompat(FMLPostInitializationEvent evt)
     {
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.baubles.BaublesEventHandler());
+        bagRender = true;
     }
 
     private void doMetastuff()
@@ -204,6 +211,17 @@ public class Compat
     public void postPostInit(PostPostInit evt)
     {
         // gccompat.register();
+    }
+
+    boolean                   bagRender    = false;
+    private Set<RenderPlayer> addedBaubles = Sets.newHashSet();
+
+    @SubscribeEvent
+    public void addBaubleRender(RenderPlayerEvent.Post event)
+    {
+        if (bagRender || addedBaubles.contains(event.getRenderer())) { return; }
+        event.getRenderer().addLayer(new BagRenderer(event.getRenderer()));
+        addedBaubles.add(event.getRenderer());
     }
 
     @EventHandler

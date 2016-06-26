@@ -534,7 +534,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     }
 
     @Override
-    public void levelUp(int level)
+    public IPokemob levelUp(int level)
     {
         List<String> moves = Database.getLevelUpMoves(this.getPokedexNb(), level, oldLevel);
         Collections.shuffle(moves);
@@ -556,7 +556,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                     {
                         for (String s1 : moves)
                         {
-                            if (s.equals(s1)) return;
+                            if (s.equals(s1)) return this;
                         }
                     }
                     for (String s : moves)
@@ -567,7 +567,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                         moveInfo.newMoves++;
                     }
                     setPokemonAIState(LEARNINGMOVE, true);
-                    return;
+                    return this;
                 }
             }
             for (String s : moves)
@@ -575,6 +575,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                 ((EntityPokemob) this).learn(s);
             }
         }
+        return this;
     }
 
     @Override

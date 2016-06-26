@@ -732,9 +732,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public void setExp(int exp, boolean notifyLevelUp, boolean newlySpawned)
+    public IPokemob setExp(int exp, boolean notifyLevelUp, boolean newlySpawned)
     {
-        if (this.isDead) return;
+        if (this.isDead) return this;
 
         int old = dataManager.get(EXPDW);
         oldLevel = this.getLevel();
@@ -744,29 +744,29 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         dataManager.set(EXPDW, exp);
         int newLvl = Tools.xpToLevel(getExperienceMode(), exp);
         int oldLvl = Tools.xpToLevel(getExperienceMode(), old);
-
+        IPokemob ret = this;
         if (oldLvl != newLvl)
         {
             // Fire event to allow others to interfere
             LevelUpEvent lvlup = new LevelUpEvent(this, newLvl, oldLevel);
             MinecraftForge.EVENT_BUS.post(lvlup);
 
-            if (lvlup.isCanceled()) return;
-
-            updateHealth(newLvl);
-
-            if (notifyLevelUp)
+            if (!lvlup.isCanceled())
             {
-                if (notifyLevelUp) if (!this.isDead && (canEvolve(null) || canEvolve(getHeldItemMainhand())))
+                updateHealth(newLvl);
+                if (notifyLevelUp)
                 {
-                    levelUp(newLvl);
-                    this.evolve(true, getHeldItemMainhand());
+                    if (!this.isDead && (canEvolve(null) || canEvolve(getHeldItemMainhand())))
+                    {
+                        levelUp(newLvl);
+                        ret = this.evolve(!newlySpawned, getHeldItemMainhand());
+                    }
+                    ret.levelUp(newLvl);
                 }
-                levelUp(newLvl);
             }
-            setStats(getPokedexEntry().getStats());
-
+            ret.setStats(getPokedexEntry().getStats());
         }
+        return ret;
     }
 
     @Override

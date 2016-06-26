@@ -47,6 +47,8 @@
       "gengarmega": {"textures": {"layer0": "pokecube:items/Gengarite"}},
       "glaliemega": {"textures": {"layer0": "pokecube:items/Glalitite"}},
       "gyaradosmega": {"textures": {"layer0": "pokecube:items/Gyaradosite"}},
+      "houndoommega": {"textures": {"layer0": "pokecube:items/Houndoominite"}},
+      "lucariomega": {"textures": {"layer0": "pokecube:items/Lucarionite"}},
       "mawilemega": {"textures": {"layer0": "pokecube:items/Mawilite"}},
       "mewtwomega-x": {"textures": {"layer0": "pokecube:items/Mewtwonite_X"}},
       "mewtwomega-y": {"textures": {"layer0": "pokecube:items/Mewtwonite_Y"}},

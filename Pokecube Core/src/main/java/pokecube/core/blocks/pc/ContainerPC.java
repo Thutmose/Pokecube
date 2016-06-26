@@ -256,10 +256,9 @@ public class ContainerPC extends Container
             itemstack = itemstack1.copy();
 
             int numRows = 6;
-
             if (index < numRows * 9)
             {
-                if (!this.mergeItemStack(itemstack1, numRows * 9, this.inventorySlots.size(), true)) { return null; }
+                if (!this.mergeItemStack(itemstack1, numRows * 9, this.inventorySlots.size(), false)) { return null; }
             }
             else if (!this.mergeItemStack(itemstack1, 0, numRows * 9, false)) { return null; }
 

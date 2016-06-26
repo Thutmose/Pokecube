@@ -69,7 +69,6 @@ public final class SpawnHandler
     public static final HashMap<Integer, ArrayList<PokedexEntry>> spawnLists  = new HashMap<Integer, ArrayList<PokedexEntry>>();
     public static int                                             number      = 0;
 
-    private static Vector3                                        vec         = Vector3.getNewVector();
     private static Vector3                                        vec1        = Vector3.getNewVector();
     private static Vector3                                        vec2        = Vector3.getNewVector();
     private static Vector3                                        temp        = Vector3.getNewVector();
@@ -80,6 +79,8 @@ public final class SpawnHandler
     static double                                                 maxtime     = 0;
 
     public static boolean                                         lvlCap      = false;
+
+    public static boolean                                         expFunction = false;
 
     public static int                                             capLevel    = 50;
 
@@ -236,27 +237,36 @@ public final class SpawnHandler
         return true;
     }
 
-    public static boolean creatureSpecificInit(EntityLiving entityliving, World world, double posX, double posY,
+    public static EntityLiving creatureSpecificInit(EntityLiving entityliving, World world, double posX, double posY,
             double posZ, Vector3 spawnPoint)
     {
         if (ForgeEventFactory.doSpecialSpawn(entityliving, world, (float) posX, (float) posY,
-                (float) posZ)) { return false; }
+                (float) posZ)) { return null; }
 
         if (entityliving instanceof IPokemob)
         {
-            int maxXP = getSpawnXp(world, vec.set(entityliving), ((IPokemob) entityliving).getPokedexEntry());
+            IPokemob pokemob = (IPokemob) entityliving;
+            int maxXP = 10;
+            int level = 1;
 
-            if (lvlCap) maxXP = Math.min(maxXP,
-                    Tools.levelToXp(((IPokemob) entityliving).getPokedexEntry().getEvolutionMode(), capLevel));
-            maxXP = Math.max(10, maxXP);
+            if (expFunction)
+            {
+                maxXP = getSpawnXp(world, Vector3.getNewVector().set(posX, posY, posZ), pokemob.getPokedexEntry());
+                level = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), maxXP);
+            }
+            else
+            {
+                level = getSpawnLevel(world, Vector3.getNewVector().set(posX, posY, posZ), pokemob.getPokedexEntry());
+            }
 
-            ((IPokemob) entityliving).setExp(maxXP, false, true);
-            ((IPokemob) entityliving).levelUp(((IPokemob) entityliving).getLevel());
-            ((IPokemob) entityliving).specificSpawnInit();
+            if (lvlCap) level = Math.min(level, capLevel);
+            maxXP = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), level);
 
-            return true;
+            pokemob = pokemob.setExp(maxXP, true, true);
+            pokemob.specificSpawnInit();
+            return (EntityLiving) pokemob;
         }
-        return false;
+        return null;
     }
 
     public static Vector3 getRandomPointNear(IBlockAccess world, Vector3 v, int distance)
@@ -320,9 +330,74 @@ public final class SpawnHandler
         return temp;
     }
 
+    public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon)
+    {
+        int spawnLevel = 10;
+
+        TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
+        int b = t.getBiome(location);
+        if (subBiomeLevels.containsKey(b))
+        {
+            Integer[] range = subBiomeLevels.get(b);
+            int dl = range[1] - range[0];
+            if (dl > 0) dl = new Random().nextInt(dl) + 1;
+            int level = range[0] + dl;
+            return level;
+        }
+
+        Vector3 spawn = temp.set(world.getSpawnPoint());
+        JEP toUse;
+        int type = world.getWorldType().getWorldTypeID();
+        boolean isNew = false;
+        String function = "";
+        if (functions.containsKey(type))
+        {
+            function = functions.get(type);
+        }
+        else
+        {
+            function = functions.get(0);
+        }
+        if (parsers.containsKey(type))
+        {
+            toUse = parsers.get(type);
+        }
+        else
+        {
+            parsers.put(type, new JEP());
+            toUse = parsers.get(type);
+            isNew = true;
+        }
+        if (Double.isNaN(toUse.getValue()))
+        {
+            toUse = new JEP();
+            parsers.put(type, toUse);
+            isNew = true;
+        }
+
+        boolean r = function.split(";").length == 2;
+        if (!r)
+        {
+            parseExpression(toUse, function, location.x - spawn.x, location.z - spawn.z, r, isNew);
+        }
+        else
+        {
+            double d = location.distToSq(spawn);
+            parseExpression(toUse, function.split(";")[0], d, location.y, r, isNew);
+        }
+        spawnLevel = (int) Math.abs(toUse.getValue());
+        int variance = new Random().nextInt(PokecubeCore.core.getConfig().levelVariance);
+        spawnLevel += variance;
+        spawnLevel = Math.max(spawnLevel, 1);
+        return spawnLevel;
+    }
+
     public static int getSpawnXp(World world, Vector3 location, PokedexEntry pokemon)
     {
         int maxXp = 10;
+
+        if (!expFunction) { return Tools.levelToXp(pokemon.getEvolutionMode(),
+                getSpawnLevel(world, location, pokemon)); }
 
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
         int b = t.getBiome(location);
@@ -378,9 +453,9 @@ public final class SpawnHandler
         }
         maxXp = (int) Math.abs(toUse.getValue());
         maxXp = Math.max(maxXp, 10);
-        maxXp = new Random().nextInt(maxXp);
-        maxXp = Math.max(maxXp, 10);
-        return maxXp;
+        int level = Tools.xpToLevel(pokemon.getEvolutionMode(), maxXp);
+        level = level + new Random().nextInt(PokecubeCore.core.getConfig().levelVariance);
+        return Tools.levelToXp(pokemon.getEvolutionMode(), level);
     }
 
     public static boolean isPointValidForSpawn(World world, Vector3 point, PokedexEntry dbe)
@@ -657,16 +732,13 @@ public final class SpawnHandler
                         time = System.nanoTime();
                         if (entityliving.getCanSpawnHere())
                         {
-                            if (creatureSpecificInit(entityliving, world, x, y, z, v3.set(entityliving)))
+                            if ((entityliving = creatureSpecificInit(entityliving, world, x, y, z,
+                                    v3.set(entityliving))) != null)
                             {
                                 SpawnEvent.Post evt = new SpawnEvent.Post(dbe, v3, world, (IPokemob) entityliving);
                                 MinecraftForge.EVENT_BUS.post(evt);
                                 world.spawnEntityInWorld(entityliving);
                                 totalSpawnCount++;
-                            }
-                            else
-                            {
-                                entityliving.setDead();
                             }
                         }
                         else

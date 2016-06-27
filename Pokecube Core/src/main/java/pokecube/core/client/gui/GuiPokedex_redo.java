@@ -345,7 +345,7 @@ public class GuiPokedex_redo extends GuiScreen
                 }
             }
         }
-        index = Math.max(0, Math.min(index, names.size() - 5));
+        index = Math.max(0, Math.min(index, names.size() - 6));
         int n;
         drawString(fontRendererObj, "Moves", xOffset + 16, yOffset + 15, 0xFFFFFF);
         for (n = 0; n < Math.min(names.size(), 6); n++)
@@ -380,7 +380,7 @@ public class GuiPokedex_redo extends GuiScreen
             }
         }
 
-        index = Math.max(0, Math.min(index, names.size() - 5));
+        index = Math.max(0, Math.min(index, names.size() - 6));
         String title = BiomeDatabase.getReadableNameFromType(biomes.get(index2));
         if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
         if (title.equalsIgnoreCase("birch forest hills m")) title = "Birch ForestHills M";
@@ -392,7 +392,7 @@ public class GuiPokedex_redo extends GuiScreen
         for (n = 0; n < Math.min(names.size(), 6); n++)
         {
             int yO = yOffset + 30;
-            PokedexEntry dbe = names.get((n + index) % names.size());
+            PokedexEntry dbe = names.get((n + index));
 
             if (dbe.getSpawnData() == null)
             {
@@ -469,7 +469,7 @@ public class GuiPokedex_redo extends GuiScreen
                 if (p != null) names.add(I18n.format(p.getUnlocalizedName()));
             }
         }
-        index = Math.max(0, Math.min(index, names.size() - 5));
+        index = Math.max(0, Math.min(index, names.size() - 6));
         int n;
         drawString(fontRendererObj, "Possible Mates", xOffset + 16, yOffset + 15, 0xFFFFFF);
         for (n = 0; n < Math.min(names.size(), 6); n++)
@@ -482,7 +482,8 @@ public class GuiPokedex_redo extends GuiScreen
             Ability ability = pokemob.getAbility();
             if (ability != null)
             {
-                drawString(fontRendererObj, "AB: "+I18n.format(ability.getName()), xOffset + 19, yOffset + 99, 0xFFFFFF);
+                drawString(fontRendererObj, "AB: " + I18n.format(ability.getName()), xOffset + 19, yOffset + 99,
+                        0xFFFFFF);
             }
             int happiness = pokemob.getHappiness();
             String message = "";
@@ -517,7 +518,7 @@ public class GuiPokedex_redo extends GuiScreen
             message = I18n.format(message);
             fontRendererObj.drawSplitString(message, xOffset + 19, yOffset + 145, 100, 0xFFFFFF);
 
-            message = "Size: "+pokemob.getSize();
+            message = "Size: " + pokemob.getSize();
             fontRendererObj.drawSplitString(message, xOffset + 19, yOffset + 122, 100, 0xFFFFFF);
         }
     }

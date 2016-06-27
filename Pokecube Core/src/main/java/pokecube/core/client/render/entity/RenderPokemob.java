@@ -30,11 +30,15 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.client.gui.GuiPokedex;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.entity.pokemobs.EntityPokemob;
+import pokecube.core.entity.pokemobs.helper.EntityEvolvablePokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.PokeType;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 import thut.core.client.render.model.IModelRenderer;
@@ -53,7 +57,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 
         if (evolving)
         {
-            f1 = (pokemob.getEvolutionTicks()* 5 + par2) / 200.0F;
+            f1 = (pokemob.getEvolutionTicks() + par2) / 200.0F;
             f2 = 0.0F;
             Tessellator tessellator = Tessellator.getInstance();
             VertexBuffer worldrenderer = tessellator.getBuffer();
@@ -74,14 +78,27 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             GL11.glDepthMask(false);
             GL11.glPushMatrix();
             GL11.glTranslatef(0.0F, pokemob.getPokedexEntry().height * pokemob.getSize() / 2, 0.0F);
+            PokedexEntry entry = pokemob.getPokedexEntry();
+            if (pokemob instanceof EntityEvolvablePokemob)
+            {
+                if ((entry = Database.getEntry(((EntityPokemob) pokemob).getEvolNumber())) == null)
+                {
+                    entry = pokemob.getPokedexEntry();
+                }
+            }
 
-            int color1 = pokemob.getType1().colour;
-            int color2 = pokemob.getType2().colour;
+            int color1 = entry.getType1().colour;
+            int color2 = entry.getType2().colour;
+
+            if (entry.getType2() == PokeType.unknown)
+            {
+                color2 = color1;
+            }
 
             Color col1 = new Color(color1);
             Color col2 = new Color(color2);
 
-            float scale = 0.5f * pokemob.getPokedexEntry().length;
+            float scale = pokemob.getPokedexEntry().length;
             for (int i = 0; i < (f1 + f1 * f1) / 2.0F * 60.0F; ++i)
             {
                 GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
@@ -197,10 +214,14 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         int color1 = pokemob.getType1().colour;
         int color2 = pokemob.getType2().colour;
 
+        if (pokemob.getType2() == PokeType.unknown)
+        {
+            color2 = color1;
+        }
         Color col1 = new Color(color1);
         Color col2 = new Color(color2);
 
-        float scale = 0.5f * pokemob.getPokedexEntry().length;
+        float scale = pokemob.getPokedexEntry().length;
         for (int i = 0; i < (f1 + f1 * f1) / 2.0F * 60.0F; ++i)
         {
             GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);

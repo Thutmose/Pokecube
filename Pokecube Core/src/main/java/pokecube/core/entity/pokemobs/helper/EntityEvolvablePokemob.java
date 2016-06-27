@@ -12,6 +12,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -30,15 +31,16 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 
 /** @author Manchou */
 public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 {
+    ItemStack      stack     = null;
     public boolean traded    = false;
     String         evolution = "";
-
     boolean        evolving  = false;
 
     public EntityEvolvablePokemob(World world)
@@ -115,14 +117,15 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     }
 
     @Override
-    public IPokemob evolve(boolean showAnimation)
+    public IPokemob evolve(boolean delayed, boolean init)
     {
-        return evolve(showAnimation, this.getHeldItemMainhand());
+        return evolve(delayed, init, this.getHeldItemMainhand());
     }
 
     @Override
-    public IPokemob evolve(boolean showAnimation, ItemStack stack)
+    public IPokemob evolve(boolean delayed, boolean init, ItemStack stack)
     {
+        if (init) delayed = false;
         if (this.getPokedexEntry().canEvolve() && !isDead)
         {
             boolean neededItem = false;
@@ -147,101 +150,105 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
             if (evol != null)
             {
-
                 EvolveEvent evt = new EvolveEvent.Pre(this, evol.getName());
                 MinecraftForge.EVENT_BUS.post(evt);
                 if (evt.isCanceled()) return null;
 
-                IPokemob evo = megaEvolve(((EvolveEvent.Pre) evt).forme);
-                if (neededItem)
+                if (delayed)
                 {
-                    ((EntityEvolvablePokemob) evo).setHeldItem(null);
-                }
-
-                if (showAnimation)
-                {
-                    evo.setEvolutionTicks(50);
-                    if (evo instanceof EntityEvolvablePokemob)
-                        ((EntityEvolvablePokemob) evo).setEvol(evol.getPokedexNb());
+                    if (stack != null) this.stack = stack.copy();
+                    else stack = null;
+                    this.setEvolutionTicks(PokecubeCore.core.getConfig().evolutionTicks + 50);
+                    this.setEvol(evol.getPokedexNb());
+                    this.setPokemonAIState(EVOLVING, true);
+                    evolving = true;
+                    this.displayMessageToOwner(
+                            new TextComponentTranslation("pokemob.evolution.start", this.getPokemonDisplayName()));
+                    return this;
                 }
                 else
                 {
-                    evo.specificSpawnInit();
-                }
-                if (evo != null)
-                {
-                    Entity owner = evo.getPokemonOwner();
-                    evt = new EvolveEvent.Post(evo);
-                    MinecraftForge.EVENT_BUS.post(evt);
-
-                    EntityPlayer player = null;
-                    if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
-                    if (showAnimation) ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
-                    else((EntityMovesPokemob) evo).oldLevel = data.level;
-//                    evo.levelUp(evo.getLevel());
-                    this.setDead();
-                    if (player != null && !player.worldObj.isRemote && !isShadow())
+                    IPokemob evo = megaEvolve(((EvolveEvent.Pre) evt).forme);
+                    if (neededItem)
                     {
-                        if (evo.getPokedexEntry() == Database.getEntry("ninjask"))
+                        ((EntityEvolvablePokemob) evo).setHeldItem(null);
+                    }
+
+                    if (init) evo.specificSpawnInit();
+
+                    if (evo != null)
+                    {
+                        Entity owner = evo.getPokemonOwner();
+                        evt = new EvolveEvent.Post(evo);
+                        MinecraftForge.EVENT_BUS.post(evt);
+
+                        EntityPlayer player = null;
+                        if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
+                        if (delayed) ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
+                        else((EntityMovesPokemob) evo).oldLevel = data.level;
+                        // evo.levelUp(evo.getLevel());
+                        this.setDead();
+                        if (player != null && !player.worldObj.isRemote && !isShadow())
                         {
-                            InventoryPlayer inv = player.inventory;
-                            boolean hasCube = false;
-                            boolean hasSpace = false;
-                            ItemStack cube = null;
-                            int m = -1;
-                            for (int n = 0; n < inv.getSizeInventory(); n++)
-                            {
-                                ItemStack item = inv.getStackInSlot(n);
-                                if (item == null) hasSpace = true;
-                                if (!hasCube && PokecubeItems.getCubeId(item) >= 0 && !PokecubeManager.isFilled(item))
-                                {
-                                    hasCube = true;
-                                    cube = item;
-                                    m = n;
-                                }
-                                if (hasCube && hasSpace) break;
-
-                            }
-                            if (hasCube && hasSpace)
-                            {
-                                int cubeId = PokecubeItems.getCubeId(cube);
-                                Entity pokemon = PokecubeMod.core.createEntityByPokedexNb(
-                                        Database.getEntry("shedinja").getPokedexNb(), worldObj);
-                                if (pokemon != null)
-                                {
-                                    IPokemob poke = (IPokemob) pokemon;
-                                    poke.setPokecubeId(cubeId);
-                                    poke.setPokemonOwner(player);
-                                    poke.setExp(Tools.levelToXp(poke.getExperienceMode(), 20), true, false);
-                                    ((EntityLivingBase) poke).setHealth(((EntityLivingBase) poke).getMaxHealth());
-                                    ItemStack shedinja = PokecubeManager.pokemobToItem(poke);
-                                    player.addStat(PokecubeMod.get1stPokemob, 0);
-                                    player.addStat(PokecubeMod.pokemobAchievements.get(poke.getPokedexNb()), 1);
-
-                                    cube.stackSize--;
-                                    if (cube.stackSize <= 0) inv.setInventorySlotContents(m, null);
-                                    inv.addItemStackToInventory(shedinja);
-                                }
-                            }
+                            makeShedinja(evo, player);
                         }
                     }
+                    return evo;
                 }
-                return evo;
             }
         }
-
         return null;
     }
 
-    protected String getEvolFX()
+    void makeShedinja(IPokemob evo, EntityPlayer player)
     {
-        String ret = "";
-        int num = dataManager.get(EVOLNBDW);
-        for (EvolutionData d : getPokedexEntry().getEvolutions())
+        if (evo.getPokedexEntry() == Database.getEntry("ninjask"))
         {
-            if (d.evolution.getPokedexNb() == num) return d.FX;
+            InventoryPlayer inv = player.inventory;
+            boolean hasCube = false;
+            boolean hasSpace = false;
+            ItemStack cube = null;
+            int m = -1;
+            for (int n = 0; n < inv.getSizeInventory(); n++)
+            {
+                ItemStack item = inv.getStackInSlot(n);
+                if (item == null) hasSpace = true;
+                if (!hasCube && PokecubeItems.getCubeId(item) >= 0 && !PokecubeManager.isFilled(item))
+                {
+                    hasCube = true;
+                    cube = item;
+                    m = n;
+                }
+                if (hasCube && hasSpace) break;
+
+            }
+            if (hasCube && hasSpace)
+            {
+                int cubeId = PokecubeItems.getCubeId(cube);
+                Entity pokemon = PokecubeMod.core.createEntityByPokedexNb(Database.getEntry("shedinja").getPokedexNb(),
+                        worldObj);
+                if (pokemon != null)
+                {
+                    IPokemob poke = (IPokemob) pokemon;
+                    poke.setPokecubeId(cubeId);
+                    poke.setPokemonOwner(player);
+                    poke.setExp(Tools.levelToXp(poke.getExperienceMode(), 20), true, false);
+                    ((EntityLivingBase) poke).setHealth(((EntityLivingBase) poke).getMaxHealth());
+                    ItemStack shedinja = PokecubeManager.pokemobToItem(poke);
+                    player.addStat(PokecubeMod.get1stPokemob, 0);
+                    player.addStat(PokecubeMod.pokemobAchievements.get(poke.getPokedexNb()), 1);
+
+                    cube.stackSize--;
+                    if (cube.stackSize <= 0) inv.setInventorySlotContents(m, null);
+                    inv.addItemStackToInventory(shedinja);
+                }
+            }
         }
-        return ret;
+    }
+
+    public int getEvolNumber()
+    {
+        return dataManager.get(EVOLNBDW);
     }
 
     /** @return the evolutionTicks */
@@ -290,7 +297,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (getPokemonAIState(MEGAFORME))
                 {
                     ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
-                    ((IPokemob) evolution).setEvolutionTicks(10);
+                    ((IPokemob) evolution).setEvolutionTicks(50);
                 }
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
                         this.getPokemonDisplayName().getFormattedText(),
@@ -323,25 +330,43 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         int num = getEvolutionTicks();
         if (num > 0)
         {
-            if (!evolving || forceSpawn)
-            {
-                this.evolve(true);
-            }
-            evolving = true;
             setEvolutionTicks(getEvolutionTicks() - 1);
-            if (this.getPokemonAIState(IMoveConstants.TAMED)) showEvolutionFX(getEvolFX());
-        }
-        else
-        {
-            evolving = false;
         }
         if (num <= 0 && this.getPokemonAIState(EVOLVING))
         {
             this.setPokemonAIState(EVOLVING, false);
         }
+        if (num <= 50 && evolving)
+        {
+            this.evolve(false, false, stack);
+            this.setPokemonAIState(EVOLVING, false);
+        }
         if (PokecubeSerializer.getInstance().getPokemob(getPokemonUID()) == null)
             PokecubeSerializer.getInstance().addPokemob(this);
         super.onLivingUpdate();
+    }
+
+    @Override
+    public boolean isEvolving()
+    {
+        return evolving || this.getPokemonAIState(EVOLVING);
+    }
+
+    @Override
+    public void cancelEvolve()
+    {
+        if (worldObj.isRemote)
+        {
+            MessageServer message = new MessageServer(MessageServer.CANCELEVOLVE, getEntityId());
+            PokecubePacketHandler.sendToServer(message);
+            return;
+        }
+        evolving = false;
+        setEvolutionTicks(-1);
+        this.setPokemonAIState(EVOLVING, false);
+        // TODO decide if it should refund itemstacks.
+        this.displayMessageToOwner(
+                new TextComponentTranslation("pokemob.evolution.cancel", this.getPokemonDisplayName()));
     }
 
     @Override
@@ -355,7 +380,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         }
         if (!this.getPokemonAIState(IMoveConstants.TAMED) && this.canEvolve(getHeldItemMainhand()))
         {
-            this.evolve(false);
+            this.evolve(false, false);
         }
     }
 

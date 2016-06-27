@@ -1,5 +1,6 @@
 package pokecube.adventures.entity.trainers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,6 +24,7 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -34,6 +36,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -135,6 +138,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     private boolean                     randomize        = false;
     public ItemStack[]                  pokecubes        = new ItemStack[6];
+    public ItemStack                    reward           = new ItemStack(Items.EMERALD);
     public int[]                        pokenumbers      = new int[6];
     public int[]                        pokelevels       = new int[6];
     public int[]                        attackCooldown   = new int[6];
@@ -529,6 +533,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             ItemStack stack = getItemStackFromSlot(slotIn);
             if (stack != null) this.entityDropItem(stack.copy(), 0.5f);
         }
+        if (reward != null)
+        {
+            EntityItem item = defeater.entityDropItem(reward.copy(), 0.5f);
+            item.setPickupDelay(0);
+        }
         if (defeater != null)
         {
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
@@ -548,8 +557,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         super.onLivingUpdate();
         if (worldObj.isRemote) return;
 
-        if (this.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND) == null) type.initTrainerItems(this);
-
         if (!added)
         {
             added = true;
@@ -562,9 +569,15 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             if (item != null && attackCooldown[i] <= 0)
             {
                 this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, item);
+                if (this.getHeldItemOffhand() == null && reward != null)
+                    this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, reward);
                 break;
             }
-            if (i == 5) this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+            if (i == 5)
+            {
+                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+                this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, null);
+            }
         }
 
         EntityLivingBase target = getAITarget() != null ? getAITarget()
@@ -683,7 +696,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 return true;
             }
         }
-        return true;// super.processInteract(EntityPlayer player);
+        return true;
     }
 
     @Override
@@ -698,6 +711,15 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 NBTTagCompound tag = (NBTTagCompound) temp;
                 pokecubes[n] = ItemStack.loadItemStackFromNBT(tag);
                 if (PokecubeManager.getPokedexNb(pokecubes[n]) == 0) pokecubes[n] = null;
+                else
+                {
+                    IPokemob poke = PokecubeManager.itemToPokemob(pokecubes[n], worldObj);
+                    if (poke != null)
+                    {
+                        pokenumbers[n] = poke.getPokedexNb();
+                        pokelevels[n] = poke.getLevel();
+                    }
+                }
             }
         }
         if (nbt.hasKey("Offers", 10))
@@ -705,8 +727,14 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             NBTTagCompound nbttagcompound = nbt.getCompoundTag("Offers");
             this.itemList = new MerchantRecipeList(nbttagcompound);
         }
+        if (nbt.hasKey("reward"))
+        {
+            NBTTagCompound rewardTag = nbt.getCompoundTag("reward");
+            reward = ItemStack.loadItemStackFromNBT(rewardTag);
+        }
         if (nbt.hasKey("trades")) trades = nbt.getBoolean("trades");
         dataManager.set(AIACTIONSTATESDW, nbt.getInteger("aiState"));
+        playerName = nbt.getString("playerName");
         randomize = nbt.getBoolean("randomTeam");
         type = TypeTrainer.getTrainer(nbt.getString("type"));
         if (nbt.hasKey("outPokemob"))
@@ -750,26 +778,14 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     @Override
     public void readSpawnData(ByteBuf buff)
     {
-        int num = buff.readInt();
-        byte[] string = new byte[num];
-        for (int n = 0; n < num; n++)
+        try
         {
-            string[n] = buff.readByte();
+            NBTTagCompound tag = new PacketBuffer(buff).readNBTTagCompoundFromBuffer();
+            this.readEntityFromNBT(tag);
         }
-        type = TypeTrainer.getTrainer(new String(string));
-        num = buff.readInt();
-        string = new byte[num];
-        for (int n = 0; n < num; n++)
+        catch (IOException e)
         {
-            string[n] = buff.readByte();
-        }
-        name = new String(string);
-        male = buff.readBoolean();
-        friendlyCooldown = buff.readInt();
-        for (int i = 0; i < 6; i++)
-        {
-            pokenumbers[i] = buff.readInt();
-            pokelevels[i] = buff.readInt();
+            e.printStackTrace();
         }
     }
 
@@ -800,10 +816,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     @Override
     public void setDead()
     {
-        if (isServerWorld())
-        {
-            System.out.println(this + " " + getType());
-        }
         PCEventsHandler.recallAllPokemobs(this);
         super.setDead();
     }
@@ -997,6 +1009,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             checkTradeIntegrity();
             nbt.setTag("Offers", this.itemList.getRecipiesAsTags());
         }
+        nbt.setString("playerName", playerName);
         nbt.setBoolean("trades", trades);
         nbt.setBoolean("gender", male);
         nbt.setInteger("battleCD", battleCooldown);
@@ -1008,49 +1021,19 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         nbt.setInteger("cooldown", globalCooldown);
         nbt.setIntArray("cooldowns", attackCooldown);
         nbt.setInteger("friendly", friendlyCooldown);
+        if (reward != null && reward.getItem() != null)
+        {
+            NBTTagCompound rewardTag = new NBTTagCompound();
+            reward.writeToNBT(rewardTag);
+            nbt.setTag("reward", rewardTag);
+        }
     }
 
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
-        buffer.writeInt(type.name.length());
-        buffer.writeBytes(type.name.getBytes());
-        buffer.writeInt(name.length());
-        buffer.writeBytes(name.getBytes());
-        buffer.writeBoolean(male);
-        buffer.writeInt(friendlyCooldown);
-        for (int i = 0; i < 6; i++)
-        {
-            if (pokecubes[i] != null)
-            {
-
-                if (PokecubeManager.getPokedexNb(pokecubes[i]) == 0)
-                {
-                    buffer.writeInt(0);
-                    buffer.writeInt(0);
-                    pokecubes[i] = null;
-                }
-                else
-                {
-                    IPokemob mob = PokecubeManager.itemToPokemob(pokecubes[i], worldObj);
-                    if (mob == null)
-                    {
-                        buffer.writeInt(0);
-                        buffer.writeInt(0);
-                    }
-                    else
-                    {
-                        buffer.writeInt(mob.getPokedexNb());
-                        buffer.writeInt(mob.getLevel());
-                    }
-                }
-            }
-            else
-            {
-                buffer.writeInt(0);
-                buffer.writeInt(0);
-            }
-        }
+        NBTTagCompound tag = new NBTTagCompound();
+        this.writeEntityToNBT(tag);
+        new PacketBuffer(buffer).writeNBTTagCompoundToBuffer(tag);
     }
-
 }

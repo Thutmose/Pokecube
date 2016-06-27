@@ -135,5 +135,6 @@ public class EntityPokemartSeller extends EntityTrainer
             location.moveEntity(this);
             if (stationary) setStationary(location);
         }
+        this.reward = null;
     }
 }

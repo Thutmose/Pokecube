@@ -174,7 +174,6 @@ public class Compat
     private void doMetastuff()
     {
         ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
-
         meta.parent = PokecubeMod.ID;
     }
 

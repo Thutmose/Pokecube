@@ -75,6 +75,8 @@ public class Config extends ConfigBase
     protected boolean          tableRecipe                = true;
     @Configure(category = misc)
     public double              scalefactor                = 1;
+    @Configure(category = misc)
+    public boolean             pcHoldsOnlyPokecubes       = true;
 
     // AI Related settings
     @Configure(category = mobAI)
@@ -229,6 +231,8 @@ public class Config extends ConfigBase
     boolean                    resetTags                  = false;
     @Configure(category = advanced)
     String[]                   extraValues                = { "3", "4.5" };
+    @Configure(category = advanced)
+    public int                 evolutionTicks             = 50;
 
     @Configure(category = database)
     boolean                    forceDatabase              = true;

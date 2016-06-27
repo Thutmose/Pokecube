@@ -34,9 +34,8 @@ public class ContainerPC extends Container
     {
         // System.out.println(ConfigHandler.ONLYPOKECUBES);
         if (itemstack == null) return false;
-
-        boolean eggorCube = PokecubeManager.isFilled(itemstack) || itemstack.getItem() == PokecubeItems.pokemobEgg;
-
+        boolean eggorCube = !PokecubeCore.core.getConfig().pcHoldsOnlyPokecubes || PokecubeManager.isFilled(itemstack)
+                || itemstack.getItem() == PokecubeItems.pokemobEgg;
         return eggorCube;
     }
 

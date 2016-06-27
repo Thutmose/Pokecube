@@ -750,7 +750,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             // Fire event to allow others to interfere
             LevelUpEvent lvlup = new LevelUpEvent(this, newLvl, oldLevel);
             MinecraftForge.EVENT_BUS.post(lvlup);
-
+            setStats(getPokedexEntry().getStats());
             if (!lvlup.isCanceled())
             {
                 updateHealth(newLvl);
@@ -759,7 +759,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                     if (!this.isDead && (canEvolve(null) || canEvolve(getHeldItemMainhand())))
                     {
                         levelUp(newLvl);
-                        ret = this.evolve(!newlySpawned, getHeldItemMainhand());
+                        ret = this.evolve(true, newlySpawned, getHeldItemMainhand());
                     }
                     ret.levelUp(newLvl);
                 }

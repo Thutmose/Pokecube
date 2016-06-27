@@ -146,7 +146,7 @@ public class EventsHandlerClient
                                                                  }
                                                              };
 
-    static boolean            notifier    = false;
+    static boolean                                notifier   = false;
 
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
     {
@@ -303,7 +303,8 @@ public class EventsHandlerClient
         else if (key == Keyboard.KEY_LCONTROL && player.getRidingEntity() instanceof IPokemob)
         {
             boolean state = Keyboard.getEventKeyState();
-            MountState newState = state ? EntityMountablePokemob.MountState.DOWN : EntityMountablePokemob.MountState.NONE;
+            MountState newState = state ? EntityMountablePokemob.MountState.DOWN
+                    : EntityMountablePokemob.MountState.NONE;
             if (newState != ((EntityMountablePokemob) player.getRidingEntity()).state)
             {
                 ((EntityMountablePokemob) player.getRidingEntity()).state = newState;
@@ -330,7 +331,11 @@ public class EventsHandlerClient
                 PokecubePacketHandler.sendToServer(message);
             }
         }
-
+        if (GameSettings.isKeyDown(ClientProxyPokecube.noEvolve)
+                && GuiDisplayPokecubeInfo.instance().getCurrentPokemob() != null)
+        {
+            GuiDisplayPokecubeInfo.instance().getCurrentPokemob().cancelEvolve();
+        }
         if (GameSettings.isKeyDown(ClientProxyPokecube.nextMob))
         {
             if (GuiScreen.isAltKeyDown())

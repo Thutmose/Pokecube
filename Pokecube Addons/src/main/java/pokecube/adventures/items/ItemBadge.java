@@ -19,6 +19,12 @@ public class ItemBadge extends Item
 {
     public static ArrayList<String> variants = Lists.newArrayList();
 
+    public static boolean isBadge(ItemStack stackIn)
+    {
+        return stackIn != null && stackIn.getItem() instanceof ItemBadge && stackIn.hasTagCompound()
+                && stackIn.getTagCompound().hasKey("type");
+    }
+
     static
     {
         for (PokeType type : PokeType.values())

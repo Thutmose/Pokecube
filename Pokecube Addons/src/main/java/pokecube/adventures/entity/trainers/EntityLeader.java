@@ -8,24 +8,25 @@ import net.minecraft.entity.ai.EntityAIOpenDoor;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.adventures.ai.trainers.EntityAITrainer;
-import pokecube.core.PokecubeItems;
+import pokecube.adventures.items.ItemBadge;
 import pokecube.core.database.Database;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public class EntityLeader extends EntityTrainer
 {
-
     public ArrayList<String> defeaters = new ArrayList<String>();
-    String                   badge     = "";
 
     public EntityLeader(World world)
     {
@@ -97,21 +98,29 @@ public class EntityLeader extends EntityTrainer
             ItemStack stack = getItemStackFromSlot(slotIn);
             if (stack != null) this.entityDropItem(stack.copy(), 0.5f);
         }
+        if (reward != null)
+        {
+            EntityItem item = defeater.entityDropItem(reward.copy(), 0.5f);
+            item.setPickupDelay(0);
+        }
+        if (defeater != null)
+        {
+            ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
+            defeater.addChatMessage(text);
+        }
     }
 
     @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
-        if (!player.capabilities.isCreativeMode) return false;
+        if (!player.capabilities.isCreativeMode || hand == EnumHand.OFF_HAND) return false;
 
-        if (player.getHeldItemMainhand() != null
-                && player.getHeldItemMainhand().getUnlocalizedName().toLowerCase().contains("badge"))
+        if (ItemBadge.isBadge(player.getHeldItemMainhand()))
         {
-            this.badge = player.getHeldItemMainhand().getUnlocalizedName().replace("item.", "");
-            this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, PokecubeItems.getStack(badge));
+            reward = player.getHeldItemMainhand().copy();
             player.addChatMessage(new TextComponentString("Badge set to " + this.getHeldItemOffhand()));
+            this.setHeldItem(EnumHand.OFF_HAND, reward);
         }
-
         return super.processInteract(player, hand, stack);
     }
 
@@ -119,15 +128,12 @@ public class EntityLeader extends EntityTrainer
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
         super.readEntityFromNBT(nbt);
-
         NBTTagCompound names = nbt.getCompoundTag("defeaters");
-        int n = defeaters.size();
+        int n = names.getInteger("num");
         for (int i = 0; i < n; i++)
         {
             defeaters.add(names.getString("" + i));
         }
-        badge = nbt.getString("badge");
-        this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, PokecubeItems.getStack(badge));
     }
 
     @Override
@@ -136,12 +142,11 @@ public class EntityLeader extends EntityTrainer
         super.writeEntityToNBT(nbt);
         NBTTagCompound names = new NBTTagCompound();
         int n = defeaters.size();
+        names.setInteger("num", n);
         for (int i = 0; i < n; i++)
         {
             names.setString("" + i, defeaters.get(i));
         }
         nbt.setTag("defeaters", names);
-        nbt.setString("badge", badge);
-
     }
 }

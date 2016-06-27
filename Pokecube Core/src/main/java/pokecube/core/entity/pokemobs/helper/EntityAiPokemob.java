@@ -850,7 +850,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if (popped && traded)
         {
-            evolve(true);
+            evolve(true, false);
             popped = false;
         }
         if (getPokedexEntry().floats() || getPokedexEntry().flys()) fallDistance = 0;
@@ -1050,7 +1050,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     /////////////////////////// Interaction
     /////////////////////////// logic/////////////////////////////////////////////////////
-    
+
     @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
     {
@@ -1197,7 +1197,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 // Check if it should evolve from item, do so if yes.
                 if (PokecubeItems.isValidEvoItem(itemstack) && canEvolve(itemstack))
                 {
-                    IPokemob evolution = evolve(true, itemstack);
+                    IPokemob evolution = evolve(true, false, itemstack);
 
                     if (evolution != null)
                     {

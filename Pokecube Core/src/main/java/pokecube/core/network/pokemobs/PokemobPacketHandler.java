@@ -220,7 +220,7 @@ public class PokemobPacketHandler
                             {
                                 if (pokemob.getPokemonAIState(IMoveConstants.EVOLVING)) return;
                                 PokedexEntry megaEntry = pokemob.getPokedexEntry().getEvo(pokemob);
-                                
+
                                 if (megaEntry != null
                                         && megaEntry.getPokedexNb() == pokemob.getPokedexEntry().getPokedexNb())
                                 {
@@ -371,6 +371,10 @@ public class PokemobPacketHandler
                                             !pokemob.getPokemonAIState(IMoveConstants.SITTING));
                                 }
                             }
+                            else if (channel == CANCELEVOLVE)
+                            {
+                                pokemob.cancelEvolve();
+                            }
                         }
                     };
                     PokecubeCore.proxy.getMainThreadListener().addScheduledTask(toRun);
@@ -464,18 +468,19 @@ public class PokemobPacketHandler
             }
         }
 
-        public static final byte RETURN      = 0;
-        public static final byte NICKNAME    = 1;
-        public static final byte MOVEUSE     = 2;
-        public static final byte MOVEMESSAGE = 3;
-        public static final byte MOVESWAP    = 4;
-        public static final byte MOVEINDEX   = 5;
-        public static final byte CHANGEFORM  = 6;
-        public static final byte ALIVECHECK  = 7;
-        public static final byte SYNCPOS     = 8;
-        public static final byte STANCE      = 9;
-        public static final byte COME        = 10;
-        public static final byte MOUNTDIR    = 11;
+        public static final byte RETURN       = 0;
+        public static final byte NICKNAME     = 1;
+        public static final byte MOVEUSE      = 2;
+        public static final byte MOVEMESSAGE  = 3;
+        public static final byte MOVESWAP     = 4;
+        public static final byte MOVEINDEX    = 5;
+        public static final byte CHANGEFORM   = 6;
+        public static final byte ALIVECHECK   = 7;
+        public static final byte SYNCPOS      = 8;
+        public static final byte STANCE       = 9;
+        public static final byte COME         = 10;
+        public static final byte MOUNTDIR     = 11;
+        public static final byte CANCELEVOLVE = 12;
 
         PacketBuffer             buffer;;
 

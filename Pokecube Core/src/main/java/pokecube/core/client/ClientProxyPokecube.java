@@ -130,6 +130,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
     public static KeyBinding         mobMegavolve;
 
+    public static KeyBinding         noEvolve;
+
     public static KeyBinding         mobMove1;
 
     public static KeyBinding         mobMove2;
@@ -523,6 +525,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ClientRegistry
                 .registerKeyBinding(mobStance = new KeyBinding("Pokemob Stance", Keyboard.KEY_BACKSLASH, "Pokecube"));
         ClientRegistry.registerKeyBinding(mobMegavolve = new KeyBinding("Mega Evolve", Keyboard.KEY_M, "Pokecube"));
+        ClientRegistry.registerKeyBinding(noEvolve = new KeyBinding("Stop Evolution", Keyboard.KEY_B, "Pokecube"));
 
         ClientRegistry.registerKeyBinding(mobMove1 = new KeyBinding("Move 1", Keyboard.KEY_Y, "Pokecube"));
         ClientRegistry.registerKeyBinding(mobMove2 = new KeyBinding("Move 2", Keyboard.KEY_U, "Pokecube"));

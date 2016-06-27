@@ -1391,12 +1391,13 @@ public class PokedexEntry
     {
         if (sound == null)
         {
-            sound = "mobs." + getName();
+            sound = "mobs." + getBaseName();
             if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 2);
         }
         if (event == null)
         {
-            SoundEvent.registerSound(getModId() + ":" + sound);
+            if (baseForme != null && baseForme != this) baseForme.getSoundEvent();
+            else SoundEvent.registerSound(getModId() + ":" + sound);
         }
         event = SoundEvent.REGISTRY.getObject(new ResourceLocation(getModId(), sound));
         return event;

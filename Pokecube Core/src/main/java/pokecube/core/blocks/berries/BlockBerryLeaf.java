@@ -35,6 +35,7 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
         setCreativeTab(PokecubeMod.creativeTabPokecubeBerries);
         this.setDefaultState(this.blockState.getBaseState().withProperty(BerryManager.type, "cheri")
                 .withProperty(CHECK_DECAY, Boolean.valueOf(true)).withProperty(DECAYABLE, Boolean.valueOf(true)));
+        this.setHardness(0.2F);
     }
 
     @Override

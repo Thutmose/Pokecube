@@ -1,14 +1,22 @@
 package pokecube.adventures.client.render.entity;
 
 import java.util.Map;
+import java.util.UUID;
 
 import com.google.common.collect.Maps;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.entity.trainers.EntityTrainer;
@@ -52,6 +60,26 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
 
         if (villager instanceof EntityTrainer)
         {
+            if (!((EntityTrainer) villager).playerName.isEmpty())
+            {
+                Minecraft minecraft = Minecraft.getMinecraft();
+                GameProfile profile = new GameProfile((UUID) null, ((EntityTrainer) villager).playerName);
+                profile = TileEntitySkull.updateGameprofile(profile);
+                Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(profile);
+                ResourceLocation resourcelocation;
+                if (map.containsKey(Type.SKIN))
+                {
+                    resourcelocation = minecraft.getSkinManager().loadSkin((MinecraftProfileTexture) map.get(Type.SKIN),
+                            Type.SKIN);
+                }
+                else
+                {
+                    UUID uuid = EntityPlayer.getUUID(profile);
+                    resourcelocation = DefaultPlayerSkin.getDefaultSkin(uuid);
+                }
+                return resourcelocation;
+            }
+
             TypeTrainer type = ((EntityTrainer) villager).getType();
 
             if (((EntityTrainer) villager).male)

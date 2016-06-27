@@ -280,17 +280,21 @@ public interface IPokemob extends IMoveConstants
 
     /** Evolve the pokemob.
      *
-     * @param showAnimation
+     * @param delayed
      *            true if we want to display the evolution animation
      * @return the evolution or null if the evolution failed */
-    IPokemob evolve(boolean showAnimation);
+    IPokemob evolve(boolean delayed, boolean init);
 
     /** Evolve the pokemob via handed item.
      *
-     * @param showAnimation
+     * @param delayed
      *            true if we want to display the evolution animation
      * @return the evolution or null if the evolution failed */
-    IPokemob evolve(boolean showAnimation, ItemStack item);
+    IPokemob evolve(boolean delayed, boolean init, ItemStack item);
+
+    boolean isEvolving();
+
+    void cancelEvolve();
 
     /** Used by Gui Pokedex. Exchange the two moves.
      *
@@ -366,7 +370,7 @@ public interface IPokemob extends IMoveConstants
     int getExplosionState();
 
     EntityAIBase getGuardAI();
-    
+
     /** @return how happy is the pokemob, see {@link HappinessType} */
     int getHappiness();
 
@@ -575,7 +579,7 @@ public interface IPokemob extends IMoveConstants
     void returnToPokecube();
 
     void setAbility(Ability ability);
-    
+
     void setAncient(boolean toSet);
 
     void setDirectionPitch(float pitch);

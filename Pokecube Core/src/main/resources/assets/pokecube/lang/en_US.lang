@@ -31,6 +31,9 @@ pokemob.stance.follow=FOLLOW
 pokemob.stance.sit=SIT
 pokemob.stance.stand=STAND
 
+pokemob.evolution.start=§aWhat? %1$s §ais evolving!
+pokemob.evolution.cancel=§cHuh? %1$s §cstopped evolving.
+
 pokemob.agress=A wild %1$s has appeared
 
 pokemob.hungry.slow=Your Pokémob is too hungry to move quickly

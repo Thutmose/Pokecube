@@ -20,6 +20,7 @@ import org.lwjgl.opengl.GL12;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -27,6 +28,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -932,18 +934,20 @@ public class GuiPokedex_redo extends GuiScreen
                         new byte[] { (byte) page });
                 PokecubePacketHandler.sendToServer(packet);
 
-                if (page == 1)
+                if (page == 2)
                 {
                     TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
                     Vector3 location = Vector3.getNewVector().set(entityPlayer);
-                    int type = t.getBiome(location.intX(), location.intY(), location.intZ());
+                    int type = t.getBiome(location);
                     for (int i = 0; i < biomes.size(); i++)
                     {
                         if (biomes.get(i) == (type))
                         {
-                            index2 = i - 1;// type - 1;
+                            index2 = i;
                         }
                     }
+                    nicknameTextField.setText("");
+                    nicknameTextField.setEnabled(false);
                 }
             }
 
@@ -1094,17 +1098,16 @@ public class GuiPokedex_redo extends GuiScreen
             nicknameTextField.setEnabled(true);
         }
 
-        if (page == 1)
+        if (page == 2)
         {
             TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-            // t.refresh(entityPlayer.worldObj);
             Vector3 location = Vector3.getNewVector().set(entityPlayer);
             int type = t.getBiome(location);
             for (int i = 0; i < biomes.size(); i++)
             {
                 if (biomes.get(i) == (type))
                 {
-                    index2 = i;// type - 1;
+                    index2 = i;
                 }
             }
             nicknameTextField.setText("");
@@ -1231,6 +1234,11 @@ public class GuiPokedex_redo extends GuiScreen
         nicknameTextField.mouseClicked(x, y, mouseButton);
         // System.out.println(mouseButton);
         int button = getButtonId(x, y);
+
+        if (button != 0)
+        {
+            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        }
 
         if (button == 10)
         {

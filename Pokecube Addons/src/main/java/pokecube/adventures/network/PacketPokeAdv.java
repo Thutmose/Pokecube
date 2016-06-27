@@ -83,7 +83,7 @@ public class PacketPokeAdv
                     else if (type == TYPEADDLAND)
                     {
                         String team = buffer.readStringFromBuffer(20);
-                        TeamManager.getInstance().addTeamLand(team, c);
+                        TeamManager.getInstance().addTeamLand(team, c, false);
                     }
                     else if (type == TYPEREMOVELAND)
                     {
@@ -96,7 +96,7 @@ public class PacketPokeAdv
                     try
                     {
                         NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
-                        TeamManager.getInstance().loadFromNBT(tag);
+                        TeamManager.getInstance().loadFromNBTOld(tag);
                     }
                     catch (Exception e)
                     {
@@ -211,7 +211,7 @@ public class PacketPokeAdv
                     player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj,
                             InventoryBag.getBag(player).getPage() + 1, 0, 0);
                 }
-                if (channel == 9)
+                if (channel == MESSAGEBIOMESETTER)
                 {
                     try
                     {
@@ -262,7 +262,9 @@ public class PacketPokeAdv
 
         }
 
-        public static final byte MESSAGEGUIAFA = 11;
+        public static final byte MESSAGEBIOMESETTER = 9;
+
+        public static final byte MESSAGEGUIAFA      = 11;
 
         PacketBuffer             buffer;;
 

@@ -355,6 +355,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public void cancelEvolve()
     {
+        if (!isEvolving()) return;
         if (worldObj.isRemote)
         {
             MessageServer message = new MessageServer(MessageServer.CANCELEVOLVE, getEntityId());

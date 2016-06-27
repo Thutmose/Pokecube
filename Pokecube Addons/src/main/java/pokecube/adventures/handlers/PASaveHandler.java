@@ -20,9 +20,10 @@ import pokecube.adventures.items.bags.InventoryBag;
 
 public class PASaveHandler
 {
-    private static PASaveHandler           instance;
+    private static PASaveHandler instance;
 
-    private static PASaveHandler           clientInstance;
+    private static PASaveHandler clientInstance;
+
     public static PASaveHandler getInstance()
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
@@ -33,6 +34,7 @@ public class PASaveHandler
         if (clientInstance == null) clientInstance = new PASaveHandler();
         return clientInstance;
     }
+
     private ISaveHandler                   saveHandler;
 
     public HashMap<Integer, EntityTrainer> trainers = new HashMap<Integer, EntityTrainer>();
@@ -123,7 +125,29 @@ public class PASaveHandler
                 FileInputStream fileinputstream = new FileInputStream(file);
                 NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
                 fileinputstream.close();
-                TeamManager.getInstance().loadFromNBT(nbttagcompound.getCompoundTag("Data"));
+
+                boolean old = !nbttagcompound.hasKey("VERSION");
+                if (old) TeamManager.getInstance().loadFromNBTOld(nbttagcompound.getCompoundTag("Data"));
+                else TeamManager.getInstance().loadFromNBT(nbttagcompound.getCompoundTag("Data"));
+            }
+            File upperDir = new File(file.getParentFile().getAbsolutePath());
+            File dir = new File(upperDir, "PokeTeams");
+            if (dir.exists() && dir.isDirectory())
+            {
+                for (File f : dir.listFiles())
+                {
+                    try
+                    {
+                        FileInputStream fileinputstream = new FileInputStream(f);
+                        NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
+                        fileinputstream.close();
+                        TeamManager.getInstance().loadTeamFromNBT(nbttagcompound.getCompoundTag("Data"));
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         catch (Exception exception)
@@ -180,7 +204,7 @@ public class PASaveHandler
         }
     }
 
-    public void saveTeams()
+    public void saveTeams(String team)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
 
@@ -188,16 +212,39 @@ public class PASaveHandler
         {
             World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
             saveHandler = world.getSaveHandler();
-            File file = saveHandler.getMapFileFromName("PokecubeTeams");
-            if (file != null)
+
+            if (team == null)
             {
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                TeamManager.getInstance().saveToNBT(nbttagcompound, true);
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setTag("Data", nbttagcompound);
-                FileOutputStream fileoutputstream = new FileOutputStream(file);
-                CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
-                fileoutputstream.close();
+                File file = saveHandler.getMapFileFromName("PokecubeTeams");
+                if (file != null)
+                {
+                    NBTTagCompound nbttagcompound = new NBTTagCompound();
+                    TeamManager.getInstance().saveToNBT(nbttagcompound);
+                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    nbttagcompound1.setTag("Data", nbttagcompound);
+                    FileOutputStream fileoutputstream = new FileOutputStream(file);
+                    CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
+                    fileoutputstream.close();
+                }
+            }
+            else
+            {
+                File file = saveHandler.getMapFileFromName("PokeTeams" + File.separator + team);
+                File dir = new File(file.getParentFile().getAbsolutePath());
+                if (file != null && !file.exists())
+                {
+                    dir.mkdirs();
+                }
+                if (file != null)
+                {
+                    NBTTagCompound nbttagcompound = new NBTTagCompound();
+                    TeamManager.getInstance().saveTeamToNBT(team, nbttagcompound);
+                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    nbttagcompound1.setTag("Data", nbttagcompound);
+                    FileOutputStream fileoutputstream = new FileOutputStream(file);
+                    CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
+                    fileoutputstream.close();
+                }
             }
         }
         catch (Exception e)

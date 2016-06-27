@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
@@ -23,10 +29,104 @@ import pokecube.core.utils.ChunkCoordinate;
 public class TeamManager
 {
 
+    public static class TeamLand
+    {
+        HashSet<ChunkCoordinate> land = Sets.newHashSet();
+
+        public boolean addLand(ChunkCoordinate land)
+        {
+            return this.land.add(land);
+        }
+
+        public boolean removeLand(ChunkCoordinate land)
+        {
+            return this.land.remove(land);
+        }
+
+        public int countLand()
+        {
+            return land.size();
+        }
+
+        public NBTTagCompound saveToNBT()
+        {
+            NBTTagCompound tag = new NBTTagCompound();
+            NBTTagList list = new NBTTagList();
+            for (ChunkCoordinate c : land)
+            {
+                NBTTagCompound entry = new NBTTagCompound();
+                entry.setIntArray("Location", new int[] { c.getX(), c.getY(), c.getZ(), c.dim });
+                list.appendTag(entry);
+            }
+            tag.setTag("Land", list);
+            return tag;
+        }
+
+        public void loadFromNBT(NBTTagCompound tag)
+        {
+            NBTTagList list = tag.getTagList("Land", 10);
+            for (int i = 0; i < list.tagCount(); i++)
+            {
+                NBTTagCompound landTag = list.getCompoundTagAt(i);
+                int[] loc = landTag.getIntArray("Location");
+                if (loc.length != 4) continue;
+                ChunkCoordinate c = new ChunkCoordinate(loc[0], loc[1], loc[2], loc[3]);
+                land.add(c);
+            }
+        }
+    }
+
+    public static class PokeTeam
+    {
+        public PokeTeam(String name)
+        {
+            teamName = name;
+        }
+
+        TeamLand     land   = new TeamLand();
+        final String teamName;
+        Set<String>  admins = Sets.newHashSet();
+
+        public void writeToNBT(NBTTagCompound nbt)
+        {
+            nbt.setString("name", teamName);
+            nbt.setTag("land", land.saveToNBT());
+            NBTTagList adminList = new NBTTagList();
+            for (String s : admins)
+            {
+                NBTTagCompound tag = new NBTTagCompound();
+                tag.setString("N", s);
+                adminList.appendTag(tag);
+            }
+            nbt.setTag("admins", adminList);
+        }
+
+        public static PokeTeam loadFromNBT(NBTTagCompound nbt)
+        {
+            if (!nbt.hasKey("name")) return null;
+            PokeTeam team = new PokeTeam(nbt.getString("name"));
+            team.land.loadFromNBT(nbt.getCompoundTag("land"));
+            NBTTagList adminList = nbt.getTagList("admins", 10);
+            for (int i = 0; i < adminList.tagCount(); i++)
+            {
+                System.out.println(adminList.getCompoundTagAt(i));
+                team.admins.add(adminList.getCompoundTagAt(i).getString("N"));
+            }
+            System.out.println(adminList + " " + team.admins);
+            return team;
+        }
+    }
+
+    public static class Invites
+    {
+        public Set<String> teams = Sets.newHashSet();
+    }
+
     private static TeamManager instance;
 
     public static int          maxLandCount = 125;
     public static boolean      denyBlasts   = false;
+    public static final int    VERSION      = 1;
 
     public static void clearInstance()
     {
@@ -39,87 +139,79 @@ public class TeamManager
         return instance;
     }
 
+    private HashMap<String, PokeTeam>        teamMap;
     private HashMap<ChunkCoordinate, String> landMap;
-    private HashMap<String, Integer>         landCounts;
-    private HashMap<String, String>          teamAdmins;
-
+    private HashMap<String, Invites>         inviteMap;
     private HashSet<ChunkCoordinate>         publicBlocks;
-
-    private HashMap<String, String>          teamInvites;
 
     private TeamManager()
     {
-        landMap = new HashMap<ChunkCoordinate, String>();
-        landCounts = new HashMap<String, Integer>();
-        teamAdmins = new HashMap<String, String>();
-        teamInvites = new HashMap<String, String>();
-        publicBlocks = new HashSet<ChunkCoordinate>();
+        publicBlocks = Sets.newHashSet();
+        inviteMap = Maps.newHashMap();
+        teamMap = Maps.newHashMap();
+        landMap = Maps.newHashMap();
     }
 
-    public void addTeamLand(String team, ChunkCoordinate land)
+    public void addTeamLand(String team, ChunkCoordinate land, boolean sync)
     {
-        landCounts.put(team, landCounts.containsKey(team) ? landCounts.get(team) + 1 : 1);
-        if (landMap.containsKey(land))
+        PokeTeam t = teamMap.get(team);
+        if (t == null)
         {
-            String old = landMap.get(land);
-            if (landCounts.containsKey(old))
-            {
-                landCounts.put(old, landCounts.get(old) - 1);
-                if (landCounts.get(old) <= 0) landCounts.remove(old);
-            }
+            Thread.dumpStack();
+            return;
         }
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER
-                && FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
-        {
-            PacketBuffer message = new PacketBuffer(Unpooled.buffer());
-            message.writeByte(6);
-            message.writeByte(PacketPokeAdv.TYPEADDLAND);
-            land.writeToBuffer(message);
-            message.writeString(team);
-            MessageClient packet = new MessageClient(message);
-            PokecubePacketHandler.sendToAll(packet);
-        }
+        t.land.addLand(land);
         landMap.put(land, team);
-        PASaveHandler.getInstance().saveTeams();
-    }
-
-    public void addTeamLand2(String team, ChunkCoordinate land)
-    {
-        landCounts.put(team, landCounts.containsKey(team) ? landCounts.get(team) + 1 : 1);
-        if (landMap.containsKey(land))
+        for (PokeTeam t1 : teamMap.values())
         {
-            String old = landMap.get(land);
-            if (landCounts.containsKey(old))
-            {
-                landCounts.put(old, landCounts.get(old) - 1);
-                if (landCounts.get(old) <= 0) landCounts.remove(old);
-            }
+            if (t != t1) t1.land.removeLand(land);
         }
-        landMap.put(land, team);
+        if (sync)
+        {
+            // if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER
+            // &&
+            // FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+            // {
+            // PacketBuffer message = new PacketBuffer(Unpooled.buffer());
+            // message.writeByte(6);
+            // message.writeByte(PacketPokeAdv.TYPEADDLAND);
+            // land.writeToBuffer(message);
+            // message.writeString(team);
+            // MessageClient packet = new MessageClient(message);
+            // PokecubePacketHandler.sendToAll(packet);
+            // }
+            PASaveHandler.getInstance().saveTeams(team);
+        }
     }
 
     public void addToAdmins(String admin, String team)
     {
-        String admins = "";
-        if (teamAdmins.containsKey(team))
-        {
-            admins = teamAdmins.get(team);
-        }
-        admins += admin + ":";
-        teamAdmins.put(team, admins);
-        PASaveHandler.getInstance().saveTeams();
+        PokeTeam t = getTeam(team, true);
+        System.out.println("Adding Admin " + admin + " to " + team);
+        t.admins.add(admin);
+        PASaveHandler.getInstance().saveTeams(team);
     }
 
     public void addToTeam(EntityPlayer player, String team)
     {
         player.worldObj.getScoreboard().addPlayerToTeam(player.getName(), team);
         player.addChatMessage(new TextComponentString("You joined Team " + team));
-        teamInvites.remove(player.getName());
+        PokeTeam t = getTeam(team, true);
+        if (t.admins.isEmpty())
+        {
+            addToAdmins(player.getName(), team);
+        }
+        Invites invite = inviteMap.get(player.getName());
+        if (invite != null)
+        {
+            invite.teams.remove(team);
+        }
     }
 
     public int countLand(String team)
     {
-        if (landCounts.containsKey(team)) return landCounts.get(team);
+        PokeTeam t = teamMap.get(team);
+        if (t != null) { return t.land.countLand(); }
         return 0;
     }
 
@@ -137,6 +229,7 @@ public class TeamManager
         if (player.worldObj.getScoreboard().getTeam(team) == null)
         {
             player.worldObj.getScoreboard().createTeam(team);
+            getTeam(team, true);
             addToTeam(player, team);
             addToAdmins(player.getName(), team);
         }
@@ -145,28 +238,17 @@ public class TeamManager
     public List<String> getAdmins(String team)
     {
         List<String> ret = new ArrayList<String>();
-        if (teamAdmins.containsKey(team))
-        {
-            String[] admins = teamAdmins.get(team).split(":");
-            for (String s : admins)
-            {
-                if (s != null && !s.isEmpty()) ret.add(s);
-            }
-        }
-
+        PokeTeam t = teamMap.get(team);
+        if (t != null) return Lists.newArrayList(t.admins);
         return ret;
     }
 
     public List<String> getInvites(String player)
     {
         List<String> ret = new ArrayList<String>();
-        String adminList = teamInvites.get(player);
-        if (adminList == null) return ret;
-
-        String[] names = adminList.split(":");
-        for (String s : names)
-            ret.add(s);
-        return ret;
+        Invites invite = inviteMap.get(player);
+        if (invite == null) return ret;
+        return Lists.newArrayList(invite.teams);
     }
 
     public String getLandOwner(ChunkCoordinate land)
@@ -177,63 +259,36 @@ public class TeamManager
     public List<ChunkCoordinate> getTeamLand(String team)
     {
         ArrayList<ChunkCoordinate> ret = new ArrayList<ChunkCoordinate>();
-
-        for (ChunkCoordinate c : landMap.keySet())
-        {
-            if (landMap.get(c).equals(team)) ret.add(c);
-        }
-
+        PokeTeam t = teamMap.get(team);
+        if (t != null) ret.addAll(t.land.land);
         return ret;
     }
 
     public boolean hasInvite(String player, String team)
     {
-        String adminList = teamInvites.get(player);
-        if (adminList == null) return false;
-
-        String[] names = adminList.split(":");
-        for (String s : names)
-        {
-            if (team.equalsIgnoreCase(s)) return true;
-        }
+        Invites invite = inviteMap.get(player);
+        if (invite != null) return invite.teams.contains(team);
         return false;
     }
 
     public void invite(String admin, String player, String team)
     {
-        String invites = "";
-        if (!isAdmin(admin, teamAdmins.get(team))) return;
+        if (!isAdmin(admin, team)) return;
         if (hasInvite(player, team)) return;
-
-        if (teamInvites.containsKey(player))
-        {
-            invites = teamInvites.get(player);
-        }
-        invites += team + ":";
-        teamInvites.put(player, invites);
+        Invites invite = inviteMap.get(player);
+        invite.teams.add(team);
     }
 
-    public boolean isAdmin(String name, String adminList)
+    public boolean isAdmin(String name, String team)
     {
-        String[] names = adminList.split(":");
-        for (String s : names)
-        {
-            if (name.equalsIgnoreCase(s)) return true;
-        }
+        PokeTeam t = teamMap.get(team);
+        if (t != null) return t.admins.contains(name);
         return false;
     }
 
     public boolean isAdmin(String name, Team team)
     {
-        String adminList = teamAdmins.get(team.getRegisteredName());
-        if (adminList == null) return false;
-
-        String[] names = adminList.split(":");
-        for (String s : names)
-        {
-            if (name.equalsIgnoreCase(s)) return true;
-        }
-        return false;
+        return isAdmin(name, team.getRegisteredName());
     }
 
     public boolean isOwned(ChunkCoordinate land)
@@ -243,104 +298,81 @@ public class TeamManager
 
     public boolean isPublic(ChunkCoordinate c)
     {
-        // System.out.println(publicBlocks + " " + c + " " +
-        // publicBlocks.contains(c));
         return publicBlocks.contains(c);
     }
 
     public boolean isTeamLand(ChunkCoordinate chunk, String team)
     {
-        if (landMap.containsKey(chunk)) { return landMap.get(chunk).equals(team); }
+        PokeTeam t = teamMap.get(team);
+        if (t != null) return t.land.land.contains(chunk);
         return false;
     }
 
-    public void loadFromNBT(NBTTagCompound nbt)
+    public void loadFromNBTOld(NBTTagCompound nbt)
     {
-        if (!(nbt.getTag("LandMap") instanceof NBTTagList)) return;
-
-        NBTTagList tagList = (NBTTagList) nbt.getTag("LandMap");
-        for (int i = 0; i < tagList.tagCount(); i++)
+        if ((nbt.getTag("LandMap") instanceof NBTTagList))
         {
-            NBTTagCompound landTag = tagList.getCompoundTagAt(i);
-            int[] loc = landTag.getIntArray("Location");
-            String team = landTag.getString("Team");
-            if (loc.length != 4 || team.isEmpty()) continue;
-            ChunkCoordinate c = new ChunkCoordinate(loc[0], loc[1], loc[2], loc[3]);
-            addTeamLand2(team, c);
+            NBTTagList tagList = (NBTTagList) nbt.getTag("LandMap");
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound landTag = tagList.getCompoundTagAt(i);
+                int[] loc = landTag.getIntArray("Location");
+                String team = landTag.getString("Team");
+                if (loc.length != 4 || team.isEmpty()) continue;
+                ChunkCoordinate c = new ChunkCoordinate(loc[0], loc[1], loc[2], loc[3]);
+                addTeamLand(team, c, false);
+            }
         }
-        if (!(nbt.getTag("Admins") instanceof NBTTagList)) return;
-
-        tagList = (NBTTagList) nbt.getTag("Admins");
-        for (int i = 0; i < tagList.tagCount(); i++)
+        if ((nbt.getTag("Admins") instanceof NBTTagList))
         {
-            NBTTagCompound adminTag = tagList.getCompoundTagAt(i);
-            teamAdmins.put(adminTag.getString("Team"), adminTag.getString("Admins"));
+            NBTTagList tagList = (NBTTagList) nbt.getTag("Admins");
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound adminTag = tagList.getCompoundTagAt(i);
+                String[] admins = adminTag.getString("Admins").split(":");
+                String team;
+                getTeam(team = adminTag.getString("Team"), true);
+                for (String s : admins)
+                {
+                    if (s == null || s.isEmpty())
+                    {
+                        addToAdmins(s, team);
+                    }
+                }
+            }
         }
-        if (!(nbt.getTag("Invites") instanceof NBTTagList)) return;
-
-        tagList = (NBTTagList) nbt.getTag("Invites");
-        for (int i = 0; i < tagList.tagCount(); i++)
+        if ((nbt.getTag("PublicBlocks") instanceof NBTTagList))
         {
-            NBTTagCompound adminTag = tagList.getCompoundTagAt(i);
-            teamInvites.put(adminTag.getString("Player"), adminTag.getString("Team"));
+            NBTTagList tagList = (NBTTagList) nbt.getTag("PublicBlocks");
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound landTag = tagList.getCompoundTagAt(i);
+                int[] loc = landTag.getIntArray("Location");
+                if (loc.length != 4) continue;
+                ChunkCoordinate c = new ChunkCoordinate(loc[0], loc[1], loc[2], loc[3]);
+                publicBlocks.add(c);
+            }
         }
-        if (!(nbt.getTag("PublicBlocks") instanceof NBTTagList)) return;
-
-        tagList = (NBTTagList) nbt.getTag("PublicBlocks");
-        for (int i = 0; i < tagList.tagCount(); i++)
-        {
-            NBTTagCompound landTag = tagList.getCompoundTagAt(i);
-            int[] loc = landTag.getIntArray("Location");
-            if (loc.length != 4) continue;
-            ChunkCoordinate c = new ChunkCoordinate(loc[0], loc[1], loc[2], loc[3]);
-            publicBlocks.add(c);
-        }
-
     }
 
     public void removeFromAdmins(String admin, String team)
     {
-        String admins = "";
-        if (teamAdmins.containsKey(team))
+        PokeTeam t = teamMap.get(team);
+        if (t != null && t.admins.contains(admin))
         {
-            admins = teamAdmins.get(team);
-            String[] list = admins.split(":");
-            for (int i = 0; i < list.length; i++)
-            {
-                if (list[i].equals(admin))
-                {
-                    list[i] = null;
-                }
-            }
-            admins = "";
-            for (String s : list)
-            {
-                if (s != null) admins += s + ":";
-            }
-            teamAdmins.put(team, admins);
-            PASaveHandler.getInstance().saveTeams();
+            t.admins.remove(admin);
+            System.out.println("Removing Admin " + admin + " to " + team);
+            PASaveHandler.getInstance().saveTeams(team);
         }
     }
 
     public void removeFromInvites(String player, String team)
     {
-        String admins = "";
-        if (teamInvites.containsKey(player))
+        Invites invites = inviteMap.get(player);
+        if (invites != null && invites.teams.contains(team))
         {
-            admins = teamInvites.get(player);
-            String[] list = admins.split(":");
-            for (int i = 0; i < list.length; i++)
-            {
-                if (list[i].equals(team))
-                {
-                    list[i] = null;
-                }
-            }
-            admins = "";
-            for (String s : list)
-            {
-                if (s != null) admins += s + ":";
-            }
+            invites.teams.remove(team);
+            PASaveHandler.getInstance().saveTeams(team);
         }
     }
 
@@ -356,11 +388,10 @@ public class TeamManager
 
     public void removeTeamLand(String team, ChunkCoordinate land)
     {
-        if (landMap.get(land) != null && landMap.get(land).equals(team))
+        PokeTeam t = teamMap.get(team);
+        landMap.remove(land);
+        if (t != null && t.land.removeLand(land))
         {
-            if (landCounts.containsKey(land))
-                landCounts.put(team, landCounts.containsKey(team) ? landCounts.get(team) - 1 : 0);
-            landMap.remove(land);
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER
                     && FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             {
@@ -372,54 +403,96 @@ public class TeamManager
                 MessageClient packet = new MessageClient(message);
                 PokecubePacketHandler.sendToAll(packet);
             }
-            PASaveHandler.getInstance().saveTeams();
+            PASaveHandler.getInstance().saveTeams(team);
         }
     }
 
-    public void saveToNBT(NBTTagCompound nbt, boolean land)
+    public void saveToNBT(NBTTagCompound nbt)
     {
-        NBTTagList taglist = new NBTTagList();
-        if (land) for (ChunkCoordinate c : landMap.keySet())
-        {
-            if (c != null && landMap.get(c) != null)
-            {
-                NBTTagCompound landTag = new NBTTagCompound();
-                landTag.setIntArray("Location", new int[] { c.getX(), c.getY(), c.getZ(), c.dim });
-                landTag.setString("Team", landMap.get(c));
-                taglist.appendTag(landTag);
-            }
-        }
-        nbt.setTag("LandMap", taglist);
-
-        NBTTagList tagadmins = new NBTTagList();
-        for (String s : teamAdmins.keySet())
-        {
-            NBTTagCompound tag = new NBTTagCompound();
-            tag.setString("Team", s);
-            tag.setString("Admins", teamAdmins.get(s));
-            tagadmins.appendTag(tag);
-        }
-        nbt.setTag("Admins", tagadmins);
-
-        NBTTagList taginvites = new NBTTagList();
-        for (String s : teamInvites.keySet())
-        {
-            NBTTagCompound tag = new NBTTagCompound();
-            tag.setString("Player", s);
-            tag.setString("Team", teamAdmins.get(s));
-            taginvites.appendTag(tag);
-        }
-        nbt.setTag("Invites", taginvites);
-
-        NBTTagList tagpublic = new NBTTagList();
+        NBTTagList tagList = new NBTTagList();
+        nbt.setInteger("VERSION", VERSION);
         for (ChunkCoordinate c : publicBlocks)
         {
             NBTTagCompound tag = new NBTTagCompound();
             tag.setIntArray("Location", new int[] { c.getX(), c.getY(), c.getZ(), c.dim });
-            tagpublic.appendTag(tag);
+            tagList.appendTag(tag);
         }
-        nbt.setTag("PublicBlocks", tagpublic);
+        nbt.setTag("PublicBlocks", tagList);
+        tagList = new NBTTagList();
+        for (String s : inviteMap.keySet())
+        {
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setString("name", s);
+            NBTTagList teams = new NBTTagList();
+            for (String s1 : inviteMap.get(s).teams)
+            {
+                NBTTagCompound compound = new NBTTagCompound();
+                compound.setString("T", s1);
+                teams.appendTag(compound);
+            }
+            tag.setTag("teams", teams);
+            tagList.appendTag(tag);
+        }
+        nbt.setTag("Invites", tagList);
+    }
 
+    public void loadFromNBT(NBTTagCompound nbt)
+    {
+        NBTBase base;
+        if (((base = nbt.getTag("PublicBlocks")) instanceof NBTTagList))
+        {
+            NBTTagList tagList = (NBTTagList) base;
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound landTag = tagList.getCompoundTagAt(i);
+                int[] loc = landTag.getIntArray("Location");
+                if (loc.length != 4) continue;
+                ChunkCoordinate c = new ChunkCoordinate(loc[0], loc[1], loc[2], loc[3]);
+                publicBlocks.add(c);
+            }
+        }
+        if (((base = nbt.getTag("Invites")) instanceof NBTTagList))
+        {
+            NBTTagList tagList = (NBTTagList) base;
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                String name = tag.getString("name");
+                Invites invites;
+                inviteMap.put(name, invites = new Invites());
+                NBTTagList teams = tag.getTagList("teams", 10);
+                for (int i1 = 0; i1 < teams.tagCount(); i1++)
+                {
+                    invites.teams.add(teams.getCompoundTagAt(i1).getString("T"));
+                }
+            }
+        }
+    }
+
+    public void saveTeamToNBT(String team, NBTTagCompound nbt)
+    {
+        PokeTeam t = getTeam(team, false);
+        if (t != null)
+        {
+            t.writeToNBT(nbt);
+        }
+    }
+
+    public void loadTeamFromNBT(NBTTagCompound nbt)
+    {
+        PokeTeam team = PokeTeam.loadFromNBT(nbt);
+        if (team != null) teamMap.put(team.teamName, team);
+    }
+
+    private PokeTeam getTeam(String name, boolean create)
+    {
+        PokeTeam team = teamMap.get(name);
+        if (team == null && create)
+        {
+            team = new PokeTeam(name);
+            teamMap.put(name, team);
+        }
+        return team;
     }
 
     public void setPublic(ChunkCoordinate c)
@@ -435,13 +508,12 @@ public class TeamManager
             MessageClient packet = new MessageClient(message);
             PokecubePacketHandler.sendToAll(packet);
         }
-        PASaveHandler.getInstance().saveTeams();
+        PASaveHandler.getInstance().saveTeams(null);
     }
 
     public void unsetPublic(ChunkCoordinate c)
     {
         if (!publicBlocks.contains(c)) return;
-
         publicBlocks.remove(c);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER
                 && FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
@@ -453,7 +525,7 @@ public class TeamManager
             MessageClient packet = new MessageClient(message);
             PokecubePacketHandler.sendToAll(packet);
         }
-        PASaveHandler.getInstance().saveTeams();
+        PASaveHandler.getInstance().saveTeams(null);
     }
 
 }

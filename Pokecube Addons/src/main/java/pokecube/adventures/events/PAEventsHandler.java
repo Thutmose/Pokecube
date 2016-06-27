@@ -4,16 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.entity.trainers.EntityTrainer;
-import pokecube.adventures.handlers.TeamManager;
-import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.events.PCEvent;
@@ -31,16 +25,6 @@ public class PAEventsHandler
     @SubscribeEvent
     public void PlayerLoggin(PlayerLoggedInEvent evt)
     {
-        EntityPlayer entityPlayer = evt.player;
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-
-        NBTTagCompound nbt;
-        MessageClient packet;
-
-        nbt = new NBTTagCompound();
-        TeamManager.getInstance().saveToNBT(nbt, false);
-        packet = new MessageClient((byte) 7, nbt);
-        PokecubePacketHandler.sendToClient(packet, entityPlayer);
 
     }
 

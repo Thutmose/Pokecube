@@ -106,7 +106,6 @@ public class ItemTarget extends Item
 
         if (world.isRemote)
         {
-
             if (meta == 0 && player.isSneaking())
             {
                 TeamEventsHandler.shouldRenderVolume = !TeamEventsHandler.shouldRenderVolume;
@@ -142,7 +141,21 @@ public class ItemTarget extends Item
         }
         else if (meta == 3)
         {
-
+//            if(!world.isRemote)
+//            {
+//                for(int i = -15; i<=15; i++)
+//                {
+//                    for(int j = -15; j<=15; j++)
+//                    {
+//                        for(int k = -15; k<=15; k++)
+//                        {
+//                            Vector3 v = Vector3.getNewVector().set(player).add(i*16, j*16, k*16);
+//                            TerrainSegment t = TerrainManager.getInstance().getTerrain(world, v.getPos());
+//                            
+//                        }
+//                    }
+//                }
+//            }
         }
         else if (!player.isSneaking())
         {

@@ -40,6 +40,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.Resources;
+import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
@@ -425,6 +426,17 @@ public class GuiPokedex_redo extends GuiScreen
                     yOffset + 15, 0xFFFFFF);
             List<String> biomes = Lists.newArrayList();
 
+            PokedexEntry entry = ((IPokemob) getEntityToDisplay()).getPokedexEntry();
+
+            if (entry.getSpawnData() == null && entry.getChildNb() != entry.getPokedexNb())
+            {
+                PokedexEntry child;
+                if ((child = Database.getEntry(entry.getChildNb())).getSpawnData() != null)
+                {
+                    entry = child;
+                }
+            }
+
             lists:
             for (Integer i : this.biomes)
             {
@@ -432,30 +444,35 @@ public class GuiPokedex_redo extends GuiScreen
                 {
                     for (PokedexEntry dbe : SpawnHandler.spawnLists.get(i))
                     {
-                        if (dbe.getPokedexNb() == ((IPokemob) getEntityToDisplay()).getPokedexNb())
+                        if (dbe.getPokedexNb() == entry.getPokedexNb())
                         {
                             String title = BiomeDatabase.getReadableNameFromType(i);
                             if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
                             if (title.equalsIgnoreCase("birch forest hills m")) title = "Birch ForestHills M";
+                            if (title.contains(" Hills") && title.length() > 16)
+                            {
+                                title = title.replace(" Hills", "Hills");
+                            }
+                            if (title.contains("Mega ") && title.length() > 16)
+                            {
+                                title = title.replace("Mega ", "Mega");
+                            }
                             biomes.add(title);
                             continue lists;
                         }
                     }
                 }
             }
-            // index = Math.max(0, Math.min(index, biomes.size() - 6));
-            int ind = 0;
+            // System.out.println(biomes);
+            index = Math.max(0, Math.min(index, biomes.size() - 6));
             for (int n = 0; n < Math.min(biomes.size(), 6); n++)
             {
-                String s = biomes.get((ind + index) % biomes.size());
+                String s = biomes.get(n + index);
                 int yO = yOffset + 30;
-                int length = fontRendererObj.getStringWidth(s);
-                fontRendererObj.drawSplitString(s, xOffset + 18, yO + n * 10, 90, 0xFF0000);
-                if (length > 90)
-                {
-                    n++;
-                }
-                ind++;
+                int colour = 0xFF0000;
+                if (n % 2 == 0) colour = 0xFF3300;
+                s = fontRendererObj.trimStringToWidth(s, 90);
+                fontRendererObj.drawString(s, xOffset + 18, yO + n * 10, colour);
             }
         }
 
@@ -574,11 +591,14 @@ public class GuiPokedex_redo extends GuiScreen
                 .getTeleports(minecraft.thePlayer.getUniqueID().toString());
 
         if (locations.size() == 0) { return; }
-
         TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
-
-        if (location != null) drawString(fontRendererObj, location.loc.toIntString(), xOffset + 16,
-                yOffset + 99 + 14 * index, PokeType.fire.colour);
+        if (location != null)
+        {
+            String loc = location.loc.toIntString();
+            loc = loc.replace(" ", "");
+            loc = fontRendererObj.trimStringToWidth(loc, 90);
+            drawString(fontRendererObj, loc, xOffset + 16, yOffset + 99 + 14 * index, PokeType.fire.colour);
+        }
     }
 
     @Override

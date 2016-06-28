@@ -781,4 +781,11 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         tagCompound.setTag("Inventory", itemList);
         return tagCompound;
     }
+
+    @Override
+    public NBTTagCompound getUpdateTag()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+        return writeToNBT(nbt);
+    }
 }

@@ -355,6 +355,7 @@ public class PCPacketHandler
             int z = Integer.valueOf(args[3].trim());
 
             TileEntityTradingTable tile = (TileEntityTradingTable) player.worldObj.getTileEntity(new BlockPos(x, y, z));
+            if (tile == null) return;
 
             int id;
             try

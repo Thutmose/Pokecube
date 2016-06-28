@@ -110,7 +110,6 @@ public class ItemTarget extends Item
             {
                 TeamEventsHandler.shouldRenderVolume = !TeamEventsHandler.shouldRenderVolume;
             }
-
             if (meta == 2)
             {
                 // WorldTerrain t =

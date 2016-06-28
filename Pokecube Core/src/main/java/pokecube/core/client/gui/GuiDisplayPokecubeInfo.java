@@ -23,6 +23,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -30,7 +31,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -355,8 +355,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
-                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.command.attack", "",
-                        pokemob.getPokemonDisplayName().getFormattedText(), target.getName());
+                ITextComponent mess = new TextComponentTranslation("pokemob.command.attack",
+                        pokemob.getPokemonDisplayName(), target.getDisplayName());
                 pokemob.displayMessageToOwner(mess);
                 attack = true;
             }
@@ -390,9 +390,9 @@ public class GuiDisplayPokecubeInfo extends Gui
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
                 if (move != null && (target != null || v != null))
                 {
-                    ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.usemove", "",
-                            pokemob.getPokemonDisplayName().getFormattedText(),
-                            MovesUtils.getUnlocalizedMove(move.getName()));
+                    ITextComponent mess = new TextComponentTranslation("pokemob.action.usemove",
+                            pokemob.getPokemonDisplayName(),
+                            new TextComponentTranslation(MovesUtils.getUnlocalizedMove(move.getName())));
                     pokemob.displayMessageToOwner(mess);
                 }
             }

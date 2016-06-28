@@ -21,6 +21,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -427,7 +428,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public ITextComponent getPokemonDisplayName()
     {
-        return new TextComponentTranslation(this.getName());
+        if (this.getPokemonNickname().isEmpty())
+            return new TextComponentTranslation(getPokedexEntry().getUnlocalizedName());
+        return new TextComponentString(this.getPokemonNickname());
     }
 
     @Override

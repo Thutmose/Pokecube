@@ -18,6 +18,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.google.common.collect.Lists;
+
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -34,8 +36,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.ClientProxyPokecube;
@@ -97,13 +97,12 @@ public class GuiPokedex_redo extends GuiScreen
     private int                                   page               = 0;
 
     private int                                   index              = 0;
-
     private int                                   index2             = 0;
+    private boolean                               mode               = false;
 
     List<Integer>                                 biomes             = new ArrayList<Integer>();
 
     int                                           prevX              = 0;
-
     int                                           prevY              = 0;
 
     String                                        oldName            = "";
@@ -367,80 +366,119 @@ public class GuiPokedex_redo extends GuiScreen
      * @param yOffset */
     private void drawPage2(int xOffset, int yOffset)
     {
-        if (index2 < 0) index2 = biomes.size() - 2;
-        index2 = Math.max(0, index2 % (biomes.size() - 1));
-
-        String biomeName = BiomeDatabase.getNameFromType(biomes.get(index2));
-        int n = 0;
-        ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
-
-        if (SpawnHandler.spawnLists.containsKey(biomes.get(index2)))
+        if (!mode)
         {
-            for (PokedexEntry dbe : SpawnHandler.spawnLists.get(biomes.get(index2)))
+            if (index2 < 0) index2 = biomes.size() - 2;
+            index2 = Math.max(0, index2 % (biomes.size() - 1));
+
+            String biomeName = BiomeDatabase.getNameFromType(biomes.get(index2));
+            ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
+
+            if (SpawnHandler.spawnLists.containsKey(biomes.get(index2)))
             {
-                if (!dbe.getSpawnData().types[SpawnData.LEGENDARY] && dbe.getPokedexNb() != 151) names.add(dbe);
+                for (PokedexEntry dbe : SpawnHandler.spawnLists.get(biomes.get(index2)))
+                {
+                    if (!dbe.getSpawnData().types[SpawnData.LEGENDARY] && dbe.getPokedexNb() != 151) names.add(dbe);
+                }
+            }
+
+            index = Math.max(0, Math.min(index, names.size() - 6));
+            String title = BiomeDatabase.getReadableNameFromType(biomes.get(index2));
+            if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
+            if (title.equalsIgnoreCase("birch forest hills m")) title = "Birch ForestHills M";
+
+            drawString(fontRendererObj, title, xOffset + 16, yOffset + 15, 0xFFFFFF);
+
+            for (int n = 0; n < Math.min(names.size(), 6); n++)
+            {
+                int yO = yOffset + 30;
+                PokedexEntry dbe = names.get((n + index));
+
+                if (dbe.getSpawnData() == null)
+                {
+                    System.err.println("FATAL ERROR MISSING SPAWN DATA FOR " + dbe);
+                    continue;
+                }
+                String numbers = "";// "+dbe.getSpawnData().global[0];
+                if (!entityPlayer.capabilities.isCreativeMode) numbers = "";
+                drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()) + numbers, xOffset + 18, yO + n * 10,
+                        0xFF0000);
+                String time = "";
+                boolean cave = dbe.getSpawnData().types[CAVE];
+
+                boolean industrial = dbe.getSpawnData().types[INDUSTRIAL];
+
+                if (dbe.getSpawnData().types[SpawnData.DAY]) time = time + "D";
+                if (dbe.getSpawnData().types[SpawnData.NIGHT]) time = time + "N";
+                if (cave && !biomeName.toLowerCase().contains("cave"))
+                {
+                    time = time + "C";
+                }
+                if (industrial) time = time + "I";
+
+                drawString(fontRendererObj, time, xOffset + 85, yO + n * 10, 0xFF0000);
+            }
+        }
+        else if (getEntityToDisplay() != null)
+        {
+            drawString(fontRendererObj, getEntityToDisplay().getDisplayName().getFormattedText(), xOffset + 16,
+                    yOffset + 15, 0xFFFFFF);
+            List<String> biomes = Lists.newArrayList();
+
+            lists:
+            for (Integer i : this.biomes)
+            {
+                if (SpawnHandler.spawnLists.containsKey(i))
+                {
+                    for (PokedexEntry dbe : SpawnHandler.spawnLists.get(i))
+                    {
+                        if (dbe.getPokedexNb() == ((IPokemob) getEntityToDisplay()).getPokedexNb())
+                        {
+                            String title = BiomeDatabase.getReadableNameFromType(i);
+                            if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
+                            if (title.equalsIgnoreCase("birch forest hills m")) title = "Birch ForestHills M";
+                            biomes.add(title);
+                            continue lists;
+                        }
+                    }
+                }
+            }
+            // index = Math.max(0, Math.min(index, biomes.size() - 6));
+            int ind = 0;
+            for (int n = 0; n < Math.min(biomes.size(), 6); n++)
+            {
+                String s = biomes.get((ind + index) % biomes.size());
+                int yO = yOffset + 30;
+                int length = fontRendererObj.getStringWidth(s);
+                fontRendererObj.drawSplitString(s, xOffset + 18, yO + n * 10, 90, 0xFF0000);
+                if (length > 90)
+                {
+                    n++;
+                }
+                ind++;
             }
         }
 
-        index = Math.max(0, Math.min(index, names.size() - 6));
-        String title = BiomeDatabase.getReadableNameFromType(biomes.get(index2));
-        if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
-        if (title.equalsIgnoreCase("birch forest hills m")) title = "Birch ForestHills M";
-        // if(title.length()>16)
-        // title = title.substring(0, 16);
-
-        drawString(fontRendererObj, title, xOffset + 16, yOffset + 15, 0xFFFFFF);
-
-        for (n = 0; n < Math.min(names.size(), 6); n++)
-        {
-            int yO = yOffset + 30;
-            PokedexEntry dbe = names.get((n + index));
-
-            if (dbe.getSpawnData() == null)
-            {
-                System.err.println("FATAL ERROR MISSING SPAWN DATA FOR " + dbe);
-                continue;
-            }
-            String numbers = "";// "+dbe.getSpawnData().global[0];
-            if (!entityPlayer.capabilities.isCreativeMode) numbers = "";
-            drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()) + numbers, xOffset + 18, yO + n * 10,
-                    0xFF0000);
-            String time = "";
-            boolean cave = dbe.getSpawnData().types[CAVE];
-
-            boolean industrial = dbe.getSpawnData().types[INDUSTRIAL];
-
-            if (dbe.getSpawnData().types[SpawnData.DAY]) time = time + "D";
-            if (dbe.getSpawnData().types[SpawnData.NIGHT]) time = time + "N";
-            if (cave && !biomeName.toLowerCase().contains("cave"))
-            {
-                time = time + "C";
-            }
-            if (industrial) time = time + "I";
-
-            drawString(fontRendererObj, time, xOffset + 85, yO + n * 10, 0xFF0000);
-        }
-
-        drawString(fontRendererObj, "User Stats", xOffset + 19, yOffset + 100, 0xFFFFFF);
+        drawString(fontRendererObj, "User Stats", xOffset + 19, yOffset + 99, 0xFFFFFF);
 
         int count = KillStats.getNumberUniqueKilledBy(entityPlayer.getUniqueID().toString());
         int count2 = KillStats.getTotalNumberKilledBy(entityPlayer.getUniqueID().toString());
 
-        drawString(fontRendererObj, "Kills", xOffset + 19, yOffset + 113, 0xFFFFFF);
+        drawString(fontRendererObj, "Kills", xOffset + 19, yOffset + 112, 0xFFFFFF);
         drawString(fontRendererObj, count + "/" + count2,
-                xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 113, 0xffffff);
+                xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 112, 0xffffff);
 
         count = CaptureStats.getNumberUniqueCaughtBy(entityPlayer.getUniqueID().toString());
         count2 = CaptureStats.getTotalNumberCaughtBy(entityPlayer.getUniqueID().toString());
-        drawString(fontRendererObj, "Captures", xOffset + 19, yOffset + 127, 0xFFFFFF);
+        drawString(fontRendererObj, "Captures", xOffset + 19, yOffset + 126, 0xFFFFFF);
         drawString(fontRendererObj, count + "/" + count2,
-                xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 127, 0xffffff);
+                xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 126, 0xffffff);
 
         count = EggStats.getNumberUniqueHatchedBy(entityPlayer.getUniqueID().toString());
         count2 = EggStats.getTotalNumberHatchedBy(entityPlayer.getUniqueID().toString());
-        drawString(fontRendererObj, "Hatched", xOffset + 19, yOffset + 141, 0xFFFFFF);
+        drawString(fontRendererObj, "Hatched", xOffset + 19, yOffset + 140, 0xFFFFFF);
         drawString(fontRendererObj, count + "/" + count2,
-                xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 141, 0xffffff);
+                xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 140, 0xffffff);
         World world = entityPlayer.worldObj;
         List<Object> entities = new ArrayList<Object>(world.loadedEntityList);
         count = 0;
@@ -452,9 +490,9 @@ public class GuiPokedex_redo extends GuiScreen
                 count++;
             }
         }
-        drawString(fontRendererObj, "Around", xOffset + 19, yOffset + 155, 0xFFFFFF);
+        drawString(fontRendererObj, "Around", xOffset + 19, yOffset + 154, 0xFFFFFF);
         drawString(fontRendererObj, "" + count, xOffset + 120 - fontRendererObj.getStringWidth((count + "")),
-                yOffset + 155, 0xffffff);
+                yOffset + 154, 0xffffff);
     }
 
     /** Draws the breeding information page
@@ -795,29 +833,11 @@ public class GuiPokedex_redo extends GuiScreen
 
     public void handleGuiButton(int button)
     {
-
-        if (button == 14)
-        {
-            if (Loader.isModLoaded("IGWMod"))
-            {
-                try
-                {
-                    Class<?> wikiGui = Class.forName("igwmod.gui.GuiWiki");
-                    FMLCommonHandler.instance().showGuiScreen(wikiGui.newInstance());
-                }
-                catch (Throwable t)
-                {
-
-                }
-            }
-            return;
-        }
-
-        if (page != 2 && button == 1)
+        if ((page != 2 || mode) && button == 1)
         {
             pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 1);
         }
-        else if (page != 2 && button == 2)
+        else if ((page != 2 || mode) && button == 2)
         {
             pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 1);
         }
@@ -979,8 +999,8 @@ public class GuiPokedex_redo extends GuiScreen
                     }
                 }
             }
-
         }
+        if (button == 13) mode = !mode;
 
         if (page != 0)
         {

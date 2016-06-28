@@ -229,8 +229,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public String getName()
     {
-        return this.getPokemonNickname().isEmpty() ? this.getPokedexEntry().getUnlocalizedName()
-                : this.getPokemonNickname();
+        return this.getPokedexEntry().getName();
     }
 
     @Override

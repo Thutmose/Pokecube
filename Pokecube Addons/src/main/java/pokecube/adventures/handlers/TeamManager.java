@@ -109,10 +109,8 @@ public class TeamManager
             NBTTagList adminList = nbt.getTagList("admins", 10);
             for (int i = 0; i < adminList.tagCount(); i++)
             {
-                System.out.println(adminList.getCompoundTagAt(i));
                 team.admins.add(adminList.getCompoundTagAt(i).getString("N"));
             }
-            System.out.println(adminList + " " + team.admins);
             return team;
         }
     }

@@ -127,8 +127,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public static final int             PERMFRIENDLY     = 8;
 
     public static ArrayList<CubeTrade>  cubeList         = Lists.newArrayList();
-    public static int                   ATTACKCOOLDOWN   = 10000;
-    private int                         battleCooldown   = ATTACKCOOLDOWN;
+    private int                         battleCooldown   = -1;
     /** This villager's current customer. */
     private EntityPlayer                buyingPlayer;
     /** Initialises the MerchantRecipeList.java */
@@ -165,6 +164,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public EntityTrainer(World par1World)
     {
         this(par1World, null);
+        if (battleCooldown == -1) battleCooldown = Config.instance.trainerCooldown;
         inventoryHandsDropChances = new float[] { 1, 1 };
         inventoryArmorDropChances = new float[] { 1, 1, 1, 1 };
     }

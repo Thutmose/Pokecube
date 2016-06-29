@@ -37,6 +37,7 @@ pokemob.evolution.cancel=§cHuh? %1$s §cstopped evolving.
 pokemob.agress=A wild %1$s has appeared
 
 pokemob.hungry.slow=Your Pokémob is too hungry to move quickly
+pokemob.hungry.hurt=%1$s §cis starving!
 
 pokemob.command.attack=You tell %1$s to attack %2$s
 

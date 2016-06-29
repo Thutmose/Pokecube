@@ -428,6 +428,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (isServerWorld())
         {
             PokedexEntry entry = getPokedexEntry();
+            if (getTransformedTo() instanceof IPokemob)
+            {
+                entry = ((IPokemob) getTransformedTo()).getPokedexEntry();
+            }
             int aiState = dataManager.get(AIACTIONSTATESDW);
             boolean isAbleToFly = entry.floats() || entry.flys();
             boolean isWaterMob = entry.swims();
@@ -911,6 +915,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             setPokemonAIState(EXITINGCUBE, false);
         }
+        if (this.getTransformedTo() instanceof IPokemob) entry = ((IPokemob) getTransformedTo()).getPokedexEntry();
         boolean canFloat = entry.floats();
 
         if (canFloat && !getAIState(INWATER, state))

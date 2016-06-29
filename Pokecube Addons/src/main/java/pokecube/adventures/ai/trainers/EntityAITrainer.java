@@ -221,9 +221,8 @@ public class EntityAITrainer extends EntityAIBase
         }
         if (trainer.getTarget() == null) return;
         double distance = trainer.getDistanceSqToEntity(trainer.getTarget());
-        if (distance > 256 && trainer.cooldown < -300)
+        if (distance > 1024 && trainer.cooldown < -300)
         {
-            System.out.println("Too Far");
             trainer.setTarget(null);
         }
         else if (trainer.outMob != null)

@@ -21,6 +21,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.village.Village;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
@@ -605,6 +606,18 @@ public final class SpawnHandler
         {
             t.checkIndustrial(world);
             b = t.getBiome(v);
+        }
+        else if (b != BiomeType.VILLAGE.getType())
+        {
+            Village village = world.villageCollectionObj.getNearestVillage(v.getPos(), 2);
+            if (village != null)
+            {
+                b = BiomeType.VILLAGE.getType();
+                if (b <= 255)
+                {
+                    t.setBiome(v, b);
+                }
+            }
         }
 
         if (spawns.containsKey(b))

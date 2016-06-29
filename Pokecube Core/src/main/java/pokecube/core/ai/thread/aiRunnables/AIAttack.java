@@ -7,6 +7,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.commands.CommandTools;
@@ -229,16 +230,36 @@ public class AIAttack extends AIBase implements IAICombat
 
         boolean inRange = false;
 
-        ((IMultibox) attacker).setBoxes();
-        ((IMultibox) attacker).setOffsets();
-        attackerBox.set(((IMultibox) attacker).getBoxes().get("main"));
-        attackerBox.addOffsetTo(v2.set(((IMultibox) attacker).getOffsets().get("main")).addTo(v1.set(attacker)));
         if (distanced)
         {
             inRange = dist < var1;
         }
+        else if (entityTarget instanceof IPokemob)
+        {
+            IPokemob pokemob2 = (IPokemob) entityTarget;
+            float attackerLength = pokemob.getPokedexEntry().length * pokemob2.getSize();
+            float attackerHeight = pokemob.getPokedexEntry().height * pokemob2.getSize();
+            float attackerWidth = pokemob.getPokedexEntry().height * pokemob2.getSize();
+
+            float attackedLength = pokemob2.getPokedexEntry().length * pokemob2.getSize();
+            float attackedHeight = pokemob2.getPokedexEntry().height * pokemob2.getSize();
+            float attackedWidth = pokemob2.getPokedexEntry().height * pokemob2.getSize();
+
+            float dx = (float) (attacker.posX - entityTarget.posX);
+            float dz = (float) (attacker.posZ - entityTarget.posZ);
+            float dy = (float) (attacker.posY - entityTarget.posY);
+
+            AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
+            AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
+                    dz + attackedLength);
+            inRange = box.intersectsWith(box2);
+        }
         else if (entityTarget instanceof IMultibox)
         {
+            ((IMultibox) attacker).setBoxes();
+            ((IMultibox) attacker).setOffsets();
+            attackerBox.set(((IMultibox) attacker).getBoxes().get("main"));
+            attackerBox.addOffsetTo(v2.set(((IMultibox) attacker).getOffsets().get("main")).addTo(v1.set(attacker)));
             IMultibox target = (IMultibox) entityTarget;
             target.setBoxes();
             target.setOffsets();
@@ -329,7 +350,7 @@ public class AIAttack extends AIBase implements IAICombat
             path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
             if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
         }
-        else if(targetLoc.isEmpty())
+        else if (targetLoc.isEmpty())
         {
             addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
         }

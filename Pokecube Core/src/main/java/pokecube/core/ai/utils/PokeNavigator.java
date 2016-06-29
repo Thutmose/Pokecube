@@ -177,6 +177,10 @@ public class PokeNavigator extends PathNavigate
     public Path getPathToEntityLiving(Entity entity)
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
+        if (pokemob.getTransformedTo() instanceof IPokemob)
+        {
+            entry = ((IPokemob) pokemob.getTransformedTo()).getPokedexEntry();
+        }
         this.canFly = entry.flys() || entry.floats();
         this.canDive = entry.swims();
 
@@ -193,6 +197,10 @@ public class PokeNavigator extends PathNavigate
     public Path getPathToPos(BlockPos pos)
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
+        if (pokemob.getTransformedTo() instanceof IPokemob)
+        {
+            entry = ((IPokemob) pokemob.getTransformedTo()).getPokedexEntry();
+        }
         this.canFly = entry.flys() || entry.floats();
         this.canDive = entry.swims();
         Path current = currentPath;

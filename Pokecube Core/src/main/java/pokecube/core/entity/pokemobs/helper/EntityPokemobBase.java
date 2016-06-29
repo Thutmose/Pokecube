@@ -437,7 +437,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             double dist;
             if (y < 0) diffs.y = 0;
 
-            if ((dist = diffs.mag()) >= 0.15)
+            if ((dist = diffs.mag()) >= 0.1)
             {
                 Vector3 v = Vector3.getNextSurfacePoint(worldObj, here.add(0, height / 2, 0), diffs, diffs.mag());
                 if (v != null)
@@ -472,7 +472,10 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             double newY = y + yOff + dy;
 
             this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
-
+            if (newY == 0)
+            {
+                motionY = 0;
+            }
             this.posX += x;
             this.posY += newY;
             this.posZ += z;

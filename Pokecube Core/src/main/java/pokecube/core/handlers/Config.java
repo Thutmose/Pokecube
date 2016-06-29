@@ -54,7 +54,7 @@ public class Config extends ConfigBase
 
     public static Config       instance;
 
-    private static Config defaults = null;
+    private static Config      defaults                   = null;
     // Misc Settings
     @Configure(category = misc)
     public String[]            defaultStarts              = {};
@@ -107,7 +107,16 @@ public class Config extends ConfigBase
     public int                 pokemobLifeSpan            = 8000;
     @Configure(category = mobAI)
     /** Capped damage to players by pokémobs */
-    public int                 maxPlayerDamage            = 10;
+    public int                 maxWildPlayerDamage        = 10;
+    @Configure(category = mobAI)
+    /** Capped damage to players by pokémobs */
+    public int                 maxOwnedPlayerDamage       = 10;
+    @Configure(category = mobAI)
+    /** Capped damage to players by pokémobs */
+    public int                 wildPlayerDamageScale      = 100;
+    @Configure(category = mobAI)
+    /** Capped damage to players by pokémobs */
+    public int                 ownedPlayerDamageScale     = 100;
     @Configure(category = mobAI)
     /** Warning time before a wild pokémob attacks a player */
     public int                 pokemobagressticks         = 100;

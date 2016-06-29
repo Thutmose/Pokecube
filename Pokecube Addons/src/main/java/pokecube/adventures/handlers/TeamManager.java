@@ -41,6 +41,10 @@ public class TeamManager
             if (!nbt.hasKey("name")) return null;
             PokeTeam team = new PokeTeam(nbt.getString("name"));
             team.land.loadFromNBT(nbt.getCompoundTag("land"));
+            for (ChunkCoordinate land : team.land.land)
+            {
+                TeamManager.getInstance().landMap.put(land, team.teamName);
+            }
             NBTTagList adminList = nbt.getTagList("admins", 10);
             for (int i = 0; i < adminList.tagCount(); i++)
             {

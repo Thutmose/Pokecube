@@ -172,7 +172,7 @@ public class EntityLeader extends EntityTrainer
     {
         super.readEntityFromNBT(nbt);
         defeaters.clear();
-        nbt.setLong("resetTime", resetTime);
+        resetTime = nbt.getLong("resetTime");
         if (nbt.hasKey("DefeatList", 9))
         {
             NBTTagList nbttaglist = nbt.getTagList("DefeatList", 10);
@@ -185,7 +185,7 @@ public class EntityLeader extends EntityTrainer
     public void writeEntityToNBT(NBTTagCompound nbt)
     {
         super.writeEntityToNBT(nbt);
-        resetTime = nbt.getLong("resetTime");
+        nbt.setLong("resetTime", resetTime);
         NBTTagList nbttaglist = new NBTTagList();
         for (DefeatEntry entry : defeaters)
         {

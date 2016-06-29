@@ -78,7 +78,9 @@ public class EntityAITrainer extends EntityAIBase
             if (!Vector3.isVisibleEntityFromEntity(trainer, trainer.getTarget()))
             {
                 angry = false;
+                trainer.setAIState(EntityTrainer.INBATTLE, true);
                 trainer.setTarget(null);
+                return;
             }
         }
         if (trainer instanceof EntityLeader)
@@ -196,9 +198,8 @@ public class EntityAITrainer extends EntityAIBase
     @Override
     public void updateTask()
     {
-        double distance = trainer.getDistanceSqToEntity(trainer.getTarget());
         trainer.faceEntity(trainer.getTarget(), trainer.rotationPitch, trainer.rotationYaw);
-        if (distance > 100 || trainer.cooldown > 0)
+        if (trainer.cooldown > 0)
         {
             if (trainer.cooldown == Config.instance.trainerSendOutDelay - 1)
             {
@@ -216,6 +217,14 @@ public class EntityAITrainer extends EntityAIBase
                     trainer.getTarget().addChatMessage(new TextComponentTranslation("pokecube.trainer.next",
                             trainer.getDisplayName(), next.getPokemonDisplayName()));
             }
+            return;
+        }
+        if (trainer.getTarget() == null) return;
+        double distance = trainer.getDistanceSqToEntity(trainer.getTarget());
+        if (distance > 256 && trainer.cooldown < -300)
+        {
+            System.out.println("Too Far");
+            trainer.setTarget(null);
         }
         else if (trainer.outMob != null)
         {

@@ -16,6 +16,7 @@ import org.lwjgl.input.Keyboard;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
+import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -36,7 +37,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.ISnooperInfo;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
@@ -58,7 +58,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.CommonProxyPokecube;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.blocks.berries.BlockBerryLeaf;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.healtable.TileHealTable;
@@ -168,10 +167,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
         if (guiID == Config.GUIPOKECENTER_ID)
         {
-            TileEntity tile_entity = world.getTileEntity(pos);
-
-            if (tile_entity instanceof TileHealTable) { return new GuiHealTable(player.inventory,
-                    (TileHealTable) tile_entity); }
+            return new GuiHealTable(player.inventory);
         }
         else
         {
@@ -228,11 +224,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             }
         }
 
-        if (guiID == Config.GUICHOOSEFIRSTPOKEMOB_ID)
-        {
-            boolean fixed = false;
-            return new GuiChooseFirstPokemob(null, fixed);
-        }
+        if (guiID == Config.GUICHOOSEFIRSTPOKEMOB_ID) { return new GuiChooseFirstPokemob(null); }
         return null;
     }
 
@@ -501,7 +493,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelLoader.setCustomStateMapper(BerryManager.berryFruit, map);
 
         map = (new StateMap.Builder())
-                .ignore(new IProperty[] { BerryManager.type, BlockBerryLeaf.CHECK_DECAY, BlockBerryLeaf.DECAYABLE })
+                .ignore(new IProperty[] { BerryManager.type, BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE })
                 .build();
         ModelLoader.setCustomStateMapper(BerryManager.berryLeaf, map);
 

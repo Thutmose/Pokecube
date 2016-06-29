@@ -34,24 +34,6 @@ public class ItemMegastone extends Item
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        String name = super.getUnlocalizedName(stack);
-        if (stack.hasTagCompound())
-        {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "megastone";
-            if (tag != null)
-            {
-                String stackname = tag.getString("pokemon");
-                variant = stackname.toLowerCase();
-            }
-            name = "item." + variant;
-        }
-        return name;
-    }
-
-    @Override
     /** If this function returns true (or the item is damageable), the
      * ItemStack's NBT tag will be sent to the client. */
     public boolean getShareTag()
@@ -74,5 +56,23 @@ public class ItemMegastone extends Item
             stack.getTagCompound().setString("pokemon", s);
             subItems.add(stack);
         }
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        String name = super.getUnlocalizedName(stack);
+        if (stack.hasTagCompound())
+        {
+            NBTTagCompound tag = stack.getTagCompound();
+            String variant = "megastone";
+            if (tag != null)
+            {
+                String stackname = tag.getString("pokemon");
+                variant = stackname.toLowerCase();
+            }
+            name = "item." + variant;
+        }
+        return name;
     }
 }

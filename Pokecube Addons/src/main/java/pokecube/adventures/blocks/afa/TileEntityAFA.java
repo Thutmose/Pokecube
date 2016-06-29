@@ -170,16 +170,6 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         return "afa";
     }
 
-    /** Overriden in a sign to provide the text. */
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
     @Override
     public ITextComponent getDisplayName()
     {
@@ -265,6 +255,23 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         if (inventory[index] != null && inventory[index].stackSize <= 0) inventory[index] = null;
 
         return inventory[index];
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+        return writeToNBT(nbt);
     }
 
     @Override
@@ -552,12 +559,5 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         nbt.setInteger("distance", distance);
         nbt.setBoolean("noEnergy", noEnergy);
         return storage.writeToNBT(nbt);
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag()
-    {
-        NBTTagCompound nbt = new NBTTagCompound();
-        return writeToNBT(nbt);
     }
 }

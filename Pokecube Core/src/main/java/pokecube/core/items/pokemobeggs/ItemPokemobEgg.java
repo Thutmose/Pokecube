@@ -476,6 +476,17 @@ public class ItemPokemobEgg extends Item
         this.setCreativeTab(null);
     }
 
+    /** allows items to add custom lines of information to the mouseover
+     * description */
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    {
+        int pokedexNb = getNumber(stack);
+        PokedexEntry entry = Pokedex.getInstance().getEntry(pokedexNb);
+        if (entry != null) tooltip.add(1, I18n.format("pokemobEggnamed.name", I18n.format(entry.getUnlocalizedName())));
+    }
+
     public boolean dropEgg(World world, ItemStack stack, Vector3 location, Entity placer)
     {
         if (!PokecubeMod.pokemobEggs.containsKey(getNumber(stack))) { return false; }
@@ -498,17 +509,6 @@ public class ItemPokemobEgg extends Item
     {
         String s = "pokemobEgg";
         return s;
-    }
-
-    /** allows items to add custom lines of information to the mouseover
-     * description */
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
-    {
-        int pokedexNb = getNumber(stack);
-        PokedexEntry entry = Pokedex.getInstance().getEntry(pokedexNb);
-        if (entry != null) tooltip.add(1, I18n.format("pokemobEggnamed.name", I18n.format(entry.getUnlocalizedName())));
     }
 
     /** Callback for item usage. If the item does something special on right

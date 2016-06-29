@@ -27,54 +27,6 @@ import pokecube.core.utils.PokeType;
 
 public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityProvider
 {
-    private static ITheOneProbe probe;
-    IElementFactory             factory;
-    private static int          ELEMENT;
-
-    public TheOneProbeCompat()
-    {
-        probe = TheOneProbe.theOneProbeImp;
-        probe.registerProvider(this);
-        probe.registerEntityProvider(this);
-
-        factory = new IElementFactory()
-        {
-            @Override
-            public IElement createElement(ByteBuf buf)
-            {
-                return new Element(buf);
-            }
-        };
-        ELEMENT = probe.registerElementFactory(factory);
-    }
-
-    @Override
-    public String getID()
-    {
-        return "pokecube_compat";
-    }
-
-    @Override
-    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world,
-            IBlockState blockState, IProbeHitData data)
-    {
-        // TODO Auto-generated method stub
-        // System.out.println(mode+" "+player+" "+blockState);
-    }
-
-    public void GetTheOneProbe(ITheOneProbe in)
-    {
-        probe = in;
-        System.out.println(in);
-    }
-
-    @Override
-    public void addProbeEntityInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world,
-            Entity entity, IProbeHitEntityData data)
-    {
-        if (entity instanceof IPokemob) probeInfo.element(new Element((IPokemob) entity, player));
-    }
-
     private static class Element implements IElement
     {
         PokedexEntry entry;
@@ -96,6 +48,24 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
             int hatched = EggStats.getTotalNumberOfPokemobHatchedBy(player.getUniqueID().toString(), pokemob.getPokedexEntry());
             have = caught + hatched;
             killed = KillStats.getTotalNumberOfPokemobKilledBy(player.getUniqueID().toString(), pokemob.getPokedexEntry());
+        }
+
+        @Override
+        public int getHeight()
+        {
+            return 20;
+        }
+
+        @Override
+        public int getID()
+        {
+            return ELEMENT;
+        }
+
+        @Override
+        public int getWidth()
+        {
+            return 100;
         }
 
         @Override
@@ -123,18 +93,6 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
         }
 
         @Override
-        public int getWidth()
-        {
-            return 100;
-        }
-
-        @Override
-        public int getHeight()
-        {
-            return 20;
-        }
-
-        @Override
         public void toBytes(ByteBuf buf)
         {
             PacketBuffer buffer = new PacketBuffer(buf);
@@ -143,11 +101,53 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
             buffer.writeString(entry.getName());
         }
 
-        @Override
-        public int getID()
-        {
-            return ELEMENT;
-        }
+    }
+    private static ITheOneProbe probe;
+    private static int          ELEMENT;
 
+    IElementFactory             factory;
+
+    public TheOneProbeCompat()
+    {
+        probe = TheOneProbe.theOneProbeImp;
+        probe.registerProvider(this);
+        probe.registerEntityProvider(this);
+
+        factory = new IElementFactory()
+        {
+            @Override
+            public IElement createElement(ByteBuf buf)
+            {
+                return new Element(buf);
+            }
+        };
+        ELEMENT = probe.registerElementFactory(factory);
+    }
+
+    @Override
+    public void addProbeEntityInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world,
+            Entity entity, IProbeHitEntityData data)
+    {
+        if (entity instanceof IPokemob) probeInfo.element(new Element((IPokemob) entity, player));
+    }
+
+    @Override
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world,
+            IBlockState blockState, IProbeHitData data)
+    {
+        // TODO Auto-generated method stub
+        // System.out.println(mode+" "+player+" "+blockState);
+    }
+
+    @Override
+    public String getID()
+    {
+        return "pokecube_compat";
+    }
+
+    public void GetTheOneProbe(ITheOneProbe in)
+    {
+        probe = in;
+        System.out.println(in);
     }
 }

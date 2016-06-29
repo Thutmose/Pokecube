@@ -9,15 +9,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class ItemFossil extends Item
 {
     public ItemFossil()
     {
         super();
-        this.setCreativeTab(PokecubeCore.creativeTabPokecube);
+        this.setCreativeTab(PokecubeMod.creativeTabPokecube);
         this.setHasSubtypes(true);
     }
 
@@ -32,24 +32,6 @@ public class ItemFossil extends Item
             String s = stack.getTagCompound().getString("pokemon");
             list.add(s);
         }
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        String name = super.getUnlocalizedName();
-        if (stack.hasTagCompound())
-        {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "fossil";
-            if (tag != null)
-            {
-                String stackname = tag.getString("pokemon");
-                variant = stackname.toLowerCase();
-            }
-            name = "item." + variant;
-        }
-        return name;
     }
 
     @Override
@@ -74,5 +56,23 @@ public class ItemFossil extends Item
             stack.getTagCompound().setString("pokemon", s);
             subItems.add(stack);
         }
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        String name = super.getUnlocalizedName();
+        if (stack.hasTagCompound())
+        {
+            NBTTagCompound tag = stack.getTagCompound();
+            String variant = "fossil";
+            if (tag != null)
+            {
+                String stackname = tag.getString("pokemon");
+                variant = stackname.toLowerCase();
+            }
+            name = "item." + variant;
+        }
+        return name;
     }
 }

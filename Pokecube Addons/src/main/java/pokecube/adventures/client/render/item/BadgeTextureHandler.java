@@ -33,12 +33,6 @@ public class BadgeTextureHandler
         return new ModelResourceLocation(new ResourceLocation("pokecube_adventures", "item/badge"), "type=" + name.toLowerCase());
     }
 
-    private static void registerItemVariant(String variant)
-    {
-        ModelBakery.registerItemVariants(ItemHandler.badges,
-                new ModelResourceLocation(new ResourceLocation("pokecube_adventures", "item/badge"), variant));
-    }
-
     public static void registerItemModels()
     {
         ModelLoader.setCustomMeshDefinition(ItemHandler.badges, new MegaStone());
@@ -46,5 +40,11 @@ public class BadgeTextureHandler
         {
             registerItemVariant("type=" + s);
         }
+    }
+
+    private static void registerItemVariant(String variant)
+    {
+        ModelBakery.registerItemVariants(ItemHandler.badges,
+                new ModelResourceLocation(new ResourceLocation("pokecube_adventures", "item/badge"), variant));
     }
 }

@@ -18,7 +18,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.blocks.healtable.ContainerHealTable;
-import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.TileEntityPC;
 import pokecube.core.blocks.tradingTable.BlockTradingTable;
@@ -81,13 +80,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     @Override
     public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (id == Config.GUIPOKECENTER_ID)
-        {
-            TileEntity tile_entity = world.getTileEntity(new BlockPos(x, y, z));
-
-            if (tile_entity instanceof TileHealTable) { return new ContainerHealTable((TileHealTable) tile_entity,
-                    player.inventory); }
-        }
+        if (id == Config.GUIPOKECENTER_ID) { return new ContainerHealTable(player.inventory); }
         if (id == Config.GUIPOKEMOB_ID)
         {
             IPokemob e = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, x, true);

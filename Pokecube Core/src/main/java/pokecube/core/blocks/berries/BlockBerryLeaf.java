@@ -51,16 +51,12 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     }
 
     @Override
-    public EnumType getWoodType(int meta)
+    /** Get the actual Block state of this Block at the given position. This
+     * applies properties not visible in the metadata, such as fence
+     * connections. */
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
-        return EnumType.OAK;
-    }
-
-    @Override
-    /** Get the Item that this Block should drop when harvested. */
-    public Item getItemDropped(IBlockState state, Random rand, int fortune)
-    {
-        return null;
+        return Blocks.LEAVES.getDefaultState();
     }
 
     @SideOnly(Side.CLIENT)
@@ -68,31 +64,6 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.CUTOUT_MIPPED;
-    }
-
-    @Override
-    public boolean isVisuallyOpaque()
-    {
-        return false;
-    }
-
-    @Override
-    /** Used to determine ambient occlusion and culling when rebuilding chunks
-     * for render */
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
-
-    @Override
-    public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
-    {
-        List<ItemStack> ret = Lists.newArrayList();
-        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
-        String berry = BerryManager.berryNames.get(tile.getBerryId());
-        ItemStack stack = BerryManager.getBerryItem(berry);
-        ret.add(stack);
-        return ret;
     }
 
     @Override
@@ -127,26 +98,10 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     }
 
     @Override
-    /** Called when a user uses the creative pick block button on this block
-     *
-     * @param target
-     *            The full target the player is looking at
-     * @return A ItemStack to add to the player's inventory, Null if nothing
-     *         should be added. */
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
-            EntityPlayer player)
+    /** Get the Item that this Block should drop when harvested. */
+    public Item getItemDropped(IBlockState state, Random rand, int fortune)
     {
-        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
-        return BerryManager.getBerryItem(tile.getBerryId());
-    }
-
-    @Override
-    /** Get the actual Block state of this Block at the given position. This
-     * applies properties not visible in the metadata, such as fence
-     * connections. */
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
-    {
-        return Blocks.LEAVES.getDefaultState();
+        return null;
     }
 
     @Override
@@ -169,11 +124,56 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
     }
 
     @Override
+    /** Called when a user uses the creative pick block button on this block
+     *
+     * @param target
+     *            The full target the player is looking at
+     * @return A ItemStack to add to the player's inventory, Null if nothing
+     *         should be added. */
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
+            EntityPlayer player)
+    {
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        return BerryManager.getBerryItem(tile.getBerryId());
+    }
+
+    @Override
     /** Convert the given metadata into a BlockState for this Block */
     public IBlockState getStateFromMeta(int meta)
     {
         return this.getDefaultState().withProperty(DECAYABLE, Boolean.valueOf((meta & 4) == 0))
                 .withProperty(CHECK_DECAY, Boolean.valueOf((meta & 8) > 0));
+    }
+
+    @Override
+    public EnumType getWoodType(int meta)
+    {
+        return EnumType.OAK;
+    }
+
+    @Override
+    /** Used to determine ambient occlusion and culling when rebuilding chunks
+     * for render */
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isVisuallyOpaque()
+    {
+        return false;
+    }
+
+    @Override
+    public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
+    {
+        List<ItemStack> ret = Lists.newArrayList();
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        String berry = BerryManager.berryNames.get(tile.getBerryId());
+        ItemStack stack = BerryManager.getBerryItem(berry);
+        ret.add(stack);
+        return ret;
     }
 
 }

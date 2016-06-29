@@ -86,16 +86,16 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
 
         if(recipeWrapper instanceof ClonerRecipeWrapper)
         {
-            ClonerRecipeWrapper clonerwrapper = (ClonerRecipeWrapper) recipeWrapper;
+            ClonerRecipeWrapper clonerwrapper = recipeWrapper;
             if(clonerwrapper.isVanilla())
             {
-                ICraftingRecipeWrapper wrapper = (ICraftingRecipeWrapper) recipeWrapper;
+                ICraftingRecipeWrapper wrapper = recipeWrapper;
                 craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());
                 craftingGridHelper.setOutput(guiItemStacks, wrapper.getOutputs());
             }
             else
             {
-                ICraftingRecipeWrapper wrapper = (ICraftingRecipeWrapper) recipeWrapper;
+                ICraftingRecipeWrapper wrapper = recipeWrapper;
                 craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());
                 
             }

@@ -54,16 +54,6 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         return "warppad";
     }
 
-    /** Overriden in a sign to provide the text. */
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
     @Callback(doc = "Returns the current 4-vector destination")
     @Optional.Method(modid = "OpenComputers")
     public Object[] getDestination(Context context, Arguments args) throws Exception
@@ -82,6 +72,16 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
     public int getMaxEnergyStored(EnumFacing facing)
     {
         return storage.getMaxEnergyStored();
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
 
     /** Called when you receive a TileEntityData packet for the location this

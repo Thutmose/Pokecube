@@ -26,8 +26,9 @@ import pokecube.core.utils.PokecubeSerializer;
 
 public class BlockPokecubeTable extends Block implements ITileEntityProvider
 {
-//    private ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[0],
-//            new IUnlistedProperty[] { OBJModel.OBJProperty.INSTANCE });
+    // private ExtendedBlockState state = new ExtendedBlockState(this, new
+    // IProperty[0],
+    // new IUnlistedProperty[] { OBJModel.OBJProperty.INSTANCE });
 
     public BlockPokecubeTable()
     {
@@ -86,6 +87,8 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                 ByteBuf buf = Unpooled.buffer();
                 buf.writeByte(PokecubeClientPacket.CHOOSE1ST);
                 buf.writeBoolean(true);
+                buf.writeBoolean(
+                        PokecubePacketHandler.specialStarters.containsKey(playerIn.getName().toLowerCase()));
 
                 ArrayList<Integer> starters = new ArrayList<Integer>();
                 TileEntity te = playerIn.worldObj.getTileEntity(pos.down(2));
@@ -106,11 +109,11 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                         }
                     }
                 }
+                buf.writeInt(starters.size());
                 for (Integer i : starters)
                 {
                     buf.writeInt(i);
                 }
-
                 PokecubeClientPacket packet = new PokecubeClientPacket(buf);
                 PokecubePacketHandler.sendToClient(packet, playerIn);
             }

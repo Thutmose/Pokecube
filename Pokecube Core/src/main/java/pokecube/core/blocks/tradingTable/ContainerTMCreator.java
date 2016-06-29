@@ -73,7 +73,7 @@ public class ContainerTMCreator extends Container
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot) this.inventorySlots.get(index);
+        Slot slot = this.inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack())
         {

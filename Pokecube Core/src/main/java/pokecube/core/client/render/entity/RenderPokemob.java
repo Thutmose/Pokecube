@@ -113,13 +113,13 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 worldrenderer.pos(0.0D, 0.0D, 0.0D)
                         .color(col1.getRed(), col1.getGreen(), col1.getBlue(), (int) (255.0F * (1.0F - f1)))
                         .endVertex();
-                worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3)
                         .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-                worldrenderer.pos(0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                worldrenderer.pos(0.866D * f3, f4, -0.5F * f3)
                         .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-                worldrenderer.pos(0.0D, (double) f4, (double) (1.0F * f3))
+                worldrenderer.pos(0.0D, f4, 1.0F * f3)
                         .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-                worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3)
                         .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
                 tessellator.draw();
             }
@@ -235,13 +235,13 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             worldrenderer.begin(6, DefaultVertexFormats.POSITION_COLOR);
             worldrenderer.pos(0.0D, 0.0D, 0.0D)
                     .color(col1.getRed(), col1.getGreen(), col1.getBlue(), (int) (255.0F * (1.0F - f1))).endVertex();
-            worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+            worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3)
                     .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-            worldrenderer.pos(0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+            worldrenderer.pos(0.866D * f3, f4, -0.5F * f3)
                     .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-            worldrenderer.pos(0.0D, (double) f4, (double) (1.0F * f3))
+            worldrenderer.pos(0.0D, f4, 1.0F * f3)
                     .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-            worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+            worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3)
                     .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
             tessellator.draw();
         }

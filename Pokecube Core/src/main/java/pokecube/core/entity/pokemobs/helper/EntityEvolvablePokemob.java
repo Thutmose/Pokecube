@@ -49,6 +49,24 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     }
 
     @Override
+    public void cancelEvolve()
+    {
+        if (!isEvolving()) return;
+        if (worldObj.isRemote)
+        {
+            MessageServer message = new MessageServer(MessageServer.CANCELEVOLVE, getEntityId());
+            PokecubePacketHandler.sendToServer(message);
+            return;
+        }
+        evolving = false;
+        setEvolutionTicks(-1);
+        this.setPokemonAIState(EVOLVING, false);
+        // TODO decide if it should refund itemstacks.
+        this.displayMessageToOwner(
+                new TextComponentTranslation("pokemob.evolution.cancel", this.getPokemonDisplayName()));
+    }
+
+    @Override
     public boolean canEvolve(ItemStack itemstack)
     {
         if (itemstack != null && Tools.isSameStack(itemstack, PokecubeItems.getStack("everstone"))) return false;
@@ -158,7 +176,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 {
                     if (stack != null) this.stack = stack.copy();
                     else stack = null;
-                    this.setEvolutionTicks(PokecubeCore.core.getConfig().evolutionTicks + 50);
+                    this.setEvolutionTicks(PokecubeMod.core.getConfig().evolutionTicks + 50);
                     this.setEvol(evol.getPokedexNb());
                     this.setPokemonAIState(EVOLVING, true);
                     evolving = true;
@@ -198,6 +216,31 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
         }
         return null;
+    }
+
+    public int getEvolNumber()
+    {
+        return dataManager.get(EVOLNBDW);
+    }
+
+    /** @return the evolutionTicks */
+    @Override
+    public int getEvolutionTicks()
+    {
+        return dataManager.get(EVOLTICKDW);
+    }
+
+    @Override
+    public boolean isEvolving()
+    {
+        return evolving || this.getPokemonAIState(EVOLVING);
+    }
+
+    /** Returns whether the entity is in a server world */
+    @Override
+    public boolean isServerWorld()
+    {
+        return worldObj != null && super.isServerWorld();
     }
 
     void makeShedinja(IPokemob evo, EntityPlayer player)
@@ -244,25 +287,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 }
             }
         }
-    }
-
-    public int getEvolNumber()
-    {
-        return dataManager.get(EVOLNBDW);
-    }
-
-    /** @return the evolutionTicks */
-    @Override
-    public int getEvolutionTicks()
-    {
-        return dataManager.get(EVOLTICKDW);
-    }
-
-    /** Returns whether the entity is in a server world */
-    @Override
-    public boolean isServerWorld()
-    {
-        return worldObj != null && super.isServerWorld();
     }
 
     @Override
@@ -344,30 +368,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         if (PokecubeSerializer.getInstance().getPokemob(getPokemonUID()) == null)
             PokecubeSerializer.getInstance().addPokemob(this);
         super.onLivingUpdate();
-    }
-
-    @Override
-    public boolean isEvolving()
-    {
-        return evolving || this.getPokemonAIState(EVOLVING);
-    }
-
-    @Override
-    public void cancelEvolve()
-    {
-        if (!isEvolving()) return;
-        if (worldObj.isRemote)
-        {
-            MessageServer message = new MessageServer(MessageServer.CANCELEVOLVE, getEntityId());
-            PokecubePacketHandler.sendToServer(message);
-            return;
-        }
-        evolving = false;
-        setEvolutionTicks(-1);
-        this.setPokemonAIState(EVOLVING, false);
-        // TODO decide if it should refund itemstacks.
-        this.displayMessageToOwner(
-                new TextComponentTranslation("pokemob.evolution.cancel", this.getPokemonDisplayName()));
     }
 
     @Override

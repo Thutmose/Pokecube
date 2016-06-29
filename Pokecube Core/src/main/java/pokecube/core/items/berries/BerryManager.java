@@ -30,27 +30,27 @@ public class BerryManager implements IMoveConstants
     public static final IProperty<String> type          = new IProperty<String>()
                                                         {
                                                             @Override
-                                                            public String getName()
-                                                            {
-                                                                return "type";
-                                                            }
-
-                                                            @Override
                                                             public Collection<String> getAllowedValues()
                                                             {
                                                                 return BerryManager.berryNames.values();
                                                             }
 
                                                             @Override
-                                                            public Class<String> getValueClass()
+                                                            public String getName()
                                                             {
-                                                                return String.class;
+                                                                return "type";
                                                             }
 
                                                             @Override
                                                             public String getName(String value)
                                                             {
                                                                 return value;
+                                                            }
+
+                                                            @Override
+                                                            public Class<String> getValueClass()
+                                                            {
+                                                                return String.class;
                                                             }
 
                                                             @Override

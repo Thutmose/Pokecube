@@ -1,23 +1,15 @@
 package pokecube.adventures.events;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.PokecubeItems;
-import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.StarterInfo;
-import pokecube.core.utils.PCSaveHandler;
 
 public class PAEventsHandler
 {
@@ -29,81 +21,9 @@ public class PAEventsHandler
     }
 
     @SubscribeEvent
-    public void PlayerStarter(StarterEvent evt)
+    public void PlayerStarter(StarterEvent.Pick evt)
     {
-        String playerName = evt.player.getName().toLowerCase();
-        if (evt.starterPack == null)
-        {
-            if (PokecubePacketHandler.specialStarters.containsKey(playerName))
-            {
-                StarterInfo[] info = PokecubePacketHandler.specialStarters.get(playerName);
-                for (StarterInfo i : info)
-                {
-                    if (i == null || i.name == null)
-                    {
-                        evt.setCanceled(true);
-                    }
-                }
-            }
-            return;
-        }
-
-        if (!PokecubePacketHandler.specialStarters.containsKey(playerName))
-        {
-            ItemStack[] temp = evt.starterPack.clone();
-            evt.starterPack = new ItemStack[temp.length + 1];
-            for (int i = 0; i < temp.length; i++)
-                evt.starterPack[i] = temp[i];
-            evt.starterPack[temp.length] = PokecubeItems.getStack("pokecubebag");
-            return;
-        }
-
-        ItemStack[] temp = evt.starterPack.clone();
-        evt.starterPack = new ItemStack[temp.length + 1];
-        for (int i = 0; i < temp.length; i++)
-            evt.starterPack[i] = temp[i];
-        evt.starterPack[temp.length] = PokecubeItems.getStack("pokecubebag");
-
-        if (!evt.player.worldObj.isRemote)
-        {
-            List<ItemStack> toPC = new ArrayList<ItemStack>();
-            ItemStack starter = null;
-            boolean replaced = false;
-
-            if (PokecubePacketHandler.specialStarters.containsKey(playerName))
-            {
-                StarterInfo[] info = PokecubePacketHandler.specialStarters.get(playerName);
-                for (StarterInfo i : info)
-                {
-                    if (i != null && i.name != null)
-                    {
-                        replaced = true;
-                    }
-                }
-            }
-
-            if (!replaced) for (int i = 0; i < evt.starterPack.length; i++)
-            {
-                ItemStack e = evt.starterPack[i];
-                int num;
-                if ((num = PokecubeManager.getPokedexNb(e)) > 0 && num != evt.pick)
-                {
-                    if (e != starter) toPC.add(e);
-                    evt.starterPack[i] = null;
-                    if (!replaced)
-                    {
-                        replaced = true;
-                        evt.starterPack[i] = starter;
-                    }
-                }
-            }
-
-            for (ItemStack e : toPC)
-            {
-                InventoryPC.addStackToPC(evt.player.getUniqueID().toString(), e);
-            }
-            PCSaveHandler.getInstance().savePC(evt.player.getUniqueID().toString());
-        }
+        evt.starterPack.add(PokecubeItems.getStack("pokecubebag"));
     }
 
     @SubscribeEvent

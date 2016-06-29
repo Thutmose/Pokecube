@@ -38,6 +38,7 @@ public class EntityPokemartSeller extends EntityTrainer
         friendlyCooldown = Integer.MAX_VALUE;
     }
 
+    @Override
     protected void addRandomTrades()
     {
         itemList.clear();
@@ -122,6 +123,7 @@ public class EntityPokemartSeller extends EntityTrainer
         }
     }
 
+    @Override
     protected void initAI(Vector3 location, boolean stationary)
     {
         this.tasks.addTask(0, new EntityAISwimming(this));

@@ -29,6 +29,50 @@ import pokecube.core.utils.ChunkCoordinate;
 public class TeamManager
 {
 
+    public static class Invites
+    {
+        public Set<String> teams = Sets.newHashSet();
+    }
+
+    public static class PokeTeam
+    {
+        public static PokeTeam loadFromNBT(NBTTagCompound nbt)
+        {
+            if (!nbt.hasKey("name")) return null;
+            PokeTeam team = new PokeTeam(nbt.getString("name"));
+            team.land.loadFromNBT(nbt.getCompoundTag("land"));
+            NBTTagList adminList = nbt.getTagList("admins", 10);
+            for (int i = 0; i < adminList.tagCount(); i++)
+            {
+                team.admins.add(adminList.getCompoundTagAt(i).getString("N"));
+            }
+            return team;
+        }
+
+        TeamLand     land   = new TeamLand();
+        final String teamName;
+        Set<String>  admins = Sets.newHashSet();
+
+        public PokeTeam(String name)
+        {
+            teamName = name;
+        }
+
+        public void writeToNBT(NBTTagCompound nbt)
+        {
+            nbt.setString("name", teamName);
+            nbt.setTag("land", land.saveToNBT());
+            NBTTagList adminList = new NBTTagList();
+            for (String s : admins)
+            {
+                NBTTagCompound tag = new NBTTagCompound();
+                tag.setString("N", s);
+                adminList.appendTag(tag);
+            }
+            nbt.setTag("admins", adminList);
+        }
+    }
+
     public static class TeamLand
     {
         HashSet<ChunkCoordinate> land = Sets.newHashSet();
@@ -38,14 +82,27 @@ public class TeamManager
             return this.land.add(land);
         }
 
-        public boolean removeLand(ChunkCoordinate land)
-        {
-            return this.land.remove(land);
-        }
-
         public int countLand()
         {
             return land.size();
+        }
+
+        public void loadFromNBT(NBTTagCompound tag)
+        {
+            NBTTagList list = tag.getTagList("Land", 10);
+            for (int i = 0; i < list.tagCount(); i++)
+            {
+                NBTTagCompound landTag = list.getCompoundTagAt(i);
+                int[] loc = landTag.getIntArray("Location");
+                if (loc.length != 4) continue;
+                ChunkCoordinate c = new ChunkCoordinate(loc[0], loc[1], loc[2], loc[3]);
+                land.add(c);
+            }
+        }
+
+        public boolean removeLand(ChunkCoordinate land)
+        {
+            return this.land.remove(land);
         }
 
         public NBTTagCompound saveToNBT()
@@ -61,63 +118,6 @@ public class TeamManager
             tag.setTag("Land", list);
             return tag;
         }
-
-        public void loadFromNBT(NBTTagCompound tag)
-        {
-            NBTTagList list = tag.getTagList("Land", 10);
-            for (int i = 0; i < list.tagCount(); i++)
-            {
-                NBTTagCompound landTag = list.getCompoundTagAt(i);
-                int[] loc = landTag.getIntArray("Location");
-                if (loc.length != 4) continue;
-                ChunkCoordinate c = new ChunkCoordinate(loc[0], loc[1], loc[2], loc[3]);
-                land.add(c);
-            }
-        }
-    }
-
-    public static class PokeTeam
-    {
-        public PokeTeam(String name)
-        {
-            teamName = name;
-        }
-
-        TeamLand     land   = new TeamLand();
-        final String teamName;
-        Set<String>  admins = Sets.newHashSet();
-
-        public void writeToNBT(NBTTagCompound nbt)
-        {
-            nbt.setString("name", teamName);
-            nbt.setTag("land", land.saveToNBT());
-            NBTTagList adminList = new NBTTagList();
-            for (String s : admins)
-            {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setString("N", s);
-                adminList.appendTag(tag);
-            }
-            nbt.setTag("admins", adminList);
-        }
-
-        public static PokeTeam loadFromNBT(NBTTagCompound nbt)
-        {
-            if (!nbt.hasKey("name")) return null;
-            PokeTeam team = new PokeTeam(nbt.getString("name"));
-            team.land.loadFromNBT(nbt.getCompoundTag("land"));
-            NBTTagList adminList = nbt.getTagList("admins", 10);
-            for (int i = 0; i < adminList.tagCount(); i++)
-            {
-                team.admins.add(adminList.getCompoundTagAt(i).getString("N"));
-            }
-            return team;
-        }
-    }
-
-    public static class Invites
-    {
-        public Set<String> teams = Sets.newHashSet();
     }
 
     private static TeamManager instance;
@@ -254,6 +254,17 @@ public class TeamManager
         return landMap.get(land);
     }
 
+    private PokeTeam getTeam(String name, boolean create)
+    {
+        PokeTeam team = teamMap.get(name);
+        if (team == null && create)
+        {
+            team = new PokeTeam(name);
+            teamMap.put(name, team);
+        }
+        return team;
+    }
+
     public List<ChunkCoordinate> getTeamLand(String team)
     {
         ArrayList<ChunkCoordinate> ret = new ArrayList<ChunkCoordinate>();
@@ -306,6 +317,39 @@ public class TeamManager
         return false;
     }
 
+    public void loadFromNBT(NBTTagCompound nbt)
+    {
+        NBTBase base;
+        if (((base = nbt.getTag("PublicBlocks")) instanceof NBTTagList))
+        {
+            NBTTagList tagList = (NBTTagList) base;
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound landTag = tagList.getCompoundTagAt(i);
+                int[] loc = landTag.getIntArray("Location");
+                if (loc.length != 4) continue;
+                ChunkCoordinate c = new ChunkCoordinate(loc[0], loc[1], loc[2], loc[3]);
+                publicBlocks.add(c);
+            }
+        }
+        if (((base = nbt.getTag("Invites")) instanceof NBTTagList))
+        {
+            NBTTagList tagList = (NBTTagList) base;
+            for (int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                String name = tag.getString("name");
+                Invites invites;
+                inviteMap.put(name, invites = new Invites());
+                NBTTagList teams = tag.getTagList("teams", 10);
+                for (int i1 = 0; i1 < teams.tagCount(); i1++)
+                {
+                    invites.teams.add(teams.getCompoundTagAt(i1).getString("T"));
+                }
+            }
+        }
+    }
+
     public void loadFromNBTOld(NBTTagCompound nbt)
     {
         if ((nbt.getTag("LandMap") instanceof NBTTagList))
@@ -351,6 +395,12 @@ public class TeamManager
                 publicBlocks.add(c);
             }
         }
+    }
+
+    public void loadTeamFromNBT(NBTTagCompound nbt)
+    {
+        PokeTeam team = PokeTeam.loadFromNBT(nbt);
+        if (team != null) teamMap.put(team.teamName, team);
     }
 
     public void removeFromAdmins(String admin, String team)
@@ -405,6 +455,15 @@ public class TeamManager
         }
     }
 
+    public void saveTeamToNBT(String team, NBTTagCompound nbt)
+    {
+        PokeTeam t = getTeam(team, false);
+        if (t != null)
+        {
+            t.writeToNBT(nbt);
+        }
+    }
+
     public void saveToNBT(NBTTagCompound nbt)
     {
         NBTTagList tagList = new NBTTagList();
@@ -432,65 +491,6 @@ public class TeamManager
             tagList.appendTag(tag);
         }
         nbt.setTag("Invites", tagList);
-    }
-
-    public void loadFromNBT(NBTTagCompound nbt)
-    {
-        NBTBase base;
-        if (((base = nbt.getTag("PublicBlocks")) instanceof NBTTagList))
-        {
-            NBTTagList tagList = (NBTTagList) base;
-            for (int i = 0; i < tagList.tagCount(); i++)
-            {
-                NBTTagCompound landTag = tagList.getCompoundTagAt(i);
-                int[] loc = landTag.getIntArray("Location");
-                if (loc.length != 4) continue;
-                ChunkCoordinate c = new ChunkCoordinate(loc[0], loc[1], loc[2], loc[3]);
-                publicBlocks.add(c);
-            }
-        }
-        if (((base = nbt.getTag("Invites")) instanceof NBTTagList))
-        {
-            NBTTagList tagList = (NBTTagList) base;
-            for (int i = 0; i < tagList.tagCount(); i++)
-            {
-                NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                String name = tag.getString("name");
-                Invites invites;
-                inviteMap.put(name, invites = new Invites());
-                NBTTagList teams = tag.getTagList("teams", 10);
-                for (int i1 = 0; i1 < teams.tagCount(); i1++)
-                {
-                    invites.teams.add(teams.getCompoundTagAt(i1).getString("T"));
-                }
-            }
-        }
-    }
-
-    public void saveTeamToNBT(String team, NBTTagCompound nbt)
-    {
-        PokeTeam t = getTeam(team, false);
-        if (t != null)
-        {
-            t.writeToNBT(nbt);
-        }
-    }
-
-    public void loadTeamFromNBT(NBTTagCompound nbt)
-    {
-        PokeTeam team = PokeTeam.loadFromNBT(nbt);
-        if (team != null) teamMap.put(team.teamName, team);
-    }
-
-    private PokeTeam getTeam(String name, boolean create)
-    {
-        PokeTeam team = teamMap.get(name);
-        if (team == null && create)
-        {
-            team = new PokeTeam(name);
-            teamMap.put(name, team);
-        }
-        return team;
     }
 
     public void setPublic(ChunkCoordinate c)

@@ -91,24 +91,6 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        String name = super.getUnlocalizedName(stack);
-        if (stack.hasTagCompound())
-        {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "vitamin";
-            if (tag != null)
-            {
-                String stackname = tag.getString("vitamin");
-                variant = stackname.toLowerCase();
-            }
-            name = "item." + variant;
-        }
-        return name;
-    }
-
-    @Override
     /** If this function returns true (or the item is damageable), the
      * ItemStack's NBT tag will be sent to the client. */
     public boolean getShareTag()
@@ -130,5 +112,23 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
             stack.getTagCompound().setString("vitamin", s);
             subItems.add(stack);
         }
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        String name = super.getUnlocalizedName(stack);
+        if (stack.hasTagCompound())
+        {
+            NBTTagCompound tag = stack.getTagCompound();
+            String variant = "vitamin";
+            if (tag != null)
+            {
+                String stackname = tag.getString("vitamin");
+                variant = stackname.toLowerCase();
+            }
+            name = "item." + variant;
+        }
+        return name;
     }
 }

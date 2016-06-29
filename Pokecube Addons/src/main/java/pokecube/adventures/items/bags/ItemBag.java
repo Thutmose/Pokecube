@@ -26,21 +26,6 @@ public class ItemBag extends Item
         this.setHasSubtypes(true);
     }
 
-    @Override
-    public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
-    {
-        return armorType == EntityEquipmentSlot.CHEST;
-    }
-
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
-            EnumHand hand)
-    {
-        if (!world.isRemote) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj,
-                InventoryBag.getBag(player).getPage() + 1, 0, 0);
-        return super.onItemRightClick(itemstack, world, player, hand);
-    }
-
     /** allows items to add custom lines of information to the mouseover
      * description */
     @SideOnly(Side.CLIENT)
@@ -62,5 +47,20 @@ public class ItemBag extends Item
     public boolean getShareTag()
     {
         return true;
+    }
+
+    @Override
+    public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
+    {
+        return armorType == EntityEquipmentSlot.CHEST;
+    }
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
+            EnumHand hand)
+    {
+        if (!world.isRemote) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj,
+                InventoryBag.getBag(player).getPage() + 1, 0, 0);
+        return super.onItemRightClick(itemstack, world, player, hand);
     }
 }

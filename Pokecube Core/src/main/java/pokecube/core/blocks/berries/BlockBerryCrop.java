@@ -69,6 +69,12 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
     }
 
     @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        return BUSH_AABB;
+    }
+
+    @Override
     /** This returns a complete list of items dropped from this block.
      *
      * @param world
@@ -130,10 +136,5 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
     {
-    }
-
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
-        return BUSH_AABB;
     }
 }

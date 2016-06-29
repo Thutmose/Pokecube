@@ -59,15 +59,6 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
         return "pokecubepc";
     }
 
-    /** Overriden in a sign to provide the text. */
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        this.writeToNBT(nbttagcompound);
-        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
     @Override
     public ITextComponent getDisplayName()
     {
@@ -136,6 +127,22 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
     {
         if (getPC() != null) { return getPC().getStackInSlot(i); }
         return null;
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        this.writeToNBT(nbttagcompound);
+        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+        return writeToNBT(nbt);
     }
 
     @Override
@@ -287,12 +294,5 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
         par1NBTTagCompound.setString("boundID", boundId);
         par1NBTTagCompound.setString("boundName", boundName);
         return par1NBTTagCompound;
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag()
-    {
-        NBTTagCompound nbt = new NBTTagCompound();
-        return writeToNBT(nbt);
     }
 }

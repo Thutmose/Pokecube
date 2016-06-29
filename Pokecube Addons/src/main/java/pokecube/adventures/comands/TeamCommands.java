@@ -59,44 +59,6 @@ public class TeamCommands implements ICommand
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @SubscribeEvent
-    public void livingUpdate(LivingUpdateEvent evt)
-    {
-        if (evt.getEntity().worldObj.isRemote || evt.getEntity().isDead || claimers.isEmpty()) return;
-
-        if (evt.getEntityLiving() instanceof EntityPlayer && claimers.containsKey(evt.getEntityLiving()))
-        {
-            boolean all = claimers.get(evt.getEntityLiving());
-            ScorePlayerTeam team = null;
-            team = evt.getEntityLiving().worldObj.getScoreboard().getPlayersTeam(evt.getEntityLiving().getName());
-            int num = all ? 16 : 1;
-            int n = 0;
-            for (int i = 0; i < num; i++)
-            {
-                int x = MathHelper.floor_double(evt.getEntityLiving().getPosition().getX() / 16f);
-                int y = MathHelper.floor_double(evt.getEntityLiving().getPosition().getY() / 16f) + i;
-                if (all) y = i;
-                int z = MathHelper.floor_double(evt.getEntityLiving().getPosition().getZ() / 16f);
-                int dim = evt.getEntityLiving().getEntityWorld().provider.getDimension();
-                if (y < 0 || y > 15) return;
-                String owner = TeamManager.getInstance().getLandOwner(new ChunkCoordinate(x, y, z, dim));
-                if (owner != null)
-                {
-                    if (owner.equals(team.getRegisteredName())) continue;
-                    continue;
-                }
-                n++;
-                TeamManager.getInstance().addTeamLand(team.getRegisteredName(), new ChunkCoordinate(x, y, z, dim),
-                        true);
-            }
-            if (n > 0)
-            {
-                evt.getEntityLiving().addChatMessage(
-                        new TextComponentString("Claimed This land for Team" + team.getRegisteredName()));
-            }
-        }
-    }
-
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
@@ -107,6 +69,320 @@ public class TeamCommands implements ICommand
     public int compareTo(ICommand arg0)
     {
         return 0;
+    }
+
+    private boolean doAddAdmin(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("admin") && team != null && !team.getRegisteredName().equalsIgnoreCase("Trainers"))
+        {
+            if (args.length > 1)
+            {
+                String player = args[1];
+                String teamName = team.getRegisteredName();
+                if (TeamManager.getInstance().isAdmin(sender.getName(), team))
+                {
+                    TeamManager.getInstance().addToAdmins(player, teamName);
+                    sender.addChatMessage(new TextComponentString(player + " added as an Admin for Team " + teamName));
+
+                }
+                else
+                {
+                    CommandTools.sendNoPermissions(sender);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean doClaim(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("claim") && team != null)
+        {
+            if (!TeamManager.getInstance().isAdmin(sender.getName(), team)
+                    || team.getRegisteredName().equalsIgnoreCase("Trainers"))
+            {
+                sender.addChatMessage(new TextComponentString("You are not Authorized to claim land for your team"));
+                return false;
+            }
+            int teamCount = team.getMembershipCollection().size();
+
+            int count = TeamManager.getInstance().countLand(team.getRegisteredName());
+
+            boolean up = false;
+            boolean all = false;
+            int num = 1;
+
+            if (args.length > 2)
+            {
+                try
+                {
+                    if (args[1].equalsIgnoreCase("up") || args[1].equalsIgnoreCase("down"))
+                    {
+                        num = Integer.parseInt(args[2]);
+                        up = args[1].equalsIgnoreCase("up");
+                    }
+                    if (args[1].equalsIgnoreCase("all"))
+                    {
+                        all = true;
+                        up = true;
+                        num = 16;
+                    }
+                }
+                catch (NumberFormatException e)
+                {
+                    // e.printStackTrace();
+                }
+            }
+            for (int i = 0; i < num; i++)
+            {
+                if (count < teamCount * TeamManager.maxLandCount || isOp)
+                {
+                    int dir = up ? 1 : -1;
+                    teamCount = team.getMembershipCollection().size();
+                    count = TeamManager.getInstance().countLand(team.getRegisteredName());
+
+                    int x = MathHelper.floor_double(sender.getPosition().getX() / 16f);
+                    int y = MathHelper.floor_double(sender.getPosition().getY() / 16f) + i * dir;
+                    if (all) y = i * dir;
+                    int z = MathHelper.floor_double(sender.getPosition().getZ() / 16f);
+                    int dim = sender.getEntityWorld().provider.getDimension();
+                    if (y < 0 || y > 15) continue;
+
+                    String owner = TeamManager.getInstance().getLandOwner(new ChunkCoordinate(x, y, z, dim));
+
+                    if (owner != null)
+                    {
+                        if (owner.equals(team.getRegisteredName())) continue;
+
+                        sender.addChatMessage(new TextComponentString("This land is already claimed by " + owner));
+                        return false;
+                    }
+                    sender.addChatMessage(
+                            new TextComponentString("Claimed This land for Team" + team.getRegisteredName()));
+                    TeamManager.getInstance().addTeamLand(team.getRegisteredName(), new ChunkCoordinate(x, y, z, dim),
+                            true);
+                    num--;
+                }
+                else
+                {
+                    num = 0;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean doKick(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("kick") && team != null && !team.getRegisteredName().equals("Trainers"))
+        {
+            if (args.length > 1)
+            {
+                String teamname = args[1];
+
+                if (teamname.equalsIgnoreCase(sender.getName())
+                        || TeamManager.getInstance().isAdmin(sender.getName(), team))
+                {
+                    TeamManager.getInstance().removeFromTeam((EntityPlayer) sender, team.getRegisteredName(), teamname);
+                    sender.addChatMessage(
+                            new TextComponentString("Removed " + teamname + " From Team " + team.getRegisteredName()));
+                }
+                else
+                {
+                    CommandTools.sendNoPermissions(sender);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean doLeave(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("leave") && team != null && !team.getRegisteredName().equals("Trainers"))
+        {
+            String teamname = sender.getName();
+
+            if (teamname.equalsIgnoreCase(sender.getName())
+                    || TeamManager.getInstance().isAdmin(sender.getName(), team))
+            {
+                TeamManager.getInstance().removeFromTeam((EntityPlayer) sender, team.getRegisteredName(), teamname);
+                sender.addChatMessage(new TextComponentString("Left Team " + team.getRegisteredName()));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean doListAdmins(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("admins") && team != null)
+        {
+            String teamName = team.getRegisteredName();
+            sender.addChatMessage(new TextComponentString("Admins of Team " + teamName));
+            Collection<?> c = TeamManager.getInstance().getAdmins(teamName);
+            for (Object o : c)
+            {
+                sender.addChatMessage(new TextComponentString("" + o));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean doListInvites(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("invites") && team != null)
+        {
+            String player = sender.getName();
+            List<String> c = TeamManager.getInstance().getInvites(player);
+
+            if (c.isEmpty())
+            {
+                sender.addChatMessage(new TextComponentString("You have no team invites"));
+                return true;
+            }
+            else
+            {
+                sender.addChatMessage(new TextComponentString("List of Team Invites, You can click one to join."));
+            }
+            String links = "";
+            String cmd = "poketeam join";
+            String command = "/" + cmd + " " + c.get(0);
+            String abilityJson = "{\"text\":\"" + c.get(0)
+                    + "\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"" + command + ""
+                    + "\"}}";
+            links = abilityJson;
+            for (int i = 1; i < c.size(); i++)
+            {
+                String command2 = "/" + cmd + " " + c.get(i);
+                String abilityJson2 = "{\"text\":\"" + c.get(i)
+                        + "\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"" + command2
+                        + "" + "\"}}";
+                links = links + ",\"]\"" + ",\"[\"," + abilityJson2;
+            }
+            ITextComponent message = ITextComponent.Serializer.jsonToComponent("[\" [\"," + links + ",\"]\"]");
+            sender.addChatMessage(message);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean doListLand(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("land") && team != null)
+        {
+            int x = MathHelper.floor_double(sender.getPosition().getX() / 16f);
+            int y = MathHelper.floor_double(sender.getPosition().getY() / 16f);
+            int z = MathHelper.floor_double(sender.getPosition().getZ() / 16f);
+            int dim = sender.getEntityWorld().provider.getDimension();
+            String owner = TeamManager.getInstance().getLandOwner(new ChunkCoordinate(x, y, z, dim));
+            if (owner == null) sender.addChatMessage(new TextComponentString("This Land is not owned"));
+            else sender.addChatMessage(new TextComponentString("This Land is owned by Team " + owner));
+            return true;
+        }
+        return false;
+    }
+
+    private boolean doListPlayers(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("list") && team != null)
+        {
+            String teamName = team.getRegisteredName();
+            sender.addChatMessage(new TextComponentString("Members of Team " + teamName));
+            Collection<?> c = team.getMembershipCollection();
+            for (Object o : c)
+            {
+                sender.addChatMessage(new TextComponentString("" + o));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean doListTeam(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("team") && team != null)
+        {
+            String teamName = team.getRegisteredName();
+            sender.addChatMessage(new TextComponentString("Currently a member of Team " + teamName));
+            return true;
+        }
+        return false;
+    }
+
+    private boolean doRemoveAdmin(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("unadmin") && team != null
+                && !team.getRegisteredName().equalsIgnoreCase("Trainers"))
+        {
+            if (args.length > 1)
+            {
+                String player = args[1];
+                String teamName = team.getRegisteredName();
+                if (TeamManager.getInstance().isAdmin(sender.getName(), team))
+                {
+                    TeamManager.getInstance().removeFromAdmins(player, teamName);
+                    sender.addChatMessage(
+                            new TextComponentString(player + " removed as an Admin for Team " + teamName));
+                }
+                else
+                {
+                    CommandTools.sendNoPermissions(sender);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean doUnclaim(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
+    {
+        if (args[0].equalsIgnoreCase("unclaim") && team != null)
+        {
+            if (!TeamManager.getInstance().isAdmin(sender.getName(), team)
+                    || team.getRegisteredName().equalsIgnoreCase("Trainers"))
+            {
+                sender.addChatMessage(new TextComponentString("You are not Authorized to unclaim land for your team"));
+                return false;
+            }
+            boolean up = false;
+            int num = 1;
+
+            if (args.length > 2)
+            {
+                try
+                {
+                    if (args[1].equalsIgnoreCase("up") || args[1].equalsIgnoreCase("down"))
+                    {
+                        num = Integer.parseInt(args[2]);
+                        up = args[1].equalsIgnoreCase("up");
+                    }
+                }
+                catch (NumberFormatException e)
+                {
+                    // e.printStackTrace();
+                }
+            }
+            int n = 0;
+            for (int i = 0; i < num; i++)
+            {
+                int dir = up ? -1 : 1;
+                int x = MathHelper.floor_double(sender.getPosition().getX() / 16f);
+                int y = MathHelper.floor_double(sender.getPosition().getY() / 16f) + dir * i;
+                int z = MathHelper.floor_double(sender.getPosition().getZ() / 16f);
+                int dim = sender.getEntityWorld().provider.getDimension();
+                if (y < 0 || y > 15) continue;
+                n++;
+                TeamManager.getInstance().removeTeamLand(team.getRegisteredName(), new ChunkCoordinate(x, y, z, dim));
+            }
+            if (n > 0) sender
+                    .addChatMessage(new TextComponentString("Unclaimed This land for Team" + team.getRegisteredName()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -229,320 +505,6 @@ public class TeamCommands implements ICommand
         }
     }
 
-    private boolean doClaim(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("claim") && team != null)
-        {
-            if (!TeamManager.getInstance().isAdmin(sender.getName(), team)
-                    || team.getRegisteredName().equalsIgnoreCase("Trainers"))
-            {
-                sender.addChatMessage(new TextComponentString("You are not Authorized to claim land for your team"));
-                return false;
-            }
-            int teamCount = team.getMembershipCollection().size();
-
-            int count = TeamManager.getInstance().countLand(team.getRegisteredName());
-
-            boolean up = false;
-            boolean all = false;
-            int num = 1;
-
-            if (args.length > 2)
-            {
-                try
-                {
-                    if (args[1].equalsIgnoreCase("up") || args[1].equalsIgnoreCase("down"))
-                    {
-                        num = Integer.parseInt(args[2]);
-                        up = args[1].equalsIgnoreCase("up");
-                    }
-                    if (args[1].equalsIgnoreCase("all"))
-                    {
-                        all = true;
-                        up = true;
-                        num = 16;
-                    }
-                }
-                catch (NumberFormatException e)
-                {
-                    // e.printStackTrace();
-                }
-            }
-            for (int i = 0; i < num; i++)
-            {
-                if (count < teamCount * TeamManager.maxLandCount || isOp)
-                {
-                    int dir = up ? 1 : -1;
-                    teamCount = team.getMembershipCollection().size();
-                    count = TeamManager.getInstance().countLand(team.getRegisteredName());
-
-                    int x = MathHelper.floor_double(sender.getPosition().getX() / 16f);
-                    int y = MathHelper.floor_double(sender.getPosition().getY() / 16f) + i * dir;
-                    if (all) y = i * dir;
-                    int z = MathHelper.floor_double(sender.getPosition().getZ() / 16f);
-                    int dim = sender.getEntityWorld().provider.getDimension();
-                    if (y < 0 || y > 15) continue;
-
-                    String owner = TeamManager.getInstance().getLandOwner(new ChunkCoordinate(x, y, z, dim));
-
-                    if (owner != null)
-                    {
-                        if (owner.equals(team.getRegisteredName())) continue;
-
-                        sender.addChatMessage(new TextComponentString("This land is already claimed by " + owner));
-                        return false;
-                    }
-                    sender.addChatMessage(
-                            new TextComponentString("Claimed This land for Team" + team.getRegisteredName()));
-                    TeamManager.getInstance().addTeamLand(team.getRegisteredName(), new ChunkCoordinate(x, y, z, dim),
-                            true);
-                    num--;
-                }
-                else
-                {
-                    num = 0;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private boolean doUnclaim(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("unclaim") && team != null)
-        {
-            if (!TeamManager.getInstance().isAdmin(sender.getName(), team)
-                    || team.getRegisteredName().equalsIgnoreCase("Trainers"))
-            {
-                sender.addChatMessage(new TextComponentString("You are not Authorized to unclaim land for your team"));
-                return false;
-            }
-            boolean up = false;
-            int num = 1;
-
-            if (args.length > 2)
-            {
-                try
-                {
-                    if (args[1].equalsIgnoreCase("up") || args[1].equalsIgnoreCase("down"))
-                    {
-                        num = Integer.parseInt(args[2]);
-                        up = args[1].equalsIgnoreCase("up");
-                    }
-                }
-                catch (NumberFormatException e)
-                {
-                    // e.printStackTrace();
-                }
-            }
-            int n = 0;
-            for (int i = 0; i < num; i++)
-            {
-                int dir = up ? -1 : 1;
-                int x = MathHelper.floor_double(sender.getPosition().getX() / 16f);
-                int y = MathHelper.floor_double(sender.getPosition().getY() / 16f) + dir * i;
-                int z = MathHelper.floor_double(sender.getPosition().getZ() / 16f);
-                int dim = sender.getEntityWorld().provider.getDimension();
-                if (y < 0 || y > 15) continue;
-                n++;
-                TeamManager.getInstance().removeTeamLand(team.getRegisteredName(), new ChunkCoordinate(x, y, z, dim));
-            }
-            if (n > 0) sender
-                    .addChatMessage(new TextComponentString("Unclaimed This land for Team" + team.getRegisteredName()));
-            return true;
-        }
-        return false;
-    }
-
-    private boolean doListPlayers(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("list") && team != null)
-        {
-            String teamName = team.getRegisteredName();
-            sender.addChatMessage(new TextComponentString("Members of Team " + teamName));
-            Collection<?> c = team.getMembershipCollection();
-            for (Object o : c)
-            {
-                sender.addChatMessage(new TextComponentString("" + o));
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private boolean doListLand(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("land") && team != null)
-        {
-            int x = MathHelper.floor_double(sender.getPosition().getX() / 16f);
-            int y = MathHelper.floor_double(sender.getPosition().getY() / 16f);
-            int z = MathHelper.floor_double(sender.getPosition().getZ() / 16f);
-            int dim = sender.getEntityWorld().provider.getDimension();
-            String owner = TeamManager.getInstance().getLandOwner(new ChunkCoordinate(x, y, z, dim));
-            if (owner == null) sender.addChatMessage(new TextComponentString("This Land is not owned"));
-            else sender.addChatMessage(new TextComponentString("This Land is owned by Team " + owner));
-            return true;
-        }
-        return false;
-    }
-
-    private boolean doListAdmins(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("admins") && team != null)
-        {
-            String teamName = team.getRegisteredName();
-            sender.addChatMessage(new TextComponentString("Admins of Team " + teamName));
-            Collection<?> c = TeamManager.getInstance().getAdmins(teamName);
-            for (Object o : c)
-            {
-                sender.addChatMessage(new TextComponentString("" + o));
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private boolean doListInvites(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("invites") && team != null)
-        {
-            String player = sender.getName();
-            List<String> c = TeamManager.getInstance().getInvites(player);
-
-            if (c.isEmpty())
-            {
-                sender.addChatMessage(new TextComponentString("You have no team invites"));
-                return true;
-            }
-            else
-            {
-                sender.addChatMessage(new TextComponentString("List of Team Invites, You can click one to join."));
-            }
-            String links = "";
-            String cmd = "poketeam join";
-            String command = "/" + cmd + " " + c.get(0);
-            String abilityJson = "{\"text\":\"" + c.get(0)
-                    + "\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"" + command + ""
-                    + "\"}}";
-            links = abilityJson;
-            for (int i = 1; i < c.size(); i++)
-            {
-                String command2 = "/" + cmd + " " + c.get(i);
-                String abilityJson2 = "{\"text\":\"" + c.get(i)
-                        + "\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"" + command2
-                        + "" + "\"}}";
-                links = links + ",\"]\"" + ",\"[\"," + abilityJson2;
-            }
-            ITextComponent message = ITextComponent.Serializer.jsonToComponent("[\" [\"," + links + ",\"]\"]");
-            sender.addChatMessage(message);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean doListTeam(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("team") && team != null)
-        {
-            String teamName = team.getRegisteredName();
-            sender.addChatMessage(new TextComponentString("Currently a member of Team " + teamName));
-            return true;
-        }
-        return false;
-    }
-
-    private boolean doRemoveAdmin(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("unadmin") && team != null
-                && !team.getRegisteredName().equalsIgnoreCase("Trainers"))
-        {
-            if (args.length > 1)
-            {
-                String player = args[1];
-                String teamName = team.getRegisteredName();
-                if (TeamManager.getInstance().isAdmin(sender.getName(), team))
-                {
-                    TeamManager.getInstance().removeFromAdmins(player, teamName);
-                    sender.addChatMessage(
-                            new TextComponentString(player + " removed as an Admin for Team " + teamName));
-                }
-                else
-                {
-                    CommandTools.sendNoPermissions(sender);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean doAddAdmin(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("admin") && team != null && !team.getRegisteredName().equalsIgnoreCase("Trainers"))
-        {
-            if (args.length > 1)
-            {
-                String player = args[1];
-                String teamName = team.getRegisteredName();
-                if (TeamManager.getInstance().isAdmin(sender.getName(), team))
-                {
-                    TeamManager.getInstance().addToAdmins(player, teamName);
-                    sender.addChatMessage(new TextComponentString(player + " added as an Admin for Team " + teamName));
-
-                }
-                else
-                {
-                    CommandTools.sendNoPermissions(sender);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean doLeave(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("leave") && team != null && !team.getRegisteredName().equals("Trainers"))
-        {
-            String teamname = sender.getName();
-
-            if (teamname.equalsIgnoreCase(sender.getName())
-                    || TeamManager.getInstance().isAdmin(sender.getName(), team))
-            {
-                TeamManager.getInstance().removeFromTeam((EntityPlayer) sender, team.getRegisteredName(), teamname);
-                sender.addChatMessage(new TextComponentString("Left Team " + team.getRegisteredName()));
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private boolean doKick(String[] args, ICommandSender sender, boolean isOp, ScorePlayerTeam team)
-    {
-        if (args[0].equalsIgnoreCase("kick") && team != null && !team.getRegisteredName().equals("Trainers"))
-        {
-            if (args.length > 1)
-            {
-                String teamname = args[1];
-
-                if (teamname.equalsIgnoreCase(sender.getName())
-                        || TeamManager.getInstance().isAdmin(sender.getName(), team))
-                {
-                    TeamManager.getInstance().removeFromTeam((EntityPlayer) sender, team.getRegisteredName(), teamname);
-                    sender.addChatMessage(
-                            new TextComponentString("Removed " + teamname + " From Team " + team.getRegisteredName()));
-                }
-                else
-                {
-                    CommandTools.sendNoPermissions(sender);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public List<String> getCommandAliases()
     {
@@ -586,6 +548,44 @@ public class TeamCommands implements ICommand
             return index == 1;
 
         return false;
+    }
+
+    @SubscribeEvent
+    public void livingUpdate(LivingUpdateEvent evt)
+    {
+        if (evt.getEntity().worldObj.isRemote || evt.getEntity().isDead || claimers.isEmpty()) return;
+
+        if (evt.getEntityLiving() instanceof EntityPlayer && claimers.containsKey(evt.getEntityLiving()))
+        {
+            boolean all = claimers.get(evt.getEntityLiving());
+            ScorePlayerTeam team = null;
+            team = evt.getEntityLiving().worldObj.getScoreboard().getPlayersTeam(evt.getEntityLiving().getName());
+            int num = all ? 16 : 1;
+            int n = 0;
+            for (int i = 0; i < num; i++)
+            {
+                int x = MathHelper.floor_double(evt.getEntityLiving().getPosition().getX() / 16f);
+                int y = MathHelper.floor_double(evt.getEntityLiving().getPosition().getY() / 16f) + i;
+                if (all) y = i;
+                int z = MathHelper.floor_double(evt.getEntityLiving().getPosition().getZ() / 16f);
+                int dim = evt.getEntityLiving().getEntityWorld().provider.getDimension();
+                if (y < 0 || y > 15) return;
+                String owner = TeamManager.getInstance().getLandOwner(new ChunkCoordinate(x, y, z, dim));
+                if (owner != null)
+                {
+                    if (owner.equals(team.getRegisteredName())) continue;
+                    continue;
+                }
+                n++;
+                TeamManager.getInstance().addTeamLand(team.getRegisteredName(), new ChunkCoordinate(x, y, z, dim),
+                        true);
+            }
+            if (n > 0)
+            {
+                evt.getEntityLiving().addChatMessage(
+                        new TextComponentString("Claimed This land for Team" + team.getRegisteredName()));
+            }
+        }
     }
 
 }

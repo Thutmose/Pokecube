@@ -65,16 +65,6 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         return stack;
     }
 
-    /** Overriden in a sign to provide the text. */
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
-    }
-
     @Override
     public ITextComponent getDisplayName()
     {
@@ -115,6 +105,16 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     public ItemStack getStackInSlot(int slotIndex)
     {
         return this.inventory[slotIndex];
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
     }
 
     @Override

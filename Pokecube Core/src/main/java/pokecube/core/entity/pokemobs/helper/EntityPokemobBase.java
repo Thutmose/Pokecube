@@ -202,6 +202,16 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
+    public ITextComponent getDisplayName()
+    {
+        TextComponentTranslation textcomponentstring = new TextComponentTranslation(
+                this.getPokedexEntry().getUnlocalizedName());
+        textcomponentstring.getStyle().setHoverEvent(this.getHoverEvent());
+        textcomponentstring.getStyle().setInsertion(this.getCachedUniqueIdString());
+        return textcomponentstring;
+    }
+
+    @Override
     public float getEyeHeight()
     {
         return height * 0.8F;
@@ -230,16 +240,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public String getName()
     {
         return this.getPokedexEntry().getName();
-    }
-
-    @Override
-    public ITextComponent getDisplayName()
-    {
-        TextComponentTranslation textcomponentstring = new TextComponentTranslation(
-                this.getPokedexEntry().getUnlocalizedName());
-        textcomponentstring.getStyle().setHoverEvent(this.getHoverEvent());
-        textcomponentstring.getStyle().setInsertion(this.getCachedUniqueIdString());
-        return textcomponentstring;
     }
 
     @Override

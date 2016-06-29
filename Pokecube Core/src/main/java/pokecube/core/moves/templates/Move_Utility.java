@@ -159,6 +159,12 @@ public class Move_Utility extends Move_Basic
         return ret;
     }
 
+    private void doFortuneDrop(Vector3 location, World world, int fortune)
+    {
+        location.getBlock(world).dropBlockAsItem(world, location.getPos(), location.getBlockState(world), fortune);
+        location.breakBlock(world, false);
+    }
+
     @Override
     public void doWorldAction(IPokemob user, Vector3 location)
     {
@@ -338,11 +344,5 @@ public class Move_Utility extends Move_Basic
                     }
                 }
         return ret;
-    }
-
-    private void doFortuneDrop(Vector3 location, World world, int fortune)
-    {
-        location.getBlock(world).dropBlockAsItem(world, location.getPos(), location.getBlockState(world), fortune);
-        location.breakBlock(world, false);
     }
 }

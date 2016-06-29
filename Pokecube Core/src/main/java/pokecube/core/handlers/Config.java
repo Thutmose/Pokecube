@@ -54,6 +54,7 @@ public class Config extends ConfigBase
 
     public static Config       instance;
 
+    private static Config defaults = null;
     // Misc Settings
     @Configure(category = misc)
     public String[]            defaultStarts              = {};
@@ -75,9 +76,9 @@ public class Config extends ConfigBase
     protected boolean          tableRecipe                = true;
     @Configure(category = misc)
     public double              scalefactor                = 1;
+
     @Configure(category = misc)
     public boolean             pcHoldsOnlyPokecubes       = true;
-
     // AI Related settings
     @Configure(category = mobAI)
     public int                 mateMultiplier             = 1;
@@ -126,9 +127,9 @@ public class Config extends ConfigBase
     public int                 attackCooldown             = 20;
     @Configure(category = mobAI)
     public int                 chaseDistance              = 32;
+
     @Configure(category = mobAI)
     public int                 aiDisableDistance          = 32;
-
     // World Gen and World effect settings
     @Configure(category = world)
     /** do meteors fall. */
@@ -155,6 +156,7 @@ public class Config extends ConfigBase
     public String              industrial                 = "";
     @Configure(category = world)
     public boolean             useConfigForBerryLocations = false;
+
     @Configure(category = world)
     public String[]            berryLocations             = {                                                          // @formatter:off
             "cheri:TWplains,Bsavanna'Svillage", "chesto:TWforest,Bconiferous", "pecha:TWforest,Bconiferous",
@@ -162,7 +164,6 @@ public class Config extends ConfigBase
             "oran:TWforest,Whills,Bconiferous'Sall", "persim:TWswamp", "lum:TWjungle,Bhills", "sitrus:TWjungle,Whills",
             "nanab:TWjungle,Bhills'TWbeach,Bcold'TWocean,Bcold", "pinap:TWjungle", "cornn:TWswamp", "enigma:TWend",
             "jaboca:TWmountain,Whills", "rowap:TWforest,Wconiferous", };                                               // @formatter:on
-
     // Mob Spawning settings
     @Configure(category = spawning)
     /** Do monsters not spawn. */
@@ -208,9 +209,9 @@ public class Config extends ConfigBase
             "1:1+r/1300;r", "2:(25)*(sin(x*0.5*10^-3)^4 + sin(y*0.5*10^-3)^4)" };
     @Configure(category = spawning)
     public boolean             expFunction                = false;
+
     @Configure(category = spawning)
     public int                 levelVariance              = 5;
-
     // Gui/client settings
     @Configure(category = client)
     public int[]               guiOffset                  = { 0, 0 };
@@ -222,20 +223,21 @@ public class Config extends ConfigBase
     public boolean             moveAnimationCallLists     = true;
     @Configure(category = client)
     public boolean             autoRecallPokemobs         = false;
+
     @Configure(category = client)
     public int                 autoRecallDistance         = 32;
-
     @Configure(category = advanced)
     String[]                   mystLocs                   = {};
     @Configure(category = advanced)
     boolean                    resetTags                  = false;
     @Configure(category = advanced)
     String[]                   extraValues                = { "3", "4.5" };
+
     @Configure(category = advanced)
     public int                 evolutionTicks             = 50;
-
     @Configure(category = database)
     boolean                    forceDatabase              = true;
+
     @Configure(category = database)
     String[]                   configDatabases            = { "pokemobs", "moves" };
 
@@ -257,8 +259,6 @@ public class Config extends ConfigBase
     {
         super(null);
     }
-
-    private static Config defaults = null;
 
     public Config(File path)
     {

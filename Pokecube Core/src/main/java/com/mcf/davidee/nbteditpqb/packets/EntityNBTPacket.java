@@ -20,6 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.network.play.server.SPacketUpdateHealth;
 import net.minecraft.world.WorldSettings.GameType;
+import thut.api.network.PacketHandler;
 
 public class EntityNBTPacket extends AbstractPacket
 {
@@ -75,6 +76,7 @@ public class EntityNBTPacket extends AbstractPacket
             {
                 GameType preGameType = player.interactionManager.getGameType();
                 e.readFromNBT(tag);
+                PacketHandler.sendEntityUpdate(e);
                 NBTEdit.log(Level.FINE, player.getName() + " edited a tag -- Entity ID #" + entityID);
                 NBTEdit.logTag(tag);
                 if (e == player)

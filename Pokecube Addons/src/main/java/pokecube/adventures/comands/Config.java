@@ -30,16 +30,16 @@ import thut.core.common.config.Configure;
 public class Config extends ConfigBase
 {
 
-    public static final String         machines           = "machine";
-    public static final String         trainers           = "trainers";
-    public static final String         teams              = "teams";
+    public static final String         machines            = "machine";
+    public static final String         trainers            = "trainers";
+    public static final String         teams               = "teams";
 
     public static Config               instance;
 
-    public static Map<String, Integer> biomeMap           = new HashMap<String, Integer>();
+    public static Map<String, Integer> biomeMap            = new HashMap<String, Integer>();
 
     @Configure(category = world)
-    String[]                           structureBiomes    = {
+    String[]                           structureBiomes     = {
             // @formatter:off
             "meteorsite:" + BiomeType.METEOR.name, "smallfortruins:" + BiomeType.RUIN.name,
             "VillageForgeLarge:" + BiomeType.INDUSTRIAL.name, "VillageGuardTower:" + BiomeType.VILLAGE.name,
@@ -61,66 +61,70 @@ public class Config extends ConfigBase
             // @formatter:on
     };
     @Configure(category = world)
-    public boolean                     exp_shareLoot      = true;
+    public boolean                     exp_shareLoot       = true;
     @Configure(category = world)
-    public boolean                     HMLoot             = true;
+    public boolean                     HMLoot              = true;
 
     @Configure(category = machines)
-    public int                         maxOutput          = 256;
+    public int                         maxOutput           = 256;
     @Configure(category = machines)
-    public String                      powerFunction      = "a*x/10";
+    public String                      powerFunction       = "a*x/10";
     @Configure(category = machines)
-    public boolean                     warpPadEnergy      = true;
+    public boolean                     warpPadEnergy       = true;
     @Configure(category = machines)
-    public boolean                     theft              = false;
+    public boolean                     theft               = false;
     @Configure(category = machines)
-    public int                         warpPadRange       = 64;
+    public int                         warpPadRange        = 64;
     @Configure(category = machines)
-    String[]                           ranchables         = {
+    String[]                           ranchables          = {
             // @formatter:off
             "arceus:nether_star:100000", "chinchou:glowstone_dust:500", "lanturn:glowstone_dust,2:500",
             "lotad:waterlily:100", "tangela:vine:100", "bulbasaur:vine:100", "octillery:dye:100", "camerupt::lava:1000"
             // @formatter:on
     };
     @Configure(category = spawning)
-    String[]                           biomeLevels        = { "mound:5-10" };
+    String[]                           biomeLevels         = { "mound:5-10" };
     @Configure(category = spawning)
-    public int[]                       dimensionBlackList = {};
+    public int[]                       dimensionBlackList  = {};
 
     @Configure(category = trainers)
-    public boolean                     trainerSpawn       = true;
+    public boolean                     trainerSpawn        = true;
     @Configure(category = trainers)
-    public boolean                     trainersInvul      = false;
+    public boolean                     trainersInvul       = false;
     @Configure(category = trainers)
-    public boolean                     trainersTradeMobs  = true;
+    public boolean                     trainersTradeMobs   = true;
     @Configure(category = trainers)
-    public boolean                     trainersTradeItems = true;
+    public boolean                     trainersTradeItems  = true;
     @Configure(category = trainers)
-    public int                         trainerBox         = 128;
+    public int                         trainerBox          = 128;
     @Configure(category = trainers)
-    public int                         trainerCooldown    = 10000;
+    public int                         trainerCooldown     = 10000;
     @Configure(category = trainers)
-    public int                         megaCost           = 16;
+    public int                         trainerSendOutDelay = 50;
     @Configure(category = trainers)
-    public int                         orbCost            = 32;
+    public int                         trainerBattleDelay  = 100;
     @Configure(category = trainers)
-    public int                         shinyCost          = 128;
+    public int                         megaCost            = 16;
     @Configure(category = trainers)
-    public int                         tmCost             = 16;
+    public int                         orbCost             = 32;
     @Configure(category = trainers)
-    public int                         badgeCost          = 64;
+    public int                         shinyCost           = 128;
     @Configure(category = trainers)
-    public int                         vitaminCost        = 8;
+    public int                         tmCost              = 16;
     @Configure(category = trainers)
-    String[]                           cubeCosts          = { "0:16:4-8:1", "1:8:2-4:1", "2:2:1-2:1", "3:1:1:64" };
+    public int                         badgeCost           = 64;
+    @Configure(category = trainers)
+    public int                         vitaminCost         = 8;
+    @Configure(category = trainers)
+    String[]                           cubeCosts           = { "0:16:4-8:1", "1:8:2-4:1", "2:2:1-2:1", "3:1:1:64" };
 
     @Configure(category = teams)
-    private int                        teamLandPerPlayer  = 125;
+    private int                        teamLandPerPlayer   = 125;
     @Configure(category = teams)
-    private boolean                    denyExplosions     = false;
+    private boolean                    denyExplosions      = false;
 
     @Configure(category = misc)
-    protected boolean                  tmRecipe           = true;
+    protected boolean                  tmRecipe            = true;
 
     public Config()
     {

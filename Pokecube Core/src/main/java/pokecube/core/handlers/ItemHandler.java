@@ -22,6 +22,7 @@ import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubeBlocks;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubes;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -71,6 +72,7 @@ import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.megastuff.ItemMegastone;
+import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.Pokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -181,7 +183,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(Item.getItemFromBlock(fossilStone), 0,
                     new ModelResourceLocation("pokecube:fossilstone", "inventory"));
-        PokecubeItems.fossil = new ItemFossil().setRegistryName(PokecubeCore.ID, "fossil");
+        PokecubeItems.fossil = new ItemFossil().setRegistryName(PokecubeMod.ID, "fossil");
         PokecubeItems.register(PokecubeItems.fossil);
         for (String s : HeldItemHandler.fossilVariants)
         {
@@ -252,6 +254,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(pokemobEgg, 0, new ModelResourceLocation("pokecube:pokemobEgg", "inventory"));
         OreDictionary.registerOre("egg", new ItemStack(pokemobEgg, 1, OreDictionary.WILDCARD_VALUE));
+        BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(pokemobEgg, new DispenserBehaviorPokecube());
 
         pokedex = (new ItemPokedex()).setUnlocalizedName("pokedex");
         pokedex.setCreativeTab(creativeTabPokecube);
@@ -496,7 +499,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addStones()
     {
-        PokecubeItems.held = new ItemHeldItems().setRegistryName(PokecubeCore.ID, "held");
+        PokecubeItems.held = new ItemHeldItems().setRegistryName(PokecubeMod.ID, "held");
         PokecubeItems.register(PokecubeItems.held);
         for (String s : ItemHeldItems.variants)
         {

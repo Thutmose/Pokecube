@@ -9,28 +9,25 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import pokecube.core.interfaces.IHealer;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
-public class ContainerHealTable extends Container
+public class ContainerHealTable extends Container implements IHealer
 {
-    /**
-     * Returns true if the item is a filled pokecube.
+    /** Returns true if the item is a filled pokecube.
      *
-     * @param itemstack the itemstack to test
-     * @return true if the id is a filled pokecube one, false otherwise
-     */
+     * @param itemstack
+     *            the itemstack to test
+     * @return true if the id is a filled pokecube one, false otherwise */
     protected static boolean isItemValid(ItemStack itemstack)
     {
-    	return PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound();
+        return PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound();
     }
-    protected TileHealTable tile_entity;
 
     InventoryHealTable inventoryHealTable;
 
-    public ContainerHealTable(TileHealTable tile_entity,
-            InventoryPlayer player_inventory)
+    public ContainerHealTable(InventoryPlayer player_inventory)
     {
-        this.tile_entity = tile_entity;
         inventoryHealTable = new InventoryHealTable(this, "heal");
         int index = 0;
 
@@ -38,10 +35,10 @@ public class ContainerHealTable extends Container
         {
             for (int l = 0; l < 2; l++)
             {
-                addSlotToContainer(new SlotHealTable(player_inventory.player, inventoryHealTable, index++, 62 + l * 18, 17 + i * 18));
+                addSlotToContainer(new SlotHealTable(player_inventory.player, inventoryHealTable, index++, 62 + l * 18,
+                        17 + i * 18));
             }
         }
-
         bindPlayerInventory(player_inventory);
     }
 
@@ -51,10 +48,7 @@ public class ContainerHealTable extends Container
         {
             for (int j = 0; j < 9; j++)
             {
-                addSlotToContainer(new Slot(player_inventory,
-                        j + i * 9 + 9,
-                        8 + j * 18,
-                        84 + i * 18));
+                addSlotToContainer(new Slot(player_inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
             }
         }
 
@@ -67,14 +61,13 @@ public class ContainerHealTable extends Container
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
-        return tile_entity.isUseableByPlayer(player);
+        return true;
     }
 
-    /**
-     * Heals all the Pokecubes in the heal inventory.
-     * It means, it sets the damage with the value for a full healthy Pokemob for
-     * each of the 6 pokecubes.
-     */
+    /** Heals all the Pokecubes in the heal inventory. It means, it sets the
+     * damage with the value for a full healthy Pokemob for each of the 6
+     * pokecubes. */
+    @Override
     public void heal()
     {
         for (int i = 0; i < 6; i++)
@@ -89,10 +82,11 @@ public class ContainerHealTable extends Container
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer player) {
-    	super.onContainerClosed(player);
-    	
-        if (!this.tile_entity.getWorld().isRemote)
+    public void onContainerClosed(EntityPlayer player)
+    {
+        super.onContainerClosed(player);
+
+        if (!player.worldObj.isRemote)
         {
             for (int var2 = 0; var2 < this.inventoryHealTable.getSizeInventory(); ++var2)
             {
@@ -100,26 +94,26 @@ public class ContainerHealTable extends Container
 
                 if (var3 != null)
                 {
-                	
-    	            if(player.inventory.getFirstEmptyStack()==-1)
-    	            {
-    	            	
-    	            	ItemTossEvent toss = new ItemTossEvent(player.entityDropItem(var3, 0F), null);
-    	            	MinecraftForge.EVENT_BUS.post(toss);
-    	            	//InventoryPC.addPokecubeToPC(itemstack);
-    	            }
-    	            else if (var3.getItem()!=null&&(player.isDead || !player.inventory.addItemStackToInventory(var3)))
-    	            {
-    	            	ItemTossEvent toss = new ItemTossEvent(player.entityDropItem(var3, 0F), null);
-    	            	MinecraftForge.EVENT_BUS.post(toss);
-    	            	//InventoryPC.addPokecubeToPC(itemstack);
-    	            }
-    	            else
-    	            	player.dropItem(var3, true);
-    	            if(player instanceof EntityPlayerMP)
-    	            {
-    		    		((EntityPlayerMP)player).sendContainerToPlayer(player.inventoryContainer);
-    	            }
+
+                    if (player.inventory.getFirstEmptyStack() == -1)
+                    {
+
+                        ItemTossEvent toss = new ItemTossEvent(player.entityDropItem(var3, 0F), null);
+                        MinecraftForge.EVENT_BUS.post(toss);
+                        // InventoryPC.addPokecubeToPC(itemstack);
+                    }
+                    else if (var3.getItem() != null
+                            && (player.isDead || !player.inventory.addItemStackToInventory(var3)))
+                    {
+                        ItemTossEvent toss = new ItemTossEvent(player.entityDropItem(var3, 0F), null);
+                        MinecraftForge.EVENT_BUS.post(toss);
+                        // InventoryPC.addPokecubeToPC(itemstack);
+                    }
+                    else player.dropItem(var3, true);
+                    if (player instanceof EntityPlayerMP)
+                    {
+                        ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
+                    }
                 }
             }
         }
@@ -133,16 +127,15 @@ public class ContainerHealTable extends Container
         if (slot_object != null && slot_object.getHasStack())
         {
             ItemStack stack_in_slot = slot_object.getStack();
-            
 
-//			if (slot_index == 0) {
-//				if (!mergeItemStack(stack_in_slot, 1, inventorySlots.size(),
-//						true)) {
-//					return;
-//				}
-//			} else if (!mergeItemStack(stack_in_slot, 0, 1, false)) {
-//				return;
-//			}
+            // if (slot_index == 0) {
+            // if (!mergeItemStack(stack_in_slot, 1, inventorySlots.size(),
+            // true)) {
+            // return;
+            // }
+            // } else if (!mergeItemStack(stack_in_slot, 0, 1, false)) {
+            // return;
+            // }
 
             if (stack_in_slot.stackSize == 0)
             {
@@ -160,8 +153,7 @@ public class ContainerHealTable extends Container
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
-    	if (slotId < 0)
-    		return null;
+        if (slotId < 0) return null;
         if (clickTypeIn != ClickType.PICKUP && clickTypeIn != ClickType.PICKUP_ALL)
         {
             ItemStack itemstack = null;
@@ -174,22 +166,13 @@ public class ContainerHealTable extends Container
 
                 if (slotId < 6)
                 {
-                    if (!mergeItemStack(itemstack1, 6, 42, true))
-                    {
-                        return null;
-                    }
+                    if (!mergeItemStack(itemstack1, 6, 42, true)) { return null; }
                 }
                 else
                 {
-                    if (itemstack != null && !isItemValid(itemstack1))
-                    {
-                        return null;
-                    }
+                    if (itemstack != null && !isItemValid(itemstack1)) { return null; }
 
-                    if (!mergeItemStack(itemstack1, 0, 6, false))
-                    {
-                        return null;
-                    }
+                    if (!mergeItemStack(itemstack1, 0, 6, false)) { return null; }
                 }
 
                 if (itemstack1.stackSize == 0)
@@ -203,7 +186,7 @@ public class ContainerHealTable extends Container
 
                 if (itemstack1.stackSize != itemstack.stackSize)
                 {
-//					slot.onPickupFromSlot(itemstack1);
+                    // slot.onPickupFromSlot(itemstack1);
                 }
                 else
                 {

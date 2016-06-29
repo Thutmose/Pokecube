@@ -36,6 +36,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -66,10 +67,10 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
-import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
@@ -122,7 +123,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     static final DataParameter<Integer> AIACTIONSTATESDW = EntityDataManager.<Integer> createKey(EntityTrainer.class,
             DataSerializers.VARINT);
     public static final int             STATIONARY       = 1;
-    public static final int             ANGRY            = 2;
+    public static final int             INBATTLE         = 2;
     public static final int             THROWING         = 4;
     public static final int             PERMFRIENDLY     = 8;
 
@@ -137,7 +138,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     private boolean                     randomize        = false;
     public ItemStack[]                  pokecubes        = new ItemStack[6];
-    public ItemStack                    reward           = new ItemStack(Items.EMERALD);
+    public ItemStack[]                  reward           = { new ItemStack(Items.EMERALD) };
     public int[]                        pokenumbers      = new int[6];
     public int[]                        pokelevels       = new int[6];
     public int[]                        attackCooldown   = new int[6];
@@ -214,13 +215,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 tradeList.add(new MerchantRecipe(buy1, stack));
             }
         }
-    }
-
-    private int getBaseStats(IPokemob mob)
-    {
-        PokedexEntry entry = mob.getPokedexEntry();
-        return entry.getStatHP() + entry.getStatATT() + entry.getStatDEF() + entry.getStatATTSPE()
-                + entry.getStatDEFSPE() + entry.getStatVIT();
     }
 
     public void addPokemob(ItemStack mob)
@@ -346,6 +340,27 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         return false;
     }
 
+    private void checkTradeIntegrity()
+    {
+        if (itemList == null) return;
+        List<MerchantRecipe> toRemove = Lists.newArrayList();
+        for (MerchantRecipe r : itemList)
+        {
+            if (r.getItemToSell() == null || r.getItemToSell().getItem() == null)
+            {
+                toRemove.add(r);
+                continue;
+            }
+            boolean hasBuy = r.getItemToBuy() != null && r.getItemToBuy().getItem() != null;
+            hasBuy = hasBuy || (r.getSecondItemToBuy() != null && r.getSecondItemToBuy().getItem() != null);
+            if (!hasBuy)
+            {
+                toRemove.add(r);
+            }
+        }
+        itemList.removeAll(toRemove);
+    }
+
     public int countPokemon()
     {
         if (outID != null && outMob == null)
@@ -406,6 +421,13 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public EntityLivingBase getAITarget()
     {
         return this.getTarget();
+    }
+
+    private int getBaseStats(IPokemob mob)
+    {
+        PokedexEntry entry = mob.getPokedexEntry();
+        return entry.getStatHP() + entry.getStatATT() + entry.getStatDEF() + entry.getStatATTSPE()
+                + entry.getStatDEFSPE() + entry.getStatVIT();
     }
 
     @Override
@@ -509,6 +531,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         if (friendlyCooldown-- >= 0) return;
         boolean done = attackCooldown[0] <= 0;
         cooldown--;
+        if (getAIState(INBATTLE)) return;
         if (done)
         {
             for (int i = 0; i < 6; i++)
@@ -535,14 +558,24 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         if (reward != null)
         {
-            EntityItem item = defeater.entityDropItem(reward.copy(), 0.5f);
-            item.setPickupDelay(0);
+            for (ItemStack i : reward)
+            {
+                if (i == null || i.getItem() == null) continue;
+                EntityItem item = defeater.entityDropItem(i.copy(), 0.5f);
+                if (item == null)
+                {
+                    System.out.println("Test" + item + " " + i);
+                    continue;
+                }
+                item.setPickupDelay(0);
+            }
         }
         if (defeater != null)
         {
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
             target.addChatMessage(text);
         }
+        this.setTrainerTarget(null);
     }
 
     @Override
@@ -557,6 +590,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         super.onLivingUpdate();
         if (worldObj.isRemote) return;
 
+        if (getTarget() == null && getAIState(INBATTLE))
+        {
+            setAIState(INBATTLE, false);
+        }
+
         if (!added)
         {
             added = true;
@@ -569,8 +607,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             if (item != null && attackCooldown[i] <= 0)
             {
                 this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, item);
-                if (this.getHeldItemOffhand() == null && reward != null)
-                    this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, reward);
+                if (this.getHeldItemOffhand() == null && reward != null && reward.length > 0)
+                    this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, reward[0]);
                 break;
             }
             if (i == 5)
@@ -727,10 +765,18 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             NBTTagCompound nbttagcompound = nbt.getCompoundTag("Offers");
             this.itemList = new MerchantRecipeList(nbttagcompound);
         }
-        if (nbt.hasKey("reward"))
+        if (nbt.hasKey("reward", 9))
         {
-            NBTTagCompound rewardTag = nbt.getCompoundTag("reward");
-            reward = ItemStack.loadItemStackFromNBT(rewardTag);
+            NBTTagList nbttaglist = nbt.getTagList("reward", 10);
+            reward = new ItemStack[nbttaglist.tagCount()];
+            for (int i = 0; i < this.reward.length; ++i)
+            {
+                this.reward[i] = ItemStack.loadItemStackFromNBT(nbttaglist.getCompoundTagAt(i));
+            }
+            if (reward.length == 0)
+            {
+                reward = new ItemStack[] { new ItemStack(Items.EMERALD) };
+            }
         }
         if (nbt.hasKey("trades")) trades = nbt.getBoolean("trades");
         dataManager.set(AIACTIONSTATESDW, nbt.getInteger("aiState"));
@@ -742,6 +788,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             outID = UUID.fromString(nbt.getString("outPokemob"));
         }
         if (nbt.hasKey("battleCD")) battleCooldown = nbt.getInteger("battleCD");
+        if (battleCooldown < 0) battleCooldown = Config.instance.trainerCooldown;
         globalCooldown = nbt.getInteger("cooldown");
         attackCooldown = nbt.getIntArray("cooldowns");
         male = nbt.getBoolean("gender");
@@ -752,27 +799,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
         setTypes();
         checkTradeIntegrity();
-    }
-
-    private void checkTradeIntegrity()
-    {
-        if (itemList == null) return;
-        List<MerchantRecipe> toRemove = Lists.newArrayList();
-        for (MerchantRecipe r : itemList)
-        {
-            if (r.getItemToSell() == null || r.getItemToSell().getItem() == null)
-            {
-                toRemove.add(r);
-                continue;
-            }
-            boolean hasBuy = r.getItemToBuy() != null && r.getItemToBuy().getItem() != null;
-            hasBuy = hasBuy || (r.getSecondItemToBuy() != null && r.getSecondItemToBuy().getItem() != null);
-            if (!hasBuy)
-            {
-                toRemove.add(r);
-            }
-        }
-        itemList.removeAll(toRemove);
     }
 
     @Override
@@ -856,7 +882,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     public void setStationary(boolean stationary)
     {
-
     }
 
     public void setStationary(Vector3 location)
@@ -878,7 +903,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     {
         if (target != null && target != this.target)
         {
-            cooldown = 100;
+            cooldown = Config.instance.trainerBattleDelay;
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.agress", getDisplayName());
             target.addChatMessage(text);
         }
@@ -896,42 +921,39 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         {
             int index = getEntityId() % (male ? TypeTrainer.maleNames.size() : TypeTrainer.femaleNames.size());
             name = (male ? TypeTrainer.maleNames.get(index) : TypeTrainer.femaleNames.get(index));
+            this.setCustomNameTag(type.name + " " + name);
         }
-        this.setCustomNameTag(type.name + " " + name);
     }
 
     public void throwCubeAt(Entity target)
     {
-        if (target == null) return;
+        if (target == null || getAIState(THROWING) || outMob != null) return;
         for (int j = 0; j < 6; j++)
         {
             ItemStack i = pokecubes[j];
-            if (i != null && attackCooldown[j] < 0)
+            if (i != null && attackCooldown[j] <= 0)
             {
-                EntityPokecube entity = new EntityPokecube(worldObj, this, i.copy());
-
-                Vector3 here = Vector3.getNewVector().set(this);
-                Vector3 t = Vector3.getNewVector().set(target);
-                t.set(t.subtractFrom(here).scalarMultBy(0.5).addTo(here));
-                entity.targetLocation.set(t);
+                this.setAIState(INBATTLE, true);
+                IPokecube cube = (IPokecube) i.getItem();
+                cube.throwPokecubeAt(worldObj, this, i, null, target);
                 setAIState(THROWING, true);
-                worldObj.spawnEntityInWorld(entity);
                 attackCooldown[j] = battleCooldown;
-                globalCooldown = 1000;
+                cooldown = Config.instance.trainerSendOutDelay;
+                globalCooldown = 100;
                 pokecubes[j] = null;
-
                 ITextComponent text = new TextComponentTranslation("pokecube.trainer.toss", getDisplayName(),
                         i.getDisplayName());
                 target.addChatMessage(text);
 
                 for (int k = j + 1; k < 6; k++)
                 {
-                    attackCooldown[k] = 20;
+                    attackCooldown[k] = 0;
                 }
                 return;
             }
             if (i != null && attackCooldown[j] < 30) { return; }
         }
+        this.setAIState(INBATTLE, false);
         if (globalCooldown > 0 && outID == null && outMob == null && !getAIState(THROWING))
         {
             globalCooldown = 0;
@@ -1012,6 +1034,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         nbt.setString("playerName", playerName);
         nbt.setBoolean("trades", trades);
         nbt.setBoolean("gender", male);
+        if (battleCooldown < 0) battleCooldown = Config.instance.trainerCooldown;
         nbt.setInteger("battleCD", battleCooldown);
         nbt.setBoolean("randomTeam", randomize);
         nbt.setString("name", name);
@@ -1021,12 +1044,17 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         nbt.setInteger("cooldown", globalCooldown);
         nbt.setIntArray("cooldowns", attackCooldown);
         nbt.setInteger("friendly", friendlyCooldown);
-        if (reward != null && reward.getItem() != null)
+        NBTTagList nbttaglist = new NBTTagList();
+        for (int i = 0; i < this.reward.length; ++i)
         {
-            NBTTagCompound rewardTag = new NBTTagCompound();
-            reward.writeToNBT(rewardTag);
-            nbt.setTag("reward", rewardTag);
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+            if (this.reward[i] != null)
+            {
+                this.reward[i].writeToNBT(nbttagcompound);
+            }
+            nbttaglist.appendTag(nbttagcompound);
         }
+        nbt.setTag("reward", nbttaglist);
     }
 
     @Override

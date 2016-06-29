@@ -5,7 +5,7 @@ import java.util.HashMap;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import pokecube.core.events.CaptureEvent;
@@ -46,17 +46,6 @@ public interface IPokecube
      * @return */
     double getCaptureModifier(IPokemob mob, int pokecubeId);
 
-    /** Used to throw the pokecube at a specific target
-     * 
-     * @param world
-     * @param player
-     * @param cube
-     * @param targetLocation
-     * @param target
-     * @return */
-    boolean throwPokecubeAt(World world, EntityPlayer player, ItemStack cube, @Nullable Vector3 targetLocation,
-            @Nullable Entity target);
-
     /** Used for throwing cubes out into the air without a specific target.
      * 
      * @param world
@@ -65,5 +54,16 @@ public interface IPokecube
      * @param direction
      * @param power
      * @return */
-    boolean throwPokecube(World world, EntityPlayer player, ItemStack cube, Vector3 direction, float power);
+    boolean throwPokecube(World world, EntityLivingBase thrower, ItemStack cube, Vector3 direction, float power);
+
+    /** Used to throw the pokecube at a specific target
+     * 
+     * @param world
+     * @param player
+     * @param cube
+     * @param targetLocation
+     * @param target
+     * @return */
+    boolean throwPokecubeAt(World world, EntityLivingBase thrower, ItemStack cube, @Nullable Vector3 targetLocation,
+            @Nullable Entity target);
 }

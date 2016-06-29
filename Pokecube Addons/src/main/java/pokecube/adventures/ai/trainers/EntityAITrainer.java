@@ -7,13 +7,17 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
@@ -77,7 +81,6 @@ public class EntityAITrainer extends EntityAIBase
                 trainer.setTarget(null);
             }
         }
-
         if (trainer instanceof EntityLeader)
         {
             if (((EntityLeader) trainer).hasDefeated(trainer.getTarget()))
@@ -197,7 +200,22 @@ public class EntityAITrainer extends EntityAIBase
         trainer.faceEntity(trainer.getTarget(), trainer.rotationPitch, trainer.rotationYaw);
         if (distance > 100 || trainer.cooldown > 0)
         {
-
+            if (trainer.cooldown == Config.instance.trainerSendOutDelay - 1)
+            {
+                IPokemob next = null;
+                for (int j = 0; j < 6; j++)
+                {
+                    ItemStack i = trainer.pokecubes[j];
+                    if (i != null && trainer.attackCooldown[j] <= 0)
+                    {
+                        next = PokecubeManager.itemToPokemob(i, world);
+                        break;
+                    }
+                }
+                if (next != null)
+                    trainer.getTarget().addChatMessage(new TextComponentTranslation("pokecube.trainer.next",
+                            trainer.getDisplayName(), next.getPokemonDisplayName()));
+            }
         }
         else if (trainer.outMob != null)
         {

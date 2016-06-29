@@ -33,12 +33,6 @@ public class HeldItemTextureHandler
         return new ModelResourceLocation(new ResourceLocation("pokecube", "item/held"), "type=" + name.toLowerCase());
     }
 
-    private static void registerItemVariant(String variant)
-    {
-        ModelBakery.registerItemVariants(PokecubeItems.held,
-                new ModelResourceLocation(new ResourceLocation("pokecube", "item/held"), variant));
-    }
-
     public static void registerItemModels()
     {
         ModelLoader.setCustomMeshDefinition(PokecubeItems.held, new MegaStone());
@@ -46,5 +40,11 @@ public class HeldItemTextureHandler
         {
             registerItemVariant("type=" + s);
         }
+    }
+
+    private static void registerItemVariant(String variant)
+    {
+        ModelBakery.registerItemVariants(PokecubeItems.held,
+                new ModelResourceLocation(new ResourceLocation("pokecube", "item/held"), variant));
     }
 }

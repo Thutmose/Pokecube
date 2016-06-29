@@ -254,21 +254,6 @@ public class TypeTrainer
         return texture;
     }
 
-    @SideOnly(Side.CLIENT)
-    private boolean texExists(ResourceLocation texture)
-    {
-        try
-        {
-            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(texture);
-            InputStream stream = res.getInputStream();
-            stream.close();
-            return true;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-    }
     private void initLoot()
     {
         if (loot[0] != null) return;
@@ -310,7 +295,6 @@ public class TypeTrainer
         }
         if (loot[0] == null) loot[0] = new ItemStack(Items.EMERALD);
     }
-
     public void initTrainerItems(EntityTrainer trainer)
     {
         initLoot();
@@ -318,6 +302,22 @@ public class TypeTrainer
         {
             EntityEquipmentSlot slotIn = EntityEquipmentSlot.values()[i];
             trainer.setItemStackToSlot(slotIn, loot[i - 1]);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private boolean texExists(ResourceLocation texture)
+    {
+        try
+        {
+            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(texture);
+            InputStream stream = res.getInputStream();
+            stream.close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
         }
     }
 

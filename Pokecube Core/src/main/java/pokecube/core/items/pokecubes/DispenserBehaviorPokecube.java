@@ -8,7 +8,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.util.FakePlayer;
 import pokecube.core.PokecubeItems;
+import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.PokecubeMod;
+import thut.api.maths.Vector3;
 
 public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
 {
@@ -16,48 +18,22 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
     @Override
     public ItemStack dispense(IBlockSource iblocksource, ItemStack itemstack)
     {
-
         FakePlayer player = PokecubeMod.getFakePlayer();
         player.worldObj = iblocksource.getWorld();
         player.posX = iblocksource.getX();
         player.posY = iblocksource.getY() - player.getEyeHeight();
         player.posZ = iblocksource.getZ();
-        EnumFacing dir = BlockDispenser.getFacing(iblocksource.getBlockMetadata());//TODO 1.10 changes this.
-        float yaw = 0;
-        float pitch = 0;
-        if (dir == EnumFacing.NORTH)
-        {
-            yaw = 180;
-        }
-        if (dir == EnumFacing.EAST)
-        {
-            yaw = -90;
-        }
-        if (dir == EnumFacing.WEST)
-        {
-            yaw = 90;
-        }
-        if (dir == EnumFacing.UP)
-        {
-            pitch = -90;
-        }
-        if (dir == EnumFacing.DOWN)
-        {
-            pitch = 90;
-        }
-
-        player.rotationYaw = yaw;
-        player.rotationPitch = pitch;
-        player.rotationYawHead = yaw;
-
-
+        EnumFacing dir = BlockDispenser.getFacing(iblocksource.getBlockMetadata());
+        Vector3 direction = Vector3.getNewVector().set(dir);
         if (itemstack.getItem() == PokecubeItems.pokemobEgg)
         {
-            itemstack.onItemUse(player, iblocksource.getWorld(), iblocksource.getBlockPos().offset(dir), EnumHand.MAIN_HAND, dir, 0.5f, 0.5f, 0.5f);
+            itemstack.onItemUse(player, iblocksource.getWorld(), iblocksource.getBlockPos(),
+                    EnumHand.MAIN_HAND, dir, 0.5f, 0.5f, 0.5f);
         }
-        else
+        else if (itemstack.getItem() instanceof IPokecube)
         {
-            itemstack.useItemRightClick(iblocksource.getWorld(), player, EnumHand.MAIN_HAND);
+            IPokecube cube = (IPokecube) itemstack.getItem();
+            cube.throwPokecube(iblocksource.getWorld(), player, itemstack, direction, 0.5f);
         }
         itemstack.splitStack(1);
         return itemstack;

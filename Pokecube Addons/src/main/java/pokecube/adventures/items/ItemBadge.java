@@ -12,18 +12,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 
 public class ItemBadge extends Item
 {
     public static ArrayList<String> variants = Lists.newArrayList();
-
-    public static boolean isBadge(ItemStack stackIn)
-    {
-        return stackIn != null && stackIn.getItem() instanceof ItemBadge && stackIn.hasTagCompound()
-                && stackIn.getTagCompound().hasKey("type");
-    }
 
     static
     {
@@ -36,10 +30,16 @@ public class ItemBadge extends Item
         }
     }
 
+    public static boolean isBadge(ItemStack stackIn)
+    {
+        return stackIn != null && stackIn.getItem() instanceof ItemBadge && stackIn.hasTagCompound()
+                && stackIn.getTagCompound().hasKey("type");
+    }
+
     public ItemBadge()
     {
         super();
-        this.setCreativeTab(PokecubeCore.creativeTabPokecube);
+        this.setCreativeTab(PokecubeMod.creativeTabPokecube);
         this.setHasSubtypes(true);
     }
 
@@ -54,24 +54,6 @@ public class ItemBadge extends Item
             String s = stack.getTagCompound().getString("type");
             list.add(s);
         }
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        String name = super.getUnlocalizedName();
-        if (stack.hasTagCompound())
-        {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "???";
-            if (tag != null)
-            {
-                String stackname = tag.getString("type");
-                variant = stackname.toLowerCase();
-            }
-            name = "item." + variant;
-        }
-        return name;
     }
 
     @Override
@@ -96,5 +78,23 @@ public class ItemBadge extends Item
             stack.getTagCompound().setString("type", s);
             subItems.add(stack);
         }
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        String name = super.getUnlocalizedName();
+        if (stack.hasTagCompound())
+        {
+            NBTTagCompound tag = stack.getTagCompound();
+            String variant = "???";
+            if (tag != null)
+            {
+                String stackname = tag.getString("type");
+                variant = stackname.toLowerCase();
+            }
+            name = "item." + variant;
+        }
+        return name;
     }
 }

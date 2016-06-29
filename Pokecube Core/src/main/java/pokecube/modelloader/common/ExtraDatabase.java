@@ -24,6 +24,20 @@ import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
 
 public class ExtraDatabase
 {
+    static class AddedXML
+    {
+        final String name;
+        final String modId;
+        final String xml;
+
+        AddedXML(String modId, String name, String xml)
+        {
+            this.modId = modId;
+            this.name = name;
+            this.xml = xml;
+        }
+    }
+
     @XmlRootElement(name = "details")
     public static class XMLDetails
     {
@@ -40,20 +54,6 @@ public class ExtraDatabase
         XMLDetails            details;
         @XmlElement(name = "Pokemon")
         List<XMLPokedexEntry> entries = Lists.newArrayList();
-    }
-
-    static class AddedXML
-    {
-        final String name;
-        final String modId;
-        final String xml;
-
-        AddedXML(String modId, String name, String xml)
-        {
-            this.modId = modId;
-            this.name = name;
-            this.xml = xml;
-        }
     }
 
     static HashMap<String, AddedXML>        xmls    = Maps.newHashMap();

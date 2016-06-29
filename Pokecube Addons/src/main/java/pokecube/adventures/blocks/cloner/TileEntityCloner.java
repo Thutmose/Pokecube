@@ -496,20 +496,6 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         return "splicer";
     }
 
-    /** Overriden in a sign to provide the text. */
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        if (craftMatrix != null)
-        {
-            craftMatrix.eventHandler.onCraftMatrixChanged(craftMatrix);
-        }
-        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
     @Override
     public ITextComponent getDisplayName()
     {
@@ -633,6 +619,20 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         if (inventory[index] != null && inventory[index].stackSize <= 0) inventory[index] = null;
 
         return inventory[index];
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        if (craftMatrix != null)
+        {
+            craftMatrix.eventHandler.onCraftMatrixChanged(craftMatrix);
+        }
+        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
 
     @Override

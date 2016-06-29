@@ -26,18 +26,6 @@ public class CommandNBTEdit extends CommandBase
     }
 
     @Override
-    public String getCommandName()
-    {
-        return "pcedit";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender par1ICommandSender)
-    {
-        return "/pcedit OR /pcedit <EntityId> OR /pcedit <TileX> <TileY> <TileZ>";
-    }
-
-    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] var2)
             throws NumberInvalidException, WrongUsageException
     {
@@ -77,6 +65,18 @@ public class CommandNBTEdit extends CommandBase
                 throw new WrongUsageException("Pass 0, 1, or 3 integers -- ex. /pcedit");
             }
         }
+    }
+
+    @Override
+    public String getCommandName()
+    {
+        return "pcedit";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender par1ICommandSender)
+    {
+        return "/pcedit OR /pcedit <EntityId> OR /pcedit <TileX> <TileY> <TileZ>";
     }
 
 }

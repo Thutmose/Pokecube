@@ -76,6 +76,8 @@ public class Config extends ConfigBase
     protected boolean          tableRecipe                = true;
     @Configure(category = misc)
     public double              scalefactor                = 1;
+    @Configure(category = misc)
+    public boolean             pcOnDrop                   = true;
 
     @Configure(category = misc)
     public boolean             pcHoldsOnlyPokecubes       = true;

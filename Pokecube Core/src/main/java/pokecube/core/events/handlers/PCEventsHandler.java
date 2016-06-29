@@ -15,8 +15,8 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -193,15 +193,21 @@ public class PCEventsHandler
         if (evt.getItem().worldObj.isRemote) return;
         InventoryPlayer inv = evt.getEntityPlayer().inventory;
         int num = inv.getFirstEmptyStack();
-
-        if (num == -1)
+        if (!PokecubeManager.isFilled(evt.getItem().getEntityItem())) { return; }
+        String owner = PokecubeManager.getOwner(evt.getItem().getEntityItem());
+        if (evt.getEntityPlayer().getUniqueID().toString().equals(owner))
         {
-            if (PokecubeManager.isFilled(evt.getItem().getEntityItem()))
+            if (num == -1)
             {
                 InventoryPC.addPokecubeToPC(evt.getItem().getEntityItem(), evt.getEntityPlayer().worldObj);
                 evt.getItem().setDead();
-
             }
+        }
+        else
+        {
+            InventoryPC.addPokecubeToPC(evt.getItem().getEntityItem(), evt.getEntityPlayer().worldObj);
+            evt.getItem().setDead();
+            evt.setCanceled(true);
         }
     }
 
@@ -239,9 +245,9 @@ public class PCEventsHandler
      * 
      * @param evt */
     @SubscribeEvent
-    public void sendPokemobToPCPlayerDeath(LivingDeathEvent evt)
+    public void sendPokemobToPCPlayerDeath(PlayerDropsEvent evt)
     {
-        if (!(evt.getEntity() instanceof EntityPlayer)) return;
+        if (!(evt.getEntity() instanceof EntityPlayer) || !PokecubeCore.core.getConfig().pcOnDrop) return;
 
         if (evt.getEntity().worldObj.isRemote) return;
 

@@ -1,9 +1,13 @@
 package pokecube.core.entity.professor;
 
+import java.io.IOException;
+
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.INpc;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -16,6 +20,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.commands.CommandTools;
@@ -27,7 +32,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
-public class EntityProfessor extends EntityAgeable
+public class EntityProfessor extends EntityAgeable implements IEntityAdditionalSpawnData, INpc
 {
     public static enum ProfessorType
     {
@@ -143,7 +148,7 @@ public class EntityProfessor extends EntityAgeable
                 player.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, worldObj, 0, 0, 0);
             }
         }
-        return false;// super.processInteract(EntityPlayer player);
+        return false;
     }
 
     @Override
@@ -200,6 +205,28 @@ public class EntityProfessor extends EntityAgeable
         nbt.setBoolean("stationary", stationary);
         nbt.setString("playerName", playerName);
         nbt.setString("type", type.toString());
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer)
+    {
+        NBTTagCompound tag = new NBTTagCompound();
+        this.writeEntityToNBT(tag);
+        new PacketBuffer(buffer).writeNBTTagCompoundToBuffer(tag);
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf additionalData)
+    {
+        try
+        {
+            NBTTagCompound tag = new PacketBuffer(additionalData).readNBTTagCompoundFromBuffer();
+            this.readEntityFromNBT(tag);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 }

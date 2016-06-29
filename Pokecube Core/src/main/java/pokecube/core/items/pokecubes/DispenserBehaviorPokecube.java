@@ -22,11 +22,13 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
         player.posX = iblocksource.getX();
         player.posY = iblocksource.getY() - player.getEyeHeight();
         player.posZ = iblocksource.getZ();
-        Vector3 direction = Vector3.getNewVector().set(iblocksource.getX(),iblocksource.getY(),iblocksource.getZ());
+
+        Vector3 direction = Vector3.getNewVector().set(iblocksource.getX(), iblocksource.getY(), iblocksource.getZ());
+
         if (itemstack.getItem() == PokecubeItems.pokemobEgg)
         {
-            itemstack.onItemUse(player, iblocksource.getWorld(), iblocksource.getBlockPos(),
-                    EnumHand.MAIN_HAND, EnumFacing.UP, 0.5f, 0.5f, 0.5f);
+            itemstack.onItemUse(player, iblocksource.getWorld(), iblocksource.getBlockPos(), EnumHand.MAIN_HAND,
+                    EnumFacing.UP, 0.5f, 0.5f, 0.5f);
         }
         else if (itemstack.getItem() instanceof IPokecube)
         {

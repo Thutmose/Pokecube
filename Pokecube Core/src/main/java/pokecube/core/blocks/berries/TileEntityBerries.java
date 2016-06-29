@@ -83,6 +83,13 @@ public class TileEntityBerries extends TileEntity implements ITickable
         return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
 
+    @Override
+    public NBTTagCompound getUpdateTag()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+        return writeToNBT(nbt);
+    }
+
     public void growCrop()
     {
         stage++;
@@ -183,12 +190,5 @@ public class TileEntityBerries extends TileEntity implements ITickable
         nbt.setInteger("stage", stage);
         nbt.setString("type", type.toString());
         return nbt;
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag()
-    {
-        NBTTagCompound nbt = new NBTTagCompound();
-        return writeToNBT(nbt);
     }
 }

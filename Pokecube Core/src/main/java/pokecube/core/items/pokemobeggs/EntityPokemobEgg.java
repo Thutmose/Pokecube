@@ -5,10 +5,14 @@ package pokecube.core.items.pokemobeggs;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
@@ -82,7 +86,7 @@ public class EntityPokemobEgg extends EntityLiving
             EntityPlayer player = (EntityPlayer) e;
             if (this.delayBeforeCanPickup <= 0 && (i <= 0 || player.inventory.addItemStackToInventory(itemstack)))
             {
-                //TODO maybe make egg plop sound
+                // TODO maybe make egg plop sound
                 player.onItemPickup(this, i);
 
                 if (itemstack.stackSize <= 0)
@@ -143,7 +147,7 @@ public class EntityPokemobEgg extends EntityLiving
 
     public void incubateEgg()
     {
-        if(ticksExisted!=lastIncubate)
+        if (ticksExisted != lastIncubate)
         {
             lastIncubate = ticksExisted;
             age++;
@@ -165,7 +169,8 @@ public class EntityPokemobEgg extends EntityLiving
         here.set(this);
         if (worldObj.isRemote) return;
         this.delayBeforeCanPickup--;
-        boolean spawned = getHeldItemMainhand().hasTagCompound() && getHeldItemMainhand().getTagCompound().hasKey("nestLocation");
+        boolean spawned = getHeldItemMainhand().hasTagCompound()
+                && getHeldItemMainhand().getTagCompound().hasKey("nestLocation");
 
         if (age++ >= hatch || spawned)
         {
@@ -185,6 +190,18 @@ public class EntityPokemobEgg extends EntityLiving
             IPokemob mob = getPokemob();
             if (mob == null) this.setDead();
             else((EntityLiving) getPokemob()).playLivingSound();
+        }
+        TileEntity te = here.getTileEntity(worldObj, EnumFacing.DOWN);
+        if (te == null) te = here.getTileEntity(worldObj);
+        if (te instanceof TileEntityHopper)
+        {
+            TileEntityHopper hopper = (TileEntityHopper) te;
+            EntityItem item = new EntityItem(worldObj, posX, posY, posZ, getHeldItemMainhand());
+            boolean added = TileEntityHopper.putDropInInventoryAllSlots(hopper, item);
+            if (added)
+            {
+                this.setDead();
+            }
         }
     }
 

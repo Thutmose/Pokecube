@@ -20,17 +20,72 @@ import thut.core.client.render.x3d.X3dModel;
 
 public class BagRenderer implements LayerRenderer<EntityPlayer>
 {
-    private static BagChecker         checker = new BagChecker(null);
-    private final RenderLivingBase<?> renderer;
-    X3dModel                          model;
-    X3dModel                          model2;
-    private ResourceLocation          BAG_1   = new ResourceLocation("pokecube_adventures:textures/Bag_1.png");
-    private ResourceLocation          BAG_2   = new ResourceLocation("pokecube_adventures:textures/Bag_2.png");
+    public static class BagChecker
+    {
+        final BagChecker defaults;
 
+        public BagChecker(BagChecker defaults)
+        {
+            this.defaults = defaults;
+        }
+
+        public ItemStack getBag(EntityPlayer player)
+        {
+            ItemStack armour = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            if (armour != null)
+            {
+                if (armour.getItem() instanceof ItemBag) return armour;
+                if (armour.hasTagCompound() && armour.getTagCompound().getBoolean("isapokebag")) return armour;
+            }
+            return null;
+        }
+
+        public EnumDyeColor getBagColour(ItemStack bag)
+        {
+            EnumDyeColor ret = EnumDyeColor.YELLOW;
+            if (bag.hasTagCompound() && bag.getTagCompound().hasKey("dyeColour"))
+            {
+                int damage = bag.getTagCompound().getInteger("dyeColour");
+                ret = EnumDyeColor.byDyeDamage(damage);
+            }
+            return ret;
+        }
+
+        protected boolean hasBag(EntityPlayer player)
+        {
+            ItemStack armour = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            if (armour != null) return armour.getItem() instanceof ItemBag
+                    || (armour.hasTagCompound() && armour.getTagCompound().getBoolean("isapokebag"));
+            return false;
+        }
+
+        public boolean isWearingBag(EntityPlayer player)
+        {
+            boolean ret;
+            if (!(ret = hasBag(player)) && defaults != null) return defaults.isWearingBag(player);
+            return ret;
+        }
+    }
+    private static BagChecker         checker = new BagChecker(null);
     public static BagChecker getChecker()
     {
         return checker;
     }
+    public static void setChecker(Class<? extends BagChecker> checkerIn)
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+            NoSuchMethodException, SecurityException
+    {
+        BagChecker newchecker = checkerIn.getConstructor(BagChecker.class).newInstance(checker);
+        checker = newchecker;
+    }
+    private final RenderLivingBase<?> renderer;
+    X3dModel                          model;
+
+    X3dModel                          model2;
+
+    private ResourceLocation          BAG_1   = new ResourceLocation("pokecube_adventures:textures/Bag_1.png");
+
+    private ResourceLocation          BAG_2   = new ResourceLocation("pokecube_adventures:textures/Bag_2.png");
 
     public BagRenderer(RenderLivingBase<?> livingEntityRendererIn)
     {
@@ -94,60 +149,5 @@ public class BagRenderer implements LayerRenderer<EntityPlayer>
     public boolean shouldCombineTextures()
     {
         return false;
-    }
-
-    public static class BagChecker
-    {
-        final BagChecker defaults;
-
-        public BagChecker(BagChecker defaults)
-        {
-            this.defaults = defaults;
-        }
-
-        protected boolean hasBag(EntityPlayer player)
-        {
-            ItemStack armour = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-            if (armour != null) return armour.getItem() instanceof ItemBag
-                    || (armour.hasTagCompound() && armour.getTagCompound().getBoolean("isapokebag"));
-            return false;
-        }
-
-        public boolean isWearingBag(EntityPlayer player)
-        {
-            boolean ret;
-            if (!(ret = hasBag(player)) && defaults != null) return defaults.isWearingBag(player);
-            return ret;
-        }
-
-        public ItemStack getBag(EntityPlayer player)
-        {
-            ItemStack armour = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-            if (armour != null)
-            {
-                if (armour.getItem() instanceof ItemBag) return armour;
-                if (armour.hasTagCompound() && armour.getTagCompound().getBoolean("isapokebag")) return armour;
-            }
-            return null;
-        }
-
-        public EnumDyeColor getBagColour(ItemStack bag)
-        {
-            EnumDyeColor ret = EnumDyeColor.YELLOW;
-            if (bag.hasTagCompound() && bag.getTagCompound().hasKey("dyeColour"))
-            {
-                int damage = bag.getTagCompound().getInteger("dyeColour");
-                ret = EnumDyeColor.byDyeDamage(damage);
-            }
-            return ret;
-        }
-    }
-
-    public static void setChecker(Class<? extends BagChecker> checkerIn)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException
-    {
-        BagChecker newchecker = checkerIn.getConstructor(BagChecker.class).newInstance(checker);
-        checker = newchecker;
     }
 }

@@ -27,6 +27,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
 {
     private static Map<TypeTrainer, ResourceLocation> males   = Maps.newHashMap();
     private static Map<TypeTrainer, ResourceLocation> females = Maps.newHashMap();
+    private static Map<String, ResourceLocation>      players = Maps.newHashMap();
 
     private ModelBiped                                male;
     private ModelBiped                                female;
@@ -38,6 +39,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
         female = new ModelPlayer(0, true);
     }
 
+    @Override
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
         if (((EntityTrainer) entity).male)
@@ -62,6 +64,8 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
         {
             if (!((EntityTrainer) villager).playerName.isEmpty())
             {
+                if (players.containsKey(((EntityTrainer) villager).playerName))
+                    return players.get(((EntityTrainer) villager).playerName);
                 Minecraft minecraft = Minecraft.getMinecraft();
                 GameProfile profile = new GameProfile((UUID) null, ((EntityTrainer) villager).playerName);
                 profile = TileEntitySkull.updateGameprofile(profile);
@@ -69,7 +73,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
                 ResourceLocation resourcelocation;
                 if (map.containsKey(Type.SKIN))
                 {
-                    resourcelocation = minecraft.getSkinManager().loadSkin((MinecraftProfileTexture) map.get(Type.SKIN),
+                    resourcelocation = minecraft.getSkinManager().loadSkin(map.get(Type.SKIN),
                             Type.SKIN);
                 }
                 else
@@ -77,6 +81,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
                     UUID uuid = EntityPlayer.getUUID(profile);
                     resourcelocation = DefaultPlayerSkin.getDefaultSkin(uuid);
                 }
+                players.put(((EntityTrainer) villager).playerName, resourcelocation);
                 return resourcelocation;
             }
 
@@ -92,7 +97,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
             }
             if (texture == null)
             {
-                texture = type == null ? super.getEntityTexture((T) villager)
+                texture = type == null ? super.getEntityTexture(villager)
                         : type.getTexture(((EntityTrainer) villager));
 
                 if (((EntityTrainer) villager).male)

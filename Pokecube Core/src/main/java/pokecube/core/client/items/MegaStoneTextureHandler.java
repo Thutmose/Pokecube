@@ -34,12 +34,6 @@ public class MegaStoneTextureHandler
                 "type=" + name.toLowerCase());
     }
 
-    private static void registerItemVariant(String variant)
-    {
-        ModelBakery.registerItemVariants(PokecubeItems.megastone,
-                new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"), variant));
-    }
-
     public static void registerItemModels()
     {
         ModelLoader.setCustomMeshDefinition(PokecubeItems.megastone, new MegaStone());
@@ -47,5 +41,11 @@ public class MegaStoneTextureHandler
         {
             registerItemVariant("type=" + s);
         }
+    }
+
+    private static void registerItemVariant(String variant)
+    {
+        ModelBakery.registerItemVariants(PokecubeItems.megastone,
+                new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"), variant));
     }
 }

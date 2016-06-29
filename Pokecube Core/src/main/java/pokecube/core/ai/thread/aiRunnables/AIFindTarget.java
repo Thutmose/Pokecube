@@ -229,9 +229,9 @@ public class AIFindTarget extends AIBase implements IAICombat
         {
             Entity owner = pokemob.getPokemonOwner();
             boolean stayOrGuard = pokemob.getPokemonAIState(IMoveConstants.GUARDING)
-                    || pokemob.getPokemonAIState(IPokemob.STAYING);
+                    || pokemob.getPokemonAIState(IMoveConstants.STAYING);
             if (owner != null && !stayOrGuard
-                    && owner.getDistanceToEntity(entity) > PokecubeCore.core.getConfig().chaseDistance)
+                    && owner.getDistanceToEntity(entity) > PokecubeMod.core.getConfig().chaseDistance)
             {
                 setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
                 addTargetInfo(entity, null);

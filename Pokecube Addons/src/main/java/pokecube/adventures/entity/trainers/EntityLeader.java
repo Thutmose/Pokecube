@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -26,7 +27,33 @@ import thut.api.maths.Vector3;
 
 public class EntityLeader extends EntityTrainer
 {
-    public ArrayList<String> defeaters = new ArrayList<String>();
+    public static class DefeatEntry
+    {
+        static DefeatEntry createFromNBT(NBTTagCompound nbt)
+        {
+            String defeater = nbt.getString("player");
+            long time = nbt.getLong("time");
+            return new DefeatEntry(defeater, time);
+        }
+        final String defeater;
+
+        final long   defeatTime;
+
+        public DefeatEntry(String defeater, long time)
+        {
+            this.defeater = defeater;
+            this.defeatTime = time;
+        }
+
+        void writeToNBT(NBTTagCompound nbt)
+        {
+            nbt.setString("player", defeater);
+            nbt.setLong("time", defeatTime);
+        }
+    }
+
+    private long                  resetTime = 0;
+    public ArrayList<DefeatEntry> defeaters = new ArrayList<DefeatEntry>();
 
     public EntityLeader(World world)
     {
@@ -63,9 +90,21 @@ public class EntityLeader extends EntityTrainer
     {
         if (e == null) return false;
         String name = e.getUniqueID().toString();
-        for (String s : defeaters)
+        for (DefeatEntry s : defeaters)
         {
-            if (s.equals(name)) return true;
+            if (s.defeater.equals(name))
+            {
+                if (resetTime > 0)
+                {
+                    long diff = worldObj.getTotalWorldTime() - s.defeatTime;
+                    if (diff > resetTime)
+                    {
+                        defeaters.remove(s);
+                        return false;
+                    }
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -91,7 +130,7 @@ public class EntityLeader extends EntityTrainer
     public void onDefeated(Entity defeater)
     {
         if (hasDefeated(defeater)) return;
-        defeaters.add(defeater.getUniqueID().toString());
+        defeaters.add(new DefeatEntry(defeater.getUniqueID().toString(), worldObj.getTotalWorldTime()));
         for (int i = 1; i < 5; i++)
         {
             EntityEquipmentSlot slotIn = EntityEquipmentSlot.values()[i];
@@ -100,8 +139,12 @@ public class EntityLeader extends EntityTrainer
         }
         if (reward != null)
         {
-            EntityItem item = defeater.entityDropItem(reward.copy(), 0.5f);
-            item.setPickupDelay(0);
+            for (ItemStack i : reward)
+            {
+                if (i == null || i.getItem() == null) continue;
+                EntityItem item = defeater.entityDropItem(i.copy(), 0.5f);
+                item.setPickupDelay(0);
+            }
         }
         if (defeater != null)
         {
@@ -117,9 +160,9 @@ public class EntityLeader extends EntityTrainer
 
         if (ItemBadge.isBadge(player.getHeldItemMainhand()))
         {
-            reward = player.getHeldItemMainhand().copy();
+            reward[0] = player.getHeldItemMainhand().copy();
             player.addChatMessage(new TextComponentString("Badge set to " + this.getHeldItemOffhand()));
-            this.setHeldItem(EnumHand.OFF_HAND, reward);
+            this.setHeldItem(EnumHand.OFF_HAND, reward[0]);
         }
         return super.processInteract(player, hand, stack);
     }
@@ -128,11 +171,13 @@ public class EntityLeader extends EntityTrainer
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
         super.readEntityFromNBT(nbt);
-        NBTTagCompound names = nbt.getCompoundTag("defeaters");
-        int n = names.getInteger("num");
-        for (int i = 0; i < n; i++)
+        defeaters.clear();
+        nbt.setLong("resetTime", resetTime);
+        if (nbt.hasKey("DefeatList", 9))
         {
-            defeaters.add(names.getString("" + i));
+            NBTTagList nbttaglist = nbt.getTagList("DefeatList", 10);
+            for (int i = 0; i < nbttaglist.tagCount(); i++)
+                defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
         }
     }
 
@@ -140,13 +185,14 @@ public class EntityLeader extends EntityTrainer
     public void writeEntityToNBT(NBTTagCompound nbt)
     {
         super.writeEntityToNBT(nbt);
-        NBTTagCompound names = new NBTTagCompound();
-        int n = defeaters.size();
-        names.setInteger("num", n);
-        for (int i = 0; i < n; i++)
+        resetTime = nbt.getLong("resetTime");
+        NBTTagList nbttaglist = new NBTTagList();
+        for (DefeatEntry entry : defeaters)
         {
-            names.setString("" + i, defeaters.get(i));
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+            entry.writeToNBT(nbttagcompound);
+            nbttaglist.appendTag(nbttagcompound);
         }
-        nbt.setTag("defeaters", names);
+        nbt.setTag("DefeatList", nbttaglist);
     }
 }

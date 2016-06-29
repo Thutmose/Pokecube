@@ -8,6 +8,7 @@ import java.util.Random;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -25,6 +26,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
@@ -70,6 +72,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
+import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -99,16 +102,34 @@ public class EventsHandler
         public ChooseFirst(EntityPlayer player)
         {
             this.player = player;
+            System.out.println("Test");
             MinecraftForge.EVENT_BUS.register(this);
         }
 
         @SubscribeEvent
         public void onPlayerJoin(TickEvent.PlayerTickEvent event)
         {
-            if (event.player == player)
+            if (event.player == player && player.ticksExisted > 0)
             {
-                PokecubeClientPacket packet2 = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.CHOOSE1ST });
-                PokecubePacketHandler.sendToClient(packet2, event.player);
+                PokecubeClientPacket packet;
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(4));
+                boolean hasStarter = PokecubeSerializer.getInstance().hasStarter(player);
+                buffer.writeByte(PokecubeClientPacket.CHOOSE1ST);
+                buffer.writeBoolean(!hasStarter);
+                if (hasStarter)
+                {
+                    System.out.println(hasStarter);
+                    buffer.writeBoolean(hasStarter);
+                }
+                else
+                {
+                    buffer.writeBoolean(
+                            PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase()));
+                    buffer.writeInt(0);
+                }
+                System.out.println("Test " + player.ticksExisted);
+                packet = new PokecubeClientPacket(buffer);
+                PokecubePacketHandler.sendToClient(packet, event.player);
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }
@@ -548,7 +569,7 @@ public class EventsHandler
     @SubscribeEvent
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent.Entity event)
     {
-        if (event.getEntity() instanceof IPokemob)
+        if (event.getEntity() instanceof IPokemob || event.getEntity() instanceof EntityProfessor)
         {
             class Provider extends GuardAICapability implements ICapabilitySerializable<NBTTagCompound>
             {
@@ -601,7 +622,6 @@ public class EventsHandler
         {
             NBTTagCompound nbt = new NBTTagCompound();
             StatsCollector.writeToNBT(nbt);
-            nbt.setBoolean("playerhasstarter", PokecubeSerializer.getInstance().hasStarter(entityPlayer));
             PokecubeSerializer.getInstance().writeToNBT2(nbt);
             nbt.setBoolean("hasSerializer", true);
             boolean offline = !FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode();
@@ -610,11 +630,14 @@ public class EventsHandler
             PokecubePacketHandler.sendToClient(packet, entityPlayer);
         }
 
-        if (!evt.player.worldObj.isRemote && evt.player instanceof EntityPlayer)
+        if (evt.player instanceof EntityPlayer)
         {
-            if (PokecubeMod.core.getConfig().guiOnLogin && !PokecubeSerializer.getInstance().hasStarter(entityPlayer))
+            if (!evt.player.worldObj.isRemote)
             {
-                new ChooseFirst(evt.player);
+                if (PokecubeMod.core.getConfig().guiOnLogin)
+                {
+                    new ChooseFirst(evt.player);
+                }
             }
         }
     }

@@ -59,22 +59,6 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)
-    {
-        Random rand = worldIn instanceof World ? ((World) worldIn).rand : RANDOM;
-
-        int count = 1 + rand.nextInt(2);
-        for (int i = 0; i < count; i++)
-        {
-            Item item = this.getItemDropped(state, rand, 0);
-            if (item != null)
-            {
-                dropBlockAsItemWithChance(worldIn, pos, state, 1, 0);
-            }
-        }
-    }
-
-    @Override
     /** Spawns EntityItem in the world for the given ItemStack if the world is
      * not remote. */
     public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune)
@@ -96,29 +80,16 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
                         return;
                     }
                     float f = 0.5F;
-                    double d0 = (double) (worldIn.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-                    double d1 = (double) (worldIn.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-                    double d2 = (double) (worldIn.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-                    EntityItem entityitem = new EntityItem(worldIn, (double) pos.getX() + d0, (double) pos.getY() + d1,
-                            (double) pos.getZ() + d2, stack);
+                    double d0 = worldIn.rand.nextFloat() * f + (1.0F - f) * 0.5D;
+                    double d1 = worldIn.rand.nextFloat() * f + (1.0F - f) * 0.5D;
+                    double d2 = worldIn.rand.nextFloat() * f + (1.0F - f) * 0.5D;
+                    EntityItem entityitem = new EntityItem(worldIn, pos.getX() + d0, pos.getY() + d1,
+                            pos.getZ() + d2, stack);
                     entityitem.setDefaultPickupDelay();
                     worldIn.spawnEntityInWorld(entityitem);
                 }
             }
         }
-    }
-
-    @Override
-    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
-    {
-        List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
-        Random rand = world instanceof World ? ((World) world).rand : RANDOM;
-        int count = quantityDropped(state, fortune, rand);
-        ItemStack stack = getBerryStack(world, pos);
-        if (stack == null) return ret;
-        stack.stackSize = count;
-        ret.add(stack);
-        return ret;
     }
 
     @Override
@@ -141,6 +112,30 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         return BerryManager.getBerryItem(BerryManager.berryNames.get(tile.getBerryId()));
     }
 
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        TileEntityBerries tile = (TileEntityBerries) source.getTileEntity(pos);
+        if (TileEntityBerries.trees.containsKey(tile.getBerryId()))
+        {
+            return BUSH2_AABB;
+        }
+        else return BUSH_AABB;
+    }
+
+    @Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    {
+        List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
+        Random rand = world instanceof World ? ((World) world).rand : RANDOM;
+        int count = quantityDropped(state, fortune, rand);
+        ItemStack stack = getBerryStack(world, pos);
+        if (stack == null) return ret;
+        stack.stackSize = count;
+        ret.add(stack);
+        return ret;
+    }
+
     /** Returns the ID of the items to drop on destruction. */
     @Override
     public Item getItemDropped(IBlockState state, Random p_149650_2_, int p_149650_3_)
@@ -149,6 +144,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     }
 
     /** Convert the BlockState into the correct metadata value */
+    @Override
     public int getMetaFromState(IBlockState state)
     {
         return 0;
@@ -168,21 +164,27 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         return BerryManager.getBerryItem(tile.getBerryId());
     }
 
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)
+    {
+        Random rand = worldIn instanceof World ? worldIn.rand : RANDOM;
+
+        int count = 1 + rand.nextInt(2);
+        for (int i = 0; i < count; i++)
+        {
+            Item item = this.getItemDropped(state, rand, 0);
+            if (item != null)
+            {
+                dropBlockAsItemWithChance(worldIn, pos, state, 1, 0);
+            }
+        }
+    }
+
     /** Returns the quantity of items to drop on block destruction. */
     @Override
     public int quantityDropped(Random par1Random)
     {
         int i = par1Random.nextInt(2) + 1;
         return i;
-    }
-
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
-        TileEntityBerries tile = (TileEntityBerries) source.getTileEntity(pos);
-        if (TileEntityBerries.trees.containsKey(tile.getBerryId()))
-        {
-            return BUSH2_AABB;
-        }
-        else return BUSH_AABB;
     }
 }

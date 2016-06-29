@@ -39,7 +39,7 @@ public class ItemLuckyEgg extends Item
             Vector3 location = Vector3.getNewVector().set(player).add(Vector3.getNewVector().set(player.getLookVec()));
             if (metadata == 0 && player.isSneaking())
             {
-                EntityProfessor p = new EntityProfessor(world, location.offset(EnumFacing.UP));
+                EntityProfessor p = new EntityProfessor(world, location.offset(EnumFacing.UP), true);
                 world.spawnEntityInWorld(p);
             }
             else

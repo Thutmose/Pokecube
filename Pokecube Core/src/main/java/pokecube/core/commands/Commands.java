@@ -303,7 +303,7 @@ public class Commands implements ICommand
                     ByteBuf buf = Unpooled.buffer(3);
                     buf.writeByte(PokecubeClientPacket.CHOOSE1ST);
                     buf.writeBoolean(false);
-                    buf.writeBoolean(true);
+                    buf.writeBoolean(false);
                     PokecubeClientPacket packet = new PokecubeClientPacket(buf);
                     PokecubePacketHandler.sendToClient(packet, player);
                     cSender.addChatMessage(

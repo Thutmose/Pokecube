@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class ItemHeldItems extends Item
 {
@@ -37,7 +37,7 @@ public class ItemHeldItems extends Item
     public ItemHeldItems()
     {
         super();
-        this.setCreativeTab(PokecubeCore.creativeTabPokecube);
+        this.setCreativeTab(PokecubeMod.creativeTabPokecube);
         this.setHasSubtypes(true);
     }
 
@@ -52,24 +52,6 @@ public class ItemHeldItems extends Item
             String s = stack.getTagCompound().getString("type");
             list.add(s);
         }
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        String name = super.getUnlocalizedName();
-        if (stack.hasTagCompound())
-        {
-            NBTTagCompound tag = stack.getTagCompound();
-            String variant = "???";
-            if (tag != null)
-            {
-                String stackname = tag.getString("type");
-                variant = stackname.toLowerCase();
-            }
-            name = "item." + variant;
-        }
-        return name;
     }
 
     @Override
@@ -94,5 +76,23 @@ public class ItemHeldItems extends Item
             stack.getTagCompound().setString("type", s);
             subItems.add(stack);
         }
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        String name = super.getUnlocalizedName();
+        if (stack.hasTagCompound())
+        {
+            NBTTagCompound tag = stack.getTagCompound();
+            String variant = "???";
+            if (tag != null)
+            {
+                String stackname = tag.getString("type");
+                variant = stackname.toLowerCase();
+            }
+            name = "item." + variant;
+        }
+        return name;
     }
 }

@@ -50,8 +50,8 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PCPacketHandler;
 import pokecube.core.network.PCPacketHandler.MessageClient;
-import pokecube.core.utils.Tools;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
@@ -297,16 +297,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         return "tradingtable";
     }
 
-    /** Overriden in a sign to provide the text. */
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
     @Override
     public ITextComponent getDisplayName()
     {
@@ -448,6 +438,23 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         if (trade) return inventory[i];
         if (i < inventory2.length) return inventory2[i];
         return null;
+    }
+
+    /** Overriden in a sign to provide the text. */
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket()
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        this.writeToNBT(nbttagcompound);
+        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+        return writeToNBT(nbt);
     }
 
     @Override
@@ -780,12 +787,5 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         tagCompound.setBoolean("trade", trade);
         tagCompound.setTag("Inventory", itemList);
         return tagCompound;
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag()
-    {
-        NBTTagCompound nbt = new NBTTagCompound();
-        return writeToNBT(nbt);
     }
 }

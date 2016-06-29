@@ -138,6 +138,21 @@ public class Pokecube extends Item implements IPokecube
         return 0;
     }
 
+    @Override
+    /** returns the action that specifies what animation to play when the items
+     * is being used */
+    public EnumAction getItemUseAction(ItemStack stack)
+    {
+        return EnumAction.BOW;
+    }
+
+    @Override
+    /** How long it takes to use or consume an item */
+    public int getMaxItemUseDuration(ItemStack stack)
+    {
+        return 2000;
+    }
+
     public double nest(IPokemob mob, int id)
     {
         double x = 1;
@@ -184,19 +199,14 @@ public class Pokecube extends Item implements IPokecube
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
     }
 
+    /** Called when the player finishes using this Item (E.g. finishes eating.).
+     * Not called when the player stops using the Item before the action is
+     * complete. */
     @Override
-    /** returns the action that specifies what animation to play when the items
-     * is being used */
-    public EnumAction getItemUseAction(ItemStack stack)
+    @Nullable
+    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
     {
-        return EnumAction.BOW;
-    }
-
-    @Override
-    /** How long it takes to use or consume an item */
-    public int getMaxItemUseDuration(ItemStack stack)
-    {
-        return 2000;
+        return stack;
     }
 
     @Override
@@ -229,22 +239,14 @@ public class Pokecube extends Item implements IPokecube
             {
                 CommandTools.sendError(player, "pokecube.badaim");
             }
-            if(used)
+            if (used)
             {
                 stack.splitStack(1);
             }
         }
     }
 
-    /** Called when the player finishes using this Item (E.g. finishes eating.).
-     * Not called when the player stops using the Item before the action is
-     * complete. */
-    @Nullable
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
-    {
-        return stack;
-    }
-
+    @Override
     public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
     {
 
@@ -271,40 +273,44 @@ public class Pokecube extends Item implements IPokecube
     }
 
     @Override
-    public boolean throwPokecube(World world, EntityPlayer player, ItemStack cube, Vector3 direction, float power)
+    public boolean throwPokecube(World world, EntityLivingBase thrower, ItemStack cube, Vector3 direction, float power)
     {
         EntityPokecube entity = null;
         int id = PokecubeItems.getCubeId(cube.getItem());
         if (id < 0) return false;
         ItemStack stack = ItemStack.copyItemStack(cube);
         stack.stackSize = 1;
-        entity = new EntityPokecube(world, player, stack);
-        Vector3 temp = Vector3.getNewVector().set(player).add(0, player.getEyeHeight(), 0);
-        Vector3 temp1 = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1.5);
+        entity = new EntityPokecube(world, thrower, stack);
+        Vector3 temp = Vector3.getNewVector().set(thrower).add(0, thrower.getEyeHeight(), 0);
+        Vector3 temp1 = Vector3.getNewVector().set(thrower.getLookVec()).scalarMultBy(1.5);
         temp.addTo(temp1).moveEntity(entity);
         temp.set(direction.scalarMultBy(power * 10)).setVelocities(entity);
         entity.targetEntity = null;
         entity.targetLocation.clear();
 
-        if (PokecubeManager.isFilled(stack) && !player.isSneaking())
+        if (PokecubeManager.isFilled(stack) && !thrower.isSneaking())
         {
             entity.targetLocation.y = -1;
         }
 
         if (!world.isRemote)
         {
-            player.playSound(SoundEvents.ENTITY_EGG_THROW, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+            thrower.playSound(SoundEvents.ENTITY_EGG_THROW, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
             world.spawnEntityInWorld(entity);
         }
         if (!PokecubeManager.isFilled(cube)) return true;
-        int current = player.inventory.currentItem;
-        player.inventory.mainInventory[current] = null;
-        player.inventory.markDirty();
+        if (thrower instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) thrower;
+            int current = player.inventory.currentItem;
+            player.inventory.mainInventory[current] = null;
+            player.inventory.markDirty();
+        }
         return true;
     }
 
     @Override
-    public boolean throwPokecubeAt(World world, EntityPlayer player, ItemStack cube, Vector3 targetLocation,
+    public boolean throwPokecubeAt(World world, EntityLivingBase thrower, ItemStack cube, Vector3 targetLocation,
             Entity target)
     {
         EntityPokecube entity = null;
@@ -312,12 +318,12 @@ public class Pokecube extends Item implements IPokecube
         if (id < 0) return false;
         ItemStack stack = ItemStack.copyItemStack(cube);
         stack.stackSize = 1;
-        entity = new EntityPokecube(world, player, stack);
-        boolean rightclick = target == player;
+        entity = new EntityPokecube(world, thrower, stack);
+        boolean rightclick = target == thrower;
         if (rightclick) target = null;
 
-        if (target instanceof EntityLivingBase || PokecubeManager.isFilled(cube) || player.isSneaking()
-                || (player instanceof FakePlayer))
+        if (target instanceof EntityLivingBase || PokecubeManager.isFilled(cube) || thrower.isSneaking()
+                || (thrower instanceof FakePlayer))
         {
             entity.targetEntity = (EntityLivingBase) target;
             if (target == null && targetLocation == null && PokecubeManager.isFilled(cube))
@@ -325,10 +331,10 @@ public class Pokecube extends Item implements IPokecube
                 targetLocation = Vector3.secondAxisNeg;
             }
             entity.targetLocation.set(targetLocation);
-            if (player.isSneaking())
+            if (thrower.isSneaking())
             {
-                Vector3 temp = Vector3.getNewVector().set(player).add(0, player.getEyeHeight(), 0);
-                Vector3 temp1 = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1.5);
+                Vector3 temp = Vector3.getNewVector().set(thrower).add(0, thrower.getEyeHeight(), 0);
+                Vector3 temp1 = Vector3.getNewVector().set(thrower.getLookVec()).scalarMultBy(1.5);
 
                 temp.addTo(temp1).moveEntity(entity);
                 temp.clear().setVelocities(entity);
@@ -338,16 +344,20 @@ public class Pokecube extends Item implements IPokecube
 
             if (!world.isRemote)
             {
-                player.playSound(SoundEvents.ENTITY_EGG_THROW, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+                thrower.playSound(SoundEvents.ENTITY_EGG_THROW, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
                 world.spawnEntityInWorld(entity);
             }
         }
         else if (!rightclick) { return false; }
 
         if (!PokecubeManager.isFilled(cube)) return true;
-        int current = player.inventory.currentItem;
-        player.inventory.mainInventory[current] = null;
-        player.inventory.markDirty();
+        if (thrower instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) thrower;
+            int current = player.inventory.currentItem;
+            player.inventory.mainInventory[current] = null;
+            player.inventory.markDirty();
+        }
         return true;
     }
 

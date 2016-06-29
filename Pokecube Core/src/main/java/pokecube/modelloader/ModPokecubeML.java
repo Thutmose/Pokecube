@@ -28,7 +28,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
@@ -89,6 +88,30 @@ public class ModPokecubeML
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }
 
+    private void loadMob(String mob)
+    {
+        if (textureProviders.containsKey(mob) && !textureProviders.get(mob).equals(ID)) return;
+
+        ArrayList<String> list = Lists.newArrayList();
+        ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
+        try
+        {
+            proxy.fileAsList(this, xml, list);
+            if (!list.isEmpty())
+            {
+                ExtraDatabase.addXMLEntry(ID, mob, list);
+            }
+            else
+            {
+                System.err.println("Failed to aquire XML for " + mob);
+            }
+        }
+        catch (Exception e1)
+        {
+            e1.printStackTrace();
+        }
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void loadModels(ModelBakeEvent e)
@@ -134,7 +157,7 @@ public class ModPokecubeML
         }
 
         GameRegistry.register(new ItemModelReloader().setUnlocalizedName("modelreloader")
-                .setRegistryName(ID, "modelreloader").setCreativeTab(PokecubeCore.creativeTabPokecube));
+                .setRegistryName(ID, "modelreloader").setCreativeTab(PokecubeMod.creativeTabPokecube));
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -194,30 +217,6 @@ public class ModPokecubeML
             }
         }
         addedPokemon = toAdd;
-    }
-
-    private void loadMob(String mob)
-    {
-        if (textureProviders.containsKey(mob) && !textureProviders.get(mob).equals(ID)) return;
-
-        ArrayList<String> list = Lists.newArrayList();
-        ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
-        try
-        {
-            proxy.fileAsList(this, xml, list);
-            if (!list.isEmpty())
-            {
-                ExtraDatabase.addXMLEntry(ID, mob, list);
-            }
-            else
-            {
-                System.err.println("Failed to aquire XML for " + mob);
-            }
-        }
-        catch (Exception e1)
-        {
-            e1.printStackTrace();
-        }
     }
 
     private void registerMob(String mob)

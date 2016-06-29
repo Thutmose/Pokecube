@@ -210,6 +210,14 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
                 && Math.max(entry.width, entry.length) * getSize() > rider.width * 1.8;
     }
 
+    /** Returns true if the entity is riding another entity, used by render to
+     * rotate the legs to be in 'sit' position for players. */
+    @Override
+    public boolean isRiding()
+    {
+        return super.isRiding();
+    }
+
     /** Moves the entity based on the specified heading. Args: strafe,
      * forward */
     @Override
@@ -369,14 +377,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             super.moveEntityWithHeading(strafe, forward);
             new Exception().printStackTrace();
         }
-    }
-
-    /** Returns true if the entity is riding another entity, used by render to
-     * rotate the legs to be in 'sit' position for players. */
-    @Override
-    public boolean isRiding()
-    {
-        return super.isRiding();
     }
 
     /** Moves the entity based on the specified heading. Args: strafe,

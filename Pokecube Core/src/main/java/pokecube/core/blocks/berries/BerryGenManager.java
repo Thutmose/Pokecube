@@ -28,15 +28,6 @@ import thut.api.terrain.TerrainSegment;
 
 public class BerryGenManager
 {
-    public static HashMap<Integer, List<ItemStack>> berryLocations = Maps.newHashMap();
-
-    public static void placeBerryLeaf(World world, BlockPos pos, int berryId)
-    {
-        world.setBlockState(pos, BerryManager.berryLeaf.getDefaultState());
-        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
-        tile.setBerryId(berryId);
-    }
-
     public static class GenericGrower implements TreeGrower
     {
         final IBlockState wood;
@@ -295,76 +286,7 @@ public class BerryGenManager
         }
     }
 
-    public static ItemStack getRandomBerryForBiome(World world, BlockPos location)
-    {
-        TerrainSegment t = TerrainManager.getInstance().getTerrain(world, location);
-        int i = t.getBiome(Vector3.getNewVector().set(location));
-        if (berryLocations.isEmpty()) parseConfig();
-        List<ItemStack> options = berryLocations.get(i);
-        if (options == null || options.isEmpty()) options = berryLocations.get(BiomeType.ALL.getType());
-        if (options != null && !options.isEmpty())
-        {
-            ItemStack ret = options.get(world.rand.nextInt(options.size())).copy();
-            ret.stackSize = 1 + world.rand.nextInt(ret.stackSize + 10);
-            return ret;
-        }
-        return null;
-    }
-
-    public static void parseConfig()
-    {
-        for (ResourceLocation key : Biome.REGISTRY.getKeys())
-        {
-            Biome b = Biome.REGISTRY.getObject(key);
-            if (b != null)
-            {
-                for (String s : PokecubeMod.core.getConfig().berryLocations)
-                {
-                    String[] args = s.split(":");
-                    String berryName = args[0];
-                    String[] locations = args[1].split("\'");
-                    for (String s1 : locations)
-                    {
-                        boolean valid = false;
-                        if (s1.startsWith("S"))
-                        {
-                            valid = checkNormal(-1, b, s1.substring(1));
-                        }
-                        else if (s1.startsWith("T"))
-                        {
-                            valid = checkPerType(b, s1.substring(1));
-                        }
-                        if (valid)
-                        {
-                            addToList(Biome.getIdForBiome(b), berryName);
-                        }
-                    }
-                }
-            }
-        }
-        for (ResourceLocation key : BiomeDatabase.biomeTypeRegistry.getKeys())
-        {
-            BiomeType type = BiomeDatabase.biomeTypeRegistry.getObject(key);
-            for (String s : PokecubeMod.core.getConfig().berryLocations)
-            {
-                String[] args = s.split(":");
-                String berryName = args[0];
-                String[] locations = args[1].split("\'");
-                for (String s1 : locations)
-                {
-                    boolean valid = false;
-                    if (s1.startsWith("S"))
-                    {
-                        valid = checkNormal(type.getType(), null, s1.substring(1));
-                    }
-                    if (valid)
-                    {
-                        addToList(type.getType(), berryName);
-                    }
-                }
-            }
-        }
-    }
+    public static HashMap<Integer, List<ItemStack>> berryLocations = Maps.newHashMap();
 
     private static void addToList(int biomeId, String berryType)
     {
@@ -453,6 +375,84 @@ public class BerryGenManager
             bannedType = bannedType || BiomeDictionary.isBiomeOfType(b, t);
         }
         return correctType && !bannedType;
+    }
+
+    public static ItemStack getRandomBerryForBiome(World world, BlockPos location)
+    {
+        TerrainSegment t = TerrainManager.getInstance().getTerrain(world, location);
+        int i = t.getBiome(Vector3.getNewVector().set(location));
+        if (berryLocations.isEmpty()) parseConfig();
+        List<ItemStack> options = berryLocations.get(i);
+        if (options == null || options.isEmpty()) options = berryLocations.get(BiomeType.ALL.getType());
+        if (options != null && !options.isEmpty())
+        {
+            ItemStack ret = options.get(world.rand.nextInt(options.size())).copy();
+            ret.stackSize = 1 + world.rand.nextInt(ret.stackSize + 10);
+            return ret;
+        }
+        return null;
+    }
+
+    public static void parseConfig()
+    {
+        for (ResourceLocation key : Biome.REGISTRY.getKeys())
+        {
+            Biome b = Biome.REGISTRY.getObject(key);
+            if (b != null)
+            {
+                for (String s : PokecubeMod.core.getConfig().berryLocations)
+                {
+                    String[] args = s.split(":");
+                    String berryName = args[0];
+                    String[] locations = args[1].split("\'");
+                    for (String s1 : locations)
+                    {
+                        boolean valid = false;
+                        if (s1.startsWith("S"))
+                        {
+                            valid = checkNormal(-1, b, s1.substring(1));
+                        }
+                        else if (s1.startsWith("T"))
+                        {
+                            valid = checkPerType(b, s1.substring(1));
+                        }
+                        if (valid)
+                        {
+                            addToList(Biome.getIdForBiome(b), berryName);
+                        }
+                    }
+                }
+            }
+        }
+        for (ResourceLocation key : BiomeDatabase.biomeTypeRegistry.getKeys())
+        {
+            BiomeType type = BiomeDatabase.biomeTypeRegistry.getObject(key);
+            for (String s : PokecubeMod.core.getConfig().berryLocations)
+            {
+                String[] args = s.split(":");
+                String berryName = args[0];
+                String[] locations = args[1].split("\'");
+                for (String s1 : locations)
+                {
+                    boolean valid = false;
+                    if (s1.startsWith("S"))
+                    {
+                        valid = checkNormal(type.getType(), null, s1.substring(1));
+                    }
+                    if (valid)
+                    {
+                        addToList(type.getType(), berryName);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void placeBerryLeaf(World world, BlockPos pos, int berryId)
+    {
+        world.setBlockState(pos, BerryManager.berryLeaf.getDefaultState());
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        tile.setBerryId(berryId);
     }
 
 }

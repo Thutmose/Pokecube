@@ -33,32 +33,6 @@ public class CommandTools
         return makeTranslatedMessage(text, "red:italic");
     }
 
-    public static void sendBadArgumentsMissingArg(ICommandSender sender)
-    {
-        sender.addChatMessage(makeError("pokecube.command.invalidmissing"));
-    }
-
-    public static void sendBadArgumentsTryTab(ICommandSender sender)
-    {
-        sender.addChatMessage(makeError("pokecube.command.invalidtab"));
-    }
-
-    public static void sendError(ICommandSender sender, String text)
-    {
-        sender.addChatMessage(makeError(text));
-    }
-
-    public static void sendMessage(ICommandSender sender, String text)
-    {
-        ITextComponent message = makeTranslatedMessage(text, null);
-        sender.addChatMessage(message);
-    }
-
-    public static void sendNoPermissions(ICommandSender sender)
-    {
-        sender.addChatMessage(makeError("pokecube.command.noperms"));
-    }
-
     public static ITextComponent makeTranslatedMessage(String key, String formatting, Object... args)
     {
         ITextComponent message = null;
@@ -117,5 +91,31 @@ public class CommandTools
             message = new TextComponentString(TextFormatting.RED + "message error");
         }
         return message;
+    }
+
+    public static void sendBadArgumentsMissingArg(ICommandSender sender)
+    {
+        sender.addChatMessage(makeError("pokecube.command.invalidmissing"));
+    }
+
+    public static void sendBadArgumentsTryTab(ICommandSender sender)
+    {
+        sender.addChatMessage(makeError("pokecube.command.invalidtab"));
+    }
+
+    public static void sendError(ICommandSender sender, String text)
+    {
+        sender.addChatMessage(makeError(text));
+    }
+
+    public static void sendMessage(ICommandSender sender, String text)
+    {
+        ITextComponent message = makeTranslatedMessage(text, null);
+        sender.addChatMessage(message);
+    }
+
+    public static void sendNoPermissions(ICommandSender sender)
+    {
+        sender.addChatMessage(makeError("pokecube.command.noperms"));
     }
 }

@@ -1,39 +1,46 @@
 package pokecube.core.entity.professor;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
-import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
-import net.minecraft.entity.ai.EntityAIOpenDoor;
 import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.commands.CommandTools;
+import pokecube.core.events.handlers.EventsHandler;
+import pokecube.core.handlers.Config;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
 public class EntityProfessor extends EntityAgeable
 {
-    public ItemStack[] pokecubes      = new ItemStack[6];
-    public int[]       attackCooldown = new int[6];
-    public int         cooldown       = 0;
-    public String      name           = "";
-    public int         out            = -1;
-    public boolean     male           = true;
-    public boolean     stationary     = false;
+    public static enum ProfessorType
+    {
+        PROFESSOR, HEALER;
+    }
+
+    public ProfessorType type       = ProfessorType.PROFESSOR;
+    public String        name       = "";
+    public String        playerName = "";
+    public boolean       male       = true;
+    public boolean       stationary = false;
+    public Vector3       location   = null;
+    public GuardAI       guardAI;
 
     public EntityProfessor(World par1World)
     {
@@ -48,19 +55,15 @@ public class EntityProfessor extends EntityAgeable
     public EntityProfessor(World par1World, Vector3 location, boolean stationary)
     {
         super(par1World);
-
         this.setSize(0.6F, 1.8F);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
-        this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
-        this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
         this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
-        this.tasks.addTask(9, new EntityAIWander(this, 0.6D));
         this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
+        this.tasks.addTask(1, guardAI);
         if (location != null)
         {
             location.moveEntity(this);
-
             setStationary(location);
         }
     }
@@ -109,16 +112,35 @@ public class EntityProfessor extends EntityAgeable
     @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
-        if (!worldObj.isRemote)
+        if (!worldObj.isRemote && hand == EnumHand.MAIN_HAND)
         {
-            if (!PokecubeSerializer.getInstance().hasStarter(player))
+            if (type == ProfessorType.PROFESSOR)
             {
-                PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.CHOOSE1ST });
-                PokecubePacketHandler.sendToClient(packet, player);
+                if (!PokecubeSerializer.getInstance().hasStarter(player))
+                {
+                    PokecubeClientPacket packet;
+                    PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(4));
+                    boolean hasStarter = PokecubeSerializer.getInstance().hasStarter(player);
+                    buffer.writeByte(PokecubeClientPacket.CHOOSE1ST);
+                    buffer.writeBoolean(!hasStarter);
+                    if (!hasStarter) buffer.writeBoolean(hasStarter);
+                    else
+                    {
+                        buffer.writeBoolean(
+                                PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase()));
+                        buffer.writeInt(0);
+                    }
+                    packet = new PokecubeClientPacket(buffer);
+                    PokecubePacketHandler.sendToClient(packet, player);
+                }
+                else
+                {
+                    CommandTools.sendError(player, "pokecube.professor.deny");
+                }
             }
-            else
+            else if (type == ProfessorType.HEALER)
             {
-                CommandTools.sendError(player, "pokecube.professor.deny");
+                player.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, worldObj, 0, 0, 0);
             }
         }
         return false;// super.processInteract(EntityPlayer player);
@@ -128,23 +150,19 @@ public class EntityProfessor extends EntityAgeable
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
         super.readEntityFromNBT(nbt);
-        for (int n = 0; n < 6; n++)
-        {
-            NBTBase temp = nbt.getTag("slot" + n);
-            if (temp instanceof NBTTagCompound)
-            {
-                NBTTagCompound tag = (NBTTagCompound) temp;
-                pokecubes[n] = ItemStack.loadItemStackFromNBT(tag);
-            }
-        }
-        out = nbt.getInteger("pokemob out");
         stationary = nbt.getBoolean("stationary");
-        cooldown = nbt.getInteger("cooldown");
-        attackCooldown = nbt.getIntArray("cooldowns");
         male = nbt.getBoolean("gender");
         name = nbt.getString("name");
-        if (attackCooldown.length != 6) attackCooldown = new int[6];
-
+        playerName = nbt.getString("playerName");
+        try
+        {
+            type = ProfessorType.valueOf(nbt.getString("type"));
+        }
+        catch (Exception e)
+        {
+            type = ProfessorType.PROFESSOR;
+            e.printStackTrace();
+        }
     }
 
     public void setStationary(boolean stationary)
@@ -160,6 +178,16 @@ public class EntityProfessor extends EntityAgeable
 
     public void setStationary(Vector3 location)
     {
+        this.location = location;
+        if (location == null)
+        {
+            stationary = false;
+            guardAI.setPos(new BlockPos(0, 0, 0));
+            guardAI.setTimePeriod(new TimePeriod(0, 0));
+            return;
+        }
+        guardAI.setTimePeriod(TimePeriod.fullDay);
+        guardAI.setPos(getPosition());
         stationary = true;
     }
 
@@ -167,23 +195,11 @@ public class EntityProfessor extends EntityAgeable
     public void writeEntityToNBT(NBTTagCompound nbt)
     {
         super.writeEntityToNBT(nbt);
-        int n = 0;
-        for (ItemStack i : pokecubes)
-        {
-            if (i != null)
-            {
-                NBTTagCompound tag = new NBTTagCompound();
-                i.writeToNBT(tag);
-                nbt.setTag("slot" + n, tag);
-                n++;
-            }
-        }
         nbt.setBoolean("gender", male);
         nbt.setString("name", name);
-        nbt.setInteger("pokemob out", out);
         nbt.setBoolean("stationary", stationary);
-        nbt.setInteger("cooldown", cooldown);
-        nbt.setIntArray("cooldowns", attackCooldown);
+        nbt.setString("playerName", playerName);
+        nbt.setString("type", type.toString());
     }
 
 }

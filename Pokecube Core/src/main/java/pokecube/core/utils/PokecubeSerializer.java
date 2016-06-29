@@ -53,6 +53,7 @@ public class PokecubeSerializer
 
             return new TeleDest(loc).setName(name);
         }
+
         public Vector4 loc;
         Vector3        subLoc;
 
@@ -92,30 +93,31 @@ public class PokecubeSerializer
             nbt.setString("name", name);
         }
     }
-    private static final String POKECUBE            = "pokecube";
-    private static final String DATA                = "data";
-    private static final String HASSTARTER          = "hasStarter";
-    private static final String TPOPTIONS           = "tpOptions";
-    private static final String METEORS             = "meteors";
-    private static final String CHUNKS              = "chunks";
-    private static final String LASTUID             = "lastUid";
-    public static final String  USERNAME            = "username";
-    public static final String  EXP                 = "exp";
-    public static final String  SEXE                = "sexe";
-    public static final String  POKEDEXNB           = "pokedexNb";
-    public static final String  STATUS              = "status";
 
-    public static final String  NICKNAME            = "nickname";
-    public static final String EVS   = "EVS";
-    public static final String IVS   = "IVS";
-    public static final String MOVES = "MOVES";
+    private static final String      POKECUBE       = "pokecube";
+    private static final String      DATA           = "data";
+    private static final String      HASSTARTER     = "hasStarter";
+    private static final String      TPOPTIONS      = "tpOptions";
+    private static final String      METEORS        = "meteors";
+    private static final String      CHUNKS         = "chunks";
+    private static final String      LASTUID        = "lastUid";
+    public static final String       USERNAME       = "username";
+    public static final String       EXP            = "exp";
+    public static final String       SEXE           = "sexe";
+    public static final String       POKEDEXNB      = "pokedexNb";
+    public static final String       STATUS         = "status";
 
-    public static final byte[] noEVs = new byte[] { Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE,
-            Byte.MIN_VALUE, Byte.MIN_VALUE };
+    public static final String       NICKNAME       = "nickname";
+    public static final String       EVS            = "EVS";
+    public static final String       IVS            = "IVS";
+    public static final String       MOVES          = "MOVES";
 
-    public static int MeteorDistance = 3000 * 3000;
+    public static final byte[]       noEVs          = new byte[] { Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE,
+            Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE };
 
-    public static PokecubeSerializer instance = null;
+    public static int                MeteorDistance = 3000 * 3000;
+
+    public static PokecubeSerializer instance       = null;
 
     public static int[] byteArrayAsIntArray(byte[] stats)
     {
@@ -212,6 +214,7 @@ public class PokecubeSerializer
                 (byte) ((l >> 24 & 0xFFL)), (byte) ((l >> 32 & 0xFFL)), (byte) ((l >> 40 & 0xFFL)) };
         return stats;
     }
+
     public static int modifierArrayAsInt(byte[] stats)
     {
         if (stats.length != 8) return 0;
@@ -222,21 +225,23 @@ public class PokecubeSerializer
         }
         return value;
     }
-    ISaveHandler                                                 saveHandler;
-    private HashMap<String, Boolean>                             hasStarter;
-    public HashMap<String, ArrayList<TeleDest>>                  teleportOptions;
-    private HashMap<String, Integer>                             teleportIndex;
-    private ArrayList<Vector3>                                   meteors;
+
+    ISaveHandler                                        saveHandler;
+    private HashMap<String, Boolean>                    hasStarter;
+    public HashMap<String, ArrayList<TeleDest>>         teleportOptions;
+    private HashMap<String, Integer>                    teleportIndex;
+    private ArrayList<Vector3>                          meteors;
 
     public HashMap<Integer, HashMap<Vector3, ChunkPos>> chunks;
-    private HashMap<Vector3, Ticket>                             tickets;
-    private int    lastId = 0;
+    private HashMap<Vector3, Ticket>                    tickets;
+    private int                                         lastId           = 0;
 
-    public World   myWorld;
+    public World                                        myWorld;
 
-    private String serverId;
+    private String                                      serverId;
+    private boolean                                     clientHasStarter = false;
 
-    private HashMap<Integer, IPokemob> pokemobsMap;
+    private HashMap<Integer, IPokemob>                  pokemobsMap;
 
     private PokecubeSerializer(MinecraftServer server)
     {
@@ -386,8 +391,8 @@ public class PokecubeSerializer
 
     public boolean hasStarter(EntityPlayer player)
     {
+        if (player == null || player.worldObj.isRemote) return clientHasStarter;
         Boolean bool = hasStarter.get(player.getUniqueID().toString());
-
         return bool == Boolean.TRUE;
     }
 
@@ -536,7 +541,7 @@ public class PokecubeSerializer
         String username = tag.getString(USERNAME);
         int index = tag.getInteger("TPOPTION");
         setTeleIndex(username, index);
-        
+
         NBTBase temp2 = tag.getTag(TPOPTIONS);
         if (temp2 instanceof NBTTagList)
         {
@@ -684,6 +689,12 @@ public class PokecubeSerializer
 
     public void setHasStarter(EntityPlayer player, boolean value)
     {
+        if (player == null || player.worldObj.isRemote)
+        {
+            System.out.println(player+" "+value);
+            clientHasStarter = value;
+            return;
+        }
         try
         {
             this.hasStarter.put(player.getUniqueID().toString(), value);
@@ -691,7 +702,6 @@ public class PokecubeSerializer
         catch (Exception e)
         {
             System.err.println("UUID null");
-//            Thread.dumpStack();
         }
         saveData();
     }

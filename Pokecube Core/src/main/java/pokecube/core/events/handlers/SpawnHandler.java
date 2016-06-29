@@ -201,8 +201,8 @@ public final class SpawnHandler
             biome2 = BiomeType.VILLAGE.getType();
         }
 
-        int count = Tools.countPokemon(world, v, PokecubeCore.core.getConfig().maxSpawnRadius);
-        if (count > PokecubeCore.core.getConfig().mobSpawnNumber * PokecubeCore.core.getConfig().mobDensityMultiplier)
+        int count = Tools.countPokemon(world, v, PokecubeMod.core.getConfig().maxSpawnRadius);
+        if (count > PokecubeMod.core.getConfig().mobSpawnNumber * PokecubeMod.core.getConfig().mobDensityMultiplier)
             return false;
 
         if ((data.getWeight(BiomeType.ALL.getType())) > 0) return true;
@@ -332,7 +332,7 @@ public final class SpawnHandler
 
     public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon)
     {
-        int spawnLevel = 10;
+        int spawnLevel = 1;
 
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
         int b = t.getBiome(location);
@@ -386,7 +386,7 @@ public final class SpawnHandler
             parseExpression(toUse, function.split(";")[0], d, location.y, r, isNew);
         }
         spawnLevel = (int) Math.abs(toUse.getValue());
-        int variance = new Random().nextInt(PokecubeCore.core.getConfig().levelVariance);
+        int variance = new Random().nextInt(PokecubeMod.core.getConfig().levelVariance);
         spawnLevel += variance;
         spawnLevel = Math.max(spawnLevel, 1);
         return spawnLevel;
@@ -454,7 +454,8 @@ public final class SpawnHandler
         maxXp = (int) Math.abs(toUse.getValue());
         maxXp = Math.max(maxXp, 10);
         int level = Tools.xpToLevel(pokemon.getEvolutionMode(), maxXp);
-        level = level + new Random().nextInt(PokecubeCore.core.getConfig().levelVariance);
+        level = level + new Random().nextInt(PokecubeMod.core.getConfig().levelVariance);
+        level = Math.max(1, level);
         return Tools.levelToXp(pokemon.getEvolutionMode(), level);
     }
 

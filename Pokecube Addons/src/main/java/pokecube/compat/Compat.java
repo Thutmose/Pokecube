@@ -127,11 +127,7 @@ public class Compat
 
     // GCCompat gccompat;
 
-    public Compat()
-    {
-        // gccompat = new GCCompat();
-        // MinecraftForge.EVENT_BUS.register(gccompat);
-    }
+    boolean                   bagRender    = false;
 
     // @Optional.Method(modid = "PneumaticCraft")
     // @SubscribeEvent
@@ -144,6 +140,23 @@ public class Compat
     // living.tasks.addTask(1, new AIThermalInteferance((IPokemob) living));
     // }
     // }
+
+    private Set<RenderPlayer> addedBaubles = Sets.newHashSet();
+
+    public Compat()
+    {
+        // gccompat = new GCCompat();
+        // MinecraftForge.EVENT_BUS.register(gccompat);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void addBaubleRender(RenderPlayerEvent.Post event)
+    {
+        if (bagRender || addedBaubles.contains(event.getRenderer())) { return; }
+        event.getRenderer().addLayer(new BagRenderer(event.getRenderer()));
+        addedBaubles.add(event.getRenderer());
+    }
 
     @Optional.Method(modid = "DynamicLights")
     @EventHandler
@@ -200,7 +213,6 @@ public class Compat
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new WikiInfoNotifier();
     }
-
     @EventHandler
     public void postInit(FMLPostInitializationEvent evt)
     {
@@ -210,18 +222,6 @@ public class Compat
     public void postPostInit(PostPostInit evt)
     {
         // gccompat.register();
-    }
-
-    boolean                   bagRender    = false;
-    private Set<RenderPlayer> addedBaubles = Sets.newHashSet();
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void addBaubleRender(RenderPlayerEvent.Post event)
-    {
-        if (bagRender || addedBaubles.contains(event.getRenderer())) { return; }
-        event.getRenderer().addLayer(new BagRenderer(event.getRenderer()));
-        addedBaubles.add(event.getRenderer());
     }
 
     @EventHandler

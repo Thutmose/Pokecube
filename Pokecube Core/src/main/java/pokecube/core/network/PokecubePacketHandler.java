@@ -3,8 +3,6 @@
  */
 package pokecube.core.network;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -29,7 +28,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
@@ -39,7 +37,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.AISaveHandler;
-import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.database.Database;
@@ -49,6 +46,7 @@ import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
+import pokecube.core.interfaces.IHealer;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -115,17 +113,17 @@ public class PokecubePacketHandler
                         public void run()
                         {
                             byte channel = buffer.readByte();
-                            byte[] message = new byte[buffer.array().length - 1];
-                            for (int i = 0; i < message.length; i++)
-                            {
-                                message[i] = buffer.array()[i + 1];
-                            }
                             if (channel == CHOOSE1ST)
                             {
-                                handlePacketGuiChooseFirstPokemobClient(message, player);
+                                handleChooseFirstClient(buffer, player);
                             }
                             else if (channel == MOVEANIMATION)
                             {
+                                byte[] message = new byte[buffer.array().length - 1];
+                                for (int i = 0; i < message.length; i++)
+                                {
+                                    message[i] = buffer.array()[i + 1];
+                                }
                                 handlePokemobMoveClientAnimation(message);
                             }
                             else if (channel == TERRAIN)
@@ -258,8 +256,13 @@ public class PokecubePacketHandler
             public PokecubeServerPacket onMessage(PokecubeClientPacket message, MessageContext ctx)
             {
                 EntityPlayer player = PokecubeCore.getPlayer(null);
+                if (player == null)
+                {
+                    System.err.println(FMLClientHandler.instance().getClientPlayerEntity());
+                    // Thread.dumpStack();
+                    return null;
+                }
                 new PacketHandler(player, message.buffer);
-
                 return null;
             }
         }
@@ -342,15 +345,9 @@ public class PokecubePacketHandler
                         public void run()
                         {
                             byte channel = buffer.readByte();
-                            byte[] message = new byte[buffer.array().length - 1];
-
-                            for (int i = 0; i < message.length; i++)
-                            {
-                                message[i] = buffer.array()[i + 1];
-                            }
                             if (channel == CHOOSE1ST)
                             {
-                                handlePacketGuiChooseFirstPokemobServer(message, player);
+                                handleChooseFirstServer(buffer, player);
                             }
                             else if (channel == 1)
                             {
@@ -358,6 +355,12 @@ public class PokecubePacketHandler
                             }
                             else if (channel == POKECENTER)
                             {
+                                byte[] message = new byte[buffer.array().length - 1];
+
+                                for (int i = 0; i < message.length; i++)
+                                {
+                                    message[i] = buffer.array()[i + 1];
+                                }
                                 handlePokecenterPacket(message, (EntityPlayerMP) player);
                             }
                             else if (channel == POKEDEX)
@@ -422,11 +425,17 @@ public class PokecubePacketHandler
                             }
                             else if (channel == STATS)
                             {
+                                byte[] message = new byte[buffer.array().length - 1];
+
+                                for (int i = 0; i < message.length; i++)
+                                {
+                                    message[i] = buffer.array()[i + 1];
+                                }
                                 handleStatsPacketServer(message, player);
                             }
                             else if (channel == TELEPORT)
                             {
-                                int index = message[0];
+                                int index = buffer.readByte();
                                 PokecubeSerializer.getInstance().setTeleIndex(player.getUniqueID().toString(), index);
                                 TeleDest d = PokecubeSerializer.getInstance()
                                         .getTeleport(player.getUniqueID().toString());
@@ -539,7 +548,8 @@ public class PokecubePacketHandler
                         info[i] = new StarterInfo(null, s2);
                     }
                 }
-                specialStarters.put(username, info);
+                StarterInfoContainer cont = new StarterInfoContainer(info);
+                specialStarters.put(username, cont);
             }
         }
 
@@ -656,190 +666,167 @@ public class PokecubePacketHandler
         }
     }
 
-    public final static byte                     CHANNEL_ID_ChooseFirstPokemob = 0;
-    public final static byte                     CHANNEL_ID_PokemobMove        = 1;
+    public static class StarterInfoContainer
+    {
+        public final StarterInfo[] info;
 
-    public final static byte                     CHANNEL_ID_EntityPokemob      = 2;
-    public final static byte                     CHANNEL_ID_HealTable          = 3;
+        public StarterInfoContainer(StarterInfo[] info)
+        {
+            this.info = info;
+        }
+    }
 
-    public final static byte                     CHANNEL_ID_PokemobSpawner     = 4;
+    public final static byte                            CHANNEL_ID_ChooseFirstPokemob = 0;
+    public final static byte                            CHANNEL_ID_PokemobMove        = 1;
 
-    public final static byte                     CHANNEL_ID_STATS              = 6;
+    public final static byte                            CHANNEL_ID_EntityPokemob      = 2;
+    public final static byte                            CHANNEL_ID_HealTable          = 3;
 
-    public static boolean                        giveHealer                    = true;
+    public final static byte                            CHANNEL_ID_PokemobSpawner     = 4;
 
-    public static boolean                        serverOffline                 = false;
+    public final static byte                            CHANNEL_ID_STATS              = 6;
 
-    public static HashMap<String, StarterInfo[]> specialStarters               = new HashMap<String, StarterInfo[]>();
+    public static boolean                               giveHealer                    = true;
 
-    private static void handlePacketGuiChooseFirstPokemobClient(byte[] packet, EntityPlayer player)
+    public static boolean                               serverOffline                 = false;
+
+    public static HashMap<String, StarterInfoContainer> specialStarters               = Maps.newHashMap();
+
+    private static void handleChooseFirstClient(ByteBuf buffer, EntityPlayer player)
     {
         if (player == null)
         {
             new NullPointerException("Null Player while recieving starter packet");
             return;
         }
-
-        String username = player.getName().toLowerCase();
-        ByteBuf buf = Unpooled.buffer().writeBytes(packet);
-
-        boolean bool = buf.readBoolean();
-        if (!bool)
+        boolean openGui = buffer.readBoolean();
+        if (openGui)
         {
-            boolean bool2 = buf.readBoolean();
-            if (bool2)
-            {
-                PokecubeSerializer.getInstance().setHasStarter(player, false);
-                return;
-            }
-        }
-
-        if (bool)
-        {
+            boolean special = buffer.readBoolean();
+            int toAdd = buffer.readableBytes() >= 4 ? buffer.readInt() : 0;
             ArrayList<Integer> starters = new ArrayList<Integer>();
-            int i = -1;
-            while ((i = buf.readInt()) != 0)
+            for (int i = 0; i < toAdd; i++)
             {
-                starters.add(i);
+                starters.add(buffer.readInt());
             }
-
-            boolean special = starters.isEmpty();
-            if (special)
-            {
-                StarterInfo[] starter = specialStarters.get(username);
-                for (StarterInfo info : starter)
-                {
-                    if (info == null || Database.getEntry(info.name) == null)
-                    {
-                        special = false;
-                        break;
-                    }
-                }
-            }
+            System.out.println(special + " " + toAdd + " " + starters);
             pokecube.core.client.gui.GuiChooseFirstPokemob.starters = starters.toArray(new Integer[0]);
             new GuiOpener(player, !special);
-            return;
-        }
-
-        StarterEvent.Pre evt = new StarterEvent.Pre(player);
-        MinecraftForge.EVENT_BUS.post(evt);
-        boolean special = specialStarters.containsKey(username);
-        if (!special || (evt.isCanceled() && evt.getResult() != Result.DENY))
-        {
-            new GuiOpener(player, true);
         }
         else
         {
-            StarterInfo[] starter = specialStarters.get(username);
+            PokecubeSerializer.getInstance().setHasStarter(player, buffer.readBoolean());
+        }
+    }
+
+    private static void handleChooseFirstServer(ByteBuf buffer, EntityPlayer player)
+    {
+        int pokedexNb = buffer.readInt();
+        // This is if the player chose to get normal starter, instead of special
+        // one.
+        boolean fixed = buffer.readBoolean();
+        String username = player.getName().toLowerCase();
+        if (PokecubeSerializer.getInstance().hasStarter(player)) { return; }
+
+        // Fire pre event to deny starters at all
+        StarterEvent.Pre pre = new StarterEvent.Pre(player);
+        MinecraftForge.EVENT_BUS.post(pre);
+        if (pre.isCanceled()) return;
+
+        List<ItemStack> items = Lists.newArrayList();
+
+        // 10 Pokecubes
+        ItemStack pokecubesItemStack = new ItemStack(PokecubeItems.getEmptyCube(0), 10);
+        items.add(pokecubesItemStack);
+        if (giveHealer)
+        {
+            ItemStack pokecenterItemStack = new ItemStack(PokecubeItems.pokecenter);
+            items.add(pokecenterItemStack);
+        }
+        // Pokedex
+        ItemStack pokedexItemStack = new ItemStack(PokecubeItems.pokedex);
+        items.add(pokedexItemStack);
+
+        // If they don't actually get the picked starter, then no achievement.
+        boolean starterGiven = false;
+        if (!(specialStarters.containsKey(player.getUniqueID().toString()) || specialStarters.containsKey(username))
+                || fixed)
+        {
+            // No Custom Starter. just gets this
+            ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(pokedexNb, player);
+            items.add(pokemobItemstack);
+            starterGiven = true;
+        }
+        else
+        {
+            StarterInfoContainer info = specialStarters.get(player.getUniqueID().toString());
+            if (info == null) info = specialStarters.get(username);
+            StarterInfo[] starter = specialStarters.get(username).info;
+
             for (StarterInfo i : starter)
             {
                 if (i == null)
                 {
-                    new GuiOpener(player, true);
-                    return;
-                }
-            }
-            new GuiOpener(player, false);
-        }
-    }
-
-    private static void handlePacketGuiChooseFirstPokemobServer(byte[] packet, EntityPlayer player)
-    {
-        try
-        {
-            DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet));
-            int pokedexNb = inputStream.readInt();
-            boolean fixed = inputStream.readBoolean();
-
-            String username = player.getName();
-
-            if (PokecubeSerializer.getInstance().hasStarter(player)) { return; }
-            PokecubeSerializer.getInstance().setHasStarter(player);
-            List<ItemStack> items = new ArrayList<ItemStack>();
-            ItemStack pokecubesItemStack = new ItemStack(PokecubeItems.getEmptyCube(0), 10);
-            items.add(pokecubesItemStack);
-
-            if (giveHealer && !fixed)
-            {
-                ItemStack pokecenterItemStack = new ItemStack(PokecubeItems.pokecenter);
-                items.add(pokecenterItemStack);
-            }
-            ItemStack pokedexItemStack = new ItemStack(PokecubeItems.pokedex);
-            items.add(pokedexItemStack);
-
-            username = username.toLowerCase();
-
-            boolean starterGiven = false;
-            if (!specialStarters.containsKey(username) || fixed)
-            {
-                ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(pokedexNb, player);
-                items.add(pokemobItemstack);
-                starterGiven = true;
-            }
-            else
-            {
-                StarterInfo[] starter = specialStarters.get(username);
-
-                player.addStat(PokecubeMod.get1stPokemob, 1);
-                for (StarterInfo i : starter)
-                {
-                    if (i == null)
+                    if (!starterGiven)
                     {
-                        if (!starterGiven)
-                        {
-                            starterGiven = true;
-                            ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(pokedexNb, player);
-                            items.add(pokemobItemstack);
-                        }
+                        starterGiven = true;
+                        ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(pokedexNb, player);
+                        items.add(pokemobItemstack);
                     }
-                    else
-                    {
-                        ItemStack start = i.makeStack(player);
-                        if (start == null && !starterGiven)
-                        {
-                            start = i.makeStack(player, pokedexNb);
-                            starterGiven = true;
-                        }
-                        if (start != null) items.add(start);
-                    }
-
                 }
-            }
-            ItemStack[] itemArr = items.toArray(new ItemStack[0]);
-            if (!fixed)
-            {
-                StarterEvent evt = new StarterEvent(player, itemArr.clone(), pokedexNb);
-                MinecraftForge.EVENT_BUS.post(evt);
-                itemArr = evt.starterPack.clone();
-            }
-            player.addStat(PokecubeMod.get1stPokemob, 1);
-            if (starterGiven) player.addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
-            for (ItemStack e : itemArr)
-            {
-                if (e == null) continue;
-
-                player.inventory.addItemStackToInventory(e);
-                pokedexNb = PokecubeManager.getPokedexNb(e);
-                if (pokedexNb > 0)
+                else
                 {
-                    StatsCollector.addCapture(PokecubeManager.itemToPokemob(e, player.worldObj));
+                    ItemStack start = i.makeStack(player);
+                    if (start == null && !starterGiven)
+                    {
+                        start = i.makeStack(player, pokedexNb);
+                        starterGiven = true;
+                    }
+                    if (start != null) items.add(start);
                 }
-            }
 
-            PokecubeSerializer.getInstance().save();
+            }
         }
-        catch (IOException e)
+        // Fire pick event to add new starters or items
+        StarterEvent.Pick pick = new StarterEvent.Pick(player, items, pokedexNb);
+        System.out.println(items);
+        MinecraftForge.EVENT_BUS.post(pick);
+        if (pick.isCanceled()) return;
+        System.out.println(pick.starterPack + " " + items);
+        items.clear();
+        items.addAll(pick.starterPack);
+        System.out.println(items);
+        player.addStat(PokecubeMod.get1stPokemob, 1);
+        if (starterGiven) player.addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
+        for (ItemStack e : items)
         {
-            e.printStackTrace();
+            if (e == null || e.getItem() == null) continue;
+            player.inventory.addItemStackToInventory(e);
+            pokedexNb = PokecubeManager.getPokedexNb(e);
+            if (pokedexNb > 0)
+            {
+                StatsCollector.addCapture(PokecubeManager.itemToPokemob(e, player.worldObj));
+            }
         }
+        PokecubeSerializer.getInstance().setHasStarter(player);
+        PokecubeSerializer.getInstance().save();
+
+        // Send Packt to client to notifiy about having a starter now.
+        PokecubeClientPacket packet;
+        buffer = new PacketBuffer(Unpooled.buffer(4));
+        buffer.writeByte(PokecubeClientPacket.CHOOSE1ST);
+        buffer.writeBoolean(false);
+        buffer.writeBoolean(true);
+        packet = new PokecubeClientPacket(buffer);
+        PokecubePacketHandler.sendToClient(packet, player);
     }
 
     public static void handlePokecenterPacket(byte[] packet, EntityPlayerMP sender)
     {
-        if (sender.openContainer instanceof ContainerHealTable)
+        if (sender.openContainer instanceof IHealer)
         {
-            ContainerHealTable containerHealTable = (ContainerHealTable) sender.openContainer;
-            containerHealTable.heal();
+            IHealer healer = (IHealer) sender.openContainer;
+            healer.heal();
         }
     }
 
@@ -903,7 +890,6 @@ public class PokecubePacketHandler
                 new GuiTeleport();
 
                 PokecubeSerializer.getInstance().readFromNBT(nbt);
-                PokecubeSerializer.getInstance().setHasStarter(player, nbt.getBoolean("playerhasstarter"));
                 PokecubeCore.registerSpawns();
                 SpawnHandler.sortSpawnables();
             }

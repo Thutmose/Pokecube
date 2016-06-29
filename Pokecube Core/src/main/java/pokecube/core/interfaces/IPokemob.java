@@ -246,6 +246,8 @@ public interface IPokemob extends IMoveConstants
 
     boolean attackEntityFrom(DamageSource generic, float damage);
 
+    void cancelEvolve();
+
     /** Called when give item. to override when the pokemob evolve with a stone.
      *
      * @param itemId
@@ -291,10 +293,6 @@ public interface IPokemob extends IMoveConstants
      *            true if we want to display the evolution animation
      * @return the evolution or null if the evolution failed */
     IPokemob evolve(boolean delayed, boolean init, ItemStack item);
-
-    boolean isEvolving();
-
-    void cancelEvolve();
 
     /** Used by Gui Pokedex. Exchange the two moves.
      *
@@ -530,6 +528,8 @@ public interface IPokemob extends IMoveConstants
     void healStatus();
 
     boolean isAncient();
+
+    boolean isEvolving();
 
     boolean isShadow();
 

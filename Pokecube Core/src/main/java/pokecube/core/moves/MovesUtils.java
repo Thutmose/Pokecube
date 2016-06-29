@@ -545,13 +545,13 @@ public class MovesUtils implements IMoveConstants
         String attackName = getUnlocalizedMove(attack);
         text = CommandTools.makeTranslatedMessage("pokemob.move.used", "green",
                 attacker.getPokemonDisplayName().getFormattedText(), attackName);
-        ((IPokemob) attacker).displayMessageToOwner(text);
+        attacker.displayMessageToOwner(text);
         if (attacker == attacked) return;
 
         if (attacked instanceof IPokemob)
         {
             text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red",
-                    ((IPokemob) attacker).getPokemonDisplayName().getFormattedText(), attackName);
+                    attacker.getPokemonDisplayName().getFormattedText(), attackName);
             ((IPokemob) attacked).displayMessageToOwner(text);
         }
         else if (attacked instanceof EntityPlayer && !attacked.worldObj.isRemote && attacker!=null)
@@ -627,7 +627,7 @@ public class MovesUtils implements IMoveConstants
             {
                 String colour = fell ? "green" : "red";
                 text = CommandTools.makeTranslatedMessage(message, colour,
-                        ((IPokemob) attacker).getPokemonDisplayName().getFormattedText(), statName);
+                        attacker.getPokemonDisplayName().getFormattedText(), statName);
                 attacker.displayMessageToOwner(text);
             }
         }
@@ -759,6 +759,17 @@ public class MovesUtils implements IMoveConstants
         return ret; // should be between around 10 and 80
     }
 
+    public static String getLocalizedMove(String attack)
+    {
+        String PREFIX = "pokemob.move.";
+        String translatedAttack = I18n.translateToLocal(PREFIX + attack);
+        if (translatedAttack == null || translatedAttack.startsWith(PREFIX))
+        {
+            translatedAttack = attack;
+        }
+        return translatedAttack;
+    }
+
     public static Move_Base getMoveFromName(String moveName)
     {
         Move_Base ret = moves.get(moveName);
@@ -878,17 +889,6 @@ public class MovesUtils implements IMoveConstants
     public static String getUnlocalizedMove(String attack)
     {
         return "pokemob.move." + attack;
-    }
-
-    public static String getLocalizedMove(String attack)
-    {
-        String PREFIX = "pokemob.move.";
-        String translatedAttack = I18n.translateToLocal(PREFIX + attack);
-        if (translatedAttack == null || translatedAttack.startsWith(PREFIX))
-        {
-            translatedAttack = attack;
-        }
-        return translatedAttack;
     }
 
     /** Handles stats modifications of the move

@@ -33,12 +33,6 @@ public class FossilTextureHandler
         return new ModelResourceLocation(new ResourceLocation("pokecube", "item/fossil"), "type=" + name.toLowerCase());
     }
 
-    private static void registerItemVariant(String variant)
-    {
-        ModelBakery.registerItemVariants(PokecubeItems.fossil,
-                new ModelResourceLocation(new ResourceLocation("pokecube", "item/fossil"), variant));
-    }
-
     public static void registerItemModels()
     {
         ModelLoader.setCustomMeshDefinition(PokecubeItems.fossil, new MegaStone());
@@ -46,5 +40,11 @@ public class FossilTextureHandler
         {
             registerItemVariant("type=" + s);
         }
+    }
+
+    private static void registerItemVariant(String variant)
+    {
+        ModelBakery.registerItemVariants(PokecubeItems.fossil,
+                new ModelResourceLocation(new ResourceLocation("pokecube", "item/fossil"), variant));
     }
 }

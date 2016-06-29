@@ -12,6 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PCPacketHandler.MessageServer;
 import pokecube.core.network.PokecubePacketHandler;
@@ -34,7 +35,7 @@ public class ContainerPC extends Container
     {
         // System.out.println(ConfigHandler.ONLYPOKECUBES);
         if (itemstack == null) return false;
-        boolean eggorCube = !PokecubeCore.core.getConfig().pcHoldsOnlyPokecubes || PokecubeManager.isFilled(itemstack)
+        boolean eggorCube = !PokecubeMod.core.getConfig().pcHoldsOnlyPokecubes || PokecubeManager.isFilled(itemstack)
                 || itemstack.getItem() == PokecubeItems.pokemobEgg;
         return eggorCube;
     }
@@ -247,7 +248,7 @@ public class ContainerPC extends Container
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot) this.inventorySlots.get(index);
+        Slot slot = this.inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack())
         {

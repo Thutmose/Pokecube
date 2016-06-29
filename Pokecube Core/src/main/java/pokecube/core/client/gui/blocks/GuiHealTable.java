@@ -9,7 +9,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import pokecube.core.blocks.healtable.ContainerHealTable;
-import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.client.Resources;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
@@ -17,24 +16,24 @@ import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 
 public class GuiHealTable extends GuiContainer
 {
-    public GuiHealTable(InventoryPlayer player_inventory,
-            TileHealTable tile_entity)
+    public GuiHealTable(InventoryPlayer player_inventory)
     {
-        super(new ContainerHealTable(tile_entity, player_inventory));
+        super(new ContainerHealTable(player_inventory));
     }
 
     @Override
     protected void actionPerformed(GuiButton guibutton)
     {
-        if (guibutton.id != 0);
+        if (guibutton.id != 0) ;
 
         if (guibutton.id == 1)
         {
-        	PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKECENTER, "coucou".getBytes());
-        	PokecubePacketHandler.sendToServer(packet);
-        	
+            PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKECENTER,
+                    "coucou".getBytes());
+            PokecubePacketHandler.sendToServer(packet);
+
             ((ContainerHealTable) inventorySlots).heal();// client side
-            mc.thePlayer.playSound(new SoundEvent(new ResourceLocation(PokecubeMod.ID+":pokecenter")), 3, 1);
+            mc.thePlayer.playSound(new SoundEvent(new ResourceLocation(PokecubeMod.ID + ":pokecenter")), 3, 1);
         }
     }
 
@@ -42,8 +41,8 @@ public class GuiHealTable extends GuiContainer
     protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		// bind texture
-    	mc.renderEngine.bindTexture(Resources.GUI_HEAL_TABLE);
+        // bind texture
+        mc.renderEngine.bindTexture(Resources.GUI_HEAL_TABLE);
         int j2 = (width - xSize) / 2;
         int k2 = (height - ySize) / 2;
         drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);

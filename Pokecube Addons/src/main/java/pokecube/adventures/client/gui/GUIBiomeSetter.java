@@ -26,6 +26,27 @@ public class GUIBiomeSetter extends GuiScreen
     }
 
     @Override
+    protected void actionPerformed(GuiButton button) throws IOException
+    {
+        super.actionPerformed(button);
+        FMLControlledNamespacedRegistry<BiomeType> biomeTypeRegistry = BiomeDatabase.biomeTypeRegistry;
+        List<BiomeType> types = biomeTypeRegistry.getValues();
+
+        if (button.id == 0)
+        {
+            if (index < types.size() - 1) index++;
+            else index = 0;
+        }
+        else if (button.id == 1)
+        {
+            if (index > 0) index--;
+            else index = types.size() - 1;
+        }
+        BiomeType type = types.get(index);
+        textField0.setText(type.readableName);
+    }
+
+    @Override
     public void drawScreen(int i, int j, float f)
     {
         super.drawScreen(i, j, f);
@@ -74,27 +95,6 @@ public class GUIBiomeSetter extends GuiScreen
         super.mouseClicked(par1, par2, par3);
 
 //        textField0.mouseClicked(par1, par2, par3);
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) throws IOException
-    {
-        super.actionPerformed(button);
-        FMLControlledNamespacedRegistry<BiomeType> biomeTypeRegistry = BiomeDatabase.biomeTypeRegistry;
-        List<BiomeType> types = biomeTypeRegistry.getValues();
-
-        if (button.id == 0)
-        {
-            if (index < types.size() - 1) index++;
-            else index = 0;
-        }
-        else if (button.id == 1)
-        {
-            if (index > 0) index--;
-            else index = types.size() - 1;
-        }
-        BiomeType type = types.get(index);
-        textField0.setText(type.readableName);
     }
 
     @Override

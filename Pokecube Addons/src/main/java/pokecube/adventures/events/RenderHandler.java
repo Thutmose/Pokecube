@@ -80,6 +80,17 @@ public class RenderHandler
     }
 
     @SubscribeEvent
+    public void keyInput(KeyInputEvent evt)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        boolean bag = BagRenderer.getChecker().isWearingBag(player);
+        if (bag && Keyboard.getEventKey() == ClientProxy.bag.getKeyCode())
+        {
+            PacketPokeAdv.sendBagOpenPacket();
+        }
+    }
+
+    @SubscribeEvent
     public void onToolTip(ItemTooltipEvent evt)
     {
         EntityPlayer player = evt.getEntityPlayer();
@@ -96,17 +107,6 @@ public class RenderHandler
                 evt.getToolTip().add("" + stack.getTagCompound().getLong("ivs") + ":"
                         + stack.getTagCompound().getFloat("size") + ":" + stack.getTagCompound().getByte("nature"));
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void keyInput(KeyInputEvent evt)
-    {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        boolean bag = BagRenderer.getChecker().isWearingBag(player);
-        if (bag && Keyboard.getEventKey() == ClientProxy.bag.getKeyCode())
-        {
-            PacketPokeAdv.sendBagOpenPacket();
         }
     }
 

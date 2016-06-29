@@ -32,12 +32,6 @@ public class VitaminTextureHandler
         return new ModelResourceLocation(new ResourceLocation("pokecube", "item/vitamins"), "type=" + name.toLowerCase());
     }
 
-    private static void registerItemVariant(String variant)
-    {
-        ModelBakery.registerItemVariants(ItemVitamin.instance,
-                new ModelResourceLocation(new ResourceLocation("pokecube", "item/vitamins"), variant));
-    }
-
     public static void registerItemModels()
     {
         ModelLoader.setCustomMeshDefinition(ItemVitamin.instance, new MeshDefinition());
@@ -45,5 +39,11 @@ public class VitaminTextureHandler
         {
             registerItemVariant("type=" + s);
         }
+    }
+
+    private static void registerItemVariant(String variant)
+    {
+        ModelBakery.registerItemVariants(ItemVitamin.instance,
+                new ModelResourceLocation(new ResourceLocation("pokecube", "item/vitamins"), variant));
     }
 }

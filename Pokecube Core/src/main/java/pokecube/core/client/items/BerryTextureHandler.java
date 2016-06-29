@@ -27,12 +27,6 @@ public class BerryTextureHandler
                 "type=" + name.toLowerCase());
     }
 
-    private static void registerItemVariant(String variant)
-    {
-        ModelBakery.registerItemVariants(PokecubeItems.berries,
-                new ModelResourceLocation(new ResourceLocation("pokecube", "item/berry"), variant));
-    }
-
     public static void registerItemModels()
     {
         ModelLoader.setCustomMeshDefinition(PokecubeItems.berries, new MeshDefinition());
@@ -40,5 +34,11 @@ public class BerryTextureHandler
         {
             registerItemVariant("type=" + s);
         }
+    }
+
+    private static void registerItemVariant(String variant)
+    {
+        ModelBakery.registerItemVariants(PokecubeItems.berries,
+                new ModelResourceLocation(new ResourceLocation("pokecube", "item/berry"), variant));
     }
 }

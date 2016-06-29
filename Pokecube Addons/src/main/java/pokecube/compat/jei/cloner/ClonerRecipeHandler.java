@@ -16,6 +16,13 @@ public class ClonerRecipeHandler implements IRecipeHandler<ClonerRecipe> {
     }
 
     @Override
+    public String getRecipeCategoryUid(ClonerRecipe recipe)
+    {
+        // TODO Auto-generated method stub
+        return JEICompat.CLONER;
+    }
+
+    @Override
     @Nonnull
     public Class<ClonerRecipe> getRecipeClass() {
         return ClonerRecipe.class;
@@ -41,12 +48,5 @@ public class ClonerRecipeHandler implements IRecipeHandler<ClonerRecipe> {
             }
         }
         return inputCount > 0;
-    }
-
-    @Override
-    public String getRecipeCategoryUid(ClonerRecipe recipe)
-    {
-        // TODO Auto-generated method stub
-        return JEICompat.CLONER;
     }
 }

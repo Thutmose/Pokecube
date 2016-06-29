@@ -1466,13 +1466,6 @@ public class PokedexEntry
         return ret;
     }
 
-    /** @return the name to be fed to the language formatter */
-    public String getUnlocalizedName()
-    {
-        String translated = "pkmn." + name + ".name";
-        return translated;
-    }
-
     /** @return the type1 */
     public PokeType getType1()
     {
@@ -1483,6 +1476,13 @@ public class PokedexEntry
     public PokeType getType2()
     {
         return type2;
+    }
+
+    /** @return the name to be fed to the language formatter */
+    public String getUnlocalizedName()
+    {
+        String translated = "pkmn." + name + ".name";
+        return translated;
     }
 
     public boolean hasForm(String form)

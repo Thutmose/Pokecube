@@ -12,6 +12,31 @@ public class RecipeRings implements IRecipe
     private ItemStack output;
 
     @Override
+    public ItemStack getCraftingResult(InventoryCrafting inv)
+    {
+        return output;
+    }
+
+    @Override
+    public ItemStack getRecipeOutput()
+    {
+        return output;
+    }
+
+    @Override
+    public int getRecipeSize()
+    {
+        return 10;
+    }
+
+    @Override
+    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    {
+        ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
+        return ret;
+    }
+
+    @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
         output = null;
@@ -43,31 +68,6 @@ public class RecipeRings implements IRecipe
             output.getTagCompound().setInteger("dyeColour", dyeStack.getItemDamage());
         }
         return output != null;
-    }
-
-    @Override
-    public ItemStack getCraftingResult(InventoryCrafting inv)
-    {
-        return output;
-    }
-
-    @Override
-    public int getRecipeSize()
-    {
-        return 10;
-    }
-
-    @Override
-    public ItemStack getRecipeOutput()
-    {
-        return output;
-    }
-
-    @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
-    {
-        ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
-        return ret;
     }
 
 }

@@ -72,6 +72,7 @@ entity.pokecube_adventures.targetParticles.name=Target
 pokecube.trainer.agress=%1$s §cwants to battle!
 pokecube.trainer.defeat=%1$s §chas been defeated!
 pokecube.trainer.toss=%1$s §csent out %2$s!
+pokecube.trainer.next=%1$s §cis about to send out %2$s!
 
 #Config Stuff
 

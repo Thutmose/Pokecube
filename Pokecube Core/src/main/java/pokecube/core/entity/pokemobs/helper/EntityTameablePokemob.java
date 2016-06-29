@@ -172,10 +172,10 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         else
         {
             Entity owner = this.getPokemonOwner();
-            MoveMessageEvent event = new MoveMessageEvent(this, message);
-            MinecraftForge.EVENT_BUS.post(event);
             if (owner instanceof EntityPlayerMP && !this.isDead)
             {
+                MoveMessageEvent event = new MoveMessageEvent(this, message);
+                MinecraftForge.EVENT_BUS.post(event);
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));
                 buffer.writeByte(PokecubeClientPacket.MOVEMESSAGE);
                 buffer.writeInt(getEntityId());

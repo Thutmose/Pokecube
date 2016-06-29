@@ -14,6 +14,7 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.entity.pokemobs.EntityPokemob;
@@ -330,6 +331,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
                 && ticksExisted % 100 == 0)
         {
             this.setHealth(getHealth() - getMaxHealth() * 0.05f);
+            this.displayMessageToOwner(new TextComponentTranslation("pokemob.hungry.hurt", getPokemonDisplayName()));
         }
         boolean ownedSleepCheck = getPokemonAIState(IMoveConstants.TAMED)
                 && !(getPokemonAIState((byte) (STAYING)) || getPokemonAIState((byte) (SITTING)));

@@ -1045,6 +1045,10 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         nbt.setIntArray("cooldowns", attackCooldown);
         nbt.setInteger("friendly", friendlyCooldown);
         NBTTagList nbttaglist = new NBTTagList();
+        if (reward == null || reward.length == 0)
+        {
+            reward = new ItemStack[] { new ItemStack(Items.EMERALD) };
+        }
         for (int i = 0; i < this.reward.length; ++i)
         {
             NBTTagCompound nbttagcompound = new NBTTagCompound();

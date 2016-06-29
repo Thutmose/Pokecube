@@ -18,7 +18,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.ResourceLocation;
-import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.interfaces.PokecubeMod;
 
@@ -54,12 +53,12 @@ public class RenderProfessor<T extends EntityLiving> extends RenderBiped<T>
     @Override
     protected ResourceLocation getEntityTexture(T entity)
     {
-        if (!((EntityTrainer) entity).playerName.isEmpty())
+        if (!((EntityProfessor) entity).playerName.isEmpty())
         {
-            if (players.containsKey(((EntityTrainer) entity).playerName))
-                return players.get(((EntityTrainer) entity).playerName);
+            if (players.containsKey(((EntityProfessor) entity).playerName))
+                return players.get(((EntityProfessor) entity).playerName);
             Minecraft minecraft = Minecraft.getMinecraft();
-            GameProfile profile = new GameProfile((UUID) null, ((EntityTrainer) entity).playerName);
+            GameProfile profile = new GameProfile((UUID) null, ((EntityProfessor) entity).playerName);
             profile = TileEntitySkull.updateGameprofile(profile);
             Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(profile);
             ResourceLocation resourcelocation;
@@ -72,7 +71,7 @@ public class RenderProfessor<T extends EntityLiving> extends RenderBiped<T>
                 UUID uuid = EntityPlayer.getUUID(profile);
                 resourcelocation = DefaultPlayerSkin.getDefaultSkin(uuid);
             }
-            players.put(((EntityTrainer) entity).playerName, resourcelocation);
+            players.put(((EntityProfessor) entity).playerName, resourcelocation);
             return resourcelocation;
         }
 

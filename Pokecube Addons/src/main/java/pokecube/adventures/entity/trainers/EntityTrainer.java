@@ -15,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.INpc;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
@@ -324,7 +325,16 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         if (source.getEntity() != null && (source.getEntity() instanceof EntityLivingBase)
                 && !(source.getEntity() instanceof EntityPlayer))
         {
-            setTrainerTarget(source.getEntity());
+            Entity entity = source.getEntity();
+            if (entity instanceof IEntityOwnable)
+            {
+                if (((IEntityOwnable) entity).getOwner() != null)
+                {
+                    entity = ((IEntityOwnable) entity).getOwner();
+                }
+            }
+            setTrainerTarget(entity);
+            if (entity != source.getEntity()) return false;
         }
 
         if (Config.instance.trainersInvul) return false;
@@ -575,6 +585,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
             target.addChatMessage(text);
         }
+        this.setAIState(INBATTLE, false);
         this.setTrainerTarget(null);
     }
 
@@ -907,6 +918,14 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.agress", getDisplayName());
             target.addChatMessage(text);
         }
+        if (target == null)
+        {
+            if (this.target != null && this.getAIState(INBATTLE))
+            {
+                this.target.addChatMessage(new TextComponentTranslation("pokecube.trainer.forget", getDisplayName()));
+            }
+            this.setAIState(INBATTLE, false);
+        }
         this.target = target;
     }
 
@@ -935,7 +954,10 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             {
                 this.setAIState(INBATTLE, true);
                 IPokecube cube = (IPokecube) i.getItem();
-                cube.throwPokecubeAt(worldObj, this, i, null, target);
+                Vector3 here = Vector3.getNewVector().set(this);
+                Vector3 t = Vector3.getNewVector().set(target);
+                t.set(t.subtractFrom(here).scalarMultBy(0.5).addTo(here));
+                cube.throwPokecubeAt(worldObj, this, i, t, null);
                 setAIState(THROWING, true);
                 attackCooldown[j] = battleCooldown;
                 cooldown = Config.instance.trainerSendOutDelay;

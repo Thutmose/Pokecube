@@ -26,12 +26,12 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
         GL11.glTranslatef((float) x + 0.5F, (float) y, (float) z + 0.5F);
         GL11.glPushMatrix();
         float offset = 0.2f;
-        
+
         float dx, dy, dz;
-        dx = te.shift[0]/100f;
-        dy = te.shift[1]/100f;
-        dz = te.shift[2]/100f;
-        float scale = te.scale/1000f;
+        dx = te.shift[0] / 100f;
+        dy = te.shift[1] / 100f;
+        dz = te.shift[2] / 100f;
+        float scale = te.scale / 1000f;
         GL11.glTranslatef(dx, offset + dy, dz);
 
         GL11.glRotatef(180, 0, 0, 1);
@@ -40,10 +40,14 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
         if (mob instanceof IMobColourable)
         {
             int[] col = ((IMobColourable) mob).getRGBA();
-            col[3] = 127;
+            col[3] = te.transparency;
             ((IMobColourable) mob).setRGBA(col);
         }
-        EventsHandlerClient.renderMob(mob, partialTicks);
+        if(!te.rotates)
+        {
+            GL11.glRotatef(te.angle, 0, 1, 0);
+        }
+        EventsHandlerClient.renderMob(mob, partialTicks, te.rotates);
         GL11.glPopMatrix();
         GL11.glTranslatef(0.405f, 0.645f, -0.5f);
         GL11.glScaled(0.15, 0.15, 0.15);

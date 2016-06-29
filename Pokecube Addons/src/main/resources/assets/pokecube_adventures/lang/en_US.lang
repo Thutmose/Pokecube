@@ -70,6 +70,7 @@ msg.celebiangry.txt=You have angered Celebi and need to re-gain its trust.
 entity.pokecube_adventures.targetParticles.name=Target
 
 pokecube.trainer.agress=%1$s §cwants to battle!
+pokecube.trainer.forget=%1$s §cno longer wants to battle...
 pokecube.trainer.defeat=%1$s §chas been defeated!
 pokecube.trainer.toss=%1$s §csent out %2$s!
 pokecube.trainer.next=%1$s §cis about to send out %2$s!

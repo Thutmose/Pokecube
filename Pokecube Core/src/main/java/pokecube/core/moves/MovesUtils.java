@@ -276,7 +276,7 @@ public class MovesUtils implements IMoveConstants
         float healRatio;
         float damageRatio;
 
-        int beforeHealth = (int) ((EntityLivingBase) attacked).getHealth();// getHealth()
+        int beforeHealth = (int) ((EntityLivingBase) attacked).getHealth();
 
         if (efficiency > 0 && MoveEntry.oneHitKos.contains(attack))
         {
@@ -288,9 +288,17 @@ public class MovesUtils implements IMoveConstants
             finalAttackStrength = Math.min(finalAttackStrength, beforeHealth - 1);
         }
 
-        if (PokecubeMod.core.getConfig().maxPlayerDamage > 0 && attacked instanceof EntityPlayer)
+        boolean wild = attacker.getPokemonAIState(TAMED);
+
+        if (PokecubeMod.core.getConfig().maxWildPlayerDamage > 0 && wild && attacked instanceof EntityPlayer)
         {
-            finalAttackStrength = Math.min(PokecubeMod.core.getConfig().maxPlayerDamage, finalAttackStrength);
+            finalAttackStrength *= PokecubeMod.core.getConfig().wildPlayerDamageScale / 100f;
+            finalAttackStrength = Math.min(PokecubeMod.core.getConfig().maxWildPlayerDamage, finalAttackStrength);
+        }
+        else if (PokecubeMod.core.getConfig().maxOwnedPlayerDamage > 0 && !wild && attacked instanceof EntityPlayer)
+        {
+            finalAttackStrength *= PokecubeMod.core.getConfig().ownedPlayerDamageScale / 100f;
+            finalAttackStrength = Math.min(PokecubeMod.core.getConfig().maxOwnedPlayerDamage, finalAttackStrength);
         }
 
         if (attacked instanceof IPokemob)
@@ -554,7 +562,7 @@ public class MovesUtils implements IMoveConstants
                     attacker.getPokemonDisplayName().getFormattedText(), attackName);
             ((IPokemob) attacked).displayMessageToOwner(text);
         }
-        else if (attacked instanceof EntityPlayer && !attacked.worldObj.isRemote && attacker!=null)
+        else if (attacked instanceof EntityPlayer && !attacked.worldObj.isRemote && attacker != null)
         {
             text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red",
                     attacker.getPokemonDisplayName().getFormattedText(), attackName);
@@ -619,8 +627,8 @@ public class MovesUtils implements IMoveConstants
             }
             else if (attacker == null && (attacked instanceof IPokemob))
             {
-                text = CommandTools.makeTranslatedMessage(message, "red", ((IPokemob) attacked).getPokemonDisplayName().getFormattedText(),
-                        statName);
+                text = CommandTools.makeTranslatedMessage(message, "red",
+                        ((IPokemob) attacked).getPokemonDisplayName().getFormattedText(), statName);
                 ((IPokemob) attacked).displayMessageToOwner(text);
             }
             else if (attacker instanceof IPokemob)
@@ -651,7 +659,7 @@ public class MovesUtils implements IMoveConstants
                         ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
                 ((IPokemob) attacked).displayMessageToOwner(text);
             }
-            else if (attacked instanceof EntityPlayer && attacker!=null)
+            else if (attacked instanceof EntityPlayer && attacker != null)
             {
                 text = CommandTools.makeTranslatedMessage(message, "red",
                         attacker.getPokemonDisplayName().getFormattedText());

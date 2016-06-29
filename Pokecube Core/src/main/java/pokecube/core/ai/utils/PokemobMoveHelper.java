@@ -12,18 +12,18 @@ public class PokemobMoveHelper extends EntityMoveHelper
 {
     /** The EntityLiving that is being moved */
     private EntityLiving entity;
-    private double posX;
-    private double posY;
-    private double posZ;
-    private Vector3 pos = Vector3.getNewVector();
-    private Vector3 lastPos = Vector3.getNewVector();
+    private double       posX;
+    private double       posY;
+    private double       posZ;
+    private Vector3      pos     = Vector3.getNewVector();
+    private Vector3      lastPos = Vector3.getNewVector();
     /** The speed at which the entity should move */
-    private double speed;
-    private boolean update;
+    private double       speed;
+    private boolean      update;
 
     public PokemobMoveHelper(EntityLiving entity)
     {
-    	super(entity);
+        super(entity);
         this.entity = entity;
         this.posX = entity.posX;
         this.posY = entity.posY;
@@ -31,20 +31,18 @@ public class PokemobMoveHelper extends EntityMoveHelper
     }
 
     @Override
-	public double getSpeed()
+    public double getSpeed()
     {
         return this.speed;
     }
 
     @Override
-	public boolean isUpdating()
+    public boolean isUpdating()
     {
         return this.update;
     }
 
-    /**
-     * Limits the given angle to a upper and lower limit.
-     */
+    /** Limits the given angle to a upper and lower limit. */
     @Override
     public float limitAngle(float old, float newAngle, float target)
     {
@@ -65,17 +63,21 @@ public class PokemobMoveHelper extends EntityMoveHelper
     }
 
     @Override
-	public void onUpdateMoveHelper()
+    public void onUpdateMoveHelper()
     {
         this.entity.setMoveForward(0.0F);
         this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
         if (this.update)
         {
-        	pos.set(entity);
-        	PokedexEntry entry = ((IPokemob)entity).getPokedexEntry();
+            pos.set(entity);
+            PokedexEntry entry = ((IPokemob) entity).getPokedexEntry();
+            if (((IPokemob) entity).getTransformedTo() instanceof IPokemob)
+            {
+                entry = ((IPokemob) ((IPokemob) entity).getTransformedTo()).getPokedexEntry();
+            }
             boolean water = entry.swims() && entity.isInWater();
             boolean air = entry.flys() || entry.floats();
-        	
+
             this.update = false;
             double i = (this.entity.posY + this.entity.stepHeight);
             double d0 = this.posX - this.entity.posX;
@@ -85,35 +87,36 @@ public class PokemobMoveHelper extends EntityMoveHelper
             double d3 = d4 + d2 * d2;
             if (d3 >= 2.5E-7D)
             {
-            	
-                if(!(water||air)||d4>1.0E-1D )//&&  d4 > d2))//!(water||air)||
+
+                if (!(water || air) || d4 > 1.0E-1D)// && d4 >
+                                                    // d2))//!(water||air)||
                 {
-                    float f = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
-                   // f = MathHelper.wrapAngleTo180_float(f);
+                    float f = (float) (Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
+                    // f = MathHelper.wrapAngleTo180_float(f);
 
                     entity.getLookHelper().setLookPosition(posX, posY, posZ, 10.0F, 10.0F);
-                    this.entity.rotationYaw = f;// MathHelper.wrapAngleTo180_float(this.limitAngle(this.entity.rotationYaw, f, 180.0F));
+                    this.entity.rotationYaw = f;// MathHelper.wrapAngleTo180_float(this.limitAngle(this.entity.rotationYaw,
+                                                // f, 180.0F));
                 }
-                else 
-                if(entity.getAITarget()!=null)
+                else if (entity.getAITarget() != null)
                 {
                     d0 = entity.getAITarget().posX - this.entity.posX;
                     d1 = entity.getAITarget().posZ - this.entity.posZ;
-                    float f = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
+                    float f = (float) (Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
                     this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f, 180.0F);
                 }
-                if(air || water)
+                if (air || water)
                 {
-                	entity.rotationPitch = -(float) (Math.atan((float) (d2/Math.sqrt(d4))) * 180/Math.PI);
-                	((IPokemob)entity).setDirectionPitch(entity.rotationPitch);
+                    entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);
+                    ((IPokemob) entity).setDirectionPitch(entity.rotationPitch);
                 }
-                float newSpeed = (float) (this.speed * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
-               
+                float newSpeed = (float) (this.speed
+                        * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
+
                 this.entity.setAIMoveSpeed(newSpeed);
                 double d6 = lastPos.distanceTo(pos);
-               
-                
-                if (d2 > 0.0D && !air || d6 < speed/10)
+
+                if (d2 > 0.0D && !air || d6 < speed / 10)
                 {
                     this.entity.getJumpHelper().setJumping();
                 }
@@ -122,11 +125,9 @@ public class PokemobMoveHelper extends EntityMoveHelper
         }
     }
 
-    /**
-     * Sets the speed and location to move to
-     */
+    /** Sets the speed and location to move to */
     @Override
-	public void setMoveTo(double p_75642_1_, double p_75642_3_, double p_75642_5_, double p_75642_7_)
+    public void setMoveTo(double p_75642_1_, double p_75642_3_, double p_75642_5_, double p_75642_7_)
     {
         this.posX = p_75642_1_;
         this.posY = p_75642_3_;

@@ -61,10 +61,7 @@ public class PokecubeManager
                 }
             }
         }
-
-        return ret;// itemStack.hasTagCompound() &&
-                   // itemStack.getTagCompound().hasKey("Owner") ?
-                   // itemStack.getTagCompound().getString("Owner") : "";
+        return ret;
     }
 
     public static int getPokedexNb(ItemStack itemStack)

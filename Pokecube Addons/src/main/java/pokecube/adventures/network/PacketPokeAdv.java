@@ -206,7 +206,7 @@ public class PacketPokeAdv
                     int m = buffer.readByte();
                     ((ContainerBag) (player.openContainer)).gotoInventoryPage(m);
                 }
-                if (channel == 7)
+                if (channel == MESSAGEOPENBAG)
                 {
                     player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj,
                             InventoryBag.getBag(player).getPage() + 1, 0, 0);
@@ -263,7 +263,8 @@ public class PacketPokeAdv
         }
 
         public static final byte MESSAGEBIOMESETTER = 9;
-
+        public static final byte MESSAGEOPENBAG     = 7;
+        public static final byte MESSAGEBAGPAGE     = 6;
         public static final byte MESSAGEGUIAFA      = 11;
 
         PacketBuffer             buffer;;

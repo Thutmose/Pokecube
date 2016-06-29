@@ -198,7 +198,6 @@ public class EventsHandlerClient
         float zoom = (float) (10f / Math.sqrt(size));
         GL11.glScalef(-zoom, zoom, zoom);
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-        Minecraft.getMinecraft();
         long time = Minecraft.getSystemTime();
         if (rotates) GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
         RenderHelper.enableStandardItemLighting();

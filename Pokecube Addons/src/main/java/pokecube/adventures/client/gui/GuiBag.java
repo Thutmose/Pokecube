@@ -65,7 +65,7 @@ public class GuiBag extends GuiContainer
             if (guibutton.id == 4)
             {
                 PacketBuffer buf = new PacketBuffer(Unpooled.buffer(1));
-                buf.writeByte(7);
+                buf.writeByte(MessageServer.MESSAGEOPENBAG);
                 packet = new MessageServer(buf);
                 PokecubePacketHandler.sendToServer(packet);
             }
@@ -73,7 +73,11 @@ public class GuiBag extends GuiContainer
             {
                 cont.updateInventoryPages((byte) (guibutton.id == 2 ? -1 : guibutton.id == 1 ? 1 : 0),
                         mc.thePlayer.inventory);
-
+                PacketBuffer buf = new PacketBuffer(Unpooled.buffer(5));
+                buf.writeByte(MessageServer.MESSAGEBAGPAGE);
+                buf.writeInt(cont.invBag.getPage() + 1);
+                packet = new MessageServer(buf);
+                PokecubePacketHandler.sendToServer(packet);
                 textFieldSelectedBox.setText(cont.getPageNb());
             }
         }
@@ -207,7 +211,12 @@ public class GuiBag extends GuiContainer
 
             number = Math.max(1, Math.min(number, InventoryPC.PAGECOUNT));
             cont.gotoInventoryPage(number);
-
+            PacketBuffer buf = new PacketBuffer(Unpooled.buffer(5));
+            buf.writeByte(MessageServer.MESSAGEBAGPAGE);
+            buf.writeInt(number);
+            MessageServer packet = new MessageServer(buf);
+            PokecubePacketHandler.sendToServer(packet);
+            textFieldSelectedBox.setText(cont.getPageNb());
             if (toRename && box != boxName)
             {
                 if (toRename)

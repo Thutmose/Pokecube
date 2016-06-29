@@ -97,6 +97,9 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
     public Ability          ability        = null;
     int                     energy         = 0;
     int                     distance       = 4;
+    public int              transparency   = 128;
+    public boolean          rotates        = true;
+    public float            angle          = 0;
     boolean                 noEnergy       = false;
 
     protected EnergyStorage storage;
@@ -347,6 +350,9 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         if (nbt.hasKey("scale")) scale = nbt.getInteger("scale");
         distance = nbt.getInteger("distance");
         noEnergy = nbt.getBoolean("noEnergy");
+        angle = nbt.getFloat("angle");
+        rotates = nbt.getBoolean("rotates");
+        transparency = nbt.getInteger("transparency");
         storage.readFromNBT(nbt);
     }
 
@@ -558,6 +564,9 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         nbt.setTag("Inventory", itemList);
         nbt.setInteger("distance", distance);
         nbt.setBoolean("noEnergy", noEnergy);
+        nbt.setFloat("angle", angle);
+        nbt.setBoolean("rotates", rotates);
+        nbt.setInteger("transparency", transparency);
         return storage.writeToNBT(nbt);
     }
 }

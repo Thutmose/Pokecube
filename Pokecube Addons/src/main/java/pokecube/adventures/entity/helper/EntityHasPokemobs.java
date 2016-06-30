@@ -160,6 +160,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         }
         friendlyCooldown = nbt.getInteger("friendly");
         nextSlot = nbt.getInteger("nextSlot");
+        if (nextSlot >= 6) nextSlot = 0;
     }
 
     @Override
@@ -259,6 +260,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
                     i.getDisplayName());
             target.addChatMessage(text);
             nextSlot++;
+            if (nextSlot >= 6) nextSlot = -1;
             return;
         }
         else

@@ -231,13 +231,6 @@ public class Compat
     public void postPostInit(PostPostInit evt)
     {
         gccompat.register();
-
-        boolean wikiWrite = false;
-
-        if (wikiWrite)
-        {
-            WikiWriter.writeWiki();
-        }
     }
 
     @EventHandler

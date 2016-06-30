@@ -269,17 +269,6 @@ public class TeamManager
         return team;
     }
 
-    private PokeTeam getTeam(String name, boolean create)
-    {
-        PokeTeam team = teamMap.get(name);
-        if (team == null && create)
-        {
-            team = new PokeTeam(name);
-            teamMap.put(name, team);
-        }
-        return team;
-    }
-
     public List<ChunkCoordinate> getTeamLand(String team)
     {
         ArrayList<ChunkCoordinate> ret = new ArrayList<ChunkCoordinate>();
@@ -418,12 +407,6 @@ public class TeamManager
         if (team != null) teamMap.put(team.teamName, team);
     }
 
-    public void loadTeamFromNBT(NBTTagCompound nbt)
-    {
-        PokeTeam team = PokeTeam.loadFromNBT(nbt);
-        if (team != null) teamMap.put(team.teamName, team);
-    }
-
     public void removeFromAdmins(String admin, String team)
     {
         PokeTeam t = teamMap.get(team);
@@ -473,15 +456,6 @@ public class TeamManager
                 PokecubePacketHandler.sendToAll(packet);
             }
             PASaveHandler.getInstance().saveTeams(team);
-        }
-    }
-
-    public void saveTeamToNBT(String team, NBTTagCompound nbt)
-    {
-        PokeTeam t = getTeam(team, false);
-        if (t != null)
-        {
-            t.writeToNBT(nbt);
         }
     }
 

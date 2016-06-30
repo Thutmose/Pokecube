@@ -87,30 +87,6 @@ public class TeamEventsHandler
         }
     }
 
-    @SubscribeEvent
-    public void ExplosionEvent(ExplosionEvent.Detonate evt)
-    {
-        if (!TeamManager.denyBlasts) return;
-        int dimension = evt.getWorld().provider.getDimension();
-        List<BlockPos> toRemove = Lists.newArrayList();
-        for (BlockPos pos : evt.getAffectedBlocks())
-        {
-            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(pos, dimension);
-            String owner = TeamManager.getInstance().getLandOwner(c);
-            if (evt.getExplosion().getExplosivePlacedBy() instanceof EntityPlayer)
-            {
-                String team = evt.getWorld().getScoreboard()
-                        .getPlayersTeam(evt.getExplosion().getExplosivePlacedBy().getName()).getRegisteredName();
-                if (owner.equals(team))
-                {
-                    owner = null;
-                }
-            }
-            if (owner != null) continue;
-            toRemove.add(pos);
-        }
-    }
-
     /** Uses player interact here to also prevent opening of inventories.
      * 
      * @param evt */

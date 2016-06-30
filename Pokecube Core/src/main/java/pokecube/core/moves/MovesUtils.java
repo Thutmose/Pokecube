@@ -288,17 +288,24 @@ public class MovesUtils implements IMoveConstants
             finalAttackStrength = Math.min(finalAttackStrength, beforeHealth - 1);
         }
 
-        boolean wild = attacker.getPokemonAIState(TAMED);
+        boolean wild = !attacker.getPokemonAIState(TAMED);
 
-        if (PokecubeMod.core.getConfig().maxWildPlayerDamage > 0 && wild && attacked instanceof EntityPlayer)
+        if (PokecubeMod.core.getConfig().maxWildPlayerDamage >= 0 && wild && attacked instanceof EntityPlayer)
         {
-            finalAttackStrength *= PokecubeMod.core.getConfig().wildPlayerDamageScale / 100f;
             finalAttackStrength = Math.min(PokecubeMod.core.getConfig().maxWildPlayerDamage, finalAttackStrength);
         }
-        else if (PokecubeMod.core.getConfig().maxOwnedPlayerDamage > 0 && !wild && attacked instanceof EntityPlayer)
+        else if (PokecubeMod.core.getConfig().maxOwnedPlayerDamage >= 0 && !wild && attacked instanceof EntityPlayer)
         {
-            finalAttackStrength *= PokecubeMod.core.getConfig().ownedPlayerDamageScale / 100f;
             finalAttackStrength = Math.min(PokecubeMod.core.getConfig().maxOwnedPlayerDamage, finalAttackStrength);
+        }
+
+        if (wild && attacked instanceof EntityPlayer)
+        {
+            finalAttackStrength *= PokecubeMod.core.getConfig().wildPlayerDamageRatio;
+        }
+        else if (!wild && attacked instanceof EntityPlayer)
+        {
+            finalAttackStrength *= PokecubeMod.core.getConfig().ownedPlayerDamageRatio;
         }
 
         if (attacked instanceof IPokemob)
@@ -312,8 +319,38 @@ public class MovesUtils implements IMoveConstants
 
         if (!(move.attackCategory == CATEGORY_SELF && PWR == 0) && finalAttackStrength > 0)
         {
-            DamageSource source = new PokemobDamageSource("mob", (EntityLivingBase) attacker, getMoveFromName(attack));
-            attacked.attackEntityFrom(source, finalAttackStrength);
+            if (attacked instanceof EntityPlayer)
+            {
+                DamageSource source1 = new PokemobDamageSource("mob", (EntityLivingBase) attacker,
+                        getMoveFromName(attack));
+                DamageSource source2 = new PokemobDamageSource("mob", (EntityLivingBase) attacker,
+                        getMoveFromName(attack));
+                source2.setDamageBypassesArmor();
+                source2.setMagicDamage();
+                float d1, d2;
+                if (wild)
+                {
+                    d2 = (float) (finalAttackStrength
+                            * Math.min(1, PokecubeMod.core.getConfig().wildPlayerDamageMagic));
+                    d1 = finalAttackStrength - d2;
+                }
+                else
+                {
+                    d2 = (float) (finalAttackStrength
+                            * Math.min(1, PokecubeMod.core.getConfig().ownedPlayerDamageMagic));
+                    d1 = finalAttackStrength - d2;
+                }
+
+                System.out.println(d1 + " " + d2);
+                attacked.attackEntityFrom(source1, d1);
+                attacked.attackEntityFrom(source2, d2);
+            }
+            else
+            {
+                DamageSource source = new PokemobDamageSource("mob", (EntityLivingBase) attacker,
+                        getMoveFromName(attack));
+                attacked.attackEntityFrom(source, finalAttackStrength);
+            }
 
             if (attacked instanceof IPokemob)
             {

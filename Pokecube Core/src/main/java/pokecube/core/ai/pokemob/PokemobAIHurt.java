@@ -223,7 +223,7 @@ public class PokemobAIHurt extends EntityAIBase
         if (this.entityCallsForHelp && Math.random() > 0.95)
         {
             double d0 = this.getTargetDistance();
-            List<? extends EntityCreature> list = this.taskOwner.worldObj.getEntitiesWithinAABB(
+            List<? extends EntityCreature> list = this.taskOwner.getEntityWorld().getEntitiesWithinAABB(
                     this.taskOwner.getClass(),
                     new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ,
                             this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D)

@@ -120,7 +120,7 @@ public class ItemTarget extends Item
             }
             if (meta == 3 && world.isRemote && !player.isSneaking())
             {
-                player.openGui(PokecubeAdv.instance, 5, player.worldObj, 0, 0, 0);
+                player.openGui(PokecubeAdv.instance, 5, player.getEntityWorld(), 0, 0, 0);
             }
             return new ActionResult<>(EnumActionResult.PASS, itemstack);
         }

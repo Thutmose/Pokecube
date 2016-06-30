@@ -391,7 +391,7 @@ public class PokecubeSerializer
 
     public boolean hasStarter(EntityPlayer player)
     {
-        if (player == null || player.worldObj.isRemote) return clientHasStarter;
+        if (player == null || player.getEntityWorld().isRemote) return clientHasStarter;
         Boolean bool = hasStarter.get(player.getUniqueID().toString());
         return bool == Boolean.TRUE;
     }
@@ -689,7 +689,7 @@ public class PokecubeSerializer
 
     public void setHasStarter(EntityPlayer player, boolean value)
     {
-        if (player == null || player.worldObj.isRemote)
+        if (player == null || player.getEntityWorld().isRemote)
         {
             System.out.println(player+" "+value);
             clientHasStarter = value;
@@ -778,7 +778,7 @@ public class PokecubeSerializer
 
     public ItemStack starter(int pokedexNb, EntityPlayer owner)
     {
-        World worldObj = owner.worldObj;
+        World worldObj = owner.getEntityWorld();
         IPokemob entity = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(pokedexNb, worldObj);
 
         if (entity != null)
@@ -792,7 +792,7 @@ public class PokecubeSerializer
 
             EntityPlayer player = owner;
 
-            if (player != null && !player.worldObj.isRemote)
+            if (player != null && !player.getEntityWorld().isRemote)
             {
                 player.addStat(PokecubeMod.get1stPokemob, 1);
                 player.addStat(PokecubeMod.pokemobAchievements.get(entity.getPokedexNb()), 1);

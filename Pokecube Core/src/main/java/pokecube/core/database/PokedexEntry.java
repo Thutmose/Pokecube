@@ -107,7 +107,7 @@ public class PokedexEntry
                 }
             }
             Vector3 v = Vector3.getNewVector().set(mob);
-            World world = ((EntityLiving) mob).worldObj;
+            World world = ((EntityLiving) mob).getEntityWorld();
             if (type == -1)
             {
                 Biome b = v.getBiome(world);
@@ -156,7 +156,7 @@ public class PokedexEntry
                 }
             }
             Vector3 v = Vector3.getNewVector().set(mob);
-            World world = ((EntityLiving) mob).worldObj;
+            World world = ((EntityLiving) mob).getEntityWorld();
             Biome b = v.getBiome(world);
             boolean correctType = true;
             boolean bannedType = false;
@@ -305,7 +305,7 @@ public class PokedexEntry
             boolean ret = mob.traded() == this.traded || !this.traded;
             if (rainOnly)
             {
-                World world = ((EntityLiving) mob).worldObj;
+                World world = ((EntityLiving) mob).getEntityWorld();
                 // TODO also iclude check for terrain segement based rain
                 if (!world.isRaining()) return false;
             }
@@ -347,8 +347,8 @@ public class PokedexEntry
             if (!rightTime && mob instanceof Entity)
             {
                 Entity poke = (Entity) mob;
-                rightTime = dayOnly ? poke.worldObj.isDaytime() : !poke.worldObj.isDaytime();
-                // System.out.println("Is it Day?"+poke.worldObj.isDaytime());
+                rightTime = dayOnly ? poke.getEntityWorld().isDaytime() : !poke.getEntityWorld().isDaytime();
+                // System.out.println("Is it Day?"+poke.getEntityWorld().isDaytime());
             }
             ret = ret && rightTime;
             if (happy)
@@ -485,12 +485,12 @@ public class PokedexEntry
             if (data.hasKey("lastInteract"))
             {
                 long time = data.getLong("lastInteract");
-                long diff = entity.worldObj.getTotalWorldTime() - time;
+                long diff = entity.getEntityWorld().getTotalWorldTime() - time;
                 if (diff < 100) { return false; }
             }
             ItemStack stack = getKey(player.getHeldItemMainhand());
             if (!doInteract) return stack != null;
-            data.setLong("lastInteract", entity.worldObj.getTotalWorldTime());
+            data.setLong("lastInteract", entity.getEntityWorld().getTotalWorldTime());
             if (stack != null)
             {
                 List<ItemStack> results = stacks.get(stack);

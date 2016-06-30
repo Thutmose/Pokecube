@@ -55,7 +55,7 @@ public class GuiPC extends GuiContainer
     @Override
     protected void actionPerformed(GuiButton guibutton)
     {
-        if (mc.thePlayer.worldObj.isRemote)
+        if (mc.thePlayer.getEntityWorld().isRemote)
         {
             byte[] message = { (byte) guibutton.id };
             // if(guibutton.id<5)

@@ -31,7 +31,7 @@ public class InventoryBag implements IInventory
 
     public static InventoryBag getBag(Entity player)
     {// TODO Sync box names to blank
-        if (player.worldObj.isRemote) return blank == null ? blank = new InventoryBag("blank") : blank;
+        if (player.getEntityWorld().isRemote) return blank == null ? blank = new InventoryBag("blank") : blank;
         return getBag(player.getUniqueID().toString());
     }
 
@@ -291,7 +291,7 @@ public class InventoryBag implements IInventory
     public void closeInventory(EntityPlayer player)
     {
         PASaveHandler.getInstance().saveBag(player.getUniqueID().toString());
-        if (player.worldObj.isRemote && FMLCommonHandler.instance().getMinecraftServerInstance() == null)
+        if (player.getEntityWorld().isRemote && FMLCommonHandler.instance().getMinecraftServerInstance() == null)
             clearInventory();
     }
 

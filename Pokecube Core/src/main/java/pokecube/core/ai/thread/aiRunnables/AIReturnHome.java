@@ -52,7 +52,7 @@ public class AIReturnHome extends AIBase
         boolean activeTime = false;
         for (TimePeriod active : entry.activeTimes())
         {
-            if (active.contains(entity.worldObj.getWorldTime()))
+            if (active.contains(entity.getEntityWorld().getWorldTime()))
             {
                 activeTime = true;
             }

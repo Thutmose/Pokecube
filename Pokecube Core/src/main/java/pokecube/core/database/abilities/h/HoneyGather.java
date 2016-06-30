@@ -55,19 +55,19 @@ public class HoneyGather extends Ability
         here.set(mob).addTo(range * (rand.nextDouble() - 0.5), Math.min(10, range) * (rand.nextDouble() - 0.5),
                 range * (rand.nextDouble() - 0.5));
 
-        IBlockState state = here.getBlockState(entity.worldObj);
+        IBlockState state = here.getBlockState(entity.getEntityWorld());
         Block block = state.getBlock();
         if (block instanceof IGrowable)
         {
             IGrowable growable = (IGrowable) block;
-            if (growable.canGrow(entity.worldObj, here.getPos(), here.getBlockState(entity.worldObj),
-                    entity.worldObj.isRemote))
+            if (growable.canGrow(entity.getEntityWorld(), here.getPos(), here.getBlockState(entity.getEntityWorld()),
+                    entity.getEntityWorld().isRemote))
             {
-                if (!entity.worldObj.isRemote)
+                if (!entity.getEntityWorld().isRemote)
                 {
-                    if (growable.canUseBonemeal(entity.worldObj, entity.worldObj.rand, here.getPos(), state))
+                    if (growable.canUseBonemeal(entity.getEntityWorld(), entity.getEntityWorld().rand, here.getPos(), state))
                     {
-                        growable.grow(entity.worldObj, entity.worldObj.rand, here.getPos(), state);
+                        growable.grow(entity.getEntityWorld(), entity.getEntityWorld().rand, here.getPos(), state);
                         return;
                     }
                 }

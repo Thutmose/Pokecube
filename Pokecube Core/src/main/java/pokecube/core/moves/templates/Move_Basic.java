@@ -147,7 +147,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             Vec3d loc1 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
             Vec3d loc2 = new Vec3d(location.x, location.y, location.z);
-            RayTraceResult pos = entity.worldObj.rayTraceBlocks(loc1, loc2, false);
+            RayTraceResult pos = entity.getEntityWorld().rayTraceBlocks(loc1, loc2, false);
             if (pos != null)
             {
                 location.set(pos.hitVec);
@@ -234,7 +234,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     public void doWorldAction(IPokemob attacker, Vector3 location)
     {
         if (!PokecubeMod.pokemobsDamageBlocks) return;
-        World world = ((Entity) attacker).worldObj;
+        World world = ((Entity) attacker).getEntityWorld();
         IBlockState state = location.getBlockState(world);
         Block block = state.getBlock();
         if (getType(attacker) == PokeType.ice && (move.attackCategory & CATEGORY_DISTANCE) > 0 && move.power > 0)
@@ -322,7 +322,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             if (getAnimation() instanceof Thunder && attacked != null)
             {
-                EntityLightningBolt lightning = new EntityLightningBolt(attacked.worldObj, 0, 0, 0, false);
+                EntityLightningBolt lightning = new EntityLightningBolt(attacked.getEntityWorld(), 0, 0, 0, false);
                 attacked.onStruckByLightning(lightning);
             }
             if (f > 0 && attacked instanceof EntityCreeper)

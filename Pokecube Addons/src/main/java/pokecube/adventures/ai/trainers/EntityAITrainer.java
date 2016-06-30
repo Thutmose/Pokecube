@@ -37,7 +37,7 @@ public class EntityAITrainer extends EntityAIBase
     public EntityAITrainer(EntityTrainer trainer, Class<? extends EntityLivingBase> targetClass)
     {
         this.trainer = trainer;
-        this.world = trainer.worldObj;
+        this.world = trainer.getEntityWorld();
         this.setMutexBits(3);
         this.targetClass = targetClass;
     }
@@ -91,7 +91,7 @@ public class EntityAITrainer extends EntityAIBase
                 return;
             }
         }
-        if (angry && !trainer.worldObj.isRemote && trainer.outMob == null)
+        if (angry && !trainer.getEntityWorld().isRemote && trainer.outMob == null)
         {
             trainer.throwCubeAt(trainer.getTarget());
         }

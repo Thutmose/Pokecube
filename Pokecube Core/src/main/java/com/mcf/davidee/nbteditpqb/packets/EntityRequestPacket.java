@@ -42,7 +42,7 @@ public class EntityRequestPacket extends AbstractPacket {
 
 	@Override
 	public void handleServerSide(EntityPlayerMP player) {
-		Entity e = player.worldObj.getEntityByID(entityID);
+		Entity e = player.getEntityWorld().getEntityByID(entityID);
 		if (e instanceof EntityPlayer && e != player) {
 			sendMessageToPlayer(player, SECTION_SIGN + "cError - You may not use NBTEdit on other Players");
 			NBTEdit.log(Level.WARNING, player.getName() +  " tried to use NBTEdit on another player, " + e.getName());

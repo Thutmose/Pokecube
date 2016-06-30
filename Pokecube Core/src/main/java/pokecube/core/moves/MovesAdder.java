@@ -1032,7 +1032,7 @@ public class MovesAdder implements IMoveConstants
             @Override
             public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
             {
-                Random r = new Random(attacked.worldObj.rand.nextLong());
+                Random r = new Random(attacked.getEntityWorld().rand.nextLong());
 
                 int rand = r.nextInt(7);
                 attacker.getMoveStats().SELFRAISECOUNTER = 80;
@@ -1920,7 +1920,7 @@ public class MovesAdder implements IMoveConstants
             public boolean doAttack(IPokemob attacker, Entity attacked, float f)
             {
                 if (!super.doAttack(attacker, attacked, f)) return false;
-                attacked.worldObj.setBlockState(
+                attacked.getEntityWorld().setBlockState(
                         new BlockPos((int) attacked.posX, (int) attacked.posY + 1, (int) attacked.posZ),
                         Blocks.FLOWING_WATER.getStateFromMeta(1), 3);
                 return true;

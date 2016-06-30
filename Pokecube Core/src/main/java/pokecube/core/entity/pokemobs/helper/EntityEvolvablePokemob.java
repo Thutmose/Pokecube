@@ -206,7 +206,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                         else((EntityMovesPokemob) evo).oldLevel = data.level;
                         // evo.levelUp(evo.getLevel());
                         this.setDead();
-                        if (player != null && !player.worldObj.isRemote && !isShadow())
+                        if (player != null && !player.getEntityWorld().isRemote && !isShadow())
                         {
                             makeShedinja(evo, player);
                         }

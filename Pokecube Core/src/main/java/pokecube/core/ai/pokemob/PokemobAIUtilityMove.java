@@ -31,7 +31,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
     {
         this.pokemon = (IPokemob) pokemob;
         this.entity = pokemob;
-        this.world = pokemob.worldObj;
+        this.world = pokemob.getEntityWorld();
         this.setMutexBits(3);
         speed = pokemon.getMovementSpeed();
     }

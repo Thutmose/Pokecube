@@ -414,7 +414,7 @@ public class PokemobPacketHandler
                             Entity owner = pokemob.getPokemonOwner();
                             if (owner != null)
                             {
-                                Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.worldObj, id,
+                                Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.getEntityWorld(), id,
                                         false);
                                 if (closest instanceof IPokemob)
                                 {

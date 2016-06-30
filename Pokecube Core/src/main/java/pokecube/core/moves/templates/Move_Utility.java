@@ -106,7 +106,7 @@ public class Move_Utility extends Move_Basic
         {
             player = (EntityPlayer) owner;
 
-            BreakEvent evt = new BreakEvent(player.worldObj, v.getPos(), v.getBlockState(player.worldObj), player);
+            BreakEvent evt = new BreakEvent(player.getEntityWorld(), v.getPos(), v.getBlockState(player.getEntityWorld()), player);
 
             MinecraftForge.EVENT_BUS.post(evt);
             if (evt.isCanceled()) return 0;
@@ -128,7 +128,7 @@ public class Move_Utility extends Move_Basic
                 for (int k = -1; k <= 1; k++)
                 {
                     temp.set(v);
-                    IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).worldObj);
+                    IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).getEntityWorld());
                     Block block = state.getBlock();
                     if (list.contains(block))
                     {
@@ -139,17 +139,17 @@ public class Move_Utility extends Move_Basic
 
                         if (!count)
                         {
-                            if (!silky) temp.breakBlock(((Entity) digger).worldObj, drop);
+                            if (!silky) temp.breakBlock(((Entity) digger).getEntityWorld(), drop);
                             else
                             {
-                                if (block.canSilkHarvest(player.worldObj, temp.getPos(), state, player))
+                                if (block.canSilkHarvest(player.getEntityWorld(), temp.getPos(), state, player))
                                 {
-                                    silkHarvest(state, temp.getPos(), player.worldObj, player);
-                                    temp.breakBlock(((Entity) digger).worldObj, drop);
+                                    silkHarvest(state, temp.getPos(), player.getEntityWorld(), player);
+                                    temp.breakBlock(((Entity) digger).getEntityWorld(), drop);
                                 }
                                 else
                                 {
-                                    temp.breakBlock(((Entity) digger).worldObj, drop);
+                                    temp.breakBlock(((Entity) digger).getEntityWorld(), drop);
                                 }
                             }
                         }
@@ -200,7 +200,7 @@ public class Move_Utility extends Move_Basic
             return;
         }
         boolean used = false;
-        boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).worldObj, location.intX(), location.intY(),
+        boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).getEntityWorld(), location.intX(), location.intY(),
                 location.intZ());
 
         EntityLivingBase owner = user.getPokemonOwner();
@@ -217,7 +217,7 @@ public class Move_Utility extends Move_Basic
             number = countBerries(user, (EntityPlayer) owner);
             EntityPlayer player = (EntityPlayer) owner;
 
-            BreakEvent evt = new BreakEvent(player.worldObj, location.getPos(), location.getBlockState(player.worldObj),
+            BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(), location.getBlockState(player.getEntityWorld()),
                     player);
 
             MinecraftForge.EVENT_BUS.post(evt);
@@ -252,7 +252,7 @@ public class Move_Utility extends Move_Basic
         }
         else if (this.name == MOVE_CUT)
         {
-            TreeRemover remover = new TreeRemover(((Entity) user).worldObj, location);
+            TreeRemover remover = new TreeRemover(((Entity) user).getEntityWorld(), location);
             int cut = remover.cut(true);
 
             if (cut == 0)
@@ -261,7 +261,7 @@ public class Move_Utility extends Move_Basic
                 for (int i = 0; i < 6; i++)
                 {
                     EnumFacing dir = EnumFacing.VALUES[(i + index) % 6];
-                    remover = new TreeRemover(((Entity) user).worldObj, location.offset(dir));
+                    remover = new TreeRemover(((Entity) user).getEntityWorld(), location.offset(dir));
                     cut = remover.cut(true);
                     if (cut != 0) break;
                 }
@@ -300,7 +300,7 @@ public class Move_Utility extends Move_Basic
         if (owner instanceof EntityPlayer)
         {
             player = (EntityPlayer) owner;
-            BreakEvent evt = new BreakEvent(player.worldObj, v.getPos(), v.getBlockState(player.worldObj), player);
+            BreakEvent evt = new BreakEvent(player.getEntityWorld(), v.getPos(), v.getBlockState(player.getEntityWorld()), player);
 
             MinecraftForge.EVENT_BUS.post(evt);
             if (evt.isCanceled()) return 0;
@@ -320,23 +320,23 @@ public class Move_Utility extends Move_Basic
                 for (int k = -1; k <= 1; k++)
                 {
                     temp.set(v);
-                    IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).worldObj);
+                    IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).getEntityWorld());
                     Block block = state.getBlock();
                     if (list.contains(block))
                     {
                         if (!count)
                         {
-                            if (!silky) doFortuneDrop(temp, ((Entity) digger).worldObj, fortune);
+                            if (!silky) doFortuneDrop(temp, ((Entity) digger).getEntityWorld(), fortune);
                             else
                             {
-                                if (block.canSilkHarvest(player.worldObj, temp.getPos(), state, player))
+                                if (block.canSilkHarvest(player.getEntityWorld(), temp.getPos(), state, player))
                                 {
-                                    silkHarvest(state, temp.getPos(), player.worldObj, player);
-                                    temp.breakBlock(((Entity) digger).worldObj, false);
+                                    silkHarvest(state, temp.getPos(), player.getEntityWorld(), player);
+                                    temp.breakBlock(((Entity) digger).getEntityWorld(), false);
                                 }
                                 else
                                 {
-                                    doFortuneDrop(temp, ((Entity) digger).worldObj, fortune);
+                                    doFortuneDrop(temp, ((Entity) digger).getEntityWorld(), fortune);
                                 }
                             }
                         }

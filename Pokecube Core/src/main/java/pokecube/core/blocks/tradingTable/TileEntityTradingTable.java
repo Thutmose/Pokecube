@@ -168,7 +168,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                     player2 = null;
                 }
 
-                if (!player.worldObj.isRemote)
+                if (!player.getEntityWorld().isRemote)
                 {
                     String message = 9 + "," + getPos().getX() + "," + getPos().getY() + "," + getPos().getZ() + ","
                             + player.getEntityId();
@@ -201,7 +201,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                     player2 = null;
                 }
 
-                if (!player.worldObj.isRemote)
+                if (!player.getEntityWorld().isRemote)
                 {
                     String message = 9 + "," + getPos().getX() + "," + getPos().getY() + "," + getPos().getZ() + ","
                             + player.getEntityId();
@@ -506,7 +506,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
     public ArrayList<String> moves(EntityPlayer player)
     {
-        if (!player.worldObj.isRemote)
+        if (!player.getEntityWorld().isRemote)
         {
             boolean pc = hasPC();
             if (!pc) { return Lists.newArrayList(); }

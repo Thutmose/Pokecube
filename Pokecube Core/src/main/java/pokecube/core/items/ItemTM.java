@@ -126,7 +126,7 @@ public class ItemTM extends ItemPokemobUseable
     @Override
     public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
     {
-        if (mob.worldObj.isRemote) return true;
+        if (mob.getEntityWorld().isRemote) return true;
 
         if (stack.hasTagCompound())
         {

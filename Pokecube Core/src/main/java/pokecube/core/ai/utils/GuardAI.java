@@ -97,7 +97,7 @@ public class GuardAI extends EntityAIBase
         if (null == entity || entity.isDead || capability.getActiveTime() == null
                 || capability.getPos() == null) { return false; }
         if (capability.getActiveTime() != TimePeriod.fullDay
-                && !capability.getActiveTime().contains((int) (entity.worldObj.getWorldTime() % 24000L)))
+                && !capability.getActiveTime().contains((int) (entity.getEntityWorld().getWorldTime() % 24000L)))
         {
             return false;
         }

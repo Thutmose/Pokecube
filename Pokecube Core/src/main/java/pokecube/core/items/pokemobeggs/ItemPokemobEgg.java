@@ -345,12 +345,12 @@ public class ItemPokemobEgg extends Item
         }
 
         Vector3 location = Vector3.getNewVector().set(mob);
-        EntityPlayer player = ((Entity) mob).worldObj.getClosestPlayer(location.x, location.y, location.z, 2, false);
+        EntityPlayer player = ((Entity) mob).getEntityWorld().getClosestPlayer(location.x, location.y, location.z, 2, false);
         EntityLivingBase owner = player;
         AxisAlignedBB box = location.getAABB().expand(4, 4, 4);
         if (owner == null)
         {
-            List<EntityLivingBase> list = ((Entity) mob).worldObj.getEntitiesWithinAABB(EntityLivingBase.class, box,
+            List<EntityLivingBase> list = ((Entity) mob).getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, box,
                     new Predicate<EntityLivingBase>()
                     {
                         @Override
@@ -382,7 +382,7 @@ public class ItemPokemobEgg extends Item
         }
         if (owner == null)
         {
-            IPokemob pokemob = (IPokemob) ((Entity) mob).worldObj.findNearestEntityWithinAABB(EntityPokemob.class, box,
+            IPokemob pokemob = (IPokemob) ((Entity) mob).getEntityWorld().findNearestEntityWithinAABB(EntityPokemob.class, box,
                     (Entity) mob);
             if (pokemob != null && pokemob.getPokemonOwner() instanceof EntityPlayer)
                 player = (EntityPlayer) pokemob.getPokemonOwner();

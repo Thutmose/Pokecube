@@ -188,7 +188,7 @@ public class AIStoreStuff extends AIBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
-        world = entity.worldObj;
+        world = entity.getEntityWorld();
         IPokemob pokemob = (IPokemob) entity;
         IInventory inventory = pokemob.getPokemobInventory();
         if (run[0])

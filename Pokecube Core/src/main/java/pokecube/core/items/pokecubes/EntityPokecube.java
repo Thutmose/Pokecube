@@ -484,7 +484,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
-        if (!player.worldObj.isRemote)
+        if (!player.getEntityWorld().isRemote)
         {
             if (!isReleasing())
             {

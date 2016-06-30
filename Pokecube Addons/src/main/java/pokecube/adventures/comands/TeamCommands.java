@@ -394,7 +394,7 @@ public class TeamCommands implements ICommand
             ScorePlayerTeam team = null;
             if (sender instanceof EntityPlayer)
             {
-                team = ((EntityPlayer) sender).worldObj.getScoreboard().getPlayersTeam(sender.getName());
+                team = ((EntityPlayer) sender).getEntityWorld().getScoreboard().getPlayersTeam(sender.getName());
             }
 
             for (int i = 1; i < args.length; i++)
@@ -553,13 +553,13 @@ public class TeamCommands implements ICommand
     @SubscribeEvent
     public void livingUpdate(LivingUpdateEvent evt)
     {
-        if (evt.getEntity().worldObj.isRemote || evt.getEntity().isDead || claimers.isEmpty()) return;
+        if (evt.getEntity().getEntityWorld().isRemote || evt.getEntity().isDead || claimers.isEmpty()) return;
 
         if (evt.getEntityLiving() instanceof EntityPlayer && claimers.containsKey(evt.getEntityLiving()))
         {
             boolean all = claimers.get(evt.getEntityLiving());
             ScorePlayerTeam team = null;
-            team = evt.getEntityLiving().worldObj.getScoreboard().getPlayersTeam(evt.getEntityLiving().getName());
+            team = evt.getEntityLiving().getEntityWorld().getScoreboard().getPlayersTeam(evt.getEntityLiving().getName());
             int num = all ? 16 : 1;
             int n = 0;
             for (int i = 0; i < num; i++)

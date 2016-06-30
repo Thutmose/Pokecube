@@ -69,7 +69,7 @@ public class EntityNBTPacket extends AbstractPacket
     @Override
     public void handleServerSide(EntityPlayerMP player)
     {
-        Entity e = player.worldObj.getEntityByID(entityID);
+        Entity e = player.getEntityWorld().getEntityByID(entityID);
         if (e != null)
         {
             try

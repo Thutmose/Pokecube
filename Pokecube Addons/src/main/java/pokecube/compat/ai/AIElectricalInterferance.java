@@ -77,7 +77,7 @@ public class AIElectricalInterferance extends EntityAIBase
 
 			mobLoc.set(pokemob).addTo(toFill);
 			
-			TileEntity tile = mobLoc.getTileEntity(entity.worldObj);
+			TileEntity tile = mobLoc.getTileEntity(entity.getEntityWorld());
 
 			if(tile instanceof IEnergyStorage)
 			{

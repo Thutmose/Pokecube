@@ -42,7 +42,7 @@ public class TeamEventsHandler
         {
             ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), player.dimension);
             if (!TeamManager.getInstance().isOwned(c)) return;
-            if (!player.worldObj.isRemote)
+            if (!player.getEntityWorld().isRemote)
             {
                 UserListOpsEntry userentry = ((EntityPlayerMP) player).mcServer.getPlayerList().getOppedPlayers()
                         .getEntry(player.getGameProfile());

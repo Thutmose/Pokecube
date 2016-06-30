@@ -58,7 +58,7 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
         {
             if (pokemob.getPokedexEntry().swims())
             {
-                List<EntityFishHook> list = leaper.worldObj.getEntitiesWithinAABB(EntityFishHook.class,
+                List<EntityFishHook> list = leaper.getEntityWorld().getEntitiesWithinAABB(EntityFishHook.class,
                         new AxisAlignedBB(leaper.posX, leaper.posY, leaper.posZ, leaper.posX + 1.0D, leaper.posY + 1.0D,
                                 leaper.posZ + 1.0D).expand(20D, 20D, 20D));
                 if (!list.isEmpty())

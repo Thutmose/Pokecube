@@ -93,12 +93,12 @@ public class Pokecube extends Item implements IPokecube
     {
         double x = 1;
         Entity entity = (Entity) mob;
-        if (entity.worldObj.getBlockState(entity.getPosition()).getBlock() == Blocks.WATER
+        if (entity.getEntityWorld().getBlockState(entity.getPosition()).getBlock() == Blocks.WATER
                 && mob.getType1() == PokeType.water)
         {
             x = 3.5;
         }
-        if (entity.worldObj.getBlockState(entity.getPosition()).getBlock() == Blocks.WATER
+        if (entity.getEntityWorld().getBlockState(entity.getPosition()).getBlock() == Blocks.WATER
                 && mob.getType2() == PokeType.water)
         {
             x = 3.5;
@@ -110,7 +110,7 @@ public class Pokecube extends Item implements IPokecube
     {
         double x = 1;
         Entity entity = (Entity) mob;
-        int light = entity.worldObj.getLight(entity.getPosition());
+        int light = entity.getEntityWorld().getLight(entity.getPosition());
         if (light < 5)
         {
             x = 3.5;

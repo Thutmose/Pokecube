@@ -109,11 +109,11 @@ public class PacketPokeAdv
                     Random rand = new Random();
                     for (int i = 0; i < 32; ++i)
                     {
-                        player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, v.x + 0.5,
+                        player.getEntityWorld().spawnParticle(EnumParticleTypes.PORTAL, v.x + 0.5,
                                 v.y + rand.nextDouble() * 2.0D, v.z + 0.5, rand.nextGaussian(), 0.0D,
                                 rand.nextGaussian());
                     }
-                    player.worldObj.playSound(v.x, v.y, v.z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS,
+                    player.getEntityWorld().playSound(v.x, v.y, v.z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS,
                             1, 1, false);
                 }
                 if (channel == MESSAGEGUIAFA && player.openContainer instanceof ContainerAFA)
@@ -208,7 +208,7 @@ public class PacketPokeAdv
                 }
                 if (channel == MESSAGEOPENBAG)
                 {
-                    player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj,
+                    player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.getEntityWorld(),
                             InventoryBag.getBag(player).getPage() + 1, 0, 0);
                 }
                 if (channel == MESSAGEBIOMESETTER)
@@ -348,7 +348,7 @@ public class PacketPokeAdv
             }
             type = new String(string2);
             int id = buffer.readInt();
-            EntityTrainer trainer = (EntityTrainer) player.worldObj.getEntityByID(id);
+            EntityTrainer trainer = (EntityTrainer) player.getEntityWorld().getEntityByID(id);
             boolean stationary = buffer.readBoolean();
             boolean male = buffer.readBoolean();
             boolean reset = buffer.readBoolean();
@@ -363,11 +363,11 @@ public class PacketPokeAdv
                     trainer.setPokemob(numbers[index], levels[index], index);
                 }
             }
-            if (!player.worldObj.isRemote)
+            if (!player.getEntityWorld().isRemote)
             {
                 if (reset)
                 {
-                    int maxXp = SpawnHandler.getSpawnXp(trainer.worldObj, Vector3.getNewVector().set(trainer),
+                    int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), Vector3.getNewVector().set(trainer),
                             Database.getEntry(1));
                     trainer.initTrainer(trainer.type, maxXp);
                     numbers = trainer.pokenumbers;

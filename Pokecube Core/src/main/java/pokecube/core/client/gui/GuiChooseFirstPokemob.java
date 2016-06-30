@@ -299,7 +299,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         if (pokemob == null)
         {
             pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(),
-                    entityPlayer.worldObj);
+                    entityPlayer.getEntityWorld());
 
             if (pokemob != null)
             {
@@ -373,7 +373,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
             glPushMatrix();
             glTranslatef(0.5F, 1.0f, 0.5F);
             glRotatef(-180, 1.0F, 0.0F, 0.0F);
-            glRotatef(entityPlayer.worldObj.getWorldTime() * 2, 0.0F, 1.0F, 0.0F);
+            glRotatef(entityPlayer.getEntityWorld().getWorldTime() * 2, 0.0F, 1.0F, 0.0F);
             glScalef(50f, 50f, 50f);
 
             GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);

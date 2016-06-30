@@ -255,7 +255,7 @@ public class MakeCommand extends CommandBase
                         mob.specificSpawnInit();
                         if (mob != null)
                         {
-                            ((Entity) mob).worldObj.spawnEntityInWorld((Entity) mob);
+                            ((Entity) mob).getEntityWorld().spawnEntityInWorld((Entity) mob);
                         }
                         text = TextFormatting.GREEN + "Spawned " + mob;
                         message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");

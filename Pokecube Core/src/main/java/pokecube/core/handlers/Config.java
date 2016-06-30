@@ -57,7 +57,8 @@ public class Config extends ConfigBase
     private static Config      defaults                   = null;
     // Misc Settings
     @Configure(category = misc)
-    public String[]            defaultStarts              = {};
+    public String[]            defaultStarters            = {};
+    public String[]            defaultStarts            = {};
     @Configure(category = misc)
     public boolean             contributorStarters        = true;
     @Configure(category = misc)
@@ -169,7 +170,7 @@ public class Config extends ConfigBase
     public boolean             useConfigForBerryLocations = false;
 
     @Configure(category = world)
-    public String[]            berryLocations             = {                                                          // @formatter:off
+    public String[]            berryLocations             = { // @formatter:off
             "cheri:TWplains,Bsavanna'Svillage", "chesto:TWforest,Bconiferous", "pecha:TWforest,Bconiferous",
             "rawst:TWmountain,Whills'TWnether'Scave", "aspear:TWforest,Bconiferous", "leppa:TWplains,Bsavanna",
             "oran:TWforest,Whills,Bconiferous'Sall", "persim:TWswamp", "lum:TWjungle,Bhills", "sitrus:TWjungle,Whills",
@@ -375,7 +376,7 @@ public class Config extends ConfigBase
                     JsonElement element = parser.parse(new InputStreamReader(in));
                     JsonElement element1 = element.getAsJsonObject().get("contributors");
                     JsonArray contribArray = element1.getAsJsonArray();
-                    List<String> defaults = Lists.newArrayList(defaultStarts);
+                    List<String> defaults = Lists.newArrayList(defaultStarters);
                     for (int i = 0; i < contribArray.size(); i++)
                     {
                         element1 = contribArray.get(i);

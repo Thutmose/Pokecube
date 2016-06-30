@@ -143,6 +143,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         if (nbt.hasKey("reward", 9))
         {
             NBTTagList nbttaglist = nbt.getTagList("reward", 10);
+            if (reward == null) reward = Lists.newArrayList();
             reward.clear();
             for (int i = 0; i < nbttaglist.tagCount(); ++i)
             {
@@ -184,14 +185,14 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         nbt.setInteger("friendly", friendlyCooldown);
         nbt.setInteger("nextSlot", nextSlot);
         nbttaglist = new NBTTagList();
-        for (int i = 0; i < this.reward.size(); ++i)
+        if (reward != null) for (int i = 0; i < this.reward.size(); ++i)
         {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
             if (this.reward.get(i) != null)
             {
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
                 this.reward.get(i).writeToNBT(nbttagcompound);
+                nbttaglist.appendTag(nbttagcompound);
             }
-            nbttaglist.appendTag(nbttagcompound);
         }
         nbt.setTag("reward", nbttaglist);
     }

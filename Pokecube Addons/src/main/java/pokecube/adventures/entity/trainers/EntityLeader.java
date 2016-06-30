@@ -160,9 +160,10 @@ public class EntityLeader extends EntityTrainer
 
         if (ItemBadge.isBadge(player.getHeldItemMainhand()))
         {
-            reward[0] = player.getHeldItemMainhand().copy();
+            reward.remove(0);
+            reward.set(0,player.getHeldItemMainhand().copy());
             player.addChatMessage(new TextComponentString("Badge set to " + this.getHeldItemOffhand()));
-            this.setHeldItem(EnumHand.OFF_HAND, reward[0]);
+            this.setHeldItem(EnumHand.OFF_HAND, reward.get(0));
         }
         return super.processInteract(player, hand, stack);
     }

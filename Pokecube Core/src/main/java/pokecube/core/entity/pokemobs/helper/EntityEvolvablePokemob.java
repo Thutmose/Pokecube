@@ -203,8 +203,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                         EntityPlayer player = null;
                         if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
                         if (delayed) ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
-                        else((EntityMovesPokemob) evo).oldLevel = data.level;
-                        // evo.levelUp(evo.getLevel());
+                        else((EntityMovesPokemob) evo).oldLevel = data.level - 1;
+                        evo.levelUp(evo.getLevel());
                         this.setDead();
                         if (player != null && !player.getEntityWorld().isRemote && !isShadow())
                         {

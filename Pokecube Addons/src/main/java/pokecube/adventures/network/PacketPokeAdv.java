@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
@@ -27,6 +28,8 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.database.Database;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
@@ -113,8 +116,8 @@ public class PacketPokeAdv
                                 v.y + rand.nextDouble() * 2.0D, v.z + 0.5, rand.nextGaussian(), 0.0D,
                                 rand.nextGaussian());
                     }
-                    player.getEntityWorld().playSound(v.x, v.y, v.z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS,
-                            1, 1, false);
+                    player.getEntityWorld().playSound(v.x, v.y, v.z, SoundEvents.ENTITY_ENDERMEN_TELEPORT,
+                            SoundCategory.BLOCKS, 1, 1, false);
                 }
                 if (channel == MESSAGEGUIAFA && player.openContainer instanceof ContainerAFA)
                 {
@@ -278,7 +281,6 @@ public class PacketPokeAdv
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
             buffer.writeNBTTagCompoundToBuffer(nbt);
-            // System.out.println(buffer.array().length);
         }
 
         public MessageServer(byte[] data)
@@ -370,8 +372,18 @@ public class PacketPokeAdv
                     int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), Vector3.getNewVector().set(trainer),
                             Database.getEntry(1));
                     trainer.initTrainer(trainer.type, maxXp);
-                    numbers = trainer.pokenumbers;
-                    levels = trainer.pokelevels;
+
+                    for (int i = 0; i < 6; i++)
+                    {
+                        ItemStack stack = trainer.getPokemob(i);
+                        if (stack == null) continue;
+                        IPokemob pokemob = PokecubeManager.itemToPokemob(stack, trainer.getEntityWorld());
+                        if (pokemob != null)
+                        {
+                            numbers[i] = pokemob.getPokedexNb();
+                            levels[i] = pokemob.getLevel();
+                        }
+                    }
                 }
                 PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
                 ret.writeByte(3);

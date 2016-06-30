@@ -21,7 +21,6 @@ import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
-import pokecube.adventures.entity.villager.EntityTrader;
 
 public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
 {
@@ -110,10 +109,6 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
                 }
             }
             return texture;
-        }
-        else if (villager instanceof EntityTrader)
-        {
-            texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + ((EntityTrader) villager).texture + ".png");
         }
         else
         {

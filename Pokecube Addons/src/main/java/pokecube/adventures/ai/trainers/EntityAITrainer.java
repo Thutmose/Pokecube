@@ -144,6 +144,11 @@ public class EntityAITrainer extends EntityAIBase
     {
         trainer.lowerCooldowns();
         if (!trainer.isEntityAlive()) return false;
+        if (trainer.getTarget() != null && trainer.getTarget().isDead)
+        {
+            trainer.setTarget(null);
+            return false;
+        }
         if (trainer.getTarget() != null || trainer.cooldown > 0) return true;
 
         Vector3 here = loc.set(trainer);
@@ -162,15 +167,7 @@ public class EntityAITrainer extends EntityAIBase
 
         if (target == null) return false;
 
-        boolean onCooldown = false;
-        for (int i = 0; i < trainer.attackCooldown.length; i++)
-        {
-            if (trainer.attackCooldown[i] > 0)
-            {
-                onCooldown = true;
-                break;
-            }
-        }
+        boolean onCooldown = trainer.attackCooldown > 0;
         if (onCooldown) return false;
 
         if (target instanceof EntityPlayer)
@@ -203,19 +200,14 @@ public class EntityAITrainer extends EntityAIBase
         {
             if (trainer.cooldown == Config.instance.trainerSendOutDelay - 1)
             {
-                IPokemob next = null;
-                for (int j = 0; j < 6; j++)
+                ItemStack nextStack = trainer.getNextPokemob();
+                if (nextStack != null)
                 {
-                    ItemStack i = trainer.pokecubes[j];
-                    if (i != null && trainer.attackCooldown[j] <= 0)
-                    {
-                        next = PokecubeManager.itemToPokemob(i, world);
-                        break;
-                    }
+                    IPokemob next = PokecubeManager.itemToPokemob(nextStack, world);
+                    if (next != null)
+                        trainer.getTarget().addChatMessage(new TextComponentTranslation("pokecube.trainer.next",
+                                trainer.getDisplayName(), next.getPokemonDisplayName()));
                 }
-                if (next != null)
-                    trainer.getTarget().addChatMessage(new TextComponentTranslation("pokecube.trainer.next",
-                            trainer.getDisplayName(), next.getPokemonDisplayName()));
             }
             return;
         }

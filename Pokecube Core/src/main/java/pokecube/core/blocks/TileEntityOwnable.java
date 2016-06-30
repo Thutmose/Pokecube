@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -21,6 +22,7 @@ public class TileEntityOwnable extends TileEntity implements IOwnableTE
     @Override
     public boolean canEdit(Entity editor)
     {
+        if(editor instanceof EntityPlayer && ((EntityPlayer)editor).capabilities.isCreativeMode) return true;
         if (placer == null || placer.compareTo(editor.getUniqueID()) != 0) return false;
         return true;
     }

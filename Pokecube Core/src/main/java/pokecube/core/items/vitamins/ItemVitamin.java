@@ -16,6 +16,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.ItemPokemobUseable;
+import pokecube.core.utils.Tools;
 
 public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
 {
@@ -37,32 +38,32 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
     {
         if (entity instanceof IPokemob)
         {
-            if (stack.isItemEqual(PokecubeItems.getStack("hpup")))
+            if (Tools.isSameStack(stack, PokecubeItems.getStack("hpup")))
             {
                 ((IPokemob) entity).addEVs(new byte[] { 10, 0, 0, 0, 0, 0 });
                 return true;
             }
-            if (stack.isItemEqual(PokecubeItems.getStack("protein")))
+            if (Tools.isSameStack(stack, PokecubeItems.getStack("protein")))
             {
                 ((IPokemob) entity).addEVs(new byte[] { 0, 10, 0, 0, 0, 0 });
                 return true;
             }
-            if (stack.isItemEqual(PokecubeItems.getStack("iron")))
+            if (Tools.isSameStack(stack, PokecubeItems.getStack("iron")))
             {
                 ((IPokemob) entity).addEVs(new byte[] { 0, 0, 10, 0, 0, 0 });
                 return true;
             }
-            if (stack.isItemEqual(PokecubeItems.getStack("calcium")))
+            if (Tools.isSameStack(stack, PokecubeItems.getStack("calcium")))
             {
                 ((IPokemob) entity).addEVs(new byte[] { 0, 0, 0, 10, 0, 0 });
                 return true;
             }
-            if (stack.isItemEqual(PokecubeItems.getStack("zinc")))
+            if (Tools.isSameStack(stack, PokecubeItems.getStack("zinc")))
             {
                 ((IPokemob) entity).addEVs(new byte[] { 0, 0, 0, 0, 10, 0 });
                 return true;
             }
-            if (stack.isItemEqual(PokecubeItems.getStack("carbos")))
+            if (Tools.isSameStack(stack, PokecubeItems.getStack("carbos")))
             {
                 ((IPokemob) entity).addEVs(new byte[] { 0, 0, 0, 0, 0, 10 });
                 return true;

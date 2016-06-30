@@ -69,6 +69,10 @@ pokemob.rename.deny=You cannot rename a traded Pokémob.
 
 pokemob.hatch=%1$s Hatched from the egg
 
+pokecube.tooltip.level=Level: %1$s
+pokecube.tooltip.health=HP: %1$s/%2$s
+pokecube.tooltip.xp=XP: %1$s/%2$s
+
 ability.adaptability.name=Adaptability
 ability.aerilate.name=Aerilate
 ability.aftermath.name=Aftermath

@@ -340,8 +340,6 @@ public class MovesUtils implements IMoveConstants
                             * Math.min(1, PokecubeMod.core.getConfig().ownedPlayerDamageMagic));
                     d1 = finalAttackStrength - d2;
                 }
-
-                System.out.println(d1 + " " + d2);
                 attacked.attackEntityFrom(source1, d1);
                 attacked.attackEntityFrom(source2, d2);
             }
@@ -776,16 +774,14 @@ public class MovesUtils implements IMoveConstants
         return (((level * 0.4F + 2F) * ATT * PWR) / (DEF * 50F) + 2);
     }
 
-    /** Computes the delay between two moves in a fight from speed stat.
+    /** Computes the delay between two moves in a fight from move and status effects.
      *
-     * @return the time to wait before reattack */
-    public static int getDelayBetweenAttacks(IPokemob attacker, String moveName)
+     * @return muliplier on attack delay */
+    public static float getDelayMultiplier(IPokemob attacker, String moveName)
     {
         float statusMultiplier = 1F;
         if (attacker.getStatus() == STATUS_PAR) statusMultiplier = 0.25F;
-
         Move_Base move = getMoveFromName(moveName);
-
         if (moveName == MOVE_NONE)
         {
             move = getMoveFromName(MOVE_TACKLE);
@@ -795,13 +791,8 @@ public class MovesUtils implements IMoveConstants
             move = getMoveFromName(MOVE_TACKLE);
         }
         float pp = move.getPP();
-
-        float ppFactor = pp / 40f;
-
-        int VIT = (int) Math.max(1, ppFactor * statusMultiplier * Tools.getStats(attacker)[5]);
-
-        int ret = (int) (100 / Math.sqrt(VIT));
-        return ret; // should be between around 10 and 80
+        float ppFactor = (float) Math.sqrt(pp / 40f);
+        return ppFactor * statusMultiplier;
     }
 
     public static String getLocalizedMove(String attack)

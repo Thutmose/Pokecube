@@ -15,15 +15,16 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -85,15 +86,20 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     /** Reduces damage, depending on armor */
     protected float applyArmorCalculations(DamageSource source, float damage)
     {
-        if (!source.isUnblockable())
+        if (!(source instanceof PokemobDamageSource))
         {
-            int armour = source instanceof PokemobDamageSource ? super.getTotalArmorValue() : this.getTotalArmorValue();
-            int i = 25 - armour;
-            float f1 = damage * i;
-            this.damageArmor(damage);
-            damage = f1 / 25.0F;
+            int armour = 0;
+            if (source.isMagicDamage())
+            {
+                armour = (int) ((getActualStats()[4]) / 12.5);
+            }
+            else
+            {
+                armour = this.getTotalArmorValue();
+            }
+            damage = CombatRules.getDamageAfterAbsorb(damage, (float) armour,
+                    (float) this.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
         }
-
         return damage;
     }
 
@@ -432,11 +438,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
      * InventoryPlayer.getTotalArmorValue */
     public int getTotalArmorValue()
     {
-        EnumDifficulty diff = worldObj.getDifficulty();
-        int comp = diff.compareTo(EnumDifficulty.NORMAL);
-        if (comp < 0) { return super.getTotalArmorValue(); }
-        int i = (getActualStats()[2] + getActualStats()[4]) / 25;
-        return i;
+        return (int) ((getActualStats()[2]) / 12.5);
     }
 
     @Override
@@ -803,16 +805,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         if (i >= 0) moveInfo.Exploding = true;
         dataManager.set(BOOMSTATEDW, Byte.valueOf((byte) i));
-    }
-
-    public void setHasAttacked(String move)
-    {
-        attackTime = MovesUtils.getDelayBetweenAttacks(this, move);
-    }
-
-    public void setLastAttackTick(int tick)
-    {
-        attackTime = tick;
     }
 
     @Override

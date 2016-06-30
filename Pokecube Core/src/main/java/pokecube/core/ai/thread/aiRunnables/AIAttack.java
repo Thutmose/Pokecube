@@ -48,14 +48,14 @@ public class AIAttack extends AIBase implements IAICombat
         this.setMutex(3);
     }
 
-    private void applyDelay(boolean distanced)
+    private void applyDelay(IPokemob attacker, String moveName, boolean distanced)
     {
         byte[] mods = ((IPokemob) attacker).getModifiers();
         int cd = PokecubeMod.core.getConfig().attackCooldown;
-        int def = distanced ? cd : cd / 2;
-        if (entityTarget instanceof EntityPlayer) def *= distanced ? 3 : 2;
+        if (entityTarget instanceof EntityPlayer) cd *= distanced ? 3 : 2;
         double accuracyMod = Tools.modifierToRatio(mods[6], true);
-        delayTime = (int) (def / accuracyMod);
+        double moveMod = MovesUtils.getDelayMultiplier(attacker, moveName);
+        delayTime = (int) (cd * moveMod / accuracyMod);
     }
 
     private void checkMateFight(IPokemob pokemob)
@@ -166,6 +166,9 @@ public class AIAttack extends AIBase implements IAICombat
         boolean distanced = false;
         boolean self = false;
         Move_Base move = null;
+        double dist = this.attacker.getDistanceSq(this.entityTarget.posX, this.entityTarget.posY,
+                this.entityTarget.posZ);
+        boolean canSee = dist < 1 || Vector3.isVisibleEntityFromEntity(attacker, entityTarget);
         if (attacker instanceof IPokemob)
         {
             IPokemob mob = (IPokemob) attacker;
@@ -200,7 +203,12 @@ public class AIAttack extends AIBase implements IAICombat
                     String s = moves[i];
                     if (s != null)
                     {
+                        Move_Base m = MovesUtils.getMoveFromName(s);
                         int temp = Tools.getPower(s, mob, entityTarget);
+                        if (dist > 5 && (m.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0)
+                        {
+                            temp *= 1.5;
+                        }
                         if (temp > max)
                         {
                             index = i;
@@ -223,10 +231,6 @@ public class AIAttack extends AIBase implements IAICombat
                 self = true;
             }
         }
-
-        double dist = this.attacker.getDistanceSq(this.entityTarget.posX, this.entityTarget.posY,
-                this.entityTarget.posZ);
-        boolean canSee = dist < 1 || Vector3.isVisibleEntityFromEntity(attacker, entityTarget);
 
         boolean inRange = false;
 
@@ -307,7 +311,7 @@ public class AIAttack extends AIBase implements IAICombat
         if (delayTime < -20)
         {
             shouldPath = true;
-            applyDelay(distanced);
+            applyDelay(pokemob, move.name, distanced);
             addTargetInfo(attacker, entityTarget);
             ((IPokemob) attacker).setPokemonAIState(IMoveConstants.ANGRY, true);
             targetLoc.set(entityTarget);
@@ -319,7 +323,7 @@ public class AIAttack extends AIBase implements IAICombat
             {
                 if (delayTime <= 0)
                 {
-                    applyDelay(distanced);
+                    applyDelay(pokemob, move.name, distanced);
                     delay = true;
                 }
                 shouldPath = false;

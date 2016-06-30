@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -78,14 +80,32 @@ public class Pokecube extends Item implements IPokecube
      * description */
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack item, EntityPlayer player, List<String> list, boolean boo)
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> list, boolean advanced)
     {
+        if (PokecubeManager.isFilled(item))
+        {
+            NBTTagCompound poketag = item.getTagCompound().getCompoundTag("Pokemob");
+            IPokemob pokemob = PokecubeManager.itemToPokemob(item, player.getEntityWorld());
+            float health = poketag.getFloat("Health");
+            float maxHealth = ((EntityLiving) pokemob).getMaxHealth();
+            int lvlexp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel());
+            int exp = pokemob.getExp() - lvlexp;
+            int neededexp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() + 1) - lvlexp;
+
+            list.add(I18n.format("pokecube.tooltip.level", pokemob.getLevel()));
+            list.add(I18n.format("pokecube.tooltip.health", health, maxHealth));
+            list.add(I18n.format("pokecube.tooltip.xp", exp, neededexp));
+
+            if (GuiScreen.isShiftKeyDown())
+            {
+
+            }
+        }
+
         if (item.hasTagCompound())
         {
             NBTTagCompound nbttagcompound = PokecubeManager.getSealTag(item);
-
             displayInformation(nbttagcompound, list);
-
         }
     }
 

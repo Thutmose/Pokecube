@@ -10,7 +10,6 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -35,6 +34,7 @@ public class EntityLeader extends EntityTrainer
             long time = nbt.getLong("time");
             return new DefeatEntry(defeater, time);
         }
+
         final String defeater;
 
         final long   defeatTime;
@@ -131,19 +131,25 @@ public class EntityLeader extends EntityTrainer
     {
         if (hasDefeated(defeater)) return;
         defeaters.add(new DefeatEntry(defeater.getUniqueID().toString(), worldObj.getTotalWorldTime()));
-        for (int i = 1; i < 5; i++)
+        if (reward != null && defeater instanceof EntityPlayer)
         {
-            EntityEquipmentSlot slotIn = EntityEquipmentSlot.values()[i];
-            ItemStack stack = getItemStackFromSlot(slotIn);
-            if (stack != null) this.entityDropItem(stack.copy(), 0.5f);
-        }
-        if (reward != null)
-        {
+            EntityPlayer player = (EntityPlayer) defeater;
             for (ItemStack i : reward)
             {
                 if (i == null || i.getItem() == null) continue;
-                EntityItem item = defeater.entityDropItem(i.copy(), 0.5f);
-                item.setPickupDelay(0);
+                if (!player.inventory.addItemStackToInventory(i.copy()))
+                {
+                    EntityItem item = defeater.entityDropItem(i.copy(), 0.5f);
+                    if (item == null)
+                    {
+                        System.out.println("Test" + item + " " + i);
+                        continue;
+                    }
+                    item.setPickupDelay(0);
+                }
+                ITextComponent text = new TextComponentTranslation("pokecube.trainer.drop", this.getDisplayName(),
+                        i.getDisplayName());
+                defeater.addChatMessage(text);
             }
         }
         if (defeater != null)
@@ -161,7 +167,7 @@ public class EntityLeader extends EntityTrainer
         if (ItemBadge.isBadge(player.getHeldItemMainhand()))
         {
             reward.remove(0);
-            reward.set(0,player.getHeldItemMainhand().copy());
+            reward.set(0, player.getHeldItemMainhand().copy());
             player.addChatMessage(new TextComponentString("Badge set to " + this.getHeldItemOffhand()));
             this.setHeldItem(EnumHand.OFF_HAND, reward.get(0));
         }

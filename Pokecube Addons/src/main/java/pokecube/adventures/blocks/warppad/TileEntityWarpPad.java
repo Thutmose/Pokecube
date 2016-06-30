@@ -34,6 +34,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
     public Vector4          link;
     private Vector3         linkPos;
     public Vector3          here;
+    boolean                 admin    = false;
     boolean                 noEnergy = false;
 
     protected EnergyStorage storage  = new EnergyStorage(32000);
@@ -167,6 +168,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         super.readFromNBT(tagCompound);
         link = new Vector4(tagCompound.getCompoundTag("link"));
         noEnergy = tagCompound.getBoolean("noEnergy");
+        admin = tagCompound.getBoolean("admin");
         storage.readFromNBT(tagCompound);
     }
 
@@ -210,6 +212,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
             tagCompound.setTag("link", linkTag);
         }
         tagCompound.setBoolean("noEnergy", noEnergy);
+        tagCompound.setBoolean("admin", admin);
         return storage.writeToNBT(tagCompound);
     }
 }

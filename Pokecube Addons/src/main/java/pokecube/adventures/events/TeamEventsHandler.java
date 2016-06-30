@@ -8,7 +8,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.UserListOpsEntry;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -23,6 +25,7 @@ import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.utils.ChunkCoordinate;
+import thut.api.block.IOwnableTE;
 import thut.api.maths.Vector3;
 
 public class TeamEventsHandler
@@ -38,6 +41,17 @@ public class TeamEventsHandler
         // TODO interface with
         // forge permissions API
         // here as well
+        TileEntity tile = evt.getWorld().getTileEntity(evt.getPos());
+        if (tile instanceof IOwnableTE)
+        {
+            IOwnableTE te = (IOwnableTE) tile;
+            NBTTagCompound tag = tile.writeToNBT(new NBTTagCompound());
+            if (tag.hasKey("admin") && tag.getBoolean("admin") && !te.canEdit(player))
+            {
+                evt.setCanceled(true);
+                return;
+            }
+        }
         if (player != null && player.getTeam() != null)
         {
             ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), player.dimension);
@@ -66,25 +80,40 @@ public class TeamEventsHandler
     @SubscribeEvent
     public void ExplosionEvent(ExplosionEvent.Detonate evt)
     {
-        if (!TeamManager.denyBlasts) return;
-        int dimension = evt.getWorld().provider.getDimension();
         List<BlockPos> toRemove = Lists.newArrayList();
         for (BlockPos pos : evt.getAffectedBlocks())
         {
-            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(pos, dimension);
-            String owner = TeamManager.getInstance().getLandOwner(c);
-            if (evt.getExplosion().getExplosivePlacedBy() instanceof EntityPlayer)
+            TileEntity tile = evt.getWorld().getTileEntity(pos);
+            if (tile instanceof IOwnableTE)
             {
-                String team = evt.getWorld().getScoreboard()
-                        .getPlayersTeam(evt.getExplosion().getExplosivePlacedBy().getName()).getRegisteredName();
-                if (owner.equals(team))
+                NBTTagCompound tag = tile.writeToNBT(new NBTTagCompound());
+                if (tag.hasKey("admin") && tag.getBoolean("admin"))
                 {
-                    owner = null;
+                    toRemove.add(pos);
                 }
             }
-            if (owner != null) continue;
-            toRemove.add(pos);
         }
+        if (TeamManager.denyBlasts)
+        {
+            int dimension = evt.getWorld().provider.getDimension();
+            for (BlockPos pos : evt.getAffectedBlocks())
+            {
+                ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(pos, dimension);
+                String owner = TeamManager.getInstance().getLandOwner(c);
+                if (evt.getExplosion().getExplosivePlacedBy() instanceof EntityPlayer)
+                {
+                    String team = evt.getWorld().getScoreboard()
+                            .getPlayersTeam(evt.getExplosion().getExplosivePlacedBy().getName()).getRegisteredName();
+                    if (owner.equals(team))
+                    {
+                        owner = null;
+                    }
+                }
+                if (owner != null) continue;
+                toRemove.add(pos);
+            }
+        }
+        evt.getAffectedBlocks().removeAll(toRemove);
     }
 
     /** Uses player interact here to also prevent opening of inventories.

@@ -1,12 +1,5 @@
 package pokecube.core.client.render.entity;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-
 import java.awt.Color;
 import java.util.Random;
 
@@ -113,14 +106,14 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 worldrenderer.pos(0.0D, 0.0D, 0.0D)
                         .color(col1.getRed(), col1.getGreen(), col1.getBlue(), (int) (255.0F * (1.0F - f1)))
                         .endVertex();
-                worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3)
-                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-                worldrenderer.pos(0.866D * f3, f4, -0.5F * f3)
-                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-                worldrenderer.pos(0.0D, f4, 1.0F * f3)
-                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-                worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3)
-                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+                worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
+                        .endVertex();
+                worldrenderer.pos(0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
+                        .endVertex();
+                worldrenderer.pos(0.0D, f4, 1.0F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
+                        .endVertex();
+                worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
+                        .endVertex();
                 tessellator.draw();
             }
             GL11.glPopMatrix();
@@ -161,8 +154,8 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 x = rand.nextDouble() - 0.5;
                 y = rand.nextDouble();
                 z = rand.nextDouble() - 0.5;
-                entity.getEntityWorld().spawnParticle(EnumParticleTypes.FLAME, entity.posX, entity.posY, entity.posZ, x / 10,
-                        y / 10, z / 10);
+                entity.getEntityWorld().spawnParticle(EnumParticleTypes.FLAME, entity.posX, entity.posY, entity.posZ,
+                        x / 10, y / 10, z / 10);
             }
             // *
             if (sealTag.getBoolean("Leaves"))
@@ -235,14 +228,13 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             worldrenderer.begin(6, DefaultVertexFormats.POSITION_COLOR);
             worldrenderer.pos(0.0D, 0.0D, 0.0D)
                     .color(col1.getRed(), col1.getGreen(), col1.getBlue(), (int) (255.0F * (1.0F - f1))).endVertex();
-            worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3)
-                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-            worldrenderer.pos(0.866D * f3, f4, -0.5F * f3)
-                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-            worldrenderer.pos(0.0D, f4, 1.0F * f3)
-                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
-            worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3)
-                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
+                    .endVertex();
+            worldrenderer.pos(0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
+                    .endVertex();
+            worldrenderer.pos(0.0D, f4, 1.0F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            worldrenderer.pos(-0.866D * f3, f4, -0.5F * f3).color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0)
+                    .endVertex();
             tessellator.draw();
         }
 
@@ -309,21 +301,18 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 
     protected float     scale;
 
+    boolean             blend;
+
+    boolean             normalize;
+
+    int                 src;
+    int                 dst;
+
     protected ModelBase modelStatus;
 
     Vector3             v = Vector3.getNewVector();
 
-    public RenderPokemob(ModelBase modelbase, float f, float shadowSize)
-    {
-        this(Minecraft.getMinecraft().getRenderManager(), modelbase, shadowSize, 1.0F);
-    }
-
     public RenderPokemob(RenderManager m, ModelBase modelbase, float shadowSize)
-    {
-        this(m, modelbase, shadowSize, 1.0F);
-    }
-
-    public RenderPokemob(RenderManager m, ModelBase modelbase, float shadowSize, float scale)
     {
         super(m, modelbase, shadowSize);
         try
@@ -334,8 +323,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         {
             // e.printStackTrace();
         }
-
-        this.scale = scale;
     }
 
     /** Returns an ARGB int color back. Args: entityLiving, lightBrightness,
@@ -365,50 +352,37 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         return texture;
     }
 
-    public float getScale()
+    protected void postRenderCallback()
     {
-        return scale;
+        // Reset to original state. This fixes changes to guis when rendered in
+        // them.
+        if (!normalize) GL11.glDisable(GL11.GL_NORMALIZE);
+        if (!blend) GL11.glDisable(GL11.GL_BLEND);
+        GL11.glBlendFunc(src, dst);
     }
 
     @Override
     protected void preRenderCallback(T entity, float f)
     {
-        preRenderScale(entity, f);
-        GL11.glEnable(GL11.GL_NORMALIZE);
-        GL11.glEnable(GL11.GL_BLEND);
+        blend = GL11.glGetBoolean(GL11.GL_BLEND);
+        normalize = GL11.glGetBoolean(GL11.GL_NORMALIZE);
+        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
+        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
+        if (!normalize) GL11.glEnable(GL11.GL_NORMALIZE);
+        if (!blend) GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    protected void preRenderScale(Entity entity, float f)
-    {
-        GL11.glScalef(scale, scale, scale);
     }
 
     @Override
     protected void renderModel(T entity, float walktime, float walkspeed, float time, float rotationYaw,
-            float rotationPitch, float scale)
+            float rotationPitch, float partialTicks)
     {
         GL11.glPushMatrix();
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        preRenderCallback(entity, partialTicks);
         if (entity instanceof IPokemob)
         {
             IPokemob mob = (IPokemob) entity;
-            float red = 1;
-            float green = 1;
-            float blue = 1;
-            float alpha = 1;
-            if (mob instanceof IMobColourable)
-            {
-                IMobColourable colour = (IMobColourable) mob;
-                red = colour.getRGBA()[0];
-                green = colour.getRGBA()[1];
-                blue = colour.getRGBA()[2];
-                alpha = colour.getRGBA()[3];
-            }
             PokedexEntry entry = mob.getPokedexEntry();
-
             if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IMoveConstants.SHOULDER)
                     && ((Entity) mob).getRidingEntity() != null)
             {
@@ -421,32 +395,30 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 GL11.glTranslated(look.x, ((Entity) mob).height + 1 - look.y, look.z);
             }
             int ticks = ((Entity) mob).ticksExisted;
-            if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5 && !(time == GuiPokedex.POKEDEX_RENDER))
+            if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5 && !(partialTicks <= 1))
             {
                 float max = 5;// ;
                 float s = (ticks) / max;
                 GL11.glScalef(s, s, s);
             }
-            GL11.glColor4f(red, green, blue, alpha);
         }
         if ((time != GuiPokedex.POKEDEX_RENDER))
         {
-            renderEvolution((IPokemob) entity, scale);
-            renderExitCube((IPokemob) entity, scale);
+            renderEvolution((IPokemob) entity, partialTicks);
+            renderExitCube((IPokemob) entity, partialTicks);
         }
         if (time == GuiPokedex.POKEDEX_RENDER)
         {
             long t = Minecraft.getMinecraft().theWorld.getWorldTime() % 1000;
-            super.renderModel(entity, t / 3f, 0.6f, t, rotationYaw, rotationPitch, scale);
+            super.renderModel(entity, t / 3f, 0.6f, t, rotationYaw, rotationPitch, partialTicks);
         }
         else if (((IPokemob) entity).getStatus() == IMoveConstants.STATUS_SLP
                 || ((IPokemob) entity).getPokemonAIState(IMoveConstants.SLEEPING))
         {
-            super.renderModel(entity, 0, 0, 0, -40, 19, scale);
+            super.renderModel(entity, 0, 0, 0, -40, 19, partialTicks);
         }
-        else super.renderModel(entity, walktime, walkspeed, time, rotationYaw, rotationPitch, scale);
-
-        glDisable(GL_BLEND);
+        else super.renderModel(entity, walktime, walkspeed, time, rotationYaw, rotationPitch, partialTicks);
+        this.postRenderCallback();
         GL11.glPopMatrix();
 
     }

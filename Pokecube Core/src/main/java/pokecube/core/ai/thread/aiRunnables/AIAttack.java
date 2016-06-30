@@ -237,9 +237,9 @@ public class AIAttack extends AIBase implements IAICombat
         else if (entityTarget instanceof IPokemob)
         {
             IPokemob pokemob2 = (IPokemob) entityTarget;
-            float attackerLength = pokemob.getPokedexEntry().length * pokemob2.getSize();
-            float attackerHeight = pokemob.getPokedexEntry().height * pokemob2.getSize();
-            float attackerWidth = pokemob.getPokedexEntry().height * pokemob2.getSize();
+            float attackerLength = pokemob.getPokedexEntry().length * pokemob.getSize() + 0.5f;
+            float attackerHeight = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
+            float attackerWidth = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
 
             float attackedLength = pokemob2.getPokedexEntry().length * pokemob2.getSize();
             float attackedHeight = pokemob2.getPokedexEntry().height * pokemob2.getSize();
@@ -267,8 +267,22 @@ public class AIAttack extends AIBase implements IAICombat
         }
         else
         {
-            targetBox.set(entityTarget.getEntityBoundingBox());
-            inRange = attackerBox.intersects(targetBox);
+            float attackerLength = pokemob.getPokedexEntry().length * pokemob.getSize() + 0.5f;
+            float attackerHeight = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
+            float attackerWidth = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
+
+            float attackedLength = entityTarget.width;
+            float attackedHeight = entityTarget.height;
+            float attackedWidth = entityTarget.width;
+
+            float dx = (float) (attacker.posX - entityTarget.posX);
+            float dz = (float) (attacker.posZ - entityTarget.posZ);
+            float dy = (float) (attacker.posY - entityTarget.posY);
+
+            AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
+            AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
+                    dz + attackedLength);
+            inRange = box.intersectsWith(box2);
         }
         if (self)
         {

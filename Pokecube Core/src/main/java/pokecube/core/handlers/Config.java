@@ -58,7 +58,7 @@ public class Config extends ConfigBase
     // Misc Settings
     @Configure(category = misc)
     public String[]            defaultStarters            = {};
-    public String[]            defaultStarts            = {};
+    public String[]            defaultStarts              = {};
     @Configure(category = misc)
     public boolean             contributorStarters        = true;
     @Configure(category = misc)
@@ -116,10 +116,16 @@ public class Config extends ConfigBase
     public int                 maxOwnedPlayerDamage       = 10;
     @Configure(category = mobAI)
     /** Capped damage to players by pokémobs */
-    public int                 wildPlayerDamageScale      = 100;
+    public double              wildPlayerDamageRatio      = 1;
     @Configure(category = mobAI)
     /** Capped damage to players by pokémobs */
-    public int                 ownedPlayerDamageScale     = 100;
+    public double              wildPlayerDamageMagic      = 0.1;
+    @Configure(category = mobAI)
+    /** Capped damage to players by pokémobs */
+    public double              ownedPlayerDamageRatio     = 1;
+    @Configure(category = mobAI)
+    /** Capped damage to players by pokémobs */
+    public double              ownedPlayerDamageMagic     = 0.1;
     @Configure(category = mobAI)
     /** Warning time before a wild pokémob attacks a player */
     public int                 pokemobagressticks         = 100;
@@ -170,7 +176,7 @@ public class Config extends ConfigBase
     public boolean             useConfigForBerryLocations = false;
 
     @Configure(category = world)
-    public String[]            berryLocations             = { // @formatter:off
+    public String[]            berryLocations             = {                                                          // @formatter:off
             "cheri:TWplains,Bsavanna'Svillage", "chesto:TWforest,Bconiferous", "pecha:TWforest,Bconiferous",
             "rawst:TWmountain,Whills'TWnether'Scave", "aspear:TWforest,Bconiferous", "leppa:TWplains,Bsavanna",
             "oran:TWforest,Whills,Bconiferous'Sall", "persim:TWswamp", "lum:TWjungle,Bhills", "sitrus:TWjungle,Whills",

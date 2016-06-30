@@ -242,6 +242,10 @@ public class Pokecube extends Item implements IPokecube
             if (used)
             {
                 stack.splitStack(1);
+                if (stack.stackSize <= 0 && player.getActiveItemStack() == stack)
+                {
+                    player.setHeldItem(player.getActiveHand(), null);
+                }
             }
         }
     }

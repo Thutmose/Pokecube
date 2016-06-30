@@ -326,7 +326,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (transformedTo instanceof IPokemob && transformedTo != this)
         {
             IPokemob to = (IPokemob) transformedTo;
-            return to.getMove(index);
+            if (to.getTransformedTo() != this) return to.getMove(index);
         }
 
         String[] moves = getMoves();

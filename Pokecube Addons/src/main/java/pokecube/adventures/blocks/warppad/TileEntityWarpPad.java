@@ -85,16 +85,6 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
 
-    /** Overriden in a sign to provide the text. */
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
     /** Called when you receive a TileEntityData packet for the location this
      * TileEntity is currently in. On the client, the NetworkManager will always
      * be the remote server. On the server, it will be whomever is responsible

@@ -303,24 +303,24 @@ public class EntityTrainer extends EntityHasPokemobs
 
     public void onDefeated(Entity defeater)
     {
-        for (int i = 1; i < 5; i++)
+        if (reward != null && defeater instanceof EntityPlayer)
         {
-            EntityEquipmentSlot slotIn = EntityEquipmentSlot.values()[i];
-            ItemStack stack = getItemStackFromSlot(slotIn);
-            if (stack != null) this.entityDropItem(stack.copy(), 0.5f);
-        }
-        if (reward != null)
-        {
+            EntityPlayer player = (EntityPlayer) defeater;
             for (ItemStack i : reward)
             {
                 if (i == null || i.getItem() == null) continue;
-                EntityItem item = defeater.entityDropItem(i.copy(), 0.5f);
-                if (item == null)
+                if(!player.inventory.addItemStackToInventory(i.copy()))
                 {
-                    System.out.println("Test" + item + " " + i);
-                    continue;
+                    EntityItem item = defeater.entityDropItem(i.copy(), 0.5f);
+                    if (item == null)
+                    {
+                        System.out.println("Test" + item + " " + i);
+                        continue;
+                    }
+                    item.setPickupDelay(0);
                 }
-                item.setPickupDelay(0);
+                ITextComponent text = new TextComponentTranslation("pokecube.trainer.drop", this.getDisplayName(), i.getDisplayName());
+                defeater.addChatMessage(text);
             }
         }
         if (defeater != null)

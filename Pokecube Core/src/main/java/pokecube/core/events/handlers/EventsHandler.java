@@ -127,7 +127,6 @@ public class EventsHandler
                             PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase()));
                     buffer.writeInt(0);
                 }
-                System.out.println("Test " + player.ticksExisted);
                 packet = new PokecubeClientPacket(buffer);
                 PokecubePacketHandler.sendToClient(packet, event.player);
                 MinecraftForge.EVENT_BUS.unregister(this);

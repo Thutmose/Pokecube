@@ -141,7 +141,7 @@ public class EntityPokemobEgg extends EntityLiving
     {
         IPokemob pokemob = ItemPokemobEgg.getFakePokemob(worldObj, here, getHeldItemMainhand());
         if (pokemob == null) return null;
-        ((Entity) pokemob).worldObj = worldObj;
+        ((Entity) pokemob).setWorld(worldObj);
         return pokemob;
     }
 

@@ -59,7 +59,7 @@ public class ItemBag extends Item
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
-        if (!world.isRemote) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj,
+        if (!world.isRemote) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.getEntityWorld(),
                 InventoryBag.getBag(player).getPage() + 1, 0, 0);
         return super.onItemRightClick(itemstack, world, player, hand);
     }

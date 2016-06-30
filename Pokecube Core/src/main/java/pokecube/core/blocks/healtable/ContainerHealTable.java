@@ -86,7 +86,7 @@ public class ContainerHealTable extends Container implements IHealer
     {
         super.onContainerClosed(player);
 
-        if (!player.worldObj.isRemote)
+        if (!player.getEntityWorld().isRemote)
         {
             for (int var2 = 0; var2 < this.inventoryHealTable.getSizeInventory(); ++var2)
             {

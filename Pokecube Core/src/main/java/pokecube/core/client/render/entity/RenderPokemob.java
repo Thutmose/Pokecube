@@ -153,7 +153,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 x = rand.nextDouble() - 0.5;
                 y = rand.nextDouble();
                 z = rand.nextDouble() - 0.5;
-                entity.worldObj.spawnParticle(EnumParticleTypes.DRIP_WATER, entity.posX + x, entity.posY + y,
+                entity.getEntityWorld().spawnParticle(EnumParticleTypes.DRIP_WATER, entity.posX + x, entity.posY + y,
                         entity.posZ + z, 0d, 0d, 0d);
             }
             if (sealTag.getBoolean("Flames"))
@@ -161,7 +161,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 x = rand.nextDouble() - 0.5;
                 y = rand.nextDouble();
                 z = rand.nextDouble() - 0.5;
-                entity.worldObj.spawnParticle(EnumParticleTypes.FLAME, entity.posX, entity.posY, entity.posZ, x / 10,
+                entity.getEntityWorld().spawnParticle(EnumParticleTypes.FLAME, entity.posX, entity.posY, entity.posZ, x / 10,
                         y / 10, z / 10);
             }
             // *

@@ -48,7 +48,7 @@ public class ParticleBeam extends MoveAnimationBase
         GL11.glPushAttrib(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_BLEND);
 
-        initColour((long) (factor * 1000 + info.attacker.worldObj.getWorldTime()) * 20, partialTick, info.move);
+        initColour((long) (factor * 1000 + info.attacker.getEntityWorld().getWorldTime()) * 20, partialTick, info.move);
         float alpha = ((rgba >> 24) & 255) / 255f;
         float red = ((rgba >> 16) & 255) / 255f;
         float green = ((rgba >> 8) & 255) / 255f;

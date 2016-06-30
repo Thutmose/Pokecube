@@ -219,7 +219,7 @@ public class Tools
         Vec3d vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
         Entity pointedEntity = null;
         float f = 1.0F;
-        List<Entity> list = entity.worldObj
+        List<Entity> list = entity.getEntityWorld()
                 .getEntitiesInAABBexcluding(
                         entity, entity.getEntityBoundingBox()
                                 .addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand(f, f, f),
@@ -400,7 +400,7 @@ public class Tools
 
     public static boolean isAnyPlayerInRange(double rangeHorizontal, double rangeVertical, Entity entity)
     {
-        return isAnyPlayerInRange(rangeHorizontal, rangeVertical, entity.worldObj, Vector3.getNewVector().set(entity));
+        return isAnyPlayerInRange(rangeHorizontal, rangeVertical, entity.getEntityWorld(), Vector3.getNewVector().set(entity));
     }
 
     public static boolean isAnyPlayerInRange(double rangeHorizontal, double rangeVertical, World world,
@@ -426,7 +426,7 @@ public class Tools
 
     public static boolean isAnyPlayerInRange(double range, Entity entity)
     {
-        return entity.worldObj.isAnyPlayerWithinRangeAt(entity.posX, entity.posY, entity.posZ, range);
+        return entity.getEntityWorld().isAnyPlayerWithinRangeAt(entity.posX, entity.posY, entity.posZ, range);
     }
 
     public static boolean isSameStack(ItemStack a, ItemStack b)

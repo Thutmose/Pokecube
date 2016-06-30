@@ -265,7 +265,7 @@ public class AIHungry extends AIBase
         v.set(entity);
         if (hungrymob.isPhototroph())
         {
-            if (entity.worldObj.provider.isDaytime() && v.canSeeSky(world))
+            if (entity.getEntityWorld().provider.isDaytime() && v.canSeeSky(world))
             {
                 hungrymob.setHungerTime(0);
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);

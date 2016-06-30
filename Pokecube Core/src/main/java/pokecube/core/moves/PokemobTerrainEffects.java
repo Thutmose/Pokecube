@@ -189,7 +189,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
 
     private void dropDurations(Entity e)
     {
-        long time = e.worldObj.getTotalWorldTime();
+        long time = e.getEntityWorld().getTotalWorldTime();
         boolean send = false;
         for (int i = 0; i < effects.length; i++)
         {
@@ -222,7 +222,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
                 }
                 PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
                 Vector3 v = Vector3.getNewVector().set(e);
-                PokecubePacketHandler.sendToAllNear(packet, v, e.worldObj.provider.getDimension(), 64);
+                PokecubePacketHandler.sendToAllNear(packet, v, e.getEntityWorld().provider.getDimension(), 64);
             }
         }
     }

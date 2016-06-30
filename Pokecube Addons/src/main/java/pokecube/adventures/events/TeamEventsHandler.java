@@ -42,7 +42,7 @@ public class TeamEventsHandler
         {
             ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), player.dimension);
             if (!TeamManager.getInstance().isOwned(c)) return;
-            if (!player.worldObj.isRemote)
+            if (!player.getEntityWorld().isRemote)
             {
                 UserListOpsEntry userentry = ((EntityPlayerMP) player).mcServer.getPlayerList().getOppedPlayers()
                         .getEntry(player.getGameProfile());
@@ -60,6 +60,30 @@ public class TeamEventsHandler
             }
             ChunkCoordinate block = new ChunkCoordinate(evt.getPos(), evt.getWorld().provider.getDimension());
             TeamManager.getInstance().unsetPublic(block);
+        }
+    }
+
+    @SubscribeEvent
+    public void ExplosionEvent(ExplosionEvent.Detonate evt)
+    {
+        if (!TeamManager.denyBlasts) return;
+        int dimension = evt.getWorld().provider.getDimension();
+        List<BlockPos> toRemove = Lists.newArrayList();
+        for (BlockPos pos : evt.getAffectedBlocks())
+        {
+            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(pos, dimension);
+            String owner = TeamManager.getInstance().getLandOwner(c);
+            if (evt.getExplosion().getExplosivePlacedBy() instanceof EntityPlayer)
+            {
+                String team = evt.getWorld().getScoreboard()
+                        .getPlayersTeam(evt.getExplosion().getExplosivePlacedBy().getName()).getRegisteredName();
+                if (owner.equals(team))
+                {
+                    owner = null;
+                }
+            }
+            if (owner != null) continue;
+            toRemove.add(pos);
         }
     }
 

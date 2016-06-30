@@ -347,14 +347,14 @@ public class PCPacketHandler
 
         byte message = Byte.valueOf(args[0].trim());
 
-        if (message == 9 && player.worldObj.isRemote)
+        if (message == 9 && player.getEntityWorld().isRemote)
         {
 
             int x = Integer.valueOf(args[1].trim());
             int y = Integer.valueOf(args[2].trim());
             int z = Integer.valueOf(args[3].trim());
 
-            TileEntityTradingTable tile = (TileEntityTradingTable) player.worldObj.getTileEntity(new BlockPos(x, y, z));
+            TileEntityTradingTable tile = (TileEntityTradingTable) player.getEntityWorld().getTileEntity(new BlockPos(x, y, z));
             if (tile == null) return;
 
             int id;
@@ -362,7 +362,7 @@ public class PCPacketHandler
             {
                 id = Integer.valueOf(args[4].trim());
 
-                Entity player2 = player.worldObj.getEntityByID(id);
+                Entity player2 = player.getEntityWorld().getEntityByID(id);
 
                 if (args.length == 6)
                 {
@@ -413,7 +413,7 @@ public class PCPacketHandler
                 int x = Integer.valueOf(args[1].trim());
                 int y = Integer.valueOf(args[2].trim());
                 int z = Integer.valueOf(args[3].trim());
-                TileEntityTradingTable tile = (TileEntityTradingTable) sender.worldObj
+                TileEntityTradingTable tile = (TileEntityTradingTable) sender.getEntityWorld()
                         .getTileEntity(new BlockPos(x, y, z));
                 if (tile == null) return;
                 tile.addPlayer(null);

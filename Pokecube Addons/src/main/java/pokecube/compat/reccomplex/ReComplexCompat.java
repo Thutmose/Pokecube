@@ -55,7 +55,7 @@ public class ReComplexCompat {
 //							v.tasks.addTask(2,ai = new GuardAI(v, new ChunkCoordinates(pos.intX(), pos.intY(), pos.intZ()),
 //									1.0f, 48.0f, time, false));
 //							GuardAIProperties props = new GuardAIProperties();
-//							props.init(v, v.worldObj);
+//							props.init(v, v.getEntityWorld());
 //							NBTTagCompound nbt = new NBTTagCompound();
 //							v.writeToNBT(nbt);
 //							props.saveNBTData(nbt);
@@ -110,7 +110,7 @@ public class ReComplexCompat {
 ////		else
 //		{
 //			Vector3 loc = Vector3.getNewVector().set(trainer);
-//			int maxXp = SpawnHandler.getSpawnXp( trainer.worldObj, loc, Database.getEntry(1));
+//			int maxXp = SpawnHandler.getSpawnXp( trainer.getEntityWorld(), loc, Database.getEntry(1));
 //			trainer.initTrainer(trainer.getType(), maxXp);
 //			System.out.println("Randomized "+trainer.name);
 //			loc.freeVectorFromPool();

@@ -43,7 +43,7 @@ public class TileRequestPacket extends AbstractPacket {
 
 	@Override
 	public void handleServerSide(EntityPlayerMP player) {
-		TileEntity te = player.worldObj.getTileEntity(pos);
+		TileEntity te = player.getEntityWorld().getTileEntity(pos);
 		if (te != null) {
 			NBTTagCompound tag = new NBTTagCompound();
 			te.writeToNBT(tag);

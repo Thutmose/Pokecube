@@ -166,7 +166,7 @@ public class Commands implements ICommand
                         IPokemob e = (IPokemob) o;
                         if (!all || e.getPokedexEntry() == Database.getEntry(name))
                         {
-                            if (((Entity) e).worldObj.getClosestPlayerToEntity((Entity) e,
+                            if (((Entity) e).getEntityWorld().getClosestPlayerToEntity((Entity) e,
                                     PokecubeMod.core.getConfig().maxSpawnRadius) == null
                                     && !e.getPokemonAIState(IMoveConstants.TAMED))
                             {

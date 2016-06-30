@@ -24,7 +24,7 @@ public class ItemModelReloader extends Item
             EnumHand hand)
     {
         if (!world.isRemote) return new ActionResult<ItemStack>(EnumActionResult.PASS, itemstack);
-        player.openGui(ModPokecubeML.instance, 0, player.worldObj, 0, 0, 0);
+        player.openGui(ModPokecubeML.instance, 0, player.getEntityWorld(), 0, 0, 0);
         return new ActionResult<ItemStack>(EnumActionResult.PASS, itemstack);
     }
 }

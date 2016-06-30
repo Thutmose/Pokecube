@@ -82,10 +82,10 @@ public class ParticleHandler
             {
                 IParticle particle = this.particles.get(e);
 
-                if (particle.lastTick() != event.getEntity().worldObj.getTotalWorldTime())
+                if (particle.lastTick() != event.getEntity().getEntityWorld().getTotalWorldTime())
                 {
                     particle.setDuration(particle.getDuration() - 1);
-                    particle.setLastTick(event.getEntity().worldObj.getTotalWorldTime());
+                    particle.setLastTick(event.getEntity().getEntityWorld().getTotalWorldTime());
                 }
             }
             HashSet<Vector3> toRemove = new HashSet<Vector3>();

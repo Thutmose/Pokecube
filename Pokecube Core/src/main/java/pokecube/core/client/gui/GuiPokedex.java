@@ -361,7 +361,7 @@ public class GuiPokedex extends GuiScreen
         drawString(fontRendererObj, "Hatched", xOffset + 14, yOffset + 141, 0xFFFFFF);
         drawString(fontRendererObj, count + "/" + count2,
                 xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 141, 0xffffff);
-        World world = entityPlayer.worldObj;
+        World world = entityPlayer.getEntityWorld();
         List<Object> entities = new ArrayList<Object>(world.loadedEntityList);
         count = 0;
         count2 = 0;
@@ -724,7 +724,7 @@ public class GuiPokedex extends GuiScreen
             // int entityId =
             // mod_Pokecube.getEntityIdFromPokedexNumber(pokedexEntry.getPokedexNb());
             pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(),
-                    entityPlayer.worldObj);
+                    entityPlayer.getEntityWorld());
 
             ((IPokemob) pokemob).specificSpawnInit();
             if (pokemob != null)
@@ -1042,7 +1042,7 @@ public class GuiPokedex extends GuiScreen
         if (page == 1)
         {
             TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-            // t.refresh(entityPlayer.worldObj);
+            // t.refresh(entityPlayer.getEntityWorld());
             Vector3 location = Vector3.getNewVector().set(entityPlayer);
             int type = t.getBiome(location);
             for (int i = 0; i < biomes.size(); i++)

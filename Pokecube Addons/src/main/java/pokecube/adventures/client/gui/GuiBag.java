@@ -50,7 +50,7 @@ public class GuiBag extends GuiContainer
     @Override
     protected void actionPerformed(GuiButton guibutton)
     {
-        if (mc.thePlayer.worldObj.isRemote)
+        if (mc.thePlayer.getEntityWorld().isRemote)
         {
             MessageServer packet;
             if (guibutton.id == 3)

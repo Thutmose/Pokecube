@@ -95,7 +95,7 @@ public class Move_Explode extends Move_Ongoing
             if (pokemob.isType(normal)) f1 *= 1.5f;
 
             Explosion boom = MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);
-            ExplosionEvent.Start evt = new ExplosionEvent.Start(mob.worldObj, boom);
+            ExplosionEvent.Start evt = new ExplosionEvent.Start(mob.getEntityWorld(), boom);
             MinecraftForge.EVENT_BUS.post(evt);
             if (!evt.isCanceled())
             {
@@ -145,7 +145,7 @@ public class Move_Explode extends Move_Ongoing
             public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
             {
                 EntityLivingBase voltorb = (EntityLivingBase) info.attacker;
-                Explosion explosion = new Explosion(voltorb.worldObj, voltorb, voltorb.posX, voltorb.posY, voltorb.posZ,
+                Explosion explosion = new Explosion(voltorb.getEntityWorld(), voltorb, voltorb.posX, voltorb.posY, voltorb.posZ,
                         10, false, true);
                 explosion.doExplosionB(true);
             }

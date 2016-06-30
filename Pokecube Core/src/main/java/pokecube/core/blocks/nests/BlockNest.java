@@ -46,7 +46,7 @@ public class BlockNest extends Block implements ITileEntityProvider
         TileEntity tile_entity = worldIn.getTileEntity(pos);
         if (tile_entity instanceof TileEntityNest && playerIn.capabilities.isCreativeMode
                 && playerIn.getHeldItemMainhand() != null
-                && playerIn.getHeldItemMainhand().getItem() instanceof ItemPokemobEgg && !playerIn.worldObj.isRemote)
+                && playerIn.getHeldItemMainhand().getItem() instanceof ItemPokemobEgg && !playerIn.getEntityWorld().isRemote)
         {
             TileEntityNest nest = (TileEntityNest) tile_entity;
 

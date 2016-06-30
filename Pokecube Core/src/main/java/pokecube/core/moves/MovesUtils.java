@@ -562,7 +562,7 @@ public class MovesUtils implements IMoveConstants
                     attacker.getPokemonDisplayName().getFormattedText(), attackName);
             ((IPokemob) attacked).displayMessageToOwner(text);
         }
-        else if (attacked instanceof EntityPlayer && !attacked.worldObj.isRemote && attacker != null)
+        else if (attacked instanceof EntityPlayer && !attacked.getEntityWorld().isRemote && attacker != null)
         {
             text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red",
                     attacker.getPokemonDisplayName().getFormattedText(), attackName);
@@ -1008,7 +1008,7 @@ public class MovesUtils implements IMoveConstants
     public static Explosion newExplosion(Entity entity, double par2, double par4, double par6, float par8, boolean par9,
             boolean par10)
     {
-        ExplosionCustom var11 = new ExplosionCustom(entity.worldObj, entity, par2, par4, par6, par8);
+        ExplosionCustom var11 = new ExplosionCustom(entity.getEntityWorld(), entity, par2, par4, par6, par8);
 
         if (entity instanceof IPokemob)
         {
@@ -1084,7 +1084,7 @@ public class MovesUtils implements IMoveConstants
     {
         Vector3 source = Vector3.getNewVector().set(attacker, true);
         source.y += attacker.height / 4;
-        return targetHit(source, dest.subtract(source), 16, attacker.worldObj, attacker, false);
+        return targetHit(source, dest.subtract(source), 16, attacker.getEntityWorld(), attacker, false);
     }
 
     @SuppressWarnings("rawtypes")
@@ -1139,7 +1139,7 @@ public class MovesUtils implements IMoveConstants
 
         source.y += attacker.height / 4;
         List<Entity> targets = source.allEntityLocationExcluding(16, 0.1, dest.subtract(source), source,
-                attacker.worldObj, attacker);
+                attacker.getEntityWorld(), attacker);
         List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
         if (targets != null) for (Entity e : targets)
         {
@@ -1157,7 +1157,7 @@ public class MovesUtils implements IMoveConstants
         Vector3 source = Vector3.getNewVector().set(attacker);
 
         List<Entity> targets = source.allEntityLocationExcluding(range, area, dest.subtract(source), source,
-                attacker.worldObj, attacker);
+                attacker.getEntityWorld(), attacker);
         List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
         if (targets != null) for (Entity e : targets)
         {

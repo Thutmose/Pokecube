@@ -127,7 +127,7 @@ public abstract class AIBase implements IAIRunnable
 
             EntityLiving mob = (EntityLiving) e;
             List<?> unloadedMobs = world.unloadedEntityList;
-            if (!mob.worldObj.loadedEntityList.contains(mob) || unloadedMobs.contains(mob)) return false;
+            if (!mob.getEntityWorld().loadedEntityList.contains(mob) || unloadedMobs.contains(mob)) return false;
             if (!(mob.isDead || mob.getHealth() <= 0))
             {
                 ((IPokemob) mob).executeMove(world.getEntityByID(targetEnt), target, distance);
@@ -161,7 +161,7 @@ public abstract class AIBase implements IAIRunnable
             if (e == null || !(e instanceof EntityLiving)) { return false; }
             EntityLiving mob = (EntityLiving) e;
             List<?> unloadedMobs = world.unloadedEntityList;
-            if (!mob.worldObj.loadedEntityList.contains(mob) || unloadedMobs.contains(mob)) { return false; }
+            if (!mob.getEntityWorld().loadedEntityList.contains(mob) || unloadedMobs.contains(mob)) { return false; }
 
             if (!(mob.isDead || mob.getHealth() <= 0))
             {
@@ -227,7 +227,7 @@ public abstract class AIBase implements IAIRunnable
             boolean mobExists = !(unloadedMobs.contains(e));
 
             if (!mobExists
-                    || (!(e1 instanceof EntityPlayer) && ((e1 != null && !e1.worldObj.loadedEntityList.contains(e1))
+                    || (!(e1 instanceof EntityPlayer) && ((e1 != null && !e1.getEntityWorld().loadedEntityList.contains(e1))
                             || (e1 != null && unloadedMobs.contains(e1))))) { return false; }
             if (!(mob.isDead || mob.getHealth() <= 0))
             {

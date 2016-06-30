@@ -14,7 +14,7 @@ public class Thunder extends MoveAnimationBase {
     @Override
     public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
     {
-    	World theRealWorld = info.attacker.worldObj;
+    	World theRealWorld = info.attacker.getEntityWorld();
     	Entity lightning = new EntityLightningBolt(theRealWorld, info.target.x, info.target.y, info.target.z, false);
     	theRealWorld.spawnEntityInWorld(lightning);
         theRealWorld.addWeatherEffect(lightning);

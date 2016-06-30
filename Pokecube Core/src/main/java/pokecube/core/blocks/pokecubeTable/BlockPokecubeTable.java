@@ -91,7 +91,7 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                         PokecubePacketHandler.specialStarters.containsKey(playerIn.getName().toLowerCase()));
 
                 ArrayList<Integer> starters = new ArrayList<Integer>();
-                TileEntity te = playerIn.worldObj.getTileEntity(pos.down(2));
+                TileEntity te = playerIn.getEntityWorld().getTileEntity(pos.down(2));
                 if (te != null && te instanceof IInventory)
                 {
                     IInventory container = (IInventory) te;

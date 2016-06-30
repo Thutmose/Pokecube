@@ -86,7 +86,7 @@ public class PokecubePacketHandler
         public void tick(ClientTickEvent event)
         {
             pokecube.core.client.gui.GuiChooseFirstPokemob.options = starter;
-            player.openGui(PokecubeCore.instance, Config.GUICHOOSEFIRSTPOKEMOB_ID, player.worldObj, 0, 0, 0);
+            player.openGui(PokecubeCore.instance, Config.GUICHOOSEFIRSTPOKEMOB_ID, player.getEntityWorld(), 0, 0, 0);
             MinecraftForge.EVENT_BUS.unregister(this);
         }
 
@@ -132,7 +132,7 @@ public class PokecubePacketHandler
                                 {
                                     NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
                                     TerrainSegment t = TerrainSegment.readFromNBT(nbt);
-                                    TerrainManager.getInstance().getTerrain(player.worldObj).addTerrain(t);
+                                    TerrainManager.getInstance().getTerrain(player.getEntityWorld()).addTerrain(t);
 
                                 }
                                 catch (IOException e)
@@ -179,7 +179,7 @@ public class PokecubePacketHandler
                                 {
                                     int id = buffer.readInt();
                                     ITextComponent component = buffer.readTextComponent();
-                                    Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id,
+                                    Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id,
                                             false);
                                     if (e != null && e instanceof IPokemob)
                                     {
@@ -201,8 +201,8 @@ public class PokecubePacketHandler
                                 {
                                     NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
                                     int id = nbt.getInteger("id");
-                                    if (player.worldObj.getEntityByID(id) != null)
-                                        player.worldObj.getEntityByID(id).setDead();
+                                    if (player.getEntityWorld().getEntityByID(id) != null)
+                                        player.getEntityWorld().getEntityByID(id).setDead();
                                 }
                                 catch (IOException e)
                                 {
@@ -212,7 +212,7 @@ public class PokecubePacketHandler
                             else if (channel == MOVEENTITY)
                             {
                                 int id = buffer.readInt();
-                                Entity e = player.worldObj.getEntityByID(id);
+                                Entity e = player.getEntityWorld().getEntityByID(id);
                                 Vector3 v = Vector3.readFromBuff(buffer);
 
                                 if (e != null)
@@ -233,11 +233,11 @@ public class PokecubePacketHandler
                                     NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
                                     int id = nbt.getInteger("id");
                                     String forme = nbt.getString("forme");
-                                    if (player.worldObj.getEntityByID(id) != null)
+                                    if (player.getEntityWorld().getEntityByID(id) != null)
                                     {
-                                        PokedexEntry entry = ((IPokemob) player.worldObj.getEntityByID(id))
+                                        PokedexEntry entry = ((IPokemob) player.getEntityWorld().getEntityByID(id))
                                                 .getPokedexEntry().getForm(forme);
-                                        ((IPokemob) player.worldObj.getEntityByID(id)).setPokedexEntry(entry);
+                                        ((IPokemob) player.getEntityWorld().getEntityByID(id)).setPokedexEntry(entry);
                                     }
 
                                 }
@@ -620,7 +620,7 @@ public class PokecubePacketHandler
             PokedexEntry entry = (name != null) ? Database.getEntry(name) : Database.getEntry(number);
             if (entry != null)
             {
-                World worldObj = owner.worldObj;
+                World worldObj = owner.getEntityWorld();
                 IPokemob entity = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), worldObj);
                 if (entity != null)
                 {
@@ -805,7 +805,7 @@ public class PokecubePacketHandler
             pokedexNb = PokecubeManager.getPokedexNb(e);
             if (pokedexNb > 0)
             {
-                StatsCollector.addCapture(PokecubeManager.itemToPokemob(e, player.worldObj));
+                StatsCollector.addCapture(PokecubeManager.itemToPokemob(e, player.getEntityWorld()));
             }
         }
         PokecubeSerializer.getInstance().setHasStarter(player);
@@ -901,7 +901,7 @@ public class PokecubePacketHandler
                 Vector3 temp = Vector3.readFromNBT(tag, "village");
                 if (temp != null) pokecube.core.client.gui.GuiPokedex.closestVillage.set(temp);
                 else pokecube.core.client.gui.GuiPokedex.closestVillage.clear();
-                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
+                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.getEntityWorld(), 0, 0, 0);
             }
             else if (nbt.getBoolean("toLoadTerrain"))
             {
@@ -938,10 +938,10 @@ public class PokecubePacketHandler
             dat.writeBytes(arr);
             int id = dat.readInt();
             int id1 = dat.readInt();
-            Entity entity = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id, true);
+            Entity entity = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id, true);
             if (!(entity instanceof IPokemob)) return;
 
-            IPokemob pokemob = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id1, true);
+            IPokemob pokemob = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id1, true);
             if (pokemob != null)
             {
                 int currentMove = pokemob.getMoveIndex();
@@ -980,7 +980,7 @@ public class PokecubePacketHandler
                     Entity owner = pokemob.getPokemonOwner();
                     if (owner != null)
                     {
-                        Entity closest = owner.worldObj.getEntityByID(id);
+                        Entity closest = owner.getEntityWorld().getEntityByID(id);
                         if (closest instanceof IPokemob)
                         {
                             IPokemob target = (IPokemob) closest;
@@ -1007,7 +1007,7 @@ public class PokecubePacketHandler
         if (message == 22)
         {
             boolean shift = sender.isSneaking();
-            List<Entity> pokemobs = new ArrayList<Entity>(sender.worldObj.loadedEntityList);
+            List<Entity> pokemobs = new ArrayList<Entity>(sender.getEntityWorld().loadedEntityList);
             if (!shift)
             {
                 for (Entity e : pokemobs)

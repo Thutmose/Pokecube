@@ -196,7 +196,7 @@ public class TeamManager
 
     public void addToTeam(EntityPlayer player, String team)
     {
-        player.worldObj.getScoreboard().addPlayerToTeam(player.getName(), team);
+        player.getEntityWorld().getScoreboard().addPlayerToTeam(player.getName(), team);
         player.addChatMessage(new TextComponentString("You joined Team " + team));
         PokeTeam t = getTeam(team, true);
         if (t.admins.isEmpty())
@@ -219,7 +219,7 @@ public class TeamManager
 
     public void createTeam(EntityPlayer player, String team)
     {
-        for (Object o : player.worldObj.getScoreboard().getTeamNames())
+        for (Object o : player.getEntityWorld().getScoreboard().getTeamNames())
         {
             String s = (String) o;
             if (s.equalsIgnoreCase(team))
@@ -228,9 +228,9 @@ public class TeamManager
                 return;
             }
         }
-        if (player.worldObj.getScoreboard().getTeam(team) == null)
+        if (player.getEntityWorld().getScoreboard().getTeam(team) == null)
         {
-            player.worldObj.getScoreboard().createTeam(team);
+            player.getEntityWorld().getScoreboard().createTeam(team);
             getTeam(team, true);
             addToTeam(player, team);
             addToAdmins(player.getName(), team);
@@ -256,6 +256,17 @@ public class TeamManager
     public String getLandOwner(ChunkCoordinate land)
     {
         return landMap.get(land);
+    }
+
+    private PokeTeam getTeam(String name, boolean create)
+    {
+        PokeTeam team = teamMap.get(name);
+        if (team == null && create)
+        {
+            team = new PokeTeam(name);
+            teamMap.put(name, team);
+        }
+        return team;
     }
 
     private PokeTeam getTeam(String name, boolean create)
@@ -407,6 +418,12 @@ public class TeamManager
         if (team != null) teamMap.put(team.teamName, team);
     }
 
+    public void loadTeamFromNBT(NBTTagCompound nbt)
+    {
+        PokeTeam team = PokeTeam.loadFromNBT(nbt);
+        if (team != null) teamMap.put(team.teamName, team);
+    }
+
     public void removeFromAdmins(String admin, String team)
     {
         PokeTeam t = teamMap.get(team);
@@ -430,11 +447,11 @@ public class TeamManager
 
     public void removeFromTeam(EntityPlayer admin, String team, String toRemove)
     {
-        ScorePlayerTeam oldTeam = admin.worldObj.getScoreboard().getPlayersTeam(toRemove);
+        ScorePlayerTeam oldTeam = admin.getEntityWorld().getScoreboard().getPlayersTeam(toRemove);
         if (oldTeam != null)
         {
             removeFromAdmins(toRemove, team);
-            admin.worldObj.getScoreboard().removePlayerFromTeam(toRemove, oldTeam);
+            admin.getEntityWorld().getScoreboard().removePlayerFromTeam(toRemove, oldTeam);
         }
     }
 
@@ -456,6 +473,15 @@ public class TeamManager
                 PokecubePacketHandler.sendToAll(packet);
             }
             PASaveHandler.getInstance().saveTeams(team);
+        }
+    }
+
+    public void saveTeamToNBT(String team, NBTTagCompound nbt)
+    {
+        PokeTeam t = getTeam(team, false);
+        if (t != null)
+        {
+            t.writeToNBT(nbt);
         }
     }
 

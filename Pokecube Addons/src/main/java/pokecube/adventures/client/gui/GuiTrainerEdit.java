@@ -506,7 +506,7 @@ public class GuiTrainerEdit extends GuiScreen
         try
         {
             EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(mob.getPokedexNb(),
-                    trainer.worldObj);
+                    trainer.getEntityWorld());
 
             float size = 0;
             int j = 0;

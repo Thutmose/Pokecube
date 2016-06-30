@@ -496,7 +496,7 @@ public class GuiPokedex_redo extends GuiScreen
         drawString(fontRendererObj, "Hatched", xOffset + 19, yOffset + 140, 0xFFFFFF);
         drawString(fontRendererObj, count + "/" + count2,
                 xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 140, 0xffffff);
-        World world = entityPlayer.worldObj;
+        World world = entityPlayer.getEntityWorld();
         List<Object> entities = new ArrayList<Object>(world.loadedEntityList);
         count = 0;
         count2 = 0;
@@ -839,7 +839,7 @@ public class GuiPokedex_redo extends GuiScreen
             // int entityId =
             // mod_Pokecube.getEntityIdFromPokedexNumber(pokedexEntry.getPokedexNb());
             pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(),
-                    entityPlayer.worldObj);
+                    entityPlayer.getEntityWorld());
 
             ((IPokemob) pokemob).specificSpawnInit();
             if (pokemob != null)

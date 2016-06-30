@@ -57,7 +57,7 @@ public class TileNBTPacket extends AbstractPacket {
 
 	@Override
 	public void handleServerSide(EntityPlayerMP player) {
-		TileEntity te = player.worldObj.getTileEntity(pos);
+		TileEntity te = player.getEntityWorld().getTileEntity(pos);
 		if (te != null) {
 			try {
 				te.readFromNBT(tag);

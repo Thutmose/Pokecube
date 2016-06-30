@@ -26,7 +26,7 @@ public class Move_Teleport extends Move_Utility
         double var1;
         double var3;
         double var5;
-        Vector3 v = SpawnHandler.getRandomSpawningPointNearEntity(toTeleport.worldObj, toTeleport, 32);
+        Vector3 v = SpawnHandler.getRandomSpawningPointNearEntity(toTeleport.getEntityWorld(), toTeleport, 32);
         var1 = v.x;
         var3 = v.y;
         var5 = v.z;
@@ -54,10 +54,10 @@ public class Move_Teleport extends Move_Utility
                     + toTeleport.getRNG().nextDouble() * toTeleport.height;
             double var28 = par5 + (toTeleport.posZ - par5) * var19
                     + (toTeleport.getRNG().nextDouble() - 0.5D) * toTeleport.width * 2.0D;
-            toTeleport.worldObj.spawnParticle(EnumParticleTypes.PORTAL, var24, var26, var28, var21, var22, var23);
+            toTeleport.getEntityWorld().spawnParticle(EnumParticleTypes.PORTAL, var24, var26, var28, var21, var22, var23);
         }
 
-        toTeleport.worldObj.playSound(par1, par3, par5, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.HOSTILE,
+        toTeleport.getEntityWorld().playSound(par1, par3, par5, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.HOSTILE,
                 1.0F, 1.0F, false);
         toTeleport.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
         return true;

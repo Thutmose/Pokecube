@@ -64,7 +64,7 @@ public class StatsHandler
         EntityPlayer player = null;
         if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
 
-        if (player != null && !player.worldObj.isRemote)
+        if (player != null && !player.getEntityWorld().isRemote)
         {
             player.addStat(PokecubeMod.get1stPokemob, 0);
             player.addStat(PokecubeMod.pokemobAchievements.get(evt.caught.getPokedexNb()), 1);
@@ -81,7 +81,7 @@ public class StatsHandler
         EntityPlayer player = null;
         if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
 
-        if (player != null && !player.worldObj.isRemote)
+        if (player != null && !player.getEntityWorld().isRemote)
         {
             player.addStat(PokecubeMod.get1stPokemob, 0);
             player.addStat(PokecubeMod.pokemobAchievements.get(evt.mob.getPokedexNb()), 1);
@@ -96,7 +96,7 @@ public class StatsHandler
         EntityPlayer player = null;
         if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
 
-        if (player != null && !player.worldObj.isRemote)
+        if (player != null && !player.getEntityWorld().isRemote)
         {
             player.addStat(PokecubeMod.get1stPokemob, 0);
             player.addStat(PokecubeMod.pokemobAchievements.get(evt.egg.getPokemob().getPokedexNb()), 1);
@@ -119,7 +119,7 @@ public class StatsHandler
         EntityPlayer player = null;
         if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
 
-        if (player != null && !player.worldObj.isRemote)
+        if (player != null && !player.getEntityWorld().isRemote)
         {
             player.addStat(PokecubeMod.get1stPokemob, 0);
             player.addStat(PokecubeMod.pokemobAchievements.get(evt.mob.getPokedexNb()), 1);

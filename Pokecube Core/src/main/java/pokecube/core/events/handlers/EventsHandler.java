@@ -160,7 +160,7 @@ public class EventsHandler
         AxisAlignedBB box = new AxisAlignedBB(owner.posX, owner.posY, owner.posZ, owner.posX, owner.posY, owner.posZ)
                 .expand(distance, distance, distance);
 
-        List<EntityLivingBase> pokemobs = owner.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, box);
+        List<EntityLivingBase> pokemobs = owner.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, box);
         for (Object o : pokemobs)
         {
             if (o instanceof IPokemob)
@@ -202,7 +202,7 @@ public class EventsHandler
 
     public static void recallAllPokemobsExcluding(EntityPlayer player, IPokemob excluded)
     {
-        List<?> pokemobs = new ArrayList<Object>(player.worldObj.loadedEntityList);
+        List<?> pokemobs = new ArrayList<Object>(player.getEntityWorld().loadedEntityList);
         for (Object o : pokemobs)
         {
             if (o instanceof IPokemob)
@@ -226,7 +226,7 @@ public class EventsHandler
                     {
                         ItemStack cube = mob.getEntityItem();
                         ItemTossEvent evt = new ItemTossEvent(
-                                new EntityItem(mob.worldObj, mob.posX, mob.posY, mob.posZ, cube), player);
+                                new EntityItem(mob.getEntityWorld(), mob.posX, mob.posY, mob.posZ, cube), player);
                         MinecraftForge.EVENT_BUS.post(evt);
                     }
                 }
@@ -298,7 +298,7 @@ public class EventsHandler
     public void checkHatch(EggEvent.PreHatch evt)
     {
         Vector3 location = Vector3.getNewVector().set(evt.egg);
-        World world = evt.egg.worldObj;
+        World world = evt.egg.getEntityWorld();
         int num = Tools.countPokemon(world, location, PokecubeMod.core.getConfig().maxSpawnRadius);
         float factor = 1.25f;
         if (num > PokecubeMod.core.getConfig().mobSpawnNumber * factor)
@@ -410,10 +410,10 @@ public class EventsHandler
                 }
             }
         }
-        if (evt.getEntityPlayer().worldObj.isRemote || evt.getEntityPlayer().worldObj.rand.nextInt(10) != 0) return;
+        if (evt.getEntityPlayer().getEntityWorld().isRemote || evt.getEntityPlayer().getEntityWorld().rand.nextInt(10) != 0) return;
 
         TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(evt.getEntityPlayer());
-        t.checkIndustrial(evt.getEntityPlayer().worldObj);
+        t.checkIndustrial(evt.getEntityPlayer().getEntityWorld());
     }
 
     /** Applies the exp from lucky egg and exp share. TODO move this out of
@@ -504,18 +504,18 @@ public class EventsHandler
     @SubscribeEvent
     public void livingUpdate(LivingUpdateEvent evt)
     {
-        if (evt.getEntity().worldObj.isRemote || evt.getEntity().isDead) return;
+        if (evt.getEntity().getEntityWorld().isRemote || evt.getEntity().isDead) return;
 
         if (evt.getEntityLiving() instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
             if (player.getTeam() == null)
             {
-                player.worldObj.getScoreboard().addPlayerToTeam(player.getName(), "Trainers");
+                player.getEntityWorld().getScoreboard().addPlayerToTeam(player.getName(), "Trainers");
             }
         }
 
-        if (evt.getEntityLiving().worldObj.getTotalWorldTime() % 40 == 0)
+        if (evt.getEntityLiving().getEntityWorld().getTotalWorldTime() % 40 == 0)
         {
             TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(evt.getEntityLiving());
             PokemobTerrainEffects effect = (PokemobTerrainEffects) terrain.geTerrainEffect("pokemobEffects");
@@ -530,7 +530,7 @@ public class EventsHandler
         {
             IPokemob shuckle = (IPokemob) evt.getEntityLiving();
 
-            if (evt.getEntityLiving().worldObj.isRemote) return;
+            if (evt.getEntityLiving().getEntityWorld().isRemote) return;
 
             ItemStack item = evt.getEntityLiving().getHeldItemMainhand();
             if (item == null) return;
@@ -611,14 +611,14 @@ public class EventsHandler
 
         if (entityPlayer.getTeam() == null)
         {
-            if (entityPlayer.worldObj.getScoreboard().getTeam("Trainers") == null)
+            if (entityPlayer.getEntityWorld().getScoreboard().getTeam("Trainers") == null)
             {
-                entityPlayer.worldObj.getScoreboard().createTeam("Trainers");
+                entityPlayer.getEntityWorld().getScoreboard().createTeam("Trainers");
             }
-            entityPlayer.worldObj.getScoreboard().addPlayerToTeam(entityPlayer.getName(), "Trainers");
+            entityPlayer.getEntityWorld().getScoreboard().addPlayerToTeam(entityPlayer.getName(), "Trainers");
         }
 
-        if (!evt.player.worldObj.isRemote)
+        if (!evt.player.getEntityWorld().isRemote)
         {
             NBTTagCompound nbt = new NBTTagCompound();
             StatsCollector.writeToNBT(nbt);
@@ -632,7 +632,7 @@ public class EventsHandler
 
         if (evt.player instanceof EntityPlayer)
         {
-            if (!evt.player.worldObj.isRemote)
+            if (!evt.player.getEntityWorld().isRemote)
             {
                 if (PokecubeMod.core.getConfig().guiOnLogin)
                 {
@@ -655,9 +655,9 @@ public class EventsHandler
     public void travelToDimension(EntityTravelToDimensionEvent evt)
     {
         Entity entity = evt.getEntity();
-        if (entity.worldObj.isRemote) return;
+        if (entity.getEntityWorld().isRemote) return;
 
-        ArrayList<?> list = new ArrayList<Object>(entity.worldObj.loadedEntityList);
+        ArrayList<?> list = new ArrayList<Object>(entity.getEntityWorld().loadedEntityList);
         for (Object o : list)
         {
             if (o instanceof IPokemob)

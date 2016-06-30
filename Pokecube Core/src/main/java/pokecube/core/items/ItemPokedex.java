@@ -101,7 +101,7 @@ public class ItemPokedex extends Item
     {
         if (PokecubeCore.isOnClientSide())
         {
-            player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.worldObj, 0, 0, 0);
+            player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.getEntityWorld(), 0, 0, 0);
         }
         else
         {

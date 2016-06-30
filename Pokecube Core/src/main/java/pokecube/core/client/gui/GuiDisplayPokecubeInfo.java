@@ -351,7 +351,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
             Vector3 look = Vector3.getNewVector().set(player.getLookVec());
             Vector3 pos = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
-            Vector3 v = pos.findNextSolidBlock(player.worldObj, look, 32);
+            Vector3 v = pos.findNextSolidBlock(player.getEntityWorld(), look, 32);
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
@@ -428,7 +428,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             Entity target = null;
             Vector3 look = Vector3.getNewVector().set(player.getLook(1));
             Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
-            target = temp.firstEntityExcluding(32, look, player.worldObj, player.isSneaking(), player);
+            target = temp.firstEntityExcluding(32, look, player.getEntityWorld(), player.isSneaking(), player);
             if (target != null && target instanceof IPokemob && ((IPokemob) target).getPokemonOwner() == player)
             {
                 ((IPokemob) target).returnToPokecube();

@@ -134,10 +134,10 @@ public class MoveAnimationHelper
                 HashSet<MoveAnimation> moves = this.moves.get(e);
                 for (MoveAnimation move : moves)
                 {
-                    if (move.lastDrop != event.getEntity().worldObj.getTotalWorldTime())
+                    if (move.lastDrop != event.getEntity().getEntityWorld().getTotalWorldTime())
                     {
                         move.duration--;
-                        move.lastDrop = event.getEntity().worldObj.getTotalWorldTime();
+                        move.lastDrop = event.getEntity().getEntityWorld().getTotalWorldTime();
                     }
                 }
             }

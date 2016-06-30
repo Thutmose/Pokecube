@@ -101,7 +101,7 @@ public class EventsHandlerClient
         @SubscribeEvent
         public void onPlayerJoin(TickEvent.PlayerTickEvent event)
         {
-            if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
+            if (event.player.getEntityWorld().isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
                 Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
@@ -516,7 +516,7 @@ public class EventsHandlerClient
                 ItemStack stack = player.inventory.mainInventory[l];
                 if (stack != null && PokecubeManager.isFilled(stack))
                 {
-                    IPokemob pokemob = getPokemobForRender(stack, player.worldObj);
+                    IPokemob pokemob = getPokemobForRender(stack, player.getEntityWorld());
                     if (pokemob == null)
                     {
                         continue;

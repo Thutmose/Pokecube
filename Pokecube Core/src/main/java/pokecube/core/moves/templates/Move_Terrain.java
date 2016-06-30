@@ -50,8 +50,8 @@ public class Move_Terrain extends Move_Basic
             segment.addEffect(teffect = new PokemobTerrainEffects(), "pokemobEffects");
         }
 
-        if (segment != null && attacked.worldObj != null)
-            teffect.setEffect(effect, duration + attacked.worldObj.getTotalWorldTime());
+        if (segment != null && attacked.getEntityWorld() != null)
+            teffect.setEffect(effect, duration + attacked.getEntityWorld().getTotalWorldTime());
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(73));
@@ -65,7 +65,7 @@ public class Move_Terrain extends Move_Basic
             }
             PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
             Vector3 v = Vector3.getNewVector().set(attacked);
-            PokecubePacketHandler.sendToAllNear(packet, v, attacked.worldObj.provider.getDimension(), 64);
+            PokecubePacketHandler.sendToAllNear(packet, v, attacked.getEntityWorld().provider.getDimension(), 64);
         }
 
     }

@@ -1,23 +1,17 @@
 package pokecube.adventures.entity.trainers;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
-import net.minecraft.entity.IMerchant;
-import net.minecraft.entity.INpc;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
 import net.minecraft.entity.ai.EntityAIOpenDoor;
@@ -26,22 +20,12 @@ import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.ContainerMerchant;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.InventoryMerchant;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -52,121 +36,43 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.ai.trainers.EntityAITrainer;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
+import pokecube.adventures.entity.helper.EntityHasPokemobs;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.GuardAI;
-import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.handlers.HeldItemHandler;
-import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
-import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
-public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpawnData, INpc, IMerchant
+public class EntityTrainer extends EntityHasPokemobs
 {
-    public static class CubeTrade
-    {
-        final int   cubeId;
-        final int[] amtRange = { 0, 0 };
-        final int   cost;
 
-        public CubeTrade(int cubeId, int min, int max, int cost)
-        {
-            this.cubeId = cubeId;
-            amtRange[0] = min;
-            amtRange[1] = max;
-            this.cost = cost;
-        }
+    private boolean   randomize  = false;
 
-        public MerchantRecipe getTrade()
-        {
-            ItemStack sell = new ItemStack(PokecubeItems.getEmptyCube(cubeId));
-            sell.stackSize = amtRange[0];
-            if (amtRange[0] < amtRange[1])
-            {
-                sell.stackSize += new Random().nextInt(amtRange[1] - amtRange[0] + 1);
-            }
-            ItemStack buy1 = new ItemStack(Items.EMERALD);
-            buy1.stackSize = (cost & 63);
-            ItemStack buy2 = null;
-            if (cost > 64)
-            {
-                buy2 = buy1.copy();
-                buy1.stackSize = 64;
-                buy2.stackSize = ((cost - 64) & 63);
-                if (cost - 64 >= 64) buy2.stackSize = 64;
-            }
-            else if (cost == 64)
-            {
-                buy1.stackSize = 64;
-            }
-            return new MerchantRecipe(buy1, buy2, sell);
-        }
-    }
-
-    static final DataParameter<Integer> AIACTIONSTATESDW = EntityDataManager.<Integer> createKey(EntityTrainer.class,
-            DataSerializers.VARINT);
-    public static final int             STATIONARY       = 1;
-    public static final int             INBATTLE         = 2;
-    public static final int             THROWING         = 4;
-    public static final int             PERMFRIENDLY     = 8;
-
-    public static ArrayList<CubeTrade>  cubeList         = Lists.newArrayList();
-    private int                         battleCooldown   = -1;
-    /** This villager's current customer. */
-    private EntityPlayer                buyingPlayer;
-    /** Initialises the MerchantRecipeList.java */
-    private MerchantRecipeList          tradeList;
-    /** Initialises the MerchantRecipeList.java */
-    protected MerchantRecipeList        itemList;
-
-    private boolean                     randomize        = false;
-    public ItemStack[]                  pokecubes        = new ItemStack[6];
-    public ItemStack[]                  reward           = { new ItemStack(Items.EMERALD) };
-    public int[]                        pokenumbers      = new int[6];
-    public int[]                        pokelevels       = new int[6];
-    public int[]                        attackCooldown   = new int[6];
-    public int                          cooldown         = 0;
-    public int                          globalCooldown   = 0;
-    public int                          friendlyCooldown = 0;
-    public List<IPokemob>               currentPokemobs  = new ArrayList<IPokemob>();
-    private EntityLivingBase            target;
-    public TypeTrainer                  type;
-    public Vector3                      location         = null;
-    public String                       name             = "";
-    public String                       playerName       = "";
-    public UUID                         outID;
-    public IPokemob                     outMob;
-    public boolean                      male             = true;
-    boolean                             clear            = false;
-    boolean                             shouldrefresh    = false;
-    boolean                             added            = false;
-    protected boolean                   trades           = true;
-    public GuardAI                      guardAI;
-
-    int                                 timercounter     = 0;
+    public Vector3    location   = null;
+    public String     name       = "";
+    public String     playerName = "";
+    public boolean    male       = true;
+    boolean           added      = false;
+    protected boolean trades     = true;
+    public GuardAI    guardAI;
 
     public EntityTrainer(World par1World)
     {
         this(par1World, null);
-        if (battleCooldown == -1) battleCooldown = Config.instance.trainerCooldown;
         inventoryHandsDropChances = new float[] { 1, 1 };
         inventoryArmorDropChances = new float[] { 1, 1, 1, 1 };
     }
@@ -214,19 +120,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 stack = PokecubeManager.pokemobToItem(mon);
                 stack.getTagCompound().setInteger("slotnum", i);
                 tradeList.add(new MerchantRecipe(buy1, stack));
-            }
-        }
-    }
-
-    public void addPokemob(ItemStack mob)
-    {
-        for (int i = 0; i < 6; i++)
-        {
-            if (pokecubes[i] == null)
-            {
-                InventoryPC.heal(mob);
-                pokecubes[i] = mob.copy();
-                return;
             }
         }
     }
@@ -350,81 +243,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         return false;
     }
 
-    private void checkTradeIntegrity()
-    {
-        if (itemList == null) return;
-        List<MerchantRecipe> toRemove = Lists.newArrayList();
-        for (MerchantRecipe r : itemList)
-        {
-            if (r.getItemToSell() == null || r.getItemToSell().getItem() == null)
-            {
-                toRemove.add(r);
-                continue;
-            }
-            boolean hasBuy = r.getItemToBuy() != null && r.getItemToBuy().getItem() != null;
-            hasBuy = hasBuy || (r.getSecondItemToBuy() != null && r.getSecondItemToBuy().getItem() != null);
-            if (!hasBuy)
-            {
-                toRemove.add(r);
-            }
-        }
-        itemList.removeAll(toRemove);
-    }
-
-    public int countPokemon()
-    {
-        if (outID != null && outMob == null)
-        {
-            for (int i = 0; i < worldObj.loadedEntityList.size(); ++i)
-            {
-                Entity entity = worldObj.loadedEntityList.get(i);
-                if (entity instanceof IPokemob && outID.equals(entity.getUniqueID()))
-                {
-                    outMob = (IPokemob) entity;
-                    break;
-                }
-            }
-        }
-        if (outMob != null && ((Entity) outMob).isDead)
-        {
-            outID = null;
-            outMob = null;
-        }
-        int ret = outMob == null ? 0 : 1;
-
-        if (ret == 0 && getAIState(THROWING)) ret++;
-
-        for (ItemStack i : pokecubes)
-        {
-            if (i != null && PokecubeManager.getPokedexNb(i) != 0) ret++;
-        }
-        return ret;
-    }
-
-    @Override
-    public EntityAgeable createChild(EntityAgeable p_90011_1_)
-    {
-        return null;
-    }
-
     /** Drop the equipment for this entity. */
     @Override
     protected void dropEquipment(boolean drop, int looting)
     {
         if (looting > 4) super.dropEquipment(drop, looting);
-    }
-
-    @Override
-    protected void entityInit()
-    {
-        super.entityInit();
-        this.dataManager.register(AIACTIONSTATESDW, 0);// more action states
-    }
-
-    public boolean getAIState(int state)
-    {
-
-        return (dataManager.get(AIACTIONSTATESDW) & state) != 0;
     }
 
     @Override
@@ -440,45 +263,23 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 + entry.getStatDEFSPE() + entry.getStatVIT();
     }
 
-    @Override
-    public EntityPlayer getCustomer()
-    {
-        return buyingPlayer;
-    }
-
-    @Override
-    public MerchantRecipeList getRecipes(EntityPlayer player)
-    {
-        if (player.openContainer instanceof ContainerMerchant)
-        {
-            InventoryMerchant inv = ((ContainerMerchant) player.openContainer).getMerchantInventory();
-            if (clear)
-            {
-                inv.removeStackFromSlot(0);
-            }
-            clear = false;
-        }
-        if (this.tradeList == null || shouldrefresh)
-        {
-            shouldrefresh = false;
-            this.populateBuyingList();
-        }
-        return this.tradeList;
-    }
-
     public boolean getShouldRandomize()
     {
         return randomize;
     }
 
-    public EntityLivingBase getTarget()
+    /** Sets the active target the Task system uses for tracking */
+    public void setAttackTarget(@Nullable EntityLivingBase entity)
     {
-        return target;
-    }
-
-    public TypeTrainer getType()
-    {
-        return type;
+        if (entity instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) entity;
+            if (mob.getPokemonOwner() != null && getTarget() == null)
+            {
+                setTarget(mob.getPokemonOwner());
+                this.throwCubeAt(entity);
+            }
+        }
     }
 
     protected void initAI(Vector3 location, boolean stationary)
@@ -497,64 +298,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         {
             location.moveEntity(this);
             if (stationary) setStationary(location);
-        }
-    }
-
-    public void initTrainer(TypeTrainer type, int level)
-    {
-        this.type = type;
-        byte genders = type.genders;
-        if (genders == 1) male = true;
-        if (genders == 2) male = false;
-        if (genders == 3) male = Math.random() < 0.5;
-
-        TypeTrainer.getRandomTeam(this, level, pokecubes, worldObj);
-
-        for (int i = 0; i < 6; i++)
-        {
-            if (pokecubes[i] != null)
-            {
-                IPokemob poke = PokecubeManager.itemToPokemob(pokecubes[i], worldObj);
-                if (poke != null)
-                {
-                    pokenumbers[i] = poke.getPokedexNb();
-                    pokelevels[i] = poke.getLevel();
-                }
-                else
-                {
-                    pokenumbers[i] = 0;
-                    pokelevels[i] = 0;
-                }
-            }
-            else
-            {
-                pokenumbers[i] = 0;
-                pokelevels[i] = 0;
-            }
-        }
-        setTypes();
-    }
-
-    public void lowerCooldowns()
-    {
-        if (getAIState(PERMFRIENDLY)) { return; }
-        if (friendlyCooldown-- >= 0) return;
-        boolean done = attackCooldown[0] <= 0;
-        cooldown--;
-        if (getAIState(INBATTLE)) return;
-        if (done)
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                attackCooldown[i] = -1;
-            }
-        }
-        else
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                attackCooldown[i]--;
-            }
         }
     }
 
@@ -583,9 +326,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         if (defeater != null)
         {
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
-            target.addChatMessage(text);
+            defeater.addChatMessage(text);
         }
-        this.setAIState(INBATTLE, false);
         this.setTrainerTarget(null);
     }
 
@@ -615,11 +357,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         for (int i = 0; i < 6; i++)
         {
             ItemStack item = pokecubes[i];
-            if (item != null && attackCooldown[i] <= 0)
+            if (item != null && attackCooldown <= 0)
             {
                 this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, item);
-                if (this.getHeldItemOffhand() == null && reward != null && reward.length > 0)
-                    this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, reward[0]);
+                if (this.getHeldItemOffhand() == null && reward != null && reward.size() > 0)
+                    this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, reward.get(0));
                 break;
             }
             if (i == 5)
@@ -637,17 +379,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             this.faceEntity(target, 10, 10);
             getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
         }
-
-        if (this.countPokemon() == 0 && !getAIState(STATIONARY) && !getAIState(PERMFRIENDLY))
-        {
-            timercounter++;
-            if (timercounter > 50)
-            {
-                this.setDead();
-            }
-            return;
-        }
-        timercounter = 0;
     }
 
     @Override
@@ -674,7 +405,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         super.onUpdate();
     }
 
-    private void populateBuyingList()
+    protected void populateBuyingList()
     {
         tradeList = new MerchantRecipeList();
         if (itemList == null && Config.instance.trainersTradeItems)
@@ -752,101 +483,12 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
         super.readEntityFromNBT(nbt);
-        for (int n = 0; n < 6; n++)
-        {
-            NBTBase temp = nbt.getTag("slot" + n);
-            if (temp instanceof NBTTagCompound)
-            {
-                NBTTagCompound tag = (NBTTagCompound) temp;
-                pokecubes[n] = ItemStack.loadItemStackFromNBT(tag);
-                if (PokecubeManager.getPokedexNb(pokecubes[n]) == 0) pokecubes[n] = null;
-                else
-                {
-                    IPokemob poke = PokecubeManager.itemToPokemob(pokecubes[n], worldObj);
-                    if (poke != null)
-                    {
-                        pokenumbers[n] = poke.getPokedexNb();
-                        pokelevels[n] = poke.getLevel();
-                    }
-                }
-            }
-        }
-        if (nbt.hasKey("Offers", 10))
-        {
-            NBTTagCompound nbttagcompound = nbt.getCompoundTag("Offers");
-            this.itemList = new MerchantRecipeList(nbttagcompound);
-        }
-        if (nbt.hasKey("reward", 9))
-        {
-            NBTTagList nbttaglist = nbt.getTagList("reward", 10);
-            reward = new ItemStack[nbttaglist.tagCount()];
-            for (int i = 0; i < this.reward.length; ++i)
-            {
-                this.reward[i] = ItemStack.loadItemStackFromNBT(nbttaglist.getCompoundTagAt(i));
-            }
-            if (reward.length == 0)
-            {
-                reward = new ItemStack[] { new ItemStack(Items.EMERALD) };
-            }
-        }
         if (nbt.hasKey("trades")) trades = nbt.getBoolean("trades");
-        dataManager.set(AIACTIONSTATESDW, nbt.getInteger("aiState"));
         playerName = nbt.getString("playerName");
         randomize = nbt.getBoolean("randomTeam");
-        type = TypeTrainer.getTrainer(nbt.getString("type"));
-        if (nbt.hasKey("outPokemob"))
-        {
-            outID = UUID.fromString(nbt.getString("outPokemob"));
-        }
-        if (nbt.hasKey("battleCD")) battleCooldown = nbt.getInteger("battleCD");
-        if (battleCooldown < 0) battleCooldown = Config.instance.trainerCooldown;
-        globalCooldown = nbt.getInteger("cooldown");
-        attackCooldown = nbt.getIntArray("cooldowns");
         male = nbt.getBoolean("gender");
         name = nbt.getString("name");
-        if (attackCooldown.length != 6) attackCooldown = new int[6];
-
-        friendlyCooldown = nbt.getInteger("friendly");
-
         setTypes();
-        checkTradeIntegrity();
-    }
-
-    @Override
-    public void readSpawnData(ByteBuf buff)
-    {
-        try
-        {
-            NBTTagCompound tag = new PacketBuffer(buff).readNBTTagCompoundFromBuffer();
-            this.readEntityFromNBT(tag);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void setAIState(int state, boolean flag)
-    {
-        int byte0 = dataManager.get(AIACTIONSTATESDW);
-
-        Integer toSet;
-        if (flag)
-        {
-            toSet = Integer.valueOf((byte0 | state));
-        }
-        else
-        {
-            toSet = Integer.valueOf((byte0 & -state - 1));
-        }
-        dataManager.set(AIACTIONSTATESDW, toSet);
-    }
-
-    @Override
-    public void setCustomer(EntityPlayer player)
-    {
-        tradeList = null;
-        this.buyingPlayer = player;
     }
 
     /** Will get destroyed next tick. */
@@ -855,40 +497,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     {
         PCEventsHandler.recallAllPokemobs(this);
         super.setDead();
-    }
-
-    public void setPokemob(int number, int level, int index)
-    {
-        if (number < 1)
-        {
-            pokecubes[index] = null;
-            attackCooldown[index] = 0;
-            pokenumbers[index] = 0;
-            pokelevels[index] = 0;
-            return;
-        }
-
-        IPokemob pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(number, worldObj);
-        if (pokemob == null)
-        {
-            pokecubes[index] = null;
-            return;
-        }
-        pokemob.setExp(Tools.levelToXp(pokemob.getExperienceMode(), level), false, true);
-        pokemob.setPokemonOwner(this);
-        ItemStack mob = PokecubeManager.pokemobToItem(pokemob);
-        ((Entity) pokemob).setDead();
-        InventoryPC.heal(mob);
-        pokecubes[index] = mob.copy();
-        pokenumbers[index] = number;
-        pokelevels[index] = level;
-        attackCooldown[index] = 0;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void setRecipes(MerchantRecipeList recipeList)
-    {
     }
 
     public void setStationary(boolean stationary)
@@ -910,25 +518,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         setAIState(STATIONARY, true);
     }
 
-    public void setTarget(EntityLivingBase target)
-    {
-        if (target != null && target != this.target)
-        {
-            cooldown = Config.instance.trainerBattleDelay;
-            ITextComponent text = new TextComponentTranslation("pokecube.trainer.agress", getDisplayName());
-            target.addChatMessage(text);
-        }
-        if (target == null)
-        {
-            if (this.target != null && this.getAIState(INBATTLE))
-            {
-                this.target.addChatMessage(new TextComponentTranslation("pokecube.trainer.forget", getDisplayName()));
-            }
-            this.setAIState(INBATTLE, false);
-        }
-        this.target = target;
-    }
-
     public void setTrainerTarget(Entity e)
     {
         setTarget((EntityLivingBase) e);
@@ -944,46 +533,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
     }
 
-    public void throwCubeAt(Entity target)
-    {
-        if (target == null || getAIState(THROWING) || outMob != null) return;
-        for (int j = 0; j < 6; j++)
-        {
-            ItemStack i = pokecubes[j];
-            if (i != null && attackCooldown[j] <= 0)
-            {
-                this.setAIState(INBATTLE, true);
-                IPokecube cube = (IPokecube) i.getItem();
-                Vector3 here = Vector3.getNewVector().set(this);
-                Vector3 t = Vector3.getNewVector().set(target);
-                t.set(t.subtractFrom(here).scalarMultBy(0.5).addTo(here));
-                cube.throwPokecubeAt(worldObj, this, i, t, null);
-                setAIState(THROWING, true);
-                attackCooldown[j] = battleCooldown;
-                cooldown = Config.instance.trainerSendOutDelay;
-                globalCooldown = 100;
-                pokecubes[j] = null;
-                ITextComponent text = new TextComponentTranslation("pokecube.trainer.toss", getDisplayName(),
-                        i.getDisplayName());
-                target.addChatMessage(text);
-
-                for (int k = j + 1; k < 6; k++)
-                {
-                    attackCooldown[k] = 0;
-                }
-                return;
-            }
-            if (i != null && attackCooldown[j] < 30) { return; }
-        }
-        this.setAIState(INBATTLE, false);
-        if (globalCooldown > 0 && outID == null && outMob == null && !getAIState(THROWING))
-        {
-            globalCooldown = 0;
-            onDefeated(target);
-        }
-    }
-
-    private void trade(MerchantRecipe recipe)
+    protected void trade(MerchantRecipe recipe)
     {
         ItemStack poke1 = recipe.getItemToBuy();
         ItemStack poke2 = recipe.getItemToSell();
@@ -997,97 +547,28 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         poke1 = PokecubeManager.pokemobToItem(mon1);
         clear = true;
         pokecubes[num] = poke1;
-        pokenumbers[num] = mon1.getPokedexNb();
-        pokelevels[num] = mon1.getLevel();
         shouldrefresh = true;
     }
 
-    @Override
-    public void useRecipe(MerchantRecipe recipe)
+    public void initTrainer(TypeTrainer type, int level)
     {
-        trade(recipe);
-        this.livingSoundTime = -this.getTalkInterval();
-        this.playSound(SoundEvents.ENTITY_VILLAGER_YES, this.getSoundVolume(), this.getSoundPitch());
-        int i = 3 + this.rand.nextInt(4);
-        if (recipe.getRewardsExp())
-        {
-            this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY + 0.5D, this.posZ, i));
-        }
-    }
-
-    @Override
-    public void verifySellingItem(ItemStack stack)
-    {
-        if (!this.worldObj.isRemote && this.livingSoundTime > -this.getTalkInterval() + 20)
-        {
-            this.livingSoundTime = -this.getTalkInterval();
-
-            if (stack != null)
-            {
-                this.playSound(SoundEvents.ENTITY_VILLAGER_YES, this.getSoundVolume(), this.getSoundPitch());
-            }
-            else
-            {
-                this.playSound(SoundEvents.ENTITY_VILLAGER_NO, this.getSoundVolume(), this.getSoundPitch());
-            }
-        }
+        this.type = type;
+        byte genders = type.genders;
+        if (genders == 1) male = true;
+        if (genders == 2) male = false;
+        if (genders == 3) male = Math.random() < 0.5;
+        TypeTrainer.getRandomTeam(this, level, pokecubes, worldObj);
+        setTypes();
     }
 
     @Override
     public void writeEntityToNBT(NBTTagCompound nbt)
     {
         super.writeEntityToNBT(nbt);
-        int n = 0;
-        for (ItemStack i : pokecubes)
-        {
-            if (i != null)
-            {
-                NBTTagCompound tag = new NBTTagCompound();
-                i.writeToNBT(tag);
-                nbt.setTag("slot" + n, tag);
-                n++;
-            }
-        }
-        if (this.itemList != null)
-        {
-            checkTradeIntegrity();
-            nbt.setTag("Offers", this.itemList.getRecipiesAsTags());
-        }
         nbt.setString("playerName", playerName);
         nbt.setBoolean("trades", trades);
         nbt.setBoolean("gender", male);
-        if (battleCooldown < 0) battleCooldown = Config.instance.trainerCooldown;
-        nbt.setInteger("battleCD", battleCooldown);
         nbt.setBoolean("randomTeam", randomize);
         nbt.setString("name", name);
-        nbt.setString("type", type.name);
-        if (outID != null) nbt.setString("outPokemob", outID.toString());
-        nbt.setInteger("aiState", dataManager.get(AIACTIONSTATESDW));
-        nbt.setInteger("cooldown", globalCooldown);
-        nbt.setIntArray("cooldowns", attackCooldown);
-        nbt.setInteger("friendly", friendlyCooldown);
-        NBTTagList nbttaglist = new NBTTagList();
-        if (reward == null || reward.length == 0)
-        {
-            reward = new ItemStack[] { new ItemStack(Items.EMERALD) };
-        }
-        for (int i = 0; i < this.reward.length; ++i)
-        {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            if (this.reward[i] != null)
-            {
-                this.reward[i].writeToNBT(nbttagcompound);
-            }
-            nbttaglist.appendTag(nbttagcompound);
-        }
-        nbt.setTag("reward", nbttaglist);
-    }
-
-    @Override
-    public void writeSpawnData(ByteBuf buffer)
-    {
-        NBTTagCompound tag = new NBTTagCompound();
-        this.writeEntityToNBT(tag);
-        new PacketBuffer(buffer).writeNBTTagCompoundToBuffer(tag);
     }
 }

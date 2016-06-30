@@ -33,6 +33,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import thut.api.entity.IMobColourable;
 
@@ -107,8 +108,20 @@ public class GuiTrainerEdit extends GuiScreen
             resetTeam = true;
             sendChooseToServer();
             resetTeam = false;
-            int[] numbers = trainer.pokenumbers;
-            int[] levels = trainer.pokelevels;
+            int[] numbers = new int[6];
+            int[] levels = new int[6];
+
+            for (int i = 0; i < 6; i++)
+            {
+                ItemStack stack = trainer.getPokemob(i);
+                if (stack == null) continue;
+                IPokemob pokemob = PokecubeManager.itemToPokemob(stack, trainer.getEntityWorld());
+                if (pokemob != null)
+                {
+                    numbers[i] = pokemob.getPokedexNb();
+                    levels[i] = pokemob.getLevel();
+                }
+            }
 
             textfieldPokedexNb0.setText(numbers[0] + "");
             textfieldLevel0.setText(levels[0] + "");
@@ -315,8 +328,20 @@ public class GuiTrainerEdit extends GuiScreen
         textfieldLevel5 = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset, height / 4 + 160 + yOffset, 30,
                 10);
 
-        int[] numbers = trainer.pokenumbers;
-        int[] levels = trainer.pokelevels;
+        int[] numbers = new int[6];
+        int[] levels = new int[6];
+
+        for (int i = 0; i < 6; i++)
+        {
+            ItemStack stack = trainer.getPokemob(i);
+            if (stack == null) continue;
+            IPokemob pokemob = PokecubeManager.itemToPokemob(stack, trainer.getEntityWorld());
+            if (pokemob != null)
+            {
+                numbers[i] = pokemob.getPokedexNb();
+                levels[i] = pokemob.getLevel();
+            }
+        }
 
         textfieldPokedexNb0.setText(numbers[0] + "");
         textfieldLevel0.setText(levels[0] + "");

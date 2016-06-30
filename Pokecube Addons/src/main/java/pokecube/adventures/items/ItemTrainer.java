@@ -29,7 +29,6 @@ import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityPokemartSeller;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
-import pokecube.adventures.entity.villager.EntityTrader;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.events.handlers.EventsHandler;
@@ -73,7 +72,8 @@ public class ItemTrainer extends Item
     /** Returns true if the item can be used on the given entity, e.g. shears on
      * sheep. */
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target, EnumHand hand)
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target,
+            EnumHand hand)
     {
         if (stack.getItemDamage() != 2) return false;
         if (!(target instanceof EntityVillager)) return false;
@@ -139,29 +139,25 @@ public class ItemTrainer extends Item
 
             if (player.isSneaking())
             {
-                t = new EntityTrader(world);
-            }
-            else
-            {
                 t = new EntityPokemartSeller(world);
-            }
 
-            location.offset(EnumFacing.UP).moveEntity(t);
-            world.spawnEntityInWorld(t);
-            ArrayList<EntityAIBase> toRemove = Lists.newArrayList();
-            for (EntityAITaskEntry task : t.tasks.taskEntries)
-            {
-                if (task.action instanceof GuardAI)
+                location.offset(EnumFacing.UP).moveEntity(t);
+                world.spawnEntityInWorld(t);
+                ArrayList<EntityAIBase> toRemove = Lists.newArrayList();
+                for (EntityAITaskEntry task : t.tasks.taskEntries)
                 {
-                    toRemove.add(task.action);
+                    if (task.action instanceof GuardAI)
+                    {
+                        toRemove.add(task.action);
+                    }
                 }
+                for (EntityAIBase ai : toRemove)
+                    t.tasks.removeTask(ai);
+                IGuardAICapability capability = t.getCapability(EventsHandler.GUARDAI_CAP, null);
+                capability.setActiveTime(new TimePeriod(0, 0.5));
+                capability.setPos(t.getPosition());
+                t.tasks.addTask(2, new GuardAI(t, capability));
             }
-            for (EntityAIBase ai : toRemove)
-                t.tasks.removeTask(ai);
-            IGuardAICapability capability = t.getCapability(EventsHandler.GUARDAI_CAP, null);
-            capability.setActiveTime(new TimePeriod(0, 0.5));
-            capability.setPos(t.getPosition());
-            t.tasks.addTask(2, new GuardAI(t, capability));
         }
         return new ActionResult<>(EnumActionResult.PASS, itemstack);
     }

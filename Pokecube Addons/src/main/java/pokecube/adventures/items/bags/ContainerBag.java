@@ -1,19 +1,20 @@
 package pokecube.adventures.items.bags;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
+import pokecube.adventures.network.packets.PacketBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 
 public class ContainerBag extends Container
 {
@@ -47,6 +48,16 @@ public class ContainerBag extends Container
         invBag = InventoryBag.getBag(ivplay.player);
         invPlayer = ivplay;
         bindInventories();
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        {
+            PacketBag packet = new PacketBag(PacketBag.ONOPEN);
+            packet.data.setInteger("N", invBag.boxes.length);
+            for (int i = 0; i < invBag.boxes.length; i++)
+            {
+                packet.data.setString("N" + i, invBag.boxes[i]);
+            }
+            PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) ivplay.player);
+        }
     }
 
     /**
@@ -115,21 +126,11 @@ public class ContainerBag extends Container
     public void changeName(String name)
     {
         invBag.boxes[invBag.getPage()] = name;
-
-        if (PokecubeCore.isOnClientSide())
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            byte[] string = name.getBytes();
-            byte[] message = new byte[string.length + 2];
-
-            message[0] = 11;
-            message[1] = (byte) string.length;
-            for (int i = 2; i < message.length; i++)
-            {
-                message[i] = string[i - 2];
-            }
-            PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 6, message);
-            PokecubePacketHandler.sendToServer(packet);
-            return;
+            PacketBag packet = new PacketBag(PacketBag.RENAME);
+            packet.data.setString("N", name);
+            PokecubeMod.packetPipeline.sendToServer(packet);
         }
     }
 
@@ -165,6 +166,13 @@ public class ContainerBag extends Container
     {
         if (page - 1 == invBag.getPage()) return;
         invBag.setPage(page - 1);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PacketBag packet = new PacketBag(PacketBag.SETPAGE);
+            packet.data.setInteger("P", page);
+            PokecubeMod.packetPipeline.sendToServer(packet);
+            invBag.clear();
+        }
         bindInventories();
     }
 
@@ -233,9 +241,10 @@ public class ContainerBag extends Container
 
     public void updateInventoryPages(int dir, InventoryPlayer invent)
     {
-        invBag.setPage((invBag.getPage() == 0) && (dir == -1) ? InventoryBag.PAGECOUNT - 1
-                : (invBag.getPage() + dir) % InventoryBag.PAGECOUNT);
-        bindInventories();
+        int page = (invBag.getPage() == 0) && (dir == -1) ? InventoryBag.PAGECOUNT - 1
+                : (invBag.getPage() + dir) % InventoryBag.PAGECOUNT;
+        page += 1;
+        gotoInventoryPage(page);
     }
 
 }

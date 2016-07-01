@@ -19,9 +19,8 @@ import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.network.PCPacketHandler;
-import pokecube.core.network.PCPacketHandler.MessageServer;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.packets.PacketTrade;
 import pokecube.core.utils.PokeType;
 
 public class GuiTMCreator extends GuiContainer
@@ -30,10 +29,10 @@ public class GuiTMCreator extends GuiContainer
     ContainerTMCreator           cont;
     GuiTextField                 textFieldSearch;
 
-    int               index = 0;
-    ArrayList<String> moves = new ArrayList<String>();
+    int                          index = 0;
+    ArrayList<String>            moves = new ArrayList<String>();
 
-    private Slot theSlot;
+    private Slot                 theSlot;
 
     public GuiTMCreator(ContainerTMCreator container)
     {
@@ -55,9 +54,8 @@ public class GuiTMCreator extends GuiContainer
         }
         if (guibutton.id == 4 && !moves.isEmpty())
         {
-            table.addMoveToTM(moves.get(index));
-            String message = 2 + "," + moves.get(index);
-            MessageServer packet = PCPacketHandler.makeServerPacket(MessageServer.TRADE, message.getBytes());
+            PacketTrade packet = new PacketTrade(PacketTrade.MAKETM);
+            packet.data.setString("M", moves.get(index));
             PokecubePacketHandler.sendToServer(packet);
         }
     }

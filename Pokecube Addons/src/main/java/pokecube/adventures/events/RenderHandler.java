@@ -6,7 +6,9 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
@@ -98,6 +100,18 @@ public class RenderHandler
         if (stack != null && stack.hasTagCompound() && stack.getTagCompound().getBoolean("isapokebag"))
         {
             evt.getToolTip().add("PokeBag");
+        }
+        if (stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
+        {
+            String colour = I18n.format(
+                    EnumDyeColor.byDyeDamage(stack.getTagCompound().getInteger("dyeColour")).getUnlocalizedName());
+            boolean has = false;
+            for (String s : evt.getToolTip())
+            {
+                has = s.equals(colour);
+                if (has) break;
+            }
+            if (!has) evt.getToolTip().add(colour);
         }
         if (player == null || player.openContainer == null || stack == null) return;
         if (player.openContainer instanceof ContainerCloner && stack.getItem() instanceof ItemPokemobEgg)

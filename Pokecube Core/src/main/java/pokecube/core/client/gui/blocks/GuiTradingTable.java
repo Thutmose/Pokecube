@@ -21,9 +21,8 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.network.PCPacketHandler;
-import pokecube.core.network.PCPacketHandler.MessageServer;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.packets.PacketTrade;
 
 public class GuiTradingTable extends GuiContainer
 {
@@ -51,7 +50,11 @@ public class GuiTradingTable extends GuiContainer
     {
         if (guibutton.id == 1)
         {
-            MessageServer packet = PCPacketHandler.makeServerPacket(MessageServer.TRADE, "0".getBytes());
+            PacketTrade packet = new PacketTrade(PacketTrade.SETTRADER);
+            packet.data.setBoolean("R", false);
+            packet.data.setIntArray("L",
+                    new int[] { table.getPos().getX(), table.getPos().getY(), table.getPos().getZ() });
+            packet.data.setInteger("I", entityPlayer.getEntityId());
             PokecubePacketHandler.sendToServer(packet);
         }
     }
@@ -150,10 +153,9 @@ public class GuiTradingTable extends GuiContainer
     @Override
     public void onGuiClosed()
     {
-        table.player1 = null;
-        table.player2 = null;
-        MessageServer packet = PCPacketHandler.makeServerPacket(MessageServer.TRADE,
-                ("5," + table.getPos().getX() + "," + table.getPos().getY() + "," + table.getPos().getZ()).getBytes());
+        PacketTrade packet = new PacketTrade(PacketTrade.SETTRADER);
+        packet.data.setBoolean("R", true);
+        packet.data.setIntArray("L", new int[] { table.getPos().getX(), table.getPos().getY(), table.getPos().getZ() });
         PokecubePacketHandler.sendToServer(packet);
     }
 

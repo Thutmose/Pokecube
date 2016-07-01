@@ -186,9 +186,9 @@ public class TrainerSpawnHandler
 
             if (m != ttype.material) { return; }
 
-            int maxXp = SpawnHandler.getSpawnXp(w, v, Database.getEntry(1));
+            int level = SpawnHandler.getSpawnLevel(w, v, Database.getEntry(1));
             long time = System.nanoTime();
-            EntityTrainer t = new EntityTrainer(w, ttype, maxXp);
+            EntityTrainer t = new EntityTrainer(w, ttype, level);
 
             double dt = (System.nanoTime() - time) / 1000000D;
             if (dt > 20) System.err.println(

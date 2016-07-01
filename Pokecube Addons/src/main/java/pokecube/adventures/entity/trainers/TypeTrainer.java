@@ -111,7 +111,7 @@ public class TypeTrainer
         return ret;
     }
 
-    private static ItemStack makeStack(PokedexEntry entry, EntityLivingBase trainer, World world, int level)
+    public static ItemStack makeStack(PokedexEntry entry, EntityLivingBase trainer, World world, int level)
     {
         int num = entry.getPokedexNb();
         if (Pokedex.getInstance().getEntry(num) == null) return null;
@@ -139,6 +139,7 @@ public class TypeTrainer
             }
             ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
 
+            entity.changeForme(entry.getName());
             entity.setPokemonOwner(trainer);
             entity.setPokecubeId(0);
             entity.setExp(Tools.levelToXp(entity.getExperienceMode(), level), true, false);
@@ -295,6 +296,7 @@ public class TypeTrainer
         }
         if (loot[0] == null) loot[0] = new ItemStack(Items.EMERALD);
     }
+
     public void initTrainerItems(EntityTrainer trainer)
     {
         initLoot();

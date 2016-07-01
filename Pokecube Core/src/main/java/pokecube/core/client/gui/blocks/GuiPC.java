@@ -16,9 +16,6 @@ import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.blocks.pc.SlotPC;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.network.PCPacketHandler;
-import pokecube.core.network.PCPacketHandler.MessageServer;
-import pokecube.core.network.PokecubePacketHandler;
 
 public class GuiPC extends GuiContainer
 {
@@ -49,7 +46,6 @@ public class GuiPC extends GuiContainer
         page = cont.getPageNb();
         boxName = cont.getPage();
         if (cont.pcTile != null) this.bound = cont.pcTile.isBound();
-        // release = cont.release;
     }
 
     @Override
@@ -57,25 +53,20 @@ public class GuiPC extends GuiContainer
     {
         if (mc.thePlayer.getEntityWorld().isRemote)
         {
-            byte[] message = { (byte) guibutton.id };
-            // if(guibutton.id<5)
-            // {
-            MessageServer packet = PCPacketHandler.makeServerPacket(MessageServer.PC, message);
-            PokecubePacketHandler.sendToServer(packet);
-            // }
-            if (guibutton.id == 5)
+            if (guibutton.id == 5)// Toggle Bound
             {
-                // cont.pcTile.toggleBound();
-                // mc.thePlayer.closeScreen();
+                cont.pcTile.toggleBound();
+                mc.thePlayer.closeScreen();
                 return;
             }
-            if (guibutton.id == 9)
+            if (guibutton.id == 8)// Bind PC to self
             {
-                // mc.thePlayer.closeScreen();
+                cont.pcTile.setBoundOwner(mc.thePlayer);
+                mc.thePlayer.closeScreen();
                 return;
             }
 
-            else if (guibutton.id == 4)
+            else if (guibutton.id == 4)// Toggle Rename
             {
                 if (toRename)
                 {
@@ -84,11 +75,11 @@ public class GuiPC extends GuiContainer
                 }
                 toRename = !toRename;
             }
-            else if (guibutton.id == 3)
+            else if (guibutton.id == 3)// Toggle Auto To PC
             {
-                cont.inv.autoToPC = !cont.inv.autoToPC;
+                cont.toggleAuto();
             }
-            else if (guibutton.id == 6)
+            else if (guibutton.id == 6)// Initialte Release
             {
                 release = !release;
                 if (!release && cont.release)
@@ -100,9 +91,6 @@ public class GuiPC extends GuiContainer
                         SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
                         slot.release = false;
                     }
-                    message[0] = 13;
-                    packet = PCPacketHandler.makeServerPacket(MessageServer.PC, message);
-                    PokecubePacketHandler.sendToServer(packet);
                 }
                 else
                 {
@@ -112,11 +100,7 @@ public class GuiPC extends GuiContainer
                         SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
                         slot.release = true;
                     }
-                    message[0] = 12;
-                    packet = PCPacketHandler.makeServerPacket(MessageServer.PC, message);
-                    PokecubePacketHandler.sendToServer(packet);
                 }
-
                 cont.release = release;
                 if (release)
                 {
@@ -129,7 +113,7 @@ public class GuiPC extends GuiContainer
                     buttonList.get(6).visible = release;
                 }
             }
-            else if (guibutton.id == 7)
+            else if (guibutton.id == 7)// Confirm Release
             {
                 release = !release;
                 cont.setRelease(release);
@@ -145,22 +129,10 @@ public class GuiPC extends GuiContainer
                 }
                 mc.thePlayer.closeScreen();
             }
-            else if (guibutton.id == 8)
-            {
-                // PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-                // buf.writeByte(7);
-                // buf.writeBoolean(true);
-                // Vector3 loc = Vector3.getNewVector().set(cont.pcTile);
-                // loc.writeToBuff(buf);
-                // loc.freeVectorFromPool();
-                // packet = new MessageServer(buf);
-                // PokecubePacketHandler.sendToServer(packet);
-            }
             else
             {
                 cont.updateInventoryPages((byte) (guibutton.id == 2 ? -1 : guibutton.id == 1 ? 1 : 0),
                         mc.thePlayer.inventory);
-
                 textFieldSelectedBox.setText(cont.getPageNb());
             }
         }
@@ -184,8 +156,7 @@ public class GuiPC extends GuiContainer
         GL11.glScaled(0.8, 0.8, 0.8);
 
         String name = cont.pcTile.getName();
-        String pcTitle = bound ? name
-                : I18n.format("tile.pc.title", cont.inv.seenOwner ? "Thutmose" : "Someone");
+        String pcTitle = bound ? name : I18n.format("tile.pc.title", cont.inv.seenOwner ? "Thutmose" : "Someone");
         fontRendererObj.drawString(cont.getPage(), xSize / 2 - fontRendererObj.getStringWidth(cont.getPage()) / 3 - 60,
                 13, 4210752);
         fontRendererObj.drawString(pcTitle, xSize / 2 - fontRendererObj.getStringWidth(pcTitle) / 3 - 60, 4, 4210752);
@@ -268,8 +239,8 @@ public class GuiPC extends GuiContainer
 
         if (!bound)
         {
-            String auto = cont.inv.autoToPC?I18n.format("tile.pc.autoon"):I18n.format("tile.pc.autooff");
-            System.out.println(auto+" "+cont.inv.autoToPC+" "+(cont.inv == InventoryPC.blank));
+            String auto = cont.inv.autoToPC ? I18n.format("tile.pc.autoon") : I18n.format("tile.pc.autooff");
+            System.out.println(auto + " " + cont.inv.autoToPC + " " + (cont.inv == InventoryPC.blank));
             buttonList.add(new GuiButton(3, width / 2 - xOffset - 137, height / 2 - yOffset - 105, 50, 20, auto));
         }
         if (!bound)
@@ -285,7 +256,7 @@ public class GuiPC extends GuiContainer
             {
                 buttonList
                         .add(new GuiButton(5, width / 2 - xOffset + 89, height / 2 - yOffset - 125, 50, 20, "public"));
-                buttonList.add(new GuiButton(9, width / 2 - xOffset + 89, height / 2 - yOffset - 105, 50, 20, "bind"));
+                buttonList.add(new GuiButton(8, width / 2 - xOffset + 89, height / 2 - yOffset - 105, 50, 20, "bind"));
             }
         }
         else

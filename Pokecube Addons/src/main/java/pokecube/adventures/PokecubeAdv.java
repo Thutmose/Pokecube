@@ -30,6 +30,8 @@ import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.EntityTarget;
+import pokecube.adventures.items.bags.InventoryBag;
+import pokecube.adventures.network.PacketPokeAdv;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient.MessageHandlerClient;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
@@ -90,7 +92,7 @@ public class PokecubeAdv
     public void load(FMLInitializationEvent evt)
     {
         proxy.initClient();
-
+        PacketPokeAdv.init();
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
@@ -179,6 +181,7 @@ public class PokecubeAdv
     public void WorldUnloadEvent(FMLServerStoppedEvent evt)
     {
         TrainerSpawnHandler.trainers.clear();
+        InventoryBag.clearInventory();
         TeamManager.clearInstance();
     }
 

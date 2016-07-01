@@ -48,9 +48,8 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.network.PCPacketHandler;
-import pokecube.core.network.PCPacketHandler.MessageClient;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.packets.PacketTrade;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -148,18 +147,17 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         {
             player1 = null;
             player2 = null;
-            String message = 9 + "," + getPos().getX() + "," + getPos().getY() + "," + getPos().getZ() + ",0,0";
-            Vector3 point = Vector3.getNewVector().set(player);
-            MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
-            PokecubePacketHandler.sendToAllNear(packet, point, worldObj.provider.getDimension(), 10);
+            PacketTrade packet = new PacketTrade(PacketTrade.SETTRADER);
+            packet.data.setBoolean("R", true);
+            packet.data.setIntArray("L", new int[] { getPos().getX(), getPos().getY(), getPos().getZ() });
+            PokecubePacketHandler.sendToAllNear(packet, Vector3.getNewVector().set(this),
+                    worldObj.provider.getDimension(), 64);
             return;
         }
         if (inventory[0] != null)
         {
             if (PokecubeManager.isFilled(inventory[0])
-                    && (PokecubeManager.getOwner(inventory[0]).equals(player.getUniqueID().toString())
-                    // || player.worldObj.isRemote
-                    ))
+                    && (PokecubeManager.getOwner(inventory[0]).equals(player.getUniqueID().toString())))
             {
                 if (player1 == null) player1 = player;
                 else
@@ -170,15 +168,12 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
                 if (!player.getEntityWorld().isRemote)
                 {
-                    String message = 9 + "," + getPos().getX() + "," + getPos().getY() + "," + getPos().getZ() + ","
-                            + player.getEntityId();
-                    if (player1 == null)
-                    {
-                        message += "," + 0;
-                    }
-                    Vector3 point = Vector3.getNewVector().set(player);
-                    MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
-                    PokecubePacketHandler.sendToAllNear(packet, point, player.dimension, 10);
+                    PacketTrade packet = new PacketTrade(PacketTrade.SETTRADER);
+                    packet.data.setBoolean("R", false);
+                    packet.data.setIntArray("L", new int[] { getPos().getX(), getPos().getY(), getPos().getZ() });
+                    packet.data.setInteger("I", player.getEntityId());
+                    PokecubePacketHandler.sendToAllNear(packet, Vector3.getNewVector().set(this),
+                            worldObj.provider.getDimension(), 64);
                 }
                 if (player2 == null)
                 {
@@ -203,17 +198,12 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
                 if (!player.getEntityWorld().isRemote)
                 {
-                    String message = 9 + "," + getPos().getX() + "," + getPos().getY() + "," + getPos().getZ() + ","
-                            + player.getEntityId();
-
-                    if (player2 == null)
-                    {
-                        message += "," + 0;
-                    }
-
-                    Vector3 point = Vector3.getNewVector().set(player);
-                    MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
-                    PokecubePacketHandler.sendToAllNear(packet, point, player.dimension, 10);
+                    PacketTrade packet = new PacketTrade(PacketTrade.SETTRADER);
+                    packet.data.setBoolean("R", false);
+                    packet.data.setIntArray("L", new int[] { getPos().getX(), getPos().getY(), getPos().getZ() });
+                    packet.data.setInteger("I", player.getEntityId());
+                    PokecubePacketHandler.sendToAllNear(packet, Vector3.getNewVector().set(this),
+                            worldObj.provider.getDimension(), 64);
                 }
                 if (player1 == null)
                 {
@@ -513,11 +503,13 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             InventoryPC pcInv = InventoryPC.getPC(player.getUniqueID().toString());
             ArrayList<String> moves = getMoves(pcInv);
             Collections.sort(moves);
-            String message = "" + 3 + "," + player.getUniqueID().toString();
-            for (String s : moves)
-                message += "," + s;
 
-            MessageClient packet = PCPacketHandler.makeClientPacket(MessageClient.TRADE, message.getBytes());
+            PacketTrade packet = new PacketTrade(PacketTrade.SETMOVES);
+            packet.data.setInteger("N", moves.size());
+            for (int i = 0; i < moves.size(); i++)
+            {
+                packet.data.setString("M" + i, moves.get(i));
+            }
             PokecubePacketHandler.sendToClient(packet, player);
             this.moves.put(player.getName(), moves);
             return moves;

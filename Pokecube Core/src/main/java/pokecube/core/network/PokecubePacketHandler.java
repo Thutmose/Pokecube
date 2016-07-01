@@ -34,6 +34,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.AISaveHandler;
@@ -58,6 +59,8 @@ import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.moves.animations.MoveAnimationHelper.MoveAnimation;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Utility;
+import pokecube.core.network.packets.PacketPC;
+import pokecube.core.network.packets.PacketTrade;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
@@ -692,6 +695,18 @@ public class PokecubePacketHandler
 
     public static HashMap<String, StarterInfoContainer> specialStarters               = Maps.newHashMap();
 
+    public static void init()
+    {
+        PokecubeMod.packetPipeline.registerMessage(PacketPC.class, PacketPC.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketPC.class, PacketPC.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+        PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+    }
+    
     private static void handleChooseFirstClient(ByteBuf buffer, EntityPlayer player)
     {
         if (player == null)

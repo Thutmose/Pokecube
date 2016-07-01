@@ -2,6 +2,7 @@ package pokecube.core.events.handlers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -9,8 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
@@ -26,14 +25,16 @@ import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.network.PCPacketHandler.MessageClient;
-import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.packets.PacketPC;
 import pokecube.core.utils.PCSaveHandler;
 
 public class PCEventsHandler
 {
+    public static final UUID THUTMOSE = UUID.fromString("f1dacdfd-42d6-4af0-8234-b2f180ecd6a8");
+
     /** Gets a list of all pokemobs out of their cube belonging to the player in
      * the player's current world.
      * 
@@ -77,7 +78,6 @@ public class PCEventsHandler
     public static void recallAllPokemobs(Entity player)
     {
         List<Object> pokemobs = new ArrayList<Object>(player.getEntityWorld().loadedEntityList);
-        boolean sentToPC = false;
         for (Object o : pokemobs)
         {
             if (o instanceof IPokemob)
@@ -99,24 +99,8 @@ public class PCEventsHandler
                     {
                         InventoryPC.addStackToPC(name, mob.getEntityItem());
                         mob.setDead();
-                        sentToPC = true;
                     }
                 }
-            }
-        }
-        if (sentToPC && player instanceof EntityPlayer)
-        {
-            String uuid = player.getUniqueID().toString();
-            if (!PokecubeCore.isOnClientSide())
-            {
-                PCSaveHandler.getInstance().savePC(uuid);
-                NBTTagCompound nbt = new NBTTagCompound();
-                NBTTagList tags = InventoryPC.saveToNBT(player.getUniqueID().toString());
-
-                nbt.setTag("pc", tags);
-
-                MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
-                PokecubePacketHandler.sendToClient(packet, (EntityPlayer) player);
             }
         }
     }
@@ -132,8 +116,7 @@ public class PCEventsHandler
         if (!(evt.getEntity() instanceof EntityPlayer)) return;
 
         EntityPlayer entityPlayer = (EntityPlayer) evt.getEntity();
-
-        if (entityPlayer.getName().toLowerCase().trim().equals("thutmose"))
+        if (entityPlayer.getUniqueID().equals(THUTMOSE))
         {
             for (Object o : evt.getWorld().playerEntities)
             {
@@ -142,17 +125,12 @@ public class PCEventsHandler
                     EntityPlayer p = (EntityPlayer) o;
                     if (InventoryPC.map.containsKey(p.getUniqueID().toString()))
                     {
-                        InventoryPC.getPC(p.getUniqueID().toString()).seenOwner = true;
-
+                        InventoryPC pc = InventoryPC.getPC(p);
+                        pc.seenOwner = true;
                         if (evt.getWorld().isRemote) continue;
-
-                        NBTTagCompound nbt = new NBTTagCompound();
-                        NBTTagList tags = InventoryPC.saveToNBT(p.getUniqueID().toString());
-
-                        nbt.setTag("pc", tags);
-                        nbt.setBoolean("pcCreator", true);
-                        MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
-                        PokecubePacketHandler.sendToClient(packet, p);
+                        PacketPC packet = new PacketPC(PacketPC.ONOPEN);
+                        packet.data.setBoolean("O", pc.seenOwner);
+                        PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) p);
                     }
                 }
             }
@@ -172,14 +150,11 @@ public class PCEventsHandler
             PCSaveHandler.getInstance().seenPCCreator = true;
         }
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-
-        NBTTagCompound nbt = new NBTTagCompound();
-        NBTTagList tags = InventoryPC.saveToNBT(entityPlayer.getUniqueID().toString());
-
-        nbt.setTag("pc", tags);
-        nbt.setBoolean("pcCreator", PCSaveHandler.getInstance().seenPCCreator);
-        MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
-        PokecubePacketHandler.sendToClient(packet, entityPlayer);
+        InventoryPC pc = InventoryPC.getPC(evt.player);
+        PacketPC packet = new PacketPC(PacketPC.ONOPEN);
+        packet.data.setBoolean("O", pc.seenOwner);
+        packet.data.setBoolean("A", pc.autoToPC);
+        PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) evt.player);
 
     }
 
@@ -277,21 +252,6 @@ public class PCEventsHandler
             ItemStack item = inv.mainInventory[i];
             if (ContainerPC.isItemValid(item)) inv.mainInventory[i] = null;
         }
-
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-        String uuid = player.getUniqueID().toString();
-        if (!PokecubeCore.isOnClientSide())
-        {
-            PCSaveHandler.getInstance().savePC(uuid);
-            NBTTagCompound nbt = new NBTTagCompound();
-            NBTTagList tags = InventoryPC.saveToNBT(player.getUniqueID().toString());
-
-            nbt.setTag("pc", tags);
-
-            MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
-            PokecubePacketHandler.sendToClient(packet, player);
-        }
-
     }
 
     /** Tries to send pokecube to PC if player has no room in inventory for it.
@@ -314,6 +274,8 @@ public class PCEventsHandler
             InventoryPC pc = InventoryPC.getPC(PokecubeManager.getOwner(evt.filledCube));
             int num = inv.getFirstEmptyStack();
 
+            System.out.println(pc.autoToPC);
+            
             if (evt.filledCube == null || pc == null)
             {
                 System.err.println("Cube is null");

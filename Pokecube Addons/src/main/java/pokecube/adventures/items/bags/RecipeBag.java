@@ -80,6 +80,13 @@ public class RecipeBag implements IRecipe
                 if (!output.hasTagCompound()) output.setTagCompound(new NBTTagCompound());
                 output.getTagCompound().setInteger("dyeColour", dyeStack.getItemDamage());
             }
+            else if (dye && armour && armourStack.hasTagCompound()
+                    && armourStack.getTagCompound().getBoolean("isapokebag"))
+            {
+                output = armourStack.copy();
+                if (!output.hasTagCompound()) output.setTagCompound(new NBTTagCompound());
+                output.getTagCompound().setInteger("dyeColour", dyeStack.getItemDamage());
+            }
             return output != null;
         }
         output = armourStack.copy();
@@ -88,6 +95,10 @@ public class RecipeBag implements IRecipe
         if (dye)
         {
             output.getTagCompound().setInteger("dyeColour", dyeStack.getItemDamage());
+        }
+        else if (bagStack.hasTagCompound() && bagStack.getTagCompound().hasKey("dyeColour"))
+        {
+            output.getTagCompound().setInteger("dyeColour", bagStack.getTagCompound().getInteger("dyeColour"));
         }
         return output != null;
     }

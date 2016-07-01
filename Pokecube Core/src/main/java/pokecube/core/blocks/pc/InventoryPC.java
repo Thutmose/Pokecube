@@ -19,8 +19,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.network.PCPacketHandler.MessageClient;
-import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.PCSaveHandler;
 import pokecube.core.utils.Tools;
 
@@ -65,18 +63,7 @@ public class InventoryPC implements IInventory
         {
             addStackToPC(player, mob);
         }
-        String uuid = player;
-        if (!PokecubeCore.isOnClientSide() && PokecubeCore.proxy.getPlayer(uuid) != null)
-        {
-            PCSaveHandler.getInstance().savePC(uuid);
-            NBTTagCompound nbt = new NBTTagCompound();
-            NBTTagList tags = InventoryPC.saveToNBT(player);
-
-            nbt.setTag("pc", tags);
-
-            MessageClient packet = new MessageClient(MessageClient.PERSONALPC, nbt);
-            PokecubePacketHandler.sendToClient(packet, PokecubeCore.proxy.getPlayer(uuid));
-        }
+        //TODO see if update packet here was needed.
     }
 
     public static void addStackToPC(String uuid, ItemStack mob)
@@ -389,7 +376,7 @@ public class InventoryPC implements IInventory
     @Override
     public void clear()
     {
-
+        this.contents.clear();
     }
 
     @Override

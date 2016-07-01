@@ -108,13 +108,13 @@ public class ItemTrainer extends Item
                 if (itemstack.getItemDamage() == 0)
                 {
                     TypeTrainer type = TypeTrainer.getTrainer("");
-                    EntityTrainer t = new EntityTrainer(world, type, 1000, location.offset(EnumFacing.UP), true);
+                    EntityTrainer t = new EntityTrainer(world, type, 10, location.offset(EnumFacing.UP), true);
                     world.spawnEntityInWorld(t);
                 }
                 else if (itemstack.getItemDamage() == 1)
                 {
                     TypeTrainer type = TypeTrainer.getTrainer("");
-                    EntityLeader t = new EntityLeader(world, type, 1000, location.offset(EnumFacing.UP));
+                    EntityLeader t = new EntityLeader(world, type, 10, location.offset(EnumFacing.UP));
                     world.spawnEntityInWorld(t);
                 }
             }

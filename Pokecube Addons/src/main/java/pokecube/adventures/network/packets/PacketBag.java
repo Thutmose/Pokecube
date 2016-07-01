@@ -20,7 +20,7 @@ public class PacketBag implements IMessage, IMessageHandler<PacketBag, IMessage>
     public static final byte SETPAGE = 0;
     public static final byte RENAME  = 1;
     public static final byte ONOPEN  = 2;
-    public static final byte OPEN    = 2;
+    public static final byte OPEN    = 3;
 
     byte                     message;
     public NBTTagCompound    data    = new NBTTagCompound();

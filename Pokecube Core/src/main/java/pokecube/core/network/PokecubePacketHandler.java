@@ -26,10 +26,7 @@ import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -44,7 +41,6 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.database.stats.StatsCollector;
-import pokecube.core.events.StarterEvent;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IHealer;
@@ -59,6 +55,7 @@ import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.moves.animations.MoveAnimationHelper.MoveAnimation;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Utility;
+import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketPC;
 import pokecube.core.network.packets.PacketTrade;
 import pokecube.core.utils.PokecubeSerializer;
@@ -73,27 +70,6 @@ import thut.api.terrain.TerrainSegment;
 /** @author Manchou */
 public class PokecubePacketHandler
 {
-    private static class GuiOpener
-    {
-        final EntityPlayer player;
-        final boolean      starter;
-
-        public GuiOpener(EntityPlayer player, boolean starter)
-        {
-            this.player = player;
-            this.starter = starter;
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        @SubscribeEvent
-        public void tick(ClientTickEvent event)
-        {
-            pokecube.core.client.gui.GuiChooseFirstPokemob.options = starter;
-            player.openGui(PokecubeCore.instance, Config.GUICHOOSEFIRSTPOKEMOB_ID, player.getEntityWorld(), 0, 0, 0);
-            MinecraftForge.EVENT_BUS.unregister(this);
-        }
-
-    }
 
     public static class PokecubeClientPacket implements IMessage
     {
@@ -116,11 +92,7 @@ public class PokecubePacketHandler
                         public void run()
                         {
                             byte channel = buffer.readByte();
-                            if (channel == CHOOSE1ST)
-                            {
-                                handleChooseFirstClient(buffer, player);
-                            }
-                            else if (channel == MOVEANIMATION)
+                            if (channel == MOVEANIMATION)
                             {
                                 byte[] message = new byte[buffer.array().length - 1];
                                 for (int i = 0; i < message.length; i++)
@@ -270,7 +242,7 @@ public class PokecubePacketHandler
             }
         }
 
-        public static final byte CHOOSE1ST      = 0;
+//        public static final byte CHOOSE1ST      = 0;
         public static final byte MOVEANIMATION  = 1;
         public static final byte TERRAIN        = 5;
         public static final byte STATS          = 6;
@@ -348,11 +320,7 @@ public class PokecubePacketHandler
                         public void run()
                         {
                             byte channel = buffer.readByte();
-                            if (channel == CHOOSE1ST)
-                            {
-                                handleChooseFirstServer(buffer, player);
-                            }
-                            else if (channel == 1)
+                            if (channel == 1)
                             {
                                 new Exception().printStackTrace();
                             }
@@ -463,7 +431,7 @@ public class PokecubePacketHandler
             }
         }
 
-        public static final byte CHOOSE1ST      = 0;
+//        public static final byte CHOOSE1ST      = 0;
         public static final byte POKECENTER     = 3;
         public static final byte POKEMOBSPAWNER = 4;
         public static final byte POKEDEX        = 5;
@@ -705,135 +673,10 @@ public class PokecubePacketHandler
                 PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
-    }
-    
-    private static void handleChooseFirstClient(ByteBuf buffer, EntityPlayer player)
-    {
-        if (player == null)
-        {
-            new NullPointerException("Null Player while recieving starter packet");
-            return;
-        }
-        boolean openGui = buffer.readBoolean();
-        if (openGui)
-        {
-            boolean special = buffer.readBoolean();
-            int toAdd = buffer.readableBytes() >= 4 ? buffer.readInt() : 0;
-            ArrayList<Integer> starters = new ArrayList<Integer>();
-            for (int i = 0; i < toAdd; i++)
-            {
-                starters.add(buffer.readInt());
-            }
-            System.out.println(special + " " + toAdd + " " + starters);
-            pokecube.core.client.gui.GuiChooseFirstPokemob.starters = starters.toArray(new Integer[0]);
-            new GuiOpener(player, !special);
-        }
-        else
-        {
-            PokecubeSerializer.getInstance().setHasStarter(player, buffer.readBoolean());
-        }
-    }
-
-    private static void handleChooseFirstServer(ByteBuf buffer, EntityPlayer player)
-    {
-        int pokedexNb = buffer.readInt();
-        // This is if the player chose to get normal starter, instead of special
-        // one.
-        boolean fixed = buffer.readBoolean();
-        String username = player.getName().toLowerCase();
-        if (PokecubeSerializer.getInstance().hasStarter(player)) { return; }
-
-        // Fire pre event to deny starters at all
-        StarterEvent.Pre pre = new StarterEvent.Pre(player);
-        MinecraftForge.EVENT_BUS.post(pre);
-        if (pre.isCanceled()) return;
-
-        List<ItemStack> items = Lists.newArrayList();
-
-        // 10 Pokecubes
-        ItemStack pokecubesItemStack = new ItemStack(PokecubeItems.getEmptyCube(0), 10);
-        items.add(pokecubesItemStack);
-        if (giveHealer)
-        {
-            ItemStack pokecenterItemStack = new ItemStack(PokecubeItems.pokecenter);
-            items.add(pokecenterItemStack);
-        }
-        // Pokedex
-        ItemStack pokedexItemStack = new ItemStack(PokecubeItems.pokedex);
-        items.add(pokedexItemStack);
-
-        // If they don't actually get the picked starter, then no achievement.
-        boolean starterGiven = false;
-        if (!(specialStarters.containsKey(player.getUniqueID().toString()) || specialStarters.containsKey(username))
-                || fixed)
-        {
-            // No Custom Starter. just gets this
-            ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(pokedexNb, player);
-            items.add(pokemobItemstack);
-            starterGiven = true;
-        }
-        else
-        {
-            StarterInfoContainer info = specialStarters.get(player.getUniqueID().toString());
-            if (info == null) info = specialStarters.get(username);
-            StarterInfo[] starter = specialStarters.get(username).info;
-
-            for (StarterInfo i : starter)
-            {
-                if (i == null)
-                {
-                    if (!starterGiven)
-                    {
-                        starterGiven = true;
-                        ItemStack pokemobItemstack = PokecubeSerializer.getInstance().starter(pokedexNb, player);
-                        items.add(pokemobItemstack);
-                    }
-                }
-                else
-                {
-                    ItemStack start = i.makeStack(player);
-                    if (start == null && !starterGiven)
-                    {
-                        start = i.makeStack(player, pokedexNb);
-                        starterGiven = true;
-                    }
-                    if (start != null) items.add(start);
-                }
-
-            }
-        }
-        // Fire pick event to add new starters or items
-        StarterEvent.Pick pick = new StarterEvent.Pick(player, items, pokedexNb);
-        System.out.println(items);
-        MinecraftForge.EVENT_BUS.post(pick);
-        if (pick.isCanceled()) return;
-        System.out.println(pick.starterPack + " " + items);
-        items.clear();
-        items.addAll(pick.starterPack);
-        System.out.println(items);
-        player.addStat(PokecubeMod.get1stPokemob, 1);
-        if (starterGiven) player.addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
-        for (ItemStack e : items)
-        {
-            if (e == null || e.getItem() == null) continue;
-            player.inventory.addItemStackToInventory(e);
-            pokedexNb = PokecubeManager.getPokedexNb(e);
-            if (pokedexNb > 0)
-            {
-                StatsCollector.addCapture(PokecubeManager.itemToPokemob(e, player.getEntityWorld()));
-            }
-        }
-        PokecubeSerializer.getInstance().setHasStarter(player);
-        PokecubeSerializer.getInstance().save();
-
-        // Send Packt to client to notifiy about having a starter now.
-        PokecubeClientPacket packet;
-        buffer = new PacketBuffer(Unpooled.buffer(4));
-        buffer.writeByte(PokecubeClientPacket.CHOOSE1ST);
-        buffer.writeBoolean(false);
-        buffer.writeBoolean(true);
-        packet = new PokecubeClientPacket(buffer);
-        PokecubePacketHandler.sendToClient(packet, player);
+        PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
     }
 
     public static void handlePokecenterPacket(byte[] packet, EntityPlayerMP sender)

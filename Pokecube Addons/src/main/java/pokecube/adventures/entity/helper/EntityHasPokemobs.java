@@ -114,6 +114,10 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
             }
             return;
         }
+        if (this.ticksExisted % 20 == 0 && this.getHealth() < this.getMaxHealth())
+        {
+            this.setHealth(Math.min(this.getHealth() + 1, this.getMaxHealth()));
+        }
         despawncounter = 0;
     }
 
@@ -206,6 +210,10 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         boolean done = attackCooldown <= 0;
         cooldown--;
         if (getAIState(INBATTLE)) return;
+        if (!done && getTarget() != null)
+        {
+            setTarget(null);
+        }
         if (done)
         {
             attackCooldown = -1;
@@ -264,20 +272,23 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         }
         else
         {
-            attackCooldown = battleCooldown;
             nextSlot = -1;
         }
 
         this.setAIState(INBATTLE, false);
         if (outID == null && outMob == null && !getAIState(THROWING))
         {
-            onDefeated(target);
+            if (attackCooldown <= 0)
+            {
+                onDefeated(target);
+                attackCooldown = battleCooldown;
+            }
         }
     }
 
     public void setTarget(EntityLivingBase target)
     {
-        if (target != null && target != this.target)
+        if (target != null && target != this.target && attackCooldown <= 0)
         {
             cooldown = Config.instance.trainerBattleDelay;
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.agress", getDisplayName());

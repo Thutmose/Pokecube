@@ -213,7 +213,7 @@ public class EntityTrainer extends EntityHasPokemobs
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float i)
+    public boolean attackEntityFrom(DamageSource source, float amount)
     {
         if (source.getEntity() != null && (source.getEntity() instanceof EntityLivingBase)
                 && !(source.getEntity() instanceof EntityPlayer))
@@ -226,15 +226,22 @@ public class EntityTrainer extends EntityHasPokemobs
                     entity = ((IEntityOwnable) entity).getOwner();
                 }
             }
-            setTrainerTarget(entity);
-            if (entity != source.getEntity()) return false;
+            if (attackCooldown <= 0)
+            {
+                setTrainerTarget(entity);
+                if (entity != source.getEntity()) return false;
+            }
+            else
+            {
+                return super.attackEntityFrom(source, amount);
+            }
         }
 
         if (Config.instance.trainersInvul) return false;
 
         if (friendlyCooldown > 0) return false;
 
-        return super.attackEntityFrom(source, i);
+        return super.attackEntityFrom(source, amount);
     }
 
     @Override
@@ -276,7 +283,7 @@ public class EntityTrainer extends EntityHasPokemobs
             IPokemob mob = (IPokemob) entity;
             if (mob.getPokemonOwner() != null && getTarget() == null)
             {
-                setTarget(mob.getPokemonOwner());
+                if (attackCooldown <= 0) setTarget(mob.getPokemonOwner());
                 this.throwCubeAt(entity);
             }
         }
@@ -309,7 +316,7 @@ public class EntityTrainer extends EntityHasPokemobs
             for (ItemStack i : reward)
             {
                 if (i == null || i.getItem() == null) continue;
-                if(!player.inventory.addItemStackToInventory(i.copy()))
+                if (!player.inventory.addItemStackToInventory(i.copy()))
                 {
                     EntityItem item = defeater.entityDropItem(i.copy(), 0.5f);
                     if (item == null)
@@ -319,7 +326,8 @@ public class EntityTrainer extends EntityHasPokemobs
                     }
                     item.setPickupDelay(0);
                 }
-                ITextComponent text = new TextComponentTranslation("pokecube.trainer.drop", this.getDisplayName(), i.getDisplayName());
+                ITextComponent text = new TextComponentTranslation("pokecube.trainer.drop", this.getDisplayName(),
+                        i.getDisplayName());
                 defeater.addChatMessage(text);
             }
         }

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommand;
@@ -29,6 +27,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
@@ -300,11 +299,9 @@ public class Commands implements ICommand
                 {
                     EntityPlayer player = (EntityPlayer) cSender;
                     PokecubeSerializer.getInstance().setHasStarter(player, false);
-                    ByteBuf buf = Unpooled.buffer(3);
-                    buf.writeByte(PokecubeClientPacket.CHOOSE1ST);
-                    buf.writeBoolean(false);
-                    buf.writeBoolean(false);
-                    PokecubeClientPacket packet = new PokecubeClientPacket(buf);
+                    PacketChoose packet = new PacketChoose(PacketChoose.OPENGUI);
+                    packet.data.setBoolean("C", false);
+                    packet.data.setBoolean("H", false);
                     PokecubePacketHandler.sendToClient(packet, player);
                     cSender.addChatMessage(
                             CommandTools.makeTranslatedMessage("pokecube.command.reset", "", player.getName()));
@@ -348,11 +345,10 @@ public class Commands implements ICommand
                         if (player != null)
                         {
                             PokecubeSerializer.getInstance().setHasStarter(player, false);
-                            ByteBuf buf = Unpooled.buffer(3);
-                            buf.writeByte(PokecubeClientPacket.CHOOSE1ST);
-                            buf.writeBoolean(false);
-                            buf.writeBoolean(true);
-                            PokecubeClientPacket packet = new PokecubeClientPacket(buf);
+                            PacketChoose packet = new PacketChoose(PacketChoose.OPENGUI);
+                            packet.data.setBoolean("C", false);
+                            packet.data.setBoolean("H", false);
+                            PokecubePacketHandler.sendToClient(packet, player);
                             PokecubePacketHandler.sendToClient(packet, player);
 
                             cSender.addChatMessage(

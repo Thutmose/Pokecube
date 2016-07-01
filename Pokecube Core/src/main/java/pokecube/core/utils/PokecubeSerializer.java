@@ -691,7 +691,6 @@ public class PokecubeSerializer
     {
         if (player == null || player.getEntityWorld().isRemote)
         {
-            System.out.println(player+" "+value);
             clientHasStarter = value;
             return;
         }

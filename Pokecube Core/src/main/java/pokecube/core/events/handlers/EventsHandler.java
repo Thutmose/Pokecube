@@ -8,7 +8,6 @@ import java.util.Random;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -26,7 +25,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
@@ -83,6 +81,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -102,7 +101,6 @@ public class EventsHandler
         public ChooseFirst(EntityPlayer player)
         {
             this.player = player;
-            System.out.println("Test");
             MinecraftForge.EVENT_BUS.register(this);
         }
 
@@ -111,23 +109,24 @@ public class EventsHandler
         {
             if (event.player == player && player.ticksExisted > 0)
             {
-                PokecubeClientPacket packet;
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(4));
+                PacketChoose packet;
+                packet = new PacketChoose(PacketChoose.OPENGUI);
                 boolean hasStarter = PokecubeSerializer.getInstance().hasStarter(player);
-                buffer.writeByte(PokecubeClientPacket.CHOOSE1ST);
-                buffer.writeBoolean(!hasStarter);
                 if (hasStarter)
                 {
-                    System.out.println(hasStarter);
-                    buffer.writeBoolean(hasStarter);
+                    packet.data.setBoolean("C", false);
+                    packet.data.setBoolean("H", hasStarter);
                 }
                 else
                 {
-                    buffer.writeBoolean(
-                            PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase()));
-                    buffer.writeInt(0);
+                    boolean special = false;
+                    if (PokecubePacketHandler.specialStarters.containsKey(player.getUniqueID().toString())
+                            || PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase()))
+                    {
+                        special = true;
+                    }
+                    packet = PacketChoose.createOpenPacket(!special, special, PokecubeMod.core.getStarters());
                 }
-                packet = new PokecubeClientPacket(buffer);
                 PokecubePacketHandler.sendToClient(packet, event.player);
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
@@ -409,7 +408,9 @@ public class EventsHandler
                 }
             }
         }
-        if (evt.getEntityPlayer().getEntityWorld().isRemote || evt.getEntityPlayer().getEntityWorld().rand.nextInt(10) != 0) return;
+        if (evt.getEntityPlayer().getEntityWorld().isRemote
+                || evt.getEntityPlayer().getEntityWorld().rand.nextInt(10) != 0)
+            return;
 
         TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(evt.getEntityPlayer());
         t.checkIndustrial(evt.getEntityPlayer().getEntityWorld());

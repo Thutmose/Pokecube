@@ -8,8 +8,6 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
 import static pokecube.core.utils.PokeType.flying;
 import static pokecube.core.utils.PokeType.getTranslatedName;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +26,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
@@ -37,10 +34,8 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.IMobColourable;
 
 public class GuiChooseFirstPokemob extends GuiScreen
@@ -48,6 +43,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
     public final static float                     POKEDEX_RENDER     = 1.5f;
     public static boolean                         options            = true;
+    public static boolean                         fixed              = false;
 
     public static Integer[]                       starters;
     private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
@@ -66,8 +62,6 @@ public class GuiChooseFirstPokemob extends GuiScreen
     protected PokedexEntry                        pokedexEntry       = null;
     int                                           index              = 0;
 
-    boolean                                       fixed              = false;
-
     GuiButton                                     next;
 
     GuiButton                                     prev;
@@ -79,7 +73,6 @@ public class GuiChooseFirstPokemob extends GuiScreen
     public GuiChooseFirstPokemob(Integer[] _starters)
     {
         super();
-        fixed = true;
         if (_starters == null && starters == null)
         {
             _starters = PokecubeMod.core.getStarters();
@@ -93,15 +86,6 @@ public class GuiChooseFirstPokemob extends GuiScreen
         {
             _starters = starters;
         }
-        if (starters.length == PokecubeMod.core.getStarters().length)
-        {
-            boolean same = true;
-            for (int i = 0; i < starters.length; i++)
-            {
-                same = same && starters[i] == PokecubeMod.core.getStarters()[i];
-            }
-            if (same) fixed = false;
-        }
 
         ArrayList<Integer> starts = new ArrayList<Integer>();
         for (int i = 0; i < _starters.length; i++)
@@ -113,11 +97,6 @@ public class GuiChooseFirstPokemob extends GuiScreen
         }
         GuiChooseFirstPokemob.starters = starts.toArray(new Integer[0]);
         entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
-    }
-
-    public GuiChooseFirstPokemob(Integer[] _starters, boolean fixed)
-    {
-        this(_starters);
     }
 
     @Override
@@ -137,22 +116,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         if (n == 4)
         {
             int pokedexNb = 0;
-            ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-            DataOutputStream outputStream = new DataOutputStream(bos);
-            try
-            {
-                outputStream.writeInt(pokedexNb);
-                outputStream.writeBoolean(fixed);
-                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
-                        bos.toByteArray());
-                PokecubePacketHandler.sendToServer(packet);
-                if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
-                    PokecubeSerializer.instance.setHasStarter(entityPlayer);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
+            sendMessage(pokedexNb);
             mc.thePlayer.closeScreen();
             options = true;
         }
@@ -169,24 +133,17 @@ public class GuiChooseFirstPokemob extends GuiScreen
         if (n == 3)
         {
             int pokedexNb = pokedexEntry.getPokedexNb();
-            ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-            DataOutputStream outputStream = new DataOutputStream(bos);
-            try
-            {
-                outputStream.writeInt(pokedexNb);
-                outputStream.writeBoolean(fixed);
-                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.CHOOSE1ST,
-                        bos.toByteArray());
-                PokecubePacketHandler.sendToServer(packet);
-                if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
-                    PokecubeSerializer.instance.setHasStarter(entityPlayer);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
+            sendMessage(pokedexNb);
             mc.thePlayer.closeScreen();
         }
+    }
+
+    private void sendMessage(int num)
+    {
+        PacketChoose packet = new PacketChoose(PacketChoose.CHOOSE);
+        packet.data.setBoolean("F", fixed);
+        packet.data.setInteger("N", num);
+        PokecubeMod.packetPipeline.sendToServer(packet);
     }
 
     /** Returns true if this GUI should pause the game when it is displayed in
@@ -212,8 +169,8 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
         if (!options)
         {
-            drawCenteredString(fontRendererObj, I18n.format("gui.pokemob.choose1st.override"),
-                    (width / 2), 17, 0xffffff);
+            drawCenteredString(fontRendererObj, I18n.format("gui.pokemob.choose1st.override"), (width / 2), 17,
+                    0xffffff);
             return;
         }
         pokedexEntry = Database.getEntry(starters[index % starters.length]);
@@ -231,8 +188,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         int k1 = i1 / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
 
-        drawCenteredString(fontRendererObj, I18n.format("gui.pokemob.choose1st"), (width / 2), 17,
-                0xffffff);
+        drawCenteredString(fontRendererObj, I18n.format("gui.pokemob.choose1st"), (width / 2), 17, 0xffffff);
 
         drawCenteredString(fontRendererObj, I18n.format(pokedexEntry.getUnlocalizedName()), (width / 2), 45, 0xffffff);
 

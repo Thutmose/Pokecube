@@ -3,7 +3,6 @@ package pokecube.core.entity.professor;
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
@@ -26,8 +25,9 @@ import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.Config;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
@@ -123,19 +123,24 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
             {
                 if (!PokecubeSerializer.getInstance().hasStarter(player))
                 {
-                    PokecubeClientPacket packet;
-                    PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(4));
+                    PacketChoose packet;
+                    packet = new PacketChoose(PacketChoose.OPENGUI);
                     boolean hasStarter = PokecubeSerializer.getInstance().hasStarter(player);
-                    buffer.writeByte(PokecubeClientPacket.CHOOSE1ST);
-                    buffer.writeBoolean(!hasStarter);
-                    if (!hasStarter) buffer.writeBoolean(hasStarter);
+                    if (hasStarter)
+                    {
+                        packet.data.setBoolean("C", false);
+                        packet.data.setBoolean("H", hasStarter);
+                    }
                     else
                     {
-                        buffer.writeBoolean(
-                                PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase()));
-                        buffer.writeInt(0);
+                        boolean special = false;
+                        if (PokecubePacketHandler.specialStarters.containsKey(player.getUniqueID().toString())
+                                || PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase()))
+                        {
+                            special = true;
+                        }
+                        packet = PacketChoose.createOpenPacket(!special, special, PokecubeMod.core.getStarters());
                     }
-                    packet = new PokecubeClientPacket(buffer);
                     PokecubePacketHandler.sendToClient(packet, player);
                 }
                 else

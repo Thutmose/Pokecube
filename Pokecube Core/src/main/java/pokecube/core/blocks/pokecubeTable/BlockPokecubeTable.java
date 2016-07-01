@@ -2,8 +2,6 @@ package pokecube.core.blocks.pokecubeTable;
 
 import java.util.ArrayList;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -19,9 +17,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.utils.PokecubeSerializer;
 
 public class BlockPokecubeTable extends Block implements ITileEntityProvider
@@ -84,12 +83,6 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
         {
             if (!PokecubeSerializer.getInstance().hasStarter(playerIn))
             {
-                ByteBuf buf = Unpooled.buffer();
-                buf.writeByte(PokecubeClientPacket.CHOOSE1ST);
-                buf.writeBoolean(true);
-                buf.writeBoolean(
-                        PokecubePacketHandler.specialStarters.containsKey(playerIn.getName().toLowerCase()));
-
                 ArrayList<Integer> starters = new ArrayList<Integer>();
                 TileEntity te = playerIn.getEntityWorld().getTileEntity(pos.down(2));
                 if (te != null && te instanceof IInventory)
@@ -109,12 +102,31 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                         }
                     }
                 }
-                buf.writeInt(starters.size());
-                for (Integer i : starters)
+                Integer[] starts = null;
+                boolean special = false;
+                if (!starters.isEmpty())
                 {
-                    buf.writeInt(i);
+                    starts = new Integer[starters.size()];
+                    for (int i = 0; i < starts.length; i++)
+                    {
+                        starts[i] = starters.get(i);
+                    }
+                    special = false;
                 }
-                PokecubeClientPacket packet = new PokecubeClientPacket(buf);
+                else
+                {
+                    starts = new Integer[PokecubeMod.core.getStarters().length];
+                    for (int i = 0; i < starts.length; i++)
+                    {
+                        starts[i] = PokecubeMod.core.getStarters()[i];
+                    }
+                    if (PokecubePacketHandler.specialStarters.containsKey(playerIn.getUniqueID().toString())
+                            || PokecubePacketHandler.specialStarters.containsKey(playerIn.getName().toLowerCase()))
+                    {
+                        special = true;
+                    }
+                }
+                PacketChoose packet = PacketChoose.createOpenPacket(!special, special, starts);
                 PokecubePacketHandler.sendToClient(packet, playerIn);
             }
         }

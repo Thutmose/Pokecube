@@ -580,9 +580,12 @@ public class MovesUtils implements IMoveConstants
 
         if (attack.equals("pokemob.status.confusion"))
         {
-            text = CommandTools.makeTranslatedMessage("pokemob.status.confusion", "red",
-                    ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
-            ((IPokemob) attacked).displayMessageToOwner(text);
+            if (attacked instanceof IPokemob)
+            {
+                text = CommandTools.makeTranslatedMessage("pokemob.status.confusion", "red",
+                        ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
+                ((IPokemob) attacked).displayMessageToOwner(text);
+            }
             return;
         }
         String attackName = getUnlocalizedMove(attack);
@@ -685,7 +688,7 @@ public class MovesUtils implements IMoveConstants
             if (attacker != null)
             {
                 text = CommandTools.makeTranslatedMessage(message, "green",
-                        ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
+                        ((IPokemob) attacker).getPokemonDisplayName().getFormattedText());
                 attacker.displayMessageToOwner(text);
             }
             if (attacked instanceof IPokemob)
@@ -774,7 +777,8 @@ public class MovesUtils implements IMoveConstants
         return (((level * 0.4F + 2F) * ATT * PWR) / (DEF * 50F) + 2);
     }
 
-    /** Computes the delay between two moves in a fight from move and status effects.
+    /** Computes the delay between two moves in a fight from move and status
+     * effects.
      *
      * @return muliplier on attack delay */
     public static float getDelayMultiplier(IPokemob attacker, String moveName)

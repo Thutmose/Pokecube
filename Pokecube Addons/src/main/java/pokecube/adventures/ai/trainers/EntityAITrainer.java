@@ -195,6 +195,7 @@ public class EntityAITrainer extends EntityAIBase
     @Override
     public void updateTask()
     {
+        if (trainer.getTarget() == null) return;
         trainer.faceEntity(trainer.getTarget(), trainer.rotationPitch, trainer.rotationYaw);
         if (trainer.cooldown > 0)
         {

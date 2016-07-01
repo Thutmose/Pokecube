@@ -493,11 +493,11 @@ public class TeamCommands implements ICommand
                                 + "\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\""
                                 + command + "" + "\"}}";
                         links = abilityJson;
-                        sender.addChatMessage(
+                        adding.addChatMessage(
                                 new TextComponentString("New Invite to Team " + team.getRegisteredName()));
                         ITextComponent message = ITextComponent.Serializer
                                 .jsonToComponent("[\" [\"," + links + ",\"]\"]");
-                        sender.addChatMessage(message);
+                        adding.addChatMessage(message);
                     }
                 }
                 return;

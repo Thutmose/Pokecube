@@ -77,7 +77,6 @@ import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MovesAdder;
 import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.network.EntityProvider;
-import pokecube.core.network.PCPacketHandler;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket.PokecubeMessageHandlerClient;
@@ -460,11 +459,8 @@ public class PokecubeCore extends PokecubeMod
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
 
-        // Packets for PCs and Trading
-        PokecubeMod.packetPipeline.registerMessage(PCPacketHandler.MessageClient.MessageHandlerClient.class,
-                PCPacketHandler.MessageClient.class, PokecubeCore.getMessageID(), Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PCPacketHandler.MessageServer.MessageHandlerServer.class,
-                PCPacketHandler.MessageServer.class, PokecubeCore.getMessageID(), Side.SERVER);
+        // Init Packets
+        PokecubePacketHandler.init();
 
         helper.addItems();
         Reader fileIn = null;

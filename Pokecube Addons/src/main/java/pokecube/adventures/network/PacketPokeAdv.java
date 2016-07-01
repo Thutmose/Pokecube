@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
@@ -15,21 +14,16 @@ import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import pokecube.adventures.PokecubeAdv;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
-import pokecube.adventures.entity.trainers.EntityTrainer;
-import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.ItemTarget;
-import pokecube.adventures.items.bags.ContainerBag;
-import pokecube.adventures.items.bags.InventoryBag;
+import pokecube.adventures.network.packets.PacketBag;
+import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
-import pokecube.core.database.Database;
-import pokecube.core.events.handlers.SpawnHandler;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
@@ -37,6 +31,7 @@ import thut.api.terrain.BiomeType;
 
 public class PacketPokeAdv
 {
+
     public static class MessageClient implements IMessage
     {
         public static class MessageHandlerClient implements IMessageHandler<MessageClient, MessageServer>
@@ -62,10 +57,6 @@ public class PacketPokeAdv
                     {
                         e.printStackTrace();
                     }
-                }
-                if (channel == 3)
-                {
-                    handleTrainerEditPacket(buffer, player);
                 }
                 if (channel == 6)
                 {
@@ -200,20 +191,6 @@ public class PacketPokeAdv
                 {
                     message[i] = buffer.array()[i + 1];
                 }
-                if (channel == 1)
-                {
-                    handleTrainerEditPacket(buffer, player);
-                }
-                if (channel == 6)
-                {
-                    int m = buffer.readByte();
-                    ((ContainerBag) (player.openContainer)).gotoInventoryPage(m);
-                }
-                if (channel == MESSAGEOPENBAG)
-                {
-                    player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.getEntityWorld(),
-                            InventoryBag.getBag(player).getPage() + 1, 0, 0);
-                }
                 if (channel == MESSAGEBIOMESETTER)
                 {
                     try
@@ -266,8 +243,6 @@ public class PacketPokeAdv
         }
 
         public static final byte MESSAGEBIOMESETTER = 9;
-        public static final byte MESSAGEOPENBAG     = 7;
-        public static final byte MESSAGEBAGPAGE     = 6;
         public static final byte MESSAGEGUIAFA      = 11;
 
         PacketBuffer             buffer;;
@@ -322,103 +297,16 @@ public class PacketPokeAdv
 
     public static byte TYPEREMOVELAND = 2;
 
-    public static void handleTrainerEditPacket(PacketBuffer buffer, EntityPlayer player)
+    public static void init()
     {
-        int[] numbers = new int[6];
-        int[] levels = new int[6];
-        String name = "";
-        String type = "";
-        try
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                numbers[i] = buffer.readInt();
-                levels[i] = buffer.readInt();
-            }
-            int num1 = buffer.readInt();
-            byte[] string1 = new byte[num1];
-            for (int n = 0; n < num1; n++)
-            {
-                string1[n] = buffer.readByte();
-            }
-            name = new String(string1);
-            int num2 = buffer.readInt();
-            byte[] string2 = new byte[num2];
-            for (int n = 0; n < num2; n++)
-            {
-                string2[n] = buffer.readByte();
-            }
-            type = new String(string2);
-            int id = buffer.readInt();
-            EntityTrainer trainer = (EntityTrainer) player.getEntityWorld().getEntityByID(id);
-            boolean stationary = buffer.readBoolean();
-            boolean male = buffer.readBoolean();
-            boolean reset = buffer.readBoolean();
-            trainer.male = male;
-            trainer.name = name;
-            trainer.type = TypeTrainer.getTrainer(type);
-            trainer.setTypes();
-            if (!reset)
-            {
-                for (int index = 0; index < 6; index++)
-                {
-                    trainer.setPokemob(numbers[index], levels[index], index);
-                }
-            }
-            if (!player.getEntityWorld().isRemote)
-            {
-                if (reset)
-                {
-                    int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), Vector3.getNewVector().set(trainer),
-                            Database.getEntry(1));
-                    trainer.initTrainer(trainer.type, maxXp);
-
-                    for (int i = 0; i < 6; i++)
-                    {
-                        ItemStack stack = trainer.getPokemob(i);
-                        if (stack == null) continue;
-                        IPokemob pokemob = PokecubeManager.itemToPokemob(stack, trainer.getEntityWorld());
-                        if (pokemob != null)
-                        {
-                            numbers[i] = pokemob.getPokedexNb();
-                            levels[i] = pokemob.getLevel();
-                        }
-                    }
-                }
-                PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
-                ret.writeByte(3);
-                for (int i = 0; i < 6; i++)
-                {
-                    ret.writeInt(numbers[i]);
-                    ret.writeInt(levels[i]);
-                }
-                ret.writeInt(num1);
-                for (int n = 0; n < num1; n++)
-                {
-                    ret.writeByte(string1[n]);
-                }
-                ret.writeInt(num2);
-                string1 = new byte[num2];
-                for (int n = 0; n < num2; n++)
-                {
-                    ret.writeByte(string2[n]);
-                }
-                ret.writeInt(id);
-                ret.writeBoolean(stationary);
-                ret.writeBoolean(male);
-                ret.writeBoolean(false);// No reset on client.
-                if (stationary)
-                {
-                    trainer.setStationary(true);
-                }
-                MessageClient mes = new MessageClient(ret.array());
-                PokecubePacketHandler.sendToClient(mes, player);
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        PokecubeMod.packetPipeline.registerMessage(PacketBag.class, PacketBag.class, PokecubeCore.getMessageID(),
+                Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketBag.class, PacketBag.class, PokecubeCore.getMessageID(),
+                Side.SERVER);
+        PokecubeMod.packetPipeline.registerMessage(PacketTrainer.class, PacketTrainer.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketTrainer.class, PacketTrainer.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
     }
 
     public static MessageClient makeClientPacket(byte channel, byte[] data)
@@ -447,9 +335,7 @@ public class PacketPokeAdv
 
     public static void sendBagOpenPacket()
     {
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-        buf.writeByte(7);
-        MessageServer packet = new MessageServer(buf);
+        PacketBag packet = new PacketBag(PacketBag.OPEN);
         PokecubePacketHandler.sendToServer(packet);
     }
 

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -12,13 +11,10 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.items.bags.ContainerBag;
-import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.blocks.pc.InventoryPC;
-import pokecube.core.network.PokecubePacketHandler;
 import thut.api.maths.Vector3;
 
 public class GuiBag extends GuiContainer
@@ -52,7 +48,6 @@ public class GuiBag extends GuiContainer
     {
         if (mc.thePlayer.getEntityWorld().isRemote)
         {
-            MessageServer packet;
             if (guibutton.id == 3)
             {
                 if (toRename)
@@ -62,22 +57,10 @@ public class GuiBag extends GuiContainer
                 }
                 toRename = !toRename;
             }
-            if (guibutton.id == 4)
-            {
-                PacketBuffer buf = new PacketBuffer(Unpooled.buffer(1));
-                buf.writeByte(MessageServer.MESSAGEOPENBAG);
-                packet = new MessageServer(buf);
-                PokecubePacketHandler.sendToServer(packet);
-            }
             else
             {
                 cont.updateInventoryPages((byte) (guibutton.id == 2 ? -1 : guibutton.id == 1 ? 1 : 0),
                         mc.thePlayer.inventory);
-                PacketBuffer buf = new PacketBuffer(Unpooled.buffer(5));
-                buf.writeByte(MessageServer.MESSAGEBAGPAGE);
-                buf.writeInt(cont.invBag.getPage() + 1);
-                packet = new MessageServer(buf);
-                PokecubePacketHandler.sendToServer(packet);
                 textFieldSelectedBox.setText(cont.getPageNb());
             }
         }
@@ -199,7 +182,6 @@ public class GuiBag extends GuiContainer
             String entry = textFieldSelectedBox.getText();
             String box = textFieldBoxName.getText();
             int number = 1;
-
             try
             {
                 number = Integer.parseInt(entry);
@@ -208,14 +190,8 @@ public class GuiBag extends GuiContainer
             {
                 e.printStackTrace();
             }
-
             number = Math.max(1, Math.min(number, InventoryPC.PAGECOUNT));
             cont.gotoInventoryPage(number);
-            PacketBuffer buf = new PacketBuffer(Unpooled.buffer(5));
-            buf.writeByte(MessageServer.MESSAGEBAGPAGE);
-            buf.writeInt(number);
-            MessageServer packet = new MessageServer(buf);
-            PokecubePacketHandler.sendToServer(packet);
             textFieldSelectedBox.setText(cont.getPageNb());
             if (toRename && box != boxName)
             {
@@ -227,7 +203,6 @@ public class GuiBag extends GuiContainer
                 toRename = !toRename;
             }
         }
-
     }
 
     // public boolean getReleaseState(){

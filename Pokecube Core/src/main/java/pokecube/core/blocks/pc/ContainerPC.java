@@ -1,23 +1,19 @@
 package pokecube.core.blocks.pc;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.network.PCPacketHandler.MessageServer;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
-import pokecube.core.utils.PCSaveHandler;
+import pokecube.core.network.packets.PacketPC;
 
 public class ContainerPC extends Container
 {
@@ -61,7 +57,17 @@ public class ContainerPC extends Container
         else inv = temp;
         invPlayer = ivplay;
         pcTile = pc;
-
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        {
+            PacketPC packet = new PacketPC(PacketPC.ONOPEN);
+            packet.data.setInteger("N", inv.boxes.length);
+            packet.data.setBoolean("O", inv.seenOwner);
+            for (int i = 0; i < inv.boxes.length; i++)
+            {
+                packet.data.setString("N" + i, inv.boxes[i]);
+            }
+            PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) ivplay.player);
+        }
         bindInventories();
     }
 
@@ -132,21 +138,11 @@ public class ContainerPC extends Container
     public void changeName(String name)
     {
         inv.boxes[inv.getPage()] = name;
-
-        if (PokecubeCore.isOnClientSide())
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            byte[] string = name.getBytes();
-            byte[] message = new byte[string.length + 2];
-
-            message[0] = 11;
-            message[1] = (byte) string.length;
-            for (int i = 2; i < message.length; i++)
-            {
-                message[i] = string[i - 2];
-            } // TODO move this to PC packet handler instead
-            PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS, message);
-            PokecubePacketHandler.sendToServer(packet);
-            return;
+            PacketPC packet = new PacketPC(PacketPC.RENAME);
+            packet.data.setString("N", name);
+            PokecubeMod.packetPipeline.sendToServer(packet);
         }
     }
 
@@ -181,17 +177,22 @@ public class ContainerPC extends Container
     public void gotoInventoryPage(int page)
     {
         if (page - 1 == inv.getPage()) return;
-
         inv.setPage(page - 1);
-
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PacketPC packet = new PacketPC(PacketPC.SETPAGE);
+            packet.data.setInteger("P", page);
+            PokecubeMod.packetPipeline.sendToServer(packet);
+            inv.clear();
+        }
         bindInventories();
     }
 
     @Override
     public void onContainerClosed(EntityPlayer player)
     {
-        PCSaveHandler.getInstance().savePC(player.getUniqueID().toString());
         super.onContainerClosed(player);
+        inv.closeInventory(player);
     }
 
     /** args: slotID, itemStack to put in slot */
@@ -213,22 +214,34 @@ public class ContainerPC extends Container
         }
     }
 
+    public void toggleAuto()
+    {
+        inv.autoToPC = !inv.autoToPC;
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            PacketPC packet = new PacketPC(PacketPC.TOGGLEAUTO);
+            packet.data.setBoolean("A", inv.autoToPC);
+            PokecubeMod.packetPipeline.sendToServer(packet);
+        }
+    }
+
     public void setRelease(boolean bool)
     {
         if (release && !bool)
         {
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("page", inv.getPage());
-
-            for (int i = 0; i < 54; i++)
+            if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             {
-                if (toRelease[i])
+                PacketPC packet = new PacketPC(PacketPC.RELEASE);
+                packet.data.setInteger("page", inv.getPage());
+                for (int i = 0; i < 54; i++)
                 {
-                    nbt.setBoolean("val" + i, true);
+                    if (toRelease[i])
+                    {
+                        packet.data.setBoolean("val" + i, true);
+                    }
                 }
+                PokecubeMod.packetPipeline.sendToServer(packet);
             }
-            MessageServer mess = new MessageServer(MessageServer.PCRELEASE, nbt);
-            PokecubePacketHandler.sendToServer(mess);
         }
         release = bool;
     }
@@ -276,8 +289,9 @@ public class ContainerPC extends Container
 
     public void updateInventoryPages(int dir, InventoryPlayer invent)
     {
-        inv.setPage((inv.getPage() == 0) && (dir == -1) ? InventoryPC.PAGECOUNT - 1
-                : (inv.getPage() + dir) % InventoryPC.PAGECOUNT);
-        bindInventories();
+        int page = (inv.getPage() == 0) && (dir == -1) ? InventoryPC.PAGECOUNT - 1
+                : (inv.getPage() + dir) % InventoryPC.PAGECOUNT;
+        page += 1;
+        gotoInventoryPage(page);
     }
 }

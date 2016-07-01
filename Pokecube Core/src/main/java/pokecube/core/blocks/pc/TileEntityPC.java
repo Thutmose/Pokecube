@@ -20,6 +20,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import pokecube.core.blocks.TileEntityOwnable;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.network.packets.PacketPC;
 import thut.api.network.PacketHandler;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
@@ -216,6 +218,16 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
 
     public void setBoundOwner(EntityPlayer player)
     {
+        if (this.worldObj.isRemote)
+        {
+            if (!canEdit(player)) return;
+
+            PacketPC packet = new PacketPC(PacketPC.BIND);
+            packet.data.setBoolean("O", true);
+            PokecubeMod.packetPipeline.sendToServer(packet);
+            return;
+        }
+
         String uuid = player.getUniqueID().toString();
         UUID id = InventoryPC.defaultId;
 
@@ -261,6 +273,14 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
 
     public void toggleBound()
     {
+        if (this.worldObj.isRemote)
+        {
+            PacketPC packet = new PacketPC(PacketPC.BIND);
+            packet.data.setBoolean("O", false);
+            PokecubeMod.packetPipeline.sendToServer(packet);
+            return;
+        }
+
         TileEntity te = worldObj.getTileEntity(getPos().down());
         this.bound = !this.bound;
 

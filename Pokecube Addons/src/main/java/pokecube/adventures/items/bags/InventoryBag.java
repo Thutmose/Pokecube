@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.PokecubeMod;
@@ -19,14 +18,13 @@ import pokecube.core.interfaces.PokecubeMod;
 public class InventoryBag implements IInventory
 {
     public static HashMap<String, InventoryBag> map       = new HashMap<String, InventoryBag>();
+    public static int                           PAGECOUNT = 32;
     // blank bag for client use.
     public static InventoryBag                  blank;
-    public static int                           PAGECOUNT = 32;
 
     public static void clearInventory()
     {
         map.clear();
-        blank = new InventoryBag("blank");
     }
 
     public static InventoryBag getBag(Entity player)
@@ -285,14 +283,13 @@ public class InventoryBag implements IInventory
     @Override
     public void clear()
     {
+        this.contents.clear();
     }
 
     @Override
     public void closeInventory(EntityPlayer player)
     {
         PASaveHandler.getInstance().saveBag(player.getUniqueID().toString());
-        if (player.getEntityWorld().isRemote && FMLCommonHandler.instance().getMinecraftServerInstance() == null)
-            clearInventory();
     }
 
     @Override

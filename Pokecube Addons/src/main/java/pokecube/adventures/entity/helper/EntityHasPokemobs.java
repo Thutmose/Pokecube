@@ -121,7 +121,6 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
         super.readEntityFromNBT(nbt);
-
         // TODO remove this legacy support later
         if (nbt.hasKey("slot" + 0)) for (int n = 0; n < 6; n++)
         {
@@ -132,7 +131,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
                 if (PokecubeManager.getPokedexNb(pokecubes[n]) == 0) pokecubes[n] = null;
             }
         }
-        else if (nbt.hasKey("pokemobs", 9))
+        if (nbt.hasKey("pokemobs", 9))
         {
             NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
             for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)

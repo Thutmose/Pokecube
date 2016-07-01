@@ -289,6 +289,11 @@ public class TeamManager
         if (!isAdmin(admin, team)) return;
         if (hasInvite(player, team)) return;
         Invites invite = inviteMap.get(player);
+        if (invite == null)
+        {
+            invite = new Invites();
+            inviteMap.put(player, invite);
+        }
         invite.teams.add(team);
     }
 

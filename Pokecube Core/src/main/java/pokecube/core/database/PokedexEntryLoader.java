@@ -221,6 +221,12 @@ public class PokedexEntryLoader
         @XmlElement(name = "MOVES")
         Moves          moves;
 
+        @Override
+        public String toString()
+        {
+            return name + " " + number + " " + stats + " " + moves;
+        }
+
         void mergeMissingFrom(XMLPokedexEntry other)
         {
             if (moves == null && other.moves != null)
@@ -278,12 +284,6 @@ public class PokedexEntryLoader
                     }
                 }
             }
-        }
-
-        @Override
-        public String toString()
-        {
-            return name + " " + number + " " + stats + " " + moves;
         }
     }
 

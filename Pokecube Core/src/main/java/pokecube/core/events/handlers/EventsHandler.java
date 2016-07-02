@@ -207,7 +207,6 @@ public class EventsHandler
             {
                 IPokemob mob = (IPokemob) o;
                 if (mob != excluded && mob.getPokemonOwner() == player
-                        && !mob.getPokemonAIState(IMoveConstants.GUARDING)
                         && !mob.getPokemonAIState(IMoveConstants.STAYING))
                 {
                     mob.returnToPokecube();
@@ -664,8 +663,7 @@ public class EventsHandler
             {
                 IPokemob mob = (IPokemob) o;
                 boolean stay = mob.getPokemonAIState(IMoveConstants.STAYING);
-                boolean guard = mob.getPokemonAIState(IMoveConstants.GUARDING);
-                if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay && !guard)
+                if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay)
                     mob.returnToPokecube();
             }
         }

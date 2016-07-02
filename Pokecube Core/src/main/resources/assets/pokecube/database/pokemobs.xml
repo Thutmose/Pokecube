@@ -2706,7 +2706,7 @@
     </Pokemon>
     <Pokemon base="true" name="Magneton" number="82">
         <STATS>
-            <EVOLUTIONMODE>Bcave</EVOLUTIONMODE>
+            <EVOLUTIONMODE>BTcave</EVOLUTIONMODE>
             <CAPTURERATE>60</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Magnet</SPECIES>
@@ -21896,7 +21896,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <BIOMESANYACCEPTABLE>all 0.1</BIOMESANYACCEPTABLE>
+            <BIOMESANYACCEPTABLE>all 0.025</BIOMESANYACCEPTABLE>
             <SPECIALCASES>day</SPECIALCASES>
             <BASESTATS atk="35" def="40" hp="38" spatk="27" spd="35" spdef="25"/>
             <EVYIELD def="1"/>

@@ -907,10 +907,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 this.dismountRidingEntity();
             }
         }
-        if (getAIState(GUARDING, state) && getAIState(SITTING, state))
-        {
-            setPokemonAIState(SITTING, false);
-        }
         if (ticksExisted > EXITCUBEDURATION && getAIState(EXITINGCUBE, state))
         {
             setPokemonAIState(EXITINGCUBE, false);
@@ -1158,7 +1154,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             boolean isHeld = getPokemonAIState(HELD);
 
             if ((!getPokemonAIState(IMoveConstants.TAMED) || getHeldItemMainhand() == null)
-                    && !getPokemonAIState(GUARDING))
+                    && !getPokemonAIState(STAYING))
             {
                 if (!isHeld)
                 {

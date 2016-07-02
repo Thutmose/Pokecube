@@ -229,7 +229,6 @@ public class GuiDisplayPokecubeInfo extends Gui
             int id = pokemob.getPokemonUID();
 
             if (owner && !pokemob.getPokemonAIState(IMoveConstants.SITTING)
-                    && !pokemob.getPokemonAIState(IMoveConstants.GUARDING)
                     && !pokemob.getPokemonAIState(IMoveConstants.STAYING) && !added.contains(id))
             {
                 ret.add(pokemob);

@@ -177,8 +177,13 @@ public class AIFindTarget extends AIBase implements IAICombat
         {
             List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
             List<Object> pokemobs = new ArrayList<Object>();
-            pokemobs = getEntitiesWithinDistance(Vector3.getNewVector().set(pokemob.getHome()), entity.dimension, 16,
-                    EntityLivingBase.class);
+
+            Vector3 centre = Vector3.getNewVector();
+            if (pokemob.getPokemonAIState(IMoveConstants.STAYING) || pokemob.getPokemonOwner() == null)
+                centre.set(pokemob.getHome());
+            else centre.set(pokemob.getPokemonOwner());
+
+            pokemobs = getEntitiesWithinDistance(centre, entity.dimension, 16, EntityLivingBase.class);
 
             for (Object o : pokemobs)
             {

@@ -215,7 +215,7 @@ public class Compat
     }
 
     @Optional.Method(modid = "Tesla")
-    @SubscribeEvent
+    @EventHandler
     public void TeslaCompat(FMLPreInitializationEvent evt)
     {
         new TeslaHandler();

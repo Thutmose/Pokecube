@@ -58,6 +58,7 @@ import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketPC;
 import pokecube.core.network.packets.PacketTrade;
+import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
@@ -676,6 +677,8 @@ public class PokecubePacketHandler
         PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+        PokecubeMod.packetPipeline.registerMessage(PacketPokemobGui.class, PacketPokemobGui.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
     }
 

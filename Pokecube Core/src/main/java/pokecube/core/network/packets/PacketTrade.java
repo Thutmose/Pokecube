@@ -89,7 +89,7 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
             if (player.openContainer instanceof ContainerTMCreator)
             {
                 TileEntityTradingTable tradeTable = ((ContainerTMCreator) player.openContainer).getTile();
-                tradeTable.addMoveToTM(data.getString("M"));
+                tradeTable.addMoveToTM(message.data.getString("M"));
             }
         }
         else if (message.message == SETMOVES)

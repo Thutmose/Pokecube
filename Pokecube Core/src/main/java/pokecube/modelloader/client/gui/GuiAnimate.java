@@ -63,6 +63,7 @@ public class GuiAnimate extends GuiScreen
             int num = (entry = Pokedex.getInstance().getNext(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
             else pokedexNb = (entry = Pokedex.getInstance().getFirstEntry()).getPokedexNb();
+            mob = entry.getName();
         }
         else if (button.id == 1)
         {
@@ -70,7 +71,7 @@ public class GuiAnimate extends GuiScreen
             int num = (entry = Pokedex.getInstance().getPrevious(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
             else pokedexNb = (entry = Pokedex.getInstance().getLastEntry()).getPokedexNb();
-
+            mob = entry.getName();
         }
         else if (button.id == 3)
         {
@@ -176,7 +177,7 @@ public class GuiAnimate extends GuiScreen
             return;
         }
         // TODO make a way to handle shininess.
-        String form = forme.getText();
+        String form = mob;
         PokedexEntry e1;
         if (pokemob.getPokedexEntry().hasForm(form))
         {
@@ -320,6 +321,7 @@ public class GuiAnimate extends GuiScreen
         anim.setText("idle");
         state = new GuiTextField(0, fontRendererObj, width - 101, yOffset + 43 - yOffset / 2, 100, 10);
         forme = new GuiTextField(0, fontRendererObj, width - 101, yOffset + 73 - yOffset / 2, 100, 10);
+        if (mob.isEmpty()) mob = Pokedex.getInstance().getFirstEntry().getName();
         forme.setText(mob);
         info = new GuiTextField(0, fontRendererObj, width - 21, yOffset + 28 - yOffset / 2, 20, 10);
         yOffset += 0;
@@ -348,6 +350,7 @@ public class GuiAnimate extends GuiScreen
         hit = hit || state.textboxKeyTyped(typedChar, keyCode);
         hit = hit || forme.textboxKeyTyped(typedChar, keyCode);
         hit = hit || info.textboxKeyTyped(typedChar, keyCode);
+
         if (!hit && keyCode == 205)
         {
             PokedexEntry entry = null;
@@ -364,6 +367,29 @@ public class GuiAnimate extends GuiScreen
                     pokemob.specificSpawnInit();
                 }
                 forme.setText(pokemob.getPokedexEntry().getName());
+                mob = forme.getText();
+                info.setText("" + pokemob.getSpecialInfo());
+            }
+        }
+        if (forme.isFocused() && typedChar == 13)
+        {
+            PokedexEntry entry = Database.getEntry(forme.getText());
+            if (entry == null)
+            {
+                entry = Database.getEntry(pokedexNb);
+            }
+            if (entry != null)
+            {
+                IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
+                if (pokemob == null || pokemob.getPokedexEntry() != entry)
+                {
+                    EventsHandlerClient.renderMobs.put(entry, pokemob = (IPokemob) PokecubeMod.core
+                            .createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+                    pokemob.changeForme(entry.getName());
+                    pokemob.specificSpawnInit();
+                }
+                forme.setText(pokemob.getPokedexEntry().getName());
+                mob = forme.getText();
                 info.setText("" + pokemob.getSpecialInfo());
             }
         }

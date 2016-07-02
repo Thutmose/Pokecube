@@ -989,6 +989,23 @@ public class GuiPokedex_redo extends GuiScreen
                     nicknameTextField.setText("");
                     nicknameTextField.setEnabled(false);
                 }
+                if (page == 4)
+                {
+                    Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+                    List<TeleDest> locations = PokecubeSerializer.getInstance()
+                            .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+
+                    if (locations.size() > 0)
+                    {
+                        TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
+                        nicknameTextField.setText(location.getName());
+                    }
+                    else
+                    {
+                        nicknameTextField.setText("");
+                    }
+                    nicknameTextField.setEnabled(true);
+                }
             }
 
         }
@@ -997,10 +1014,27 @@ public class GuiPokedex_redo extends GuiScreen
             page = (page - 1) % PAGECOUNT;
             if (page < 0) page = PAGECOUNT - 1;
 
+            if (page == 4)
+            {
+                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+                List<TeleDest> locations = PokecubeSerializer.getInstance()
+                        .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+
+                if (locations.size() > 0)
+                {
+                    TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
+                    nicknameTextField.setText(location.getName());
+                }
+                else
+                {
+                    nicknameTextField.setText("");
+                }
+                nicknameTextField.setEnabled(true);
+            }
+
             if (entityPlayer.getHeldItemMainhand() != null
                     && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
-                // entityPlayer.getHeldItemMainhand().setItemDamage(page);
                 PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 5,
                         new byte[] { (byte) page });
                 PokecubePacketHandler.sendToServer(packet);
@@ -1125,8 +1159,9 @@ public class GuiPokedex_redo extends GuiScreen
         buttonList.clear();
         int yOffset = height / 2 - 80;
         int xOffset = width / 2;
-        nicknameTextField = new GuiTextField(0, fontRendererObj, xOffset + 11, yOffset + 14, 110, 10);
+        nicknameTextField = new GuiTextField(0, fontRendererObj, xOffset + 14, yOffset + 14, 110, 10);
         nicknameTextField.setMaxStringLength(20);
+        nicknameTextField.setEnableBackgroundDrawing(false);
         nicknameTextField.setFocused(false);
         nicknameTextField.setEnabled(false);
 
@@ -1226,11 +1261,11 @@ public class GuiPokedex_redo extends GuiScreen
         {
             boolean b = nicknameTextField.textboxKeyTyped(par1, par2);
 
-            if (par2 == Keyboard.KEY_LEFT)
+            if (par2 == Keyboard.KEY_LEFT && page != 4)
             {
                 handleGuiButton(2);
             }
-            else if (par2 == Keyboard.KEY_RIGHT)
+            else if (par2 == Keyboard.KEY_RIGHT && page != 4)
             {
                 handleGuiButton(1);
             }

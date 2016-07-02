@@ -348,7 +348,8 @@ public class PokedexEntry
             {
                 Entity poke = (Entity) mob;
                 rightTime = dayOnly ? poke.getEntityWorld().isDaytime() : !poke.getEntityWorld().isDaytime();
-                // System.out.println("Is it Day?"+poke.getEntityWorld().isDaytime());
+                // System.out.println("Is it
+                // Day?"+poke.getEntityWorld().isDaytime());
             }
             ret = ret && rightTime;
             if (happy)
@@ -398,7 +399,7 @@ public class PokedexEntry
 
         protected static void initForEntry(PokedexEntry entry, String fromDatabase)
         {
-            if (fromDatabase == null)
+            if (fromDatabase == null || fromDatabase.isEmpty())
             {
                 initForEntry(entry);
                 return;
@@ -411,25 +412,34 @@ public class PokedexEntry
 
                 if (key.equals("null")) return;
 
-                String[] vals = new String[args.length - 1];
-                for (int i = 0; i < vals.length; i++)
+                if (key.startsWith("F:"))
                 {
-                    vals[i] = args[i + 1];
+                    ItemStack keyStack = parseStack(key.substring(2));
+                    PokedexEntry forme = Database.getEntry(args[1]);
+                    entry.interactionLogic.formes.put(keyStack, forme);
                 }
-                ItemStack keyStack = parseStack(key);
-                List<ItemStack> stacks = Lists.newArrayList();
-                for (String s1 : vals)
+                else
                 {
-                    ItemStack temp = parseStack(s1);
-                    if (temp != null)
+                    ItemStack keyStack = parseStack(key);
+                    String[] vals = new String[args.length - 1];
+                    for (int i = 0; i < vals.length; i++)
                     {
-                        stacks.add(temp);
+                        vals[i] = args[i + 1];
                     }
-                }
-                if (keyStack != null && !stacks.isEmpty())
-                {
-                    InteractionLogic interact = entry.interactionLogic;
-                    interact.stacks.put(keyStack, stacks);
+                    List<ItemStack> stacks = Lists.newArrayList();
+                    for (String s1 : vals)
+                    {
+                        ItemStack temp = parseStack(s1);
+                        if (temp != null)
+                        {
+                            stacks.add(temp);
+                        }
+                    }
+                    if (keyStack != null && !stacks.isEmpty())
+                    {
+                        InteractionLogic interact = entry.interactionLogic;
+                        interact.stacks.put(keyStack, stacks);
+                    }
                 }
             }
         }
@@ -463,13 +473,24 @@ public class PokedexEntry
         }
 
         HashMap<ItemStack, List<ItemStack>> stacks = new HashMap<ItemStack, List<ItemStack>>();
+        HashMap<ItemStack, PokedexEntry>    formes = new HashMap<>();
 
         boolean canInteract(ItemStack key)
         {
-            return getKey(key) != null;
+            return getStackKey(key) != null;
         }
 
-        private ItemStack getKey(ItemStack held)
+        private ItemStack getFormeKey(ItemStack held)
+        {
+            if (held != null) for (ItemStack stack : formes.keySet())
+            {
+                System.out.println(stack + " " + held);
+                if (stack.isItemEqual(held)) { return stack; }
+            }
+            return null;
+        }
+
+        private ItemStack getStackKey(ItemStack held)
         {
             if (held != null) for (ItemStack stack : stacks.keySet())
             {
@@ -485,14 +506,27 @@ public class PokedexEntry
             if (data.hasKey("lastInteract"))
             {
                 long time = data.getLong("lastInteract");
-                long diff = entity.getEntityWorld().getTotalWorldTime() - time;
+                long diff = entity.worldObj.getTotalWorldTime() - time;
                 if (diff < 100) { return false; }
             }
-            ItemStack stack = getKey(player.getHeldItemMainhand());
-            if (!doInteract) return stack != null;
-            data.setLong("lastInteract", entity.getEntityWorld().getTotalWorldTime());
-            if (stack != null)
+            ItemStack stack = getStackKey(player.getHeldItemMainhand());
+
+            if (stack == null)
             {
+                stack = getFormeKey(player.getHeldItemMainhand());
+                if (!doInteract) return stack != null;
+                if (stack != null)
+                {
+                    PokedexEntry forme = formes.get(stack);
+                    pokemob.changeForme(forme.getName());
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                if (!doInteract) return stack != null;
+                data.setLong("lastInteract", entity.worldObj.getTotalWorldTime());
                 List<ItemStack> results = stacks.get(stack);
                 int index = player.getRNG().nextInt(results.size());
                 ItemStack result = results.get(index).copy();
@@ -510,12 +544,11 @@ public class PokedexEntry
                 }
                 return true;
             }
-            return false;
         }
 
         List<ItemStack> interact(ItemStack key)
         {
-            return stacks.get(getKey(key));
+            return stacks.get(getStackKey(key));
         }
     }
 
@@ -1643,13 +1676,7 @@ public class PokedexEntry
         }
         if (newForme != null)
         {
-            // pokemob.megaEvolve(newForme.getName());
             pokemob.changeForme(newForme.getName());
-        }
-        else if (baseForme != null)
-        {
-            // pokemob.megaEvolve(baseForme.getName());
-            pokemob.changeForme(baseForme.getName());
         }
     }
 

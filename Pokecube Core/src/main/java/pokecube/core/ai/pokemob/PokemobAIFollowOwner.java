@@ -48,7 +48,7 @@ public class PokemobAIFollowOwner extends EntityAIBase
     @Override
     public boolean continueExecuting()
     {
-        if (pokemob.getPokemonAIState(IMoveConstants.FOLLOWING)
+        if (pokemob.getPokemonAIState(IMoveConstants.PATHING)
                 && this.thePet.getDistanceSqToEntity(this.theOwner) > this.maxDist * this.maxDist)
             return true;
         return !this.petPathfinder.noPath() && !pokemob.getPokemonAIState(IMoveConstants.SITTING)
@@ -62,7 +62,7 @@ public class PokemobAIFollowOwner extends EntityAIBase
         ownerPos.set(theOwner);
         this.theOwner = null;
         this.petPathfinder.clearPathEntity();
-        pokemob.setPokemonAIState(IMoveConstants.FOLLOWING, false);
+        pokemob.setPokemonAIState(IMoveConstants.PATHING, false);
     }
 
     /** Returns whether the EntityAIBase should begin execution. */
@@ -73,6 +73,7 @@ public class PokemobAIFollowOwner extends EntityAIBase
 
         this.petPathfinder = thePet.getNavigator();
         Vector3 ownerV = Vector3.getNewVector();
+
         if (entitylivingbase == null)
         {
             return false;
@@ -81,8 +82,7 @@ public class PokemobAIFollowOwner extends EntityAIBase
         {
             return false;
         }
-        else if (pokemob != null && (pokemob.getPokemonAIState(IMoveConstants.GUARDING)
-                || pokemob.getPokemonAIState(IMoveConstants.STAYING)))
+        else if (pokemob != null && pokemob.getPokemonAIState(IMoveConstants.STAYING))
         {
             return false;
         }
@@ -119,7 +119,7 @@ public class PokemobAIFollowOwner extends EntityAIBase
     {
         this.field_75343_h = 0;
         ownerPos.set(theOwner);
-        pokemob.setPokemonAIState(IMoveConstants.FOLLOWING, true);
+        pokemob.setPokemonAIState(IMoveConstants.PATHING, true);
     }
 
     /** Updates the task */

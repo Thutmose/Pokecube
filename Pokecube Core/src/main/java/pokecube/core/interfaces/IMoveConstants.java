@@ -140,8 +140,8 @@ public interface IMoveConstants extends IMoveNames
     static final int MATING               = 1 << 18;
     /** does the pokemob have a new move to learn */
     static final int LEARNINGMOVE         = 1 << 19;
-    // /** FREE VALUE */
-    static final int FOLLOWING            = 1 << 20;
+    // /** is the pokemob pathing to owner */
+    static final int PATHING              = 1 << 20;
     /** is the pokemob jumping */
     static final int JUMPING              = 1 << 21;
     /** is the pokemob in lava */

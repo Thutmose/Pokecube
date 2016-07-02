@@ -275,10 +275,8 @@ public class Commands implements ICommand
                     IPokemob mob = (IPokemob) o;
 
                     boolean isStaying = mob.getPokemonAIState(IMoveConstants.STAYING);
-                    boolean isGuarding = mob.getPokemonAIState(IMoveConstants.GUARDING);
-
                     if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == player || allall)
-                            && (named || all || (stay == isStaying && guard == isGuarding))
+                            && (named || all || (stay == isStaying))
                             && (named == specificName
                                     .equalsIgnoreCase(mob.getPokemonDisplayName().getUnformattedComponentText())))
                         mob.returnToPokecube();

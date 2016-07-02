@@ -1,3 +1,2 @@
 cd "%~dp0\Pokecube Core"
-gradlew setupDecompWorkspace eclipse
-pause
+start cmd /k gradlew setupDecompWorkspace eclipse

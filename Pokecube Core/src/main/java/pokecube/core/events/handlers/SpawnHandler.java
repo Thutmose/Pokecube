@@ -387,7 +387,8 @@ public final class SpawnHandler
             parseExpression(toUse, function.split(";")[0], d, location.y, r, isNew);
         }
         spawnLevel = (int) Math.abs(toUse.getValue());
-        int variance = new Random().nextInt(PokecubeMod.core.getConfig().levelVariance);
+        int variance = PokecubeMod.core.getConfig().levelVariance;
+        variance = new Random().nextInt(Math.max(1, variance));
         spawnLevel += variance;
         spawnLevel = Math.max(spawnLevel, 1);
         return spawnLevel;
@@ -455,7 +456,8 @@ public final class SpawnHandler
         maxXp = (int) Math.abs(toUse.getValue());
         maxXp = Math.max(maxXp, 10);
         int level = Tools.xpToLevel(pokemon.getEvolutionMode(), maxXp);
-        level = level + new Random().nextInt(PokecubeMod.core.getConfig().levelVariance);
+        int variance = PokecubeMod.core.getConfig().levelVariance;
+        level = level + new Random().nextInt(Math.max(1, variance));
         level = Math.max(1, level);
         return Tools.levelToXp(pokemon.getEvolutionMode(), level);
     }

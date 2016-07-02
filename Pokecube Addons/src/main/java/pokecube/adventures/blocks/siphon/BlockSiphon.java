@@ -1,4 +1,4 @@
-package pokecube.adventures.blocks.rf;
+package pokecube.adventures.blocks.siphon;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -36,9 +36,8 @@ public class BlockSiphon extends Block implements ITileEntityProvider
         if (!worldIn.isRemote && hand == EnumHand.MAIN_HAND)
         {
             TileEntitySiphon tile = (TileEntitySiphon) worldIn.getTileEntity(pos);
-            int input = tile.getInput();
-            int stored = tile.lastInput;
-            ITextComponent message = CommandTools.makeTranslatedMessage("block.rfsiphon.info", "", input, stored);
+            int input = tile.getInput(false);
+            ITextComponent message = CommandTools.makeTranslatedMessage("block.rfsiphon.info", "", input);
             playerIn.addChatMessage(message);
         }
         return false;

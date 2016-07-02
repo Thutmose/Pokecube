@@ -83,6 +83,7 @@ public class RecipeRevive implements IRecipe
             ItemStack stack = other;
             if (stack != null && stack.hasTagCompound() && PokecubeManager.isFilled(stack))
             {
+                if (stack.getItemDamage() != 32767) return false;
                 healed = stack.copy();
                 if (stack.getItemDamage() == 32767) PokecubeManager.setStatus(healed, IMoveConstants.STATUS_NON);
                 int serialization = Tools.getHealedPokemobSerialization();

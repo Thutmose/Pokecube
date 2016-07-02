@@ -6,11 +6,11 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -35,6 +35,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
@@ -42,8 +43,9 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.Tools;
 
-@Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityCloner extends TileEntity implements IInventory, ITickable, IEnergyReceiver//, SimpleComponent
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
+        @Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = "CoFHAPI") })
+public class TileEntityCloner extends TileEntity implements IInventory, ITickable, IEnergyReceiver, SimpleComponent
 {
     public static class CraftMatrix extends InventoryCrafting
     {
@@ -241,7 +243,9 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
 
     }
 
-    protected EnergyStorage     storage   = new EnergyStorage(32000);
+    // protected EnergyStorage storage = new EnergyStorage(32000);
+    public static int           MAXENERGY = 32000;
+    public int                  energy    = 0;
     public CraftMatrix          craftMatrix;
     public InventoryCraftResult result;
     private ItemStack[]         inventory = new ItemStack[10];
@@ -257,7 +261,6 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public boolean canConnectEnergy(EnumFacing facing)
     {
-
         return true;
     }
 
@@ -278,10 +281,9 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         {
             ItemStack stack = inventory[fossilIndex];
             int num = PokecubeItems.getFossilNumber(stack);
-            int energy = storage.getEnergyStored();
             if (energy >= 20000)
             {
-                storage.extractEnergy(20000, false);
+                energy -= 20000;
                 EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(num, worldObj);
                 if (entity != null)
                 {
@@ -348,10 +350,9 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         if (domeFossilIndex >= 0 && potionIndex >= 0 && redstoneBlockIndex >= 0 && diamondBlockIndex >= 0
                 && ironBlockIndex >= 0)
         {
-            int energy = storage.getEnergyStored();
             if (energy >= 30000)
             {
-                storage.extractEnergy(30000, false);
+                energy -= 30000;
 
                 IPokemob mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(649, getWorld());
                 if (mob != null)
@@ -414,10 +415,9 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         {
             ItemStack hair = inventory[mewHairIndex];
             ItemStack egg = inventory[eggIndex];
-            int energy = storage.getEnergyStored();
             if (energy >= 30000 && correctPotion)
             {
-                storage.extractEnergy(30000, false);
+                energy -= 30000;
                 egg = egg.splitStack(1);
                 if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
                 egg.getTagCompound().setInteger("pokemobNumber", 150);
@@ -438,7 +438,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             }
             else if (energy >= 10000 && !correctPotion)
             {
-                storage.extractEnergy(10000, false);
+                energy -= 10000;
                 egg = egg.splitStack(1);
                 if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
                 egg.getTagCompound().setInteger("pokemobNumber", 132);
@@ -490,7 +490,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         return null;
     }
 
-//  @Override //TODO re-add SimpleComponent when it is fixed.
+    @Override // TODO re-add SimpleComponent when it is fixed.
     public String getComponentName()
     {
         return "splicer";
@@ -506,13 +506,13 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public int getEnergyStored(EnumFacing facing)
     {
-        return storage.getEnergyStored();
+        return energy;
     }
 
     @Override
     public int getField(int id)
     {
-        return storage.getEnergyStored();
+        return energy;
     }
 
     @Override
@@ -598,7 +598,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public int getMaxEnergyStored(EnumFacing facing)
     {
-        return storage.getMaxEnergyStored();
+        return MAXENERGY;
     }
 
     @Override
@@ -713,17 +713,16 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                 }
             }
         }
-        storage.readFromNBT(nbt);
+        energy = nbt.getInteger("energy");
     }
 
-    /* IEnergyReceiver */
     @Override
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
-        int receive = storage.receiveEnergy(maxReceive, simulate);
+        int receive = Math.min(maxReceive, getMaxEnergyStored(facing) - energy);
         if (!simulate && receive > 0)
         {
-            this.markDirty();
+            energy += receive;
         }
         return receive;
     }
@@ -743,7 +742,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public void setField(int id, int value)
     {
-        storage.setEnergyStored(value);
+        energy = value;
     }
 
     @Override
@@ -782,7 +781,8 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             }
         }
         nbt.setTag("Inventory", itemList);
-        return storage.writeToNBT(nbt);
+        nbt.setInteger("energy", energy);
+        return nbt;
     }
 
 }

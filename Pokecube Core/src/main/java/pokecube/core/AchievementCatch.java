@@ -11,7 +11,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
-import pokecube.core.database.Pokedex;
+import pokecube.core.database.Database;
 
 /** @author Manchou */
 public class AchievementCatch extends Achievement
@@ -33,9 +33,9 @@ public class AchievementCatch extends Achievement
 
     protected String getPokemobTranslatedName()
     {
-        if (pokedexNb > 0 && Pokedex.getInstance().getEntry(pokedexNb) != null)
+        if (pokedexNb > 0 && Database.getEntry(pokedexNb) != null)
         {
-            return Pokedex.getInstance().getEntry(pokedexNb).getUnlocalizedName();
+            return Database.getEntry(pokedexNb).getUnlocalizedName();
         }
         else
         {

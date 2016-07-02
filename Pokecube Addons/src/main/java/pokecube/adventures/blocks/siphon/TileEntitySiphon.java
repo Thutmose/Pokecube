@@ -1,4 +1,4 @@
-package pokecube.adventures.blocks.rf;
+package pokecube.adventures.blocks.siphon;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +12,7 @@ import cofh.api.energy.IEnergyReceiver;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -21,6 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
@@ -28,12 +30,13 @@ import pokecube.core.utils.PokeType;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
-@Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyProvider//, SimpleComponent
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
+        @Interface(iface = "cofh.api.energy.IEnergyProvider", modid = "CoFHAPI") })
+public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyProvider, SimpleComponent
 {
     AxisAlignedBB box;
     public JEP    parser    = new JEP();
-    int           lastInput = 0;
+    public int    lastInput = 0;
 
     public TileEntitySiphon()
     {
@@ -63,7 +66,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
         return ret;
     }
 
-//  @Override //TODO re-add SimpleComponent when it is fixed.
+    @Override
     public String getComponentName()
     {
         return "pokesiphon";
@@ -93,7 +96,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
         return lastInput;
     }
 
-    public int getInput()
+    public int getInput(boolean applyHunger)
     {
         List<EntityLiving> l = worldObj.getEntitiesWithinAABB(EntityLiving.class, box);
         int ret = 0;
@@ -120,7 +123,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
                     {
                         long time = living.getEntityData().getLong("energyTime");
 
-                        if (energyTime != time)
+                        if (energyTime != time || !applyHunger)
                         {
                             pokeEnergy = maxEnergy;
                         }
@@ -136,12 +139,15 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
                     ret += dE;
                     // Always drain at least 1
                     dE = Math.max(1, dE);
-                    living.getEntityData().setLong("energyTime", energyTime);
-                    living.getEntityData().setInteger("energyRemaining", pokeEnergy - dE);
-                    if (first && living.ticksExisted % 2 == 0)
+                    if (applyHunger)
                     {
-                        int time = ((IHungrymob) poke).getHungerTime();
-                        ((IHungrymob) poke).setHungerTime(time + 1);
+                        living.getEntityData().setLong("energyTime", energyTime);
+                        living.getEntityData().setInteger("energyRemaining", pokeEnergy - dE);
+                        if (first && living.ticksExisted % 2 == 0)
+                        {
+                            int time = ((IHungrymob) poke).getHungerTime();
+                            ((IHungrymob) poke).setHungerTime(time + 1);
+                        }
                     }
                 }
             }
@@ -207,7 +213,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
         {
             box = v.getAABB().expand(10, 10, 10);
         }
-        lastInput = getInput();
+        lastInput = getInput(true);
         Map<IEnergyReceiver, Integer> tiles = Maps.newHashMap();
         Map<IEnergyReceiver, EnumFacing> sides = Maps.newHashMap();
         for (EnumFacing side : EnumFacing.values())

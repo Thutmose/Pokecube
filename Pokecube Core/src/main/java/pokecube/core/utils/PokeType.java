@@ -108,7 +108,6 @@ public enum PokeType
         return unknown;
     }
 
-    // @formatter:on
     public final int    colour;
 
     public final String name;

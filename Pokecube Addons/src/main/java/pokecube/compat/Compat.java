@@ -35,7 +35,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.client.render.item.BagRenderer;
-import pokecube.compat.ai.AIElectricalInterferance;
+import pokecube.compat.ai.AIRFInterferance;
+import pokecube.compat.tesla.TeslaHandler;
 import pokecube.core.database.Database;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.IPokemob;
@@ -55,7 +56,8 @@ public class Compat
         @SubscribeEvent
         public void onPlayerJoin(TickEvent.PlayerTickEvent event)
         {
-            if (event.player.getEntityWorld().isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
+            if (event.player.getEntityWorld().isRemote
+                    && event.player == FMLClientHandler.instance().getClientPlayerEntity())
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
                 Object o = Loader.instance().getIndexedModList().get(PokecubeAdv.ID);
@@ -190,14 +192,33 @@ public class Compat
         meta.parent = PokecubeMod.ID;
     }
 
+    @Optional.Method(modid = "CoFHAPI")
     @SubscribeEvent
-    public void entityConstruct(EntityJoinWorldEvent evt)
+    public void addRFInterference(EntityJoinWorldEvent evt)
     {
         if (evt.getEntity() instanceof IPokemob && evt.getEntity() instanceof EntityLiving)
         {
             EntityLiving living = (EntityLiving) evt.getEntity();
-            living.tasks.addTask(1, new AIElectricalInterferance((IPokemob) living));
+            living.tasks.addTask(1, new AIRFInterferance((IPokemob) living));
         }
+    }
+
+    @Optional.Method(modid = "Tesla")
+    @SubscribeEvent
+    public void addTeslaInterferance(EntityJoinWorldEvent evt)
+    {
+        if (evt.getEntity() instanceof IPokemob && evt.getEntity() instanceof EntityLiving)
+        {
+            EntityLiving living = (EntityLiving) evt.getEntity();
+            living.tasks.addTask(1, new AIRFInterferance((IPokemob) living));
+        }
+    }
+
+    @Optional.Method(modid = "Tesla")
+    @SubscribeEvent
+    public void TeslaCompat(FMLPreInitializationEvent evt)
+    {
+        new TeslaHandler();
     }
 
     @SideOnly(Side.CLIENT)
@@ -213,6 +234,7 @@ public class Compat
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new WikiInfoNotifier();
     }
+
     @EventHandler
     public void postInit(FMLPostInitializationEvent evt)
     {

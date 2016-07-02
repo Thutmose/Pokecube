@@ -1,11 +1,11 @@
 package pokecube.adventures.blocks.warppad;
 
-import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import io.netty.buffer.Unpooled;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -16,6 +16,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.core.blocks.TileEntityOwnable;
@@ -25,19 +26,18 @@ import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 
-@Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyReceiver// ,
-                                                                                   // SimpleComponent
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
+        @Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = "CoFHAPI") })
+public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyReceiver, SimpleComponent
 {
-    public static double    MAXRANGE = 64;
-    public static int       COOLDOWN = 20;
-    public Vector4          link;
-    private Vector3         linkPos;
-    public Vector3          here;
-    boolean                 admin    = false;
-    boolean                 noEnergy = false;
-
-    protected EnergyStorage storage  = new EnergyStorage(32000);
+    public static double MAXRANGE = 64;
+    public static int    COOLDOWN = 20;
+    public Vector4       link;
+    private Vector3      linkPos;
+    public Vector3       here;
+    boolean              admin    = false;
+    boolean              noEnergy = false;
+    public int           energy   = 0;
 
     public TileEntityWarpPad()
     {
@@ -49,7 +49,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         return facing == EnumFacing.DOWN;
     }
 
-    // @Override //TODO re-add SimpleComponent when it is fixed.
+    @Override
     public String getComponentName()
     {
         return "warppad";
@@ -66,13 +66,13 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
     @Override
     public int getEnergyStored(EnumFacing facing)
     {
-        return storage.getEnergyStored();
+        return energy;
     }
 
     @Override
     public int getMaxEnergyStored(EnumFacing facing)
     {
-        return storage.getMaxEnergyStored();
+        return 32000;
     }
 
     /** Overriden in a sign to provide the text. */
@@ -120,13 +120,17 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
                 && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);
         if (tele && Config.instance.warpPadEnergy && !noEnergy)
         {
-            int energy = (int) (distSq);
-            tele = storage.extractEnergy(energy, false) == energy;
+            tele = energy > distSq;
 
             if (!tele)
             {
+                energy = 0;
                 stepper.playSound(SoundEvents.BLOCK_NOTE_BASEDRUM, 1.0F, 1.0F);
                 stepper.getEntityData().setLong("lastWarpPadUse", time);
+            }
+            else
+            {
+                energy -= distSq;
             }
         }
         if (tele)
@@ -169,13 +173,18 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         link = new Vector4(tagCompound.getCompoundTag("link"));
         noEnergy = tagCompound.getBoolean("noEnergy");
         admin = tagCompound.getBoolean("admin");
-        storage.readFromNBT(tagCompound);
+        energy = tagCompound.getInteger("energy");
     }
 
     @Override
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
-        return storage.receiveEnergy(maxReceive, simulate);
+        int receive = Math.min(maxReceive, getMaxEnergyStored(facing) - energy);
+        if (!simulate && receive > 0)
+        {
+            energy += receive;
+        }
+        return receive;
     }
 
     @Callback(doc = "function(x:number, y:number, z:number, w:number) - Sets the 4-vector destination, w is the dimension")
@@ -213,6 +222,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         }
         tagCompound.setBoolean("noEnergy", noEnergy);
         tagCompound.setBoolean("admin", admin);
-        return storage.writeToNBT(tagCompound);
+        tagCompound.setInteger("energy", energy);
+        return tagCompound;
     }
 }

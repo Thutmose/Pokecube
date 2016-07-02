@@ -2,11 +2,12 @@ package pokecube.adventures.blocks.afa;
 
 import java.util.Random;
 
-import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -43,10 +44,10 @@ import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
 
 @Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-        @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
-public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEnergyReceiver, ITickable// ,
-                                                                                                      // SimpleComponent,
-                                                                                                      // SidedComponent
+        @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
+        @Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = "CoFHAPI") })
+public class TileEntityAFA extends TileEntityOwnable
+        implements IInventory, IEnergyReceiver, ITickable, SimpleComponent, SidedComponent
 {
     public static ItemStack shiny_charm = null;
 
@@ -89,27 +90,26 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 
-    public IPokemob         pokemob        = null;
-    boolean                 shiny          = false;
-    private ItemStack[]     inventory      = new ItemStack[1];
-    public int[]            shift          = { 0, 0, 0 };
-    public int              scale          = 1000;
-    public Ability          ability        = null;
-    int                     energy         = 0;
-    int                     distance       = 4;
-    public int              transparency   = 128;
-    public boolean          rotates        = true;
-    public float            angle          = 0;
-    boolean                 noEnergy       = false;
+    public IPokemob     pokemob        = null;
+    boolean             shiny          = false;
+    private ItemStack[] inventory      = new ItemStack[1];
+    public int[]        shift          = { 0, 0, 0 };
+    public int          scale          = 1000;
+    public Ability      ability        = null;
+    int                 energy         = 0;
+    int                 distance       = 4;
+    public int          transparency   = 128;
+    public boolean      rotates        = true;
+    public float        angle          = 0;
+    public boolean      noEnergy       = false;
 
-    protected EnergyStorage storage;
+    // protected EnergyStorage storage;
 
-    protected boolean       addedToNetwork = false;
+    protected boolean   addedToNetwork = false;
 
     public TileEntityAFA()
     {
         super();
-        storage = new EnergyStorage(3200);
     }
 
     // Energy related things after here
@@ -119,7 +119,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         return true;
     }
 
-    // @Override //TODO re-add SimpleComponent when it is fixed.
+    @Override
     public boolean canConnectNode(EnumFacing side)
     {
         return side == EnumFacing.DOWN;
@@ -167,7 +167,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         throw new Exception("no ability");
     }
 
-    // @Override //TODO re-add SimpleComponent when it is fixed.
+    @Override // TODO re-add SimpleComponent when it is fixed.
     public String getComponentName()
     {
         return "afa";
@@ -183,20 +183,19 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
     @Optional.Method(modid = "OpenComputers")
     public Object[] getEnergy(Context context, Arguments args)
     {
-        return new Object[] { storage.getEnergyStored() };
+        return new Object[] { energy };
     }
 
     @Override
     public int getEnergyStored(EnumFacing facing)
     {
-
-        return storage.getEnergyStored();
+        return energy;
     }
 
     @Override
     public int getField(int id)
     {
-        if (id == 0) return worldObj.isRemote ? energy : storage.getEnergyStored();
+        if (id == 0) return energy;
         if (id == 1) return distance;
         if (id == 2) return noEnergy ? 1 : 0;
         if (id == 3) return scale;
@@ -221,8 +220,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
     @Override
     public int getMaxEnergyStored(EnumFacing facing)
     {
-
-        return storage.getMaxEnergyStored();
+        return 3200;
     }
 
     @Override
@@ -353,16 +351,16 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         angle = nbt.getFloat("angle");
         rotates = nbt.getBoolean("rotates");
         transparency = nbt.getInteger("transparency");
-        storage.readFromNBT(nbt);
+        energy = nbt.getInteger("energy");
     }
 
     @Override
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
-        int receive = storage.receiveEnergy(maxReceive, simulate);
+        int receive = Math.min(maxReceive, getMaxEnergyStored(facing) - energy);
         if (!simulate && receive > 0)
         {
-            this.markDirty();
+            energy += receive;
         }
         return receive;
     }
@@ -408,8 +406,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
     @Override
     public void setField(int id, int value)
     {
-        if (id == 0) if (worldObj.isRemote) energy = value;
-        else storage.setEnergyStored(value);
+        if (id == 0) energy = value;
         if (id == 1) distance = value;
         if (id == 2) noEnergy = value != 0;
         if (id == 3) scale = value;
@@ -479,13 +476,14 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
                     if (!noEnergy && !worldObj.isRemote)
                     {
                         int needed = (int) Math.ceil(distance * distance * distance / ((double) 50));
-                        int energy = storage.extractEnergy(needed, false);
-                        if (energy < needed)
+                        if (this.energy < needed)
                         {
+                            energy = 0;
                             worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(),
                                     SoundEvents.BLOCK_NOTE_BASEDRUM, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                             return;
                         }
+                        else energy -= needed;
                     }
                     evt.pokemob.setShiny(true);
                     worldObj.playSound(evt.entity.posX, evt.entity.posY, evt.entity.posZ,
@@ -529,8 +527,11 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
             if (!noEnergy && !worldObj.isRemote)
             {
                 int needed = (int) Math.ceil(distance * distance * distance / ((double) 50 + 5 * levelFactor));
-                int energy = storage.extractEnergy(needed, false);
-                if (energy < needed) return;
+                if (energy < needed)
+                {
+                    energy = 0;
+                }
+                else energy -= needed;
             }
         }
     }
@@ -567,6 +568,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, IEne
         nbt.setFloat("angle", angle);
         nbt.setBoolean("rotates", rotates);
         nbt.setInteger("transparency", transparency);
-        return storage.writeToNBT(nbt);
+        nbt.setInteger("energy", energy);
+        return nbt;
     }
 }

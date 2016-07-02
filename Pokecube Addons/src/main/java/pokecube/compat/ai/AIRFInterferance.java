@@ -13,7 +13,7 @@ import pokecube.core.utils.PokeType;
 import thut.api.maths.Cruncher;
 import thut.api.maths.Vector3;
 
-public class AIElectricalInterferance extends EntityAIBase
+public class AIRFInterferance extends EntityAIBase
 {
 	static boolean init = true;
 	static boolean eln = false;
@@ -23,7 +23,7 @@ public class AIElectricalInterferance extends EntityAIBase
 	final EntityLiving entity;
 	final Set<?> linesAffectedThisTick = new HashSet<Object>();
 	
-	public AIElectricalInterferance(IPokemob pokemob_)
+	public AIRFInterferance(IPokemob pokemob_)
 	{
 		pokemob = pokemob_;
 		entity = (EntityLiving) pokemob;

@@ -93,11 +93,13 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
     @Override
     public int getEnergyStored(EnumFacing facing)
     {
-        return lastInput;
+        return 0;
     }
 
     public int getInput(boolean applyHunger)
     {
+        if (worldObj == null) return 0;
+
         List<EntityLiving> l = worldObj.getEntitiesWithinAABB(EntityLiving.class, box);
         int ret = 0;
         for (Object o : l)
@@ -152,7 +154,6 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
                 }
             }
         }
-
         return Math.min(ret, PokecubeAdv.conf.maxOutput);
     }
 

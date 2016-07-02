@@ -1,6 +1,6 @@
 ﻿#Pokecube Adventures translation
 
-block.rfsiphon.info=Input: %1$sRF/t, last Input: %2$sRF/t
+block.rfsiphon.info=Energy Output: %1$s/t
 
 item.pokemobTarget.name=Target
 item.warplinker.name=Warp Pad Linker

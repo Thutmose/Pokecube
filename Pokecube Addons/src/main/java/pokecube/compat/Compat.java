@@ -36,6 +36,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.compat.ai.AIRFInterferance;
+import pokecube.compat.rf.SiphonHandler;
 import pokecube.compat.tesla.TeslaHandler;
 import pokecube.core.database.Database;
 import pokecube.core.events.PostPostInit;
@@ -46,9 +47,9 @@ import thut.core.client.ClientProxy;
 @Mod(modid = "pokecube_compat", name = "Pokecube Compat", version = "1.0", acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
 public class Compat
 {
-    public static class WikiInfoNotifier
+    public static class UpdateNotifier
     {
-        public WikiInfoNotifier()
+        public UpdateNotifier()
         {
             MinecraftForge.EVENT_BUS.register(this);
         }
@@ -80,11 +81,13 @@ public class Compat
 
     private static FileWriter  fwriter;
 
-    static String              header   = "Name,Special Cases,Biomes - any acceptable,Biomes - all needed,Excluded biomes,Replace";
+    static boolean             TESLALOADED = false;
 
-    static String              example1 = "Rattata,day night ,mound 0.6:10:5,,,false";
+    static String              header      = "Name,Special Cases,Biomes - any acceptable,Biomes - all needed,Excluded biomes,Replace";
 
-    static String              example2 = "Spearow,day night ,plains 0.3;hills 0.3,,,true";
+    static String              example1    = "Rattata,day night ,mound 0.6:10:5,,,false";
+
+    static String              example2    = "Spearow,day night ,plains 0.3;hills 0.3,,,true";
 
     public static void setSpawnsFile(FMLPreInitializationEvent evt)
     {
@@ -214,11 +217,19 @@ public class Compat
         }
     }
 
+    @Optional.Method(modid = "CoFHAPI")
+    @EventHandler
+    public void RFCompat(FMLInitializationEvent evt)
+    {
+        if (!TESLALOADED) new SiphonHandler();
+    }
+
     @Optional.Method(modid = "Tesla")
     @EventHandler
     public void TeslaCompat(FMLPreInitializationEvent evt)
     {
         new TeslaHandler();
+        TESLALOADED = true;
     }
 
     @SideOnly(Side.CLIENT)
@@ -232,7 +243,7 @@ public class Compat
     @EventHandler
     public void load(FMLInitializationEvent evt)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new WikiInfoNotifier();
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new UpdateNotifier();
     }
 
     @EventHandler

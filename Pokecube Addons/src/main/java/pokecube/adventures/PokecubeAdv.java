@@ -3,6 +3,7 @@ package pokecube.adventures;
 import java.io.File;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -64,7 +65,8 @@ public class PokecubeAdv
     public static int          GUICLONER_ID       = 4;
     public static int          GUIBIOMESETTER_ID  = 5;
     public static int          GUIAFA_ID          = 6;
-    // public static int GUITRAINERMERC_ID = 7;
+
+    public static boolean      hasEnergyAPI       = false;
 
     @SidedProxy(clientSide = "pokecube.adventures.client.ClientProxy", serverSide = "pokecube.adventures.CommonProxy")
     public static CommonProxy  proxy;
@@ -99,7 +101,7 @@ public class PokecubeAdv
                 PokecubeCore.getMessageID(), Side.SERVER);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-
+        
         try
         {
             registerMerchant();
@@ -156,6 +158,7 @@ public class PokecubeAdv
     public void preInit(FMLPreInitializationEvent e)
     {
         conf = new Config(PokecubeMod.core.getPokecubeConfig(e).getConfigFile());
+        hasEnergyAPI = Loader.isModLoaded("CoFHAPI") || Loader.isModLoaded("Tesla");
         BlockHandler.registerBlocks();
         ItemHandler.registerItems();
         setTrainerConfig(e);

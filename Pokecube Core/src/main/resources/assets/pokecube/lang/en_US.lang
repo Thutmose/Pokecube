@@ -72,6 +72,11 @@ pokemob.hatch=%1$s Hatched from the egg
 pokecube.tooltip.level=Level: %1$s
 pokecube.tooltip.health=HP: %1$s/%2$s
 pokecube.tooltip.xp=XP: %1$s/%2$s
+pokecube.tooltip.moves=Moves: %1$s
+pokecube.tooltip.ivs=IVs: %s
+pokecube.tooltip.evs=EVs: %s
+pokecube.tooltip.nature=N: %s
+pokecube.tooltip.ability=A: %s
 
 ability.adaptability.name=Adaptability
 ability.aerilate.name=Aerilate

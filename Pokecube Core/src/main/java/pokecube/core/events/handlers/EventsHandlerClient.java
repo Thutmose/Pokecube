@@ -195,7 +195,7 @@ public class EventsHandlerClient
                 Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
 
         GL11.glPushMatrix();
-        float zoom = (float) (10f / Math.sqrt(size));
+        float zoom = (float) (12f / size);
         GL11.glScalef(-zoom, zoom, zoom);
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         long time = Minecraft.getSystemTime();
@@ -470,12 +470,12 @@ public class EventsHandlerClient
                         GL11.glPushMatrix();
                         GL11.glTranslatef(i + x, j + y, 0F);
                         EntityLiving entity = (EntityLiving) pokemob;
-                        entity.rotationYaw = 0;
+                        entity.rotationYaw = -40;
                         entity.rotationPitch = 0;
                         entity.rotationYawHead = 0;
                         pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
                         entity.onGround = true;
-                        renderMob(pokemob, event.getRenderPartialTicks());
+                        renderMob(pokemob, event.getRenderPartialTicks(), false);
                         GL11.glPopMatrix();
                     }
                 }
@@ -526,12 +526,12 @@ public class EventsHandlerClient
                     GL11.glPushMatrix();
                     GL11.glTranslatef(i + x + 20 * l, j + y, 0F);
                     EntityLiving entity = (EntityLiving) pokemob;
-                    entity.rotationYaw = 0;
+                    entity.rotationYaw = -40;
                     entity.rotationPitch = 0;
                     entity.rotationYawHead = 0;
                     pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
                     entity.onGround = true;
-                    renderMob(pokemob, event.getPartialTicks());
+                    renderMob(pokemob, event.getPartialTicks(), false);
                     GL11.glPopMatrix();
                 }
             }

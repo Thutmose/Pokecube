@@ -100,6 +100,7 @@ public class PacketBag implements IMessage, IMessageHandler<PacketBag, IMessage>
         }
         if (message.message == ONOPEN)
         {
+            InventoryBag.blank = new InventoryBag("blank");
             InventoryBag bag = InventoryBag.getBag(player);
             int num = message.data.getInteger("N");
             bag.boxes = new String[num];

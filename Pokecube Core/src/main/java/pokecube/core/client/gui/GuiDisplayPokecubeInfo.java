@@ -14,6 +14,8 @@ import java.util.Set;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.google.common.collect.Lists;
+
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -211,7 +213,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (refreshCounter > 0) return arrayRet;
 
         EntityPlayer player = minecraft.thePlayer;
-        List<?> pokemobs = minecraft.theWorld.getLoadedEntityList();
+        List<?> pokemobs = Lists.newArrayList(minecraft.theWorld.getLoadedEntityList());
 
         List<IPokemob> ret = new ArrayList<IPokemob>();
         Set<Integer> added = new HashSet<>();

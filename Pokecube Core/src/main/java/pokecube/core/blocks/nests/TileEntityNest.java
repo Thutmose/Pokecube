@@ -149,7 +149,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
                 float weight = dbe.getSpawnData().getWeight(b);
                 if (Math.random() > weight) continue;
                 if (!(!SpawnHandler.canSpawn(t, dbe.getSpawnData(),
-                        here.set(this).offsetBy(EnumFacing.UP).offsetBy(EnumFacing.UP), worldObj)))
+                        here.set(this).offsetBy(EnumFacing.UP).offsetBy(EnumFacing.UP), worldObj, true)))
                     continue;
                 if (!SpawnHandler.isPointValidForSpawn(worldObj, here, dbe)) continue;
 
@@ -301,7 +301,8 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         addForbiddenSpawningCoord();
     }
 
-    /** Writes a tile entity to NBT. 
+    /** Writes a tile entity to NBT.
+     * 
      * @return */
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt)

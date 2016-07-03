@@ -191,7 +191,8 @@ public final class SpawnHandler
                 net.minecraft.entity.EntityLiving.SpawnPlacementType.ON_GROUND);// validSurfaces.contains(down);
     }
 
-    public static boolean canSpawn(TerrainSegment terrain, SpawnData data, Vector3 v, World world)
+    public static boolean canSpawn(TerrainSegment terrain, SpawnData data, Vector3 v, World world,
+            boolean respectDensity)
     {
         int biome2 = terrain.getBiome(v.intX(), v.intY(), v.intZ());
 
@@ -203,7 +204,8 @@ public final class SpawnHandler
         }
 
         int count = Tools.countPokemon(world, v, PokecubeMod.core.getConfig().maxSpawnRadius);
-        if (count > PokecubeMod.core.getConfig().mobSpawnNumber * PokecubeMod.core.getConfig().mobDensityMultiplier)
+        if (respectDensity && count > PokecubeMod.core.getConfig().mobSpawnNumber
+                * PokecubeMod.core.getConfig().mobDensityMultiplier)
             return false;
 
         if ((data.getWeight(BiomeType.ALL.getType())) > 0) return true;
@@ -656,7 +658,7 @@ public final class SpawnHandler
 
             Vector3.movePointOutOfBlocks(v, world);
 
-            if (!canSpawn(t, dbe.getSpawnData(), v, world)) return ret;
+            if (!canSpawn(t, dbe.getSpawnData(), v, world, true)) return ret;
 
             if (dbe.getSpawnData().types[SpawnData.LEGENDARY])
             {

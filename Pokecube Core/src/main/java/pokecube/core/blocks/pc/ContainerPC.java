@@ -61,6 +61,7 @@ public class ContainerPC extends Container
         {
             PacketPC packet = new PacketPC(PacketPC.ONOPEN);
             packet.data.setInteger("N", inv.boxes.length);
+            packet.data.setBoolean("A", inv.autoToPC);
             packet.data.setBoolean("O", inv.seenOwner);
             for (int i = 0; i < inv.boxes.length; i++)
             {

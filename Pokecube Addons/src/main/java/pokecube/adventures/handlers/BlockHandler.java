@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.adventures.LegendaryConditions;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.BlockAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.cloner.BlockCloner;
@@ -40,9 +41,9 @@ public class BlockHandler
         afa.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         PokecubeItems.register(afa, "afa");
         GameRegistry.registerTileEntity(TileEntityAFA.class, "afa");
-        
-        siphon = new BlockSiphon().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
-                .setUnlocalizedName("pokesiphon");
+
+        siphon = new BlockSiphon().setUnlocalizedName("pokesiphon");
+        if (PokecubeAdv.hasEnergyAPI) siphon.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         PokecubeItems.register(siphon, "pokesiphon");
         GameRegistry.registerTileEntity(TileEntitySiphon.class, "pokesiphon");
 

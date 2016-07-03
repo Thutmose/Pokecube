@@ -30,6 +30,7 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.abilities.Ability;
@@ -498,6 +499,7 @@ public class TileEntityAFA extends TileEntityOwnable
     @Override
     public void update()
     {
+        if (!PokecubeAdv.hasEnergyAPI) energy = 3200;
         if (inventory[0] != null && pokemob == null)
         {
             refreshAbility();

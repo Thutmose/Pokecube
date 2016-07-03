@@ -36,6 +36,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
@@ -757,6 +758,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     {
         if (worldObj.getTotalWorldTime() % 10 == 0 && !worldObj.isRemote)
         {
+            if (!PokecubeAdv.hasEnergyAPI) energy = 32000;
             checkMewtwo();
             checkGenesect();
             checkFossil();

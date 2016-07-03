@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -25,8 +26,7 @@ import pokecube.core.network.packets.PacketPC;
 import thut.api.network.PacketHandler;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
-                                                                         // SimpleComponent
+public class TileEntityPC extends TileEntityOwnable implements IInventory, SimpleComponent
 {
     private boolean     bound     = false;
     private String      boundId   = "";
@@ -55,7 +55,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory// ,
         return null;
     }
 
-    // @Override //TODO re-add SimpleComponent when it is fixed.
+    @Override
     public String getComponentName()
     {
         return "pokecubepc";

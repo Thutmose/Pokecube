@@ -35,6 +35,7 @@ public class HeldItemHandler
         megaVariants.add("glaliemega");
         megaVariants.add("houndoommega");
         megaVariants.add("lucariomega");
+        megaVariants.add("manectricmega");
         megaVariants.add("mawilemega");
         megaVariants.add("mewtwomega-y");
         megaVariants.add("mewtwomega-x");
@@ -44,6 +45,7 @@ public class HeldItemHandler
         megaVariants.add("salamencemega");
         megaVariants.add("sceptilemega");
         megaVariants.add("scizormega");
+        megaVariants.add("sharpedomega");
         megaVariants.add("slowbromega");
         megaVariants.add("steelixmega");
         megaVariants.add("swampertmega");

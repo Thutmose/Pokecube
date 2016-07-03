@@ -29,6 +29,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -98,7 +99,42 @@ public class Pokecube extends Item implements IPokecube
 
             if (GuiScreen.isShiftKeyDown())
             {
-
+                String arg = "";
+                for (String s : pokemob.getMoves())
+                {
+                    if (s != null)
+                    {
+                        arg += I18n.format(MovesUtils.getUnlocalizedMove(s)) + ", ";
+                    }
+                }
+                if (arg.endsWith(", "))
+                {
+                    arg = arg.substring(0, arg.length() - 2);
+                }
+                list.add(I18n.format("pokecube.tooltip.moves", arg));
+                arg = "";
+                for (Byte b : pokemob.getIVs())
+                {
+                    arg += b + ", ";
+                }
+                if (arg.endsWith(", "))
+                {
+                    arg = arg.substring(0, arg.length() - 2);
+                }
+                list.add(I18n.format("pokecube.tooltip.ivs", arg));
+                arg = "";
+                for (Byte b : pokemob.getEVs())
+                {
+                    int n = b + 128;
+                    arg += n + ", ";
+                }
+                if (arg.endsWith(", "))
+                {
+                    arg = arg.substring(0, arg.length() - 2);
+                }
+                list.add(I18n.format("pokecube.tooltip.evs", arg));
+                list.add(I18n.format("pokecube.tooltip.nature", pokemob.getNature()));
+                list.add(I18n.format("pokecube.tooltip.ability", pokemob.getAbility()));
             }
         }
 

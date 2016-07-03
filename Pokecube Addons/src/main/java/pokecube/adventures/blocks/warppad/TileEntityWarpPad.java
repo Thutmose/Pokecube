@@ -17,6 +17,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.core.blocks.TileEntityOwnable;
@@ -118,7 +119,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         long lastStepped = stepper.getEntityData().getLong("lastWarpPadUse");
         boolean tele = link != null && !link.isEmpty() && lastStepped + COOLDOWN <= time
                 && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);
-        if (tele && Config.instance.warpPadEnergy && !noEnergy)
+        if (tele && Config.instance.warpPadEnergy && !noEnergy && PokecubeAdv.hasEnergyAPI)
         {
             tele = energy > distSq;
 

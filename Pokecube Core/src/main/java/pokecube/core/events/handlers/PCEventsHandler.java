@@ -130,6 +130,7 @@ public class PCEventsHandler
                         if (evt.getWorld().isRemote) continue;
                         PacketPC packet = new PacketPC(PacketPC.ONOPEN);
                         packet.data.setBoolean("O", pc.seenOwner);
+                        packet.data.setBoolean("A", pc.autoToPC);
                         PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) p);
                     }
                 }

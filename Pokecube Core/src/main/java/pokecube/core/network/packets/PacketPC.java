@@ -101,9 +101,10 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
         }
         if (message.message == ONOPEN)
         {
+            InventoryPC.blank = new InventoryPC("blank");
             InventoryPC bag = InventoryPC.getPC(player);
             bag.seenOwner = message.data.getBoolean("O");
-            if (message.data.hasKey("A")) bag.autoToPC = message.data.getBoolean("A");
+            bag.autoToPC = message.data.getBoolean("A");
             if (message.data.hasKey("N"))
             {
                 int num = message.data.getInteger("N");

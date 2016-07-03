@@ -113,7 +113,7 @@ public class EntityTrainer extends EntityHasPokemobs
                 IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, worldObj);
                 int stat = getBaseStats(mon);
                 int stat1 = getBaseStats(mon1);
-                if (stat >= stat1 && mon.getLevel() >= mon1.getLevel()) continue;
+                if (stat > stat1 || mon.getLevel() > mon1.getLevel()) continue;
                 String trader1 = mon1.getPokemonOwnerName();
                 mon.setOriginalOwnerUUID(getUniqueID());
                 mon.setPokemonOwnerByName(trader1);

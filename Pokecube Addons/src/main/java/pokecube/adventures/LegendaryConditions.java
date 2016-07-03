@@ -91,8 +91,9 @@ public class LegendaryConditions
                 if (((double) count1) / ((double) count3) >= 0.5) { return true; }
                 if (pokemon != null && !trainer.getEntityWorld().isRemote)
                 {
-                    String message = "msg.nosuicunetrust.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.notrust.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("suicune").getUnlocalizedName())));
                     return false;
                 }
                 return false;
@@ -121,8 +122,9 @@ public class LegendaryConditions
                 if (((double) count1) / ((double) count3) >= 0.5) { return true; }
                 if (pokemon != null && !trainer.getEntityWorld().isRemote)
                 {
-                    String message = "msg.noenteitrust.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.notrust.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("entei").getUnlocalizedName())));
                     return false;
                 }
                 return false;
@@ -153,8 +155,9 @@ public class LegendaryConditions
                 if (((double) count1) / ((double) count3) >= 0.5) { return true; }
                 if (pokemon != null && !trainer.getEntityWorld().isRemote)
                 {
-                    String message = "msg.noraikoutrust.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.notrust.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("raikou").getUnlocalizedName())));
                     return false;
                 }
                 return false;
@@ -181,7 +184,8 @@ public class LegendaryConditions
 
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
                 Vector3 v = Vector3.getNewVector().set(trainer);
-                if (SpawnHandler.canSpawn(t, Database.getEntry("celebi").getSpawnData(), v, trainer.getEntityWorld()))
+                if (SpawnHandler.canSpawn(t, Database.getEntry("celebi").getSpawnData(), v, trainer.getEntityWorld(),
+                        false))
                 {
                     boolean hasCelebi = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                             Database.getEntry("celebi")) > 0;
@@ -189,14 +193,16 @@ public class LegendaryConditions
                             Database.getEntry("celebi")) > 2;
 
                     if (hasKilled || hasCelebi) { return false; }
-                    boolean celebiHere = Tools.countPokemon(v, trainer.getEntityWorld(), 32, Database.getEntry("celebi")) > 0;
+                    boolean celebiHere = Tools.countPokemon(v, trainer.getEntityWorld(), 32,
+                            Database.getEntry("celebi")) > 0;
                     if (celebiHere) return false;
                     return SpecialCaseRegister.getCaptureCondition("celebi").canCapture(trainer);
                 }
                 else
                 {
-                    String message = "msg.nocelebihere.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.nohere.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("celebi").getUnlocalizedName())));
                     return false;
                 }
             }
@@ -233,8 +239,9 @@ public class LegendaryConditions
                         Database.getEntry("entei")) > 0;
                 if (!(raikou && entei && suicune))
                 {
-                    String message = "msg.nohoohtrust.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.notrust.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("hooh").getUnlocalizedName())));
                     return false;
                 }
                 int biomeId = v.getBiomeID(trainer.getEntityWorld());
@@ -248,8 +255,9 @@ public class LegendaryConditions
                 }
                 else
                 {
-                    String message = "msg.nohoohhere.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.nohere.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("hooh").getUnlocalizedName())));
                     return false;
                 }
 
@@ -261,8 +269,9 @@ public class LegendaryConditions
 
                 if (location.y < 150)
                 {
-                    String message = "msg.nohoohhere.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.nohere.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("hooh").getUnlocalizedName())));
                     return false;
                 }
 
@@ -275,10 +284,12 @@ public class LegendaryConditions
                     for (int k = -5; k <= 5; k++)
                     {
 
-                        if (location.add(i, -1, k).getBlockState(trainer.getEntityWorld()).getMaterial() == Material.AIR)
+                        if (location.add(i, -1, k).getBlockState(trainer.getEntityWorld())
+                                .getMaterial() == Material.AIR)
                         {
-                            String message = "msg.nohoohhere.txt";
-                            trainer.addChatMessage(new TextComponentTranslation(message));
+                            String message = "msg.nohere.txt";
+                            trainer.addChatMessage(new TextComponentTranslation(message,
+                                    new TextComponentTranslation(Database.getEntry("hooh").getUnlocalizedName())));
                             return false;
                         }
                     }
@@ -319,13 +330,15 @@ public class LegendaryConditions
                 {
                     if (captureFactor < 0.75)
                     {
-                        String message = "msg.nocelebitrust.txt";
-                        trainer.addChatMessage(new TextComponentTranslation(message));
+                        String message = "msg.notrust.txt";
+                        trainer.addChatMessage(new TextComponentTranslation(message,
+                                new TextComponentTranslation(Database.getEntry("celebi").getUnlocalizedName())));
                     }
                     else if (count1 < count2)
                     {
-                        String message = "msg.celebiangry.txt";
-                        trainer.addChatMessage(new TextComponentTranslation(message));
+                        String message = "msg.angeredlegend.txt";
+                        trainer.addChatMessage(new TextComponentTranslation(message,
+                                new TextComponentTranslation(Database.getEntry("celebi").getUnlocalizedName())));
                     }
                 }
                 return false;
@@ -378,8 +391,6 @@ public class LegendaryConditions
             {
                 boolean hasLugia = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("lugia")) > 0;
-                boolean hasKilled = KillStats.getTotalNumberOfPokemobKilledBy(trainer.getUniqueID().toString(),
-                        Database.getEntry("lugia")) > 2;
 
                 boolean articuno = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("articuno")) > 0;
@@ -389,12 +400,13 @@ public class LegendaryConditions
                         Database.getEntry("moltres")) > 0;
                 if (!(articuno && moltres && zapdos))
                 {
-                    String message = "msg.nolugiatrust.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.notrust.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("lugia").getUnlocalizedName())));
                     return false;
                 }
 
-                if (hasKilled || hasLugia) return false;
+                if (hasLugia) return false;
 
                 return true;
             }
@@ -423,15 +435,17 @@ public class LegendaryConditions
                 Vector3 v = Vector3.getNewVector().set(trainer);
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
 
-                if (SpawnHandler.canSpawn(t, Database.getEntry("kyogre").getSpawnData(), v, trainer.getEntityWorld()))
+                if (SpawnHandler.canSpawn(t, Database.getEntry("kyogre").getSpawnData(), v, trainer.getEntityWorld(),
+                        false))
                 {
                     boolean here = Tools.countPokemon(v, trainer.getEntityWorld(), 32, Database.getEntry("kyogre")) > 0;
                     return !here;
                 }
                 else
                 {
-                    String message = "msg.nokyogrehere.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.nohere.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("kyogre").getUnlocalizedName())));
                     return false;
                 }
             }
@@ -461,15 +475,18 @@ public class LegendaryConditions
                 Vector3 v = Vector3.getNewVector().set(trainer);
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
 
-                if (SpawnHandler.canSpawn(t, Database.getEntry("groudon").getSpawnData(), v, trainer.getEntityWorld()))
+                if (SpawnHandler.canSpawn(t, Database.getEntry("groudon").getSpawnData(), v, trainer.getEntityWorld(),
+                        false))
                 {
-                    boolean here = Tools.countPokemon(v, trainer.getEntityWorld(), 32, Database.getEntry("groudon")) > 0;
+                    boolean here = Tools.countPokemon(v, trainer.getEntityWorld(), 32,
+                            Database.getEntry("groudon")) > 0;
                     return !here;
                 }
                 else
                 {
-                    String message = "msg.nogroudonhere.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.nohere.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("groudon").getUnlocalizedName())));
                     return false;
                 }
             }
@@ -509,8 +526,9 @@ public class LegendaryConditions
                 if (killFactor >= 0.5 && captureFactor >= 0.5) { return true; }
                 if (pokemon != null && !trainer.getEntityWorld().isRemote)
                 {
-                    String message = "msg.nokyogretrust.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.notrust.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("kyogre").getUnlocalizedName())));
                 }
                 return false;
             }
@@ -538,8 +556,9 @@ public class LegendaryConditions
                 if (killFactor >= 0.5 && captureFactor >= 0.5) { return true; }
                 if (pokemon != null && !trainer.getEntityWorld().isRemote)
                 {
-                    String message = "msg.nogroudontrust.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    String message = "msg.notrust.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message,
+                            new TextComponentTranslation(Database.getEntry("groudon").getUnlocalizedName())));
                 }
                 return false;
             }
@@ -579,11 +598,18 @@ public class LegendaryConditions
                 boolean wailord = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("wailord")) > 0;
 
+                if (!(relicanth && wailord))
+                {
+                    String message = "msg.noknowhowmakeregi.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    return false;
+                }
+
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
                 boolean biome = SpawnHandler.canSpawn(t, Database.getEntry("regirock").getSpawnData(), v,
-                        trainer.getEntityWorld());
+                        trainer.getEntityWorld(), false);
                 if (relicanth && wailord && biome) { return true; }
-                String message = "msg.noregirockhere.txt";
+                String message = "msg.noregi.txt";
                 trainer.addChatMessage(new TextComponentTranslation(message));
                 return false;
 
@@ -676,11 +702,17 @@ public class LegendaryConditions
                 boolean wailord = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("wailord")) > 0;
 
+                if (!(relicanth && wailord))
+                {
+                    String message = "msg.noknowhowmakeregi.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    return false;
+                }
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
 
                 if (relicanth && wailord && SpawnHandler.canSpawn(t, Database.getEntry("regice").getSpawnData(), v,
-                        trainer.getEntityWorld())) { return true; }
-                String message = "msg.noregicehere.txt";
+                        trainer.getEntityWorld(), false)) { return true; }
+                String message = "msg.noregi.txt";
                 trainer.addChatMessage(new TextComponentTranslation(message));
                 return false;
 
@@ -775,13 +807,18 @@ public class LegendaryConditions
                         Database.getEntry("relicanth")) > 0;
                 boolean wailord = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
                         Database.getEntry("wailord")) > 0;
-
+                if (!(relicanth && wailord))
+                {
+                    String message = "msg.noknowhowmakeregi.txt";
+                    trainer.addChatMessage(new TextComponentTranslation(message));
+                    return false;
+                }
                 TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(trainer);
 
                 if (relicanth && wailord && SpawnHandler.canSpawn(t, Database.getEntry("registeel").getSpawnData(), v,
-                        trainer.getEntityWorld())) { return true; }
+                        trainer.getEntityWorld(), false)) { return true; }
 
-                String message = "msg.noregisteelhere.txt";
+                String message = "msg.noregi.txt";
                 trainer.addChatMessage(new TextComponentTranslation(message));
                 return false;
 

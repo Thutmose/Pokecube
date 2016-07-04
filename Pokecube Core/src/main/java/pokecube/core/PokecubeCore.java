@@ -71,6 +71,7 @@ import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IEntityProvider;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
@@ -222,6 +223,17 @@ public class PokecubeCore extends PokecubeMod
     {
         new Tools();
         core = this;
+    }
+
+    @Override
+    public Entity createEntityByPokedexEntry(PokedexEntry entry, World world)
+    {
+        Entity e = createEntityByPokedexNb(entry.getPokedexNb(), world);
+        if (e != null && ((IPokemob) e).getPokedexEntry() != entry)
+        {
+            ((IPokemob) e).changeForme(entry.getName());
+        }
+        return e;
     }
 
     /** Creates a new instance of an entity in the world for the pokemob

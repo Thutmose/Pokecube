@@ -114,7 +114,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
             }
             return;
         }
-        if (this.ticksExisted % 20 == 0 && this.getHealth() < this.getMaxHealth())
+        if (this.ticksExisted % 20 == 0 && this.getHealth() < this.getMaxHealth() && this.getHealth() > 0)
         {
             this.setHealth(Math.min(this.getHealth() + 1, this.getMaxHealth()));
         }

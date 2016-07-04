@@ -1,6 +1,6 @@
 ﻿#Pokecube Adventures translation
 
-block.rfsiphon.info=Energy Output: %1$s/t
+block.rfsiphon.info=Energy Output: %1$s/%2$s
 
 item.pokemobTarget.name=Target
 item.warplinker.name=Warp Pad Linker
@@ -62,6 +62,9 @@ pokecube.trainer.defeat=%1$s §ahas been defeated!
 pokecube.trainer.toss=%1$s §csent out %2$s!
 pokecube.trainer.next=%1$s §cis about to send out %2$s!
 pokecube.trainer.drop=%1$s §agave you %2$s for winning!
+
+pokecube.power.enabled=§aPower API found, Machines will require energy to run.
+pokecube.power.disabled=§cNo Power API found, Machines will not use energy, install something which provides Tesla or RF to enable.
 
 #Config Stuff
 

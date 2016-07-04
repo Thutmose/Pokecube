@@ -165,7 +165,7 @@ public class GuiAnimate extends GuiScreen
         if (pokemob == null)
         {
             EventsHandlerClient.renderMobs.put(entry,
-                    pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+                    pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(entry, mc.theWorld));
         }
         if (pokemob != null)
         {

@@ -61,8 +61,8 @@ public class GiftCommand extends CommandBase
 
                     String name = gift[0];
 
-                    IPokemob mob = (IPokemob) PokecubeMod.core
-                            .createEntityByPokedexNb(Database.getEntry(name).getPokedexNb(), sender.getEntityWorld());
+                    IPokemob mob = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(Database.getEntry(name),
+                            sender.getEntityWorld());
 
                     boolean shiny = false;
                     boolean shadow = false;

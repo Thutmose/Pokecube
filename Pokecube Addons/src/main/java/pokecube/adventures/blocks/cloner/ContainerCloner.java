@@ -2,31 +2,93 @@ package pokecube.adventures.blocks.cloner;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.database.Database;
-import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
 public class ContainerCloner extends Container
 {
+    public static class SlotClonerCrafting extends SlotCrafting
+    {
+        final TileEntityCloner cloner;
+
+        public SlotClonerCrafting(TileEntityCloner cloner, EntityPlayer player, InventoryCrafting craftingInventory,
+                IInventory inventoryIn, int slotIndex, int xPosition, int yPosition)
+        {
+            super(player, craftingInventory, inventoryIn, slotIndex, xPosition, yPosition);
+            this.cloner = cloner;
+        }
+
+        /** the itemStack passed in is the output - ie, iron ingots, and
+         * pickaxes, not ore and wood. */
+        protected void onCrafting(ItemStack stack)
+        {
+            super.onCrafting(stack);
+        }
+
+        public void onPickupFromSlot(EntityPlayer playerIn, ItemStack stack)
+        {
+            ItemStack vanilla = CraftingManager.getInstance().findMatchingRecipe(cloner.craftMatrix, cloner.getWorld());
+            if (vanilla != null)
+            {
+                super.onPickupFromSlot(playerIn, stack);
+                return;
+            }
+            if (cloner.currentProcess != null) cloner.currentProcess.reset();
+            else cloner.currentProcess = cloner.cloneProcess;
+            net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent(playerIn, stack,
+                    cloner.craftMatrix);
+            this.onCrafting(stack);
+            net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
+            ItemStack[] aitemstack = cloner.currentProcess.recipe.getRemainingItems(cloner.craftMatrix);
+            net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
+            for (int i = 0; i < aitemstack.length; ++i)
+            {
+                ItemStack itemstack = cloner.craftMatrix.getStackInSlot(i);
+                ItemStack itemstack1 = aitemstack[i];
+
+                if (itemstack != null)
+                {
+                    cloner.craftMatrix.decrStackSize(i, 1);
+                    itemstack = cloner.craftMatrix.getStackInSlot(i);
+                }
+                if (itemstack1 != null)
+                {
+                    if (itemstack == null || itemstack.stackSize <= 0)
+                    {
+                        cloner.craftMatrix.setInventorySlotContents(i, itemstack1);
+                    }
+                    else if (ItemStack.areItemsEqual(itemstack, itemstack1)
+                            && ItemStack.areItemStackTagsEqual(itemstack, itemstack1))
+                    {
+                        itemstack1.stackSize += itemstack.stackSize;
+                        cloner.craftMatrix.setInventorySlotContents(i, itemstack1);
+                    }
+                    else if (!playerIn.inventory.addItemStackToInventory(itemstack1))
+                    {
+                        playerIn.dropItem(itemstack1, false);
+                    }
+                }
+            }
+            cloner.setField(0, 0);
+        }
+
+    }
+
     public InventoryPlayer inv;
     public World           worldObj;
-    int                    energy;
+    int                    progress;
+    int                    total;
     TileEntityCloner       tile;
     public BlockPos        pos;
     ItemStack              cube   = null;
@@ -45,7 +107,7 @@ public class ContainerCloner extends Container
         tile.craftMatrix = new TileEntityCloner.CraftMatrix(this, tile);
         tile.result = new TileEntityCloner.CraftResult(tile);
 
-        this.addSlotToContainer(new SlotCrafting(inv.player, tile.craftMatrix, tile.result, 0, 124, 35));
+        this.addSlotToContainer(new SlotClonerCrafting(tile, inv.player, tile.craftMatrix, tile.result, 0, 124, 35));
 
         for (int i = 0; i < 3; ++i)
         {
@@ -72,6 +134,12 @@ public class ContainerCloner extends Container
         tile.openInventory(inv.player);
     }
 
+    public void addListener(IContainerListener listener)
+    {
+        super.addListener(listener);
+        listener.sendAllWindowProperties(this, this.tile);
+    }
+
     @Override
     public boolean canInteractWith(EntityPlayer p)
     {
@@ -83,17 +151,16 @@ public class ContainerCloner extends Container
      * listener. */
     public void detectAndSendChanges()
     {
-        super.detectAndSendChanges();
-
         for (int i = 0; i < this.listeners.size(); ++i)
         {
             IContainerListener icrafting = this.listeners.get(i);
-            if (energy != tile.getField(0))
-            {
-                icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
-                this.onCraftMatrixChanged(tile.craftMatrix);
-            }
+            if (progress != tile.getField(0)) icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
+            if (total != tile.getField(1)) icrafting.sendProgressBarUpdate(this, 1, this.tile.getField(1));
+            this.onCraftMatrixChanged(tile.craftMatrix);
         }
+        progress = tile.getField(0);
+        total = tile.getField(1);
+        super.detectAndSendChanges();
     }
 
     /** Called when the container is closed. */
@@ -106,77 +173,20 @@ public class ContainerCloner extends Container
 
     @Override
     /** Callback for when the crafting matrix is changed. */
-    public void onCraftMatrixChanged(IInventory p_75130_1_)
+    public void onCraftMatrixChanged(IInventory inv)
     {
-        ItemStack item = CraftingManager.getInstance().findMatchingRecipe(tile.craftMatrix, this.worldObj);
-        egg = null;
-        cube = null;
-        star = null;
-        result = null;
-        if (worldObj == null) return;
-        int energy = tile.getField(0);
-        if (item != null)
+        ItemStack vanilla = CraftingManager.getInstance().findMatchingRecipe(tile.craftMatrix, this.worldObj);
+        if (vanilla != null)
         {
-            tile.setInventorySlotContents(9, item);
-            return;
+            tile.result.setInventorySlotContents(0, vanilla);
         }
-        else if (energy > 10000)
+        else if(tile.currentProcess!=null)
         {
-            boolean wrongnum = false;
-            for (int i = 0; i < tile.craftMatrix.getSizeInventory(); i++)
+            if(!tile.currentProcess.valid())
             {
-                item = tile.craftMatrix.getStackInSlot(i);
-                if (item == null) continue;
-                if (PokecubeManager.isFilled(item))
-                {
-                    if (cube != null)
-                    {
-                        wrongnum = true;
-                        break;
-                    }
-                    cube = item.copy();
-                    continue;
-                }
-                else if (item.getItem() instanceof ItemPokemobEgg)
-                {
-                    if (egg != null)
-                    {
-                        wrongnum = true;
-                        break;
-                    }
-                    egg = item.copy();
-                    continue;
-                }
-                else if (item.getItem() == Items.NETHER_STAR)
-                {
-                    if (star != null)
-                    {
-                        wrongnum = true;
-                        break;
-                    }
-                    star = item.copy();
-                    continue;
-                }
-                wrongnum = true;
-                break;
+                tile.result.setInventorySlotContents(0, null);
             }
-            if (!wrongnum && cube != null && egg != null)
-            {
-                int pokenb = PokecubeManager.getPokedexNb(cube);
-                PokedexEntry entry = Database.getEntry(pokenb);
-                pokenb = entry.getChildNb();
-                if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
-                egg.getTagCompound().setInteger("pokemobNumber", pokenb);
-                IPokemob mob = PokecubeManager.itemToPokemob(cube, worldObj);
-                if (mob.isShiny() && egg.hasTagCompound()) egg.getTagCompound().setBoolean("shiny", true);
-                egg.getTagCompound().setByte("gender", mob.getSexe());
-                egg.stackSize = 1;
-                tile.setInventorySlotContents(9, egg);
-                return;
-            }
-            tile.setInventorySlotContents(9, null);
         }
-        tile.setInventorySlotContents(9, null);
     }
 
     @Override
@@ -187,23 +197,6 @@ public class ContainerCloner extends Container
      *            4 = drop, 5 = ?, 6 = double click */
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
-        if (slotId == 0 && getSlot(0).getHasStack() && egg != null)
-        {
-            tile.setField(0, tile.getField(0) - 10000);
-            // If there is a nether star, consume it, but leave a pokecube
-            // behind.
-            for (int i = 0; i < tile.craftMatrix.getSizeInventory(); i++)
-            {
-                ItemStack item = tile.craftMatrix.getStackInSlot(i);
-                if (star != null && item != null && item.isItemEqual(cube))
-                {
-                    cube.stackSize = 2;
-                    tile.craftMatrix.setInventorySlotContents(i, cube);
-                    break;
-                }
-            }
-
-        }
         return super.slotClick(slotId, dragType, clickTypeIn, player);
     }
 
@@ -256,6 +249,5 @@ public class ContainerCloner extends Container
     public void updateProgressBar(int id, int data)
     {
         this.tile.setField(id, data);
-        this.onCraftMatrixChanged(tile.craftMatrix);
     }
 }

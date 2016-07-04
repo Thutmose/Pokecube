@@ -18,8 +18,8 @@ import pokecube.compat.jei.JEICompat;
 public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper>
 {
 
-    private static final int craftOutputSlot = 0;
-    private static final int craftInputSlot1 = 1;
+    private static final int          craftOutputSlot = 0;
+    private static final int          craftInputSlot1 = 1;
 
     @Nonnull
     private final IDrawable           background;
@@ -72,7 +72,7 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull ClonerRecipeWrapper recipeWrapper)
     {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-        
+
         guiItemStacks.init(craftOutputSlot, false, 94, 18);
 
         for (int y = 0; y < 3; ++y)
@@ -84,21 +84,10 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
             }
         }
 
-        if(recipeWrapper instanceof ClonerRecipeWrapper)
+        if (recipeWrapper instanceof ClonerRecipeWrapper)
         {
-            ClonerRecipeWrapper clonerwrapper = recipeWrapper;
-            if(clonerwrapper.isVanilla())
-            {
-                ICraftingRecipeWrapper wrapper = recipeWrapper;
-                craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());
-                craftingGridHelper.setOutput(guiItemStacks, wrapper.getOutputs());
-            }
-            else
-            {
-                ICraftingRecipeWrapper wrapper = recipeWrapper;
-                craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());
-                
-            }
+            ICraftingRecipeWrapper wrapper = recipeWrapper;
+            craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());
         }
         else
         {

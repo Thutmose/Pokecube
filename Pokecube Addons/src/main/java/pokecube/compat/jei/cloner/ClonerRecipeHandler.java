@@ -5,9 +5,10 @@ import javax.annotation.Nonnull;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
+import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
 import pokecube.compat.jei.JEICompat;
 
-public class ClonerRecipeHandler implements IRecipeHandler<ClonerRecipe> {
+public class ClonerRecipeHandler implements IRecipeHandler<RecipeFossilRevive> {
 
     @Nonnull
     @Override
@@ -16,7 +17,7 @@ public class ClonerRecipeHandler implements IRecipeHandler<ClonerRecipe> {
     }
 
     @Override
-    public String getRecipeCategoryUid(ClonerRecipe recipe)
+    public String getRecipeCategoryUid(RecipeFossilRevive recipe)
     {
         // TODO Auto-generated method stub
         return JEICompat.CLONER;
@@ -24,18 +25,18 @@ public class ClonerRecipeHandler implements IRecipeHandler<ClonerRecipe> {
 
     @Override
     @Nonnull
-    public Class<ClonerRecipe> getRecipeClass() {
-        return ClonerRecipe.class;
+    public Class<RecipeFossilRevive> getRecipeClass() {
+        return RecipeFossilRevive.class;
     }
 
     @Override
     @Nonnull
-    public IRecipeWrapper getRecipeWrapper(@Nonnull ClonerRecipe recipe) {
+    public IRecipeWrapper getRecipeWrapper(@Nonnull RecipeFossilRevive recipe) {
         return new ClonerRecipeWrapper(recipe);
     }
 
     @Override
-    public boolean isRecipeValid(@Nonnull ClonerRecipe recipe) {
+    public boolean isRecipeValid(@Nonnull RecipeFossilRevive recipe) {
         if (recipe.getRecipeOutput() == null) {
             return false;
         }

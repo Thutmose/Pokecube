@@ -171,6 +171,8 @@ public abstract class PokecubeMod
      * @return the {@link Entity} instance or null if a problem occurred */
     public abstract Entity createEntityByPokedexNb(int pokedexNb, World world);
 
+    public abstract Entity createEntityByPokedexEntry(PokedexEntry entry, World world);
+
     public abstract Config getConfig();
 
     /** Returns the class of the {@link EntityLiving} for the given pokedexNb.

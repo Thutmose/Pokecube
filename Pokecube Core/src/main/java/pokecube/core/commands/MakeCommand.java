@@ -107,8 +107,7 @@ public class MakeCommand extends CommandBase
 
                         }
 
-                        mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(),
-                                sender.getEntityWorld());
+                        mob = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(entry, sender.getEntityWorld());
 
                         if (mob == null)
                         {
@@ -216,7 +215,7 @@ public class MakeCommand extends CommandBase
                         else
                         {
                             EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(owner);
-                            System.out.println(p+" "+owner);
+                            System.out.println(p + " " + owner);
                             if (p != null) owner = p.getUniqueID().toString();
                         }
 
@@ -297,7 +296,8 @@ public class MakeCommand extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+            BlockPos pos)
     {
         List<String> ret = new ArrayList<String>();
         if (args.length == 1)

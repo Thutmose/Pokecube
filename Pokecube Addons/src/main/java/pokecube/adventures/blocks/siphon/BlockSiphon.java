@@ -36,8 +36,8 @@ public class BlockSiphon extends Block implements ITileEntityProvider
         if (!worldIn.isRemote && hand == EnumHand.MAIN_HAND)
         {
             TileEntitySiphon tile = (TileEntitySiphon) worldIn.getTileEntity(pos);
-            int input = tile.getInput(false);
-            ITextComponent message = CommandTools.makeTranslatedMessage("block.rfsiphon.info", "", input);
+            ITextComponent message = CommandTools.makeTranslatedMessage("block.rfsiphon.info", "gold", tile.currentOutput,
+                    tile.theoreticalOutput);
             playerIn.addChatMessage(message);
         }
         return false;

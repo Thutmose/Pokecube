@@ -161,7 +161,7 @@ public class GuiAFA extends GuiContainer
 
             TileEntityAFA cloner = (TileEntityAFA) te;
 
-            if (last != cloner.getWorld().getTotalWorldTime())
+            if (last < cloner.getWorld().getTotalWorldTime())
             {
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(1));
                 buffer.writeByte(MessageServer.MESSAGEGUIAFA);

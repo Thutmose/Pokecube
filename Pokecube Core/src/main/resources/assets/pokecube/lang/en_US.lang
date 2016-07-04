@@ -78,6 +78,8 @@ pokecube.tooltip.evs=EVs: %s
 pokecube.tooltip.nature=N: %s
 pokecube.tooltip.ability=A: %s
 
+entity.pokecube.pokecube:cube.name=Pokécube
+
 ability.adaptability.name=Adaptability
 ability.aerilate.name=Aerilate
 ability.aftermath.name=Aftermath

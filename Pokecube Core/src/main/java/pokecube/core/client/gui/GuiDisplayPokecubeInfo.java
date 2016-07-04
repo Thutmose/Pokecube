@@ -213,7 +213,10 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (refreshCounter > 0) return arrayRet;
 
         EntityPlayer player = minecraft.thePlayer;
-        List<?> pokemobs = Lists.newArrayList(minecraft.theWorld.getLoadedEntityList());
+        
+        if(player==null || player.getEntityWorld() == null) return new IPokemob[0];
+        
+        List<?> pokemobs = Lists.newArrayList(player.getEntityWorld().getLoadedEntityList());
 
         List<IPokemob> ret = new ArrayList<IPokemob>();
         Set<Integer> added = new HashSet<>();

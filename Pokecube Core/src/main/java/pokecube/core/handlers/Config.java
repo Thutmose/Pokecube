@@ -3,6 +3,7 @@ package pokecube.core.handlers;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -56,12 +57,12 @@ public class Config extends ConfigBase
 
     private static Config      defaults                   = null;
     // Misc Settings
-    @Configure(category = misc)
+    @Configure(category = misc, needsMcRestart = true)
     public String[]            defaultStarters            = {};
     public String[]            defaultStarts              = {};
-    @Configure(category = misc)
+    @Configure(category = misc, needsMcRestart = true)
     public boolean             contributorStarters        = true;
-    @Configure(category = misc)
+    @Configure(category = misc, needsMcRestart = true)
     public boolean             loginmessage               = true;
     @Configure(category = misc)
     /** is there a choose first gui on login */
@@ -71,9 +72,9 @@ public class Config extends ConfigBase
     public boolean             pvpExp                     = false;
     @Configure(category = misc)
     public boolean             mysterygift                = true;
-    @Configure(category = misc)
+    @Configure(category = misc, needsMcRestart = true)
     public String              defaultMobs                = "";
-    @Configure(category = misc)
+    @Configure(category = misc, needsMcRestart = true)
     protected boolean          tableRecipe                = true;
     @Configure(category = misc)
     public double              scalefactor                = 1;
@@ -129,7 +130,7 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     /** Warning time before a wild pokémob attacks a player */
     public int                 pokemobagressticks         = 100;
-    @Configure(category = mobAI)
+    @Configure(category = mobAI, needsMcRestart = true)
     /** Number of threads allowed for AI. */
     public int                 maxAIThreads               = 1;
     @Configure(category = mobAI)
@@ -158,41 +159,41 @@ public class Config extends ConfigBase
     public boolean             doSpawnBuilding            = true;
     @Configure(category = world)
     public boolean             pokemartMerchant           = true;
-    @Configure(category = world)
+    @Configure(category = world, needsMcRestart = true)
     public String              cave                       = "";
-    @Configure(category = world)
+    @Configure(category = world, needsMcRestart = true)
     public String              surface                    = "";
-    @Configure(category = world)
+    @Configure(category = world, needsMcRestart = true)
     public String              rock                       = "";
-    @Configure(category = world)
+    @Configure(category = world, needsMcRestart = true)
     public String              trees                      = "";
-    @Configure(category = world)
+    @Configure(category = world, needsMcRestart = true)
     public String              plants                     = "";
-    @Configure(category = world)
+    @Configure(category = world, needsMcRestart = true)
     public String              terrains                   = "";
-    @Configure(category = world)
+    @Configure(category = world, needsMcRestart = true)
     public String              industrial                 = "";
     @Configure(category = world)
     public boolean             useConfigForBerryLocations = false;
 
     @Configure(category = world)
-    public String[]            berryLocations             = {                                                          // @formatter:off
+    public String[]            berryLocations             = { // @formatter:off
             "cheri:TWplains,Bsavanna'Svillage", "chesto:TWforest,Bconiferous", "pecha:TWforest,Bconiferous",
             "rawst:TWmountain,Whills'TWnether'Scave", "aspear:TWforest,Bconiferous", "leppa:TWplains,Bsavanna",
             "oran:TWforest,Whills,Bconiferous'Sall", "persim:TWswamp", "lum:TWjungle,Bhills", "sitrus:TWjungle,Whills",
             "nanab:TWjungle,Bhills'TWbeach,Bcold'TWocean,Bcold", "pinap:TWjungle", "cornn:TWswamp", "enigma:TWend",
             "jaboca:TWmountain,Whills", "rowap:TWforest,Wconiferous", };                                               // @formatter:on
     // Mob Spawning settings
-    @Configure(category = spawning)
+    @Configure(category = spawning, needsMcRestart = true)
     /** Do monsters not spawn. */
     public boolean             deactivateMonsters         = false;
     @Configure(category = spawning)
     /** do monster spawns get swapped with shadow pokemobs */
     public boolean             disableMonsters            = false;
-    @Configure(category = spawning)
+    @Configure(category = spawning, needsMcRestart = true)
     /** do animals not spawn */
     public boolean             deactivateAnimals          = false;
-    @Configure(category = spawning)
+    @Configure(category = spawning, needsMcRestart = true)
     /** do Pokemobs spawn */
     public boolean             pokemonSpawn               = true;
     @Configure(category = spawning)
@@ -253,10 +254,10 @@ public class Config extends ConfigBase
 
     @Configure(category = advanced)
     public int                 evolutionTicks             = 50;
-    @Configure(category = database)
+    @Configure(category = database, needsMcRestart = true)
     boolean                    forceDatabase              = true;
 
-    @Configure(category = database)
+    @Configure(category = database, needsMcRestart = true)
     String[]                   configDatabases            = { "pokemobs", "moves" };
 
     /** List of blocks to be considered for the floor of a cave. */
@@ -415,9 +416,21 @@ public class Config extends ConfigBase
 
     public void requiresRestart(Property property)
     {
-        // TODO see which need which.
-        // property.setRequiresMcRestart(false);
-        // property.setRequiresWorldRestart(false);
+        Class<?> me = getClass();
+        Configure c;
+        for (Field f : me.getDeclaredFields())
+        {
+            if (f.getName().equals(property.getName()))
+            {
+                c = f.getAnnotation(Configure.class);
+                if (c != null)
+                {
+                    boolean needsMcRestart = c.needsMcRestart();
+                    property.setRequiresMcRestart(needsMcRestart);
+                }
+                break;
+            }
+        }
     }
 
     @Override

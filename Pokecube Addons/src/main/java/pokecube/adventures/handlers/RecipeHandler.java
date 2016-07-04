@@ -7,6 +7,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionType;
+import net.minecraft.potion.PotionUtils;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -35,32 +37,47 @@ public class RecipeHandler
                 RecipeFossilRevive.addRecipe(newRecipe);
             }
         }
-        ItemStack egg = PokecubeItems.getStack("pokemobEgg");
+        ItemStack eggIn = PokecubeItems.getStack("pokemobEgg");
+        eggIn.setItemDamage(Short.MAX_VALUE);
         ItemStack mewhair = PokecubeItems.getStack("mewHair");
         ItemStack ironBlock = new ItemStack(Blocks.IRON_BLOCK);
         ItemStack redstoneBlock = new ItemStack(Blocks.REDSTONE_BLOCK);
         ItemStack diamondBlock = new ItemStack(Blocks.DIAMOND_BLOCK);
         ItemStack dome = PokecubeItems.getStack("kabuto");
         ItemStack potion = new ItemStack(Items.POTIONITEM, 1, Short.MAX_VALUE);
-       
-        //Ditto
-        egg = ItemPokemobEgg.getEggStack(132);
-        RecipeFossilRevive newRecipe = new RecipeFossilRevive(egg, Lists.newArrayList(mewhair, egg, potion), Database.getEntry("ditto"), 10000);
-        //Low priority
+
+        // Ditto
+        ItemStack eggOut = ItemPokemobEgg.getEggStack(132);
+        RecipeFossilRevive newRecipe = new RecipeFossilRevive(eggOut, Lists.newArrayList(mewhair, eggIn, potion),
+                Database.getEntry("ditto"), 10000);
+        newRecipe.remainIndex.add(0);
+        // Low priority
         newRecipe.priority = -1;
         RecipeFossilRevive.addRecipe(newRecipe);
-        
-        //Genesect
-        potion = new ItemStack(Items.POTIONITEM, 1, 8225);
-        egg = ItemPokemobEgg.getEggStack(649);
-        newRecipe = new RecipeFossilRevive(egg, Lists.newArrayList(ironBlock, redstoneBlock, diamondBlock, dome, potion), Database.getEntry(649),
+
+        potion = new ItemStack(Items.POTIONITEM);
+        PotionUtils.addPotionToItemStack(potion, PotionType.getPotionTypeForName("minecraft:strong_regeneration"));
+
+        // Genesect
+        eggOut = ItemPokemobEgg.getEggStack(649);
+        newRecipe = new RecipeFossilRevive(eggOut,
+                Lists.newArrayList(ironBlock, redstoneBlock, diamondBlock, dome, potion), Database.getEntry(649),
                 30000);
+        newRecipe.tame = false;
+        newRecipe.level = 70;
+        RecipeFossilRevive.addRecipe(newRecipe);
+
+        // Mewtwo
+        eggOut = ItemPokemobEgg.getEggStack(150);
+        newRecipe = new RecipeFossilRevive(eggOut, Lists.newArrayList(mewhair, eggIn, potion), Database.getEntry("mewtwo"),
+                30000);
+        newRecipe.tame = false;
+        newRecipe.level = 70;
         RecipeFossilRevive.addRecipe(newRecipe);
     }
 
     private static void addLegendarySpawnerRecipes()
     {
-
         GameRegistry.addRecipe(getStack("registeelspawner"),
                 new Object[] { "RSR", "SRS", "RSR", 'S', Blocks.IRON_BLOCK, 'R', Blocks.REDSTONE_BLOCK });
 

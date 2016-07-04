@@ -185,6 +185,8 @@ public class ContainerCloner extends Container
             if(!tile.currentProcess.valid())
             {
                 tile.result.setInventorySlotContents(0, null);
+                tile.setField(0, 0);
+                tile.setField(1, 0);
             }
         }
     }

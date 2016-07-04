@@ -1,7 +1,6 @@
 package pokecube.adventures.blocks.cloner;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -13,21 +12,16 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -37,12 +31,10 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
-import pokecube.core.utils.Tools;
+import thut.api.network.PacketHandler;
 
 @InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
         @Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = "CoFHAPI") })
@@ -73,7 +65,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         public ItemStack decrStackSize(int index, int count)
         {
             ItemStack ret = cloner.decrStackSize(index, count);
-            this.eventHandler.onCraftMatrixChanged(this);
+            if (eventHandler != null) this.eventHandler.onCraftMatrixChanged(this);
             return ret;
         }
 
@@ -123,7 +115,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         public void setInventorySlotContents(int index, ItemStack stack)
         {
             cloner.setInventorySlotContents(index, stack);
-            this.eventHandler.onCraftMatrixChanged(this);
+            if (eventHandler != null) eventHandler.onCraftMatrixChanged(this);
         }
     }
 
@@ -241,51 +233,66 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         {
             cloner.setInventorySlotContents(index + 9, stack);
         }
-
     }
 
-    // protected EnergyStorage storage = new EnergyStorage(32000);
-    public static int           MAXENERGY = 32000;
-    public int                  energy    = 0;
-    public CraftMatrix          craftMatrix;
-    public InventoryCraftResult result;
-    private ItemStack[]         inventory = new ItemStack[10];
-
-    EntityPlayer                user;
-
-    public TileEntityCloner()
+    public static class ClonerProcess
     {
-        super();
-    }
+        final IClonerRecipe    recipe;
+        final TileEntityCloner tile;
+        int                    needed = 0;
 
-    /* IEnergyConnection */
-    @Override
-    public boolean canConnectEnergy(EnumFacing facing)
-    {
-        return true;
-    }
-
-    private void checkFossil()
-    {
-        int fossilIndex = -1;
-        for (int i = 0; i < 9; i++)
+        public ClonerProcess(IClonerRecipe recipe, TileEntityCloner tile)
         {
-            ItemStack stack = inventory[i];
-            int num = PokecubeItems.getFossilNumber(stack);
-            if (num > 0)
+            this.recipe = recipe;
+            this.tile = tile;
+            needed = recipe.getEnergyCost();
+        }
+
+        public boolean valid()
+        {
+            return recipe.matches(tile.craftMatrix, tile.getWorld());
+        }
+
+        public void reset()
+        {
+            needed = recipe.getEnergyCost();
+            tile.progress = getProgress();
+        }
+
+        public boolean tick()
+        {
+            if (needed > 0)
             {
-                fossilIndex = i;
-                break;
+                needed -= Math.min(needed, tile.energy);
+                tile.energy = 0;
+                tile.progress = getProgress();
+                tile.total = recipe.getEnergyCost();
+                return true;
+            }
+            else
+            {
+                return !complete();
             }
         }
-        if (fossilIndex >= 0)
+
+        public int getProgress()
         {
-            ItemStack stack = inventory[fossilIndex];
-            int num = PokecubeItems.getFossilNumber(stack);
-            if (energy >= 20000)
+            return recipe.getEnergyCost() - needed;
+        }
+
+        public boolean complete()
+        {
+            if (recipe instanceof RecipeFossilRevive)
             {
-                energy -= 20000;
-                EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(num, worldObj);
+                ItemStack[] remaining = recipe.getRemainingItems(tile.craftMatrix);
+                for (int i = 0; i < remaining.length; i++)
+                {
+                    if (remaining[i] != null) tile.setInventorySlotContents(i, remaining[i]);
+                    else tile.decrStackSize(i, 1);
+                }
+                RecipeFossilRevive recipe = (RecipeFossilRevive) this.recipe;
+                EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexEntry(recipe.pokedexEntry,
+                        tile.getWorld());
                 if (entity != null)
                 {
                     entity.setHealth(entity.getMaxHealth());
@@ -293,171 +300,52 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                     int maxXP = 6000;
                     // that will make your pokemob around level 3-5.
                     // You can give him more XP if you want
-                    ((IPokemob) entity).setExp(worldObj.rand.nextInt(maxXP) + 50, true, true);
-                    if (user != null) ((IPokemob) entity).setPokemonOwner(user);
-                    entity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(),
-                            worldObj.rand.nextFloat() * 360F, 0.0F);
-                    worldObj.spawnEntityInWorld(entity);
+                    ((IPokemob) entity).setExp(tile.getWorld().rand.nextInt(maxXP) + 50, true, true);
+                    if (tile.user != null && recipe.tame) ((IPokemob) entity).setPokemonOwner(tile.user);
+                    entity.setLocationAndAngles(tile.pos.getX(), tile.pos.getY() + 1, tile.pos.getZ(),
+                            tile.getWorld().rand.nextFloat() * 360F, 0.0F);
+                    tile.getWorld().spawnEntityInWorld(entity);
                     entity.playLivingSound();
-                    stack.stackSize--;
                 }
+                return true;
+            }
+            else
+            {
+                if (tile.getStackInSlot(9) == null)
+                {
+                    tile.setInventorySlotContents(9, recipe.getCraftingResult(tile.craftMatrix));
+                    if (tile.craftMatrix.eventHandler != null) tile.craftMatrix.eventHandler.onCraftMatrixChanged(tile);
+                    PacketHandler.sendTileUpdate(tile);
+                }
+                return false;
             }
         }
     }
 
-    private void checkGenesect()
-    {
-        if (!Database.entryExists(649)) return;
-        int redstoneBlockIndex = -1;
-        int ironBlockIndex = -1;
-        int diamondBlockIndex = -1;
-        int domeFossilIndex = -1;
-        int potionIndex = -1;
-        for (int i = 0; i < 9; i++)
-        {
-            ItemStack stack = inventory[i];
-            if (stack == null)
-            {
-            }
-            else if (stack.isItemEqual(PokecubeItems.getStack("kabuto")))
-            {
-                domeFossilIndex = i;
-            }
-            else if (stack.getItem() == Item.getItemFromBlock(Blocks.IRON_BLOCK))
-            {
-                ironBlockIndex = i;
-            }
-            else if (stack.getItem() == Item.getItemFromBlock(Blocks.REDSTONE_BLOCK))
-            {
-                redstoneBlockIndex = i;
-            }
-            else if (stack.getItem() == Item.getItemFromBlock(Blocks.DIAMOND_BLOCK))
-            {
-                diamondBlockIndex = i;
-            }
-            else if (stack.getItem() instanceof ItemPotion)
-            {
-                List<PotionEffect> effects = PotionUtils.getEffectsFromStack(stack);
-                for (PotionEffect effect : effects)
-                {
-                    if (effect != null && effect.getEffectName().contains("regeneration") && effect.getAmplifier() == 1)
-                    {
-                        potionIndex = i;
-                        break;
-                    }
-                }
-            }
-        }
-        if (domeFossilIndex >= 0 && potionIndex >= 0 && redstoneBlockIndex >= 0 && diamondBlockIndex >= 0
-                && ironBlockIndex >= 0)
-        {
-            if (energy >= 30000)
-            {
-                energy -= 30000;
+    public static int           MAXENERGY      = 256;
+    public int                  energy         = 0;
+    private int                 progress       = 0;
+    private int                 total          = 0;
+    protected ClonerProcess     currentProcess = null;
+    protected ClonerProcess     cloneProcess   = null;
+    public CraftMatrix          craftMatrix;
+    public InventoryCraftResult result;
+    private ItemStack[]         inventory      = new ItemStack[10];
 
-                IPokemob mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(649, getWorld());
-                if (mob != null)
-                {
-                    EntityLiving entity = (EntityLiving) mob;
-                    entity.setHealth(entity.getMaxHealth());
-                    ((IPokemob) entity).setExp(Tools.levelToXp(mob.getExperienceMode(), 70), true, true);
-                    entity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(),
-                            worldObj.rand.nextFloat() * 360F, 0.0F);
-                    worldObj.spawnEntityInWorld(entity);
-                    entity.playLivingSound();
-                    inventory[domeFossilIndex].stackSize--;
-                    inventory[redstoneBlockIndex].stackSize--;
-                    inventory[ironBlockIndex].stackSize--;
-                    inventory[diamondBlockIndex].stackSize--;
-                    inventory[potionIndex] = null;
-                }
-            }
-        }
+    EntityPlayer                user;
+
+    public TileEntityCloner()
+    {
+        super();
+        this.craftMatrix = new CraftMatrix(null, this);
+        cloneProcess = new ClonerProcess(new RecipeClone(), this);
     }
 
-    private void checkMewtwo()
+    /* IEnergyConnection */
+    @Override
+    public boolean canConnectEnergy(EnumFacing facing)
     {
-        if (!Database.entryExists(150)) return;
-
-        int mewHairIndex = -1;
-        int eggIndex = -1;
-        int potionIndex = -1;
-        boolean correctPotion = false;
-        for (int i = 0; i < 9; i++)
-        {
-            ItemStack stack = inventory[i];
-            if (stack == null)
-            {
-            }
-            else if (stack.isItemEqual(PokecubeItems.getStack("mewHair")))
-            {
-                mewHairIndex = i;
-            }
-            else if (stack.getItem() instanceof ItemPokemobEgg)
-            {
-                eggIndex = i;
-            }
-            else if (stack.getItem() instanceof ItemPotion)
-            {
-                List<PotionEffect> effects = PotionUtils.getEffectsFromStack(stack);
-                if (!correctPotion) potionIndex = i;
-                for (PotionEffect effect : effects)
-                {
-                    if (effect != null && effect.getEffectName().contains("regeneration") && effect.getAmplifier() == 1)
-                    {
-                        correctPotion = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (mewHairIndex >= 0 && potionIndex >= 0 && eggIndex >= 0)
-        {
-            ItemStack hair = inventory[mewHairIndex];
-            ItemStack egg = inventory[eggIndex];
-            if (energy >= 30000 && correctPotion)
-            {
-                energy -= 30000;
-                egg = egg.splitStack(1);
-                if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
-                egg.getTagCompound().setInteger("pokemobNumber", 150);
-
-                IPokemob mob = ItemPokemobEgg.getPokemob(getWorld(), egg);
-                if (mob != null)
-                {
-                    EntityLiving entity = (EntityLiving) mob;
-                    entity.setHealth(entity.getMaxHealth());
-                    ((IPokemob) entity).setExp(Tools.levelToXp(mob.getExperienceMode(), 70), true, true);
-                    entity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(),
-                            worldObj.rand.nextFloat() * 360F, 0.0F);
-                    worldObj.spawnEntityInWorld(entity);
-                    entity.playLivingSound();
-                    hair.stackSize--;
-                    inventory[potionIndex] = null;
-                }
-            }
-            else if (energy >= 10000 && !correctPotion)
-            {
-                energy -= 10000;
-                egg = egg.splitStack(1);
-                if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
-                egg.getTagCompound().setInteger("pokemobNumber", 132);
-
-                IPokemob mob = ItemPokemobEgg.getPokemob(getWorld(), egg);
-                if (mob != null)
-                {
-                    EntityLiving entity = (EntityLiving) mob;
-                    entity.setHealth(entity.getMaxHealth());
-                    ((IPokemob) entity).setExp(Tools.levelToXp(mob.getExperienceMode(), 10), true, true);
-                    entity.setLocationAndAngles(pos.getX(), pos.getY() + 1, pos.getZ(),
-                            worldObj.rand.nextFloat() * 360F, 0.0F);
-                    worldObj.spawnEntityInWorld(entity);
-                    entity.playLivingSound();
-                    inventory[potionIndex] = null;
-                }
-            }
-        }
+        return true;
     }
 
     @Override
@@ -491,7 +379,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         return null;
     }
 
-    @Override // TODO re-add SimpleComponent when it is fixed.
+    @Override
     public String getComponentName()
     {
         return "splicer";
@@ -513,13 +401,13 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public int getField(int id)
     {
-        return energy;
+        return id == 0 ? progress : total;
     }
 
     @Override
     public int getFieldCount()
     {
-        return 1;
+        return 2;
     }
 
     @Callback(doc = "function(slot:number, info:number) -- slot is which slot to get the info for,"
@@ -629,7 +517,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
-        if (craftMatrix != null)
+        if (craftMatrix != null && craftMatrix.eventHandler != null)
         {
             craftMatrix.eventHandler.onCraftMatrixChanged(craftMatrix);
         }
@@ -682,7 +570,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         {
             NBTTagCompound nbt = pkt.getNbtCompound();
             readFromNBT(nbt);
-            if (craftMatrix != null)
+            if (craftMatrix != null && craftMatrix.eventHandler != null)
             {
                 craftMatrix.eventHandler.onCraftMatrixChanged(craftMatrix);
             }
@@ -714,7 +602,33 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                 }
             }
         }
-        energy = nbt.getInteger("energy");
+        if (nbt.hasKey("progress"))
+        {
+            NBTTagCompound tag = nbt.getCompoundTag("progress");
+            String entryName = tag.getString("entry");
+            int needed = tag.getInteger("needed");
+            RecipeFossilRevive recipe = RecipeFossilRevive.getRecipe(Database.getEntry(entryName));
+            if (recipe != null)
+            {
+                currentProcess = new ClonerProcess(recipe, this);
+                currentProcess.needed = needed;
+                progress = needed;
+                total = currentProcess.recipe.getEnergyCost();
+            }
+            else if (needed != 0)
+            {
+                currentProcess = new ClonerProcess(new RecipeClone(), this);
+                currentProcess.needed = needed;
+                progress = needed;
+                total = currentProcess.recipe.getEnergyCost();
+            }
+            if (currentProcess == null || !currentProcess.valid())
+            {
+                progress = 0;
+                currentProcess = cloneProcess;
+                total = currentProcess.recipe.getEnergyCost();
+            }
+        }
     }
 
     @Override
@@ -743,7 +657,8 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public void setField(int id, int value)
     {
-        energy = value;
+        if (id == 0) progress = value;
+        else total = value;
     }
 
     @Override
@@ -756,12 +671,46 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public void update()
     {
-        if (worldObj.getTotalWorldTime() % 10 == 0 && !worldObj.isRemote)
+        if (worldObj.isRemote) return;
+        if (!PokecubeAdv.hasEnergyAPI) energy = 32;
+        checkRecipes();
+    }
+
+    public void checkRecipes()
+    {
+        if (currentProcess == null || !currentProcess.valid())
         {
-            if (!PokecubeAdv.hasEnergyAPI) energy = 32000;
-            checkMewtwo();
-            checkGenesect();
-            checkFossil();
+            for (RecipeFossilRevive recipe : RecipeFossilRevive.getRecipeList())
+            {
+                if (recipe.matches(craftMatrix, getWorld()))
+                {
+                    currentProcess = new ClonerProcess(recipe, this);
+                    break;
+                }
+            }
+            if (currentProcess == null)
+            {
+                cloneProcess.reset();
+                total = 0;
+                currentProcess = cloneProcess;
+            }
+        }
+        else
+        {
+            boolean valid = currentProcess.valid();
+            boolean done = true;
+            if (valid)
+            {
+                done = !currentProcess.tick();
+            }
+            if (!valid || done)
+            {
+                cloneProcess.reset();
+                currentProcess = cloneProcess;
+                progress = 0;
+                total = 0;
+                markDirty();
+            }
         }
     }
 
@@ -782,9 +731,15 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                 itemList.appendTag(tag);
             }
         }
+        if (currentProcess != null)
+        {
+            NBTTagCompound current = new NBTTagCompound();
+            if (currentProcess.recipe instanceof RecipeFossilRevive)
+                current.setString("entry", ((RecipeFossilRevive) currentProcess.recipe).pokedexEntry.getName());
+            current.setInteger("needed", currentProcess.needed);
+            nbt.setTag("progress", current);
+        }
         nbt.setTag("Inventory", itemList);
-        nbt.setInteger("energy", energy);
         return nbt;
     }
-
 }

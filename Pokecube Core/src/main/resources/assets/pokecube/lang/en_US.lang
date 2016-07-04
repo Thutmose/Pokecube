@@ -294,7 +294,7 @@ pokedex.locationinfo1=There are %1$s Registered Spawns
 pokedex.locationinfo2=There are %1$s registered Pokémobs
 pokedex.locationinfo3=%1$s Spawn here
 
-pokemobEgg.name=Pokemob Egg
+pokemobEgg.name=Pokémob Egg
 pokemobEggnamed.name=Egg of %1$s
 
 item.waterstone.name=Water Stone

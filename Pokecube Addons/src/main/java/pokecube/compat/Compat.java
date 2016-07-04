@@ -11,6 +11,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
@@ -66,6 +67,16 @@ public class Compat
                 if (result.status == Status.OUTDATED)
                 {
                     ITextComponent mess = ClientProxy.getOutdatedMessage(result, "Pokecube Revival");
+                    (event.player).addChatMessage(mess);
+                }
+                if(PokecubeAdv.hasEnergyAPI)
+                {
+                    ITextComponent mess = new TextComponentTranslation("pokecube.power.enabled");
+                    (event.player).addChatMessage(mess);
+                }
+                else
+                {
+                    ITextComponent mess = new TextComponentTranslation("pokecube.power.disabled");
                     (event.player).addChatMessage(mess);
                 }
             }

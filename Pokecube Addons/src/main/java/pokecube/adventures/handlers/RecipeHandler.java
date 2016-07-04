@@ -2,19 +2,61 @@ package pokecube.adventures.handlers;
 
 import static pokecube.core.PokecubeItems.getStack;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
+import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
 import pokecube.adventures.items.bags.RecipeBag;
 import pokecube.core.PokecubeItems;
+import pokecube.core.database.Database;
+import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
 public class RecipeHandler
 {
 
     public static boolean tmRecipe = true;
+
+    private static void addClonerRecipes()
+    {
+        for (ItemStack stack : PokecubeItems.fossils.keySet())
+        {
+            PokedexEntry i = PokecubeItems.fossils.get(stack);
+            System.out.println(i);
+            if (PokecubeMod.registered.get(i.getPokedexNb()))
+            {
+                RecipeFossilRevive newRecipe = new RecipeFossilRevive(stack, Lists.newArrayList(stack), i, 20000);
+                RecipeFossilRevive.addRecipe(newRecipe);
+            }
+        }
+        ItemStack egg = PokecubeItems.getStack("pokemobEgg");
+        ItemStack mewhair = PokecubeItems.getStack("mewHair");
+        ItemStack ironBlock = new ItemStack(Blocks.IRON_BLOCK);
+        ItemStack redstoneBlock = new ItemStack(Blocks.REDSTONE_BLOCK);
+        ItemStack diamondBlock = new ItemStack(Blocks.DIAMOND_BLOCK);
+        ItemStack dome = PokecubeItems.getStack("kabuto");
+        ItemStack potion = new ItemStack(Items.POTIONITEM, 1, Short.MAX_VALUE);
+       
+        //Ditto
+        egg = ItemPokemobEgg.getEggStack(132);
+        RecipeFossilRevive newRecipe = new RecipeFossilRevive(egg, Lists.newArrayList(mewhair, egg, potion), Database.getEntry("ditto"), 10000);
+        //Low priority
+        newRecipe.priority = -1;
+        RecipeFossilRevive.addRecipe(newRecipe);
+        
+        //Genesect
+        potion = new ItemStack(Items.POTIONITEM, 1, 8225);
+        egg = ItemPokemobEgg.getEggStack(649);
+        newRecipe = new RecipeFossilRevive(egg, Lists.newArrayList(ironBlock, redstoneBlock, diamondBlock, dome, potion), Database.getEntry(649),
+                30000);
+        RecipeFossilRevive.addRecipe(newRecipe);
+    }
 
     private static void addLegendarySpawnerRecipes()
     {
@@ -43,7 +85,8 @@ public class RecipeHandler
 
     public static void register()
     {
-        RecipeSorter.register("pokecube_adventures:bag", RecipeBag.class, Category.SHAPELESS, "after:minecraft:shapeless");
+        RecipeSorter.register("pokecube_adventures:bag", RecipeBag.class, Category.SHAPELESS,
+                "after:minecraft:shapeless");
         GameRegistry.addRecipe(new RecipeBag());
         if (tmRecipe) GameRegistry.addRecipe(getStack("tm"), new Object[] { "SS ", "SOS", "SRS", 'S', Items.IRON_INGOT,
                 'O', Blocks.GLASS_PANE, 'R', Items.REDSTONE });
@@ -88,24 +131,6 @@ public class RecipeHandler
         GameRegistry.addShapelessRecipe(new ItemStack(Items.EMERALD), shards1, shards1, shards1, shards1, shards1,
                 shards1, shards1, shards1, shards1);
         addLegendarySpawnerRecipes();
-        // PRIEST
-        // VillagerRegistry.instance().registerVillageTradeHandler(2, new
-        // VillagerRegistry.IVillageTradeHandler() {
-        // @Override
-        // public void manipulateTradesForVillager(EntityVillager villager,
-        // MerchantRecipeList recipeList, Random random) {
-        // int rand = random.nextInt(1);
-        // switch (rand) {
-        // case 0:
-        // recipeList.add(new MerchantRecipe(
-        // new ItemStack(Items.emerald, 20),
-        // getStack("exp_share")));
-        // break;
-        // default:
-        // break;
-        // }
-        // }
-        // });
-
+        addClonerRecipes();
     }
 }

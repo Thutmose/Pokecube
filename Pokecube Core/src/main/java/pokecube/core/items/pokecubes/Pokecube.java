@@ -87,6 +87,13 @@ public class Pokecube extends Item implements IPokecube
         {
             NBTTagCompound poketag = item.getTagCompound().getCompoundTag("Pokemob");
             IPokemob pokemob = PokecubeManager.itemToPokemob(item, player.getEntityWorld());
+
+            if (pokemob == null)
+            {
+                list.add("ERROR");
+                return;
+            }
+
             float health = poketag.getFloat("Health");
             float maxHealth = ((EntityLiving) pokemob).getMaxHealth();
             int lvlexp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel());

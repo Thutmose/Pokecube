@@ -13,19 +13,12 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.client.gui.GuiCloner;
-import pokecube.compat.jei.cloner.ClonerRecipe;
 import pokecube.compat.jei.cloner.ClonerRecipeCategory;
 import pokecube.compat.jei.cloner.ClonerRecipeHandler;
-import pokecube.core.PokecubeItems;
 import pokecube.core.client.gui.blocks.GuiPC;
-import pokecube.core.database.Database;
-import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
 @JEIPlugin
 public class JEICompat implements IModPlugin
@@ -61,34 +54,7 @@ public class JEICompat implements IModPlugin
 
         IRecipeTransferRegistry recipeTransferRegistry = registry.getRecipeTransferRegistry();
         recipeTransferRegistry.addRecipeTransferHandler(ContainerCloner.class, CLONER, 1, 9, 10, 36);
-
-        List<IRecipe> newRecipes = Lists.newArrayList();
-        for (ItemStack stack : PokecubeItems.fossils.keySet())
-        {
-            Integer i = PokecubeItems.fossils.get(stack);
-            if (Database.entryExists(i))
-            {
-                ClonerRecipe newRecipe = new ClonerRecipe(stack, Lists.newArrayList(stack), i, 20000);
-                newRecipes.add(newRecipe);
-            }
-        }
-        ItemStack egg = PokecubeItems.getStack("pokemobEgg");
-        ItemStack mewhair = PokecubeItems.getStack("mewHair");
-        ItemStack ironBlock = new ItemStack(Blocks.IRON_BLOCK);
-        ItemStack redstoneBlock = new ItemStack(Blocks.REDSTONE_BLOCK);
-        ItemStack diamondBlock = new ItemStack(Blocks.DIAMOND_BLOCK);
-        ItemStack dome = PokecubeItems.getStack("kabuto");
-        ItemStack potion = new ItemStack(Items.POTIONITEM, 1, Short.MAX_VALUE);
-        egg = ItemPokemobEgg.getEggStack(132);
-        ClonerRecipe newRecipe = new ClonerRecipe(egg, Lists.newArrayList(mewhair, egg, potion), 132, 10000);
-        newRecipes.add(newRecipe);
-        potion = new ItemStack(Items.POTIONITEM, 1, 8225);
-        egg = ItemPokemobEgg.getEggStack(649);
-        newRecipe = new ClonerRecipe(egg, Lists.newArrayList(ironBlock, redstoneBlock, diamondBlock, dome, potion), 649,
-                30000);
-        newRecipes.add(newRecipe);
-
-        registry.addRecipes(newRecipes);
+        registry.addRecipes(RecipeFossilRevive.getRecipeList());
 
         registry.addAdvancedGuiHandlers(new IAdvancedGuiHandler<GuiPC>()
         {

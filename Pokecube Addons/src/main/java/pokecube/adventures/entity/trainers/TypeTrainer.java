@@ -116,7 +116,7 @@ public class TypeTrainer
         int num = entry.getPokedexNb();
         if (Pokedex.getInstance().getEntry(num) == null) return null;
 
-        IPokemob entity = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), world);
+        IPokemob entity = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(entry, world);
         if (entity != null)
         {
             for (int i = 1; i < level; i++)

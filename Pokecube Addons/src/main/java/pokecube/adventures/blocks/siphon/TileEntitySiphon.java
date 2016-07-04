@@ -1,7 +1,5 @@
 package pokecube.adventures.blocks.siphon;
 
-import java.util.List;
-
 import org.nfunk.jep.JEP;
 
 import cofh.api.energy.IEnergyProvider;
@@ -9,7 +7,6 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -21,17 +18,15 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.utils.PokeType;
-import thut.api.entity.IHungrymob;
-import thut.api.maths.Vector3;
 
 @InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
         @Interface(iface = "cofh.api.energy.IEnergyProvider", modid = "CoFHAPI") })
 public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyProvider, SimpleComponent
 {
-    AxisAlignedBB box;
-    public JEP    parser = new JEP();
+    AxisAlignedBB     box;
+    public static JEP parser;
+    public int        currentOutput     = 0;
+    public int        theoreticalOutput = 0;
 
     public TileEntitySiphon()
     {
@@ -52,7 +47,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
     @Override
     public int extractEnergy(EnumFacing facing, int maxExtract, boolean simulate)
     {
-        int ret = getInput(!simulate);
+        int ret = currentOutput;
         if (ret > maxExtract) ret = maxExtract;
         return ret;
     }
@@ -63,9 +58,13 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
         return "pokesiphon";
     }
 
-    public int getEnergyGain(int level, int spAtk, int atk, PokedexEntry entry)
+    public static int getEnergyGain(int level, int spAtk, int atk, PokedexEntry entry)
     {
         int power = Math.max(atk, spAtk);
+        if (parser == null)
+        {
+            initParser();
+        }
         parser.setVarValue("x", level);
         parser.setVarValue("a", power);
         double value = parser.getValue();
@@ -75,7 +74,11 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
             parser.setVarValue("x", level);
             parser.setVarValue("a", power);
             value = parser.getValue();
-            new Exception().printStackTrace();
+            System.err.println(atk + " " + spAtk + " " + value);
+            if (Double.isNaN(value))
+            {
+                value = 0;
+            }
         }
         power = (int) value;
         return Math.max(1, power);
@@ -87,72 +90,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
         return 0;
     }
 
-    public int getInput(boolean applyHunger)
-    {
-        if (worldObj == null) return 0;
-        Vector3 v = Vector3.getNewVector().set(this);
-        if (box == null)
-        {
-            box = v.getAABB().expand(10, 10, 10);
-        }
-        List<EntityLiving> l = worldObj.getEntitiesWithinAABB(EntityLiving.class, box);
-        int ret = 0;
-        for (Object o : l)
-        {
-            if (o != null && o instanceof IPokemob)
-            {
-                IPokemob poke = (IPokemob) o;
-                EntityLiving living = (EntityLiving) o;
-                if (poke.isType(PokeType.electric))
-                {
-                    int spAtk = poke.getActualStats()[3];
-                    int atk = poke.getActualStats()[1];
-                    int level = poke.getLevel();
-                    double dSq = living.getDistanceSq(getPos().getX() + 0.5, getPos().getY() + 0.5,
-                            getPos().getZ() + 0.5);
-                    dSq = Math.max(dSq, 1);
-                    int maxEnergy = getMaxEnergy(level, spAtk, atk, poke.getPokedexEntry());
-                    int pokeEnergy = maxEnergy;
-                    int dE;
-                    long energyTime = worldObj.getTotalWorldTime();
-                    boolean first = true;
-                    if (living.getEntityData().hasKey("energyRemaining"))
-                    {
-                        long time = living.getEntityData().getLong("energyTime");
-
-                        if (energyTime != time || !applyHunger)
-                        {
-                            pokeEnergy = maxEnergy;
-                        }
-                        else
-                        {
-                            first = false;
-                            pokeEnergy = living.getEntityData().getInteger("energyRemaining");
-                        }
-                    }
-                    dE = (int) (pokeEnergy / dSq);
-                    // If out of power, no power
-                    dE = Math.max(0, dE);
-                    ret += dE;
-                    // Always drain at least 1
-                    dE = Math.max(1, dE);
-                    if (applyHunger)
-                    {
-                        living.getEntityData().setLong("energyTime", energyTime);
-                        living.getEntityData().setInteger("energyRemaining", pokeEnergy - dE);
-                        if (first && living.ticksExisted % 2 == 0)
-                        {
-                            int time = ((IHungrymob) poke).getHungerTime();
-                            ((IHungrymob) poke).setHungerTime(time + 1);
-                        }
-                    }
-                }
-            }
-        }
-        return Math.min(ret, PokecubeAdv.conf.maxOutput);
-    }
-
-    public int getMaxEnergy(int level, int spAtk, int atk, PokedexEntry entry)
+    public static int getMaxEnergy(int level, int spAtk, int atk, PokedexEntry entry)
     {
         return getEnergyGain(level, spAtk, atk, entry);
     }
@@ -167,11 +105,12 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
     @Optional.Method(modid = "OpenComputers")
     public Object[] getPower(Context context, Arguments args)
     {
-        return new Object[] { getInput(false) };
+        return new Object[] { currentOutput };
     }
 
-    private void initParser()
+    private static void initParser()
     {
+        parser = new JEP();
         parser.initFunTab(); // clear the contents of the function table
         parser.addStandardFunctions();
         parser.initSymTab(); // clear the contents of the symbol table
@@ -186,7 +125,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
     @Override
     public void update()
     {
-        MinecraftForge.EVENT_BUS.post(new SiphonTickEvent(this));
+        if (!worldObj.isRemote) MinecraftForge.EVENT_BUS.post(new SiphonTickEvent(this));
     }
 
 }

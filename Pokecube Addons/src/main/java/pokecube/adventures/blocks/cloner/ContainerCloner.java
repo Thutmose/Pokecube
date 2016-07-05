@@ -180,11 +180,14 @@ public class ContainerCloner extends Container
         {
             tile.result.setInventorySlotContents(0, vanilla);
         }
-        else if(tile.currentProcess!=null)
+        else if (tile.currentProcess != null)
         {
-            if(!tile.currentProcess.valid())
+            if (!tile.currentProcess.valid())
             {
                 tile.result.setInventorySlotContents(0, null);
+                if (tile.currentProcess != null) tile.currentProcess.reset();
+                tile.setField(0, 0);
+                tile.setField(1, 0);
             }
         }
     }

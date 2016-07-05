@@ -236,11 +236,9 @@ public class EntityTrainer extends EntityHasPokemobs
                 return super.attackEntityFrom(source, amount);
             }
         }
-
+        if (source == DamageSource.drown) return false;
         if (Config.instance.trainersInvul) return false;
-
         if (friendlyCooldown > 0) return false;
-
         return super.attackEntityFrom(source, amount);
     }
 

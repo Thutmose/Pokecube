@@ -18,8 +18,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.Village;
 import net.minecraft.world.EnumDifficulty;
@@ -596,7 +598,15 @@ public final class SpawnHandler
         int ret = 0;
         if (!v.doChunksExist(world, 10)) return ret;
         int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
-        int num = Tools.countPokemon(world, v, radius);
+        int num = 0;
+        int height = v.getMaxY(world);
+        AxisAlignedBB box = v.getAABB();
+        List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
+                box.expand(radius, Math.max(height, radius), radius));
+        for (Object o : list)
+        {
+            if (o instanceof IPokemob) num++;
+        }
         boolean player = Tools.isAnyPlayerInRange(radius, 10, world, v);
         if (num > MAX_DENSITY * MAXNUM || !player) return ret;
 

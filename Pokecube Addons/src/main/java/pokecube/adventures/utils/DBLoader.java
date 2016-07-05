@@ -1,7 +1,5 @@
 package pokecube.adventures.utils;
 
-import static pokecube.adventures.entity.trainers.TypeTrainer.addTrainerSpawn;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,28 +11,45 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.database.Database;
-import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.PokedexEntry.SpawnData;
-import pokecube.core.utils.PokeType;
 
 public class DBLoader
 {
-    private final static String DBLOCATION = "/assets/pokecube_adventures/database/";
+    public static boolean      FORCECOPY  = true;
+    private static String      DBLOCATION = "/assets/pokecube_adventures/database/";
+    public static String       CONFIGLOC  = "";
 
-    private static PrintWriter  out;
+    private static PrintWriter out;
 
-    private static FileWriter   fwriter;
+    private static FileWriter  fwriter;
 
-    static String               header     = "Trainer Type,Trainer Pokemon,Biomes,Occurance,Trainer Gender (Male/Female/Both)";
+    static String              female     = "female:,Alice,Bridget,Carrie,Connie,Dana,Ellen,Krise,Laura,Linda,Michelle,Shannon,Gina,Brooke,Cindy,Debra,Edna,Erin,Heidi,Hope,Liz,Sharon,Tanya,Tiffany,Beth,Carol,Emma,Fran,Cara,Jenn,Kate,Cybil,Gwen,Irene,Kelly,Joyce,Lola,Megan,Quinn,Reena,Valerie";
 
-    static String               example    = "Red,omanyte pidgey lapras nidoranm venonat zapdos,all,1,Male";
+    static String              male       = "male:,Anthony,Bailey,Benjamin,Daniel,Erik,Jim,Kenny,Leonard,Michael,Parry,Philip,Russell,Sidney,Tim,Timothy,Wade,Al,Arnie,Benny,Don,Doug,Ed,Josh,Ken,Rob,Joey,Mikey,Albert,Gordon,Ian,Jason,Jimmy,Owen,Samuel,Warren,Aaron,Allen,Blake,Brian,Abe";
 
-    static String               female     = "female:,Alice,Bridget,Carrie,Connie,Dana,Ellen,Krise,Laura,Linda,Michelle,Shannon,Gina,Brooke,Cindy,Debra,Edna,Erin,Heidi,Hope,Liz,Sharon,Tanya,Tiffany,Beth,Carol,Emma,Fran,Cara,Jenn,Kate,Cybil,Gwen,Irene,Kelly,Joyce,Lola,Megan,Quinn,Reena,Valerie";
+    public static void checkConfigFiles(FMLPreInitializationEvent evt)
+    {
+        File file = evt.getSuggestedConfigurationFile();
+        String seperator = System.getProperty("file.separator");
 
-    static String               male       = "male:,Anthony,Bailey,Benjamin,Daniel,Erik,Jim,Kenny,Leonard,Michael,Parry,Philip,Russell,Sidney,Tim,Timothy,Wade,Al,Arnie,Benny,Don,Doug,Ed,Josh,Ken,Rob,Joey,Mikey,Albert,Gordon,Ian,Jason,Jimmy,Owen,Samuel,Warren,Aaron,Allen,Blake,Brian,Abe";
+        String folder = file.getAbsolutePath();
+        String name = file.getName();
+        folder = folder.replace(name, "pokecube" + seperator + "trainers" + seperator + "");
+
+        CONFIGLOC = folder;
+        File temp = new File(CONFIGLOC);
+        if (!temp.exists())
+        {
+            temp.mkdirs();
+        }
+        copyDatabaseFile("trainers.xml");
+        copyDatabaseFile("names.csv");
+        DBLOCATION = CONFIGLOC;
+        return;
+    }
 
     private static ArrayList<ArrayList<String>> getRows(String file)
     {
@@ -89,7 +104,6 @@ public class DBLoader
             catch (FileNotFoundException e1)
             {
                 System.err.println("Missing a Database file " + file);
-                writeDefaultConfig(file);
             }
             catch (IOException e1)
             {
@@ -120,121 +134,30 @@ public class DBLoader
         return rows;
     }
 
+    public static void preInit(FMLPreInitializationEvent evt)
+    {
+        checkConfigFiles(evt);
+    }
+
     public static void load()
     {
-        loadInfo(DBLOCATION + "types.csv");
-        loadInfo(PokecubeAdv.CUSTOMTRAINERFILE);
+        try
+        {
+            File file;
+            TrainerEntryLoader.loadDatabase(file = new File(DBLOCATION + "trainers.xml"));
+            TrainerEntryLoader.makeEntries(file);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         loadNames();
         TypeTrainer.postInitTrainers();
     }
 
-    public static void loadInfo(String s2)
-    {
-        ArrayList<ArrayList<String>> rows = getRows(s2);
-
-        rows:
-        for (ArrayList<String> row : rows)
-        {
-            if (row.isEmpty()) continue;
-
-            String name = row.get(0);
-
-            if (name.equals("Trainer Type") || name.equals("TrainerName") || name.trim().isEmpty()) continue;
-
-            String pokemon = row.get(1);
-            String b = row.get(2);
-
-            int weight = 0;
-            try
-            {
-                weight = Integer.parseInt(row.get(3));
-            }
-            catch (NumberFormatException e1)
-            {
-            }
-
-            String[] pokeList = pokemon.split(" ");
-            String[] biomeList = b.split(" ");
-            String gender = row.get(4).trim();
-            TypeTrainer type = TypeTrainer.typeMap.get(name);
-            if (type == null) type = new TypeTrainer(name);
-
-            byte male = 1;
-            byte female = 2;
-
-            if (row.size() > 5)
-            {
-                type.drops = row.get(5);
-            }
-
-            type.genders = (byte) (gender.equalsIgnoreCase("male") ? male
-                    : gender.equalsIgnoreCase("female") ? female : male + female);
-
-            if (!pokeList[0].contains("-"))
-            {
-                for (String s : pokeList)
-                {
-                    PokedexEntry e = Database.getEntry(s);
-                    if (s != null && !type.pokemon.contains(e) && e != null)
-                    {
-                        type.pokemon.add(e);
-                    }
-                    else if (e == null)
-                    {
-                        // System.err.println("Error in reading of "+s);
-                    }
-                }
-            }
-            else
-            {
-                String[] types = pokeList[0].replace("-", "").split(":");
-                if (types[0].equalsIgnoreCase("all"))
-                {
-                    for (PokedexEntry s : Database.spawnables)
-                    {
-                        if (!s.getSpawnData().types[SpawnData.LEGENDARY] && s.getPokedexNb() != 151 && s != null)
-                        {
-                            type.pokemon.add(s);
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < types.length; i++)
-                    {
-                        PokeType pokeType = PokeType.getType(types[i]);
-                        if (pokeType != PokeType.unknown)
-                        {
-                            for (PokedexEntry s : Database.spawnables)
-                            {
-                                if (s.isType(pokeType) && !s.getSpawnData().types[SpawnData.LEGENDARY]
-                                        && s.getPokedexNb() != 151 && s != null)
-                                {
-                                    type.pokemon.add(s);
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-            for (String s : biomeList)
-            {
-                if (s.equalsIgnoreCase("none")) continue rows;
-            }
-            for (String s : biomeList)
-            {
-                for (int i = 0; i < weight; i++)
-                    addTrainerSpawn(s, type);
-            }
-
-        }
-
-    }
-
     public static void loadNames()
     {
-        String s = PokecubeAdv.CUSTOMTRAINERFILE.replace("trainers.csv", "names.csv");
+        String s = PokecubeAdv.CUSTOMTRAINERFILE.replace("trainers.xml", "names.csv");
 
         File file = new File(s);
         if (!file.exists())
@@ -274,19 +197,21 @@ public class DBLoader
         }
     }
 
-    private static void writeDefaultConfig(String file)
+    private static void copyDatabaseFile(String name)
     {
+        File temp1 = new File(CONFIGLOC + name);
+        if (temp1.exists() && !FORCECOPY)
+        {
+            System.out.println(" Not Overwriting old database " + name);
+            return;
+        }
+        ArrayList<String> rows = Database.getFile(DBLOCATION + name);
         try
         {
-            File temp = new File(file.replace("trainers.csv", ""));
-            if (!temp.exists())
-            {
-                temp.mkdirs();
-            }
-            fwriter = new FileWriter(file);
+            fwriter = new FileWriter(CONFIGLOC + name);
             out = new PrintWriter(fwriter);
-            out.println(header);
-            out.println(example);
+            for (int i = 0; i < rows.size(); i++)
+                out.println(rows.get(i));
             out.close();
             fwriter.close();
         }

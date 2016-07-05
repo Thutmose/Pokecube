@@ -198,7 +198,7 @@ public class Database implements IMoveConstants
         return ret;
     }
 
-    private static ArrayList<String> getFile(String file)
+    public static ArrayList<String> getFile(String file)
     {
         InputStream res = (Database.class).getResourceAsStream(file);
 

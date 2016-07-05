@@ -15,9 +15,11 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import pokecube.core.PokecubeItems;
+import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -53,9 +55,14 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
                 float rotateY = MathHelper.cos(MathHelper.abs((float) (Math.PI * f2) / 12)) * (180F / (float) Math.PI);// getRotationX(entityItem);
                 GL11.glRotatef(rotateY, 0.0F, 0.0F, 1.0F);
             }
+            ItemStack renderStack = cube.getEntityItem();
+            if(renderStack == null || !(renderStack.getItem() instanceof IPokecube))
+            {
+                renderStack = PokecubeItems.getStack("pokecube");
+            }
 
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-            Minecraft.getMinecraft().getItemRenderer().renderItem(player, cube.getEntityItem(), TransformType.NONE);
+            Minecraft.getMinecraft().getItemRenderer().renderItem(player, renderStack, TransformType.NONE);
 
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_CULL_FACE);

@@ -34,6 +34,7 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.Tools;
 import thut.api.network.PacketHandler;
 
 @InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
@@ -297,10 +298,10 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                 {
                     entity.setHealth(entity.getMaxHealth());
                     // to avoid the death on spawn
-                    int maxXP = 6000;
+                    int exp = Tools.levelToXp(recipe.pokedexEntry.getEvolutionMode(), recipe.level);
                     // that will make your pokemob around level 3-5.
                     // You can give him more XP if you want
-                    ((IPokemob) entity).setExp(tile.getWorld().rand.nextInt(maxXP) + 50, true, true);
+                    ((IPokemob) entity).setExp(exp, true, true);
                     if (tile.user != null && recipe.tame) ((IPokemob) entity).setPokemonOwner(tile.user);
                     entity.setLocationAndAngles(tile.pos.getX(), tile.pos.getY() + 1, tile.pos.getZ(),
                             tile.getWorld().rand.nextFloat() * 360F, 0.0F);

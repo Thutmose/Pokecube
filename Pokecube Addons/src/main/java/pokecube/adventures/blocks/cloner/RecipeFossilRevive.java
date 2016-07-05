@@ -48,12 +48,13 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
         return entryMap.get(entry);
     }
 
-    public PokedexEntry pokedexEntry;
-    public int          energyCost;
-    public int          priority = 0;
-    public int          level    = 20;
-    public boolean      tame     = true;
-    private IPokemob    pokemob;
+    public PokedexEntry  pokedexEntry;
+    public int           energyCost;
+    public int           priority    = 0;
+    public int           level       = 20;
+    public List<Integer> remainIndex = Lists.newArrayList();
+    public boolean       tame        = true;
+    private IPokemob     pokemob;
 
     public RecipeFossilRevive(ItemStack output, List<ItemStack> inputList, PokedexEntry entry, int cost)
     {
@@ -129,5 +130,36 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
     public int getEnergyCost()
     {
         return energyCost;
+    }
+
+    @Override
+    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    {
+        if (remainIndex.isEmpty()) return super.getRemainingItems(inv);
+        else
+        {
+            ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
+            for (int i = 0; i < aitemstack.length; ++i)
+            {
+                ItemStack itemstack = inv.getStackInSlot(i);
+
+                boolean remain = false;
+                if (itemstack != null) for (Integer i1 : remainIndex)
+                {
+                    ItemStack stack = recipeItems.get(i1);
+                    if (stack.getMetadata() == 32767) remain = itemstack.getItem() == stack.getItem();
+                    else remain = Tools.isSameStack(itemstack, stack);
+                }
+                if (!remain)
+                {
+                    aitemstack[i] = null;
+                }
+                else
+                {
+                    aitemstack[i] = itemstack.copy();
+                }
+            }
+            return aitemstack;
+        }
     }
 }

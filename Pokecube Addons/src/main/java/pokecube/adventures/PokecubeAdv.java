@@ -23,6 +23,7 @@ import pokecube.adventures.comands.TeamCommands;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityPokemartSeller;
 import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.events.PAEventsHandler;
 import pokecube.adventures.events.TeamEventsHandler;
 import pokecube.adventures.handlers.BlockHandler;
@@ -83,7 +84,7 @@ public class PokecubeAdv
 
         String folder = file.getAbsolutePath();
         String name = file.getName();
-        folder = folder.replace(name, "pokecube" + seperator + "trainers" + seperator + "trainers.csv");
+        folder = folder.replace(name, "pokecube" + seperator + "trainers" + seperator + "trainers.xml");
 
         CUSTOMTRAINERFILE = folder;
 
@@ -101,7 +102,7 @@ public class PokecubeAdv
                 PokecubeCore.getMessageID(), Side.SERVER);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-        
+
         try
         {
             registerMerchant();
@@ -161,6 +162,7 @@ public class PokecubeAdv
         hasEnergyAPI = Loader.isModLoaded("CoFHAPI") || Loader.isModLoaded("Tesla");
         BlockHandler.registerBlocks();
         ItemHandler.registerItems();
+        DBLoader.preInit(e);
         setTrainerConfig(e);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ItemHandler());
@@ -178,6 +180,7 @@ public class PokecubeAdv
     {
         event.registerServerCommand(new GeneralCommands());
         event.registerServerCommand(new TeamCommands());
+        TypeTrainer.initSpawns();
     }
 
     @EventHandler

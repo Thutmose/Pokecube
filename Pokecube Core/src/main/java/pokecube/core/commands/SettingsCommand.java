@@ -106,7 +106,7 @@ public class SettingsCommand extends CommandBase
                 {
                     text += o;
                 }
-                mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.check", "", args[0],
+                mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.set", "", args[0],
                         text);
                 sender.addChatMessage(mess);
                 return;

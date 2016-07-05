@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -22,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.core.PokecubeItems;
+import pokecube.core.database.BiomeMatcher;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
@@ -29,48 +33,59 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.Tools;
+import thut.api.terrain.BiomeType;
 
 public class TypeTrainer
 {
-    public static HashMap<String, TypeTrainer>            typeMap     = new HashMap<String, TypeTrainer>();
-
-    public static HashMap<String, ArrayList<TypeTrainer>> biomes      = new HashMap<String, ArrayList<TypeTrainer>>();
-    public static ArrayList<String>                       maleNames   = new ArrayList<String>();
-
-    public static ArrayList<String>                       femaleNames = new ArrayList<String>();
+    public static HashMap<String, TypeTrainer>      typeMap     = new HashMap<String, TypeTrainer>();
+    public static HashMap<Biome, List<TypeTrainer>> biomeMap    = Maps.newHashMap();
+    public static ArrayList<String>                 maleNames   = new ArrayList<String>();
+    public static ArrayList<String>                 femaleNames = new ArrayList<String>();
 
     public static void addTrainer(String name, TypeTrainer type)
     {
         typeMap.put(name, type);
     }
 
-    public static void addTrainerSpawn(String biome, TypeTrainer type)
+    public static void initSpawns()
     {
-        if (!biome.equalsIgnoreCase("all")) if (biomes.containsKey(biome))
+        biomeMap.clear();
+        for (TypeTrainer t : typeMap.values())
         {
-            biomes.get(biome).add(type);
-        }
-        else
-        {
-            ArrayList<TypeTrainer> trainers = new ArrayList<TypeTrainer>();
-            trainers.add(type);
-            biomes.put(biome, trainers);
-        }
-        else for (ResourceLocation key : Biome.REGISTRY.getKeys())
-        {
-            Biome b = Biome.REGISTRY.getObject(key);
-            if (b == null) continue;
-            if (biomes.containsKey(b.getBiomeName()))
+            if (t.matcher != null)
             {
-                biomes.get(b.getBiomeName()).add(type);
-            }
-            else
-            {
-                ArrayList<TypeTrainer> trainers = new ArrayList<TypeTrainer>();
-                trainers.add(type);
-                biomes.put(b.getBiomeName(), trainers);
+                t.matcher.parse();
+                if (!t.matcher.validBiomes.isEmpty())
+                {
+                    for (Biome b : t.matcher.validBiomes)
+                    {
+                        addSpawn(b, t);
+                    }
+                }
+                else if (!t.matcher.validSubBiomes.contains(BiomeType.NONE))
+                {
+                    for (ResourceLocation key : Biome.REGISTRY.getKeys())
+                    {
+                        Biome b = Biome.REGISTRY.getObject(key);
+                        if (b != null)
+                        {
+                            addSpawn(b, t);
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private static void addSpawn(Biome b, TypeTrainer t)
+    {
+        List<TypeTrainer> types = biomeMap.get(b);
+        if (types == null)
+        {
+            biomeMap.put(b, types = Lists.newArrayList());
+        }
+        for (int i = 0; i < t.weight; i++)
+            types.add(t);
     }
 
     public static void getRandomTeam(EntityTrainer trainer, int maxXp, ItemStack[] team, World world)
@@ -165,35 +180,25 @@ public class TypeTrainer
         for (TypeTrainer t : toRemove)
         {
             typeMap.remove(t.name);
-            List<String> blank = new ArrayList<String>();
-            for (String b : biomes.keySet())
-            {
-                ArrayList<TypeTrainer> trainers = biomes.get(b);
-                if (trainers.contains(t)) trainers.remove(t);
-                if (trainers.size() == 0) blank.add(b);
-            }
-            for (String b : blank)
-                biomes.remove(b);
         }
-        // System.out.println(typeMap);
     }
 
     public final String       name;
-    public boolean            surfaceOnly = true;
     /** 1 = male, 2 = female, 3 = both */
-    public byte               genders     = 1;
+    public byte               genders  = 1;
 
-    public Material           material    = Material.AIR;
-
+    public Material           material = Material.AIR;
+    public BiomeMatcher       matcher  = null;
+    public int                weight;
     private ResourceLocation  texture;
 
     private ResourceLocation  femaleTexture;
 
-    public List<PokedexEntry> pokemon     = new ArrayList<PokedexEntry>();
+    public List<PokedexEntry> pokemon  = new ArrayList<PokedexEntry>();
 
-    private ItemStack[]       loot        = new ItemStack[4];
+    private ItemStack[]       loot     = new ItemStack[4];
 
-    public String             drops       = "";
+    public String             drops    = "";
 
     public TypeTrainer(String name)
     {
@@ -201,15 +206,9 @@ public class TypeTrainer
         typeMap.put(name, this);
     }
 
-    public TypeTrainer(String name, boolean cave)
+    public TypeTrainer(String name, Material material)
     {
         this(name);
-        surfaceOnly = !cave;
-    }
-
-    public TypeTrainer(String name, boolean cave, Material material)
-    {
-        this(name, cave);
         this.material = material;
     }
 
@@ -333,7 +332,7 @@ public class TypeTrainer
     {
         if (this.material == Material.WATER) return m == Material.WATER;
         if (this.material == Material.AIR) { return m == material
-                || !m.isLiquid() && !m.isSolid() && m.isReplaceable(); }
+                || (!m.isLiquid() && !m.isSolid() && m.isReplaceable()); }
 
         return false;
     }

@@ -234,12 +234,11 @@ public class PokecubeSerializer
 
     public HashMap<Integer, HashMap<Vector3, ChunkPos>> chunks;
     private HashMap<Vector3, Ticket>                    tickets;
-    private int                                         lastId           = 0;
+    private int                                         lastId = 0;
 
     public World                                        myWorld;
 
     private String                                      serverId;
-    private boolean                                     clientHasStarter = false;
 
     private HashMap<Integer, IPokemob>                  pokemobsMap;
 
@@ -391,7 +390,6 @@ public class PokecubeSerializer
 
     public boolean hasStarter(EntityPlayer player)
     {
-        if (player == null || player.getEntityWorld().isRemote) return clientHasStarter;
         Boolean bool = hasStarter.get(player.getUniqueID().toString());
         return bool == Boolean.TRUE;
     }
@@ -689,11 +687,6 @@ public class PokecubeSerializer
 
     public void setHasStarter(EntityPlayer player, boolean value)
     {
-        if (player == null || player.getEntityWorld().isRemote)
-        {
-            clientHasStarter = value;
-            return;
-        }
         try
         {
             this.hasStarter.put(player.getUniqueID().toString(), value);

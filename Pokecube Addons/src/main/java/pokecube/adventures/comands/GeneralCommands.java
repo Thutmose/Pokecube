@@ -149,7 +149,6 @@ public class GeneralCommands implements ICommand
                     {
                         text += o;
                     }
-
                     message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                     sender.addChatMessage(message);
                     return;

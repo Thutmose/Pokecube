@@ -20,6 +20,7 @@ import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
+import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.events.handlers.SpawnHandler;
@@ -33,6 +34,7 @@ public class Config extends ConfigBase
     public static final String         machines            = "machine";
     public static final String         trainers            = "trainers";
     public static final String         teams               = "teams";
+    public static final String         database            = "database";
 
     public static Config               instance;
 
@@ -126,6 +128,9 @@ public class Config extends ConfigBase
     @Configure(category = misc)
     protected boolean                  tmRecipe            = true;
 
+    @Configure(category = database)
+    protected boolean                  forceDatabase       = true;
+
     public Config()
     {
         super(null);
@@ -161,7 +166,7 @@ public class Config extends ConfigBase
         TileEntityTradingTable.theftEnabled = theft;
         TrainerSpawnHandler.trainerBox = trainerBox;
         RecipeHandler.tmRecipe = tmRecipe;
-
+        DBLoader.FORCECOPY = forceDatabase;
         EntityTrainer.cubeList.clear();
         for (String s : cubeCosts)
         {

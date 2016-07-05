@@ -204,7 +204,7 @@ public class TrainerSpawnHandler
     public void tickEvent(WorldTickEvent evt)
     {
         if (Config.instance.trainerSpawn && evt.phase == Phase.END && evt.type != Type.CLIENT && evt.side != Side.CLIENT
-                && evt.world.getTotalWorldTime() % 1 == 0)
+                && evt.world.getTotalWorldTime() % 100 == 0)
         {
             long time = System.nanoTime();
             tick(evt.world);

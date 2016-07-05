@@ -63,10 +63,12 @@ repositories {
         name 'tterrag maven'
         url "http://maven.tterrag.com/"
     }
+    maven {url 'http://maven.epoxide.xyz'}
 }
 
 dependencies {
     compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
+    compile "net.darkhax.tesla:Tesla:${version_tesla}"
     deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
     deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
     deobfCompile "mcjty.theoneprobe:TheOneProbe:${version_top}"

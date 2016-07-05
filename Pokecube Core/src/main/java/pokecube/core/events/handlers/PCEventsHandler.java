@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
@@ -224,35 +226,19 @@ public class PCEventsHandler
     public void sendPokemobToPCPlayerDeath(PlayerDropsEvent evt)
     {
         if (!(evt.getEntity() instanceof EntityPlayer) || !PokecubeCore.core.getConfig().pcOnDrop) return;
-
         if (evt.getEntity().getEntityWorld().isRemote) return;
-
         EntityPlayer player = (EntityPlayer) evt.getEntity();
-        InventoryPlayer inv = player.inventory;
-
         recallAllPokemobs(player);
-        for (ItemStack stack : inv.mainInventory)
+        List<EntityItem> toRemove = Lists.newArrayList();
+        for (EntityItem item : evt.getDrops())
         {
-            if (stack != null && ContainerPC.isItemValid(stack))
+            if (item != null && item.getEntityItem() != null && ContainerPC.isItemValid(item.getEntityItem()))
             {
-                InventoryPC.addStackToPC(player.getUniqueID().toString(), stack.copy());
+                InventoryPC.addStackToPC(player.getUniqueID().toString(), item.getEntityItem().copy());
+                toRemove.add(item);
             }
         }
-        for (int i = 0; i < inv.armorInventory.length; i++)
-        {
-            ItemStack stack = inv.armorInventory[i];
-            if (stack != null && ContainerPC.isItemValid(stack))
-            {
-                InventoryPC.addStackToPC(player.getUniqueID().toString(), stack.copy());
-                inv.armorInventory[i] = null;
-            }
-        }
-
-        for (int i = 0; i < inv.mainInventory.length; i++)
-        {
-            ItemStack item = inv.mainInventory[i];
-            if (ContainerPC.isItemValid(item)) inv.mainInventory[i] = null;
-        }
+        evt.getDrops().removeAll(toRemove);
     }
 
     /** Tries to send pokecube to PC if player has no room in inventory for it.
@@ -276,7 +262,7 @@ public class PCEventsHandler
             int num = inv.getFirstEmptyStack();
 
             System.out.println(pc.autoToPC);
-            
+
             if (evt.filledCube == null || pc == null)
             {
                 System.err.println("Cube is null");

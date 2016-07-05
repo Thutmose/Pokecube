@@ -50,9 +50,12 @@ public class Compat
 {
     public static class UpdateNotifier
     {
+        static boolean done = false;
+
         public UpdateNotifier()
         {
-            MinecraftForge.EVENT_BUS.register(this);
+            if (!done) MinecraftForge.EVENT_BUS.register(this);
+            done = true;
         }
 
         @SubscribeEvent
@@ -69,7 +72,7 @@ public class Compat
                     ITextComponent mess = ClientProxy.getOutdatedMessage(result, "Pokecube Revival");
                     (event.player).addChatMessage(mess);
                 }
-                if(PokecubeAdv.hasEnergyAPI)
+                if (PokecubeAdv.hasEnergyAPI)
                 {
                     ITextComponent mess = new TextComponentTranslation("pokecube.power.enabled");
                     (event.player).addChatMessage(mess);

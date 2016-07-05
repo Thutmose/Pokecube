@@ -616,5 +616,6 @@ pokecube.command.makeneedname=Missing mob name or number
 pokecube.command.makeinvalid=Invalid mob name or number
 
 pokecube.command.settings.check=§a%1$s§f is currently set to: §6%2$s
+pokecube.command.settings.set=§a%1$s§f set to: §6%2$s
 pokecube.command.settings.invalid=Invalid option for %1$s
 pokecube.command.settings.error=Error while checking config field, please report this as a bug.

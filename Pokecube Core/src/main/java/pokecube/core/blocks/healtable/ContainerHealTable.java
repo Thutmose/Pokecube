@@ -94,20 +94,20 @@ public class ContainerHealTable extends Container implements IHealer
 
                 if (var3 != null)
                 {
-
-                    if (player.inventory.getFirstEmptyStack() == -1)
+                    if (player.isDead || player.getHealth() <= 0 || player.inventory.getFirstEmptyStack() == -1)
                     {
-
                         ItemTossEvent toss = new ItemTossEvent(player.entityDropItem(var3, 0F), null);
                         MinecraftForge.EVENT_BUS.post(toss);
-                        // InventoryPC.addPokecubeToPC(itemstack);
+                        if(!toss.isCanceled())
+                        {
+                            player.dropItem(var3, true);
+                        }
                     }
                     else if (var3.getItem() != null
                             && (player.isDead || !player.inventory.addItemStackToInventory(var3)))
                     {
                         ItemTossEvent toss = new ItemTossEvent(player.entityDropItem(var3, 0F), null);
                         MinecraftForge.EVENT_BUS.post(toss);
-                        // InventoryPC.addPokecubeToPC(itemstack);
                     }
                     else player.dropItem(var3, true);
                     if (player instanceof EntityPlayerMP)

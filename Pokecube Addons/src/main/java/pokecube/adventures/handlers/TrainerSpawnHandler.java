@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -33,8 +34,6 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
-import thut.api.terrain.BiomeDatabase;
-import thut.api.terrain.TerrainManager;
 
 public class TrainerSpawnHandler
 {
@@ -148,7 +147,8 @@ public class TrainerSpawnHandler
         Vector3 v = SpawnHandler.getRandomSpawningPointNearEntity(w, p, trainerBox);
         if (v == null) return;
         if (v.y < 0) v.y = v.getMaxY(w);
-        Vector3 temp = Vector3.getNextSurfacePoint2(w, v, Vector3.secondAxisNeg, 4);
+        Vector3 temp = Vector3.getNextSurfacePoint2(w, v, Vector3.secondAxisNeg, v.y);
+        temp = Vector3.getNextSurfacePoint2(w, v, Vector3.secondAxisNeg, v.y);
         v = temp != null ? temp.offset(EnumFacing.UP) : v;
 
         if (!SpawnHandler.checkNoSpawnerInArea(w, v.intX(), v.intY(), v.intZ())) return;
@@ -163,15 +163,11 @@ public class TrainerSpawnHandler
             {
                 v = v.getTopBlockPos(w).offsetBy(EnumFacing.UP);
             }
-
-            String biome = BiomeDatabase.getNameFromType(TerrainManager.getInstance().getTerrian(w, v).getBiome(v));
-
-            List<TypeTrainer> trainers = TypeTrainer.biomes.get(biome);
-
+            Biome biome = v.getBiome(w);
+            List<TypeTrainer> trainers = TypeTrainer.biomeMap.get(biome);
             if (trainers == null || trainers.size() == 0) return;
-
             ttype = trainers.get(w.rand.nextInt(trainers.size()));
-
+            if (ttype.matcher == null || !ttype.matcher.matches(v, w)) return;
             if (m != ttype.material)
             {
                 for (TypeTrainer b : trainers)
@@ -183,9 +179,8 @@ public class TrainerSpawnHandler
                     }
                 }
             }
-
             if (m != ttype.material) { return; }
-
+            System.out.println(ttype.name + " " + v);
             int level = SpawnHandler.getSpawnLevel(w, v, Database.getEntry(1));
             long time = System.nanoTime();
             EntityTrainer t = new EntityTrainer(w, ttype, level);
@@ -209,7 +204,7 @@ public class TrainerSpawnHandler
     public void tickEvent(WorldTickEvent evt)
     {
         if (Config.instance.trainerSpawn && evt.phase == Phase.END && evt.type != Type.CLIENT && evt.side != Side.CLIENT
-                && Math.random() > 0.999)
+                && evt.world.getTotalWorldTime() % 1 == 0)
         {
             long time = System.nanoTime();
             tick(evt.world);

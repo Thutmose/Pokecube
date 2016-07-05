@@ -30,7 +30,6 @@ public class RecipeHandler
         for (ItemStack stack : PokecubeItems.fossils.keySet())
         {
             PokedexEntry i = PokecubeItems.fossils.get(stack);
-            System.out.println(i);
             if (PokecubeMod.registered.get(i.getPokedexNb()))
             {
                 RecipeFossilRevive newRecipe = new RecipeFossilRevive(stack, Lists.newArrayList(stack), i, 20000);

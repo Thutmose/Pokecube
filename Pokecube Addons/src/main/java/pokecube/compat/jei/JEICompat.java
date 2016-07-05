@@ -44,9 +44,6 @@ public class JEICompat implements IModPlugin
     @Override
     public void register(IModRegistry registry)
     {
-        if (added) return;
-
-        added = true;
         IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
         registry.addRecipeCategories(new ClonerRecipeCategory(guiHelper));
         registry.addRecipeHandlers(new ClonerRecipeHandler());

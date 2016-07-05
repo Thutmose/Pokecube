@@ -34,6 +34,7 @@ tile.enigmaLeaves.name=Enigma Leaves
 tile.warppad.name=Warp Pad
 tile.cloner.name=Splicing Device
 tile.afa.name=Ability Field Amplifier
+tile.pokesiphon.name=Energy Siphon
 
 tile.celebi.name=Mysterious Altar
 tile.groudon.name=Groudon Altar
@@ -61,10 +62,10 @@ pokecube.trainer.forget=%1$s §cno longer wants to battle...
 pokecube.trainer.defeat=%1$s §ahas been defeated!
 pokecube.trainer.toss=%1$s §csent out %2$s!
 pokecube.trainer.next=%1$s §cis about to send out %2$s!
-pokecube.trainer.drop=%1$s §agave you %2$s for winning!
+pokecube.trainer.drop=%1$s §agave you %2$s §afor winning!
 
-pokecube.power.enabled=§aPower API found, Machines will require energy to run.
-pokecube.power.disabled=§cNo Power API found, Machines will not use energy, install something which provides Tesla or RF to enable.
+pokecube.power.enabled=§aPower API found, Pokecube Machines will require energy to run.
+pokecube.power.disabled=§cNo Power API found, Pokecube Machines will not use energy, install something which provides Tesla or RF to enable.
 
 #Config Stuff
 

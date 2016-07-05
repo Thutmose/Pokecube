@@ -155,8 +155,8 @@ public class PokecubePacketHandler
                                 {
                                     int id = buffer.readInt();
                                     ITextComponent component = buffer.readTextComponent();
-                                    Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id,
-                                            false);
+                                    Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(),
+                                            id, false);
                                     if (e != null && e instanceof IPokemob)
                                     {
                                         ((IPokemob) e).displayMessageToOwner(component);
@@ -243,7 +243,7 @@ public class PokecubePacketHandler
             }
         }
 
-//        public static final byte CHOOSE1ST      = 0;
+        // public static final byte CHOOSE1ST = 0;
         public static final byte MOVEANIMATION  = 1;
         public static final byte TERRAIN        = 5;
         public static final byte STATS          = 6;
@@ -432,7 +432,7 @@ public class PokecubePacketHandler
             }
         }
 
-//        public static final byte CHOOSE1ST      = 0;
+        // public static final byte CHOOSE1ST = 0;
         public static final byte POKECENTER     = 3;
         public static final byte POKEMOBSPAWNER = 4;
         public static final byte POKEDEX        = 5;
@@ -666,18 +666,18 @@ public class PokecubePacketHandler
 
     public static void init()
     {
-        PokecubeMod.packetPipeline.registerMessage(PacketPC.class, PacketPC.class,
-                PokecubeCore.getMessageID(), Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PacketPC.class, PacketPC.class,
-                PokecubeCore.getMessageID(), Side.SERVER);
-        PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class,
-                PokecubeCore.getMessageID(), Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class,
-                PokecubeCore.getMessageID(), Side.SERVER);
-        PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class,
-                PokecubeCore.getMessageID(), Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class,
-                PokecubeCore.getMessageID(), Side.SERVER);
+        PokecubeMod.packetPipeline.registerMessage(PacketPC.class, PacketPC.class, PokecubeCore.getMessageID(),
+                Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketPC.class, PacketPC.class, PokecubeCore.getMessageID(),
+                Side.SERVER);
+        PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class, PokecubeCore.getMessageID(),
+                Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class, PokecubeCore.getMessageID(),
+                Side.SERVER);
+        PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class, PokecubeCore.getMessageID(),
+                Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class, PokecubeCore.getMessageID(),
+                Side.SERVER);
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobGui.class, PacketPokemobGui.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
     }
@@ -760,8 +760,8 @@ public class PokecubePacketHandler
                 TerrainManager.getInstance().getTerrain(tag.getInteger("dimID"))
                         .addTerrain(TerrainSegment.readFromNBT(tag));
                 Vector3 temp = Vector3.readFromNBT(tag, "village");
-                if (temp != null) pokecube.core.client.gui.GuiPokedex.closestVillage.set(temp);
-                else pokecube.core.client.gui.GuiPokedex.closestVillage.clear();
+                if (temp != null) pokecube.core.client.gui.GuiPokedex_redo.closestVillage.set(temp);
+                else pokecube.core.client.gui.GuiPokedex_redo.closestVillage.clear();
                 player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.getEntityWorld(), 0, 0, 0);
             }
             else if (nbt.getBoolean("toLoadTerrain"))
@@ -802,7 +802,8 @@ public class PokecubePacketHandler
             Entity entity = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id, true);
             if (!(entity instanceof IPokemob)) return;
 
-            IPokemob pokemob = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id1, true);
+            IPokemob pokemob = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id1,
+                    true);
             if (pokemob != null)
             {
                 int currentMove = pokemob.getMoveIndex();

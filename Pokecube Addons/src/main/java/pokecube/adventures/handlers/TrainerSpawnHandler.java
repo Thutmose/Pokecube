@@ -144,7 +144,7 @@ public class TrainerSpawnHandler
         players.addAll(w.playerEntities);
         if (players.size() < 1) return;
         EntityPlayer p = (EntityPlayer) players.get(w.rand.nextInt(players.size()));
-        Vector3 v = SpawnHandler.getRandomSpawningPointNearEntity(w, p, trainerBox);
+        Vector3 v = SpawnHandler.getRandomSpawningPointNearEntity(w, p, trainerBox, 32);
         if (v == null) return;
         if (v.y < 0) v.y = v.getMaxY(w);
         Vector3 temp = Vector3.getNextSurfacePoint2(w, v, Vector3.secondAxisNeg, v.y);

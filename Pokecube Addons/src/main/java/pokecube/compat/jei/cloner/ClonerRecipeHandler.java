@@ -19,7 +19,6 @@ public class ClonerRecipeHandler implements IRecipeHandler<RecipeFossilRevive> {
     @Override
     public String getRecipeCategoryUid(RecipeFossilRevive recipe)
     {
-        // TODO Auto-generated method stub
         return JEICompat.CLONER;
     }
 

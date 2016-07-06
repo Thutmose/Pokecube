@@ -180,7 +180,7 @@ public class TrainerSpawnHandler
                 }
             }
             if (m != ttype.material) { return; }
-            System.out.println(ttype.name + " " + v);
+
             int level = SpawnHandler.getSpawnLevel(w, v, Database.getEntry(1));
             long time = System.nanoTime();
             EntityTrainer t = new EntityTrainer(w, ttype, level);

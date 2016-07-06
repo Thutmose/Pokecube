@@ -84,6 +84,7 @@ public class GuiPokedex_redo extends GuiScreen
     public IPokemob                               pokemob            = null;
     protected EntityPlayer                        entityPlayer       = null;
     protected GuiTextField                        nicknameTextField;
+    protected GuiTextField                        pokemobTextField;
     /** The X size of the inventory window in pixels. */
     protected int                                 xSize;
     /** The Y size of the inventory window in pixels. */
@@ -622,6 +623,10 @@ public class GuiPokedex_redo extends GuiScreen
         renderMob();// TODO find out why rendering player messes up shaders
         GL11.glPopMatrix();
         nicknameTextField.drawTextBox();
+        int length = fontRendererObj.getStringWidth(pokemobTextField.getText()) / 2;
+        pokemobTextField.xPosition -= length;
+        pokemobTextField.drawTextBox();
+        pokemobTextField.xPosition += length;
         drawCenteredString(fontRendererObj, "" + (page + 1), xOffset + 55, yOffset + 1, 0xffffff);
         if (page == 0)
         {
@@ -646,8 +651,6 @@ public class GuiPokedex_redo extends GuiScreen
 
         if (pokedexEntry != null)
         {
-            drawCenteredString(fontRendererObj, I18n.format(pokedexEntry.getUnlocalizedName()), xOffset - 65,
-                    yOffset + 123, 0xffffff);
             drawCenteredString(fontRendererObj, "#" + pokedexEntry.getPokedexNb(), xOffset - 28, yOffset + 02,
                     0xffffff);
             try
@@ -856,18 +859,22 @@ public class GuiPokedex_redo extends GuiScreen
         if ((page != 2 || mode) && button == 1)
         {
             pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 1);
+            pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
         }
         else if ((page != 2 || mode) && button == 2)
         {
             pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 1);
+            pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
         }
         else if (page == 0 && button == 3)
         {
             pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 10);
+            pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
         }
         else if (page == 0 && button == 4)
         {
             pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 10);
+            pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
         }
         else if (page == 4 && button == 3)
         {
@@ -1172,6 +1179,15 @@ public class GuiPokedex_redo extends GuiScreen
             oldName = nicknameTextField.getText();
             nicknameTextField.setEnabled(true);
         }
+        pokemobTextField = new GuiTextField(0, fontRendererObj, xOffset - 65, yOffset + 123, 110, 10);
+        pokemobTextField.setEnableBackgroundDrawing(false);
+        pokemobTextField.setFocused(false);
+        pokemobTextField.setEnabled(true);
+
+        if (pokedexEntry != null)
+        {
+            pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
+        }
 
         if (page == 2)
         {
@@ -1260,8 +1276,37 @@ public class GuiPokedex_redo extends GuiScreen
         // else
         {
             boolean b = nicknameTextField.textboxKeyTyped(par1, par2);
+            boolean b2 = pokemobTextField.textboxKeyTyped(par1, par2) || pokemobTextField.isFocused();
 
-            if (par2 == Keyboard.KEY_LEFT && page != 4)
+            if (b2)
+            {
+                if ((par2 == Keyboard.KEY_RETURN))
+                {
+                    PokedexEntry entry = Database.getEntry(pokemobTextField.getText());
+                    if (entry == null)
+                    {
+                        for (PokedexEntry e : Database.allFormes)
+                        {
+                            String translated = I18n.format(e.getUnlocalizedName());
+                            if (translated.equalsIgnoreCase(pokemobTextField.getText()))
+                            {
+                                Database.data2.put(translated, e);
+                                entry = e;
+                                break;
+                            }
+                        }
+                    }
+                    if (entry != null)
+                    {
+                        pokedexEntry = entry;
+                    }
+                    else
+                    {
+                        pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
+                    }
+                }
+            }
+            else if (par2 == Keyboard.KEY_LEFT && page != 4)
             {
                 handleGuiButton(2);
             }
@@ -1297,8 +1342,7 @@ public class GuiPokedex_redo extends GuiScreen
                 }
                 return;
             }
-
-            super.keyTyped(par1, par2);
+            if (!b2) super.keyTyped(par1, par2);
         }
     }
 
@@ -1307,6 +1351,7 @@ public class GuiPokedex_redo extends GuiScreen
     protected void mouseClicked(int x, int y, int mouseButton)
     {
         nicknameTextField.mouseClicked(x, y, mouseButton);
+        pokemobTextField.mouseClicked(x, y, mouseButton);
         // System.out.println(mouseButton);
         int button = getButtonId(x, y);
 
@@ -1384,13 +1429,14 @@ public class GuiPokedex_redo extends GuiScreen
 
             pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
 
-            size = Math.max(entity.width, entity.height);
+            size = Math.max(pokemob.getPokedexEntry().height, pokemob.getPokedexEntry().width);
+            size = Math.max(size, pokemob.getPokedexEntry().length);
             j = (width - xSize) / 2;
             k = (height - ySize) / 2;
 
             GL11.glPushMatrix();
             GL11.glTranslatef(j + 60, k + 100, 50F);
-            float zoom = (float) (30F / Math.sqrt(size + 0.6));
+            float zoom = (float) (25F / Math.sqrt(size));
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
             float f5 = ((k + 75) - 50) - ySize;

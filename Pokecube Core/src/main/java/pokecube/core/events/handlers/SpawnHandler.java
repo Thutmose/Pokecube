@@ -296,7 +296,7 @@ public final class SpawnHandler
     }
 
     /** Given a player, find a random position near it. */
-    public static Vector3 getRandomSpawningPointNearEntity(World world, Entity player, int maxRange)
+    public static Vector3 getRandomSpawningPointNearEntity(World world, Entity player, int maxRange, int maxTries)
     {
         if (player == null) return null;
 
@@ -309,6 +309,7 @@ public final class SpawnHandler
         int distance = maxRange;
         if (distance % 2 == 0) distance++;
         int num = distance * distance;
+        if (maxTries > 0) num = Math.min(num, maxTries);
         for (int i = 0; i < num; i++)
         {
             for (int k = 0; k <= 20; k++)
@@ -802,7 +803,7 @@ public final class SpawnHandler
         for (int i = 0; i < players.size(); i++)
         {
             Vector3 v = getRandomSpawningPointNearEntity(world, (Entity) players.get(0),
-                    PokecubeMod.core.getConfig().maxSpawnRadius);
+                    PokecubeMod.core.getConfig().maxSpawnRadius, 0);
             if (v != null)
             {
                 doSpawnForLocation(world, v);

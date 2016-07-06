@@ -475,6 +475,7 @@ public class EventsHandlerClient
                         entity.rotationYawHead = 0;
                         pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
                         entity.onGround = true;
+                        GL11.glScaled(0.5, 0.5, 0.5);
                         renderMob(pokemob, event.getRenderPartialTicks(), false);
                         GL11.glPopMatrix();
                     }
@@ -531,6 +532,7 @@ public class EventsHandlerClient
                     entity.rotationYawHead = 0;
                     pokemob.setPokemonAIState(IMoveConstants.SITTING, true);
                     entity.onGround = true;
+                    GL11.glScaled(0.5, 0.5, 0.5);
                     renderMob(pokemob, event.getPartialTicks(), false);
                     GL11.glPopMatrix();
                 }

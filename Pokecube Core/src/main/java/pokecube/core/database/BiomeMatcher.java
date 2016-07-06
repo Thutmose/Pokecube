@@ -114,7 +114,6 @@ public class BiomeMatcher
             needAll = true;
             biomeName = biomeName.substring(1);
         }
-        System.out.println(biomeName);
         BiomeType subBiome = null;
         Biome biome = null;
         if (!specific) for (BiomeType b : BiomeType.values())

@@ -12,7 +12,8 @@
       "lileep": {"textures": {"layer0": "pokecube:items/fossilLileep"}},
       "anorith": {"textures": {"layer0": "pokecube:items/fossilAnorith"}},
       "cranidos": {"textures": {"layer0": "pokecube:items/fossilCranidos"}},
-      "shieldon": {"textures": {"layer0": "pokecube:items/fossilShieldon"}}
+      "shieldon": {"textures": {"layer0": "pokecube:items/fossilShieldon"}},
+      "tyrunt": {"textures": {"layer0": "pokecube:items/fossilJaw"}}
     }
   }
 }

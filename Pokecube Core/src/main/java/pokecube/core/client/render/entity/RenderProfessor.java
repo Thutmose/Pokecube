@@ -11,6 +11,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -45,7 +46,9 @@ public class RenderProfessor<T extends EntityLiving> extends RenderBiped<T>
         {
             mainModel = female;
         }
+        GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
+        GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
     }
 
     /** Returns the location of an entity's texture. Doesn't seem to be called

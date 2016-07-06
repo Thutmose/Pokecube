@@ -22,7 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
@@ -402,12 +401,12 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 GL11.glScalef(s, s, s);
             }
         }
-        if ((time != GuiPokedex.POKEDEX_RENDER))
+        if ((time <= 1))
         {
             renderEvolution((IPokemob) entity, partialTicks);
             renderExitCube((IPokemob) entity, partialTicks);
         }
-        if (time == GuiPokedex.POKEDEX_RENDER)
+        if (time > 1)
         {
             long t = Minecraft.getMinecraft().theWorld.getWorldTime() % 1000;
             super.renderModel(entity, t / 3f, 0.6f, t, rotationYaw, rotationPitch, partialTicks);

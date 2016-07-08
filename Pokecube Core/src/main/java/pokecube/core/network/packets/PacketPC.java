@@ -117,14 +117,22 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
         }
         if (message.message == RELEASE)
         {
-            int page = message.data.getInteger("page");
-            InventoryPC pc = InventoryPC.getPC(player);
-            for (int i = 0; i < 54; i++)
+            boolean toggle = message.data.getBoolean("T");
+            if (toggle)
             {
-                if (message.data.getBoolean("val" + i))
+                container.setRelease(message.data.getBoolean("R"));
+            }
+            else
+            {
+                int page = message.data.getInteger("page");
+                InventoryPC pc = InventoryPC.getPC(player);
+                for (int i = 0; i < 54; i++)
                 {
-                    int j = i + page * 54;
-                    pc.setInventorySlotContents(j, null);
+                    if (message.data.getBoolean("val" + i))
+                    {
+                        int j = i + page * 54;
+                        pc.setInventorySlotContents(j, null);
+                    }
                 }
             }
         }

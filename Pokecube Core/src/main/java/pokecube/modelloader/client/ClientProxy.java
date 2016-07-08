@@ -22,6 +22,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.CommonProxy;
+import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.client.gui.GuiAnimate;
 import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.client.render.TabulaPackLoader;
@@ -66,13 +67,15 @@ public class ClientProxy extends CommonProxy
         for (String mod : modList)
         {
             bar.step(mod);
+            IMobProvider provider = mobProviders.get(mod);
             ProgressBar bar2 = ProgressManager.push("Pokemob", Database.allFormes.size());
             for (PokedexEntry p : Database.allFormes)
             {
                 bar2.step(p.getName());
                 try
                 {
-                    ResourceLocation tex = new ResourceLocation(mod, AnimationLoader.MODELPATH + p.getName() + ".xml");
+                    ResourceLocation tex = new ResourceLocation(mod,
+                            provider.getModelDirectory(p) + p.getName() + ".xml");
                     IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                     res.getInputStream().close();
                     ArrayList<String> models = modModels.get(mod);
@@ -87,7 +90,7 @@ public class ClientProxy extends CommonProxy
                     try
                     {
                         ResourceLocation tex = new ResourceLocation(mod,
-                                AnimationLoader.MODELPATH + p.getName() + ".tbl");
+                                provider.getModelDirectory(p) + p.getName() + ".tbl");
                         IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                         res.getInputStream().close();
                         ArrayList<String> models = modModels.get(mod);
@@ -102,7 +105,7 @@ public class ClientProxy extends CommonProxy
                         try
                         {
                             ResourceLocation tex = new ResourceLocation(mod,
-                                    AnimationLoader.MODELPATH + p.getName() + ".x3d");
+                                    provider.getModelDirectory(p) + p.getName() + ".x3d");
                             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                             res.getInputStream().close();
                             ArrayList<String> models = modModels.get(mod);
@@ -123,23 +126,29 @@ public class ClientProxy extends CommonProxy
             if (modModels.containsKey(mod))
             {
                 HashSet<String> alternateFormes = Sets.newHashSet();
-                bar2 = ProgressManager.push("Pokemob", modModels.get(mod).size());
+                bar2 = ProgressManager.push("Pokemob Models Pass 1", modModels.get(mod).size());
                 for (String s : modModels.get(mod))
                 {
                     bar2.step(s);
-                    if (!AnimationLoader.initModel(mod + ":" + AnimationLoader.MODELPATH + s, alternateFormes))
+                    PokedexEntry entry = Database.getEntry(s);
+                    if (!AnimationLoader.initModel(provider, mod + ":" + provider.getModelDirectory(entry) + s,
+                            alternateFormes))
                     {
-                        TabulaPackLoader.loadModel(mod + ":" + AnimationLoader.MODELPATH + s, alternateFormes);
+                        TabulaPackLoader.loadModel(provider, mod + ":" + provider.getModelDirectory(entry) + s,
+                                alternateFormes);
                     }
                 }
                 ProgressManager.pop(bar2);
+                bar2 = ProgressManager.push("Pokemob Models Pass 2", alternateFormes.size());
                 for (String s : alternateFormes)
                 {
-                    if (!AnimationLoader.initModel(s, alternateFormes))
+                    bar2.step(s);
+                    if (!AnimationLoader.initModel(provider, s, alternateFormes))
                     {
-                        TabulaPackLoader.loadModel(s, alternateFormes);
+                        TabulaPackLoader.loadModel(provider, s, alternateFormes);
                     }
                 }
+                ProgressManager.pop(bar2);
             }
         }
         ProgressManager.pop(bar);
@@ -161,7 +170,7 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
-    public void registerModelProvider(String modid, Object mod)
+    public void registerModelProvider(String modid, IMobProvider mod)
     {
         super.registerModelProvider(modid, mod);
         if (!modelProviders.containsKey(modid)) modelProviders.put(modid, mod);

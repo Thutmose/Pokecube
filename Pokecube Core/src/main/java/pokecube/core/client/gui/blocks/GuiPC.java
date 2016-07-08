@@ -12,10 +12,13 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.blocks.pc.SlotPC;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.network.packets.PacketPC;
 
 public class GuiPC extends GuiContainer
 {
@@ -102,6 +105,13 @@ public class GuiPC extends GuiContainer
                     }
                 }
                 cont.release = release;
+                if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+                {
+                    PacketPC packet = new PacketPC(PacketPC.RELEASE);
+                    packet.data.setBoolean("T", true);
+                    packet.data.setBoolean("R", release);
+                    PokecubeMod.packetPipeline.sendToServer(packet);
+                }
                 if (release)
                 {
                     buttonList.get(6).enabled = release;
@@ -240,7 +250,6 @@ public class GuiPC extends GuiContainer
         if (!bound)
         {
             String auto = cont.inv.autoToPC ? I18n.format("tile.pc.autoon") : I18n.format("tile.pc.autooff");
-            System.out.println(auto + " " + cont.inv.autoToPC + " " + (cont.inv == InventoryPC.blank));
             buttonList.add(new GuiButton(3, width / 2 - xOffset - 137, height / 2 - yOffset - 105, 50, 20, auto));
         }
         if (!bound)

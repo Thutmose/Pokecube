@@ -632,7 +632,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 ItemStack itemstack = PokecubeManager.pokemobToItem(this);
                 EntityPlayer player = (EntityPlayer) owner;
                 boolean noRoom = false;
-                if (player.inventory.getFirstEmptyStack() == -1)
+                if (player.isDead || player.getHealth() <= 0 || player.inventory.getFirstEmptyStack() == -1)
                 {
                     noRoom = true;
                 }

@@ -6,9 +6,7 @@ package pokecube.core.entity.pokemobs.helper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -16,12 +14,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
@@ -38,11 +32,7 @@ import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Move_Base;
-import pokecube.core.items.ItemPokemobUseable;
-import pokecube.core.items.berries.BerryManager;
-import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.templates.Move_Ongoing;
@@ -189,7 +179,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void executeMove(Entity target, Vector3 targetLocation, float f)
     {
-
         if (getMove(getMoveIndex()) == MOVE_NONE) { return; }
 
         if (target instanceof EntityLiving)
@@ -453,15 +442,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         return index == 0 ? moveInfo.weapon1 : moveInfo.weapon2;
     }
 
-    public boolean hasMove(String move)
-    {
-        for (String s : getMoves())
-        {
-            if (s != null && s.equalsIgnoreCase(move)) return true;
-        }
-        return false;
-    }
-
     @Override
     public void healStatus()
     {
@@ -587,55 +567,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     }
 
     @Override
-    public void onEntityUpdate()
-    {
-        super.onEntityUpdate();
-
-        if (getMoves()[0] == null)
-        {
-            learn(MOVE_TACKLE);
-        }
-
-        if (isServerWorld() && transformedTo != null && getAttackTarget() == null
-                && !(getPokemonAIState(MATING) || isInLove() || getLover() != null))
-        {
-            setTransformedTo(null);
-        }
-
-        if (transformedTo == null && getLover() != null && hasMove(MOVE_TRANSFORM))
-        {
-            setTransformedTo(getLover());
-            Move_Base trans = MovesUtils.getMoveFromName(MOVE_TRANSFORM);
-            trans.notifyClient(this, here, getLover());
-        }
-
-        this.updateStatusEffect();
-        this.updateOngoingMoves();
-        if (getAbility() != null)
-        {
-            getAbility().onUpdate(this);
-        }
-        if (!this.isDead && getHeldItemMainhand() != null
-                && getHeldItemMainhand().getItem() instanceof ItemPokemobUseable)
-        {
-            ((IPokemobUseable) getHeldItemMainhand().getItem()).itemUse(getHeldItemMainhand(), this, null);
-        }
-        moves:
-        if (this.getLevel() > 0)
-        {
-            for (String s : getMoves())
-            {
-                if (MovesUtils.isMoveImplemented(s))
-                {
-                    break moves;
-                }
-            }
-            oldLevel = 1;
-            levelUp(getLevel());
-        }
-    }
-
-    @Override
     public void onMoveUse(MovePacket move)
     {
         Move_Base attack = move.getMove();
@@ -731,40 +662,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             }
         }
         if (moveInfo.BLOCKCOUNTER > 0) moveInfo.BLOCKCOUNTER--;
-    }
-
-    @Override
-    public void onUpdate()
-    {
-        super.onUpdate();
-
-        moveInfo.lastActiveTime = moveInfo.timeSinceIgnited;
-
-        if (true)
-        {
-            int i = getExplosionState();
-
-            if (i > 0 && moveInfo.timeSinceIgnited == 0 && worldObj.isRemote)
-            {
-                playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
-            }
-            moveInfo.timeSinceIgnited += i;
-
-            if (moveInfo.timeSinceIgnited < 0)
-            {
-                moveInfo.timeSinceIgnited = 0;
-            }
-        }
-        if (getAttackTarget() == null && moveInfo.timeSinceIgnited > 50) //
-        {
-            setExplosionState(-1);
-            moveInfo.timeSinceIgnited--;
-
-            if (moveInfo.timeSinceIgnited < 0)
-            {
-                moveInfo.timeSinceIgnited = 0;
-            }
-        }
     }
 
     @Override
@@ -931,125 +828,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         if (index == 0) moveInfo.weapon1 = weapon;
         else moveInfo.weapon2 = weapon;
-    }
-
-    protected void spawnPoisonParticle()
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            // TODO Poison Effects
-        }
-    }
-
-    protected void updateOngoingMoves()
-    {
-        if (this.ticksExisted % 40 == 0)
-        {
-            Set<Move_Ongoing> effects = new HashSet<Move_Ongoing>();
-            for (Move_Ongoing m : moveInfo.ongoingEffects.keySet())
-            {
-                effects.add(m);
-            }
-            for (Move_Ongoing m : effects)
-            {
-                m.doOngoingEffect(this);
-                int duration = moveInfo.ongoingEffects.get(m);
-                if (duration == 0) moveInfo.ongoingEffects.remove(m);
-                else if (duration > 0) moveInfo.ongoingEffects.put(m, duration - 1);
-            }
-        }
-        if (moveInfo.DEFENSECURLCOUNTER > 0) moveInfo.DEFENSECURLCOUNTER--;
-        if (moveInfo.SELFRAISECOUNTER > 0) moveInfo.SELFRAISECOUNTER--;
-        if (moveInfo.TARGETLOWERCOUNTER > 0) moveInfo.TARGETLOWERCOUNTER--;
-        if (moveInfo.SPECIALCOUNTER > 0) moveInfo.SPECIALCOUNTER--;
-    }
-
-    protected void updateStatusEffect()
-    {
-        int duration = 10;
-
-        short timer = getStatusTimer();
-
-        if (timer > 0) setStatusTimer((short) (timer - 1));
-        byte status = getStatus();
-
-        ItemStack held = getHeldItemMainhand();
-        if (held != null && held.getItem() instanceof ItemBerry)
-        {
-            if (BerryManager.berryEffect(this, held))
-            {
-                HappinessType.applyHappiness(this, HappinessType.BERRY);
-                setHeldItem(null);
-            }
-        }
-
-        if (this.ticksExisted % 20 == 0)
-        {
-            int statusChange = getChanges();
-
-            if ((statusChange & CHANGE_CURSE) != 0)
-            {
-                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.status.curse", "red",
-                        getPokemonDisplayName().getFormattedText());
-                displayMessageToOwner(mess);
-                setHealth(getHealth() - getMaxHealth() * 0.25f);
-            }
-
-        }
-
-        if (status == STATUS_NON)
-        {
-            if (getPokemonAIState(SLEEPING))
-            {
-                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration * 2, 100));
-                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
-            }
-            return;
-        }
-        if (this.ticksExisted % 20 == 0)
-        {
-
-            if (status == IMoveConstants.STATUS_BRN)
-            {
-                this.setFire(1);
-            }
-            else if (status == IMoveConstants.STATUS_FRZ)
-            {
-                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
-                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration * 2, 100));
-                if (Math.random() > 0.9)
-                {
-                    healStatus();
-                }
-            }
-            else if (status == IMoveConstants.STATUS_PSN)
-            {
-                this.attackEntityFrom(DamageSource.magic, getMaxHealth() / 8f);
-                spawnPoisonParticle();
-
-            }
-            else if (status == IMoveConstants.STATUS_PSN2)
-            {
-                this.attackEntityFrom(DamageSource.magic, (moveInfo.TOXIC_COUNTER + 1) * getMaxHealth() / 16f);
-                spawnPoisonParticle();
-                spawnPoisonParticle();
-                moveInfo.TOXIC_COUNTER++;
-            }
-            else if (status == IMoveConstants.STATUS_SLP)
-            {
-                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
-                addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration * 2, 100));
-                if (Math.random() > 0.9 || timer <= 0)
-                {
-                    healStatus();
-                }
-            }
-            else
-            {
-                moveInfo.TOXIC_COUNTER = 0;
-            }
-        }
-
     }
 
     @Override

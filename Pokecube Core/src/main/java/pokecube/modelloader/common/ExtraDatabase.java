@@ -42,7 +42,7 @@ public class ExtraDatabase
     public static class XMLDetails
     {
         @XmlElement(name = "RIDDENOFFSET")
-        float  offset = -1;
+        String offset = "";
         @XmlElement(name = "PARTICLEEFFECTS")
         String particles;
     }
@@ -81,7 +81,6 @@ public class ExtraDatabase
     {
         if (toAdd.isEmpty()) return;
         boolean bar = toApply == null;
-
         xmls.clear();
         for (AddedXML xml : toAdd)
         {
@@ -163,12 +162,37 @@ public class ExtraDatabase
                     }
                 }
                 if (fileEntry != null) PokedexEntryLoader.addOverrideEntry(fileEntry, true);
-
-                if (entry != null && file.details != null)
+            }
+            if (entry != null && file.details != null)
+            {
+                if (!file.details.offset.isEmpty())
                 {
-                    if (file.details.offset != -1) entry.mountedOffset = file.details.offset;
-                    if (file.details.particles != null) entry.particleData = file.details.particles.split(":");
+                    String[] args = file.details.offset.split(":");
+                    List<double[]> offsets = Lists.newArrayList();
+                    for (String s : args)
+                    {
+                        String[] vec = s.split(",");
+                        if (vec.length == 1)
+                        {
+                            offsets.add(new double[] { 0, Float.parseFloat(vec[0]), 0 });
+                        }
+                        else if (vec.length == 3)
+                        {
+                            offsets.add(new double[] { Float.parseFloat(vec[0]), Float.parseFloat(vec[1]),
+                                    Float.parseFloat(vec[2]) });
+                        }
+                        else
+                        {
+                            throw new IllegalArgumentException("Wrong number of numbers for offset, must be 1 or 3");
+                        }
+                    }
+                    entry.passengerOffsets = new double[offsets.size()][];
+                    for (int i = 0; i < entry.passengerOffsets.length; i++)
+                    {
+                        entry.passengerOffsets[i] = offsets.get(i);
+                    }
                 }
+                if (file.details.particles != null) entry.particleData = file.details.particles.split(":");
             }
         }
         catch (Exception e)

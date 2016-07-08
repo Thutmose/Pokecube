@@ -36,10 +36,12 @@ import pokecube.modelloader.common.ExtraDatabase;
 import pokecube.modelloader.items.ItemModelReloader;
 
 @Mod(modid = ModPokecubeML.ID, name = "Pokecube Model Loader", version = "0.1.0", acceptedMinecraftVersions = PokecubeMod.MCVERSIONS)
-public class ModPokecubeML
+public class ModPokecubeML implements IMobProvider
 {
     /** The id of your mod */
     public final static String        ID                      = "pokecube_ml";
+    public static final String        MODELPATH               = "models/pokemobs/";
+    public static final String        TEXTUREPATH             = "textures/entities/";
 
     @Instance(ID)
     public static ModPokecubeML       instance;
@@ -93,7 +95,7 @@ public class ModPokecubeML
         if (textureProviders.containsKey(mob) && !textureProviders.get(mob).equals(ID)) return;
 
         ArrayList<String> list = Lists.newArrayList();
-        ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
+        ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, getModelDirectory(null) + mob + ".xml");
         try
         {
             proxy.fileAsList(this, xml, list);
@@ -238,5 +240,23 @@ public class ModPokecubeML
         {
             System.err.println("Failed to register " + mob);
         }
+    }
+
+    @Override
+    public String getModelDirectory(PokedexEntry entry)
+    {
+        return MODELPATH;
+    }
+
+    @Override
+    public String getTextureDirectory(PokedexEntry entry)
+    {
+        return TEXTUREPATH;
+    }
+
+    @Override
+    public Object getMod()
+    {
+        return this;
     }
 }

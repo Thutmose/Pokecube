@@ -13,7 +13,8 @@
       "anorith": {"textures": {"layer0": "pokecube:items/fossilAnorith"}},
       "cranidos": {"textures": {"layer0": "pokecube:items/fossilCranidos"}},
       "shieldon": {"textures": {"layer0": "pokecube:items/fossilShieldon"}},
-      "tyrunt": {"textures": {"layer0": "pokecube:items/fossilJaw"}}
+      "tyrunt": {"textures": {"layer0": "pokecube:items/fossilJaw"}},
+      "amaura": {"textures": {"layer0": "pokecube:items/fossilSail"}}
     }
   }
 }

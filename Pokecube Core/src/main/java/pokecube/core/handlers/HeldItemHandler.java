@@ -60,6 +60,7 @@ public class HeldItemHandler
         fossilVariants.add("cranidos");
         fossilVariants.add("shieldon");
         fossilVariants.add("tyrunt");
+        fossilVariants.add("amaura");
     }
 
     private static double getMoveMultiplier(ItemStack held, PokeType move)

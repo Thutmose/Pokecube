@@ -22,6 +22,7 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
 import thut.api.maths.Vector3;
@@ -51,17 +52,13 @@ public class AnimationLoader
 
     }
 
-    public static final String                    MODELPATH   = "models/pokemobs/";
+    public static boolean                         loaded    = false;
 
-    public static boolean                         loaded      = false;
-
-    /** texture folder */
-    public final static String                    TEXTUREPATH = "textures/entities/";
-    static String                                 file        = "";
+    static String                                 file      = "";
     @SuppressWarnings("rawtypes")
-    public static HashMap<String, IModelRenderer> modelMaps   = new HashMap<String, IModelRenderer>();
+    public static HashMap<String, IModelRenderer> modelMaps = new HashMap<String, IModelRenderer>();
 
-    public static HashMap<String, Model>          models      = new HashMap<String, Model>();
+    public static HashMap<String, Model>          models    = new HashMap<String, Model>();
 
     public static void addStrings(String key, Node node, Set<String> toAddTo)
     {
@@ -186,7 +183,7 @@ public class AnimationLoader
         return default_;
     }
 
-    public static boolean initModel(String s, HashSet<String> toReload)
+    public static boolean initModel(IMobProvider provider, String s, HashSet<String> toReload)
     {
         ResourceLocation model = null;
         String anim = s + ".xml";
@@ -196,7 +193,8 @@ public class AnimationLoader
         String name = args2[args2.length > 1 ? args2.length - 1 : 0];
         PokedexEntry entry = Database.getEntry(name);
 
-        ResourceLocation texture = new ResourceLocation(s.replace(MODELPATH, TEXTUREPATH) + ".png");
+        ResourceLocation texture = new ResourceLocation(
+                s.replace(provider.getModelDirectory(entry), provider.getTextureDirectory(entry)) + ".png");
         try
         {
             model = new ResourceLocation(s + ".x3d");

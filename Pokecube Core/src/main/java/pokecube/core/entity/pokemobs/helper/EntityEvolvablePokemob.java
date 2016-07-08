@@ -25,7 +25,6 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.events.EvolveEvent;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -378,10 +377,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 && Tools.isSameStack(getHeldItemMainhand(), PokecubeItems.getStack("everstone")))
         {
             traded = false;
-        }
-        if (!this.getPokemonAIState(IMoveConstants.TAMED) && this.canEvolve(getHeldItemMainhand()))
-        {
-            this.evolve(false, false);
         }
     }
 

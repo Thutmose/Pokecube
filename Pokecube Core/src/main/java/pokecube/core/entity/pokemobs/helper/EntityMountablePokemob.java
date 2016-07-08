@@ -3,6 +3,8 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
+import java.util.List;
+
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -25,6 +27,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
+import thut.api.maths.Vector3;
 
 /** Handles the HM behaviour.
  * 
@@ -127,7 +130,35 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     @Override
     public double getMountedYOffset()
     {
-        return this.height * this.getPokedexEntry().mountedOffset;
+        return this.height * this.getPokedexEntry().passengerOffsets[0][1];
+    }
+
+    @Override
+    public void updatePassenger(Entity passenger)
+    {
+        List<Entity> passengers = this.getPassengers();
+        int index = 0;
+        for (int i = 0; i < passengers.size(); i++)
+        {
+            if (passenger == passengers.get(index))
+            {
+                index = i;
+                break;
+            }
+        }
+        if (index >= getPokedexEntry().passengerOffsets.length) index = 0;
+        double[] offset = this.getPokedexEntry().passengerOffsets[index];
+        Vector3 v = Vector3.getNewVector().set(offset);
+        double dx = this.getPokedexEntry().width * this.getSize(), dz = this.getPokedexEntry().length * this.getSize();
+        v.x *= dx;
+        v.y *= this.height;
+        v.z *= dz;
+        Vector3 v0 = v.copy();
+        float sin = MathHelper.sin((float) (this.renderYawOffset * 0.017453292F));
+        float cos = MathHelper.cos((float) (this.renderYawOffset * 0.017453292F));
+        v.x = v0.x * cos - v0.z * sin;
+        v.z = v0.x * sin + v0.z * cos;
+        passenger.setPosition(this.posX + v.x, this.posY + passenger.getYOffset() + v.y, this.posZ + v.z);
     }
 
     @Override
@@ -145,14 +176,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         {
 
         }
-
-        // if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
-        // && ridingEntity == PokecubeCore.getProxy().getPlayer(null))
-        // {
-        // ret = -ridingEntity.height + 0.25;
-        // this.onGround = true;
-        // return ret;
-        // }
 
         return ret;// - 1.6F;
     }
@@ -300,7 +323,8 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
                 if (this.isPotionActive(Potion.getPotionFromResourceLocation("jump_boost")))
                 {
-                    this.motionY += (this.getActivePotionEffect(Potion.getPotionFromResourceLocation("jump_boost")).getAmplifier() + 1) * 0.1F;
+                    this.motionY += (this.getActivePotionEffect(Potion.getPotionFromResourceLocation("jump_boost"))
+                            .getAmplifier() + 1) * 0.1F;
                 }
 
                 this.setPokemobJumping(true);

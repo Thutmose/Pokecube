@@ -233,6 +233,7 @@ public class ContainerPC extends Container
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             {
                 PacketPC packet = new PacketPC(PacketPC.RELEASE);
+                packet.data.setBoolean("T", false);
                 packet.data.setInteger("page", inv.getPage());
                 for (int i = 0; i < 54; i++)
                 {

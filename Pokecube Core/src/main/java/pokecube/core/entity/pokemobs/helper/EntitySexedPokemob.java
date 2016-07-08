@@ -3,18 +3,13 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
-import com.google.common.base.Predicate;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,29 +22,24 @@ import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
-import thut.api.maths.Vector3;
 
 /** @author Manchou */
 public abstract class EntitySexedPokemob extends EntityStatsPokemob
 {
-    protected Entity               egg            = null;
+    protected Entity               egg   = null;
     private Entity                 lover;
     protected int                  inLove;
-    protected byte                 sexe           = 0;
-    protected Vector<IBreedingMob> males          = new Vector<>();
-
-    int                            spawnBabyDelay = 0;
+    protected byte                 sexe  = 0;
+    protected Vector<IBreedingMob> males = new Vector<>();
 
     /** @param par1World */
     public EntitySexedPokemob(World world)
@@ -99,84 +89,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     protected void entityInit()
     {
         super.entityInit();
-    }
-
-    public Entity findLover()
-    {
-        boolean transforms = false;
-        for (String s : getMoves())
-        {
-            if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
-        }
-        if (getSexe() == SEXLEGENDARY && !transforms) return null;
-        if (isType(PokeType.ghost) && !getPokemonAIState(IMoveConstants.TAMED)) return null;
-        if (!(getOwner() instanceof EntityPlayer)
-                && !Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius,
-                        PokecubeMod.core.getConfig().maxSpawnRadius / 4, this))
-            return null;
-        if (getLover() != null) { return lover = getLover(); }
-
-        if ((getSexe() == MALE && !transforms) || males.size() > 0) { return null; }
-
-        if (getLoveTimer() > 0)
-        {
-            float searchingLoveDist = 5F;
-            AxisAlignedBB bb = here.getAABB().expand(searchingLoveDist, searchingLoveDist, searchingLoveDist);
-            List<Entity> list = worldObj.getEntitiesInAABBexcluding(this, bb, new Predicate<Entity>()
-            {
-                @Override
-                public boolean apply(Entity input)
-                {
-                    return input instanceof IPokemob;
-                }
-            });
-            bb = here.getAABB().expand(5 * searchingLoveDist, 2 * searchingLoveDist, 5 * searchingLoveDist);
-            List<Entity> list2 = worldObj.getEntitiesInAABBexcluding(this, bb, new Predicate<Entity>()
-            {
-                @Override
-                public boolean apply(Entity input)
-                {
-                    return input instanceof IPokemob;
-                }
-            });
-            if (list2.size() >= 30)
-            {
-                resetLoveStatus();
-                return null;
-            }
-            for (int i = 0; i < list.size(); i++)
-            {
-                IPokemob entityanimal = (IPokemob) list.get(i);
-                EntityAnimal animal = (EntityAnimal) list.get(i);
-                if (entityanimal == this || entityanimal
-                        .getPokemonAIState(IMoveConstants.TAMED) != getPokemonAIState(IMoveConstants.TAMED))
-                    continue;
-
-                boolean validMate = canMate((EntityAnimal) entityanimal);
-
-                if (!validMate || getDistanceSqToEntity((Entity) entityanimal) > searchingLoveDist * searchingLoveDist)
-                    continue;
-
-                if (!Vector3.isVisibleEntityFromEntity(this, (Entity) entityanimal)
-                        || entityanimal.getPokemonAIState(ANGRY))
-                    continue;
-
-                if (entityanimal != this && animal.getHealth() > animal.getMaxHealth() / 1.5f)
-                {
-                    if (!males.contains(entityanimal))
-                    {
-                        ((IBreedingMob) animal).setLover(this);
-                        if (transforms) setLover(animal);
-                        males.add((IBreedingMob) entityanimal);
-                        if (entityanimal instanceof IBreedingMob)
-                        {
-                            ((IBreedingMob) entityanimal).setLoveTimer(200);
-                        }
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     public int getBreedingDelay(IPokemob mate)
@@ -253,66 +165,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         super.init(nb);
         setSexe(Tools.getSexe(getPokedexEntry().getSexeRatio(), new Random()));
         resetInLove();
-    }
-
-    public void initiateMateFight()
-    {
-        if (getSexe() == IPokemob.MALE && getLover() != null)
-        {
-            Entity targetMate = getLover();
-            getLookHelper().setLookPositionWithEntity(getLover(), 10.0F, getVerticalFaceSpeed());
-            if (((IBreedingMob) targetMate).getMalesForBreeding().size() > 1)
-            {
-                IPokemob[] males = ((IBreedingMob) targetMate).getMalesForBreeding().toArray(new IPokemob[0]);
-                Arrays.sort(males, new Comparator<IPokemob>()
-                {
-                    @Override
-                    public int compare(IPokemob o1, IPokemob o2)
-                    {
-                        if (o2.getLevel() == o1.getLevel()) return (o1.getPokemonDisplayName().getFormattedText()
-                                .compareTo(o2.getPokemonDisplayName().getFormattedText()));
-                        return o2.getLevel() - o1.getLevel();
-                    }
-                });
-                int level = males[0].getLevel();
-                int n = 0;
-                for (int i = 0; i < males.length; i++)
-                {
-                    if (males[i].getLevel() < level
-                            || ((EntityAnimal) males[i]).getHealth() < ((EntityAnimal) males[i]).getMaxHealth() / 1.5f)
-                    {
-                        ((IBreedingMob) targetMate).getMalesForBreeding().remove(males[i]);
-                        ((IBreedingMob) males[i]).resetLoveStatus();
-                        n++;
-                    }
-                }
-                if (n == 0 && ((IBreedingMob) targetMate).getMalesForBreeding().size() > 1)
-                {
-                    ((IBreedingMob) targetMate).getMalesForBreeding().get(0).resetLoveStatus();
-                    ((IBreedingMob) targetMate).getMalesForBreeding().get(1).resetLoveStatus();
-                    ((IPokemob) ((IBreedingMob) targetMate).getMalesForBreeding().get(0))
-                            .setPokemonAIState(IMoveConstants.MATEFIGHT, true);
-                    ((IPokemob) ((IBreedingMob) targetMate).getMalesForBreeding().get(1))
-                            .setPokemonAIState(IMoveConstants.MATEFIGHT, true);
-                    ((EntityAnimal) ((IBreedingMob) targetMate).getMalesForBreeding().get(0))
-                            .setAttackTarget(((EntityAnimal) ((IBreedingMob) targetMate).getMalesForBreeding().get(1)));
-                }
-
-            }
-
-            if (((IBreedingMob) targetMate).getMalesForBreeding().size() > 1) return;
-            else if (((IBreedingMob) targetMate).getMalesForBreeding().size() == 0)
-            {
-                ((IBreedingMob) targetMate).resetLoveStatus();
-                resetLoveStatus();
-            }
-        }
-        else if (getMalesForBreeding().size() == 1)
-        {
-            IBreedingMob lover = getMalesForBreeding().get(0);
-            setLover((Entity) lover);
-            lover.setLover(this);
-        }
     }
 
     @Override
@@ -405,30 +257,14 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             this.worldObj.spawnParticle(EnumParticleTypes.HEART,
                     this.posX + this.rand.nextFloat() * this.width * 2.0F - this.width,
                     this.posY + 0.5D + this.rand.nextFloat() * this.height,
-                    this.posZ + this.rand.nextFloat() * this.width * 2.0F - this.width, d0, d1, d2,
-                    new int[0]);
+                    this.posZ + this.rand.nextFloat() * this.width * 2.0F - this.width, d0, d1, d2, new int[0]);
         }
 
         if (!isServerWorld()) return;
 
         int diff = 1 * PokecubeMod.core.getConfig().mateMultiplier;
-        if (inLove > 0) diff = 1;
+        if (getLoveTimer() > 0) diff = 1;
         setLoveTimer(getLoveTimer() + diff);
-        if (isInLove() && lover == null)
-        {
-            findLover();
-        }
-        boolean transforms = false;
-        for (String s : getMoves())
-        {
-            if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
-        }
-        if ((lover != null || !males.isEmpty()) && (transforms || sexe != MALE))
-        {
-            if (males.size() == 1 && lover == null) setLover((Entity) males.get(0));
-            if (males.size() <= 1) tryFindMate();
-            else initiateMateFight();
-        }
     }
 
     @Override
@@ -508,33 +344,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public void specificSpawnInit()
     {
         super.specificSpawnInit();
-    }
-
-    public void tryFindMate()
-    {
-        if (getLover() == null) return;
-        if (this.getPokemonAIState(SITTING)) this.setPokemonAIState(SITTING, false);
-
-        double dist = width * width + getLover().width * getLover().width;
-        dist = Math.max(dist, 1);
-        this.getNavigator().tryMoveToEntityLiving(getLover(), 1.5);
-        this.spawnBabyDelay++;
-        this.setPokemonAIState(MATING, true);
-        if (getLover() instanceof IPokemob)
-        {
-            ((IPokemob) getLover()).setPokemonAIState(MATING, true);
-        }
-        if (getLover() instanceof EntityLiving)
-        {
-            ((EntityLiving) getLover()).getNavigator().tryMoveToEntityLiving(this, 1.5);
-        }
-        if (this.spawnBabyDelay >= 50)
-        {
-            if (getLover() instanceof IPokemob) ((IPokemob) getLover()).setPokemonAIState(MATING, false);
-            mate((IBreedingMob) getLover());
-            this.setPokemonAIState(MATING, false);
-            this.spawnBabyDelay = 0;
-        }
     }
 
     @Override

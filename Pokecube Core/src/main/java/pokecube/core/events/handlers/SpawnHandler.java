@@ -681,27 +681,21 @@ public final class SpawnHandler
             if (!isPointValidForSpawn(world, v, dbe)) return ret;
 
             num = 0;
-            if (dbe.getSpawnData() == null)
-            {
-                System.err.println("Error with Spawn registration for " + dbe.getName());
-            }
-            else
-            {
-                long time = System.nanoTime();
 
-                ret += num = doSpawnForType(world, v, dbe, parser, t);
+            long time = System.nanoTime();
 
-                double dt = (System.nanoTime() - time) / 1000000D;
-                if (dt > 50)
+            ret += num = doSpawnForType(world, v, dbe, parser, t);
+
+            double dt = (System.nanoTime() - time) / 1000000D;
+            if (dt > 50)
+            {
+                if (dt > maxtime)
                 {
-                    if (dt > maxtime)
-                    {
-                        maxtime = dt;
-                        functions.put(-2, dbe.toString());
-                    }
-                    System.err.println(t.getCentre() + " " + dt + " " + dbe + " " + num + " Maximum was "
-                            + functions.get(-2) + " at " + maxtime);
+                    maxtime = dt;
+                    functions.put(-2, dbe.toString());
                 }
+                System.err.println(t.getCentre() + " " + dt + " " + dbe + " " + num + " Maximum was "
+                        + functions.get(-2) + " at " + maxtime);
             }
         }
         return ret;

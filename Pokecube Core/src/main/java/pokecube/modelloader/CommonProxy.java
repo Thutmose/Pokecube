@@ -75,18 +75,14 @@ public class CommonProxy implements IGuiHandler
     }
 
     public static HashMap<String, Object>            modelProviders = Maps.newHashMap();
+    public static HashMap<String, IMobProvider>      mobProviders   = Maps.newHashMap();
     public static HashMap<String, ArrayList<String>> modModels      = Maps.newHashMap();
-    public static final String                       MODELPATH      = "models/pokemobs/";
-    /** texture folder */
-    public final static String                       TEXTUREPATH    = "textures/entities/";
 
     private static final char                        DOT            = '.';
 
     private static final char                        SLASH          = '/';
 
     HashMap<String, XMLLocs>                         xmlFiles       = Maps.newHashMap();
-
-    HashMap<String, Object>                          mobProviders   = Maps.newHashMap();
 
     private void addXML(ResourceLocation xml, Object location)
     {
@@ -294,6 +290,16 @@ public class CommonProxy implements IGuiHandler
         {
             entries.add(entry.getName());
         }
+        Collections.sort(entries, new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                PokedexEntry e1 = Database.getEntry(o1);
+                PokedexEntry e2 = Database.getEntry(o2);
+                return e1.getPokedexNb() - e2.getPokedexNb();
+            }
+        });
         String[] entryArr = entries.toArray(new String[0]);
         boolean[] has = new boolean[entryArr.length];
         for (int i = 0; i < has.length; i++)
@@ -324,12 +330,11 @@ public class CommonProxy implements IGuiHandler
                 return o1.compareTo(o2);
             }
         });
-
+        xmlFiles.clear();
         for (String modId : modList)
         {
             bar.step(modId);
-            Object mod = mobProviders.get(modId);
-            xmlFiles.clear();
+            IMobProvider mod = mobProviders.get(modId);
             boolean[] hasArr = providesModels(modId, mod, entryArr);
             ProgressBar bar2 = ProgressManager.push("Pokemob", hasArr.length);
             for (int i = 0; i < hasArr.length; i++)
@@ -340,11 +345,13 @@ public class CommonProxy implements IGuiHandler
                     continue;
                 }
                 String entry = entryArr[i];
+                PokedexEntry pokeentry = Database.getEntry(entry);
                 bar2.step(entry);
                 toAdd.add(entry);
                 ModPokecubeML.textureProviders.put(entry, modId);
                 ArrayList<String> list = Lists.newArrayList();
-                ResourceLocation xml = new ResourceLocation(modId, MODELPATH + entry + ".xml");
+                ResourceLocation xml = new ResourceLocation(modId, mod.getModelDirectory(pokeentry) + entry + ".xml");
+                pokeentry.texturePath = mod.getTextureDirectory(pokeentry);
                 try
                 {
                     fileAsList(mod, xml, list);
@@ -397,7 +404,7 @@ public class CommonProxy implements IGuiHandler
         return ret;
     }
 
-    public void registerModelProvider(String modid, Object mod)
+    public void registerModelProvider(String modid, IMobProvider mod)
     {
         if (!mobProviders.containsKey(modid)) mobProviders.put(modid, mod);
     }
@@ -412,9 +419,11 @@ public class CommonProxy implements IGuiHandler
     private ResourceLocation[] toLocations(String modid, String ext, String... entries)
     {
         ResourceLocation[] ret = new ResourceLocation[entries.length];
+        IMobProvider mod = mobProviders.get(modid);
         for (int i = 0; i < entries.length; i++)
         {
-            ret[i] = new ResourceLocation(modid, MODELPATH + entries[i] + ext);
+            ret[i] = new ResourceLocation(modid,
+                    mod.getModelDirectory(Database.getEntry(entries[i])) + entries[i] + ext);
         }
         return ret;
     }

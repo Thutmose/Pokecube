@@ -571,9 +571,19 @@ public class PokedexEntryLoader
             updateEntry(xmlEntry, create);
         }
         ProgressManager.pop(bar);
+        if (create)
+        {
+            bar = ProgressManager.push("Loading Evolutions", entries.size());
+            for (XMLPokedexEntry xmlEntry : entries)
+            {
+                bar.step(xmlEntry.name);
+                preCheckEvolutions(xmlEntry);
+            }
+            ProgressManager.pop(bar);
+        }
     }
 
-    private static void parseEvols(PokedexEntry entry, StatsNode xmlStats)
+    private static void parseEvols(PokedexEntry entry, StatsNode xmlStats, boolean error)
     {
         String numberString = xmlStats.evoTo;
         String dataString = xmlStats.evoModes;
@@ -608,8 +618,29 @@ public class PokedexEntryLoader
                     {
                         evol = Database.getEntry(s1);
                     }
-                    if (evol != null) entry.addEvolution(new EvolutionData(evol, evolData[i], s2));
-                    else System.out.println("No evolution " + s1 + " for " + entry);
+                    if (evol != null)
+                    {
+                        EvolutionData data = null;
+                        for (EvolutionData d : entry.evolutions)
+                        {
+                            if (d.evolution == evol)
+                            {
+                                data = d;
+                                break;
+                            }
+                        }
+                        if (data == null)
+                        {
+                            data = new EvolutionData(evol, evolData[i], s2);
+                            entry.addEvolution(data);
+                        }
+                        else
+                        {
+                            data.data = evolData[i];
+                            data.FX = s2;
+                        }
+                    }
+                    else if (error) System.out.println("No evolution " + s1 + " for " + entry);
                 }
             }
         }
@@ -1110,6 +1141,21 @@ public class PokedexEntryLoader
         return entry != null;
     }
 
+    public static void preCheckEvolutions(XMLPokedexEntry xmlEntry)
+    {
+        PokedexEntry entry = Database.getEntry(xmlEntry.name);
+        StatsNode stats = xmlEntry.stats;
+        if (stats != null) try
+        {
+            parseEvols(entry, stats, false);
+        }
+        catch (Exception e)
+        {
+            System.out.println(xmlEntry + ", " + entry + ": " + e + " ");
+        }
+
+    }
+
     public static void updateEntry(XMLPokedexEntry xmlEntry, boolean init)
     {
         String name = xmlEntry.name;
@@ -1125,7 +1171,7 @@ public class PokedexEntryLoader
             {
                 postIniStats(entry, stats);
                 parseSpawns(entry, stats);
-                parseEvols(entry, stats);
+                parseEvols(entry, stats, true);
                 if (xmlEntry.special != null)
                 {
                     parseSpecial(xmlEntry.special, entry);

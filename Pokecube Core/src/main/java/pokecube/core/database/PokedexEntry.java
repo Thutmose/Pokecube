@@ -68,10 +68,8 @@ public class PokedexEntry
         public String             move      = "";
         // 1 for male, 2 for female, 0 for either;
         public byte               gender    = 0;
-
         public String             FX        = "";
-
-        private String            data;
+        public String             data;
 
         private EvolutionData(PokedexEntry evol)
         {
@@ -875,6 +873,8 @@ public class PokedexEntry
     /** Array used for animated or gender based textures. Index 0 is the male
      * textures, index 1 is the females */
     public String[][]                          textureDetails   = { { "" }, null };
+
+    public String                              texturePath      = "textures/entities/";
     /** The abilities available to the pokedex entry. */
     protected ArrayList<String>                abilities        = Lists.newArrayList();
     /** The abilities available to the pokedex entry. */
@@ -888,7 +888,8 @@ public class PokedexEntry
     /** If the above is floating, how high does it try to float */
     public double                              preferedHeight   = 1.5;
     /** Offset between top of hitbox and where player sits */
-    public double                              mountedOffset    = 1;
+    public double[][]                          passengerOffsets = { { 0, 1, 0 } };
+
     /** indicatees of the specified special texture exists. Index 4 is used for
      * if the mob can be dyed */
     public boolean                             dyeable          = false;
@@ -1260,7 +1261,6 @@ public class PokedexEntry
         if (pokedexNb < 494) return 4;
         if (pokedexNb < 650) return 5;
         if (pokedexNb < 722) return 6;
-
         return 0;
     }
 
@@ -1494,8 +1494,7 @@ public class PokedexEntry
         String[] textureSuffixs = textureDetails[index];
         long suffixIndex = ((time % textureSuffixs.length * 3) / textureSuffixs.length);
         String suffix = textureSuffixs[(int) suffixIndex];
-        String ret = original.contains("/") ? "textures/" + original + suffix + ".png"
-                : "textures/entities/" + original + suffix + ".png";
+        String ret = texturePath + original + suffix + ".png";
         return ret;
     }
 

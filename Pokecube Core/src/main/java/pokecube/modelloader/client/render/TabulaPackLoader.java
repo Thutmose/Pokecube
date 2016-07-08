@@ -31,6 +31,7 @@ import net.minecraftforge.common.IShearable;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
 import thut.api.maths.Vector3;
 import thut.core.client.render.animation.AnimationBuilder;
@@ -497,7 +498,7 @@ public class TabulaPackLoader extends AnimationLoader
         modelMap.clear();
     }
 
-    public static boolean loadModel(String path, HashSet<String> toReload)
+    public static boolean loadModel(IMobProvider provider, String path, HashSet<String> toReload)
     {
         ResourceLocation model = new ResourceLocation(path + ".tbl");
         String anim = path + ".xml";

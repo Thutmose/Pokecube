@@ -1,6 +1,5 @@
 package pokecube.core.entity.pokemobs.helper;
 
-import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -14,28 +13,23 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.ChunkCoordinate;
-import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
 public abstract class EntityHungryPokemob extends EntityAiPokemob
 {
 
-    public static int HUNGERDELAY    = 6000;
-    boolean           sleepy         = false;
-    Vector3           sizes          = Vector3.getNewVector();
+    Vector3       sizes          = Vector3.getNewVector();
 
-    protected int     hungerCooldown = 0;
+    protected int hungerCooldown = 0;
 
-    int               fleeingTick;
+    int           fleeingTick;
 
     public EntityHungryPokemob(World world)
     {
@@ -191,16 +185,15 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         Block block = state.getBlock();
         boolean water = getPokedexEntry().swims();
         boolean air = getPokedexEntry().flys() || getPokedexEntry().floats();
-
         if (getPokedexEntry().hatedMaterial != null)
         {
             String material = getPokedexEntry().hatedMaterial[0];
             if (material.equalsIgnoreCase("water") && state.getMaterial() == Material.WATER) { return 100; }
         }
-
         if (state.getMaterial() == Material.WATER) return water ? 1 : air ? 100 : 40;
         if (block == Blocks.GRAVEL) return water ? 40 : 5;
-
+        if (!this.isImmuneToFire() && (state.getMaterial() == Material.LAVA || state.getMaterial() == Material.FIRE))
+            return 1;
         return water ? 40 : 20;
     }
 
@@ -250,22 +243,6 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         return getPokedexEntry().foods[2];
     }
 
-    // 0 is sunrise, 6000 noon, 12000 dusk, 18000 midnight, 23999
-    public boolean isGoodSleepingSpot(ChunkCoordinate c)
-    {
-        float light = this.getBrightness(0);
-        List<TimePeriod> active = getPokedexEntry().activeTimes();
-        if (this.hasHome() && this.getPosition().distanceSq(getHome()) > 10) return false;
-
-        // TODO refine timing
-        for (TimePeriod p : active)
-        {
-            if (p.contains(18000)) { return light < 0.1; }
-        }
-
-        return true;
-    }
-
     /** @return Does this pokemon eat grass */
     @Override
     public boolean isHerbivore()
@@ -306,64 +283,6 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     public void onLivingUpdate()
     {
         super.onLivingUpdate();
-        int hungerTime = getHungerTime();
-        sleepy = true;
-        for (TimePeriod p : getPokedexEntry().activeTimes())
-        {
-            if (p != null && p.contains(worldObj.getWorldTime()))
-            {
-                sleepy = false;
-                break;
-            }
-        }
-        Vector3 v = here.set(this);
-        ChunkCoordinate c = new ChunkCoordinate(v, dimension);
-        if (!this.neverHungry() && hungerCooldown < 0)
-        {
-            if (hungerTime > HUNGERDELAY + getRNG().nextInt((int) (0.5 * HUNGERDELAY)) && !getPokemonAIState(HUNTING))
-            {
-                this.setPokemonAIState(HUNTING, true);
-            }
-        }
-
-        double hurtTime = HUNGERDELAY * 1.5 + getRNG().nextInt((int) (0.5 * HUNGERDELAY));
-        if (hungerTime > hurtTime && !worldObj.isRemote && this.getAttackTarget() == null && !this.neverHungry()
-                && ticksExisted % 100 == 0)
-        {
-            this.setHealth(getHealth() - getMaxHealth() * 0.05f);
-            this.displayMessageToOwner(new TextComponentTranslation("pokemob.hungry.hurt", getPokemonDisplayName()));
-        }
-        boolean ownedSleepCheck = getPokemonAIState(IMoveConstants.TAMED)
-                && !(getPokemonAIState((byte) (STAYING)) || getPokemonAIState((byte) (SITTING)));
-        if (sleepy && hungerTime < 0.85 * PokecubeMod.core.getConfig().pokemobLifeSpan)
-        {
-            if (!isGoodSleepingSpot(c))
-            {
-
-            }
-            else if (getAttackTarget() == null && !ownedSleepCheck && getNavigator().noPath())
-            {
-                setPokemonAIState(SLEEPING, true);
-                setPokemonAIState(HUNTING, false);
-            }
-            else if (!getNavigator().noPath() || getAttackTarget() != null)
-            {
-                setPokemonAIState(SLEEPING, false);
-            }
-        }
-        else if (!getPokemonAIState(TIRED))
-        {
-            setPokemonAIState(SLEEPING, false);
-        }
-
-        if (this.getAttackTarget() == null && !this.isDead && ticksExisted % 100 == 0 && !worldObj.isRemote
-                && hungerCooldown < 0)
-        {
-            float dh = Math.max(1, getMaxHealth() * 0.05f);
-
-            float toHeal = this.getHealth() + dh;
-            this.setHealth(Math.min(toHeal, getMaxHealth()));
-        }
     }
 
     @Override

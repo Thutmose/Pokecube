@@ -1,5 +1,7 @@
 package pokecube.core.ai.thread.aiRunnables;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -12,6 +14,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BerryGenManager;
@@ -20,6 +23,8 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.ItemBerry;
+import pokecube.core.utils.ChunkCoordinate;
+import pokecube.core.utils.TimePeriod;
 import thut.api.TickHandler;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
@@ -27,6 +32,7 @@ import thut.api.maths.Vector3;
 
 public class AIHungry extends AIBase
 {
+    public static int HUNGERDELAY = 6000;
 
     private static class GenBerries implements IRunnable
     {
@@ -59,6 +65,7 @@ public class AIHungry extends AIBase
     IPokemob           pokemob;
     Vector3            foodLoc = Vector3.getNewVector();
     boolean            block   = false;
+    boolean            sleepy  = false;
     double             moveSpeed;
     Vector3            v       = Vector3.getNewVector();
     Vector3            v1      = Vector3.getNewVector();
@@ -71,6 +78,74 @@ public class AIHungry extends AIBase
         this.hungrymob = (IHungrymob) entity;
         this.pokemob = (IPokemob) entity;
         this.moveSpeed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 0.75;
+    }
+
+    @Override
+    public void doMainThreadTick(World world)
+    {
+        super.doMainThreadTick(world);
+
+        int hungerTime = hungrymob.getHungerTime();
+        sleepy = true;
+        for (TimePeriod p : pokemob.getPokedexEntry().activeTimes())
+        {
+            if (p != null && p.contains(entity.getEntityWorld().getWorldTime()))
+            {
+                sleepy = false;
+                break;
+            }
+        }
+        v.set(entity);
+        ChunkCoordinate c = new ChunkCoordinate(v, entity.dimension);
+        if (!hungrymob.neverHungry() && hungrymob.getHungerCooldown() < 0)
+        {
+            if (hungerTime > HUNGERDELAY + entity.getRNG().nextInt((int) (0.5 * HUNGERDELAY))
+                    && !pokemob.getPokemonAIState(IMoveConstants.HUNTING))
+            {
+                pokemob.setPokemonAIState(IMoveConstants.HUNTING, true);
+            }
+        }
+
+        double hurtTime = HUNGERDELAY * 1.5 + entity.getRNG().nextInt((int) (0.5 * HUNGERDELAY));
+        if (hungerTime > hurtTime && !entity.getEntityWorld().isRemote && entity.getAttackTarget() == null
+                && !hungrymob.neverHungry() && entity.ticksExisted % 100 == 0)
+        {
+            entity.setHealth(entity.getHealth() - entity.getMaxHealth() * 0.05f);
+            pokemob.displayMessageToOwner(
+                    new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
+        }
+        boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
+                && !(pokemob.getPokemonAIState(IMoveConstants.STAYING)
+                        || pokemob.getPokemonAIState(IMoveConstants.SITTING));
+        if (sleepy && hungerTime < 0.85 * PokecubeMod.core.getConfig().pokemobLifeSpan)
+        {
+            if (!isGoodSleepingSpot(c))
+            {
+
+            }
+            else if (entity.getAttackTarget() == null && !ownedSleepCheck && entity.getNavigator().noPath())
+            {
+                pokemob.setPokemonAIState(IMoveConstants.SLEEPING, true);
+                pokemob.setPokemonAIState(IMoveConstants.HUNTING, false);
+            }
+            else if (!entity.getNavigator().noPath() || entity.getAttackTarget() != null)
+            {
+                pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
+            }
+        }
+        else if (!pokemob.getPokemonAIState(IMoveConstants.TIRED))
+        {
+            pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
+        }
+
+        if (entity.getAttackTarget() == null && !entity.isDead && entity.ticksExisted % 100 == 0
+                && !entity.getEntityWorld().isRemote && hungrymob.getHungerCooldown() < 0)
+        {
+            float dh = Math.max(1, entity.getMaxHealth() * 0.05f);
+
+            float toHeal = entity.getHealth() + dh;
+            entity.setHealth(Math.min(toHeal, entity.getMaxHealth()));
+        }
     }
 
     protected void eatBerry(Block block, double distance)
@@ -446,6 +521,22 @@ public class AIHungry extends AIBase
             hungrymob.setHungerCooldown(10);
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
         }
+    }
+
+    // 0 is sunrise, 6000 noon, 12000 dusk, 18000 midnight, 23999
+    public boolean isGoodSleepingSpot(ChunkCoordinate c)
+    {
+        float light = entity.getBrightness(0);
+        List<TimePeriod> active = pokemob.getPokedexEntry().activeTimes();
+        if (pokemob.hasHomeArea() && entity.getPosition().distanceSq(pokemob.getHome()) > 10) return false;
+
+        // TODO refine timing
+        for (TimePeriod p : active)
+        {
+            if (p.contains(18000)) { return light < 0.1; }
+        }
+
+        return true;
     }
 
     @Override

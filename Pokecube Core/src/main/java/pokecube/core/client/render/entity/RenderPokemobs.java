@@ -24,7 +24,7 @@ public class RenderPokemobs extends RenderPokemob
     private static Map<String, ModelBase> statusModels = new HashMap<String, ModelBase>();
     public static Map<String, Render>     renderMap    = new HashMap<String, Render>();
 
-    private static RenderPokemobs instance;
+    private static RenderPokemobs         instance;
 
     public static void addCustomRenderer(String name, Render renderer)
     {
@@ -108,6 +108,12 @@ public class RenderPokemobs extends RenderPokemob
             if (mob.getTransformedTo() instanceof IPokemob)
             {
                 mob = (IPokemob) mob.getTransformedTo();
+            }
+            else if (mob.getTransformedTo() != null)
+            {
+                Minecraft.getMinecraft().getRenderManager().doRenderEntity(mob.getTransformedTo(), x, y, z, par8, par9,
+                        false);
+                return;
             }
 
             GlStateManager.pushMatrix();

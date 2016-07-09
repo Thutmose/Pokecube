@@ -749,4 +749,14 @@ public interface IPokemob extends IMoveConstants
      * 
      * @return */
     ItemStack wildHeldItem();
+
+    /** The personality value for the pokemob, used to determine nature,
+     * ability, etc.<br>
+     * http://bulbapedia.bulbagarden.net/wiki/Personality_value
+     * 
+     * @return */
+    int getRNGValue();
+
+    /** @param value */
+    void setRNGValue(int value);
 }

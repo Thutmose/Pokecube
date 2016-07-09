@@ -282,60 +282,60 @@ public class MovesAdder implements IMoveConstants
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                super.finalAttack(attacker, attacked, f);
-                super.finalAttack(attacker, attacked, f);
+                super.finalAttack(attacker, attacked);
+                super.finalAttack(attacker, attacked);
             };
         });// setAnimtion(new ThrowParticle("rock")));
         registerMove(new Move_Basic(MOVE_DOUBLEHIT)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                super.finalAttack(attacker, attacked, f);
-                super.finalAttack(attacker, attacked, f);
+                super.finalAttack(attacker, attacked);
+                super.finalAttack(attacker, attacked);
             };
         });
         registerMove(new Move_Basic(MOVE_DOUBLEKICK)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                super.finalAttack(attacker, attacked, f);
-                super.finalAttack(attacker, attacked, f);
+                super.finalAttack(attacker, attacked);
+                super.finalAttack(attacker, attacked);
             };
         });
         registerMove(new Move_Basic(MOVE_DUALCHOP)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                super.finalAttack(attacker, attacked, f);
-                super.finalAttack(attacker, attacked, f);
+                super.finalAttack(attacker, attacked);
+                super.finalAttack(attacker, attacked);
             };
         });
         registerMove(new Move_Basic(MOVE_GEARGRIND)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                super.finalAttack(attacker, attacked, f);
-                super.finalAttack(attacker, attacked, f);
+                super.finalAttack(attacker, attacked);
+                super.finalAttack(attacker, attacked);
             };
         });
         registerMove(new Move_Basic(MOVE_TWINEEDLE)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                super.finalAttack(attacker, attacked, f);
-                super.finalAttack(attacker, attacked, f);
+                super.finalAttack(attacker, attacked);
+                super.finalAttack(attacker, attacked);
             };
         });
         // 2-5 hits
@@ -343,7 +343,7 @@ public class MovesAdder implements IMoveConstants
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -364,14 +364,14 @@ public class MovesAdder implements IMoveConstants
                 }
 
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f);
+                    super.finalAttack(attacker, attacked);
             };
         });// setAnimtion(new ThrowParticle("iceshard")));
         registerMove(new Move_Basic(MOVE_FURYATTACK)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -390,9 +390,8 @@ public class MovesAdder implements IMoveConstants
                 default:
                     count = 2;
                 }
-                MovesUtils.displayMoveMessages(attacker, attacked, name);
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
 
             };
         });
@@ -400,7 +399,7 @@ public class MovesAdder implements IMoveConstants
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -420,14 +419,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });
         registerMove(new Move_Basic(MOVE_ARMTHRUST)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -447,14 +446,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });
         registerMove(new Move_Basic(MOVE_BARRAGE)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -474,14 +473,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });
         registerMove(new Move_Basic(MOVE_BONERUSH)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -501,14 +500,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });
         registerMove(new Move_Basic(MOVE_BULLETSEED)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -528,14 +527,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });// setAnimtion(new ThrowParticle("sting")));
         registerMove(new Move_Basic(MOVE_COMETPUNCH)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -555,14 +554,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });
         registerMove(new Move_Basic(MOVE_DOUBLESLAP)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -582,14 +581,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });
         registerMove(new Move_Basic(MOVE_ICICLESPEAR)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -609,14 +608,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });// setAnimtion(new ThrowParticle("iceshard")));
         registerMove(new Move_Basic(MOVE_PINMISSILE)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -636,14 +635,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });// setAnimtion(new ThrowParticle("sting")));
         registerMove(new Move_Basic(MOVE_ROCKBLAST)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -663,14 +662,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });// setAnimtion(new ThrowParticle("rock")));
         registerMove(new Move_Basic(MOVE_SPIKECANNON)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -690,14 +689,14 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });// setAnimtion(new ThrowParticle("sting")));
         registerMove(new Move_Basic(MOVE_TAILSLAP)
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int count = 2;
                 int random = (new Random()).nextInt(6);
@@ -717,7 +716,7 @@ public class MovesAdder implements IMoveConstants
                     count = 2;
                 }
                 for (int i = 0; i <= count; i++)
-                    super.finalAttack(attacker, attacked, f, false);
+                    super.finalAttack(attacker, attacked, false);
             };
         });
         // 3 hits
@@ -725,7 +724,7 @@ public class MovesAdder implements IMoveConstants
         {
 
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int PWR = this.getPWR();
                 for (int i = 0; i < 3; i++)
@@ -735,8 +734,6 @@ public class MovesAdder implements IMoveConstants
                         ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVector().set(attacked);
-                    notifyClient((Entity) attacker, v, attacked);
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;
                     if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
@@ -938,7 +935,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_LEAFSTORM)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 System.out.println("Test " + finalAttackStrength);
                 if (finalAttackStrength > 0)
@@ -951,7 +948,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_OVERHEAT)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 if (finalAttackStrength > 0) MovesUtils.handleStats2(attacker, attacked, SPATACK, HARSH);
             }
@@ -960,7 +957,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_DRACOMETEOR)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 if (finalAttackStrength > 0) MovesUtils.handleStats2(attacker, attacked, SPATACK, HARSH);
             }
@@ -969,7 +966,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_PSYCHOBOOST)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 if (finalAttackStrength > 0) MovesUtils.handleStats2(attacker, attacked, SPATACK, HARSH);
             }
@@ -1013,7 +1010,7 @@ public class MovesAdder implements IMoveConstants
              * 
              * @param mob */
             @Override
-            public void doSelfAttack(IPokemob mob, float f)
+            public void doSelfAttack(IPokemob mob)
             {
                 if (mob.getMoveStats().SELFRAISECOUNTER == 0)
                 {
@@ -1025,12 +1022,12 @@ public class MovesAdder implements IMoveConstants
                     MovesUtils.attack(
                             new MovePacket(mob, (Entity) mob, name, move.type, getPWR(), move.crit, (byte) 0, (byte) 0),
                             false);
-                    postAttack(mob, (Entity) mob, f, 0);
+                    postAttack(mob, (Entity) mob, 0, 0);
                 }
             }
 
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 Random r = new Random(attacked.getEntityWorld().rand.nextLong());
 
@@ -1052,7 +1049,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_POWERSPLIT)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 if (attacked instanceof IPokemob)
                 {
@@ -1079,7 +1076,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_GUARDSPLIT)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 if (attacked instanceof IPokemob)
                 {
@@ -1107,7 +1104,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_POWERTRICK)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 if (attacked instanceof IPokemob)
                 {
@@ -1132,7 +1129,7 @@ public class MovesAdder implements IMoveConstants
         {
 
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 // ends the battle
                 if (attacked instanceof EntityLiving)
@@ -1157,7 +1154,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_REST)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 attacker.healStatus();
                 attacker.setStatus(STATUS_SLP);
@@ -1168,7 +1165,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_BIDE)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 if (!attacker.getMoveStats().biding)
                 {
@@ -1196,7 +1193,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_MIRRORCOAT)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 if (!attacker.getMoveStats().biding)
                 {
@@ -1222,7 +1219,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_COUNTER)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 if (!attacker.getMoveStats().biding)
                 {
@@ -1247,7 +1244,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_FOCUSENERGY)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 attacker.getMoveStats().SPECIALTYPE = IPokemob.TYPE_CRIT;
             }
@@ -1256,7 +1253,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_CURSE)
         {
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 if (attacker.isType(PokeType.ghost))
                 {
@@ -1271,7 +1268,6 @@ public class MovesAdder implements IMoveConstants
                             if (!move.canceled)
                             {
                                 target.addChange(CHANGE_CURSE);
-                                MovesUtils.displayMoveMessages(attacker, attacked, MOVE_CURSE);
                                 ((EntityLivingBase) attacker).attackEntityFrom(DamageSource.magic,
                                         ((EntityLivingBase) attacker).getMaxHealth() / 2);
                             }
@@ -1299,9 +1295,9 @@ public class MovesAdder implements IMoveConstants
             }
 
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
-                if (f == 0 && attacked instanceof EntityLivingBase)
+                if (pwr == 0 && attacked instanceof EntityLivingBase)
                 {
                     EntityLivingBase toHeal = (EntityLivingBase) attacked;
                     float health = Math.min(toHeal.getHealth() + 80, toHeal.getMaxHealth());
@@ -1313,22 +1309,19 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_ATTRACT)
         {
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f, boolean message)
+            protected void finalAttack(IPokemob attacker, Entity attacked, boolean message)
             {
-                if (doAttack(attacker, attacked, f))
+                if (doAttack(attacker, attacked))
                 {
-                    if (message) MovesUtils.displayMoveMessages(attacker, attacked, name);
-                    Vector3 v = Vector3.getNewVector();
                     Entity temp = attacked;
                     if (attacked == null) attacked = temp;
-                    notifyClient((Entity) attacker, v.set(attacked), attacked);
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;
                     MovePacket packet = new MovePacket(attacker, attacked, name, move.type, getPWR(attacker, attacked),
                             move.crit, statusChange, changeAddition);
                     packet.infatuate[0] = true;
                     int finalAttackStrength = MovesUtils.attack(packet);
-                    postAttack(attacker, attacked, f, finalAttackStrength);
+                    postAttack(attacker, attacked, getPWR(attacker, attacked), finalAttackStrength);
                 }
 
             }
@@ -1344,17 +1337,15 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_FURYCUTTER)
         {
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                if (doAttack(attacker, attacked, f))
+                if (doAttack(attacker, attacked))
                 {
                     if (sound != null)
                     {
                         ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVector().set(attacked);
-                    notifyClient((Entity) attacker, v, attacked);
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;
                     if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
@@ -1370,7 +1361,7 @@ public class MovesAdder implements IMoveConstants
                     int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type, PWR,
                             move.crit, statusChange, changeAddition));
 
-                    postAttack(attacker, attacked, f, finalAttackStrength);
+                    postAttack(attacker, attacked, getPWR(attacker, attacked), finalAttackStrength);
                     if (finalAttackStrength == 0)
                     {
                         attacker.getMoveStats().FURYCUTTERCOUNTER = 0;
@@ -1419,9 +1410,9 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_SHOCKWAVE)
         {// TODO better animation
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                if (doAttack(attacker, attacked, f))
+                if (doAttack(attacker, attacked))
                 {
                     if (sound != null)
                     {
@@ -1429,8 +1420,6 @@ public class MovesAdder implements IMoveConstants
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     Vector3 v = Vector3.getNewVector().set(attacked);
-                    notifyClient((Entity) attacker, v, attacked);
-
                     List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker), v, 2, 8);
                     for (Entity e : hit)
                     {
@@ -1449,7 +1438,7 @@ public class MovesAdder implements IMoveConstants
                         }
                         int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
                                 getPWR(), move.crit, statusChange, changeAddition));
-                        postAttack(attacker, attacked, f, finalAttackStrength);
+                        postAttack(attacker, attacked, getPWR(), finalAttackStrength);
 
                     }
                 }
@@ -1599,9 +1588,9 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_EARTHQUAKE)
         {
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                if (doAttack(attacker, attacked, f))
+                if (doAttack(attacker, attacked))
                 {
                     if (sound != null)
                     {
@@ -1609,8 +1598,6 @@ public class MovesAdder implements IMoveConstants
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     Vector3 v = Vector3.getNewVector().set(attacked);
-                    notifyClient((Entity) attacker, v, attacked);
-
                     List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker), v, 2, 8);
                     for (Entity e : hit)
                     {
@@ -1622,7 +1609,7 @@ public class MovesAdder implements IMoveConstants
                         attacked = e;
                         int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
                                 getPWR(), move.crit, (byte) 0, (byte) 0));
-                        postAttack(attacker, attacked, f, finalAttackStrength);
+                        postAttack(attacker, attacked, getPWR(), finalAttackStrength);
 
                     }
                 }
@@ -1632,7 +1619,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_MAGNITUDE)
         {
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 int PWR = 0;
                 int rand = (new Random()).nextInt(20);
@@ -1644,7 +1631,7 @@ public class MovesAdder implements IMoveConstants
                 else if (rand <= 18) PWR = 110;
                 else PWR = 150;
 
-                if (doAttack(attacker, attacked, f))
+                if (doAttack(attacker, attacked))
                 {
                     if (sound != null)
                     {
@@ -1652,8 +1639,6 @@ public class MovesAdder implements IMoveConstants
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     Vector3 v = Vector3.getNewVector().set(attacked);
-                    notifyClient((Entity) attacker, v, attacked);
-
                     List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker), v, 2, 8);
                     for (Entity e : hit)
                     {
@@ -1665,7 +1650,7 @@ public class MovesAdder implements IMoveConstants
                         attacked = e;
                         int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
                                 PWR, move.crit, (byte) 0, (byte) 0));
-                        postAttack(attacker, attacked, f, finalAttackStrength);
+                        postAttack(attacker, attacked, PWR, finalAttackStrength);
 
                     }
                 }
@@ -1681,7 +1666,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_ICESHARD)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 // entityAttacker.attackTime =
                 // MovesUtils.getDelayBetweenAttacks(attacker) * 2 / 3; // will
@@ -1696,17 +1681,15 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_ICEBALL)
         {
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                if (doAttack(attacker, attacked, f))
+                if (doAttack(attacker, attacked))
                 {
                     if (sound != null)
                     {
                         ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVector().set(attacked);
-                    notifyClient((Entity) attacker, v, attacked);
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;
                     if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
@@ -1726,7 +1709,7 @@ public class MovesAdder implements IMoveConstants
                     int PWR = (int) Math.min(this.getPWR(), (rollOut * 1.5) * this.getPWR() * defCurl);
                     int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type, PWR,
                             move.crit, statusChange, changeAddition));
-                    postAttack(attacker, attacked, f, finalAttackStrength);
+                    postAttack(attacker, attacked, PWR, finalAttackStrength);
                     attacker.getMoveStats().ROLLOUTCOUNTER++;
                 }
             }
@@ -1753,7 +1736,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_QUICKATTACK)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 // entityAttacker.attackTime =
                 // MovesUtils.getDelayBetweenAttacks(attacker) * 2 / 3; // will
@@ -1764,7 +1747,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_SUPERFANG)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 // the actual PWR is 0
                 // the attack causes half the remaining life of the target
@@ -1853,17 +1836,15 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_ROLLOUT)
         {
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
-                if (doAttack(attacker, attacked, f))
+                if (doAttack(attacker, attacked))
                 {
                     if (sound != null)
                     {
                         ((Entity) attacker).playSound(sound, 0.5F,
                                 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
-                    Vector3 v = Vector3.getNewVector().set(attacked);
-                    notifyClient((Entity) attacker, v, attacked);
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;
                     if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
@@ -1884,7 +1865,7 @@ public class MovesAdder implements IMoveConstants
                     int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type, PWR,
                             move.crit, statusChange, changeAddition));
 
-                    postAttack(attacker, attacked, f, finalAttackStrength);
+                    postAttack(attacker, attacked, PWR, finalAttackStrength);
                     if (finalAttackStrength == 0)
                     {
                         attacker.getMoveStats().ROLLOUTCOUNTER = 0;
@@ -1917,9 +1898,9 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_HYDROPUMP)
         {
             @Override
-            public boolean doAttack(IPokemob attacker, Entity attacked, float f)
+            public boolean doAttack(IPokemob attacker, Entity attacked)
             {
-                if (!super.doAttack(attacker, attacked, f)) return false;
+                if (!super.doAttack(attacker, attacked)) return false;
                 attacked.getEntityWorld().setBlockState(
                         new BlockPos((int) attacked.posX, (int) attacked.posY + 1, (int) attacked.posZ),
                         Blocks.FLOWING_WATER.getStateFromMeta(1), 3);
@@ -1950,9 +1931,9 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_SPLASH)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
-                super.postAttack(attacker, attacked, f, finalAttackStrength);
+                super.postAttack(attacker, attacked, pwr, finalAttackStrength);
                 if (attacked instanceof IPokemob)
                 {
                     ITextComponent text = CommandTools.makeTranslatedMessage("pokemob.move.doesnt.affect", "red", ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
@@ -1970,7 +1951,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_DEFENSECURL)
         {
             @Override
-            public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+            public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
             {
                 IPokemob e = attacker;
                 e.getMoveStats().DEFENSECURLCOUNTER = 200;
@@ -1982,10 +1963,10 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_GROWL)
         {
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 sound = attacker.getSound();
-                super.finalAttack(attacker, attacked, f);
+                super.finalAttack(attacker, attacked);
             }
         });
         registerMove(new Move_Basic(MOVE_SANDATTACK).setMultiTarget());
@@ -2014,10 +1995,10 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_SING)
         {
             @Override
-            protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+            protected void finalAttack(IPokemob attacker, Entity attacked)
             {
                 sound = attacker.getSound();
-                super.finalAttack(attacker, attacked, f);
+                super.finalAttack(attacker, attacked);
             }
         });// setAnimtion(new ParticlesOnSource("note")));
         registerMove(new Move_Basic(MOVE_GRASSWHISTLE));// setAnimtion(new

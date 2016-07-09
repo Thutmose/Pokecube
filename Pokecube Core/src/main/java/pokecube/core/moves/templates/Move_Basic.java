@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -24,7 +25,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeCore;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -33,8 +33,6 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.animations.Thunder;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
@@ -98,7 +96,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     }
 
     @Override
-    public void attack(IPokemob attacker, Entity attacked, float f)
+    public void attack(IPokemob attacker, Entity attacked)
     {
         if (attacker.getStatus() == STATUS_SLP)
         {
@@ -120,25 +118,24 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         if ((getAttackCategory() & CATEGORY_CONTACT) != 0)
         {
-            if (MovesUtils.contactAttack(attacker, attacked, f))
+            if (MovesUtils.contactAttack(attacker, attacked))
             {
-                finalAttack(attacker, attacked, f);
+                finalAttack(attacker, attacked);
             }
         }
         else if ((getAttackCategory() & CATEGORY_DISTANCE) != 0)
         {
-            finalAttack(attacker, attacked, f);
+            finalAttack(attacker, attacked);
         }
         else if ((getAttackCategory() & CATEGORY_SELF) != 0)
         {
-            doSelfAttack(attacker, f);
+            doSelfAttack(attacker);
         }
     }
 
     @Override
-    public void attack(IPokemob attacker, Vector3 location, float f)
+    public void attack(IPokemob attacker, Vector3 location)
     {
-        int finalAttackStrength = 0;
         List<Entity> targets = new ArrayList<Entity>();
 
         Entity entity = (Entity) attacker;
@@ -173,30 +170,28 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         if ((getAttackCategory() & CATEGORY_SELF) == 0)
         {
             int n = targets.size();
-            notifyClient((Entity) attacker, location, null);
             if (n > 0)
             {
                 for (Entity e : targets)
                 {
-                    if (e != null) finalAttack(attacker, e, finalAttackStrength);
+                    if (e != null) finalAttack(attacker, e, true);
                 }
             }
             else
             {
-                MovesUtils.displayMoveMessages(attacker, null, this.name);
                 MovesUtils.displayEfficiencyMessages(attacker, null, -1, 0);
             }
 
         }
         else if ((getAttackCategory() & CATEGORY_SELF) != 0)
         {
-            doSelfAttack(attacker, f);
+            doSelfAttack(attacker);
         }
         doWorldAction(attacker, location);
     }
 
     @Override
-    public boolean doAttack(IPokemob attacker, Entity attacked, float f)
+    public boolean doAttack(IPokemob attacker, Entity attacked)
     {
         if (attacked == null && getAttackCategory() != CATEGORY_SELF) return false;
 
@@ -204,7 +199,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             return attacker.getMoveStats().SELFRAISECOUNTER == 0;
         }
-        else if (this.hasStatModTarget && f == 0) return attacker.getMoveStats().TARGETLOWERCOUNTER == 0;
+        else if (this.hasStatModTarget && getPWR(attacker, attacked) == 0)
+            return attacker.getMoveStats().TARGETLOWERCOUNTER == 0;
 
         return true;
     }
@@ -213,20 +209,17 @@ public class Move_Basic extends Move_Base implements IMoveConstants
      * 
      * @param mob */
     @Override
-    public void doSelfAttack(IPokemob mob, float f)
+    public void doSelfAttack(IPokemob mob)
     {
-        if (doAttack(mob, (Entity) mob, f))
+        if (doAttack(mob, (Entity) mob))
         {
-            MovesUtils.displayMoveMessages(mob, (Entity) mob, name);
             if (sound != null)
             {
                 ((Entity) mob).playSound(sound, 0.5F, 1F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
             }
-            Vector3 v = Vector3.getNewVector().set(mob);
-            notifyClient((Entity) mob, v, (Entity) mob);
             MovesUtils.attack(
                     new MovePacket(mob, (Entity) mob, name, move.type, getPWR(), move.crit, (byte) 0, (byte) 0, false));
-            postAttack(mob, (Entity) mob, f, 0);
+            postAttack(mob, (Entity) mob, 0, 0);
         }
     }
 
@@ -265,18 +258,29 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             }
         }
         int strong = 100;
-        if (getType(attacker) == PokeType.water && getPWR() >= strong)
+        if (getType(attacker) == PokeType.water)
         {
             Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
                     .addTo(location);
             IBlockState nextState = nextBlock.getBlockState(world);
-            if (block == Blocks.LAVA)
+            if (getPWR() >= strong)
             {
-                location.setBlock(world, Blocks.OBSIDIAN);
+                if (block == Blocks.LAVA)
+                {
+                    location.setBlock(world, Blocks.OBSIDIAN);
+                }
+                else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.LAVA)
+                {
+                    nextBlock.setBlock(world, Blocks.OBSIDIAN);
+                }
             }
-            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.LAVA)
+            if (nextState.getProperties().containsKey(BlockFarmland.MOISTURE))
             {
-                nextBlock.setBlock(world, Blocks.OBSIDIAN);
+                nextBlock.setBlock(world, nextState.withProperty(BlockFarmland.MOISTURE, 7));
+            }
+            if (state.getProperties().containsKey(BlockFarmland.MOISTURE))
+            {
+                location.setBlock(world, state.withProperty(BlockFarmland.MOISTURE, 7));
             }
         }
         if (getType(attacker) == PokeType.electric && getPWR() >= strong)
@@ -310,22 +314,22 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     }
 
     @Override
-    protected void finalAttack(IPokemob attacker, Entity attacked, float f)
+    protected void finalAttack(IPokemob attacker, Entity attacked)
     {
-        finalAttack(attacker, attacked, f, true);
+        finalAttack(attacker, attacked, true);
     }
 
     @Override
-    protected void finalAttack(IPokemob attacker, Entity attacked, float f, boolean message)
+    protected void finalAttack(IPokemob attacker, Entity attacked, boolean message)
     {
-        if (doAttack(attacker, attacked, f))
+        if (doAttack(attacker, attacked))
         {
             if (getAnimation() instanceof Thunder && attacked != null)
             {
                 EntityLightningBolt lightning = new EntityLightningBolt(attacked.getEntityWorld(), 0, 0, 0, false);
                 attacked.onStruckByLightning(lightning);
             }
-            if (f > 0 && attacked instanceof EntityCreeper)
+            if (attacked instanceof EntityCreeper)
             {
                 EntityCreeper creeper = (EntityCreeper) attacked;
                 if (move.type == PokeType.psychic && creeper.getHealth() > 0)
@@ -333,7 +337,6 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                     creeper.explode();
                 }
             }
-            if (message) MovesUtils.displayMoveMessages(attacker, attacked, name);
             if (move.multiTarget && (getAttackCategory() & CATEGORY_SELF) == 0)
             {
                 if (sound != null)
@@ -342,7 +345,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 }
                 List<EntityLivingBase> hit = MovesUtils.targetsHit(((Entity) attacker),
                         v.set(attacked).addTo(0, attacked.height / 3, 0));
-                notifyClient((Entity) attacker, v.set(attacked), attacked);
+                // notifyClient((Entity) attacker, v.set(attacked), attacked);
                 for (Entity e : hit)
                 {
                     attacked = e;
@@ -376,7 +379,6 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                     ((Entity) attacker).playSound(sound, 0.5F, 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                 }
                 if (attacked == null) attacked = temp;
-                notifyClient((Entity) attacker, v.set(attacked), attacked);
                 byte statusChange = STATUS_NON;
                 byte changeAddition = CHANGE_NONE;
                 if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
@@ -387,9 +389,10 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 {
                     changeAddition = move.change;
                 }
+                int pwr;
                 int finalAttackStrength = MovesUtils.attack(new MovePacket(attacker, attacked, name, move.type,
-                        getPWR(attacker, attacked), move.crit, statusChange, changeAddition));
-                postAttack(attacker, attacked, f, finalAttackStrength);
+                        pwr = getPWR(attacker, attacked), move.crit, statusChange, changeAddition));
+                postAttack(attacker, attacked, pwr, finalAttackStrength);
             }
         }
     }
@@ -412,37 +415,6 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         return MovesUtils.isMoveImplemented(s);
     }
 
-    /** Sends a message to clients to display specific animation on the client
-     * side.
-     *
-     * @param attacker
-     * @param attacked */
-    @Override
-    public void notifyClient(Entity attacker, Vector3 attacked, Entity target)
-    {
-        if (!PokecubeCore.isOnClientSide())
-        {
-            String toSend = getName();
-
-            double shift = target != null ? target.height / 2 : 0;
-
-            toSend += "`" + attacker.getEntityId();
-            toSend += "`" + attacked.x + "`" + (attacked.y + shift) + "`" + attacked.z;
-            if (target != null)
-            {
-                toSend += "`" + target.getEntityId();
-            }
-            else
-            {
-                toSend += "`" + 0;
-            }
-            PokecubeClientPacket packet = PokecubePacketHandler.makeClientPacket(PokecubeClientPacket.MOVEANIMATION,
-                    toSend.getBytes());
-            PokecubePacketHandler.sendToAllNear(packet, v1.set(attacker), attacker.dimension, 64);
-
-        }
-    }
-
     /** Called after the attack for special post attack treatment.
      * 
      * @param attacker
@@ -451,7 +423,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
      * @param finalAttackStrength
      *            the number of HPs the attack takes from target */
     @Override
-    public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+    public void postAttack(IPokemob attacker, Entity attacked, int power, int finalAttackStrength)
     {
     }
 

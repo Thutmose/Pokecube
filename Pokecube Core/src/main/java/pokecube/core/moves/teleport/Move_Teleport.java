@@ -71,7 +71,7 @@ public class Move_Teleport extends Move_Utility
     }
 
     @Override
-    public void attack(IPokemob attacker, Entity attacked, float f)
+    public void attack(IPokemob attacker, Entity attacked)
     {
         Entity target = ((EntityCreature) attacker).getAttackTarget();
         boolean angry = attacker.getPokemonAIState(IMoveConstants.ANGRY);

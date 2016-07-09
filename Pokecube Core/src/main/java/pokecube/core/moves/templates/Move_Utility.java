@@ -87,11 +87,11 @@ public class Move_Utility extends Move_Basic
     }
 
     @Override
-    public void attack(IPokemob attacker, Entity attacked, float f)
+    public void attack(IPokemob attacker, Entity attacked)
     {
         if (attacked != null && attacked != attacker)
         {
-            super.attack(attacker, attacked, f);
+            super.attack(attacker, attacked);
             return;
         }
     }
@@ -106,7 +106,8 @@ public class Move_Utility extends Move_Basic
         {
             player = (EntityPlayer) owner;
 
-            BreakEvent evt = new BreakEvent(player.getEntityWorld(), v.getPos(), v.getBlockState(player.getEntityWorld()), player);
+            BreakEvent evt = new BreakEvent(player.getEntityWorld(), v.getPos(),
+                    v.getBlockState(player.getEntityWorld()), player);
 
             MinecraftForge.EVENT_BUS.post(evt);
             if (evt.isCanceled()) return 0;
@@ -200,8 +201,8 @@ public class Move_Utility extends Move_Basic
             return;
         }
         boolean used = false;
-        boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).getEntityWorld(), location.intX(), location.intY(),
-                location.intZ());
+        boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).getEntityWorld(), location.intX(),
+                location.intY(), location.intZ());
 
         EntityLivingBase owner = user.getPokemonOwner();
 
@@ -217,8 +218,8 @@ public class Move_Utility extends Move_Basic
             number = countBerries(user, (EntityPlayer) owner);
             EntityPlayer player = (EntityPlayer) owner;
 
-            BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(), location.getBlockState(player.getEntityWorld()),
-                    player);
+            BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(),
+                    location.getBlockState(player.getEntityWorld()), player);
 
             MinecraftForge.EVENT_BUS.post(evt);
 
@@ -300,7 +301,8 @@ public class Move_Utility extends Move_Basic
         if (owner instanceof EntityPlayer)
         {
             player = (EntityPlayer) owner;
-            BreakEvent evt = new BreakEvent(player.getEntityWorld(), v.getPos(), v.getBlockState(player.getEntityWorld()), player);
+            BreakEvent evt = new BreakEvent(player.getEntityWorld(), v.getPos(),
+                    v.getBlockState(player.getEntityWorld()), player);
 
             MinecraftForge.EVENT_BUS.post(evt);
             if (evt.isCanceled()) return 0;

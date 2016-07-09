@@ -9,7 +9,6 @@ import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.moves.templates.Move_Utility;
 import thut.api.maths.Vector3;
 
 /** This AI executes the Utility moves, which are moves that have out of battle
@@ -60,7 +59,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
         if (move == null) { return; }
         if (move.name.equalsIgnoreCase(IMoveNames.MOVE_FLASH) || move.name.equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
         {
-            ((Move_Utility) move).attack(pokemon, (Entity) pokemon, 0);
+            move.attack(pokemon, (Entity) pokemon);
             return;
         }
         if (destination == null)
@@ -78,7 +77,6 @@ public class PokemobAIUtilityMove extends EntityAIBase
     @Override
     public void updateTask()
     {
-
         if (destination == null)
         {
             if (pokemon.getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
@@ -99,7 +97,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
         }
         if (dist < var1)
         {
-            move.doWorldAction(pokemon, destination);
+            MovesUtils.useMove(move, entity, null, v.set(entity), destination);
             entity.getNavigator().clearPathEntity();
             pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);
             destination = null;

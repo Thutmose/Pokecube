@@ -39,7 +39,7 @@ public class Move_Terrain extends Move_Basic
      * @param f
      * @param finalAttackStrength
      *            the number of HPs the attack takes from target */
-    public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+    public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
     {
         duration = 300 + new Random().nextInt(600);
         TerrainSegment segment = TerrainManager.getInstance().getTerrainForEntity(attacked);

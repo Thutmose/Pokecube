@@ -7,18 +7,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.reflect.TypeUtils;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.Explosion;
@@ -30,9 +30,9 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.moves.templates.Move_Ongoing;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.network.packets.PacketPokemobMessage;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.ExplosionCustom;
@@ -452,22 +452,25 @@ public class MovesUtils implements IMoveConstants
      * hits.
      *
      * @return whether the mob must attack */
-    public static boolean contactAttack(IPokemob attacker, Entity attacked, float f)
+    public static boolean contactAttack(IPokemob attacker, Entity attacked)
     {
-        EntityLivingBase entityAttacker = (EntityLivingBase) attacker;
+        // EntityLivingBase entityAttacker = (EntityLivingBase) attacker;
         if (attacked == null || attacker == null) return false;
 
-        if (f < 4 && entityAttacker.onGround || attacker.getPokedexEntry().flys()
-                || attacker.getPokedexEntry().floats())
-        {
-            double d0 = attacked.posX - entityAttacker.posX;
-            double d1 = attacked.posZ - entityAttacker.posZ;
-            float f1 = MathHelper.sqrt_double(d0 * d0 + d1 * d1);
-            f1 = Math.max(f1, 0.25f);
-            entityAttacker.motionX += d0 / f1 * 0.25D * 0.8D + entityAttacker.motionX * 0.2D;
-            entityAttacker.motionZ += d1 / f1 * 0.25D * 0.8D + entityAttacker.motionZ * 0.2D;
-            entityAttacker.motionY = 0.2d;
-        }
+        // if (f < 4 && entityAttacker.onGround ||
+        // attacker.getPokedexEntry().flys()
+        // || attacker.getPokedexEntry().floats())
+        // {
+        // double d0 = attacked.posX - entityAttacker.posX;
+        // double d1 = attacked.posZ - entityAttacker.posZ;
+        // float f1 = MathHelper.sqrt_double(d0 * d0 + d1 * d1);
+        // f1 = Math.max(f1, 0.25f);
+        // entityAttacker.motionX += d0 / f1 * 0.25D * 0.8D +
+        // entityAttacker.motionX * 0.2D;
+        // entityAttacker.motionZ += d1 / f1 * 0.25D * 0.8D +
+        // entityAttacker.motionZ * 0.2D;
+        // entityAttacker.motionY = 0.2d;
+        // }
         return true;
     }
 
@@ -604,14 +607,7 @@ public class MovesUtils implements IMoveConstants
         {
             text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red",
                     attacker.getPokemonDisplayName().getFormattedText(), attackName);
-            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));
-            buffer.writeByte(PokecubeClientPacket.MOVEMESSAGE);
-            buffer.writeInt(attacked.getEntityId());
-
-            buffer.writeTextComponent(text);
-
-            PokecubeClientPacket mess = new PokecubeClientPacket(buffer);
-            PokecubePacketHandler.sendToClient(mess, (EntityPlayer) attacked);
+            PacketPokemobMessage.sendMessage((EntityPlayer) attacked, attacked.getEntityId(), text);
         }
     }
 
@@ -701,22 +697,17 @@ public class MovesUtils implements IMoveConstants
             {
                 text = CommandTools.makeTranslatedMessage(message, "red",
                         attacker.getPokemonDisplayName().getFormattedText());
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));
-                buffer.writeByte(PokecubeClientPacket.MOVEMESSAGE);
-                buffer.writeInt(attacked.getEntityId());
-                buffer.writeTextComponent(text);
-                PokecubeClientPacket mess = new PokecubeClientPacket(buffer);
-                PokecubePacketHandler.sendToClient(mess, (EntityPlayer) attacked);
+                PacketPokemobMessage.sendMessage((EntityPlayer) attacked, attacked.getEntityId(), text);
             }
         }
     }
 
-    public static void doAttack(String attackName, IPokemob attacker, Entity attacked, float f)
+    public static void doAttack(String attackName, IPokemob attacker, Entity attacked)
     {
         Move_Base move = moves.get(attackName);
         if (move != null)
         {
-            move.attack(attacker, attacked, f);
+            move.attack(attacker, attacked);
         }
         else
         {
@@ -724,17 +715,17 @@ public class MovesUtils implements IMoveConstants
             {
                 System.err.println("The Move \"" + attackName + "\" does not exist.");
             }
-            doAttack(DEFAULT_MOVE, attacker, attacked, f);
+            doAttack(DEFAULT_MOVE, attacker, attacked);
         }
     }
 
-    public static void doAttack(String attackName, IPokemob attacker, Vector3 attacked, float f)
+    public static void doAttack(String attackName, IPokemob attacker, Vector3 attacked)
     {
         Move_Base move = moves.get(attackName);
 
         if (move != null)
         {
-            move.attack(attacker, attacked, f);
+            move.attack(attacker, attacked);
         }
         else
         {
@@ -742,7 +733,7 @@ public class MovesUtils implements IMoveConstants
             {
                 System.err.println("The Move \"" + attackName + "\" does not exist.");
             }
-            doAttack(DEFAULT_MOVE, attacker, attacked, f);
+            doAttack(DEFAULT_MOVE, attacker, attacked);
         }
     }
 
@@ -1202,4 +1193,18 @@ public class MovesUtils implements IMoveConstants
         return ret;
     }
 
+    public static void useMove(@Nonnull Move_Base move, @Nonnull Entity user, @Nullable Entity target,
+            @Nonnull Vector3 start, @Nonnull Vector3 end)
+    {
+        EntityMoveUse moveUse = new EntityMoveUse(user.getEntityWorld());
+        moveUse.setMove(move).setUser(user).setTarget(target).setStart(start).setEnd(end);
+        user.getEntityWorld().spawnEntityInWorld(moveUse);
+        displayMoveMessages((IPokemob) user, target, move.name);
+    }
+
+    public static void useMove(@Nonnull String move, @Nonnull Entity user, @Nullable Entity target,
+            @Nonnull Vector3 start, @Nonnull Vector3 end)
+    {
+        useMove(getMoveFromName(move), user, target, start, end);
+    }
 }

@@ -41,6 +41,7 @@ public class RenderTarget<T extends EntityLivingBase> extends RenderLivingBase<E
             GL11.glColor4f(1, 1, 1, 0.5f);
             RenderHelper.disableStandardItemLighting();
             renderAll(0.1f);
+            RenderHelper.enableStandardItemLighting();
 
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_CULL_FACE);
@@ -74,7 +75,7 @@ public class RenderTarget<T extends EntityLivingBase> extends RenderLivingBase<E
     @Override
     public void doRender(EntityLivingBase entity, double d, double d1, double d2, float f, float partialTick)
     {
-        super.doRender(entity,d,d1,d2,f,partialTick);
+        super.doRender(entity, d, d1, d2, f, partialTick);
     }
 
     @Override

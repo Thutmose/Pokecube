@@ -37,14 +37,14 @@ public class Move_Explode extends Move_Ongoing
     }
 
     @Override
-    public void attack(IPokemob attacker, Entity attacked, float f)
+    public void attack(IPokemob attacker, Entity attacked)
     {
         if (attacker instanceof EntityLiving)
         {
             EntityLiving voltorb = (EntityLiving) attacker;
             IPokemob pokemob = attacker;
             int i = pokemob.getExplosionState();
-            if (i <= 0 && f < 3F || i > 0 && f < 7F)
+            if (i <= 0)
             {
                 if (pokemob.getMoveStats().timeSinceIgnited == 0)
                 {
@@ -54,7 +54,7 @@ public class Move_Explode extends Move_Ongoing
                 if (PokecubeMod.core.getConfig().explosions) attacker.addOngoingEffect(this);
                 else
                 {
-                    super.attack(attacker, attacked, f);
+                    super.attack(attacker, attacked);
                 }
             }
             else
@@ -72,12 +72,12 @@ public class Move_Explode extends Move_Ongoing
     }
 
     @Override
-    public void attack(IPokemob attacker, Vector3 attacked, float f)
+    public void attack(IPokemob attacker, Vector3 attacked)
     {
-        if (PokecubeMod.core.getConfig().explosions) attack(attacker, (Entity) attacker, f);
+        if (PokecubeMod.core.getConfig().explosions) attack(attacker, (Entity) attacker);
         else
         {
-            super.attack(attacker, attacked, f);
+            super.attack(attacker, attacked);
         }
     }
 
@@ -145,8 +145,8 @@ public class Move_Explode extends Move_Ongoing
             public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
             {
                 EntityLivingBase voltorb = (EntityLivingBase) info.attacker;
-                Explosion explosion = new Explosion(voltorb.getEntityWorld(), voltorb, voltorb.posX, voltorb.posY, voltorb.posZ,
-                        10, false, true);
+                Explosion explosion = new Explosion(voltorb.getEntityWorld(), voltorb, voltorb.posX, voltorb.posY,
+                        voltorb.posZ, 10, false, true);
                 explosion.doExplosionB(true);
             }
 
@@ -182,7 +182,7 @@ public class Move_Explode extends Move_Ongoing
     }
 
     @Override
-    public void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength)
+    public void postAttack(IPokemob attacker, Entity attacked, int f, int finalAttackStrength)
     {
         EntityLivingBase voltorb = (EntityLivingBase) attacker;
         voltorb.attackEntityFrom(DamageSource.generic, voltorb.getMaxHealth());

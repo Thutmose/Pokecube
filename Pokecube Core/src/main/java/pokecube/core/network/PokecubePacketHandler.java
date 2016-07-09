@@ -22,8 +22,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -51,12 +49,11 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
-import pokecube.core.moves.animations.MoveAnimationHelper;
-import pokecube.core.moves.animations.MoveAnimationHelper.MoveAnimation;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketPC;
+import pokecube.core.network.packets.PacketPokemobMessage;
 import pokecube.core.network.packets.PacketTrade;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.utils.PokecubeSerializer;
@@ -93,16 +90,7 @@ public class PokecubePacketHandler
                         public void run()
                         {
                             byte channel = buffer.readByte();
-                            if (channel == MOVEANIMATION)
-                            {
-                                byte[] message = new byte[buffer.array().length - 1];
-                                for (int i = 0; i < message.length; i++)
-                                {
-                                    message[i] = buffer.array()[i + 1];
-                                }
-                                handlePokemobMoveClientAnimation(message);
-                            }
-                            else if (channel == TERRAIN)
+                            if (channel == TERRAIN)
                             {
                                 try
                                 {
@@ -143,28 +131,6 @@ public class PokecubePacketHandler
                                     NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
                                     PokecubeSerializer.getInstance().readPlayerTeleports(nbt);
                                     GuiTeleport.instance().refresh();
-                                }
-                                catch (IOException e)
-                                {
-                                    e.printStackTrace();
-                                }
-                            }
-                            else if (channel == MOVEMESSAGE)
-                            {
-                                try
-                                {
-                                    int id = buffer.readInt();
-                                    ITextComponent component = buffer.readTextComponent();
-                                    Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(),
-                                            id, false);
-                                    if (e != null && e instanceof IPokemob)
-                                    {
-                                        ((IPokemob) e).displayMessageToOwner(component);
-                                    }
-                                    else if (e instanceof EntityPlayer)
-                                    {
-                                        pokecube.core.client.gui.GuiInfoMessages.addMessage(component);
-                                    }
                                 }
                                 catch (IOException e)
                                 {
@@ -244,12 +210,12 @@ public class PokecubePacketHandler
         }
 
         // public static final byte CHOOSE1ST = 0;
-        public static final byte MOVEANIMATION  = 1;
+        // public static final byte MOVEANIMATION = 1;
         public static final byte TERRAIN        = 5;
         public static final byte STATS          = 6;
         public static final byte TERRAINEFFECTS = 7;
         public static final byte TELEPORTLIST   = 8;
-        public static final byte MOVEMESSAGE    = 10;
+        // public static final byte MOVEMESSAGE = 10;
         public static final byte KILLENTITY     = 11;
         public static final byte MOVEENTITY     = 12;
         public static final byte TELEPORTINDEX  = 13;
@@ -680,6 +646,8 @@ public class PokecubePacketHandler
                 Side.SERVER);
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobGui.class, PacketPokemobGui.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
+        PokecubeMod.packetPipeline.registerMessage(PacketPokemobMessage.class, PacketPokemobMessage.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
     }
 
     public static void handlePokecenterPacket(byte[] packet, EntityPlayerMP sender)
@@ -688,47 +656,6 @@ public class PokecubePacketHandler
         {
             IHealer healer = (IHealer) sender.openContainer;
             healer.heal();
-        }
-    }
-
-    public static void handlePokemobMoveClientAnimation(byte[] packet)
-    {
-        try
-        {
-            String message = ChatAllowedCharacters.filterAllowedCharacters(new String(packet));
-
-            String[] args = message.split("`");
-
-            String moveName = args[0];
-            int attackerId = Integer.valueOf(args[1]);
-            int attackedId = Integer.valueOf(args[5]);
-            Vector3 target = Vector3.getNewVector().set(Double.valueOf(args[2]), Double.valueOf(args[3]),
-                    Double.valueOf(args[4]));
-
-            Move_Base move = MovesUtils.getMoveFromName(moveName);
-
-            Entity attacker = FMLClientHandler.instance().getClient().theWorld.getEntityByID(attackerId);
-            Entity attacked = FMLClientHandler.instance().getClient().theWorld.getEntityByID(attackedId);
-
-            if (target.isEmpty() && attacked != null)
-            {
-                target.set(attacked);
-            }
-            if (attacker == null)
-            {
-                attacker = PokecubeCore.getPlayer(null);
-            }
-
-            if (move.getAnimation() != null && attacker != null)
-            {
-                MoveAnimation anim = new MoveAnimation(attacker, attacked, target, move,
-                        move.getAnimation().getDuration());
-                MoveAnimationHelper.Instance().addMove(attacker, anim);
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
         }
     }
 

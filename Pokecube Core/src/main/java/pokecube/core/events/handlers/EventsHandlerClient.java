@@ -63,6 +63,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.ItemMegaring;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -101,7 +102,8 @@ public class EventsHandlerClient
         @SubscribeEvent
         public void onPlayerJoin(TickEvent.PlayerTickEvent event)
         {
-            if (event.player.getEntityWorld().isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
+            if (event.player.getEntityWorld().isRemote
+                    && event.player == FMLClientHandler.instance().getClientPlayerEntity())
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
                 Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
@@ -326,8 +328,7 @@ public class EventsHandlerClient
                     && System.currentTimeMillis() > counter + 500)
             {
                 counter = System.currentTimeMillis();
-                MessageServer message = new MessageServer(MessageServer.CHANGEFORM, ((Entity) current).getEntityId());
-                PokecubePacketHandler.sendToServer(message);
+                PacketChangeForme.sendPacketToServer(((Entity) current), "");
             }
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.noEvolve)

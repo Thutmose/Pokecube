@@ -32,7 +32,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.moves.templates.Move_Ongoing;
-import pokecube.core.network.packets.PacketPokemobMessage;
+import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.ExplosionCustom;

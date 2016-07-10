@@ -85,8 +85,6 @@ import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket.Pokecube
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket.PokecubeMessageHandlerServer;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient.MessageHandlerClient;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer.MessageHandlerServer;
 import pokecube.core.utils.PCSaveHandler;
@@ -468,8 +466,6 @@ public class PokecubeCore extends PokecubeMod
                 Side.SERVER);
 
         // Packets for Pokemobs
-        PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
-                PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
 

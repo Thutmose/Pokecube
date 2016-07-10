@@ -29,7 +29,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
+import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -124,11 +124,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         }
         if (newEntry != null && worldObj != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
-            MessageClient message = new MessageClient(MessageClient.CHANGEFORME, getEntityId());
-            NBTTagCompound compound = new NBTTagCompound();
-            compound.setString("f", newEntry.getName());
-            message.buffer.writeNBTTagCompoundToBuffer(compound);
-            PokecubePacketHandler.sendToAllNear(message, here, dimension, 128);
+            PacketChangeForme.sendPacketToNear(this, newEntry.getName(), 128);
         }
         return this;
     }

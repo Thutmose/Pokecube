@@ -1,4 +1,4 @@
-package pokecube.core.network.packets;
+package pokecube.core.network.pokemobs;
 
 import java.io.IOException;
 
@@ -17,14 +17,14 @@ import pokecube.core.network.PokecubePacketHandler;
 
 public class PacketPokemobMessage implements IMessage, IMessageHandler<PacketPokemobMessage, IMessage>
 {
-    ITextComponent message;
-    int            senderId;
-
     public static void sendMessage(EntityPlayer sendTo, int senderId, ITextComponent message)
     {
         PacketPokemobMessage toSend = new PacketPokemobMessage(message, senderId);
         PokecubePacketHandler.sendToClient(toSend, sendTo);
     }
+
+    ITextComponent message;
+    int            senderId;
 
     public PacketPokemobMessage()
     {

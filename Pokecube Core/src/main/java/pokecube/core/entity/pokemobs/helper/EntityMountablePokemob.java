@@ -5,7 +5,6 @@ package pokecube.core.entity.pokemobs.helper;
 
 import java.util.List;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -14,7 +13,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -25,7 +23,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
+import pokecube.core.network.pokemobs.PacketPosSync;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
@@ -381,17 +379,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
             if (worldObj.isRemote && riddenByEntity == PokecubeCore.getPlayer(null))
             {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(27));
-                buffer.writeByte(MessageServer.SYNCPOS);
-                buffer.writeInt(getEntityId());
-                buffer.writeFloat((float) posX);
-                buffer.writeFloat((float) posY);
-                buffer.writeFloat((float) posZ);
-                buffer.writeFloat((float) motionX);
-                buffer.writeFloat((float) motionY);
-                buffer.writeFloat((float) motionZ);
-                MessageServer message = new MessageServer(buffer);
-                PokecubeMod.packetPipeline.sendToServer(message);
+                PacketPosSync.sendToServer(this);
             }
         }
         else

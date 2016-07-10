@@ -88,15 +88,15 @@ public class TypeTrainer
             types.add(t);
     }
 
-    public static void getRandomTeam(EntityTrainer trainer, int maxXp, ItemStack[] team, World world)
+    public static void getRandomTeam(EntityTrainer trainer, int level, ItemStack[] team, World world)
     {
         TypeTrainer type = trainer.getType();
 
         for (int i = 0; i < 6; i++)
             team[i] = null;
 
-        int level = Tools.xpToLevel(0, maxXp);
-        if (level == 0) level = 4;
+        if (level == 0) level = 5;
+        int variance = PokecubeMod.core.getConfig().levelVariance;
         int number = 1 + new Random().nextInt(7);
         number = Math.min(number, 6);
 
@@ -108,7 +108,8 @@ public class TypeTrainer
             {
                 if (s != null)
                 {
-                    item = makeStack(s, trainer, world, level + new Random().nextInt(5));
+                    variance = new Random().nextInt(Math.max(1, variance));
+                    item = makeStack(s, trainer, world, level + variance);
                 }
                 if (item != null) break;
             }
@@ -157,7 +158,8 @@ public class TypeTrainer
             entity.changeForme(entry.getName());
             entity.setPokemonOwner(trainer);
             entity.setPokecubeId(0);
-            entity.setExp(Tools.levelToXp(entity.getExperienceMode(), level), true, false);
+            int exp = Tools.levelToXp(entity.getExperienceMode(), level);
+            entity.setExp(exp, true, false);
             ItemStack item = PokecubeManager.pokemobToItem(entity);
 
             ((Entity) entity).isDead = true;

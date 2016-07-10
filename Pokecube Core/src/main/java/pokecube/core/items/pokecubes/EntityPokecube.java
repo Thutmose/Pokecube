@@ -224,6 +224,21 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         return false;
     }
 
+    public Entity getOwner()
+    {
+        if (PokecubeManager.isFilled(getEntityItem()))
+        {
+            String name = PokecubeManager.getOwner(getEntityItem());
+            if (!name.isEmpty())
+            {
+                UUID id = UUID.fromString(name);
+                EntityPlayer player = worldObj.getPlayerEntityByUUID(id);
+                return player;
+            }
+        }
+        return null;
+    }
+
     public Entity copy()
     {
         EntityPokecube copy = new EntityPokecube(worldObj, shootingEntity, getEntityItem());

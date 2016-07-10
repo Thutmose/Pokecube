@@ -31,7 +31,9 @@ import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;
+import pokecube.core.database.Database;
 import pokecube.core.events.handlers.EventsHandler;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
@@ -105,16 +107,17 @@ public class ItemTrainer extends Item
         {
             if (player.isSneaking())
             {
+                int level = SpawnHandler.getSpawnLevel(world, location, Database.getEntry(1));
                 if (itemstack.getItemDamage() == 0)
                 {
                     TypeTrainer type = TypeTrainer.getTrainer("");
-                    EntityTrainer t = new EntityTrainer(world, type, 10, location.offset(EnumFacing.UP), true);
+                    EntityTrainer t = new EntityTrainer(world, type, level, location.offset(EnumFacing.UP), true);
                     world.spawnEntityInWorld(t);
                 }
                 else if (itemstack.getItemDamage() == 1)
                 {
                     TypeTrainer type = TypeTrainer.getTrainer("");
-                    EntityLeader t = new EntityLeader(world, type, 10, location.offset(EnumFacing.UP));
+                    EntityLeader t = new EntityLeader(world, type, level, location.offset(EnumFacing.UP));
                     world.spawnEntityInWorld(t);
                 }
             }

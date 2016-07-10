@@ -115,8 +115,7 @@ public class AIHungry extends AIBase
                     new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
         }
         boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
-                && !(pokemob.getPokemonAIState(IMoveConstants.STAYING)
-                        || pokemob.getPokemonAIState(IMoveConstants.SITTING));
+                && !(pokemob.getPokemonAIState(IMoveConstants.STAYING));
         if (sleepy && hungerTime < 0.85 * PokecubeMod.core.getConfig().pokemobLifeSpan)
         {
             if (!isGoodSleepingSpot(c))

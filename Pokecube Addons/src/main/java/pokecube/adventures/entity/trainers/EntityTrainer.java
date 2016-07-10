@@ -231,7 +231,7 @@ public class EntityTrainer extends EntityHasPokemobs
                 setTrainerTarget(entity);
                 if (entity != source.getEntity()) return false;
             }
-            else
+            else if(!Config.instance.trainersInvul)
             {
                 return super.attackEntityFrom(source, amount);
             }

@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
@@ -18,7 +18,7 @@ import pokecube.adventures.items.bags.ItemBag;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.x3d.X3dModel;
 
-public class BagRenderer implements LayerRenderer<EntityPlayer>
+public class BagRenderer implements LayerRenderer<EntityLivingBase>
 {
     public static class BagChecker
     {
@@ -29,7 +29,7 @@ public class BagRenderer implements LayerRenderer<EntityPlayer>
             this.defaults = defaults;
         }
 
-        public ItemStack getBag(EntityPlayer player)
+        public ItemStack getBag(EntityLivingBase player)
         {
             ItemStack armour = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
             if (armour != null)
@@ -51,7 +51,7 @@ public class BagRenderer implements LayerRenderer<EntityPlayer>
             return ret;
         }
 
-        protected boolean hasBag(EntityPlayer player)
+        protected boolean hasBag(EntityLivingBase player)
         {
             ItemStack armour = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
             if (armour != null) return armour.getItem() instanceof ItemBag
@@ -59,7 +59,7 @@ public class BagRenderer implements LayerRenderer<EntityPlayer>
             return false;
         }
 
-        public boolean isWearingBag(EntityPlayer player)
+        public boolean isWearingBag(EntityLivingBase player)
         {
             boolean ret;
             if (!(ret = hasBag(player)) && defaults != null) return defaults.isWearingBag(player);
@@ -95,13 +95,13 @@ public class BagRenderer implements LayerRenderer<EntityPlayer>
     }
 
     @Override
-    public void doRenderLayer(EntityPlayer player, float f, float f1, float partialTicks, float f3, float f4, float f5,
+    public void doRenderLayer(EntityLivingBase entity, float f, float f1, float partialTicks, float f3, float f4, float f5,
             float scale)
     {
-        boolean bag = getChecker().isWearingBag(player);
+        boolean bag = getChecker().isWearingBag(entity);
         if (bag)
         {
-            int brightness = player.getBrightnessForRender(partialTicks);
+            int brightness = entity.getBrightnessForRender(partialTicks);
             // First pass of render
             GL11.glPushMatrix();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -128,7 +128,7 @@ public class BagRenderer implements LayerRenderer<EntityPlayer>
             GL11.glScaled(0.7, 0.7, 0.7);
             this.renderer.bindTexture(BAG_2);
             Color colour = new Color(
-                    getChecker().getBagColour(getChecker().getBag(player)).getMapColor().colorValue + 0xFF000000);
+                    getChecker().getBagColour(getChecker().getBag(entity)).getMapColor().colorValue + 0xFF000000);
             int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
             for (IExtendedModelPart part : model2.getParts().values())
             {

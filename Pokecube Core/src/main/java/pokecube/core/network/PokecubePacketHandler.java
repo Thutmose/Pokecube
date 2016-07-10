@@ -53,6 +53,7 @@ import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketPC;
+import pokecube.core.network.packets.PacketPokemobAttack;
 import pokecube.core.network.packets.PacketPokemobMessage;
 import pokecube.core.network.packets.PacketTrade;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
@@ -648,6 +649,8 @@ public class PokecubePacketHandler
                 PokecubeCore.getMessageID(), Side.SERVER);
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobMessage.class, PacketPokemobMessage.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketPokemobAttack.class, PacketPokemobAttack.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
     }
 
     public static void handlePokecenterPacket(byte[] packet, EntityPlayerMP sender)

@@ -272,6 +272,18 @@ public class Tools
         return pointedEntity;
     }
 
+    public static Vector3 getPointedLocation(Entity entity, double distance)
+    {
+        Vec3d vec3 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+        double d0 = distance;
+        Vec3d vec31 = entity.getLook(0);
+        Vec3d vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
+        RayTraceResult result = entity.getEntityWorld().rayTraceBlocks(vec3, vec32, false, true, false);
+        if (result == null || result.hitVec == null) return null;
+        Vector3 vec = Vector3.getNewVector().set(result.hitVec);
+        return vec;
+    }
+
     public static int getPower(String move, IPokemob user, Entity target)
     {
         Move_Base attack = MovesUtils.getMoveFromName(move);
@@ -400,7 +412,8 @@ public class Tools
 
     public static boolean isAnyPlayerInRange(double rangeHorizontal, double rangeVertical, Entity entity)
     {
-        return isAnyPlayerInRange(rangeHorizontal, rangeVertical, entity.getEntityWorld(), Vector3.getNewVector().set(entity));
+        return isAnyPlayerInRange(rangeHorizontal, rangeVertical, entity.getEntityWorld(),
+                Vector3.getNewVector().set(entity));
     }
 
     public static boolean isAnyPlayerInRange(double rangeHorizontal, double rangeVertical, World world,

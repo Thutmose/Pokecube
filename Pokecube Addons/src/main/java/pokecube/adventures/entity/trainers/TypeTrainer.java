@@ -190,6 +190,7 @@ public class TypeTrainer
     public Material           material = Material.AIR;
     public BiomeMatcher       matcher  = null;
     public int                weight;
+    public boolean            hasBag   = false;
     private ResourceLocation  texture;
 
     private ResourceLocation  femaleTexture;

@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -19,19 +18,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
-import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob;
 import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob.MountState;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.moves.MovesUtils;
-import pokecube.core.moves.templates.Move_Explode;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
-import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 
 /** This class handles the packets sent for the IPokemob Entities.
@@ -197,10 +189,6 @@ public class PokemobPacketHandler
                                     e.fallDistance = 0;
                                 }
                             }
-                            else if (channel == MOVEUSE)
-                            {
-                                handleMoveUse(pokemob, id);
-                            }
                             else if (channel == MOVEINDEX)
                             {
                                 byte moveIndex = buffer.readByte();
@@ -301,84 +289,6 @@ public class PokemobPacketHandler
                     };
                     PokecubeCore.proxy.getMainThreadListener().addScheduledTask(toRun);
                 }
-
-                private void handleMoveUse(IPokemob pokemob, int id1)
-                {
-                    PacketBuffer dat = buffer;
-                    int id = dat.readInt();
-                    Vector3 v = Vector3.getNewVector();
-
-                    if (pokemob != null)
-                    {
-                        int currentMove = pokemob.getMoveIndex();
-
-                        if (currentMove == 5) { return; }
-
-                        Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
-                        boolean teleport = dat.readBoolean();
-
-                        if (teleport)
-                        {
-                            NBTTagCompound teletag = new NBTTagCompound();
-                            PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(), teletag);
-
-                            PokecubeClientPacket packe = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST,
-                                    teletag);
-                            PokecubePacketHandler.sendToClient(packe, player);
-                        }
-
-                        if (move instanceof Move_Explode && (id1 == id || id == 0))
-                        {
-                            pokemob.executeMove(null, v.set(pokemob), 0);
-                        }
-                        else
-                        {
-                            Entity owner = pokemob.getPokemonOwner();
-                            if (owner != null)
-                            {
-                                Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.getEntityWorld(),
-                                        id, false);
-                                if (closest instanceof IPokemob)
-                                {
-                                    IPokemob target = (IPokemob) closest;
-                                    if (target.getPokemonOwnerName().equals(pokemob.getPokemonOwnerName()))
-                                    {
-                                        if (target == closest)
-                                        {
-                                            pokemob.executeMove(null, v.set(pokemob), 0);
-                                        }
-                                        return;
-                                    }
-                                }
-
-                                if (closest != null || teleport)
-                                {
-                                    if (closest instanceof EntityLivingBase)
-                                    {
-                                        ((EntityLiving) pokemob).setAttackTarget((EntityLivingBase) closest);
-                                        if (closest instanceof EntityLiving)
-                                        {
-                                            ((EntityLiving) closest).setAttackTarget((EntityLivingBase) pokemob);
-                                        }
-                                    }
-                                    else if (closest == null)
-                                    {
-                                        pokemob.executeMove(closest, v.set(pokemob), 0);
-                                    }
-                                    else pokemob.executeMove(closest, v.set(closest),
-                                            closest.getDistanceToEntity((Entity) pokemob));
-                                }
-                                else if (buffer.isReadable(24))
-                                {
-                                    v = Vector3.readFromBuff(buffer);
-                                    pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);
-                                    if (!v.isEmpty())
-                                        ((PokemobAIUtilityMove) pokemob.getUtilityMoveAI()).destination = v;
-                                }
-                            }
-                        }
-                    }
-                }
             }
 
             @Override
@@ -392,8 +302,6 @@ public class PokemobPacketHandler
 
         public static final byte RETURN       = 0;
         public static final byte NICKNAME     = 1;
-        public static final byte MOVEUSE      = 2;
-        public static final byte MOVEMESSAGE  = 3;
         public static final byte MOVESWAP     = 4;
         public static final byte MOVEINDEX    = 5;
         public static final byte CHANGEFORM   = 6;

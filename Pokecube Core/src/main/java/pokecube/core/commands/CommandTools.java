@@ -7,6 +7,7 @@ import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -37,59 +38,50 @@ public class CommandTools
     {
         ITextComponent message = null;
         if (formatting == null) formatting = "";
-        String argString = "";
-        int num = 1;
-        if (args != null) for (Object s : args)
+        for (int i = 0; i < args.length; i++)
         {
-            argString = argString + "{\"translate\":\"" + s + "\"}";
-            num++;
-            if (num <= args.length) argString = argString + ",";
-        }
-        if (argString.isEmpty()) argString = "\"\"";
-
-        String format = "";
-        if (!formatting.isEmpty())
-        {
-            String[] args2 = formatting.split(":");
-            format = ",\"color\":\"" + args2[0] + "\"";
-            if (args2.length > 1)
+            if (args[i] instanceof String)
             {
-                for (int i = 1; i < args2.length; i++)
+                args[i] = new TextComponentTranslation((String) args[i]);
+            }
+
+            if (!formatting.isEmpty() && args[i] instanceof ITextComponent)
+            {
+                ITextComponent component = (ITextComponent) args[i];
+                String[] args2 = formatting.split(":");
+                String colour = args2[0].toUpperCase();
+                component.getStyle().setColor(TextFormatting.getValueByName(colour));
+                if (args2.length > 1)
                 {
-                    String arg = args2[i];
-                    if (arg.equalsIgnoreCase("italic"))
+                    for (int i1 = 1; i1 < args2.length; i1++)
                     {
-                        format = format + ",\"italic\":true";
-                    }
-                    if (arg.equalsIgnoreCase("bold"))
-                    {
-                        format = format + ",\"bold\":true";
-                    }
-                    if (arg.equalsIgnoreCase("underlined"))
-                    {
-                        format = format + ",\"underlined\":true";
-                    }
-                    if (arg.equalsIgnoreCase("strikethrough"))
-                    {
-                        format = format + ",\"strikethrough\":true";
-                    }
-                    if (arg.equalsIgnoreCase("obfuscated"))
-                    {
-                        format = format + ",\"obfuscated\":true";
+                        String arg = args2[i1];
+                        if (arg.equalsIgnoreCase("italic"))
+                        {
+                            component.getStyle().setItalic(true);
+                        }
+                        if (arg.equalsIgnoreCase("bold"))
+                        {
+                            component.getStyle().setBold(true);
+                        }
+                        if (arg.equalsIgnoreCase("underlined"))
+                        {
+                            component.getStyle().setUnderlined(true);
+                        }
+                        if (arg.equalsIgnoreCase("strikethrough"))
+                        {
+                            component.getStyle().setStrikethrough(true);
+                        }
+                        if (arg.equalsIgnoreCase("obfuscated"))
+                        {
+                            component.getStyle().setObfuscated(true);
+                        }
                     }
                 }
             }
         }
-        String text = "{\"translate\":\"" + key + "\",\"with\":[" + argString + "]" + format + "}";
-        text = "[" + text + "]";
-        try
-        {
-            message = ITextComponent.Serializer.jsonToComponent(text);
-        }
-        catch (Exception e)
-        {
-            message = new TextComponentString(TextFormatting.RED + "message error");
-        }
+        TextComponentTranslation translated = new TextComponentTranslation(key, args);
+        message = translated != null ? translated : new TextComponentString(TextFormatting.RED + "message error");
         return message;
     }
 

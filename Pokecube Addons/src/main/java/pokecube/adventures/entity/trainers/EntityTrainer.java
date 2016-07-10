@@ -564,6 +564,10 @@ public class EntityTrainer extends EntityHasPokemobs
         if (genders == 2) male = false;
         if (genders == 3) male = Math.random() < 0.5;
         TypeTrainer.getRandomTeam(this, level, pokecubes, worldObj);
+        if (type.hasBag)
+        {
+            this.setItemStackToSlot(EntityEquipmentSlot.CHEST, PokecubeItems.getStack("pokecubebag"));
+        }
         setTypes();
     }
 

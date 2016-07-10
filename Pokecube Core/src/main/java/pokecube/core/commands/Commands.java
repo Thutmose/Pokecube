@@ -25,6 +25,7 @@ import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.packets.PacketChoose;
@@ -280,6 +281,15 @@ public class Commands implements ICommand
                             && (named == specificName
                                     .equalsIgnoreCase(mob.getPokemonDisplayName().getUnformattedComponentText())))
                         mob.returnToPokecube();
+                }
+                if (all && o instanceof EntityPokecube)
+                {
+                    EntityPokecube cube = (EntityPokecube) o;
+                    Entity owner = cube.getOwner();
+                    if ((all && owner == player) || (allall && owner instanceof EntityPlayer))
+                    {
+                        cube.sendOut().returnToPokecube();
+                    }
                 }
             }
             return true;

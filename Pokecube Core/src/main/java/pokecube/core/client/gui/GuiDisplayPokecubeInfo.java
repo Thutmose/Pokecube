@@ -16,14 +16,12 @@ import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.Lists;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -41,6 +39,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.packets.PacketPokemobAttack;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
@@ -213,9 +212,9 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (refreshCounter > 0) return arrayRet;
 
         EntityPlayer player = minecraft.thePlayer;
-        
-        if(player==null || player.getEntityWorld() == null) return new IPokemob[0];
-        
+
+        if (player == null || player.getEntityWorld() == null) return new IPokemob[0];
+
         List<?> pokemobs = Lists.newArrayList(player.getEntityWorld().getLoadedEntityList());
 
         List<IPokemob> ret = new ArrayList<IPokemob>();
@@ -335,13 +334,11 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (getCurrentPokemob() == null) return;
 
         EntityPlayer player = minecraft.thePlayer;
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
-        buffer.writeByte(MessageServer.MOVEUSE);
-        buffer.writeInt(((Entity) getCurrentPokemob()).getEntityId());
-
+        Entity attacker = ((Entity) getCurrentPokemob());
         Entity target = Tools.getPointedEntity(player, 32);
+        boolean teleport = false;
+        Vector3 targetLocation = Tools.getPointedLocation(player, 32);
 
-        buffer.writeInt(target != null ? target.getEntityId() : 0);
         boolean sameOwner = false;
         if (target instanceof IPokemob)
         {
@@ -353,9 +350,6 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (pokemob != null)
         {
             if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
-            Vector3 look = Vector3.getNewVector().set(player.getLookVec());
-            Vector3 pos = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
-            Vector3 v = pos.findNextSolidBlock(player.getEntityWorld(), look, 32);
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
@@ -381,18 +375,14 @@ public class GuiDisplayPokecubeInfo extends Gui
 
                     if (locations.size() > 0)
                     {
-                        buffer.writeBoolean(true);
-                    }
-                    else
-                    {
-                        buffer.writeBoolean(false);
+                        teleport = true;
                     }
                 }
             }
             else if (!attack)
             {
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
-                if (move != null && (target != null || v != null))
+                if (move != null && (target != null || targetLocation != null))
                 {
                     ITextComponent mess = new TextComponentTranslation("pokemob.action.usemove",
                             pokemob.getPokemonDisplayName(),
@@ -400,15 +390,8 @@ public class GuiDisplayPokecubeInfo extends Gui
                     pokemob.displayMessageToOwner(mess);
                 }
             }
-            buffer.writeBoolean(false);
-
-            if (v != null)
-            {
-                v.writeToBuff(buffer);
-            }
         }
-        MessageServer packet = new MessageServer(buffer);
-        PokecubePacketHandler.sendToServer(packet);
+        PacketPokemobAttack.sendAttackUse(attacker, target, targetLocation, teleport);
     }
 
     /** Recalls selected pokemob, if none selected, will try to identify a

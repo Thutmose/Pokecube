@@ -142,7 +142,9 @@ public class ClientProxy extends CommonProxy
                 bar2 = ProgressManager.push("Pokemob Models Pass 2", alternateFormes.size());
                 for (String s : alternateFormes)
                 {
-                    bar2.step(s);
+                    String[] args2 = s.split("/");
+                    String name = args2[args2.length > 1 ? args2.length - 1 : 0];
+                    bar2.step(name);
                     if (!AnimationLoader.initModel(provider, s, alternateFormes))
                     {
                         TabulaPackLoader.loadModel(provider, s, alternateFormes);

@@ -60,8 +60,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public PokedexEntry entry;
     String              forme            = "";
 
-    protected Entity    transformedTo;
-
     /** The happiness value of the pokemob */
     private int         bonusHappiness   = 0;
 
@@ -78,6 +76,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     /** Used for if there is a special texture */
     public boolean      shiny            = false;
     PokeType            type1, type2;
+    private int         personalityValue = 0;
 
     public EntityStatsPokemob(World world)
     {
@@ -464,6 +463,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         this.pokedexNb = nb;
         getPokedexEntry();
 
+        this.setRNGValue(rand.nextInt());
+
         setEVs(PokecubeSerializer.noEVs);
         setIVs(new byte[] { Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand),
                 Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand) });
@@ -619,18 +620,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         wasShadow = nbttagcompound.getBoolean("wasShadow");
 
         byte[] rgbaBytes = new byte[4];
-        // TODO remove the legacy colour support eventually.
-        if (nbttagcompound.hasKey("colours", 7))
-        {
-            rgbaBytes = nbttagcompound.getByteArray("colours");
-        }
-        else
-        {
-            rgbaBytes[0] = nbttagcompound.getByte("red");
-            rgbaBytes[1] = nbttagcompound.getByte("green");
-            rgbaBytes[2] = nbttagcompound.getByte("blue");
-            rgbaBytes[3] = 127;
-        }
+        rgbaBytes = nbttagcompound.getByteArray("colours");
+
         for (int i = 0; i < 4; i++)
             rgba[i] = rgbaBytes[i] + 128;
 
@@ -653,6 +644,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             setAbility(getPokedexEntry().getAbility(abilityNumber, this));
         }
         if (ability != null) ability.init(this);
+        if (nbttagcompound.hasKey("personalityValue")) personalityValue = nbttagcompound.getInteger("personalityValue");
 
         nature = Nature.values()[nbttagcompound.getByte("nature")];
         forme = nbttagcompound.getString("forme");
@@ -680,6 +672,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void readSpawnData(ByteBuf data)
     {
+        personalityValue = data.readInt();
         int num = data.readInt();
         byte[] arr = new byte[num];
         for (int i = 0; i < num; i++)
@@ -984,6 +977,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         nbttagcompound.setBoolean("isAncient", isAncient);
         nbttagcompound.setBoolean("wasShadow", wasShadow);
         nbttagcompound.setString("forme", forme);
+        nbttagcompound.setInteger("personalityValue", personalityValue);
         if (pokedexNb == 132) nbttagcompound.setBoolean("dittotag", getEntityData().getBoolean("dittotag"));
     }
 
@@ -991,6 +985,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void writeSpawnData(ByteBuf data)
     {
+        data.writeInt(personalityValue);
         data.writeInt(forme.getBytes().length);
         data.writeBytes(forme.getBytes());
         data.writeBoolean(shiny);
@@ -1002,5 +997,17 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         data.writeBoolean(!noTags);
         PacketBuffer buffer = new PacketBuffer(data);
         buffer.writeNBTTagCompoundToBuffer(getEntityData());
+    }
+
+    @Override
+    public int getRNGValue()
+    {
+        return personalityValue;
+    }
+
+    @Override
+    public void setRNGValue(int value)
+    {
+        personalityValue = value;
     }
 }

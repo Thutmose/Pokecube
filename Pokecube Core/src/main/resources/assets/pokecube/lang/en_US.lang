@@ -600,24 +600,24 @@ pokecube.config.spawnLevelFunctions.tooltip=Functions for exp of wild Pokémobs 
 
 #Commands
 
-pokecube.command.noperms=Insufficient Permissions
-pokecube.command.invalidtab=Invalid Arguments, try TAB for options
-pokecube.command.invalidmissing=Invalid Arguments, Missing an Argument
+pokecube.command.noperms=§cInsufficient Permissions
+pokecube.command.invalidtab=§cInvalid Arguments, try TAB for options
+pokecube.command.invalidmissing=§cInvalid Arguments, Missing an Argument
 pokecube.command.reset=Reset Starter for %1$s
 pokecube.command.canchoose=You may choose a new starter
 pokecube.command.count=Found %1$s in range and %2$s out of range
 
 pokecube.command.giftdisabled=Mystery Gift is currently disabled via configs
-pokecube.command.giftdenyused=You have already used this code.
+pokecube.command.giftdenyused=§cYou have already used this code.
 pokecube.command.gift=Congratulations!
-pokecube.command.giftinvalid=The code %1$s is invalid!
-pokecube.command.giftneedcode=You need to enter a code!
+pokecube.command.giftinvalid=§cThe code %1$s §cis invalid!
+pokecube.command.giftneedcode=§cYou need to enter a code!
 
 pokecube.command.makedeny=This command can only be used by command blocks
 pokecube.command.makeneedname=Missing mob name or number
 pokecube.command.makeinvalid=Invalid mob name or number
 
-pokecube.command.settings.check=§a%1$s§f is currently set to: §6%2$s
-pokecube.command.settings.set=§a%1$s§f set to: §6%2$s
-pokecube.command.settings.invalid=Invalid option for %1$s
-pokecube.command.settings.error=Error while checking config field, please report this as a bug.
+pokecube.command.settings.check=%1$s §ais currently set to: %2$s
+pokecube.command.settings.set=%1$s §aset to: %2$s
+pokecube.command.settings.invalid=§cInvalid option for %1$s
+pokecube.command.settings.error=§cError while checking config field, please report this as a bug.

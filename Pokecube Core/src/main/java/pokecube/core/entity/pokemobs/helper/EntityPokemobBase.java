@@ -14,7 +14,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.init.Blocks;
@@ -298,12 +297,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public Entity getTransformedTo()
-    {
-        return transformedTo;
-    }
-
-    @Override
     public EntityAIBase getUtilityMoveAI()
     {
         return utilMoveAI;
@@ -339,7 +332,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.noClip = true;
         }
 
-        Random random = new Random();
+        Random random = new Random(getRNGValue());
         abilityIndex = random.nextInt(100) % 2;
         if (getPokedexEntry().getAbility(abilityIndex, this) == null)
         {

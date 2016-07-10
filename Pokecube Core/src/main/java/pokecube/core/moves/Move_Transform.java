@@ -15,7 +15,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.templates.Move_Basic;
 import thut.api.entity.IBreedingMob;
-import thut.api.maths.Vector3;
 
 /** @author Manchou */
 public class Move_Transform extends Move_Basic
@@ -62,21 +61,18 @@ public class Move_Transform extends Move_Basic
     }
 
     @Override
-    public void attack(IPokemob attacker, Entity attacked, float f)
+    public void attack(IPokemob attacker, Entity attacked)
     {
         if (!(attacker instanceof IPokemob)) return;
         if (attacker.getTransformedTo() == null && attacked instanceof EntityLivingBase)
         {
-            if (MovesUtils.contactAttack(attacker, attacked, f))
+            if (MovesUtils.contactAttack(attacker, attacked))
             {
-                MovesUtils.displayMoveMessages(attacker, attacked, IMoveNames.MOVE_TRANSFORM);
                 if (attacked instanceof IPokemob)
                 {
 
                     if (attacked instanceof IPokemob)
                     {
-                        // ((EntityPokemob) attacked).setTarget((Entity)
-                        // attacker);
                         attacker.setStats(((IPokemob) attacked).getBaseStats());
                         if (!(attacked instanceof IBreedingMob) || attacked != ((IBreedingMob) attacker).getLover())
                             ((EntityCreature) attacked).setAttackTarget((EntityLivingBase) attacker);
@@ -84,8 +80,6 @@ public class Move_Transform extends Move_Basic
 
                 }
                 attacker.setTransformedTo(attacked);
-                Vector3 v = Vector3.getNewVector().set(attacked);
-                notifyClient((Entity) attacker, v, attacked);
             }
         }
         else
@@ -94,18 +88,17 @@ public class Move_Transform extends Move_Basic
             {
                 String move = ((IPokemob) attacked).getMove(0);
                 if (move != null && !IMoveNames.MOVE_TRANSFORM.equals(move))
-                    MovesUtils.doAttack(move, attacker, attacked, f);
-                else if (MovesUtils.contactAttack(attacker, attacked, f))
+                    MovesUtils.doAttack(move, attacker, attacked);
+                else if (MovesUtils.contactAttack(attacker, attacked))
                 {
-                    MovesUtils.displayMoveMessages(attacker, attacked, IMoveNames.MOVE_TRANSFORM);
                     MovesUtils.displayEfficiencyMessages(attacker, attacked, 0F, 1F);
                 }
             }
             else if (attacked instanceof EntityPlayer)
             {
-                if (MovesUtils.contactAttack(attacker, attacked, f))
+                if (MovesUtils.contactAttack(attacker, attacked))
                 {
-                    if (doAttack(attacker, attacked, f)) MovesUtils.attack(new MovePacket(attacker, attacked, name,
+                    if (doAttack(attacker, attacked)) MovesUtils.attack(new MovePacket(attacker, attacked, name,
                             move.type, 25, 1, IMoveConstants.STATUS_NON, IMoveConstants.CHANGE_NONE));
                 }
             }

@@ -68,8 +68,8 @@ public class RecipeHandler
 
         // Mewtwo
         eggOut = ItemPokemobEgg.getEggStack(150);
-        newRecipe = new RecipeFossilRevive(eggOut, Lists.newArrayList(mewhair, eggIn, potion), Database.getEntry("mewtwo"),
-                30000);
+        newRecipe = new RecipeFossilRevive(eggOut, Lists.newArrayList(mewhair, eggIn, potion),
+                Database.getEntry("mewtwo"), 30000);
         newRecipe.tame = false;
         newRecipe.level = 70;
         RecipeFossilRevive.addRecipe(newRecipe);

@@ -20,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 
@@ -37,6 +38,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
         super(manager, new ModelBiped(0.0F), 0.5f);
         male = new ModelPlayer(0, false);
         female = new ModelPlayer(0, true);
+        this.addLayer(new BagRenderer(this));
     }
 
     @Override
@@ -75,8 +77,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
                 ResourceLocation resourcelocation;
                 if (map.containsKey(Type.SKIN))
                 {
-                    resourcelocation = minecraft.getSkinManager().loadSkin(map.get(Type.SKIN),
-                            Type.SKIN);
+                    resourcelocation = minecraft.getSkinManager().loadSkin(map.get(Type.SKIN), Type.SKIN);
                 }
                 else
                 {
@@ -99,8 +100,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
             }
             if (texture == null)
             {
-                texture = type == null ? super.getEntityTexture(villager)
-                        : type.getTexture(((EntityTrainer) villager));
+                texture = type == null ? super.getEntityTexture(villager) : type.getTexture(((EntityTrainer) villager));
 
                 if (((EntityTrainer) villager).male)
                 {

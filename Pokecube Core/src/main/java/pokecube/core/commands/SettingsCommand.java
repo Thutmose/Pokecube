@@ -71,7 +71,7 @@ public class SettingsCommand extends CommandBase
             {
                 text += o;
             }
-            ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.check", "", args[0],
+            ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.check", "gold", args[0],
                     text);
             if (check)
             {
@@ -91,7 +91,7 @@ public class SettingsCommand extends CommandBase
                 }
                 catch (Exception e)
                 {
-                    mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.invalid", "red", args[0]);
+                    mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.invalid", "gold", args[0]);
                     sender.addChatMessage(mess);
                     CommandTools.sendError(sender, text);
                     return;
@@ -106,7 +106,7 @@ public class SettingsCommand extends CommandBase
                 {
                     text += o;
                 }
-                mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.set", "", args[0],
+                mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.set", "gold", args[0],
                         text);
                 sender.addChatMessage(mess);
                 return;

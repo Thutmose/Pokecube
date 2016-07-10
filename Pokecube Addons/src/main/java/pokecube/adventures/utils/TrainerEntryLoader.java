@@ -37,17 +37,19 @@ public class TrainerEntryLoader
     public static class TrainerEntry
     {
         @XmlElement(name = "TYPE")
-        String type;
+        String  type;
         @XmlElement(name = "POKEMON")
-        String pokemon;
+        String  pokemon;
         @XmlElement(name = "BIOMES")
-        String biomes;
+        String  biomes;
         @XmlElement(name = "RATE")
-        int    spawnRate;
+        int     spawnRate;
         @XmlElement(name = "GENDER")
-        String gender;
+        String  gender;
         @XmlElement(name = "MATERIAL")
-        String material = "air";
+        String  material = "air";
+        @XmlElement(name = "BAG")
+        boolean bag      = false;
     }
 
     public static XMLDatabase loadDatabase(File file) throws Exception
@@ -72,6 +74,7 @@ public class TrainerEntryLoader
             if (type == null) type = new TypeTrainer(name);
             byte male = 1;
             byte female = 2;
+            type.hasBag = entry.bag;
             type.weight = entry.spawnRate;
             type.genders = (byte) (entry.gender.equalsIgnoreCase("male") ? male
                     : entry.gender.equalsIgnoreCase("female") ? female : male + female);

@@ -127,6 +127,11 @@ public class ModPokecubeML implements IMobProvider
     private void postInit(FMLPostInitializationEvent evt)
     {
         proxy.postInit();
+        for (PokedexEntry e : Database.allFormes)
+        {
+            if (e.baseForme != null && e.texturePath.equals("textures/entities/"))
+                e.texturePath = e.baseForme.texturePath;
+        }
         postInit = true;
     }
 

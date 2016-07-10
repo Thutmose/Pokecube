@@ -53,22 +53,23 @@ public class PokedexEntry
     {
         public final PokedexEntry evolution;
         public PokedexEntry       preEvolution;
-        public int                level     = -1;
+        public int                level        = -1;
         // the item it must be holding, if null, any item is fine, or no items
         // is fine
-        public ItemStack          item      = null;
+        public ItemStack          item         = null;
         // does it need to grow a level for the item to work
-        public boolean            itemLevel = false;
-        public boolean            dayOnly   = false;
-        public boolean            nightOnly = false;
-        public boolean            traded    = false;
-        public boolean            happy     = false;
-        public boolean            rainOnly  = false;
-        public String             biome     = "";
-        public String             move      = "";
+        public boolean            itemLevel    = false;
+        public boolean            dayOnly      = false;
+        public boolean            nightOnly    = false;
+        public boolean            traded       = false;
+        public boolean            happy        = false;
+        public boolean            rainOnly     = false;
+        public float              randomFactor = 1.0f;
+        public String             biome        = "";
+        public String             move         = "";
         // 1 for male, 2 for female, 0 for either;
-        public byte               gender    = 0;
-        public String             FX        = "";
+        public byte               gender       = 0;
+        public String             FX           = "";
         public String             data;
 
         private EvolutionData(PokedexEntry evol)
@@ -261,6 +262,10 @@ public class PokedexEntry
                     rainOnly = true;
                     if (level == -1) this.level = 0;
                 }
+                else if (arg1.equals("P"))
+                {
+                    this.randomFactor = Float.parseFloat(arg2);
+                }
                 else
                 {
                     System.out.println(data);
@@ -301,6 +306,8 @@ public class PokedexEntry
         {
             if (this.level < 0) return false;
             boolean ret = mob.traded() == this.traded || !this.traded;
+            Random rand = new Random(mob.getRNGValue());
+            if (rand.nextFloat() > randomFactor) return false;
             if (rainOnly)
             {
                 World world = ((EntityLiving) mob).getEntityWorld();

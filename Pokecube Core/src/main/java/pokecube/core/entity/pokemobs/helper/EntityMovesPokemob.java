@@ -211,7 +211,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             }
             else if (Math.random() > 0.5)
             {
-                MovesUtils.doAttack("pokemob.status.confusion", this, this, f);
+                MovesUtils.doAttack("pokemob.status.confusion", this, this);
                 return;
             }
         }
@@ -279,8 +279,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             Thread.dumpStack();
             return;
         }
-        if (!move.move.notIntercepable) MovesUtils.doAttack(attack, this, targetLocation, f);
-        else MovesUtils.doAttack(attack, this, target, f);
+        here.set(posX, posY + getEyeHeight(), posZ);
+        MovesUtils.useMove(move, this, target, here, targetLocation);
+        here.set(this);
     }
 
     @Override
@@ -318,9 +319,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public String getMove(int index)
     {
-        if (transformedTo instanceof IPokemob && transformedTo != this)
+        if (getTransformedTo() instanceof IPokemob && getTransformedTo() != this)
         {
-            IPokemob to = (IPokemob) transformedTo;
+            IPokemob to = (IPokemob) getTransformedTo();
             if (to.getTransformedTo() != this) return to.getMove(index);
         }
 
@@ -370,9 +371,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public String[] getMoves()
     {
-        if (transformedTo instanceof IPokemob && transformedTo != this)
+        if (getTransformedTo() instanceof IPokemob && getTransformedTo() != this)
         {
-            IPokemob to = (IPokemob) transformedTo;
+            IPokemob to = (IPokemob) getTransformedTo();
             if (to.getTransformedTo() != this) return to.getMoves();
         }
         String movesString = dataManager.get(MOVESDW);
@@ -433,7 +434,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public Entity getTransformedTo()
     {
-        return transformedTo;
+        return worldObj.getEntityByID(getDataManager().get(TRANSFORMEDTODW));
     }
 
     @Override
@@ -810,11 +811,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void setTransformedTo(Entity to)
     {
-        if (isServerWorld())
-        {
-            MovesUtils.getMoveFromName(MOVE_TRANSFORM).notifyClient(this, here, to);
-        }
-        transformedTo = to;
+        if (to != null) getDataManager().set(TRANSFORMEDTODW, to.getEntityId());
+        else getDataManager().set(TRANSFORMEDTODW, -1);
         if (to instanceof IPokemob)
         {
             PokedexEntry newEntry = ((IPokemob) to).getPokedexEntry();

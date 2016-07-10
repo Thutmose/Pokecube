@@ -76,6 +76,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MovesAdder;
+import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.network.EntityProvider;
 import pokecube.core.network.PokecubePacketHandler;
@@ -179,7 +180,6 @@ public class PokecubeCore extends PokecubeMod
         return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }
 
-    // TODO This should be called on world load, to allow refreshing biome ids
     public static void registerSpawns()
     {
         int n = 0;
@@ -357,6 +357,8 @@ public class PokecubeCore extends PokecubeMod
         EntityRegistry.registerModEntity(EntityPokemobEgg.class, "pokecube:pokemobEgg", getUniqueEntityId(this), this,
                 80, 3, false);
         EntityRegistry.registerModEntity(EntityPokecube.class, "pokecube:cube", getUniqueEntityId(this), this, 80, 3,
+                true);
+        EntityRegistry.registerModEntity(EntityMoveUse.class, "pokecube:moveuse", getUniqueEntityId(this), this, 80, 3,
                 true);
 
         if (!Loader.isModLoaded("reccomplex"))

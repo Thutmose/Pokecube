@@ -19,11 +19,9 @@ import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.IPokemobUseable;
-import pokecube.core.interfaces.Move_Base;
 import pokecube.core.items.ItemPokemobUseable;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
-import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Ongoing;
 import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
@@ -96,8 +94,6 @@ public class AIMovesUpdates extends AIBase
                 && hasMove(IMoveNames.MOVE_TRANSFORM))
         {
             pokemob.setTransformedTo(((IBreedingMob) entity).getLover());
-            Move_Base trans = MovesUtils.getMoveFromName(IMoveNames.MOVE_TRANSFORM);
-            trans.notifyClient(entity, v, ((IBreedingMob) entity).getLover());
         }
         if (pokemob.getAbility() != null)
         {

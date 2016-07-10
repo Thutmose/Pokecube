@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -23,7 +22,6 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -54,7 +52,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.network.packets.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.IBreedingMob;
@@ -106,6 +104,9 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
     static final DataParameter<Float>   DIRECTIONPITCHDW  = EntityDataManager
             .<Float> createKey(EntityTameablePokemob.class, DataSerializers.FLOAT);
+
+    static final DataParameter<Integer> TRANSFORMEDTODW   = EntityDataManager
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
 
     protected boolean                   looksWithInterest;
 
@@ -176,12 +177,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
             {
                 MoveMessageEvent event = new MoveMessageEvent(this, message);
                 MinecraftForge.EVENT_BUS.post(event);
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));
-                buffer.writeByte(PokecubeClientPacket.MOVEMESSAGE);
-                buffer.writeInt(getEntityId());
-                buffer.writeTextComponent(event.message);
-                PokecubeClientPacket mess = new PokecubeClientPacket(buffer);
-                PokecubePacketHandler.sendToClient(mess, (EntityPlayer) owner);
+                PacketPokemobMessage.sendMessage((EntityPlayer) owner, getEntityId(), event.message);
             }
         }
     }
@@ -216,9 +212,9 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         // From EntityMovesPokemb
         dataManager.register(BOOMSTATEDW, Byte.valueOf((byte) -1));
         dataManager.register(STATUSMOVEINDEXDW, Integer.valueOf(0));
-        dataManager.register(MOVESDW, "");// moves
-
+        dataManager.register(MOVESDW, "");
         dataManager.register(SPECIALINFO, Integer.valueOf(0));
+        dataManager.register(TRANSFORMEDTODW, Integer.valueOf(-1));
 
     }
 

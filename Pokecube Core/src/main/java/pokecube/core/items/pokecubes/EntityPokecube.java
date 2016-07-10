@@ -568,7 +568,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             if (owner instanceof EntityPlayer)
             {
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.sendout", "green",
-                        entity1.getPokemonDisplayName().getFormattedText());
+                        entity1.getPokemonDisplayName());
                 entity1.displayMessageToOwner(mess);
             }
 

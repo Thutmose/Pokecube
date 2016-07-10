@@ -69,22 +69,22 @@ public abstract class Move_Base
         if (instance == null) instance = this;
     }
 
-    public abstract void attack(IPokemob attacker, Entity attacked, float f);
+    public abstract void attack(IPokemob attacker, Entity attacked);
 
-    public abstract void attack(IPokemob attacker, Vector3 location, float f);
+    public abstract void attack(IPokemob attacker, Vector3 location);
 
-    public abstract boolean doAttack(IPokemob attacker, Entity attacked, float f);
+    public abstract boolean doAttack(IPokemob attacker, Entity attacked);
 
     /** Do anything special for self attacks, usually raising/lowering of stats.
      * 
      * @param mob */
-    public abstract void doSelfAttack(IPokemob mob, float f);
+    public abstract void doSelfAttack(IPokemob mob);
 
     public abstract void doWorldAction(IPokemob attacker, Vector3 location);
 
-    protected abstract void finalAttack(IPokemob attacker, Entity attacked, float f);
+    protected abstract void finalAttack(IPokemob attacker, Entity attacked);
 
-    protected abstract void finalAttack(IPokemob attacker, Entity attacked, float f, boolean message);
+    protected abstract void finalAttack(IPokemob attacker, Entity attacked, boolean message);
 
     public IMoveAnimation getAnimation()
     {
@@ -162,13 +162,6 @@ public abstract class Move_Base
 
     public abstract boolean isMoveImplemented(String s);
 
-    /** Sends a message to clients to display specific animation on the client
-     * side.
-     *
-     * @param attacker
-     * @param attacked */
-    public abstract void notifyClient(Entity attacker, Vector3 target, Entity attacked);
-
     /** Called after the attack for special post attack treatment.
      * 
      * @param attacker
@@ -176,7 +169,7 @@ public abstract class Move_Base
      * @param f
      * @param finalAttackStrength
      *            the number of HPs the attack takes from target */
-    public abstract void postAttack(IPokemob attacker, Entity attacked, float f, int finalAttackStrength);
+    public abstract void postAttack(IPokemob attacker, Entity attacked, int power, int finalAttackStrength);
 
     public Move_Base setAnimation(IMoveAnimation anim)
     {

@@ -46,6 +46,9 @@ public class PokecubeOrigin
         pichu.setModId(MODID);
         pikachu.setModId(MODID);
         raichu.setModId(MODID);
+        pichu.texturePath = "textures/entities/";
+        pikachu.texturePath = "textures/entities/";
+        raichu.texturePath = "textures/entities/";
         RenderPokemobs.addModel(pichu.getName() + "" + pichu.getModId(), new ModelPichu());
         RenderPokemobs.addModel(pikachu.getName() + "" + pikachu.getModId(), new ModelPikachu());
         RenderPokemobs.addModel(raichu.getName() + "" + raichu.getModId(), new ModelRaichu());

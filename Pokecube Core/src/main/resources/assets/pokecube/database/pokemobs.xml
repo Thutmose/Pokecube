@@ -8741,13 +8741,13 @@
     </Pokemon>
     <Pokemon base="true" name="Wurmple" number="265">
         <STATS>
-            <EVOLUTIONMODE>L-1 L-1</EVOLUTIONMODE>
+            <EVOLUTIONMODE>L7:P0.5 L7</EVOLUTIONMODE>
             <CAPTURERATE>255</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Insecta</SPECIES>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>3.6</MASSKG>
-            <EVOLVESTO>266 268</EVOLVESTO>
+            <EVOLVESTO>Silcoon Cascoon</EVOLVESTO>
             <EXPYIELD>39</EXPYIELD>
             <COMMONDROP>1:string</COMMONDROP>
             <FOODMATERIAL>grass</FOODMATERIAL>

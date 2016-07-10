@@ -83,6 +83,7 @@ import pokecube.core.client.items.HeldItemTextureHandler;
 import pokecube.core.client.items.MegaStoneTextureHandler;
 import pokecube.core.client.items.VitaminTextureHandler;
 import pokecube.core.client.models.ModelPokemobEgg;
+import pokecube.core.client.render.RenderMoves;
 import pokecube.core.client.render.blocks.RenderPokecubeTable;
 import pokecube.core.client.render.blocks.RenderTradingTable;
 import pokecube.core.client.render.entity.RenderPokecube;
@@ -103,6 +104,7 @@ import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import pokecube.core.moves.animations.EntityMoveUse;
 import thut.api.maths.Vector3;
 
 @SideOnly(Side.CLIENT)
@@ -403,6 +405,14 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                         return new ResourceLocation(PokecubeMod.ID + ":textures/egg.png");
                     }
                 };
+            }
+        });
+        RenderingRegistry.registerEntityRenderingHandler(EntityMoveUse.class, new IRenderFactory<EntityMoveUse>()
+        {
+            @Override
+            public Render<? super EntityMoveUse> createRenderFor(RenderManager manager)
+            {
+                return new RenderMoves(manager);
             }
         });
 

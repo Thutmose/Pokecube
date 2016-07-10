@@ -136,6 +136,10 @@ public class AIHungry extends AIBase
         {
             pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
         }
+        if (ownedSleepCheck)
+        {
+            pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
+        }
 
         if (entity.getAttackTarget() == null && !entity.isDead && entity.ticksExisted % 100 == 0
                 && !entity.getEntityWorld().isRemote && hungrymob.getHungerCooldown() < 0)

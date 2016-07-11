@@ -100,7 +100,7 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
                 ArrayList<String> moves = new ArrayList<String>();
                 for (int i = 0; i < message.data.getInteger("N"); i++)
                     moves.add(message.data.getString("M" + i));
-                tradeTable.moves.put(player.getUniqueID().toString(), moves);
+                tradeTable.moves.put(player.getCachedUniqueIdString(), moves);
             }
         }
         else if (message.message == SETTRADER)

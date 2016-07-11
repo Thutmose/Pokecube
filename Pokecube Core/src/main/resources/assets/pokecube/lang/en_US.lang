@@ -44,11 +44,12 @@ pokemob.command.attack=You tell %1$s to attack %2$s
 pokemob.action.sendout=%1$s was sent out
 pokemob.action.return=%1$s has returned to the Pokécube
 pokemob.action.usemove=You tell %1$s to use %2$s
-pokemob.action.faint=%1$s has fainted
-pokemob.action.denydamageblock=pokemobsDamageBlocks is disabled via configs
-pokemob.action.needsberries=Your Pokémob needs to eat more Berries to do that
-pokemob.action.denyrepel=Your Pokémob is too disgusted by repel to do that
-pokemob.areanotloaded=Warning, Unloaded area.
+pokemob.action.faint.enemy=Enemy %1$s has fainted!
+pokemob.action.faint.own=Your %1$s has fainted!
+pokemob.action.denydamageblock=§cpokemobsDamageBlocks is disabled via configs
+pokemob.action.needsberries=§cYour Pokémob needs to eat more Berries to do that
+pokemob.action.denyrepel=§cYour Pokémob is too disgusted by repel to do that
+pokemob.areanotloaded=§cWarning, Unloaded area.
 
 pokemob.info.levelup=%1$s has grown to level %2$s
 

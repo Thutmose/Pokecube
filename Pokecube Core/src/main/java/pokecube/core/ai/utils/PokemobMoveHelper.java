@@ -66,7 +66,6 @@ public class PokemobMoveHelper extends EntityMoveHelper
     public void onUpdateMoveHelper()
     {
         this.entity.setMoveForward(0.0F);
-        this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
         if (this.update)
         {
             pos.set(entity);
@@ -77,7 +76,6 @@ public class PokemobMoveHelper extends EntityMoveHelper
             }
             boolean water = entry.swims() && entity.isInWater();
             boolean air = entry.flys() || entry.floats();
-
             this.update = false;
             double i = (this.entity.posY + this.entity.stepHeight);
             double d0 = this.posX - this.entity.posX;
@@ -87,16 +85,11 @@ public class PokemobMoveHelper extends EntityMoveHelper
             double d3 = d4 + d2 * d2;
             if (d3 >= 2.5E-7D)
             {
-
-                if (!(water || air) || d4 > 1.0E-1D)// && d4 >
-                                                    // d2))//!(water||air)||
+                if (!(water || air) || d4 > 1.0E-1D)
                 {
                     float f = (float) (Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
-                    // f = MathHelper.wrapAngleTo180_float(f);
-
                     entity.getLookHelper().setLookPosition(posX, posY, posZ, 10.0F, 10.0F);
-                    this.entity.rotationYaw = f;// MathHelper.wrapAngleTo180_float(this.limitAngle(this.entity.rotationYaw,
-                                                // f, 180.0F));
+                    this.entity.rotationYaw = f;
                 }
                 else if (entity.getAITarget() != null)
                 {
@@ -115,8 +108,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
 
                 this.entity.setAIMoveSpeed(newSpeed);
                 double d6 = lastPos.distanceTo(pos);
-
-                if (d2 > 0.0D && !air || d6 < speed / 10)
+                if ((d2 > 0.0D || (d6 < speed / 20 && d4 > 0)) && !air )
                 {
                     this.entity.getJumpHelper().setJumping();
                 }

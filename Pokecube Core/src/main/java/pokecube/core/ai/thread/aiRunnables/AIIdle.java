@@ -32,7 +32,7 @@ public class AIIdle extends AIBase
         this.setMutex(2);
         mob = (IPokemob) entity;
         entry = mob.getPokedexEntry();
-        this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 0.4;
+        this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
     }
 
     private void doFloatingIdle()
@@ -45,10 +45,17 @@ public class AIIdle extends AIBase
 
     private void doFlyingIdle()
     {
-        if (Math.random() > 0.75)
+        boolean sitting = mob.getPokemonAIState(IMoveConstants.SITTING);
+        boolean up = Math.random() < 0.9;
+        if (sitting && up)
         {
-            doGroundIdle();
+            mob.setPokemonAIState(IMoveConstants.SITTING, false);
         }
+        else if (Math.random() > 0.95)
+        {
+            mob.setPokemonAIState(IMoveConstants.SITTING, true);
+        }
+        else if (Math.random() > 0.75) doGroundIdle();
     }
 
     private void doGroundIdle()
@@ -56,7 +63,7 @@ public class AIIdle extends AIBase
         v.set(xPosition, yPosition, zPosition);
         Vector3 temp = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
         if (temp == null) return;
-        yPosition = temp.y;
+        yPosition = Math.round(temp.y + 1);
     }
 
     public void doStationaryIdle()
@@ -102,13 +109,11 @@ public class AIIdle extends AIBase
         v1.set(entity);
         v.set(this.xPosition, this.yPosition, this.zPosition);
 
-        if (v.isEmpty() || v1.distToSq(v) <= 1) return;
-        // if (true) return;
+        if (v.isEmpty() || v1.distToSq(v) <= 1 || mob.getPokemonAIState(IMoveConstants.SITTING)) return;
 
         mob.setPokemonAIState(IMoveConstants.IDLE, true);
         Path path = this.entity.getNavigator().getPathToXYZ(this.xPosition, this.yPosition, this.zPosition);
         addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
-        // System.out.println("should run");
         mob.setPokemonAIState(IMoveConstants.IDLE, false);
     }
 
@@ -146,13 +151,13 @@ public class AIIdle extends AIBase
         if (entity.getAttackTarget() != null || !entity.getNavigator().noPath()) return false;
 
         mob.getPokedexEntry().flys();
-        if (mob.getPokemonAIState(IMoveConstants.SITTING)) return false;
+        if (mob.getPokemonAIState(IMoveConstants.SITTING) && mob.getPokemonAIState(IMoveConstants.TAMED)) return false;
         if (mob.getPokemonAIState(IMoveConstants.SLEEPING)) return false;
         else if (this.entity.isBeingRidden() || current != null)
         {
             return false;
         }
-        else if (entity.ticksExisted % (50 + new Random().nextInt(50)) == 0)
+        else if (entity.ticksExisted % (50 + new Random(mob.getRNGValue()).nextInt(50)) == 0)
         {
             boolean tameFactor = mob.getPokemonAIState(IMoveConstants.TAMED)
                     && !mob.getPokemonAIState(IMoveConstants.STAYING);
@@ -188,7 +193,7 @@ public class AIIdle extends AIBase
             else
             {
                 this.xPosition = v.x;
-                this.yPosition = v.y;
+                this.yPosition = Math.round(v.y);
                 this.zPosition = v.z;
                 return true;
             }

@@ -252,13 +252,14 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         if (target == null || getAIState(THROWING) || outMob != null) return;
 
         ItemStack i = getNextPokemob();
-        if (getNextPokemob() != null)
+        if (i != null)
         {
             this.setAIState(INBATTLE, true);
             IPokecube cube = (IPokecube) i.getItem();
             Vector3 here = Vector3.getNewVector().set(this);
             Vector3 t = Vector3.getNewVector().set(target);
             t.set(t.subtractFrom(here).scalarMultBy(0.5).addTo(here));
+            
             cube.throwPokecubeAt(worldObj, this, i, t, null);
             setAIState(THROWING, true);
             cooldown = Config.instance.trainerSendOutDelay;
@@ -293,6 +294,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
             cooldown = Config.instance.trainerBattleDelay;
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.agress", getDisplayName());
             target.addChatMessage(text);
+            this.setAIState(INBATTLE, true);
         }
         if (target == null)
         {

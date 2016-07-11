@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import pokecube.core.PokecubeCore;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -550,7 +551,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 attacker.addEVs(evsToAdd);
             }
             Entity targetOwner = ((IPokemob) attacked).getPokemonOwner();
-
+            displayMessageToOwner(CommandTools.makeTranslatedMessage("pokemob.action.faint.enemy", "green",
+                    ((IPokemob) attacked).getPokemonDisplayName()));
             if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner
                     && !PokecubeMod.pokemobsDamagePlayers)
             {
@@ -590,7 +592,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-
         setPokemonNickname(nbttagcompound.getString(PokecubeSerializer.NICKNAME));
 
         try

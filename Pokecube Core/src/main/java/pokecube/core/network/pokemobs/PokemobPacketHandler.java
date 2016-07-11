@@ -68,7 +68,7 @@ public class PokemobPacketHandler
                             }
                             else if (channel == COME)
                             {
-                                ((EntityLiving) pokemob).getNavigator().tryMoveToEntityLiving(player, 0.4);
+                                ((EntityLiving) pokemob).getNavigator().tryMoveToEntityLiving(player, 0.6);
                                 ((EntityLiving) pokemob).setAttackTarget(null);
                                 return;
                             }

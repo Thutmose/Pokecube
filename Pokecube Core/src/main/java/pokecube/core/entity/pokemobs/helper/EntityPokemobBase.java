@@ -4,9 +4,11 @@
 package pokecube.core.entity.pokemobs.helper;
 
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
@@ -14,11 +16,15 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -33,46 +39,45 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.PokemobBodies;
+import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
-import thut.api.entity.IMultibox;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 
 /** @author Manchou, Thutmose */
-public abstract class EntityPokemobBase extends EntityHungryPokemob implements IMultibox// ,
-                                                                                        // IBossDisplayData
+public abstract class EntityPokemobBase extends EntityHungryPokemob implements IEntityMultiPart
 {
 
-    static String[]                 unowns            = { "Unown_A", "Unown_B", "Unown_C", "Unown_D", "Unown_E",
-            "Unown_F", "Unown_G", "Unown_H", "Unown_I", "Unown_J", "Unown_K", "Unown_L", "Unown_M", "Unown_N",
-            "Unown_O", "Unown_P", "Unown_Q", "Unown_Qu", "Unown_R", "Unown_S", "Unown_T", "Unown_U", "Unown_V",
-            "Unown_W", "Unown_X", "Unown_Y", "Unown_Z", "Unown_Ex" };
+    static String[]             unowns            = { "Unown_A", "Unown_B", "Unown_C", "Unown_D", "Unown_E", "Unown_F",
+            "Unown_G", "Unown_H", "Unown_I", "Unown_J", "Unown_K", "Unown_L", "Unown_M", "Unown_N", "Unown_O",
+            "Unown_P", "Unown_Q", "Unown_Qu", "Unown_R", "Unown_S", "Unown_T", "Unown_U", "Unown_V", "Unown_W",
+            "Unown_X", "Unown_Y", "Unown_Z", "Unown_Ex" };
 
-    public static float             scaleFactor       = 0.075f;
-    public static boolean           multibox          = true;
+    public static float         scaleFactor       = 0.075f;
+    public static boolean       multibox          = true;
 
-    private int                     uid               = -1;
-    protected int                   pokecubeId        = 0;
-    private int                     despawntimer      = 0;
+    private int                 uid               = -1;
+    protected int               pokecubeId        = 0;
+    private int                 despawntimer      = 0;
 
-    protected int                   particleIntensity = 0;
-    protected int                   particleCounter   = 0;
-    protected String                particle;
-    private float                   scale;
+    protected int               particleIntensity = 0;
+    protected int               particleCounter   = 0;
+    protected String            particle;
+    private float               scale;
 
-    private int[]                   flavourAmounts    = new int[5];
+    private int[]               flavourAmounts    = new int[5];
+    private EntityPokemobPart[] partsArray;
 
-    public Matrix3                  mainBox;
-    private Vector3                 offset            = Vector3.getNewVector();
-    public HashMap<String, Matrix3> boxes             = new HashMap<String, Matrix3>();
-    public HashMap<String, Vector3> offsets           = new HashMap<String, Vector3>();
+    public Matrix3              mainBox;
+    private Vector3             offset            = Vector3.getNewVector();
 
-    private float                   nextStepDistance;
+    private float               nextStepDistance;
 
     public EntityPokemobBase(World world)
     {
@@ -81,12 +86,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         this.width = 1;
         this.height = 1;
         nextStepDistance = 1;
-    }
-
-    @Override
-    public Matrix3 bounds(Vector3 target)
-    {
-        return mainBox.set(2, mainBox.rows[2].set(0, 0, -rotationYaw));
     }
 
     /** Returns true if other Entities should be prevented from moving through
@@ -135,13 +134,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         return true;
     }
 
-    @Override
-    public void checkCollision()
-    {
-        // TODO see if I need anything here, of if the LogicCollision will
-        // handle it.
-    }
-
     /** Makes the entity despawn if requirements are reached */
     @Override
     protected void despawnEntity()
@@ -165,16 +157,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         return getPokedexEntry().getSoundEvent();
     }
 
-    @Override
-    public HashMap<String, Matrix3> getBoxes()
-    {
-        if (boxes.isEmpty())
-        {
-            boxes.put("main", mainBox);
-        }
-        return boxes;
-    }
-
     /** Checks if the entity's current position is a valid location to spawn
      * this entity. */
     @Override
@@ -184,7 +166,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         int j = MathHelper.floor_double(getEntityBoundingBox().minY);
         int k = MathHelper.floor_double(posZ);
         here.set(i, j, k);
-        return getBlockPathWeight(worldObj, here) >= 0.0F;
+        float weight = getBlockPathWeight(worldObj, here);
+        return weight >= 0.0F && weight <= 100;
     }
 
     /** returns the bounding box for this entity */
@@ -239,16 +222,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public String getName()
     {
         return this.getPokedexEntry().getName();
-    }
-
-    @Override
-    public HashMap<String, Vector3> getOffsets()
-    {
-        if (offsets.isEmpty())
-        {
-            offsets.put("main", offset);
-        }
-        return offsets;
     }
 
     @Override
@@ -407,6 +380,67 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         return new ResourceLocation(domain, args + "S.png");
     }
 
+    Vector3             lastCheck     = Vector3.getNewVector();
+    int                 lastTickCheck = 0;
+    List<AxisAlignedBB> aabbs;
+
+    public List<AxisAlignedBB> getTileCollsionBoxes(Entity entity, float diff)
+    {
+        if (aabbs == null || lastCheck.distToEntity(entity) > 1 + diff || ticksExisted - lastTickCheck > 100)
+        {
+            Vector3 v = lastCheck.set(entity);
+            lastTickCheck = ticksExisted;
+            AxisAlignedBB box = v.getAABB().expand(2 + diff, 2 + diff, 2 + diff);
+            aabbs = new Matrix3().getCollidingBoxes(box, worldObj, worldObj);
+            Matrix3.expandAABBs(aabbs, entity.getEntityBoundingBox());
+            Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
+        }
+        return aabbs;
+    }
+
+    @Override
+    public boolean fits(IBlockAccess world, Vector3 location, @Nullable Vector3 directionFrom)
+    {
+        Vector3 diffs = Vector3.getNewVector();
+        if (getParts() != null)
+        {
+            Matrix3 box = new Matrix3();
+            box.set(getEntityBoundingBox());
+            float diff = (float) Math.max(width, Math.max(height, length));
+            aabbs = getTileCollsionBoxes(this, diff);
+            diffs.set(box.doTileCollision(world, aabbs, this, Vector3.empty, diffs, false));
+            for (EntityPokemobPart e : partsArray)
+            {
+                Vector3 v = Vector3.getNewVector().set(e.offset.x, e.offset.y, e.offset.z);
+                v.scalarMultBy(getSize());
+                Vector3 v0 = v.copy();
+                float sin = MathHelper.sin((float) (this.rotationYaw * 0.017453292F));
+                float cos = MathHelper.cos((float) (this.rotationYaw * 0.017453292F));
+                v.x = v0.x * cos - v0.z * sin;
+                v.z = v0.x * sin + v0.z * cos;
+                e.motionX = motionX;
+                e.motionY = motionY;
+                e.motionZ = motionZ;
+                e.setPosition(posX + v.x, posY + v.y, posZ + v.z);
+                box.set(e.defaultBox.offset(e.posX, e.posY, e.posZ));
+                diffs.set(box.doTileCollision(world, aabbs, e, Vector3.empty, diffs, false));
+            }
+        }
+        else
+        {
+            mainBox.boxMin().clear();
+            mainBox.boxMax().x = getPokedexEntry().width * getSize();
+            mainBox.boxMax().z = getPokedexEntry().length * getSize();
+            mainBox.boxMax().y = getPokedexEntry().height * getSize();
+            float diff = (float) Math.max(mainBox.boxMax().y, Math.max(mainBox.boxMax().x, mainBox.boxMax().z));
+            offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
+            mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
+            Vector3 pos = offset.add(here);
+            diffs.set(mainBox.doTileCollision(world, getTileCollsionBoxes(this, diff), this, pos, diffs, false));
+        }
+        return diffs.isEmpty();
+    }
+
     /** Tries to moves the entity by the passed in displacement. Args: x, y,
      * z */
     @Override
@@ -420,38 +454,56 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         else
         {
             double x0 = x, y0 = y, z0 = z;
-            setBoxes();
-            setOffsets();
             IBlockAccess world = worldObj;
-
             Vector3 diffs = Vector3.getNewVector();
             diffs.set(x, y, z);
-
-            double dist;
-            if (y < 0) diffs.y = 0;
-
-            if ((dist = diffs.mag()) >= 0.1)
+            boolean multi = false;
+            if (getParts() != null && multi)
             {
-                Vector3 v = Vector3.getNextSurfacePoint(worldObj, here.add(0, height / 2, 0), diffs, diffs.mag());
-                if (v != null)
+                Matrix3 box = new Matrix3();
+                box.set(getEntityBoundingBox());
+                float diff = (float) Math.max(width, Math.max(height, length));
+                aabbs = getTileCollsionBoxes(this, diff);
+                diff = (float) Math.min(width, Math.min(height, length));
+                diffs.set(box.doTileCollision(world, aabbs, this, Vector3.empty, diffs, false));
+                for (EntityPokemobPart e : partsArray)
                 {
-                    diffs.scalarMultBy(v.distanceTo(here) / dist);
+                    Vector3 v = Vector3.getNewVector().set(e.offset.x, e.offset.y, e.offset.z);
+                    v.scalarMultBy(getSize());
+                    Vector3 v0 = v.copy();
+                    float sin = MathHelper.sin((float) (this.rotationYaw * 0.017453292F));
+                    float cos = MathHelper.cos((float) (this.rotationYaw * 0.017453292F));
+                    v.x = v0.x * cos - v0.z * sin;
+                    v.z = v0.x * sin + v0.z * cos;
+                    e.motionX = motionX;
+                    e.motionY = motionY;
+                    e.motionZ = motionZ;
+                    e.setPosition(posX + v.x, posY + v.y, posZ + v.z);
+                    box.set(e.defaultBox.offset(e.posX, e.posY, e.posZ));
+                    diffs.set(box.doTileCollision(world, aabbs, e, Vector3.empty, diffs, false));
                 }
-            }
-            if (y <= 0) diffs.y = y;
-
-            for (String s : getBoxes().keySet())
-            {
-                // diffs.set(x, y, z);
-                Matrix3 box = getBoxes().get(s);
-                Vector3 offset = getOffsets().get(s);
-                if (offset == null) offset = Vector3.empty;
-                Vector3 pos = offset.add(here);
-                diffs.set(box.doTileCollision(world, this, pos, diffs));
                 x = diffs.x;
                 y = diffs.y;
                 z = diffs.z;
             }
+            else
+            {
+                mainBox.boxMin().clear();
+                mainBox.boxMax().x = getPokedexEntry().width * getSize();
+                mainBox.boxMax().z = getPokedexEntry().length * getSize();
+                mainBox.boxMax().y = getPokedexEntry().height * getSize();
+                offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
+                mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
+                mainBox.addOffsetTo(offset).addOffsetTo(here);
+                this.setEntityBoundingBox(mainBox.getBoundingBox());
+                float amount = (float) (Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ));
+                aabbs = getTileCollsionBoxes(this, amount);
+                diffs.set(mainBox.doTileCollision(world, aabbs, this, Vector3.empty, diffs, false));
+                x = diffs.x;
+                y = diffs.y;
+                z = diffs.z;
+            }
+
             this.posX = here.x;
             this.posY = here.y;
             this.posZ = here.z;
@@ -464,7 +516,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             double yOff = this.yOffset;
             double newY = y + yOff + dy;
 
-            this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
+            // this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x,
+            // y, z));
             if (newY == 0)
             {
                 motionY = 0;
@@ -472,6 +525,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.posX += x;
             this.posY += newY;
             this.posZ += z;
+            this.setPosition(posX, posY, posZ);
 
             this.isCollidedHorizontally = x0 != x || z0 != z;
             this.isCollidedVertically = y0 != y;
@@ -546,6 +600,18 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         super.onLivingUpdate();
 
+        if (getParts() == null)
+        {
+            PokemobBodies.initBody(this);
+        }
+        if (getParts() != null)
+        {
+            for (Entity e : getParts())
+            {
+                e.onUpdate();
+            }
+        }
+
         if (uid == -1) this.uid = PokecubeSerializer.getInstance().getNextID();
 
         if (worldObj.isRemote)
@@ -560,8 +626,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 flavourAmounts[i]--;
             }
         }
-
-        if (multibox) checkCollision();
 
         if (isAncient())
         {
@@ -662,30 +726,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public void setBoxes()
-    {
-        if (mainBox == null)
-        {
-            setSize(getSize());
-        }
-        mainBox.boxMin().clear();
-        mainBox.boxMax().x = getPokedexEntry().width * getSize();
-        mainBox.boxMax().z = getPokedexEntry().length * getSize();
-        mainBox.boxMax().y = getPokedexEntry().height * getSize();
-
-        mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
-        boxes.put("main", mainBox);
-    }
-
-    @Override
-    public void setOffsets()
-    {
-        if (offset == null) offset = Vector3.getNewVector();
-        offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
-        offsets.put("main", offset);
-    }
-
-    @Override
     public void setPokecubeId(int pokeballId)
     {
         pokecubeId = pokeballId;
@@ -696,6 +736,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         super.setPokedexEntry(newEntry);
         setSize(getSize());
+    }
+
+    public void setEntityBoundingBox(AxisAlignedBB bb)
+    {
+        super.setEntityBoundingBox(bb);
     }
 
     @Override
@@ -732,12 +777,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         this.setEntityBoundingBox(new AxisAlignedBB(this.getEntityBoundingBox().minX, this.getEntityBoundingBox().minY,
                 this.getEntityBoundingBox().minZ, this.getEntityBoundingBox().minX + this.width,
                 this.getEntityBoundingBox().minY + this.height, this.getEntityBoundingBox().minZ + this.width));
-
+        double max = Math.max(Math.max(a, b), c);
+        World.MAX_ENTITY_RADIUS = Math.max(World.MAX_ENTITY_RADIUS, max);
         mainBox = new Matrix3(a, b, c);
-        offset.set(-a / 2, 0, -c / 2);
     }
 
-    // TODO Pokeblock Particle Effects
     void showLivingParticleFX()
     {
         if (flavourAmounts.length != 5) flavourAmounts = new int[5];
@@ -829,5 +873,30 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         super.writeSpawnData(data);
 
+    }
+
+    @Override
+    public World getWorld()
+    {
+        return worldObj;
+    }
+
+    @Override
+    public boolean attackEntityFromPart(EntityDragonPart dragonPart, DamageSource source, float damage)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public Entity[] getParts()
+    {
+        return partsArray;
+    }
+
+    @Override
+    public void setSubParts(EntityPokemobPart[] subParts)
+    {
+        this.partsArray = subParts;
     }
 }

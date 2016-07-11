@@ -7,16 +7,23 @@ import static pokecube.core.utils.PokeType.rock;
 import static pokecube.core.utils.PokeType.steel;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
+import org.lwjgl.opengl.GL11;
+
 import io.netty.buffer.Unpooled;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -44,15 +51,15 @@ public class PokemobTerrainEffects implements ITerrainEffect
     public static final int EFFECT_POISON2          = 14;
     public static final int EFFECT_WEBS             = 15;
 
-    public static final int CLEAR_ENTRYEFFECTS = 16;
+    public static final int CLEAR_ENTRYEFFECTS      = 16;
 
-    public final long[] effects = new long[16];
+    public final long[]     effects                 = new long[16];
 
-    int chunkX;
-    int chunkZ;
-    int chunkY;
+    int                     chunkX;
+    int                     chunkZ;
+    int                     chunkY;
 
-    Set<IPokemob> pokemon = new HashSet<IPokemob>();
+    Set<IPokemob>           pokemon                 = new HashSet<IPokemob>();
 
     public PokemobTerrainEffects()
     {
@@ -196,11 +203,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
             if (effects[i] > 0)
             {
                 long diff = effects[i] - time;
-                if (diff > 0)
-                {
-                    effects[i] = effects[i] - 1;
-                }
-                else
+                if (diff < 0)
                 {
                     effects[i] = 0;
                     send = true;
@@ -308,5 +311,59 @@ public class PokemobTerrainEffects implements ITerrainEffect
     public void writeToNBT(NBTTagCompound nbt)
     {
 
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void renderTerrainEffects(RenderFogEvent event)
+    {
+        if (this.hasEffects())
+        {
+            int time = Minecraft.getMinecraft().thePlayer.ticksExisted;
+            Vector3 direction = Vector3.getNewVector().set(0, -1, 0);
+            float tick = (float) (time + event.getRenderPartialTicks()) / 2f;
+            if (effects[EFFECT_WEATHER_RAIN] > 0)
+            {
+                GlStateManager.color(0, 0, 1, 1);
+                renderEffect(direction, tick);
+            }
+            if (effects[EFFECT_WEATHER_HAIL] > 0)
+            {
+                GlStateManager.color(1, 1, 1, 1);
+                renderEffect(direction, tick);
+            }
+            if (effects[EFFECT_WEATHER_SAND] > 0)
+            {
+                GlStateManager.color(220 / 255f, 209 / 255f, 192 / 255f, 1);
+                direction.set(0, 0, 1);
+                renderEffect(direction, tick);
+            }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void renderEffect(Vector3 direction, float tick)
+    {
+        GlStateManager.disableTexture2D();
+        Vector3 temp = Vector3.getNewVector();
+        Vector3 temp2 = Vector3.getNewVector();
+        Random rand = new Random(Minecraft.getMinecraft().thePlayer.ticksExisted / 200);
+        GlStateManager.translate(-direction.x * 8, -direction.y * 8, -direction.z * 8);
+        for (int i = 0; i < 1000; i++)
+        {
+            GL11.glBegin(GL11.GL_QUADS);
+            temp.set(rand.nextFloat() - 0.5, rand.nextFloat() - 0.5, rand.nextFloat() - 0.5);
+            temp.scalarMultBy(16);
+            temp.addTo(temp2.set(direction).scalarMultBy(tick));
+            temp.y = temp.y % 16;
+            temp.x = temp.x % 16;
+            temp.z = temp.z % 16;
+            double size = 0.02;
+            GL11.glVertex3d(temp.x, temp.y + size, temp.z);
+            GL11.glVertex3d(temp.x - size, temp.y - size, temp.z - size);
+            GL11.glVertex3d(temp.x - size, temp.y + size, temp.z - size);
+            GL11.glVertex3d(temp.x, temp.y - size, temp.z);
+            GL11.glEnd();
+        }
+        GlStateManager.enableTexture2D();
     }
 }

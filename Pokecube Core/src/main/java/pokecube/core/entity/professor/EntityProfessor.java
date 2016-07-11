@@ -134,7 +134,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
                     else
                     {
                         boolean special = false;
-                        if (PokecubePacketHandler.specialStarters.containsKey(player.getUniqueID().toString())
+                        if (PokecubePacketHandler.specialStarters.containsKey(player.getCachedUniqueIdString())
                                 || PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase()))
                         {
                             special = true;

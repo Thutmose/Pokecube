@@ -97,7 +97,7 @@ public class PCEventsHandler
                 {
                     String name = PokecubeManager.getOwner(mob.getEntityItem());
                     if (name != null && (name.equalsIgnoreCase(player.getName())
-                            || name.equals(player.getUniqueID().toString())))
+                            || name.equals(player.getCachedUniqueIdString())))
                     {
                         InventoryPC.addStackToPC(name, mob.getEntityItem());
                         mob.setDead();
@@ -125,7 +125,7 @@ public class PCEventsHandler
                 if (o instanceof EntityPlayer)
                 {
                     EntityPlayer p = (EntityPlayer) o;
-                    if (InventoryPC.map.containsKey(p.getUniqueID().toString()))
+                    if (InventoryPC.map.containsKey(p.getCachedUniqueIdString()))
                     {
                         InventoryPC pc = InventoryPC.getPC(p);
                         pc.seenOwner = true;
@@ -173,7 +173,7 @@ public class PCEventsHandler
         int num = inv.getFirstEmptyStack();
         if (!PokecubeManager.isFilled(evt.getItem().getEntityItem())) { return; }
         String owner = PokecubeManager.getOwner(evt.getItem().getEntityItem());
-        if (evt.getEntityPlayer().getUniqueID().toString().equals(owner))
+        if (evt.getEntityPlayer().getCachedUniqueIdString().equals(owner))
         {
             if (num == -1)
             {
@@ -234,7 +234,7 @@ public class PCEventsHandler
         {
             if (item != null && item.getEntityItem() != null && ContainerPC.isItemValid(item.getEntityItem()))
             {
-                InventoryPC.addStackToPC(player.getUniqueID().toString(), item.getEntityItem().copy());
+                InventoryPC.addStackToPC(player.getCachedUniqueIdString(), item.getEntityItem().copy());
                 toRemove.add(item);
             }
         }

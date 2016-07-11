@@ -32,7 +32,7 @@ public class GuiTeleport extends Gui
         if (instance == null) new GuiTeleport();
 
         if (instance.locations == null) instance.locations = PokecubeSerializer.getInstance()
-                .getTeleports(instance.minecraft.thePlayer.getUniqueID().toString());
+                .getTeleports(instance.minecraft.thePlayer.getCachedUniqueIdString());
 
         return instance;
     }
@@ -71,7 +71,7 @@ public class GuiTeleport extends Gui
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        locations = PokecubeSerializer.getInstance().getTeleports(minecraft.thePlayer.getUniqueID().toString());
+        locations = PokecubeSerializer.getInstance().getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
         int i = 0;
         int xOffset = 0;
@@ -163,7 +163,7 @@ public class GuiTeleport extends Gui
     public void refresh()
     {
         instance.locations = PokecubeSerializer.getInstance()
-                .getTeleports(instance.minecraft.thePlayer.getUniqueID().toString());
+                .getTeleports(instance.minecraft.thePlayer.getCachedUniqueIdString());
     }
 
     public void setState(boolean state)

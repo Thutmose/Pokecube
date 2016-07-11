@@ -120,7 +120,7 @@ public class EventsHandler
                 else
                 {
                     boolean special = false;
-                    if (PokecubePacketHandler.specialStarters.containsKey(player.getUniqueID().toString())
+                    if (PokecubePacketHandler.specialStarters.containsKey(player.getCachedUniqueIdString())
                             || PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase()))
                     {
                         special = true;
@@ -219,7 +219,7 @@ public class EventsHandler
                 {
                     String name = PokecubeManager.getOwner(mob.getEntityItem());
                     if (name != null && (name.equalsIgnoreCase(player.getName())
-                            || name.equals(player.getUniqueID().toString())))
+                            || name.equals(player.getCachedUniqueIdString())))
                     {
                         ItemStack cube = mob.getEntityItem();
                         ItemTossEvent evt = new ItemTossEvent(

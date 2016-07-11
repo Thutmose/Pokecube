@@ -11,7 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -38,6 +37,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     }
 
     private int       mountCounter       = 0;
+    private int       jumpCounter        = 0;
     public float      landSpeedFactor    = 1;
     public float      waterSpeedFactor   = 0.25f;
     public float      airbornSpeedFactor = 0.02f;
@@ -97,28 +97,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
     public boolean checkHunger()
     {
-        // if (this.riddenByEntity instanceof EntityPlayer
-        // && !((EntityPlayer) this.riddenByEntity).capabilities.isCreativeMode)
-        // {
-        // int hunger = getHungerTime();
-        // if (hunger < 0.85 * PokecubeMod.core.getConfig().pokemobLifeSpan)
-        // {
-        // hungerFactor = 1;
-        // return true;
-        // }
-        // else
-        // {
-        // if (this.ticksExisted % 20 == 0 && !worldObj.isRemote)
-        // {
-        // String mess = I18n.translateToLocal("pokemob.hungry.slow");
-        // ((EntityPlayer) this.riddenByEntity).addChatMessage(new
-        // TextComponentString(mess));
-        // }
-        // hungerFactor = 0.01f;
-        // return false;
-        // }
-        //
-        // }//TODO riding
         hungerFactor = 1;
         return false;
     }
@@ -295,7 +273,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             }
             boolean dive = false;
             boolean jump = false;
-            if ((dive = (this.canUseDive() && isInWater())) || this.canUseFly())
+            if ((dive = (this.canUseDive() && (isInWater() || riddenByEntity.isInWater()))) || this.canUseFly())
             {
                 motionY = state == MountState.UP ? 0.5 : state == MountState.DOWN ? -0.5 : 0;
 
@@ -315,26 +293,24 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
                 jump = state == MountState.UP;
             }
 
-            if (jump && !this.isPokemobJumping() && this.onGround)
+            if (jumpCounter-- < 0 && jump && !this.isPokemobJumping() && this.onGround)
             {
-                this.motionY = 0.5 + this.jumpPower;
+                this.motionY = 0.75 + this.jumpPower;
 
                 if (this.isPotionActive(Potion.getPotionFromResourceLocation("jump_boost")))
                 {
                     this.motionY += (this.getActivePotionEffect(Potion.getPotionFromResourceLocation("jump_boost"))
                             .getAmplifier() + 1) * 0.1F;
                 }
-
+                jumpCounter = 20;
                 this.setPokemobJumping(true);
                 this.isAirBorne = true;
-
                 if (forward > 0.0F)
                 {
                     float f2 = MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F);
                     float f3 = MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F);
                     this.motionX += -0.4F * f2 * this.jumpPower;
                     this.motionZ += 0.4F * f3 * this.jumpPower;
-                    this.playSound(SoundEvents.ENTITY_HORSE_JUMP, 0.4F, 1.0F);
                 }
 
                 this.jumpPower = 0.0F;

@@ -470,7 +470,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
                         cube.getEntityWorld());
                 Vector3 v = Vector3.getNewVector();
                 Entity thrower = cube.shootingEntity;
-                int has = CaptureStats.getTotalNumberOfPokemobCaughtBy(thrower.getUniqueID().toString(),
+                int has = CaptureStats.getTotalNumberOfPokemobCaughtBy(thrower.getCachedUniqueIdString(),
                         mob.getPokedexEntry());
                 // TODO make this also check achievments, to check if pokemon
                 // has been traded to or hatched.

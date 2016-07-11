@@ -120,7 +120,7 @@ public class BlockPC extends Block implements ITileEntityProvider
         int metaDown = idDown.getMetaFromState(down);
         if (!((!((metaDown & 8) > 0)) && idDown == this)) return false;
 
-        InventoryPC inventoryPC = InventoryPC.getPC(playerIn.getUniqueID().toString());
+        InventoryPC inventoryPC = InventoryPC.getPC(playerIn.getCachedUniqueIdString());
 
         if (inventoryPC != null)
         {

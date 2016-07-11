@@ -296,11 +296,16 @@ public class GuiPokedex_redo extends GuiScreen
 
             String level = "N. " + num;
             drawString(fontRendererObj, level, xOffset + 15, yOffset + 1, 0xffffff);
+            if (!mode)
+            {
 
-            if (!closestVillage.isEmpty())
+            }
+            else if (!closestVillage.isEmpty())
             {
                 GL11.glPushMatrix();
-                GL11.glTranslated(xSize + 45, ySize / 2 + 23, 0);
+                int j = (width - xSize) / 2;
+                int k = (height - ySize) / 2;
+                GL11.glTranslated(j + 180, k + 75, 0);
                 Vector3 v = Vector3.getNewVector().set(entityPlayer).subtractFrom(closestVillage);
                 v.reverse();
                 v.set(v.normalize());
@@ -311,10 +316,10 @@ public class GuiPokedex_redo extends GuiScreen
                 GL11.glPopMatrix();
                 String mess = I18n.format("gui.pokedex.village");
                 int width = fontRendererObj.getStringWidth(mess);
-                drawString(fontRendererObj, mess, xOffset - width / 2 + 60, yOffset + 75, 0x78C850);
+                drawString(fontRendererObj, mess, xOffset - width / 2 + 60, yOffset + 105, 0x78C850);
                 mess = ((int) v.set(closestVillage).distToEntity(entityPlayer)) + "";
                 width = fontRendererObj.getStringWidth(mess);
-                drawString(fontRendererObj, mess, xOffset - width / 2 + 60, yOffset + 89, 0x78C850);
+                drawString(fontRendererObj, mess, xOffset - width / 2 + 60, yOffset + 119, 0x78C850);
             }
         }
     }
@@ -479,21 +484,21 @@ public class GuiPokedex_redo extends GuiScreen
 
         drawString(fontRendererObj, "User Stats", xOffset + 19, yOffset + 99, 0xFFFFFF);
 
-        int count = KillStats.getNumberUniqueKilledBy(entityPlayer.getUniqueID().toString());
-        int count2 = KillStats.getTotalNumberKilledBy(entityPlayer.getUniqueID().toString());
+        int count = KillStats.getNumberUniqueKilledBy(entityPlayer.getCachedUniqueIdString());
+        int count2 = KillStats.getTotalNumberKilledBy(entityPlayer.getCachedUniqueIdString());
 
         drawString(fontRendererObj, "Kills", xOffset + 19, yOffset + 112, 0xFFFFFF);
         drawString(fontRendererObj, count + "/" + count2,
                 xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 112, 0xffffff);
 
-        count = CaptureStats.getNumberUniqueCaughtBy(entityPlayer.getUniqueID().toString());
-        count2 = CaptureStats.getTotalNumberCaughtBy(entityPlayer.getUniqueID().toString());
+        count = CaptureStats.getNumberUniqueCaughtBy(entityPlayer.getCachedUniqueIdString());
+        count2 = CaptureStats.getTotalNumberCaughtBy(entityPlayer.getCachedUniqueIdString());
         drawString(fontRendererObj, "Captures", xOffset + 19, yOffset + 126, 0xFFFFFF);
         drawString(fontRendererObj, count + "/" + count2,
                 xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 126, 0xffffff);
 
-        count = EggStats.getNumberUniqueHatchedBy(entityPlayer.getUniqueID().toString());
-        count2 = EggStats.getTotalNumberHatchedBy(entityPlayer.getUniqueID().toString());
+        count = EggStats.getNumberUniqueHatchedBy(entityPlayer.getCachedUniqueIdString());
+        count2 = EggStats.getTotalNumberHatchedBy(entityPlayer.getCachedUniqueIdString());
         drawString(fontRendererObj, "Hatched", xOffset + 19, yOffset + 140, 0xFFFFFF);
         drawString(fontRendererObj, count + "/" + count2,
                 xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 140, 0xffffff);
@@ -589,7 +594,7 @@ public class GuiPokedex_redo extends GuiScreen
     {
         Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
         List<TeleDest> locations = PokecubeSerializer.getInstance()
-                .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
         if (locations.size() == 0) { return; }
         TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
@@ -883,7 +888,7 @@ public class GuiPokedex_redo extends GuiScreen
             GuiTeleport.instance().nextMove();
             Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
             if (locations.size() > 0)
             {
@@ -899,7 +904,7 @@ public class GuiPokedex_redo extends GuiScreen
             GuiTeleport.instance().previousMove();
             Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
             if (locations.size() > 0)
             {
@@ -1000,7 +1005,7 @@ public class GuiPokedex_redo extends GuiScreen
                 {
                     Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                     List<TeleDest> locations = PokecubeSerializer.getInstance()
-                            .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                            .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
                     if (locations.size() > 0)
                     {
@@ -1025,7 +1030,7 @@ public class GuiPokedex_redo extends GuiScreen
             {
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
                 if (locations.size() > 0)
                 {
@@ -1208,7 +1213,7 @@ public class GuiPokedex_redo extends GuiScreen
         {
             Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
             if (locations.size() > 0)
             {
@@ -1235,7 +1240,7 @@ public class GuiPokedex_redo extends GuiScreen
 
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
                 if (locations.size() > 0)
                 {
@@ -1250,7 +1255,7 @@ public class GuiPokedex_redo extends GuiScreen
 
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
                 if (locations.size() > 0)
                 {
@@ -1266,7 +1271,7 @@ public class GuiPokedex_redo extends GuiScreen
                     buffer.writeString(nicknameTextField.getText());
 
                     PokecubeSerializer.getInstance().unsetTeleport(location,
-                            minecraft.thePlayer.getUniqueID().toString());
+                            minecraft.thePlayer.getCachedUniqueIdString());
                     PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
                             buffer.array());
                     PokecubePacketHandler.sendToServer(packet);

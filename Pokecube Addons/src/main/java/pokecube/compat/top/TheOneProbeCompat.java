@@ -44,10 +44,10 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
         public Element(IPokemob pokemob, EntityPlayer player)
         {
             entry = pokemob.getPokedexEntry();
-            int caught = CaptureStats.getTotalNumberOfPokemobCaughtBy(player.getUniqueID().toString(), pokemob.getPokedexEntry());
-            int hatched = EggStats.getTotalNumberOfPokemobHatchedBy(player.getUniqueID().toString(), pokemob.getPokedexEntry());
+            int caught = CaptureStats.getTotalNumberOfPokemobCaughtBy(player.getCachedUniqueIdString(), pokemob.getPokedexEntry());
+            int hatched = EggStats.getTotalNumberOfPokemobHatchedBy(player.getCachedUniqueIdString(), pokemob.getPokedexEntry());
             have = caught + hatched;
-            killed = KillStats.getTotalNumberOfPokemobKilledBy(player.getUniqueID().toString(), pokemob.getPokedexEntry());
+            killed = KillStats.getTotalNumberOfPokemobKilledBy(player.getCachedUniqueIdString(), pokemob.getPokedexEntry());
         }
 
         @Override

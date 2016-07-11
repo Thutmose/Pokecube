@@ -329,7 +329,7 @@ public class PokecubePacketHandler
                                         if (vec != null)
                                         {
                                             PokecubeSerializer.getInstance().setTeleport(vec,
-                                                    player.getUniqueID().toString(), name);
+                                                    player.getCachedUniqueIdString(), name);
                                             player.addChatMessage(new TextComponentString(
                                                     "Set The location " + vec.toIntString() + " as " + name));
                                             PokecubeSerializer.getInstance().save();
@@ -352,7 +352,7 @@ public class PokecubePacketHandler
                                             player.addChatMessage(new TextComponentString(
                                                     "Removed The location " + vec.toIntString()));
                                             PokecubeSerializer.getInstance().unsetTeleport(vec,
-                                                    player.getUniqueID().toString());
+                                                    player.getCachedUniqueIdString());
                                             PokecubeSerializer.getInstance().save();
 
                                             NBTTagCompound teletag = new NBTTagCompound();
@@ -378,9 +378,9 @@ public class PokecubePacketHandler
                             else if (channel == TELEPORT)
                             {
                                 int index = buffer.readByte();
-                                PokecubeSerializer.getInstance().setTeleIndex(player.getUniqueID().toString(), index);
+                                PokecubeSerializer.getInstance().setTeleIndex(player.getCachedUniqueIdString(), index);
                                 TeleDest d = PokecubeSerializer.getInstance()
-                                        .getTeleport(player.getUniqueID().toString());
+                                        .getTeleport(player.getCachedUniqueIdString());
                                 if (d == null) return;
 
                                 Vector3 loc = d.getLoc();
@@ -567,7 +567,7 @@ public class PokecubePacketHandler
                 if (entity != null)
                 {
                     ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
-                    entity.setPokemonOwnerByName(owner.getUniqueID().toString());
+                    entity.setPokemonOwnerByName(owner.getCachedUniqueIdString());
                     entity.setPokecubeId(0);
                     entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), false, false);
                     if (shiny) entity.setShiny(true);

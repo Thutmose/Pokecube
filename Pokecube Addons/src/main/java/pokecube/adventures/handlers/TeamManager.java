@@ -170,18 +170,6 @@ public class TeamManager
         }
         if (sync)
         {
-            // if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER
-            // &&
-            // FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
-            // {
-            // PacketBuffer message = new PacketBuffer(Unpooled.buffer());
-            // message.writeByte(6);
-            // message.writeByte(PacketPokeAdv.TYPEADDLAND);
-            // land.writeToBuffer(message);
-            // message.writeString(team);
-            // MessageClient packet = new MessageClient(message);
-            // PokecubePacketHandler.sendToAll(packet);
-            // }
             PASaveHandler.getInstance().saveTeams(team);
         }
     }

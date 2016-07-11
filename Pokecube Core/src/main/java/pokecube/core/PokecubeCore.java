@@ -64,6 +64,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.SpecialCaseRegister;
 import pokecube.core.entity.pokemobs.EntityPokemob;
+import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.events.handlers.EventsHandler;
@@ -350,6 +351,8 @@ public class PokecubeCore extends PokecubeMod
         proxy.registerRenderInformation();
         EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,
                 1, true);
+        EntityRegistry.registerModEntity(EntityPokemobPart.class, "pokecube:genericMobPart", getUniqueEntityId(this),
+                this, 80, 1, true);
         EntityRegistry.registerModEntity(EntityProfessor.class, "pokecube:Professor", getUniqueEntityId(this), this, 80,
                 3, true);
         EntityRegistry.registerModEntity(EntityPokemobEgg.class, "pokecube:pokemobEgg", getUniqueEntityId(this), this,

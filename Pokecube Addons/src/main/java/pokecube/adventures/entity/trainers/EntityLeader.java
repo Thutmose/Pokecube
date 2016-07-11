@@ -89,7 +89,7 @@ public class EntityLeader extends EntityTrainer
     public boolean hasDefeated(Entity e)
     {
         if (e == null) return false;
-        String name = e.getUniqueID().toString();
+        String name = e.getCachedUniqueIdString();
         for (DefeatEntry s : defeaters)
         {
             if (s.defeater.equals(name))
@@ -130,7 +130,7 @@ public class EntityLeader extends EntityTrainer
     public void onDefeated(Entity defeater)
     {
         if (hasDefeated(defeater)) return;
-        defeaters.add(new DefeatEntry(defeater.getUniqueID().toString(), worldObj.getTotalWorldTime()));
+        defeaters.add(new DefeatEntry(defeater.getCachedUniqueIdString(), worldObj.getTotalWorldTime()));
         if (reward != null && defeater instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) defeater;

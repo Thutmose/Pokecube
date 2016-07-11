@@ -205,7 +205,7 @@ public class MakeCommand extends CommandBase
                             player = targets[i];
                             if (player != null)
                             {
-                                owner = targets[i].getUniqueID().toString();
+                                owner = targets[i].getCachedUniqueIdString();
                             }
                             else
                             {
@@ -216,7 +216,7 @@ public class MakeCommand extends CommandBase
                         {
                             EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(owner);
                             System.out.println(p + " " + owner);
-                            if (p != null) owner = p.getUniqueID().toString();
+                            if (p != null) owner = p.getCachedUniqueIdString();
                         }
 
                         mob.setHp(((EntityLiving) mob).getMaxHealth());

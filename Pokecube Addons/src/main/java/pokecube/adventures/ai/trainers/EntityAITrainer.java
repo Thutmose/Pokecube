@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.adventures.comands.Config;
+import pokecube.adventures.entity.helper.EntityHasAIStates;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.events.handlers.PCEventsHandler;
@@ -197,7 +198,8 @@ public class EntityAITrainer extends EntityAIBase
     {
         if (trainer.getTarget() == null) return;
         trainer.faceEntity(trainer.getTarget(), trainer.rotationPitch, trainer.rotationYaw);
-        if (trainer.cooldown > 0)
+        if (trainer.cooldown > 0 && trainer.outMob == null && trainer.outID == null
+                && !trainer.getAIState(EntityHasAIStates.THROWING))
         {
             if (trainer.cooldown == Config.instance.trainerSendOutDelay - 1)
             {
@@ -214,7 +216,7 @@ public class EntityAITrainer extends EntityAIBase
         }
         if (trainer.getTarget() == null) return;
         double distance = trainer.getDistanceSqToEntity(trainer.getTarget());
-        if (distance > 1024 && trainer.cooldown < -300)
+        if (distance > 1024)
         {
             trainer.setTarget(null);
         }

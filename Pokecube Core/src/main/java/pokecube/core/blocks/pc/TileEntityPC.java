@@ -228,7 +228,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
             return;
         }
 
-        String uuid = player.getUniqueID().toString();
+        String uuid = player.getCachedUniqueIdString();
         UUID id = InventoryPC.defaultId;
 
         TileEntity te = worldObj.getTileEntity(getPos().down());

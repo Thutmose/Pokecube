@@ -97,7 +97,7 @@ public class InventoryPC implements IInventory
     public static InventoryPC getPC(Entity player)
     {// TODO Sync box names/numbers to blank
         if (player == null || player.getEntityWorld().isRemote) return blank == null ? blank = new InventoryPC("blank") : blank;
-        return getPC(player.getUniqueID().toString());
+        return getPC(player.getCachedUniqueIdString());
     }
 
     public static InventoryPC getPC(String uuid)
@@ -382,7 +382,7 @@ public class InventoryPC implements IInventory
     @Override
     public void closeInventory(EntityPlayer player)
     {
-        PCSaveHandler.getInstance().savePC(player.getUniqueID().toString());
+        PCSaveHandler.getInstance().savePC(player.getCachedUniqueIdString());
     }
 
     @Override

@@ -70,6 +70,11 @@ public class PokecubeManager
                 ? itemStack.getTagCompound().getInteger("PokedexNb") : 0;
     }
 
+    public static NBTTagCompound getSealTag(Entity pokemob)
+    {
+        return pokemob.getEntityData().getCompoundTag("sealtag");
+    }
+
     public static NBTTagCompound getSealTag(ItemStack stack)
     {
         if (isFilled(stack))
@@ -106,10 +111,7 @@ public class PokecubeManager
         if (num != 0)
         {
             IPokemob pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(num, world);
-            if (pokemob == null)
-            {
-                return null;
-            }
+            if (pokemob == null) { return null; }
             Entity poke = (Entity) pokemob;
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
             poke.readFromNBT(pokeTag);
@@ -207,17 +209,17 @@ public class PokecubeManager
             itemStack.setTagCompound(new NBTTagCompound());
         }
 
-        itemStack.getTagCompound().setString("Owner", owner != null ? owner.getUniqueID().toString() : "");
+        itemStack.getTagCompound().setString("Owner", owner != null ? owner.getCachedUniqueIdString() : "");
         if (itemStack.getTagCompound().hasKey("Pokemob"))
         {
             NBTTagCompound nbt = itemStack.getTagCompound().getCompoundTag("Pokemob");
             if (nbt.hasKey("OwnerUUID"))
             {
-                nbt.setString("OwnerUUID", owner != null ? owner.getUniqueID().toString() : "");
+                nbt.setString("OwnerUUID", owner != null ? owner.getCachedUniqueIdString() : "");
             }
             if (itemStack.getTagCompound().hasKey("ownerUUID"))
             {
-                nbt.setString("ownerUUID", owner != null ? owner.getUniqueID().toString() : "");
+                nbt.setString("ownerUUID", owner != null ? owner.getCachedUniqueIdString() : "");
             }
             itemStack.getTagCompound().setTag("Pokemob", nbt);
         }

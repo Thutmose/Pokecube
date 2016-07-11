@@ -3,6 +3,8 @@
  */
 package pokecube.core.items.pokemobeggs;
 
+import java.util.UUID;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
@@ -18,6 +20,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import pokecube.core.database.Database;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -116,8 +120,19 @@ public class EntityPokemobEgg extends EntityLiving
 
     public Entity getEggOwner()
     {
-        IPokemob pokemob = getPokemob();
+        IPokemob pokemob = getPokemob(true);
         if (pokemob != null) return pokemob.getPokemonOwner();
+        return null;
+    }
+
+    public UUID getMotherId()
+    {
+        if (getHeldItemMainhand() != null && getHeldItemMainhand().hasTagCompound())
+        {
+            if (getHeldItemMainhand().getTagCompound().hasKey("motherId")) { return UUID
+                    .fromString(getHeldItemMainhand().getTagCompound().getString("motherId")); }
+        }
+
         return null;
     }
 
@@ -137,10 +152,24 @@ public class EntityPokemobEgg extends EntityLiving
      * this is not to be used for spawning into the world.
      * 
      * @return */
-    public IPokemob getPokemob()
+    public IPokemob getPokemob(boolean real)
     {
-        IPokemob pokemob = ItemPokemobEgg.getFakePokemob(worldObj, here, getHeldItemMainhand());
+        if (!real)
+        {
+            IPokemob pokemob = ItemPokemobEgg.getFakePokemob(worldObj, here, getHeldItemMainhand());
+            if (pokemob == null) return null;
+            ((Entity) pokemob).worldObj = worldObj;
+            return pokemob;
+        }
+        if (getHeldItemMainhand() == null || !getHeldItemMainhand().hasTagCompound()
+                || !getHeldItemMainhand().getTagCompound().hasKey("pokemobNumber"))
+            return null;
+        int number = getHeldItemMainhand().getTagCompound().getInteger("pokemobNumber");
+        PokedexEntry entry = Database.getEntry(number);
+        IPokemob pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(entry, worldObj);
         if (pokemob == null) return null;
+        here.moveEntity((Entity) pokemob);
+        ItemPokemobEgg.initPokemobGenetics(pokemob, getHeldItemMainhand().getTagCompound());
         ((Entity) pokemob).setWorld(worldObj);
         return pokemob;
     }
@@ -187,9 +216,9 @@ public class EntityPokemobEgg extends EntityLiving
         }
         else if (age > hatch * 0.8 && rand.nextInt(20 + hatch - age) == 0)
         {
-            IPokemob mob = getPokemob();
+            IPokemob mob = getPokemob(false);
             if (mob == null) this.setDead();
-            else((EntityLiving) getPokemob()).playLivingSound();
+            else((EntityLiving) mob).playLivingSound();
         }
         TileEntity te = here.getTileEntity(worldObj, EnumFacing.DOWN);
         if (te == null) te = here.getTileEntity(worldObj);

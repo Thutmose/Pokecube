@@ -1199,6 +1199,7 @@ public class MovesUtils implements IMoveConstants
         EntityMoveUse moveUse = new EntityMoveUse(user.getEntityWorld());
         moveUse.setMove(move).setUser(user).setTarget(target).setStart(start).setEnd(end);
         user.getEntityWorld().spawnEntityInWorld(moveUse);
+        move.applyHungerCost((IPokemob) user);
         displayMoveMessages((IPokemob) user, target, move.name);
     }
 

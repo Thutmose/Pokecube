@@ -371,7 +371,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
                     Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                     List<TeleDest> locations = PokecubeSerializer.getInstance()
-                            .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                            .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
                     if (locations.size() > 0)
                     {

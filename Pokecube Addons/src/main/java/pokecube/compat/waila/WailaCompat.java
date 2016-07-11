@@ -57,12 +57,12 @@ public class WailaCompat implements IWailaEntityProvider
             {
                 IPokemob pokemob = (IPokemob) entity;
                 int l = Minecraft.getMinecraft().fontRendererObj.getStringWidth(total);
-                int caught = CaptureStats.getTotalNumberOfPokemobCaughtBy(accessor.getPlayer().getUniqueID().toString(),
+                int caught = CaptureStats.getTotalNumberOfPokemobCaughtBy(accessor.getPlayer().getCachedUniqueIdString(),
                         pokemob.getPokedexEntry());
-                int hatched = EggStats.getTotalNumberOfPokemobHatchedBy(accessor.getPlayer().getUniqueID().toString(),
+                int hatched = EggStats.getTotalNumberOfPokemobHatchedBy(accessor.getPlayer().getCachedUniqueIdString(),
                         pokemob.getPokedexEntry());
                 int number = caught + hatched;
-                int killed = KillStats.getTotalNumberOfPokemobKilledBy(accessor.getPlayer().getUniqueID().toString(),
+                int killed = KillStats.getTotalNumberOfPokemobKilledBy(accessor.getPlayer().getCachedUniqueIdString(),
                         pokemob.getPokedexEntry());
                 DisplayUtil.drawString(number + "", l, 0, PokeType.grass.colour, true);
                 l += Minecraft.getMinecraft().fontRendererObj.getStringWidth(number + "");

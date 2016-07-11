@@ -83,8 +83,6 @@ public class PokeNavigator extends PathNavigate
     @Override
     public synchronized void clearPathEntity()
     {
-        // if(!((IPokemob)theEntity).getPokemonAIState(IPokemob.TAMED))
-        // new Exception().printStackTrace();
         this.currentPath = null;
     }
 
@@ -342,7 +340,9 @@ public class PokeNavigator extends PathNavigate
                 this.currentPath.setCurrentPathIndex(k + 1);
             }
         }
-        f = Math.max(f, 1.5f);
+        float max = 1.5f;
+        if (pokemob.getPokemonAIState(IMoveConstants.ANGRY)) max = 0.5f;
+        f = Math.max(f, max);
         v.set(theEntity);
         v1.set(currentPath.getFinalPathPoint());
         if (v.distTo(v1) < f)
@@ -351,7 +351,7 @@ public class PokeNavigator extends PathNavigate
             return;
         }
 
-        f = Math.max(f, 1.5f);
+        f = Math.max(f, max);
         if (lastPosCheck.distanceTo(vec3) > f)
         {
             this.ticksAtLastPos = this.totalTicks;
@@ -360,14 +360,13 @@ public class PokeNavigator extends PathNavigate
 
         int tickDiff = this.totalTicks - this.ticksAtLastPos;
 
-        if (tickDiff > (pokemob.getPokemonAIState(IMoveConstants.IDLE) ? 25 * speed : 50 * speed))
+        if (tickDiff > (pokemob.getPokemonAIState(IMoveConstants.IDLE) ? 100 : 200))
         {
             if (vec3.squareDistanceTo(this.lastPosCheck) < f)
             {
                 sticks++;
                 this.clearPathEntity();
             }
-
             this.ticksAtLastPos = this.totalTicks;
             lastPosCheck = vec3;
         }

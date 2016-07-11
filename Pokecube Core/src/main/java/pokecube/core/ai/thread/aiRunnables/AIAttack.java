@@ -18,7 +18,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.TickHandler;
-import thut.api.entity.IMultibox;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 
@@ -238,55 +237,51 @@ public class AIAttack extends AIBase implements IAICombat
         {
             inRange = dist < var1;
         }
-        else if (entityTarget instanceof IPokemob)
-        {
-            IPokemob pokemob2 = (IPokemob) entityTarget;
-            float attackerLength = pokemob.getPokedexEntry().length * pokemob.getSize() + 0.5f;
-            float attackerHeight = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
-            float attackerWidth = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
-
-            float attackedLength = pokemob2.getPokedexEntry().length * pokemob2.getSize();
-            float attackedHeight = pokemob2.getPokedexEntry().height * pokemob2.getSize();
-            float attackedWidth = pokemob2.getPokedexEntry().height * pokemob2.getSize();
-
-            float dx = (float) (attacker.posX - entityTarget.posX);
-            float dz = (float) (attacker.posZ - entityTarget.posZ);
-            float dy = (float) (attacker.posY - entityTarget.posY);
-
-            AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
-            AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
-                    dz + attackedLength);
-            inRange = box.intersectsWith(box2);
-        }
-        else if (entityTarget instanceof IMultibox)
-        {
-            ((IMultibox) attacker).setBoxes();
-            ((IMultibox) attacker).setOffsets();
-            attackerBox.set(((IMultibox) attacker).getBoxes().get("main"));
-            attackerBox.addOffsetTo(v2.set(((IMultibox) attacker).getOffsets().get("main")).addTo(v1.set(attacker)));
-            IMultibox target = (IMultibox) entityTarget;
-            target.setBoxes();
-            target.setOffsets();
-            inRange = attackerBox.doCollision(v2.setToVelocity(attacker), (Entity) target);
-        }
         else
         {
-            float attackerLength = pokemob.getPokedexEntry().length * pokemob.getSize() + 0.5f;
-            float attackerHeight = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
-            float attackerWidth = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
+            if (attacker.getParts() != null)
+            {
+                for (Entity part : attacker.getParts())
+                {
+                    if (inRange) break;
 
-            float attackedLength = entityTarget.width;
-            float attackedHeight = entityTarget.height;
-            float attackedWidth = entityTarget.width;
+                    float attackerLength = part.width;
+                    float attackerHeight = part.height;
+                    float attackerWidth = part.width;
 
-            float dx = (float) (attacker.posX - entityTarget.posX);
-            float dz = (float) (attacker.posZ - entityTarget.posZ);
-            float dy = (float) (attacker.posY - entityTarget.posY);
+                    float attackedLength = entityTarget.width;
+                    float attackedHeight = entityTarget.height;
+                    float attackedWidth = entityTarget.width;
 
-            AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
-            AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
-                    dz + attackedLength);
-            inRange = box.intersectsWith(box2);
+                    float dx = (float) (attacker.posX - entityTarget.posX);
+                    float dz = (float) (attacker.posZ - entityTarget.posZ);
+                    float dy = (float) (attacker.posY - entityTarget.posY);
+
+                    AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
+                    AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
+                            dz + attackedLength);
+                    inRange = box.intersectsWith(box2);
+                }
+            }
+            else
+            {
+                float attackerLength = pokemob.getPokedexEntry().length * pokemob.getSize() + 0.5f;
+                float attackerHeight = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
+                float attackerWidth = pokemob.getPokedexEntry().height * pokemob.getSize() + 0.5f;
+
+                float attackedLength = entityTarget.width;
+                float attackedHeight = entityTarget.height;
+                float attackedWidth = entityTarget.width;
+
+                float dx = (float) (attacker.posX - entityTarget.posX);
+                float dz = (float) (attacker.posZ - entityTarget.posZ);
+                float dy = (float) (attacker.posY - entityTarget.posY);
+
+                AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
+                AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
+                        dz + attackedLength);
+                inRange = box.intersectsWith(box2);
+            }
         }
         if (self)
         {
@@ -307,7 +302,7 @@ public class AIAttack extends AIBase implements IAICombat
             }
         }
 
-        boolean shouldPath = false;
+        boolean shouldPath = true;
         if (delayTime < -20)
         {
             shouldPath = true;

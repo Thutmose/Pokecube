@@ -5,6 +5,7 @@ import java.util.Random;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.interfaces.IPokemob;
@@ -39,10 +40,14 @@ public class Move_Terrain extends Move_Basic
      * @param f
      * @param finalAttackStrength
      *            the number of HPs the attack takes from target */
-    public void postAttack(IPokemob attacker, Entity attacked, int pwr, int finalAttackStrength)
+    public void doWorldAction(IPokemob attacker, Vector3 location)
     {
+        if (attacker.getMoveStats().SPECIALCOUNTER > 0) { return; }
+        attacker.getMoveStats().SPECIALCOUNTER = 20;
+
         duration = 300 + new Random().nextInt(600);
-        TerrainSegment segment = TerrainManager.getInstance().getTerrainForEntity(attacked);
+        World world = ((Entity) attacker).getEntityWorld();
+        TerrainSegment segment = TerrainManager.getInstance().getTerrian(world, location);
 
         PokemobTerrainEffects teffect = (PokemobTerrainEffects) segment.geTerrainEffect("pokemobEffects");
         if (teffect == null)
@@ -50,8 +55,11 @@ public class Move_Terrain extends Move_Basic
             segment.addEffect(teffect = new PokemobTerrainEffects(), "pokemobEffects");
         }
 
-        if (segment != null && attacked.getEntityWorld() != null)
-            teffect.setEffect(effect, duration + attacked.getEntityWorld().getTotalWorldTime());
+        // TODO check if effect already exists, and send message if so.
+        // Otherwise send the it starts to effect message
+
+        teffect.setEffect(effect, duration + world.getTotalWorldTime());
+
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(73));
@@ -62,10 +70,10 @@ public class Move_Terrain extends Move_Basic
             for (int i = 0; i < 16; i++)
             {
                 buffer.writeLong(teffect.effects[i]);
+                System.out.println(teffect.effects[i]);
             }
             PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
-            Vector3 v = Vector3.getNewVector().set(attacked);
-            PokecubePacketHandler.sendToAllNear(packet, v, attacked.getEntityWorld().provider.getDimension(), 64);
+            PokecubePacketHandler.sendToAllNear(packet, location, world.provider.getDimension(), 64);
         }
 
     }

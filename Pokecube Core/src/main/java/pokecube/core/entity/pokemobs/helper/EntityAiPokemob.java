@@ -18,13 +18,11 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.MathHelper;
@@ -38,22 +36,27 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.pokemob.PokemobAIDodge;
-import pokecube.core.ai.pokemob.PokemobAIFollowOwner;
 import pokecube.core.ai.pokemob.PokemobAIHurt;
 import pokecube.core.ai.pokemob.PokemobAILeapAtTarget;
 import pokecube.core.ai.pokemob.PokemobAILook;
 import pokecube.core.ai.pokemob.PokemobAISwimming;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
+import pokecube.core.ai.thread.ILogicRunnable;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.thread.PokemobAIThread.AIStuff;
 import pokecube.core.ai.thread.aiRunnables.AIAttack;
+import pokecube.core.ai.thread.aiRunnables.AICombatMovement;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
+import pokecube.core.ai.thread.aiRunnables.AIFollowOwner;
 import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
 import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
-import pokecube.core.ai.thread.aiRunnables.AIMovesUpdates;
 import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
+import pokecube.core.ai.thread.logicRunnables.LogicFloatFlySwim;
+import pokecube.core.ai.thread.logicRunnables.LogicInMaterials;
+import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
+import pokecube.core.ai.thread.logicRunnables.LogicCollision;
 import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
@@ -316,7 +319,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.tasks.addTask(5, guardAI);
         this.tasks.addTask(5, utilMoveAI = new PokemobAIUtilityMove(this));
 
-        if (!entry.isStationary) this.tasks.addTask(6, new PokemobAIFollowOwner(this, 8.0F, 4.0F));
         this.tasks.addTask(8, new PokemobAILook(this, EntityPlayer.class, 8.0F, 1f));
 
         this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
@@ -337,6 +339,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (worldObj.isRemote) return;
 
         aiStuff.addAITask(new AIAttack(this).setPriority(200));
+        aiStuff.addAITask(new AICombatMovement(this).setPriority(600));
+        if (!entry.isStationary)
+        {
+            aiStuff.addAITask(new AIFollowOwner(this, 2 + this.width + this.length, 2 + this.width + this.length)
+                    .setPriority(400));
+        }
+
         aiStuff.addAITask(new AIMate(this).setPriority(300));
         aiStuff.addAITask(new AIHungry(this, new EntityItem(worldObj), 16).setPriority(300));
         AIStoreStuff ai = new AIStoreStuff(this);
@@ -344,9 +353,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         aiStuff.addAITask(new AIGatherStuff(this, 32, ai).setPriority(400));
         aiStuff.addAITask(new AIIdle(this).setPriority(500));
         aiStuff.addAITask(new AIFindTarget(this).setPriority(400));
-        aiStuff.addAITask(new AIMovesUpdates(this).setPriority(100));
 
         aiStuff.addAILogic(new LogicInLiquid(this));
+        aiStuff.addAILogic(new LogicCollision(this));
+        aiStuff.addAILogic(new LogicMovesUpdates(this));
+        aiStuff.addAILogic(new LogicInMaterials(this));
+        aiStuff.addAILogic(new LogicFloatFlySwim(this));
 
     }
 
@@ -749,7 +761,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!PokecubeCore.isOnClientSide())
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
-            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.faint", "red",
+            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.faint.own", "red",
                     getPokemonDisplayName().getFormattedText());
             displayMessageToOwner(mess);
             returnToPokecube();
@@ -787,39 +799,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (lastHadTargetTime == 0)
             {
                 this.setModifiers(PokecubeSerializer.intAsModifierArray(1717986918));
-            }
-        }
-        if (getPokedexEntry().hatedMaterial != null)
-        {
-            String material = getPokedexEntry().hatedMaterial[0];
-            if (material.equalsIgnoreCase("light"))
-            {
-                float value = 0.5f;
-                if (worldObj.isDaytime() && !worldObj.isRemote && getPokemonAIState(IMoveConstants.TAMED) == false)
-                {
-
-                    value = Float.parseFloat(getPokedexEntry().hatedMaterial[1]);
-                    String action = getPokedexEntry().hatedMaterial[2];
-                    float f = getBrightness(1.0F);
-                    if (f > value && worldObj.canSeeSky(getPosition()))
-                    {
-                        if (action.equalsIgnoreCase("despawn"))
-                        {
-                            this.setDead();
-                        }
-                        else if (action.equalsIgnoreCase("hurt") && Math.random() < 0.1)
-                        {
-                            damageEntity(DamageSource.onFire, 1);
-                        }
-                    }
-                }
-            }
-            else if (material.equalsIgnoreCase("water"))
-            {
-                if (isInWater() && rand.nextInt(10) == 0)
-                {
-                    damageEntity(DamageSource.cactus, 1);
-                }
             }
         }
 
@@ -875,6 +854,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 setAttackTarget(null);
             }
         }
+
+        for (ILogicRunnable logic : aiStuff.aiLogic)
+        {
+            logic.doServerTick(worldObj);
+        }
+
         String s;
         int state = dataManager.get(AIACTIONSTATESDW);
         if (getAIState(IMoveConstants.TAMED, state) && ((s = getPokemonOwnerName()) == null || s.isEmpty()))
@@ -886,9 +871,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             resetLoveStatus();
         }
-
-        PokedexEntry entry = getPokedexEntry();
-
         if (getAIState(HELD, state))
         {
             if (!isRiding() || (getRidingEntity() instanceof EntityPlayer
@@ -912,54 +894,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (ticksExisted > EXITCUBEDURATION && getAIState(EXITINGCUBE, state))
         {
             setPokemonAIState(EXITINGCUBE, false);
-        }
-        if (this.getTransformedTo() instanceof IPokemob) entry = ((IPokemob) getTransformedTo()).getPokedexEntry();
-        boolean canFloat = entry.floats();
-
-        if (canFloat && !getAIState(INWATER, state))
-        {
-            float floatHeight = (float) entry.preferedHeight;
-            if (here == null)
-            {
-                here = Vector3.getNewVector();
-                here.set(this);
-            }
-            Vector3 down = Vector3.getNextSurfacePoint(worldObj, here.set(this), Vector3.secondAxisNeg, floatHeight);
-            if (down != null) here.set(down);
-            if (!(here.getBlock(worldObj)).isReplaceable(worldObj, here.getPos()) && !getAIState(SLEEPING, state)
-                    || here.getBlockState(worldObj).getMaterial().isLiquid())
-            {
-                motionY += 0.01;
-            }
-            else motionY -= 0.01;
-            if (down == null || getPokemonAIState(SITTING))
-            {
-                motionY -= 0.02;
-            }
-            here.set(this);
-        }
-
-        if ((entry.floats() || entry.flys()) && !getPokemonAIState(ANGRY))
-        {
-            float floatHeight = (float) entry.preferedHeight;
-            Path path = getNavigator().getPath();
-            if (path != null)
-            {
-                Vector3 end = Vector3.getNewVector().set(path.getFinalPathPoint());
-                double dhs = (here.x - end.x) * (here.x - end.x) + (here.z - end.z) * (here.z - end.z);
-                double dvs = (here.y - end.y) * (here.y - end.y);
-                double width = Math.max(1, getSize() * entry.length / 4);
-                if (dhs < width * width && dvs <= floatHeight * floatHeight)
-                {
-                    getNavigator().clearPathEntity();
-                }
-            }
-        }
-        canFloat = entry.flys();
-        if (canFloat && here.offset(EnumFacing.DOWN).getBlockState(worldObj).getMaterial().isLiquid())
-        {
-            if (motionY < -0.1) motionY = 0;
-            motionY += 0.05;
         }
         if (this.getPokemonAIState(IMoveConstants.SITTING) && !this.getNavigator().noPath())
         {
@@ -1058,7 +992,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
     {
         if (hand != player.getActiveHand()) return false;
-
         ItemStack itemstack = player.getHeldItem(hand);
         ItemStack key = new ItemStack(Items.SHEARS);
         // Check shearable interaction.

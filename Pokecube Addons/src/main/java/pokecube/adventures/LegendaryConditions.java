@@ -82,10 +82,10 @@ public class LegendaryConditions
             public boolean canCapture(Entity trainer, IPokemob pokemon)
             {
 
-                int count = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                int count = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("suicune"));
                 if (count > 0) return false;
-                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID().toString(),
+                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getCachedUniqueIdString(),
                         PokeType.water);
                 int count3 = SpecialCaseRegister.countSpawnableTypes(PokeType.water);
                 if (((double) count1) / ((double) count3) >= 0.5) { return true; }
@@ -114,10 +114,10 @@ public class LegendaryConditions
             public boolean canCapture(Entity trainer, IPokemob pokemon)
             {
 
-                int count = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                int count = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("entei"));
                 if (count > 0) return false;
-                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID().toString(), PokeType.fire);
+                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getCachedUniqueIdString(), PokeType.fire);
                 int count3 = SpecialCaseRegister.countSpawnableTypes(PokeType.fire);
                 if (((double) count1) / ((double) count3) >= 0.5) { return true; }
                 if (pokemon != null && !trainer.getEntityWorld().isRemote)
@@ -144,11 +144,11 @@ public class LegendaryConditions
             public boolean canCapture(Entity trainer, IPokemob pokemon)
             {
 
-                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID().toString(),
+                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getCachedUniqueIdString(),
                         PokeType.electric);
                 int count3 = SpecialCaseRegister.countSpawnableTypes(PokeType.electric);
 
-                int count = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                int count = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("raikou"));
                 if (count > 0) return false;
 
@@ -178,7 +178,7 @@ public class LegendaryConditions
             @Override
             public boolean canSpawn(Entity trainer)
             {
-                if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("celebi")) > 0)
                     return false;
 
@@ -187,9 +187,9 @@ public class LegendaryConditions
                 if (SpawnHandler.canSpawn(t, Database.getEntry("celebi").getSpawnData(), v, trainer.getEntityWorld(),
                         false))
                 {
-                    boolean hasCelebi = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                    boolean hasCelebi = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                             Database.getEntry("celebi")) > 0;
-                    boolean hasKilled = KillStats.getTotalNumberOfPokemobKilledBy(trainer.getUniqueID().toString(),
+                    boolean hasKilled = KillStats.getTotalNumberOfPokemobKilledBy(trainer.getCachedUniqueIdString(),
                             Database.getEntry("celebi")) > 2;
 
                     if (hasKilled || hasCelebi) { return false; }
@@ -226,16 +226,16 @@ public class LegendaryConditions
             @Override
             public boolean canSpawn(Entity trainer)
             {
-                if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("hooh")) > 0)
                     return false;
                 Vector3 v = Vector3.getNewVector().set(trainer);
 
-                boolean raikou = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean raikou = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("raikou")) > 0;
-                boolean suicune = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean suicune = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("suicune")) > 0;
-                boolean entei = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean entei = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("entei")) > 0;
                 if (!(raikou && entei && suicune))
                 {
@@ -275,7 +275,7 @@ public class LegendaryConditions
                     return false;
                 }
 
-                if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("hooh")) > 0)
                     return false;
 
@@ -318,9 +318,9 @@ public class LegendaryConditions
             @Override
             public boolean canCapture(Entity trainer, IPokemob pokemon)
             {
-                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID().toString(),
+                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getCachedUniqueIdString(),
                         PokeType.grass);
-                int count2 = KillStats.getTotalUniqueOfTypeKilledBy(trainer.getUniqueID().toString(), PokeType.grass);
+                int count2 = KillStats.getTotalUniqueOfTypeKilledBy(trainer.getCachedUniqueIdString(), PokeType.grass);
                 int count3 = SpecialCaseRegister.countSpawnableTypes(PokeType.grass);
                 double captureFactor = (double) count1 / (double) count3;
 
@@ -357,16 +357,16 @@ public class LegendaryConditions
             @Override
             public boolean canCapture(Entity trainer, IPokemob pokemon)
             {
-                boolean hasCelebi = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean hasCelebi = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("hooh")) > 0;
-                boolean hasKilled = KillStats.getTotalNumberOfPokemobKilledBy(trainer.getUniqueID().toString(),
+                boolean hasKilled = KillStats.getTotalNumberOfPokemobKilledBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("hooh")) > 2;
 
-                boolean raikou = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean raikou = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("raikou")) > 0;
-                boolean suicune = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean suicune = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("suicune")) > 0;
-                boolean entei = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean entei = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("entei")) > 0;
                 if (!(raikou && entei && suicune)) return false;
 
@@ -389,14 +389,14 @@ public class LegendaryConditions
             @Override
             public boolean canCapture(Entity trainer, IPokemob pokemon)
             {
-                boolean hasLugia = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean hasLugia = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("lugia")) > 0;
 
-                boolean articuno = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean articuno = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("articuno")) > 0;
-                boolean zapdos = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean zapdos = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("zapdos")) > 0;
-                boolean moltres = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean moltres = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("moltres")) > 0;
                 if (!(articuno && moltres && zapdos))
                 {
@@ -429,7 +429,7 @@ public class LegendaryConditions
             @Override
             public boolean canSpawn(Entity trainer)
             {
-                if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("kyogre")) > 0)
                     return false;
                 Vector3 v = Vector3.getNewVector().set(trainer);
@@ -469,7 +469,7 @@ public class LegendaryConditions
             @Override
             public boolean canSpawn(Entity trainer)
             {
-                if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                if (CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("groudon")) > 0)
                     return false;
                 Vector3 v = Vector3.getNewVector().set(trainer);
@@ -516,9 +516,9 @@ public class LegendaryConditions
             @Override
             public boolean canCapture(Entity trainer, IPokemob pokemon)
             {
-                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID().toString(),
+                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getCachedUniqueIdString(),
                         PokeType.water);
-                int count2 = KillStats.getTotalUniqueOfTypeKilledBy(trainer.getUniqueID().toString(), PokeType.ground);
+                int count2 = KillStats.getTotalUniqueOfTypeKilledBy(trainer.getCachedUniqueIdString(), PokeType.ground);
                 int count3 = SpecialCaseRegister.countSpawnableTypes(PokeType.water);
                 int count4 = SpecialCaseRegister.countSpawnableTypes(PokeType.ground);
                 double captureFactor = (double) count1 / (double) count3;
@@ -546,9 +546,9 @@ public class LegendaryConditions
             @Override
             public boolean canCapture(Entity trainer, IPokemob pokemon)
             {
-                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID().toString(),
+                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getCachedUniqueIdString(),
                         PokeType.ground);
-                int count2 = KillStats.getTotalUniqueOfTypeKilledBy(trainer.getUniqueID().toString(), PokeType.water);
+                int count2 = KillStats.getTotalUniqueOfTypeKilledBy(trainer.getCachedUniqueIdString(), PokeType.water);
                 int count4 = SpecialCaseRegister.countSpawnableTypes(PokeType.water);
                 int count3 = SpecialCaseRegister.countSpawnableTypes(PokeType.ground);
                 double captureFactor = (double) count1 / (double) count3;
@@ -593,9 +593,9 @@ public class LegendaryConditions
             {
                 Vector3 v = Vector3.getNewVector().set(trainer);
 
-                boolean relicanth = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean relicanth = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("relicanth")) > 0;
-                boolean wailord = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean wailord = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("wailord")) > 0;
 
                 if (!(relicanth && wailord))
@@ -697,9 +697,9 @@ public class LegendaryConditions
             public boolean canSpawn(Entity trainer)
             {
                 Vector3 v = Vector3.getNewVector().set(trainer);
-                boolean relicanth = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean relicanth = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("relicanth")) > 0;
-                boolean wailord = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean wailord = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("wailord")) > 0;
 
                 if (!(relicanth && wailord))
@@ -803,9 +803,9 @@ public class LegendaryConditions
             {
                 Vector3 v = Vector3.getNewVector().set(trainer);
 
-                boolean relicanth = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean relicanth = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("relicanth")) > 0;
-                boolean wailord = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getUniqueID().toString(),
+                boolean wailord = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("wailord")) > 0;
                 if (!(relicanth && wailord))
                 {

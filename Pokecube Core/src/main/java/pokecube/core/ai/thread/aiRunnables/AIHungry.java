@@ -589,6 +589,14 @@ public class AIHungry extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
+
+        boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
+                && !(pokemob.getPokemonAIState(IMoveConstants.STAYING));
+        if (ownedSleepCheck)
+        {
+            pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
+        }
+
         if (world == null || pokemob.isAncient() || entity.getAttackTarget() != null) return false;
 
         hungrymob.setHungerCooldown(hungrymob.getHungerCooldown() - 1);

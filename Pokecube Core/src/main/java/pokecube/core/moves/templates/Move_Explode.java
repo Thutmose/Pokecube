@@ -144,10 +144,6 @@ public class Move_Explode extends Move_Ongoing
             @Override
             public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
             {
-                EntityLivingBase voltorb = (EntityLivingBase) info.attacker;
-                Explosion explosion = new Explosion(voltorb.getEntityWorld(), voltorb, voltorb.posX, voltorb.posY,
-                        voltorb.posZ, 10, false, true);
-                explosion.doExplosionB(true);
             }
 
             @Override
@@ -159,6 +155,15 @@ public class Move_Explode extends Move_Ongoing
             @Override
             public void setDuration(int duration)
             {
+            }
+
+            @Override
+            public void spawnClientEntities(MovePacketInfo info)
+            {
+                EntityLivingBase voltorb = (EntityLivingBase) info.attacker;
+                Explosion explosion = new Explosion(voltorb.getEntityWorld(), voltorb, voltorb.posX, voltorb.posY,
+                        voltorb.posZ, 10, false, true);
+                explosion.doExplosionB(true);
             }
         };
     }

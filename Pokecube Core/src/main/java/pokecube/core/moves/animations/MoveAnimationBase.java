@@ -29,4 +29,9 @@ public abstract class MoveAnimationBase implements IMoveAnimation
     {
         this.duration = duration;
     }
+
+    @Override
+    public void spawnClientEntities(MovePacketInfo info)
+    {
+    }
 }

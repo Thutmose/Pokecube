@@ -11,6 +11,7 @@ import net.minecraft.util.math.Rotations;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.interfaces.IMoveAnimation.MovePacketInfo;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.MovesUtils;
@@ -141,6 +142,12 @@ public class EntityMoveUse extends Entity
         }
     }
 
+    public MovePacketInfo getMoveInfo()
+    {
+        MovePacketInfo info = new MovePacketInfo(getMove(), getUser(), getTarget(), getStart(), getEnd());
+        return info;
+    }
+
     private void doMoveUse()
     {
         Move_Base attack = getMove();
@@ -156,6 +163,10 @@ public class EntityMoveUse extends Entity
             {
                 MovesUtils.doAttack(attack.name, (IPokemob) user, getEnd());
             }
+        }
+        else if (attack.getAnimation() != null)
+        {
+            attack.getAnimation().spawnClientEntities(getMoveInfo());
         }
     }
 

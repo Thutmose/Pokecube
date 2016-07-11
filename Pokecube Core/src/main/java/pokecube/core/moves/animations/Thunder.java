@@ -6,30 +6,36 @@ import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.Move_Base;
 
-public class Thunder extends MoveAnimationBase {
+public class Thunder extends MoveAnimationBase
+{
 
-	public Thunder() {
-	}
+    public Thunder()
+    {
+    }
 
     @Override
-    public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
+    public void spawnClientEntities(MovePacketInfo info)
     {
-    	World theRealWorld = info.attacker.getEntityWorld();
-    	Entity lightning = new EntityLightningBolt(theRealWorld, info.target.x, info.target.y, info.target.z, false);
-    	theRealWorld.spawnEntityInWorld(lightning);
+        World theRealWorld = info.attacker.getEntityWorld();
+        System.out.println(info.target+" "+info.attacked);
+        Entity lightning = new EntityLightningBolt(theRealWorld, info.target.x, info.target.y, info.target.z, false);
+        theRealWorld.spawnEntityInWorld(lightning);
         theRealWorld.addWeatherEffect(lightning);
     }
 
-
-	@Override
-	public int getDuration() {
-		return 0;
-	}
+    @Override
+    public int getDuration()
+    {
+        return 0;
+    }
 
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
-        // TODO Auto-generated method stub
-        
+    }
+
+    @Override
+    public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
+    {
     }
 }

@@ -4,7 +4,6 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.EnumDyeColor;
@@ -69,7 +68,6 @@ public class ParticleFlow extends MoveAnimationBase
         double dist = source.distanceTo(target);
         Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
 
-        if (!reverse) GlStateManager.translate(temp.x, temp.y, temp.z);
         double factor = (info.currentTick + partialTick) / (double) getDuration();
         factor = Math.min(1, factor);
         temp.set(temp.normalize());
@@ -106,7 +104,6 @@ public class ParticleFlow extends MoveAnimationBase
         }
 
         GL11.glPopMatrix();
-
     }
 
     @Override

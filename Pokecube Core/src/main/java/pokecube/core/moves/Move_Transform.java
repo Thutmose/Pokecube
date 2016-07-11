@@ -22,13 +22,9 @@ public class Move_Transform extends Move_Basic
 
     public static class Animation implements IMoveAnimation
     {
-
         @Override
         public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
         {
-            if (info.attacker == null) return;
-
-            ((IPokemob) info.attacker).setTransformedTo(info.attacked);
         }
 
         @Override
@@ -41,6 +37,13 @@ public class Move_Transform extends Move_Basic
         public void setDuration(int arg0)
         {
 
+        }
+
+        @Override
+        public void spawnClientEntities(MovePacketInfo info)
+        {
+            // TODO Auto-generated method stub
+            
         }
 
     }

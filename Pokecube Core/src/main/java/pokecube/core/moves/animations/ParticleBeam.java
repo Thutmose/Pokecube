@@ -4,7 +4,6 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
 import net.minecraft.util.ResourceLocation;
@@ -36,7 +35,6 @@ public class ParticleBeam extends MoveAnimationBase
         double dist = source.distanceTo(target);
         Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
 
-        GlStateManager.translate(temp.x, temp.y, temp.z);
         double factor = (info.currentTick + partialTick) / (double) getDuration();
         factor = Math.min(1, factor);
         temp.set(temp.normalize());

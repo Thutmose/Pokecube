@@ -30,11 +30,20 @@ public interface IMoveAnimation
     /** Actually plays the animation in the world, this is called every
      * render tick for the number of world ticks specificed in getDuration();
      * 
+     * This is used for direct GL call rendering
+     * 
      * @param info
      * @param world
      * @param partialTick */
     @SideOnly(Side.CLIENT)
     public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick);
+    
+    /**
+     * Used if you need to spawn in something like thunder effects.
+     * @param info
+     */
+    @SideOnly(Side.CLIENT)
+    public void spawnClientEntities(MovePacketInfo info);
 
     /**
      * How long this animation plays for in world ticks.

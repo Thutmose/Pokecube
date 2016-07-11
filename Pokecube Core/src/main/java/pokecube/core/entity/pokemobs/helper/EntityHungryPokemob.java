@@ -11,15 +11,20 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeItems;
+import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.utils.ChunkCoordinate;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public abstract class EntityHungryPokemob extends EntityAiPokemob
@@ -125,9 +130,20 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     public void eat(Entity e)
     {
         vBak.set(vec);
+        int hungerValue = AIHungry.HUNGERDELAY / 4;
+
         if (e instanceof EntityItem)
         {
             HappinessType.applyHappiness(this, HappinessType.EVBERRY);
+            ItemStack item = ((EntityItem) e).getEntityItem();
+            if (item.getItem() instanceof IPokemobUseable)
+            {
+                ((IPokemobUseable) item.getItem()).applyEffect(this, item);
+            }
+            if (Tools.isSameStack(item, PokecubeItems.getStack("leppaBerry")))
+            {
+                hungerValue *= 2;
+            }
             // Make wild pokemon level up naturally to their cap, to allow wild
             // hatches
             if (!getPokemonAIState(IMoveConstants.TAMED))
@@ -141,8 +157,8 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
             }
         }
         vec.set(vBak);
-
-        setHungerTime(0);
+        hungerValue = Math.min(hungerValue, getHungerTime());
+        setHungerTime(getHungerTime() - hungerValue);
         hungerCooldown = 0;
 
         setPokemonAIState(HUNTING, false);
@@ -193,7 +209,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         if (state.getMaterial() == Material.WATER) return water ? 1 : air ? 100 : 40;
         if (block == Blocks.GRAVEL) return water ? 40 : 5;
         if (!this.isImmuneToFire() && (state.getMaterial() == Material.LAVA || state.getMaterial() == Material.FIRE))
-            return 1;
+            return 200;
         return water ? 40 : 20;
     }
 

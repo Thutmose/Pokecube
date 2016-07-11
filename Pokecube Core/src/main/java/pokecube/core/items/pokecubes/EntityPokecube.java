@@ -16,8 +16,6 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -49,7 +47,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
-import thut.api.entity.IMultibox;
 import thut.api.maths.Vector3;
 
 public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpawnData, IProjectile
@@ -294,16 +291,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     public void onCollideWithPlayer(EntityPlayer entityplayer)
     {
         if (entityplayer.getName() == PokecubeManager.getOwner(getEntityItem())
-                || entityplayer.getUniqueID().toString() == PokecubeManager.getOwner(getEntityItem()))
+                || entityplayer.getCachedUniqueIdString() == PokecubeManager.getOwner(getEntityItem()))
         {
-            if (shootingEntity == entityplayer
-                    && entityplayer.inventory.addItemStackToInventory(new ItemStack(Items.ARROW, 1)))
-            {
-                entityplayer.playSound(SoundEvents.ENTITY_EGG_THROW, 0.2F,
-                        (((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F));
-                entityplayer.onItemPickup(this, 1);
-                setDead();
-            }
         }
     }
 
@@ -497,6 +486,12 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     }
 
     @Override
+    public void setDead()
+    {
+        super.setDead();
+    }
+
+    @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
         if (!player.getEntityWorld().isRemote)
@@ -572,8 +567,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
             v.moveEntity(((Entity) entity1));
             worldObj.spawnEntityInWorld((Entity) entity1);
-            ((IMultibox) entity1).setBoxes();
-            ((IMultibox) entity1).setOffsets();
 
             entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
             entity1.setPokemonAIState(IMoveConstants.TAMED, true);

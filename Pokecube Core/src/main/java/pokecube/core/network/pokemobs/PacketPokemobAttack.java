@@ -1,4 +1,4 @@
-package pokecube.core.network.packets;
+package pokecube.core.network.pokemobs;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

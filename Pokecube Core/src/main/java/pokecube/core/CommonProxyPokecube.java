@@ -58,7 +58,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
 
     public EntityPlayer getPlayer(String playerName)
     {
-        if (playerName != null)
+        if (playerName != null && getWorld() != null)
         {
             try
             {
@@ -115,7 +115,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
 
     public World getWorld()
     {
-        if (FMLCommonHandler.instance().getMinecraftServerInstance().worldServers.length > 1)
+        if (FMLCommonHandler.instance().getMinecraftServerInstance().worldServers.length >= 1)
             return FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
         return null;
     }

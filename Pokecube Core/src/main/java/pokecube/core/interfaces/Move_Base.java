@@ -100,7 +100,7 @@ public abstract class Move_Base
         return (byte) move.attackCategory;
     }
 
-    public abstract int getAttackDelay(IPokemob attacker);
+    public abstract void applyHungerCost(IPokemob attacker);
 
     /** Index getter.
      * 

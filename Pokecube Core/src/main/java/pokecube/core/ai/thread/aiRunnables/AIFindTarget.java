@@ -248,7 +248,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             EntityPlayer player = getClosestVulnerablePlayerToEntity(entity,
                     PokecubeMod.core.getConfig().mobAggroRadius);
 
-            if (player != null)
+            if (player != null && Vector3.isVisibleEntityFromEntity(entity, player))
             {
                 setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
                 addTargetInfo(entity, player);

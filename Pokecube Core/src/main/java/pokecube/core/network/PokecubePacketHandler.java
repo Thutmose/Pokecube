@@ -53,10 +53,13 @@ import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketPC;
-import pokecube.core.network.packets.PacketPokemobAttack;
-import pokecube.core.network.packets.PacketPokemobMessage;
 import pokecube.core.network.packets.PacketTrade;
+import pokecube.core.network.pokemobs.PacketChangeForme;
+import pokecube.core.network.pokemobs.PacketNickname;
+import pokecube.core.network.pokemobs.PacketPokemobAttack;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
+import pokecube.core.network.pokemobs.PacketPokemobMessage;
+import pokecube.core.network.pokemobs.PacketPosSync;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
@@ -326,7 +329,7 @@ public class PokecubePacketHandler
                                         if (vec != null)
                                         {
                                             PokecubeSerializer.getInstance().setTeleport(vec,
-                                                    player.getUniqueID().toString(), name);
+                                                    player.getCachedUniqueIdString(), name);
                                             player.addChatMessage(new TextComponentString(
                                                     "Set The location " + vec.toIntString() + " as " + name));
                                             PokecubeSerializer.getInstance().save();
@@ -349,7 +352,7 @@ public class PokecubePacketHandler
                                             player.addChatMessage(new TextComponentString(
                                                     "Removed The location " + vec.toIntString()));
                                             PokecubeSerializer.getInstance().unsetTeleport(vec,
-                                                    player.getUniqueID().toString());
+                                                    player.getCachedUniqueIdString());
                                             PokecubeSerializer.getInstance().save();
 
                                             NBTTagCompound teletag = new NBTTagCompound();
@@ -375,9 +378,9 @@ public class PokecubePacketHandler
                             else if (channel == TELEPORT)
                             {
                                 int index = buffer.readByte();
-                                PokecubeSerializer.getInstance().setTeleIndex(player.getUniqueID().toString(), index);
+                                PokecubeSerializer.getInstance().setTeleIndex(player.getCachedUniqueIdString(), index);
                                 TeleDest d = PokecubeSerializer.getInstance()
-                                        .getTeleport(player.getUniqueID().toString());
+                                        .getTeleport(player.getCachedUniqueIdString());
                                 if (d == null) return;
 
                                 Vector3 loc = d.getLoc();
@@ -564,7 +567,7 @@ public class PokecubePacketHandler
                 if (entity != null)
                 {
                     ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
-                    entity.setPokemonOwnerByName(owner.getUniqueID().toString());
+                    entity.setPokemonOwnerByName(owner.getCachedUniqueIdString());
                     entity.setPokecubeId(0);
                     entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), false, false);
                     if (shiny) entity.setShiny(true);
@@ -637,20 +640,38 @@ public class PokecubePacketHandler
                 Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketPC.class, PacketPC.class, PokecubeCore.getMessageID(),
                 Side.SERVER);
+        
         PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class, PokecubeCore.getMessageID(),
                 Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class, PokecubeCore.getMessageID(),
                 Side.SERVER);
+        
         PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class, PokecubeCore.getMessageID(),
                 Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class, PokecubeCore.getMessageID(),
                 Side.SERVER);
+        
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobGui.class, PacketPokemobGui.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
-        PokecubeMod.packetPipeline.registerMessage(PacketPokemobMessage.class, PacketPokemobMessage.class,
-                PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobAttack.class, PacketPokemobAttack.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
+        PokecubeMod.packetPipeline.registerMessage(PacketNickname.class, PacketNickname.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+        
+        PokecubeMod.packetPipeline.registerMessage(PacketPokemobMessage.class, PacketPokemobMessage.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        
+        PokecubeMod.packetPipeline.registerMessage(PacketPosSync.class, PacketPosSync.class, PokecubeCore.getMessageID(),
+                Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketPosSync.class, PacketPosSync.class, PokecubeCore.getMessageID(),
+                Side.SERVER);
+        
+        PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class, PokecubeCore.getMessageID(),
+                Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class, PokecubeCore.getMessageID(),
+                Side.SERVER);
+        
+        
     }
 
     public static void handlePokecenterPacket(byte[] packet, EntityPlayerMP sender)

@@ -1,4 +1,4 @@
-package pokecube.core.ai.thread.aiRunnables;
+package pokecube.core.ai.thread.logicRunnables;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,17 +26,17 @@ import pokecube.core.moves.templates.Move_Ongoing;
 import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 
-public class AIMovesUpdates extends AIBase
+public class LogicMovesUpdates extends LogicBase
 {
     final private EntityAnimal entity;
     final IPokemob             pokemob;
     final PokedexEntry         entry;
     Vector3                    v = Vector3.getNewVector();
 
-    public AIMovesUpdates(EntityAnimal entity)
+    public LogicMovesUpdates(EntityAnimal entity)
     {
+        super((IPokemob) entity);
         this.entity = entity;
-        this.setMutex(0);
         pokemob = (IPokemob) entity;
         entry = pokemob.getPokedexEntry();
     }
@@ -70,9 +70,9 @@ public class AIMovesUpdates extends AIBase
     }
 
     @Override
-    public void doMainThreadTick(World world)
+    public void doServerTick(World world)
     {
-        super.doMainThreadTick(world);
+        super.doServerTick(world);
         v.set(entity);
         updateOngoingMoves();
         updateStatusEffect();
@@ -113,22 +113,6 @@ public class AIMovesUpdates extends AIBase
         {
             if (s != null && s.equalsIgnoreCase(move)) return true;
         }
-        return false;
-    }
-
-    @Override
-    public void reset()
-    {
-    }
-
-    @Override
-    public void run()
-    {
-    }
-
-    @Override
-    public boolean shouldRun()
-    {
         return false;
     }
 
@@ -252,5 +236,10 @@ public class AIMovesUpdates extends AIBase
                 pokemob.getMoveStats().TOXIC_COUNTER = 0;
             }
         }
+    }
+
+    @Override
+    public void doLogic()
+    {
     }
 }

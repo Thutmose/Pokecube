@@ -64,6 +64,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.SpecialCaseRegister;
 import pokecube.core.entity.pokemobs.EntityPokemob;
+import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.events.handlers.EventsHandler;
@@ -85,8 +86,6 @@ import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket.Pokecube
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket.PokecubeMessageHandlerServer;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageClient.MessageHandlerClient;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer.MessageHandlerServer;
 import pokecube.core.utils.PCSaveHandler;
@@ -352,6 +351,8 @@ public class PokecubeCore extends PokecubeMod
         proxy.registerRenderInformation();
         EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,
                 1, true);
+        EntityRegistry.registerModEntity(EntityPokemobPart.class, "pokecube:genericMobPart", getUniqueEntityId(this),
+                this, 80, 1, true);
         EntityRegistry.registerModEntity(EntityProfessor.class, "pokecube:Professor", getUniqueEntityId(this), this, 80,
                 3, true);
         EntityRegistry.registerModEntity(EntityPokemobEgg.class, "pokecube:pokemobEgg", getUniqueEntityId(this), this,
@@ -468,8 +469,6 @@ public class PokecubeCore extends PokecubeMod
                 Side.SERVER);
 
         // Packets for Pokemobs
-        PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
-                PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
 

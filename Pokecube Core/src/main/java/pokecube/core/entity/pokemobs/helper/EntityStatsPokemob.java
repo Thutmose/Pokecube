@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import pokecube.core.PokecubeCore;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -41,8 +41,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobDamageSource;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
+import pokecube.core.network.pokemobs.PacketNickname;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -552,7 +551,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 attacker.addEVs(evsToAdd);
             }
             Entity targetOwner = ((IPokemob) attacked).getPokemonOwner();
-
+            displayMessageToOwner(CommandTools.makeTranslatedMessage("pokemob.action.faint.enemy", "green",
+                    ((IPokemob) attacked).getPokemonDisplayName()));
             if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner
                     && !PokecubeMod.pokemobsDamagePlayers)
             {
@@ -592,7 +592,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-
         setPokemonNickname(nbttagcompound.getString(PokecubeSerializer.NICKNAME));
 
         try
@@ -802,20 +801,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         if (PokecubeCore.isOnClientSide())
         {
-            if (!nickname.equals(getPokemonNickname())) try
+            if (!nickname.equals(getPokemonNickname()))
             {
-                byte[] string = nickname.getBytes();
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6 + string.length));
-                buffer.writeByte(MessageServer.NICKNAME);
-                buffer.writeInt(getEntityId());
-                buffer.writeByte(string.length);
-                buffer.writeByteArray(string);
-                MessageServer packet = new MessageServer(buffer);
-                PokecubePacketHandler.sendToServer(packet);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
+                PacketNickname.sendPacket(this, nickname);
             }
         }
         else

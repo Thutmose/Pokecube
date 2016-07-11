@@ -120,7 +120,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
 
         // If they don't actually get the picked starter, then no achievement.
         boolean starterGiven = false;
-        if (!(PokecubePacketHandler.specialStarters.containsKey(player.getUniqueID().toString())
+        if (!(PokecubePacketHandler.specialStarters.containsKey(player.getCachedUniqueIdString())
                 || PokecubePacketHandler.specialStarters.containsKey(username)) || fixed)
         {
             // No Custom Starter. just gets this
@@ -130,7 +130,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         }
         else
         {
-            StarterInfoContainer info = PokecubePacketHandler.specialStarters.get(player.getUniqueID().toString());
+            StarterInfoContainer info = PokecubePacketHandler.specialStarters.get(player.getCachedUniqueIdString());
             if (info == null) info = PokecubePacketHandler.specialStarters.get(username);
             StarterInfo[] starter = PokecubePacketHandler.specialStarters.get(username).info;
 

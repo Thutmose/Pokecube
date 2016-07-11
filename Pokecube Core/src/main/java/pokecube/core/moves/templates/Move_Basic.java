@@ -34,6 +34,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.animations.Thunder;
 import pokecube.core.utils.PokeType;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -398,9 +399,13 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     }
 
     @Override
-    public int getAttackDelay(IPokemob attacker)
+    public void applyHungerCost(IPokemob attacker)
     {
-        return 0;
+        int pp = getPP();
+        float relative = (50 - pp) / 30;
+        relative = relative * relative;
+        IHungrymob mob = (IHungrymob) attacker;
+        mob.setHungerTime(mob.getHungerTime() + (int) (relative * 100));
     }
 
     @Override

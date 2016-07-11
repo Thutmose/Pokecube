@@ -99,7 +99,7 @@ public class StatsHandler
         if (player != null && !player.getEntityWorld().isRemote)
         {
             player.addStat(PokecubeMod.get1stPokemob, 0);
-            player.addStat(PokecubeMod.pokemobAchievements.get(evt.egg.getPokemob().getPokedexNb()), 1);
+            player.addStat(PokecubeMod.pokemobAchievements.get(evt.egg.getPokemob(false).getPokedexNb()), 1);
         }
     }
 

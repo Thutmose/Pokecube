@@ -3174,6 +3174,12 @@
                 lvl_40="IRONTAIL" lvl_43="DIG" lvl_46="STONEEDGE"
                 lvl_49="DOUBLEEDGE" lvl_52="SANDSTORM" lvl_7="ROCKTHROW"/>
         </MOVES>
+        <BODY>
+            <PART name="-1" offset="0,0,-2" dimensions="-0.5,-0.5,-0.5->0.5,0.5,0.5"/>
+            <PART name="0" offset="0,0,-1" dimensions="-0.5,-0.5,-0.5->0.5,0.5,0.5"/>
+            <PART name="1" offset="0,0,0" dimensions="-0.5,-0.5,-0.5->0.5,0.5,0.5"/>
+            <PART name="2" offset="0,0,1" dimensions="-0.5,-0.5,-0.5->0.5,0.5,0.5"/>
+        </BODY>
     </Pokemon>
     <Pokemon base="true" name="Drowzee" number="96">
         <STATS>

@@ -75,6 +75,24 @@ public class PokedexEntryLoader
         }
     }
 
+    @XmlRootElement(name = "BODY")
+    public static class BodyNode
+    {
+        @XmlElement(name = "PART")
+        List<BodyPart> parts = Lists.newArrayList();
+    }
+
+    @XmlRootElement(name = "PART")
+    public static class BodyPart
+    {
+        @XmlAttribute(name = "name")
+        String name;
+        @XmlAttribute(name = "offset")
+        String offset;
+        @XmlAttribute(name = "dimensions")
+        String dimensions;
+    }
+
     @XmlRootElement(name = "MOVES")
     public static class Moves
     {
@@ -220,6 +238,8 @@ public class PokedexEntryLoader
         StatsNode      stats;
         @XmlElement(name = "MOVES")
         Moves          moves;
+        @XmlElement(name = "BODY")
+        BodyNode       body;
 
         @Override
         public String toString()
@@ -243,6 +263,10 @@ public class PokedexEntryLoader
                 {
                     moves.misc = other.moves.misc;
                 }
+            }
+            if (body == null && other.body != null)
+            {
+                body = other.body;
             }
             if (stats == null && other.stats != null)
             {
@@ -1099,6 +1123,7 @@ public class PokedexEntryLoader
                 e.printStackTrace();
             }
         }
+        PokemobBodies.initBodies();
     }
 
     private static boolean processWeights(String val, TypeEntry entry)

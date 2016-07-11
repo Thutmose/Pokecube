@@ -120,7 +120,7 @@ public class BlockPokecubeTable extends Block implements ITileEntityProvider
                     {
                         starts[i] = PokecubeMod.core.getStarters()[i];
                     }
-                    if (PokecubePacketHandler.specialStarters.containsKey(playerIn.getUniqueID().toString())
+                    if (PokecubePacketHandler.specialStarters.containsKey(playerIn.getCachedUniqueIdString())
                             || PokecubePacketHandler.specialStarters.containsKey(playerIn.getName().toLowerCase()))
                     {
                         special = true;

@@ -390,7 +390,7 @@ public class PokecubeSerializer
 
     public boolean hasStarter(EntityPlayer player)
     {
-        Boolean bool = hasStarter.get(player.getUniqueID().toString());
+        Boolean bool = hasStarter.get(player.getCachedUniqueIdString());
         return bool == Boolean.TRUE;
     }
 
@@ -689,7 +689,7 @@ public class PokecubeSerializer
     {
         try
         {
-            this.hasStarter.put(player.getUniqueID().toString(), value);
+            this.hasStarter.put(player.getCachedUniqueIdString(), value);
         }
         catch (Exception e)
         {
@@ -777,7 +777,7 @@ public class PokecubeSerializer
         {
             entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), true, false);
             ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
-            entity.setPokemonOwnerByName(owner.getUniqueID().toString());
+            entity.setPokemonOwnerByName(owner.getCachedUniqueIdString());
             entity.setPokecubeId(0);
             ItemStack item = PokecubeManager.pokemobToItem(entity);
             ((Entity) entity).isDead = true;

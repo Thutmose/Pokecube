@@ -35,6 +35,7 @@ import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
@@ -48,7 +49,6 @@ import thut.api.terrain.TerrainSegment;
 /** @author Manchou */
 public class PokedexEntry
 {
-
     public static class EvolutionData
     {
         public final PokedexEntry evolution;
@@ -311,8 +311,17 @@ public class PokedexEntry
             if (rainOnly)
             {
                 World world = ((EntityLiving) mob).getEntityWorld();
-                // TODO also iclude check for terrain segement based rain
-                if (!world.isRaining()) return false;
+                boolean rain = world.isRaining();
+                if (!rain)
+                {
+                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity((Entity) mob);
+                    PokemobTerrainEffects teffect = (PokemobTerrainEffects) t.geTerrainEffect("pokemobEffects");
+                    if (teffect != null)
+                    {
+                        rain = teffect.effects[PokemobTerrainEffects.EFFECT_WEATHER_RAIN] > 0;
+                    }
+                }
+                if (!rain) return false;
             }
             boolean correctItem = item == null;
             if (item != null && mob instanceof EntityLiving)

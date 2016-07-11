@@ -131,7 +131,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     {
         if (!pokemob.getPokemonAIState(IMoveConstants.EXITINGCUBE)) return;
 
-        NBTTagCompound sealTag = PokecubeManager.getSealTag(PokecubeManager.pokemobToItem(pokemob));
+        NBTTagCompound sealTag = PokecubeManager.getSealTag((Entity) pokemob);
 
         if (!sealTag.hasNoTags())
         {

@@ -30,7 +30,7 @@ public class InventoryBag implements IInventory
     public static InventoryBag getBag(Entity player)
     {// TODO Sync box names to blank
         if (player.getEntityWorld().isRemote) return blank == null ? blank = new InventoryBag("blank") : blank;
-        return getBag(player.getUniqueID().toString());
+        return getBag(player.getCachedUniqueIdString());
     }
 
     public static InventoryBag getBag(String uuid)
@@ -57,7 +57,7 @@ public class InventoryBag implements IInventory
                 {
                     isUid = false;
                 }
-                if (!isUid) return getBag(PokecubeMod.getFakePlayer().getUniqueID().toString());
+                if (!isUid) return getBag(PokecubeMod.getFakePlayer().getCachedUniqueIdString());
                 return new InventoryBag(uuid);
             }
         }
@@ -186,7 +186,7 @@ public class InventoryBag implements IInventory
 
     public static NBTTagList saveToNBT(Entity owner)
     {
-        return saveToNBT(owner.getUniqueID().toString());
+        return saveToNBT(owner.getCachedUniqueIdString());
     }
 
     public static NBTTagList saveToNBT(String uuid)
@@ -289,7 +289,7 @@ public class InventoryBag implements IInventory
     @Override
     public void closeInventory(EntityPlayer player)
     {
-        PASaveHandler.getInstance().saveBag(player.getUniqueID().toString());
+        PASaveHandler.getInstance().saveBag(player.getCachedUniqueIdString());
     }
 
     @Override

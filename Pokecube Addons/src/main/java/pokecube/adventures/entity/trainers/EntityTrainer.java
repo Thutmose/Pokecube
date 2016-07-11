@@ -548,7 +548,7 @@ public class EntityTrainer extends EntityHasPokemobs
         int num = poke2.getTagCompound().getInteger("slotnum");
         EntityLivingBase player2 = this;
         IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, worldObj);
-        String trader2 = player2.getUniqueID().toString();
+        String trader2 = player2.getCachedUniqueIdString();
         mon1.setPokemonOwnerByName(trader2);
         poke1 = PokecubeManager.pokemobToItem(mon1);
         clear = true;

@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.Ability;
+import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.events.AttackEvent;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Ongoing;
@@ -759,4 +760,6 @@ public interface IPokemob extends IMoveConstants
 
     /** @param value */
     void setRNGValue(int value);
+    
+    void setSubParts(EntityPokemobPart[] subParts);
 }

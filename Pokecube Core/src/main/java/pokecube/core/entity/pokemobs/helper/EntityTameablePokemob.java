@@ -52,7 +52,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.packets.PacketPokemobMessage;
+import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.IBreedingMob;
@@ -412,7 +412,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     protected boolean isMovementBlocked()
     {
-        return field_25052_g || this.getHealth() <= 0.0F || getPokemonAIState(SLEEPING);
+        return field_25052_g || this.getHealth() <= 0.0F;
     }
 
     @Override
@@ -763,7 +763,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
             return;
         }
 
-        boolean uuidorName = this.getPokemonOwnerName().equalsIgnoreCase(e.getUniqueID().toString())
+        boolean uuidorName = this.getPokemonOwnerName().equalsIgnoreCase(e.getCachedUniqueIdString())
                 || getPokemonOwnerName().equalsIgnoreCase(e.getName());
 
         if (e instanceof EntityPlayer && !uuidorName)

@@ -32,7 +32,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.moves.templates.Move_Ongoing;
-import pokecube.core.network.packets.PacketPokemobMessage;
+import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.ExplosionCustom;
@@ -1199,6 +1199,7 @@ public class MovesUtils implements IMoveConstants
         EntityMoveUse moveUse = new EntityMoveUse(user.getEntityWorld());
         moveUse.setMove(move).setUser(user).setTarget(target).setStart(start).setEnd(end);
         user.getEntityWorld().spawnEntityInWorld(moveUse);
+        move.applyHungerCost((IPokemob) user);
         displayMoveMessages((IPokemob) user, target, move.name);
     }
 

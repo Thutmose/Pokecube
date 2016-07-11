@@ -29,10 +29,11 @@ public class EntityMoveUse extends Entity
             DataSerializers.VARINT);
     static final DataParameter<Integer>   TARGET        = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
+    static final DataParameter<Integer>   TICK          = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+            DataSerializers.VARINT);
 
     Vector3                               end           = Vector3.getNewVector();
     Vector3                               start         = Vector3.getNewVector();
-    int                                   age           = 0;
 
     public EntityMoveUse(World worldIn)
     {
@@ -51,9 +52,9 @@ public class EntityMoveUse extends Entity
         this.getDataManager().set(MOVENAME, name);
         if (move.getAnimation() != null)
         {
-            age = move.getAnimation().getDuration();
+            getDataManager().set(TICK, move.getAnimation().getDuration());
         }
-        else age = 1;
+        else getDataManager().set(TICK, 1);
         return this;
     }
 
@@ -120,7 +121,7 @@ public class EntityMoveUse extends Entity
 
     public int getAge()
     {
-        return age;
+        return getDataManager().get(TICK);
     }
 
     @Override
@@ -131,7 +132,9 @@ public class EntityMoveUse extends Entity
             this.setDead();
             return;
         }
-        if (age-- <= 0 && !worldObj.isRemote)
+        int age = getAge() - 1;
+        getDataManager().set(TICK, age);
+        if (age <= 0)
         {
             this.doMoveUse();
             this.setDead();
@@ -143,13 +146,16 @@ public class EntityMoveUse extends Entity
         Move_Base attack = getMove();
         Entity user;
         if ((user = getUser()) == null) return;
-        if (attack.move.notIntercepable)
+        if (!worldObj.isRemote)
         {
-            MovesUtils.doAttack(attack.name, (IPokemob) user, getTarget());
-        }
-        else
-        {
-            MovesUtils.doAttack(attack.name, (IPokemob) user, getEnd());
+            if (attack.move.notIntercepable)
+            {
+                MovesUtils.doAttack(attack.name, (IPokemob) user, getTarget());
+            }
+            else
+            {
+                MovesUtils.doAttack(attack.name, (IPokemob) user, getEnd());
+            }
         }
     }
 
@@ -161,6 +167,7 @@ public class EntityMoveUse extends Entity
         this.getDataManager().register(STARTLOC, EMPTYLOCATION);
         this.getDataManager().register(USER, -1);
         this.getDataManager().register(TARGET, -1);
+        this.getDataManager().register(TICK, 0);
     }
 
     @Override

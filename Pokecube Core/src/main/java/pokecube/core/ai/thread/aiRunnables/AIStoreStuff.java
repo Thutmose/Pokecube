@@ -315,7 +315,9 @@ public class AIStoreStuff extends AIBase
             return false;
         IPokemob pokemob = (IPokemob) entity;
 
-        if (pokemob.getHome() == null) return false;
+        // TODO make this instead check if it should make nests, and if it has
+        // one.
+        if (pokemob.getHome() == null || !pokemob.getPokemonAIState(IMoveConstants.TAMED)) return false;
 
         IInventory inventory = pokemob.getPokemobInventory();
         ItemStack stack;

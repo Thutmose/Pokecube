@@ -3,6 +3,10 @@
  */
 package pokecube.core.items;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -14,6 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.village.Village;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
@@ -63,7 +68,7 @@ public class ItemPokedex extends Item
             if (worldIn.isRemote) CommandTools.sendMessage(playerIn, "pokedex.setteleport");
             Vector4 loc = new Vector4(playerIn);
             loc.y++;
-            PokecubeSerializer.getInstance().setTeleport(loc, playerIn.getUniqueID().toString());
+            PokecubeSerializer.getInstance().setTeleport(loc, playerIn.getCachedUniqueIdString());
             PokecubeSerializer.getInstance().save();
             if (!worldIn.isRemote)
             {
@@ -114,6 +119,22 @@ public class ItemPokedex extends Item
             nbt.setBoolean("hasTerrain", true);
             nbt.setTag("terrain", tag);
 
+            List<Village> villages = player.getEntityWorld().getVillageCollection().getVillageList();
+            if (villages.size() > 0)
+            {
+                final BlockPos pos = player.getPosition();
+                Collections.sort(villages, new Comparator<Village>()
+                {
+                    @Override
+                    public int compare(Village o1, Village o2)
+                    {
+                        return (int) (pos.distanceSq(o1.getCenter()) - pos.distanceSq(o2.getCenter()));
+                    }
+                });
+                Vector3 temp = Vector3.getNewVector().set(villages.get(0).getCenter());
+                temp.writeToNBT(tag, "village");
+            }
+            System.out.println(villages);
             PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
             PokecubePacketHandler.sendToClient(packet, player);
         }

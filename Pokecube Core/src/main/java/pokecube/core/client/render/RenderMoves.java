@@ -23,7 +23,7 @@ public class RenderMoves<T extends EntityMoveUse> extends Render<T>
         Move_Base move = entity.getMove();
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x, (float) y, (float) z);
-        if (move != null && move.getAnimation() != null)
+        if (move != null && move.getAnimation() != null && entity.getUser() != null)
         {
             IMoveAnimation animation = move.getAnimation();
             MovePacketInfo info = new MovePacketInfo(move, entity.getUser(), entity.getTarget(), entity.getEnd(),

@@ -39,7 +39,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
-import pokecube.core.network.packets.PacketPokemobAttack;
+import pokecube.core.network.pokemobs.PacketPokemobAttack;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
@@ -371,7 +371,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
                     Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                     List<TeleDest> locations = PokecubeSerializer.getInstance()
-                            .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                            .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
 
                     if (locations.size() > 0)
                     {

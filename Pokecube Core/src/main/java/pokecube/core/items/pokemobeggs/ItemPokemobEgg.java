@@ -93,7 +93,6 @@ public class ItemPokemobEgg extends Item
             fakeMobs.put(entry, pokemob);
         }
         location.moveEntity((Entity) pokemob);
-        initPokemobGenetics(pokemob, stack.getTagCompound());
         return pokemob;
     }
 
@@ -105,6 +104,7 @@ public class ItemPokemobEgg extends Item
         nbt.setByteArray("colour", getColour(((IMobColourable) father).getRGBA(), ((IMobColourable) mother).getRGBA()));
         nbt.setFloat("size", getSize(father.getSize(), mother.getSize()));
         nbt.setByte("nature", getNature(mother.getNature(), father.getNature()));
+        nbt.setString("motherId", ((Entity) mother).getCachedUniqueIdString());
 
         int chance = 4096;
         if (mother.isShiny()) chance = chance / 2;
@@ -292,7 +292,7 @@ public class ItemPokemobEgg extends Item
         return ret;
     }
 
-    private static void initPokemobGenetics(IPokemob mob, NBTTagCompound nbt)
+    public static void initPokemobGenetics(IPokemob mob, NBTTagCompound nbt)
     {
         boolean fixedShiny = nbt.getBoolean("shiny");
 
@@ -345,13 +345,14 @@ public class ItemPokemobEgg extends Item
         }
 
         Vector3 location = Vector3.getNewVector().set(mob);
-        EntityPlayer player = ((Entity) mob).getEntityWorld().getClosestPlayer(location.x, location.y, location.z, 2, false);
+        EntityPlayer player = ((Entity) mob).getEntityWorld().getClosestPlayer(location.x, location.y, location.z, 2,
+                false);
         EntityLivingBase owner = player;
         AxisAlignedBB box = location.getAABB().expand(4, 4, 4);
         if (owner == null)
         {
-            List<EntityLivingBase> list = ((Entity) mob).getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, box,
-                    new Predicate<EntityLivingBase>()
+            List<EntityLivingBase> list = ((Entity) mob).getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class,
+                    box, new Predicate<EntityLivingBase>()
                     {
                         @Override
                         public boolean apply(EntityLivingBase input)
@@ -382,8 +383,8 @@ public class ItemPokemobEgg extends Item
         }
         if (owner == null)
         {
-            IPokemob pokemob = (IPokemob) ((Entity) mob).getEntityWorld().findNearestEntityWithinAABB(EntityPokemob.class, box,
-                    (Entity) mob);
+            IPokemob pokemob = (IPokemob) ((Entity) mob).getEntityWorld()
+                    .findNearestEntityWithinAABB(EntityPokemob.class, box, (Entity) mob);
             if (pokemob != null && pokemob.getPokemonOwner() instanceof EntityPlayer)
                 player = (EntityPlayer) pokemob.getPokemonOwner();
             owner = player;

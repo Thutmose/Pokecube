@@ -260,9 +260,6 @@ public class PCEventsHandler
             InventoryPlayer inv = player.inventory;
             InventoryPC pc = InventoryPC.getPC(PokecubeManager.getOwner(evt.filledCube));
             int num = inv.getFirstEmptyStack();
-
-            System.out.println(pc.autoToPC);
-
             if (evt.filledCube == null || pc == null)
             {
                 System.err.println("Cube is null");

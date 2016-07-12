@@ -107,8 +107,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
                         * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
 
                 this.entity.setAIMoveSpeed(newSpeed);
-                double d6 = lastPos.distanceTo(pos);
-                if ((d2 > 0.0D || (d6 < speed / 20 && d4 > 0)) && !air )
+                if ((d2 > 0.0D) && !air)
                 {
                     this.entity.getJumpHelper().setJumping();
                 }

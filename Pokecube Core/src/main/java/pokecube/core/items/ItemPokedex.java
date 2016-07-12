@@ -48,7 +48,6 @@ public class ItemPokedex extends Item
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
-
         if (!player.isSneaking())
         {
             showGui(player);
@@ -134,7 +133,6 @@ public class ItemPokedex extends Item
                 Vector3 temp = Vector3.getNewVector().set(villages.get(0).getCenter());
                 temp.writeToNBT(tag, "village");
             }
-            System.out.println(villages);
             PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
             PokecubePacketHandler.sendToClient(packet, player);
         }

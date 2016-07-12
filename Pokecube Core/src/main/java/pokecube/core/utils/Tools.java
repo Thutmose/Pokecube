@@ -31,9 +31,9 @@ import thut.api.maths.Vector3;
 public class Tools
 {
     // cache these in tables, for easier lookup.
-    private static int[] erraticXp     = new int[101];
+    private static int[] erraticXp     = new int[102];
 
-    private static int[] fluctuatingXp = new int[101];
+    private static int[] fluctuatingXp = new int[102];
 
     public static int[]  maxXPs        = { 800000, 1000000, 1059860, 1250000, 600000, 1640000 };
 
@@ -199,7 +199,7 @@ public class Tools
     private static int getLevelFromTable(int[] table, int exp)
     {
         int level = 0;
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 101; i++)
         {
             if (table[i] <= exp && table[i + 1] > exp)
             {
@@ -207,7 +207,6 @@ public class Tools
                 break;
             }
         }
-
         return level;
     }
 
@@ -403,7 +402,7 @@ public class Tools
 
     private static void initTables()
     {
-        for (int i = 0; i < 101; i++)
+        for (int i = 0; i < 102; i++)
         {
             erraticXp[i] = levelToXp(4, i);
             fluctuatingXp[i] = levelToXp(5, i);

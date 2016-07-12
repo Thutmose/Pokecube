@@ -281,18 +281,18 @@ public class Pokecube extends Item implements IPokecube
         {
             EntityPlayer player = (EntityPlayer) entityLiving;
             Entity target = Tools.getPointedEntity(player, 32);
-            Vector3 direction;
-            Vector3 targetLocation = Vector3.getNextSurfacePoint(worldIn, Vector3.getNewVector().set(player),
-                    direction = Vector3.getNewVector().set(player.getLook(0)), 32);
+            Vector3 direction = Vector3.getNewVector().set(player.getLook(0));
+            Vector3 targetLocation = Tools.getPointedLocation(player, 32);
             boolean filled = PokecubeManager.isFilled(stack);
 
             if (!filled && !(target instanceof IPokemob)) target = null;
             boolean used = false;
-            if (target != null)
+            boolean filledOrSneak = filled || player.isSneaking();
+            if (target != null && EntityPokecube.SEEKING)
             {
                 used = throwPokecubeAt(worldIn, player, stack, targetLocation, target);
             }
-            else if (filled || player.isSneaking())
+            else if (filledOrSneak || !EntityPokecube.SEEKING)
             {
                 float power = (getMaxItemUseDuration(stack) - timeLeft) / (float) 100;
                 power = Math.min(1, power);

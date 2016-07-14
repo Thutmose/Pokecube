@@ -116,8 +116,7 @@ public abstract class ComponentVillageBase extends House1
         IBlockState state1 = placeBlock.getDefaultState();
         IBlockState state2 = replaceBlock.getDefaultState();
 
-        super.fillWithBlocksRandomly(world, structBB, rnd, chance, minX, minY, minZ, maxX, maxY, maxZ, state1, state2,
-                false);
+        super.func_189914_a(world, structBB, rnd, chance, minX, minY, minZ, maxX, maxY, maxZ, state1, state2, false, 0);
 
     }
 

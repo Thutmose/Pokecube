@@ -384,15 +384,9 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void interactEvent(PlayerInteractEvent evt)
+    public void interactEventLeftClick(PlayerInteractEvent.LeftClickBlock evt)
     {
-        boolean rightClickBlock = evt instanceof PlayerInteractEvent.RightClickBlock;
-        boolean leftClickBlock = evt instanceof PlayerInteractEvent.LeftClickBlock;
-        boolean rightClickAir = evt instanceof PlayerInteractEvent.RightClickItem;
-
-        if (!(rightClickBlock || leftClickBlock || rightClickAir)) return;
-
-        if (leftClickBlock && evt.getEntityPlayer().getHeldItemMainhand() != null
+        if (evt.getEntityPlayer().getHeldItemMainhand() != null
                 && evt.getEntityPlayer().getHeldItemMainhand().getItem() == Items.STICK)
         {
             TileEntity te = evt.getWorld().getTileEntity(evt.getPos());
@@ -408,10 +402,14 @@ public class EventsHandler
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void interactEvent(PlayerInteractEvent.RightClickBlock evt)
+    {
         if (evt.getEntityPlayer().getEntityWorld().isRemote
                 || evt.getEntityPlayer().getEntityWorld().rand.nextInt(10) != 0)
             return;
-
         TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(evt.getEntityPlayer());
         t.checkIndustrial(evt.getEntityPlayer().getEntityWorld());
     }

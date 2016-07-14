@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -120,7 +119,32 @@ public class TeamEventsHandler
      * 
      * @param evt */
     @SubscribeEvent
-    public void placeEvent(PlayerInteractEvent.RightClickBlock evt)
+    public void interactLeftClickBlock(PlayerInteractEvent.LeftClickBlock evt)
+    {
+        ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
+        String owner = TeamManager.getInstance().getLandOwner(c);
+        if (owner == null) return;
+        String team = evt.getWorld().getScoreboard().getPlayersTeam(evt.getEntityPlayer().getName())
+                .getRegisteredName();
+        if (owner.equals(team)) { return; }
+        ChunkCoordinate blockLoc = new ChunkCoordinate(evt.getPos(), evt.getEntityPlayer().dimension);
+        TeamManager.getInstance().isPublic(blockLoc);
+        if (!team.equals(owner))
+        {
+            if (!TeamManager.getInstance().isPublic(blockLoc))
+            {
+                evt.setUseBlock(Result.DENY);
+                evt.setCanceled(true);
+            }
+            evt.setUseItem(Result.DENY);
+        }
+    }
+
+    /** Uses player interact here to also prevent opening of inventories.
+     * 
+     * @param evt */
+    @SubscribeEvent
+    public void interactRightClickBlock(PlayerInteractEvent.RightClickBlock evt)
     {
         ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
         String owner = TeamManager.getInstance().getLandOwner(c);
@@ -137,11 +161,10 @@ public class TeamEventsHandler
         {
             // return;
         }
-        else if (block != null && evt.getEntityPlayer().getHeldItemMainhand() != null
-                && evt.getEntityPlayer().getHeldItemMainhand().getItem() instanceof IPokecube)
+        else if (block != null && evt.getItemStack() != null && evt.getItemStack().getItem() instanceof IPokecube)
         {
-            b = block.onBlockActivated(evt.getWorld(), evt.getPos(), state, evt.getEntityPlayer(), EnumHand.MAIN_HAND,
-                    null, evt.getFace(), (float) evt.getHitVec().xCoord, (float) evt.getHitVec().yCoord,
+            b = block.onBlockActivated(evt.getWorld(), evt.getPos(), state, evt.getEntityPlayer(), evt.getHand(), null,
+                    evt.getFace(), (float) evt.getHitVec().xCoord, (float) evt.getHitVec().yCoord,
                     (float) evt.getHitVec().zCoord);
             if (!b) { return; }
         }
@@ -153,8 +176,6 @@ public class TeamEventsHandler
         {
             if (!TeamManager.getInstance().isPublic(blockLoc))
             {
-                evt.getEntityPlayer().addChatMessage(
-                        new TextComponentString("You must be a member of Team " + owner + " to do that."));
                 evt.setUseBlock(Result.DENY);
                 evt.setCanceled(true);
             }

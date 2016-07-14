@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMoveAnimation.MovePacketInfo;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 
@@ -105,7 +106,7 @@ public class EntityMoveUse extends Entity
 
     public Entity getUser()
     {
-        return worldObj.getEntityByID(getDataManager().get(USER));
+        return PokecubeMod.core.getEntityProvider().getEntity(worldObj, getDataManager().get(USER), true);
     }
 
     public EntityMoveUse setTarget(Entity target)

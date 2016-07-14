@@ -67,6 +67,10 @@ pokecube.trainer.drop=%1$s §agave you %2$s §afor winning!
 pokecube.power.enabled=§aPower API found, Pokecube Machines will require energy to run.
 pokecube.power.disabled=§cNo Power API found, Pokecube Machines will not use energy, install something which provides Tesla or RF to enable.
 
+msg.team.deny=§cYou are not allowed to do that in land owned by Team %1$s
+msg.team.enterLand=You have entered land owned by Team %1$s
+msg.team.exitLand=You have left land owned by Team %1$s
+
 #Config Stuff
 
 #Machines

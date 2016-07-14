@@ -13,12 +13,16 @@ import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.TeamManager;
@@ -37,9 +41,6 @@ public class TeamEventsHandler
     public void BreakBlock(BreakEvent evt)
     {
         EntityPlayer player = evt.getPlayer();
-        // TODO interface with
-        // forge permissions API
-        // here as well
         TileEntity tile = evt.getWorld().getTileEntity(evt.getPos());
         if (tile instanceof IOwnableTE)
         {
@@ -73,6 +74,41 @@ public class TeamEventsHandler
             }
             ChunkCoordinate block = new ChunkCoordinate(evt.getPos(), evt.getWorld().provider.getDimension());
             TeamManager.getInstance().unsetPublic(block);
+        }
+    }
+
+    @SubscribeEvent
+    public void EntityUpdate(LivingUpdateEvent evt)
+    {
+        if (evt.getEntityLiving() instanceof EntityPlayer
+                && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        {
+            EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
+            BlockPos here;
+            BlockPos old;
+            here = new BlockPos(player.chasingPosX, player.chasingPosY, player.chasingPosZ);
+            old = new BlockPos(player.prevChasingPosX, player.prevChasingPosY, player.prevChasingPosZ);
+            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(here, player.dimension);
+            ChunkCoordinate c1 = ChunkCoordinate.getChunkCoordFromWorldCoord(old, player.dimension);
+            if (c.equals(c1)) return;
+            if (TeamManager.getInstance().isOwned(c) || TeamManager.getInstance().isOwned(c1))
+            {
+                String team = TeamManager.getInstance().getLandOwner(c);
+                String team1 = TeamManager.getInstance().getLandOwner(c1);
+                if (team != null)
+                {
+                    if (team.equals(team1)) return;
+                    if (team1 != null)
+                    {
+                        evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.exitLand", team1));
+                    }
+                    evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.enterLand", team));
+                }
+                else
+                {
+                    evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.exitLand", team1));
+                }
+            }
         }
     }
 
@@ -118,7 +154,7 @@ public class TeamEventsHandler
     /** Uses player interact here to also prevent opening of inventories.
      * 
      * @param evt */
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void interactLeftClickBlock(PlayerInteractEvent.LeftClickBlock evt)
     {
         ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
@@ -137,13 +173,14 @@ public class TeamEventsHandler
                 evt.setCanceled(true);
             }
             evt.setUseItem(Result.DENY);
+            evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", team));
         }
     }
 
     /** Uses player interact here to also prevent opening of inventories.
      * 
      * @param evt */
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void interactRightClickBlock(PlayerInteractEvent.RightClickBlock evt)
     {
         ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
@@ -159,7 +196,7 @@ public class TeamEventsHandler
 
         if (owner.equals(team))
         {
-            // return;
+            return;
         }
         else if (block != null && evt.getItemStack() != null && evt.getItemStack().getItem() instanceof IPokecube)
         {
@@ -180,6 +217,7 @@ public class TeamEventsHandler
                 evt.setCanceled(true);
             }
             evt.setUseItem(Result.DENY);
+            evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", team));
         }
     }
 
@@ -200,5 +238,4 @@ public class TeamEventsHandler
             PASaveHandler.getInstance().loadTeams();
         }
     }
-
 }

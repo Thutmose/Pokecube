@@ -49,8 +49,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
     private int              moveIndexCounter = 0;
 
-    int                      attackTime;
-
     /** @param par1World */
     public EntityMovesPokemob(World world)
     {
@@ -303,11 +301,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public int getExplosionState()
     {
         return dataManager.get(BOOMSTATEDW);
-    }
-
-    public int getLastAttackTick()
-    {
-        return attackTime;
     }
 
     public String[] getLearnableMoves()
